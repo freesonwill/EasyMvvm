@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="base_bg">#F9F9F9</color>
+    <color name="c_6824e3">#6824E3</color>
+    <color name="c_6940f5">#6940F5</color>
+    <color name="c_4b2196">#4B2196</color>
+    <color name="orange">#FFA500</color>
+    <color name="c_1e1e1e">#1E1E1E</color>
+    <color name="c_a1a1a1">#A1A1A1</color>
+    <color name="c_8a8a8e">#8A8A8E</color>
+    <color name="c_8c8c8c">#8C8C8C</color>
+    <color name="c_898989">#898989</color>
+    <color name="c_edeef0">#EDEEF0</color>
+    <color name="c_fafafa">#FAFAFA</color>
+    <color name="c_3c3c43">#3C3C43</color>
+    <color name="c_334353ff">#994353FF</color>
+    <color name="c_1b093a">#1B093A</color>
+    <color name="c_1e0b41">#1E0B41</color>
+    <color name="c_find_bg1">#ECE5FA</color>
+    <color name="c_find_bg2">#1a6293ef</color>
+    <color name="c_find_bg3">#1af3e761</color>
+    <color name="c_find_bg4">#1aee8035</color>
+    <color name="c_find_bg5">#1a6cc867</color>
+    <color name="hint_color_1">#aaaa67</color>
+    <color name="black">#000000</color>
+    <color name="c_main_txt">#24242C</color>
+
+
+
+
+</resources>

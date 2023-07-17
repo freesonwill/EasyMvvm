@@ -51,7 +51,7 @@ dependencyResolutionManagement {
        // maven { url 'https://maven.aliyun.com/repository/google' }
     }
 }
-rootProject.name = "PokerInfo"
+rootProject.name = "Sl_live"
 include ':app'
 include ':base_lib'
 
@@ -64,4 +64,3 @@ include ':module_analytics'
 include ':module_share'
 include ':module_sms'
 include ':module_push'
-include ':pokerinfo'

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/luncher_bg" />
+    <item>
+        <shape>
+            <size
+                android:width="375dp"
+                android:height="820dp" />
+        </shape>
+    </item>
+    <item>
+        <bitmap
+            android:gravity="center"
+            android:src="@drawable/app_logo" />
+    </item>
+    <item android:bottom="80dp">
+        <bitmap
+            android:gravity="bottom"
+            android:src="@drawable/loading" />
+    </item>
+
+</layer-list>

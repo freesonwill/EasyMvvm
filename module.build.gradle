@@ -62,16 +62,16 @@ ext {
             }
             signingConfigs {
                 release {
-                    keyAlias 'tpinfo'
-                    keyPassword 'xcjh123456'
-                    storeFile file('tpinfo.jks')
-                    storePassword 'xcjh123456'
+                    keyAlias 'innofun'
+                    keyPassword 'innofun123'
+                    storeFile file('innofun.jks')
+                    storePassword 'innofun123'
                 }
                 debug {
-                    keyAlias 'tpinfo'
-                    keyPassword 'xcjh123456'
-                    storeFile file('tpinfo.jks')
-                    storePassword 'xcjh123456'
+                    keyAlias 'innofun'
+                    keyPassword 'innofun123'
+                    storeFile file('innofun.jks')
+                    storePassword 'innofun123'
                 }
             }
             buildTypes {

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rltTop"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/title_h">
+
+    <ImageView
+        android:id="@+id/ivBack"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/dp_10"
+        android:onClick="finishTopClick"
+        android:padding="11dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_black_back"
+        tools:ignore="UsingOnClickInXml" />
+    <TextView
+        android:id="@+id/tvCancel"
+        android:visibility="gone"
+        android:text="@string/cancel"
+        android:layout_alignParentStart="true"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:paddingEnd="@dimen/dp_20"
+        android:paddingStart="@dimen/dp_20"
+        android:textSize="@dimen/sp_16"
+        android:textColor="@color/white"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"/>
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="70dp"
+        android:layout_marginEnd="70dp"
+        android:gravity="center"
+        android:singleLine="true"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp_16"
+        tools:text="@string/title" />
+
+    <TextView
+        android:id="@+id/tvOption"
+        android:visibility="gone"
+        tools:text="@string/title"
+        android:layout_alignParentEnd="true"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:paddingEnd="@dimen/dp_20"
+        android:paddingStart="@dimen/dp_20"
+        android:textSize="@dimen/sp_16"
+        android:textColor="@color/white"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"/>
+</RelativeLayout>
