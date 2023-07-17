@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.xcjh.base_lib">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+<!--    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    &lt;!&ndash; Android 13 ======== &ndash;&gt;
+    &lt;!&ndash;相册权限&ndash;&gt;
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />-->
+    <!-- Android 13 ======== -->
+
+    <application>
+        <!--Fragment路由地址容器-->
+        <activity
+            android:name=".base.container.ContainerFmActivity"
+            android:theme="@style/AppTheme"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
+            android:screenOrientation="portrait" />
+        <!--Fragment直接容器-->
+        <activity
+            android:name=".base.container.ContainerFm2Activity"
+            android:theme="@style/AppTheme"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
+            android:screenOrientation="portrait" />
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
+        <meta-data
+            android:name="design_width_in_dp"
+            android:value="375" />
+        <meta-data
+            android:name="design_height_in_dp"
+            android:value="720" />
+        <meta-data
+            android:name="android.max_aspect"
+            android:value="2.4" /> <!-- 适配刘海屏、水滴屏 Android O 小米 -->
+        <meta-data
+            android:name="notch.config"
+            android:value="portrait|landscape" /> <!-- 适配刘海屏、水滴屏 Android O 华为 -->
+        <meta-data
+            android:name="android.notch_support"
+            android:value="true" /> <!-- 适配刘海屏、水滴屏 Android P -->
+        <meta-data
+            android:name="android.vendor.full_screen"
+            android:value="true" />
+
+
+    </application>
+
+</manifest>

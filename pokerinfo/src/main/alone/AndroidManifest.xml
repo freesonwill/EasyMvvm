@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.xcjh.tpInfo">
+    <!-- 谷歌商店应用内购买结算需要的权限v3v4版本 当前v5 -->
+<!--    <uses-permission android:name="com.android.vending.BILLING" />
+    <uses-permission android:name="com.farsitel.bazaar.permission.PAY_THROUGH_BAZAAR" />-->
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+
+    <application
+        android:name=".MyApplication"
+        android:allowBackup="true"
+        android:icon="@drawable/app_logo"
+        android:label="${app_name}"
+        android:networkSecurityConfig="${networkConfig}"
+        android:requestLegacyExternalStorage="true"
+        android:roundIcon="@drawable/app_logo"
+        android:supportsRtl="true"
+        android:theme="@style/ChatAppTheme"
+        android:usesCleartextTraffic="true"
+        tools:targetApi="n">
+        <!-- noHistory 解决广告躲开 不会存在栈内 -->
+        <activity
+            android:name=".ui.SplashActivity"
+            android:exported="true"
+            android:noHistory="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/ChatLauncher">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".ui.MainActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".web.WebActivity"
+            android:screenOrientation="portrait" />
+
+
+
+        <!-- ======================================================================================= -->
+        <!--facebook start-->
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
+        <meta-data
+            android:name="com.facebook.sdk.ClientToken"
+            android:value="@string/facebook_client_token" />
+
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/my_app_name" />
+        <activity
+            android:name="com.facebook.CustomTabActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="@string/fb_login_protocol_scheme" />
+            </intent-filter>
+        </activity>
+        <!--facebook end-->
+
+        <!-- 要在应用中启用 Google Pay，必须使用此元素。 -->
+        <!-- <meta-data
+             android:name="com.google.android.gms.wallet.api.enabled"
+             android:value="true" />-->
+
+        <!-- 是否打开Crashlytics bug收集false是关闭  true是开启-->
+        <meta-data
+            android:name="firebase_crashlytics_collection_enabled"
+            android:value="${is_release}" />
+
+    </application>
+
+</manifest>

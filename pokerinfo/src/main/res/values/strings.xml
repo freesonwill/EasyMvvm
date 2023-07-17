@@ -1,0 +1,129 @@
+<resources>
+    <string name="my_app_name">HoldemNews</string>
+    <string name="my_app_name_test">HoldemNewstest</string>
+
+    <!--main-->
+    <string name="Home">首页</string>
+    <string name="Schedule">赛程</string>
+    <string name="Msg">消息</string>
+    <string name="Mine">我的</string>
+
+
+    <string name="title">标题</string>
+    <string name="login">登录</string>
+    <string name="login_waiting">"正在登录…"</string>
+    <string name="find">发现</string>
+    <string name="other_login">第三方登录</string>
+    <string name="other">其他</string>
+    <string name="login_or_enroll">注册/登录</string>
+    <string name="hint_email_account">邮箱账号</string>
+    <string name="hint_code">验证码</string>
+    <string name="get_code">获取验证码</string>
+    <string name="register_code_s">%d s</string>
+    <string name="search">搜索</string>
+    <string name="exit_app">再按一次退出程序</string>
+
+
+
+    <string name="history_record">历史记录</string>
+
+    <!--setting-->
+    <string name="setting">设置</string>
+    <string name="language">语言切换</string>
+    <string name="contact_us">联系我们</string>
+    <string name="Terms_of_Use">使用条款</string>
+    <string name="agreement">隐私策略</string>
+    <string name="rate_us">评价我们</string>
+    <string name="about_us">关于我们</string>
+    <string name="clear_cache">清理缓存</string>
+    <string name="feedback">意见反馈</string>
+    <string name="feedback_ok">反馈成功</string>
+    <string name="delete_account">注销账号</string>
+    <string name="login_out">退出登录</string>
+    <string name="ensure">确定</string>
+    <string name="language_zh">简体中文</string>
+    <string name="language_zh_tw">繁体中文</string>
+    <string name="language_en">English</string>
+    <string name="copy_success">复制成功</string>
+    <string name="collect_success">收藏成功</string>
+    <string name="cancel_collect_success">已取消收藏</string>
+    <string name="share_success">分享成功</string>
+    <string name="sale_success">售卖成功</string>
+    <string name="pay_success">充值成功</string>
+    <string name="Unlocked_success">解锁成功</string>
+    <string name="pay_cancel">取消充值</string>
+    <string name="pay_fail">充值失败</string>
+    <string name="clear_cache_waiting">正在清理…</string>
+    <string name="clear_cache_success">清理完成</string>
+    <string name="price_s">$%s</string>
+
+
+
+    <string name="cancel">取消</string>
+    <string name="no_data_hint">暂无数据</string>
+    <string name="no_data">暂无数据</string>
+
+    <!--<string name="check_email_error">邮箱校验失败</string>-->
+    <string name="facebook_app_id" translatable="false">735497501397514</string>
+    <string name="fb_login_protocol_scheme" translatable="false">fb735497501397514</string>
+    <string name="facebook_client_token" translatable="false">5d4178e883269c3d3d646430390197ac</string>
+    <string name="visitor">游客</string>
+    <string name="login_out_hint">确定退出登录吗？</string>
+    <string name="waiting_last_ask">存在未回答的提问，请稍后再试！</string>
+    <string name="change_nothing">没有任何更改</string>
+    <string name="input_sth_first">请输入要问的问题！</string>
+    <string name="hint">提示</string>
+    <string name="delete_a_hint_content">是否确定注销此账号，注销后不可使用！</string>
+    <string name="feedback_hint">请对您遇到的问题进行描述</string>
+    <string name="delete_successful">注销成功</string>
+    <string name="submit">提交</string>
+    <string name="submit_success">提交成功</string>
+    <string name="submit_hint">请输入提交内容</string>
+    <string name="not_interested">不感兴趣</string>
+    <string name="not_interested_hint">确定不感兴趣之后，列表将不会再显示该内容</string>
+
+    <string name="No_more_prompts">不再提示</string>
+    <string name="Unlock_questions">解锁提问</string>
+    <string name="setting_google">Google</string>
+    <string name="setting_facebook">Facebook</string>
+    <string name="setting_binding">去绑定</string>
+    <string name="binding_success">绑定成功</string>
+    <string name="binding_error">绑定失败</string>
+    <string name="already_binding">已绑定</string>
+
+
+    <string name="choose_area_title">请选择区号</string>
+    <string name="phone_login">手机号登录</string>
+    <string name="email_login">邮箱登录</string>
+
+    <string name="changPsw">修改密码</string>
+    <string name="changNewPsw">重置密码</string>
+    <string name="changPhonePsw">重置手机密码</string>
+    <string name="changEmailPsw">重置邮箱密码</string>
+    <string name="please_input_phone_num">请输入手机号</string>
+    <string name="please_input_email">请输入邮箱</string>
+    <string name="please_input_phone_code">请输入验证码</string>
+    <string name="please_input_psw">请输入密码</string>
+    <string name="next">下一步</string>
+    <string name="set_new_psw">设置新密码</string>
+    <string name="set_new_psw_again">再次确定新密码</string>
+    <string name="finish">完成</string>
+    <string name="hint_psw_8_20">（8–20位英文，数字，下划线的两种组合）</string>
+    <string name="watch_info">看资讯</string>
+    <string name="watch_info_content">最新一手资讯都在这里</string>
+    <string name="changeToPswLogin">切换账号密码登录</string>
+    <string name="changeCodeLogin">切换验证码登录</string>
+    <string name="agree_head">我已阅读并同意</string>
+    <string name="agree_privacy">《平台隐私政策》</string>
+    <string name="and">和</string>
+    <string name="agree_user">《平台用户服务协议》</string>
+    <string name="forgetPsw">忘记密码</string>
+    <string name="update_success">更新成功</string>
+    <string name="code_send_success">验证码已发送</string>
+    <string name="code_send_first">请先获取验证码</string>
+    <string name="please_agree_first">请先同意用户服务协议</string>
+    <string name="login_hint">登录后畅享更多资源</string>
+    <string name="login_expired">登录过期</string>
+
+
+</resources>

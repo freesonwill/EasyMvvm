@@ -1,0 +1,67 @@
+pluginManagement {
+    repositories {
+      /*  maven { url 'https://maven.aliyun.com/repository/public/' }
+        //阿里云jcenter仓库
+        maven { url 'https://maven.aliyun.com/repository/jcenter' }
+        maven { url "https://s01.oss.sonatype.org/content/groups/public" }
+        gradlePluginPortal()
+        google()
+        maven { url 'https://jitpack.io' }
+        maven { url 'https://repo1.maven.org/maven2/' }
+        maven {url 'https://developer.huawei.com/repo/'}
+        mavenCentral()*/
+        mavenCentral()
+        gradlePluginPortal()
+        google()
+        maven { url 'https://jitpack.io' }
+        maven { url 'https://repo1.maven.org/maven2/' }
+        maven {url 'https://developer.huawei.com/repo/'}
+
+        maven { url 'https://maven.aliyun.com/repository/public/' }
+        //阿里云jcenter仓库
+        maven { url 'https://maven.aliyun.com/repository/jcenter' }
+        maven { url "https://s01.oss.sonatype.org/content/groups/public" }
+
+        // maven { url 'https://maven.aliyun.com/repository/google' }
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        mavenCentral()
+        google()
+        maven { url 'https://jitpack.io' }
+        maven { url 'https://repo1.maven.org/maven2/' }
+        maven {url 'https://developer.huawei.com/repo/'}
+
+        maven { url 'https://maven.aliyun.com/repository/public/' }
+        //阿里云jcenter仓库
+        maven { url 'https://maven.aliyun.com/repository/jcenter' }
+       /* maven { url 'https://maven.aliyun.com/repository/public/' }
+        //阿里云jcenter仓库
+        maven { url 'https://maven.aliyun.com/repository/jcenter' }
+        maven { url "https://s01.oss.sonatype.org/content/groups/public" }
+        gradlePluginPortal()
+        google()
+        maven { url 'https://jitpack.io' }
+        maven { url 'https://repo1.maven.org/maven2/' }
+        maven {url 'https://developer.huawei.com/repo/'}
+        mavenCentral()*/
+
+       // maven { url 'https://maven.aliyun.com/repository/google' }
+    }
+}
+rootProject.name = "PokerInfo"
+include ':app'
+include ':base_lib'
+
+include ':module_ad'
+include ':module_recharge'
+include ':module_login'
+include ':module_ranking'
+
+include ':module_analytics'
+include ':module_share'
+include ':module_sms'
+include ':module_push'
+include ':pokerinfo'

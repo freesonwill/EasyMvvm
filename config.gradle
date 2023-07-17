@@ -1,0 +1,81 @@
+ext {
+    android = [
+            compileSdkVersion: 33,
+            minSdkVersion    : 23,
+            targetSdkVersion : 33,
+            versionCode      : 4,        // 聚合app
+            versionName      : "1.0.4"
+    ]
+    //androidx配置
+    androidx = [
+
+            'kotlin_lib'            : "org.jetbrains.kotlin:kotlin-stdlib:1.7.20",
+            'kotlin_core'           : "androidx.core:core-ktx:1.9.0",
+            'appcompat'             : 'androidx.appcompat:appcompat:1.5.1',
+            'design'                : 'com.google.android.material:material:1.7.0',
+            'junit'                 : "junit:junit:4.13.2",
+            'runner'                : 'androidx.test.ext:junit:1.1.4',
+            'espresso-core'         : 'androidx.test.espresso:espresso-core:3.5.0',
+
+            'activity-ktx'          : 'androidx.activity:activity-ktx:1.6.1',
+            'fragment-ktx'          : 'androidx.fragment:fragment-ktx:1.5.5',
+            'lifecycle-vm-ktx'      : 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1',
+            'lifecycle-livedata-ktx': 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.1',
+
+    ]
+    dependencies = [
+            "glide"                  : 'com.github.bumptech.glide:glide:4.15.1',
+            'autosize'               : "me.jessyan:autosize:1.2.1",
+            "arouter_api"            : "com.alibaba:arouter-api:1.4.1",
+            "arouter_compiler"       : "com.alibaba:arouter-compiler:1.2.2",
+            "ShadowLayout"           : "com.github.lihangleo2:ShadowLayout:3.3.3",
+            "immersionbar"           : 'com.geyifeng.immersionbar:immersionbar:3.2.2',    // 沉浸式状态栏
+            "immersionbar-ktx"       : "com.geyifeng.immersionbar:immersionbar-ktx:3.2.2",
+            "adapter_helper"         : "com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.4",
+           // "adapter_helper"         : "io.github.cymchad:BaseRecyclerViewAdapterHelper:4.0.0-beta10",
+            "smartRefreshLayout"     : 'io.github.scwang90:refresh-layout-kernel:2.0.5',  //下拉刷新上拉加载
+            "refresh-header-classics": 'io.github.scwang90:refresh-header-classics:2.0.5',
+            "refresh-footer-classics": 'io.github.scwang90:refresh-footer-classics:2.0.5',
+            "refresh-header-material": 'io.github.scwang90:refresh-header-material:2.0.5',//谷歌刷新头
+            "XXPermissions"              : 'com.github.getActivity:XXPermissions:16.5',
+            "SwipeRecyclerView"          : 'com.yanzhenjie.recyclerview:x:1.3.2',
+            "AndroidUtilCode"          : 'com.blankj:utilcodex:1.31.1',
+    ]
+// 各模块状态配置
+    state = [
+            ToApp         : true,
+            adToApp       : true,//1.广告
+            rechargeToApp : false,//2.充值
+            loginToApp    : false,//3.登录
+            rankingToApp  : false,//4.排行
+            analyticsToApp: false,//5.统计
+            shareToApp    : false,//6.分享
+            smsToApp      : false,//7.短信通道
+            pushToApp     : false,//8.推送
+            chatToApp     : true,//9.ChatGenius
+
+//            adToApp       : true,//1.广告
+//            rechargeToApp : true,//2.充值
+//            loginToApp    : true,//3.登录
+//            rankingToApp  : true,//4.排行
+//            analyticsToApp: true,//5.统计
+//            shareToApp    : true,//6.分享
+//            smsToApp      : true,//7.短信通道
+//            pushToApp     : true,//8.推送
+//            chatToApp     : true,//9.ChatGenius
+    ]
+    appId = [
+            appId         : "com.innofun.sl_live.android",
+
+            adAppId       : "com.xcjh.module_ad",
+            rechargeAppId : "com.xcjh.module_recharge",
+            loginAppId    : "com.xcjh.module_login",
+            rankingAppId  : "com.xcjh.module_ranking",
+
+            analyticsAppId: "com.xcjh.module_analytics",
+            shareAppId    : "com.xcjh.module_share",
+            smsAppId      : "com.xcjh.module_sms",
+            pushAppId     : "com.xcjh.module_push",
+
+    ]
+}

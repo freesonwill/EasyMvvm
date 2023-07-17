@@ -1,0 +1,107 @@
+apply from: "config.gradle"
+ext {
+    alternatePlugin = { it ? 'com.android.application' : 'com.android.library' }
+    androidClosure = { android, isApp, appId ->
+        android.with {
+            lintOptions {
+                checkReleaseBuilds false
+                abortOnError false
+            }
+            compileSdkVersion rootProject.ext.android.compileSdkVersion
+            defaultConfig {
+                minSdkVersion rootProject.ext.android.minSdkVersion
+                targetSdkVersion rootProject.ext.android.targetSdkVersion
+                if (isApp) {
+                    applicationId appId
+                    versionCode rootProject.ext.android.versionCode
+                    versionName rootProject.ext.android.versionName
+                    testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+                }
+                //阿里路由框架配置
+                javaCompileOptions {
+                    annotationProcessorOptions {
+                        arguments = [AROUTER_MODULE_NAME: appId]
+                    }
+                }
+                ndk {
+                    // 只接入 armeabi-v7a 和 x86 架构
+                    //abiFilters 'armeabi-v7a', 'x86', 'arm64-v8a', 'x86_64'
+                    abiFilters 'armeabi-v7a', 'arm64-v8a'
+                }
+                /* dexOptions {
+                     javaMaxHeapSize "4g"
+                 }*/
+            }
+            kotlinOptions {
+                jvmTarget = "1.8"
+            }
+            buildFeatures {
+                viewBinding true
+                dataBinding true
+            }
+
+            compileOptions {
+                sourceCompatibility JavaVersion.VERSION_1_8
+                targetCompatibility JavaVersion.VERSION_1_8
+            }
+            sourceSets {
+                main {
+                    jniLibs.srcDirs = ['libs']
+                    if (isApp) {
+                        //独立运行
+                        manifest.srcFile 'src/main/alone/AndroidManifest.xml'
+                    } else {
+                        //合并到宿主
+                        manifest.srcFile 'src/main/AndroidManifest.xml'
+                        resources {
+                            //正式版本时，排除alone文件夹下所有调试文件
+                            exclude 'src/main/alone/*'
+                        }
+                    }
+                }
+            }
+            signingConfigs {
+                release {
+                    keyAlias 'tpinfo'
+                    keyPassword 'xcjh123456'
+                    storeFile file('tpinfo.jks')
+                    storePassword 'xcjh123456'
+                }
+                debug {
+                    keyAlias 'tpinfo'
+                    keyPassword 'xcjh123456'
+                    storeFile file('tpinfo.jks')
+                    storePassword 'xcjh123456'
+                }
+            }
+            buildTypes {
+                release {
+                    buildConfigField "boolean", "IS_RELEASE", "true"
+                    signingConfig signingConfigs.release
+                    proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+                   // debuggable true  //开启会导致aab签名无效
+                    minifyEnabled false//混淆
+                    zipAlignEnabled false//是否对APK包执行ZIP对齐优化，减小zip体积，增加运行效率
+                    manifestPlaceholders = [
+                            app_name     : "@string/my_app_name",
+                            is_release   : true,
+                            networkConfig: "@xml/network_security_config"//https 协议 加密政策
+                    ]
+                }
+                debug {
+                    buildConfigField "boolean", "IS_RELEASE", "false"
+                    signingConfig signingConfigs.debug
+                    proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+                    minifyEnabled false//混淆
+                    zipAlignEnabled false//是否对APK包执行ZIP对齐优化，减小zip体积，增加运行效率
+                    manifestPlaceholders = [
+                            app_name     : "@string/my_app_name_test",
+                            is_release   : false,
+                            networkConfig: "@xml/network_security_config2"//http 协议 绕过加密政策
+                    ]
+                }
+            }
+
+        }
+    }
+}

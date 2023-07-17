@@ -1,0 +1,46 @@
+<resources>
+    <string name="title">Title</string>
+    <string name="customactivityoncrash_error_activity_error_occurred_explanation">An unexpected error occurred. \nSorry for the inconvenience. </string>
+    <string name="customactivityoncrash_error_activity_restart_app">restart</string>
+    <string name="customactivityoncrash_error_activity_close_app">close the program</string>
+    <string name="customactivityoncrash_error_activity_error_details">error log</string>
+    <string name="customactivityoncrash_error_activity_error_details_title">Error details</string>
+    <string name="customactivityoncrash_error_activity_error_details_close">Close</string>
+    <string name="customactivityoncrash_error_activity_error_details_copy">copy log</string>
+    <string name="customactivityoncrash_error_activity_error_details_copied">copy log</string>
+    <string name="customactivityoncrash_error_activity_error_details_clipboard_label">error information</string>
+    <string name="down_ok">Download success!</string>
+    <string name="UNKNOWN">The request failed, please try again later</string>
+    <string name="PARSE_ERROR">parse error, please try again later</string>
+    <string name="NETWORK_ERROR">Network connection error, please try again later</string>
+    <string name="SSL_ERROR">Certificate error, please try again later</string>
+    <string name="TIMEOUT_ERROR">The network connection timed out, please try again later</string>
+
+    <string-array name="todo_type">
+        <item>Default</item>
+        <item>work</item>
+        <item>Learn</item>
+        <item>Life</item>
+        <item>Consumption</item>
+        <item>Entertainment</item>
+        <item>Family</item>
+    </string-array>
+
+    <string-array name="todo_priority">
+        <item>high</item>
+        <item>Normal</item>
+        <item>low</item>
+    </string-array>
+
+    <string-array name="todo_status">
+        <item>All</item>
+        <item>to do</item>
+        <item>Completed</item>
+    </string-array>
+
+    <string-array name="todo_time_state">
+        <item>All</item>
+        <item>not expired</item>
+        <item>Expired</item>
+    </string-array>
+</resources>

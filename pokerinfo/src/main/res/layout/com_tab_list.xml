@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <net.lucode.hackware.magicindicator.MagicIndicator
+        android:id="@+id/magicIndicator"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_40" />
+
+<!--
+    <ImageView
+        android:id="@+id/ivUser"
+        android:src="@mipmap/def_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <com.youth.banner.Banner
+        android:id="@+id/consultBanner"
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="15dp"
+        android:visibility="gone"
+        app:banner_indicator_normal_color="#4dffffff"
+        app:banner_indicator_normal_width="3dp"
+        app:banner_indicator_radius="2dp"
+        app:banner_indicator_selected_color="#ffffffff"
+        app:banner_indicator_selected_width="3dp"
+        app:banner_loop_time="5000"
+        app:banner_orientation="horizontal"
+        app:banner_radius="8dp" />-->
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</LinearLayout>
