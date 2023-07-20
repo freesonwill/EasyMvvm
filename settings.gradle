@@ -55,7 +55,7 @@ rootProject.name = "Sl_live"
 include ':app'
 include ':base_lib'
 
-include ':module_ad'
+/*include ':module_ad'
 include ':module_recharge'
 include ':module_login'
 include ':module_ranking'
@@ -63,4 +63,4 @@ include ':module_ranking'
 include ':module_analytics'
 include ':module_share'
 include ':module_sms'
-include ':module_push'
+include ':module_push'*/
