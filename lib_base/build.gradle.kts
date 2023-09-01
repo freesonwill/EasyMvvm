@@ -31,12 +31,18 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    buildFeatures {
+        dataBinding = true
+        viewBinding = true
+    }
 }
 
 dependencies {
     implementation(Dependencies.core_ktx)
     implementation(Dependencies.appcompat)
     implementation(Dependencies.material)
+    implementation(Dependencies.immersionbar)
+    api(project(Dependencies.lib_ui))
     testImplementation(Dependencies.junit)
     androidTestImplementation(Dependencies.ext_junit)
     androidTestImplementation(Dependencies.espresso_core)

@@ -1,11 +1,16 @@
 package com.coolone.mvvm
 
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
+import androidx.lifecycle.ViewModelProvider
+import com.coolone.lib_base.BaseActivity
+import com.coolone.mvvm.databinding.ActivityMainBinding
 
-class MainActivity : AppCompatActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+class MainActivity : BaseActivity<ActivityMainBinding, EmptyViewModel>() {
+
+    override fun initViewModel(): EmptyViewModel {
+        return ViewModelProvider(this)[EmptyViewModel::class.java]
+    }
+
+    override fun layoutResId(): Int {
+        return R.layout.activity_main
     }
 }

@@ -12,8 +12,9 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "Mvvm"
+rootProject.name = "EasyMvvm"
 include ':app'
 include ':lib_base'
 include ':lib_service'
 include ':lib_wifi'
+include ':lib_ui'
