@@ -3,16 +3,18 @@ package com.xcjh.app.base
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.databinding.ViewDataBinding
 import androidx.viewbinding.ViewBinding
 import com.xcjh.app.utils.dismissLoadingExt
 import com.xcjh.app.utils.showLoadingExt
 import com.xcjh.base_lib.base.BaseViewModel
+import com.xcjh.base_lib.base.fragment.BaseVmDbFragment
 import com.xcjh.base_lib.base.fragment.BaseVmVbFragment
 
 /**
  *  @author zobo 2023.02.15
  */
-abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : BaseVmVbFragment<VM, VB>() {
+abstract class BaseFragment<VM : BaseViewModel, VB : ViewDataBinding> : BaseVmDbFragment<VM, VB>() {
 
 
     abstract override fun initView(savedInstanceState: Bundle?)

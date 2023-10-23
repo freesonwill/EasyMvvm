@@ -5,6 +5,8 @@ import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.utils.myToast
 import okhttp3.Interceptor
 import com.xcjh.app.R
+import com.xcjh.app.ui.login.LoginActivity
+import com.xcjh.base_lib.utils.startNewActivity
 import okhttp3.MediaType
 import okhttp3.Response
 import org.json.JSONObject
@@ -39,7 +41,7 @@ class ExpiredInterceptor : Interceptor {
         //判断响应是否过期（无效）
         if (isResponseExpired(response, bodyString)) {
             myToast(appContext.getString(R.string.login_expired))
-           // startNewActivity<LoginActivity> {  }
+            startNewActivity<LoginActivity> {  }
         }
         return response
     }
@@ -53,7 +55,7 @@ class ExpiredInterceptor : Interceptor {
     private fun isResponseExpired(response: Response?, bodyString: String?): Boolean {
         try {
             val jsonObject = bodyString?.let { JSONObject(it) }
-            if (jsonObject?.getInt("code") == Constants.EXPIRED_CODE) {
+            if (jsonObject?.getInt("code") == Constants.EXPIRED_CODE||jsonObject?.getInt("code") == Constants.NEEDLOAGIN_CODE) {
                 val currentTime = System.currentTimeMillis()
                 return if (lastClickTime != 0L && (currentTime - lastClickTime < 1000)) {
                     false

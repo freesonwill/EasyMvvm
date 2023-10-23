@@ -1,5 +1,6 @@
 package com.xcjh.base_lib.utils.bindadapter
 
+import android.annotation.SuppressLint
 import android.os.SystemClock
 import android.text.Editable
 import android.text.InputType
@@ -9,6 +10,7 @@ import android.widget.CheckBox
 import android.widget.CompoundButton
 import android.widget.EditText
 import android.widget.ImageView
+import androidx.appcompat.widget.AppCompatEditText
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
@@ -16,6 +18,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.xcjh.base_lib.utils.command.BindingCommand
 import com.xcjh.base_lib.utils.view.textString
+import java.util.concurrent.TimeUnit
 
 /**
  * 作者　: zb
@@ -64,7 +67,7 @@ object CustomBindAdapter {
 
     @BindingAdapter(value = ["afterTextChanged"])
     @JvmStatic
-    fun EditText.afterTextChanged(action: (String) -> Unit) {
+    fun AppCompatEditText.afterTextChanged(action: (String) -> Unit) {
         addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
 
@@ -109,5 +112,38 @@ object CustomBindAdapter {
         }
     }
 
+    /**
+     * 防止暴力点击
+     */
+    @SuppressLint("CheckResult")
+    @BindingAdapter("click")
+    @JvmStatic
+    fun setThrottleClickListener(v: View, onClickListener: View.OnClickListener?) {
+        if (onClickListener != null) {
+            v.throttleClick { onClickListener.onClick(this) }
+        }
+    }
+    fun View.throttleClick(
+        interval: Long = 500,
+        unit: TimeUnit = TimeUnit.MILLISECONDS,
+        block: View.() -> Unit
+    ) {
+        setOnClickListener(ThrottleClickListener(interval, unit, block))
+    }
 
+    class ThrottleClickListener(
+        private val interval: Long = 500,
+        private val unit: TimeUnit = TimeUnit.MILLISECONDS,
+        private var block: View.() -> Unit
+    ) : View.OnClickListener {
+        private var lastTime: Long = 0
+
+        override fun onClick(v: View) {
+            val currentTime = System.currentTimeMillis()
+            if (currentTime - lastTime > unit.toMillis(interval)) {
+                lastTime = currentTime
+                block(v)
+            }
+        }
+    }
 }

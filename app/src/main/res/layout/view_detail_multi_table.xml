@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/shape_r8"
+        android:backgroundTint="@color/c_18152a"
+        android:layout_marginBottom="@dimen/dp_20"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_44"
+            android:background="@drawable/bg_table_title"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="133"
+                android:gravity="start|center_vertical"
+                android:paddingStart="@dimen/dp_16"
+                android:text="@string/company"
+                android:textColor="@color/c_F5F5F5"
+                android:textSize="@dimen/sp_12" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="52"
+                android:gravity="center"
+                android:text="@string/zs"
+                android:textColor="@color/c_F5F5F5"
+                android:textSize="@dimen/sp_12" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="52"
+                android:gravity="center"
+                android:text="@string/ping"
+                android:textColor="@color/c_F5F5F5"
+                android:textSize="@dimen/sp_12" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="52"
+                android:gravity="center"
+                android:text="@string/ks"
+                android:textColor="@color/c_F5F5F5"
+                android:textSize="@dimen/sp_12" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="52"
+                android:gravity="center"
+                android:text="@string/pf"
+                android:textColor="@color/c_F5F5F5"
+                android:textSize="@dimen/sp_12" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_multi_table"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+    </LinearLayout>
+</RelativeLayout>

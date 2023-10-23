@@ -2,7 +2,7 @@ plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
-   // id "org.jetbrains.kotlin.plugin.parcelize"
+    // id "org.jetbrains.kotlin.plugin.parcelize"
 }
 apply plugin: alternatePlugin(false)
 android {
@@ -34,12 +34,12 @@ dependencies {
 
     /*==============================三方工具库==========================*/
     //glide图片加载库
-  //  api rootProject.ext.dependencies["glide"]
+    //  api rootProject.ext.dependencies["glide"]
     api 'com.github.bumptech.glide:glide:4.15.1'
     kapt 'com.github.bumptech.glide:compiler:4.15.1'
 //    api 'com.caverock:androidsvg-aar:1.4'
     api 'com.caverock:androidsvg:1.4'
-   // api "com.facebook.fresco:animated-webp:1.9.0"
+    // api "com.facebook.fresco:animated-webp:1.9.0"
 
     //权限获取
     api rootProject.ext.dependencies["XXPermissions"]
@@ -55,10 +55,10 @@ dependencies {
     api rootProject.ext.dependencies["immersionbar-ktx"]
     //BaseRecyclerViewAdapterHelper
     api rootProject.ext.dependencies["adapter_helper"]
-    api rootProject.ext.dependencies["smartRefreshLayout"]
+    //api rootProject.ext.dependencies["smartRefreshLayout"]
     api rootProject.ext.dependencies["refresh-header-classics"]
-    api rootProject.ext.dependencies["refresh-footer-classics"]
-    api rootProject.ext.dependencies["refresh-header-material"]
+    //api rootProject.ext.dependencies["refresh-footer-classics"]
+    //api rootProject.ext.dependencies["refresh-header-material"]
     //指示器库
     api 'com.github.hackware1993:MagicIndicator:1.7.0'
     //微信开源项目，替代SP
@@ -81,4 +81,9 @@ dependencies {
     //侧滑
     api 'com.github.anzaizai:EasySwipeMenuLayout:1.1.4'
     api 'com.github.getActivity:Toaster:12.2'
+    api 'com.github.liangjingkanji:BRV:1.4.3'
+    api 'io.github.h07000223:flycoTabLayout:3.0.0'
+    // 软键盘事件监听/平滑键盘弹出动画
+    api 'com.github.liangjingkanji:soft-input-event:1.0.9'
+
 }

@@ -3,13 +3,47 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.xcjh.app">
     <!-- 谷歌商店应用内购买结算需要的权限v3v4版本 当前v5 -->
-<!--    <uses-permission android:name="com.android.vending.BILLING" />
-    <uses-permission android:name="com.farsitel.bazaar.permission.PAY_THROUGH_BAZAAR" />-->
+    <!--
+    <uses-permission android:name="com.android.vending.BILLING" />
+        <uses-permission android:name="com.farsitel.bazaar.permission.PAY_THROUGH_BAZAAR" />
+    -->
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
     <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+    <uses-permission android:name="android.permission.WRITE_MEDIA_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <queries package="${applicationId}">
+        <intent>
+            <action android:name="android.media.action.IMAGE_CAPTURE" />
+        </intent>
+        <intent>
+            <action android:name="android.media.action.ACTION_VIDEO_CAPTURE" />
+        </intent>
+    </queries>
 
     <application
         android:name=".MyApplication"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:icon="@drawable/app_logo"
         android:label="${app_name}"
         android:networkSecurityConfig="${networkConfig}"
@@ -17,9 +51,34 @@
         android:roundIcon="@drawable/app_logo"
         android:supportsRtl="true"
         android:theme="@style/ChatAppTheme"
-        android:usesCleartextTraffic="true"
-        tools:targetApi="n">
-        <!-- noHistory 解决广告躲开 不会存在栈内 -->
+        android:usesCleartextTraffic="true">
+        <activity
+            android:name=".ui.home.my.operate.LevelMissionActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.home.my.operate.ContactUsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.home.my.personal.EditProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.home.my.personal.PersonalDataActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.home.my.operate.ViewingHistoryListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.home.my.operate.MyFollowListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.Index.IndexLetterActivity"
+            android:exported="false" />
+        <activity
+            android:name=".web.WebRichTextActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.home.my.operate.EventsCentreActivity"
+            android:exported="false" />
         <activity
             android:name=".ui.SplashActivity"
             android:exported="true"
@@ -28,23 +87,39 @@
             android:theme="@style/ChatLauncher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".ui.MainActivity"
+            android:exported="true"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait">
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+        </activity>
         <activity
             android:name=".web.WebActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.chat.ChatActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.search.SearchActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.login.LoginActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.notice.MyNoticeActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.search.SeacherMsgActivity"
+            android:screenOrientation="portrait" />
 
-
-
-        <!-- ======================================================================================= -->
-        <!--facebook start-->
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
@@ -61,25 +136,22 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-        <!--facebook end-->
+        <activity
+            android:name=".ui.details.MatchDetailActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
+            android:screenOrientation="portrait" />
 
-        <!-- 要在应用中启用 Google Pay，必须使用此元素。 -->
-        <!-- <meta-data
-             android:name="com.google.android.gms.wallet.api.enabled"
-             android:value="true" />-->
-
-        <!-- 是否打开Crashlytics bug收集false是关闭  true是开启-->
         <meta-data
             android:name="firebase_crashlytics_collection_enabled"
             android:value="${is_release}" />
-
+        <service
+            android:name="com.xcjh.app.websocket.MyWsClientService"
+            android:enabled="true"
+            android:exported="true" />
     </application>
-
 </manifest>

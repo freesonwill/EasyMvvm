@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/base_color"
+        android:orientation="vertical" >
+        <include
+            android:id="@+id/titleTop"
+            layout="@layout/com_title_transparent" />
+        <RelativeLayout
+            android:id="@+id/rlPersonalClickHead"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/dp_24"
+            android:paddingRight="@dimen/dp_24"
+            android:paddingBottom="@dimen/dp_12"
+            android:paddingTop="@dimen/dp_12">
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/sp_14"
+                android:textColor="@color/c_ffffff"
+                android:textStyle="bold"
+                android:text="@string/personal_txt_head"
+                android:layout_centerVertical="true"/>
+            <LinearLayout
+                android:id="@+id/llPersonalClickHead"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:gravity="center"
+                android:orientation="horizontal">
+                <com.xcjh.app.utils.nice.NiceImageView
+                    android:id="@+id/ivPersonalHead"
+                    android:layout_width="@dimen/dp_44"
+                    android:layout_height="@dimen/dp_44"
+                    android:scaleType="fitXY"
+                    app:srcCompat="@drawable/load_head"
+                    app:is_circle="true" />
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="@dimen/dp_16"
+                        android:layout_height="@dimen/dp_16"
+                        android:layout_marginLeft="@dimen/dp_8"
+                        app:srcCompat="@drawable/icon_left"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/rlPersonalClickName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/dp_24"
+            android:paddingRight="@dimen/dp_24"
+            android:paddingBottom="@dimen/dp_12"
+            android:paddingTop="@dimen/dp_12">
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/sp_14"
+                android:textColor="@color/c_ffffff"
+                android:textStyle="bold"
+                android:text="@string/personal_txt_name"
+                android:layout_centerVertical="true"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:gravity="center"
+                android:orientation="horizontal">
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/txtPersonalNickname"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/c_8a91a0"
+                    android:text="@string/personal_txt_nickname"/>
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="@dimen/dp_16"
+                    android:layout_height="@dimen/dp_16"
+                    android:layout_marginLeft="@dimen/dp_8"
+                    app:srcCompat="@drawable/icon_left"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+    </LinearLayout>
+</layout>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/dp_16">
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/txtHotNAme"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingRight="16dp"
+        android:paddingLeft="16dp"
+        android:paddingTop="9dp"
+        android:paddingBottom="9dp"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:textColor="@color/c_f5f5f5"
+        android:text="NBA 利雅得胜利 VS 青岛海牛"
+        android:background="@drawable/shape_r4_18152a"/>
+</LinearLayout>

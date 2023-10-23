@@ -221,3 +221,36 @@
 #列出从apk中删除的代码
 -printusage unused.txt
 # 混淆映射，生成映射文件============
+
+-keep class com.luck.picture.lib.** { *; }
+
+#如果引入了Camerax库请添加混淆
+-keep class com.luck.lib.camerax.** { *; }
+
+# 如果引入了Ucrop库请添加混淆
+-dontwarn com.yalantis.ucrop**
+-keep class com.yalantis.ucrop** { *; }
+-keep interface com.yalantis.ucrop** { *; }
+
+#=================
+-dontwarn com.king.app.dialog.**
+-keep class com.king.app.dialog.**{ *;}
+
+-keepclassmembers enum * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
+
+-dontwarn com.king.app.updater.**
+-keep class com.king.app.updater.**{ *;}
+-keep class * extends com.king.app.updater.**{ *;}
+-keep class * implements com.king.app.updater.**{ *;}
+-keepattributes InnerClasses
+
+-keep public class * extends android.app.Service
+
+-keep class * implements android.os.Parcelable {
+    public static final android.os.Parcelable$Creator *;
+}
+
+

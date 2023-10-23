@@ -7,6 +7,8 @@ import com.tencent.mmkv.MMKV
 import com.xcjh.app.appViewModel
 import com.xcjh.app.bean.LoginInfo
 import com.xcjh.app.bean.UserInfo
+import com.xcjh.base_lib.appContext
+import com.xcjh.base_lib.network.cookie.CookieManger
 
 object CacheUtil {
     /**
@@ -68,14 +70,19 @@ object CacheUtil {
      * 设置是否已经登录
      */
     fun setIsLogin(isLogin: Boolean, login: LoginInfo? = null) {
-        appViewModel.updateLoginEvent.postValue(isLogin)
+
         if (isLogin && login != null) {
             saveToken(login.tokenValue)
+            onWsUserLogin(){}
         } else {
             saveToken("")
+            onWsUserLoginOut(){}
+            CookieManger(appContext).removeAll()
+            setUser(null)
         }
         val kv = MMKV.mmkvWithID("app")
         kv.encode("login", isLogin)
+        appViewModel.updateLoginEvent.postValue(isLogin)
     }
 
     /**

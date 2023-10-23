@@ -17,26 +17,25 @@ class MyHeadInterceptor : Interceptor {
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
         val builder = chain.request().newBuilder()
-        //  builder.addHeader("token", "token123456").build()
-        builder.addHeader("device", "Android").build()
-        builder.addHeader("appId", Constants.APP_ID).build()
+        builder.addHeader("device", "Android")
+        builder.addHeader("appId", Constants.APP_ID)
         if (CacheUtil.isLogin()){
             //登录用户
-            builder.addHeader("token", CacheUtil.getToken()).build()
+            builder.addHeader("sportstoken", CacheUtil.getToken())
         }else{
             //游客
-            builder.addHeader("tourist", getUUID().toString()).build()
-            //builder.addHeader("tourist", "aaaabbbbbccccdddeee").build()
+            builder.addHeader("tourist", getUUID().toString())
+            //builder.addHeader("tourist", "aaaabbbbbccccdddeee")
         }
         when (MultiLanguages.getAppLanguage().language){
             "zh"->{
-                builder.addHeader("content-language", "zh_CN ").build()
+                builder.addHeader("content-language", "zh_CN ")
             }
             "en"->{
-                builder.addHeader("content-language", "en_US").build()
+                builder.addHeader("content-language", "en_US")
             }
             else ->{
-                builder.addHeader("content-language", "en_US").build()
+                builder.addHeader("content-language", "en_US")
             }
         }
         return chain.proceed(builder.build())

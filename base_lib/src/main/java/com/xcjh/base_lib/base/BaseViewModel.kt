@@ -1,7 +1,10 @@
 package com.xcjh.base_lib.base
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.kunminx.architecture.ui.callback.UnPeekLiveData
+import kotlinx.coroutines.cancel
 
 
 open class BaseViewModel : ViewModel() {
@@ -17,5 +20,4 @@ open class BaseViewModel : ViewModel() {
         //隐藏
         val dismissDialog by lazy { UnPeekLiveData<Boolean>() }
     }
-
 }

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingDefaultResource">
+
+    <data>
+
+    </data>
+
+    <TextView
+        android:id="@+id/tvRefereeName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/shape_bg_cai"
+        android:padding="@dimen/dp_6"
+        tools:text="暂无裁判信息"
+        android:textColor="@color/c_F5F5F5"
+        android:textSize="@dimen/sp_12" />
+
+</layout>

@@ -4,17 +4,16 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import com.gyf.immersionbar.ImmersionBar
 import com.xcjh.base_lib.R
-import com.xcjh.base_lib.base.activity.BaseActivity
+import com.xcjh.base_lib.base.activity.BaseContainerActivity
 
 /**
  *
  * @Description Fragment容器
  */
-class ContainerFm2Activity : BaseActivity() {
+class ContainerFm2Activity : BaseContainerActivity() {
 
     companion object {
         private lateinit var fragment : Fragment

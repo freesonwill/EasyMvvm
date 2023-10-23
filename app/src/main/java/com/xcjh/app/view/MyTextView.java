@@ -62,3 +62,4 @@ public class MyTextView extends View {
             canvas.drawText(mText, getWidth() / 2 - mBound.width() / 2, getHeight() / 2 + mBound.height() / 2, mPaint);
         }
     }
+

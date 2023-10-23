@@ -1,10 +1,11 @@
 package com.xcjh.app.event
 
 import com.kunminx.architecture.ui.callback.UnPeekLiveData
-import com.xcjh.base_lib.base.BaseViewModel
-import com.xcjh.base_lib.callback.livedata.event.EventLiveData
+import com.xcjh.app.bean.MsgBean
 import com.xcjh.app.bean.UserInfo
 import com.xcjh.app.utils.CacheUtil
+import com.xcjh.base_lib.base.BaseViewModel
+import com.xcjh.base_lib.callback.livedata.event.EventLiveData
 
 /**
  * 描述　:APP全局的ViewModel，可以存放公共数据，当他数据改变时，所有监听他的地方都会收到回调,也可以做发送消息
@@ -21,9 +22,19 @@ class AppViewModel : BaseViewModel() {
 
     //App主题颜色 中大型项目不推荐以这种方式改变主题颜色，比较繁琐耦合，且容易有遗漏某些控件没有设置主题色
     var appColor = EventLiveData<Int>()
-
+    //需要轮询的时候通知
+    var appPolling=EventLiveData<Boolean>()
+    //更新消息列表
+    var updateMsgEvent = EventLiveData<String>()
+    var updateSchedulePosition = EventLiveData<Int>()
+    //更首页显示ViewPager切换  -1是切换到首页并且是推荐页面
+    var mainViewPagerEvent= EventLiveData<Int>()
+    //切换home的ViewPager的切换  0就是推荐依次类推
+    var homeViewPagerEvent= EventLiveData<Int>()
+    //socket状态消息
+    var wsStatus = EventLiveData<Int>()//1 开启   2 关闭
     init {
-        //默认值保存的账户信息，没有登陆过则为null
+        //默认值保存的账户信息，没有登陆过则为null started 或 resumed
         this.updateLoginEvent.value = CacheUtil.isLogin()
         this.userInfo.value = CacheUtil.getUser()
 

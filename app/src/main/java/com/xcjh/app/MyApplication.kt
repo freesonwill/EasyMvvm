@@ -1,23 +1,30 @@
 package com.xcjh.app
 
-import android.content.Context
-import android.view.View
+import android.app.Activity
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ProcessLifecycleOwner
+import com.drake.brv.PageRefreshLayout
+import com.drake.statelayout.StateConfig
 import com.hjq.language.MultiLanguages
 import com.hjq.toast.Toaster
-import com.kingja.loadsir.callback.Callback
 import com.kingja.loadsir.callback.SuccessCallback
 import com.kingja.loadsir.core.LoadSir
 import com.kongzue.dialogx.DialogX
 import com.kongzue.dialogx.style.MaterialStyle
+import com.scwang.smart.refresh.footer.ClassicsFooter
+import com.scwang.smart.refresh.header.MaterialHeader
+import com.scwang.smart.refresh.layout.SmartRefreshLayout
+import com.shuyu.gsyvideoplayer.player.IjkPlayerManager
+import com.shuyu.gsyvideoplayer.player.PlayerFactory
 import com.tencent.mmkv.MMKV
-import com.xcjh.base_lib.App
-import com.xcjh.base_lib.appContext
 import com.xcjh.app.event.AppViewModel
 import com.xcjh.app.event.EventViewModel
 import com.xcjh.app.view.callback.EmptyCallback
 import com.xcjh.app.view.callback.LoadingCallback
+import com.xcjh.base_lib.App
+import com.xcjh.base_lib.appContext
+import com.xcjh.base_lib.manager.KtxActivityManger
+
 
 //Application全局的ViewModel，里面存放了一些账户信息，基本配置信息等
 /*val appViewModel: AppViewModel by lazy {
@@ -56,16 +63,46 @@ class MyApplication : App() , LifecycleObserver{
         eventViewModelInstance = getAppViewModelProvider()[EventViewModel::class.java]
         Toaster.init(this);
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
+        //
+
+        //ijk内核，默认模式
+        PlayerFactory.setPlayManager(IjkPlayerManager::class.java)
+        /**
+         *  推荐在Application中进行全局配置缺省页, 当然同样每个页面可以单独指定缺省页.
+         *  具体查看 https://github.com/liangjingkanji/StateLayout
+         */
+        StateConfig.apply {
+            emptyLayout = R.layout.layout_empty
+            errorLayout = R.layout.layout_empty
+            loadingLayout = R.layout.layout_loading
+            setRetryIds(R.id.ivEmptyIcon, R.id.txtEmptyName)
+
+            onLoading {
+                // 此生命周期可以拿到LoadingLayout创建的视图对象, 可以进行动画设置或点击事件.
+            }
+        }
+       /* PageRefreshLayout.refreshEnableWhenError = false
+        PageRefreshLayout.refreshEnableWhenEmpty = false*/
+        SmartRefreshLayout.setDefaultRefreshHeaderCreator { context, layout -> MaterialHeader(this) }
+        SmartRefreshLayout.setDefaultRefreshFooterCreator { context, layout -> ClassicsFooter(this) }
+
     }
 
     private fun initDialogX() {
         DialogX.init(this)
-        DialogX.implIMPLMode = DialogX.IMPL_MODE.WINDOW
+        DialogX.implIMPLMode = DialogX.IMPL_MODE.VIEW
         DialogX.useHaptic = true
+        DialogX.globalTheme = DialogX.THEME.DARK
         DialogX.globalStyle = MaterialStyle()
         /*    DialogX.globalTheme = DialogX.THEME.AUTO
           DialogX.onlyOnePopTip = false*/
     }
 
+}
 
+/**
+ * 当前activity 是否为最顶栈
+ */
+fun isTopActivity(activity: Activity?): Boolean {
+    return KtxActivityManger.currentActivity.toString() == activity.toString()
 }

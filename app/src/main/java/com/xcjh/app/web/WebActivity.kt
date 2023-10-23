@@ -1,6 +1,7 @@
 package com.xcjh.app.web
 
 import android.graphics.Bitmap
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.ViewGroup
@@ -23,24 +24,32 @@ class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
     private val model: MainVm by viewModels()
     private var url: String? = ""//url
     private var title: String? = "" //会话标题
+    private var type:Int=0//0是普通url   1是一段html
+    private var urlID:String=""
     override fun initView(savedInstanceState: Bundle?) {
         ImmersionBar.with(this)
-            .statusBarDarkFont(true)
-            .titleBar(mViewBind.titleTop.root)
+            .statusBarDarkFont(false)
+            .titleBar(mDatabind.titleTop.root)
             .init()
         intent?.let {
             url = it.getStringExtra(Constants.WEB_URL).toString()
             title = it.getStringExtra(Constants.CHAT_TITLE).toString()
+            type=it.getIntExtra(Constants.WEB_VIEW_TYPE,0)
+            urlID= it.getStringExtra(Constants.WEB_VIEW_ID).toString()
         }
-        mViewBind.titleTop.tvTitle.text = title
+        mDatabind.titleTop.tvTitle.text = title
         initWeb()
+        if(type==1){
+            mViewModel.getNewsInfo(urlID)
+        }
+
     }
 
     private lateinit var agentWeb: AgentWeb
     private fun initWeb() {
         agentWeb = AgentWeb.with(this)
             .setAgentWebParent(
-                mViewBind.agentWeb as ViewGroup,
+                mDatabind.agentWeb as ViewGroup,
                 LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT
@@ -70,13 +79,39 @@ class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
                 override fun onPageFinished(view: WebView?, url: String?) {
                     super.onPageFinished(view, url)
                     Log.e("TAG", "===-----onPageFinished------ ")
+
+                    val javascript = "javascript:(function() { " +
+                            "var imgs = document.getElementsByTagName('img');" +
+                            "for(var i = 0; i < imgs.length; i++){" +
+                            "   imgs[i].style.maxWidth = '100%';" +
+                            "   imgs[i].style.height = 'auto';" +
+                            "}" +
+                            "})()"
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        view!!.evaluateJavascript(javascript, null)
+                    } else {
+                        view!!.loadUrl(javascript)
+                    }
                 }
             })
             // .setWebView(binding.agentWeb)
             .createAgentWeb()
             .ready().get()
         //agentWeb.urlLoader.loadUrl("https://music.163.com/")
-        agentWeb.urlLoader.loadUrl(url)
+        if(type==0){
+            agentWeb.urlLoader.loadUrl(url)
+        }else{
+//            agentWeb.urlLoader.loadDataWithBaseURL(
+//                null,
+//                mViewModel.newsBeanValue.value!!.content,
+//                "text/html",
+//                "utf-8",
+//                null
+//            )
+
+//            agentWeb.urlLoader.loadData(url,"text/html","UTF-8")
+        }
+
         // .go("https://music.163.com/")
     }
 
@@ -96,5 +131,19 @@ class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
     override fun onDestroy() {
         agentWeb.webLifeCycle.onDestroy()
         super.onDestroy()
+    }
+
+    override fun createObserver() {
+        super.createObserver()
+        //获取到网页详情
+        mViewModel.newsBeanValue.observe(this){
+            agentWeb.urlLoader.loadDataWithBaseURL(
+                null,
+                mViewModel.newsBeanValue.value!!.content,
+                "text/html",
+                "utf-8",
+                null
+            )
+        }
     }
 }

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <FrameLayout
+            android:id="@+id/frrl"
+            android:layout_width="@dimen/dp_40"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_height="@dimen/dp_40">
+            <ImageView
+                android:id="@+id/iv_meau"
+                android:layout_width="@dimen/dp_20"
+                android:background="@drawable/ic_menu"
+                android:layout_gravity="center"
+
+                android:layout_height="@dimen/dp_20"/>
+        </FrameLayout>
+
+        <HorizontalScrollView
+            android:layout_width="0dp"
+            app:layout_constraintTop_toTopOf="@id/frrl"
+            app:layout_constraintBottom_toBottomOf="@id/frrl"
+            app:layout_constraintLeft_toRightOf="@id/frrl"
+            app:layout_constraintRight_toRightOf="parent"
+            android:scrollbars="none"
+            android:layout_height="wrap_content">
+            <com.flyco.tablayout.CommonTabLayout
+                android:id="@+id/rec_top"
+                android:layout_width="wrap_content"
+                app:layout_constraintTop_toTopOf="@id/frrl"
+                app:layout_constraintBottom_toBottomOf="@id/frrl"
+                app:layout_constraintLeft_toRightOf="@id/frrl"
+                app:layout_constraintRight_toRightOf="parent"
+                app:tl_indicator_height="0dp"
+                app:tl_iconVisible="false"
+                app:tl_tab_space_equal="false"
+                app:tl_textBold="BOTH"
+                app:tl_textsize="@dimen/sp_16"
+                android:orientation="horizontal"
+                android:layout_height="wrap_content"/>
+        </HorizontalScrollView>
+        <com.scwang.smart.refresh.layout.SmartRefreshLayout
+            android:id="@+id/smart_common"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:srlEnableLoadMore="false"
+            app:layout_constraintTop_toBottomOf="@id/frrl"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_weight="1">
+
+        <com.scwang.smart.refresh.header.MaterialHeader
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+            <com.drake.statelayout.StateLayout
+                android:id="@+id/state"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rec_bottom"
+            android:layout_width="match_parent"
+            android:layout_marginTop="@dimen/dp_20"
+            android:orientation="vertical"
+
+            app:layoutManager="com.xcjh.app.view.WrapContentLinearLayoutManager"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_height="match_parent"/>
+            </com.drake.statelayout.StateLayout>
+            <com.scwang.smart.refresh.footer.ClassicsFooter
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </com.scwang.smart.refresh.layout.SmartRefreshLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

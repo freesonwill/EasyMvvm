@@ -27,7 +27,7 @@ abstract class BaseVmFragment<VM : BaseViewModel> : Fragment() {
     private val handler = Handler()
 
     //是否第一次加载
-    private var isFirst: Boolean = true
+    var isFirst: Boolean = true
 
     lateinit var mViewModel: VM
 

@@ -3,7 +3,10 @@ package com.xcjh.base_lib.utils
 import android.text.TextUtils
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 
 
 /**
@@ -17,6 +20,7 @@ object TimeUtil {
     private const val seconds_of_3hour = 3 * 60 * 60
 
     private const val YMDHMS_FORMAT = "yyyy-MM-dd HH:mm:ss"
+    public const val YMDHMS_FORMAT_YEAR = "yyyy-MM-dd"
     private const val search_DateFormat = "MM/dd/yyyy HH:mm:ss"
     private const val TIME_ZERO = "00:00"
     private const val TIME_MAX = "23:59:59"
@@ -32,6 +36,81 @@ object TimeUtil {
         return data
     }
 
+    /***
+     * 判断时间差是否大于15分钟  主要用于私聊页面是否显示时间
+     */
+    fun getTimeCha(start: Long?, endTime: Long?): Boolean? {
+
+        try {
+
+            val diff = endTime!! - start!! //
+            val days = diff / (1000 * 60 * 60 * 24)
+            val hours = (diff - days * (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+            val minutes =
+                diff - days * (1000 * 60 * 60 * 24) - hours * (1000 * 60 * 60) / (1000 * 60)
+            val second = diff / 1000 - days * 24 * 60 * 60 - hours * 60 * 60 - minutes * 60
+
+            LogUtils.d("时间差===$days--$hours--$minutes")
+            if (days > 0||hours > 0||minutes > 60000) {
+                return true
+            }
+
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+            return false
+        }
+        return false
+    }
+
+    /***
+     * 当前日期加几天
+     */
+    fun addDayEgls(time: String, day: Int): String? {
+        var time = time
+        if (time == "0") {
+            time = gettimenowYear().toString()
+        }
+        if (time == gettimenowYear() && day == -1) {
+            return gettimenowYear()
+        }
+        var timee = ""
+        val sdf = SimpleDateFormat("yyyy-MM-dd")
+        try {
+            val dt = sdf.parse(time)
+            val rightNow = Calendar.getInstance()
+            rightNow.time = dt
+            rightNow.add(Calendar.DAY_OF_YEAR, day) // 日期加几天
+            val dt1 = rightNow.time
+            timee = sdf.format(dt1)
+            //timee=timee.substring(0,10);
+        } catch (e: ParseException) {
+            e.printStackTrace()
+        }
+        return timee
+    }
+    fun getDateStr(day: String?, Num: Int): String? {
+        val df = SimpleDateFormat("yyyy-MM-dd")
+        var nowDate: Date? = null
+        try {
+            nowDate = df.parse(day)
+        } catch (e: ParseException) {
+            e.printStackTrace()
+        }
+        //如果需要向后计算日期 -改为+
+        val newDate2 = Date(nowDate!!.time - Num.toLong() * 24 * 60 * 60 * 1000)
+        val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd")
+        return simpleDateFormat.format(newDate2)
+    }
+
+    fun checkTimeSingle(char: Int): String {
+        var time = "01"
+        if (char < 10) {
+            time = "0$char"
+        } else {
+            time = char.toString()
+        }
+        return time
+    }
 
     /**
      * 时间戳转换成日期格式字符串
@@ -46,11 +125,36 @@ object TimeUtil {
         val sdf = SimpleDateFormat(format)
         return sdf.format(Date(seconds))
     }
+    fun gettimenowYear(): String? {
+        val date = Date()
+        val time = date.toLocaleString()
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd")
+        return dateFormat.format(date)
+    }
+    fun gettimenowSences(): String? {
+        val date = Date()
+        val time = date.toLocaleString()
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm")
+        return dateFormat.format(date)
+    }
+
+    fun getStringToDate(dateString: String?, pattern: String?): Long {
+        val dateFormat = SimpleDateFormat(pattern)
+        var date = Date()
+        try {
+            date = dateFormat.parse(dateString)
+        } catch (e: ParseException) {
+
+// TODO Auto-generated catch block
+            e.printStackTrace()
+        }
+        return date.time
+    }
 
     fun longToString(longNum: Long, dateFormat: String?): String? {
         var dateFormat = dateFormat
         if (TextUtils.isEmpty(dateFormat)) {
-            dateFormat = YMDHMS_FORMAT
+            dateFormat = SimpleDateFormat(YMDHMS_FORMAT).toString()
         }
         val format = SimpleDateFormat(dateFormat)
         val date = Date(longNum)
@@ -95,7 +199,8 @@ object TimeUtil {
         }
         return null
     }
-    /**
+
+    /**00
      * UTC时间 ---> 当地时间
      * @param utcDate   UTC时间
      * @return

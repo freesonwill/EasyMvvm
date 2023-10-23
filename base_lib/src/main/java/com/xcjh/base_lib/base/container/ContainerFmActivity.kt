@@ -5,14 +5,14 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.gyf.immersionbar.ImmersionBar
 import com.xcjh.base_lib.R
-import com.xcjh.base_lib.base.activity.BaseActivity
+import com.xcjh.base_lib.base.activity.BaseContainerActivity
 import com.xcjh.base_lib.route.RouteCenter
 
 /**
  *
  * @Description Fragment容器 根据路由地址加载根Fragment
  */
-class ContainerFmActivity : BaseActivity() {
+class ContainerFmActivity : BaseContainerActivity() {
 
     companion object {
         const val FRAGMENT = "fragment"

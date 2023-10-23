@@ -7,7 +7,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 
 /**
- * 单布局有用  多布局有问题
+ * 单布局有用  多布局得特殊处理
  * GridLayoutManager
  * paddingH   左右内边距
  * paddingV   上下内边距
@@ -18,7 +18,6 @@ class GlmSpaceItemDecoration(
     private val spanCount: Int,
     private val paddingH: Int = 0,// 左右内边距
     private val paddingV: Int = 0,// 上下内边距
-
 ) : RecyclerView.ItemDecoration() {
 
 
@@ -29,12 +28,11 @@ class GlmSpaceItemDecoration(
         parent: RecyclerView,
         state: RecyclerView.State
     ) {
-        /**最left      right
+        /**最left列      right
          * 0   1   2   3      最top行
          * 4   5   6   7
          * 8   9            最bottom行
          */
-      //  Log.e("===", "===getItemOffsets: ====" + parent.getChildAdapterPosition(view).toString())
         //左右间隔个数 = spanCount-1
         //左右间隔距离 = paddingH
         //总共左右间隔距离 = 左右间隔个数 * 左右间隔距离
@@ -43,6 +41,7 @@ class GlmSpaceItemDecoration(
         val column: Int = position % spanCount //列
         val row: Int = position / spanCount //行
 
+        //使得每个outRect宽度相等
         outRect.left = column * paddingH / spanCount  //
         outRect.right = paddingH - (column + 1) * paddingH / spanCount
         if (position >= spanCount) {//除第一行外 加底边距

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+    <RelativeLayout
+        android:id="@+id/rlClick"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/shape_r8_18152b">
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txtContactName"
+            android:layout_width="wrap_content"
+            android:gravity="center"
+            android:paddingRight="@dimen/dp_20"
+            android:paddingLeft="@dimen/dp_20"
+            android:layout_height="@dimen/dp_50"
+            android:textColor="@color/c_f5f5f5"
+            android:textSize="@dimen/sp_14"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:layout_centerInParent="true"
+            android:text="四大就是的"/>
+
+    </RelativeLayout>
+</androidx.appcompat.widget.LinearLayoutCompat>

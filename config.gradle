@@ -3,8 +3,8 @@ ext {
             compileSdkVersion: 33,
             minSdkVersion    : 23,
             targetSdkVersion : 33,
-            versionCode      : 4,        // 聚合app
-            versionName      : "1.0.4"
+            versionCode      : 1,        // 聚合app
+            versionName      : "1.0.1"
     ]
     //androidx配置
     androidx = [
@@ -31,15 +31,15 @@ ext {
             "ShadowLayout"           : "com.github.lihangleo2:ShadowLayout:3.3.3",
             "immersionbar"           : 'com.geyifeng.immersionbar:immersionbar:3.2.2',    // 沉浸式状态栏
             "immersionbar-ktx"       : "com.geyifeng.immersionbar:immersionbar-ktx:3.2.2",
-            "adapter_helper"         : "com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.4",
-           // "adapter_helper"         : "io.github.cymchad:BaseRecyclerViewAdapterHelper:4.0.0-beta10",
+            //  "adapter_helper"         : "com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.4",
+            "adapter_helper"         : "io.github.cymchad:BaseRecyclerViewAdapterHelper:4.0.0-beta14",
             "smartRefreshLayout"     : 'io.github.scwang90:refresh-layout-kernel:2.0.5',  //下拉刷新上拉加载
             "refresh-header-classics": 'io.github.scwang90:refresh-header-classics:2.0.5',
             "refresh-footer-classics": 'io.github.scwang90:refresh-footer-classics:2.0.5',
             "refresh-header-material": 'io.github.scwang90:refresh-header-material:2.0.5',//谷歌刷新头
-            "XXPermissions"              : 'com.github.getActivity:XXPermissions:16.5',
-            "SwipeRecyclerView"          : 'com.yanzhenjie.recyclerview:x:1.3.2',
-            "AndroidUtilCode"          : 'com.blankj:utilcodex:1.31.1',
+            "XXPermissions"          : 'com.github.getActivity:XXPermissions:16.5',
+            "SwipeRecyclerView"      : 'com.yanzhenjie.recyclerview:x:1.3.2',
+            "AndroidUtilCode"        : 'com.blankj:utilcodex:1.31.1',
     ]
 // 各模块状态配置
     state = [

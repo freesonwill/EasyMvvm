@@ -1,8 +1,6 @@
 package com.xcjh.base_lib.bean
 
 import androidx.annotation.Keep
-import com.chad.library.adapter.base.entity.MultiItemEntity
-import java.io.Serializable
 
 /**
  * 所有去壳 返回的 实体类 =======================================================================

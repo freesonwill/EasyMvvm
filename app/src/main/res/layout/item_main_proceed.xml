@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/dp_16"
+    android:orientation="vertical">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_40"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_12"
+        android:paddingLeft="@dimen/dp_12"
+        android:background="@drawable/shape_r8_5e49a4">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:orientation="horizontal">
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="@dimen/dp_14"
+                android:layout_height="@dimen/dp_18"
+                app:srcCompat="@drawable/ic_fire_hot"
+                android:scaleType="fitXY" />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvProceedDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/sp_14"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:text="@string/main_txt_date"
+                android:textColor="@color/c_f5f5f5"/>
+        </LinearLayout>
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvProceedSession"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_14"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:text="@string/main_txt_session"
+            android:layout_centerVertical="true"
+            android:textColor="@color/c_f5f5f5"/>
+    </RelativeLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rcvReProceed"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_100"
+        android:layout_marginLeft="@dimen/dp_16"
+        tools:listitem="@layout/item_under_way"
+        tools:itemCount="1"
+        android:overScrollMode="never" />
+</LinearLayout>

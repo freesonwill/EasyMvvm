@@ -11,7 +11,7 @@
         android:id="@+id/titleTop"
         layout="@layout/com_title"/>
     <com.scwang.smart.refresh.layout.SmartRefreshLayout
-        android:id="@+id/smartCommon"
+        android:id="@+id/smartListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

@@ -15,26 +15,31 @@ import android.webkit.WebView
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.chad.library.adapter.base.BaseBinderAdapter
+import androidx.viewpager2.widget.ViewPager2
+import com.chad.library.adapter.base.BaseDifferAdapter
 import com.chad.library.adapter.base.BaseQuickAdapter
+import com.drake.brv.PageRefreshLayout
+import com.drake.brv.utils.addModels
+import com.drake.brv.utils.models
 import com.google.android.material.snackbar.Snackbar
 import com.just.agentweb.WebViewClient
 import com.kingja.loadsir.core.LoadService
 import com.kingja.loadsir.core.LoadSir
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
+import com.xcjh.app.R
+import com.xcjh.app.adapter.ViewPager2Adapter
+import com.xcjh.app.bean.BeingLiveBean
+import com.xcjh.app.ui.login.LoginActivity
+import com.xcjh.app.view.callback.EmptyCallback
+import com.xcjh.app.view.callback.LoadingCallback
 import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.bean.ListDataUiState
 import com.xcjh.base_lib.utils.layoutInflater
+import com.xcjh.base_lib.utils.setLm
 import com.xcjh.base_lib.utils.startNewActivity
-import com.xcjh.base_lib.utils.view.clickNoRepeat
-import com.xcjh.base_lib.utils.view.visibleOrGone
-import com.xcjh.app.R
-import com.xcjh.app.view.callback.EmptyCallback
-import com.xcjh.app.view.callback.LoadingCallback
 import java.text.DecimalFormat
 
 
@@ -131,6 +136,18 @@ fun View.showSnackbar(
     snackbar.show()
 }
 
+fun ViewPager2.initChangeActivity(
+    acivity: FragmentActivity,
+    fragments: ArrayList<Fragment>,
+    isUserInputEnabled: Boolean = true//是否可滑动
+): ViewPager2 {
+    this.isUserInputEnabled = isUserInputEnabled
+    //设置适配器
+    adapter = ViewPager2Adapter(acivity,fragments)
+    setLm(this)
+    isSaveEnabled = false
+    return this
+}
 
 //绑定普通的Recyclerview
 fun RecyclerView.init(
@@ -165,14 +182,14 @@ fun <T> smartListData(
             //第一页并没有数据 显示空布局界面
             data.isFirstEmpty -> {
                 smartRefresh.finishRefresh()
-                baseQuickAdapter.setList(null)
-                baseQuickAdapter.setEmptyView(empty)
+                baseQuickAdapter.submitList(null)
+                baseQuickAdapter.emptyView = empty
             }
             //是第一页
             data.isRefresh -> {
                 smartRefresh.finishRefresh()
                 smartRefresh.resetNoMoreData()
-                baseQuickAdapter.setList(data.listData)
+                baseQuickAdapter.submitList(data.listData)
             }
             //不是第一页
             else -> {
@@ -180,7 +197,7 @@ fun <T> smartListData(
                     smartRefresh.finishLoadMoreWithNoMoreData()
                 } else {
                     smartRefresh.finishLoadMore()
-                    baseQuickAdapter.addData(data.listData)
+                    baseQuickAdapter.addAll(data.listData)
                 }
             }
         }
@@ -189,9 +206,9 @@ fun <T> smartListData(
         if (data.isRefresh) {
             smartRefresh.finishRefresh()
             //如果是第一页，则显示错误界面，并提示错误信息
-            baseQuickAdapter.setList(null)
+            baseQuickAdapter.submitList(null)
             // emptyHint.text = data.errMessage
-            baseQuickAdapter.setEmptyView(empty)
+            baseQuickAdapter.emptyView = empty
             /* val layoutParams = baseQuickAdapter.emptyLayout?.layoutParams
               layoutParams?.height=DisplayUtils.dp2px(300f)
               baseQuickAdapter.emptyLayout?.layoutParams=layoutParams*/
@@ -200,36 +217,33 @@ fun <T> smartListData(
         }
     }
 }
-
 /**
- * BaseBinderAdapter 普通加载列表数据
+ * 普通加载Differ列表数据
  */
-fun <T : Any> smartList2Data(
+fun <T> smartDifferListData(
     activity: Context,
     data: ListDataUiState<T>,
-    baseQuickAdapter: BaseBinderAdapter,
+    baseQuickAdapter: BaseDifferAdapter<T, *>,
     smartRefresh: SmartRefreshLayout,
     imgEmptyId: Int = R.drawable.tp_empty,//图片
     notice: String = appContext.getString(R.string.no_data),//提示
-    noticeContent: String = appContext.getString(R.string.no_data),//提示
-    showBtnGo: Boolean = false,//是否展示按钮
     block: (() -> Unit)? = null
 ) {
-    val empty = setTpEmpty(activity, imgEmptyId,notice)
+    val empty = setTpEmpty(activity, imgEmptyId, notice)
     if (data.isSuccess) {
         //成功
         when {
             //第一页并没有数据 显示空布局界面
             data.isFirstEmpty -> {
                 smartRefresh.finishRefresh()
-                baseQuickAdapter.setList(null)
-                baseQuickAdapter.setEmptyView(empty)
+                baseQuickAdapter.submitList(null)
+                baseQuickAdapter.emptyView = empty
             }
             //是第一页
             data.isRefresh -> {
                 smartRefresh.finishRefresh()
                 smartRefresh.resetNoMoreData()
-                baseQuickAdapter.setList(data.listData)
+                baseQuickAdapter.submitList(data.listData)
             }
             //不是第一页
             else -> {
@@ -237,7 +251,7 @@ fun <T : Any> smartList2Data(
                     smartRefresh.finishLoadMoreWithNoMoreData()
                 } else {
                     smartRefresh.finishLoadMore()
-                    baseQuickAdapter.addData(data.listData)
+                    baseQuickAdapter.addAll(data.listData)
                 }
             }
         }
@@ -246,9 +260,9 @@ fun <T : Any> smartList2Data(
         if (data.isRefresh) {
             smartRefresh.finishRefresh()
             //如果是第一页，则显示错误界面，并提示错误信息
-            baseQuickAdapter.setList(null)
+            baseQuickAdapter.submitList(null)
             // emptyHint.text = data.errMessage
-            baseQuickAdapter.setEmptyView(empty)
+            baseQuickAdapter.emptyView = empty
             /* val layoutParams = baseQuickAdapter.emptyLayout?.layoutParams
               layoutParams?.height=DisplayUtils.dp2px(300f)
               baseQuickAdapter.emptyLayout?.layoutParams=layoutParams*/
@@ -273,6 +287,105 @@ fun setTpEmpty(
     return empty
 }
 
+
+/**
+ * 普通加载列表数据
+ */
+fun <T> smartListData(
+    data: ListDataUiState<T>,
+    rcv: RecyclerView,
+    smartRefresh: SmartRefreshLayout,
+) {
+    if (data.isSuccess) {
+        //成功
+        when {
+            //第一页并没有数据 显示空布局界面
+            data.isFirstEmpty -> {
+                smartRefresh.finishRefresh()
+                rcv.addModels(null)
+            }
+            //是第一页
+            data.isRefresh -> {
+                smartRefresh.finishRefresh()
+                smartRefresh.resetNoMoreData()
+                rcv.addModels(data.listData)
+            }
+            //不是第一页
+            else -> {
+                if (data.listData.isEmpty()) {
+                    smartRefresh.finishLoadMoreWithNoMoreData()
+                } else {
+                    smartRefresh.finishLoadMore()
+                    rcv.addModels(data.listData)
+                }
+            }
+        }
+    } else {
+        //失败
+        if (data.isRefresh) {
+            smartRefresh.finishRefresh()
+            rcv.addModels(null)
+        } else {
+            smartRefresh.finishLoadMore(false)
+        }
+    }
+}
+
+/**
+ * 普通加载列表数据
+ */
+fun <T> smartPageListData(
+    data: ListDataUiState<T>,
+    rcv: RecyclerView,
+    pageRefreshLayout: PageRefreshLayout,
+    imgEmptyId: Int = R.drawable.tp_empty,//图片
+    notice: String = appContext.getString(R.string.no_data),//提示
+) {
+    pageRefreshLayout.emptyLayout=R.layout.layout_empty
+    pageRefreshLayout.stateLayout?.onEmpty {
+        val emptyImg = findViewById<ImageView>(R.id.ivEmptyIcon)
+        val emptyHint = findViewById<TextView>(R.id.txtEmptyName)
+        emptyImg.setImageResource(imgEmptyId)
+        emptyHint.text = notice
+    }
+    if (data.isSuccess) {
+        //成功
+        when {
+            //第一页并没有数据 显示空布局界面
+            data.isFirstEmpty -> {
+                pageRefreshLayout.finishRefresh()
+                rcv.models=(null)
+                pageRefreshLayout.showEmpty()
+            }
+            //是第一页
+            data.isRefresh -> {
+                pageRefreshLayout.finishRefresh()
+                pageRefreshLayout.resetNoMoreData()
+                pageRefreshLayout.showContent()
+                rcv.models=(data.listData)
+            }
+            //不是第一页
+            else -> {
+                pageRefreshLayout.showContent()
+                if (data.listData.isEmpty()) {
+                    pageRefreshLayout.finishLoadMoreWithNoMoreData()
+                } else {
+                    pageRefreshLayout.finishLoadMore()
+                    rcv.addModels(data.listData)
+                }
+            }
+        }
+    } else {
+        //失败
+        if (data.isRefresh) {
+            pageRefreshLayout.finishRefresh()
+            rcv.addModels(null)
+            pageRefreshLayout.showEmpty()
+        } else {
+            pageRefreshLayout.finishLoadMore(false)
+        }
+    }
+}
 /**
  * 加载 LoadService+列表数据
  */
@@ -294,7 +407,7 @@ fun <T> loadListData(
             data.isRefresh -> {
                 smartRefresh.finishRefresh()
                 smartRefresh.resetNoMoreData()
-                baseQuickAdapter.setList(data.listData)
+                baseQuickAdapter.submitList(data.listData)
                 loadService.showSuccess()
             }
             //不是第一页
@@ -304,7 +417,7 @@ fun <T> loadListData(
                     smartRefresh.finishLoadMoreWithNoMoreData()
                 } else {
                     smartRefresh.finishLoadMore()
-                    baseQuickAdapter.addData(data.listData)
+                    baseQuickAdapter.addAll(data.listData)
                 }
             }
         }
@@ -314,7 +427,7 @@ fun <T> loadListData(
             //如果是第一页，则显示错误界面，并提示错误信息
             smartRefresh.finishRefresh()
             //如果是第一页，则显示错误界面，并提示错误信息
-            baseQuickAdapter.setList(null)
+            baseQuickAdapter.submitList(null)
             loadService.showEmpty()
         } else {
             smartRefresh.finishLoadMore(false)
@@ -337,8 +450,8 @@ fun <T> setEmptyOrError(
     val emptyHint = empty.findViewById<TextView>(R.id.emptyHint)
     emptyImg.setImageResource(imgId)
     emptyHint.text = notice
-    baseQuickAdapter.setList(null)
-    baseQuickAdapter.setEmptyView(empty)
+    baseQuickAdapter.submitList(null)
+    baseQuickAdapter.emptyView = empty
 }
 
 
@@ -357,13 +470,33 @@ fun getVerName(context: Context): String {
     }
     return "V$verName"
 }
+/**
+ * 获取版本号名称
+ *
+ * @param context 上下文
+ * @return
+ */
+fun getVerCode(context: Context):  Long{
+    var versionCode:Long=0
+    try {
+       var  packageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
 
+          versionCode = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+            packageInfo.longVersionCode
+        } else {
+            packageInfo.versionCode.toLong()
+        }
+    } catch (e: PackageManager.NameNotFoundException) {
+        e.printStackTrace()
+    }
+    return versionCode
+}
 
 fun judgeLogin(action: () -> Unit = {}) {
     if (CacheUtil.isLogin()) {
         action.invoke()
     } else {
-       // startNewActivity<LoginActivity>()
+        startNewActivity<LoginActivity>()
     }
 }
 

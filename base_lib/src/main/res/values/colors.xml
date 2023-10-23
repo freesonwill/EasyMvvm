@@ -79,6 +79,7 @@
     <color name="trans">#00000000</color>
 
     <color name="white_tran_cc">#FFFFFF</color>
+    <color name="white_05">#0dFFFFFF</color>
     <color name="white_f8">#F8F8F8</color>
     <color name="white_f4">#F4F4F4</color>
     <color name="white_aa">#AAAAAA</color>
@@ -113,7 +114,6 @@
     <color name="tran_gray_7C">#7C000000</color>
 
     <color name="green_68">#13CE68</color>
-
     <color name="white">#FFFFFF</color>
     <color name="gray">#808080</color>
     <color name="yellow">#FFFF00</color>
@@ -126,5 +126,11 @@
         <item>#1903A9F4</item>
     </array>
     <color name="c_1f58ed">#1F58ED </color>
+    <color name="c_181b25">#181b25 </color>
     <color name="c_5974eb">#5974EB </color>
+    <color name="c_8a91a0">#8a91a0 </color>
+    <color name="c_18152a">#18152a </color>
+    <color name="c_ff07061d">#FF07061D</color>
+    <color name="c_8e8c9d">#8E8C9D </color>
+
 </resources>

@@ -64,7 +64,7 @@ fun myToast(whiteStr: String?, yellowStr: String? = null) {
             .showIn(tvMsg) //显示到控件TextView中
         val toast = Toast(appContext)
         // toast.setGravity(Gravity.BOTTOM or Gravity.CENTER, 0, DisplayUtils.dp2px(50f))
-        toast.setGravity( Gravity.CENTER, 0,0)
+        toast.setGravity( Gravity.CENTER, 0,200)
         toast.duration = 5000
         toast.view = view
         toast.show()

@@ -1,6 +1,6 @@
 # sl_live
 
-树懒 体育直播
+体育直播Android
 
 ## Getting started
 

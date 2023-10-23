@@ -99,7 +99,8 @@ fun <T> BaseViewModel.request(
             loadingChange.dismissDialog.postValue(true)
             runCatching {
                 //校验请求结果码是否正确，不正确会抛出异常走下面的onFailure
-                executeResponse(it) { t -> success(t)
+                executeResponse(it) {
+                        t -> success(t)
                 }
             }.onFailure { e ->
                 //打印错误消息

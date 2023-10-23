@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    android:id="@+id/rlNewsClick"
+    android:background="@drawable/shape_gradation_8_261e3f"
+    android:layout_marginBottom="@dimen/dp_16"
+    android:paddingLeft="12dp"
+    android:paddingRight="12dp"
+
+    android:orientation="horizontal">
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivNewsIcon"
+        android:layout_width="120dp"
+        android:layout_height="68dp"
+        android:scaleType="fitXY"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center"
+        app:srcCompat="@drawable/main_banner_load" />
+    <LinearLayout
+        android:layout_toRightOf="@id/ivNewsIcon"
+        android:layout_alignTop="@id/ivNewsIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="68dp"
+        android:orientation="vertical"
+        android:layout_marginLeft="@dimen/dp_12">
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txtNewsName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:textColor="@color/c_f5f5f5"
+            android:textSize="@dimen/sp_14"
+            android:text="sdjskhdjsdhjsdhksjdksjdksdjksdjskdjskdjksjdksdjk"/>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txtNewsDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_12"
+            android:text="2023-07-03 12:55"
+            android:textColor="@color/c_8a91a0"
+            android:textSize="@dimen/sp_12" />
+    </LinearLayout>
+</RelativeLayout>

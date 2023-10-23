@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rltTop"
+    android:background="@color/c_18152A"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/title_h">
+
+    <ImageView
+        android:id="@+id/ivBack"
+        android:layout_width="44dp"
+        android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/dp_4"
+        android:onClick="finishTopClick"
+        android:scaleType="centerCrop"
+        android:src="@drawable/return_b"
+        tools:ignore="UsingOnClickInXml" />
+    <TextView
+        android:id="@+id/tvCancel"
+        android:visibility="gone"
+        android:text="@string/cancel"
+        android:layout_alignParentStart="true"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:paddingEnd="@dimen/dp_20"
+        android:paddingStart="@dimen/dp_20"
+        android:textSize="@dimen/sp_16"
+        android:textColor="@color/white"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"/>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="bottom"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:layout_height="match_parent">
+        <com.xcjh.base_lib.utils.view.CircleImageView
+            android:id="@+id/ivhead"
+            android:layout_width="@dimen/dp_20"
+            android:layout_height="@dimen/dp_20"/>
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:singleLine="true"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_16"
+            tools:text="@string/title" />
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/tvOption"
+        android:visibility="gone"
+        tools:text="@string/title"
+        android:layout_alignParentEnd="true"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:paddingEnd="@dimen/dp_20"
+        android:paddingStart="@dimen/dp_20"
+        android:textSize="@dimen/sp_16"
+        android:textColor="@color/white"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"/>
+</RelativeLayout>

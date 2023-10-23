@@ -7,7 +7,7 @@ import android.view.View
 /**
  * @author zobo 2023.02.15
  */
-abstract class BaseActivity : AppCompatActivity() {
+abstract class BaseContainerActivity : AppCompatActivity() {
 
     /**
      * 泛型的高级特性 泛型实例化

@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
+import androidx.databinding.ViewDataBinding
 import androidx.viewbinding.ViewBinding
 import com.just.agentweb.AgentWeb
 import com.just.agentweb.WebChromeClient
@@ -18,7 +19,7 @@ import com.xcjh.base_lib.base.BaseViewModel
 /**
  *  纯网页加载
  */
-abstract class BaseWebFragment<VM : BaseViewModel, VB : ViewBinding> : BaseFragment<VM, VB>() {
+abstract class BaseWebFragment<VM : BaseViewModel, VB : ViewDataBinding> : BaseFragment<VM, VB>() {
 
     protected lateinit var mAgentWeb: AgentWeb
     protected abstract val agentWebParent: ViewGroup

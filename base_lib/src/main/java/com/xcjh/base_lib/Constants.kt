@@ -15,26 +15,34 @@ class Constants {
          * 登录过期
          */
         const val EXPIRED_CODE = 4005
+        const val NEEDLOAGIN_CODE = 401
         const val APP_ID = "8888"
-
+        const val BASE_PAGE_SIZE = 20
         //微信
         const val WX_APPID = "wx5568f9de502defe3"
         const val WX_APPSecret = "35758f387da2633589629f33fd90cc2c"
 
         //调整参数
-        const val CHAT_TYPE = "CHAT_TYPE"//会话ID
-        const val CHAT_ID = "CHAT_ID"//会话ID
-        const val CHAT_TITLE = "CHAT_TITLE"//会话标题
+        const val CHAT_TITLE = "CHAT_TITLE"//用户ID
+        const val USER_NICK = "USER_NICK"//主播昵称
+        const val USER_ID = "USER_ID"//用户ID
+        const val USER_HEAD = "USER_HEAD"//主播头像
         const val CHAT_DATA = "CHAT_DATA"//数据
         const val WEB_URL = "WEB_URL"//网站地址
-        const val STRATEGY_DATA = "STRATEGY_DATA"//进阶文章详情
+         var PHONE_CODE = "+86"//手机区号
         const val VIDEO_DATA = "VIDEO_DATA"//视频详情
         const val BUNDLE_DATA = "BUNDLE_DATA"//详情数据
         const val TOURNAMENT_DATA = "TOURNAMENT_DATA"//锦标赛详情
-
         const val FIND_SEARCH_PAGE = "FIND_SEARCH_PAGE"//发现跳转页面
 
-
+        const val MATCH_DETAIL_NAME = ""//比赛详情名称
+        const val MATCH_DETAIL_MODE = "MATCH_DETAIL_MODE"//比赛详情纯净模式还是普通模式
+        const val CHAT_PURE_MODE = "mode"//比赛详情聊天tab纯净模式还是普通模式
+        const val CHAT_ID = "chat_id"//聊天室id
+        const val ANCHOR_ID = "anchor_id"//主播id
+        const val MATCH_TYPE = "type"//足球比赛还是篮球比赛
+        const val WEB_VIEW_TYPE = "type"//是加载普通url或者是一段html
+        const val WEB_VIEW_ID= "WEB_VIEW_ID"//获取url详情id
         //test
 //        const val RewardedAdUnitId = "ca-app-pub-3940256099942544/5224354917"//激励视频
 //        const val NativeAdUnitId = "ca-app-pub-3940256099942544/2247696110"//原生广告

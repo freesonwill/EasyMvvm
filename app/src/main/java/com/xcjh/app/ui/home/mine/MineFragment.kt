@@ -11,7 +11,7 @@ class MineFragment : BaseFragment<MainVm, ActivityWebBinding>() {
     override fun initView(savedInstanceState: Bundle?) {
         ImmersionBar.with(this)
             .statusBarDarkFont(true)//黑色
-            .titleBar(mViewBind.titleTop.root)
+            .titleBar(mDatabind.titleTop.root)
             .init()
         initEvent()
     }
@@ -20,7 +20,7 @@ class MineFragment : BaseFragment<MainVm, ActivityWebBinding>() {
         super.onResume()
         ImmersionBar.with(this)
             .statusBarDarkFont(true)//黑色
-            .titleBarMarginTop(mViewBind.titleTop.root)
+            .titleBarMarginTop(mDatabind.titleTop.root)
             .init()
     }
 

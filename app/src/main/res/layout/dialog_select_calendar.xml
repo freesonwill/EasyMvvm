@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/c_181b25"
     android:orientation="vertical">
 
     <LinearLayout
@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_24"
             android:text="August 2023"
-            android:textColor="@color/c_main_txt"
+            android:textColor="@color/c_8a91a0"
             android:textSize="@dimen/sp_14"
             android:textStyle="bold" />
 
@@ -30,19 +30,21 @@
 
         <ImageView
             android:id="@+id/ivPre"
-            android:layout_width="@dimen/dp_30"
-            android:layout_height="24dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="@dimen/dp_10"
             android:padding="@dimen/dp_5"
-            android:src="@drawable/ic_add" />
+            android:src="@drawable/ic_pre" />
 
         <ImageView
             android:id="@+id/ivNext"
-            android:layout_width="@dimen/dp_30"
-            android:layout_height="24dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="@dimen/dp_10"
             android:layout_marginStart="@dimen/dp_15"
             android:layout_marginEnd="@dimen/dp_16"
             android:padding="@dimen/dp_5"
-            android:src="@drawable/ic_add" />
+            android:src="@drawable/ic_next" />
     </LinearLayout>
 
     <View
@@ -56,23 +58,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_24"
-        android:background="#fff"
+        android:background="@color/c_181b25"
         app:calendar_height="36dp"
         app:calendar_padding="10dp"
-        app:current_month_text_color="@color/c_main_txt"
+        app:current_month_text_color="@color/c_8a91a0"
+        app:current_day_text_color="@color/white"
         app:day_text_size="12sp"
         app:max_select_range="-1"
-        app:max_year="2025"
-        app:min_select_range="-1"
-        app:min_year="2023"
+        app:max_year="2030"
+        app:min_year="2021"
         app:month_view="com.xcjh.app.view.range_calendar.CustomRangeMonthView"
         app:month_view_show_mode="mode_only_current"
-        app:other_month_text_color="#1222"
+        app:other_month_text_color="@color/c_8a91a0"
         app:select_mode="range_mode"
-        app:selected_text_color="@color/c_main_txt"
+        app:selected_text_color="@color/c_8a91a0"
         app:selected_theme_color="@color/select_color"
-        app:week_background="#fff"
-        app:week_text_color="@color/c_main_txt"
+
+        app:scheme_theme_color="@color/c_181b25"
+        app:week_background="@color/c_181b25"
+        app:week_text_color="@color/c_8a91a0"
         app:week_text_size="12sp" />
 
 </LinearLayout>

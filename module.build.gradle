@@ -80,8 +80,8 @@ ext {
                     signingConfig signingConfigs.release
                     proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
                    // debuggable true  //开启会导致aab签名无效
-                    minifyEnabled false//混淆
-                    zipAlignEnabled false//是否对APK包执行ZIP对齐优化，减小zip体积，增加运行效率
+                    minifyEnabled true//混淆
+                    zipAlignEnabled true//是否对APK包执行ZIP对齐优化，减小zip体积，增加运行效率
                     manifestPlaceholders = [
                             app_name     : "@string/my_app_name",
                             is_release   : true,

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginBottom="@dimen/dp_0"
+    android:layout_marginStart="@dimen/dp_16"
+    android:layout_marginEnd="@dimen/dp_16"
+    android:gravity="center"
+    android:background="@drawable/shape_r16"
+    android:backgroundTint="@color/c_18152a"
+    android:orientation="vertical">
+
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:textSize="@dimen/sp_12"
+        android:textColor="@color/c_8a91a0"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_7"
+        android:text="@string/choose_live_resource"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:minHeight="200dp"
+        tools:itemCount="4"
+        android:id="@+id/rcvSignal"
+        tools:listitem="@layout/item_signal"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/white_05"/>
+    <TextView
+        android:id="@+id/tvCancel"
+        android:text="@string/cancel"
+        android:gravity="center"
+        android:textColor="@color/c_fe4848"
+        android:textSize="@dimen/sp_14"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_60"/>
+</LinearLayout>
