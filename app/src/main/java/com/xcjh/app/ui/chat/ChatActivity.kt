@@ -440,7 +440,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
             "0",
             System.currentTimeMillis(),
             CacheUtil.getUser()?.id,
-            if (userhead.isEmpty()) "" else userhead,
+            if (userhead.isEmpty()) "http://s2yoc3fd7.hd-bkt.clouddn.com/user-icon/20231016/VJzE138LNsLCdrh0_xY3M.jpg" else userhead,
             if (nickname.isEmpty()) "" else nickname,
             if (CacheUtil.getUser()?.head!!.isEmpty()) "" else CacheUtil.getUser()?.head,
             if (CacheUtil.getUser()?.name!!.isEmpty()) "" else CacheUtil.getUser()?.name,

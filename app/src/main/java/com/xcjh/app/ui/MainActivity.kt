@@ -57,6 +57,7 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
+
         CacheUtil.setFirst(false)
         mViewModel.appUpdate()
         //runOnUiThread {  }
