@@ -41,6 +41,7 @@ import com.xcjh.app.websocket.bean.SendChatMsgBean
 import com.xcjh.app.websocket.bean.SendCommonWsBean
 import com.xcjh.app.websocket.listener.C2CListener
 import com.xcjh.base_lib.Constants
+import com.xcjh.base_lib.utils.LogUtils
 import com.xcjh.base_lib.utils.TAG
 import com.xcjh.base_lib.utils.TimeUtil
 import com.xcjh.base_lib.utils.setOnclickNoRepeat
@@ -144,7 +145,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                         binding.tvcontent.text = ad.content
                         binding.tvtime.text =
                             TimeUtil.timeStamp2Date(ad.createTime!!, null)
-                        // binding.tvtime.visibility = View.GONE
+                         binding.tvtime.visibility = View.GONE
                         Glide.with(this@ChatActivity).load(userhead).placeholder(R.drawable.icon_avatar).into(binding.ivhead)
                         if (TimeUtil.getTimeCha(lastShowTimeStamp, ad.createTime) == true) {
                             lastShowTimeStamp = ad.createTime!!
@@ -159,17 +160,20 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                     R.layout.item_chat_txt_right -> {//正在进行中的比赛
                         var binding = getBinding<ItemChatTxtRightBinding>()
                         var matchBeanNew = _data as MsgBean
-
-                        // binding.tvtime.visibility = View.GONE
+                        binding.tvtime.text =
+                            TimeUtil.timeStamp2Date(matchBeanNew.createTime!!, null)
+                         binding.tvtime.visibility = View.GONE
                         binding.tvcontent.text =
                             matchBeanNew.content
                         Glide.with(this@ChatActivity).load(CacheUtil.getUser()?.head).placeholder(R.drawable.icon_avatar)
                             .into(binding.ivhead)
                         if (TimeUtil.getTimeCha(
-                                lastShowTimeStamp,
-                                matchBeanNew.createTime
+                                matchBeanNew.createTime,
+                                        lastShowTimeStamp
                             ) == true
                         ) {
+                            LogUtils.d(matchBeanNew.content+"时间-==="+matchBeanNew.createTime+"====="+lastShowTimeStamp)
+
                             lastShowTimeStamp = matchBeanNew.createTime!!
                             binding.tvtime.visibility = View.VISIBLE
                             binding.tvtime.text =

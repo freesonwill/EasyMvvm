@@ -43,6 +43,10 @@ object TimeUtil {
 
         try {
 
+            var xx:Long=0
+            if (endTime==xx){
+                return true
+            }
             val diff = endTime!! - start!! //
             val days = diff / (1000 * 60 * 60 * 24)
             val hours = (diff - days * (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
