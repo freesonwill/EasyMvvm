@@ -201,7 +201,7 @@ data class LetterBean(
 data class MsgListBean(
     val avatar: String?=null,
     var content: String?=null,
-    val createTime: Long?=null,
+    val createTime: Long,
     val msgType: Int?=null,
     val fromId: String?=null,
     val anchorId: String?=null,
