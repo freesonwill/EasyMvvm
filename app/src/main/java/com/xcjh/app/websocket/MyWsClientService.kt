@@ -92,7 +92,7 @@ class MyWsClientService : Service() {
                 // val trustAllCerts = TrustManager
             }
             override fun onMessage(message: String) {
-               // Log.e("MyWsClient：onReceive===", message)
+                // Log.e("MyWsClient：onReceive===", message)
                 val intent = Intent()
                 intent.action = WebSocketAction.WEB_ACTION
                 intent.putExtra("message", message)
@@ -215,7 +215,7 @@ class MyWsClientService : Service() {
                 if (client!!.isClosed) {
                     reconnectWs()
                     //MyWsManager.getInstance(appContext)?.stopService()
-                   // MyWsManager.getInstance(appContext)?.initService()
+                    // MyWsManager.getInstance(appContext)?.initService()
                 } else {
                     sendHeartCmd()
                 }

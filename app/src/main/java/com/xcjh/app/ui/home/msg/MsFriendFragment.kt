@@ -3,7 +3,9 @@ package com.xcjh.app.ui.home.msg
 import android.os.Bundle
 import com.xcjh.app.R
 import com.xcjh.app.adapter.MsgFriendAdapter
+import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseFragment
+import com.xcjh.app.bean.FriendListBean
 import com.xcjh.app.bean.MatchBean
 import com.xcjh.app.databinding.FrMsgfriendBinding
 import com.xcjh.app.utils.CacheUtil
@@ -13,7 +15,7 @@ import com.xcjh.base_lib.utils.vertical
 
 class MsFriendFragment : BaseFragment<MsgVm, FrMsgfriendBinding>() {
     private val mAdapter by lazy { MsgFriendAdapter() }
-    var listdata: MutableList<MatchBean> = ArrayList<MatchBean>()
+    var listdata: MutableList<FriendListBean> = ArrayList<FriendListBean>()
 
     companion object {
 
@@ -44,7 +46,16 @@ class MsFriendFragment : BaseFragment<MsgVm, FrMsgfriendBinding>() {
             mViewModel.getUnNoticeFriend(mAdapter.getItem(position)?.anchorId.toString())
             mAdapter.removeAt(position)
         }
-
+        //登录或者登出
+        appViewModel.updateLoginEvent.observe(this){
+            if(it){
+                mViewModel.getMsgList(true, "")
+            }else{
+                listdata.clear()
+                mAdapter.submitList(listdata)
+                mAdapter.notifyDataSetChanged()
+            }
+        }
     }
 
     override fun onResume() {
@@ -73,6 +84,8 @@ class MsFriendFragment : BaseFragment<MsgVm, FrMsgfriendBinding>() {
                     it.isRefresh -> {
                         mDatabind.smartCommon.finishRefresh()
                         mDatabind.smartCommon.resetNoMoreData()
+                        listdata.clear()
+                        listdata.addAll(it.listData)
                         mAdapter.submitList(it.listData)
 
 
@@ -85,7 +98,7 @@ class MsFriendFragment : BaseFragment<MsgVm, FrMsgfriendBinding>() {
                         } else {
                             mDatabind.smartCommon.setEnableLoadMore(true)
                             mDatabind.smartCommon.finishLoadMore()
-
+                            listdata.addAll(it.listData)
                             mAdapter.addAll(it.listData)
                         }
 

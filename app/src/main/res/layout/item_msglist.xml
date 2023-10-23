@@ -148,7 +148,7 @@
                 android:layout_gravity="bottom"
                 android:background="@color/c_221d3d"
                 app:layout_constraintBottom_toBottomOf="parent"
-                 />
+                />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.guanaj.easyswipemenulibrary.EasySwipeMenuLayout>
 </RelativeLayout>
