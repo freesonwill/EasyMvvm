@@ -22,6 +22,7 @@ import com.xcjh.app.bean.MatchDetailBean
 import com.xcjh.app.bean.TabBean
 import com.xcjh.app.databinding.ActivityMatchDetailBinding
 import com.xcjh.app.isTopActivity
+import com.xcjh.app.net.ApiComService
 import com.xcjh.app.ui.chat.ChatActivity
 import com.xcjh.app.ui.details.common.GSYBaseActivity
 import com.xcjh.app.ui.details.fragment.*
@@ -231,9 +232,9 @@ class MatchDetailActivity :
             //分享 固定地址
             //复制链接成功
             var url = if (isHasAnchor){
-                "http://192.168.101.180:1820/#/roomDetail?id=${matchId}&liveId=${anchor?.liveId}&type=${matchType}&userId=${anchorId}"
+                ApiComService.SHARE_IP +"#/roomDetail?id=${matchId}&liveId=${anchor?.liveId}&type=${matchType}&userId=${anchorId}"
             }else{
-                "http://192.168.101.180:1820/#/roomDetail?id=${matchId}&type=${matchType}"
+                ApiComService.SHARE_IP +"#/roomDetail?id=${matchId}&type=${matchType}"
             }
 
             copyToClipboard(url)
