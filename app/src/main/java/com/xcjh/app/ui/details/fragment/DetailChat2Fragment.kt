@@ -67,7 +67,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
 
     private val mLayoutManager by lazy {
         HoverLinearLayoutManager(context, RecyclerView.VERTICAL, true).apply {
-            stackFromEnd = true
+            stackFromEnd = false
         }
     }
 
@@ -224,7 +224,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
                     mDatabind.smartChat.finishRefresh()
                     mDatabind.rcvChat.addModels(it.listData.apply { reverse() }) // 添加一条消息
                     if (it.isRefresh){
-                        mDatabind.rcvChat.scrollToPosition(0)
+                      //  mDatabind.rcvChat.scrollToPosition(0)
                     }
                 }
             } else {

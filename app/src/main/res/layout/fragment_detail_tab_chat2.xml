@@ -61,7 +61,7 @@
                 android:id="@+id/rcvChat"
                 click="@{v}"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 tools:itemCount="3"
                 tools:listitem="@layout/item_detail_chat" />
 
