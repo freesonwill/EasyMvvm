@@ -219,7 +219,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
             if (it.isSuccess) {
                 if (it.listData.isEmpty()) {
                    // myToast("没有更多消息了")
-                    mDatabind.smartChat.setEnableRefresh(false)
+                    //mDatabind.smartChat.setEnableRefresh(false)
                     mDatabind.smartChat.finishRefreshWithNoMoreData()
                 } else {
                     mDatabind.smartChat.finishRefresh()
@@ -254,6 +254,9 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
     }
 
     override fun onResume() {
+        mDatabind.rcvChat.postDelayed({
+            Log.e("===", "onResume:isTopActivity ==="+this.mDatabind.root.height)
+        },200)
         super.onResume()
     }
     override fun onPause() {

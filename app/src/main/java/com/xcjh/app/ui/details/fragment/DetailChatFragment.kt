@@ -270,6 +270,9 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
 
     override fun onResume() {
         //setWindowSoftInput(float = mDatabind.llInput, setPadding = true)
+        mDatabind.rcvChat.postDelayed({
+            Log.e("===", "onResume:isTopActivity ==="+this.mDatabind.root.height)
+        },200)
         super.onResume()
         mDatabind.rcvChat.models?.size?.let {
             //mDatabind.rcvChat.smoothScrollToPosition(it)

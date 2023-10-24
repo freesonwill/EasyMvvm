@@ -134,7 +134,7 @@ class MatchDetailActivity :
     }
 
     private fun initVp() {
-        mDatabind.viewPager.initChangeActivity(this, mFragList,false)
+        mDatabind.viewPager.initChangeActivity(this, mFragList, false)
         pager2Adapter = mDatabind.viewPager.adapter as ViewPager2Adapter
         //初始化Tab控件
         mDatabind.magicIndicator.bindViewPager2(
@@ -172,6 +172,7 @@ class MatchDetailActivity :
                 //折叠后显示top
                 mDatabind.cslTopMatchStatus.alpha = v
                 mDatabind.rltTop.background.alpha = (v * 255).toInt()
+                mDatabind.lltSignal.isClickable = !(v < 2 && v > 0.8)
             }
         })
         initVideoBuilderMode()
@@ -231,10 +232,10 @@ class MatchDetailActivity :
         mDatabind.tvToShare.setOnClickListener {
             //分享 固定地址
             //复制链接成功
-            var url = if (isHasAnchor){
-                ApiComService.SHARE_IP +"#/roomDetail?id=${matchId}&liveId=${anchor?.liveId}&type=${matchType}&userId=${anchorId}"
-            }else{
-                ApiComService.SHARE_IP +"#/roomDetail?id=${matchId}&type=${matchType}"
+            var url = if (isHasAnchor) {
+                ApiComService.SHARE_IP + "#/roomDetail?id=${matchId}&liveId=${anchor?.liveId}&type=${matchType}&userId=${anchor?.userId}"
+            } else {
+                ApiComService.SHARE_IP + "#/roomDetail?id=${matchId}&type=${matchType}"
             }
 
             copyToClipboard(url)
@@ -245,26 +246,24 @@ class MatchDetailActivity :
         mDatabind.lltSignal.setOnClickListener {
             //
             if (matchDetail.anchorList?.isNotEmpty() == true) {
-                showSignalDialog(matchDetail.anchorList!!,signalPos) { anchor,pos ->
+                showSignalDialog(matchDetail.anchorList!!, signalPos) { anchor, pos ->
                     signalPos = pos
                     if (anchorId == anchor.userId) {
                         //无改变
                         return@showSignalDialog
                     }
                     //切换主播
-                    playUrl = anchor.playUrl
-                    anchorId = anchor.userId
                     this.anchor = anchor
-                    if (anchor.pureFlow){
+                    if (anchor.pureFlow) {
                         isHasAnchor = false
                         isShowVideo = !anchor.playUrl.isNullOrEmpty()
-                    }else{
+                    } else {
                         isHasAnchor = true
-                        isShowVideo =true
+                        isShowVideo = true
                     }
-                    if (isShowVideo){
-                        startVideo(playUrl)
-                    }else{
+                    if (isShowVideo) {
+                        startVideo(anchor.playUrl)
+                    } else {
                         mDatabind.videoPlayer.release()
                     }
                     changeUI()
@@ -322,7 +321,7 @@ class MatchDetailActivity :
                 if (isNeedInit) {
                     isNeedInit = false
                     ///判断当前是否展示直播
-                    getSignal(match){
+                    getAnchor(match) {
                         startVideo(it)
                     }
                     changeUI()
@@ -376,19 +375,19 @@ class MatchDetailActivity :
             mFragList,
             tabs,
             isHasAnchor,
-            anchorId,
+            anchor?.userId,
             matchDetail,
             pager2Adapter,
             mDatabind.viewPager,
             mDatabind.magicIndicator)
         //有主播
         if (isHasAnchor) {
-            mDatabind.viewPager.postDelayed({ mViewModel.getDetailAnchorInfo(anchorId!!) },
+            mDatabind.viewPager.postDelayed({ mViewModel.getDetailAnchorInfo(anchor?.userId!!) },
                 200)
         }
     }
 
-    private fun getSignal(match: MatchDetailBean,  action: (String?) -> Unit = {}) {
+    private fun getAnchor(match: MatchDetailBean, action: (String?) -> Unit = {}) {
         match.anchorList.notNull({ list ->
             for ((i, item) in list.withIndex()) {
                 if (isHasAnchor) {
@@ -396,8 +395,7 @@ class MatchDetailActivity :
                         isShowVideo = true
                         signalPos = i
                         anchor = item
-                        playUrl = item.playUrl
-                        action.invoke(playUrl)
+                        action.invoke(item.playUrl)
                         return@notNull
                     }
                 } else {
@@ -410,14 +408,12 @@ class MatchDetailActivity :
                                 isShowVideo = false
                             } else {
                                 isShowVideo = true
-                                playUrl = item.playUrl
                                 action.invoke(playUrl)
                             }
                         } else {
                             isShowVideo = true
                             isHasAnchor = true
                             anchor = item
-                            playUrl = item.playUrl
                             action.invoke(playUrl)
                         }
                         return@notNull
@@ -440,7 +436,7 @@ class MatchDetailActivity :
     override fun onResume() {
         super.onResume()
         if (isShowVideo && !isTopActivity(this)) {
-            startVideo(playUrl)
+            startVideo(anchor?.playUrl)
         }
         //Log.e("TAG", "onResume: ${isTopActivity(this)}===" + this.toString())
     }

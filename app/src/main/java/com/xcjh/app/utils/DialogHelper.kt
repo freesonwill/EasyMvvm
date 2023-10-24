@@ -184,7 +184,7 @@ fun clearMsg(context: Context, block: (isSure: Boolean) -> Unit) {
 fun showSignalDialog(
     anchorList: List<AnchorListBean>,
     signalPos: Int,
-    action: (AnchorListBean,Int) -> Unit
+    action: (AnchorListBean, Int) -> Unit,
 ) {
     //模式数据
     CustomDialog.build()
@@ -198,17 +198,20 @@ fun showSignalDialog(
                     onBind {
                         val model = getModel<AnchorListBean>()
                         findView<TextView>(R.id.tvContent).apply {
-                            if (signalPos==modelPosition) {
+                            if (signalPos == modelPosition) {
                                 this.setTextColor(context.getColor(R.color.c_6D48FE))
                             } else {
                                 this.setTextColor(context.getColor(R.color.c_F5F5F5))
                             }
-                            this.text = model.nickName.ifEmpty { context.getString(R.string.anchor) + (modelPosition + 1) }
+                            this.text =
+                                if (model.pureFlow) model.nickName else model.nickName.ifEmpty {
+                                    context.getString(R.string.anchor) + (modelPosition + 1)
+                                }
                         }
                     }
                     onClick(R.id.lltItem) {
                         val model = getModel<AnchorListBean>()
-                        action.invoke(model,modelPosition)
+                        action.invoke(model, modelPosition)
                         dialog?.dismiss()
                     }
                 }.models = anchorList
