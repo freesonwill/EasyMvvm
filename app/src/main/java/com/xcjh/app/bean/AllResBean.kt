@@ -145,7 +145,7 @@ data class MsgBean(
     val sent: Int? = 0,//是否已发送: 0 未发送 1 已发送
     val toId: String? = "",
     val updateTime: String? = "",
-    var lastShowTimeStamp:  Long? = 0,
+    var lastShowTimeStamp:  Long = 0,
     val updater: String? = ""
 ): ItemAttached {
     var visibility: Boolean = false // 显示隐藏

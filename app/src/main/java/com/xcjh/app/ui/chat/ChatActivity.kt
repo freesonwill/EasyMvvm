@@ -64,6 +64,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
     var userhead = ""
     var isShowBottom = false
     var lastShowTimeStamp: Long = 0
+    val baseLong: Long = 0
     var listdata: MutableList<MsgBean> = ArrayList<MsgBean>()
     var msgType = 0//消息类型，文字：0， 图片：1
     var msgContent = ""
@@ -148,7 +149,17 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                         binding.tvtime.visibility = View.GONE
                         Glide.with(this@ChatActivity).load(userhead)
                             .placeholder(R.drawable.icon_avatar).into(binding.ivhead)
-                        if (TimeUtil.getTimeCha(ad.createTime, lastShowTimeStamp) == true) {
+                        if (ad.lastShowTimeStamp!! == baseLong) {
+                            ad.lastShowTimeStamp = lastShowTimeStamp
+                        }
+                        if (TimeUtil.getTimeCha(
+                                ad.createTime, ad.lastShowTimeStamp
+
+                            ) == true
+                        ) {
+                            if (ad.lastShowTimeStamp!! == baseLong) {
+                                ad.lastShowTimeStamp = -1
+                            }
                             lastShowTimeStamp = ad.createTime!!
                             binding.tvtime.visibility = View.VISIBLE
                             binding.tvtime.text =
@@ -169,18 +180,17 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                         Glide.with(this@ChatActivity).load(CacheUtil.getUser()?.head)
                             .placeholder(R.drawable.icon_avatar)
                             .into(binding.ivhead)
-                        if (matchBeanNew.lastShowTimeStamp!!.equals("0")) {
+                        if (matchBeanNew.lastShowTimeStamp!! == baseLong) {
                             matchBeanNew.lastShowTimeStamp = lastShowTimeStamp
-                        } else {
-                            matchBeanNew.lastShowTimeStamp
                         }
                         if (TimeUtil.getTimeCha(
                                 matchBeanNew.createTime, matchBeanNew.lastShowTimeStamp
 
                             ) == true
                         ) {
-                            LogUtils.d(matchBeanNew.content + "时间-===" + matchBeanNew.createTime + "=====" + lastShowTimeStamp)
-
+                            if (matchBeanNew.lastShowTimeStamp!! == baseLong) {
+                                matchBeanNew.lastShowTimeStamp = -1
+                            }
                             lastShowTimeStamp = matchBeanNew.createTime!!
                             binding.tvtime.visibility = View.VISIBLE
                             binding.tvtime.text =
@@ -211,12 +221,17 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                 .setImageEngine(GlideEngine.createGlideEngine())
                                 .startActivityPreview(0, false, listPic)
                         }
-                        if (TimeUtil.getTimeCha(//消息频繁上下华东 容易导致 lastShowTimeStamp变化  导致时间显示异常
-                                //解决办法1  可以尝试每次加载单条数据的时候  判断item本身的lastShowTimeStamp是否为0 否则给他设置个变量
-                                //
-                                matchBeanNew.createTime, lastShowTimeStamp
+                        if (matchBeanNew.lastShowTimeStamp!! == baseLong) {
+                            matchBeanNew.lastShowTimeStamp = lastShowTimeStamp
+                        }
+                        if (TimeUtil.getTimeCha(
+                                matchBeanNew.createTime, matchBeanNew.lastShowTimeStamp
+
                             ) == true
                         ) {
+                            if (matchBeanNew.lastShowTimeStamp!! == baseLong) {
+                                matchBeanNew.lastShowTimeStamp = -1
+                            }
                             lastShowTimeStamp = matchBeanNew.createTime!!
                             binding.tvtime.visibility = View.VISIBLE
                             binding.tvtime.text =
@@ -247,10 +262,17 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                 .setImageEngine(GlideEngine.createGlideEngine())
                                 .startActivityPreview(0, false, listPic)
                         }
+                        if (matchBeanNew.lastShowTimeStamp!! == baseLong) {
+                            matchBeanNew.lastShowTimeStamp = lastShowTimeStamp
+                        }
                         if (TimeUtil.getTimeCha(
-                                matchBeanNew.createTime, lastShowTimeStamp
+                                matchBeanNew.createTime, matchBeanNew.lastShowTimeStamp
+
                             ) == true
                         ) {
+                            if (matchBeanNew.lastShowTimeStamp!! == baseLong) {
+                                matchBeanNew.lastShowTimeStamp = -1
+                            }
                             lastShowTimeStamp = matchBeanNew.createTime!!
                             binding.tvtime.visibility = View.VISIBLE
                             binding.tvtime.text =
