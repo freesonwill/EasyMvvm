@@ -109,6 +109,7 @@ data class MatchBean(
     var list: ArrayList<MatchBean> = arrayListOf(),
     var matchData: ArrayList<ConditionsBean> = arrayListOf(),//比赛是否有赛况、阵容、指数
     var runTime: String? = "0",//比赛进行时间（分钟）进行中足球比赛有此信息
+    var ishsow: Boolean = true
 ) : Serializable
 
 /**

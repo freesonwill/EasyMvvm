@@ -1,220 +1,258 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:id="@+id/conroot"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:paddingTop="@dimen/dp_8"
-    android:paddingBottom="@dimen/dp_16"
-    android:background="@drawable/shape6_schitem"
-    android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/ivtype"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
-        android:layout_marginLeft="@dimen/dp_12"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/conroot"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="wrap_content"
+   >
+
     <TextView
-        android:id="@+id/tvtime"
-        android:layout_width="wrap_content"
-        app:layout_constraintTop_toTopOf="@id/ivtype"
-        app:layout_constraintBottom_toBottomOf="@id/ivtype"
-        app:layout_constraintLeft_toRightOf="@id/ivtype"
-        android:layout_marginLeft="@dimen/dp_5"
-        android:textSize="@dimen/sp_12"
-        android:textStyle="bold"
-        android:textColor="@color/white"
-        tools:text="10:30"
-        android:layout_height="wrap_content"/>
-    <View
-        android:id="@+id/view1"
-        android:layout_width="1dp"
-        android:background="#0dffffff"
-        app:layout_constraintTop_toTopOf="@id/ivtype"
-        app:layout_constraintBottom_toBottomOf="@id/ivtype"
-        app:layout_constraintLeft_toRightOf="@id/tvtime"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:layout_height="@dimen/dp_10"/>
-    <TextView
-        android:id="@+id/tvname"
-        android:layout_width="wrap_content"
-        app:layout_constraintTop_toTopOf="@id/ivtype"
-        app:layout_constraintBottom_toBottomOf="@id/ivtype"
-        app:layout_constraintLeft_toRightOf="@id/view1"
-        android:layout_marginLeft="@dimen/dp_5"
-        android:textSize="@dimen/sp_12"
-        android:textColor="@color/white"
-        tools:text="夏季联赛"
-        android:textStyle="bold"
-        android:layout_height="wrap_content"/>
-    <TextView
-        android:id="@+id/tvstatus"
-        android:layout_width="wrap_content"
-        app:layout_constraintTop_toTopOf="@id/ivtype"
-        app:layout_constraintBottom_toBottomOf="@id/ivtype"
-        app:layout_constraintLeft_toRightOf="@id/tvname"
-        android:layout_marginLeft="@dimen/dp_5"
-        android:textStyle="bold"
-        android:textSize="@dimen/sp_12"
-        android:textColor="@color/c_ff5151"
-        tools:text="进行中 13‘’"
-        android:layout_height="wrap_content"/>
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/txtMatchAnimation"
+        android:id="@+id/tvmiddletime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="@id/ivtype"
-        app:layout_constraintBottom_toBottomOf="@id/ivtype"
-        app:layout_constraintLeft_toRightOf="@id/tvstatus"
-        android:text="''"
-        android:visibility="gone"
-        android:textSize="10sp"
-        android:textStyle="bold"
-        android:textColor="@color/c_fe4848"/>
-
-    <ImageView
-        android:id="@+id/tvcollect"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
-        android:background="@drawable/ic_focus_n"
-        android:layout_marginRight="@dimen/dp_12"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/ivtype"
-        app:layout_constraintTop_toTopOf="@id/ivtype" />
-    <View
-        android:id="@+id/view2"
-        android:layout_width="match_parent"
-        android:background="@color/c_0dffffff"
-        app:layout_constraintTop_toBottomOf="@id/ivtype"
-        android:layout_marginTop="8dp"
-        android:layout_height="1dp"/>
-    <LinearLayout
-        android:id="@+id/linceter"
-        android:layout_width="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/view2"
-        android:layout_marginTop="@dimen/dp_20"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginLeft="@dimen/dp_15"
-        android:layout_marginRight="@dimen/dp_15"
-        android:gravity="center_vertical"
-        android:layout_height="wrap_content">
-        <TextView
-            android:id="@+id/tvname_left"
-            android:layout_width="80dp"
-            android:layout_marginLeft="@dimen/dp_5"
-            android:textSize="@dimen/sp_14"
-            android:textColor="@color/white"
-            android:maxLines="2"
-            android:ellipsize="end"
-            android:gravity="right"
-            android:maxEms="10"
-            tools:text="中国"
-            android:textStyle="bold"
-            android:layout_height="wrap_content"/>
-        <ImageView
-            android:id="@+id/tvflag_left"
-            android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24"
-            android:background="@drawable/basketball"
-            android:layout_marginLeft="@dimen/dp_6"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toBottomOf="@id/ivtype"
-            app:layout_constraintTop_toTopOf="@id/ivtype" />
-        <TextView
-            android:id="@+id/tvvs"
-            android:layout_width="wrap_content"
-            android:layout_marginLeft="@dimen/dp_12"
-            android:textSize="@dimen/sp_20"
-            android:textColor="@color/white"
-            android:text="VS"
-            android:textStyle="bold"
-            android:layout_height="wrap_content"/>
-        <ImageView
-            android:id="@+id/tvflag_right"
-            android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24"
-            android:background="@drawable/basketball"
-            android:layout_marginLeft="@dimen/dp_12"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toBottomOf="@id/ivtype"
-            app:layout_constraintTop_toTopOf="@id/ivtype" />
-        <TextView
-            android:id="@+id/tvname_right"
-            android:layout_width="80dp"
-            android:layout_marginLeft="@dimen/dp_5"
-            android:textSize="@dimen/sp_14"
-            android:textColor="@color/white"
-            android:gravity="left"
-            tools:text="美国"
-            android:maxLines="2"
-            android:ellipsize="end"
-            android:maxEms="10"
-            android:textStyle="bold"
-            android:layout_height="wrap_content"/>
-
-    </LinearLayout>
-    <TextView
-        android:id="@+id/tvhafl"
-        android:layout_width="wrap_content"
         android:layout_marginLeft="@dimen/dp_5"
-        app:layout_constraintTop_toBottomOf="@+id/linceter"
-        app:layout_constraintLeft_toLeftOf="@id/linceter"
-        app:layout_constraintRight_toRightOf="@id/linceter"
-        android:layout_marginTop="@dimen/dp_10"
-        android:textSize="@dimen/sp_12"
         android:textColor="@color/c_8a91a0"
-        tools:text="半场: 0-0"
-        android:textStyle="bold"
-        android:layout_height="wrap_content"/>
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/conlive"
-        android:layout_width="match_parent"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/dp_12"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/tvhafl"
-        android:layout_marginTop="@dimen/dp_15"
-        android:layout_height="60dp">
+        android:textSize="@dimen/sp_12"
+        android:textStyle="bold"
+        tools:text="进行中 13‘’" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dp_8"
+        android:paddingBottom="@dimen/dp_16"
+        android:background="@drawable/shape6_schitem">
 
-        <TextView
-            android:id="@+id/viewx"
-            android:layout_width="match_parent"
-            app:layout_constraintTop_toTopOf="parent"
 
-            android:background="@drawable/shape_xux"
-            android:layout_height="wrap_content"/>
-        <TextView
-            android:id="@+id/tvjs"
-            android:layout_width="wrap_content"
-            android:text="@string/txt_jiesuo"
-            android:textColor="@color/white"
+        <ImageView
+            android:id="@+id/ivtype"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
             android:layout_marginLeft="@dimen/dp_12"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            app:layout_constraintTop_toBottomOf="@id/viewx"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_height="wrap_content"/>
-        <View
-            android:id="@+id/views"
-            android:layout_width="1dp"
-            android:background="#0dffffff"
-            app:layout_constraintTop_toBottomOf="@id/viewx"
-            android:layout_marginLeft="@dimen/dp_12"
-            app:layout_constraintLeft_toRightOf="@+id/tvjs"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_height="@dimen/dp_28"/>
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rec"
-            android:layout_width="0dp"
-            app:layout_constraintTop_toBottomOf="@id/viewx"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toRightOf="@id/views"
-            app:layout_constraintRight_toRightOf="parent"
-            android:layout_marginLeft="@dimen/dp_12"
-            android:layout_height="wrap_content"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
+        <TextView
+            android:id="@+id/tvtime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_5"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_12"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/ivtype"
+            app:layout_constraintLeft_toRightOf="@id/ivtype"
+            app:layout_constraintTop_toTopOf="@id/ivtype"
+            tools:text="10:30" />
+
+        <View
+            android:id="@+id/view1"
+            android:layout_width="1dp"
+            android:layout_height="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:background="#0dffffff"
+            app:layout_constraintBottom_toBottomOf="@id/ivtype"
+            app:layout_constraintLeft_toRightOf="@id/tvtime"
+            app:layout_constraintTop_toTopOf="@id/ivtype" />
+
+        <TextView
+            android:id="@+id/tvname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_5"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_12"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/ivtype"
+            app:layout_constraintLeft_toRightOf="@id/view1"
+            app:layout_constraintTop_toTopOf="@id/ivtype"
+            tools:text="夏季联赛" />
+
+        <TextView
+            android:id="@+id/tvstatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_5"
+            android:textColor="@color/c_ff5151"
+            android:textSize="@dimen/sp_12"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/ivtype"
+            app:layout_constraintLeft_toRightOf="@id/tvname"
+            app:layout_constraintTop_toTopOf="@id/ivtype"
+            tools:text="进行中 13‘’" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txtMatchAnimation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="''"
+            android:textColor="@color/c_fe4848"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/ivtype"
+            app:layout_constraintLeft_toRightOf="@id/tvstatus"
+            app:layout_constraintTop_toTopOf="@id/ivtype" />
+
+        <ImageView
+            android:id="@+id/tvcollect"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_marginRight="@dimen/dp_12"
+            android:background="@drawable/ic_focus_n"
+            app:layout_constraintBottom_toBottomOf="@id/ivtype"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/ivtype" />
+
+        <View
+            android:id="@+id/view2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/c_0dffffff"
+            app:layout_constraintTop_toBottomOf="@id/ivtype" />
+
+        <LinearLayout
+            android:id="@+id/linceter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_15"
+            android:layout_marginTop="@dimen/dp_20"
+            android:layout_marginRight="@dimen/dp_15"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/view2">
+
+            <TextView
+                android:id="@+id/tvname_left"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_5"
+                android:ellipsize="end"
+                android:gravity="right"
+                android:maxEms="10"
+                android:maxLines="2"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_14"
+                android:textStyle="bold"
+                tools:text="中国" />
+
+            <ImageView
+                android:id="@+id/tvflag_left"
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="@dimen/dp_24"
+                android:layout_marginLeft="@dimen/dp_6"
+                android:background="@drawable/basketball"
+                app:layout_constraintBottom_toBottomOf="@id/ivtype"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/ivtype" />
+
+            <TextView
+                android:id="@+id/tvvs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_12"
+                android:text="VS"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_20"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/tvflag_right"
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="@dimen/dp_24"
+                android:layout_marginLeft="@dimen/dp_12"
+                android:background="@drawable/basketball"
+                app:layout_constraintBottom_toBottomOf="@id/ivtype"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/ivtype" />
+
+            <TextView
+                android:id="@+id/tvname_right"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_5"
+                android:ellipsize="end"
+                android:gravity="left"
+                android:maxEms="10"
+                android:maxLines="2"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_14"
+                android:textStyle="bold"
+                tools:text="美国" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvhafl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_5"
+            android:layout_marginTop="@dimen/dp_10"
+            android:textColor="@color/c_8a91a0"
+            android:textSize="@dimen/sp_12"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="@id/linceter"
+            app:layout_constraintRight_toRightOf="@id/linceter"
+            app:layout_constraintTop_toBottomOf="@+id/linceter"
+            tools:text="半场: 0-0" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/conlive"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="@dimen/dp_15"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/tvhafl">
+
+            <TextView
+                android:id="@+id/viewx"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:background="@drawable/shape_xux"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tvjs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_12"
+                android:text="@string/txt_jiesuo"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/viewx" />
+
+            <View
+                android:id="@+id/views"
+                android:layout_width="1dp"
+                android:layout_height="@dimen/dp_28"
+                android:layout_marginLeft="@dimen/dp_12"
+                android:background="#0dffffff"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@+id/tvjs"
+                app:layout_constraintTop_toBottomOf="@id/viewx" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rec"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_12"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/views"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/viewx" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

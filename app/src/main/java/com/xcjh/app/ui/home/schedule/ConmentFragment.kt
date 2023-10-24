@@ -66,6 +66,7 @@ class ConmentFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
     var mPushPosition = 0
     var isClick = false
     val animatorSet = AnimatorSet()
+    var strTimeZu: MutableList<String> = ArrayList<String>()
 
     companion object {
         var mTitles: Array<out String>? = null
@@ -106,6 +107,35 @@ class ConmentFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                         binding.tvcollect.setBackgroundResource(R.drawable.ic_focus_s)
                     } else {
                         binding.tvcollect.setBackgroundResource(R.drawable.ic_focus_n)
+                    }
+                    binding.tvmiddletime.text=time!!.substring(0,10)
+                    if (time!!.substring(0,10)==TimeUtil.gettimenowYear()){
+                        if (strTimeZu.size==0){
+                            binding.tvmiddletime.visibility=View.GONE
+                        }else{
+                            if (strTimeZu[strTimeZu.size-1]==time!!.substring(0,10)){
+                                binding.tvmiddletime.visibility=View.GONE
+                            }else{
+                                binding.tvmiddletime.visibility=View.VISIBLE
+                                strTimeZu.add(time!!.substring(0,10))
+                            }
+                        }
+                    }else{
+                        if (strTimeZu.size==0){
+                            binding.tvmiddletime.visibility=View.VISIBLE
+                            strTimeZu.add(time!!.substring(0,10))
+                        }else{
+                            if (strTimeZu[strTimeZu.size-1]==time!!.substring(0,10)){
+                                binding.tvmiddletime.visibility=View.GONE
+                            }else{
+                                binding.tvmiddletime.visibility=View.VISIBLE
+                                strTimeZu.add(time!!.substring(0,10))
+                            }
+
+
+
+                        }
+
                     }
                     LogUtils.d("直播数据" + item.anchorList)
 
@@ -745,7 +775,7 @@ class ConmentFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
 
         mViewModel.hotMatchList.observe(this) {
             if (it.isSuccess) {
-
+                strTimeZu.clear()
                 //成功
                 when {
                     //第一页并没有数据 显示空布局界面
