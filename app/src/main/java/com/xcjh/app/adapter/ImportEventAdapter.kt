@@ -27,15 +27,13 @@ class ImportEventAdapter : BaseViewBindingQuickAdapter<IncidentsBean, ItemImport
                 // 21-射正  22-射偏  23-进攻  24-危险进攻  25-控球率  
                 // 26-加时赛结束  27-点球大战结束  28-VAR(视频助理裁判)  
                 // 29-点球(点球大战)  30-点球未进(点球大战)
+                0 -> {
+                    //开始比赛
+                    setUI(binding)
+                }
                 1 -> {
                     //进球
-                    binding.vHomeCard.visibleOrGone(false)
-                    binding.vHomeShot.visibleOrGone(item.position == 1)
-                    binding.vHomeExchange.visibleOrGone(false)
-                    binding.vAwayCard.visibleOrGone(false)
-                    binding.vAwayShot.visibleOrGone(item.position == 2)
-                    binding.vAwayExchange.visibleOrGone(false)
-
+                    setUI(binding,2,item.position)
                     binding.tvHomeShotScore.text = "${item.homeScore} - ${item.awayScore}"
                     binding.tvHomeShotMsg.text = item.playerName
                     binding.tvAwayShotScore.text = "${item.homeScore} - ${item.awayScore}"
@@ -43,12 +41,7 @@ class ImportEventAdapter : BaseViewBindingQuickAdapter<IncidentsBean, ItemImport
                 }
                 3, 4 ,15-> {
                     //红黄牌
-                    binding.vHomeCard.visibleOrGone(item.position == 1)
-                    binding.vHomeShot.visibleOrGone(false)
-                    binding.vHomeExchange.visibleOrGone(false)
-                    binding.vAwayCard.visibleOrGone(item.position == 2)
-                    binding.vAwayShot.visibleOrGone(false)
-                    binding.vAwayExchange.visibleOrGone(false)
+                    setUI(binding,1,item.position)
                     binding.tvHomeMsg.text = item.playerName
                     binding.ivHomeIcon.setImageResource(if (item.type == 3) R.drawable.yellow_card else R.drawable.red_card)
                     binding.tvAwayMsg.text =item.playerName
@@ -56,27 +49,36 @@ class ImportEventAdapter : BaseViewBindingQuickAdapter<IncidentsBean, ItemImport
                 }
                 9 -> {
                     //换人
-                    binding.vHomeCard.visibleOrGone(false)
-                    binding.vHomeShot.visibleOrGone(false)
-                    binding.vHomeExchange.visibleOrGone(item.position == 1)
-                    binding.vAwayCard.visibleOrGone(false)
-                    binding.vAwayShot.visibleOrGone(false)
-                    binding.vAwayExchange.visibleOrGone(item.position == 2)
-
+                    setUI(binding,3,item.position)
                     binding.tvHomeExUp.text = item.inPlayerName
                     binding.tvHomeExDown.text =item.outPlayerName
                     binding.tvAwayExUp.text = item.inPlayerName
                     binding.tvAwayExDown.text = item.outPlayerName
-
+                }
+                11->{
+                    //中场
+                    binding.tvTime.text = "中场"
+                    setUI(binding)
+                }
+                12->{
+                    //中场
+                    binding.tvTime.text = "结束"
+                    setUI(binding)
                 }
                 else->{
-                    binding.vHomeShot.visibleOrGone(false)
-                    binding.vHomeExchange.visibleOrGone(false)
-                    binding.vAwayCard.visibleOrGone(false)
-                    binding.vAwayShot.visibleOrGone(false)
-                    binding.vAwayExchange.visibleOrGone(false)
+                    setUI(binding)
                 }
             }
         }
+    }
+
+    private fun setUI(binding: ItemImportEventBinding,type:Int=0,pos:Int=0) {
+
+        binding.vHomeCard.visibleOrGone(if (type==0) false else { type==1&&pos==1 })
+        binding.vHomeShot.visibleOrGone(if (type==0) false else { type==2&&pos==1 })
+        binding.vHomeExchange.visibleOrGone(if (type==0) false else { type==3&&pos==1 })
+        binding.vAwayCard.visibleOrGone(if (type==0) false else { type==1&&pos==2 })
+        binding.vAwayShot.visibleOrGone(if (type==0) false else { type==2&&pos==2 })
+        binding.vAwayExchange.visibleOrGone(if (type==0) false else { type==3&&pos==2 })
     }
 }

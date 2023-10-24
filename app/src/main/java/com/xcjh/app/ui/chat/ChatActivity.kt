@@ -64,6 +64,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
     var userhead = ""
     var isShowBottom = false
     var lastShowTimeStamp: Long = 0
+    val baseLong: Long = 0
     var listdata: MutableList<MsgBean> = ArrayList<MsgBean>()
     var msgType = 0//消息类型，文字：0， 图片：1
     var msgContent = ""
@@ -145,9 +146,20 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                         binding.tvcontent.text = ad.content
                         binding.tvtime.text =
                             TimeUtil.timeStamp2Date(ad.createTime!!, null)
-                         binding.tvtime.visibility = View.GONE
-                        Glide.with(this@ChatActivity).load(userhead).placeholder(R.drawable.icon_avatar).into(binding.ivhead)
-                        if (TimeUtil.getTimeCha(lastShowTimeStamp, ad.createTime) == true) {
+                        binding.tvtime.visibility = View.GONE
+                        Glide.with(this@ChatActivity).load(userhead)
+                            .placeholder(R.drawable.icon_avatar).into(binding.ivhead)
+                        if (ad.lastShowTimeStamp!! == baseLong) {
+                            ad.lastShowTimeStamp = lastShowTimeStamp
+                        }
+                        if (TimeUtil.getTimeCha(
+                                ad.createTime, ad.lastShowTimeStamp
+
+                            ) == true
+                        ) {
+                            if (ad.lastShowTimeStamp!! == baseLong) {
+                                ad.lastShowTimeStamp = -1
+                            }
                             lastShowTimeStamp = ad.createTime!!
                             binding.tvtime.visibility = View.VISIBLE
                             binding.tvtime.text =
@@ -162,18 +174,23 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                         var matchBeanNew = _data as MsgBean
                         binding.tvtime.text =
                             TimeUtil.timeStamp2Date(matchBeanNew.createTime!!, null)
-                         binding.tvtime.visibility = View.GONE
+                        binding.tvtime.visibility = View.GONE
                         binding.tvcontent.text =
                             matchBeanNew.content
-                        Glide.with(this@ChatActivity).load(CacheUtil.getUser()?.head).placeholder(R.drawable.icon_avatar)
+                        Glide.with(this@ChatActivity).load(CacheUtil.getUser()?.head)
+                            .placeholder(R.drawable.icon_avatar)
                             .into(binding.ivhead)
+                        if (matchBeanNew.lastShowTimeStamp!! == baseLong) {
+                            matchBeanNew.lastShowTimeStamp = lastShowTimeStamp
+                        }
                         if (TimeUtil.getTimeCha(
-                                matchBeanNew.createTime,
-                                        lastShowTimeStamp
+                                matchBeanNew.createTime, matchBeanNew.lastShowTimeStamp
+
                             ) == true
                         ) {
-                            LogUtils.d(matchBeanNew.content+"时间-==="+matchBeanNew.createTime+"====="+lastShowTimeStamp)
-
+                            if (matchBeanNew.lastShowTimeStamp!! == baseLong) {
+                                matchBeanNew.lastShowTimeStamp = -1
+                            }
                             lastShowTimeStamp = matchBeanNew.createTime!!
                             binding.tvtime.visibility = View.VISIBLE
                             binding.tvtime.text =
@@ -187,8 +204,9 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                         var matchBeanNew = _data as MsgBean
                         binding.tvtime.text =
                             TimeUtil.timeStamp2Date(matchBeanNew.createTime!!, null)
-                        //  binding.tvtime.visibility = View.GONE
-                        Glide.with(this@ChatActivity).load(CacheUtil.getUser()?.head).placeholder(R.drawable.icon_avatar)
+                        binding.tvtime.visibility = View.GONE
+                        Glide.with(this@ChatActivity).load(CacheUtil.getUser()?.head)
+                            .placeholder(R.drawable.icon_avatar)
                             .into(binding.ivhead)
                         Glide.with(this@ChatActivity).load(matchBeanNew.content).dontAnimate()
                             .into(binding.ivpic)
@@ -203,11 +221,17 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                 .setImageEngine(GlideEngine.createGlideEngine())
                                 .startActivityPreview(0, false, listPic)
                         }
+                        if (matchBeanNew.lastShowTimeStamp!! == baseLong) {
+                            matchBeanNew.lastShowTimeStamp = lastShowTimeStamp
+                        }
                         if (TimeUtil.getTimeCha(
-                                lastShowTimeStamp,
-                                matchBeanNew.createTime
+                                matchBeanNew.createTime, matchBeanNew.lastShowTimeStamp
+
                             ) == true
                         ) {
+                            if (matchBeanNew.lastShowTimeStamp!! == baseLong) {
+                                matchBeanNew.lastShowTimeStamp = -1
+                            }
                             lastShowTimeStamp = matchBeanNew.createTime!!
                             binding.tvtime.visibility = View.VISIBLE
                             binding.tvtime.text =
@@ -222,10 +246,11 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                         var matchBeanNew = _data as MsgBean
                         binding.tvtime.text =
                             TimeUtil.timeStamp2Date(matchBeanNew.createTime!!, null)
-                        //binding.tvtime.visibility = View.GONE
+                        binding.tvtime.visibility = View.GONE
                         Glide.with(this@ChatActivity).load(matchBeanNew.content)
                             .dontAnimate().into(binding.ivpic)
-                        Glide.with(this@ChatActivity).load(userhead).placeholder(R.drawable.icon_avatar).into(binding.ivhead)
+                        Glide.with(this@ChatActivity).load(userhead)
+                            .placeholder(R.drawable.icon_avatar).into(binding.ivhead)
                         binding.ivpic.setOnClickListener {
                             listPic.clear()
                             var localMedia: LocalMedia = LocalMedia()
@@ -237,11 +262,17 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                 .setImageEngine(GlideEngine.createGlideEngine())
                                 .startActivityPreview(0, false, listPic)
                         }
+                        if (matchBeanNew.lastShowTimeStamp!! == baseLong) {
+                            matchBeanNew.lastShowTimeStamp = lastShowTimeStamp
+                        }
                         if (TimeUtil.getTimeCha(
-                                lastShowTimeStamp,
-                                matchBeanNew.createTime
+                                matchBeanNew.createTime, matchBeanNew.lastShowTimeStamp
+
                             ) == true
                         ) {
+                            if (matchBeanNew.lastShowTimeStamp!! == baseLong) {
+                                matchBeanNew.lastShowTimeStamp = -1
+                            }
                             lastShowTimeStamp = matchBeanNew.createTime!!
                             binding.tvtime.visibility = View.VISIBLE
                             binding.tvtime.text =
@@ -426,7 +457,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
         mDatabind.rv.scrollToPosition(0) // 保证最新一条消息显示
 
 
-      //  appViewModel.updateMsgEvent.postValue(beanmy)
+        //  appViewModel.updateMsgEvent.postValue(beanmy)
 
     }
 

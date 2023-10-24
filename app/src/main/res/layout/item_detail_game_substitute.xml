@@ -37,19 +37,20 @@
             android:textSize="@dimen/sp_10" />
         <TextView
             android:id="@+id/tvName"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginEnd="@dimen/dp_5"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@id/tvPosition"
             app:layout_constraintStart_toEndOf="@id/ivIcon"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintVertical_chainStyle="packed"
             android:singleLine="true"
             android:layout_marginStart="@dimen/dp_8"
-            tools:text="上海申花"
+            tools:text="上海申花上海申花上海申花上海申花上海申花上海申花上海申花上海申花上海申花上海申花上海申花"
             android:textColor="@color/c_F5F5F5"
-            android:textSize="@dimen/sp_14" />
+            android:textSize="@dimen/sp_12" />
         <TextView
             android:id="@+id/tvPosition"
             android:layout_width="wrap_content"
@@ -62,6 +63,6 @@
             android:layout_marginEnd="@dimen/dp_5"
             tools:text="上海申花"
             android:textColor="@color/c_F5F5F5"
-            android:textSize="@dimen/sp_14" />
+            android:textSize="@dimen/sp_10" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

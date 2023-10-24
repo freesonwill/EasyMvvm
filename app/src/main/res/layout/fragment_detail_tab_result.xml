@@ -37,7 +37,7 @@
                         android:background="@drawable/bg_btn_detail_tab"
                         android:gravity="center"
                         android:text="@string/text_live"
-                        android:textColor="@color/white"
+                        android:textColor="@color/c_F5F5F5"
                         android:textSize="@dimen/sp_14" />
 
                     <TextView
@@ -48,7 +48,7 @@
                         android:background="@drawable/bg_btn_detail_tab"
                         android:gravity="center"
                         android:text="@string/import_event"
-                        android:textColor="@color/white"
+                        android:textColor="@color/c_F5F5F5"
                         android:textSize="@dimen/sp_14" />
                 </LinearLayout>
 
