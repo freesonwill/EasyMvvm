@@ -382,7 +382,9 @@ class MatchDetailActivity :
             mDatabind.magicIndicator)
         //有主播
         if (isHasAnchor) {
-            mDatabind.viewPager.postDelayed({ mViewModel.getDetailAnchorInfo(anchor?.userId) },
+            mDatabind.viewPager.postDelayed({
+                mViewModel.addLiveHistory(anchor?.liveId)
+                mViewModel.getDetailAnchorInfo(anchor?.userId) },
                 200)
         }
     }

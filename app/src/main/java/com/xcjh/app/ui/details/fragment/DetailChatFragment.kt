@@ -2,30 +2,25 @@ package com.xcjh.app.ui.details.fragment
 
 import android.annotation.SuppressLint
 import android.graphics.LinearGradient
-import android.graphics.Rect
 import android.graphics.Shader
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.view.ViewGroup
-import android.widget.FrameLayout
-import android.widget.RelativeLayout
 import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
 import com.blankj.utilcode.util.SizeUtils.dp2px
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
+import com.drake.brv.animation.SlideLeftItemAnimation
 import com.drake.brv.layoutmanager.HoverLinearLayoutManager
 import com.drake.brv.utils.addModels
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.drake.softinput.hideSoftInput
-import com.drake.softinput.setWindowSoftInput
 import com.google.gson.Gson
 import com.luck.picture.lib.basic.PictureSelector
 import com.luck.picture.lib.entity.LocalMedia
@@ -36,9 +31,9 @@ import com.xcjh.app.bean.*
 import com.xcjh.app.databinding.*
 import com.xcjh.app.isTopActivity
 import com.xcjh.app.ui.details.DetailVm
+import com.xcjh.app.ui.details.common.MyItemAnimator
 import com.xcjh.app.ui.details.common.RoomChatVm
 import com.xcjh.app.utils.*
-import com.xcjh.app.utils.nice.Utils
 import com.xcjh.app.websocket.MyWsManager
 import com.xcjh.app.websocket.bean.ReceiveChatMsg
 import com.xcjh.app.websocket.bean.ReceiveWsBean
@@ -187,6 +182,10 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
                 }
             }
         }
+        val defaultItemAnimator = DefaultItemAnimator()
+        //val defaultItemAnimator = MyItemAnimator()
+        defaultItemAnimator.addDuration = 500
+        mDatabind.rcvChat.itemAnimator = defaultItemAnimator
         //点击列表隐藏软键盘
         mDatabind.rcvChat.setOnTouchListener { v, _ ->
             v.clearFocus() // 清除文字选中状态
@@ -350,6 +349,7 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
         /*  if (chat.from == CacheUtil.getUser()?.id) {
               return
           }*/
+
         mDatabind.rcvChat.addModels(listOf(MsgBean(
             chat.from,
             chat.fromAvatar,
@@ -357,13 +357,12 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
             chat.level,
             chat.content,
             identityType = chat.identityType,
-        ))) // 添加一条消息
+        )) ) // 添加一条消息
 
         mDatabind.rcvChat.models?.size?.let {
             /// mLayoutManager.scrollToPositionWithOffset(it, Integer.MIN_VALUE)
             if (chat.from == CacheUtil.getUser()?.id || lastVisible == it - 2) {
                 mDatabind.rcvChat.smoothScrollToPosition(it)
-
             }
         }
 

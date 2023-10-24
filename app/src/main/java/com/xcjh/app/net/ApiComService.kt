@@ -335,6 +335,12 @@ interface ApiComService {
     @GET("app/live/detail/football/stats/{matchId}")
     suspend fun getFootballStatus(@Path("matchId") matchId: String): ApiResponse<ArrayList<StatusBean>?>
 
+    /**
+     * 新增观看直播历史
+     */
+    @GET("app/user/live/history/add/{liveId}")
+    suspend fun addLiveHistory(@Path("liveId") liveId: String?): ApiResponse<*>
+
 
     /**
      * APP退出

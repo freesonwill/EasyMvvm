@@ -259,4 +259,15 @@ class DetailVm : BaseViewModel() {
         })
     }
 
+    /**
+     * 增加观看直播历史
+     */
+    fun addLiveHistory(liveId: String?) {
+        request({
+            apiService.addLiveHistory(liveId)
+        },{
+
+        })
+    }
+
 }
