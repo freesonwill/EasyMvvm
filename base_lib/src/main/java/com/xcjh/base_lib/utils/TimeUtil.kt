@@ -44,7 +44,7 @@ object TimeUtil {
         try {
 
             var xx:Long=0
-            if (endTime==xx){
+            if (endTime!! <=0){
                 LogUtils.d("true时间差===")
                 return true
             }
