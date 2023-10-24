@@ -338,12 +338,15 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
             chat.level,
             chat.content,
             identityType=chat.identityType,))) // 添加一条消息
-        /*if (isShowBottom) {
-            mDatabind.rcvChat.scrollToPosition(0)
-        }*/
-        mDatabind.rcvChat.models?.size?.let {
-            mDatabind.rcvChat.smoothScrollToPosition(it)
-        }
+
+            mDatabind.rcvChat.models?.size?.let {
+               /// mLayoutManager.scrollToPositionWithOffset(it, Integer.MIN_VALUE)
+                if (chat.from == CacheUtil.getUser()?.id||lastVisible==it-2) {
+                    mDatabind.rcvChat.smoothScrollToPosition(it)
+
+                }
+            }
+
     }
 
     override fun onClick(v: View?) {

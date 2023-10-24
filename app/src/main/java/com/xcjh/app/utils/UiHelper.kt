@@ -203,7 +203,7 @@ fun setNewViewPager(
     newTabs.forEach { t ->
         mTitles.add(t.name)
         when (t.type) {
-            1 -> mFragList.add(DetailChatFragment(liveId, anchorId))
+            1 -> mFragList.add(DetailChat2Fragment(liveId, anchorId))
             2 -> mFragList.add(DetailAnchorFragment(anchorId ?: ""))
             3 -> mFragList.add(DetailResultFragment(detailBean))//赛况
             4 -> mFragList.add(DetailLineUpFragment(detailBean))//阵容
