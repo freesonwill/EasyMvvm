@@ -191,7 +191,7 @@
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:background="@drawable/bg_match_detail">
+            android:background="@drawable/match_bg">
 
             <com.google.android.material.appbar.AppBarLayout
                 android:id="@+id/appBayLayout"
@@ -436,9 +436,10 @@
                 <net.lucode.hackware.magicindicator.MagicIndicator
                     android:id="@+id/magic_indicator"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_32"
-                    android:layout_marginHorizontal="@dimen/dp_16"
-                    android:layout_marginVertical="@dimen/dp_12" />
+                    android:background="#07061D"
+                    android:layout_height="@dimen/dp_56"
+                    android:paddingHorizontal="@dimen/dp_16"
+                    android:paddingVertical="@dimen/dp_12" />
             </com.google.android.material.appbar.AppBarLayout>
 
             <androidx.viewpager2.widget.ViewPager2

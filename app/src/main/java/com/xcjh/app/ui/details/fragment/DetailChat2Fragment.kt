@@ -9,6 +9,11 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
+import com.blankj.utilcode.util.SizeUtils
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
 import com.drake.brv.layoutmanager.HoverLinearLayoutManager
 import com.drake.brv.utils.addModels
 import com.drake.brv.utils.models
@@ -16,6 +21,8 @@ import com.drake.brv.utils.setup
 import com.drake.softinput.hideSoftInput
 import com.drake.softinput.setWindowSoftInput
 import com.google.gson.Gson
+import com.luck.picture.lib.basic.PictureSelector
+import com.luck.picture.lib.entity.LocalMedia
 import com.xcjh.app.R
 import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseVpFragment
@@ -34,6 +41,7 @@ import com.xcjh.base_lib.App
 import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.utils.SpanUtil
 import com.xcjh.base_lib.utils.myToast
+import com.xcjh.base_lib.utils.view.visibleOrGone
 import kotlinx.android.synthetic.main.fragment_detail_tab_chat.view.*
 
 
@@ -42,7 +50,7 @@ import kotlinx.android.synthetic.main.fragment_detail_tab_chat.view.*
  */
 
 class DetailChat2Fragment(var liveId: String, var userId: String?, override val typeId: Long = 1) :
-    BaseVpFragment<RoomChatVm, FragmentDetailTabChatBinding>(),
+    BaseVpFragment<RoomChatVm, FragmentDetailTabChat2Binding>(),
     LiveRoomListener, View.OnClickListener {
 
     private val vm by lazy {
@@ -69,7 +77,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
         setNotice()
         initRcv()
         getHistoryData()
-        //Log.e("===", "initView:isTopActivity ==="+activity.toString())1706502981541576704
+        handleSoftInput(requireActivity(), mDatabind.llInput)
     }
 
     private fun setNotice() {
@@ -135,6 +143,26 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
                             binding.tvType.text = getString(R.string.anchor)
                             binding.tvType.setBackgroundResource(setLeverDrawable("2"))
                             binding.tvType.setTextColor(setLeverColor("2"))
+                            binding.ivImage.visibleOrGone(item.msgType==1)
+                            if (item.msgType==1){//图片
+                                Glide.with(context)
+                                    .load(item.content)
+                                    .apply(RequestOptions().transform(CenterCrop(), RoundedCorners(
+                                        SizeUtils.dp2px( 8f))))
+                                    .placeholder(R.drawable.load_square)
+                                    .into(binding.ivImage)
+                                binding.ivImage.setOnClickListener {
+                                    val list = arrayListOf<LocalMedia>()
+                                    val localMedia = LocalMedia()
+                                    localMedia.path = item.content
+                                    localMedia.cutPath = item.content
+                                    list.add(localMedia)
+                                    PictureSelector.create(context)
+                                        .openPreview()
+                                        .setImageEngine(GlideEngine.createGlideEngine())
+                                        .startActivityPreview(0, false, list)
+                                }
+                            }
                         }
                         if (modelPosition == modelCount - 1) {
                             offset = item.id ?: ""
@@ -142,7 +170,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
                         SpanUtil.create()
                             .addForeColorSection(item.nick + " : ",
                                 ContextCompat.getColor(context, R.color.c_8a91a0))
-                            .addForeColorSection(item.content,
+                            .addForeColorSection(if (item.msgType==1) "" else item.content,
                                 ContextCompat.getColor(context, R.color.c_F5F5F5))
                             .showIn(binding.tvContent) //显示到控件TextView中
                     }
@@ -157,7 +185,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
         }
         //点击列表隐藏软键盘
         mDatabind.edtChatMsg.setOnFocusChangeListener { v, hasFocus ->
-            setWindowSoftInput(float = mDatabind.llInput, setPadding = true)
+           // setWindowSoftInput(float = mDatabind.llInput, setPadding = true)
         }
     }
 
@@ -180,7 +208,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
                         index = 0
                     ) // 添加一条消息
                     mDatabind.rcvChat.scrollToPosition(0)
-                },800)
+                },500)
             }
         }
         //历史消息
@@ -219,10 +247,12 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
     }
 
     override fun onResume() {
-        setWindowSoftInput(float = mDatabind.llInput, setPadding = true)
         super.onResume()
     }
-
+    override fun onPause() {
+        hideSoftInput()
+        super.onPause()
+    }
     override fun onStop() {
         super.onStop()
         if (!isTopActivity(activity)) {
@@ -242,13 +272,16 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
         isEnterRoom = false
     }
 
-
     override fun onEnterRoomInfo(isOk: Boolean, msg: ReceiveWsBean<*>) {
         isEnterRoom = true
     }
 
     override fun onExitRoomInfo(isOk: Boolean, msg: ReceiveWsBean<*>) {
+        // myToast("exit Room ==$isOk")
+    }
 
+    override fun onSendMsgIsOk(isOk: Boolean, bean: ReceiveWsBean<*>) {
+        //myToast("send_msg ==$isOk")
     }
 
     override fun onRoomReceive(chat: ReceiveChatMsg) {
@@ -261,21 +294,14 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
                 isShowBottom = true
             }
         }
-      /*  if (chat.from == CacheUtil.getUser()?.id) {
-            return
-        }*/
         mDatabind.rcvChat.addModels(listOf(MsgBean(chat.from,
             chat.fromAvatar,
             chat.fromNickName ?: "",
             chat.level,
             chat.content))) // 添加一条消息
-        if (true) {
+        if (chat.from == CacheUtil.getUser()?.id||isShowBottom) {
             mDatabind.rcvChat.scrollToPosition(0)
         }
-    }
-
-    override fun onSendMsgIsOk(isOk: Boolean, bean: ReceiveWsBean<*>) {
-        //myToast("send ==$isOk")
     }
 
     override fun onClick(v: View?) {

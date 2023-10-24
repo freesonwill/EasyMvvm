@@ -1,9 +1,17 @@
 package com.xcjh.app.utils
 
+import android.app.Activity
+import android.content.Context
+import android.graphics.Rect
+import android.view.View
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
+import com.blankj.utilcode.util.SizeUtils
 import com.google.android.material.appbar.AppBarLayout
 import com.xcjh.app.R
 import com.xcjh.app.adapter.ViewPager2Adapter
@@ -195,7 +203,7 @@ fun setNewViewPager(
     newTabs.forEach { t ->
         mTitles.add(t.name)
         when (t.type) {
-            1 -> mFragList.add(DetailChatFragment(liveId, anchorId))
+            1 -> mFragList.add(DetailChat2Fragment(liveId, anchorId))
             2 -> mFragList.add(DetailAnchorFragment(anchorId ?: ""))
             3 -> mFragList.add(DetailResultFragment(detailBean))//赛况
             4 -> mFragList.add(DetailLineUpFragment(detailBean))//阵容
@@ -208,4 +216,43 @@ fun setNewViewPager(
     viewPager.offscreenPageLimit = mFragList.size
     viewPager.adapter?.notifyDataSetChanged()
     magicIndicator.navigator.notifyDataSetChanged()
+}
+fun handleSoftInput(context: Activity,layout: RelativeLayout) {
+    var currentHeight = 0
+    val layoutParams = layout.layoutParams as RelativeLayout.LayoutParams
+    val decorView = context.window.decorView
+    decorView.viewTreeObserver.addOnGlobalLayoutListener {
+        val rect = Rect()
+        decorView.getWindowVisibleDisplayFrame(rect)
+        val keyboardMinHeight = SizeUtils.dp2px(100f)
+        val screenHeight =
+            if (hasNavigationBar(decorView)) context.resources.displayMetrics.heightPixels else decorView.height
+        val rectHeight = if (hasNavigationBar(decorView)) rect.height() else rect.bottom
+        val heightDiff = screenHeight - rectHeight
+        // 视图树变化高度大于100dp,认为键盘弹出
+        // currentHeight 防止界面频繁刷新，降低帧率，耗电
+        if (currentHeight != heightDiff && heightDiff > keyboardMinHeight) {
+            // 键盘弹出
+            currentHeight = heightDiff
+            layoutParams.bottomMargin = currentHeight
+            layout.requestLayout()
+
+        } else if (currentHeight != heightDiff && heightDiff < keyboardMinHeight) {
+            // 键盘收起
+            currentHeight = 0
+            layoutParams.bottomMargin = currentHeight
+            layout.requestLayout()
+
+        }
+
+    }
+}
+fun hasNavigationBar(view: View): Boolean {
+    val compact = ViewCompat.getRootWindowInsets(view.findViewById(android.R.id.content))
+    compact?.apply {
+        return isVisible(WindowInsetsCompat.Type.navigationBars()) && getInsets(
+            WindowInsetsCompat.Type.navigationBars()
+        ).bottom > 0
+    }
+    return false
 }
