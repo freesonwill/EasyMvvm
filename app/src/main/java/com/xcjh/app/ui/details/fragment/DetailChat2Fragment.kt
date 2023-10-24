@@ -66,13 +66,15 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
     }
 
     private val mLayoutManager by lazy {
-        HoverLinearLayoutManager(context, RecyclerView.VERTICAL, true)
+        HoverLinearLayoutManager(context, RecyclerView.VERTICAL, true).apply {
+            stackFromEnd = true
+        }
     }
 
     private var offset = ""
 
     override fun initView(savedInstanceState: Bundle?) {
-        //mDatabind.v = this
+        mDatabind.v = this
         mDatabind.m = mViewModel
         setNotice()
         initRcv()
@@ -207,7 +209,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
                         listOf(MsgBean(it.id, it.head, it.nickName, "0", it.firstMessage?:"",identityType=1)),
                         index = 0
                     ) // 添加一条消息
-                    mDatabind.rcvChat.scrollToPosition(0)
+                    mDatabind.rcvChat.smoothScrollToPosition(0)
                 },500)
             }
         }
@@ -215,11 +217,15 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
         mViewModel.hisMsgList.observe(this) {
             if (it.isSuccess) {
                 if (it.listData.isEmpty()) {
+                    myToast("没有更多消息了")
                     mDatabind.smartChat.setEnableRefresh(false)
                     mDatabind.smartChat.finishRefreshWithNoMoreData()
                 } else {
                     mDatabind.smartChat.finishRefresh()
                     mDatabind.rcvChat.addModels(it.listData.apply { reverse() }) // 添加一条消息
+                    if (it.isRefresh){
+                        mDatabind.rcvChat.scrollToPosition(0)
+                    }
                 }
             } else {
                 mDatabind.smartChat.finishRefresh()
@@ -298,9 +304,9 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
             chat.fromAvatar,
             chat.fromNickName ?: "",
             chat.level,
-            chat.content))) // 添加一条消息
+            chat.content)), index = 0) // 添加一条消息
         if (chat.from == CacheUtil.getUser()?.id||isShowBottom) {
-            mDatabind.rcvChat.scrollToPosition(0)
+            mDatabind.rcvChat.smoothScrollToPosition(0)
         }
     }
 
