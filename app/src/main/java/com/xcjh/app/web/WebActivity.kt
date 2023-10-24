@@ -13,11 +13,14 @@ import androidx.activity.viewModels
 import com.gyf.immersionbar.ImmersionBar
 import com.just.agentweb.AgentWeb
 import com.just.agentweb.WebChromeClient
-import com.xcjh.base_lib.Constants
-import com.xcjh.base_lib.utils.loge
 import com.xcjh.app.base.BaseActivity
 import com.xcjh.app.databinding.ActivityWebBinding
 import com.xcjh.app.vm.MainVm
+import com.xcjh.base_lib.Constants
+import com.xcjh.base_lib.utils.loge
+import java.text.ParsePosition
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
@@ -135,11 +138,24 @@ class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
 
     override fun createObserver() {
         super.createObserver()
+
+//
         //获取到网页详情
         mViewModel.newsBeanValue.observe(this){
+            var sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+            var dateTimeString:String=""
+            var title:String=""
+            title="<h1 style=\" color: #18152A; font-size: 20px;\">${it.title}</h1>"
+            if(it.publishTime.isNotEmpty()){
+                dateTimeString= sdf.format(Date(it.publishTime.toLong()))
+                title += "<h2 style=\" color: #8A91A0; font-size: 14px;\">${dateTimeString}</h2>"
+            }
+            title += it.content
+
+
             agentWeb.urlLoader.loadDataWithBaseURL(
                 null,
-                mViewModel.newsBeanValue.value!!.content,
+                title,
                 "text/html",
                 "utf-8",
                 null

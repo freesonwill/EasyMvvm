@@ -157,9 +157,6 @@ class ContactUsActivity : BaseActivity<ContactUsVm, ActivityContactUsBinding>() 
 
         //点击提交
         mDatabind.txtContactSub.clickNoRepeat {
-
-
-
             if(selectType!=null&&mAdapter!!.data.size>0&& mDatabind.editContactInput.text.toString().trim().isNotEmpty()){
                 mViewModel.showLoading()
                 mViewModel.imageList.clear()

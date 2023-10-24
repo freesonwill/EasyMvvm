@@ -99,12 +99,14 @@
            </LinearLayout>
            <LinearLayout
                android:layout_width="match_parent"
-               android:layout_height="80dp"
+               android:layout_height="wrap_content"
                android:layout_marginLeft="@dimen/dp_24"
                android:layout_marginRight="@dimen/dp_24"
                android:layout_marginTop="@dimen/dp_32"
                android:paddingRight="@dimen/dp_13"
                android:paddingLeft="@dimen/dp_13"
+               android:paddingTop="@dimen/dp_20"
+               android:paddingBottom="@dimen/dp_20"
                android:gravity="center"
                android:orientation="vertical"
                android:background="@drawable/shape_r8_18152a">
@@ -112,7 +114,7 @@
                    android:id="@+id/progressLevel"
                    android:layout_width="match_parent"
                    app:progressView_radius="60dp"
-                   android:layout_height="12dp"
+                   android:layout_height="8dp"
                    app:progressView_progress="40"
                    app:progressView_colorGradientStart="@color/c_c4cbd7"
                    app:progressView_colorGradientEnd="@color/c_8896ae"

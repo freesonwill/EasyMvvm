@@ -70,15 +70,15 @@ class HomeFragment : BaseFragment<MainVm, FragmentHomeBinding>() {
         mDatabind.viewPager.registerOnPageChangeCallback(object :
             ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
-                if (position == 0) {
-                    mDatabind.ivHomeGg.setImageDrawable(
-                        ContextCompat.getDrawable(requireContext(), R.drawable.icon_home_bg)
-                    )
-                } else {
-                    mDatabind.ivHomeGg.setImageDrawable(
-                        ContextCompat.getDrawable(requireContext(), R.color.black)
-                    )
-                }
+//                if (position == 0) {
+//                    mDatabind.ivHomeGg.setImageDrawable(
+//                        ContextCompat.getDrawable(requireContext(), R.drawable.icon_home_bg)
+//                    )
+//                } else {
+//                    mDatabind.ivHomeGg.setImageDrawable(
+//                        ContextCompat.getDrawable(requireContext(), R.color.black)
+//                    )
+//                }
 
 
             }
