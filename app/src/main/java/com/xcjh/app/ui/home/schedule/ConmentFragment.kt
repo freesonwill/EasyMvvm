@@ -422,9 +422,10 @@ class ConmentFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                     Glide.with(context).load(item.awayLogo).into(binding.tvflagRight)
                     if (item.anchorList != null && item.anchorList.isNotEmpty()) {
                         binding.conlive.visibility = View.VISIBLE
-                        if (binding.rec.getItemDecorationCount() == 0) {//加个判断
+                        if (binding.rec.itemDecorationCount == 0) {//加个判断
                             binding.rec.run {
-                                grid(4)
+                               horizontal()
+                                distance(30,30,0,0)
                             }
                         }
 
@@ -447,11 +448,7 @@ class ConmentFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
 
                                 }
                             }
-                        }.models = if (item.anchorList.size>4){
-                            item.anchorList.subList(0,4)
-                        }else{
-                            item.anchorList
-                        }
+                        }.models =item.anchorList
 
 
                     } else {

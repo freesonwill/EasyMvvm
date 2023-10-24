@@ -74,7 +74,7 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
     private val mLayoutManager by lazy {
 
         HoverLinearLayoutManager(context, RecyclerView.VERTICAL, false).apply {
-            stackFromEnd = true
+            // stackFromEnd = true
         }
     }
 
@@ -153,11 +153,12 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
                             binding.tvType.text = getString(R.string.anchor)
                             binding.tvType.setBackgroundResource(setLeverDrawable("2"))
                             binding.tvType.setTextColor(setLeverColor("2"))
-                            binding.ivImage.visibleOrGone(item.msgType==1)
-                            if (item.msgType==1){//图片
+                            binding.ivImage.visibleOrGone(item.msgType == 1)
+                            if (item.msgType == 1) {//图片
                                 Glide.with(context)
                                     .load(item.content)
-                                    .apply(RequestOptions().transform(CenterCrop(), RoundedCorners(dp2px( 8f))))
+                                    .apply(RequestOptions().transform(CenterCrop(),
+                                        RoundedCorners(dp2px(8f))))
                                     .placeholder(R.drawable.load_square)
                                     .into(binding.ivImage)
                                 binding.ivImage.setOnClickListener {
@@ -179,7 +180,7 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
                         SpanUtil.create()
                             .addForeColorSection(item.nick + " : ",
                                 ContextCompat.getColor(context, R.color.c_8a91a0))
-                            .addForeColorSection(if (item.msgType==1) "" else item.content,
+                            .addForeColorSection(if (item.msgType == 1) "" else item.content,
                                 ContextCompat.getColor(context, R.color.c_F5F5F5))
                             .showIn(binding.tvContent) //显示到控件TextView中
                     }
@@ -195,7 +196,7 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
     }
 
     private fun getHistoryData() {
-        mViewModel.getHisMsgList(liveId, offset,true)
+        mViewModel.getHisMsgList(liveId, offset, true)
     }
 
     override fun createObserver() {
@@ -205,18 +206,23 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
         //公告
         vm.anchor.observe(this) { it ->
             if (it != null) {
-                noticeBean.notice = it.notice?:""
+                noticeBean.notice = it.notice ?: ""
                 mDatabind.notice.expandableText.text = it.notice //主播公告
                 mDatabind.rcvChat.postDelayed({
                     mDatabind.rcvChat.addModels(
-                        listOf(MsgBean(it.id, it.head, it.nickName, "0", it.firstMessage?:"",identityType=1)),
-                       // index = 0
+                        listOf(MsgBean(it.id,
+                            it.head,
+                            it.nickName,
+                            "0",
+                            it.firstMessage ?: "",
+                            identityType = 1)),
+                        // index = 0
                     ) // 添加一条消息
-                   // mDatabind.rcvChat.scrollToPosition(0)
+                    // mDatabind.rcvChat.scrollToPosition(0)
                     mDatabind.rcvChat.models?.size?.let {
                         mDatabind.rcvChat.smoothScrollToPosition(it)
                     }
-                },500)
+                }, 500)
             }
         }
         //历史消息
@@ -234,8 +240,8 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
                     mDatabind.smartChat.finishRefreshWithNoMoreData()
                 } else {
                     mDatabind.smartChat.finishRefresh()
-                    mDatabind.rcvChat.addModels(it.listData,index = 0) // 添加一条消息
-                    if (it.isRefresh){
+                    mDatabind.rcvChat.addModels(it.listData, index = 0) // 添加一条消息
+                    if (it.isRefresh) {
                         mDatabind.rcvChat.models?.size?.let {
                             mDatabind.rcvChat.smoothScrollToPosition(it)
                         }
@@ -271,8 +277,12 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
     override fun onResume() {
         //setWindowSoftInput(float = mDatabind.llInput, setPadding = true)
         mDatabind.rcvChat.postDelayed({
-            Log.e("===", "onResume:isTopActivity ==="+this.mDatabind.root.height)
-        },200)
+            Log.e("===",
+                "onResume:isTopActivity ===" + this.mDatabind.root.height + "=====" + mDatabind.rcvChat.height)
+            val params = mDatabind.rcvChat.layoutParams
+            params.height = mDatabind.rcvChat.height
+            mDatabind.rcvChat.layoutParams = params
+        }, 200)
         super.onResume()
         mDatabind.rcvChat.models?.size?.let {
             //mDatabind.rcvChat.smoothScrollToPosition(it)
@@ -284,8 +294,13 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
         }
         //Log.e("===", "onResume:isTopActivity ==="+activity.toString())
     }
+
     override fun onPause() {
         hideSoftInput()
+        mDatabind.rcvChat.postDelayed({
+            Log.e("===",
+                "onPause:isTopActivity ===" + this.mDatabind.root.height + "=====" + mDatabind.rcvChat.height)
+        }, 200)
         super.onPause()
     }
 
@@ -332,23 +347,25 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
                 isShowBottom = true
             }
         }
-      /*  if (chat.from == CacheUtil.getUser()?.id) {
-            return
-        }*/
-        mDatabind.rcvChat.addModels(listOf(MsgBean(chat.from,
+        /*  if (chat.from == CacheUtil.getUser()?.id) {
+              return
+          }*/
+        mDatabind.rcvChat.addModels(listOf(MsgBean(
+            chat.from,
             chat.fromAvatar,
             chat.fromNickName ?: "",
             chat.level,
             chat.content,
-            identityType=chat.identityType,))) // 添加一条消息
+            identityType = chat.identityType,
+        ))) // 添加一条消息
 
-            mDatabind.rcvChat.models?.size?.let {
-               /// mLayoutManager.scrollToPositionWithOffset(it, Integer.MIN_VALUE)
-                if (chat.from == CacheUtil.getUser()?.id||lastVisible==it-2) {
-                    mDatabind.rcvChat.smoothScrollToPosition(it)
+        mDatabind.rcvChat.models?.size?.let {
+            /// mLayoutManager.scrollToPositionWithOffset(it, Integer.MIN_VALUE)
+            if (chat.from == CacheUtil.getUser()?.id || lastVisible == it - 2) {
+                mDatabind.rcvChat.smoothScrollToPosition(it)
 
-                }
             }
+        }
 
     }
 
@@ -380,8 +397,8 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
                         }
                         // mViewModel.input.set("")
                         mViewModel.input.set("")
-                       /* mDatabind.rcvChat.addModels(mViewModel.getMessages(), index = 0) // 添加一条消息
-                        mDatabind.rcvChat.scrollToPosition(0) // 保证最新一条消息显示*/
+                        /* mDatabind.rcvChat.addModels(mViewModel.getMessages(), index = 0) // 添加一条消息
+                         mDatabind.rcvChat.scrollToPosition(0) // 保证最新一条消息显示*/
                         /* mDatabind.rcvChat.addModels(mViewModel.getMessages()) // 添加一条消息
                          mDatabind.rcvChat.models?.size?.let {
                              mLayoutManager.smoothScrollToPosition(mDatabind.rcvChat, null, it)

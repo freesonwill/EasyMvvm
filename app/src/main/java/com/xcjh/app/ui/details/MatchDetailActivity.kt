@@ -248,7 +248,7 @@ class MatchDetailActivity :
             if (matchDetail.anchorList?.isNotEmpty() == true) {
                 showSignalDialog(matchDetail.anchorList!!, signalPos) { anchor, pos ->
                     signalPos = pos
-                    if (anchorId == anchor.userId) {
+                    if (this.anchor?.userId == anchor.userId) {
                         //无改变
                         return@showSignalDialog
                     }
@@ -382,7 +382,7 @@ class MatchDetailActivity :
             mDatabind.magicIndicator)
         //有主播
         if (isHasAnchor) {
-            mDatabind.viewPager.postDelayed({ mViewModel.getDetailAnchorInfo(anchor?.userId!!) },
+            mDatabind.viewPager.postDelayed({ mViewModel.getDetailAnchorInfo(anchor?.userId) },
                 200)
         }
     }

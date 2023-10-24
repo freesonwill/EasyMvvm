@@ -260,6 +260,9 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
         super.onResume()
     }
     override fun onPause() {
+        mDatabind.rcvChat.postDelayed({
+            Log.e("===", "onPause:isTopActivity ==="+this.mDatabind.root.height)
+        },200)
         hideSoftInput()
         super.onPause()
     }

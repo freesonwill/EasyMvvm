@@ -35,7 +35,7 @@ class TextLiveAdapter : BaseQuickAdapter<LiveTextBean, QuickViewHolder>() {
 
     override fun onBindViewHolder(holder: QuickViewHolder, position: Int, item: LiveTextBean?) {
         if (item != null) {
-            holder.getView<TextView>(R.id.tv_content).text = item.time + "” " + item.data
+            holder.getView<TextView>(R.id.tv_content).text = /*item.time + "” " + */item.data
             val ivType = holder.getView<ImageView>(R.id.iv_type)
             val ivLogo = holder.getView<ImageView>(R.id.iv_logo)
             val lineView = holder.getView<View>(R.id.lineView)
