@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.WindowManager
+import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.drake.brv.utils.*
@@ -17,6 +18,7 @@ import com.xcjh.app.bean.FollowAnchorBean
 import com.xcjh.app.databinding.ActivityMyFollowListBinding
 import com.xcjh.app.databinding.ItemMyFollowBinding
 import com.xcjh.app.ui.details.MatchDetailActivity
+import com.xcjh.app.vm.MainVm
 import com.xcjh.base_lib.utils.dp2px
 
 
@@ -99,9 +101,6 @@ class MyFollowListActivity : BaseActivity<MyFollowListVm, ActivityMyFollowListBi
                 if(bean.liveId!=null&&bean.liveId.isNotEmpty()){
                     MatchDetailActivity.open(matchType =bean.matchType, matchId = bean.matchId, anchorId = bean.anchorId  )
                 }
-
-
-
 
 
             }

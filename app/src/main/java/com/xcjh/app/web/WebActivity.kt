@@ -151,8 +151,6 @@ class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
                 title += "<h2 style=\" color: #8A91A0; font-size: 14px;\">${dateTimeString}</h2>"
             }
             title += it.content
-
-
             agentWeb.urlLoader.loadDataWithBaseURL(
                 null,
                 title,

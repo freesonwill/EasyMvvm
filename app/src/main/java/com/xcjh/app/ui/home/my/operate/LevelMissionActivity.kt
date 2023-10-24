@@ -3,6 +3,7 @@ package com.xcjh.app.ui.home.my.operate
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
@@ -14,6 +15,7 @@ import com.xcjh.app.databinding.ActivityLevelMissionBinding
 import com.xcjh.app.databinding.ActivityMyFollowListBinding
 import com.xcjh.app.event.AppViewModel
 import com.xcjh.app.utils.CacheUtil
+import com.xcjh.app.vm.MainVm
 import com.xcjh.base_lib.utils.TAG
 import com.xcjh.base_lib.utils.loge
 import com.xcjh.base_lib.utils.view.clickNoRepeat
@@ -22,12 +24,22 @@ import com.xcjh.base_lib.utils.view.clickNoRepeat
  * 我的等级任务中心
  */
 class LevelMissionActivity  : BaseActivity<LevelMissionVm, ActivityLevelMissionBinding>() {
-
+    private val mainVm: MainVm by viewModels()
     override fun initView(savedInstanceState: Bundle?) {
         ImmersionBar.with(this)
             .statusBarDarkFont(false)//黑色
             .titleBar(mDatabind.titleTop.rltTop)
             .init()
+
+        //更新用户信息
+        appViewModel.userInfo.observe(this){
+            data()
+
+        }
+
+
+        mainVm.getUserInfo()
+
         mDatabind.titleTop.tvTitle.text=resources.getString(R.string.level_txt_title)
         //进入首页
         mDatabind.txtLevelClickInteraction.clickNoRepeat {
@@ -41,6 +53,10 @@ class LevelMissionActivity  : BaseActivity<LevelMissionVm, ActivityLevelMissionB
             finish()
         }
 
+
+
+    }
+    fun data(){
         if(CacheUtil.isLogin()){
             if(CacheUtil.getUser()!=null){
                 var user=CacheUtil.getUser()
@@ -121,6 +137,5 @@ class LevelMissionActivity  : BaseActivity<LevelMissionVm, ActivityLevelMissionB
             }
 
         }
-
     }
 }
