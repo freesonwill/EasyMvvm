@@ -96,7 +96,12 @@ class MyFollowListActivity : BaseActivity<MyFollowListVm, ActivityMyFollowListBi
 //            }
             R.id.rlFollowShow.onClick {
                 var  bean=_data as FollowAnchorBean
-                MatchDetailActivity.open(matchType =bean.matchType, matchId = bean.matchId, anchorId = bean.anchorId  )
+                if(bean.liveId!=null&&bean.liveId.isNotEmpty()){
+                    MatchDetailActivity.open(matchType =bean.matchType, matchId = bean.matchId, anchorId = bean.anchorId  )
+                }
+
+
+
 
 
             }

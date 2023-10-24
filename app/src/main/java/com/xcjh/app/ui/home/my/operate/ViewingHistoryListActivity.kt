@@ -12,9 +12,11 @@ import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
 import com.xcjh.app.R
 import com.xcjh.app.base.BaseActivity
 import com.xcjh.app.bean.BeingLiveBean
+import com.xcjh.app.bean.MatchBean
 import com.xcjh.app.databinding.ActivityMyFollowListBinding
 import com.xcjh.app.databinding.ActivityViewingHistoryListBinding
 import com.xcjh.app.databinding.ItemMainLiveListBinding
+import com.xcjh.app.ui.details.MatchDetailActivity
 import com.xcjh.base_lib.utils.dp2px
 
 /**
@@ -93,6 +95,16 @@ class ViewingHistoryListActivity : BaseActivity<ViewingHistoryListVm, ActivityVi
                         }
                     }
 
+
+                }
+
+            }
+            R.id.llLiveSpacing.onClick {
+                var  bean=_data as BeingLiveBean
+                if(bean.liveStatus.equals("2")){
+                    MatchDetailActivity.open(matchType =bean.matchType, matchId = bean.matchId,matchName = "${bean.homeTeamName}VS${bean.awayTeamName}", anchorId = bean.userId )
+                }else{
+                    MatchDetailActivity.open(matchType =bean.matchType, matchId = bean.matchId,matchName = "${bean.homeTeamName}VS${bean.awayTeamName}" )
 
                 }
 
