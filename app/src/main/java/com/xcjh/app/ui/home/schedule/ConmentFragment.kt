@@ -32,6 +32,7 @@ import com.xcjh.app.utils.selectTime
 import com.xcjh.base_lib.utils.LogUtils
 import com.xcjh.base_lib.utils.TimeUtil
 import com.xcjh.base_lib.utils.distance
+import com.xcjh.base_lib.utils.grid
 import com.xcjh.base_lib.utils.horizontal
 import com.xcjh.base_lib.utils.setOnclickNoRepeat
 import com.xcjh.base_lib.utils.vertical
@@ -140,7 +141,7 @@ class ConmentFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                                     )
                                     binding.tvstatus.text = context.resources.getString(
                                         R.string.main_txt_under,
-                                        if (item.runTime==null)
+                                        if (item.runTime == null)
                                             "0"
                                         else {
                                             item.runTime
@@ -165,6 +166,81 @@ class ConmentFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
 
                                 }
 
+                                "9" -> {
+                                    binding.txtMatchAnimation.visibility = View.GONE
+                                    binding.tvvs.text = item.homeScore + "-" + item.awayScore
+                                    binding.tvstatus.visibility = View.VISIBLE
+                                    binding.tvstatus.setTextColor(
+                                        ContextCompat.getColor(
+                                            context,
+                                            R.color.c_F7DA73
+                                        )
+                                    )
+                                    binding.tvstatus.text =
+                                        context.resources.getString(R.string.main_txt_tc)
+
+                                }
+
+                                "10" -> {
+                                    binding.txtMatchAnimation.visibility = View.GONE
+                                    binding.tvvs.text = item.homeScore + "-" + item.awayScore
+                                    binding.tvstatus.visibility = View.VISIBLE
+                                    binding.tvstatus.setTextColor(
+                                        ContextCompat.getColor(
+                                            context,
+                                            R.color.c_F7DA73
+                                        )
+                                    )
+                                    binding.tvstatus.text =
+                                        context.resources.getString(R.string.main_txt_zd)
+
+                                }
+
+                                "11" -> {
+                                    binding.txtMatchAnimation.visibility = View.GONE
+                                    binding.tvvs.text = item.homeScore + "-" + item.awayScore
+                                    binding.tvstatus.visibility = View.VISIBLE
+                                    binding.tvstatus.setTextColor(
+                                        ContextCompat.getColor(
+                                            context,
+                                            R.color.c_F7DA73
+                                        )
+                                    )
+                                    binding.tvstatus.text =
+                                        context.resources.getString(R.string.main_txt_yz)
+
+                                }
+
+                                "12" -> {
+                                    binding.txtMatchAnimation.visibility = View.GONE
+                                    binding.tvvs.text = item.homeScore + "-" + item.awayScore
+                                    binding.tvstatus.visibility = View.VISIBLE
+                                    binding.tvstatus.setTextColor(
+                                        ContextCompat.getColor(
+                                            context,
+                                            R.color.c_F7DA73
+                                        )
+                                    )
+                                    binding.tvstatus.text =
+                                        context.resources.getString(R.string.main_txt_qx)
+
+                                }
+
+                                "13" -> {
+                                    binding.txtMatchAnimation.visibility = View.GONE
+                                    binding.tvvs.text = item.homeScore + "-" + item.awayScore
+                                    binding.tvstatus.visibility = View.VISIBLE
+                                    binding.tvstatus.setTextColor(
+                                        ContextCompat.getColor(
+                                            context,
+                                            R.color.c_F7DA73
+                                        )
+                                    )
+                                    binding.tvstatus.text =
+                                        context.resources.getString(R.string.main_txt_dd)
+
+                                }
+
                                 else -> {
                                     binding.txtMatchAnimation.visibility = View.GONE
                                     binding.tvstatus.visibility = View.VISIBLE
@@ -178,7 +254,8 @@ class ConmentFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                                     val date = Date(item.matchTime.toLong())
                                     var formatter =
                                         SimpleDateFormat("MM-dd HH:mm", Locale.getDefault())
-                                    binding.tvstatus.text =  context.resources.getString(R.string.main_txt_over)
+                                    binding.tvstatus.text =
+                                        context.resources.getString(R.string.main_txt_over)
                                 }
                             }
                         }
@@ -295,7 +372,41 @@ class ConmentFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                                 }
 
                                 "11", "12", "13", "14", "15" -> {
+                                    binding.txtMatchAnimation.visibility = View.GONE
+                                    binding.tvvs.text = item.homeScore + "-" + item.awayScore
+                                    binding.tvstatus.visibility = View.VISIBLE
+                                    binding.tvstatus.setTextColor(
+                                        ContextCompat.getColor(
+                                            context,
+                                            R.color.c_F7DA73
+                                        )
+                                    )
+                                    when (item.status) {
+                                        "11" -> {
+                                            binding.tvstatus.text =
+                                                context.resources.getString(R.string.main_txt_zd)
+                                        }
 
+                                        "12" -> {
+                                            binding.tvstatus.text =
+                                                context.resources.getString(R.string.main_txt_qx)
+                                        }
+
+                                        "13" -> {
+                                            binding.tvstatus.text =
+                                                context.resources.getString(R.string.main_txt_zd)
+                                        }
+
+                                        "14" -> {
+                                            binding.tvstatus.text =
+                                                context.resources.getString(R.string.main_txt_yz)
+                                        }
+
+                                        "15" -> {
+                                            binding.tvstatus.text =
+                                                context.resources.getString(R.string.main_txt_dd)
+                                        }
+                                    }
 
                                 }
                             }
@@ -309,19 +420,22 @@ class ConmentFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                     binding.tvnameRight.text = item.awayName
                     Glide.with(context).load(item.homeLogo).into(binding.tvflagLeft)
                     Glide.with(context).load(item.awayLogo).into(binding.tvflagRight)
-                    if (item.anchorList!=null&&item.anchorList.isNotEmpty()){
-                        binding.conlive.visibility=View.VISIBLE
-                        binding.rec.run {
-                            horizontal()
-                            distance(0, 15, 0, 0)
+                    if (item.anchorList != null && item.anchorList.isNotEmpty()) {
+                        binding.conlive.visibility = View.VISIBLE
+                        if (binding.rec.getItemDecorationCount() == 0) {//加个判断
+                            binding.rec.run {
+                                grid(4)
+                            }
                         }
+
                         binding.rec.setup {
                             addType<AnchorBean>(R.layout.item_js)
                             onBind {
                                 var binding1 = getBinding<ItemJsBinding>()
                                 var item1 = _data as AnchorBean
-                                binding1.tvname.text=item1.nickName
-                                Glide.with(context).load(item1.userLogo).placeholder(R.drawable.icon_avatar).into(binding1.ivhead)
+                                binding1.tvname.text = item1.nickName
+                                Glide.with(context).load(item1.userLogo)
+                                    .placeholder(R.drawable.icon_avatar).into(binding1.ivhead)
                                 binding1.linroot.setOnClickListener {
                                     MatchDetailActivity.open(
                                         matchType = item.matchType,
@@ -333,11 +447,15 @@ class ConmentFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
 
                                 }
                             }
-                        }.models=item.anchorList
+                        }.models = if (item.anchorList.size>4){
+                            item.anchorList.subList(0,4)
+                        }else{
+                            item.anchorList
+                        }
 
 
-                    }else{
-                        binding.conlive.visibility=View.GONE
+                    } else {
+                        binding.conlive.visibility = View.GONE
                     }
 
                     binding.tvcollect.setOnClickListener {
@@ -396,8 +514,8 @@ class ConmentFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                 mTabPosition = bundle.getInt(TAB)
             }
             if (matchtype == "3") {
-                strTime=endTimeResult
-                endTime=strTimeRuslt
+                strTime = endTimeResult
+                endTime = strTimeRuslt
             }
             appViewModel.updateSchedulePosition.observeForever {
                 if (isAdded) {
@@ -421,7 +539,7 @@ class ConmentFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
 
     }
 
-    fun initAnimation(view: AppCompatTextView){
+    fun initAnimation(view: AppCompatTextView) {
         animatorSet.removeAllListeners()
         view.clearAnimation()
         val fadeIn =
@@ -458,6 +576,7 @@ class ConmentFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
         })
         animatorSet.start()
     }
+
     override fun onResume() {
         super.onResume()
         isVisble = mTabPosition == mPushPosition
@@ -508,7 +627,7 @@ class ConmentFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                 LogUtils.d("选中了第几个$position")
                 page = 1
                 isClick = true
-                matchtype=list[position].matchType
+                matchtype = list[position].matchType
                 mPosition = position
                 mViewModel.getHotMatchDataList(
                     true, PostSchMatchListBean(
@@ -613,7 +732,7 @@ class ConmentFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                     )
                     it.add(0, bean)
                 } else {
-                    matchtype="1"
+                    matchtype = "1"
                     var bean1 = HotMatchBean("", resources.getString(R.string.foot_scr), 0, "1")
                     it.add(0, bean1)
                     var bean2 = HotMatchBean("", resources.getString(R.string.bas_scr), 0, "2")

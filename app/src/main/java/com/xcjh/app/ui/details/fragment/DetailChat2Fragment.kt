@@ -130,6 +130,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
                     is MsgBean -> {
                         val binding = getBinding<ItemDetailChatBinding>()
                         if (item.identityType == 0) {
+                            binding.ivImage.visibleOrGone(false)
                             binding.tvType.text = getLeverNum(item.level)
                             binding.tvType.paint.shader =
                                 LinearGradient(0f, 0f, 0f, binding.tvType.lineHeight.toFloat(),
@@ -217,7 +218,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
         mViewModel.hisMsgList.observe(this) {
             if (it.isSuccess) {
                 if (it.listData.isEmpty()) {
-                    myToast("没有更多消息了")
+                   // myToast("没有更多消息了")
                     mDatabind.smartChat.setEnableRefresh(false)
                     mDatabind.smartChat.finishRefreshWithNoMoreData()
                 } else {
@@ -306,7 +307,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
             chat.level,
             chat.content)), index = 0) // 添加一条消息
         if (chat.from == CacheUtil.getUser()?.id||isShowBottom) {
-            mDatabind.rcvChat.smoothScrollToPosition(0)
+            mDatabind.rcvChat.scrollToPosition(0)
         }
     }
 
