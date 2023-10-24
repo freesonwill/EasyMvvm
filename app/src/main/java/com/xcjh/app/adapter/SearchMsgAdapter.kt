@@ -41,7 +41,7 @@ class SearchMsgAdapter : BaseQuickAdapter<MsgListBean, QuickViewHolder>() {
 
         }
         holder.getView<TextView>(R.id.tvname).text = item!!.nick
-       // holder.getView<TextView>(R.id.tvconetnt).text = item!!.content
+        // holder.getView<TextView>(R.id.tvconetnt).text = item!!.content
         Glide.with(context).load(item.avatar).placeholder(R.drawable.icon_avatar)
             .into(holder.getView<CircleImageView>(R.id.ivhead))
         holder.itemView.setOnClickListener {

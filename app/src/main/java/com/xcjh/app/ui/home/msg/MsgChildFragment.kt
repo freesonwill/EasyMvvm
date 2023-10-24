@@ -1,6 +1,7 @@
 package com.xcjh.app.ui.home.msg
 
 import  android.os.Bundle
+import com.drake.brv.utils.models
 import com.xcjh.app.R
 import com.xcjh.app.adapter.MsgListAdapter
 import com.xcjh.app.appViewModel
@@ -61,7 +62,10 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
         appViewModel.updateLoginEvent.observe(this){
             if(it){
                 mViewModel.getMsgList(true, "")
-
+            }else{
+                listdata.clear()
+                mAdapter.submitList(listdata)
+                mAdapter.notifyDataSetChanged()
             }
         }
 
@@ -94,7 +98,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                 } else{
 
                 }
-            //                else {
+                //                else {
 //                    var bean = ReceiveChatMsg()
 //                    bean.fromAvatar = it.avatar
 //                    bean.content = it.content

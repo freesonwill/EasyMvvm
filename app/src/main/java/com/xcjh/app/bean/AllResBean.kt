@@ -199,14 +199,14 @@ data class LetterBean(
 
 @Keep
 data class MsgListBean(
-    val avatar: String,
-    var content: String,
+    val avatar: String?=null,
+    var content: String?=null,
     val createTime: Long,
-    val msgType: Int,
-    val fromId: String,
-    val anchorId: String,
-    val id: String,
-    val nick: String,
+    val msgType: Int?=null,
+    val fromId: String?=null,
+    val anchorId: String?=null,
+    val id: String?=null,
+    val nick: String?=null,
     var noReadSum: Int
 ) : Serializable
 

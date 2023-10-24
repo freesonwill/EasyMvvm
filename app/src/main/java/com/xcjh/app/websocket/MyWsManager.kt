@@ -208,10 +208,10 @@ class MyWsManager private constructor(private val mContext: Context) {
                 }
             }
             20 -> {//历史消息 http方式
-               /* val s = wsBean.data as String
-                val string2map = string2map<ChatMsgBean>(s)
-                string2map?.keys
-                string2map?.values*/
+                /* val s = wsBean.data as String
+                 val string2map = string2map<ChatMsgBean>(s)
+                 string2map?.keys
+                 string2map?.values*/
             }
             23 -> {//消息已读
                 mReadListener.forEach {
