@@ -74,9 +74,9 @@ class DetailVm : BaseViewModel() {
     }
 
     //获取主播详情接口，DetailAnchorFragment界面调用
-    fun getDetailAnchorInfo(id: String) {
+    fun getDetailAnchorInfo(id: String?="") {
         request({
-            apiService.getDetailAnchorInfo(id)
+            apiService.getDetailAnchorInfo(id?:"")
         }, {
             anchor.postValue(it)
         }, {

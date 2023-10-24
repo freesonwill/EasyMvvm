@@ -74,7 +74,7 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
     private val mLayoutManager by lazy {
 
         HoverLinearLayoutManager(context, RecyclerView.VERTICAL, false).apply {
-            stackFromEnd = true
+           // stackFromEnd = true
         }
     }
 
@@ -286,6 +286,9 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
     }
     override fun onPause() {
         hideSoftInput()
+        mDatabind.rcvChat.postDelayed({
+            Log.e("===", "onPause:isTopActivity ==="+this.mDatabind.root.height)
+        },200)
         super.onPause()
     }
 
