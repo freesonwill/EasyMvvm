@@ -273,7 +273,7 @@ data class BeingLiveBean(
     var playUrl: String = "",//	播放地址
     var openTime: String = "",//	开播时间
     var closeTime: String = "",//	关播时间
-    var liveStatus: String = "",//	直播状态,可用值:1,2,3
+    var liveStatus: String = "",//	直播状态,1:未开始，2：直播中，3：已关播,可用值:1,2,3
     var hotValue: Int = 0,//	总热度
     var onlineUser: Int = 0,//	在线人数
 ) : Serializable

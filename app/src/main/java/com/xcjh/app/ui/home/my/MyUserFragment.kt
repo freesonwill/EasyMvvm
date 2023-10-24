@@ -23,6 +23,8 @@ import com.xcjh.app.ui.home.my.personal.PersonalDataActivity
 import com.xcjh.app.ui.login.LoginActivity
 import com.xcjh.app.ui.notice.MyNoticeActivity
 import com.xcjh.app.utils.CacheUtil
+import com.xcjh.app.web.WebActivity
+import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.utils.dp2px
 import com.xcjh.base_lib.utils.view.clickNoRepeat
@@ -119,7 +121,13 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
         mDatabind.rlMyClickInvite.clickNoRepeat {
             showCopyLink()
         }
-
+        //广告
+        mDatabind.ivMyAdvertising.clickNoRepeat {
+            startNewActivity<WebActivity>() {
+                this.putExtra(Constants.WEB_URL,mViewModel.advertisement.value!!.targetUrl)
+                this.putExtra(Constants.CHAT_TITLE, getString(R.string.my_app_name))
+            }
+        }
 
         //退出登录
         mDatabind.rlMyClickLogOut.clickNoRepeat {

@@ -104,7 +104,7 @@ class ViewingHistoryListActivity : BaseActivity<ViewingHistoryListVm, ActivityVi
                 if(bean.liveStatus.equals("2")){
                     MatchDetailActivity.open(matchType =bean.matchType, matchId = bean.matchId,matchName = "${bean.homeTeamName}VS${bean.awayTeamName}", anchorId = bean.userId )
                 }else{
-                    MatchDetailActivity.open(matchType =bean.matchType, matchId = bean.matchId,matchName = "${bean.homeTeamName}VS${bean.awayTeamName}" )
+//                    MatchDetailActivity.open(matchType =bean.matchType, matchId = bean.matchId,matchName = "${bean.homeTeamName}VS${bean.awayTeamName}" )
 
                 }
 
