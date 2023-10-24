@@ -96,7 +96,7 @@
                 android:text="@={m.input}"
                 android:maxLength="60"
                 android:textColor="@color/white"
-                android:textColorHint="@color/c_8A8C90"
+                android:textColorHint="@color/white"
                 android:textSize="@dimen/sp_14" />
 
             <ImageButton

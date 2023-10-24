@@ -62,15 +62,15 @@ ext {
             }
             signingConfigs {
                 release {
-                    keyAlias 'innofun'
+                    keyAlias 'innofun_live'
                     keyPassword 'innofun123'
-                    storeFile file('innofun.jks')
+                    storeFile file('innofun_live.jks')
                     storePassword 'innofun123'
                 }
                 debug {
-                    keyAlias 'innofun'
+                    keyAlias 'innofun_live'
                     keyPassword 'innofun123'
-                    storeFile file('innofun.jks')
+                    storeFile file('innofun_live.jks')
                     storePassword 'innofun123'
                 }
             }

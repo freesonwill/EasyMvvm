@@ -55,7 +55,11 @@ fun myDivide(a: Int, b: Int): Float {
         return 0f
     }
     val dF = DecimalFormat("0.00000000")
-    return dF.format((a.toFloat() / b).toDouble()).toFloat()
+    return try {
+        dF.format((a.toFloat() / b).toDouble()).toFloat()
+    }catch (e:Exception){
+        0f
+    }
 }
 
 /**

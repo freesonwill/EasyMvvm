@@ -2,6 +2,7 @@ package com.xcjh.app.view.balldetail.liveup
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.widget.LinearLayout
 import android.view.LayoutInflater
 import androidx.recyclerview.widget.RecyclerView
@@ -11,6 +12,7 @@ import com.drake.brv.utils.divider
 import com.drake.brv.utils.grid
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
+import com.google.gson.Gson
 import com.xcjh.app.R
 import com.xcjh.app.bean.FootballLineupBean
 import com.xcjh.app.bean.FootballPlayer
@@ -73,13 +75,14 @@ class FootballDetailSubstituteView : LinearLayout {
                     }
                     is FootballPlayer -> {
                         val binding = getBinding<ItemDetailGameSubstituteBinding>()
-                        if (item.logo.isNotEmpty()){
-                            Glide.with(context).load(if(this.modelPosition%2==0) R.drawable.icon_red_cloth else R.drawable.icon_team_blue).into(binding.ivIcon)
-                            binding.ctlItem.setBackgroundColor(context.getColor(if(this.modelPosition%2==0) R.color.c_21152a else R.color.c_18152A ))
-                            binding.tvPlayerNum.text = item.shirtNumber.toString()
-                            binding.tvName.text = item.name
-                            binding.tvPosition.text = getPlayerPos(item.position)
-                        }
+                      /*  if (item.logo.isNotEmpty()){
+
+                        }*/
+                        Glide.with(context).load(if(this.modelPosition%2==0) R.drawable.icon_red_cloth else R.drawable.icon_team_blue).into(binding.ivIcon)
+                        binding.ctlItem.setBackgroundColor(context.getColor(if(this.modelPosition%2==0) R.color.c_21152a else R.color.c_18152A ))
+                        binding.tvPlayerNum.text = item.shirtNumber.toString()
+                        binding.tvName.text = item.name
+                        binding.tvPosition.text = getPlayerPos(item.position)
                     }
                 }
             }
@@ -120,11 +123,12 @@ class FootballDetailSubstituteView : LinearLayout {
         val away = data.away.filter {
             it.first == 0
         }
+        //Log.e("TAG", "setData:home ==="+ Gson().toJson(home))
         if (home.size == away.size) {
             //替补球员数量相同
-            for ((i, item) in data.home.withIndex()) {
+            for ((i, item) in home.withIndex()) {
                 list.add(item)
-                list.add(data.away[i])
+                list.add(away[i])
             }
         } else {
             if (home.size > away.size) {

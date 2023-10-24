@@ -52,14 +52,14 @@ public class FootballLineupView extends LinearLayout {
     }
 
     public void setHomeTeamInfo(String lineup, String value) {
-        tv_home_lineup.setText(lineup);//阵型
+        tv_home_lineup.setText("阵型："+lineup);//阵型
         tv_home_value.setText(value);//身价
     }
     public void setData(@NotNull FootballLineupBean it) {
         lineUpMiddleView.setData(it);
     }
     public void setAwayTeamInfo(String lineup, String value) {
-        tv_away_lineup.setText(lineup);//阵型
+        tv_away_lineup.setText("阵型："+lineup);//阵型
         tv_away_value.setText(value);//身价
     }
 }

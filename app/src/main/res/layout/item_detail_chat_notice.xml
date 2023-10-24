@@ -17,8 +17,10 @@
             android:layout_marginEnd="@dimen/dp_16"
             android:paddingHorizontal="@dimen/dp_16"
             android:paddingTop="@dimen/dp_16"
+            android:paddingBottom="@dimen/dp_0"
             android:orientation="vertical"
-            android:background="@drawable/bg_shape_notice">
+            android:backgroundTint="#181C39"
+            android:background="@drawable/shape_r8">
 
             <LinearLayout
                 android:gravity="center_vertical"

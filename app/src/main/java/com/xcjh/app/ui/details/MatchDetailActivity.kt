@@ -134,7 +134,7 @@ class MatchDetailActivity :
     }
 
     private fun initVp() {
-        mDatabind.viewPager.initChangeActivity(this, mFragList)
+        mDatabind.viewPager.initChangeActivity(this, mFragList,false)
         pager2Adapter = mDatabind.viewPager.adapter as ViewPager2Adapter
         //初始化Tab控件
         mDatabind.magicIndicator.bindViewPager2(
@@ -142,8 +142,8 @@ class MatchDetailActivity :
             mTitles,
             selectSize = 16f,
             unSelectSize = 16f,
-            selectColor = com.xcjh.base_lib.R.color.white,
-            normalColor = com.xcjh.base_lib.R.color.c_8e8c9d,
+            selectColor = R.color.c_F5F5F5,
+            normalColor = com.xcjh.base_lib.R.color.c_8a91a0,
             typefaceBold = true,
             scrollEnable = true,
             lineIndicatorColor = R.color.c_F5F5F5,
