@@ -130,6 +130,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
                     is MsgBean -> {
                         val binding = getBinding<ItemDetailChatBinding>()
                         if (item.identityType == 0) {
+                            binding.ivImage.visibleOrGone(false)
                             binding.tvType.text = getLeverNum(item.level)
                             binding.tvType.paint.shader =
                                 LinearGradient(0f, 0f, 0f, binding.tvType.lineHeight.toFloat(),
