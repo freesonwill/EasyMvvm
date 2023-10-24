@@ -45,6 +45,7 @@ object TimeUtil {
 
             var xx:Long=0
             if (endTime==xx){
+                LogUtils.d("true时间差===")
                 return true
             }
             val diff = endTime!! - start!! //
@@ -55,14 +56,17 @@ object TimeUtil {
             val second = diff / 1000 - days * 24 * 60 * 60 - hours * 60 * 60 - minutes * 60
 
             LogUtils.d("时间差===$days--$hours--$minutes")
-            if (days > 0||hours > 0||minutes > 60000) {
+            if (days > 0||hours > 0||minutes > 300000) {
+                LogUtils.d("true时间差===")
                 return true
             }
 
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
+            LogUtils.d("false时间差===")
             return false
         }
+        LogUtils.d("false时间差===")
         return false
     }
 
