@@ -115,9 +115,9 @@ class BasketballDataView : RelativeLayout {
             homeV3 = if (shot3 == 0) 0 else hit3 * 100 / shot3
             homeP = if (penalty == 0) 0 else penaltyHit * 100 / penalty
 
-            view_game_status_left.text = "$homeV2%"
-            view_game_status_wx_left.text = "$homeV3%"
-            view_game_status_kql_left.text = "$homeP%"
+            view_game_status_left.text = "$homeV2"
+            view_game_status_wx_left.text = "$homeV3"
+            view_game_status_kql_left.text = "$homeP"
 
             tv_home_two_point.text = hit2.toString()
             tv_home_three_point.text = hit3.toString()
@@ -128,9 +128,9 @@ class BasketballDataView : RelativeLayout {
             awayV3 = if (shot3 == 0) 0 else hit3 * 100 / shot3
             awayP = if (penalty == 0) 0 else penaltyHit * 100 / penalty
 
-            view_game_status_right.text = "$awayV2%"
-            view_game_status_wx_right.text ="$awayV3%"
-            view_game_status_kql_right.text = "$awayP%"
+            view_game_status_right.text = "$awayV2"
+            view_game_status_wx_right.text ="$awayV3"
+            view_game_status_kql_right.text = "$awayP"
 
             tv_away_two_point.text = hit2.toString()
             tv_away_three_point.text = hit3.toString()

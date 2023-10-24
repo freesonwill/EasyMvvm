@@ -139,10 +139,11 @@ class DetailResultFragment(var match: MatchDetailBean) :
         mViewModel.incidents.observe(this) {
             if (it != null) {
                 val event = ArrayList<IncidentsBean>()
+                event.add(IncidentsBean(type = 0, time = 0))
                 for (item: IncidentsBean in it) {
                     //重要事件  红黄牌 进球 换人
                     when(item.type){
-                        1,3,4,9,15->{
+                        1,3,4,9,11,12,15->{
                             event.add(item)
                         }
                     }

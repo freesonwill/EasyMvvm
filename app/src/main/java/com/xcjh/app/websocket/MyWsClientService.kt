@@ -12,6 +12,7 @@ import com.xcjh.app.utils.onWsUserLogin
 import com.xcjh.app.websocket.bean.SendCommonWsBean
 import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.utils.loge
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -78,6 +79,7 @@ class MyWsClientService : Service() {
     /**
      * 初始化websocket连接
      */
+    @OptIn(DelicateCoroutinesApi::class)
     private fun initSocketClient() {
         client = object : WebSocketClient(URI.create(WebSocketAction.WEB_SOCKET_URL)) {
             init {

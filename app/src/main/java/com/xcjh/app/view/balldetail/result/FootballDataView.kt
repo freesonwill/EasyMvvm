@@ -50,17 +50,20 @@ class FootballDataView : RelativeLayout {
             when (type) {
                 // 23-进攻 24-危险进攻 25-控球率
                 23 -> {
-                    binding.viewGameStatusJg.progress = home * 100 / (home + away)
+                    binding.viewGameStatusJg.progress =
+                        if (home == away && home == 0) 50 else home * 100 / (home + away)
                     binding.viewGameStatusJgLeft.text = home.toString()
                     binding.viewGameStatusJgRight.text = away.toString()
                 }
                 24 -> {
-                    binding.viewGameStatusWx.progress = home * 100 / (home + away)
+                    binding.viewGameStatusWx.progress =
+                        if (home == away && home == 0) 50 else home * 100 / (home + away)
                     binding.viewGameStatusWxLeft.text = home.toString()
                     binding.viewGameStatusWxRight.text = away.toString()
                 }
                 25 -> {
-                    binding.viewGameStatusKql.progress = home * 100 / (home + away)
+                    binding.viewGameStatusKql.progress =
+                        if (home == away && home == 0) 50 else home * 100 / (home + away)
                     binding.viewGameStatusKqlLeft.text = home.toString()
                     binding.viewGameStatusKqlRight.text = away.toString()
                 }
@@ -80,10 +83,14 @@ class FootballDataView : RelativeLayout {
                 21 -> {
                     binding.tvSzHome.text = home.toString()
                     binding.tvSzAway.text = away.toString()
+                    binding.pbSz.progress =
+                        if (home == away && home == 0) 50 else home * 100 / (home + away)
                 }
                 22 -> {
                     binding.tvSpHome.text = home.toString()
                     binding.tvSpAway.text = away.toString()
+                    binding.pbSp.progress =
+                        if (home == away && home == 0) 50 else home * 100 / (home + away)
                 }
                 else -> {}
             }

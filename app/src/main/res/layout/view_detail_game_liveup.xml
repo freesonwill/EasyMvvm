@@ -20,8 +20,9 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/dp_12"
-                android:textColor="@color/white"
+                android:textColor="@color/c_F5F5F5"
                 android:textSize="@dimen/sp_12"
+                android:textStyle="bold"
                 tools:text="阵型：4-4-2"/>
 
             <LinearLayout
@@ -52,8 +53,9 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="@dimen/dp_4"
-                    android:textColor="@color/white"
+                    android:textColor="@color/c_F5F5F5"
                     android:textSize="@dimen/sp_12"
+                    android:textStyle="bold"
                     tools:text="0欧元"/>
             </LinearLayout>
         </RelativeLayout>
@@ -75,7 +77,8 @@
                 android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/dp_12"
                 tools:text="阵型：4-4-2"
-                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textColor="@color/c_F5F5F5"
                 android:textSize="@dimen/sp_12" />
 
             <LinearLayout
@@ -107,7 +110,8 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="@dimen/dp_4"
                     tools:text="0欧元"
-                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    android:textColor="@color/c_F5F5F5"
                     android:textSize="@dimen/sp_12" />
             </LinearLayout>
         </RelativeLayout>
