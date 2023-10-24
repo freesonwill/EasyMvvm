@@ -41,7 +41,6 @@ fun RecyclerView.grid(count: Int): RecyclerView {
 }
 
 
-
 /**
  * 配置item间距
  * @receiver RecyclerView
@@ -49,7 +48,8 @@ fun RecyclerView.grid(count: Int): RecyclerView {
  * @return RecyclerView
  */
 fun RecyclerView.distance(left: Int, right: Int, top: Int, bottom: Int): RecyclerView {
-    addItemDecoration(object : RecyclerView.ItemDecoration() {
+
+    var item = object : RecyclerView.ItemDecoration() {
         override fun getItemOffsets(
             outRect: Rect,
             view: View,
@@ -63,9 +63,9 @@ fun RecyclerView.distance(left: Int, right: Int, top: Int, bottom: Int): Recycle
             outRect.right = right
             outRect.top = top
             outRect.bottom = dp2px(bottom)
-
-
         }
-    })
+    }
+    removeItemDecoration(item)
+    addItemDecoration(item)
     return this
 }
