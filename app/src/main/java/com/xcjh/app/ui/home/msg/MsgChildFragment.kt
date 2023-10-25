@@ -179,14 +179,22 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
             if (msg.anchorId == listdata[i].anchorId) {
                 hasMsg = true
                 var bean = MsgListBean(
-                    listdata[i].avatar,
+                    if (msg.anchorId==msg.from){//主播发送的消息
+                        msg.fromAvatar!!
+                    }else{
+                        msg.toAvatar!!
+                    },
                     msg.content.toString(),
                     msg.createTime!!,
                     msg.msgType!!,
                     msg.from!!,
                     msg.anchorId!!,
                     listdata[i].id,
-                    listdata[i].nick,
+                    if (msg.anchorId==msg.from){//主播发送的消息
+                        msg.fromNickName!!
+                    }else{
+                        msg.toNickName!!
+                    },
                     if (chatId==msg.anchorId){
                         0
                     }else{
@@ -201,15 +209,30 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
         }
         if (!hasMsg) {
             var bean = MsgListBean(
-                msg.fromAvatar!!,
+                if (msg.anchorId==msg.from){//主播发送的消息
+                    msg.fromAvatar!!
+                }else{
+                    msg.toAvatar!!
+                }
+               ,
                 msg.content.toString(),
                 msg.createTime!!,
                 msg.msgType!!,
                 msg.from!!,
                 msg.anchorId!!,
                 msg.id!!,
-                msg.fromNickName!!,
-                1
+                if (msg.anchorId==msg.from){//主播发送的消息
+                    msg.fromNickName!!
+                }else{
+
+                    msg.toNickName!!
+                }
+             ,
+                if (chatId==msg.anchorId){
+                    0
+                }else{
+                    1
+                }
             )
             mAdapter.add(0,bean)
         }
