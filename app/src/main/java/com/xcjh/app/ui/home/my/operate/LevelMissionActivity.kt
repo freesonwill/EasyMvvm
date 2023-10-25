@@ -67,12 +67,12 @@ class LevelMissionActivity  : BaseActivity<LevelMissionVm, ActivityLevelMissionB
                     .into(mDatabind.ivLevelHead)
                 mDatabind.txtLevelName.text=user!!.name
                 if(user!!.growthValueNext!=null){
-                    mDatabind.progressLevel.max=(user!!.growthValueNext!!.toFloat()+user!!.growthValue!!.toFloat())
+                    mDatabind.progressLevel.max=(user!!.growthValueNext!!.toFloat())
                     mDatabind.progressLevel.progress=user!!.growthValue!!.toFloat()
 //                    mDatabind.progressLevel.progress=150f
                     mDatabind.txtLevelShow.text="L${user!!.lvNum}${user!!.lvName}"
-//                    mDatabind.txtLevelGrow.text=resources.getString(R.string.level_txt_grow,"${(user!!.growthValueNext!!.toFloat()-user!!.growthValueNext!!.toFloat()).toInt()}")
-                    mDatabind.txtLevelGrow.text=resources.getString(R.string.level_txt_grow,"${(user!!.growthValueNext!!.toFloat()).toInt()}")
+                    mDatabind.txtLevelGrow.text=resources.getString(R.string.level_txt_grow,"${(user!!.growthValueNext!!.toFloat()-user!!.growthValue!!.toFloat()).toInt()}")
+//                    mDatabind.txtLevelGrow.text=resources.getString(R.string.level_txt_grow,"${(user!!.growthValueNext!!.toFloat()).toInt()}")
 
 
                     mDatabind.txtLeve.text="Lv.${user!!.lvNum} ${user!!.lvName}"
