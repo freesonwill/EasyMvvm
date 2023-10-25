@@ -233,7 +233,7 @@ class ConmentFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                                     binding.tvstatus.setTextColor(
                                         ContextCompat.getColor(
                                             context,
-                                            R.color.c_F7DA73
+                                            R.color.c_8a91a0
                                         )
                                     )
                                     binding.tvstatus.text =
@@ -248,7 +248,7 @@ class ConmentFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                                     binding.tvstatus.setTextColor(
                                         ContextCompat.getColor(
                                             context,
-                                            R.color.c_F7DA73
+                                            R.color.c_8a91a0
                                         )
                                     )
                                     binding.tvstatus.text =
@@ -263,7 +263,7 @@ class ConmentFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                                     binding.tvstatus.setTextColor(
                                         ContextCompat.getColor(
                                             context,
-                                            R.color.c_F7DA73
+                                            R.color.c_8a91a0
                                         )
                                     )
                                     binding.tvstatus.text =
@@ -277,7 +277,7 @@ class ConmentFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                                     binding.tvstatus.setTextColor(
                                         ContextCompat.getColor(
                                             context,
-                                            R.color.c_f5f5f5
+                                            R.color.c_8a91a0
                                         )
                                     )
 
@@ -310,7 +310,7 @@ class ConmentFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                                 }
 
                                 "2", "3" -> {
-                                    binding.txtMatchAnimation.visibility = View.VISIBLE
+                                    binding.txtMatchAnimation.visibility = View.GONE
                                     binding.tvvs.text = item.homeScore + "-" + item.awayScore
                                     binding.tvstatus.visibility = View.VISIBLE
                                     binding.tvstatus.setTextColor(
@@ -324,12 +324,12 @@ class ConmentFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                                             R.string.main_txt_basketball_phase,
                                             "一"
                                         )
-                                    initAnimation(binding.txtMatchAnimation)
+                                    //initAnimation(binding.txtMatchAnimation)
 
                                 }
 
                                 "4", "5" -> {
-                                    binding.txtMatchAnimation.visibility = View.VISIBLE
+                                    binding.txtMatchAnimation.visibility = View.GONE
                                     binding.tvvs.text = item.homeScore + "-" + item.awayScore
                                     binding.tvstatus.visibility = View.VISIBLE
                                     binding.tvstatus.setTextColor(
@@ -343,12 +343,12 @@ class ConmentFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                                             R.string.main_txt_basketball_phase,
                                             "二"
                                         )
-                                    initAnimation(binding.txtMatchAnimation)
+                                   // initAnimation(binding.txtMatchAnimation)
 
                                 }
 
                                 "6", "7" -> {
-                                    binding.txtMatchAnimation.visibility = View.VISIBLE
+                                    binding.txtMatchAnimation.visibility = View.GONE
                                     binding.tvvs.text = item.homeScore + "-" + item.awayScore
                                     binding.tvstatus.visibility = View.VISIBLE
                                     binding.tvstatus.setTextColor(
@@ -362,12 +362,12 @@ class ConmentFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                                             R.string.main_txt_basketball_phase,
                                             "三"
                                         )
-                                    initAnimation(binding.txtMatchAnimation)
+                                   // initAnimation(binding.txtMatchAnimation)
 
                                 }
 
                                 "8", "9" -> {
-                                    binding.txtMatchAnimation.visibility = View.VISIBLE
+                                    binding.txtMatchAnimation.visibility = View.GONE
                                     binding.tvvs.text = item.homeScore + "-" + item.awayScore
                                     binding.tvstatus.visibility = View.VISIBLE
                                     binding.tvstatus.setTextColor(
@@ -381,7 +381,7 @@ class ConmentFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                                             R.string.main_txt_basketball_phase,
                                             "四"
                                         )
-                                    initAnimation(binding.txtMatchAnimation)
+                                   // initAnimation(binding.txtMatchAnimation)
 
 
                                 }
@@ -408,7 +408,7 @@ class ConmentFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                                     binding.tvstatus.setTextColor(
                                         ContextCompat.getColor(
                                             context,
-                                            R.color.c_F7DA73
+                                            R.color.c_8a91a0
                                         )
                                     )
                                     when (item.status) {

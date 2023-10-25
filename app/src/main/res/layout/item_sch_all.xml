@@ -149,7 +149,6 @@
                 android:layout_width="@dimen/dp_24"
                 android:layout_height="@dimen/dp_24"
                 android:layout_marginLeft="@dimen/dp_6"
-                android:background="@drawable/basketball"
                 app:layout_constraintBottom_toBottomOf="@id/ivtype"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="@id/ivtype" />
@@ -169,7 +168,6 @@
                 android:layout_width="@dimen/dp_24"
                 android:layout_height="@dimen/dp_24"
                 android:layout_marginLeft="@dimen/dp_12"
-                android:background="@drawable/basketball"
                 app:layout_constraintBottom_toBottomOf="@id/ivtype"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="@id/ivtype" />
