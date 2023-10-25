@@ -356,6 +356,7 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
             chat.fromNickName ?: "",
             chat.level,
             chat.content,
+            msgType=chat.msgType,
             identityType = chat.identityType,
         )) ) // 添加一条消息
 

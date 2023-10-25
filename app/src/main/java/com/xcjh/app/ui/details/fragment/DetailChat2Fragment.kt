@@ -307,11 +307,15 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
                 isShowBottom = true
             }
         }
-        mDatabind.rcvChat.addModels(listOf(MsgBean(chat.from,
+        mDatabind.rcvChat.addModels(listOf(MsgBean(
+            chat.from,
             chat.fromAvatar,
             chat.fromNickName ?: "",
             chat.level,
-            chat.content)), index = 0) // 添加一条消息
+            chat.content,
+            msgType=chat.msgType,
+            identityType = chat.identityType,
+            )), index = 0) // 添加一条消息
         if (chat.from == CacheUtil.getUser()?.id||isShowBottom) {
             mDatabind.rcvChat.scrollToPosition(0)
         }

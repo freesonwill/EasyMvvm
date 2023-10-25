@@ -11,7 +11,9 @@ import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.xcjh.app.R
 import com.xcjh.app.bean.BasketballSBean
+import com.xcjh.app.utils.myDivide
 import com.xcjh.app.view.ProgressBarView
+import kotlin.math.roundToInt
 
 class BasketballDataView : RelativeLayout {
     private lateinit var iv_icon_home: ImageView
@@ -111,9 +113,9 @@ class BasketballDataView : RelativeLayout {
 
 
         bean.home.apply {
-            homeV2 = if (shot2 == 0) 0 else hit2 * 100 / shot2
-            homeV3 = if (shot3 == 0) 0 else hit3 * 100 / shot3
-            homeP = if (penalty == 0) 0 else penaltyHit * 100 / penalty
+            homeV2 = if (shot2 == 0) 0 else myDivide(hit2 * 100, shot2).roundToInt()
+            homeV3 = if (shot3 == 0) 0 else myDivide(hit3 * 100, shot3).roundToInt()//hit3 * 100 / shot3
+            homeP = if (penalty == 0) 0 else myDivide(penaltyHit * 100, penalty).roundToInt()
 
             view_game_status_left.text = "$homeV2"
             view_game_status_wx_left.text = "$homeV3"
@@ -124,9 +126,9 @@ class BasketballDataView : RelativeLayout {
             tv_home_penalty.text = penaltyHit.toString()
         }
         bean.away.apply {
-            awayV2 = if (shot2 == 0) 0 else hit2 * 100 / shot2
-            awayV3 = if (shot3 == 0) 0 else hit3 * 100 / shot3
-            awayP = if (penalty == 0) 0 else penaltyHit * 100 / penalty
+            awayV2 = if (shot2 == 0) 0 else myDivide(hit2 * 100, shot2).roundToInt()
+            awayV3 = if (shot3 == 0) 0 else myDivide(hit3 * 100, shot3).roundToInt()
+            awayP = if (penalty == 0) 0 else myDivide(penaltyHit * 100, penalty).roundToInt()
 
             view_game_status_right.text = "$awayV2"
             view_game_status_wx_right.text ="$awayV3"

@@ -241,9 +241,8 @@ public class MyItemAnimator extends SimpleItemAnimator {
     @SuppressLint("UnknownNullness") // b/240775049: Cannot annotate properly
     public boolean animateAdd(final RecyclerView.ViewHolder holder) {
         resetAnimation(holder);
-        ViewCompat.setAlpha(holder.itemView, 0);
-//这里我们增加了一个平移动画
-        ViewCompat.setTranslationX(holder.itemView, -holder.itemView.getWidth());
+        //这里我们增加了一个平移动画
+        holder.itemView.setTranslationX( -holder.itemView.getWidth());
         mPendingAdditions.add(holder);
         return true;
     }
@@ -253,7 +252,7 @@ public class MyItemAnimator extends SimpleItemAnimator {
         final ViewPropertyAnimatorCompat animation = ViewCompat.animate(view);
         mAddAnimations.add(holder);
         //这里我们增加了一个平移动画
-        animation.alpha(1).translationX(0).setDuration(getAddDuration())
+        animation.translationX(0).setDuration(getAddDuration())
                 .setListener(new ViewPropertyAnimatorListener() {
                     @Override
                     public void onAnimationStart(@NonNull View view) {
