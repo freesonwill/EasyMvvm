@@ -65,18 +65,23 @@ class ViewingHistoryListActivity : BaseActivity<ViewingHistoryListVm, ActivityVi
                             bindingItem.txtLiveIsBroadcast.text=resources.getString(R.string.live_txt_0ff_air)
                         }
 
-                        Glide.with(context).asBitmap()
+                        Glide.with(context)
                             .load(bean.titlePage) // 替换为您要加载的图片 URL
                             .error(R.drawable.main_top_load)
                             .placeholder(R.drawable.main_top_load)
                             .into(bindingItem.ivLiveBe)
-                        Glide.with(context).asBitmap()
+                        Glide.with(context)
                             .load(bean.userLogo) // 替换为您要加载的图片 URL
                             .error(R.drawable.load_round)
                             .placeholder(R.drawable.load_round)
                             .into(bindingItem.ivLiveHead)
                         bindingItem.txtLiveName.text=bean.nickName
-                        bindingItem.txtLiveTeam.text="${bean.homeTeamName}VS${bean.awayTeamName}"
+                        //比赛类型 1足球，2篮球,可用值:1,2
+                        if(bean.matchType.equals("1")){
+                            bindingItem.txtLiveTeam.text="${bean.homeTeamName}VS${bean.awayTeamName}"
+                        }else{
+                            bindingItem.txtLiveTeam.text="${bean.awayTeamName }VS${bean.homeTeamName}"
+                        }
                         bindingItem.txtLiveCompetition.text=bean.competitionName
                         if(bean.hotValue<=9999){
                             bindingItem.txtLiveHeat.text="${bean.hotValue}"

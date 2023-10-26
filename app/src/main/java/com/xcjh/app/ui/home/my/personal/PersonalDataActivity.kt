@@ -41,7 +41,7 @@ class PersonalDataActivity : BaseActivity<PersonalDataVm, ActivityPersonalDataBi
         mDatabind.titleTop.tvTitle.text=resources.getString(R.string.personal_txt_title)
           user= CacheUtil.getUser()
         if(user!=null){
-            Glide.with(this).asBitmap()
+            Glide.with(this)
                 .load(user!!.head) // 替换为您要加载的图片 URL
                 .error(R.drawable.load_head)
                 .placeholder(R.drawable.load_head)
@@ -111,7 +111,7 @@ class PersonalDataActivity : BaseActivity<PersonalDataVm, ActivityPersonalDataBi
             user= CacheUtil.getUser()
             if(user!=null){
                 if(user!!.name!=null&&!user!!.name.equals("")){
-                    Glide.with(this).asBitmap()
+                    Glide.with(this)
                         .load(user!!.head) // 替换为您要加载的图片 URL
                         .error(R.drawable.load_head)
                         .placeholder(R.drawable.load_head)

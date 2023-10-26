@@ -67,7 +67,7 @@ class MyFollowListActivity : BaseActivity<MyFollowListVm, ActivityMyFollowListBi
                         bindingItem.txtFollowName.text=bean.nickName
                         //计算text显示的宽度
                         bindingItem.txtFollowName.maxWidth=screenWidth-context.dp2px(105)-context.dp2px(56)-context.dp2px(84)
-                        Glide.with(context).asBitmap()
+                        Glide.with(context)
                             .load(bean.head) // 替换为您要加载的图片 URL
                             .error(R.drawable.load_round)
                             .placeholder(R.drawable.load_round)

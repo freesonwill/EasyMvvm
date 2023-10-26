@@ -8,6 +8,7 @@
     android:layout_marginBottom="@dimen/dp_20"
     android:background="@drawable/shape_r8_261e49"
     android:layout_height="150dp">
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="92dp">
@@ -18,7 +19,7 @@
             app:corner_top_left_radius="@dimen/dp_8"
             app:corner_top_right_radius="@dimen/dp_8"
             app:srcCompat="@drawable/bg_basketball_status"
-             android:scaleType="fitXY"/>
+            android:scaleType="fitXY"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
