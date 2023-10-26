@@ -137,7 +137,7 @@
                         app:ringWidth="@dimen/dp_5" />
 
                     <TextView
-                        android:id="@+id/view_game_status_wx_left"
+                        android:id="@+id/tvWxHome"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/dp_15"
@@ -148,7 +148,7 @@
                         android:textSize="@dimen/sp_10" />
 
                     <TextView
-                        android:id="@+id/view_game_status_wx_right"
+                        android:id="@+id/tvWxAway"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/dp_4"
@@ -187,7 +187,7 @@
                         app:ringWidth="@dimen/dp_5" />
 
                     <TextView
-                        android:id="@+id/view_game_status_kql_left"
+                        android:id="@+id/tvKqlHome"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/dp_15"
@@ -198,7 +198,7 @@
                         android:textSize="@dimen/sp_10" />
 
                     <TextView
-                        android:id="@+id/view_game_status_kql_right"
+                        android:id="@+id/tvKqlAway"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/dp_4"

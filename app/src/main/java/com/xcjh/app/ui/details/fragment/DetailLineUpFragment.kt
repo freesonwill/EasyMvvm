@@ -25,7 +25,7 @@ class DetailLineUpFragment(var match: MatchDetailBean) :
             mDatabind.layoutBasketball.visibility = View.VISIBLE
             mDatabind.tvHomeName.text = match.homeName
             mDatabind.tvAwayName.text = match.awayName
-            mDatabind.tvHomeName.isSelected = true
+            mDatabind.tvAwayName.isSelected = true
             mDatabind.tvHomeName.setOnClickListener {
                 mDatabind.tvHomeName.isSelected = true
                 mDatabind.tvAwayName.isSelected = false

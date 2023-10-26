@@ -183,8 +183,9 @@ class MatchDetailActivity :
      * （比赛中基本固定不变）
      */
     private fun setBaseMatchUI() {
-        matchName =
-            matchDetail.competitionName + "  " + matchDetail.homeName + "VS" + matchDetail.awayName
+        matchName = matchDetail.competitionName + "  " +
+                if (matchType=="1")matchDetail.homeName + "VS" + matchDetail.awayName
+                else matchDetail.awayName + "VS" + matchDetail.homeName
         mDatabind.tvTitle.text = matchName
         //上滑停靠栏
         getMatchStatus(mDatabind.tvTopMatchStatus, matchDetail.matchType, matchDetail.status)
@@ -199,22 +200,41 @@ class MatchDetailActivity :
             matchDetail.status,
             matchDetail.runTime)
         //有比分的情况 足球status正在比赛是[2,8] 篮球是[2,10]
-        mDatabind.tvTopHomeScore.text =
-            if (matchDetail.status in 2..if (matchType == "1") 8 else 10) matchDetail.homeScore.toString() else ""
-        mDatabind.tvTopAwayScore.text =
-            if (matchDetail.status in 2..if (matchType == "1") 8 else 10) matchDetail.awayScore.toString() else ""
 
-        if (matchDetail.status in 2..if (matchType == "1") 8 else 10) {
-            mDatabind.tvMatchVs.textSize = 20f
-            mDatabind.tvMatchVs.text =
-                matchDetail.homeScore.toString() + " : " + matchDetail.awayScore.toString()
-        } else {
-            mDatabind.tvMatchVs.textSize = 22f
-            mDatabind.tvMatchVs.text = getString(R.string.vs)
+
+        if (matchType=="1"){
+            //足球
+            Glide.with(this).load(matchDetail.homeLogo).into(mDatabind.ivTopHomeIcon)
+            Glide.with(this).load(matchDetail.awayLogo).into(mDatabind.ivTopAwayIcon)
+            mDatabind.tvTopHomeScore.text =
+                if (matchDetail.status in 2..8 ) matchDetail.homeScore.toString() else ""
+            mDatabind.tvTopAwayScore.text =
+                if (matchDetail.status in 2..8) matchDetail.awayScore.toString() else ""
+            if (matchDetail.status in 2..8) {
+                mDatabind.tvMatchVs.textSize = 20f
+                mDatabind.tvMatchVs.text =
+                    matchDetail.homeScore.toString() + " : " + matchDetail.awayScore.toString()
+            } else {
+                mDatabind.tvMatchVs.textSize = 22f
+                mDatabind.tvMatchVs.text = getString(R.string.vs)
+            }
+        }else{
+            Glide.with(this).load(matchDetail.awayLogo).into(mDatabind.ivTopHomeIcon)
+            Glide.with(this).load(matchDetail.homeLogo).into(mDatabind.ivTopAwayIcon)
+            mDatabind.tvTopHomeScore.text =
+                if (matchDetail.status in 2..10) matchDetail.awayScore.toString() else ""
+            mDatabind.tvTopAwayScore.text =
+                if (matchDetail.status in 2..10) matchDetail.homeScore.toString() else ""
+            if (matchDetail.status in 2.. 10) {
+                mDatabind.tvMatchVs.textSize = 20f
+                mDatabind.tvMatchVs.text =
+                    matchDetail.awayScore.toString() + " : " + matchDetail.homeScore.toString()
+            } else {
+                mDatabind.tvMatchVs.textSize = 22f
+                mDatabind.tvMatchVs.text = getString(R.string.vs)
+            }
         }
 
-        Glide.with(this).load(matchDetail.homeLogo).into(mDatabind.ivTopHomeIcon)
-        Glide.with(this).load(matchDetail.awayLogo).into(mDatabind.ivTopAwayIcon)
         //私聊按钮
         mDatabind.tvToChat.setOnClickListener {
             //聊天界面还在开发中，先占位
@@ -281,12 +301,21 @@ class MatchDetailActivity :
      * 无主播流时展示比赛状态
      */
     private fun showMatchStatusUI() {
-        //主队名称以及图标
-        mDatabind.tvHomeName.text = matchDetail.homeName
-        Glide.with(this).load(matchDetail.homeLogo).into(mDatabind.ivHomeIcon)
-        //客队名称以及图标
-        mDatabind.tvAwayName.text = matchDetail.awayName
-        Glide.with(this).load(matchDetail.awayLogo).into(mDatabind.ivAwayIcon)
+        if (matchType=="1"){//足球
+            //主队名称以及图标
+            mDatabind.tvHomeName.text = matchDetail.homeName
+            Glide.with(this).load(matchDetail.homeLogo).into(mDatabind.ivHomeIcon)
+            //客队名称以及图标
+            mDatabind.tvAwayName.text = matchDetail.awayName
+            Glide.with(this).load(matchDetail.awayLogo).into(mDatabind.ivAwayIcon)
+        }else{
+            //主队名称以及图标
+            mDatabind.tvAwayName.text = matchDetail.homeName+"\n(主)"
+            Glide.with(this).load(matchDetail.homeLogo).into(mDatabind.ivAwayIcon)
+            //客队名称以及图标
+            mDatabind.tvHomeName.text = matchDetail.awayName
+            Glide.with(this).load(matchDetail.awayLogo).into(mDatabind.ivHomeIcon)
+        }
         //赛事名字和比赛时间
         mDatabind.tvCompetitionName.text = matchDetail.competitionName
         mDatabind.tvMatchTime.text =

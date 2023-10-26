@@ -8,14 +8,14 @@ import android.widget.RelativeLayout
 import com.bumptech.glide.Glide
 import com.xcjh.app.R
 import com.xcjh.app.bean.StatusBean
-import com.xcjh.app.databinding.ViewDetailGameStatusBinding
+import com.xcjh.app.databinding.ViewDetailFootballStatusBinding
 import kotlinx.android.synthetic.main.activity_chat.view.*
 
 /**
  * Describe : 足球直播详情页面赛况布局控件
  */
 class FootballDataView : RelativeLayout {
-    private lateinit var binding: ViewDetailGameStatusBinding
+    private lateinit var binding: ViewDetailFootballStatusBinding
 
     constructor(context: Context?) : super(context) {
         initView(context, null)
@@ -34,7 +34,7 @@ class FootballDataView : RelativeLayout {
     @SuppressLint("MissingInflatedId")
     fun initView(context: Context?, attrs: AttributeSet?) {
         // val inflate = LayoutInflater.from(context).inflate(R.layout.view_detail_game_status, this)
-        binding = ViewDetailGameStatusBinding.inflate(LayoutInflater.from(context), null, false)
+        binding = ViewDetailFootballStatusBinding.inflate(LayoutInflater.from(context), null, false)
         addView(binding.root)
     }
 
@@ -58,14 +58,14 @@ class FootballDataView : RelativeLayout {
                 24 -> {
                     binding.viewGameStatusWx.progress =
                         if (home == away && home == 0) 50 else home * 100 / (home + away)
-                    binding.viewGameStatusWxLeft.text = home.toString()
-                    binding.viewGameStatusWxRight.text = away.toString()
+                    binding.tvWxHome.text = home.toString()
+                    binding.tvWxAway.text = away.toString()
                 }
                 25 -> {
                     binding.viewGameStatusKql.progress =
                         if (home == away && home == 0) 50 else home * 100 / (home + away)
-                    binding.viewGameStatusKqlLeft.text = home.toString()
-                    binding.viewGameStatusKqlRight.text = away.toString()
+                    binding.tvKqlHome.text = home.toString()
+                    binding.tvKqlAway.text = away.toString()
                 }
                 2 -> {//2-角球
                     binding.tvHomeYw.text = home.toString()
