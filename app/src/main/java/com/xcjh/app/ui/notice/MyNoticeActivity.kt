@@ -254,7 +254,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
 
                             "2", "3" -> {
                                 binding.txtMatchAnimation.visibility = View.GONE
-                                binding.tvvs.text = item.homeScore + "-" + item.awayScore
+                                binding.tvvs.text = item.awayScore + "-" + item.homeScore
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
@@ -273,7 +273,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
 
                             "4", "5" -> {
                                 binding.txtMatchAnimation.visibility = View.GONE
-                                binding.tvvs.text = item.homeScore + "-" + item.awayScore
+                                binding.tvvs.text = item.awayScore + "-" + item.homeScore
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
@@ -292,7 +292,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
 
                             "6", "7" -> {
                                 binding.txtMatchAnimation.visibility = View.GONE
-                                binding.tvvs.text = item.homeScore + "-" + item.awayScore
+                                binding.tvvs.text = item.awayScore + "-" + item.homeScore
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
@@ -311,7 +311,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
 
                             "8", "9" -> {
                                 binding.txtMatchAnimation.visibility = View.GONE
-                                binding.tvvs.text = item.homeScore + "-" + item.awayScore
+                                binding.tvvs.text = item.awayScore + "-" + item.homeScore
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
@@ -331,7 +331,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
 
                             "10" -> {
                                 binding.txtMatchAnimation.visibility = View.GONE
-                                binding.tvvs.text = item.homeScore + "-" + item.awayScore
+                                binding.tvvs.text = item.awayScore + "-" + item.homeScore
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
@@ -346,7 +346,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
 
                             "11", "12", "13", "14", "15" -> {
                                 binding.txtMatchAnimation.visibility = View.GONE
-                                binding.tvvs.text = item.homeScore + "-" + item.awayScore
+                                binding.tvvs.text = item.awayScore + "-" + item.homeScore
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
@@ -386,13 +386,13 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                     }
                 }
                 binding.tvhafl.text =
-                    context.resources.getString(R.string.hafl_rices) + ":" + item.homeHalfScore + "-" + item.awayHalfScore
+                    context.resources.getString(R.string.hafl_rices) + ":" + item.awayHalfScore + "-" + item.homeHalfScore
                 binding.tvtime.text = time!!.substring(11, 16)
                 binding.tvname.text = item.competitionName
-                binding.tvnameLeft.text = item.homeName
-                binding.tvnameRight.text = item.awayName
-                Glide.with(context).load(item.homeLogo).into(binding.tvflagLeft)
-                Glide.with(context).load(item.awayLogo).into(binding.tvflagRight)
+                binding.tvnameLeft.text = item.awayName
+                binding.tvnameRight.text = item.homeName
+                Glide.with(context).load(item.awayLogo).into(binding.tvflagLeft)
+                Glide.with(context).load(item.homeLogo).into(binding.tvflagRight)
                 if (item.anchorList!=null&&item.anchorList.isNotEmpty()){
                     binding.conlive.visibility= View.VISIBLE
                     binding.rec.run {

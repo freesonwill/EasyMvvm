@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/c_181b25"
+    android:background="@color/c_2b2156"
     android:orientation="vertical">
 
     <LinearLayout
@@ -58,7 +58,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_24"
-        android:background="@color/c_181b25"
+        android:background="@color/c_2b2156"
         app:calendar_height="36dp"
         app:calendar_padding="10dp"
         app:current_month_text_color="@color/c_8a91a0"
@@ -75,7 +75,7 @@
         app:selected_theme_color="@color/select_color"
 
         app:scheme_theme_color="@color/c_181b25"
-        app:week_background="@color/c_181b25"
+        app:week_background="@color/c_2b2156"
         app:week_text_color="@color/c_8a91a0"
         app:week_text_size="12sp" />
 
