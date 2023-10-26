@@ -153,7 +153,15 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
         appViewModel.updateLoginEvent.observe(this){
              if(it){
                  mDatabind.rlMyClickLogOut.visibility=View.VISIBLE
+                 mDatabind.ivMyLevelAdd.visibility=View.VISIBLE
+                 mDatabind.txtMyTxt.setTextColor(ContextCompat.getColor(requireContext(),R.color.c_f5f5f5))
+                 mDatabind.txtMyView.setTextColor(ContextCompat.getColor(requireContext(),R.color.c_f5f5f5))
+                 mDatabind.ivMyNext.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.icon_next))
             }else{
+                 mDatabind.ivMyLevelAdd.visibility=View.GONE
+                 mDatabind.txtMyTxt.setTextColor(ContextCompat.getColor(requireContext(),R.color.c_8a91a0))
+                 mDatabind.txtMyView.setTextColor(ContextCompat.getColor(requireContext(),R.color.c_8a91a0))
+                 mDatabind.ivMyNext.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.icon_my_next_no))
                  notLogin()
 
             }
@@ -169,6 +177,7 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
     fun setData(){
         if(CacheUtil.isLogin()){
             if(CacheUtil.getUser()!=null){
+                mDatabind.rlClickLevel.background = null
                 var user=CacheUtil.getUser()
                 mDatabind.iiIsShowLeve.visibility= View.VISIBLE
                 Glide.with(requireContext())
@@ -179,27 +188,38 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
                 mDatabind.txtMyName.text=user!!.name
                 mDatabind.txtMyNum.text="Lv.${user!!.lvNum} ${user!!.lvName}"
 
+
                 if (user!!.lvNum.equals("1")){
                     mDatabind.ivMyLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_yi))
+                    mDatabind.ivMyLevelAdd.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_yi))
                 }else if (user!!.lvNum.equals("2")){
                     mDatabind.ivMyLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_er))
+                    mDatabind.ivMyLevelAdd.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_er))
                 }else if (user!!.lvNum.equals("3")){
                     mDatabind.ivMyLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_san))
+                    mDatabind.ivMyLevelAdd.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_san))
                 }else if (user!!.lvNum.equals("4")){
                     mDatabind.ivMyLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_si))
+                    mDatabind.ivMyLevelAdd.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_si))
                 }else if (user!!.lvNum.equals("5")){
                     mDatabind.ivMyLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_wu))
+                    mDatabind.ivMyLevelAdd.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_wu))
                 }else if (user!!.lvNum.equals("6")){
                     mDatabind.ivMyLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_liu))
+                    mDatabind.ivMyLevelAdd.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_liu))
                 }else if (user!!.lvNum.equals("7")){
                     mDatabind.ivMyLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_qi))
+                    mDatabind.ivMyLevelAdd.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_qi))
                 }else if (user!!.lvNum.equals("8")){
                     mDatabind.ivMyLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_ba))
+                    mDatabind.ivMyLevelAdd.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_ba))
                 }else  {
                     mDatabind.ivMyLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_yi))
+                    mDatabind.ivMyLevelAdd.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_yi))
                 }
 
             }else{
+                mDatabind.rlClickLevel.background=ContextCompat.getDrawable(requireContext(),R.drawable.gradation_top8_1e285a)
                 notLogin()
             }
 
@@ -219,6 +239,7 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
         mDatabind.txtMyName.text=resources.getString(R.string.my_txt_click_login)
         mDatabind.iiIsShowLeve.visibility= View.GONE
         mDatabind.rlMyClickLogOut.visibility=View.GONE
+        mDatabind.rlClickLevel.background=ContextCompat.getDrawable(requireContext(),R.drawable.gradation_top8_1e285a)
     }
 
     override fun createObserver() {

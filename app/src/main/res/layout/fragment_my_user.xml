@@ -84,13 +84,28 @@
                 android:paddingLeft="@dimen/dp_16"
                 android:paddingRight="@dimen/dp_16"
                 android:background="@drawable/gradation_top8_1e285a">
-                <androidx.appcompat.widget.AppCompatTextView
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="12sp"
-                    android:textColor="@color/c_f5f5f5"
                     android:layout_centerVertical="true"
-                    android:text="@string/my_txt_leve"/>
+                    android:gravity="center"
+                    android:orientation="horizontal">
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ivMyLevelAdd"
+                        android:layout_width="30dp"
+                        android:layout_height="20dp"
+                        android:visibility="gone"
+                        android:layout_marginRight="@dimen/dp_4"
+                        app:srcCompat="@drawable/level_yi"/>
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/txtMyTxt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        android:textColor="@color/c_8a91a0"
+
+                        android:text="@string/my_txt_leve"/>
+                </LinearLayout>
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -99,15 +114,17 @@
                     android:gravity="center"
                     android:orientation="horizontal">
                     <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/txtMyView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/c_f5f5f5"
+                        android:textColor="@color/c_8a91a0"
                         android:textSize="@dimen/sp_12"
                         android:text="@string/my_txt_view"/>
                     <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ivMyNext"
                         android:layout_width="@dimen/dp_16"
                         android:layout_height="@dimen/dp_16"
-                        app:srcCompat="@drawable/ic_next"/>
+                        app:srcCompat="@drawable/icon_my_next_no"/>
                 </LinearLayout>
             </RelativeLayout>
         </RelativeLayout>
