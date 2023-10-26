@@ -145,7 +145,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
 
                         binding.tvcontent.text = ad.content
                         binding.tvtime.text =
-                            TimeUtil.timeStamp2Date(ad.createTime!!, null)
+                            TimeUtil.timeStamp2Date(ad.createTime!!, null)!!.substring(0,16)
                         binding.tvtime.visibility = View.GONE
                         Glide.with(this@ChatActivity).load(userhead)
                             .placeholder(R.drawable.icon_avatar).into(binding.ivhead)
@@ -173,7 +173,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                         var binding = getBinding<ItemChatTxtRightBinding>()
                         var matchBeanNew = _data as MsgBean
                         binding.tvtime.text =
-                            TimeUtil.timeStamp2Date(matchBeanNew.createTime!!, null)
+                            TimeUtil.timeStamp2Date(matchBeanNew.createTime!!, null)!!.substring(0,16)
                         binding.tvtime.visibility = View.GONE
                         binding.tvcontent.text =
                             matchBeanNew.content
@@ -203,7 +203,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                         var binding = getBinding<ItemChatPicRightBinding>()
                         var matchBeanNew = _data as MsgBean
                         binding.tvtime.text =
-                            TimeUtil.timeStamp2Date(matchBeanNew.createTime!!, null)
+                            TimeUtil.timeStamp2Date(matchBeanNew.createTime!!, null)!!.substring(0,16)
                         binding.tvtime.visibility = View.GONE
                         Glide.with(this@ChatActivity).load(CacheUtil.getUser()?.head)
                             .placeholder(R.drawable.icon_avatar)
@@ -245,7 +245,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                         var binding = getBinding<ItemChatPicLeftBinding>()
                         var matchBeanNew = _data as MsgBean
                         binding.tvtime.text =
-                            TimeUtil.timeStamp2Date(matchBeanNew.createTime!!, null)
+                            TimeUtil.timeStamp2Date(matchBeanNew.createTime!!, null)!!.substring(0,16)
                         binding.tvtime.visibility = View.GONE
                         Glide.with(this@ChatActivity).load(matchBeanNew.content)
                             .dontAnimate().into(binding.ivpic)

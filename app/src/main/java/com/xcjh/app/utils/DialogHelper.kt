@@ -175,7 +175,7 @@ fun clearMsg(context: Context, block: (isSure: Boolean) -> Unit) {
                     dialog?.dismiss()
                 }
             }
-        }).setRadius(8f).setBackgroundColor(Color.parseColor("#181b25")).show()
+        }).setRadius(8f).setBackgroundColor(Color.parseColor("#2B2156")).show()
 }
 
 /**
