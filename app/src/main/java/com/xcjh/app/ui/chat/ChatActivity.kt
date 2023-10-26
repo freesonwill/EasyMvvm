@@ -162,8 +162,6 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                             }
                             lastShowTimeStamp = ad.createTime!!
                             binding.tvtime.visibility = View.VISIBLE
-                            binding.tvtime.text =
-                                TimeUtil.timeStamp2Date(ad.createTime!!, null)
                         }
 
 
@@ -193,8 +191,6 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                             }
                             lastShowTimeStamp = matchBeanNew.createTime!!
                             binding.tvtime.visibility = View.VISIBLE
-                            binding.tvtime.text =
-                                TimeUtil.timeStamp2Date(matchBeanNew.createTime!!, null)
                         }
 
                     }
@@ -234,8 +230,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                             }
                             lastShowTimeStamp = matchBeanNew.createTime!!
                             binding.tvtime.visibility = View.VISIBLE
-                            binding.tvtime.text =
-                                TimeUtil.timeStamp2Date(matchBeanNew.createTime!!, null)
+
                         }
 
 
@@ -275,8 +270,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                             }
                             lastShowTimeStamp = matchBeanNew.createTime!!
                             binding.tvtime.visibility = View.VISIBLE
-                            binding.tvtime.text =
-                                TimeUtil.timeStamp2Date(matchBeanNew.createTime!!, null)
+
                         }
                     }
                 }
