@@ -15,7 +15,7 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="2"
+            android:layout_weight="3"
             android:gravity="start|center_vertical"
             android:paddingStart="@dimen/dp_16"
             android:text="@string/player"
@@ -61,7 +61,7 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="1.2"
             android:gravity="center"
             android:text="@string/shoot"
             android:textColor="@color/c_F5F5F5"

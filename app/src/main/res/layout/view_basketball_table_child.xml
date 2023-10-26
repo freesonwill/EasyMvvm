@@ -24,21 +24,20 @@
             android:textSize="@dimen/sp_12" />
 
         <TextView
-            android:id="@+id/tv_home"
+            android:id="@+id/tv_away"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_44"
             android:gravity="center"
             android:text="-"
             android:textColor="@color/white"
             android:textSize="@dimen/sp_12" />
-
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
             android:background="@color/c_29283A" />
 
         <TextView
-            android:id="@+id/tv_away"
+            android:id="@+id/tv_home"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_44"
             android:gravity="center"

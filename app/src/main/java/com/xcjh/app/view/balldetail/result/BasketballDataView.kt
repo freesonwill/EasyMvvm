@@ -20,27 +20,27 @@ class BasketballDataView : RelativeLayout {
     private lateinit var iv_icon_away: ImageView
     private lateinit var iv_name_home: TextView
     private lateinit var iv_name_away: TextView
-    private lateinit var tv_home_two_point: TextView
-    private lateinit var tv_home_three_point: TextView
-    private lateinit var tv_home_penalty: TextView
-    private lateinit var tv_away_two_point: TextView
-    private lateinit var tv_away_three_point: TextView
-    private lateinit var tv_away_penalty: TextView
+    private lateinit var tvHit2Home: TextView
+    private lateinit var tvHit3Home: TextView
+    private lateinit var tvPenaltyHome: TextView
+    private lateinit var tvHit2Away: TextView
+    private lateinit var tvHit3Away: TextView
+    private lateinit var tvPenaltyAway: TextView
     private lateinit var pro_two_point: ProgressBar
     private lateinit var pro_three_point: ProgressBar
     private lateinit var pro_penalty: ProgressBar
 
     private lateinit var pgTwoPercent: ProgressBarView
-    private lateinit var view_game_status_left: TextView
-    private lateinit var view_game_status_right: TextView
+    private lateinit var tv2Home: TextView
+    private lateinit var tv2Away: TextView
 
     private lateinit var pgThreePercent: ProgressBarView
-    private lateinit var view_game_status_wx_left: TextView
-    private lateinit var view_game_status_wx_right: TextView
+    private lateinit var tv3Home: TextView
+    private lateinit var tv3Away: TextView
 
-    private lateinit var pgFq: ProgressBarView
-    private lateinit var view_game_status_kql_left: TextView
-    private lateinit var view_game_status_kql_right: TextView
+    private lateinit var pgFqPercent: ProgressBarView
+    private lateinit var tvFqHome: TextView
+    private lateinit var tvFqAway: TextView
 
     constructor(context: Context?) : super(context) {
         initView(context)
@@ -66,28 +66,28 @@ class BasketballDataView : RelativeLayout {
 
         //2f
         pgTwoPercent = v.findViewById(R.id.pgTwoPercent)
-        view_game_status_left = v.findViewById(R.id.view_game_status_left)
-        view_game_status_right = v.findViewById(R.id.view_game_status_right)
+        tv2Home = v.findViewById(R.id.tv2Home)
+        tv2Away = v.findViewById(R.id.tv2Away)
 
         //3f
         pgThreePercent = v.findViewById(R.id.pgThreePercent)
-        view_game_status_wx_left = v.findViewById(R.id.view_game_status_wx_left)
-        view_game_status_wx_right = v.findViewById(R.id.view_game_status_wx_right)
+        tv3Home = v.findViewById(R.id.tv3Home)
+        tv3Away = v.findViewById(R.id.tv3Away)
 
         //罚球
-        pgFq = v.findViewById(R.id.pgFq)
-        view_game_status_kql_left = v.findViewById(R.id.view_game_status_kql_left)
-        view_game_status_kql_right = v.findViewById(R.id.view_game_status_kql_right)
+        pgFqPercent = v.findViewById(R.id.pgFqPercent)
+        tvFqHome = v.findViewById(R.id.tvFqHome)
+        tvFqAway = v.findViewById(R.id.tvFqAway)
 
         //2分球
-        tv_home_two_point = v.findViewById(R.id.tv_home_two_point)
-        tv_away_two_point = v.findViewById(R.id.tv_away_two_point)
+        tvHit2Home = v.findViewById(R.id.tvHit2Home)
+        tvHit2Away = v.findViewById(R.id.tvHit2Away)
         //3分球
-        tv_home_three_point = v.findViewById(R.id.tv_home_three_point)
-        tv_away_three_point = v.findViewById(R.id.tv_away_three_point)
+        tvHit3Home = v.findViewById(R.id.tvHit3Home)
+        tvHit3Away = v.findViewById(R.id.tvHit3Away)
         //罚球
-        tv_home_penalty = v.findViewById(R.id.tv_home_penalty)
-        tv_away_penalty = v.findViewById(R.id.tv_away_penalty)
+        tvPenaltyHome = v.findViewById(R.id.tvPenaltyHome)
+        tvPenaltyAway = v.findViewById(R.id.tvPenaltyAway)
         //主客占比
         pro_two_point = v.findViewById(R.id.pro_two_point)
         pro_three_point = v.findViewById(R.id.pro_three_point)
@@ -114,98 +114,99 @@ class BasketballDataView : RelativeLayout {
 
         bean.home.apply {
             homeV2 = if (shot2 == 0) 0 else myDivide(hit2 * 100, shot2).roundToInt()
-            homeV3 = if (shot3 == 0) 0 else myDivide(hit3 * 100, shot3).roundToInt()//hit3 * 100 / shot3
+            homeV3 =
+                if (shot3 == 0) 0 else myDivide(hit3 * 100, shot3).roundToInt()//hit3 * 100 / shot3
             homeP = if (penalty == 0) 0 else myDivide(penaltyHit * 100, penalty).roundToInt()
 
-            view_game_status_left.text = "$homeV2"
-            view_game_status_wx_left.text = "$homeV3"
-            view_game_status_kql_left.text = "$homeP"
+            tv2Home.text = "$homeV2"
+            tv3Home.text = "$homeV3"
+            tvFqHome.text = "$homeP"
 
-            tv_home_two_point.text = hit2.toString()
-            tv_home_three_point.text = hit3.toString()
-            tv_home_penalty.text = penaltyHit.toString()
+            tvHit2Home.text = (2 * hit2).toString()
+            tvHit3Home.text = (3 * hit3).toString()
+            tvPenaltyHome.text = (1 * penaltyHit).toString()
         }
         bean.away.apply {
             awayV2 = if (shot2 == 0) 0 else myDivide(hit2 * 100, shot2).roundToInt()
             awayV3 = if (shot3 == 0) 0 else myDivide(hit3 * 100, shot3).roundToInt()
             awayP = if (penalty == 0) 0 else myDivide(penaltyHit * 100, penalty).roundToInt()
 
-            view_game_status_right.text = "$awayV2"
-            view_game_status_wx_right.text ="$awayV3"
-            view_game_status_kql_right.text = "$awayP"
+            tv2Away.text = "$awayV2"
+            tv3Away.text = "$awayV3"
+            tvFqAway.text = "$awayP"
 
-            tv_away_two_point.text = hit2.toString()
-            tv_away_three_point.text = hit3.toString()
-            tv_away_penalty.text = penaltyHit.toString()
+            tvHit2Away.text = (2 * hit2).toString()
+            tvHit3Away.text = (3 * hit3).toString()
+            tvPenaltyAway.text = (1 * penaltyHit).toString()
         }
         //===============命中率===============
         if (homeV2 == 0 && awayV2 == 0) {
             pgTwoPercent.progress = 50
         } else {
-            if (homeV2 == 0) {
+            if (awayV2 == 0) {
                 pgTwoPercent.progress = 0
-            } else if (awayV2 == 0) {
+            } else if (homeV2 == 0) {
                 pgTwoPercent.progress = 100
             } else {
-                pgTwoPercent.progress = homeV2* 100 / (homeV2 + awayV2)
+                pgTwoPercent.progress = awayV2 * 100 / (homeV2 + awayV2)
             }
         }
 
         if (homeV3 == 0 && awayV3 == 0) {
             pgThreePercent.progress = 50
         } else {
-            if (homeV3 == 0) {
+            if (awayV3 == 0) {
                 pgThreePercent.progress = 0
-            } else if (awayV3 == 0) {
+            } else if (homeV3 == 0) {
                 pgThreePercent.progress = 100
             } else {
-                pgThreePercent.progress = homeV3 * 100/ (homeV3 + awayV3)
+                pgThreePercent.progress = awayV3 * 100 / (homeV3 + awayV3)
             }
         }
         if (homeP == 0 && awayP == 0) {
-            pgFq.progress = 50
+            pgFqPercent.progress = 50
         } else {
-            if (homeP == 0) {
-                pgFq.progress = 0
-            } else if (awayP == 0) {
-                pgFq.progress = 100
+            if (awayP == 0) {
+                pgFqPercent.progress = 0
+            } else if (homeP == 0) {
+                pgFqPercent.progress = 100
             } else {
-                pgFq.progress = homeP* 100 / (homeP + awayP)
+                pgFqPercent.progress = awayP * 100 / (homeP + awayP)
             }
         }
-       ////=========比分========
+        ////=========比分========
         if (bean.home.hit2 == 0 && bean.away.hit2 == 0) {
             pro_two_point.progress = 50
         } else {
-            if (bean.home.hit2 == 0) {
+            if (bean.away.hit2 == 0) {
                 pro_two_point.progress = 0
-            } else if (bean.away.hit2 == 0) {
+            } else if (bean.home.hit2 == 0) {
                 pro_two_point.progress = 100
             } else {
-                pro_two_point.progress = bean.home.hit2 * 100 / (bean.home.hit2 + bean.away.hit2)
+                pro_two_point.progress = bean.away.hit2 * 100 / (bean.home.hit2 + bean.away.hit2)
             }
         }
         if (bean.home.hit3 == 0 && bean.away.hit3 == 0) {
-            pro_two_point.progress = 50
+            pro_three_point.progress = 50
         } else {
-            if (bean.home.hit3 == 0) {
-                pro_two_point.progress = 0
-            } else if (bean.away.hit3 == 0) {
-                pro_two_point.progress = 100
+            if (bean.away.hit3 == 0) {
+                pro_three_point.progress = 0
+            } else if (bean.home.hit3 == 0) {
+                pro_three_point.progress = 100
             } else {
-                pro_three_point.progress = bean.home.hit3 * 100 / (bean.home.hit3 + bean.away.hit3)
+                pro_three_point.progress = bean.away.hit3 * 100 / (bean.home.hit3 + bean.away.hit3)
             }
         }
         if (bean.home.penaltyHit == 0 && bean.away.penaltyHit == 0) {
-            pro_two_point.progress = 50
+            pro_penalty.progress = 50
         } else {
-            if (bean.home.penaltyHit == 0) {
-                pro_two_point.progress = 0
-            } else if (bean.away.penaltyHit == 0) {
-                pro_two_point.progress = 100
+            if (bean.away.penaltyHit == 0) {
+                pro_penalty.progress = 0
+            } else if (bean.home.penaltyHit == 0) {
+                pro_penalty.progress = 100
             } else {
                 pro_penalty.progress =
-                    bean.home.penaltyHit * 100 / (bean.home.penaltyHit + bean.away.penaltyHit)
+                    bean.away.penaltyHit * 100 / (bean.home.penaltyHit + bean.away.penaltyHit)
             }
         }
 
