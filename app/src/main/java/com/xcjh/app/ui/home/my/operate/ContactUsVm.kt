@@ -77,7 +77,7 @@ class ContactUsVm : BaseViewModel() {
             { apiService.submitFeedback(FeedbackReq(feedbackType = type, feedbackContent = content,feedbackImage=imageList)) },
             {
                 submit.value=true
-
+                myToast(appContext.getString(R.string.submit_success))
             }, {
                 myToast(it.errorMsg)
             },isShowDialog=true
