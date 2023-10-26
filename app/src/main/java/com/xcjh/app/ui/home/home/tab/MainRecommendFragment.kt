@@ -124,19 +124,25 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                                             .error(R.drawable.main_load_icon)
                                             .placeholder(R.drawable.main_load_icon)
                                             .into(binding.txtWayHome)
-                                        binding.txtHomeName.text=matchBean.homeName
-                                        binding.txtHomeScore.text=matchBean.homeScore
+
+
+
+
                                         //客队
                                         Glide.with(requireContext())
                                             .load(matchBean.awayLogo) // 替换为您要加载的图片 URL
                                             .error(R.drawable.main_load_icon)
                                             .placeholder(R.drawable.main_load_icon)
                                             .into(binding.ivGuestIcon)
-                                        binding.txtGuestName.text=matchBean.awayName
-                                        binding.txtGuestScore.text=matchBean.awayScore
+
                                         binding.txtMatchAnimation.visibility=View.GONE
                                         //比赛类型：1：足球；2：篮球,可用值:1,2
                                          if(matchBean.matchType.equals("2")){
+                                             binding.txtHomeName.text=matchBean.homeName
+                                             binding.txtHomeScore.text=matchBean.homeScore
+                                             binding.txtGuestName.text=matchBean.awayName
+                                             binding.txtGuestScore.text=matchBean.awayScore
+
                                                 if(matchBean.status.equals("0")){
                                                     binding.txtMatchStatus.visibility=View.GONE
                                                 }else if(matchBean.status.equals("1")||matchBean.status.equals("10")
@@ -166,6 +172,12 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                                                     binding.txtMatchStatus.text=resources.getString(R.string.main_txt_basketball_phase,"四")
                                                 }
                                          }else{
+
+                                             binding.txtHomeName.text=matchBean.awayName
+                                             binding.txtGuestName.text=matchBean.homeName
+                                             binding.txtHomeScore.text=matchBean.awayScore
+                                             binding.txtGuestScore.text=matchBean. homeScore
+
                                              if(matchBean.status.equals("0")){
                                                  binding.txtMatchStatus.visibility=View.GONE
 
@@ -262,7 +274,13 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                                                 .placeholder(R.drawable.load_round)
                                                 .into(bindingItem.ivLiveHead)
                                             bindingItem.txtLiveName.text=bean.nickName
-                                            bindingItem.txtLiveTeam.text="${bean.homeTeamName}VS${bean.awayTeamName}"
+                                             //比赛类型 1足球，2篮球,可用值:1,2
+                                            if(bean.matchType.equals("1")){
+                                                bindingItem.txtLiveTeam.text="${bean.homeTeamName}VS${bean.awayTeamName}"
+                                            }else{
+                                                bindingItem.txtLiveTeam.text="${bean.awayTeamName }VS${bean.homeTeamName}"
+                                            }
+
                                             bindingItem.txtLiveCompetition.text=bean.competitionName
                                             if(bean.hotValue<=9999){
                                                 bindingItem.txtLiveHeat.text="${bean.hotValue}"

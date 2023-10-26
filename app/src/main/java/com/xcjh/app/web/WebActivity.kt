@@ -3,6 +3,10 @@ package com.xcjh.app.web
 import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
+import android.text.Html
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.ViewGroup
 import android.webkit.WebResourceError
@@ -10,6 +14,7 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.widget.LinearLayout
 import androidx.activity.viewModels
+import androidx.core.text.HtmlCompat
 import com.gyf.immersionbar.ImmersionBar
 import com.just.agentweb.AgentWeb
 import com.just.agentweb.WebChromeClient
@@ -18,7 +23,6 @@ import com.xcjh.app.databinding.ActivityWebBinding
 import com.xcjh.app.vm.MainVm
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.loge
-import java.text.ParsePosition
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -82,40 +86,41 @@ class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
                 override fun onPageFinished(view: WebView?, url: String?) {
                     super.onPageFinished(view, url)
                     Log.e("TAG", "===-----onPageFinished------ ")
+                    if(type!=0){
+                        view!!.evaluateJavascript("javascript:(function() { " +
+                                "var elements = document.querySelectorAll(':not(h4)');" +
+                                "for(var i = 0; i < elements.length; i++) {" +
+                                "   elements[i].style.color = 'white';" +
+                                "}" +
+                                "})()", null)
 
-                    val javascript = "javascript:(function() { " +
-                            "var imgs = document.getElementsByTagName('img');" +
-                            "for(var i = 0; i < imgs.length; i++){" +
-                            "   imgs[i].style.maxWidth = '100%';" +
-                            "   imgs[i].style.height = 'auto';" +
-                            "}" +
-                            "})()"
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                        view!!.evaluateJavascript(javascript, null)
-                    } else {
-                        view!!.loadUrl(javascript)
+                        val javascript = "javascript:(function() { " +
+                                "var imgs = document.getElementsByTagName('img');" +
+                                "for(var i = 0; i < imgs.length; i++){" +
+                                "   imgs[i].style.maxWidth = '100%';" +
+                                "   imgs[i].style.height = 'auto';" +
+                                "}" +
+                                "})()"
+
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                            view!!.evaluateJavascript(javascript, null)
+                        } else {
+                            view!!.loadUrl(javascript)
+                        }
                     }
+
+
                 }
             })
             // .setWebView(binding.agentWeb)
             .createAgentWeb()
             .ready().get()
-        //agentWeb.urlLoader.loadUrl("https://music.163.com/")
+
         if(type==0){
             agentWeb.urlLoader.loadUrl(url)
-        }else{
-//            agentWeb.urlLoader.loadDataWithBaseURL(
-//                null,
-//                mViewModel.newsBeanValue.value!!.content,
-//                "text/html",
-//                "utf-8",
-//                null
-//            )
-
-//            agentWeb.urlLoader.loadData(url,"text/html","UTF-8")
         }
 
-        // .go("https://music.163.com/")
+
     }
 
     override fun onPause() {
@@ -145,12 +150,13 @@ class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
             var sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
             var dateTimeString:String=""
             var title:String=""
-            title="<h1 style=\" color: #18152A; font-size: 20px;\">${it.title}</h1>"
+            title="<p style=\" color: white; font-size: 20px; font-weight: bold;\">${it.title}</p>"
             if(it.publishTime.isNotEmpty()){
                 dateTimeString= sdf.format(Date(it.publishTime.toLong()))
-                title += "<h2 style=\" color: #8A91A0; font-size: 14px;\">${dateTimeString}</h2>"
+                title += "<h4 style=\" color: #8A91A0; font-size: 14px;\">${dateTimeString}</h4>"
             }
             title += it.content
+            title="<body style=\"background-color: #07061D; margin: 0; padding: 24px;\">${title}</body>"
             agentWeb.urlLoader.loadDataWithBaseURL(
                 null,
                 title,

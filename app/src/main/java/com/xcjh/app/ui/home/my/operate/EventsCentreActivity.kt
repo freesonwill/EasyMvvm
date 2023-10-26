@@ -64,7 +64,7 @@ class EventsCentreActivity : BaseActivity<EventsCentreVm, ActivityEventsCentreBi
                     R.layout.item_events_centre -> {
                         var bindingItem=getBinding<ItemEventsCentreBinding>()
                         var  bean=_data as EventsBean
-                        Glide.with(context).asBitmap()
+                        Glide.with(context)
                             .load(bean.mainPic) // 替换为您要加载的图片 URL
                             .error(R.drawable.load_square)
                             .apply(RequestOptions().transform(RoundedCorners(context.dp2px(8))))

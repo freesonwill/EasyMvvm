@@ -61,7 +61,7 @@ class MainNewsListFragment  : BaseFragment<MainNewsListVm, FragmentMainNewsListB
                     R.layout.item_news_list -> {
                         var bindingItem=getBinding<ItemNewsListBinding>()
                         var  bean=_data as NewsBean
-                        Glide.with(context).asBitmap()
+                        Glide.with(context)
                             .load(bean.pic) // 替换为您要加载的图片 URL
                             .error(R.drawable.main_banner_load)
                             .apply(RequestOptions().transform(RoundedCorners(context.dp2px(8))))
