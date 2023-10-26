@@ -55,7 +55,7 @@
                     tools:text="ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss"
                     android:ellipsize="end"
                     android:maxLines="2"
-                    android:textColor="@color/white"
+                    android:textColor="@color/c_F5F5F5"
                     android:textSize="@dimen/sp_12" />
 
                 <ImageView
@@ -64,7 +64,8 @@
                     android:layout_height="@dimen/dp_30"
                     android:layout_gravity="center_horizontal"
                     android:src="@drawable/ic_arrow_down"
-                    android:padding="@dimen/dp_12" />
+                    android:padding="@dimen/dp_12"
+                    expandableTextView:tint="#8A91A0" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

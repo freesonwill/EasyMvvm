@@ -71,7 +71,7 @@
             android:id="@+id/llInput"
             android:layout_alignParentBottom="true"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_60"
+            android:layout_height="@dimen/dp_48"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginEnd="@dimen/dp_16"
             android:background="@drawable/shape_chat_input">
@@ -101,12 +101,11 @@
 
             <ImageButton
                 android:id="@+id/sendChat"
-                android:layout_width="@dimen/dp_40"
-                android:layout_height="@dimen/dp_40"
+                android:layout_width="@dimen/dp_36"
+                android:layout_height="@dimen/dp_36"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:layout_marginStart="@dimen/dp_12"
-                android:layout_marginEnd="@dimen/dp_19"
+                android:layout_marginHorizontal="@dimen/dp_12"
                 android:background="@drawable/icon_send"
                 android:enabled="@{m.sendEnable}"
                 app:click="@{v}" />

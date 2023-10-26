@@ -45,7 +45,7 @@
                     android:layout_marginStart="@dimen/dp_4"
                     android:text="@string/substitute"
                     android:textColor="@color/c_8a91a0"
-                    android:textSize="@dimen/sp_10" />
+                    android:textSize="@dimen/sp_12" />
 
                 <TextView
                     android:id="@+id/tv_match_home_value"
@@ -101,7 +101,7 @@
                     android:layout_marginStart="@dimen/dp_4"
                     android:text="@string/substitute"
                     android:textColor="@color/c_8a91a0"
-                    android:textSize="@dimen/sp_10" />
+                    android:textSize="@dimen/sp_12" />
 
                 <TextView
                     android:id="@+id/tv_match_away_value"

@@ -24,7 +24,7 @@ import net.lucode.hackware.magicindicator.MagicIndicator
 
 
 fun setUnScroll(lltFold: LinearLayout) {
-    var params = lltFold.layoutParams as AppBarLayout.LayoutParams
+    val params = lltFold.layoutParams as AppBarLayout.LayoutParams
     //设置不能滑动
     params.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_NO_SCROLL
     //以下代码是让layout_scrollFlags的控件获取焦点的，如果不设置，可能会有问题；
@@ -36,7 +36,7 @@ fun setUnScroll(lltFold: LinearLayout) {
 //SCROLL_FLAG_SNAP 会就近惯性折叠伸展
 fun setScroll(lltFold: LinearLayout) {
     //重新设置布局可以滑动
-    var params = lltFold.layoutParams as AppBarLayout.LayoutParams
+    val params = lltFold.layoutParams as AppBarLayout.LayoutParams
     params.scrollFlags =
         (AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL /*or AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP*/)
     lltFold.layoutParams = params
@@ -64,7 +64,7 @@ fun getMatchStatusStr(matchType: String, status: Int): String {
             11 -> "腰斩"
             12 -> "取消"
             13 -> "待定"
-            else -> "无状态"
+            else -> "比赛异常"
         }
     } else {
         //篮球状态码：0 比赛异常，说明：暂未判断具体原因的异常比赛，可能但不限于：腰斩、取消等等，建议隐藏处理;1 未开赛;
@@ -87,7 +87,7 @@ fun getMatchStatusStr(matchType: String, status: Int): String {
             13 -> "延期"
             14 -> "腰斩"
             15 -> "待定"
-            else -> "无状态"
+            else -> "比赛异常"
         }
     }
 }
