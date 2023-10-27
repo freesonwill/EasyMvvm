@@ -43,18 +43,22 @@ class DetailLiveFragment(var matchId: String,var matchType: String) : BaseVpFrag
                     R.layout.item_main_live_list -> {
                         val bindingItem = getBinding<ItemMainLiveListBinding>()
                         val bean = _data as BeingLiveBean
-                        Glide.with(context).asBitmap()
+                        Glide.with(context)
                             .load(bean.titlePage)
                             .error(R.drawable.main_top_load)
                             .placeholder(R.drawable.main_top_load)
                             .into(bindingItem.ivLiveBe)
-                        Glide.with(context).asBitmap()
+                        Glide.with(context)
                             .load(bean.userLogo) // 替换为您要加载的图片 URL
                             .error(R.drawable.load_round)
                             .placeholder(R.drawable.load_round)
                             .into(bindingItem.ivLiveHead)
                         bindingItem.txtLiveName.text = bean.nickName
-                        bindingItem.txtLiveTeam.text = "${bean.homeTeamName} VS ${bean.awayTeamName}"
+                        if(matchType=="1"){
+                            bindingItem.txtLiveTeam.text="${bean.homeTeamName} VS ${bean.awayTeamName}"
+                        }else{
+                            bindingItem.txtLiveTeam.text="${bean.awayTeamName } VS ${bean.homeTeamName}"
+                        }
                         bindingItem.txtLiveCompetition.text = bean.competitionName
                         if (bean.hotValue <= 9999) {
                             bindingItem.txtLiveHeat.text = "${bean.hotValue}"

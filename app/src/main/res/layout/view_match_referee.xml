@@ -10,7 +10,7 @@
     <TextView
         android:id="@+id/tvRefereeName"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dp_30"
         android:background="@drawable/shape_bg_cai"
         android:padding="@dimen/dp_6"
         tools:text="暂无裁判信息"

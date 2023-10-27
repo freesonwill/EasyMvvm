@@ -33,6 +33,7 @@ import com.xcjh.app.isTopActivity
 import com.xcjh.app.ui.details.DetailVm
 import com.xcjh.app.ui.details.common.MyItemAnimator
 import com.xcjh.app.ui.details.common.RoomChatVm
+import com.xcjh.app.ui.details.common.SlideInLeftAnimator
 import com.xcjh.app.utils.*
 import com.xcjh.app.websocket.MyWsManager
 import com.xcjh.app.websocket.bean.ReceiveChatMsg
@@ -90,9 +91,17 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
             mDatabind.notice.apply {
                 expandableText.text = noticeBean.notice
                 expandCollapse.setOnClickListener {
+                    val aa = expandableText.height
                     noticeBean.isOpen = !noticeBean.isOpen
                     startImageRotate(expandCollapse, noticeBean.isOpen)
                     expandableText.maxLines = if (noticeBean.isOpen) 10 else 2
+                    mDatabind.rcvChat.postDelayed({
+                        val bb = expandableText.height
+                        val params = mDatabind.rcvChat.layoutParams
+                        params.height = mDatabind.rcvChat.height - bb + aa
+                        mDatabind.rcvChat.layoutParams = params
+                    }, 200)
+
                 }
             }
         } else {
@@ -183,7 +192,8 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
             }
         }
         val defaultItemAnimator = DefaultItemAnimator()
-        //val defaultItemAnimator = MyItemAnimator()
+      //  val defaultItemAnimator = MyItemAnimator()
+       // val defaultItemAnimator = SlideInLeftAnimator()
         defaultItemAnimator.addDuration = 500
         mDatabind.rcvChat.itemAnimator = defaultItemAnimator
         //点击列表隐藏软键盘
@@ -199,9 +209,6 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
     }
 
     override fun createObserver() {
-        /* appViewModel.updateLoginEvent.observe(this) {
-             mViewModel.getUserBaseInfo()
-         }*/
         //公告
         vm.anchor.observe(this) { it ->
             if (it != null) {
@@ -228,12 +235,6 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
         mViewModel.hisMsgList.observe(this) {
 
             if (it.isSuccess) {
-                /* val map = it.listData.map { child ->
-                     DetailMsgBean(userId = child.fromId.toString(),
-                         userType = "==",
-                         nickName = child.nick!!,
-                         content = child.content)
-                 }*/
                 if (it.listData.isEmpty()) {
                     mDatabind.smartChat.setEnableRefresh(false)
                     mDatabind.smartChat.finishRefreshWithNoMoreData()
@@ -276,21 +277,12 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
     override fun onResume() {
         //setWindowSoftInput(float = mDatabind.llInput, setPadding = true)
         mDatabind.rcvChat.postDelayed({
-            Log.e("===",
-                "onResume:isTopActivity ===" + this.mDatabind.root.height + "=====" + mDatabind.rcvChat.height)
+            Log.e("===", "onResume:isTopActivity ===" + this.mDatabind.root.height + "=====" + mDatabind.rcvChat.height)
             val params = mDatabind.rcvChat.layoutParams
-            params.height = mDatabind.rcvChat.height
+            params.height = mDatabind.rcvChat.height//+10
             mDatabind.rcvChat.layoutParams = params
-        }, 200)
+        }, 800)
         super.onResume()
-        mDatabind.rcvChat.models?.size?.let {
-            //mDatabind.rcvChat.smoothScrollToPosition(it)
-
-            //mDatabind.rcvChat.scrollTo(0,it)
-            //mLayoutManager.scrollToPosition(it)
-            //mLayoutManager.scrollToPositionWithOffset(it, Integer.MIN_VALUE);
-
-        }
         //Log.e("===", "onResume:isTopActivity ==="+activity.toString())
     }
 
@@ -346,9 +338,6 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
                 isShowBottom = true
             }
         }
-        /*  if (chat.from == CacheUtil.getUser()?.id) {
-              return
-          }*/
 
         mDatabind.rcvChat.addModels(listOf(MsgBean(
             chat.from,
@@ -356,12 +345,14 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
             chat.fromNickName ?: "",
             chat.level,
             chat.content,
-            msgType=chat.msgType,
+            msgType = chat.msgType,
             identityType = chat.identityType,
-        )) ) // 添加一条消息
+        ))) // 添加一条消息
 
         mDatabind.rcvChat.models?.size?.let {
-            /// mLayoutManager.scrollToPositionWithOffset(it, Integer.MIN_VALUE)
+           // mDatabind.rcvChat.adapter?.notifyItemInserted(it-1)
+           // mDatabind.rcvChat.adapter?.notifyItemRangeChanged(it, 1);
+           // mLayoutManager.scrollToPositionWithOffset(it, Integer.MIN_VALUE)
             if (chat.from == CacheUtil.getUser()?.id || lastVisible == it - 2) {
                 mDatabind.rcvChat.smoothScrollToPosition(it)
             }
@@ -378,9 +369,7 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
                         CacheUtil.getUser()?.apply {
                             MyWsManager.getInstance(App.app)?.sendMessage(
                                 Gson().toJson(SendChatMsgBean(
-                                    1,
-                                    0,
-                                    11,
+                                    1, 0, 11,
                                     from = id,
                                     fromAvatar = head,
                                     fromNickName = name,
@@ -395,14 +384,7 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
                             )
 
                         }
-                        // mViewModel.input.set("")
                         mViewModel.input.set("")
-                        /* mDatabind.rcvChat.addModels(mViewModel.getMessages(), index = 0) // 添加一条消息
-                         mDatabind.rcvChat.scrollToPosition(0) // 保证最新一条消息显示*/
-                        /* mDatabind.rcvChat.addModels(mViewModel.getMessages()) // 添加一条消息
-                         mDatabind.rcvChat.models?.size?.let {
-                             mLayoutManager.smoothScrollToPosition(mDatabind.rcvChat, null, it)
-                         }*/
                     }
                 }, 400)
             }

@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
 import androidx.core.widget.NestedScrollView
+import kotlin.math.abs
 
 /**
  *
@@ -12,7 +13,7 @@ class MyNestedScrollV @JvmOverloads constructor(context: Context, attrs: Attribu
     : NestedScrollView(context, attrs, defStyleAttr) {
     private var mLastXIntercept = 0f
     private var mLastYIntercept = 0f
-   /* override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
+  /*  override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
         var intercepted = false
         val x = ev.x
         val y = ev.y
@@ -28,7 +29,7 @@ class MyNestedScrollV @JvmOverloads constructor(context: Context, attrs: Attribu
                 val deltaX = x - mLastXIntercept
                 //纵坐标位移增量
                 val deltaY = y - mLastYIntercept
-                intercepted = Math.abs(deltaX) < Math.abs(deltaY)
+                intercepted = abs(deltaX) < abs(deltaY)
             }
             MotionEvent.ACTION_UP -> {
                 intercepted = false
@@ -38,5 +39,4 @@ class MyNestedScrollV @JvmOverloads constructor(context: Context, attrs: Attribu
         mLastYIntercept = y
         return intercepted
     }*/
-
 }

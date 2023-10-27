@@ -198,80 +198,68 @@ public class MyItemAnimator extends SimpleItemAnimator {
     @Override
     @SuppressLint("UnknownNullness") // b/240775049: Cannot annotate properly
     public boolean animateRemove(final RecyclerView.ViewHolder holder) {
-        /*resetAnimation(holder);
-        mPendingRemovals.add(holder);*/
         resetAnimation(holder);
         mPendingRemovals.add(holder);
-//这里我们增加了一个平移动画
-        ViewCompat.setTranslationX(holder.itemView, 0);
         return true;
     }
 
     private void animateRemoveImpl(final RecyclerView.ViewHolder holder) {
         final View view = holder.itemView;
-        final ViewPropertyAnimatorCompat animation = ViewCompat.animate(view);
+        final ViewPropertyAnimator animation = view.animate();
         mRemoveAnimations.add(holder);
-//这里我们增加了一个平移动画
-        animation.setDuration(getRemoveDuration())
-                .alpha(0).translationX(-holder.itemView.getWidth()).setListener(
-                        new ViewPropertyAnimatorListener() {
-                            @Override
-                            public void onAnimationStart(View view) {
-                                dispatchRemoveStarting(holder);
-                            }
+        animation.setDuration(getRemoveDuration()).alpha(0).setListener(
+                new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationStart(Animator animator) {
+                        dispatchRemoveStarting(holder);
+                    }
 
-                            @Override
-                            public void onAnimationEnd(View view) {
-                                animation.setListener(null);
-                                ViewCompat.setAlpha(view, 1);
-                                ViewCompat.setTranslationX(view, 0);//因为复用布局，此处需还原
-                                dispatchRemoveFinished(holder);
-                                mRemoveAnimations.remove(holder);
-                                dispatchFinishedWhenDone();
-                            }
-
-                            @Override
-                            public void onAnimationCancel(@NonNull View view) {
-
-                            }
-                        }).start();
+                    @Override
+                    public void onAnimationEnd(Animator animator) {
+                        animation.setListener(null);
+                        view.setAlpha(1);
+                        dispatchRemoveFinished(holder);
+                        mRemoveAnimations.remove(holder);
+                        dispatchFinishedWhenDone();
+                    }
+                }).start();
     }
+
 
     @Override
     @SuppressLint("UnknownNullness") // b/240775049: Cannot annotate properly
     public boolean animateAdd(final RecyclerView.ViewHolder holder) {
         resetAnimation(holder);
         //这里我们增加了一个平移动画
-        holder.itemView.setTranslationX( -holder.itemView.getWidth());
+        holder.itemView.setTranslationX(holder.itemView.getWidth());
         mPendingAdditions.add(holder);
         return true;
     }
 
     void animateAddImpl(final RecyclerView.ViewHolder holder) {
         final View view = holder.itemView;
-        final ViewPropertyAnimatorCompat animation = ViewCompat.animate(view);
+        final ViewPropertyAnimator animation = view.animate();
         mAddAnimations.add(holder);
         //这里我们增加了一个平移动画
         animation.translationX(0).setDuration(getAddDuration())
-                .setListener(new ViewPropertyAnimatorListener() {
+                .setListener(new AnimatorListenerAdapter() {
                     @Override
-                    public void onAnimationStart(@NonNull View view) {
+                    public void onAnimationStart(Animator animator) {
                         dispatchAddStarting(holder);
                     }
 
                     @Override
-                    public void onAnimationEnd(@NonNull View view) {
-                        //view.setAlpha(1);
-                        ViewCompat.setAlpha(view, 1);
-                    }
-
-                    @Override
-                    public void onAnimationCancel(@NonNull View view) {
+                    public void onAnimationEnd(Animator animator) {
                         animation.setListener(null);
                         dispatchAddFinished(holder);
-                        mAddAnimations.remove(holder);
+                        //mAddAnimations.remove(holder);
                         dispatchFinishedWhenDone();
                     }
+                    @Override
+                    public void onAnimationCancel(Animator animator) {
+                        view.setAlpha(1);
+                    }
+
                 }).start();
     }
 

@@ -13,22 +13,22 @@ class NoVScrollRecycleView @JvmOverloads constructor(context: Context, attrs: At
     : RecyclerView(context, attrs, defStyleAttr) {
     private var lastX = 0f
     private var lastY = 0f
-    /*override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
-
+  /*  override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        val x = ev.x
+        val y = ev.y
         when (ev.action) {
             MotionEvent.ACTION_DOWN -> {
-                lastX = ev.x
-                lastY = ev.y
                 parent.requestDisallowInterceptTouchEvent(true)
             }
             MotionEvent.ACTION_MOVE -> {
-                if (abs(ev.y)>0) {
+                if (abs(lastY-y) > abs(lastX-x)) {
                     parent.requestDisallowInterceptTouchEvent(false)
                 }
             }
             MotionEvent.ACTION_UP -> {}
         }
+        lastX = x
+        lastY = y
         return super.dispatchTouchEvent(ev)
-    }
-*/
+    }*/
 }

@@ -184,8 +184,8 @@ class MatchDetailActivity :
      */
     private fun setBaseMatchUI() {
         matchName = matchDetail.competitionName + "  " +
-                if (matchType=="1")matchDetail.homeName + "VS" + matchDetail.awayName
-                else matchDetail.awayName + "VS" + matchDetail.homeName
+                if (matchType=="1")matchDetail.homeName + " VS " + matchDetail.awayName
+                else matchDetail.awayName + " VS " + matchDetail.homeName
         mDatabind.tvTitle.text = matchName
         //上滑停靠栏
         getMatchStatus(mDatabind.tvTopMatchStatus, matchDetail.matchType, matchDetail.status)
