@@ -35,7 +35,7 @@
                 app:border_width="@dimen/dp_2"
                 android:scaleType="fitXY"
                 app:border_color="@color/c_80fffff"
-                app:srcCompat="@drawable/load_head"
+                app:srcCompat="@drawable/icon_avatar"
                 app:is_circle="true"/>
                 <LinearLayout
                     android:layout_width="wrap_content"

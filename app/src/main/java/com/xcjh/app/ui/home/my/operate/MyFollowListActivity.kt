@@ -69,8 +69,8 @@ class MyFollowListActivity : BaseActivity<MyFollowListVm, ActivityMyFollowListBi
                         bindingItem.txtFollowName.maxWidth=screenWidth-context.dp2px(105)-context.dp2px(56)-context.dp2px(84)
                         Glide.with(context)
                             .load(bean.head) // 替换为您要加载的图片 URL
-                            .error(R.drawable.load_round)
-                            .placeholder(R.drawable.load_round)
+                            .error(R.drawable.default_anchor_icon)
+                            .placeholder(R.drawable.default_anchor_icon)
                             .into(bindingItem.ivLiveHead)
                         bindingItem.txtFollowFansNum.text=resources.getString(R.string.follow_txt_fans_num,"${bean.fans}")
                         //判断是否在直播

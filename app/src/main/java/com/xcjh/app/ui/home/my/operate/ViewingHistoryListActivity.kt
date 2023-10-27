@@ -72,8 +72,8 @@ class ViewingHistoryListActivity : BaseActivity<ViewingHistoryListVm, ActivityVi
                             .into(bindingItem.ivLiveBe)
                         Glide.with(context)
                             .load(bean.userLogo) // 替换为您要加载的图片 URL
-                            .error(R.drawable.load_round)
-                            .placeholder(R.drawable.load_round)
+                            .error(R.drawable.default_anchor_icon)
+                            .placeholder(R.drawable.default_anchor_icon)
                             .into(bindingItem.ivLiveHead)
                         bindingItem.txtLiveName.text=bean.nickName
                         //比赛类型 1足球，2篮球,可用值:1,2
