@@ -150,7 +150,7 @@
     <string name="anchor">主播</string>
     <string name="main_txt_under">进行中 %s</string>
     <string name="main_txt_wks">未开赛</string>
-    <string name="main_txt_over">已结束</string>
+    <string name="main_txt_over">已完场</string>
     <string name="main_txt_tc">推迟</string>
     <string name="main_txt_zd">中断</string>
     <string name="main_txt_yz">腰斩</string>
