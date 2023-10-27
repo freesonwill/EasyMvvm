@@ -182,8 +182,8 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
                 mDatabind.iiIsShowLeve.visibility= View.VISIBLE
                 Glide.with(requireContext())
                     .load(user!!.head) // 替换为您要加载的图片 URL
-                    .error(R.drawable.load_head)
-                    .placeholder(R.drawable.load_head)
+                    .error(R.drawable.icon_avatar)
+                    .placeholder(R.drawable.icon_avatar)
                     .into(mDatabind.ivMyHead)
                 mDatabind.txtMyName.text=user!!.name
                 mDatabind.txtMyNum.text="Lv.${user!!.lvNum} ${user!!.lvName}"
