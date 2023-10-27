@@ -75,58 +75,44 @@ class LevelMissionActivity  : BaseActivity<LevelMissionVm, ActivityLevelMissionB
 //                    mDatabind.txtLevelGrow.text=resources.getString(R.string.level_txt_grow,"${(user!!.growthValueNext!!.toFloat()).toInt()}")
 
 
-                    mDatabind.txtLeve.text="Lv.${user!!.lvNum} ${user!!.lvName}"
+//                    mDatabind.txtLeve.text="Lv.${user!!.lvNum} ${user!!.lvName}"
+                    mDatabind.txtLeve.text="${user!!.lvName}"
                     mDatabind.txtLeveName.text="${user!!.lvNum}"
                     if (user!!.lvNum.equals("1")){
                         mDatabind.rlLevelBg.background=ContextCompat.getDrawable(this,R.drawable.level_v_yi)
                         mDatabind.ivLevelV.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.level_txt_yi))
-                        mDatabind.ivLevelIcon.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.level_yi))
-
                         mDatabind.txtLeveName.setTextColor(ContextCompat.getColor(this,R.color.c_c5c5c5))
                     }else if (user!!.lvNum.equals("2")){
                         mDatabind.rlLevelBg.background=ContextCompat.getDrawable(this,R.drawable.level_v_er)
                         mDatabind.ivLevelV.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.level_txt_er))
-                        mDatabind.ivLevelIcon.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.level_er))
-
                         mDatabind.txtLeveName.setTextColor(ContextCompat.getColor(this,R.color.c_f6d9c8))
                     }else if (user!!.lvNum.equals("3")){
                         mDatabind.rlLevelBg.background=ContextCompat.getDrawable(this,R.drawable.level_v_san)
                         mDatabind.ivLevelV.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.level_txt_san))
-                        mDatabind.ivLevelIcon.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.level_san))
-
                         mDatabind.txtLeveName.setTextColor(ContextCompat.getColor(this,R.color.c_d2dcdb))
                     }else if (user!!.lvNum.equals("4")){
                         mDatabind.rlLevelBg.background=ContextCompat.getDrawable(this,R.drawable.level_v_si)
                         mDatabind.ivLevelV.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.level_txt_si))
-                        mDatabind.ivLevelIcon.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.level_si))
-
                         mDatabind.txtLeveName.setTextColor(ContextCompat.getColor(this,R.color.c_d0d0d0))
                     }else if (user!!.lvNum.equals("5")){
                         mDatabind.rlLevelBg.background=ContextCompat.getDrawable(this,R.drawable.level_v_wu)
                         mDatabind.ivLevelV.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.level_txt_wu))
-                        mDatabind.ivLevelIcon.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.level_wu))
-
                         mDatabind.txtLeveName.setTextColor(ContextCompat.getColor(this,R.color.c_ede2d2))
                     }else if (user!!.lvNum.equals("6")){
                         mDatabind.rlLevelBg.background=ContextCompat.getDrawable(this,R.drawable.level_v_liu)
                         mDatabind.ivLevelV.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.level_txt_liu))
-                        mDatabind.ivLevelIcon.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.level_liu))
-
                         mDatabind.txtLeveName.setTextColor(ContextCompat.getColor(this,R.color.c_dbecf0))
                     }else if (user!!.lvNum.equals("7")){
                         mDatabind.rlLevelBg.background=ContextCompat.getDrawable(this,R.drawable.level_v_qi)
                         mDatabind.ivLevelV.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.level_txt_qi))
-                        mDatabind.ivLevelIcon.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.level_qi))
                         mDatabind.txtLeveName.setTextColor(ContextCompat.getColor(this,R.color.c_d8f0f9))
                     }else if (user!!.lvNum.equals("8")){
                         mDatabind.rlLevelBg.background=ContextCompat.getDrawable(this,R.drawable.level_v_ba)
                         mDatabind.ivLevelV.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.level_txt_ba))
-                        mDatabind.ivLevelIcon.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.level_ba))
                         mDatabind.txtLeveName.setTextColor(ContextCompat.getColor(this,R.color.c_dbccfb))
                     }else  {
                         mDatabind.rlLevelBg.background=ContextCompat.getDrawable(this,R.drawable.level_v_yi)
                         mDatabind.ivLevelV.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.level_txt_yi))
-                        mDatabind.ivLevelIcon.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.level_yi))
                         mDatabind.txtLeveName.setTextColor(ContextCompat.getColor(this,R.color.c_c5c5c5))
                     }
 

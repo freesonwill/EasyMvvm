@@ -186,36 +186,72 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
                     .placeholder(R.drawable.icon_avatar)
                     .into(mDatabind.ivMyHead)
                 mDatabind.txtMyName.text=user!!.name
-                mDatabind.txtMyNum.text="Lv.${user!!.lvNum} ${user!!.lvName}"
+                mDatabind.txtMyNum.text="${user!!.lvName}"
 
 
                 if (user!!.lvNum.equals("1")){
-                    mDatabind.ivMyLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_yi))
+//                    mDatabind.ivMyLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_yi))
                     mDatabind.ivMyLevelAdd.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_yi))
+                    mDatabind.rlLevelBg.background=ContextCompat.getDrawable(requireContext(),R.drawable.level_v_yi)
+                    mDatabind.ivLevelV.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_txt_yi))
+                    mDatabind.txtLeveName.setTextColor(ContextCompat.getColor(requireContext(),R.color.c_c5c5c5))
                 }else if (user!!.lvNum.equals("2")){
-                    mDatabind.ivMyLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_er))
+//                    mDatabind.ivMyLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_er))
                     mDatabind.ivMyLevelAdd.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_er))
+
+                    mDatabind.rlLevelBg.background=ContextCompat.getDrawable(requireContext(),R.drawable.level_v_er)
+                    mDatabind.ivLevelV.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_txt_er))
+                    mDatabind.txtLeveName.setTextColor(ContextCompat.getColor(requireContext(),R.color.c_f6d9c8))
+
                 }else if (user!!.lvNum.equals("3")){
-                    mDatabind.ivMyLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_san))
+//                    mDatabind.ivMyLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_san))
                     mDatabind.ivMyLevelAdd.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_san))
+
+                    mDatabind.rlLevelBg.background=ContextCompat.getDrawable(requireContext(),R.drawable.level_v_san)
+                    mDatabind.ivLevelV.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_txt_san))
+                    mDatabind.txtLeveName.setTextColor(ContextCompat.getColor(requireContext(),R.color.c_d2dcdb))
                 }else if (user!!.lvNum.equals("4")){
-                    mDatabind.ivMyLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_si))
+//                    mDatabind.ivMyLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_si))
                     mDatabind.ivMyLevelAdd.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_si))
+
+                    mDatabind.rlLevelBg.background=ContextCompat.getDrawable(requireContext(),R.drawable.level_v_si)
+                    mDatabind.ivLevelV.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_txt_si))
+                    mDatabind.txtLeveName.setTextColor(ContextCompat.getColor(requireContext(),R.color.c_d0d0d0))
                 }else if (user!!.lvNum.equals("5")){
-                    mDatabind.ivMyLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_wu))
+//                    mDatabind.ivMyLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_wu))
                     mDatabind.ivMyLevelAdd.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_wu))
+
+                    mDatabind.rlLevelBg.background=ContextCompat.getDrawable(requireContext(),R.drawable.level_v_wu)
+                    mDatabind.ivLevelV.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_txt_wu))
+                    mDatabind.txtLeveName.setTextColor(ContextCompat.getColor(requireContext(),R.color.c_ede2d2))
                 }else if (user!!.lvNum.equals("6")){
-                    mDatabind.ivMyLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_liu))
+//                    mDatabind.ivMyLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_liu))
                     mDatabind.ivMyLevelAdd.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_liu))
+
+                    mDatabind.rlLevelBg.background=ContextCompat.getDrawable(requireContext(),R.drawable.level_v_liu)
+                    mDatabind.ivLevelV.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_txt_liu))
+                    mDatabind.txtLeveName.setTextColor(ContextCompat.getColor(requireContext(),R.color.c_dbecf0))
                 }else if (user!!.lvNum.equals("7")){
-                    mDatabind.ivMyLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_qi))
+//                    mDatabind.ivMyLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_qi))
                     mDatabind.ivMyLevelAdd.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_qi))
+
+                    mDatabind.rlLevelBg.background=ContextCompat.getDrawable(requireContext(),R.drawable.level_v_qi)
+                    mDatabind.ivLevelV.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_txt_qi))
+                    mDatabind.txtLeveName.setTextColor(ContextCompat.getColor(requireContext(),R.color.c_d8f0f9))
                 }else if (user!!.lvNum.equals("8")){
-                    mDatabind.ivMyLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_ba))
+//                    mDatabind.ivMyLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_ba))
                     mDatabind.ivMyLevelAdd.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_ba))
+
+                    mDatabind.rlLevelBg.background=ContextCompat.getDrawable(requireContext(),R.drawable.level_v_ba)
+                    mDatabind.ivLevelV.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_txt_ba))
+                    mDatabind.txtLeveName.setTextColor(ContextCompat.getColor(requireContext(),R.color.c_dbccfb))
                 }else  {
-                    mDatabind.ivMyLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_yi))
+//                    mDatabind.ivMyLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_yi))
                     mDatabind.ivMyLevelAdd.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_yi))
+
+                    mDatabind.rlLevelBg.background=ContextCompat.getDrawable(requireContext(),R.drawable.level_v_yi)
+                    mDatabind.ivLevelV.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_txt_yi))
+                    mDatabind.txtLeveName.setTextColor(ContextCompat.getColor(requireContext(),R.color.c_c5c5c5))
                 }
 
             }else{

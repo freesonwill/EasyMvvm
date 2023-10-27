@@ -73,11 +73,9 @@ class PersonalDataActivity : BaseActivity<PersonalDataVm, ActivityPersonalDataBi
                                 }else{
                                     path = result[0].compressPath
                                 }
-
                             }else{
                                 path = result[0].compressPath
                             }
-
                             Glide.with(this@PersonalDataActivity)
                                 .load(path)
                                 .placeholder(R.drawable.icon_avatar)
@@ -122,10 +120,6 @@ class PersonalDataActivity : BaseActivity<PersonalDataVm, ActivityPersonalDataBi
 
             }
         }
-
-
-
-
 
     }
 
