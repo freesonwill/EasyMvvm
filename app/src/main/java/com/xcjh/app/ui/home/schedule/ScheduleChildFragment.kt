@@ -32,20 +32,17 @@ import com.xcjh.app.utils.selectTime
 import com.xcjh.base_lib.utils.LogUtils
 import com.xcjh.base_lib.utils.TimeUtil
 import com.xcjh.base_lib.utils.distance
-import com.xcjh.base_lib.utils.grid
 import com.xcjh.base_lib.utils.horizontal
 import com.xcjh.base_lib.utils.setOnclickNoRepeat
-import com.xcjh.base_lib.utils.vertical
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import java.util.Timer
 
 
 /***
  * 赛程
  */
-class ConmentFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
+class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
 
     private val mTabEntities = ArrayList<CustomTabEntity>()
     var listdata: MutableList<MatchBean> = ArrayList<MatchBean>()
@@ -73,12 +70,12 @@ class ConmentFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
         private val MATCHTYPE = "matchtype"
         private val STATUS = "status"
         private val TAB = "tab"
-        fun newInstance(matchtype: String, status: Int, po: Int): ConmentFragment {
+        fun newInstance(matchtype: String, status: Int, po: Int): ScheduleChildFragment {
             val args = Bundle()
             args.putString(MATCHTYPE, matchtype);
             args.putInt(STATUS, status);
             args.putInt(TAB, po);
-            val fragment = ConmentFragment()
+            val fragment = ScheduleChildFragment()
             fragment.arguments = args
             return fragment
         }

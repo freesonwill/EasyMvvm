@@ -33,6 +33,8 @@ class AppViewModel : BaseViewModel() {
     var homeViewPagerEvent= EventLiveData<Int>()
     //socket状态消息
     var wsStatus = EventLiveData<Int>()//1 开启   2 关闭
+    //更新某些页面
+    var updateSomeData = EventLiveData<String>()//"friends"//好友列表
     init {
         //默认值保存的账户信息，没有登陆过则为null started 或 resumed
         this.updateLoginEvent.value = CacheUtil.isLogin()

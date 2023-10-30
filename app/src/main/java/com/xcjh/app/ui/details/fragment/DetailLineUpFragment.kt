@@ -54,14 +54,8 @@ class DetailLineUpFragment(var match: MatchDetailBean) :
         //阵容接口返回监听处理
         mViewModel.foot.observe(this) {
             if (it != null) {
-                mDatabind.matchLineup.setHomeTeamInfo(
-                    it.homeFormation, it.homeMarketValue + it.homeMarketValueCurrency
-                )
-                mDatabind.matchLineup.setAwayTeamInfo(
-                    it.awayFormation, it.awayMarketValue + it.awayMarketValueCurrency
-                )
-                mDatabind.matchLineup.setData(it)
-                mDatabind.matchTable.setData(it,match)
+                mDatabind.matchLineup.setData(it,match)
+                mDatabind.matchTable.setData(it,match,0)
             }
         }
         mViewModel.basket.observe(this) {

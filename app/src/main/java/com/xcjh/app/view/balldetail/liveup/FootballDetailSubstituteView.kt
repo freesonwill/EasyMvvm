@@ -20,6 +20,7 @@ import com.xcjh.app.bean.MatchDetailBean
 import com.xcjh.app.bean.MatchTeam
 import com.xcjh.app.databinding.ItemDetailGameSubstituteBinding
 import com.xcjh.app.databinding.ItemDetailGameSubstituteTopBinding
+import com.xcjh.base_lib.utils.view.visibleOrInvisible
 
 /**
  * 替补阵容
@@ -75,9 +76,9 @@ class FootballDetailSubstituteView : LinearLayout {
                     }
                     is FootballPlayer -> {
                         val binding = getBinding<ItemDetailGameSubstituteBinding>()
-                      /*  if (item.logo.isNotEmpty()){
-
-                        }*/
+                        binding.ivIcon.visibleOrInvisible(item.name.isNotEmpty())
+                        binding.tvPlayerNum.visibleOrInvisible(item.name.isNotEmpty())
+                        binding.tvPosition.visibleOrInvisible(item.name.isNotEmpty())
                         Glide.with(context).load(if(this.modelPosition%2==0) R.drawable.icon_red_cloth else R.drawable.icon_team_blue).into(binding.ivIcon)
                         binding.ctlItem.setBackgroundColor(context.getColor(if(this.modelPosition%2==0) R.color.c_21152a else R.color.c_18152A ))
                         binding.tvPlayerNum.text = item.shirtNumber.toString()
@@ -112,16 +113,16 @@ class FootballDetailSubstituteView : LinearLayout {
     }
 
     val list = arrayListOf<Any>()
-    fun setData(data: FootballLineupBean, match: MatchDetailBean) {
+    fun setData(data: FootballLineupBean, match: MatchDetailBean,first:Int=0) {
         list.clear()
 
         list.add(MatchTeam(name = match.homeName, logo = data.homeLogo))
         list.add(MatchTeam(name = match.awayName, logo = data.awayLogo))
         val home = data.home.filter {
-            it.first == 0
+            it.first == first
         }
         val away = data.away.filter {
-            it.first == 0
+            it.first == first
         }
         //Log.e("TAG", "setData:home ==="+ Gson().toJson(home))
         if (home.size == away.size) {

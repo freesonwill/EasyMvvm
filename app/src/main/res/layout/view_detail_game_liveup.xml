@@ -5,6 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <LinearLayout
+        android:id="@+id/lltShow"
+        android:visibility="invisible"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -116,4 +118,28 @@
             </LinearLayout>
         </RelativeLayout>
     </LinearLayout>
+    <LinearLayout
+        android:id="@+id/lltHide"
+        android:visibility="invisible"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="@dimen/dp_16"
+            android:text="@string/first_z"
+            android:textColor="@color/c_F5F5F5"
+            android:textSize="@dimen/sp_16" />
+
+        <com.xcjh.app.view.balldetail.liveup.FootballDetailSubstituteView
+            android:id="@+id/firstTable"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginBottom="@dimen/dp_30"
+            android:visibility="visible"/>
+    </LinearLayout>
+
 </RelativeLayout>

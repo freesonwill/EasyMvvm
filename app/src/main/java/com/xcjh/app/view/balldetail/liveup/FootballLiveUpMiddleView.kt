@@ -54,7 +54,7 @@ class FootballLiveUpMiddleView @JvmOverloads constructor(
             it.y
         }.toSet()//.size
         removeAllViews()
-        Log.e("TAG", "setData: ==="+homeSet.toString() )
+        Log.e("TAG", "${mWidth}===setData: ==="+homeSet.toString() )
         homeList.forEach { player ->
             val child =
                 ViewFootballPlayerBinding.inflate(LayoutInflater.from(context), null, false)
@@ -73,7 +73,7 @@ class FootballLiveUpMiddleView @JvmOverloads constructor(
                 }
                 else -> {
                     for ((i, item) in homeSet.withIndex()) {
-                        if (player.y==item){
+                        if (player.y==item && homeSet.size>1){
                             lp.topMargin = mHight * (12+76*i/(homeSet.size-1)) / 200 - dp2px(25)
                         }
                     }
@@ -84,9 +84,6 @@ class FootballLiveUpMiddleView @JvmOverloads constructor(
             addView(child.root)
         }
         awayList.forEach { player ->
-            if (player.first == 0) {
-                return@forEach
-            }
             val child =
                 ViewFootballPlayerBinding.inflate(LayoutInflater.from(context), null, false)
             child.ivPlayer.setBackgroundResource(R.drawable.icon_team_blue)

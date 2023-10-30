@@ -1,65 +1,76 @@
-package com.xcjh.app.view.balldetail.liveup;
+package com.xcjh.app.view.balldetail.liveup
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.util.AttributeSet;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.LinearLayout
+import android.widget.TextView
+import android.annotation.SuppressLint
+import android.content.Context
+import android.util.AttributeSet
+import android.view.LayoutInflater
+import com.xcjh.app.R
+import com.xcjh.app.bean.FootballLineupBean
+import com.xcjh.app.bean.MatchDetailBean
+import com.xcjh.base_lib.utils.view.visibleOrGone
+import com.xcjh.base_lib.utils.view.visibleOrInvisible
 
-import androidx.annotation.Nullable;
+class FootballLineupView : LinearLayout {
+    private var tv_home_lineup: TextView? = null
+    private var tv_home_value: TextView? = null
+    private var tv_away_lineup: TextView? = null
+    private var tv_away_value: TextView? = null
+    private var lineUpMiddleView: FootballLiveUpMiddleView? = null
+    private var lltShow: LinearLayout? = null
+    private var lltHide: LinearLayout? = null
+    private var firstTable: FootballDetailSubstituteView? = null
 
-import com.xcjh.app.R;
-import com.xcjh.app.bean.FootballLineupBean;
-
-import org.jetbrains.annotations.NotNull;
-
-public class FootballLineupView extends LinearLayout {
-
-    private TextView tv_home_lineup, tv_home_value;
-    private TextView tv_away_lineup, tv_away_value;
-    private FootballLiveUpMiddleView lineUpMiddleView;
-
-    public FootballLineupView(Context context) {
-        super(context);
-        initView(context);
+    constructor(context: Context?) : super(context) {
+        initView(context)
     }
 
-    public FootballLineupView(Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-        initView(context);
+    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
+        initView(context)
     }
 
-    public FootballLineupView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        initView(context);
+    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context,
+        attrs,
+        defStyleAttr) {
+        initView(context)
     }
 
-    public FootballLineupView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        initView(context);
+    constructor(
+        context: Context?,
+        attrs: AttributeSet?,
+        defStyleAttr: Int,
+        defStyleRes: Int,
+    ) : super(context, attrs, defStyleAttr, defStyleRes) {
+        initView(context)
     }
 
     @SuppressLint("MissingInflatedId")
-    public void initView(Context context) {
-        View v = LayoutInflater.from(getContext()).inflate(R.layout.view_detail_game_liveup, this);
-        tv_home_lineup = v.findViewById(R.id.tv_match_home_lineup);
-        tv_home_value = v.findViewById(R.id.tv_match_home_value);
-        tv_away_lineup = v.findViewById(R.id.tv_match_away_lineup);
-        tv_away_value = v.findViewById(R.id.tv_match_away_value);
-        lineUpMiddleView = v.findViewById(R.id.lineUpMiddleView);
+    fun initView(context: Context?) {
+        val v = LayoutInflater.from(getContext()).inflate(R.layout.view_detail_game_liveup, this)
+        lltShow = v.findViewById(R.id.lltShow)
+        lltHide = v.findViewById(R.id.lltHide)
+        firstTable = v.findViewById(R.id.firstTable)
+        tv_home_lineup = v.findViewById(R.id.tv_match_home_lineup)
+        tv_home_value = v.findViewById(R.id.tv_match_home_value)
+        tv_away_lineup = v.findViewById(R.id.tv_match_away_lineup)
+        tv_away_value = v.findViewById(R.id.tv_match_away_value)
+        lineUpMiddleView = v.findViewById(R.id.lineUpMiddleView)
+    }
+    fun setData(it: FootballLineupBean, match: MatchDetailBean) {
+        if (!it.homeFormation.isNullOrEmpty()) {
+            lltShow?.visibleOrInvisible(true)
+            lltHide?.visibleOrInvisible(false)
+            tv_home_lineup!!.text = "阵型：${it.homeFormation}" //阵型
+            tv_home_value!!.text = it.homeMarketValue + it.homeMarketValueCurrency //身价
+            tv_away_lineup!!.text = "阵型：${it.homeFormation}" //阵型
+            tv_away_value!!.text = it.awayMarketValue + it.awayMarketValueCurrency//身价
+            lineUpMiddleView?.setData(it)
+        } else {
+            lltShow?.visibleOrInvisible(false)
+            lltHide?.visibleOrInvisible(true)
+            firstTable?.setData(it,match,1)
+        }
     }
 
-    public void setHomeTeamInfo(String lineup, String value) {
-        tv_home_lineup.setText("阵型："+lineup);//阵型
-        tv_home_value.setText(value);//身价
-    }
-    public void setData(@NotNull FootballLineupBean it) {
-        lineUpMiddleView.setData(it);
-    }
-    public void setAwayTeamInfo(String lineup, String value) {
-        tv_away_lineup.setText("阵型："+lineup);//阵型
-        tv_away_value.setText(value);//身价
-    }
 }

@@ -277,10 +277,10 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
     override fun onResume() {
         //setWindowSoftInput(float = mDatabind.llInput, setPadding = true)
         mDatabind.rcvChat.postDelayed({
-            Log.e("===", "onResume:isTopActivity ===" + this.mDatabind.root.height + "=====" + mDatabind.rcvChat.height)
-            val params = mDatabind.rcvChat.layoutParams
+            //Log.e("===", "onResume:isTopActivity ===" + this.mDatabind.root.height + "=====" + mDatabind.rcvChat.height)
+          /*  val params = mDatabind.rcvChat.layoutParams
             params.height = mDatabind.rcvChat.height//+10
-            mDatabind.rcvChat.layoutParams = params
+            mDatabind.rcvChat.layoutParams = params*/
         }, 800)
         super.onResume()
         //Log.e("===", "onResume:isTopActivity ==="+activity.toString())

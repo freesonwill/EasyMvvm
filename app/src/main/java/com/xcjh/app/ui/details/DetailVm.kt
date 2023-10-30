@@ -3,7 +3,6 @@ package com.xcjh.app.ui.details
 import com.kunminx.architecture.ui.callback.UnPeekLiveData
 import com.xcjh.app.bean.*
 import com.xcjh.app.net.apiService
-import com.xcjh.app.utils.CacheUtil
 import com.xcjh.base_lib.base.BaseViewModel
 import com.xcjh.base_lib.bean.ListDataUiState
 import com.xcjh.base_lib.bean.UpdateUiState
@@ -95,16 +94,16 @@ class DetailVm : BaseViewModel() {
             isfocus.value=false
         },true)
     }
-    var isUnfocus = UnPeekLiveData<Boolean>()
+    var isUnFocus = UnPeekLiveData<Boolean>()
     //取消关注主播接口，DetailAnchorFragment界面调用
     fun unFollowAnchor(id: String) {
         request({
             apiService.unfollowAnchor(id)
         }, {
-            isUnfocus.value=true
+            isUnFocus.value=true
         }, {
             myToast(it.errorMsg)
-            isUnfocus.value=true
+            isUnFocus.value=true
         },true)
     }
 

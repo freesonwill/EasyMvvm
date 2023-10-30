@@ -1,15 +1,11 @@
 package com.xcjh.app.ui.details.fragment
 
-import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
-import android.view.View
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
-import com.google.gson.Gson
 import com.xcjh.app.R
+import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseVpFragment
 import com.xcjh.app.databinding.FragmentDetailTabAnchorBinding
 import com.xcjh.app.ui.chat.ChatActivity
@@ -17,7 +13,6 @@ import com.xcjh.app.ui.details.DetailVm
 import com.xcjh.app.utils.judgeLogin
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.base.BaseViewModel
-import com.xcjh.base_lib.utils.dp2px
 
 /**
  * 主播
@@ -74,11 +69,13 @@ class DetailAnchorFragment(
         }
         vm.isfocus.observe(this) {
             if (it) {
+                appViewModel.updateSomeData.postValue("friends")
                 setFocusUI(true)
             }
         }
-        vm.isUnfocus.observe(this) {
+        vm.isUnFocus.observe(this) {
             if (it) {
+                appViewModel.updateSomeData.postValue("friends")
                 setFocusUI(false)
             }
         }

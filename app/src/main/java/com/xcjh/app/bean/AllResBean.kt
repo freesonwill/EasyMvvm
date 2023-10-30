@@ -518,8 +518,8 @@ data class AppUpdateBean(
  */
 @Keep
 data class FootballLineupBean(
-    var homeFormation: String = "",//主队阵型
-    var awayFormation: String = "",//客队阵型
+    var homeFormation: String? = "",//主队阵型
+    var awayFormation: String? = "",//客队阵型
     var homeColor: String = "",//主队球衣颜色
     var awayColor: String = "",//客队球衣颜色
     var confirmed: String = "",//正式阵容，1-是、0-不是

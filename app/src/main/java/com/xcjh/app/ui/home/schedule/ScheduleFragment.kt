@@ -10,7 +10,6 @@ import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseFragment
 import com.xcjh.app.databinding.FrCourseBinding
 import com.xcjh.app.vm.MainVm
-import com.xcjh.base_lib.utils.setOnclickNoRepeat
 
 
 class ScheduleFragment : BaseFragment<MainVm, FrCourseBinding>() {
@@ -31,7 +30,7 @@ class ScheduleFragment : BaseFragment<MainVm, FrCourseBinding>() {
     private fun initEvent() {
         mTitles=resources.getStringArray(R.array.str_schedule_tab_top)
         for (i in 0 until  mTitles!!.size) {
-            mFragments.add(ConmentFragment.newInstance(mtypes[i],status[i],i))
+            mFragments.add(ScheduleChildFragment.newInstance(mtypes[i],status[i],i))
         }
         mDatabind.vp.adapter= MyPagerAdapter(childFragmentManager);
         mDatabind.slide.setViewPager(mDatabind.vp)

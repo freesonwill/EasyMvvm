@@ -58,7 +58,7 @@ fun getMatchStatusStr(matchType: String, status: Int): String {
             5 -> "加时赛"
             6 -> "加时赛"
             7 -> "点球决战"
-            8 -> "完场"
+            8 -> "已结束"
             9 -> "推迟"
             10 -> "中断"
             11 -> "腰斩"
@@ -81,7 +81,7 @@ fun getMatchStatusStr(matchType: String, status: Int): String {
             7 -> "第三节完"
             8 -> "第四节"
             9 -> "加时"*/
-            10 -> "完场"
+            10 -> "已结束"
             11 -> "中断"
             12 -> "取消"
             13 -> "延期"

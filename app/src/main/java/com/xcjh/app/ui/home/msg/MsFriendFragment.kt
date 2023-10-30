@@ -6,6 +6,7 @@ import com.xcjh.app.adapter.MsgFriendAdapter
 import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseFragment
 import com.xcjh.app.bean.FriendListBean
+import com.xcjh.app.bean.HotReq
 import com.xcjh.app.bean.MatchBean
 import com.xcjh.app.databinding.FrMsgfriendBinding
 import com.xcjh.app.utils.CacheUtil
@@ -115,6 +116,11 @@ class MsFriendFragment : BaseFragment<MsgVm, FrMsgfriendBinding>() {
                     mDatabind.smartCommon.finishLoadMore(false)
                 }
             }
+        }
+        appViewModel.updateSomeData.observe(this){
+           if (it.equals("friends")){
+               mViewModel.getFriendList(true)
+           }
         }
     }
 

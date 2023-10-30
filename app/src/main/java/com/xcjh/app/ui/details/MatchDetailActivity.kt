@@ -412,7 +412,9 @@ class MatchDetailActivity :
         //有主播
         if (isHasAnchor) {
             mDatabind.viewPager.postDelayed({
-                mViewModel.addLiveHistory(anchor?.liveId)
+                if (CacheUtil.isLogin()) {
+                    mViewModel.addLiveHistory(anchor?.liveId)
+                }
                 mViewModel.getDetailAnchorInfo(anchor?.userId) },
                 200)
         }
