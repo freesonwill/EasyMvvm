@@ -26,7 +26,7 @@ class MsgFriendAdapter : BaseQuickAdapter<FriendListBean, QuickViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: QuickViewHolder, position: Int, item: FriendListBean?) {
-        Glide.with(context).load(item?.head).placeholder(R.drawable.icon_avatar).
+        Glide.with(context).load(item?.head).placeholder(R.drawable.default_anchor_icon).
         into(holder.getView<CircleImageView>(R.id.ivhead))
         holder.getView<TextView>(R.id.tvname).text =item?.nickName
         // 设置item数据

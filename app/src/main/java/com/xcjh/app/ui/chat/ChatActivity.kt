@@ -96,7 +96,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
         userhead = intent.getStringExtra(Constants.USER_HEAD) ?: ""
         appViewModel.updateMsgEvent.postValue(userId)
         mDatabind.titleTop.tvTitle.text = nickname
-        Glide.with(this).load(userhead).placeholder(R.drawable.icon_avatar)
+        Glide.with(this).load(userhead).placeholder(R.drawable.default_anchor_icon)
             .into(mDatabind.titleTop.ivhead)
 
         mDatabind.rv.setup {
