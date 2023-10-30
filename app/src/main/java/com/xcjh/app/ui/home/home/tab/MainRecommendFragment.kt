@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -42,6 +43,7 @@ import kotlin.collections.ArrayList
  * 首页推荐页面碎片
  */
 class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommendBinding>() {
+
 
     override fun initView(savedInstanceState: Bundle?) {
         //首页轮询
@@ -119,29 +121,28 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                                         var matchBean=_data as MatchBean
                                         //主队
                                         binding.txtCompetition.text=matchBean.competitionName
-                                        Glide.with(requireContext())
-                                            .load(matchBean.homeLogo) // 替换为您要加载的图片 URL
-                                            .error(R.drawable.main_load_icon)
-                                            .placeholder(R.drawable.main_load_icon)
-                                            .into(binding.txtWayHome)
 
-
-
-
-                                        //客队
-                                        Glide.with(requireContext())
-                                            .load(matchBean.awayLogo) // 替换为您要加载的图片 URL
-                                            .error(R.drawable.main_load_icon)
-                                            .placeholder(R.drawable.main_load_icon)
-                                            .into(binding.ivGuestIcon)
 
                                         binding.txtMatchAnimation.visibility=View.GONE
                                         //比赛类型：1：足球；2：篮球,可用值:1,2
                                          if(matchBean.matchType.equals("2")){
-                                             binding.txtHomeName.text=matchBean.homeName
-                                             binding.txtHomeScore.text=matchBean.homeScore
-                                             binding.txtGuestName.text=matchBean.awayName
-                                             binding.txtGuestScore.text=matchBean.awayScore
+
+                                             Glide.with(requireContext())
+                                                 .load(matchBean.awayLogo) // 替换为您要加载的图片 URL
+                                                 .error(R.drawable.main_load_icon)
+                                                 .placeholder(R.drawable.main_load_icon)
+                                                 .into(binding.txtWayHome)
+
+                                             //客队
+                                             Glide.with(requireContext())
+                                                 .load(matchBean.homeLogo) // 替换为您要加载的图片 URL
+                                                 .error(R.drawable.main_load_icon)
+                                                 .placeholder(R.drawable.main_load_icon)
+                                                 .into(binding.ivGuestIcon)
+                                             binding.txtHomeName.text=matchBean.awayName
+                                             binding.txtGuestName.text=matchBean.homeName
+                                             binding.txtHomeScore.text=matchBean.awayScore
+                                             binding.txtGuestScore.text=matchBean. homeScore
 
                                                 if(matchBean.status.equals("0")){
                                                     binding.txtMatchStatus.visibility=View.GONE
@@ -173,10 +174,27 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                                                 }
                                          }else{
 
-                                             binding.txtHomeName.text=matchBean.awayName
-                                             binding.txtGuestName.text=matchBean.homeName
-                                             binding.txtHomeScore.text=matchBean.awayScore
-                                             binding.txtGuestScore.text=matchBean. homeScore
+                                             Glide.with(requireContext())
+                                                 .load(matchBean.homeLogo) // 替换为您要加载的图片 URL
+                                                 .error(R.drawable.main_load_icon)
+                                                 .placeholder(R.drawable.main_load_icon)
+                                                 .into(binding.txtWayHome)
+
+
+                                             //客队
+                                             Glide.with(requireContext())
+                                                 .load(matchBean.awayLogo) // 替换为您要加载的图片 URL
+                                                 .error(R.drawable.main_load_icon)
+                                                 .placeholder(R.drawable.main_load_icon)
+                                                 .into(binding.ivGuestIcon)
+
+
+
+                                             binding.txtHomeName.text=matchBean.homeName
+                                             binding.txtHomeScore.text=matchBean.homeScore
+                                             binding.txtGuestName.text=matchBean.awayName
+                                             binding.txtGuestScore.text=matchBean.awayScore
+
 
                                              if(matchBean.status.equals("0")){
                                                  binding.txtMatchStatus.visibility=View.GONE

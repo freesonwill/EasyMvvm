@@ -277,7 +277,7 @@
     <string name="level_txt_grow_add">+2成长值</string>
     <string name="level_txt_to_complete">去完成</string>
     <string name="level_txt_watch">每日观看直播10分钟以上</string>
-    <string name="my_txt_confirm_exit">是否确认退出登陆</string>
+    <string name="my_txt_confirm_exit">是否确认退出登录</string>
     <string name="my_txt_notarize">确认</string>
     <string name="vs">VS</string>
     <string name="no_referee_name">暂无裁判信息</string>
