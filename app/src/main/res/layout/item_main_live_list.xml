@@ -43,7 +43,7 @@
                 android:layout_height="@dimen/dp_20"
                 android:scaleType="fitXY"
                 app:is_circle="true"
-                app:srcCompat="@drawable/ic_default_bg"/>
+                app:srcCompat="@drawable/default_anchor_icon"/>
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/txtLiveName"
                 android:layout_width="wrap_content"
