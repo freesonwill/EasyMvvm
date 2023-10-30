@@ -84,6 +84,14 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
 
                 when (item.matchType) {//比赛类型：1：足球；2：篮球,可用值:1,2
                     "1" -> {
+                        binding.tvhafl.text =
+                            context.resources.getString(R.string.hafl_rices) + ":" + item.homeHalfScore + "-" + item.awayHalfScore
+                        binding.tvtime.text = time!!.substring(11, 16)
+                        binding.tvname.text = item.competitionName
+                        binding.tvnameLeft.text = item.homeName
+                        binding.tvnameRight.text = item.awayName
+                        Glide.with(context).load(item.homeLogo).into(binding.tvflagLeft)
+                        Glide.with(context).load(item.awayName).into(binding.tvflagRight)
                         binding.ivtype.setBackgroundResource(R.drawable.football)
                         when (item.status) {
                             "0" -> binding.tvstatus.visibility = View.GONE
@@ -234,6 +242,14 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                     }
 
                     "2" -> {
+                        binding.tvhafl.text =
+                            context.resources.getString(R.string.hafl_rices) + ":" + item.awayHalfScore + "-" + item.homeHalfScore
+                        binding.tvtime.text = time!!.substring(11, 16)
+                        binding.tvname.text = item.competitionName
+                        binding.tvnameLeft.text = item.awayName
+                        binding.tvnameRight.text = item.homeName
+                        Glide.with(context).load(item.awayLogo).into(binding.tvflagLeft)
+                        Glide.with(context).load(item.homeLogo).into(binding.tvflagRight)
                         binding.ivtype.setBackgroundResource(R.drawable.basketball)
                         when (item.status) {
                             "0" -> binding.tvstatus.visibility = View.GONE
@@ -385,14 +401,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                         }
                     }
                 }
-                binding.tvhafl.text =
-                    context.resources.getString(R.string.hafl_rices) + ":" + item.awayHalfScore + "-" + item.homeHalfScore
-                binding.tvtime.text = time!!.substring(11, 16)
-                binding.tvname.text = item.competitionName
-                binding.tvnameLeft.text = item.awayName
-                binding.tvnameRight.text = item.homeName
-                Glide.with(context).load(item.awayLogo).into(binding.tvflagLeft)
-                Glide.with(context).load(item.homeLogo).into(binding.tvflagRight)
+
                 if (item.anchorList!=null&&item.anchorList.isNotEmpty()){
                     binding.conlive.visibility= View.VISIBLE
                     binding.rec.run {

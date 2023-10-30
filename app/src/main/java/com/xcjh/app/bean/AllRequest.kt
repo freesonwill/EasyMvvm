@@ -122,7 +122,8 @@ data class PostLoaginBean(
     val code: String?=null,
     val passwd: String? = null,
     val registerAddr: String? = null,
-    val type: Int
+    val type: Int,
+    val source:Int=2
 )
 
 /**
