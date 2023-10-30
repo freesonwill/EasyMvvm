@@ -80,13 +80,13 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
         MyWsManager.getInstance(requireActivity())!!
             .setC2CListener(javaClass.name, object : C2CListener {
                 override fun onSendMsgIsOk(isOk: Boolean, bean: ReceiveWsBean<*>) {
+                    if (isOk){
+
+                    }
                 }
 
                 override fun onC2CReceive(chat: ReceiveChatMsg) {
-
-                    refshMsg(chat)
-
-
+                        refshMsg(chat)
                 }
             })
         appViewModel.updateMsgEvent.observeForever {
