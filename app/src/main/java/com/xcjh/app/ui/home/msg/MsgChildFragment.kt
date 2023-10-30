@@ -62,6 +62,12 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
         appViewModel.updateLoginEvent.observe(this){
             if(it){
                 mViewModel.getMsgList(true, "")
+                mDatabind.smartCommon.setOnRefreshListener {
+                    mViewModel.getMsgList(true, "")
+                }.setOnLoadMoreListener {
+                    mViewModel.getMsgList(false, "")
+                }
+                initEvent()
             }else{
                 listdata.clear()
                 mAdapter.submitList(listdata)
