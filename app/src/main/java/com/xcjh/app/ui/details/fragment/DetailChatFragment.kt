@@ -201,6 +201,7 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
         mDatabind.rcvChat.setOnTouchListener { v, _ ->
             v.clearFocus() // 清除文字选中状态
             hideSoftInput() // 隐藏键盘
+            mDatabind.edtChatMsg.clearFocus()
             false
         }
     }
@@ -216,19 +217,22 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
                 noticeBean.notice = it.notice ?: ""
                 mDatabind.notice.expandableText.text = it.notice //主播公告
                 mDatabind.rcvChat.postDelayed({
-                    mDatabind.rcvChat.addModels(
-                        listOf(MsgBean(it.id,
-                            it.head,
-                            it.nickName,
-                            "0",
-                            it.firstMessage ?: "",
-                            identityType = 1)),
-                        // index = 0
-                    ) // 添加一条消息
+                    try {
+                        mDatabind.rcvChat.addModels(
+                            listOf(MsgBean(it.id,
+                                it.head,
+                                it.nickName,
+                                "0",
+                                it.firstMessage ?: "",
+                                identityType = 1)),
+                            // index = 0
+                        ) // 添加一条消息
+                        mDatabind.rcvChat.models?.size?.let {
+                            mDatabind.rcvChat.smoothScrollToPosition(it)
+                        }
+                    }catch (_:Exception){}
                     // mDatabind.rcvChat.scrollToPosition(0)
-                    mDatabind.rcvChat.models?.size?.let {
-                        mDatabind.rcvChat.smoothScrollToPosition(it)
-                    }
+
                 }, 500)
             }
         }
@@ -279,9 +283,11 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
         //setWindowSoftInput(float = mDatabind.llInput, setPadding = true)
         mDatabind.rcvChat.postDelayed({
             //Log.e("===", "onResume:isTopActivity ===" + this.mDatabind.root.height + "=====" + mDatabind.rcvChat.height)
-            val params = mDatabind.rcvChat.layoutParams
-            params.height = mDatabind.rcvChat.height//+10
-            mDatabind.rcvChat.layoutParams = params
+            try {
+                val params = mDatabind.rcvChat.layoutParams
+                params.height = mDatabind.rcvChat.height//+10
+                mDatabind.rcvChat.layoutParams = params
+            }catch (_:Exception){}
         }, 100)
         super.onResume()
         //Log.e("===", "onResume:isTopActivity ==="+activity.toString())
@@ -289,6 +295,7 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
 
     override fun onPause() {
         hideSoftInput()
+        mDatabind.edtChatMsg.clearFocus()
         mDatabind.rcvChat.postDelayed({
             Log.e("===",
                 "onPause:isTopActivity ===" + this.mDatabind.root.height + "=====" + mDatabind.rcvChat.height)
@@ -368,6 +375,7 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
         when (v) {
             mDatabind.sendChat -> {
                 hideSoftInput()
+                mDatabind.edtChatMsg.clearFocus()
                 mDatabind.sendChat.postDelayed({
                     judgeLogin {
                         CacheUtil.getUser()?.apply {

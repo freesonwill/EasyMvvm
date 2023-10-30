@@ -192,6 +192,7 @@ class MatchDetailActivity :
                 override fun onOpenLive(bean: LiveStatus) {
                     if (anchor?.liveId == bean.id && matchId == bean.matchId) {
                         isShowVideo = true
+                        mDatabind.ivNoLive.visibleOrGone(false)
                         mDatabind.videoPlayer.visibleOrGone(true)
                         mDatabind.cslMatchStatus.visibleOrGone(false)
                         if (isTopActivity(this@MatchDetailActivity) && !isPause) {
@@ -204,8 +205,9 @@ class MatchDetailActivity :
                     if (anchor?.liveId == bean.id && matchId == bean.matchId) {
                         mDatabind.videoPlayer.release()
                         isShowVideo = false
+                        mDatabind.ivNoLive.visibleOrGone(true)
                         mDatabind.videoPlayer.visibleOrGone(false)
-                        mDatabind.cslMatchStatus.visibleOrGone(true)
+                        mDatabind.cslMatchStatus.visibleOrGone(false)
                     }
                 }
 
@@ -213,6 +215,7 @@ class MatchDetailActivity :
                     if (isShowVideo) {
                         if (anchor?.liveId == bean.id && matchId == bean.matchId) {
                             anchor?.playUrl = bean.playUrl
+                            mDatabind.ivNoLive.visibleOrGone(false)
                             mDatabind.videoPlayer.visibleOrGone(true)
                             mDatabind.cslMatchStatus.visibleOrGone(false)
                             if (isTopActivity(this@MatchDetailActivity) && !isPause) {
@@ -445,6 +448,7 @@ class MatchDetailActivity :
     }
 
     private fun changeUI() {
+        mDatabind.ivNoLive.visibleOrGone(false)
         mDatabind.videoPlayer.visibleOrGone(isShowVideo)
         mDatabind.cslMatchStatus.visibleOrGone(!isShowVideo)
         mDatabind.tvToChat.visibleOrGone(isHasAnchor)
