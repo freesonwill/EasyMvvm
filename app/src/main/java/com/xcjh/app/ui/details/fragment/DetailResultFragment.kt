@@ -2,20 +2,20 @@ package com.xcjh.app.ui.details.fragment
 
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import com.google.gson.Gson
+import com.xcjh.app.R
 import com.xcjh.app.adapter.ImportEventAdapter
 import com.xcjh.app.adapter.TextLiveAdapter
 import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseVpFragment
 import com.xcjh.app.bean.IncidentsBean
-import com.xcjh.app.bean.LiveTextBean
 import com.xcjh.app.bean.MatchDetailBean
-import com.xcjh.app.bean.PostSchMatchListBean
 import com.xcjh.app.databinding.FragmentDetailTabResultBinding
+import com.xcjh.app.databinding.LayoutEmptyBinding
 import com.xcjh.app.ui.details.DetailVm
 import com.xcjh.app.ui.details.MatchDetailActivity
-import com.xcjh.base_lib.utils.LogUtils
 import com.xcjh.base_lib.utils.distance
 import com.xcjh.base_lib.utils.vertical
 import com.xcjh.base_lib.utils.view.visibleOrGone
@@ -117,7 +117,7 @@ class DetailResultFragment(var match: MatchDetailBean) :
         mViewModel.basketStatus.observe(this) {
             if (it != null) {
                 //主队客队2分球、3分球、罚球数据统计
-                Log.e("TAG", "createObserver: ==="+Gson().toJson(it) )
+                Log.e("TAG", "createObserver: ===" + Gson().toJson(it))
                 mDatabind.viewBasketballData.setData(it)
             }
         }
@@ -131,24 +131,45 @@ class DetailResultFragment(var match: MatchDetailBean) :
         }
         //文字直播
         mViewModel.text.observe(this) {
-            if (it != null) {
+            if (it != null && it.size > 0) {
                 textAdapter.submitList(it)
+            } else {
+                textAdapter.submitList(null)
+                textAdapter.isEmptyViewEnable = true
+                textAdapter.emptyView = layoutInflater.inflate(R.layout.layout_empty, null)
+                // LayoutEmptyBinding.inflate(LayoutInflater.from(context), null, false).root
             }
         }
         //重要事件
         mViewModel.incidents.observe(this) {
-            if (it != null) {
+            if (it != null && it.size > 0) {
                 val event = ArrayList<IncidentsBean>()
                 event.add(IncidentsBean(type = 0, time = 0))
+                var homeS = 0//主场得分
+                var awayS = 0//客队得分
                 for (item: IncidentsBean in it) {
                     //重要事件  红黄牌 进球 换人
-                    when(item.type){
-                        1,3,4,9,11,12,15->{
+                    when (item.type) {
+                        1, 3, 4, 9, 11, 12, 15 -> {
+                            //中场数据获取
+                            if (item.type == 1) {
+                                homeS = item.homeScore
+                                awayS = item.awayScore
+                            }
+                            if (item.type == 11) {
+                                item.homeScore = homeS
+                                item.awayScore = awayS
+                            }
                             event.add(item)
                         }
                     }
                 }
                 eventAdapter.submitList(event)
+            } else {
+                eventAdapter.submitList(null)
+                eventAdapter.isEmptyViewEnable = true
+                eventAdapter.emptyView =
+                    LayoutEmptyBinding.inflate(LayoutInflater.from(context), null, false).root
             }
         }
 

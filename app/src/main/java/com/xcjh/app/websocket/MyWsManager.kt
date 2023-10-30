@@ -6,6 +6,7 @@ import android.os.IBinder
 import android.util.Log
 import android.widget.Toast
 import com.xcjh.app.R
+import com.xcjh.app.websocket.bean.LiveStatus
 import com.xcjh.app.websocket.bean.ReceiveChatMsg
 import com.xcjh.app.websocket.bean.ReceiveWsBean
 import com.xcjh.app.websocket.listener.LiveRoomListener
@@ -216,6 +217,27 @@ class MyWsManager private constructor(private val mContext: Context) {
             23 -> {//消息已读
                 mReadListener.forEach {
                     it.toPair().second.onReadReceive(wsBean)
+                }
+            }
+            25 -> {//服务器主动推送直播间开播
+                val wsBean2 = jsonToObject2<ReceiveWsBean<LiveStatus>>(msg)
+                val chatMsgBean = wsBean2?.data as LiveStatus
+                mLiveRoomListener.forEach {
+                    it.toPair().second.onOpenLive(chatMsgBean)
+                }
+            }
+            26 -> {//服务器主动推送直播间关播
+                val wsBean2 = jsonToObject2<ReceiveWsBean<LiveStatus>>(msg)
+                val chatMsgBean = wsBean2?.data as LiveStatus
+                mLiveRoomListener.forEach {
+                    it.toPair().second.onCloseLive(chatMsgBean)
+                }
+            }
+            27 -> {//服务器主动推送直播间直播地址修改
+                val wsBean2 = jsonToObject2<ReceiveWsBean<LiveStatus>>(msg)
+                val chatMsgBean = wsBean2?.data as LiveStatus
+                mLiveRoomListener.forEach {
+                    it.toPair().second.onChangeLive(chatMsgBean)
                 }
             }
             else -> {

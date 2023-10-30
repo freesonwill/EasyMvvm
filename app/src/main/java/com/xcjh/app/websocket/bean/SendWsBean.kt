@@ -26,6 +26,8 @@ data class SendCommonWsBean(
     val groupId: String? = null,
     //好友ID【私聊消息独有】
     val fromUserId: String? = null,
+    //source（字符串）: 登陆来源 1IOS 2android 3H5 4小程序
+    val source: String? = "1",
 
 )
 

@@ -36,6 +36,7 @@ import com.xcjh.app.ui.details.common.RoomChatVm
 import com.xcjh.app.ui.details.common.SlideInLeftAnimator
 import com.xcjh.app.utils.*
 import com.xcjh.app.websocket.MyWsManager
+import com.xcjh.app.websocket.bean.LiveStatus
 import com.xcjh.app.websocket.bean.ReceiveChatMsg
 import com.xcjh.app.websocket.bean.ReceiveWsBean
 import com.xcjh.app.websocket.bean.SendChatMsgBean
@@ -271,17 +272,17 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
             MyWsManager.getInstance(App.app)?.setLiveRoomListener(activity.toString(), this)
             onWsUserEnterRoom(liveId)
         }
-        // Log.e("===", "onStart:isTopActivity ===" + activity.toString())
+         Log.e("===", "onStart:isTopActivity ===" + activity.toString())
     }
 
     override fun onResume() {
         //setWindowSoftInput(float = mDatabind.llInput, setPadding = true)
         mDatabind.rcvChat.postDelayed({
             //Log.e("===", "onResume:isTopActivity ===" + this.mDatabind.root.height + "=====" + mDatabind.rcvChat.height)
-          /*  val params = mDatabind.rcvChat.layoutParams
+            val params = mDatabind.rcvChat.layoutParams
             params.height = mDatabind.rcvChat.height//+10
-            mDatabind.rcvChat.layoutParams = params*/
-        }, 800)
+            mDatabind.rcvChat.layoutParams = params
+        }, 100)
         super.onResume()
         //Log.e("===", "onResume:isTopActivity ==="+activity.toString())
     }
@@ -328,6 +329,9 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
         //myToast("send_msg ==$isOk")
     }
 
+    override fun onOpenLive( bean: LiveStatus) {}
+    override fun onCloseLive( bean: LiveStatus) {}
+    override fun onChangeLive( bean: LiveStatus) {}
     override fun onRoomReceive(chat: ReceiveChatMsg) {
         var isShowBottom = false
         val firstVisible: Int = mLayoutManager.findFirstVisibleItemPosition()

@@ -429,8 +429,8 @@ data class IncidentsBean(
     val assist1Name: String = "",//助攻球员名称
     val assist2Id: Int = 0,
     val assist2Name: String = "",
-    val awayScore: Int = 0,//
-    val homeScore: Int = 0,//
+    var awayScore: Int = 0,//
+    var homeScore: Int = 0,//
     val inPlayerId: Int = 0,//换上球员ID
     val inPlayerName: String = "",//
     val outPlayerId: Int = 0,//

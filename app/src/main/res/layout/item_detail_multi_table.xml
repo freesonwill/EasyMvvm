@@ -60,7 +60,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="44"
                         android:gravity="center"
-                        tools:text="@string/first"
+                        android:text="@string/first"
                         android:textColor="@color/c_F5F5F5"
                         android:textSize="@dimen/sp_12" />
 

@@ -44,7 +44,14 @@ class FootballMultiTableView : LinearLayout {
         list.forEach {
             val binding =
                 ItemDetailMultiTableBinding.inflate(LayoutInflater.from(context), this, false)
-            binding.tvCompany.text = it.companyName
+            if (it.companyName.isNotEmpty()){
+                if (it.companyName.length>2){
+                    binding.tvCompany.text = it.companyName.substring(0 until 2)+"*"
+                }else{
+                    binding.tvCompany.text = it.companyName.substring(0 until 1)+"*"
+                }
+            }
+
             //初盘数据
             binding.tvChuHome.text = it.firstHomeWin//主胜
             binding.tvChuPin.text = it.firstDraw//平

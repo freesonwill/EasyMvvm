@@ -1,5 +1,6 @@
 package com.xcjh.app.websocket.listener
 
+import com.xcjh.app.websocket.bean.LiveStatus
 import com.xcjh.app.websocket.bean.ReceiveChatMsg
 import com.xcjh.app.websocket.bean.ReceiveWsBean
 
@@ -42,6 +43,20 @@ interface LiveRoomListener {
 
     /// 发送消息是否成功
     fun onSendMsgIsOk(isOk: Boolean,bean:ReceiveWsBean<*>)
+
+    /**
+     * 服务器主动推送直播间开播
+     */
+    fun onOpenLive(bean: LiveStatus)
+    /**
+     * 服务器主动推送直播间关播
+     */
+    fun onCloseLive (bean:LiveStatus)
+
+    /**
+     * 服务器主动推送直播间直播地址修改
+     */
+    fun onChangeLive (bean:LiveStatus)
 
 }
 
