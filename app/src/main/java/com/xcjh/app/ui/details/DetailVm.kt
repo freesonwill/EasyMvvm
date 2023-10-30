@@ -221,13 +221,14 @@ class DetailVm : BaseViewModel() {
     /**
      * 查询比赛技术统计-足球
      */
-    var text = UnPeekLiveData<ArrayList<LiveTextBean>>()
+    var text = UnPeekLiveData<ArrayList<LiveTextBean>?>()
     fun getLiveEvent(matchId: String) {
         request({
             apiService.getLiveEvent(matchId)
         }, {
             text.value = it
         }, {
+            text.value = arrayListOf()
            /* var  it= arrayListOf<LiveTextBean>()
             it.add(LiveTextBean("11111",1,1,"2", type = 1))
             it.add(LiveTextBean("22222",1,2,"4", type = 2))
@@ -247,14 +248,14 @@ class DetailVm : BaseViewModel() {
     /**
      * 查询重要事件-足球
      */
-    var incidents = UnPeekLiveData<ArrayList<IncidentsBean>>()
+    var incidents = UnPeekLiveData<ArrayList<IncidentsBean>?>()
     fun getIncidents(matchId: String) {
         request({
             apiService.getIncidents(matchId)
         }, {
             incidents.value = it
         }, {
-
+            incidents.value = arrayListOf()
         })
     }
 

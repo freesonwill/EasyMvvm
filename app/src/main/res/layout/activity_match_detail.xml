@@ -328,11 +328,11 @@
 
                             <TextView
                                 android:id="@+id/tvHomeName"
-                                android:layout_width="160dp"
+                                android:layout_width="136dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="6dp"
+                                android:maxLines="3"
                                 android:gravity="center"
-                                android:singleLine="true"
                                 android:textColor="@color/white"
                                 android:textSize="14sp"
                                 app:layout_constraintBottom_toBottomOf="@id/lltMatchStatus"
@@ -353,11 +353,11 @@
 
                             <TextView
                                 android:id="@+id/tvAwayName"
-                                android:layout_width="160dp"
+                                android:layout_width="136dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="6dp"
                                 android:gravity="center"
-                                android:singleLine="true"
+                                android:maxLines="3"
                                 android:textColor="@color/white"
                                 android:textSize="14sp"
                                 app:layout_constraintBottom_toBottomOf="@id/lltMatchStatus"

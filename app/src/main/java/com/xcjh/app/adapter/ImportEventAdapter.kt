@@ -35,9 +35,9 @@ class ImportEventAdapter : BaseViewBindingQuickAdapter<IncidentsBean, ItemImport
                     //进球
                     setUI(binding,2,item.position)
                     binding.tvHomeShotScore.text = "${item.homeScore} - ${item.awayScore}"
-                    binding.tvHomeShotMsg.text = item.playerName
+                    binding.tvHomeShotMsg.text = item.playerName+"进球"
                     binding.tvAwayShotScore.text = "${item.homeScore} - ${item.awayScore}"
-                    binding.tvAwayShotMsg.text =  item.playerName
+                    binding.tvAwayShotMsg.text =  item.playerName+"进球"
                 }
                 3, 4 ,15-> {
                     //红黄牌
@@ -57,7 +57,7 @@ class ImportEventAdapter : BaseViewBindingQuickAdapter<IncidentsBean, ItemImport
                 }
                 11->{
                     //中场
-                    binding.tvTime.text = "中场"
+                    binding.tvTime.text = "中场 "+"${item.homeScore} - ${item.awayScore}"
                     setUI(binding)
                 }
                 12->{

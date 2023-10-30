@@ -48,3 +48,14 @@ data class ReceiveReadWsBean(
     val channelType: Int? = 3,//消息发送平台：2-LIVE, 3-APP
     val toId: String? = "3",//接收人ID
 )
+
+/**
+ * 直播流状态
+ */
+data class LiveStatus(
+    val anchorId: String = "", //主播ID
+    val id: String = "", //直播间ID
+    val playUrl: String = "", // 播放地址
+    val liveStatus: Int = 0,// 直播间状态：2：开播 3：关播
+    val matchId: String = "",//比赛ID
+)

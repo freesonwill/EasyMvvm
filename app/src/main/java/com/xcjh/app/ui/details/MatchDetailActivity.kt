@@ -27,6 +27,12 @@ import com.xcjh.app.ui.chat.ChatActivity
 import com.xcjh.app.ui.details.common.GSYBaseActivity
 import com.xcjh.app.ui.details.fragment.*
 import com.xcjh.app.utils.*
+import com.xcjh.app.websocket.MyWsManager
+import com.xcjh.app.websocket.bean.LiveStatus
+import com.xcjh.app.websocket.bean.ReceiveChatMsg
+import com.xcjh.app.websocket.bean.ReceiveWsBean
+import com.xcjh.app.websocket.listener.LiveRoomListener
+import com.xcjh.base_lib.App
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.*
 import com.xcjh.base_lib.utils.view.visibleOrGone
@@ -176,6 +182,50 @@ class MatchDetailActivity :
             }
         })
         initVideoBuilderMode()
+        MyWsManager.getInstance(App.app)
+            ?.setLiveRoomListener(this.toString(), object : LiveRoomListener {
+                override fun onEnterRoomInfo(isOk: Boolean, msg: ReceiveWsBean<*>) {}
+                override fun onExitRoomInfo(isOk: Boolean, msg: ReceiveWsBean<*>) {}
+                override fun onRoomReceive(chat: ReceiveChatMsg) {}
+                override fun onSendMsgIsOk(isOk: Boolean, bean: ReceiveWsBean<*>) {}
+
+                override fun onOpenLive(bean: LiveStatus) {
+                    if (anchor?.liveId == bean.id && matchId == bean.matchId) {
+                        isShowVideo = true
+                        mDatabind.videoPlayer.visibleOrGone(true)
+                        mDatabind.cslMatchStatus.visibleOrGone(false)
+                        if (isTopActivity(this@MatchDetailActivity) && !isPause) {
+                            startVideo(anchor?.playUrl)
+                        }
+                    }
+                }
+
+                override fun onCloseLive(bean: LiveStatus) {
+                    if (anchor?.liveId == bean.id && matchId == bean.matchId) {
+                        mDatabind.videoPlayer.release()
+                        isShowVideo = false
+                        mDatabind.videoPlayer.visibleOrGone(false)
+                        mDatabind.cslMatchStatus.visibleOrGone(true)
+                    }
+                }
+
+                override fun onChangeLive(bean: LiveStatus) {
+                    if (isShowVideo) {
+                        if (anchor?.liveId == bean.id && matchId == bean.matchId) {
+                            anchor?.playUrl = bean.playUrl
+                            mDatabind.videoPlayer.visibleOrGone(true)
+                            mDatabind.cslMatchStatus.visibleOrGone(false)
+                            if (isTopActivity(this@MatchDetailActivity) && !isPause) {
+                                startVideo(anchor?.playUrl)
+                            }
+                        }
+                    } else {
+                        if (anchor?.liveId == bean.id && matchId == bean.matchId) {
+                            anchor?.playUrl = bean.playUrl
+                        }
+                    }
+                }
+            })
     }
 
     /**
@@ -184,7 +234,7 @@ class MatchDetailActivity :
      */
     private fun setBaseMatchUI() {
         matchName = matchDetail.competitionName + "  " +
-                if (matchType=="1")matchDetail.homeName + " VS " + matchDetail.awayName
+                if (matchType == "1") matchDetail.homeName + " VS " + matchDetail.awayName
                 else matchDetail.awayName + " VS " + matchDetail.homeName
         mDatabind.tvTitle.text = matchName
         //上滑停靠栏
@@ -202,12 +252,12 @@ class MatchDetailActivity :
         //有比分的情况 足球status正在比赛是[2,8] 篮球是[2,10]
 
 
-        if (matchType=="1"){
+        if (matchType == "1") {
             //足球
             Glide.with(this).load(matchDetail.homeLogo).into(mDatabind.ivTopHomeIcon)
             Glide.with(this).load(matchDetail.awayLogo).into(mDatabind.ivTopAwayIcon)
             mDatabind.tvTopHomeScore.text =
-                if (matchDetail.status in 2..8 ) matchDetail.homeScore.toString() else ""
+                if (matchDetail.status in 2..8) matchDetail.homeScore.toString() else ""
             mDatabind.tvTopAwayScore.text =
                 if (matchDetail.status in 2..8) matchDetail.awayScore.toString() else ""
             if (matchDetail.status in 2..8) {
@@ -218,14 +268,14 @@ class MatchDetailActivity :
                 mDatabind.tvMatchVs.textSize = 22f
                 mDatabind.tvMatchVs.text = getString(R.string.vs)
             }
-        }else{
+        } else {
             Glide.with(this).load(matchDetail.awayLogo).into(mDatabind.ivTopHomeIcon)
             Glide.with(this).load(matchDetail.homeLogo).into(mDatabind.ivTopAwayIcon)
             mDatabind.tvTopHomeScore.text =
                 if (matchDetail.status in 2..10) matchDetail.awayScore.toString() else ""
             mDatabind.tvTopAwayScore.text =
                 if (matchDetail.status in 2..10) matchDetail.homeScore.toString() else ""
-            if (matchDetail.status in 2.. 10) {
+            if (matchDetail.status in 2..10) {
                 mDatabind.tvMatchVs.textSize = 20f
                 mDatabind.tvMatchVs.text =
                     matchDetail.awayScore.toString() + " : " + matchDetail.homeScore.toString()
@@ -301,16 +351,16 @@ class MatchDetailActivity :
      * 无主播流时展示比赛状态
      */
     private fun showMatchStatusUI() {
-        if (matchType=="1"){//足球
+        if (matchType == "1") {//足球
             //主队名称以及图标
             mDatabind.tvHomeName.text = matchDetail.homeName
             Glide.with(this).load(matchDetail.homeLogo).into(mDatabind.ivHomeIcon)
             //客队名称以及图标
             mDatabind.tvAwayName.text = matchDetail.awayName
             Glide.with(this).load(matchDetail.awayLogo).into(mDatabind.ivAwayIcon)
-        }else{
+        } else {
             //主队名称以及图标
-            mDatabind.tvAwayName.text = matchDetail.homeName+"\n(主)"
+            mDatabind.tvAwayName.text = matchDetail.homeName + "\n(主)"
             Glide.with(this).load(matchDetail.homeLogo).into(mDatabind.ivAwayIcon)
             //客队名称以及图标
             mDatabind.tvHomeName.text = matchDetail.awayName
@@ -415,7 +465,8 @@ class MatchDetailActivity :
                 if (CacheUtil.isLogin()) {
                     mViewModel.addLiveHistory(anchor?.liveId)
                 }
-                mViewModel.getDetailAnchorInfo(anchor?.userId) },
+                mViewModel.getDetailAnchorInfo(anchor?.userId)
+            },
                 200)
         }
     }

@@ -29,7 +29,7 @@ class CircleImageView(context: Context, attrs: AttributeSet?) : AppCompatImageVi
         val tempCanvas = Canvas(bitmap)
 
         //定义背景颜色
-        mPaint.color = Color.WHITE
+        mPaint.color = Color.TRANSPARENT
         tempCanvas.drawRect(0f, 0f, r.toFloat(), r.toFloat(), mPaint)
         val drawable = drawable
         if (drawable != null) {
