@@ -91,7 +91,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                         binding.tvnameLeft.text = item.homeName
                         binding.tvnameRight.text = item.awayName
                         Glide.with(context).load(item.homeLogo).into(binding.tvflagLeft)
-                        Glide.with(context).load(item.awayName).into(binding.tvflagRight)
+                        Glide.with(context).load(item.awayLogo).into(binding.tvflagRight)
                         binding.ivtype.setBackgroundResource(R.drawable.football)
                         when (item.status) {
                             "0" -> binding.tvstatus.visibility = View.GONE
