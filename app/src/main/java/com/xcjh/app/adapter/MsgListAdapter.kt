@@ -62,7 +62,7 @@ class MsgListAdapter: BaseQuickAdapter<MsgListBean, QuickViewHolder>() {
             holder.getView<CircleImageView>(R.id.ivhead).setBackgroundResource(R.drawable.ic_notify)
         }else{
             holder.getView<TextView>(R.id.tvname).text =item!!.nick
-            Glide.with(context).load(item.avatar).placeholder(R.drawable.icon_avatar).into(holder.getView<CircleImageView>(R.id.ivhead))
+            Glide.with(context).load(item.avatar).placeholder(R.drawable.default_anchor_icon).into(holder.getView<CircleImageView>(R.id.ivhead))
         }
         val time: String = ChatTimeUtile.getRecentTimeSpanByNow(context,
             item.createTime
