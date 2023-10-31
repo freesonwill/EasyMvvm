@@ -7,6 +7,7 @@ import com.xcjh.app.bean.MatchDetailBean
 import com.xcjh.app.databinding.FragmentDetailTabLiveupBinding
 import com.xcjh.app.ui.details.DetailVm
 import com.xcjh.base_lib.utils.view.visibleOrGone
+import com.xcjh.base_lib.utils.view.visibleOrInvisible
 
 /**
  * 阵容
@@ -52,9 +53,16 @@ class DetailLineUpFragment(var match: MatchDetailBean) :
 
     override fun createObserver() {
         //阵容接口返回监听处理
-        mViewModel.foot.observe(this) {
+        mViewModel.foot.observe(this) { it ->
             if (it != null) {
                 mDatabind.matchLineup.setData(it,match)
+                val home = it.home.filter {
+                    it.first == 0
+                }
+                val away = it.away.filter {
+                    it.first == 0
+                }
+                mDatabind.lltTb.visibleOrGone(!(home.size==away.size && home.isEmpty()))
                 mDatabind.matchTable.setData(it,match,0)
             }
         }

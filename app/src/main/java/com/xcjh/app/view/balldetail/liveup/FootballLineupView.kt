@@ -9,7 +9,7 @@ import android.view.LayoutInflater
 import com.xcjh.app.R
 import com.xcjh.app.bean.FootballLineupBean
 import com.xcjh.app.bean.MatchDetailBean
-import com.xcjh.base_lib.utils.view.visibleOrGone
+import com.xcjh.app.utils.myDivide
 import com.xcjh.base_lib.utils.view.visibleOrInvisible
 
 class FootballLineupView : LinearLayout {
@@ -20,7 +20,7 @@ class FootballLineupView : LinearLayout {
     private var lineUpMiddleView: FootballLiveUpMiddleView? = null
     private var lltShow: LinearLayout? = null
     private var lltHide: LinearLayout? = null
-    private var firstTable: FootballDetailSubstituteView? = null
+    private var firstTable: FootballLineupList? = null
 
     constructor(context: Context?) : super(context) {
         initView(context)
@@ -57,19 +57,27 @@ class FootballLineupView : LinearLayout {
         tv_away_value = v.findViewById(R.id.tv_match_away_value)
         lineUpMiddleView = v.findViewById(R.id.lineUpMiddleView)
     }
+
+    @SuppressLint("SetTextI18n")
     fun setData(it: FootballLineupBean, match: MatchDetailBean) {
         if (!it.homeFormation.isNullOrEmpty()) {
             lltShow?.visibleOrInvisible(true)
             lltHide?.visibleOrInvisible(false)
-            tv_home_lineup!!.text = "阵型：${it.homeFormation}" //阵型
-            tv_home_value!!.text = it.homeMarketValue + it.homeMarketValueCurrency //身价
-            tv_away_lineup!!.text = "阵型：${it.homeFormation}" //阵型
-            tv_away_value!!.text = it.awayMarketValue + it.awayMarketValueCurrency//身价
+            tv_home_lineup?.text = "阵型：${it.homeFormation}" //阵型
+            tv_home_value?.text =
+                "${myDivide(it.awayMarketValue,10000).toInt() }万" + if (it.homeMarketValueCurrency.isNullOrEmpty()) "欧" else {
+                    it.homeMarketValueCurrency
+                } //身价
+            tv_away_lineup?.text = "阵型：${it.homeFormation}" //阵型
+            tv_away_value?.text =
+                "${myDivide(it.awayMarketValue,10000).toInt() }万"+ if (it.awayMarketValueCurrency.isNullOrEmpty()) "欧" else {
+                    it.homeMarketValueCurrency
+                }//身价
             lineUpMiddleView?.setData(it)
         } else {
             lltShow?.visibleOrInvisible(false)
             lltHide?.visibleOrInvisible(true)
-            firstTable?.setData(it,match,1)
+            firstTable?.setData(it, match, 1)
         }
     }
 

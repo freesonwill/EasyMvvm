@@ -35,9 +35,9 @@ class ImportEventAdapter : BaseViewBindingQuickAdapter<IncidentsBean, ItemImport
                     //进球
                     setUI(binding,2,item.position)
                     binding.tvHomeShotScore.text = "${item.homeScore} - ${item.awayScore}"
-                    binding.tvHomeShotMsg.text = item.playerName+"进球"
+                    binding.tvHomeShotMsg.text = if (item.playerName.isNullOrEmpty())"" else item.playerName+"进球"
                     binding.tvAwayShotScore.text = "${item.homeScore} - ${item.awayScore}"
-                    binding.tvAwayShotMsg.text =  item.playerName+"进球"
+                    binding.tvAwayShotMsg.text = if (item.playerName.isNullOrEmpty())"" else item.playerName+"进球"
                 }
                 3, 4 ,15-> {
                     //红黄牌

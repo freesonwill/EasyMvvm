@@ -30,8 +30,8 @@ class FootballLiveUpMiddleView @JvmOverloads constructor(
         this.post {
             mWidth = measuredWidth
             mHight = measuredWidth * 768 / 343
-           // Log.e("===", "setData: ====" +mWidth)
-           // setData("")
+            // Log.e("===", "setData: ====" +mWidth)
+            // setData("")
         }
     }
 
@@ -39,11 +39,11 @@ class FootballLiveUpMiddleView @JvmOverloads constructor(
      * 设置动态数据
      */
     fun setData(bean: FootballLineupBean) {
-      /*  var str = data
-        if (str.isEmpty()) {
-            str = OpenAssets.openAsFile(context, "football.json")
-        }
-        val bean = jsonToObject<FootballLineupBean>(str)*/
+        /*  var str = data
+          if (str.isEmpty()) {
+              str = OpenAssets.openAsFile(context, "football.json")
+          }
+          val bean = jsonToObject<FootballLineupBean>(str)*/
         val homeList = bean.home.filter {
             it.first == 1
         }
@@ -53,8 +53,11 @@ class FootballLiveUpMiddleView @JvmOverloads constructor(
         val homeSet = homeList.map {
             it.y
         }.toSet()//.size
+        val awaySet = awayList.map {
+            it.y
+        }.toSet()
         removeAllViews()
-        Log.e("TAG", "${mWidth}===setData: ==="+homeSet.toString() )
+        Log.e("TAG", "${mWidth}===setData: ===" + homeSet.toString())
         homeList.forEach { player ->
             val child =
                 ViewFootballPlayerBinding.inflate(LayoutInflater.from(context), null, false)
@@ -62,21 +65,9 @@ class FootballLiveUpMiddleView @JvmOverloads constructor(
             child.tvPlayerName.text = player.name
             val lp = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
             lp.leftMargin = mWidth * player.x / 100 - dp2px(30)
-            when (player.position) {
-                "F" -> {
-                    //前锋
-                    lp.topMargin = mHight * 88 / 200 - dp2px(25)
-                }
-                "G" -> {
-                    //后卫
-                    lp.topMargin = mHight * 12 / 200 - dp2px(25)
-                }
-                else -> {
-                    for ((i, item) in homeSet.withIndex()) {
-                        if (player.y==item && homeSet.size>1){
-                            lp.topMargin = mHight * (12+76*i/(homeSet.size-1)) / 200 - dp2px(25)
-                        }
-                    }
+            for ((i, item) in homeSet.withIndex()) {
+                if (player.y == item && homeSet.size > 1) {
+                    lp.topMargin = mHight * (12 + 76 * i / (homeSet.size - 1)) / 200 - dp2px(25)
                 }
             }
 
@@ -90,27 +81,23 @@ class FootballLiveUpMiddleView @JvmOverloads constructor(
             child.tvPlayerNum.text = player.shirtNumber.toString()
             child.tvPlayerName.text = player.name
             val lp = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
-            /* lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
-             lp.addRule(RelativeLayout.ALIGN_PARENT_LEFT)
-             lp.bottomMargin = hight * player.y / 200 - dp2px(25)*/
             lp.leftMargin = mWidth * player.x / 100 - dp2px(30)
-            if (player.position == "F") {
-                lp.topMargin = mHight * (200 - player.y) / 200 - dp2px(10)
-            } else {
-                lp.topMargin = mHight * (200 - player.y) / 200 - dp2px(25)
-                if (player.position == "G") {
-                    //客队门卫距离底线
-                    lp.bottomMargin = mHight * player.y / 200 - dp2px(25)
+            for ((i, item) in awaySet.withIndex()) {
+                if (player.y == item && awaySet.size > 1) {
+                    lp.topMargin = mHight - mHight * (12 + 76 * i / (awaySet.size - 1)) / 200 - dp2px(25)
+                    if (player.position == "G") {
+                        //守门员
+                        lp.bottomMargin = mHight * player.y / 200 - dp2px(25)
+                    }
                 }
             }
-            // lp.topMargin = hight * (200 - player.y) / 200 - dp2px(25)
             child.root.layoutParams = lp
             addView(child.root)
         }
         val middle = ViewMatchRefereeBinding.inflate(LayoutInflater.from(context), null, false)
         val lp = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
         lp.addRule(CENTER_IN_PARENT)
-        lp.topMargin=mHight/2-dp2px(17)
+        lp.topMargin = mHight / 2 - dp2px(17)
         middle.root.layoutParams = lp
         if (!bean.refereeName.isNullOrEmpty()) {
             middle.tvRefereeName.text = bean.refereeName

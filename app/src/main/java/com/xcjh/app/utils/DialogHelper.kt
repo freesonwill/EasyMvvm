@@ -71,35 +71,36 @@ fun selectTime(context: Context, block: (start: Calendar, end: Calendar) -> Unit
 
                     override fun onCalendarRangeSelect(calendar: Calendar, isEnd: Boolean) {
                         //  Log.e("====", "onCalendarRangeSelect: =====" +calendar.timeInMillis)
-                        if (isEnd) {
-                            n++
-                        } else {
-                            if (calendarStart != null) {
-                                Log.e(
-                                    "====",
-                                    "onCalendarRangeSelect: =====" + calendar.differ(calendarStart)
-                                )
-                                if (calendar.differ(calendarStart) == 0) {
-                                    n++
-                                } else {
-                                    n = 0
-                                }
-                            } else {
-                                n = 0
-                            }
-                        }
-
-                        if (n == 0) {
-                            calendarStart = calendar
-                        } else if (n == 1) {
-                            calendarEnd = calendar
-                            block.invoke(calendarStart!!, calendarEnd!!)
+                        block.invoke(calendar!!, calendar!!)
+//                        if (isEnd) {
+//                            n++
+//                        } else {
+//                            if (calendarStart != null) {
+//                                Log.e(
+//                                    "====",
+//                                    "onCalendarRangeSelect: =====" + calendar.differ(calendarStart)
+//                                )
+//                                if (calendar.differ(calendarStart) == 0) {
+//                                    n++
+//                                } else {
+//                                    n = 0
+//                                }
+//                            } else {
+//                                n = 0
+//                            }
+//                        }
+//
+//                        if (n == 0) {
+//                            calendarStart = calendar
+//                        } else if (n == 1) {
+//                            calendarEnd = calendar
+//                            block.invoke(calendarStart!!, calendarEnd!!)
                             mCalendarView.postDelayed(
                                 {
                                     dialog?.dismiss()
                                 }, 500
-                            )
-                        }
+                           )
+//                        }
 
                         // Log.e("====", "onCalendarRangeSelect: =====" +calendar.toString())
                     }
@@ -132,7 +133,7 @@ fun selectTime(context: Context, block: (start: Calendar, end: Calendar) -> Unit
                     mCalendarView.scrollToNext(true)
                 }
             }
-        }).setBackgroundColor(Color.parseColor("#181b25"))
+        }).setBackgroundColor(Color.parseColor("#2b2156"))
 
         .setMaskColor(//背景遮罩
             ContextCompat.getColor(context, com.xcjh.base_lib.R.color.blacks_tr)

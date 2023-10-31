@@ -2,7 +2,6 @@ package com.xcjh.app.view.balldetail.liveup
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.widget.LinearLayout
 import android.view.LayoutInflater
 import androidx.recyclerview.widget.RecyclerView
@@ -12,7 +11,6 @@ import com.drake.brv.utils.divider
 import com.drake.brv.utils.grid
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
-import com.google.gson.Gson
 import com.xcjh.app.R
 import com.xcjh.app.bean.FootballLineupBean
 import com.xcjh.app.bean.FootballPlayer
@@ -23,9 +21,9 @@ import com.xcjh.app.databinding.ItemDetailGameSubstituteTopBinding
 import com.xcjh.base_lib.utils.view.visibleOrInvisible
 
 /**
- * 替补阵容
+ * 首发、替补阵容
  */
-class FootballDetailSubstituteView : LinearLayout {
+class FootballLineupList : LinearLayout {
     private lateinit var rcvPlayer: RecyclerView
 
     constructor(context: Context) : super(context) {
@@ -70,7 +68,7 @@ class FootballDetailSubstituteView : LinearLayout {
                 when (val item = _data) {
                     is MatchTeam -> {
                         val binding = getBinding<ItemDetailGameSubstituteTopBinding>()
-                        Glide.with(context).load(item.logo).into(binding.ivIcon)
+                        Glide.with(context).load(item.logo).placeholder(com.xcjh.base_lib.R.drawable.ic_default_bg).into(binding.ivIcon)
                         binding.rltItem.setBackgroundColor(context.getColor(if(this.modelPosition%2==0) R.color.c_21152a else R.color.c_18152A ))
                         binding.tvName.text = item.name
                     }

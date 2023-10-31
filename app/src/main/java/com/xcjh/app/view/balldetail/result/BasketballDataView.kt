@@ -95,8 +95,8 @@ class BasketballDataView : RelativeLayout {
     }
 
     fun setTitleBar(homeIcon: String?, homeName: String?, awayIcon: String?, awayName: String?) {
-        Glide.with(this).load(homeIcon).placeholder(R.drawable.icon_team).into(iv_icon_home)
-        Glide.with(this).load(awayIcon).placeholder(R.drawable.icon_team).into(iv_icon_away)
+        Glide.with(this).load(homeIcon).placeholder(com.xcjh.base_lib.R.drawable.ic_default_bg).into(iv_icon_home)
+        Glide.with(this).load(awayIcon).placeholder(com.xcjh.base_lib.R.drawable.ic_default_bg).into(iv_icon_away)
         iv_name_home.text = homeName
         iv_name_away.text = awayName
     }

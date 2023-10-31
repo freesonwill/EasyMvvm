@@ -526,10 +526,10 @@ data class FootballLineupBean(
     var refereeName: String? = "",//裁判名称
     var homeLogo: String = "",//主队logo
     var awayLogo: String = "",//客队logo
-    var homeMarketValue: String = "",//主队市值
-    var awayMarketValue: String = "",//客队市值
-    var homeMarketValueCurrency: String = "",//主队市值币种
-    var awayMarketValueCurrency: String = "",//客队市值币种
+    var homeMarketValue: Int = 0,//主队市值
+    var awayMarketValue: Int = 0,//客队市值
+    var homeMarketValueCurrency: String? = "",//主队市值币种
+    var awayMarketValueCurrency: String? = "",//客队市值币种
     var home: ArrayList<FootballPlayer> = arrayListOf(),//主队阵型球员列表
     var away: ArrayList<FootballPlayer> = arrayListOf(),//客队阵型球员列表
 ) : Serializable

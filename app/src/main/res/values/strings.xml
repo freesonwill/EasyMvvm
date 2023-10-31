@@ -43,8 +43,8 @@
     <string name="delete_account">注销账号</string>
     <string name="login_out">退出登录</string>
     <string name="ensure">确定</string>
-    <string name="txt_phone_lagoin">手机号登陆</string>
-    <string name="txt_email_login">邮箱登陆</string>
+    <string name="txt_phone_lagoin">手机号登录</string>
+    <string name="txt_email_login">邮箱登录</string>
     <string name="txt_inputphone">输入手机号</string>
     <string name="txt_inputcode">输入验证码</string>
     <string name="language_zh">简体中文</string>
