@@ -252,7 +252,7 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
      * 没有登录
      */
     fun notLogin(){
-        mDatabind.ivMyHead.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.load_head))
+        mDatabind.ivMyHead.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.icon_avatar))
         mDatabind.txtMyName.text=resources.getString(R.string.my_txt_click_login)
         mDatabind.iiIsShowLeve.visibility= View.GONE
         mDatabind.rlMyClickLogOut.visibility=View.GONE
