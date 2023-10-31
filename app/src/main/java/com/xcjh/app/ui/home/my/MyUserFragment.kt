@@ -75,11 +75,12 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
         }
         //活动中心
         mDatabind.llMyClickEvents.clickNoRepeat {
-            if(CacheUtil.isLogin()){
-                startNewActivity<EventsCentreActivity>()
-            }else{
-                startNewActivity<LoginActivity>()
-            }
+//            if(CacheUtil.isLogin()){
+//                startNewActivity<EventsCentreActivity>()
+//            }else{
+//                startNewActivity<LoginActivity>()
+//            }
+            startNewActivity<EventsCentreActivity>()
         }
 
         //我的关注
@@ -98,6 +99,7 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
             }else{
                 startNewActivity<LoginActivity>()
             }
+
         }
 
         //编辑资料
