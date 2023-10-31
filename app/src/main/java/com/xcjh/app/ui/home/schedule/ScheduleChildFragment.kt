@@ -47,6 +47,7 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
     private val mTabEntities = ArrayList<CustomTabEntity>()
     var listdata: MutableList<MatchBean> = ArrayList<MatchBean>()
     var matchtype: String? = ""
+    var matchtypeOld: String? = ""
     var status = 0
     var page = 1
     var pageSize = 1000
@@ -86,7 +87,7 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
         endTime = TimeUtil.addDayEgls("0", 2).toString()
         strTimeRuslt = TimeUtil.gettimenowYear().toString()
         endTimeResult = TimeUtil.getDateStr(strTime, 2).toString()
-        if (matchtype == "3") {
+        if (matchtypeOld == "3") {
             strTime = endTimeResult
             endTime = strTimeRuslt
         }
@@ -552,6 +553,7 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
             val bundle = arguments
             if (bundle != null) {
                 matchtype = bundle.getString(MATCHTYPE)
+                matchtypeOld=matchtype
                 status = bundle.getInt(STATUS)
                 mTabPosition = bundle.getInt(TAB)
             }
