@@ -745,10 +745,18 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                             start.year.toString() + "-" + TimeUtil.checkTimeSingle(start.month) + "-" + TimeUtil.checkTimeSingle(
                                 start.day
                             )
-                        endTime =
-                            end.year.toString() + "-" + TimeUtil.checkTimeSingle(end.month) + "-" + TimeUtil.checkTimeSingle(
-                                end.day
-                            )
+                        endTime = TimeUtil.addDayEgls(strTime, 2).toString()
+                      //  strTimeRuslt = TimeUtil.gettimenowYear().toString()
+                        endTimeResult = TimeUtil.getDateStr(strTime, 2).toString()
+                        if (matchtypeOld == "3") {
+                            endTime = strTime
+                            strTime = endTimeResult
+
+                        }
+//                        endTime =
+//                            end.year.toString() + "-" + TimeUtil.checkTimeSingle(end.month) + "-" + TimeUtil.checkTimeSingle(
+//                                end.day
+//                            )
                         isClick = true
                         mViewModel.getHotMatchDataList(
                             true, PostSchMatchListBean(
