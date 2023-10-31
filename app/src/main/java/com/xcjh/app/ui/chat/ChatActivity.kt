@@ -148,7 +148,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                             TimeUtil.timeStamp2Date(ad.createTime!!, null)!!.substring(0,16)
                         binding.tvtime.visibility = View.GONE
                         Glide.with(this@ChatActivity).load(userhead)
-                            .placeholder(R.drawable.icon_avatar).into(binding.ivhead)
+                            .placeholder(R.drawable.default_anchor_icon).into(binding.ivhead)
                         if (ad.lastShowTimeStamp!! == baseLong) {
                             ad.lastShowTimeStamp = lastShowTimeStamp
                         }
@@ -245,7 +245,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                         Glide.with(this@ChatActivity).load(matchBeanNew.content)
                             .dontAnimate().into(binding.ivpic)
                         Glide.with(this@ChatActivity).load(userhead)
-                            .placeholder(R.drawable.icon_avatar).into(binding.ivhead)
+                            .placeholder(R.drawable.default_anchor_icon).into(binding.ivhead)
                         binding.ivpic.setOnClickListener {
                             listPic.clear()
                             var localMedia: LocalMedia = LocalMedia()
