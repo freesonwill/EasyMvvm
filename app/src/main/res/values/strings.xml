@@ -269,7 +269,7 @@
     <string name="my_txt_edit_data">编辑资料</string>
     <string name="my_txt_invite">邀请好友</string>
     <string name="my_txt_copy_link">复制链接成功</string>
-    <string name="my_txt_out">退出登陆</string>
+    <string name="my_txt_out">退出登录</string>
     <string name="level_txt_grow">距离升级：%s成长值</string>
     <string name="level_txt_title">等级</string>
     <string name="level_txt_task">我的任务</string>
