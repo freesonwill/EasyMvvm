@@ -75,11 +75,6 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
         }
         //活动中心
         mDatabind.llMyClickEvents.clickNoRepeat {
-//            if(CacheUtil.isLogin()){
-//                startNewActivity<EventsCentreActivity>()
-//            }else{
-//                startNewActivity<LoginActivity>()
-//            }
             startNewActivity<EventsCentreActivity>()
         }
 
