@@ -10,7 +10,6 @@ import com.xcjh.app.R
 import com.xcjh.app.bean.FootballLineupBean
 import com.xcjh.app.bean.MatchDetailBean
 import com.xcjh.app.utils.myDivide
-import com.xcjh.base_lib.utils.view.visibleOrGone
 import com.xcjh.base_lib.utils.view.visibleOrInvisible
 
 class FootballLineupView : LinearLayout {
@@ -21,7 +20,7 @@ class FootballLineupView : LinearLayout {
     private var lineUpMiddleView: FootballLiveUpMiddleView? = null
     private var lltShow: LinearLayout? = null
     private var lltHide: LinearLayout? = null
-    private var firstTable: FootballDetailSubstituteView? = null
+    private var firstTable: FootballLineupList? = null
 
     constructor(context: Context?) : super(context) {
         initView(context)
