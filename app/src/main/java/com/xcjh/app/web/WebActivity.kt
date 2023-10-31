@@ -31,7 +31,7 @@ class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
     private val model: MainVm by viewModels()
     private var url: String? = ""//url
     private var title: String? = "" //会话标题
-    private var type:Int=0//0是普通url   1是一段html
+    private var type:Int=0//0是普通url   1是一段html新闻列表详情  2活动中心详情
     private var urlID:String=""
     override fun initView(savedInstanceState: Bundle?) {
         ImmersionBar.with(this)
@@ -48,7 +48,10 @@ class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
         initWeb()
         if(type==1){
             mViewModel.getNewsInfo(urlID)
+        }else if(type==2){
+            mViewModel.getActivityInfo(urlID)
         }
+
 
     }
 
@@ -153,6 +156,27 @@ class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
             title="<p style=\" color: white; font-size: 20px; font-weight: bold;\">${it.title}</p>"
             if(it.publishTime.isNotEmpty()){
                 dateTimeString= sdf.format(Date(it.publishTime.toLong()))
+                title += "<h4 style=\" color: #8A91A0; font-size: 14px;\">${dateTimeString}</h4>"
+            }
+            title += it.content
+            title="<body style=\"background-color: #07061D; margin: 0; padding: 24px;\">${title}</body>"
+            agentWeb.urlLoader.loadDataWithBaseURL(
+                null,
+                title,
+                "text/html",
+                "utf-8",
+                null
+            )
+        }
+
+        //获取到网页详情
+        mViewModel.events.observe(this){
+            var sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+            var dateTimeString:String=""
+            var title:String=""
+            title="<p style=\" color: white; font-size: 20px; font-weight: bold;\">${it.title}</p>"
+            if(it.updateTime .isNotEmpty()){
+                dateTimeString= sdf.format(Date(it.updateTime.toLong()))
                 title += "<h4 style=\" color: #8A91A0; font-size: 14px;\">${dateTimeString}</h4>"
             }
             title += it.content

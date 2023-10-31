@@ -2,10 +2,7 @@ package com.xcjh.app.vm
 
 import com.kunminx.architecture.ui.callback.UnPeekLiveData
 import com.xcjh.app.appViewModel
-import com.xcjh.app.bean.AppUpdateBean
-import com.xcjh.app.bean.ListReq
-import com.xcjh.app.bean.NewsBean
-import com.xcjh.app.bean.UserInfo
+import com.xcjh.app.bean.*
 import com.xcjh.app.event.AppViewModel
 import com.xcjh.app.net.apiService
 import com.xcjh.app.utils.CacheUtil
@@ -20,7 +17,11 @@ class MainVm : BaseViewModel() {
 
 
     var update= UnPeekLiveData<AppUpdateBean>()
+    //新闻详情
     var newsBeanValue=UnPeekLiveData<NewsBean>()
+
+    //活动中心详情
+    var events = UnPeekLiveData<EventsBean>()
     /**
      * 反馈
      */
@@ -67,6 +68,9 @@ class MainVm : BaseViewModel() {
         )
     }
 
+    /**
+     * 新闻详情
+     */
     fun  getNewsInfo(id :String){
         request(
             { apiService.getNewsInfo(id) },
@@ -79,4 +83,21 @@ class MainVm : BaseViewModel() {
             }
         )
     }
+
+    /**
+     * 活动中心详情
+     */
+    fun getActivityInfo(id:String){
+        request(
+            { apiService.getActivityInfo(id) },
+            {
+                events.value=it
+            }, {
+                //请求失败
+                events.value= EventsBean()
+
+            },isShowDialog=true
+        )
+    }
+
 }

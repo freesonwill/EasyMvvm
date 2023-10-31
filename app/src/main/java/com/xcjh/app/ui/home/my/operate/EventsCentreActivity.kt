@@ -19,7 +19,6 @@ import com.xcjh.app.databinding.ItemEventsCentreBinding
 import com.xcjh.app.databinding.ItemNewsListBinding
 import com.xcjh.app.ui.search.SearchVm
 import com.xcjh.app.web.WebActivity
-import com.xcjh.app.web.WebRichTextActivity
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.dp2px
 import java.text.SimpleDateFormat
@@ -84,12 +83,12 @@ class EventsCentreActivity : BaseActivity<EventsCentreVm, ActivityEventsCentreBi
             }
             R.id.llEventsClick.onClick {
                 var  bean=_data as EventsBean
-                startNewActivity<WebRichTextActivity>() {
-
+                startNewActivity<WebActivity>() {
                     this.putExtra(Constants.WEB_URL, bean.id)
-                    this.putExtra(Constants.CHAT_TITLE, getString(R.string.events_txt_title))
+                    this.putExtra(Constants.WEB_VIEW_TYPE, 2)
+                    this.putExtra(Constants.WEB_VIEW_ID, bean.id)
+                    this.putExtra(Constants.CHAT_TITLE, getString(R.string.my_app_name))
                 }
-
             }
 
 
