@@ -129,8 +129,8 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
 
                                              Glide.with(requireContext())
                                                  .load(matchBean.awayLogo) // 替换为您要加载的图片 URL
-                                                 .error(R.drawable.main_load_icon)
-                                                 .placeholder(R.drawable.main_load_icon)
+                                                 .error(R.drawable.default_team_logo)
+                                                 .placeholder(R.drawable.default_team_logo)
                                                  .into(binding.txtWayHome)
 
                                              //客队
@@ -176,16 +176,16 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
 
                                              Glide.with(requireContext())
                                                  .load(matchBean.homeLogo) // 替换为您要加载的图片 URL
-                                                 .error(R.drawable.main_load_icon)
-                                                 .placeholder(R.drawable.main_load_icon)
+                                                 .error(R.drawable.default_team_logo)
+                                                 .placeholder(R.drawable.default_team_logo)
                                                  .into(binding.txtWayHome)
 
 
                                              //客队
                                              Glide.with(requireContext())
                                                  .load(matchBean.awayLogo) // 替换为您要加载的图片 URL
-                                                 .error(R.drawable.main_load_icon)
-                                                 .placeholder(R.drawable.main_load_icon)
+                                                 .error(R.drawable.default_team_logo)
+                                                 .placeholder(R.drawable.default_team_logo)
                                                  .into(binding.ivGuestIcon)
 
 
