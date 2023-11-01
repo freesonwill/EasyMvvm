@@ -32,6 +32,7 @@ import com.xcjh.app.websocket.bean.LiveStatus
 import com.xcjh.app.websocket.bean.ReceiveChatMsg
 import com.xcjh.app.websocket.bean.ReceiveWsBean
 import com.xcjh.app.websocket.listener.LiveRoomListener
+import com.xcjh.app.websocket.listener.LiveStatusListener
 import com.xcjh.base_lib.App
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.*
@@ -183,12 +184,7 @@ class MatchDetailActivity :
         })
         initVideoBuilderMode()
         MyWsManager.getInstance(App.app)
-            ?.setLiveRoomListener(this.toString(), object : LiveRoomListener {
-                override fun onEnterRoomInfo(isOk: Boolean, msg: ReceiveWsBean<*>) {}
-                override fun onExitRoomInfo(isOk: Boolean, msg: ReceiveWsBean<*>) {}
-                override fun onRoomReceive(chat: ReceiveChatMsg) {}
-                override fun onSendMsgIsOk(isOk: Boolean, bean: ReceiveWsBean<*>) {}
-
+            ?.setLiveStatusListener(this.toString(), object : LiveStatusListener {
                 override fun onOpenLive(bean: LiveStatus) {
                     if (anchor?.liveId == bean.id && matchId == bean.matchId) {
                         isShowVideo = true
@@ -527,6 +523,11 @@ class MatchDetailActivity :
             startVideo(anchor?.playUrl)
         }
         //Log.e("TAG", "onResume: ${isTopActivity(this)}===" + this.toString())
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        MyWsManager.getInstance(App.app)?.removeLiveStatusListener(this.toString())
     }
 
     override val gSYVideoPlayer: StandardGSYVideoPlayer

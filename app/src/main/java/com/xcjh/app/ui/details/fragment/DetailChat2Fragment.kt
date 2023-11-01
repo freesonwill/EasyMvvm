@@ -298,9 +298,6 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
         //myToast("send_msg ==$isOk")
     }
 
-    override fun onOpenLive( bean: LiveStatus) {}
-    override fun onCloseLive( bean: LiveStatus) {}
-    override fun onChangeLive( bean: LiveStatus) {}
     override fun onRoomReceive(chat: ReceiveChatMsg) {
         var isShowBottom = false
         val firstVisible: Int = mLayoutManager.findFirstVisibleItemPosition()

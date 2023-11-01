@@ -219,6 +219,7 @@ fun showSignalDialog(
                 tvCancel.setOnClickListener {
                     dialog?.dismiss()
                 }
+                rcvSignal.scrollToPosition(signalPos)
             }
         })
         .setAlign(CustomDialog.ALIGN.BOTTOM)

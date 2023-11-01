@@ -44,6 +44,12 @@ interface LiveRoomListener {
     /// 发送消息是否成功
     fun onSendMsgIsOk(isOk: Boolean,bean:ReceiveWsBean<*>)
 
+}
+/**
+ * 直播间流状态
+ */
+interface LiveStatusListener {
+
     /**
      * 服务器主动推送直播间开播
      */

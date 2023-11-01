@@ -329,5 +329,6 @@
     <string name="head_failed">加载失败</string>
     <string name="head_update">上次加载 M-d HH:mm</string>
     <string name="no_chat_t">您已被禁言</string>
+    <string name="close_win_p">封</string>
 
 </resources>

@@ -44,6 +44,7 @@ import com.xcjh.app.websocket.listener.LiveRoomListener
 import com.xcjh.base_lib.App
 import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.utils.SpanUtil
+import com.xcjh.base_lib.utils.loge
 import com.xcjh.base_lib.utils.view.visibleOrGone
 import kotlinx.android.synthetic.main.fragment_detail_tab_chat.view.*
 
@@ -336,9 +337,6 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
         //myToast("send_msg ==$isOk")
     }
 
-    override fun onOpenLive( bean: LiveStatus) {}
-    override fun onCloseLive( bean: LiveStatus) {}
-    override fun onChangeLive( bean: LiveStatus) {}
     override fun onRoomReceive(chat: ReceiveChatMsg) {
         var isShowBottom = false
         val firstVisible: Int = mLayoutManager.findFirstVisibleItemPosition()

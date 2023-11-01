@@ -384,6 +384,7 @@ data class OddsBean(
 
 @Keep
 data class OddsDetailBean(
+    var close: Int = 0,// 是否封盘：0-否，1-是
     var companyId: String = "",// ID
     var companyName: String = "",//
     var firstHomeWin: String = "",//
@@ -482,6 +483,7 @@ data class MatchDetailBean(
 data class AnchorListBean(
     var liveId: String = "",
     var pureFlow: Boolean = false,//true 纯净流
+    var isOpen: Boolean = true,//true 开播中 false已关播
     var userId: String? = null,
     var nickName: String = "",
     var userLogo: String = "",

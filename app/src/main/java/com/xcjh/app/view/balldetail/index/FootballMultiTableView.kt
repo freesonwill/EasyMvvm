@@ -44,11 +44,11 @@ class FootballMultiTableView : LinearLayout {
         list.forEach {
             val binding =
                 ItemDetailMultiTableBinding.inflate(LayoutInflater.from(context), this, false)
-            if (it.companyName.isNotEmpty()){
-                if (it.companyName.length>2){
-                    binding.tvCompany.text = it.companyName.substring(0 until 2)+"*"
-                }else{
-                    binding.tvCompany.text = it.companyName.substring(0 until 1)+"*"
+            if (it.companyName.isNotEmpty()) {
+                if (it.companyName.length > 2) {
+                    binding.tvCompany.text = it.companyName.substring(0 until 2) + "*"
+                } else {
+                    binding.tvCompany.text = it.companyName.substring(0 until 1) + "*"
                 }
             }
 
@@ -56,18 +56,25 @@ class FootballMultiTableView : LinearLayout {
             binding.tvChuHome.text = it.firstHomeWin//主胜
             binding.tvChuPin.text = it.firstDraw//平
             binding.tvChuKe.text = it.firstAwayWin
-
             binding.tvChuPf.text = it.firstLossRatio//赔付率
-            //即盘数据
-            binding.tvJiHome.text = it.currentHomeWin //主胜
-            binding.tvJiPin.text = it.currentDraw//平
-            binding.tvJiAway.text = it.currentAwayWin//客胜
+            if (it.close == 1) {
+                //即盘数据
+                binding.tvJiHome.text = context.getString(R.string.close_win_p) //主胜
+                binding.tvJiPin.text = context.getString(R.string.close_win_p)
+                binding.tvJiAway.text = context.getString(R.string.close_win_p)
+                binding.tvJiPf.text = context.getString(R.string.close_win_p)
+            } else {
+                //即盘数据
+                binding.tvJiHome.text = it.currentHomeWin //主胜
+                binding.tvJiPin.text = it.currentDraw//平
+                binding.tvJiAway.text = it.currentAwayWin//客胜
 
-            setColor(binding.tvJiHome, it.firstHomeWin.toFloat(), it.currentHomeWin.toFloat())
-            setColor(binding.tvJiPin, it.firstDraw.toFloat(), it.currentDraw.toFloat())
-            setColor(binding.tvJiAway, it.firstAwayWin.toFloat(), it.currentAwayWin.toFloat())
+                setColor(binding.tvJiHome, it.firstHomeWin.toFloat(), it.currentHomeWin.toFloat())
+                setColor(binding.tvJiPin, it.firstDraw.toFloat(), it.currentDraw.toFloat())
+                setColor(binding.tvJiAway, it.firstAwayWin.toFloat(), it.currentAwayWin.toFloat())
 
-            binding.tvJiPf.text = it.currentLossRatio //赔付率
+                binding.tvJiPf.text = it.currentLossRatio //赔付率
+            }
 
             layout?.addView(binding.root)
         }

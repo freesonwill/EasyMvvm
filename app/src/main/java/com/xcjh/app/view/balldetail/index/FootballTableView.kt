@@ -53,12 +53,19 @@ class FootballTableView : LinearLayout {
             binding.tvChuK.text = it.firstAwayWin
 
             //即盘数据
-            binding.tvJiZ.text = it.currentHomeWin
-            binding.tvJiP.text = it.currentDraw
-            binding.tvJiK.text = it.currentAwayWin
-            setColor(binding.tvJiZ, it.firstHomeWin.toFloat(), it.currentHomeWin.toFloat())
-            setColor(binding.tvJiP, it.firstDraw.toFloat(), it.currentDraw.toFloat())
-            setColor(binding.tvJiK, it.firstAwayWin.toFloat(), it.currentAwayWin.toFloat())
+            if (it.close == 1) {
+                binding.tvJiZ.text = context.getString(R.string.close_win_p)
+                binding.tvJiP.text = context.getString(R.string.close_win_p)
+                binding.tvJiK.text = context.getString(R.string.close_win_p)
+            } else {
+                binding.tvJiZ.text = it.currentHomeWin
+                binding.tvJiP.text = it.currentDraw
+                binding.tvJiK.text = it.currentAwayWin
+                setColor(binding.tvJiZ, it.firstHomeWin.toFloat(), it.currentHomeWin.toFloat())
+                setColor(binding.tvJiP, it.firstDraw.toFloat(), it.currentDraw.toFloat())
+                setColor(binding.tvJiK, it.firstAwayWin.toFloat(), it.currentAwayWin.toFloat())
+            }
+
             layout?.addView(binding.root)
         }
     }

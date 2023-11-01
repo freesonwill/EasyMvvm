@@ -371,7 +371,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:scaleType="fitXY"
-                            tools:background="@drawable/no_live_stream"
+                            android:background="@drawable/no_live_stream"
                             tools:ignore="ContentDescription" />
                         <!--视频下边的广告-->
                         <TextView
