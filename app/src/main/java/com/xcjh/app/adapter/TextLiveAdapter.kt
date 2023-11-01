@@ -43,10 +43,10 @@ class TextLiveAdapter : BaseQuickAdapter<LiveTextBean, QuickViewHolder>() {
             ivLogo.visibleOrInvisible(item.position != 0)
             when (item.position) {
                 1 -> {
-                    Glide.with(context).load(homeLogo).into(ivLogo)
+                    Glide.with(context).load(homeLogo).placeholder(R.drawable.default_team_logo).into(ivLogo)
                 }
                 2 -> {
-                    Glide.with(context).load(awayLogo).into(ivLogo)
+                    Glide.with(context).load(awayLogo).placeholder(R.drawable.default_team_logo).into(ivLogo)
                 }
             }
             when (item.type) {
@@ -65,7 +65,7 @@ class TextLiveAdapter : BaseQuickAdapter<LiveTextBean, QuickViewHolder>() {
                 4, 15 ->
                     ivType.setImageResource(R.drawable.red_card)
                 else -> {
-                    ivType.setImageResource(R.drawable.ic_zhanwei)
+                    ivType.setImageResource(R.drawable.default_txt_placeholder)
                 }
             }
             //隐藏最后的进度线
