@@ -20,7 +20,7 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_weight="89"
                 android:gravity="center"
                 android:text="@string/company"
                 android:textColor="@color/c_F5F5F5"
@@ -29,7 +29,7 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_weight="127"
                 android:gravity="center"
                 android:text="@string/chu"
                 android:textColor="@color/c_F5F5F5"
@@ -38,7 +38,7 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_weight="127"
                 android:gravity="center"
                 android:text="@string/ji"
                 android:textColor="@color/c_F5F5F5"
@@ -49,7 +49,7 @@
             android:id="@+id/layout_table"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="@dimen/dp_75"
+            android:minHeight="@dimen/dp_20"
             android:orientation="vertical" />
     </LinearLayout>
 </RelativeLayout>

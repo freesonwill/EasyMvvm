@@ -21,6 +21,7 @@
 
                 <LinearLayout
                     android:layout_width="wrap_content"
+                    android:layout_marginTop="@dimen/dp_5"
                     android:layout_height="@dimen/dp_36"
                     android:orientation="horizontal">
 

@@ -45,8 +45,14 @@ class FootballTableView : LinearLayout {
         }
         list.forEach {
             val binding = ItemDetailTableBinding.inflate(LayoutInflater.from(context), null, false)
-            binding.tvCompany.text = it.companyName
-
+           // binding.tvCompany.text = it.companyName
+            if (it.companyName.isNotEmpty()) {
+                if (it.companyName.length > 2) {
+                    binding.tvCompany.text = it.companyName.substring(0 until 2) + "*"
+                } else {
+                    binding.tvCompany.text = it.companyName.substring(0 until 1) + "*"
+                }
+            }
             //初盘数据
             binding.tvChuZ.text = it.firstHomeWin
             binding.tvChuP.text = it.firstDraw
