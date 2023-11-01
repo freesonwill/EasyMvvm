@@ -11,12 +11,14 @@ import android.util.Log
 import android.view.ViewGroup
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
+import android.webkit.WebSettings
 import android.webkit.WebView
 import android.widget.LinearLayout
 import androidx.activity.viewModels
 import androidx.core.text.HtmlCompat
 import com.gyf.immersionbar.ImmersionBar
 import com.just.agentweb.AgentWeb
+import com.just.agentweb.AgentWebConfig
 import com.just.agentweb.WebChromeClient
 import com.xcjh.app.base.BaseActivity
 import com.xcjh.app.databinding.ActivityWebBinding
@@ -86,6 +88,7 @@ class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
                     Log.e("TAG", "===-----onReceivedError------ " + error?.description.toString())
                 }
 
+
                 override fun onPageFinished(view: WebView?, url: String?) {
                     super.onPageFinished(view, url)
                     Log.e("TAG", "===-----onPageFinished------ ")
@@ -123,7 +126,6 @@ class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
             agentWeb.urlLoader.loadUrl(url)
         }
 
-
     }
 
     override fun onPause() {
@@ -146,8 +148,6 @@ class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
 
     override fun createObserver() {
         super.createObserver()
-
-//
         //获取到网页详情
         mViewModel.newsBeanValue.observe(this){
             var sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")

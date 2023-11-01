@@ -87,7 +87,7 @@ class EventsCentreActivity : BaseActivity<EventsCentreVm, ActivityEventsCentreBi
                     this.putExtra(Constants.WEB_URL, bean.id)
                     this.putExtra(Constants.WEB_VIEW_TYPE, 2)
                     this.putExtra(Constants.WEB_VIEW_ID, bean.id)
-                    this.putExtra(Constants.CHAT_TITLE, getString(R.string.my_app_name))
+                    this.putExtra(Constants.CHAT_TITLE, getString(R.string.events_txt_title))
                 }
             }
 
