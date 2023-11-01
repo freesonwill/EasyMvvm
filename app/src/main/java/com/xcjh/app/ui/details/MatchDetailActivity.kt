@@ -257,8 +257,8 @@ class MatchDetailActivity :
 
         if (matchType == "1") {
             //足球
-            Glide.with(this).load(matchDetail.homeLogo).placeholder(com.xcjh.base_lib.R.drawable.ic_default_bg).into(mDatabind.ivTopHomeIcon)
-            Glide.with(this).load(matchDetail.awayLogo).placeholder(com.xcjh.base_lib.R.drawable.ic_default_bg).into(mDatabind.ivTopAwayIcon)
+            Glide.with(this).load(matchDetail.homeLogo).placeholder(R.drawable.default_team_logo).into(mDatabind.ivTopHomeIcon)
+            Glide.with(this).load(matchDetail.awayLogo).placeholder(R.drawable.default_team_logo).into(mDatabind.ivTopAwayIcon)
             mDatabind.tvTopHomeScore.text =
                 if (matchDetail.status in 2..8) matchDetail.homeScore.toString() else ""
             mDatabind.tvTopAwayScore.text =
@@ -272,8 +272,8 @@ class MatchDetailActivity :
                 mDatabind.tvMatchVs.text = getString(R.string.vs)
             }
         } else {
-            Glide.with(this).load(matchDetail.awayLogo).placeholder(com.xcjh.base_lib.R.drawable.ic_default_bg).into(mDatabind.ivTopHomeIcon)
-            Glide.with(this).load(matchDetail.homeLogo).placeholder(com.xcjh.base_lib.R.drawable.ic_default_bg).into(mDatabind.ivTopAwayIcon)
+            Glide.with(this).load(matchDetail.awayLogo).placeholder(R.drawable.default_team_logo).into(mDatabind.ivTopHomeIcon)
+            Glide.with(this).load(matchDetail.homeLogo).placeholder(R.drawable.default_team_logo).into(mDatabind.ivTopAwayIcon)
             mDatabind.tvTopHomeScore.text =
                 if (matchDetail.status in 2..10) matchDetail.awayScore.toString() else ""
             mDatabind.tvTopAwayScore.text =
@@ -357,17 +357,17 @@ class MatchDetailActivity :
         if (matchType == "1") {//足球
             //主队名称以及图标
             mDatabind.tvHomeName.text = matchDetail.homeName
-            Glide.with(this).load(matchDetail.homeLogo).placeholder(com.xcjh.base_lib.R.drawable.ic_default_bg).into(mDatabind.ivHomeIcon)
+            Glide.with(this).load(matchDetail.homeLogo).placeholder(R.drawable.default_team_logo).into(mDatabind.ivHomeIcon)
             //客队名称以及图标
             mDatabind.tvAwayName.text = matchDetail.awayName
-            Glide.with(this).load(matchDetail.awayLogo).placeholder(com.xcjh.base_lib.R.drawable.ic_default_bg).into(mDatabind.ivAwayIcon)
+            Glide.with(this).load(matchDetail.awayLogo).placeholder(R.drawable.default_team_logo).into(mDatabind.ivAwayIcon)
         } else {
             //主队名称以及图标
             mDatabind.tvAwayName.text = matchDetail.homeName + "\n(主)"
-            Glide.with(this).load(matchDetail.homeLogo).placeholder(com.xcjh.base_lib.R.drawable.ic_default_bg).into(mDatabind.ivAwayIcon)
+            Glide.with(this).load(matchDetail.homeLogo).placeholder(R.drawable.default_team_logo).into(mDatabind.ivAwayIcon)
             //客队名称以及图标
             mDatabind.tvHomeName.text = matchDetail.awayName
-            Glide.with(this).load(matchDetail.awayLogo).placeholder(com.xcjh.base_lib.R.drawable.ic_default_bg).into(mDatabind.ivHomeIcon)
+            Glide.with(this).load(matchDetail.awayLogo).placeholder(R.drawable.default_team_logo).into(mDatabind.ivHomeIcon)
         }
         //赛事名字和比赛时间
         mDatabind.tvCompetitionName.text = matchDetail.competitionName

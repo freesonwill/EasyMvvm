@@ -59,10 +59,10 @@ class BasketballTableView : RelativeLayout {
 
     fun setTeamInfo(homeIcon: String?, homeName: String?, awayIcon: String?, awayName: String?) {
         binding.tvNameHome.text = homeName
-        Glide.with(context).load(homeIcon).placeholder(com.xcjh.base_lib.R.drawable.ic_default_bg)
+        Glide.with(context).load(homeIcon).placeholder(R.drawable.default_team_logo)
             .into(binding.ivAvatarHome)
         binding.tvNameAway.text = awayName
-        Glide.with(context).load(awayIcon).placeholder(com.xcjh.base_lib.R.drawable.ic_default_bg)
+        Glide.with(context).load(awayIcon).placeholder(R.drawable.default_team_logo)
             .into(binding.ivAvatarAway)
     }
 

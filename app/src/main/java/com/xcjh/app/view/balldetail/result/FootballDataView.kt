@@ -41,8 +41,8 @@ class FootballDataView : RelativeLayout {
     fun setTeamInfo(homeIcon: String?, homeName: String?, awayIcon: String?, awayName: String?) {
         binding.tvHomeName.text = homeName
         binding.tvAwayName.text = awayName
-        Glide.with(this).load(homeIcon).placeholder(com.xcjh.base_lib.R.drawable.ic_default_bg).into(binding.ivHomeIcon)
-        Glide.with(this).load(awayIcon).placeholder(com.xcjh.base_lib.R.drawable.ic_default_bg).into(binding.ivAwayIcon)
+        Glide.with(this).load(homeIcon).placeholder(R.drawable.default_team_logo).into(binding.ivHomeIcon)
+        Glide.with(this).load(awayIcon).placeholder(R.drawable.default_team_logo).into(binding.ivAwayIcon)
     }
 
     fun setData(array: ArrayList<StatusBean>) {

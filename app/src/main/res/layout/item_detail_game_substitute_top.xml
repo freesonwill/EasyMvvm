@@ -18,7 +18,7 @@
             android:layout_height="@dimen/dp_32"
             android:layout_centerVertical="true"
             android:layout_marginStart="@dimen/dp_16"
-            tools:src="@drawable/icon_team" />
+            tools:src="@drawable/default_team_logo" />
 
         <TextView
             android:id="@+id/tvName"
