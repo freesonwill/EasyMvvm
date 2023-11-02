@@ -70,7 +70,7 @@
     <string name="txt_feedresult">反馈结果</string>
     <string name="txt_feddtime">反馈时间</string>
     <string name="txt_jiesuo">主播\n解说</string>
-
+    <string name="txt_choosecountry">请选择区号</string>
     <string name="cancel">取消</string>
     <string name="no_data_hint">暂无数据</string>
     <string name="no_data">暂无数据</string>

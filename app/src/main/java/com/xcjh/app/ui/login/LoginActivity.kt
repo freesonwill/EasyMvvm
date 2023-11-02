@@ -2,15 +2,23 @@ package com.xcjh.app.ui.login
 
 import android.os.Bundle
 import android.view.View
+import com.alibaba.fastjson.JSONObject
+import com.drake.brv.utils.models
 import com.gyf.immersionbar.ImmersionBar
 import com.xcjh.app.R
 import com.xcjh.app.base.BaseActivity
+import com.xcjh.app.bean.LetterBeann
 import com.xcjh.app.bean.PostLoaginBean
 import com.xcjh.app.databinding.ActivityLoaginBinding
 import com.xcjh.app.ui.Index.IndexLetterActivity
+import com.xcjh.app.utils.selectCountry
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.setOnclickNoRepeat
+import java.io.BufferedReader
+import java.io.IOException
+import java.io.InputStream
+import java.io.InputStreamReader
 
 /***
  * 登录
@@ -19,14 +27,16 @@ import com.xcjh.base_lib.utils.setOnclickNoRepeat
 class LoginActivity : BaseActivity<LoginVm, ActivityLoaginBinding>() {
 
     var type=1//1是手机号登录，2是邮箱登录
-
+    private var models = mutableListOf<LetterBeann>()
+    private var listStr = mutableListOf<String>()
     override fun initView(savedInstanceState: Bundle?) {
         ImmersionBar.with(this)
             .statusBarDarkFont(false)
             .titleBar(mDatabind.ivBack)
             .init()
+        initMaps()
 
-        setOnclickNoRepeat(mDatabind.tvphone,mDatabind.tvemail,mDatabind.tvlogin,mDatabind.tvgetcode,mDatabind.tvgo){
+        setOnclickNoRepeat(mDatabind.tvphone,mDatabind.tvemail,mDatabind.tvlogin,mDatabind.tvgetcode,mDatabind.tvgo,mDatabind.ivgo){
             when(it.id){
                 R.id.tvphone->{
                     type=1
@@ -98,9 +108,13 @@ class LoginActivity : BaseActivity<LoginVm, ActivityLoaginBinding>() {
                         }
                     }
                 }
-                R.id.tvgo->{
+                R.id.tvgo,R.id.ivgo->{
 
-                    com.xcjh.base_lib.utils.startNewActivity<IndexLetterActivity>()
+                    selectCountry(this,listStr) {
+                        mDatabind.tvgo.text= it.substring(it.indexOf("(")+1,it.length-1)
+
+                    }
+                   // com.xcjh.base_lib.utils.startNewActivity<IndexLetterActivity>()
                 }
             }
         }
@@ -125,5 +139,34 @@ class LoginActivity : BaseActivity<LoginVm, ActivityLoaginBinding>() {
         }
 
     }
+    private fun initMaps() {
+        // 解析Json数据
+        val newstringBuilder = StringBuilder()
+        var inputStream: InputStream? = null
+        try {
+            inputStream = resources.assets.open("JHAreaCode.json")
+            val isr = InputStreamReader(inputStream)
+            val reader = BufferedReader(isr)
+            var jsonLine: String?
+            while (reader.readLine().also { jsonLine = it } != null) {
+                newstringBuilder.append(jsonLine)
+            }
+            reader.close()
+            isr.close()
+            inputStream.close()
+        } catch (e: IOException) {
+            e.printStackTrace()
+            // LogUtil.("得到数据chuck==$e")
+        }
+        val str = newstringBuilder.toString()
+        str.length
+        //LogUtil.d("得到数据==$str")
+        models =
+            JSONObject.parseArray(str, LetterBeann::class.java)
 
+        for (i in 0 until models.size ){
+            listStr.add(models[i].cn+" ("+models[i].phone_code+")")
+        }
+
+    }
 }

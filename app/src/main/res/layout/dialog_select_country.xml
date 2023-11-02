@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/c_2b2156"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/tvcancle"
+            android:layout_width="wrap_content"
+            android:text="@string/cancel"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:textColor="@color/white"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:text="@string/txt_choosecountry"
+            android:textColor="@color/white"
+            android:layout_centerHorizontal="true"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/tvsure"
+            android:layout_width="wrap_content"
+            android:text="@string/ensure"
+            android:layout_marginRight="@dimen/dp_20"
+            android:textColor="@color/white"
+            android:layout_alignParentRight="true"
+            android:layout_height="wrap_content"/>
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#4D000000"
+        android:visibility="gone" />
+    <com.github.gzuliyujiang.wheelpicker.widget.OptionWheelLayout
+        android:id="@+id/wheel_linkage"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+
+        android:layout_marginTop="50dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        app:wheel_itemSpace="24dp"
+        app:wheel_curtainRadius="8dp"
+        app:wheel_indicatorSize="50dp"
+        app:wheel_curtainColor="@color/c_2b2156"
+        app:wheel_curtainEnabled="true"
+        app:wheel_itemTextColorSelected="#ffffff"
+        app:wheel_itemTextColor="#CBCBCB"
+        app:wheel_indicatorEnabled="false"
+        app:wheel_itemTextBoldSelected="false"
+        app:wheel_itemTextSize="14sp"
+        app:wheel_itemTextSizeSelected="16sp" />
+
+
+</LinearLayout>

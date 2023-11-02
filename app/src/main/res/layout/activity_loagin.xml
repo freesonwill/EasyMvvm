@@ -98,6 +98,7 @@
                 android:textStyle="bold" />
 
             <ImageView
+                android:id="@+id/ivgo"
                 android:layout_width="@dimen/dp_16"
                 android:layout_height="@dimen/dp_16"
                 android:layout_marginLeft="2dp"
