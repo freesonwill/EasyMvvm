@@ -169,7 +169,7 @@ class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
             )
         }
 
-        //获取到网页详情
+        //获取到活动网页详情
         mViewModel.events.observe(this){
             var sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
             var dateTimeString:String=""
