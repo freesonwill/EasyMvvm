@@ -163,6 +163,7 @@ fun selectCountry(context: Context, list:List<String>, block: (bean: String) -> 
                 val tvsure = v.findViewById<TextView>(R.id.tvsure)
                 val wheel_linkage = v.findViewById<OptionWheelLayout>(R.id.wheel_linkage)
                 wheel_linkage.setData(list)
+
                 tvcancle.setOnClickListener {
                     dialog.dismiss()
 
@@ -181,7 +182,7 @@ fun selectCountry(context: Context, list:List<String>, block: (bean: String) -> 
             ContextCompat.getColor(context, com.xcjh.base_lib.R.color.blacks_tr)
         )
 
-        .show()
+        .show().isAllowInterceptTouch = false
 }
 private fun getSchemeCalendar(
     year: Int,
