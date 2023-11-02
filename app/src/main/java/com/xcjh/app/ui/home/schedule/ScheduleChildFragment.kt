@@ -57,6 +57,7 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
     var hasData = false
     var isVisble = false
     lateinit var strTime: String
+    var calendarTime: String=""
     lateinit var endTime: String
     lateinit var strTimeRuslt: String
     lateinit var endTimeResult: String
@@ -87,9 +88,23 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
         endTime = TimeUtil.addDayEgls("0", 2).toString()
         strTimeRuslt = TimeUtil.gettimenowYear().toString()
         endTimeResult = TimeUtil.getDateStr(strTime, 2).toString()
+
         if (matchtypeOld == "3") {
-            strTime = endTimeResult
-            endTime = strTimeRuslt
+            if (calendarTime.isNotEmpty()) {
+                endTimeResult = TimeUtil.getDateStr(calendarTime, 2).toString()
+                if (matchtypeOld == "3") {
+                    endTime = calendarTime
+                    strTime = endTimeResult
+                }
+            } else {
+                strTime = endTimeResult
+                endTime = strTimeRuslt
+            }
+        }else{
+            if (calendarTime.isNotEmpty()) {
+                strTime = calendarTime
+                endTime = TimeUtil.addDayEgls(calendarTime, 2).toString()
+            }
         }
     }
 
@@ -553,7 +568,7 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
             val bundle = arguments
             if (bundle != null) {
                 matchtype = bundle.getString(MATCHTYPE)
-                matchtypeOld=matchtype
+                matchtypeOld = matchtype
                 status = bundle.getInt(STATUS)
                 mTabPosition = bundle.getInt(TAB)
             }
@@ -740,19 +755,13 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                 R.id.iv_meau -> {
 
                     selectTime(requireActivity()) { start, end ->
-                        initTime()
-                        strTime =
+
+                        calendarTime =
                             start.year.toString() + "-" + TimeUtil.checkTimeSingle(start.month) + "-" + TimeUtil.checkTimeSingle(
                                 start.day
                             )
-                        endTime = TimeUtil.addDayEgls(strTime, 2).toString()
-                      //  strTimeRuslt = TimeUtil.gettimenowYear().toString()
-                        endTimeResult = TimeUtil.getDateStr(strTime, 2).toString()
-                        if (matchtypeOld == "3") {
-                            endTime = strTime
-                            strTime = endTimeResult
+                        initTime()
 
-                        }
 //                        endTime =
 //                            end.year.toString() + "-" + TimeUtil.checkTimeSingle(end.month) + "-" + TimeUtil.checkTimeSingle(
 //                                end.day
