@@ -188,8 +188,61 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                                         context.resources.getString(R.string.main_txt_wks)
 
                                 }
-
-                                "2", "3", "4", "5", "6", "7" -> {
+                                "2"->{
+                                    binding.tvstatus.visibility = View.VISIBLE
+                                    binding.txtMatchAnimation.visibility = View.VISIBLE
+                                    binding.tvvs.text = item.homeScore + "-" + item.awayScore
+                                    binding.tvstatus.setTextColor(
+                                        ContextCompat.getColor(
+                                            context,
+                                            R.color.c_fe4848
+                                        )
+                                    )
+                                    binding.tvstatus.text = context.resources.getString(
+                                        R.string.main_txt_sbc,
+                                        if (item.runTime == null)
+                                            "0"
+                                        else {
+                                            item.runTime
+                                        }
+                                    )
+                                    initAnimation(binding.txtMatchAnimation)
+                                }
+                                "3"->{
+                                    binding.tvstatus.visibility = View.VISIBLE
+                                    binding.txtMatchAnimation.visibility = View.GONE
+                                    binding.tvvs.text = item.homeScore + "-" + item.awayScore
+                                    binding.tvstatus.setTextColor(
+                                        ContextCompat.getColor(
+                                            context,
+                                            R.color.c_fe4848
+                                        )
+                                    )
+                                    binding.tvstatus.text = context.resources.getString(
+                                        R.string.zc
+                                    )
+                                }
+                                "4"->{
+                                    binding.tvstatus.visibility = View.VISIBLE
+                                    binding.txtMatchAnimation.visibility = View.VISIBLE
+                                    binding.tvvs.text = item.homeScore + "-" + item.awayScore
+                                    binding.tvstatus.setTextColor(
+                                        ContextCompat.getColor(
+                                            context,
+                                            R.color.c_fe4848
+                                        )
+                                    )
+                                    binding.tvstatus.text = context.resources.getString(
+                                        R.string.main_txt_xbc,
+                                        if (item.runTime == null)
+                                            "0"
+                                        else {
+                                            item.runTime
+                                        }
+                                    )
+                                    initAnimation(binding.txtMatchAnimation)
+                                }
+                                "5", "6", "7" -> {
                                     binding.tvstatus.visibility = View.VISIBLE
                                     binding.txtMatchAnimation.visibility = View.VISIBLE
                                     binding.tvvs.text = item.homeScore + "-" + item.awayScore
