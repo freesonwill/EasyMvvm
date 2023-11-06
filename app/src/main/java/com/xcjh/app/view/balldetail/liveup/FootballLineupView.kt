@@ -68,10 +68,10 @@ class FootballLineupView : LinearLayout {
                 "${myDivide(it.homeMarketValue,10000).toInt() }万" + if (it.homeMarketValueCurrency.isNullOrEmpty()) "欧" else {
                     it.homeMarketValueCurrency
                 } //身价
-            tv_away_lineup?.text = "阵型：${it.homeFormation}" //阵型
+            tv_away_lineup?.text = "阵型：${it.awayFormation}" //阵型
             tv_away_value?.text =
                 "${myDivide(it.awayMarketValue,10000).toInt() }万"+ if (it.awayMarketValueCurrency.isNullOrEmpty()) "欧" else {
-                    it.homeMarketValueCurrency
+                    it.awayMarketValueCurrency
                 }//身价
             lineUpMiddleView?.setData(it)
         } else {
