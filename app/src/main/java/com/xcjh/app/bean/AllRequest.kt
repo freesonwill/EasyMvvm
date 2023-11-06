@@ -72,7 +72,7 @@ data class PageReq(
 @Keep
 data class HotReq(
     var matchType: String? = null,//比赛类型：1：足球；2：篮球,可用值:1,2
-    var top: Int = 20
+    var top: Int = 5
 
 )
 

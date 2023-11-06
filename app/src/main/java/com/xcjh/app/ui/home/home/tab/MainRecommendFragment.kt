@@ -66,8 +66,6 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                     }
                     R.layout.item_main_proceed -> {
 //                var binding=getBinding<AdapterTitleImageBinding>()
-
-
                     }
 
                 }
@@ -141,8 +139,15 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                                                  .into(binding.ivGuestIcon)
                                              binding.txtHomeName.text=matchBean.awayName
                                              binding.txtGuestName.text=matchBean.homeName
-                                             binding.txtHomeScore.text=matchBean.awayScore
-                                             binding.txtGuestScore.text=matchBean. homeScore
+                                             if(matchBean.status.equals("1")){
+                                                 binding.txtHomeScore.text=""
+                                                 binding.txtGuestScore.text=""
+                                             }else{
+                                                 binding.txtHomeScore.text=matchBean.awayScore
+                                                 binding.txtGuestScore.text=matchBean. homeScore
+                                             }
+
+
 
                                                 if(matchBean.status.equals("0")){
                                                     binding.txtMatchStatus.visibility=View.GONE
@@ -191,9 +196,17 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
 
 
                                              binding.txtHomeName.text=matchBean.homeName
-                                             binding.txtHomeScore.text=matchBean.homeScore
+
+                                             if(matchBean.status.equals("1")){
+                                                 binding.txtHomeScore.text=""
+                                                 binding.txtGuestScore.text=""
+                                             }else{
+                                                 binding.txtHomeScore.text=matchBean.homeScore
+                                                 binding.txtGuestScore.text=matchBean.awayScore
+                                             }
+
                                              binding.txtGuestName.text=matchBean.awayName
-                                             binding.txtGuestScore.text=matchBean.awayScore
+
 
 
                                              if(matchBean.status.equals("0")){

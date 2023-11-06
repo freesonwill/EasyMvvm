@@ -157,7 +157,6 @@ class SearchActivity  : BaseActivity<SearchVm, ActivitySearchBinding>() {
                         }
                     }
 
-
                 }
 
             }
