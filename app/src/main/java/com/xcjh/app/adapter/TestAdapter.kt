@@ -128,7 +128,6 @@ class TestMultiAdapter : BaseMultiItemAdapter<DiffEntity>(arrayListOf()) {
             }
             override fun onBind(holder: ItemVH, position: Int, item: DiffEntity?, payloads: List<Any>) {
                 if (item!=null){
-                    Log.e("TAG", "onBindViewHolder: ==="+payloads.toString() )
                     if (payloads.isNotEmpty()){
 
                         holder.binding.tvTitle.text = item.title+"===="
@@ -159,7 +158,6 @@ class TestMultiAdapter : BaseMultiItemAdapter<DiffEntity>(arrayListOf()) {
                 }
                 override fun onBind(holder: HeaderVH, position: Int, item: DiffEntity?, payloads: List<Any>) {
                     if (item!=null){
-                        Log.e("TAG", "onBindViewHolder: ==="+payloads.toString() )
 
                     }
                 }

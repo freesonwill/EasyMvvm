@@ -14,6 +14,7 @@ import com.just.agentweb.AgentWeb
 import com.just.agentweb.WebChromeClient
 import com.just.agentweb.WebViewClient
 import com.xcjh.base_lib.base.BaseViewModel
+import com.xcjh.base_lib.utils.loge
 
 
 /**
@@ -41,7 +42,7 @@ abstract class BaseWebFragment<VM : BaseViewModel, VB : ViewDataBinding> : BaseF
             .setWebViewClient(object : WebViewClient() {
                 override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                     super.onPageStarted(view, url, favicon)
-                    Log.e("TAG", "--------onPageStarted------ $url")
+                    "--------onPageStarted------ $url".loge()
                 }
 
                 override fun onReceivedError(
@@ -50,12 +51,12 @@ abstract class BaseWebFragment<VM : BaseViewModel, VB : ViewDataBinding> : BaseF
                     error: WebResourceError?
                 ) {
                     super.onReceivedError(view, request, error)
-                    Log.e("TAG", "--------onReceivedError------ ")
+                    "--------onReceivedError------ ".loge()
                 }
 
                 override fun onPageFinished(view: WebView?, url: String?) {
                     super.onPageFinished(view, url)
-                    Log.e("TAG", "--------onPageFinished------ ")
+                    "--------onPageFinished------ ".loge()
                 }
             })
             // .setWebView(binding.agentWeb)

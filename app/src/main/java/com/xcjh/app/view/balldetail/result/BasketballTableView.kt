@@ -15,6 +15,7 @@ import com.xcjh.app.bean.BasketballScoreBean
 import com.xcjh.app.databinding.ViewBasketballTableBinding
 import com.xcjh.app.databinding.ViewBasketballTableChildBinding
 import com.xcjh.base_lib.utils.horizontal
+import com.xcjh.base_lib.utils.loge
 import com.xcjh.base_lib.utils.notNull
 
 class BasketballTableView : RelativeLayout {
@@ -108,7 +109,7 @@ class BasketballTableView : RelativeLayout {
 
             binding.tvHomeTotal.text = homeAll.toString()
             binding.tvAwayTotal.text = awayAll.toString()
-            Log.e("TAG", "setTeamData: ===="+Gson().toJson(scoreList) )
+            Gson().toJson(scoreList).loge()
             binding.rcvCommon.models = scoreList
         }
     }

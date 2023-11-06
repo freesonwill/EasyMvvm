@@ -1,7 +1,6 @@
 package com.xcjh.app.ui.details.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import com.xcjh.app.appViewModel
@@ -29,8 +28,6 @@ class DetailIndexFragment(var matchId: String = "", var matchType: String = "1")
 
     override fun lazyLoadData() {
         //ViewModelProvider.get()
-        Log.e("TAG", "initView11: ====" + vm.tt)
-        Log.e("TAG", "initView22: ====" + mViewModel.tt)
         mViewModel.getOddsInfo(matchId)
     }
 

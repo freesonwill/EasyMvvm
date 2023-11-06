@@ -29,14 +29,12 @@ class MyWsManager private constructor(private val mContext: Context) {
         private var INSTANCE: MyWsManager? = null
         fun getInstance(context: Context): MyWsManager? {
             if (INSTANCE == null) {
-                //Log.e("====", "getInstance: ===" + null)
                 synchronized(MyWsManager::class.java) {
                     if (INSTANCE == null) {
                         INSTANCE = MyWsManager(context)
                     }
                 }
             }
-            //Log.e("====", "getInstance: ===!==" + null)
             return INSTANCE
         }
     }
@@ -58,7 +56,7 @@ class MyWsManager private constructor(private val mContext: Context) {
                 doRegisterReceiver()
             }
         } catch (e: Exception) {
-            Log.e(tag, "=======--initService------- ${e.message}")
+            "=======--initService------- ${e.message}".loge()
         }
     }
 
@@ -79,7 +77,7 @@ class MyWsManager private constructor(private val mContext: Context) {
             receiver = null
             INSTANCE = null
         } catch (e: Exception) {
-            Log.e("===", "stopService: ===" + e.message)
+            ("stopService: ===" + e.message).loge()
         }
     }
 
@@ -111,7 +109,7 @@ class MyWsManager private constructor(private val mContext: Context) {
      */
     private val serviceConnection: ServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(componentName: ComponentName, iBinder: IBinder) {
-            Log.e(tag, "=====服务与活动成功绑定")
+            "=====服务与活动成功绑定".loge()
             if (iBinder is MyWsClientService.WsClientBinder) {
                 binder = iBinder
                 service = binder?.service
@@ -120,19 +118,19 @@ class MyWsManager private constructor(private val mContext: Context) {
         }
 
         override fun onServiceDisconnected(componentName: ComponentName) {
-            Log.e(tag, "====服务与活动成功断开")
+            "====服务与活动成功断开".loge()
         }
     }
 
     private inner class ChatMessageReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             val msg = intent?.getStringExtra("message") ?: return
-            Log.e(tag, "onReceive====------------  $msg")
+            "onReceive====------------  $msg".loge()
             try {
                 //appViewModel
                 parsingServiceLogin(msg)
             } catch (e: Exception) {
-                Log.e(tag, "======onReceive===webSocket解析异常------------  ${e.message}")
+                "======onReceive===webSocket解析异常------------  ${e.message}".loge()
             }
         }
     }

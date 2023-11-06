@@ -17,6 +17,7 @@ import com.xcjh.app.databinding.LayoutEmptyBinding
 import com.xcjh.app.ui.details.DetailVm
 import com.xcjh.app.ui.details.MatchDetailActivity
 import com.xcjh.base_lib.utils.distance
+import com.xcjh.base_lib.utils.loge
 import com.xcjh.base_lib.utils.vertical
 import com.xcjh.base_lib.utils.view.visibleOrGone
 
@@ -117,7 +118,7 @@ class DetailResultFragment(var match: MatchDetailBean) :
         mViewModel.basketStatus.observe(this) {
             if (it != null) {
                 //主队客队2分球、3分球、罚球数据统计
-                Log.e("TAG", "createObserver: ===" + Gson().toJson(it))
+                Gson().toJson(it).loge()
                 mDatabind.viewBasketballData.setData(it)
             }
         }

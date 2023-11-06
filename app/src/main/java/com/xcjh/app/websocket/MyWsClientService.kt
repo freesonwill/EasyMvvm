@@ -87,14 +87,15 @@ class MyWsClientService : Service() {
                     trustAllHots(this)
                 }
             }
+
             private fun trustAllHots(client: WebSocketClient) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     MyWsClientCert().trustAllHots(client)
                 }
                 // val trustAllCerts = TrustManager
             }
+
             override fun onMessage(message: String) {
-                // Log.e("MyWsClient：onReceive===", message)
                 val intent = Intent()
                 intent.action = WebSocketAction.WEB_ACTION
                 intent.putExtra("message", message)
@@ -102,26 +103,25 @@ class MyWsClientService : Service() {
             }
 
             override fun onOpen(handshakedata: ServerHandshake) {
-                Log.e("MyWsClient===", "websocket连接成功 " + handshakedata.httpStatus)
-                if (isLogin()){
+                "websocket连接成功wsStatus===${appViewModel.wsStatus.value}".loge("MyWsClient===")
+                if (isLogin()) {
                     GlobalScope.launch {
                         delay(2000)
-                        onWsUserLogin(){}
+                        onWsUserLogin() {}
                     }
 
                 }
                 appViewModel.wsStatus.postValue(1)
-                Log.e("MyWsClient===", "wsStatus ====" + appViewModel.wsStatus.value)
+                "websocket连接成功appViewModel_wsStatus=== ${appViewModel.wsStatus.value}".loge("MyWsClient===")
                 if (errorNum > 0) {
-                    Log.e("MyWsClient===", "-----------onOpen--------$errorNum")
+                    //Log.e("MyWsClient===", "-----------onOpen--------$errorNum")
                 }
             }
 
             override fun onClose(code: Int, reason: String, remote: Boolean) {
-
                 appViewModel.wsStatus.postValue(2)
-                Log.e("MyWsClient===", "websocket 关闭 $reason  $remote")
-                Log.e("MyWsClient===", "wsStatus ====" + appViewModel.wsStatus.value)
+                "websocket 关闭 $reason  $remote".loge("MyWsClient===")
+                "websocket 关闭appViewModel_wsStatus=== ${appViewModel.wsStatus.value}".loge("MyWsClient===")
                 errorNum++
             }
 
@@ -149,7 +149,7 @@ class MyWsClientService : Service() {
 
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    Log.e("JWebSocketClient", "------connect-------- " + e.message)
+                    "------connect-------- ${e.message}".loge()
                 }
             }, 0, TimeUnit.SECONDS)
         }
@@ -211,9 +211,9 @@ class MyWsClientService : Service() {
     private val mHandler: Handler = Handler(Looper.myLooper()!!)
     private val heartBeatRunnable: Runnable = object : Runnable {
         override fun run() {
-//            Log.e("wsService===", "心跳包检测webSocket连接状态");
+            "-----------心跳包检测连接状态client-----${client==null}".loge("wsService===")
             if (client != null) {
-                ("wsService===" + "-----------socket是否断开-----" + client!!.isClosed).loge("===")
+                ("-----------socket是否断开-----" + client!!.isClosed).loge("wsService===")
                 if (client!!.isClosed) {
                     reconnectWs()
                     //MyWsManager.getInstance(appContext)?.stopService()
@@ -223,7 +223,6 @@ class MyWsClientService : Service() {
                 }
             } else {
                 //如果client已为空，重新初始化连接
-                ("wsService===" + "-----------socket是否断开-----" + client!!.isClosed).loge("===")
                 initSocketClient()
             }
             //每隔一定的时间，对长连接进行一次心跳检测
@@ -239,7 +238,7 @@ class MyWsClientService : Service() {
                 //client?.sendPing()
             }
         } catch (e: Exception) {
-            Log.e("wsService===", "---sendPing--- " + e.message)
+            "-----------sendPing-----${e.message}".loge("wsService===")
         }
     }
 
@@ -251,11 +250,11 @@ class MyWsClientService : Service() {
         if (scheduledExecutorService != null) {
             scheduledExecutorService!!.schedule({
                 try {
-                    Log.e("wsService===", "开启重连")
+                    "-----------开启重连-----".loge("wsService===")
                     client!!.reconnect()
                     client!!.reconnectBlocking()
                 } catch (e: InterruptedException) {
-                    Log.e("wsService===", "开启重连: " + e.message)
+                    "-----------开启重连-----${ e.message}".loge("wsService===")
                 }
             }, 0, TimeUnit.SECONDS)
         }

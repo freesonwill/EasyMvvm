@@ -154,9 +154,7 @@ abstract class GSYBaseActivity<VM : BaseViewModel, DB : ViewDataBinding,T : GSYB
     override fun onTouchScreenSeekVolume(url: String, vararg objects: Any) {}
     override fun onTouchScreenSeekPosition(url: String, vararg objects: Any) {}
     override fun onTouchScreenSeekLight(url: String, vararg objects: Any) {}
-    override fun onPlayError(url: String, vararg objects: Any) {
-        Log.e("TAG", "onPlayError: ========"+url )
-    }
+    override fun onPlayError(url: String, vararg objects: Any) {}
     override fun onClickStartThumb(url: String, vararg objects: Any) {}
     override fun onClickBlank(url: String, vararg objects: Any) {}
     override fun onClickBlankFullscreen(url: String, vararg objects: Any) {}

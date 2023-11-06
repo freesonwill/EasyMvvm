@@ -533,7 +533,6 @@ fun setWeb(mWebView :WebView) {
     mWebView.webViewClient = object : WebViewClient() {
         override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
             super.onPageStarted(view, url, favicon)
-            Log.e("TAG", "--------onPageStarted------ $url")
         }
 
         override fun onReceivedError(
@@ -542,12 +541,11 @@ fun setWeb(mWebView :WebView) {
             error: WebResourceError?
         ) {
             super.onReceivedError(view, request, error)
-            Log.e("TAG", "--------onReceivedError------ ")
         }
 
         override fun onPageFinished(view: WebView?, url: String?) {
             super.onPageFinished(view, url)
-            Log.e("TAG", "--------onPageFinished------ ")
+            //Log.e("TAG", "--------onPageFinished------ ")
         }
     }
     mWebView.isVerticalScrollBarEnabled = false

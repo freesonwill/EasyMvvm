@@ -30,7 +30,6 @@ class FootballLiveUpMiddleView @JvmOverloads constructor(
         this.post {
             mWidth = measuredWidth
             mHight = measuredWidth * 768 / 343
-            // Log.e("===", "setData: ====" +mWidth)
             // setData("")
         }
     }
@@ -57,7 +56,7 @@ class FootballLiveUpMiddleView @JvmOverloads constructor(
             it.y
         }.toSet()
         removeAllViews()
-        Log.e("TAG", "${mWidth}===setData: ===" + homeSet.toString())
+        "${mWidth}===setData: ===${homeSet}".loge()
         homeList.forEach { player ->
             val child =
                 ViewFootballPlayerBinding.inflate(LayoutInflater.from(context), null, false)

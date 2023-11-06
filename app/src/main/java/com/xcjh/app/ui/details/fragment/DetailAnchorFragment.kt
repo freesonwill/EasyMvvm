@@ -94,7 +94,6 @@ class DetailAnchorFragment(
     }
 
     private fun updateInfo(anchorId: String?) {
-        Log.e("TAG", "updateInfo: ====")
         if (anchorId.isNullOrEmpty()){
             return
         }else{

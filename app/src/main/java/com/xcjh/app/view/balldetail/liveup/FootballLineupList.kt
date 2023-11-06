@@ -122,7 +122,6 @@ class FootballLineupList : LinearLayout {
         val away = data.away.filter {
             it.first == first
         }
-        //Log.e("TAG", "setData:home ==="+ Gson().toJson(home))
         if (home.size == away.size) {
             //替补球员数量相同
             for ((i, item) in home.withIndex()) {

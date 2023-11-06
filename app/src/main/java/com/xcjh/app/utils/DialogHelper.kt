@@ -60,7 +60,6 @@ fun selectTime(context: Context, block: (start: Calendar,end:Calendar) -> Unit) 
                 mCalendarView.setOnCalendarRangeSelectListener(object :
                     CalendarView.OnCalendarRangeSelectListener {
                     override fun onCalendarSelectOutOfRange(calendar: Calendar?) {
-                        Log.e("====", "onCalendarSelectOutOfRange: =====" + calendar.toString())
 
                     }
 
@@ -68,7 +67,7 @@ fun selectTime(context: Context, block: (start: Calendar,end:Calendar) -> Unit) 
                         calendar: Calendar?,
                         isOutOfMinRange: Boolean,
                     ) {
-                        Log.e("====", "onSelectOutOfRange: =====" + calendar?.timeInMillis)
+                       // Log.e("====", "onSelectOutOfRange: =====" + calendar?.timeInMillis)
                     }
 
                     override fun onCalendarRangeSelect(calendar: Calendar, isEnd: Boolean) {

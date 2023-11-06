@@ -237,7 +237,6 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
             updateChatRoom(it.liveId, it.userId!!)
         }
         appViewModel.wsStatus.observe(this) {
-            Log.e("TAG", "createObserver: ====" + it)
             if (isAdded && it == 1) {
                 //断开后重连成功，重新进入房间
                 MyWsManager.getInstance(App.app)?.setLiveRoomListener(activity.toString(), this)
@@ -256,13 +255,11 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
 
     override fun onResume() {
         mDatabind.rcvChat.postDelayed({
-            Log.e("===", "onResume:isTopActivity ==="+this.mDatabind.root.height)
         },200)
         super.onResume()
     }
     override fun onPause() {
         mDatabind.rcvChat.postDelayed({
-            Log.e("===", "onPause:isTopActivity ==="+this.mDatabind.root.height)
         },200)
         hideSoftInput()
         super.onPause()
@@ -302,7 +299,6 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
         var isShowBottom = false
         val firstVisible: Int = mLayoutManager.findFirstVisibleItemPosition()
         var lastVisible: Int = mLayoutManager.findLastVisibleItemPosition()
-        // Log.e("TAG", "find: ===" + firstVisible + "=======" + lastVisible)
         mDatabind.rcvChat.models?.apply {
             if (this.size > 3 && firstVisible < 1) {
                 isShowBottom = true
@@ -343,7 +339,6 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
                                     level = lvNum,
                                     groupId = liveId,
                                 ).apply {
-                                    // Log.e("TAG", "onClick: ====" + Gson().toJson(this))
                                 })
                             )
 
@@ -366,7 +361,6 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
      * 切换直播间
      */
     private fun updateChatRoom(liveId: String, userId: String?) {
-        Log.e("TAG", "updateChatRoom: ====")
         onWsUserExitRoom(this.liveId)
         this.liveId = liveId
         this.userId = userId

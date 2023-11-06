@@ -158,7 +158,10 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
                         } else {
                             binding.tvType.text = getString(R.string.anchor)
                             binding.tvType.setBackgroundResource(setLeverDrawable("2"))
-                            binding.tvType.setTextColor(setLeverColor("2"))
+                            //binding.tvType.setTextColor(setLeverColor("2"))
+                            binding.tvType.paint.shader =
+                                LinearGradient(0f, 0f, 0f, binding.tvType.lineHeight.toFloat(),
+                                    setLeverColor("2"), setLeverColor("2"), Shader.TileMode.CLAMP)
                             binding.ivImage.visibleOrGone(item.msgType == 1)
                             if (item.msgType == 1) {//图片
                                 Glide.with(context)
@@ -204,6 +207,11 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
             hideSoftInput() // 隐藏键盘
             mDatabind.edtChatMsg.clearFocus()
             false
+        }
+        mDatabind.edtChatMsg.setOnFocusChangeListener { v, hasFocus ->
+            if (hasFocus){
+                judgeLogin()
+            }
         }
     }
 
@@ -262,7 +270,6 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
             updateChatRoom(it.liveId, it.userId)
         }
         appViewModel.wsStatus.observe(this) {
-            Log.e("TAG", "createObserver: ====" + it)
             if (isAdded && it == 1) {
                 //断开后重连成功，重新进入房间
                 MyWsManager.getInstance(App.app)?.setLiveRoomListener(activity.toString(), this)
@@ -277,13 +284,12 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
             MyWsManager.getInstance(App.app)?.setLiveRoomListener(activity.toString(), this)
             onWsUserEnterRoom(liveId)
         }
-         Log.e("===", "onStart:isTopActivity ===" + activity.toString())
+        activity.toString().loge()
     }
 
     override fun onResume() {
         //setWindowSoftInput(float = mDatabind.llInput, setPadding = true)
         mDatabind.rcvChat.postDelayed({
-            //Log.e("===", "onResume:isTopActivity ===" + this.mDatabind.root.height + "=====" + mDatabind.rcvChat.height)
             try {
                 val params = mDatabind.rcvChat.layoutParams
                 params.height = mDatabind.rcvChat.height//+10
@@ -291,15 +297,12 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
             }catch (_:Exception){}
         }, 100)
         super.onResume()
-        //Log.e("===", "onResume:isTopActivity ==="+activity.toString())
     }
 
     override fun onPause() {
         hideSoftInput()
         mDatabind.edtChatMsg.clearFocus()
         mDatabind.rcvChat.postDelayed({
-            Log.e("===",
-                "onPause:isTopActivity ===" + this.mDatabind.root.height + "=====" + mDatabind.rcvChat.height)
         }, 200)
         super.onPause()
     }
@@ -309,13 +312,11 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
         if (!isTopActivity(activity)) {
             exitRoom()
         }
-        //Log.e("===", "onStop:isTopActivity ===${KtxActivityManger.currentActivity.toString()}====="+isTopActivity(activity))
     }
 
     override fun onDestroy() {
         super.onDestroy()
         exitRoom()
-        // Log.e("===", "onDestroy:isTopActivity ==="+activity.toString())
     }
 
     private fun exitRoom() {
@@ -341,7 +342,6 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
         var isShowBottom = false
         val firstVisible: Int = mLayoutManager.findFirstVisibleItemPosition()
         val lastVisible: Int = mLayoutManager.findLastVisibleItemPosition()
-        Log.e("TAG", "find: ===" + firstVisible + "=======" + lastVisible)
         mDatabind.rcvChat.models?.apply {
             if (this.size > 3 && lastVisible < 1) {
                 isShowBottom = true
@@ -389,7 +389,6 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
                                     level = lvNum,
                                     groupId = liveId,
                                 ).apply {
-                                    // Log.e("TAG", "onClick: ====" + Gson().toJson(this))
                                 })
                             )
 
@@ -405,7 +404,6 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
      * 切换直播间
      */
     private fun updateChatRoom(liveId: String, userId: String?) {
-        Log.e("TAG", "updateChatRoom: ====")
         onWsUserExitRoom(this.liveId)
         this.liveId = liveId
         this.userId = userId

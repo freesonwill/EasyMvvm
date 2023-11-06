@@ -413,8 +413,7 @@ class MatchDetailActivity :
                 //滚动条广告
                 mDatabind.marqueeView.isSelected = true
                 val random = (0..list.size).random() % list.size
-                Log.e(TAG, "random: ====" + random + Gson().toJson(list[random]))
-                mDatabind.marqueeView.text = list[random].name
+                mDatabind.marqueeView.text = list[random].name/*+"                                                                                             "*/
                 mDatabind.marqueeView.setOnClickListener {
                     jumpOutUrl(list[random].targetUrl)
                 }
@@ -522,7 +521,6 @@ class MatchDetailActivity :
         if (isShowVideo && !isTopActivity(this)) {
             startVideo(anchor?.playUrl)
         }
-        //Log.e("TAG", "onResume: ${isTopActivity(this)}===" + this.toString())
     }
 
     override fun onDestroy() {
