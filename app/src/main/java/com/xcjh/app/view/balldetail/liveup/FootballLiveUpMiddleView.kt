@@ -81,7 +81,7 @@ class FootballLiveUpMiddleView @JvmOverloads constructor(
             child.tvPlayerNum.text = player.shirtNumber.toString()
             child.tvPlayerName.text = player.name
             val lp = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
-            lp.leftMargin = mWidth * player.x / 100 - dp2px(30)
+            lp.leftMargin = mWidth * (100-player.x) / 100 - dp2px(30)
             for ((i, item) in awaySet.withIndex()) {
                 if (player.y == item && awaySet.size > 1) {
                     lp.topMargin = mHight - mHight * (12 + 76 * i / (awaySet.size - 1)) / 200 - dp2px(25)
