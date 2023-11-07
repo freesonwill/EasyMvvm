@@ -66,7 +66,8 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
         NoticeBean(
             //notice = getString(R.string.anchor_notice),
             notice = "",
-            itemHover = true)
+            itemHover = true
+        )
     }
 
     private val mLayoutManager by lazy {
@@ -140,18 +141,23 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
                         }
 
                     }
+
                     is MsgBean -> {
                         val binding = getBinding<ItemDetailChatBinding>()
                         if (item.identityType == 0) {
                             binding.ivImage.visibleOrGone(false)
                             binding.tvType.text = getLeverNum(item.level)
                             binding.tvType.paint.shader =
-                                LinearGradient(0f, 0f, 0f, binding.tvType.lineHeight.toFloat(),
+                                LinearGradient(
+                                    0f, 0f, 0f, binding.tvType.lineHeight.toFloat(),
                                     if (item.level == "7") appContext.getColor(R.color.c_v7) else setLeverColor(
-                                        item.level),
+                                        item.level
+                                    ),
                                     if (item.level == "7") appContext.getColor(R.color.c_v77) else setLeverColor(
-                                        item.level),
-                                    Shader.TileMode.CLAMP)
+                                        item.level
+                                    ),
+                                    Shader.TileMode.CLAMP
+                                )
                             binding.tvType.setBackgroundResource(setLeverDrawable(item.level))
                             // binding.sltLevel.setStrokeColor(setLeverColor(item.level))
                             //binding.tvType.setTextColor(setLeverColor(item.level))
@@ -160,14 +166,20 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
                             binding.tvType.setBackgroundResource(setLeverDrawable("2"))
                             //binding.tvType.setTextColor(setLeverColor("2"))
                             binding.tvType.paint.shader =
-                                LinearGradient(0f, 0f, 0f, binding.tvType.lineHeight.toFloat(),
-                                    setLeverColor("2"), setLeverColor("2"), Shader.TileMode.CLAMP)
+                                LinearGradient(
+                                    0f, 0f, 0f, binding.tvType.lineHeight.toFloat(),
+                                    setLeverColor("2"), setLeverColor("2"), Shader.TileMode.CLAMP
+                                )
                             binding.ivImage.visibleOrGone(item.msgType == 1)
                             if (item.msgType == 1) {//图片
                                 Glide.with(context)
                                     .load(item.content)
-                                    .apply(RequestOptions().transform(CenterCrop(),
-                                        RoundedCorners(dp2px(8f))))
+                                    .apply(
+                                        RequestOptions().transform(
+                                            CenterCrop(),
+                                            RoundedCorners(dp2px(8f))
+                                        )
+                                    )
                                     .placeholder(R.drawable.load_square)
                                     .into(binding.ivImage)
                                 binding.ivImage.setOnClickListener {
@@ -187,18 +199,22 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
                             offset = item.id ?: ""
                         }
                         SpanUtil.create()
-                            .addForeColorSection(item.nick + " : ",
-                                ContextCompat.getColor(context, R.color.c_8a91a0))
-                            .addForeColorSection(if (item.msgType == 1) "" else item.content,
-                                ContextCompat.getColor(context, R.color.c_F5F5F5))
+                            .addForeColorSection(
+                                item.nick + " : ",
+                                ContextCompat.getColor(context, R.color.c_8a91a0)
+                            )
+                            .addForeColorSection(
+                                if (item.msgType == 1) "" else item.content,
+                                ContextCompat.getColor(context, R.color.c_F5F5F5)
+                            )
                             .showIn(binding.tvContent) //显示到控件TextView中
                     }
                 }
             }
         }
         val defaultItemAnimator = DefaultItemAnimator()
-      //  val defaultItemAnimator = MyItemAnimator()
-       // val defaultItemAnimator = SlideInLeftAnimator()
+        //  val defaultItemAnimator = MyItemAnimator()
+        // val defaultItemAnimator = SlideInLeftAnimator()
         defaultItemAnimator.addDuration = 500
         mDatabind.rcvChat.itemAnimator = defaultItemAnimator
         //点击列表隐藏软键盘
@@ -209,7 +225,7 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
             false
         }
         mDatabind.edtChatMsg.setOnFocusChangeListener { v, hasFocus ->
-            if (hasFocus){
+            if (hasFocus) {
                 judgeLogin()
             }
         }
@@ -228,18 +244,23 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
                 mDatabind.rcvChat.postDelayed({
                     try {
                         mDatabind.rcvChat.addModels(
-                            listOf(MsgBean(it.id,
-                                it.head,
-                                it.nickName,
-                                "0",
-                                it.firstMessage ?: "",
-                                identityType = 1)),
+                            listOf(
+                                MsgBean(
+                                    it.id,
+                                    it.head,
+                                    it.nickName,
+                                    "0",
+                                    it.firstMessage ?: "",
+                                    identityType = 1
+                                )
+                            ),
                             // index = 0
                         ) // 添加一条消息
                         mDatabind.rcvChat.models?.size?.let {
                             mDatabind.rcvChat.smoothScrollToPosition(it)
                         }
-                    }catch (_:Exception){}
+                    } catch (_: Exception) {
+                    }
                     // mDatabind.rcvChat.scrollToPosition(0)
 
                 }, 500)
@@ -294,7 +315,8 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
                 val params = mDatabind.rcvChat.layoutParams
                 params.height = mDatabind.rcvChat.height//+10
                 mDatabind.rcvChat.layoutParams = params
-            }catch (_:Exception){}
+            } catch (_: Exception) {
+            }
         }, 100)
         super.onResume()
     }
@@ -310,7 +332,7 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
     override fun onStop() {
         super.onStop()
         if (!isTopActivity(activity)) {
-            exitRoom()
+            // exitRoom()
         }
     }
 
@@ -342,26 +364,33 @@ class DetailChatFragment(var liveId: String, var userId: String?, override val t
         var isShowBottom = false
         val firstVisible: Int = mLayoutManager.findFirstVisibleItemPosition()
         val lastVisible: Int = mLayoutManager.findLastVisibleItemPosition()
+        if (chat.groupId != liveId) {
+            return
+        }
         mDatabind.rcvChat.models?.apply {
             if (this.size > 3 && lastVisible < 1) {
                 isShowBottom = true
             }
         }
 
-        mDatabind.rcvChat.addModels(listOf(MsgBean(
-            chat.from,
-            chat.fromAvatar,
-            chat.fromNickName ?: "",
-            chat.level,
-            chat.content,
-            msgType = chat.msgType,
-            identityType = chat.identityType,
-        ))) // 添加一条消息
+        mDatabind.rcvChat.addModels(
+            listOf(
+                MsgBean(
+                    chat.from,
+                    chat.fromAvatar,
+                    chat.fromNickName ?: "",
+                    chat.level,
+                    chat.content,
+                    msgType = chat.msgType,
+                    identityType = chat.identityType,
+                )
+            )
+        ) // 添加一条消息
 
         mDatabind.rcvChat.models?.size?.let {
-           // mDatabind.rcvChat.adapter?.notifyItemInserted(it-1)
-           // mDatabind.rcvChat.adapter?.notifyItemRangeChanged(it, 1);
-           // mLayoutManager.scrollToPositionWithOffset(it, Integer.MIN_VALUE)
+            // mDatabind.rcvChat.adapter?.notifyItemInserted(it-1)
+            // mDatabind.rcvChat.adapter?.notifyItemRangeChanged(it, 1);
+            // mLayoutManager.scrollToPositionWithOffset(it, Integer.MIN_VALUE)
             if (chat.from == CacheUtil.getUser()?.id || lastVisible == it - 2) {
                 mDatabind.rcvChat.smoothScrollToPosition(it)
             }

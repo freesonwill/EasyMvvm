@@ -281,7 +281,7 @@ class MyWsManager private constructor(private val mContext: Context) {
         }
     }
     /**
-     * 群消息
+     * 直播流状态
      */
     private val mLiveStatusListener = linkedMapOf<String, LiveStatusListener>()
     fun setLiveStatusListener(tag: String, listener: LiveStatusListener) {
