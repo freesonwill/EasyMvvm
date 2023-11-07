@@ -15,7 +15,7 @@
             android:id="@+id/ivNewsIcon"
             android:layout_width="64dp"
             android:layout_height="64dp"
-            android:scaleType="fitXY"
+            android:scaleType="centerCrop"
             android:layout_centerVertical="true"
             app:srcCompat="@drawable/load_square" />
         <LinearLayout
