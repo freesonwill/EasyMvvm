@@ -14,7 +14,7 @@
         android:id="@+id/ivNewsIcon"
         android:layout_width="120dp"
         android:layout_height="68dp"
-        android:scaleType="fitXY"
+        android:scaleType="centerCrop"
         android:layout_centerVertical="true"
         android:layout_gravity="center"
         app:srcCompat="@drawable/main_banner_load" />

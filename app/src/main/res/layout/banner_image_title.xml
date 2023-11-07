@@ -11,5 +11,5 @@
         android:layout_height="match_parent"
         app:corner_radius="@dimen/dp_8"
         app:srcCompat="@drawable/bg_basketball_status"
-        android:scaleType="fitXY"/>
+        android:scaleType="centerCrop"/>
 </RelativeLayout>

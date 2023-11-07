@@ -143,7 +143,7 @@
                 android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="99dp"
-                android:scaleType="fitXY"
+                android:scaleType="centerCrop"
                 android:layout_marginBottom="43dp"
                 app:srcCompat="@drawable/app_bg"
                 app:corner_radius="@dimen/dp_8"/>
