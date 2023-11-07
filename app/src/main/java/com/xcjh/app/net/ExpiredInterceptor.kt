@@ -6,6 +6,7 @@ import com.xcjh.base_lib.utils.myToast
 import okhttp3.Interceptor
 import com.xcjh.app.R
 import com.xcjh.app.ui.login.LoginActivity
+import com.xcjh.app.utils.CacheUtil
 import com.xcjh.base_lib.utils.startNewActivity
 import okhttp3.MediaType
 import okhttp3.Response
@@ -41,6 +42,7 @@ class ExpiredInterceptor : Interceptor {
         //判断响应是否过期（无效）
         if (isResponseExpired(response, bodyString)) {
             myToast(appContext.getString(R.string.login_expired))
+            CacheUtil.setIsLogin(false)
             startNewActivity<LoginActivity> {  }
         }
         return response
