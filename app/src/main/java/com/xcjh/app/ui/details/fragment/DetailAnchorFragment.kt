@@ -13,6 +13,7 @@ import com.xcjh.app.ui.details.DetailVm
 import com.xcjh.app.utils.judgeLogin
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.base.BaseViewModel
+import com.xcjh.base_lib.utils.view.textString
 
 /**
  * 主播
@@ -71,12 +72,16 @@ class DetailAnchorFragment(
             if (it) {
                 appViewModel.updateSomeData.postValue("friends")
                 setFocusUI(true)
+                mDatabind.tvDetailTabAnchorFans.text =
+                    (mDatabind.tvDetailTabAnchorFans.textString().toInt() + 1).toString() //主播粉丝数量+1
             }
         }
         vm.isUnFocus.observe(this) {
             if (it) {
                 appViewModel.updateSomeData.postValue("friends")
                 setFocusUI(false)
+                mDatabind.tvDetailTabAnchorFans.text =
+                    (mDatabind.tvDetailTabAnchorFans.textString().toInt() - 1).toString() //主播粉丝数量-1
             }
         }
         vm.anchorInfo.observe(this) {
@@ -94,12 +99,12 @@ class DetailAnchorFragment(
     }
 
     private fun updateInfo(anchorId: String?) {
-        if (anchorId.isNullOrEmpty()){
+        if (anchorId.isNullOrEmpty()) {
             return
-        }else{
+        } else {
             this.anchorId = anchorId
         }
-      //  lazyLoadData()
+        //  lazyLoadData()
     }
 
 }

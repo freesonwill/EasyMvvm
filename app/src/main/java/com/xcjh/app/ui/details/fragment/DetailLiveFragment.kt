@@ -81,7 +81,7 @@ class DetailLiveFragment(var matchId: String,var matchType: String) : BaseVpFrag
             }
             R.id.llLiveSpacing.onClick {
                 val bean = _data as BeingLiveBean
-                //todo 先退出当前房间，移除监听器， 然后才能进入新的房间
+                // 先退出当前房间，移除监听器， 然后才能进入新的房间
                 MatchDetailActivity.open(matchType,bean.matchId,bean.competitionName,bean.userId,bean.playUrl)
             }
         }

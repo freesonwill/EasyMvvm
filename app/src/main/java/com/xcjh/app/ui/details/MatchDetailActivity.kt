@@ -304,7 +304,7 @@ class MatchDetailActivity :
             var url = if (isHasAnchor) {
                 ApiComService.SHARE_IP + "#/roomDetail?id=${matchId}&liveId=${anchor?.liveId}&type=${matchType}&userId=${anchor?.userId}"
             } else {
-                ApiComService.SHARE_IP + "#/roomDetail?id=${matchId}&type=${matchType}"
+                ApiComService.SHARE_IP + "#/roomDetail?id=${matchId}&type=${matchType}&pureFlow=true"
             }
 
             copyToClipboard(url)
