@@ -67,12 +67,22 @@ class LevelMissionActivity  : BaseActivity<LevelMissionVm, ActivityLevelMissionB
                     .into(mDatabind.ivLevelHead)
                 mDatabind.txtLevelName.text=user!!.name
                 if(user!!.growthValueNext!=null){
-                    mDatabind.progressLevel.max=(user!!.growthValueNext!!.toFloat())
-                    mDatabind.progressLevel.progress=user!!.growthValue!!.toFloat()
+                    var result=user!!.growthValueNext!!.toLong().compareTo(user!!.growthValue!!.toLong())
+                    //超过最高等级
+                    if(result>0){
+                        mDatabind.progressLevel.max=(user!!.growthValueNext!!.toFloat())
+                        mDatabind.progressLevel.progress=user!!.growthValue!!.toFloat()
 //                    mDatabind.progressLevel.progress=150f
-                    mDatabind.txtLevelShow.text="L${user!!.lvNum}${user!!.lvName}"
-                    mDatabind.txtLevelGrow.text=resources.getString(R.string.level_txt_grow,"${(user!!.growthValueNext!!.toFloat()-user!!.growthValue!!.toFloat()).toInt()}")
+
+                        mDatabind.txtLevelGrow.text=resources.getString(R.string.level_txt_grow,"${(user!!.growthValueNext!!.toFloat()-user!!.growthValue!!.toFloat()).toInt()}")
 //                    mDatabind.txtLevelGrow.text=resources.getString(R.string.level_txt_grow,"${(user!!.growthValueNext!!.toFloat()).toInt()}")
+                    }else{
+                        mDatabind.progressLevel.max=(user!!.growthValueNext!!.toFloat())
+                        mDatabind.progressLevel.progress=(user!!.growthValueNext!!.toFloat())
+                        mDatabind.txtLevelGrow.text=""
+                    }
+
+                    mDatabind.txtLevelShow.text="L${user!!.lvNum}${user!!.lvName}"
 
 
 //                    mDatabind.txtLeve.text="Lv.${user!!.lvNum} ${user!!.lvName}"

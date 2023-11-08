@@ -174,7 +174,7 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
     fun setData(){
         if(CacheUtil.isLogin()){
             if(CacheUtil.getUser()!=null){
-                mDatabind.rlClickLevel.background = null
+
                 var user=CacheUtil.getUser()
                 mDatabind.iiIsShowLeve.visibility= View.VISIBLE
                 Glide.with(requireContext())
@@ -236,7 +236,7 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
                 }
 
             }else{
-                mDatabind.rlClickLevel.background=ContextCompat.getDrawable(requireContext(),R.drawable.gradation_top8_1e285a)
+
                 notLogin()
             }
 

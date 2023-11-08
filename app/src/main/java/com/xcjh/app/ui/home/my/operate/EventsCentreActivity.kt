@@ -91,8 +91,6 @@ class EventsCentreActivity : BaseActivity<EventsCentreVm, ActivityEventsCentreBi
                 }
             }
 
-
-
         }
     }
 
