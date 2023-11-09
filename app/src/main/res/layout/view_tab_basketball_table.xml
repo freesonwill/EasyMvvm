@@ -15,9 +15,9 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="3"
+            android:layout_weight="131"
             android:gravity="start|center_vertical"
-            android:paddingStart="@dimen/dp_16"
+            android:paddingStart="@dimen/dp_20"
             android:text="@string/player"
             android:textColor="@color/c_F5F5F5"
             android:textSize="@dimen/sp_12" />
@@ -25,7 +25,7 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="40"
             android:gravity="center"
             android:text="@string/time"
             android:textColor="@color/c_F5F5F5"
@@ -34,7 +34,7 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="40"
             android:gravity="center"
             android:text="@string/score"
             android:textColor="@color/c_F5F5F5"
@@ -43,7 +43,7 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="40"
             android:gravity="center"
             android:text="@string/floor"
             android:textColor="@color/c_F5F5F5"
@@ -52,7 +52,7 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="40"
             android:gravity="center"
             android:text="@string/assist"
             android:textColor="@color/c_F5F5F5"
@@ -61,7 +61,8 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1.2"
+            android:layout_weight="54"
+            android:paddingEnd="@dimen/dp_14"
             android:gravity="center"
             android:text="@string/shoot"
             android:textColor="@color/c_F5F5F5"

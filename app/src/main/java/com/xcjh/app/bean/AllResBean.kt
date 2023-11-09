@@ -583,7 +583,17 @@ data class PlayerBean(
     var assists: String = "0",//助攻
     var hitAndShot: String = "0",//投篮
     var score: String = "0",//得分
-) : Serializable
+) : Serializable, Comparable<PlayerBean> {
+    override fun compareTo(other: PlayerBean): Int {
+      /*  return if (this.score == other.score) {
+           // this.assists.compareTo(other.assists)
+            other.assists.toInt() - this.assists.toInt()
+        } else {
+            other.score.toInt() - this.score.toInt()
+        }*/
+        return other.score.toInt() - this.score.toInt()
+    }
+}
 
 /**
  * 篮球比赛得分

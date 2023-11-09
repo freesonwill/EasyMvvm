@@ -7,9 +7,11 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
+import com.google.gson.Gson
 import com.xcjh.app.R
 import com.xcjh.app.bean.BasketballTeamMemberBean
 import com.xcjh.app.databinding.ItemDetailLineupBasketballBinding
+import com.xcjh.base_lib.utils.loge
 
 class BasketballLineupView : LinearLayout {
     private lateinit var layout: LinearLayout
@@ -22,9 +24,11 @@ class BasketballLineupView : LinearLayout {
         initView(context)
     }
 
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context,
+    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
         attrs,
-        defStyleAttr) {
+        defStyleAttr
+    ) {
         initView(context)
     }
 
@@ -32,7 +36,7 @@ class BasketballLineupView : LinearLayout {
         context: Context?,
         attrs: AttributeSet?,
         defStyleAttr: Int,
-        defStyleRes: Int
+        defStyleRes: Int,
     ) : super(context, attrs, defStyleAttr, defStyleRes) {
         initView(context)
     }
@@ -48,21 +52,42 @@ class BasketballLineupView : LinearLayout {
         if (list == null || list.size == 0) {
             return
         }
+        //Gson().toJson(list).loge("===")
         layout.removeAllViews()
+        //方法1
+        list.sortBy { it.data }
+        //方法2
+     /*   list.sortedWith (Comparator { o1, o2 ->
+            if (o2.data.score == o1.data.score) {
+                //  o1.name.compareTo(o2.name)
+                o2.data.assists.toInt() - o1.data.assists.toInt()
+            } else {
+                o2.data.score.toInt() - o1.data.score.toInt()
+            }
+        })
+        //方法3
+        list.sortWith(compareBy({ it.data.score.toInt() }, { it.data.assists.toInt() }))
+        val list = list.reversed() */
+
+
         list.forEach {
-            val binding = ItemDetailLineupBasketballBinding.inflate(LayoutInflater.from(context), this, false)
+            val binding =
+                ItemDetailLineupBasketballBinding.inflate(LayoutInflater.from(context), this, false)
             binding.tvPlayerNum.apply {
                 backgroundTintList = ColorStateList.valueOf(
-                    ContextCompat.getColor(context, if (it.data.first=="0") R.color.c_fe4848 else R.color.c_8a91a0)
+                    ContextCompat.getColor(
+                        context,
+                        if (it.data.first == "0") R.color.c_fe4848 else R.color.c_8a91a0
+                    )
                 )
                 text = it.number.toString()
             }
-            binding.tvPlayerName.text= it.name
-            binding.tvTime.text= it.data.time
-            binding.tvScore.text= it.data.score
-            binding.tvFloor.text= it.data.rebound
-            binding.tvAssist.text= it.data.assists
-            binding.tvShot.text= it.data.hitAndShot
+            binding.tvPlayerName.text = it.name
+            binding.tvTime.text = it.data.time
+            binding.tvScore.text = it.data.score
+            binding.tvFloor.text = it.data.rebound
+            binding.tvAssist.text = it.data.assists
+            binding.tvShot.text = it.data.hitAndShot
             layout.addView(binding.root)
         }
 

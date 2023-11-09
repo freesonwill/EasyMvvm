@@ -17,10 +17,11 @@
             android:layout_height="@dimen/dp_1"/>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_44"
+            android:layout_height="wrap_content"
+            android:paddingVertical="@dimen/dp_12"
             android:orientation="horizontal">
             <LinearLayout
-                android:layout_weight="3"
+                android:layout_weight="131"
                 android:paddingStart="@dimen/dp_16"
                 android:paddingEnd="@dimen/dp_4"
                 android:gravity="center_vertical"
@@ -46,10 +47,9 @@
                     android:maxLines="2"
                     android:ellipsize="end"
                     android:gravity="start|center_vertical"
-                    tools:text="@string/player"
-                    android:singleLine="true"
+                    tools:text="string"
                     android:textColor="@color/c_F5F5F5"
-                    android:textSize="@dimen/sp_12" />
+                    android:textSize="@dimen/sp_10" />
             </LinearLayout>
 
 
@@ -57,51 +57,52 @@
                 android:id="@+id/tvTime"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_weight="40"
                 android:gravity="center"
                 tools:text="@string/time"
                 android:textColor="@color/c_F5F5F5"
-                android:textSize="@dimen/sp_12" />
+                android:textSize="@dimen/sp_10" />
 
             <TextView
                 android:id="@+id/tvScore"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_weight="40"
                 android:gravity="center"
                 tools:text="@string/score"
                 android:textColor="@color/c_F5F5F5"
-                android:textSize="@dimen/sp_12" />
+                android:textSize="@dimen/sp_10" />
 
             <TextView
                 android:id="@+id/tvFloor"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_weight="40"
                 android:gravity="center"
                 tools:text="@string/floor"
                 android:textColor="@color/c_F5F5F5"
-                android:textSize="@dimen/sp_12" />
+                android:textSize="@dimen/sp_10" />
 
             <TextView
                 android:id="@+id/tvAssist"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_weight="40"
                 android:gravity="center"
                 tools:text="@string/assist"
                 android:textColor="@color/c_F5F5F5"
-                android:textSize="@dimen/sp_12" />
+                android:textSize="@dimen/sp_10" />
 
             <TextView
                 android:id="@+id/tvShot"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1.2"
+                android:layout_weight="54"
+                android:paddingEnd="@dimen/dp_14"
                 android:gravity="center"
                 tools:text="@string/shoot"
                 android:textColor="@color/c_F5F5F5"
-                android:textSize="@dimen/sp_12" />
+                android:textSize="@dimen/sp_10" />
         </LinearLayout>
     </LinearLayout>
 
