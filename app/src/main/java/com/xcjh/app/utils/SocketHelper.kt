@@ -8,6 +8,7 @@ import com.xcjh.app.websocket.bean.SendCommonWsBean
 import com.xcjh.app.websocket.listener.LoginOrOutListener
 import com.xcjh.base_lib.App
 import com.xcjh.base_lib.appContext
+import com.xcjh.base_lib.utils.getUUID
 
 
 /**
@@ -70,7 +71,7 @@ fun onWsUserEnterRoom(groupId: String) {
         Gson().toJson(
             SendCommonWsBean(
                 7,
-                CacheUtil.getUser()?.id,
+                CacheUtil.getUser()?.id?: getUUID(),
                 groupId = groupId,
             )
         )
@@ -85,7 +86,7 @@ fun onWsUserExitRoom(groupId: String) {
         Gson().toJson(
             SendCommonWsBean(
                 21,
-                CacheUtil.getUser()?.id,
+                CacheUtil.getUser()?.id?: getUUID(),
                 groupId = groupId,
             )
         )
