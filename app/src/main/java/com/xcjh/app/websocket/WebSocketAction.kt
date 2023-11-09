@@ -16,6 +16,7 @@ object WebSocketAction {
     ///dev ws://124.222.224.186:8800
     // var WEB_SOCKET_URL = "ws://124.222.224.186:8800" ///dev
     // var WEB_SOCKET_URL = "ws://192.168.101.15:8888" ///test
-    var WEB_SOCKET_URL = "ws://192.168.101.15:6006/ws-sports-chat" ///test
+//    var WEB_SOCKET_URL = "ws://192.168.101.15:6006/ws-sports-chat" ///测试服
+    var WEB_SOCKET_URL = "wss://app.cbd246.com/ws-sports-chat" ///预发布
     // var WEB_SOCKET_URL = "ws://192.168.101.15:8888" ///正式
 }
