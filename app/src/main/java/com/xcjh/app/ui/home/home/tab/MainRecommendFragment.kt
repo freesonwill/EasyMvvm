@@ -172,10 +172,14 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                                                     binding.txtMatchStatus.visibility=View.VISIBLE
                                                     binding.txtMatchStatus.setTextColor(ContextCompat.getColor(requireContext(),R.color.c_fe4848))
                                                     binding.txtMatchStatus.text=resources.getString(R.string.main_txt_basketball_phase,"三")
-                                                }else if(matchBean.status.equals("8")||matchBean.status.equals("9")){
+                                                }else if(matchBean.status.equals("8")){
                                                     binding.txtMatchStatus.visibility=View.VISIBLE
                                                     binding.txtMatchStatus.setTextColor(ContextCompat.getColor(requireContext(),R.color.c_fe4848))
                                                     binding.txtMatchStatus.text=resources.getString(R.string.main_txt_basketball_phase,"四")
+                                                }else if(matchBean.status.equals("9")){
+                                                    binding.txtMatchStatus.visibility=View.VISIBLE
+                                                    binding.txtMatchStatus.setTextColor(ContextCompat.getColor(requireContext(),R.color.c_fe4848))
+                                                    binding.txtMatchStatus.text=resources.getString(R.string.over_time)
                                                 }
                                          }else{
 
