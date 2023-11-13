@@ -35,7 +35,7 @@ class MsgFragment : BaseFragment<MsgVm, FrMsgBinding>() {
         mDatabind.vp.adapter = MyPagerAdapter(childFragmentManager);
         mDatabind.slide.setViewPager(mDatabind.vp)
         mDatabind.vp.currentItem = 0
-        setOnclickNoRepeat(mDatabind.ivclear,mDatabind.tvseacher) {
+        setOnclickNoRepeat(mDatabind.ivclear,mDatabind.linsre) {
             when (it.id) {
                 R.id.ivclear -> {
                     clearMsg(requireActivity()) { it ->
@@ -46,7 +46,7 @@ class MsgFragment : BaseFragment<MsgVm, FrMsgBinding>() {
 
                     }
                 }
-                R.id.tvseacher->{
+                R.id.linsre->{
                    startNewActivity<SeacherMsgActivity>()
                 }
             }
