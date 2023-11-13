@@ -17,8 +17,10 @@ class SearchVm : BaseViewModel() {
      * 获取标签
      */
     fun getHotOngoingMatch() {
+        var hot=HotReq()
+        hot.top=5
         request(
-            { apiService.getHotOngoingMatch(HotReq()) },
+            { apiService.getHotOngoingMatch(hot) },
 
             {
                 matchList.value=it
