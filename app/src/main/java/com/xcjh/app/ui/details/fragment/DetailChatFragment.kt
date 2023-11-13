@@ -53,7 +53,7 @@ import kotlinx.android.synthetic.main.fragment_detail_tab_chat.view.*
  * 聊天 正向布局
  */
 
-class DetailChatFragment(var liveId: String, var userId: String?, override val typeId: Long = 1) :
+class DetailChatFragment(private var liveId: String, var userId: String?, override val typeId: Long = 1) :
     BaseVpFragment<RoomChatVm, FragmentDetailTabChatBinding>(),
     LiveRoomListener, View.OnClickListener {
 
