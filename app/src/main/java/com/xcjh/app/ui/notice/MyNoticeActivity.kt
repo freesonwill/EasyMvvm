@@ -164,7 +164,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                                 )
                                 initAnimation(binding.txtMatchAnimation)
                             }
-                            "5", "6", "7" -> {
+                            "5", "6" -> {
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.txtMatchAnimation.visibility = View.VISIBLE
                                 binding.tvvs.text = item.homeScore + "-" + item.awayScore
@@ -185,7 +185,22 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                                 initAnimation(binding.txtMatchAnimation)
 
                             }
+                            "7" -> {
+                                binding.tvstatus.visibility = View.VISIBLE
+                                binding.txtMatchAnimation.visibility = View.GONE
+                                binding.tvvs.text = item.homeScore + "-" + item.awayScore
+                                binding.tvstatus.setTextColor(
+                                    ContextCompat.getColor(
+                                        context,
+                                        R.color.c_fe4848
+                                    )
+                                )
+                                binding.tvstatus.text = context.resources.getString(
+                                    R.string.main_dqdz
+                                )
+                                // initAnimation(binding.txtMatchAnimation)
 
+                            }
                             "8" -> {
                                 binding.txtMatchAnimation.visibility = View.GONE
                                 binding.tvvs.text = item.homeScore + "-" + item.awayScore
