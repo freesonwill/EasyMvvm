@@ -15,29 +15,36 @@
 # 不做预检验，preverify是proguard的四个步骤之一，Android不需要preverify，去掉这一步可以加快混淆速度
 -dontpreverify
 
-# 有了verbose这句话，混淆后就会生成映射文件
-# 包含有类名->混淆后类名的映射关系 ，然后使用printmapping指定映射文件的名称
--verbose
-#-printmapping priguardMapping.txt
-
 # 忽略警告
 -ignorewarnings
 
-# 保留Annotation不混淆
--keepattributes *Annotation*,InnerClasses
 # 抛出异常时保留代码行号
 -keepattributes SourceFile,LineNumberTable
-
+# 保留Annotation不混淆
 -keepattributes Exceptions,*Annotation*,InnerClasses,Deprecated,EnclosingMethod
 
 -renamesourcefileattribute TbsSdkJava
 # 避免混淆泛型
 -keepattributes Signature
 
-
 # 指定混淆是采用的算法，后面的参数是一个过滤器
 # 这个过滤器是谷歌推荐的算法，一般不做更改
 -optimizations !code/simplification/artithmetic,!field/*,!class/merging/*
+
+# 混淆映射，生成映射文件================================
+# 有了verbose这句话，混淆后就会生成映射文件
+# 包含有类名->混淆后类名的映射关系 ，然后使用printmapping指定映射文件的名称
+#-verbose
+#-printmapping proguardMapping.txt
+##输出apk包内所有的class的内部结构
+#-dump dump.txt
+##未混淆的类和成员
+#-printseeds seeds.txt
+##列出从apk中删除的代码
+#-printusage unused.txt
+# 混淆映射，生成映射文件=================================
+
+
 #############################################
 # Android开发中一些需要保留的公共部分
 #############################################
@@ -88,15 +95,14 @@
     public static ** valueOf(java.lang.String);
 }
 
-# 保留我们自定义控件（继承自View）不被混淆
--keep public class * extends android.view.View{
-    *** get*();
-    void set*(***);
+# 保留自定义控件(继承自View)不能被混淆
+-keep public class * extends android.view.View {
     public <init>(android.content.Context);
     public <init>(android.content.Context, android.util.AttributeSet);
     public <init>(android.content.Context, android.util.AttributeSet, int);
+    public void set*(***);
+    *** get* ();
 }
-
 # 保留Parcelable序列化类不被混淆
 -keep class * implements android.os.Parcelable {
     public static final android.os.Parcelable$Creator *;
@@ -171,22 +177,18 @@
 -dontwarn com.kingja.loadsir.**
 -keep class com.kingja.loadsir.** {*;}
 
--keep class com.just.agentweb.** {
-    *;
-}
-
+-keep class com.just.agentweb.** {*;}
 -dontwarn com.just.agentweb.**
 
--keepattributes *Annotation*
 -keep class **.*_SnakeProxy
 
-# SearchView
--keep class androidx.appcompat.widget.SearchView {
-    ImageView mGoButton;
-}
 # Gson
 -keep class sun.misc.Unsafe { *; }
--keep class com.google.gson.stream.** { *; }
+-keep class com.google.gson.** { *; }
+-keep class com.xcjh.app.bean.**{ *; }
+-keep class com.xcjh.app.websocket.bean.**{ *; }
+-keep class com.xcjh.base_lib.network.BaseResponse { *; }
+-keep class com.xcjh.base_lib.bean.** { *; }
 # 使用Gson时需要配置Gson的解析对象及变量都不混淆。不然Gson会找不到变量。
 #okhttp
 -dontwarn okhttp3.**
@@ -194,7 +196,11 @@
 #okio
 -dontwarn okio.**
 -keep class okio.**{*;}
-
+#日历
+-keepclasseswithmembers class * {
+    public <init>(android.content.Context);
+}
+-keep class com.haibin.calendarview.** { *; }
 ################ ViewBinding & DataBinding ###############
 -keepclassmembers class * implements androidx.viewbinding.ViewBinding {
   public static * inflate(android.view.LayoutInflater);
@@ -211,17 +217,6 @@
 # 如果使用了 单类注入，即不定义接口实现 IProvider，需添加下面规则，保护实现
 # -keep class * implements com.alibaba.android.arouter.facade.template.IProvider
 
-# 混淆映射，生成映射文件============
--verbose
--printmapping proguardMapping.txt
-#输出apk包内所有的class的内部结构
--dump dump.txt
-#未混淆的类和成员
--printseeds seeds.txt
-#列出从apk中删除的代码
--printusage unused.txt
-# 混淆映射，生成映射文件============
-
 -keep class com.luck.picture.lib.** { *; }
 
 #如果引入了Camerax库请添加混淆
@@ -235,22 +230,7 @@
 #=================
 -dontwarn com.king.app.dialog.**
 -keep class com.king.app.dialog.**{ *;}
-
--keepclassmembers enum * {
-    public static **[] values();
-    public static ** valueOf(java.lang.String);
-}
-
 -dontwarn com.king.app.updater.**
 -keep class com.king.app.updater.**{ *;}
 -keep class * extends com.king.app.updater.**{ *;}
 -keep class * implements com.king.app.updater.**{ *;}
--keepattributes InnerClasses
-
--keep public class * extends android.app.Service
-
--keep class * implements android.os.Parcelable {
-    public static final android.os.Parcelable$Creator *;
-}
-
-
