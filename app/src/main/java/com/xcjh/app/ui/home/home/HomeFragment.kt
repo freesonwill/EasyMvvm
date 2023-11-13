@@ -1,7 +1,6 @@
 package com.xcjh.app.ui.home.home
 
 import android.os.Bundle
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.gyf.immersionbar.ImmersionBar
@@ -45,7 +44,7 @@ class HomeFragment : BaseFragment<MainVm, FragmentHomeBinding>() {
             .titleBar(mDatabind.rlTitle)
             .init()
         //初始化viewpager2
-        mDatabind.viewPager.initActivity(requireActivity(), mFragList, false)
+        mDatabind.viewPager.initActivity(requireActivity(), mFragList, true)
         //初始化 magic_indicator
         mDatabind.magicIndicator.bindViewPager2(
             mDatabind.viewPager, arrayListOf(
