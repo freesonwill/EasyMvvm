@@ -159,7 +159,6 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                                                     val date = Date(matchBean.matchTime.toLong())
                                                     var formatter = SimpleDateFormat("MM-dd HH:mm", Locale.getDefault())
                                                     binding.txtMatchStatus.text=formatter.format(date)
-
                                                 }else if(matchBean.status.equals("2")||matchBean.status.equals("3")){
                                                     binding.txtMatchStatus.visibility=View.VISIBLE
                                                     binding.txtMatchStatus.setTextColor(ContextCompat.getColor(requireContext(),R.color.c_fe4848))
@@ -297,7 +296,6 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                                         R.layout.item_main_live_list -> {
                                             var bindingItem=getBinding<ItemMainLiveListBinding>()
                                             var  bean=_data as BeingLiveBean
-
                                             Glide.with(requireContext())
                                                 .load(bean.titlePage) // 替换为您要加载的图片 URL
                                                 .error(R.drawable.main_top_load)
