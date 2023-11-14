@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.drake.brv.listener.ItemDifferCallback
 import com.drake.brv.utils.bindingAdapter
+import com.drake.brv.utils.linear
 import com.drake.brv.utils.models
 import com.drake.brv.utils.mutable
 import com.drake.brv.utils.setDifferModels
@@ -122,7 +123,8 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
             mDatabind.recBottom.run {
                 distance(0, 0, 0, 15)
             }
-            mDatabind.recBottom.setup {
+            //mDatabind.smartCommon.stateChangedHandler = LeastAnimationStateChangedHandler()
+            mDatabind.recBottom.linear().setup {
                 addType<MatchBean>(R.layout.item_sch_all)
 
                 onBind {
@@ -176,8 +178,8 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                             binding.tvname.text = item.competitionName
                             binding.tvnameLeft.text = item.homeName
                             binding.tvnameRight.text = item.awayName
-                            Glide.with(context).load(item.homeLogo).into(binding.tvflagLeft)
-                            Glide.with(context).load(item.awayLogo).into(binding.tvflagRight)
+                            Glide.with(context).load(item.homeLogo).placeholder(R.drawable.default_team_logo).into(binding.tvflagLeft)
+                            Glide.with(context).load(item.awayLogo).placeholder(R.drawable.default_team_logo).into(binding.tvflagRight)
                             binding.ivtype.setBackgroundResource(R.drawable.football)
                             when (item.status) {
                                 "0" -> binding.tvstatus.visibility = View.GONE
@@ -402,8 +404,8 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                             binding.tvname.text = item.competitionName
                             binding.tvnameLeft.text = item.awayName
                             binding.tvnameRight.text = item.homeName
-                            Glide.with(context).load(item.awayLogo).into(binding.tvflagLeft)
-                            Glide.with(context).load(item.homeLogo).into(binding.tvflagRight)
+                            Glide.with(context).load(item.awayLogo).placeholder(R.drawable.default_team_logo).into(binding.tvflagLeft)
+                            Glide.with(context).load(item.homeLogo).placeholder(R.drawable.default_team_logo).into(binding.tvflagRight)
                             binding.ivtype.setBackgroundResource(R.drawable.basketball)
                             when (item.status) {
                                 "0" -> binding.tvstatus.visibility = View.GONE
@@ -670,12 +672,12 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                 mViewModel.getHotMatchData(matchtype!!, status)
 
             }
-            mDatabind.smartCommon.setOnRefreshListener {
+            mDatabind.smartCommon.onRefresh {
                 if (!hasData) {
                     mViewModel.getHotMatchData(matchtype!!, status)
 
                 }
-            }
+            }.showLoading()
         } catch (e: Exception) {
 
         }
@@ -770,6 +772,7 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
         mDatabind.recTop.setOnTabSelectListener(object : OnTabSelectListener {
             override fun onTabSelect(position: Int) {
                 LogUtils.d("选中了第几个$position")
+                mDatabind.smartCommon.showLoading()
                 page = 1
                 isClick = true
                 matchtype = list[position].matchType
@@ -796,6 +799,7 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
         })
         mDatabind.smartCommon.setOnRefreshListener {
             initTime()
+            mDatabind.smartCommon.showLoading()
             if (!hasData) {
                 mViewModel.getHotMatchData(matchtype!!, status)
 
@@ -913,7 +917,7 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                             mDatabind.recBottom.mutable.clear()
                         }
                         mDatabind.smartCommon.finishRefresh()
-                        mDatabind.state.showEmpty()
+                        mDatabind.smartCommon.showEmpty()
 
                     }
                     //是第一页
@@ -931,7 +935,7 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
 //                        } else {
 //                            mDatabind.recBottom.setDifferModels(it.listData, false)
 //                        }
-                        mDatabind.state.showContent()
+                        mDatabind.smartCommon.showContent()
 
                         //listdata.addAll(it.listData)
                         //it.listData[0].homeName=it.listData[0].homeName+index1
@@ -947,7 +951,7 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                             // mDatabind.smartCommon.setEnableLoadMore(true)
                             mDatabind.smartCommon.finishLoadMore()
                             mDatabind.recBottom.setDifferModels(it.listData, true)
-                            mDatabind.state.showContent()
+                            mDatabind.smartCommon.showContent()
                         }
 
                     }
@@ -961,7 +965,7 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                     if (mDatabind.recBottom.models != null) {
                         //  mDatabind.recBottom.mutable.clear()
                     }
-                    //  mDatabind.state.showEmpty()
+                      mDatabind.smartCommon.showEmpty()
                 } else {
                     mDatabind.smartCommon.finishLoadMore(false)
                 }

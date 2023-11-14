@@ -90,8 +90,8 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                         binding.tvname.text = item.competitionName
                         binding.tvnameLeft.text = item.homeName
                         binding.tvnameRight.text = item.awayName
-                        Glide.with(context).load(item.homeLogo).into(binding.tvflagLeft)
-                        Glide.with(context).load(item.awayLogo).into(binding.tvflagRight)
+                        Glide.with(context).load(item.homeLogo).placeholder(R.drawable.default_team_logo).into(binding.tvflagLeft)
+                        Glide.with(context).load(item.awayLogo).placeholder(R.drawable.default_team_logo).into(binding.tvflagRight)
                         binding.ivtype.setBackgroundResource(R.drawable.football)
                         when (item.status) {
                             "0" -> binding.tvstatus.visibility = View.GONE
@@ -317,8 +317,8 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                         binding.tvname.text = item.competitionName
                         binding.tvnameLeft.text = item.awayName
                         binding.tvnameRight.text = item.homeName
-                        Glide.with(context).load(item.awayLogo).into(binding.tvflagLeft)
-                        Glide.with(context).load(item.homeLogo).into(binding.tvflagRight)
+                        Glide.with(context).load(item.awayLogo).placeholder(R.drawable.default_team_logo).into(binding.tvflagLeft)
+                        Glide.with(context).load(item.homeLogo).placeholder(R.drawable.default_team_logo).into(binding.tvflagRight)
                         binding.ivtype.setBackgroundResource(R.drawable.basketball)
                         when (item.status) {
                             "0" -> binding.tvstatus.visibility = View.GONE
