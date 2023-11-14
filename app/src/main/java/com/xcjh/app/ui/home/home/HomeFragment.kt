@@ -101,7 +101,6 @@ class HomeFragment : BaseFragment<MainVm, FragmentHomeBinding>() {
             mDatabind.viewPager.currentItem = it
         }
 
-
     }
 
 
