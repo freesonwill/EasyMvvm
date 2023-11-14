@@ -456,8 +456,8 @@ data class MatchDetailBean(
     val anchorList: List<AnchorListBean>? = listOf(),//主播列表
 
     val awayHalfScore: Int = 0,//客队半场比分
-    val awayLogo: String = "",//客队Logo
-    val awayName: String = "",//客队名称
+    val awayLogo: String? = "",//客队Logo
+    val awayName: String? = "",//客队名称
     val awayScore: Int = 0,//客队比分
 
     var competitionId: String = "",// 赛事ID
@@ -466,8 +466,8 @@ data class MatchDetailBean(
     val focus: Boolean = false,// 是否关注
 
     val homeHalfScore: Int = 0,
-    val homeLogo: String = "",
-    val homeName: String = "",
+    val homeLogo: String? = "",
+    val homeName: String? = "",
     val homeScore: Int = 0,
 
     val matchData: MatchDataBean = MatchDataBean(),
@@ -548,8 +548,8 @@ data class BasketballLineupBean(
 //球队信息
 @Keep
 data class MatchTeam(
-    var logo: String = "",//logo
-    val name: String = "",
+    var logo: String? = "",//logo
+    val name: String? = "",
 ): Serializable
 
 @Keep

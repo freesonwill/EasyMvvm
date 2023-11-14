@@ -211,7 +211,7 @@ class MyWsClientService : Service() {
     private val mHandler: Handler = Handler(Looper.myLooper()!!)
     private val heartBeatRunnable: Runnable = object : Runnable {
         override fun run() {
-            "-----------心跳包检测连接状态client-----${client==null}".loge("wsService===")
+            //"-----------心跳包检测连接状态client-----${client==null}".loge("wsService===")
             if (client != null) {
                 ("-----------socket是否断开-----" + client!!.isClosed).loge("wsService===")
                 if (client!!.isClosed) {

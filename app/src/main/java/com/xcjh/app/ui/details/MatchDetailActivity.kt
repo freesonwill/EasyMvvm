@@ -127,7 +127,7 @@ class MatchDetailActivity :
     private fun initStaticUI() {
         //进入界面需要传：比赛类型(1：足球；2：篮球)、比赛ID、比赛名称、主队客队名称头像、比赛时间、状态、公告、在线视频，后面改成传bean
         //比赛名称
-        mDatabind.tvTitle.text = matchName
+        mDatabind.tvTitle.text = matchName?:""
         //比赛类型
         if (matchType == "1") {
             mDatabind.ivMatchBg.setBackgroundResource(R.drawable.bg_status_football)
@@ -233,8 +233,8 @@ class MatchDetailActivity :
      */
     private fun setBaseMatchUI() {
         matchName = matchDetail.competitionName + "  " +
-                if (matchType == "1") matchDetail.homeName + " VS " + matchDetail.awayName
-                else matchDetail.awayName + " VS " + matchDetail.homeName
+                if (matchType == "1"){ "${matchDetail.homeName?:""} VS ${matchDetail.awayName?:""}"}
+                else  "${matchDetail.awayName?:""} VS ${matchDetail.homeName?:""}"
         mDatabind.tvTitle.text = matchName
         //上滑停靠栏
         getMatchStatus(mDatabind.tvTopMatchStatus, matchDetail.matchType, matchDetail.status)
@@ -352,14 +352,14 @@ class MatchDetailActivity :
     private fun showMatchStatusUI() {
         if (matchType == "1") {//足球
             //主队名称以及图标
-            mDatabind.tvHomeName.text = matchDetail.homeName
+            mDatabind.tvHomeName.text = matchDetail.homeName?:""
             Glide.with(this).load(matchDetail.homeLogo).placeholder(R.drawable.default_team_logo).into(mDatabind.ivHomeIcon)
             //客队名称以及图标
             mDatabind.tvAwayName.text = matchDetail.awayName
             Glide.with(this).load(matchDetail.awayLogo).placeholder(R.drawable.default_team_logo).into(mDatabind.ivAwayIcon)
         } else {
             //主队名称以及图标
-            mDatabind.tvAwayName.text = matchDetail.homeName + "\n(主)"
+            mDatabind.tvAwayName.text ="${matchDetail.homeName}\n(主)"
             Glide.with(this).load(matchDetail.homeLogo).placeholder(R.drawable.default_team_logo).into(mDatabind.ivAwayIcon)
             //客队名称以及图标
             mDatabind.tvHomeName.text = matchDetail.awayName
