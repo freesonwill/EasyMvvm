@@ -39,8 +39,8 @@ class FootballDataView : RelativeLayout {
     }
 
     fun setTeamInfo(homeIcon: String?, homeName: String?, awayIcon: String?, awayName: String?) {
-        binding.tvHomeName.text = homeName
-        binding.tvAwayName.text = awayName
+        binding.tvHomeName.text = homeName?:""
+        binding.tvAwayName.text = awayName?:""
         Glide.with(this).load(homeIcon).placeholder(R.drawable.default_team_logo).into(binding.ivHomeIcon)
         Glide.with(this).load(awayIcon).placeholder(R.drawable.default_team_logo).into(binding.ivAwayIcon)
     }

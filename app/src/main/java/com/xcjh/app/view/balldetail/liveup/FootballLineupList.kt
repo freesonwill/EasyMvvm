@@ -70,7 +70,7 @@ class FootballLineupList : LinearLayout {
                         val binding = getBinding<ItemDetailGameSubstituteTopBinding>()
                         Glide.with(context).load(item.logo).placeholder(R.drawable.default_team_logo).into(binding.ivIcon)
                         binding.rltItem.setBackgroundColor(context.getColor(if(this.modelPosition%2==0) R.color.c_21152a else R.color.c_18152A ))
-                        binding.tvName.text = item.name
+                        binding.tvName.text = item.name ?: ""
                     }
                     is FootballPlayer -> {
                         val binding = getBinding<ItemDetailGameSubstituteBinding>()

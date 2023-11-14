@@ -22,10 +22,8 @@ class DetailLineUpFragment(var match: MatchDetailBean) :
         mDatabind.layoutFootball.visibleOrGone(match.matchType == "1")
         mDatabind.layoutBasketball.visibleOrGone(match.matchType == "2")
         if ("2" == match.matchType) {//1：足球；2：篮球
-            mDatabind.layoutFootball.visibility = View.GONE
-            mDatabind.layoutBasketball.visibility = View.VISIBLE
-            mDatabind.tvHomeName.text = match.homeName
-            mDatabind.tvAwayName.text = match.awayName
+            mDatabind.tvHomeName.text = match.homeName?:""
+            mDatabind.tvAwayName.text = match.awayName?:""
             mDatabind.tvAwayName.isSelected = true
             mDatabind.tvHomeName.setOnClickListener {
                 mDatabind.tvHomeName.isSelected = true

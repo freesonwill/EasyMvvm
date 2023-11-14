@@ -25,10 +25,10 @@ class TextLiveAdapter : BaseQuickAdapter<LiveTextBean, QuickViewHolder>() {
         return QuickViewHolder(R.layout.item_text_live, parent)
     }
 
-    private lateinit var homeLogo: String
-    private lateinit var awayLogo: String
+    private var homeLogo: String?=""
+    private var awayLogo: String?=""
 
-    fun setLogo(homeLogo: String, awayLogo: String) {
+    fun setLogo(homeLogo: String?, awayLogo: String?) {
         this.homeLogo = homeLogo
         this.awayLogo = awayLogo
     }
