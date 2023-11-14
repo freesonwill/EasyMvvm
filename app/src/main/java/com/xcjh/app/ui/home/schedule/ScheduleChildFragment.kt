@@ -141,33 +141,51 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                         binding.tvcollect.setBackgroundResource(R.drawable.ic_focus_n)
                     }
                     binding.tvmiddletime.text = time!!.substring(0, 10)
-                    if (time!!.substring(0, 10) == TimeUtil.gettimenowYear()) {
-                        if (strTimeZu.size == 0) {
-                            binding.tvmiddletime.visibility = View.GONE
-                        } else {
-                            if (strTimeZu[strTimeZu.size - 1] == time!!.substring(0, 10)) {
-                                binding.tvmiddletime.visibility = View.GONE
+                    when(item.visbleTime){
+                        0->{
+                            if (time!!.substring(0, 10) == TimeUtil.gettimenowYear()) {
+                                if (strTimeZu.size == 0) {
+                                    item.visbleTime=2
+                                    binding.tvmiddletime.visibility = View.GONE
+                                } else {
+                                    if (strTimeZu[strTimeZu.size - 1] == time!!.substring(0, 10)) {
+                                        binding.tvmiddletime.visibility = View.GONE
+                                        item.visbleTime=2
+                                    } else {
+                                        binding.tvmiddletime.visibility = View.VISIBLE
+                                        item.visbleTime=1
+                                        strTimeZu.add(time!!.substring(0, 10))
+                                    }
+                                }
                             } else {
-                                binding.tvmiddletime.visibility = View.VISIBLE
-                                strTimeZu.add(time!!.substring(0, 10))
+                                if (strTimeZu.size == 0) {
+                                    binding.tvmiddletime.visibility = View.VISIBLE
+                                    item.visbleTime=1
+                                    strTimeZu.add(time!!.substring(0, 10))
+                                } else {
+                                    if (strTimeZu[strTimeZu.size - 1] == time!!.substring(0, 10)) {
+                                        binding.tvmiddletime.visibility = View.GONE
+                                        item.visbleTime=2
+                                    } else {
+                                        binding.tvmiddletime.visibility = View.VISIBLE
+                                        item.visbleTime=1
+                                        strTimeZu.add(time!!.substring(0, 10))
+                                    }
+
+
+                                }
+
                             }
                         }
-                    } else {
-                        if (strTimeZu.size == 0) {
+                        1->{//显示
                             binding.tvmiddletime.visibility = View.VISIBLE
-                            strTimeZu.add(time!!.substring(0, 10))
-                        } else {
-                            if (strTimeZu[strTimeZu.size - 1] == time!!.substring(0, 10)) {
-                                binding.tvmiddletime.visibility = View.GONE
-                            } else {
-                                binding.tvmiddletime.visibility = View.VISIBLE
-                                strTimeZu.add(time!!.substring(0, 10))
-                            }
-
+                        }
+                        2->{//不显示
+                            binding.tvmiddletime.visibility = View.GONE
 
                         }
-
                     }
+
                     LogUtils.d("直播数据" + item.anchorList)
 
                     when (item.matchType) {//比赛类型：1：足球；2：篮球,可用值:1,2

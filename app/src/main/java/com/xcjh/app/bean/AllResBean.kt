@@ -92,6 +92,7 @@ data class MatchBean(
     var matchId: String = "",//比赛id
     var matchType: String = "",//比赛类型：1：足球；2：篮球,可用值:1,2
     var matchTime: String = "",//比赛时间
+    var visbleTime: Int = 0,//是否显示比赛时间，0是需要判断，1是显示，2是不显示
     var homeName: String = "",//主队名称
     var homeLogo: String = "",//主队Logo
     var homeScore: String = "",//主队比分
