@@ -790,6 +790,7 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
         mDatabind.recTop.setOnTabSelectListener(object : OnTabSelectListener {
             override fun onTabSelect(position: Int) {
                 LogUtils.d("选中了第几个$position")
+
                 mDatabind.smartCommon.showLoading()
                 page = 1
                 isClick = true
@@ -797,6 +798,7 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                 mPosition = position
                 tabName=list[position].competitionName
                 initTime()
+
                 mViewModel.getHotMatchDataList(
                     true, PostSchMatchListBean(
                         list[position].competitionId,
@@ -926,6 +928,8 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
         }
 
         mViewModel.hotMatchList.observe(this) {
+            mDatabind.recBottom.mutable.clear()
+            mDatabind.recBottom.bindingAdapter.notifyDataSetChanged()
             if (it.isSuccess) {
                 strTimeZu.clear()
                 //成功
@@ -934,6 +938,7 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                     it.isFirstEmpty -> {
                         if (mDatabind.recBottom.models?.size != null) {
                             mDatabind.recBottom.mutable.clear()
+                            mDatabind.recBottom.bindingAdapter.notifyDataSetChanged()
                         }
                         mDatabind.smartCommon.finishRefresh()
                         mDatabind.smartCommon.showEmpty()
