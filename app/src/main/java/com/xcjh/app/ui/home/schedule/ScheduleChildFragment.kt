@@ -873,6 +873,7 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                                 start.day
                             )
                         initTime()
+                        mDatabind.smartCommon.showLoading()
 
 //                        endTime =
 //                            end.year.toString() + "-" + TimeUtil.checkTimeSingle(end.month) + "-" + TimeUtil.checkTimeSingle(
