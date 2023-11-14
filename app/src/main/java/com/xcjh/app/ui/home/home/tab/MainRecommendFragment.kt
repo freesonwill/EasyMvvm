@@ -64,8 +64,6 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
         MyWsManager.getInstance(App.app)
             ?.setLiveStatusListener(this.toString(), object : LiveStatusListener {
                 override fun onOpenLive(bean: LiveStatus) {
-                    mViewModel.getBannerList()
-                    mViewModel.getOngoingMatchList(HotReq())
                     mViewModel.getNowLive(true)
 
                 }
@@ -112,6 +110,9 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
 
 
     }
+
+
+
 
     override fun createObserver() {
         super.createObserver()
@@ -273,6 +274,7 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
 
 
     }
+
 
     /**
      * 适配器
