@@ -48,6 +48,7 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
     var listdata: MutableList<MatchBean> = ArrayList<MatchBean>()
     var matchtype: String? = ""
     var matchtypeOld: String? = ""
+    var tabName: String? = ""
     var status = 0
     var page = 1
     var pageSize = 1000
@@ -84,7 +85,13 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
     }
 
     fun initTime() {
+        LogUtils.d("本页面tabname=$tabName")
         strTime = TimeUtil.gettimenowYear().toString()
+        if ((tabName==resources.getString(R.string.all)||tabName==resources.getString(R.string.foot_scr)||
+            tabName==resources.getString(R.string.bas_scr))&&calendarTime.isEmpty()){//只取一天
+            endTime=strTime
+            return
+        }
         endTime = TimeUtil.addDayEgls("0", 2).toString()
         strTimeRuslt = TimeUtil.gettimenowYear().toString()
         endTimeResult = TimeUtil.getDateStr(strTime, 2).toString()
@@ -738,6 +745,7 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
 
     private fun initEvent(list: MutableList<HotMatchBean>) {
 
+        tabName=list[mPosition].competitionName
         mViewModel.getHotMatchDataList(
             true, PostSchMatchListBean(
                 list[mPosition].competitionId, page,
@@ -762,11 +770,12 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
         mDatabind.recTop.setOnTabSelectListener(object : OnTabSelectListener {
             override fun onTabSelect(position: Int) {
                 LogUtils.d("选中了第几个$position")
-                initTime()
                 page = 1
                 isClick = true
                 matchtype = list[position].matchType
                 mPosition = position
+                tabName=list[position].competitionName
+                initTime()
                 mViewModel.getHotMatchDataList(
                     true, PostSchMatchListBean(
                         list[position].competitionId,
@@ -803,6 +812,7 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                 )
             }
         }.setOnLoadMoreListener {
+            tabName=list[mPosition].competitionName
             initTime()
             mViewModel.getHotMatchDataList(
                 false, PostSchMatchListBean(
@@ -815,6 +825,7 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
         }
         appViewModel.appPolling.observeForever {
             if (isAdded && isVisble) {
+                tabName=list[mPosition].competitionName
                 isClick = false
                 initTime()
                 LogUtils.d(status.toString() + "执行了0轮询" + matchtype + "///" + isVisble)
