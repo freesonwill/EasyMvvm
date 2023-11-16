@@ -81,7 +81,7 @@ dependencies {
     //侧滑
     api 'com.github.anzaizai:EasySwipeMenuLayout:1.1.4'
     api 'com.github.getActivity:Toaster:12.2'
-    api 'com.github.liangjingkanji:BRV:1.4.3'
+    api 'com.github.liangjingkanji:BRV:1.5.6'
     api 'io.github.h07000223:flycoTabLayout:3.0.0'
     // 软键盘事件监听/平滑键盘弹出动画
     api 'com.github.liangjingkanji:soft-input-event:1.0.9'

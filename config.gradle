@@ -37,7 +37,7 @@ ext {
             "refresh-header-classics": 'io.github.scwang90:refresh-header-classics:2.0.5',
             "refresh-footer-classics": 'io.github.scwang90:refresh-footer-classics:2.0.5',
             "refresh-header-material": 'io.github.scwang90:refresh-header-material:2.0.5',//谷歌刷新头
-            "XXPermissions"          : 'com.github.getActivity:XXPermissions:16.5',
+            "XXPermissions"          : 'com.github.getActivity:XXPermissions:18.5',//修改
             "SwipeRecyclerView"      : 'com.yanzhenjie.recyclerview:x:1.3.2',
             "AndroidUtilCode"        : 'com.blankj:utilcodex:1.31.1',
     ]
