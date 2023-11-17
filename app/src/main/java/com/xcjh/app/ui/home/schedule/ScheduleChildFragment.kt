@@ -687,12 +687,12 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                 }
             }
             if (!hasData) {
-                mViewModel.getHotMatchData(matchtype!!, status)
+                mViewModel.getHotMatchData(matchtypeOld!!, status)
 
             }
             mDatabind.smartCommon.onRefresh {
                 if (!hasData) {
-                    mViewModel.getHotMatchData(matchtype!!, status)
+                    mViewModel.getHotMatchData(matchtypeOld!!, status)
 
                 }
             }.showLoading()
@@ -745,7 +745,7 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
         isVisble = mTabPosition == mPushPosition
         if (!hasData) {
             initTime()
-            mViewModel.getHotMatchData(matchtype!!, status)
+            mViewModel.getHotMatchData(matchtypeOld!!, status)
 
         }
 
@@ -906,7 +906,7 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
             if (it.isNotEmpty()) {
                 //成功
                 hasData = true
-                if (matchtype != "3") {
+                if (matchtypeOld != "3") {
                     var bean = HotMatchBean(
                         "", resources.getString(R.string.all), 0,
                         matchtype.toString()
