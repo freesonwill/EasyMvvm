@@ -78,11 +78,7 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
 
                 }
             })
-
-
         dateAdapter()
-
-
         //设置正在直播的适配器第三个适配器
        var list=ArrayList<MainTxtBean>()
         list.add(MainTxtBean())

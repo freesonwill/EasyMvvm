@@ -18,6 +18,10 @@ import com.xcjh.app.bean.MainTxtBean
 import com.xcjh.app.databinding.FragmentCompetitionTypeListBinding
 import com.xcjh.app.databinding.ItemMainLiveListBinding
 import com.xcjh.app.ui.details.MatchDetailActivity
+import com.xcjh.app.websocket.MyWsManager
+import com.xcjh.app.websocket.bean.LiveStatus
+import com.xcjh.app.websocket.listener.LiveStatusListener
+import com.xcjh.base_lib.App
 import com.xcjh.base_lib.utils.dp2px
 import com.xcjh.base_lib.utils.myToast
 import java.util.Collection
@@ -56,9 +60,24 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
 //                }
             }
 
-
         }
+        MyWsManager.getInstance(App.app)
+            ?.setLiveStatusListener(this.toString(), object : LiveStatusListener {
+                override fun onOpenLive(bean: LiveStatus) {
+                    mViewModel.getNowLive(true,type = type.toString())
 
+                }
+
+                override fun onCloseLive(bean: LiveStatus) {
+
+
+                }
+
+                override fun onChangeLive(bean: LiveStatus) {
+
+
+                }
+            })
 
 
     }
