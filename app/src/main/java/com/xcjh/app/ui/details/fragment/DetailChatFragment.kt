@@ -312,12 +312,13 @@ class DetailChatFragment(private var liveId: String, var userId: String?, overri
         //setWindowSoftInput(float = mDatabind.llInput, setPadding = true)
         mDatabind.rcvChat.postDelayed({
             try {
+               // mDatabind.rcvChat.height.toString().loge("=onResume===")
                 val params = mDatabind.rcvChat.layoutParams
-                params.height = mDatabind.rcvChat.height//+10
-                mDatabind.rcvChat.layoutParams = params
+                params.height = mDatabind.rcvChat.height
+               // mDatabind.rcvChat.layoutParams = params
             } catch (_: Exception) {
             }
-        }, 100)
+        }, 600)
         super.onResume()
     }
 
@@ -325,6 +326,7 @@ class DetailChatFragment(private var liveId: String, var userId: String?, overri
         hideSoftInput()
         mDatabind.edtChatMsg.clearFocus()
         mDatabind.rcvChat.postDelayed({
+            //mDatabind.rcvChat.height.toString().loge("=onPause===")
         }, 200)
         super.onPause()
     }

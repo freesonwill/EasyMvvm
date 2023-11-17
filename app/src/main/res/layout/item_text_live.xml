@@ -27,7 +27,7 @@
         app:layout_constraintTop_toTopOf="@id/iv_type"
         tools:text="重要时间" />
 
-    <com.xcjh.base_lib.utils.view.CircleImageView
+    <com.xcjh.app.utils.nice.NiceImageView
         android:id="@+id/iv_logo"
         android:layout_width="@dimen/dp_16"
         android:layout_height="@dimen/dp_16"
