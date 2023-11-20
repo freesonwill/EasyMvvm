@@ -695,7 +695,18 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                     mViewModel.getHotMatchData(matchtypeOld!!, status)
 
                 }
+
             }.showLoading()
+            appViewModel.updateLoginEvent.observe(this){
+                if(it){
+
+                    mDatabind.smartCommon.autoRefresh()
+
+                }else{
+                    mDatabind.smartCommon.autoRefresh()
+
+                }
+            }
         } catch (e: Exception) {
 
         }
