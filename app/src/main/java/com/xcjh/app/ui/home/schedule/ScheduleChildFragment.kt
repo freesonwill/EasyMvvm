@@ -685,6 +685,7 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                     mPushPosition = it
                     isVisble = mTabPosition == it
                     mDatabind.smartCommon.autoRefresh()
+                    calendarTime=""
                 }
             }
             if (!hasData) {
@@ -778,6 +779,7 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
     private fun initEvent(list: MutableList<HotMatchBean>) {
 
         tabName=list[mPosition].competitionName
+        initTime()
         mViewModel.getHotMatchDataList(
             true, PostSchMatchListBean(
                 list[mPosition].competitionId, page,
@@ -802,7 +804,7 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
         mDatabind.recTop.setOnTabSelectListener(object : OnTabSelectListener {
             override fun onTabSelect(position: Int) {
                 LogUtils.d("选中了第几个$position")
-
+                calendarTime=""
                 mDatabind.smartCommon.showLoading()
                 page = 1
                 isClick = true
@@ -880,7 +882,7 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
             when (it.id) {
                 R.id.iv_meau -> {
 
-                    selectTime(requireActivity()) { start, end ->
+                    selectTime(requireActivity(),"") { start, end ->
 
                         calendarTime =
                             start.year.toString() + "-" + TimeUtil.checkTimeSingle(start.month) + "-" + TimeUtil.checkTimeSingle(

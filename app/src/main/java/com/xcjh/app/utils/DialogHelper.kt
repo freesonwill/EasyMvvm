@@ -25,7 +25,7 @@ import com.xcjh.base_lib.App
 /**
  * 日历选择
  */
-fun selectTime(context: Context, block: (start: Calendar,end:Calendar) -> Unit) {
+fun selectTime(context: Context, timeOld:String,block: (start: Calendar,end:Calendar) -> Unit) {
     //对于未实例化的布局：
     //DialogX.globalStyle = MaterialYouStyle.style()
 
@@ -56,6 +56,7 @@ fun selectTime(context: Context, block: (start: Calendar,end:Calendar) -> Unit) 
                     getSchemeCalendar(year, month, day, Color.parseColor("#F7DA73"), "")
                 //此方法在巨大的数据量上不影响遍历性能，推荐使用
                 mCalendarView.setSchemeDate(map)
+
 
                 mCalendarView.setOnCalendarRangeSelectListener(object :
                     CalendarView.OnCalendarRangeSelectListener {
