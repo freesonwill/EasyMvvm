@@ -91,7 +91,7 @@ interface ApiComService {
      * 我的好友分页查询
      */
     @POST("app/follow/myFriendsPage")
-    suspend fun getFriendsList(@Body req: BasePage): ApiResponse<MyListPages<FriendListBean>>
+    suspend fun getFriendsList(@Body req: PostGetMsgBean): ApiResponse<MyListPages<FriendListBean>>
     /**
      * 消息列表页面：消息分页查询 返回对象fromId=0代表这条数据为反馈通知
      */

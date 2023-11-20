@@ -6,6 +6,8 @@ import android.text.TextWatcher
 import android.view.View
 import com.gyf.immersionbar.ImmersionBar
 import com.xcjh.app.R
+import com.xcjh.app.adapter.MsgFriendAdapter
+import com.xcjh.app.adapter.MsgSearchFriendAdapter
 import com.xcjh.app.adapter.SearchMsgAdapter
 import com.xcjh.app.base.BaseActivity
 import com.xcjh.app.bean.MatchBean
@@ -20,17 +22,16 @@ import com.xcjh.base_lib.utils.vertical
  * 搜索消息
  */
 
-class SeacherMsgActivity : BaseActivity<MsgVm, ActivitySeachermsgBinding>() {
+class SeacherFriendActivity : BaseActivity<MsgVm, ActivitySeachermsgBinding>() {
 
-    private val mAdapter by lazy { SearchMsgAdapter() }
+    private val mAdapter by lazy { MsgSearchFriendAdapter() }
     var listdata: MutableList<MatchBean> = ArrayList<MatchBean>()
-    var index = 0
+
     override fun initView(savedInstanceState: Bundle?) {
         ImmersionBar.with(this)
             .statusBarDarkFont(false)
             .titleBar(mDatabind.titleTop.root)
             .init()
-
 
         mDatabind.rec.run {
             vertical()
@@ -46,11 +47,9 @@ class SeacherMsgActivity : BaseActivity<MsgVm, ActivitySeachermsgBinding>() {
                 mAdapter.submitList(null)
             } else {
                 if (mDatabind.titleTop.tvTitle.text.toString().isNotEmpty()) {
-                    if (index==0) {
-                        mViewModel.getMsgList(true, mDatabind.titleTop.tvTitle.text.toString())
-                    }else{
+
                         mViewModel.getFriendList(true, mDatabind.titleTop.tvTitle.text.toString())
-                    }
+
                 }
             }
         }
@@ -81,7 +80,8 @@ class SeacherMsgActivity : BaseActivity<MsgVm, ActivitySeachermsgBinding>() {
     override fun createObserver() {
         val empty = layoutInflater!!.inflate(R.layout.layout_empty, null)
 
-        mViewModel.msgList.observe(this) {
+
+        mViewModel.frendList.observe(this) {
             smartListData(
                 activity = this,
                 it,
@@ -133,7 +133,6 @@ class SeacherMsgActivity : BaseActivity<MsgVm, ActivitySeachermsgBinding>() {
                 }
             }
         }
-
     }
 
 }

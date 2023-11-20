@@ -106,16 +106,16 @@ class MsgVm : BaseViewModel() {
         )
     }
 
-    fun getFriendList(isRefresh: Boolean) {
+    fun getFriendList(isRefresh: Boolean,name:String?) {
         if (isRefresh) {
             pageNoFriend = 1
         }
         request(
             {
                 apiService.getFriendsList(
-                    BasePage(
+                    PostGetMsgBean(
                         pageNoFriend,
-                        BASE_PAGE_SIZE
+                        BASE_PAGE_SIZE, name!!
                     )
                 )
             },
