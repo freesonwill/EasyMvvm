@@ -103,8 +103,18 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
             }
         })
 
+        var linkedMap = linkedMapOf(
+            "key1" to "value1",
+            "key2" to "value2",
+            "key3" to "value3"
+        )
 
+        val secondElement = linkedMap.values.elementAt(1)
 
+        linkedMap.forEach {
+            //first    second
+             Log.i("ssssssssssss","====="+it.toPair().second)
+        }
     }
 
 

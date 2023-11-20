@@ -35,7 +35,7 @@
                    android:layout_height="@dimen/dp_64"
                    app:is_circle="true"
                    android:scaleType="fitXY"
-                   app:srcCompat="@drawable/icon_level_head"/>
+                   app:srcCompat="@drawable/icon_avatar"/>
                <LinearLayout
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
