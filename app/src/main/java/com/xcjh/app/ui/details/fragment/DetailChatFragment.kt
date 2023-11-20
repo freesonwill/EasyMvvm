@@ -53,7 +53,11 @@ import kotlinx.android.synthetic.main.fragment_detail_tab_chat.view.*
  * 聊天 正向布局
  */
 
-class DetailChatFragment(private var liveId: String, var userId: String?, override val typeId: Long = 1) :
+class DetailChatFragment(
+    private var liveId: String,
+    var userId: String?,
+    override val typeId: Long = 1,
+) :
     BaseVpFragment<RoomChatVm, FragmentDetailTabChatBinding>(),
     LiveRoomListener, View.OnClickListener {
 
@@ -98,11 +102,11 @@ class DetailChatFragment(private var liveId: String, var userId: String?, overri
                     noticeBean.isOpen = !noticeBean.isOpen
                     startImageRotate(expandCollapse, noticeBean.isOpen)
                     expandableText.maxLines = if (noticeBean.isOpen) 10 else 2
-                    mDatabind.smartChat.postDelayed({
+                    mDatabind.rcvChat.postDelayed({
                         val bb = expandableText.height
-                        val params = mDatabind.smartChat.layoutParams
-                        params.height = mDatabind.smartChat.height - bb + aa
-                        mDatabind.smartChat.layoutParams = params
+                        val params = mDatabind.rcvChat.layoutParams
+                        params.height = mDatabind.rcvChat.height - bb + aa
+                        mDatabind.rcvChat.layoutParams = params
                     }, 200)
 
                 }
@@ -243,6 +247,9 @@ class DetailChatFragment(private var liveId: String, var userId: String?, overri
                 mDatabind.notice.expandableText.text = it.notice //主播公告
                 mDatabind.rcvChat.postDelayed({
                     try {
+                        val params = mDatabind.rcvChat.layoutParams
+                        params.height = mDatabind.smartChat.height
+                        mDatabind.rcvChat.layoutParams = params
                         mDatabind.rcvChat.addModels(
                             listOf(
                                 MsgBean(
@@ -261,8 +268,6 @@ class DetailChatFragment(private var liveId: String, var userId: String?, overri
                         }
                     } catch (_: Exception) {
                     }
-                    // mDatabind.rcvChat.scrollToPosition(0)
-
                 }, 500)
             }
         }
@@ -276,7 +281,9 @@ class DetailChatFragment(private var liveId: String, var userId: String?, overri
                 } else {
                     mDatabind.rcvChat.addModels(it.listData, index = 0) // 添加一条消息
                     if (it.isRefresh) {
-                        mDatabind.rcvChat.smoothScrollToPosition( mDatabind.rcvChat.models?.size?:0)
+                        mDatabind.rcvChat.smoothScrollToPosition(
+                            mDatabind.rcvChat.models?.size ?: 0
+                        )
                     }
                 }
             }
@@ -306,22 +313,24 @@ class DetailChatFragment(private var liveId: String, var userId: String?, overri
         //setWindowSoftInput(float = mDatabind.llInput, setPadding = true)
         mDatabind.smartChat.postDelayed({
             try {
-               // mDatabind.rcvChat.height.toString().loge("=onResume===")
-                val params = mDatabind.smartChat.layoutParams
+              /*  mDatabind.root.height.toString().loge("========onResume===")
+                mDatabind.notice.root.height.toString().loge("=onResume===")
+                mDatabind.smartChat.height.toString().loge("=onResume===")
+                mDatabind.rcvChat.height.toString().loge("=onResume===")*/
+                val params = mDatabind.rcvChat.layoutParams
                 params.height = mDatabind.smartChat.height
-                mDatabind.smartChat.layoutParams = params
+                mDatabind.rcvChat.layoutParams = params
             } catch (_: Exception) {
             }
-        }, 600)
+        }, 200)
         super.onResume()
     }
 
     override fun onPause() {
         hideSoftInput()
         mDatabind.edtChatMsg.clearFocus()
-        mDatabind.rcvChat.postDelayed({
-            //mDatabind.rcvChat.height.toString().loge("=onPause===")
-        }, 200)
+        /* mDatabind.smartChat.height.toString().loge("=onPause===")
+         mDatabind.rcvChat.height.toString().loge("=onPause===")*/
         super.onPause()
     }
 
