@@ -68,6 +68,9 @@
             android:name=".ui.home.my.operate.ViewingHistoryListActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.search.SeacherFriendActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.home.my.operate.MyFollowListActivity"
             android:exported="false" />
         <activity

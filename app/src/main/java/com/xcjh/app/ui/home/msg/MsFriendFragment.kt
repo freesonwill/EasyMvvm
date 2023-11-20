@@ -36,10 +36,10 @@ class MsFriendFragment : BaseFragment<MsgVm, FrMsgfriendBinding>() {
         }
         mAdapter.isEmptyViewEnable = true
         if(CacheUtil.isLogin()){
-            mViewModel.getFriendList(true)
+            mViewModel.getFriendList(true,"")
         }
-        mDatabind.smartCommon.setOnRefreshListener { mViewModel.getFriendList(true) }
-            .setOnLoadMoreListener { mViewModel.getFriendList(false) }
+        mDatabind.smartCommon.setOnRefreshListener { mViewModel.getFriendList(true,"") }
+            .setOnLoadMoreListener { mViewModel.getFriendList(false,"") }
        // mViewModel.getNoticeUser()
         // 需要传递控件 id
         mAdapter.addOnItemChildClickListener(R.id.lltDelete) { adapter, view, position ->
@@ -119,7 +119,7 @@ class MsFriendFragment : BaseFragment<MsgVm, FrMsgfriendBinding>() {
         }
         appViewModel.updateSomeData.observe(this){
            if (it.equals("friends")){
-               mViewModel.getFriendList(true)
+               mViewModel.getFriendList(true,"")
            }
         }
     }
