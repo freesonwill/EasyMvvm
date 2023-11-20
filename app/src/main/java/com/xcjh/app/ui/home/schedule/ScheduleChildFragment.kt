@@ -684,6 +684,7 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                 if (isAdded) {
                     mPushPosition = it
                     isVisble = mTabPosition == it
+                    mDatabind.smartCommon.autoRefresh()
                 }
             }
             if (!hasData) {
