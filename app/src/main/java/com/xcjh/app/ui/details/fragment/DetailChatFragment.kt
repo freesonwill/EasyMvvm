@@ -98,11 +98,11 @@ class DetailChatFragment(private var liveId: String, var userId: String?, overri
                     noticeBean.isOpen = !noticeBean.isOpen
                     startImageRotate(expandCollapse, noticeBean.isOpen)
                     expandableText.maxLines = if (noticeBean.isOpen) 10 else 2
-                    mDatabind.rcvChat.postDelayed({
+                    mDatabind.smartChat.postDelayed({
                         val bb = expandableText.height
-                        val params = mDatabind.rcvChat.layoutParams
-                        params.height = mDatabind.rcvChat.height - bb + aa
-                        mDatabind.rcvChat.layoutParams = params
+                        val params = mDatabind.smartChat.layoutParams
+                        params.height = mDatabind.smartChat.height - bb + aa
+                        mDatabind.smartChat.layoutParams = params
                     }, 200)
 
                 }
@@ -268,23 +268,17 @@ class DetailChatFragment(private var liveId: String, var userId: String?, overri
         }
         //历史消息
         mViewModel.hisMsgList.observe(this) {
-
+            mDatabind.smartChat.finishRefresh()
             if (it.isSuccess) {
                 if (it.listData.isEmpty()) {
-                    mDatabind.smartChat.setEnableRefresh(false)
+                    //mDatabind.smartChat.setEnableRefresh(false)
                     mDatabind.smartChat.finishRefreshWithNoMoreData()
                 } else {
-                    mDatabind.smartChat.finishRefresh()
                     mDatabind.rcvChat.addModels(it.listData, index = 0) // 添加一条消息
                     if (it.isRefresh) {
-                        mDatabind.rcvChat.models?.size?.let {
-                            mDatabind.rcvChat.smoothScrollToPosition(it)
-                        }
+                        mDatabind.rcvChat.smoothScrollToPosition( mDatabind.rcvChat.models?.size?:0)
                     }
                 }
-            } else {
-                mDatabind.smartChat.finishRefresh()
-                //  mDatabind.rcvChat.addModels(messageList.apply{reverse()})
             }
         }
         vm.anchorInfo.observe(this) {
@@ -310,12 +304,12 @@ class DetailChatFragment(private var liveId: String, var userId: String?, overri
 
     override fun onResume() {
         //setWindowSoftInput(float = mDatabind.llInput, setPadding = true)
-        mDatabind.rcvChat.postDelayed({
+        mDatabind.smartChat.postDelayed({
             try {
                // mDatabind.rcvChat.height.toString().loge("=onResume===")
-                val params = mDatabind.rcvChat.layoutParams
-                params.height = mDatabind.rcvChat.height
-               // mDatabind.rcvChat.layoutParams = params
+                val params = mDatabind.smartChat.layoutParams
+                params.height = mDatabind.smartChat.height
+                mDatabind.smartChat.layoutParams = params
             } catch (_: Exception) {
             }
         }, 600)
