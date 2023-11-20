@@ -63,14 +63,7 @@ class ScheduleFragment : BaseFragment<MainVm, FrCourseBinding>() {
             }
 
         })
-//        mDatabind.magicIndicator.setOnTabSelectListener(object :OnTabSelectListener{
-//            override fun onTabSelect(position: Int) {
-//
-//            }
-//
-//            override fun onTabReselect(position: Int) {
-//            }
-//        })
+
     }
 
     override fun createObserver() {
