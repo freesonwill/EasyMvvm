@@ -100,14 +100,20 @@ class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
                                 "}" +
                                 "})()", null)
 
+//                        val javascript = "javascript:(function() { " +
+//                                "var imgs = document.getElementsByTagName('img');" +
+//                                "for(var i = 0; i < imgs.length; i++){" +
+//                                "   imgs[i].style.maxWidth = '100%';" +
+//                                "   imgs[i].style.height = 'auto';" +
+//                                "}" +
+//                                "})()"
                         val javascript = "javascript:(function() { " +
-                                "var imgs = document.getElementsByTagName('img');" +
+                                "var imgs = document.querySelectorAll('*');" +
                                 "for(var i = 0; i < imgs.length; i++){" +
                                 "   imgs[i].style.maxWidth = '100%';" +
                                 "   imgs[i].style.height = 'auto';" +
                                 "}" +
                                 "})()"
-
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                             view!!.evaluateJavascript(javascript, null)
                         } else {
