@@ -108,8 +108,15 @@ public class CustomRangeMonthView extends RangeMonthView {
     @Override
     protected void onDrawScheme(Canvas canvas, Calendar calendar, int x, int y, boolean isSelected) {
         mPointPaint.setColor(calendar.getSchemeColor());
+        int cx = x + mItemWidth / 2;
+        int cy = y + mItemHeight / 2;
+        int xx = mItemWidth / 2 - mItemHeight / 2;
+        if (calendar.isCurrentDay()) {
+            canvas.drawCircle(x + mItemWidth / 2, y + mItemHeight - 3 * mPadding, mPointRadius, mPointPaint);
+        }else {
+            canvas.drawRoundRect(new RectF(x+xx, y,x+mItemWidth-xx, y+mItemHeight), 12, 12, mSelectedStartEndPaint);
 
-        canvas.drawCircle(x + mItemWidth / 2, y + mItemHeight - 3 * mPadding, mPointRadius, mPointPaint);
+        }
     }
 
     @Override
@@ -155,9 +162,10 @@ public class CustomRangeMonthView extends RangeMonthView {
                     baselineY,
                     mSelectTextPaint);*/
         } else if (hasScheme) {
-            canvas.drawText(text, cx, baselineY,
-                    calendar.isCurrentDay() ? mCurDayTextPaint :
-                            calendar.isCurrentMonth() && isInRange && isEnable? mSchemeTextPaint : mOtherMonthTextPaint);
+                canvas.drawText(text, cx, baselineY,
+                        calendar.isCurrentDay() ? mCurDayTextPaint :
+                                calendar.isCurrentMonth() && isInRange && isEnable ? mSchemeTextPaint : mOtherMonthTextPaint);
+
         }else {
             /// 未选择的普通日期
             canvas.drawText(text, cx, baselineY,

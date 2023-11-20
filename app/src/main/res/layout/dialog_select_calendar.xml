@@ -70,7 +70,7 @@
         app:month_view="com.xcjh.app.view.range_calendar.CustomRangeMonthView"
         app:month_view_show_mode="mode_only_current"
         app:other_month_text_color="@color/c_8a91a0"
-        app:select_mode="single_mode"
+        app:select_mode="default_mode"
         app:selected_text_color="@color/c_8a91a0"
         app:selected_theme_color="@color/select_color"
 

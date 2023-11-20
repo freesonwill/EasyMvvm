@@ -2,7 +2,6 @@ package com.xcjh.app.utils
 
 import android.content.Context
 import android.graphics.Color
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -18,7 +17,6 @@ import com.kongzue.dialogx.dialogs.MessageDialog
 import com.kongzue.dialogx.interfaces.OnBindView
 import com.xcjh.app.R
 import com.xcjh.app.bean.AnchorListBean
-import com.xcjh.app.bean.LetterBeann
 import com.xcjh.base_lib.App
 
 
@@ -47,7 +45,16 @@ fun selectTime(context: Context, timeOld:String,block: (start: Calendar,end:Cale
                 val year: Int = mCalendarView.curYear
                 val month: Int = mCalendarView.curMonth
                 val day: Int = mCalendarView.curDay
+
                 val map: MutableMap<String, Calendar?> = HashMap()
+                if (timeOld.isNotEmpty()){
+                    var year1:Int=timeOld.substring(0,4).toInt()
+                    var month1:Int=timeOld.substring(5,7).toInt()
+                    var day1:Int=timeOld.substring(8,10).toInt()
+                    map[getSchemeCalendar(year1, month1, day1, -0xffffff, "").toString()] =
+                        getSchemeCalendar(year1, month1, day1, -0xffffff, "")
+                }
+
                 map[getSchemeCalendar(year,
                     month,
                     day,

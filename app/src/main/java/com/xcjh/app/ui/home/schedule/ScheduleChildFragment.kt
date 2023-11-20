@@ -882,7 +882,7 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
             when (it.id) {
                 R.id.iv_meau -> {
 
-                    selectTime(requireActivity(),"") { start, end ->
+                    selectTime(requireActivity(),calendarTime) { start, end ->
 
                         calendarTime =
                             start.year.toString() + "-" + TimeUtil.checkTimeSingle(start.month) + "-" + TimeUtil.checkTimeSingle(
@@ -943,6 +943,7 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
 
         mViewModel.hotMatchList.observe(this) {
             mDatabind.recBottom.mutable.clear()
+            mDatabind.recBottom.scrollToPosition(0)
             mDatabind.recBottom.bindingAdapter.notifyDataSetChanged()
             if (it.isSuccess) {
                 strTimeZu.clear()
