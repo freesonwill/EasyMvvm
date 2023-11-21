@@ -270,7 +270,7 @@
     <string name="my_txt_view">查看</string>
     <string name="my_txt_subscribe">我的订阅</string>
     <string name="my_txt_edit_data">编辑资料</string>
-    <string name="my_txt_invite">邀请好友</string>
+    <string name="my_txt_invite">分享好友</string>
     <string name="my_txt_copy_link">复制链接成功</string>
     <string name="my_txt_out">退出登录</string>
     <string name="level_txt_grow">距离升级：%s成长值</string>
