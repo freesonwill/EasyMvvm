@@ -89,8 +89,13 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
         LogUtils.d("本页面tabname=$tabName")
         strTime = TimeUtil.gettimenowYear().toString()
         if ((tabName==resources.getString(R.string.all)||tabName==resources.getString(R.string.foot_scr)||
-            tabName==resources.getString(R.string.bas_scr))&&calendarTime.isEmpty()){//只取一天
-            endTime=strTime
+            tabName==resources.getString(R.string.bas_scr))){//只取一天
+            if (calendarTime.isNotEmpty()){
+                strTime=calendarTime
+                endTime=calendarTime
+            }else {
+                endTime = strTime
+            }
             return
         }
         endTime = TimeUtil.addDayEgls("0", 2).toString()
