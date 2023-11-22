@@ -10,6 +10,7 @@ import com.xcjh.app.bean.MsgListBean
 import com.xcjh.app.databinding.FrMsgchildBinding
 import com.xcjh.app.utils.CacheUtil
 import com.xcjh.app.websocket.MyWsManager
+import com.xcjh.app.websocket.bean.ReceiveChangeMsg
 import com.xcjh.app.websocket.bean.ReceiveChatMsg
 import com.xcjh.app.websocket.bean.ReceiveWsBean
 import com.xcjh.app.websocket.listener.C2CListener
@@ -93,6 +94,10 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
 
                 override fun onC2CReceive(chat: ReceiveChatMsg) {
                         refshMsg(chat)
+                }
+
+                override fun onChangeReceive(chat: MutableList<ReceiveChangeMsg>) {
+                    TODO("Not yet implemented")
                 }
             })
         appViewModel.updateMsgEvent.observeForever {

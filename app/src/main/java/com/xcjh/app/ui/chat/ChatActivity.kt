@@ -35,6 +35,7 @@ import com.xcjh.app.utils.GlideEngine
 import com.xcjh.app.utils.nice.Utils
 import com.xcjh.app.utils.picture.ImageFileCompressEngine
 import com.xcjh.app.websocket.MyWsManager
+import com.xcjh.app.websocket.bean.ReceiveChangeMsg
 import com.xcjh.app.websocket.bean.ReceiveChatMsg
 import com.xcjh.app.websocket.bean.ReceiveWsBean
 import com.xcjh.app.websocket.bean.SendChatMsgBean
@@ -388,6 +389,10 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
 
                 //appViewModel.updateMsgEvent.postValue(beanmy)
 
+            }
+
+            override fun onChangeReceive(chat: MutableList<ReceiveChangeMsg>) {
+                TODO("Not yet implemented")
             }
 
         })

@@ -30,6 +30,11 @@ import com.xcjh.app.databinding.ItemJsBinding
 import com.xcjh.app.databinding.ItemSchAllBinding
 import com.xcjh.app.ui.details.MatchDetailActivity
 import com.xcjh.app.utils.selectTime
+import com.xcjh.app.websocket.MyWsManager
+import com.xcjh.app.websocket.bean.ReceiveChangeMsg
+import com.xcjh.app.websocket.bean.ReceiveChatMsg
+import com.xcjh.app.websocket.bean.ReceiveWsBean
+import com.xcjh.app.websocket.listener.C2CListener
 import com.xcjh.base_lib.utils.LogUtils
 import com.xcjh.base_lib.utils.TimeUtil
 import com.xcjh.base_lib.utils.distance
@@ -59,7 +64,7 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
     var hasData = false
     var isVisble = false
     lateinit var strTime: String
-    var calendarTime: String=""
+    var calendarTime: String = ""
     lateinit var endTime: String
     lateinit var strTimeRuslt: String
     lateinit var endTimeResult: String
@@ -88,12 +93,13 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
     fun initTime() {
         LogUtils.d("本页面tabname=$tabName")
         strTime = TimeUtil.gettimenowYear().toString()
-        if ((tabName==resources.getString(R.string.all)||tabName==resources.getString(R.string.foot_scr)||
-            tabName==resources.getString(R.string.bas_scr))){//只取一天
-            if (calendarTime.isNotEmpty()){
-                strTime=calendarTime
-                endTime=calendarTime
-            }else {
+        if ((tabName == resources.getString(R.string.all) || tabName == resources.getString(R.string.foot_scr) ||
+                    tabName == resources.getString(R.string.bas_scr))
+        ) {//只取一天
+            if (calendarTime.isNotEmpty()) {
+                strTime = calendarTime
+                endTime = calendarTime
+            } else {
                 endTime = strTime
             }
             return
@@ -113,7 +119,7 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                 strTime = endTimeResult
                 endTime = strTimeRuslt
             }
-        }else{
+        } else {
             if (calendarTime.isNotEmpty()) {
                 strTime = calendarTime
                 endTime = TimeUtil.addDayEgls(calendarTime, 2).toString()
@@ -146,34 +152,34 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                         binding.tvcollect.setBackgroundResource(R.drawable.ic_focus_n)
                     }
                     binding.tvmiddletime.text = time!!.substring(0, 10)
-                    when(item.visbleTime){
-                        0->{
+                    when (item.visbleTime) {
+                        0 -> {
                             if (time!!.substring(0, 10) == TimeUtil.gettimenowYear()) {
                                 if (strTimeZu.size == 0) {
-                                    item.visbleTime=2
+                                    item.visbleTime = 2
                                     binding.tvmiddletime.visibility = View.GONE
                                 } else {
                                     if (strTimeZu[strTimeZu.size - 1] == time!!.substring(0, 10)) {
                                         binding.tvmiddletime.visibility = View.GONE
-                                        item.visbleTime=2
+                                        item.visbleTime = 2
                                     } else {
                                         binding.tvmiddletime.visibility = View.VISIBLE
-                                        item.visbleTime=1
+                                        item.visbleTime = 1
                                         strTimeZu.add(time!!.substring(0, 10))
                                     }
                                 }
                             } else {
                                 if (strTimeZu.size == 0) {
                                     binding.tvmiddletime.visibility = View.VISIBLE
-                                    item.visbleTime=1
+                                    item.visbleTime = 1
                                     strTimeZu.add(time!!.substring(0, 10))
                                 } else {
                                     if (strTimeZu[strTimeZu.size - 1] == time!!.substring(0, 10)) {
                                         binding.tvmiddletime.visibility = View.GONE
-                                        item.visbleTime=2
+                                        item.visbleTime = 2
                                     } else {
                                         binding.tvmiddletime.visibility = View.VISIBLE
-                                        item.visbleTime=1
+                                        item.visbleTime = 1
                                         strTimeZu.add(time!!.substring(0, 10))
                                     }
 
@@ -182,10 +188,12 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
 
                             }
                         }
-                        1->{//显示
+
+                        1 -> {//显示
                             binding.tvmiddletime.visibility = View.VISIBLE
                         }
-                        2->{//不显示
+
+                        2 -> {//不显示
                             binding.tvmiddletime.visibility = View.GONE
 
                         }
@@ -201,8 +209,10 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                             binding.tvname.text = item.competitionName
                             binding.tvnameLeft.text = item.homeName
                             binding.tvnameRight.text = item.awayName
-                            Glide.with(context).load(item.homeLogo).placeholder(R.drawable.default_team_logo).into(binding.tvflagLeft)
-                            Glide.with(context).load(item.awayLogo).placeholder(R.drawable.default_team_logo).into(binding.tvflagRight)
+                            Glide.with(context).load(item.homeLogo)
+                                .placeholder(R.drawable.default_team_logo).into(binding.tvflagLeft)
+                            Glide.with(context).load(item.awayLogo)
+                                .placeholder(R.drawable.default_team_logo).into(binding.tvflagRight)
                             binding.ivtype.setBackgroundResource(R.drawable.football)
                             when (item.status) {
                                 "0" -> binding.tvstatus.visibility = View.GONE
@@ -220,7 +230,8 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                                         context.resources.getString(R.string.main_txt_wks)
 
                                 }
-                                "2"->{
+
+                                "2" -> {
                                     binding.tvstatus.visibility = View.VISIBLE
                                     binding.txtMatchAnimation.visibility = View.VISIBLE
                                     binding.tvvs.text = item.homeScore + "-" + item.awayScore
@@ -240,7 +251,8 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                                     )
                                     initAnimation(binding.txtMatchAnimation)
                                 }
-                                "3"->{
+
+                                "3" -> {
                                     binding.tvstatus.visibility = View.VISIBLE
                                     binding.txtMatchAnimation.visibility = View.GONE
                                     binding.tvvs.text = item.homeScore + "-" + item.awayScore
@@ -254,7 +266,8 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                                         R.string.zc
                                     )
                                 }
-                                "4"->{
+
+                                "4" -> {
                                     binding.tvstatus.visibility = View.VISIBLE
                                     binding.txtMatchAnimation.visibility = View.VISIBLE
                                     binding.tvvs.text = item.homeScore + "-" + item.awayScore
@@ -274,7 +287,8 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                                     )
                                     initAnimation(binding.txtMatchAnimation)
                                 }
-                                "5", "6"-> {
+
+                                "5", "6" -> {
                                     binding.tvstatus.visibility = View.VISIBLE
                                     binding.txtMatchAnimation.visibility = View.VISIBLE
                                     binding.tvvs.text = item.homeScore + "-" + item.awayScore
@@ -295,7 +309,8 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                                     initAnimation(binding.txtMatchAnimation)
 
                                 }
-                                 "7" -> {
+
+                                "7" -> {
                                     binding.tvstatus.visibility = View.VISIBLE
                                     binding.txtMatchAnimation.visibility = View.GONE
                                     binding.tvvs.text = item.homeScore + "-" + item.awayScore
@@ -308,9 +323,10 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                                     binding.tvstatus.text = context.resources.getString(
                                         R.string.main_dqdz
                                     )
-                                   // initAnimation(binding.txtMatchAnimation)
+                                    // initAnimation(binding.txtMatchAnimation)
 
                                 }
+
                                 "8" -> {
                                     binding.txtMatchAnimation.visibility = View.GONE
                                     binding.tvvs.text = item.homeScore + "-" + item.awayScore
@@ -427,8 +443,10 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                             binding.tvname.text = item.competitionName
                             binding.tvnameLeft.text = item.awayName
                             binding.tvnameRight.text = item.homeName
-                            Glide.with(context).load(item.awayLogo).placeholder(R.drawable.default_team_logo).into(binding.tvflagLeft)
-                            Glide.with(context).load(item.homeLogo).placeholder(R.drawable.default_team_logo).into(binding.tvflagRight)
+                            Glide.with(context).load(item.awayLogo)
+                                .placeholder(R.drawable.default_team_logo).into(binding.tvflagLeft)
+                            Glide.with(context).load(item.homeLogo)
+                                .placeholder(R.drawable.default_team_logo).into(binding.tvflagRight)
                             binding.ivtype.setBackgroundResource(R.drawable.basketball)
                             when (item.status) {
                                 "0" -> binding.tvstatus.visibility = View.GONE
@@ -521,6 +539,7 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                                         )
                                     // initAnimation(binding.txtMatchAnimation)
                                 }
+
                                 "9" -> {
                                     binding.txtMatchAnimation.visibility = View.GONE
                                     binding.tvvs.text = item.awayScore + "-" + item.homeScore
@@ -535,6 +554,7 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                                         context.resources.getString(R.string.over_time)
                                     // initAnimation(binding.txtMatchAnimation)
                                 }
+
                                 "10" -> {
                                     binding.txtMatchAnimation.visibility = View.GONE
                                     binding.tvvs.text = item.awayScore + "-" + item.homeScore
@@ -690,7 +710,7 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                     mPushPosition = it
                     isVisble = mTabPosition == it
                     mDatabind.smartCommon.autoRefresh()
-                    calendarTime=""
+                    calendarTime = ""
                 }
             }
             if (!hasData) {
@@ -704,16 +724,40 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                 }
 
             }.showLoading()
-            appViewModel.updateLoginEvent.observe(this){
-                if(it){
+            appViewModel.updateLoginEvent.observe(this) {
+                if (it) {
 
                     mDatabind.smartCommon.autoRefresh()
 
-                }else{
+                } else {
                     mDatabind.smartCommon.autoRefresh()
 
                 }
             }
+            MyWsManager.getInstance(requireActivity())!!
+                .setC2CListener(javaClass.name, object : C2CListener {
+                    override fun onSendMsgIsOk(isOk: Boolean, bean: ReceiveWsBean<*>) {
+
+                    }
+
+                    override fun onC2CReceive(chat: ReceiveChatMsg) {
+
+                    }
+
+                    override fun onChangeReceive(chat: MutableList<ReceiveChangeMsg>) {
+                        LogUtils.d("收到推送消息")
+                        for (i in 0 until mDatabind.recBottom.models?.size!!){
+                            for (j in 0 until chat.size) {
+                                var bean:MatchBean= mDatabind.recBottom.models!![i] as MatchBean
+
+                                if (bean.matchId==chat[j].matchId&&bean.matchType==chat[j].matchType){
+
+                                }
+                            }
+                        }
+
+                    }
+                })
         } catch (e: Exception) {
 
         }
@@ -783,7 +827,7 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
 
     private fun initEvent(list: MutableList<HotMatchBean>) {
 
-        tabName=list[mPosition].competitionName
+        tabName = list[mPosition].competitionName
         initTime()
         mViewModel.getHotMatchDataList(
             true, PostSchMatchListBean(
@@ -809,13 +853,13 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
         mDatabind.recTop.setOnTabSelectListener(object : OnTabSelectListener {
             override fun onTabSelect(position: Int) {
                 LogUtils.d("选中了第几个$position")
-                calendarTime=""
+                calendarTime = ""
                 mDatabind.smartCommon.showLoading()
                 page = 1
                 isClick = true
                 matchtype = list[position].matchType
                 mPosition = position
-                tabName=list[position].competitionName
+                tabName = list[position].competitionName
                 initTime()
 
                 mViewModel.getHotMatchDataList(
@@ -855,7 +899,7 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                 )
             }
         }.setOnLoadMoreListener {
-            tabName=list[mPosition].competitionName
+            tabName = list[mPosition].competitionName
             initTime()
             mViewModel.getHotMatchDataList(
                 false, PostSchMatchListBean(
@@ -887,7 +931,7 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
             when (it.id) {
                 R.id.iv_meau -> {
 
-                    selectTime(requireActivity(),calendarTime) { start, end ->
+                    selectTime(requireActivity(), calendarTime) { start, end ->
 
                         calendarTime =
                             start.year.toString() + "-" + TimeUtil.checkTimeSingle(start.month) + "-" + TimeUtil.checkTimeSingle(
@@ -1009,7 +1053,7 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                     if (mDatabind.recBottom.models != null) {
                         //  mDatabind.recBottom.mutable.clear()
                     }
-                      mDatabind.smartCommon.showEmpty()
+                    mDatabind.smartCommon.showEmpty()
                 } else {
                     mDatabind.smartCommon.finishLoadMore(false)
                 }
