@@ -391,8 +391,8 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
 
             }
 
-            override fun onChangeReceive(chat: MutableList<ReceiveChangeMsg>) {
-                TODO("Not yet implemented")
+            override fun onChangeReceive(chat: ArrayList<ReceiveChangeMsg>) {
+
             }
 
         })

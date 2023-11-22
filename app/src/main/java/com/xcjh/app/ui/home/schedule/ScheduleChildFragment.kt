@@ -744,7 +744,7 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
 
                     }
 
-                    override fun onChangeReceive(chat: MutableList<ReceiveChangeMsg>) {
+                    override fun onChangeReceive(chat: ArrayList<ReceiveChangeMsg>) {
                         LogUtils.d("收到推送消息")
                         for (i in 0 until mDatabind.recBottom.models?.size!!){
                             for (j in 0 until chat.size) {

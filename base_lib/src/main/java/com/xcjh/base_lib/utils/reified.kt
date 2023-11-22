@@ -93,7 +93,7 @@ fun <T, V> T.lazyField(block: T.(KProperty<*>) -> V) = object : ReadWritePropert
  */
 inline fun <reified T> jsonToList(jsonStr: String) : MutableList<T> {
     val jsonArray = JsonParser().parse(jsonStr).asJsonArray
-    val list: MutableList<T> = ArrayList()
+    val list= ArrayList<T>()
     for (jsonElement in jsonArray) {
         list.add(Gson().fromJson(jsonElement, T::class.java)) //cls
     }

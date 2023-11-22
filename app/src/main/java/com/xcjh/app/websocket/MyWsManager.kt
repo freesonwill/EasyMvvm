@@ -248,9 +248,12 @@ class MyWsManager private constructor(private val mContext: Context) {
             }
 
             30 -> {
-                val wsBean2 = jsonToList<ReceiveChangeMsg>(msg)
+                val string = wsBean.data.toString()
+                var wsBean2 = jsonToList<ReceiveChangeMsg>(string)
+                var list=ArrayList<ReceiveChangeMsg>()
+                list.addAll(wsBean2)
                 mC2CListener.forEach {
-                    it.toPair().second.onChangeReceive(wsBean2)
+                    it.toPair().second.onChangeReceive(list)
                 }
             }
 

@@ -77,7 +77,7 @@ interface C2CListener {
     /// 收到主播的消息
     fun onC2CReceive(chat: ReceiveChatMsg)
     /// 收到推送消息
-    fun onChangeReceive(chat: MutableList<ReceiveChangeMsg>)
+    fun onChangeReceive(chat: ArrayList<ReceiveChangeMsg>)
 }
 
 

@@ -96,8 +96,8 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                         refshMsg(chat)
                 }
 
-                override fun onChangeReceive(chat: MutableList<ReceiveChangeMsg>) {
-                    TODO("Not yet implemented")
+                override fun onChangeReceive(chat: ArrayList<ReceiveChangeMsg>) {
+
                 }
             })
         appViewModel.updateMsgEvent.observeForever {
