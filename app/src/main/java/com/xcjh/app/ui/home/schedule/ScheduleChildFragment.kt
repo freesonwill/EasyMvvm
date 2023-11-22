@@ -867,20 +867,20 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
             )
         }
         appViewModel.appPolling.observeForever {
-            if (isAdded && isVisble) {
-                tabName=list[mPosition].competitionName
-                isClick = false
-                initTime()
-                LogUtils.d(status.toString() + "执行了0轮询" + matchtype + "///" + isVisble)
-                mViewModel.getHotMatchDataList(
-                    true, PostSchMatchListBean(
-                        list[mPosition].competitionId, page,
-                        endTime,
-                        matchtype!!, pageSize, strTime,
-                        status
-                    )
-                )
-            }
+//            if (isAdded && isVisble) {
+//                tabName=list[mPosition].competitionName
+//                isClick = false
+//                initTime()
+//                LogUtils.d(status.toString() + "执行了0轮询" + matchtype + "///" + isVisble)
+//                mViewModel.getHotMatchDataList(
+//                    true, PostSchMatchListBean(
+//                        list[mPosition].competitionId, page,
+//                        endTime,
+//                        matchtype!!, pageSize, strTime,
+//                        status
+//                    )
+//                )
+//            }
         }
 
         setOnclickNoRepeat(mDatabind.ivMeau) {

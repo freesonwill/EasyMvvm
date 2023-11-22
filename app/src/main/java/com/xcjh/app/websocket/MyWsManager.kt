@@ -7,6 +7,7 @@ import android.util.Log
 import android.widget.Toast
 import com.xcjh.app.R
 import com.xcjh.app.websocket.bean.LiveStatus
+import com.xcjh.app.websocket.bean.ReceiveChangeMsg
 import com.xcjh.app.websocket.bean.ReceiveChatMsg
 import com.xcjh.app.websocket.bean.ReceiveWsBean
 import com.xcjh.app.websocket.listener.*
@@ -148,7 +149,7 @@ class MyWsManager private constructor(private val mContext: Context) {
      */
     private fun parsingServiceLogin(msg: String) {
         val wsBean = jsonToObject2<ReceiveWsBean<Any>>(msg)
-        if (wsBean?.code=="10114"){
+        if (wsBean?.code == "10114") {
             myToast(appContext.getString(R.string.no_chat_t))
             return
         }
@@ -158,21 +159,25 @@ class MyWsManager private constructor(private val mContext: Context) {
                     it.toPair().second.onLoginIn(wsBean.success == 0, wsBean)
                 }
             }
+
             22 -> {
                 mLoginOrOutListener.forEach {
                     it.toPair().second.onLoginOut(wsBean.success == 0, wsBean)
                 }
             }
+
             9 -> {
                 mLiveRoomListener.forEach {
                     it.toPair().second.onEnterRoomInfo(wsBean.success == 0, wsBean)
                 }
             }
+
             10 -> {
                 mLiveRoomListener.forEach {
                     it.toPair().second.onExitRoomInfo(wsBean.success == 0, wsBean)
                 }
             }
+
             12 -> {
                 //发送成功回调
                 mC2CListener.forEach {
@@ -182,6 +187,7 @@ class MyWsManager private constructor(private val mContext: Context) {
                     it.toPair().second.onSendMsgIsOk(wsBean.success == 0, wsBean)
                 }
             }
+
             13 -> {
                 //心跳包成功
 
@@ -203,17 +209,20 @@ class MyWsManager private constructor(private val mContext: Context) {
                     }
                 }
             }
+
             20 -> {//历史消息 http方式
                 /* val s = wsBean.data as String
                  val string2map = string2map<ChatMsgBean>(s)
                  string2map?.keys
                  string2map?.values*/
             }
+
             23 -> {//消息已读
                 mReadListener.forEach {
                     it.toPair().second.onReadReceive(wsBean)
                 }
             }
+
             25 -> {//服务器主动推送直播间开播
                 val wsBean2 = jsonToObject2<ReceiveWsBean<LiveStatus>>(msg)
                 val chatMsgBean = wsBean2?.data as LiveStatus
@@ -221,6 +230,7 @@ class MyWsManager private constructor(private val mContext: Context) {
                     it.toPair().second.onOpenLive(chatMsgBean)
                 }
             }
+
             26 -> {//服务器主动推送直播间关播
                 val wsBean2 = jsonToObject2<ReceiveWsBean<LiveStatus>>(msg)
                 val chatMsgBean = wsBean2?.data as LiveStatus
@@ -228,6 +238,7 @@ class MyWsManager private constructor(private val mContext: Context) {
                     it.toPair().second.onCloseLive(chatMsgBean)
                 }
             }
+
             27 -> {//服务器主动推送直播间直播地址修改
                 val wsBean2 = jsonToObject2<ReceiveWsBean<LiveStatus>>(msg)
                 val chatMsgBean = wsBean2?.data as LiveStatus
@@ -235,6 +246,14 @@ class MyWsManager private constructor(private val mContext: Context) {
                     it.toPair().second.onChangeLive(chatMsgBean)
                 }
             }
+
+            30 -> {
+                val wsBean2 = jsonToList<ReceiveChangeMsg>(msg)
+                mC2CListener.forEach {
+                    it.toPair().second.onChangeReceive(wsBean2)
+                }
+            }
+
             else -> {
                 // 登录过期
                 mContext.let {
@@ -261,6 +280,7 @@ class MyWsManager private constructor(private val mContext: Context) {
     fun setLoginOrOutListener(tag: String, listener: LoginOrOutListener) {
         mLoginOrOutListener[tag] = listener
     }
+
     fun removeLoginOrOutListener(tag: String) {
         if (mLoginOrOutListener[tag] != null) {
             mLoginOrOutListener.remove(tag)
@@ -275,11 +295,13 @@ class MyWsManager private constructor(private val mContext: Context) {
     fun setLiveRoomListener(tag: String, listener: LiveRoomListener) {
         mLiveRoomListener[tag] = listener
     }
+
     fun removeLiveRoomListener(tag: String) {
         if (mLiveRoomListener[tag] != null) {
             mLiveRoomListener.remove(tag)
         }
     }
+
     /**
      * 直播流状态
      */
@@ -287,6 +309,7 @@ class MyWsManager private constructor(private val mContext: Context) {
     fun setLiveStatusListener(tag: String, listener: LiveStatusListener) {
         mLiveStatusListener[tag] = listener
     }
+
     fun removeLiveStatusListener(tag: String) {
         if (mLiveStatusListener[tag] != null) {
             mLiveStatusListener.remove(tag)
@@ -301,11 +324,13 @@ class MyWsManager private constructor(private val mContext: Context) {
     fun setC2CListener(tag: String, listener: C2CListener) {
         mC2CListener[tag] = listener
     }
+
     fun removeC2CListener(tag: String) {
         if (mC2CListener[tag] != null) {
             mC2CListener.remove(tag)
         }
     }
+
     private val mReadListener = linkedMapOf<String, ReadListener>()
 
 
@@ -315,6 +340,7 @@ class MyWsManager private constructor(private val mContext: Context) {
     fun setReadListener(tag: String, listener: ReadListener) {
         mReadListener[tag] = listener
     }
+
     fun removeReadListener(tag: String) {
         if (mReadListener[tag] != null) {
             mReadListener.remove(tag)

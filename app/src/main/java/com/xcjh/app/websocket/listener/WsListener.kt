@@ -1,6 +1,7 @@
 package com.xcjh.app.websocket.listener
 
 import com.xcjh.app.websocket.bean.LiveStatus
+import com.xcjh.app.websocket.bean.ReceiveChangeMsg
 import com.xcjh.app.websocket.bean.ReceiveChatMsg
 import com.xcjh.app.websocket.bean.ReceiveWsBean
 
@@ -75,7 +76,8 @@ interface C2CListener {
 
     /// 收到主播的消息
     fun onC2CReceive(chat: ReceiveChatMsg)
-
+    /// 收到推送消息
+    fun onChangeReceive(chat: MutableList<ReceiveChangeMsg>)
 }
 
 
