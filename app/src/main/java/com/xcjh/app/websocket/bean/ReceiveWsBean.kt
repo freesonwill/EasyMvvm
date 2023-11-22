@@ -12,15 +12,19 @@ data class ReceiveWsBean<T>(
     val msg: String? = "",   // 消息内容
     val data: T? = null,   // 消息内容
 )
+/**
+ * 推送比分数据
+ *
+ */
 data class ReceiveChangeMsg(
-    val awayHalfScore: Int,
-    val awayScore: Int,
-    val homeHalfScore: Int,
-    val homeScore: Int,
-    val matchId: Int,
-    val matchType: Int,
-    val runTime: Int,
-    val status: Int
+    val awayHalfScore: String,
+    val awayScore: String,
+    val homeHalfScore: String,
+    val homeScore: String,
+    val matchId: String,
+    val matchType: String,
+    val runTime: String,
+    val status: String
 )
 /**
  * 群聊和私聊消息内容
