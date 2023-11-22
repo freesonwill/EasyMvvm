@@ -750,7 +750,7 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                             for (j in 0 until chat.size) {
                                 var bean:MatchBean= mDatabind.recBottom.models!![i] as MatchBean
 
-                                if (bean.matchId==chat[j].matchId&&bean.matchType==chat[j].matchType){
+                                if (bean.matchId==chat[j].matchId.toString()&&bean.matchType==chat[j].matchType){
 
                                 }
                             }

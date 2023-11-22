@@ -21,7 +21,7 @@ data class ReceiveChangeMsg(
     val awayScore: String,
     val homeHalfScore: String,
     val homeScore: String,
-    val matchId: String,
+    val matchId: Long,
     val matchType: String,
     val runTime: String,
     val status: String

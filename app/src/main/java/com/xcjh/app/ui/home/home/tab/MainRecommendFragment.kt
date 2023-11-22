@@ -43,6 +43,7 @@ import com.xcjh.app.websocket.listener.LiveStatusListener
 import com.xcjh.base_lib.App
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.dp2px
+import com.xcjh.base_lib.utils.toJson
 import com.xcjh.base_lib.utils.view.clickNoRepeat
 import com.xcjh.base_lib.utils.view.visibleOrGone
 import com.youth.banner.util.BannerUtils
@@ -94,8 +95,45 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
             }
 
             override fun onChangeReceive(chat: ArrayList<ReceiveChangeMsg>) {
+                var refresh=ArrayList<Int>()
+                if(mDatabind.rcvRecommend.models!=null){
+                    for (i in 0 until  mDatabind.rcvRecommend.mutable.size){
+
+                        if(mDatabind.rcvRecommend.mutable[i] is MatchBean){
+                            for (j in 0 until   (mDatabind.rcvRecommend.mutable[i] as MatchBean).list.size){
+                                for (k in 0 until  chat.size){
+                                    refresh.add(k)
+                                    if((mDatabind.rcvRecommend.mutable[i] as MatchBean).list[j].matchId.equals(chat[k].matchId.toString())&&
+                                        (mDatabind.rcvRecommend.mutable[i] as MatchBean).list[j].matchType.equals(chat[k].matchType)){
+
+                                        (mDatabind.rcvRecommend.mutable[i] as MatchBean).list[j].awayHalfScore=chat[k].awayHalfScore
+                                        (mDatabind.rcvRecommend.mutable[i] as MatchBean).list[j].awayScore="1111"
+                                        (mDatabind.rcvRecommend.mutable[i] as MatchBean).list[j].homeHalfScore=chat[k].homeHalfScore
+                                        (mDatabind.rcvRecommend.mutable[i] as MatchBean).list[j].homeScore=chat[k].homeScore
+                                        (mDatabind.rcvRecommend.mutable[i] as MatchBean).list[j].runTime=chat[k].runTime
+                                        (mDatabind.rcvRecommend.mutable[i] as MatchBean).list[j].status=chat[k].status
 
 
+                                    }
+                                }
+                            }
+
+                        }
+
+                    }
+                    if(refresh.size>0){
+                        for (i in 0 until  mDatabind.rcvRecommend.mutable.size){
+                            if(mDatabind.rcvRecommend.mutable[i] is MatchBean){
+                                mDatabind.rcvRecommend.bindingAdapter.notifyItemChanged(i)
+                            }
+
+                        }
+                    }
+
+
+
+
+                }
 
 
             }
