@@ -43,6 +43,7 @@ import com.xcjh.base_lib.utils.setOnclickNoRepeat
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import kotlin.concurrent.thread
 
 
 /***
@@ -73,6 +74,7 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
     var isClick = false
     val animatorSet = AnimatorSet()
     var strTimeZu: MutableList<String> = ArrayList<String>()
+
 
     companion object {
         var mTitles: Array<out String>? = null
@@ -683,11 +685,11 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                 }
                 itemDifferCallback = object : ItemDifferCallback {
                     override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
-                        return oldItem == newItem
+                        return (oldItem as MatchBean).matchId == (newItem as MatchBean).matchId
                     }
 
                     override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
-                        return oldItem == newItem
+                        return (oldItem as MatchBean).homeHalfScore == (newItem as MatchBean).homeHalfScore
                     }
 
                     override fun getChangePayload(oldItem: Any, newItem: Any): Any? {
@@ -734,30 +736,33 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
 
                 }
             }
-            MyWsManager.getInstance(requireActivity())!!
-                .setC2CListener(javaClass.name, object : C2CListener {
-                    override fun onSendMsgIsOk(isOk: Boolean, bean: ReceiveWsBean<*>) {
+            appViewModel.appPushMsg.observeForever {
+                if (isAdded && isVisble) {
+                    var listzu: MutableList<MatchBean> = ArrayList<MatchBean>()
+                    for (j in 0 until it.size) {
+                        for (i in 0 until mDatabind.recBottom.models?.size!!) {
+                            var bean: MatchBean = mDatabind.recBottom.models!![i] as MatchBean
+                            listzu.add(bean)
 
-                    }
-
-                    override fun onC2CReceive(chat: ReceiveChatMsg) {
-
-                    }
-
-                    override fun onChangeReceive(chat: ArrayList<ReceiveChangeMsg>) {
-                        LogUtils.d("收到推送消息")
-                        for (i in 0 until mDatabind.recBottom.models?.size!!){
-                            for (j in 0 until chat.size) {
-                                var bean:MatchBean= mDatabind.recBottom.models!![i] as MatchBean
-
-                                if (bean.matchId==chat[j].matchId&&bean.matchType==chat[j].matchType){
-
-                                }
+                            if (bean.matchId == it[j].matchId && bean.matchType == it[j].matchType) {
+                                bean.awayHalfScore = "0000"
+                                bean.awayScore = it[j].awayScore
+                                bean.homeHalfScore = it[j].homeHalfScore
+                                bean.homeScore = it[j].homeScore
+                                bean.runTime = it[j].runTime
+                                bean.status = it[j].status
+                                mDatabind.recBottom.bindingAdapter.notifyItemChanged(i)
                             }
-                        }
 
+                        }
                     }
-                })
+                    thread {
+                       // mDatabind.recBottom.setDifferModels(listzu)
+                    }
+
+                }
+            }
+
         } catch (e: Exception) {
 
         }

@@ -5,12 +5,21 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager2.widget.ViewPager2
+import com.drake.brv.utils.bindingAdapter
+import com.drake.brv.utils.models
 import com.flyco.tablayout.listener.OnTabSelectListener
 import com.xcjh.app.R
 import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseFragment
+import com.xcjh.app.bean.MatchBean
 import com.xcjh.app.databinding.FrCourseBinding
 import com.xcjh.app.vm.MainVm
+import com.xcjh.app.websocket.MyWsManager
+import com.xcjh.app.websocket.bean.ReceiveChangeMsg
+import com.xcjh.app.websocket.bean.ReceiveChatMsg
+import com.xcjh.app.websocket.bean.ReceiveWsBean
+import com.xcjh.app.websocket.listener.C2CListener
+import com.xcjh.base_lib.utils.LogUtils
 import com.xcjh.base_lib.utils.bindViewPager2
 import com.xcjh.base_lib.utils.initActivity
 
@@ -23,6 +32,23 @@ class ScheduleFragment : BaseFragment<MainVm, FrCourseBinding>() {
     override fun initView(savedInstanceState: Bundle?) {
 
         initEvent()
+        MyWsManager.getInstance(requireActivity())!!
+            .setC2CListener(javaClass.name, object : C2CListener {
+                override fun onSendMsgIsOk(isOk: Boolean, bean: ReceiveWsBean<*>) {
+
+                }
+
+                override fun onC2CReceive(chat: ReceiveChatMsg) {
+
+                }
+
+                override fun onChangeReceive(chat: ArrayList<ReceiveChangeMsg>) {
+                    LogUtils.d("收到推送消息")
+
+                    appViewModel.appPushMsg.postValue(chat)
+
+                }
+            })
     }
 
     override fun onResume() {
