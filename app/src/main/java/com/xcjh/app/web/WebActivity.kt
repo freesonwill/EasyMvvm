@@ -15,11 +15,13 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import android.widget.LinearLayout
 import androidx.activity.viewModels
+import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import com.gyf.immersionbar.ImmersionBar
 import com.just.agentweb.AgentWeb
 import com.just.agentweb.AgentWebConfig
 import com.just.agentweb.WebChromeClient
+import com.xcjh.app.R
 import com.xcjh.app.base.BaseActivity
 import com.xcjh.app.databinding.ActivityWebBinding
 import com.xcjh.app.vm.MainVm
@@ -127,7 +129,9 @@ class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
             // .setWebView(binding.agentWeb)
             .createAgentWeb()
             .ready().get()
-
+        val webView = agentWeb.webCreator.webView
+// 设置加载中背景色为灰色
+        webView.setBackgroundColor(ContextCompat.getColor(this, R.color.c_07061d))
         if(type==0){
             agentWeb.urlLoader.loadUrl(url)
         }

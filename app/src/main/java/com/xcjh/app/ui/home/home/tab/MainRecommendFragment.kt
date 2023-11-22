@@ -54,6 +54,7 @@ import kotlin.collections.ArrayList
 class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommendBinding>() {
 
 
+
     override fun initView(savedInstanceState: Bundle?) {
         //首页轮询
         appViewModel.appPolling.observeForever{
@@ -88,6 +89,9 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
         mViewModel.getBannerList()
         mViewModel.getOngoingMatchList(HotReq())
         mViewModel.getNowLive(true)
+
+        mDatabind.smartCommon.setFooterHeight(20F)
+
 
 
         mDatabind.smartCommon.setOnRefreshLoadMoreListener(object : OnRefreshLoadMoreListener {
