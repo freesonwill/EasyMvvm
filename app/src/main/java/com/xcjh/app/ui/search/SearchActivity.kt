@@ -4,6 +4,7 @@ package com.xcjh.app.ui.search
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.drake.brv.utils.*
 import com.gyf.immersionbar.ImmersionBar
@@ -15,8 +16,10 @@ import com.xcjh.app.databinding.ActivitySearchBinding
 import com.xcjh.app.databinding.ItemMainLiveListBinding
 import com.xcjh.app.databinding.ItemSearchHotTitleBinding
 import com.xcjh.app.ui.details.MatchDetailActivity
+import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.utils.bindadapter.CustomBindAdapter.afterTextChanged
 import com.xcjh.base_lib.utils.dp2px
+import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.view.clickNoRepeat
 
 class SearchActivity  : BaseActivity<SearchVm, ActivitySearchBinding>() {
@@ -48,16 +51,26 @@ class SearchActivity  : BaseActivity<SearchVm, ActivitySearchBinding>() {
 
 
         mDatabind.etSearchInput.setOnEditorActionListener { v, actionId, event ->
-            mViewModel.getNowLive(mDatabind.etSearchInput.text.toString().trim())
-            searchType=1
-            mDatabind.txtSearchClick.text=resources.getString(R.string.cancel)
-            mDatabind.llSearchShow.visibility=View.GONE
-            mDatabind.state.visibility=View.VISIBLE
+            if(mDatabind.etSearchInput.text.toString().trim().isEmpty()){
+                myToast(getString(R.string.contact_hint_input))
+
+            }else{
+                mViewModel.getNowLive(mDatabind.etSearchInput.text.toString().trim())
+                searchType=1
+                mDatabind.txtSearchClick.text=resources.getString(R.string.cancel)
+                mDatabind.llSearchShow.visibility=View.GONE
+                mDatabind.state.visibility=View.VISIBLE
+            }
+
             true
         }
 
         //根据是否搜索来判断
         mDatabind.txtSearchClick.clickNoRepeat{
+            if(mDatabind.etSearchInput.text.toString().trim().isEmpty()){
+                myToast(getString(R.string.contact_hint_input))
+                return@clickNoRepeat
+            }
 
             if(searchType==0){
                 mViewModel.getNowLive(mDatabind.etSearchInput.text.toString().trim())

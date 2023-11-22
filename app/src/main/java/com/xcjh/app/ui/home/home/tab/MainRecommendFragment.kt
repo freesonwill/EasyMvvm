@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.drake.brv.utils.*
+import com.google.gson.Gson
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
 import com.xcjh.app.R
@@ -89,17 +90,13 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
         mViewModel.getBannerList()
         mViewModel.getOngoingMatchList(HotReq())
         mViewModel.getNowLive(true)
-
+        //设置下拉刷新的高度
         mDatabind.smartCommon.setFooterHeight(20F)
-
-
-
         mDatabind.smartCommon.setOnRefreshLoadMoreListener(object : OnRefreshLoadMoreListener {
             override fun onRefresh(refreshLayout: RefreshLayout) {
                 mViewModel.getBannerList()
                 mViewModel.getOngoingMatchList(HotReq())
                 mViewModel.getNowLive(true)
-
             }
 
             override fun onLoadMore(refreshLayout: RefreshLayout) {
@@ -107,18 +104,7 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
             }
         })
 
-        var linkedMap = linkedMapOf(
-            "key1" to "value1",
-            "key2" to "value2",
-            "key3" to "value3"
-        )
 
-        val secondElement = linkedMap.values.elementAt(1)
-
-        linkedMap.forEach {
-            //first    second
-             Log.i("ssssssssssss","====="+it.toPair().second)
-        }
     }
 
 
