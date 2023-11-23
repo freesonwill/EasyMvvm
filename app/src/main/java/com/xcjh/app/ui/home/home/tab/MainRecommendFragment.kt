@@ -107,7 +107,7 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                                         (mDatabind.rcvRecommend.mutable[i] as MatchBean).list[j].matchType.equals(chat[k].matchType)){
 
                                         (mDatabind.rcvRecommend.mutable[i] as MatchBean).list[j].awayHalfScore=chat[k].awayHalfScore
-                                        (mDatabind.rcvRecommend.mutable[i] as MatchBean).list[j].awayScore="1111"
+                                        (mDatabind.rcvRecommend.mutable[i] as MatchBean).list[j].awayScore=chat[k].awayScore
                                         (mDatabind.rcvRecommend.mutable[i] as MatchBean).list[j].homeHalfScore=chat[k].homeHalfScore
                                         (mDatabind.rcvRecommend.mutable[i] as MatchBean).list[j].homeScore=chat[k].homeScore
                                         (mDatabind.rcvRecommend.mutable[i] as MatchBean).list[j].runTime=chat[k].runTime
