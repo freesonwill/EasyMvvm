@@ -98,22 +98,18 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                 var refresh=ArrayList<Int>()
                 if(mDatabind.rcvRecommend.models!=null){
                     for (i in 0 until  mDatabind.rcvRecommend.mutable.size){
-
                         if(mDatabind.rcvRecommend.mutable[i] is MatchBean){
                             for (j in 0 until   (mDatabind.rcvRecommend.mutable[i] as MatchBean).list.size){
                                 for (k in 0 until  chat.size){
-                                    refresh.add(k)
                                     if((mDatabind.rcvRecommend.mutable[i] as MatchBean).list[j].matchId.equals(chat[k].matchId.toString())&&
-                                        (mDatabind.rcvRecommend.mutable[i] as MatchBean).list[j].matchType.equals(chat[k].matchType)){
-
+                                        (mDatabind.rcvRecommend.mutable[i] as MatchBean).list[j].matchType.equals(chat[k].matchType.toString())){
+                                        refresh.add(k)
                                         (mDatabind.rcvRecommend.mutable[i] as MatchBean).list[j].awayHalfScore=chat[k].awayHalfScore
-                                        (mDatabind.rcvRecommend.mutable[i] as MatchBean).list[j].awayScore=chat[k].awayScore
+                                        (mDatabind.rcvRecommend.mutable[i] as MatchBean).list[j].awayScore="11111"
                                         (mDatabind.rcvRecommend.mutable[i] as MatchBean).list[j].homeHalfScore=chat[k].homeHalfScore
                                         (mDatabind.rcvRecommend.mutable[i] as MatchBean).list[j].homeScore=chat[k].homeScore
                                         (mDatabind.rcvRecommend.mutable[i] as MatchBean).list[j].runTime=chat[k].runTime
                                         (mDatabind.rcvRecommend.mutable[i] as MatchBean).list[j].status=chat[k].status
-
-
                                     }
                                 }
                             }

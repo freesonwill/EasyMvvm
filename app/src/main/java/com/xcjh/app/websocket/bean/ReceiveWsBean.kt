@@ -22,7 +22,7 @@ data class ReceiveChangeMsg(
     val homeHalfScore: String,
     val homeScore: String,
     val matchId: Long,
-    val matchType: String,
+    val matchType: Long,
     val runTime: String,
     val status: String
 )
