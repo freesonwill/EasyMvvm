@@ -17,14 +17,14 @@ data class ReceiveWsBean<T>(
  *
  */
 data class ReceiveChangeMsg(
-    val awayHalfScore: String,
-    val awayScore: String,
-    val homeHalfScore: String,
-    val homeScore: String,
+    val awayHalfScore: Long,
+    val awayScore: Long,
+    val homeHalfScore: Long,
+    val homeScore: Long,
     val matchId: Long,
     val matchType: Long,
-    val runTime: String,
-    val status: String
+    val runTime: Long,
+    val status: Long
 )
 /**
  * 群聊和私聊消息内容

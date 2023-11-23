@@ -744,12 +744,12 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                             var bean: MatchBean = mDatabind.recBottom.models!![i] as MatchBean
                            // if (bean.homeHalfScore == "1") {
                             if (bean.matchId == it[j].matchId.toString() && bean.matchType == it[j].matchType.toString()) {
-                                bean.awayHalfScore = it[j].awayHalfScore
-                                bean.awayScore = it[j].awayScore
-                                bean.homeHalfScore = it[j].homeHalfScore
-                                bean.homeScore = it[j].homeScore
-                                bean.runTime = it[j].runTime
-                                bean.status = it[j].status
+                                bean.awayHalfScore = it[j].awayHalfScore.toString()
+                                bean.awayScore = it[j].awayScore.toString()
+                                bean.homeHalfScore = it[j].homeHalfScore.toString()
+                                bean.homeScore = it[j].homeScore.toString()
+                                bean.runTime = it[j].runTime.toString()
+                                bean.status = it[j].status.toString()
                                 mDatabind.recBottom.bindingAdapter.notifyItemChanged(i)
                             }
                            // listzu.add(initNewData(bean))
