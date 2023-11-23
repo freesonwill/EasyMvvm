@@ -93,12 +93,12 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                                     if((mDatabind.rcvRecommend.mutable[i] as MatchBean).list[j].matchId.equals(chat[k].matchId.toString())&&
                                         (mDatabind.rcvRecommend.mutable[i] as MatchBean).list[j].matchType.equals(chat[k].matchType.toString())){
                                         refresh.add(k)
-                                        (mDatabind.rcvRecommend.mutable[i] as MatchBean).list[j].awayHalfScore=chat[k].awayHalfScore
-                                        (mDatabind.rcvRecommend.mutable[i] as MatchBean).list[j].awayScore=chat[k].awayScore
-                                        (mDatabind.rcvRecommend.mutable[i] as MatchBean).list[j].homeHalfScore=chat[k].homeHalfScore
-                                        (mDatabind.rcvRecommend.mutable[i] as MatchBean).list[j].homeScore=chat[k].homeScore
-                                        (mDatabind.rcvRecommend.mutable[i] as MatchBean).list[j].runTime=chat[k].runTime
-                                        (mDatabind.rcvRecommend.mutable[i] as MatchBean).list[j].status=chat[k].status
+                                        (mDatabind.rcvRecommend.mutable[i] as MatchBean).list[j].awayHalfScore=chat[k].awayHalfScore.toString()
+                                        (mDatabind.rcvRecommend.mutable[i] as MatchBean).list[j].awayScore=chat[k].awayScore.toString()
+                                        (mDatabind.rcvRecommend.mutable[i] as MatchBean).list[j].homeHalfScore=chat[k].homeHalfScore.toString()
+                                        (mDatabind.rcvRecommend.mutable[i] as MatchBean).list[j].homeScore=chat[k].homeScore.toString()
+                                        (mDatabind.rcvRecommend.mutable[i] as MatchBean).list[j].runTime=chat[k].runTime.toString()
+                                        (mDatabind.rcvRecommend.mutable[i] as MatchBean).list[j].status=chat[k].status.toString()
                                     }
                                 }
                             }
