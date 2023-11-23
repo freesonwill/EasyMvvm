@@ -1,5 +1,6 @@
 package com.xcjh.app.ui.details
 
+import androidx.lifecycle.viewModelScope
 import com.kunminx.architecture.ui.callback.UnPeekLiveData
 import com.xcjh.app.bean.*
 import com.xcjh.app.net.apiService
@@ -8,11 +9,14 @@ import com.xcjh.base_lib.bean.ListDataUiState
 import com.xcjh.base_lib.bean.UpdateUiState
 import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.request
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 /**
  * 公用vm,缺点：创建多个无用的对象占用较多资源
  */
 class DetailVm : BaseViewModel() {
+    var runTime = UnPeekLiveData(0)
     private var pageNo = 1
     var tt = 1
     //主播信息
@@ -31,6 +35,15 @@ class DetailVm : BaseViewModel() {
     var basketStatus = UnPeekLiveData<BasketballSBean>()   //篮球赛况下表格数据
     var footStatus = UnPeekLiveData<ArrayList<StatusBean>>()     //足球赛况表格数据
 
+    fun startTimeRepeat(time:Int) {
+        runTime.value = time
+        viewModelScope.launch {
+            while (true) {
+                delay(60000)
+                runTime.postValue(runTime.value?.plus(1))
+            }
+        }
+    }
     //获取比赛详情
     fun getMatchDetail(matchId: String, matchType: String?,showD:Boolean=false) {
         request(

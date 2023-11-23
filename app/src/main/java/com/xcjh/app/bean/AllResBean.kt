@@ -456,27 +456,27 @@ data class IncidentsBean(
 data class MatchDetailBean(
     val anchorList: List<AnchorListBean>? = listOf(),//主播列表
 
-    val awayHalfScore: Int = 0,//客队半场比分
+    var awayHalfScore: Int = 0,//客队半场比分
     val awayLogo: String? = "",//客队Logo
     val awayName: String? = "",//客队名称
-    val awayScore: Int = 0,//客队比分
+    var awayScore: Int = 0,//客队比分
 
     var competitionId: String = "",// 赛事ID
     val competitionName: String = "",//赛事名称
 
     val focus: Boolean = false,// 是否关注
 
-    val homeHalfScore: Int = 0,
+    var homeHalfScore: Int = 0,
     val homeLogo: String? = "",
     val homeName: String? = "",
-    val homeScore: Int = 0,
+    var homeScore: Int = 0,
 
     val matchData: MatchDataBean = MatchDataBean(),
 
     var matchId: String = "",// 比赛ID
     val matchTime: String = "",// 时间
     var matchType: String = "1",// 类型1：足球；2：篮球,可用值:1,2
-    val runTime: Int = 0,//比赛进行时间（分钟）进行中足球比赛有此信息
+    var runTime: Int = 0,//比赛进行时间（分钟）进行中足球比赛有此信息
     var status: Int = 0
 ) : Serializable
 
@@ -606,7 +606,7 @@ data class BasketballScoreBean(
     var homeOverTimeScoresList: List<Int>? = listOf(),//主队加时每节得分集合
     var awayOverTimeScoresList: List<Int>? = listOf(),
     val timeRemaining: Int = 0,//小节剩余时间(秒)
-    val status: Int = 0,
+    var status: Int = 0,
 )
 
 /**

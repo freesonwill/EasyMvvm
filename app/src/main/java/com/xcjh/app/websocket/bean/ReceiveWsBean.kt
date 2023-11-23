@@ -23,8 +23,9 @@ data class ReceiveChangeMsg(
     val homeScore: Long,
     val matchId: Long,
     val matchType: Long,
-    val runTime: Long,
-    val status: Long
+    val status: Long,
+    val runTime: Long,//
+    var scoresDetail: List<List<Int>>? = listOf(),
 )
 /**
  * 群聊和私聊消息内容

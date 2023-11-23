@@ -127,7 +127,7 @@ fun setMatchStatusTime(
         if (status in 2..7) {
             tvTime.text = runTime.toString()
             tvTimeS.text = " '"
-            tvTime.visibleOrGone(true)
+            tvTime.visibleOrGone(false)
             tvTimeS.visibleOrGone(true)
         } else {
             tvTime.visibleOrGone(false)

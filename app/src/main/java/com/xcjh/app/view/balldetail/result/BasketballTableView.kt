@@ -40,6 +40,7 @@ class BasketballTableView : RelativeLayout {
     private fun initView() {
         // LayoutInflater.from(context).inflate(R.layout.view_basketball_table, this)
         binding = ViewBasketballTableBinding.inflate(LayoutInflater.from(context), null, false)
+        binding.rcvCommon.isNestedScrollingEnabled = false
         binding.rcvCommon.horizontal().setup {
             addType<BasketballScore> {
                 R.layout.view_basketball_table_child // 公告
@@ -74,7 +75,7 @@ class BasketballTableView : RelativeLayout {
             homeScoreList.notNull({
                 for (i in homeScoreList.indices) {
                     homeAll += homeScoreList[i]
-                    if (i < homeScoreList.size - 1) {
+                    if (i < 4) {
                         //排除最后的加时赛比赛
                         scoreList.add(
                             BasketballScore(getTitle(i),
@@ -88,11 +89,16 @@ class BasketballTableView : RelativeLayout {
 
             //加时赛比分
             homeOverTimeScoresList.notNull({
-                for (i in it.indices) {
+                if (it.isNotEmpty()){
+                    for (i in it.indices) {
+                        scoreList.add(
+                            BasketballScore(getAddTitle(i),
+                                it[i].toString(),
+                                awayOverTimeScoresList!![i].toString()))
+                    }
+                }else{
                     scoreList.add(
-                        BasketballScore(getAddTitle(i),
-                            it[i].toString(),
-                            awayOverTimeScoresList!![i].toString()))
+                        BasketballScore("", "", ""))
                 }
             }, {
                 scoreList.add(
@@ -109,7 +115,7 @@ class BasketballTableView : RelativeLayout {
 
             binding.tvHomeTotal.text = homeAll.toString()
             binding.tvAwayTotal.text = awayAll.toString()
-            Gson().toJson(scoreList).loge()
+          //  Gson().toJson(scoreList).loge()
             binding.rcvCommon.models = scoreList
         }
     }

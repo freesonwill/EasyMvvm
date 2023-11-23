@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <com.xcjh.app.view.MyNestedScrollV
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginEnd="@dimen/dp_16"
             android:orientation="vertical">
@@ -99,5 +99,5 @@
                     android:layout_marginBottom="@dimen/dp_30"/>
             </LinearLayout>
         </LinearLayout>
-    </com.xcjh.app.view.MyNestedScrollV>
+    </androidx.core.widget.NestedScrollView>
 </layout>
