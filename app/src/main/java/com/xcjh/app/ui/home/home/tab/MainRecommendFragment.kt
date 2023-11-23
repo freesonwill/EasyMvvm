@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.drake.brv.listener.ItemDifferCallback
 import com.drake.brv.utils.*
 import com.google.gson.Gson
 import com.scwang.smart.refresh.layout.api.RefreshLayout
@@ -65,6 +66,8 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                 mViewModel.getOngoingMatchList(HotReq())
             }
         }
+
+
         MyWsManager.getInstance(App.app)
             ?.setLiveStatusListener(this.toString(), object : LiveStatusListener {
                 override fun onOpenLive(bean: LiveStatus) {
@@ -109,7 +112,7 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                     if(refresh.size>0){
                         for (i in 0 until  mDatabind.rcvRecommend.mutable.size){
                             if(mDatabind.rcvRecommend.mutable[i] is MatchBean){
-                                mDatabind.rcvRecommend.bindingAdapter.notifyItemChanged(i)
+//                                mDatabind.rcvRecommend.bindingAdapter.notifyItemChanged(i)
                             }
 
                         }
@@ -375,13 +378,28 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                         if(matchBeanNew.list.size>0){
                             val date = Date(matchBeanNew.list[0].matchTime.toLong())
                             var formatter = SimpleDateFormat("MM月dd日", Locale.getDefault())
-
                             binding.tvProceedDate.text = resources.getString(R.string.main_txt_date,formatter.format(date))
                         }
                         binding.tvProceedSession.text=resources.getString(R.string.main_txt_session,"${matchBeanNew.list.size}")
                         binding.rcvReProceed.layoutManager=LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
                         binding.rcvReProceed.setup{
                             addType<MatchBean>(R.layout.item_under_way)
+//                            // 如果要求刷新不白屏请参考以下代码逻辑
+//                             itemDifferCallback = object : ItemDifferCallback {
+//
+//                                 override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
+//                                     return (oldItem as MatchBean).matchId == (newItem as MatchBean).matchId
+//                                 }
+//
+//                                 override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
+//                                     return (oldItem as MatchBean).matchType == (newItem as MatchBean).matchType
+//                                 }
+//
+//
+//                                 override fun getChangePayload(oldItem: Any, newItem: Any): Any? {
+//                                     return true
+//                                 }
+//                             }
                             onBind {
                                 when (itemViewType) {
                                     R.layout.item_under_way -> {
@@ -549,8 +567,8 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
 
                             }
                         }
-
-                        binding.rcvReProceed.models=matchBeanNew.list
+                        binding.rcvReProceed.setDifferModels(matchBeanNew.list)
+//                        binding.rcvReProceed.models=matchBeanNew.list
 
                     }
                     R.layout.item_main_txt -> {//正在直播的文字,和正在直播的列表
