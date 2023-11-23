@@ -54,16 +54,27 @@ interface LiveStatusListener {
     /**
      * 服务器主动推送直播间开播
      */
-    fun onOpenLive(bean: LiveStatus)
+    fun onOpenLive(bean: LiveStatus){}
     /**
      * 服务器主动推送直播间关播
      */
-    fun onCloseLive (bean:LiveStatus)
+    fun onCloseLive (bean:LiveStatus){}
 
     /**
      * 服务器主动推送直播间直播地址修改
      */
-    fun onChangeLive (bean:LiveStatus)
+    fun onChangeLive (bean:LiveStatus){}
+}
+
+/**
+ * 其他推送消息
+ */
+interface OtherPushListener {
+
+    /**
+     * 收到比赛实时推送数据
+     */
+    fun onChangeMatchData(matchList: ArrayList<ReceiveChangeMsg>){}
 
 }
 
