@@ -743,7 +743,7 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                         for (i in 0 until mDatabind.recBottom.models?.size!!) {
                             var bean: MatchBean = mDatabind.recBottom.models!![i] as MatchBean
                            // if (bean.homeHalfScore == "1") {
-                            if (bean.matchId == it[j].matchId.toString() && bean.matchType == it[j].matchType) {
+                            if (bean.matchId == it[j].matchId.toString() && bean.matchType == it[j].matchType.toString()) {
                                 bean.awayHalfScore = it[j].awayHalfScore
                                 bean.awayScore = it[j].awayScore
                                 bean.homeHalfScore = it[j].homeHalfScore
