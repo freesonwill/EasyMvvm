@@ -65,17 +65,6 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
             ?.setLiveStatusListener(this.toString(), object : LiveStatusListener {
                 override fun onOpenLive(bean: LiveStatus) {
                     mViewModel.getNowLive(true,type = type.toString())
-
-                }
-
-                override fun onCloseLive(bean: LiveStatus) {
-
-
-                }
-
-                override fun onChangeLive(bean: LiveStatus) {
-
-
                 }
             })
 

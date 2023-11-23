@@ -249,9 +249,12 @@ class MyWsManager private constructor(private val mContext: Context) {
 
             30 -> {
                 val string = wsBean.data.toString()
-                var wsBean2 = jsonToList<ReceiveChangeMsg>(string)
+                val wsBean2 = jsonToList<ReceiveChangeMsg>(string)
                 mC2CListener.forEach {
                     it.toPair().second.onChangeReceive(wsBean2)
+                }
+                mOtherPushListener.forEach {
+                    it.toPair().second.onChangeMatchData(wsBean2)
                 }
             }
 
@@ -347,4 +350,18 @@ class MyWsManager private constructor(private val mContext: Context) {
             mReadListener.remove(tag)
         }
     }
+    /**
+     * 其他推送消息监听
+     */
+    private val mOtherPushListener = linkedMapOf<String, OtherPushListener>()
+    fun setOtherPushListener(tag: String, listener: OtherPushListener) {
+        mOtherPushListener[tag] = listener
+    }
+
+    fun removeOtherPushListener(tag: String) {
+        if (mOtherPushListener[tag] != null) {
+            mOtherPushListener.remove(tag)
+        }
+    }
+
 }

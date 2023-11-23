@@ -29,15 +29,18 @@ import com.xcjh.app.ui.details.fragment.*
 import com.xcjh.app.utils.*
 import com.xcjh.app.websocket.MyWsManager
 import com.xcjh.app.websocket.bean.LiveStatus
+import com.xcjh.app.websocket.bean.ReceiveChangeMsg
 import com.xcjh.app.websocket.bean.ReceiveChatMsg
 import com.xcjh.app.websocket.bean.ReceiveWsBean
 import com.xcjh.app.websocket.listener.LiveRoomListener
 import com.xcjh.app.websocket.listener.LiveStatusListener
+import com.xcjh.app.websocket.listener.OtherPushListener
 import com.xcjh.base_lib.App
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.*
 import com.xcjh.base_lib.utils.view.visibleOrGone
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.math.abs
 
 /**
@@ -159,7 +162,11 @@ class MatchDetailActivity :
             if (it == 0) {
                 setUnScroll(mDatabind.lltFold)
             } else {
-                setScroll(mDatabind.lltFold)
+                if (isShowVideo){
+                    setUnScroll(mDatabind.lltFold)
+                }else{
+                    setScroll(mDatabind.lltFold)
+                }
             }
         }
     }
@@ -225,6 +232,11 @@ class MatchDetailActivity :
                     }
                 }
             })
+        MyWsManager.getInstance(App.app)?.setOtherPushListener(this.toString(),object :OtherPushListener{
+            override fun onChangeMatchData(matchList: ArrayList<ReceiveChangeMsg>) {
+                Gson().toJson(matchList).loge("===66666===")
+            }
+        })
     }
 
     /**
@@ -526,6 +538,7 @@ class MatchDetailActivity :
     override fun onDestroy() {
         super.onDestroy()
         MyWsManager.getInstance(App.app)?.removeLiveStatusListener(this.toString())
+        MyWsManager.getInstance(App.app)?.removeOtherPushListener(this.toString())
     }
 
     override val gSYVideoPlayer: StandardGSYVideoPlayer

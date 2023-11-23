@@ -69,17 +69,6 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
             ?.setLiveStatusListener(this.toString(), object : LiveStatusListener {
                 override fun onOpenLive(bean: LiveStatus) {
                     mViewModel.getNowLive(true)
-
-                }
-
-                override fun onCloseLive(bean: LiveStatus) {
-
-
-                }
-
-                override fun onChangeLive(bean: LiveStatus) {
-
-
                 }
             })
 
