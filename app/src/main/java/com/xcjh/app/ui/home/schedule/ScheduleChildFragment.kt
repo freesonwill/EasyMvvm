@@ -738,14 +738,13 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
             }
             appViewModel.appPushMsg.observeForever {
                 if (isAdded && isVisble) {
-                    var listzu: MutableList<MatchBean> = ArrayList<MatchBean>()
+
                     for (j in 0 until it.size) {
                         for (i in 0 until mDatabind.recBottom.models?.size!!) {
                             var bean: MatchBean = mDatabind.recBottom.models!![i] as MatchBean
-                            listzu.add(bean)
                            // if (bean.homeHalfScore == "1") {
                             if (bean.matchId == it[j].matchId.toString() && bean.matchType == it[j].matchType) {
-                                bean.awayHalfScore = "0000"
+                                bean.awayHalfScore = it[j].awayHalfScore
                                 bean.awayScore = it[j].awayScore
                                 bean.homeHalfScore = it[j].homeHalfScore
                                 bean.homeScore = it[j].homeScore
@@ -753,12 +752,13 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                                 bean.status = it[j].status
                                 mDatabind.recBottom.bindingAdapter.notifyItemChanged(i)
                             }
+                           // listzu.add(initNewData(bean))
 
                         }
                     }
-                    thread {
-                       // mDatabind.recBottom.setDifferModels(listzu)
-                    }
+                  //  thread {
+                      //  mDatabind.recBottom.setDifferModels(listzu)
+                   // }
 
                 }
             }
@@ -769,6 +769,13 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
 
     }
 
+    fun initNewData(dataOld:MatchBean):MatchBean{
+        return MatchBean(dataOld.competitionId,dataOld.competitionName,dataOld.matchId,dataOld.matchType,dataOld.matchTime,
+            dataOld.visbleTime,dataOld.homeName,dataOld.homeLogo,dataOld.homeScore,dataOld.homeHalfScore,dataOld.awayName
+        ,dataOld.awayLogo,dataOld.awayScore,dataOld.awayHalfScore,dataOld.status,dataOld.focus,arrayListOf(),arrayListOf(),arrayListOf()
+        ,dataOld.runTime,dataOld.ishsow)
+
+    }
     fun initAnimation(view: AppCompatTextView) {
         animatorSet.removeAllListeners()
         view.clearAnimation()
