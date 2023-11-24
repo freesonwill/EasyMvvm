@@ -103,8 +103,6 @@ class DetailResultFragment(private var match: MatchDetailBean) :
                         if (match.status in 0..if (match.matchType == "1") 7 else 9) {
                             matchList.forEach {
                                 if (match.matchId == it.matchId.toString() && match.matchType == it.matchType.toString()) {
-                                    Gson().toJson(it).loge("===88888===")
-
                                     if (match.matchType == "2") {
                                         BasketballScoreBean().apply {
                                             status = BigDecimal(it.status).toInt()
@@ -118,10 +116,7 @@ class DetailResultFragment(private var match: MatchDetailBean) :
                                                 it.scoresDetail?.get(1)?.filterIndexed { index, v ->
                                                     index > 3
                                                 }
-                                            Gson().toJson(it.scoresDetail?.get(0)?.get(0) ?: "-22-")
-                                                .loge("===99999===")
                                         }.apply {
-                                            Gson().toJson(this).loge("===10000===")
                                             mDatabind.viewBasketballTable.setTeamData(this)
                                         }
                                     } else {

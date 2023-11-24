@@ -107,9 +107,9 @@ class BasketballTableView : RelativeLayout {
 
 
             var awayAll = 0
-            homeScoreList.notNull({
-                for (i in awayScoreList.indices) {
-                    awayAll += awayScoreList[i]
+            awayScoreList.notNull({
+                awayAll = awayScoreList.reduce { result, item ->
+                    result + item
                 }
             })
 

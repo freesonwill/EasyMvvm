@@ -23,7 +23,7 @@ import com.xcjh.app.vm.MainVm
 import com.xcjh.base_lib.bean.ListDataUiState
 
 
-class testFragment : BaseFragment<MainVm, TtComRefreshListBinding>() {
+class TestFragment : BaseFragment<MainVm, TtComRefreshListBinding>() {
 
     private val mAdapter = DiffUtilAdapter()
     // private val mAdapter = TestAdapter()
@@ -44,11 +44,10 @@ class testFragment : BaseFragment<MainVm, TtComRefreshListBinding>() {
             addType<DiffEntity>(R.layout.item_differ)
             addType<SwitchVideoModel>(R.layout.head_view)
             itemDifferCallback = object : ItemDifferCallback {
-                override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
+                override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
                     return if (oldItem is DiffEntity && newItem is DiffEntity) {
                         oldItem.id == newItem.id
                     } else super.areContentsTheSame(oldItem, newItem)
-
                 }
 
                 override fun getChangePayload(oldItem: Any, newItem: Any): Any? {
@@ -124,7 +123,7 @@ class testFragment : BaseFragment<MainVm, TtComRefreshListBinding>() {
             mDatabind.smartListView.rcvCommon.setDifferModels(newList, true)
         }
         mDatabind.refresh.setOnClickListener {
-            entities.add(
+          /*  entities.add(
                 DiffEntity(
                     1111,
                     "===========1=== $1",
@@ -133,8 +132,8 @@ class testFragment : BaseFragment<MainVm, TtComRefreshListBinding>() {
                 )
             )
 
-            mDatabind.smartListView.rcvCommon.bindingAdapter.notifyItemInserted(entities.size)
-            // mDatabind.smartListView.rcvCommon.setDifferModels(getDiffUtilDemoEntities(), false)
+            mDatabind.smartListView.rcvCommon.bindingAdapter.notifyItemInserted(entities.size)*/
+            mDatabind.smartListView.rcvCommon.setDifferModels(getDiffUtilDemoEntities())
         }
     }
 
@@ -237,12 +236,12 @@ class testFragment : BaseFragment<MainVm, TtComRefreshListBinding>() {
                     list.add(
                         DiffEntity(
                             3,
-                            "Item " + 3,
+                            "Item " + 354,
                             "This item " + 3 + " content",
                             "06-12"
                         )
                     )
-                }/* else if (i == 2) {
+                } else if (i == 2) {
                     list.add(
                         DiffEntity(
                             2,
@@ -251,7 +250,7 @@ class testFragment : BaseFragment<MainVm, TtComRefreshListBinding>() {
                             "06-12"
                         )
                     )
-                }*/ else if (i == 3) {
+                } else if (i == 3) {
                     list.add(
                         DiffEntity(
                             1,
