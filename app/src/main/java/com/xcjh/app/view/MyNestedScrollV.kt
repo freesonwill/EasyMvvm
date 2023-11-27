@@ -14,29 +14,10 @@ class MyNestedScrollV @JvmOverloads constructor(context: Context, attrs: Attribu
     private var mLastXIntercept = 0f
     private var mLastYIntercept = 0f
   /*  override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
+        super.onInterceptTouchEvent(ev)
         var intercepted = false
         val x = ev.x
         val y = ev.y
-        when (ev.action and MotionEvent.ACTION_MASK) {
-            MotionEvent.ACTION_DOWN -> {
-                intercepted = false
-                //初始化mActivePointerId
-                super.onInterceptTouchEvent(ev)
-            }
-            MotionEvent.ACTION_MOVE -> {
-
-                //横坐标位移增量
-                val deltaX = x - mLastXIntercept
-                //纵坐标位移增量
-                val deltaY = y - mLastYIntercept
-                intercepted = abs(deltaX) < abs(deltaY)
-            }
-            MotionEvent.ACTION_UP -> {
-                intercepted = false
-            }
-        }
-        mLastXIntercept = x
-        mLastYIntercept = y
-        return intercepted
+        return ev.action != MotionEvent.ACTION_DOWN
     }*/
 }
