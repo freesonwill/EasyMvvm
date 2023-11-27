@@ -407,8 +407,6 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                                         var matchBean=_data as MatchBean
                                         //主队
                                         binding.txtCompetition.text=matchBean.competitionName
-
-
                                         binding.txtMatchAnimation.visibility=View.GONE
                                         //比赛类型：1：足球；2：篮球,可用值:1,2
                                         if(matchBean.matchType.equals("2")){
@@ -434,9 +432,6 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                                                 binding.txtHomeScore.text=matchBean.awayScore
                                                 binding.txtGuestScore.text=matchBean. homeScore
                                             }
-
-
-
                                             if(matchBean.status.equals("0")){
                                                 binding.txtMatchStatus.visibility=View.GONE
                                             }else if(matchBean.status.equals("1")||matchBean.status.equals("10")
@@ -447,6 +442,7 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                                                 val date = Date(matchBean.matchTime.toLong())
                                                 var formatter = SimpleDateFormat("MM-dd HH:mm", Locale.getDefault())
                                                 binding.txtMatchStatus.text=formatter.format(date)
+
                                             }else if(matchBean.status.equals("2")||matchBean.status.equals("3")){
                                                 binding.txtMatchStatus.visibility=View.VISIBLE
                                                 binding.txtMatchStatus.setTextColor(ContextCompat.getColor(requireContext(),R.color.c_fe4848))
@@ -509,6 +505,7 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
 
                                                 val date = Date(matchBean.matchTime.toLong())
                                                 var formatter = SimpleDateFormat("MM-dd HH:mm", Locale.getDefault())
+
                                                 binding.txtMatchStatus.text=formatter.format(date)
                                             }else if(matchBean.status.equals("2")||matchBean.status.equals("4")){
                                                 binding.txtMatchStatus.visibility=View.VISIBLE
@@ -521,11 +518,9 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                                                 val fadeIn = ObjectAnimator.ofFloat(binding.txtMatchAnimation, "alpha", 0f, 1f)
                                                 fadeIn.duration = 500
                                                 fadeIn.startDelay = 200 // 延迟200毫秒开始动画
-
                                                 val fadeOut = ObjectAnimator.ofFloat(binding.txtMatchAnimation, "alpha", 1f, 0f)
                                                 fadeOut.duration = 500
                                                 fadeOut.startDelay = 200 // 延迟200毫秒开始动画
-
                                                 val animatorSet = AnimatorSet()
                                                 animatorSet.playSequentially(fadeIn, fadeOut) // 顺序播放渐显和渐隐动画
                                                 animatorSet.startDelay = 200 // 延迟200毫秒开始第一次播放动画
@@ -536,6 +531,7 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                                                         animatorSet.start()
                                                     }
                                                 })
+                                                animatorSet.cancel()
                                                 animatorSet.start()
                                             }else{
                                                 binding.txtMatchStatus.visibility=View.VISIBLE
@@ -544,6 +540,7 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                                                 val date = Date(matchBean.matchTime.toLong())
                                                 var formatter = SimpleDateFormat("MM-dd HH:mm", Locale.getDefault())
                                                 binding.txtMatchStatus.text=formatter.format(date)
+
                                             }
 
 

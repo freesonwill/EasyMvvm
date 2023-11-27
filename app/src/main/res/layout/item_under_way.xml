@@ -8,6 +8,7 @@
     android:layout_marginRight="12dp"
     android:id="@+id/llcClickRecommended"
     android:background="@drawable/shape_r8_5e49a4">
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="26dp"
@@ -31,7 +32,7 @@
                 android:id="@+id/txtMatchStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="进行中 13"
+                android:text="进行中 0"
                 android:textSize="10sp"
                 android:textStyle="bold"
                 android:textColor="@color/c_fe4848"/>
