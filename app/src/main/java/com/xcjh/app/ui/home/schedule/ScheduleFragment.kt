@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_DRAGGING
 import androidx.viewpager2.widget.ViewPager2
 import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.models
@@ -26,9 +27,9 @@ import com.xcjh.base_lib.utils.initActivity
 
 class ScheduleFragment : BaseFragment<MainVm, FrCourseBinding>() {
     private val mFragments: ArrayList<Fragment> = ArrayList<Fragment>()
-    private var mTitles: Array<out String>? =null
-    private val mtypes = arrayOf("0", "1","2","3")
-    private val status = arrayOf(0,0,0,99)
+    private var mTitles: Array<out String>? = null
+    private val mtypes = arrayOf("0", "1", "2", "3")
+    private val status = arrayOf(0, 0, 0, 99)
     override fun initView(savedInstanceState: Bundle?) {
 
         initEvent()
@@ -57,9 +58,9 @@ class ScheduleFragment : BaseFragment<MainVm, FrCourseBinding>() {
     }
 
     private fun initEvent() {
-        mTitles=resources.getStringArray(R.array.str_schedule_tab_top)
-        for (i in 0 until  mTitles!!.size) {
-            mFragments.add(ScheduleChildFragment.newInstance(mtypes[i],status[i],i))
+        mTitles = resources.getStringArray(R.array.str_schedule_tab_top)
+        for (i in 0 until mTitles!!.size) {
+            mFragments.add(ScheduleChildOneFragment.newInstance(mtypes[i], status[i], i))
         }
         mDatabind.vp.initActivity(requireActivity(), mFragments, true)
         //初始化 magic_indicator
@@ -75,14 +76,20 @@ class ScheduleFragment : BaseFragment<MainVm, FrCourseBinding>() {
             18f, 18f, false, false,
             R.color.c_f5f5f5, margin = 28
         )
-        mDatabind.vp.offscreenPageLimit = mFragments.size
+        mDatabind.vp.offscreenPageLimit = 4
+       // mDatabind.vp.isUserInputEnabled = false
 
 //        mDatabind.vp.adapter= MyPagerAdapter(childFragmentManager);
 //        mDatabind.slide.setViewPager(mDatabind.vp)
 //        mDatabind.vp.currentItem = 0
 //        mDatabind.vp.offscreenPageLimit=4
+        appViewModel.updateViewpager.observeForever {
+
+           // mDatabind.vp.isUserInputEnabled = it
+        }
 
         mDatabind.vp.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 appViewModel.updateSchedulePosition.postValue(position)
@@ -93,9 +100,9 @@ class ScheduleFragment : BaseFragment<MainVm, FrCourseBinding>() {
     }
 
     override fun createObserver() {
-       /* appViewModel.updateLoginEvent.observe(this) {
-            mViewModel.getUserBaseInfo()
-        }*/
+        /* appViewModel.updateLoginEvent.observe(this) {
+             mViewModel.getUserBaseInfo()
+         }*/
     }
 
     private inner class MyPagerAdapter(fm: FragmentManager?) :

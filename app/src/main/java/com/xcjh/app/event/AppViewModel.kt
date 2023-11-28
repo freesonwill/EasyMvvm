@@ -16,7 +16,12 @@ class AppViewModel : BaseViewModel() {
 
     //更新用户登录登出 状态
     var updateLoginEvent = EventLiveData<Boolean>()
-
+    //更新viewPager2是否可以滑动
+    var updateViewpager = EventLiveData<Boolean>()
+    //更新选择的日期
+    var updateganlerTime = EventLiveData<String>()
+    //更新首页消息数
+    var updateMainMsgNum= EventLiveData<Int>()
     var updateHistory = EventLiveData<Boolean>()//0 首页历史数据
     //更新用户信息
     var userInfo: UnPeekLiveData<UserInfo> = UnPeekLiveData.Builder<UserInfo>().setAllowNullValue(true).create()
@@ -30,6 +35,7 @@ class AppViewModel : BaseViewModel() {
     //更新消息列表
     var updateMsgEvent = EventLiveData<String>()
     var updateSchedulePosition = EventLiveData<Int>()
+    var updateScheduleTwoPosition = EventLiveData<Int>()
     //更首页显示ViewPager切换  -1是切换到首页并且是推荐页面
     var mainViewPagerEvent= EventLiveData<Int>()
     //切换home的ViewPager的切换  0就是推荐依次类推

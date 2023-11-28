@@ -125,6 +125,15 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         // 安排 TimerTask 在一定时间后开始执行，然后每隔一定时间重复执行
         timer?.schedule(task, delay, period)
 
+        appViewModel.updateMainMsgNum.observeForever {
+            if (it>0){
+                mDatabind.tvnums.text=it.toString()
+                mDatabind.tvnums.visibility=View.VISIBLE
+            }else{
+                mDatabind.tvnums.visibility=View.GONE
+            }
+        }
+
     }
 
     public override fun onStart() {

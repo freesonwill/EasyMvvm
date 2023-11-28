@@ -25,12 +25,18 @@
         android:layout_gravity="right"
         android:layout_marginTop="@dimen/dp_12"
         android:orientation="horizontal">
+        <ProgressBar
+            android:id="@+id/google_progress"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
 
+            android:layout_toLeftOf="@id/tvcontent"
+            android:layout_gravity="center"/>
         <TextView
             android:id="@+id/tvcontent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_60"
+            android:layout_marginLeft="@dimen/dp_20"
             android:layout_marginRight="@dimen/dp_12"
             android:layout_toLeftOf="@id/ivhead"
             android:background="@drawable/shape_r10_6d48fe_rightbottom"
