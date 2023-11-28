@@ -20,6 +20,8 @@ class MainRecommendVm  : BaseViewModel() {
     var hotList = UnPeekLiveData<ArrayList<MatchBean>>()
     //进行中的比赛
     var liveList = UnPeekLiveData<ListDataUiState<BeingLiveBean>>()
+    //正在直播详情
+    var beingLive=UnPeekLiveData<BeingLiveBean>()
 
     private var pageNo = 1
     /**
@@ -86,6 +88,26 @@ class MainRecommendVm  : BaseViewModel() {
                 )
             }
         )
+    }
+
+
+
+    /**
+     * 获取首页正在直播的详情刷新页面
+     */
+    fun getOngoingMatchList(id: String){
+
+        request(
+            { apiService.getLiveInfo(id) },
+            {
+                beingLive.value=it
+            }, {
+                //请求失败
+                it.errorMsg.toString().loge("====")
+//                hotList.value = arrayListOf()
+            }
+        )
+
     }
 
 }

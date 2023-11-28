@@ -1,10 +1,17 @@
 package com.xcjh.app.ui
 
 
+import android.annotation.SuppressLint
+import android.content.Context
+import android.os.Build
 import android.os.Bundle
+import android.os.VibrationEffect
+import android.os.Vibrator
+import android.os.VibratorManager
 import android.view.LayoutInflater
 import android.view.View
 import androidx.activity.OnBackPressedCallback
+import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -45,6 +52,7 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
     val delay: Long = 0  // 延迟时间，单位为毫秒
     val period: Long = 1 * 60 * 1000 // 执行间隔时间，单位为毫秒（这里设置为1分钟）
     private var mAppUpdater: AppUpdater? = null
+    private var currentPage:Int=0
 
 
     private var mFragList: ArrayList<Fragment> = arrayListOf(
@@ -77,20 +85,32 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
 
         //点击首页
         mDatabind.txtHome.setOnClickListener {
+            if(currentPage!=0){
+                vibrate(this)
+            }
             setHome(0)
         }
         //点击赛程
         mDatabind.txtHomeSchedule.setOnClickListener {
+            if(currentPage!=1){
+                vibrate(this)
+            }
             setHome(1)
         }
         //点击消息
         mDatabind.txtHomeMsg.setOnClickListener {
             judgeLogin {
+                if(currentPage!=2){
+                    vibrate(this)
+                }
                 setHome(2)
             }
         }
         //点击我的
         mDatabind.txtHomeMine.setOnClickListener {
+            if(currentPage!=3){
+                vibrate(this)
+            }
             setHome(3)
         }
 
@@ -129,6 +149,23 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
 
     public override fun onStart() {
         super.onStart()
+    }
+
+
+
+
+    fun vibrate(context: Context) {
+        val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Android 8.0及以上版本可以使用VibrationEffect来定义震动模式
+            val amplitude =30 // 自定义震动强度（0-255）
+            val  duration:Long = 100 // 震动持续时间（毫秒）
+            val effect = VibrationEffect.createOneShot(duration, amplitude)
+            vibrator.vibrate(effect)
+        } else {
+            // Android 7.0及以下版本可以使用常规的震动模式
+            vibrator.vibrate(100)
+        }
     }
 
     public override fun onDestroy() {
@@ -216,6 +253,7 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
     }
 
     fun setHome(page: Int) {
+        currentPage=page
         if (page == 0) {
             mDatabind.txtHome.setTextColor(ContextCompat.getColor(this, R.color.c_f5f5f5))
             mDatabind.txtHomeSchedule.setTextColor(ContextCompat.getColor(this, R.color.c_8e8c9d))

@@ -30,7 +30,7 @@
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/ivHomeSearch"
-                android:layout_width="@dimen/dp_40"
+                android:layout_width="@dimen/dp_50"
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
                 app:srcCompat="@drawable/ic_search" />

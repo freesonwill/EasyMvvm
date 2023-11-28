@@ -1,9 +1,9 @@
 package com.xcjh.app
 
 import android.app.Activity
+import android.content.Context
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ProcessLifecycleOwner
-import com.drake.brv.PageRefreshLayout
 import com.drake.statelayout.StateConfig
 import com.hjq.language.MultiLanguages
 import com.hjq.toast.Toaster
@@ -12,13 +12,20 @@ import com.kingja.loadsir.core.LoadSir
 import com.kongzue.dialogx.DialogX
 import com.kongzue.dialogx.style.MaterialStyle
 import com.scwang.smart.refresh.footer.ClassicsFooter
+import com.scwang.smart.refresh.header.ClassicsHeader
 import com.scwang.smart.refresh.header.MaterialHeader
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
+import com.scwang.smart.refresh.layout.api.RefreshFooter
+import com.scwang.smart.refresh.layout.api.RefreshHeader
+import com.scwang.smart.refresh.layout.api.RefreshLayout
+import com.scwang.smart.refresh.layout.listener.DefaultRefreshFooterCreator
+import com.scwang.smart.refresh.layout.listener.DefaultRefreshHeaderCreator
 import com.shuyu.gsyvideoplayer.player.IjkPlayerManager
 import com.shuyu.gsyvideoplayer.player.PlayerFactory
 import com.tencent.mmkv.MMKV
 import com.xcjh.app.event.AppViewModel
 import com.xcjh.app.event.EventViewModel
+import com.xcjh.app.utils.DynamicTimeFormat
 import com.xcjh.app.view.callback.EmptyCallback
 import com.xcjh.app.view.callback.LoadingCallback
 import com.xcjh.base_lib.App
@@ -85,6 +92,9 @@ class MyApplication : App() , LifecycleObserver{
         PageRefreshLayout.refreshEnableWhenEmpty = false*/
         SmartRefreshLayout.setDefaultRefreshHeaderCreator { context, layout -> MaterialHeader(this) }
         SmartRefreshLayout.setDefaultRefreshFooterCreator { context, layout -> ClassicsFooter(this) }
+
+
+
 
     }
 

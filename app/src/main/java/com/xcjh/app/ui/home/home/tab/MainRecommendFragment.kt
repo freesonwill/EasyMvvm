@@ -4,7 +4,6 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -12,9 +11,11 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
-import com.drake.brv.listener.ItemDifferCallback
 import com.drake.brv.utils.*
 import com.google.gson.Gson
+import com.scwang.smart.refresh.footer.ClassicsFooter
+import com.scwang.smart.refresh.header.ClassicsHeader
+import com.scwang.smart.refresh.header.MaterialHeader
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
 import com.xcjh.app.R
@@ -28,11 +29,7 @@ import com.xcjh.app.databinding.ItemMainLiveListBinding
 import com.xcjh.app.databinding.ItemMainProceedBinding
 import com.xcjh.app.databinding.ItemMainTxtBinding
 import com.xcjh.app.databinding.ItemUnderWayBinding
-import com.xcjh.app.isTopActivity
 import com.xcjh.app.ui.details.MatchDetailActivity
-import com.xcjh.app.ui.home.my.operate.ContactUsActivity
-import com.xcjh.app.ui.home.my.personal.PersonalDataActivity
-import com.xcjh.app.ui.login.LoginActivity
 import com.xcjh.app.web.WebActivity
 import com.xcjh.app.websocket.MyWsManager
 import com.xcjh.app.websocket.bean.LiveStatus
@@ -44,13 +41,10 @@ import com.xcjh.app.websocket.listener.LiveStatusListener
 import com.xcjh.base_lib.App
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.dp2px
-import com.xcjh.base_lib.utils.toJson
-import com.xcjh.base_lib.utils.view.clickNoRepeat
-import com.xcjh.base_lib.utils.view.visibleOrGone
 import com.youth.banner.util.BannerUtils
+import kotlinx.android.synthetic.main.activity_chat.root
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 /**
  * 首页推荐页面碎片
@@ -60,18 +54,56 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
 
 
     override fun initView(savedInstanceState: Bundle?) {
+
         //首页轮询
         appViewModel.appPolling.observeForever{
             if(isAdded){
                 mViewModel.getOngoingMatchList(HotReq())
             }
         }
-
-
+        mDatabind.smartCommon.setRefreshHeader( ClassicsHeader(requireContext()))
         MyWsManager.getInstance(App.app)
             ?.setLiveStatusListener(this.toString(), object : LiveStatusListener {
                 override fun onOpenLive(bean: LiveStatus) {
-                    mViewModel.getNowLive(true)
+                    var isShow=false
+                    if(mDatabind.rcvRecommend.models!=null){
+                        for (i in 0 until  mDatabind.rcvRecommend.mutable.size){
+                            if(mDatabind.rcvRecommend.mutable[i] is MainTxtBean){
+                                for (j in 0 until  (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.size){
+                                    if((mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].userId.equals(bean.anchorId)){
+                                        isShow=true
+                                    }
+                                }
+
+
+
+                            }
+
+                        }
+                    }
+                    if(!isShow){
+                        mViewModel.getOngoingMatchList(bean.id)
+                    }
+                }
+
+                override fun onCloseLive(bean: LiveStatus) {
+                    super.onCloseLive(bean)
+                    if(mDatabind.rcvRecommend.models!=null){
+                        for (i in 0 until  mDatabind.rcvRecommend.mutable.size){
+                            if(mDatabind.rcvRecommend.mutable[i] is MainTxtBean){
+                                for (j in 0 until  (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.size){
+                                    if((mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].userId.equals(bean.anchorId)){
+                                        (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.removeAt(j)
+                                        mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
+                                    }
+                                }
+
+
+
+                            }
+
+                        }
+                    }
                 }
             })
 
@@ -161,6 +193,19 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
 
     override fun createObserver() {
         super.createObserver()
+
+        //打开直播的时候获取到详情
+        mViewModel.beingLive.observe(this){
+            if(mDatabind.rcvRecommend.models!=null){
+                for (i in 0 until mDatabind.rcvRecommend.mutable!!.size) {
+                    if(mDatabind.rcvRecommend.mutable[i] is MainTxtBean){
+                        (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.add(it)
+                        mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
+                        return@observe
+                    }
+                }
+            }
+        }
         //登录或者登出
         appViewModel.updateLoginEvent.observe(this){
             //获取广告
@@ -273,6 +318,9 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                     it.isRefresh -> {
                         mDatabind.smartCommon.finishRefresh()
                         mDatabind.smartCommon.resetNoMoreData()
+                        if(it.listData.size<20){
+                            mDatabind.smartCommon.finishLoadMoreWithNoMoreData()
+                        }
                         if(mDatabind.rcvRecommend.models!=null){
                             for (i in 0 until mDatabind.rcvRecommend.mutable!!.size) {
                                 if(mDatabind.rcvRecommend.mutable[i] is MainTxtBean){
@@ -283,7 +331,6 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                                 }
                             }
                         }
-
                     }
                     //不是第一页
                     else -> {

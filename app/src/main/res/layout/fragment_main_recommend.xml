@@ -11,32 +11,45 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical" >
-        <com.scwang.smart.refresh.layout.SmartRefreshLayout
+<!--        <com.scwang.smart.refresh.layout.SmartRefreshLayout-->
+<!--            android:id="@+id/smartCommon"-->
+<!--            android:layout_marginTop="18dp"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent" >-->
+<!--            <com.scwang.smart.refresh.header.ClassicsHeader-->
+<!--                android:id="@+id/headerHater"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content" />-->
+
+<!--            <androidx.recyclerview.widget.RecyclerView-->
+<!--                android:id="@+id/rcvRecommend"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:overScrollMode="never" />-->
+
+<!--            <com.scwang.smart.refresh.footer.ClassicsFooter-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content" />-->
+
+<!--        </com.scwang.smart.refresh.layout.SmartRefreshLayout>-->
+
+        <com.drake.brv.PageRefreshLayout
             android:id="@+id/smartCommon"
-            android:layout_marginTop="18dp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" >
-            <com.scwang.smart.refresh.header.MaterialHeader
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+            android:layout_height="match_parent">
+
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rcvRecommend"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:overScrollMode="never" />
+                android:layout_height="match_parent" />
 
-            <com.scwang.smart.refresh.footer.ClassicsFooter
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-        </com.scwang.smart.refresh.layout.SmartRefreshLayout>
-
-
+        </com.drake.brv.PageRefreshLayout>
 <!--        <Button-->
 <!--            android:id="@+id/btn"-->
 <!--            android:layout_width="wrap_content"-->
 <!--            android:layout_height="wrap_content"-->
 <!--            android:text="添加"/>-->
+
     </RelativeLayout>
 </layout>

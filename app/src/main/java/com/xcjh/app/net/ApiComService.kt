@@ -339,4 +339,13 @@ interface ApiComService {
      */
     @DELETE( "app/user/logout")
     suspend fun exitLogin(): ApiResponse<*>
+
+    /**
+     * 获取直播间详情
+     */
+    @POST("app/home/living/info")
+    suspend fun getLiveInfo(@Query("id")  id:String): ApiResponse<BeingLiveBean>
+
+
+
 }

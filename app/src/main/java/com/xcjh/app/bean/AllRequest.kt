@@ -190,5 +190,14 @@ data class FeedbackReq(
 ) : Serializable
 
 
+/**
+ * 获取直播间详情
+ */
+@Keep
+data class LiveInfoReq(
+    var id: Long=1
+): Serializable
+
+
 
 
