@@ -61,6 +61,12 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                 mViewModel.getOngoingMatchList(HotReq())
             }
         }
+        mDatabind.smartCommon.setHeaderHeight(40f)
+
+
+        mDatabind.smartCommon.setDisableContentWhenRefresh(true);//是否在刷新的时候禁止列表的操作
+        mDatabind.smartCommon.setDisableContentWhenLoading(true);//是否在加载的时候禁止列表的操作
+
         mDatabind.smartCommon.setRefreshHeader( ClassicsHeader(requireContext()))
         MyWsManager.getInstance(App.app)
             ?.setLiveStatusListener(this.toString(), object : LiveStatusListener {
@@ -74,9 +80,6 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                                         isShow=true
                                     }
                                 }
-
-
-
                             }
 
                         }
@@ -178,6 +181,7 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                 mViewModel.getBannerList()
                 mViewModel.getOngoingMatchList(HotReq())
                 mViewModel.getNowLive(true)
+
             }
 
             override fun onLoadMore(refreshLayout: RefreshLayout) {
@@ -319,7 +323,12 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                         mDatabind.smartCommon.finishRefresh()
                         mDatabind.smartCommon.resetNoMoreData()
                         if(it.listData.size<20){
-                            mDatabind.smartCommon.finishLoadMoreWithNoMoreData()
+                            mDatabind.smartCommon.finishLoadMore()
+                            mDatabind.smartCommon.setEnableLoadMore(false)
+//                            mDatabind.smartCommon.finishLoadMoreWithNoMoreData()
+                        }else{
+                            mDatabind.smartCommon.finishLoadMore()
+                            mDatabind.smartCommon.setEnableLoadMore(true)
                         }
                         if(mDatabind.rcvRecommend.models!=null){
                             for (i in 0 until mDatabind.rcvRecommend.mutable!!.size) {
@@ -335,8 +344,11 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                     //不是第一页
                     else -> {
                         if(it.listData.isEmpty()) {
-                            mDatabind.smartCommon.finishLoadMoreWithNoMoreData()
+                            mDatabind.smartCommon.finishLoadMore()
+                            mDatabind.smartCommon.setEnableLoadMore(false)
+//                            mDatabind.smartCommon.finishLoadMoreWithNoMoreData()
                         }else{
+                            mDatabind.smartCommon.setEnableLoadMore(true)
                             mDatabind.smartCommon.finishLoadMore()
                             if(mDatabind.rcvRecommend.models!=null){
                                 for (i in 0 until mDatabind.rcvRecommend.mutable!!.size) {

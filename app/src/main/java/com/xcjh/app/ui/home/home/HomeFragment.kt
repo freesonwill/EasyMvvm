@@ -43,8 +43,9 @@ class HomeFragment : BaseFragment<MainVm, FragmentHomeBinding>() {
             .statusBarDarkFont(false)//黑色
             .titleBar(mDatabind.rlTitle)
             .init()
+
         //初始化viewpager2
-        mDatabind.viewPager.initActivity(requireActivity(), mFragList, true)
+        mDatabind.viewPager.initActivity(requireActivity(), mFragList, true,4)
         //初始化 magic_indicator
         mDatabind.magicIndicator.bindViewPager2(
             mDatabind.viewPager, arrayListOf(
