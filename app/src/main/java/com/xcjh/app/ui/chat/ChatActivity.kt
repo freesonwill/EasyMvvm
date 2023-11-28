@@ -13,6 +13,7 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.drake.brv.utils.addModels
+import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.google.gson.Gson
 import com.gyf.immersionbar.ImmersionBar
@@ -46,6 +47,7 @@ import com.xcjh.base_lib.utils.LogUtils
 import com.xcjh.base_lib.utils.TAG
 import com.xcjh.base_lib.utils.TimeUtil
 import com.xcjh.base_lib.utils.setOnclickNoRepeat
+import kotlinx.android.synthetic.main.activity_chat.rv
 import java.io.File
 
 
@@ -171,6 +173,12 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                     R.layout.item_chat_txt_right -> {//正在进行中的比赛
                         var binding = getBinding<ItemChatTxtRightBinding>()
                         var matchBeanNew = _data as MsgBean
+
+                        if (matchBeanNew.sent==1){
+                            binding.googleProgress.visibility=View.GONE
+                        }else{
+                            binding.googleProgress.visibility=View.VISIBLE
+                        }
                         binding.tvtime.text =
                             TimeUtil.timeStamp2Date(matchBeanNew.createTime!!, null)!!.substring(0,16)
                         binding.tvtime.visibility = View.GONE
@@ -333,6 +341,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                     } else {
                                         path = localMedia?.realPath!!
                                     }
+                                    mDatabind.ivexpent.performClick()
                                     if (!TextUtils.isEmpty(path)) {
                                         mViewModel.upLoadPic(File(path))
 
@@ -371,21 +380,36 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
 
             override fun onSendMsgIsOk(isOk: Boolean, bean: ReceiveWsBean<*>) {
 
+                if (isOk){
+                    for (i in 0 until  mDatabind.rv.models!!.size){
+                        var beanmy: MsgBean = mDatabind.rv.models!![i] as MsgBean
+                        if (beanmy.content==bean.msg){
+                            beanmy.sent=1
+                        }
+                    }
+
+                }
             }
 
             override fun onC2CReceive(chat: ReceiveChatMsg) {
                 mViewModel.clearMsg(userId)
-                var beanmy: MsgBean = MsgBean()
-                beanmy.fromId = chat.from
-                beanmy.content = chat.content
-                beanmy.chatType = 2
-                beanmy.cmd = 11
-                beanmy.msgType = chat.msgType
-                beanmy.createTime = System.currentTimeMillis()
-                var listdata1: MutableList<MsgBean> = ArrayList<MsgBean>()
-                listdata1.add(beanmy)
-                mDatabind.rv.addModels(listdata1, index = 0)
-                mDatabind.rv.scrollToPosition(0) // 保证最新一条消息显示
+                for (i in 0 until  mDatabind.rv.models!!.size){
+                    var beanmy: MsgBean = mDatabind.rv.models!![i] as MsgBean
+                    if (beanmy.content==chat.content&&beanmy.createTime==chat.createTime){
+                        beanmy.id=chat.id
+                    }
+                }
+//                var beanmy: MsgBean = MsgBean()
+//                beanmy.fromId = chat.from
+//                beanmy.content = chat.content
+//                beanmy.chatType = 2
+//                beanmy.cmd = 11
+//                beanmy.msgType = chat.msgType
+//                beanmy.createTime = System.currentTimeMillis()
+//                var listdata1: MutableList<MsgBean> = ArrayList<MsgBean>()
+//                listdata1.add(beanmy)
+//                mDatabind.rv.addModels(listdata1, index = 0)
+//                mDatabind.rv.scrollToPosition(0) // 保证最新一条消息显示
 
                 //appViewModel.updateMsgEvent.postValue(beanmy)
 
@@ -484,6 +508,18 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
             Gson().toJson(bean)
         )
         mDatabind.edtcontent.setText("")
+        var beanmy: MsgBean = MsgBean()
+        beanmy.fromId = bean.from
+        beanmy.content = bean.content!!
+        beanmy.chatType = 2
+        beanmy.cmd = 11
+        beanmy.sent=0
+        beanmy.msgType = bean.msgType
+        beanmy.createTime = System.currentTimeMillis()
+        var listdata1: MutableList<MsgBean> = ArrayList<MsgBean>()
+        listdata1.add(beanmy)
+        mDatabind.rv.addModels(listdata1, index = 0)
+        mDatabind.rv.scrollToPosition(0) // 保证最新一条消息显示
     }
 
     override fun onDestroy() {

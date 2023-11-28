@@ -14,6 +14,7 @@ import com.xcjh.app.bean.BasketballScore
 import com.xcjh.app.bean.BasketballScoreBean
 import com.xcjh.app.databinding.ViewBasketballTableBinding
 import com.xcjh.app.databinding.ViewBasketballTableChildBinding
+import com.xcjh.base_lib.utils.dip2px
 import com.xcjh.base_lib.utils.horizontal
 import com.xcjh.base_lib.utils.loge
 import com.xcjh.base_lib.utils.notNull
@@ -45,9 +46,18 @@ class BasketballTableView : RelativeLayout {
             addType<BasketballScore> {
                 R.layout.view_basketball_table_child // 公告
             }
+            onCreate {
+
+            }
             onBind {
                 when (val item = _data) {
                     is BasketballScore -> {
+                        models?.size.notNull({
+                            if (it>0){
+                                getBinding<ViewBasketballTableChildBinding>().root.layoutParams.width = binding.rcvCommon.width/ if (it>6) 6 else it
+                            }
+                        })
+
                         val binding = getBinding<ViewBasketballTableChildBinding>()
                         binding.tvTitle.text = item.name
                         binding.tvHome.text = item.homeScore
@@ -97,12 +107,12 @@ class BasketballTableView : RelativeLayout {
                                 awayOverTimeScoresList!![i].toString()))
                     }
                 }else{
-                    scoreList.add(
-                        BasketballScore("", "", ""))
+                    /*scoreList.add(
+                        BasketballScore("", "", ""))*/
                 }
             }, {
-                scoreList.add(
-                    BasketballScore("", "", ""))
+               /* scoreList.add(
+                    BasketballScore("", "", ""))*/
             })
 
 

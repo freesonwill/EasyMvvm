@@ -23,7 +23,8 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
     private val mAdapter by lazy { MsgListAdapter() }
     var listdata: MutableList<MsgListBean> = ArrayList<MsgListBean>()
 
-    var chatId="0"
+    var chatId = "0"
+
     companion object {
 
         fun newInstance(): MsgChildFragment {
@@ -50,7 +51,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                 mAdapter.emptyView = empty
             }
         }
-        if(CacheUtil.isLogin()){
+        if (CacheUtil.isLogin()) {
             mViewModel.getMsgList(true, "")
             mDatabind.smartCommon.setOnRefreshListener {
                 mViewModel.getMsgList(true, "")
@@ -60,8 +61,8 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
             initEvent()
         }
         //登录或者登出
-        appViewModel.updateLoginEvent.observe(this){
-            if(it){
+        appViewModel.updateLoginEvent.observe(this) {
+            if (it) {
                 mViewModel.getMsgList(true, "")
                 mDatabind.smartCommon.setOnRefreshListener {
                     mViewModel.getMsgList(true, "")
@@ -69,7 +70,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                     mViewModel.getMsgList(false, "")
                 }
                 initEvent()
-            }else{
+            } else {
                 listdata.clear()
                 mAdapter.submitList(listdata)
                 mAdapter.notifyDataSetChanged()
@@ -87,13 +88,13 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
         MyWsManager.getInstance(requireActivity())!!
             .setC2CListener(javaClass.name, object : C2CListener {
                 override fun onSendMsgIsOk(isOk: Boolean, bean: ReceiveWsBean<*>) {
-                    if (isOk){
+                    if (isOk) {
 
                     }
                 }
 
                 override fun onC2CReceive(chat: ReceiveChatMsg) {
-                        refshMsg(chat)
+                    refshMsg(chat)
                 }
 
                 override fun onChangeReceive(chat: ArrayList<ReceiveChangeMsg>) {
@@ -102,11 +103,11 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
             })
         appViewModel.updateMsgEvent.observeForever {
             if (isAdded) {
-                chatId=it
+                chatId = it
                 if (it == "-1") {//清除消息红点
                     mViewModel.getClreaAllMsg()
 
-                } else{
+                } else {
 
                 }
                 //                else {
@@ -123,6 +124,15 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
 //                }
             }
         }
+    }
+
+    fun updataMsg(list:MutableList<MsgListBean>) {
+
+        var num=0
+        for (i in 0 until list.size){
+            num += list[i].noReadSum
+        }
+        appViewModel.updateMainMsgNum.postValue(num)
     }
 
     override fun createObserver() {
@@ -145,6 +155,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                         listdata.addAll(it.listData)
                         mAdapter.submitList(listdata)
                         mAdapter.notifyDataSetChanged()
+                        updataMsg(listdata)
 
 
                     }
@@ -158,6 +169,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                             mDatabind.smartCommon.finishLoadMore()
 
                             mAdapter.addAll(it.listData)
+                            updataMsg(it.listData)
                         }
 
                     }
@@ -174,7 +186,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                 }
             }
         }
-        mViewModel.clreaAllMsg.observe(this){
+        mViewModel.clreaAllMsg.observe(this) {
             mViewModel.getMsgList(true, "")
         }
     }
@@ -185,14 +197,15 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
     }
 
     fun refshMsg(msg: ReceiveChatMsg) {
+        updataMsg(listdata)
         var hasMsg = false
         for (i in 0 until listdata.size) {
             if (msg.anchorId == listdata[i].anchorId) {
                 hasMsg = true
                 var bean = MsgListBean(
-                    if (msg.anchorId==msg.from){//主播发送的消息
+                    if (msg.anchorId == msg.from) {//主播发送的消息
                         msg.fromAvatar!!
-                    }else{
+                    } else {
                         msg.toAvatar!!
                     },
                     msg.content.toString(),
@@ -201,51 +214,49 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                     msg.from!!,
                     msg.anchorId!!,
                     listdata[i].id,
-                    if (msg.anchorId==msg.from){//主播发送的消息
+                    if (msg.anchorId == msg.from) {//主播发送的消息
                         msg.fromNickName!!
-                    }else{
+                    } else {
                         msg.toNickName!!
                     },
-                    if (chatId==msg.anchorId){
+                    if (chatId == msg.anchorId) {
                         0
-                    }else{
-                        listdata[i].noReadSum+1
+                    } else {
+                        listdata[i].noReadSum + 1
                     }
                 )
 
                 mAdapter[i] = bean//更新Item数据
-                mAdapter.swap(i,0)
+                mAdapter.swap(i, 0)
                 break
             }
         }
         if (!hasMsg) {
             var bean = MsgListBean(
-                if (msg.anchorId==msg.from){//主播发送的消息
+                if (msg.anchorId == msg.from) {//主播发送的消息
                     msg.fromAvatar!!
-                }else{
+                } else {
                     msg.toAvatar!!
-                }
-               ,
+                },
                 msg.content.toString(),
                 msg.createTime!!,
                 msg.msgType!!,
                 msg.from!!,
                 msg.anchorId!!,
                 msg.id!!,
-                if (msg.anchorId==msg.from){//主播发送的消息
+                if (msg.anchorId == msg.from) {//主播发送的消息
                     msg.fromNickName!!
-                }else{
+                } else {
 
                     msg.toNickName!!
-                }
-             ,
-                if (chatId==msg.anchorId){
+                },
+                if (chatId == msg.anchorId) {
                     0
-                }else{
+                } else {
                     1
                 }
             )
-            mAdapter.add(0,bean)
+            mAdapter.add(0, bean)
         }
 
 

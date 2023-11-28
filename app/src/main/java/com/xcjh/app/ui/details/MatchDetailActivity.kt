@@ -145,7 +145,7 @@ class MatchDetailActivity :
 
     private fun initVp() {
 
-        mDatabind.viewPager.initChangeActivity(this, mFragList, false)
+        mDatabind.viewPager.initChangeActivity(this, mFragList, true)
         pager2Adapter = mDatabind.viewPager.adapter as ViewPager2Adapter
         //初始化Tab控件
         mDatabind.magicIndicator.bindViewPager2(
