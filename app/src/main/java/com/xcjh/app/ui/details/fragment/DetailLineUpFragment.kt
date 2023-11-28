@@ -38,9 +38,13 @@ class DetailLineUpFragment(var match: MatchDetailBean) :
                 mDatabind.viewBasketballAwayLineup.visibility = View.VISIBLE
             }
         }
+        loadData()
     }
 
     override fun lazyLoadData() {
+        //loadData()
+    }
+    private fun loadData() {
         if ("1" == match.matchType) {//1：足球；2：篮球
             mViewModel.getFootballLineUp(match.matchId)
             // mViewModel.getFootballLineUp("3973066")
