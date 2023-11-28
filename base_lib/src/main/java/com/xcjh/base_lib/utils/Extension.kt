@@ -101,7 +101,8 @@ fun ViewPager2.initFragment(
 fun ViewPager2.initActivity(
     acivity: FragmentActivity,
     fragments: ArrayList<Fragment>,
-    isUserInputEnabled: Boolean = true//是否可滑动
+    isUserInputEnabled: Boolean = true,//是否可滑动
+    sensitive:Int=2//设置灵敏度
 ): ViewPager2 {
 
 
@@ -114,14 +115,14 @@ fun ViewPager2.initActivity(
             return super.getItemId(position)
         }
     }
-    setLm(this)
+    setLm(this,sensitive)
     isSaveEnabled = false
     return this
 }
 /**
  * 设置灵敏度
  */
-fun setLm(viewPager2:ViewPager2){
+fun setLm(viewPager2:ViewPager2,sensitive:Int=2){
     val recyclerViewField = ViewPager2::class.java.getDeclaredField("mRecyclerView")
     recyclerViewField.isAccessible = true
     val recyclerView = recyclerViewField.get(viewPager2) as RecyclerView
@@ -129,7 +130,7 @@ fun setLm(viewPager2:ViewPager2){
     val touchSlopField = RecyclerView::class.java.getDeclaredField("mTouchSlop")
     touchSlopField.isAccessible = true
     val touchSlop = touchSlopField.get(recyclerView) as Int
-    touchSlopField.set(recyclerView, touchSlop*2)
+    touchSlopField.set(recyclerView, touchSlop*sensitive)
 }
 
 
