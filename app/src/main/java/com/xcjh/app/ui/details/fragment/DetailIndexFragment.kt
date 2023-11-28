@@ -28,7 +28,11 @@ class DetailIndexFragment(var matchId: String = "", var matchType: String = "1")
 
     override fun lazyLoadData() {
         //ViewModelProvider.get()
-        mViewModel.getOddsInfo(matchId)
+        //loadData()
+    }
+     private fun loadData() {
+        //ViewModelProvider.get()
+         mViewModel.getOddsInfo(matchId)
     }
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -48,7 +52,7 @@ class DetailIndexFragment(var matchId: String = "", var matchType: String = "1")
         mDatabind.tvTabIndexJq.setOnClickListener {
             changeUI(pos = 3)
         }
-
+        loadData()
     }
 
     private fun changeUI(pos: Int) {
@@ -72,7 +76,7 @@ class DetailIndexFragment(var matchId: String = "", var matchType: String = "1")
         //appViewModel.appPolling.observeForever {
         appViewModel.appPolling.observe(activity as MatchDetailActivity) {
             if (isAdded && !isFirst) {
-                lazyLoadData()
+                loadData()
             }
         }
 

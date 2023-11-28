@@ -93,10 +93,13 @@ class DetailLiveFragment(var matchId: String,var matchType: String) : BaseVpFrag
         mDatabind.page.onLoadMore {
             mViewModel.getNowLive(false, matchType,matchId)
         }
-
+        loadData()
     }
 
     override fun lazyLoadData() {
+       // mDatabind.page.showLoading()
+    }
+    private fun loadData() {
         mDatabind.page.showLoading()
       //  mViewModel.getNowLive(true,matchType,matchId)
     }

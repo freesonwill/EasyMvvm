@@ -444,7 +444,12 @@ class DetailChatFragment(
         offset = ""
         setNotice()
         mDatabind.rcvChat.postDelayed({
-            //聊天数据重置
+            //布局重新计算
+            try {
+                val params = mDatabind.rcvChat.layoutParams
+                params.height = mDatabind.smartChat.height
+                mDatabind.rcvChat.layoutParams = params
+            } catch (_: Exception) { }
             mDatabind.rcvChat.models = arrayListOf()
             onWsUserEnterRoom(liveId)
             getHistoryData()
