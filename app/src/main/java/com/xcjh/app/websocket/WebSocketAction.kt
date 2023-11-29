@@ -14,7 +14,7 @@ object WebSocketAction {
      * WS地址
      */
     // var WEB_SOCKET_URL = "ws://192.168.101.15:8888" ///dev
-    // var WEB_SOCKET_URL = "ws://192.168.101.15:6006/ws-sports-chat" ///dev
-    var WEB_SOCKET_URL = "wss://app.cbd246.com/ws-sports-chat" ///test
+     var WEB_SOCKET_URL = "ws://192.168.101.15:6006/ws-sports-chat" ///dev
+//    var WEB_SOCKET_URL = "wss://app.cbd246.com/ws-sports-chat" ///test
     // var WEB_SOCKET_URL = "ws://192.168.101.15:8888" ///正式
 }

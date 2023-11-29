@@ -4,6 +4,7 @@
     android:layout_height="142dp"
     android:layout_marginLeft="@dimen/dp_16"
     android:layout_marginRight="@dimen/dp_16"
+    android:layout_marginTop="@dimen/dp_18"
     xmlns:banner="http://schemas.android.com/tools">
     <com.youth.banner.Banner
         android:id="@+id/banner"

@@ -50,9 +50,6 @@ import java.util.*
  * 首页推荐页面碎片
  */
 class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommendBinding>() {
-
-
-
     override fun initView(savedInstanceState: Bundle?) {
 
         //首页轮询
@@ -62,11 +59,8 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
             }
         }
         mDatabind.smartCommon.setHeaderHeight(40f)
-
-
         mDatabind.smartCommon.setDisableContentWhenRefresh(true);//是否在刷新的时候禁止列表的操作
         mDatabind.smartCommon.setDisableContentWhenLoading(true);//是否在加载的时候禁止列表的操作
-
         mDatabind.smartCommon.setRefreshHeader( ClassicsHeader(requireContext()))
         MyWsManager.getInstance(App.app)
             ?.setLiveStatusListener(this.toString(), object : LiveStatusListener {
