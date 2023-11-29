@@ -1,24 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appBayLayout"
-            android:layout_gravity="center_horizontal"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:background="@color/trans"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            app:elevation="@dimen/dp_0">
+
             <LinearLayout
                 android:id="@+id/stickyView"
                 android:layout_width="wrap_content"
-                android:gravity="center"
-                android:background="@color/trans"
-                android:layout_marginTop="@dimen/dp_5"
                 android:layout_height="@dimen/dp_36"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/dp_5"
+                android:background="@color/trans"
                 android:orientation="horizontal">
 
                 <TextView
@@ -53,96 +56,21 @@
                     android:textColor="@color/white"
                     android:textSize="@dimen/sp_14" />
             </LinearLayout>
-        </com.google.android.material.appbar.AppBarLayout>
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/nested_scroll_view"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
 
-            <LinearLayout
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <com.xcjh.app.view.ViewPager2Container
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/viewPager"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:fadeScrollbars="false" />
+        </com.xcjh.app.view.ViewPager2Container>
 
-                <LinearLayout
-                    android:id="@+id/lay_tab_index_football"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_16"
-                    android:layout_marginEnd="@dimen/dp_16"
-                    android:visibility="visible"
-                    android:orientation="vertical">
-
-
-                    <com.xcjh.app.view.balldetail.index.FootballMultiTableView
-                        android:id="@+id/viewSFTable"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp_16" />
-
-                    <com.xcjh.app.view.balldetail.index.FootballTableView
-                        android:id="@+id/viewRQTable"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp_16"
-                        android:visibility="gone"/>
-
-                    <com.xcjh.app.view.balldetail.index.FootballTableView
-                        android:id="@+id/viewJQTable"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp_16"
-                        android:visibility="gone"/>
-                </LinearLayout>
-
-                <!-- <LinearLayout
-                     android:id="@+id/lay_tab_index_basketball"
-                     android:layout_width="match_parent"
-                     android:layout_height="wrap_content"
-                     android:layout_marginStart="@dimen/dp_16"
-                     android:layout_marginEnd="@dimen/dp_16"
-                     android:orientation="vertical"
-                     android:visibility="gone">
-
-                     <LinearLayout
-                         android:layout_width="wrap_content"
-                         android:layout_height="@dimen/dp_36"
-                         android:layout_marginTop="@dimen/dp_16"
-                         android:orientation="horizontal">
-
-                         <TextView
-                             android:layout_width="@dimen/dp_100"
-                             android:layout_height="@dimen/dp_36"
-                             android:background="@drawable/bg_btn_detail_tab"
-                             android:gravity="center"
-                             android:text="@string/win_los"
-                             android:textColor="@color/white"
-                             android:textSize="@dimen/sp_14" />
-
-                         <TextView
-                             android:layout_width="@dimen/dp_100"
-                             android:layout_height="@dimen/dp_36"
-                             android:layout_marginStart="@dimen/dp_12"
-                             android:background="@drawable/bg_btn_detail_tab"
-                             android:gravity="center"
-                             android:text="@string/handicap"
-                             android:textColor="@color/white"
-                             android:textSize="@dimen/sp_14" />
-
-                         <TextView
-                             android:layout_width="@dimen/dp_100"
-                             android:layout_height="@dimen/dp_36"
-                             android:layout_marginStart="@dimen/dp_12"
-                             android:background="@drawable/bg_btn_detail_tab"
-                             android:gravity="center"
-                             android:text="@string/total_goal"
-                             android:textColor="@color/white"
-                             android:textSize="@dimen/sp_14" />
-                     </LinearLayout>
-                 </LinearLayout>-->
-            </LinearLayout>
-        </androidx.core.widget.NestedScrollView>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </layout>
