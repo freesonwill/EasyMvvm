@@ -152,8 +152,8 @@ class BasketballTableView : RelativeLayout {
 
     //加时
     private fun getAddTitle(pos: Int): String {
-        var title = context.getString(R.string.over_time)+pos
-        when (pos) {
+        var title = context.getString(R.string.over_time)+(pos+1)
+        /*when (pos) {
             0 -> {
                 title=context.getString(R.string.over_time) + context.getString(R.string.one)
             }
@@ -166,7 +166,7 @@ class BasketballTableView : RelativeLayout {
             3 -> {
                 title=context.getString(R.string.over_time) + context.getString(R.string.four)
             }
-        }
+        }*/
         return title
     }
 

@@ -76,6 +76,8 @@
         <item name="android:windowContentOverlay">@null</item>
 
     </style>
-
+    <declare-styleable name="StickyLinearLayout_Layout" tools:ignore="ResourceName">
+        <attr name="isSticky" format="boolean" />
+    </declare-styleable>
 
 </resources>

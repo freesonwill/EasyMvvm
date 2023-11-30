@@ -1,68 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.core.widget.NestedScrollView
+    <com.xcjh.app.view.hover.ZbScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
+        android:layout_height="match_parent">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-
-            <!--football-->
-            <LinearLayout
-                android:id="@+id/layout_football"
+            <com.xcjh.app.view.hover.StickyLinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_16"
-                android:layout_marginEnd="@dimen/dp_16"
-                android:orientation="vertical"
-                android:visibility="gone">
-
-                <com.xcjh.app.view.balldetail.liveup.FootballLineupView
-                    android:id="@+id/match_lineup"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-                <LinearLayout
-                    android:id="@+id/lltTb"
-                    android:layout_marginTop="@dimen/dp_16"
-                    android:visibility="invisible"
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:text="@string/ti"
-                        android:textColor="@color/c_F5F5F5"
-                        android:textSize="@dimen/sp_16" />
-
-                    <com.xcjh.app.view.balldetail.liveup.FootballLineupList
-                        android:id="@+id/match_table"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp_10"
-                        android:layout_marginBottom="@dimen/dp_30"
-                        android:visibility="visible"/>
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <!--篮球-->
-            <LinearLayout
-                android:id="@+id/layout_basketball"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:layout_marginStart="@dimen/dp_16"
-                android:layout_marginEnd="@dimen/dp_16"
                 android:orientation="vertical">
-
+                <!--悬停-->
                 <LinearLayout
+                    android:id="@+id/layout_basketball"
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/dp_36"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="@dimen/dp_16"
+                    android:paddingVertical="@dimen/dp_10"
+                    app:isSticky="true"
+                    android:visibility="gone"
                     android:orientation="horizontal">
 
                     <TextView
@@ -70,38 +29,78 @@
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/dp_36"
                         android:background="@drawable/bg_btn_detail_tab"
+                        android:gravity="center"
                         android:paddingStart="@dimen/dp_20"
                         android:paddingEnd="@dimen/dp_20"
-                        android:gravity="center"
                         android:textColor="@color/white"
                         android:textSize="@dimen/sp_14" />
+
                     <TextView
                         android:id="@+id/tvHomeName"
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/dp_36"
                         android:layout_marginStart="@dimen/dp_12"
-                        android:paddingStart="@dimen/dp_20"
-                        android:paddingEnd="@dimen/dp_20"
                         android:background="@drawable/bg_btn_detail_tab"
                         android:gravity="center"
+                        android:paddingStart="@dimen/dp_20"
+                        android:paddingEnd="@dimen/dp_20"
                         android:textColor="@color/white"
                         android:textSize="@dimen/sp_14" />
                 </LinearLayout>
 
-                <com.xcjh.app.view.balldetail.liveup.BasketballLineupView
-                    android:id="@+id/view_basketball_away_lineup"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_16"
-                    android:visibility="visible"/>
-                <com.xcjh.app.view.balldetail.liveup.BasketballLineupView
-                    android:id="@+id/view_basketball_home_lineup"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+            </com.xcjh.app.view.hover.StickyLinearLayout>
+            <com.xcjh.app.view.ViewPager2Container
+                android:id="@+id/vpContainer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <!--football-->
+                <androidx.core.widget.NestedScrollView
+                    android:id="@+id/layout_football"
                     android:visibility="gone"
-                    android:layout_marginTop="@dimen/dp_16"/>
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/dp_16"
+                        android:orientation="vertical">
+                        <com.xcjh.app.view.balldetail.liveup.FootballLineupView
+                            android:id="@+id/match_lineup"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
 
-            </LinearLayout>
+                        <LinearLayout
+                            android:id="@+id/lltTb"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/dp_16"
+                            android:orientation="vertical"
+                            android:visibility="visible">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:text="@string/ti"
+                                android:textColor="@color/c_F5F5F5"
+                                android:textSize="@dimen/sp_16" />
+
+                            <com.xcjh.app.view.balldetail.liveup.FootballLineupList
+                                android:id="@+id/match_table"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/dp_10"
+                                android:visibility="visible" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </androidx.core.widget.NestedScrollView>
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/viewPager"
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fadeScrollbars="false" />
+            </com.xcjh.app.view.ViewPager2Container>
         </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+    </com.xcjh.app.view.hover.ZbScrollView>
 </layout>

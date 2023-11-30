@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.core.widget.NestedScrollView
-        android:id="@+id/page"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <com.xcjh.app.view.balldetail.index.FootballTableView
             android:id="@+id/viewJQTable"
+            android:layout_marginHorizontal="@dimen/dp_16"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_16" />
+            android:layout_marginVertical="@dimen/dp_10"/>
     </androidx.core.widget.NestedScrollView>
 </layout>

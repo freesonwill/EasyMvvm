@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <com.drake.brv.PageRefreshLayout
         android:id="@+id/page"
@@ -11,7 +12,10 @@
             android:id="@+id/rcvRecommend"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:overScrollMode="never" />
+            tools:listitem="@layout/item_main_live_list"
+            android:overScrollMode="never"
+            android:paddingTop="@dimen/dp_16"
+            android:paddingHorizontal="@dimen/dp_16" />
 
     </com.drake.brv.PageRefreshLayout>
 </layout>

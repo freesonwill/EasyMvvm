@@ -5,24 +5,32 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
-import com.drake.brv.utils.*
-import com.google.gson.Gson
-import com.scwang.smart.refresh.footer.ClassicsFooter
+import com.drake.brv.BindingAdapter
+import com.drake.brv.utils.addModels
+import com.drake.brv.utils.bindingAdapter
+import com.drake.brv.utils.grid
+import com.drake.brv.utils.linear
+import com.drake.brv.utils.models
+import com.drake.brv.utils.mutable
+import com.drake.brv.utils.setDifferModels
+import com.drake.brv.utils.setup
 import com.scwang.smart.refresh.header.ClassicsHeader
-import com.scwang.smart.refresh.header.MaterialHeader
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
 import com.xcjh.app.R
 import com.xcjh.app.adapter.ImageTitleAdapter
 import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseFragment
-import com.xcjh.app.bean.*
+import com.xcjh.app.bean.AdvertisementBanner
+import com.xcjh.app.bean.BeingLiveBean
+import com.xcjh.app.bean.HotReq
+import com.xcjh.app.bean.MainTxtBean
+import com.xcjh.app.bean.MatchBean
 import com.xcjh.app.databinding.FragmentMainRecommendBinding
 import com.xcjh.app.databinding.ItemMainBaanerBinding
 import com.xcjh.app.databinding.ItemMainLiveListBinding
@@ -42,9 +50,9 @@ import com.xcjh.base_lib.App
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.dp2px
 import com.youth.banner.util.BannerUtils
-import kotlinx.android.synthetic.main.activity_chat.root
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 
 /**
  * 首页推荐页面碎片
@@ -632,72 +640,64 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                                 onBind {
                                     when (itemViewType) {
                                         R.layout.item_main_live_list -> {
-                                            var bindingItem=getBinding<ItemMainLiveListBinding>()
-                                            var  bean=_data as BeingLiveBean
-                                            Glide.with(requireContext())
-                                                .load(bean.titlePage) // 替换为您要加载的图片 URL
-                                                .error(R.drawable.main_top_load)
-                                                .placeholder(R.drawable.main_top_load)
-                                                .into(bindingItem.ivLiveBe)
-                                            Glide.with(requireContext())
-                                                .load(bean.userLogo) // 替换为您要加载的图片 URL
-                                                .error(R.drawable.default_anchor_icon)
-                                                .placeholder(R.drawable.default_anchor_icon)
-                                                .into(bindingItem.ivLiveHead)
-                                            bindingItem.txtLiveName.text=bean.nickName
-                                            //比赛类型 1足球，2篮球,可用值:1,2
-                                            if(bean.matchType.equals("1")){
-                                                bindingItem.txtLiveTeam.text="${bean.homeTeamName}VS${bean.awayTeamName}"
-                                            }else{
-                                                bindingItem.txtLiveTeam.text="${bean.awayTeamName }VS${bean.homeTeamName}"
-                                            }
-
-                                            bindingItem.txtLiveCompetition.text=bean.competitionName
-                                            if(bean.hotValue<=9999){
-                                                bindingItem.txtLiveHeat.text="${bean.hotValue}"
-                                            }else{
-                                                bindingItem.txtLiveHeat.text="9999+"
-                                            }
-                                            if(layoutPosition%2==0){
-
-                                                val layoutParams = bindingItem.llLiveSpacing.layoutParams as ViewGroup.MarginLayoutParams
-                                                layoutParams.setMargins(0, 0, context.dp2px(6), context.dp2px(20))
-                                                bindingItem.llLiveSpacing.layoutParams =layoutParams
-                                            } else{
-                                                val layoutParams = bindingItem.llLiveSpacing.layoutParams as ViewGroup.MarginLayoutParams
-                                                layoutParams.setMargins(context.dp2px(6), 0, 0, context.dp2px(20))
-                                                bindingItem.llLiveSpacing.layoutParams =layoutParams
-                                            }
-
-
+                                            setLiveMatchItem()
                                         }
-
                                     }
                                 }
                                 R.id.llLiveSpacing.onClick {
                                     val bean=_data as BeingLiveBean
                                     MatchDetailActivity.open(matchType =bean.matchType, matchId = bean.matchId,matchName = "${bean.homeTeamName}VS${bean.awayTeamName}", anchorId = bean.userId,videoUrl = bean.playUrl )
                                 }
-
-
-
                             }
                             binding.rvExplore.addModels(mainTxtBean.list)
                         }else{
                             binding.rvExplore.visibility= View.GONE
                             binding.llShowTxt.visibility= View.VISIBLE
                         }
-
                     }
-
-
                 }
-
-
             }
 
         }
     }
+}
 
-
+fun BindingAdapter.BindingViewHolder.setLiveMatchItem() {
+    val bindingItem= getBinding<ItemMainLiveListBinding>()
+    val bean = _data as BeingLiveBean
+    Glide.with(context)
+        .load(bean.titlePage)
+        .error(R.drawable.main_top_load)
+        .placeholder(R.drawable.main_top_load)
+        .into(bindingItem.ivLiveBe)
+    Glide.with(context)
+        .load(bean.userLogo) // 替换为您要加载的图片 URL
+        .error(R.drawable.default_anchor_icon)
+        .placeholder(R.drawable.default_anchor_icon)
+        .into(bindingItem.ivLiveHead)
+    bindingItem.txtLiveName.text = bean.nickName
+    if (bean.matchType == "1") {
+        bindingItem.txtLiveTeam.text =
+            "${bean.homeTeamName} VS ${bean.awayTeamName}"
+    } else {
+        bindingItem.txtLiveTeam.text =
+            "${bean.awayTeamName} VS ${bean.homeTeamName}"
+    }
+    bindingItem.txtLiveCompetition.text = bean.competitionName
+    if (bean.hotValue <= 9999) {
+        bindingItem.txtLiveHeat.text = "${bean.hotValue}"
+    } else {
+        bindingItem.txtLiveHeat.text = "9999+"
+    }
+    if (layoutPosition % 2 == 0) {
+        val layoutParams =
+            bindingItem.llLiveSpacing.layoutParams as ViewGroup.MarginLayoutParams
+        layoutParams.setMargins(0, 0, context.dp2px(8), context.dp2px(16))
+        bindingItem.llLiveSpacing.layoutParams = layoutParams
+    } else {
+        val layoutParams =
+            bindingItem.llLiveSpacing.layoutParams as ViewGroup.MarginLayoutParams
+        layoutParams.setMargins(context.dp2px(8), 0, 0, context.dp2px(16))
+        bindingItem.llLiveSpacing.layoutParams = layoutParams
+    }
 }

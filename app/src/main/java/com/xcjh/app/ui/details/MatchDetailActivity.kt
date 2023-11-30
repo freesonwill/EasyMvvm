@@ -29,9 +29,6 @@ import com.xcjh.app.utils.*
 import com.xcjh.app.websocket.MyWsManager
 import com.xcjh.app.websocket.bean.LiveStatus
 import com.xcjh.app.websocket.bean.ReceiveChangeMsg
-import com.xcjh.app.websocket.bean.ReceiveChatMsg
-import com.xcjh.app.websocket.bean.ReceiveWsBean
-import com.xcjh.app.websocket.listener.LiveRoomListener
 import com.xcjh.app.websocket.listener.LiveStatusListener
 import com.xcjh.app.websocket.listener.OtherPushListener
 import com.xcjh.base_lib.App
@@ -250,8 +247,7 @@ class MatchDetailActivity :
                                         homeHalfScore = BigDecimal(it.homeHalfScore).toInt()
                                         homeScore = BigDecimal(it.homeScore).toInt()
                                     }.apply {
-                                        setBaseMatchUI()
-                                        showMatchStatusUI()
+                                        needWsToUpdateUI()
                                     }
                                 }
                             }
@@ -264,72 +260,7 @@ class MatchDetailActivity :
 
     }
 
-    /**
-     * 设置基础UI
-     * （比赛中基本固定不变）
-     */
-    private fun setBaseMatchUI() {
-        matchName = matchDetail.competitionName + "  " +
-                if (matchType == "1") {
-                    "${matchDetail.homeName ?: ""} VS ${matchDetail.awayName ?: ""}"
-                } else "${matchDetail.awayName ?: ""} VS ${matchDetail.homeName ?: ""}"
-        mDatabind.tvTitle.text = matchName
-        //上滑停靠栏
-        getMatchStatus(mDatabind.tvTopMatchStatus, matchDetail.matchType, matchDetail.status)
-        setMatchStatusTime(
-            mDatabind.tvTopMatchStatusTime,
-            mDatabind.tvTopMatchStatusTimeS,
-            matchDetail.matchType,
-            matchDetail.status,
-            matchDetail.runTime
-        )
-        setMatchStatusTime(
-            mDatabind.tvMatchStatusTime,
-            mDatabind.tvMatchStatusTimeS,
-            matchDetail.matchType,
-            matchDetail.status,
-            matchDetail.runTime
-        )
-        //有比分的情况 足球status正在比赛是[2,8] 篮球是[2,10]
-
-
-        if (matchType == "1") {
-            //足球
-            Glide.with(this).load(matchDetail.homeLogo).placeholder(R.drawable.default_team_logo)
-                .into(mDatabind.ivTopHomeIcon)
-            Glide.with(this).load(matchDetail.awayLogo).placeholder(R.drawable.default_team_logo)
-                .into(mDatabind.ivTopAwayIcon)
-            mDatabind.tvTopHomeScore.text =
-                if (matchDetail.status in 2..8) matchDetail.homeScore.toString() else ""
-            mDatabind.tvTopAwayScore.text =
-                if (matchDetail.status in 2..8) matchDetail.awayScore.toString() else ""
-            if (matchDetail.status in 2..8) {
-                mDatabind.tvMatchVs.textSize = 20f
-                mDatabind.tvMatchVs.text =
-                    matchDetail.homeScore.toString() + " : " + matchDetail.awayScore.toString()
-            } else {
-                mDatabind.tvMatchVs.textSize = 22f
-                mDatabind.tvMatchVs.text = getString(R.string.vs)
-            }
-        } else {
-            Glide.with(this).load(matchDetail.awayLogo).placeholder(R.drawable.default_team_logo)
-                .into(mDatabind.ivTopHomeIcon)
-            Glide.with(this).load(matchDetail.homeLogo).placeholder(R.drawable.default_team_logo)
-                .into(mDatabind.ivTopAwayIcon)
-            mDatabind.tvTopHomeScore.text =
-                if (matchDetail.status in 2..10) matchDetail.awayScore.toString() else ""
-            mDatabind.tvTopAwayScore.text =
-                if (matchDetail.status in 2..10) matchDetail.homeScore.toString() else ""
-            if (matchDetail.status in 2..10) {
-                mDatabind.tvMatchVs.textSize = 20f
-                mDatabind.tvMatchVs.text =
-                    matchDetail.awayScore.toString() + " : " + matchDetail.homeScore.toString()
-            } else {
-                mDatabind.tvMatchVs.textSize = 22f
-                mDatabind.tvMatchVs.text = getString(R.string.vs)
-            }
-        }
-
+    private fun setBaseListener() {
         //私聊按钮
         mDatabind.tvToChat.setOnClickListener {
             //聊天界面还在开发中，先占位
@@ -391,11 +322,15 @@ class MatchDetailActivity :
         }
     }
 
-
     /**
-     * 无主播流时展示比赛状态
+     * 设置基础UI
      */
-    private fun showMatchStatusUI() {
+    private fun showBaseUI() {
+        matchName = matchDetail.competitionName + "  " +
+                if (matchType == "1") {
+                    "${matchDetail.homeName ?: ""} VS ${matchDetail.awayName ?: ""}"
+                } else "${matchDetail.awayName ?: ""} VS ${matchDetail.homeName ?: ""}"
+        mDatabind.tvTitle.text = matchName
         if (matchType == "1") {//足球
             //主队名称以及图标
             mDatabind.tvHomeName.text = matchDetail.homeName ?: ""
@@ -419,8 +354,54 @@ class MatchDetailActivity :
         mDatabind.tvCompetitionName.text = matchDetail.competitionName
         mDatabind.tvMatchTime.text =
             TimeUtil.timeStamp2Date(matchDetail.matchTime.toLong(), "yyyy-MM-dd HH:mm")
+        needWsToUpdateUI()
+    }
+    /**
+     * 需要实时更新的UI
+     */
+    private fun needWsToUpdateUI() {
+        //上滑停靠栏
+        getMatchStatus(mDatabind.tvTopMatchStatus, matchDetail.matchType, matchDetail.status)
         //比赛状态
         getMatchStatus(mDatabind.tvMatchStatus, matchDetail.matchType, matchDetail.status)
+        updateRunTime()
+        //有比分的情况 足球status正在比赛是[2,8] 篮球是[2,10]
+        if (matchType == "1") {
+            //足球
+            Glide.with(this).load(matchDetail.homeLogo).placeholder(R.drawable.default_team_logo)
+                .into(mDatabind.ivTopHomeIcon)
+            Glide.with(this).load(matchDetail.awayLogo).placeholder(R.drawable.default_team_logo)
+                .into(mDatabind.ivTopAwayIcon)
+            mDatabind.tvTopHomeScore.text =
+                if (matchDetail.status in 2..8) matchDetail.homeScore.toString() else ""
+            mDatabind.tvTopAwayScore.text =
+                if (matchDetail.status in 2..8) matchDetail.awayScore.toString() else ""
+            if (matchDetail.status in 2..8) {
+                mDatabind.tvMatchVs.textSize = 20f
+                mDatabind.tvMatchVs.text =
+                    matchDetail.homeScore.toString() + " : " + matchDetail.awayScore.toString()
+            } else {
+                mDatabind.tvMatchVs.textSize = 22f
+                mDatabind.tvMatchVs.text = getString(R.string.vs)
+            }
+        } else {
+            Glide.with(this).load(matchDetail.awayLogo).placeholder(R.drawable.default_team_logo)
+                .into(mDatabind.ivTopHomeIcon)
+            Glide.with(this).load(matchDetail.homeLogo).placeholder(R.drawable.default_team_logo)
+                .into(mDatabind.ivTopAwayIcon)
+            mDatabind.tvTopHomeScore.text =
+                if (matchDetail.status in 2..10) matchDetail.awayScore.toString() else ""
+            mDatabind.tvTopAwayScore.text =
+                if (matchDetail.status in 2..10) matchDetail.homeScore.toString() else ""
+            if (matchDetail.status in 2..10) {
+                mDatabind.tvMatchVs.textSize = 20f
+                mDatabind.tvMatchVs.text =
+                    matchDetail.awayScore.toString() + " : " + matchDetail.homeScore.toString()
+            } else {
+                mDatabind.tvMatchVs.textSize = 22f
+                mDatabind.tvMatchVs.text = getString(R.string.vs)
+            }
+        }
     }
 
     private fun startVideo(url: String?) {
@@ -444,8 +425,8 @@ class MatchDetailActivity :
         mViewModel.detail.observe(this) { match ->
             if (match != null) {
                 matchDetail = match
-                setBaseMatchUI()
-                showMatchStatusUI()
+                setBaseListener()
+                showBaseUI()
                 if (isNeedInit) {
                     isNeedInit = false
                     mViewModel.startTimeRepeat(match.runTime)
@@ -459,7 +440,7 @@ class MatchDetailActivity :
         }
         mViewModel.runTime.observe(this) {
             matchDetail.runTime = it
-            setBaseMatchUI()
+            updateRunTime()
         }
         //跑马灯广告
         mViewModel.scrollTextList.observe(this) { stl ->
@@ -468,8 +449,7 @@ class MatchDetailActivity :
                 //滚动条广告
                 mDatabind.marqueeView.isSelected = true
                 val random = (0..list.size).random() % list.size
-                mDatabind.marqueeView.text =
-                    list[random].name/*+"                                                                                             "*/
+                mDatabind.marqueeView.text = list[random].name    /*+"                                                                                             "*/
                 mDatabind.marqueeView.setOnClickListener {
                     jumpOutUrl(list[random].targetUrl)
                 }
@@ -498,6 +478,26 @@ class MatchDetailActivity :
             }
 
         }
+    }
+
+    /**
+     * 根据状态更新比赛运行时间
+     */
+    private fun updateRunTime() {
+        setMatchStatusTime(
+            mDatabind.tvTopMatchStatusTime,
+            mDatabind.tvTopMatchStatusTimeS,
+            matchDetail.matchType,
+            matchDetail.status,
+            matchDetail.runTime
+        )
+        setMatchStatusTime(
+            mDatabind.tvMatchStatusTime,
+            mDatabind.tvMatchStatusTimeS,
+            matchDetail.matchType,
+            matchDetail.status,
+            matchDetail.runTime
+        )
     }
 
     private fun changeUI() {

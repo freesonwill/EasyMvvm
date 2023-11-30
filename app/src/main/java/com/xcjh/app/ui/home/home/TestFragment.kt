@@ -6,25 +6,28 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import com.chad.library.adapter.base.QuickAdapterHelper
 import com.chad.library.adapter.base.layoutmanager.QuickGridLayoutManager
 import com.drake.brv.listener.ItemDifferCallback
+import com.drake.brv.utils.addModels
 import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.linear
 import com.drake.brv.utils.setDifferModels
 import com.drake.brv.utils.setup
 import com.xcjh.app.R
-import com.xcjh.app.adapter.*
-import com.xcjh.app.base.BaseFragment
+import com.xcjh.app.adapter.DiffUtilAdapter
+import com.xcjh.app.adapter.HeaderAdapter
+import com.xcjh.app.base.BaseVpFragment
 import com.xcjh.app.bean.DiffEntity
-import com.xcjh.app.bean.SwitchVideoModel
+import com.xcjh.app.bean.HoverHeaderModel
 import com.xcjh.app.databinding.HeadViewBinding
 import com.xcjh.app.databinding.ItemDifferBinding
 import com.xcjh.app.databinding.TtComRefreshListBinding
 import com.xcjh.app.utils.smartListData
 import com.xcjh.app.vm.MainVm
 import com.xcjh.base_lib.bean.ListDataUiState
+import com.xcjh.base_lib.utils.myToast
 
 
-class TestFragment : BaseFragment<MainVm, TtComRefreshListBinding>() {
-
+class TestFragment : BaseVpFragment<MainVm, TtComRefreshListBinding>() {
+    override val typeId: Long=6
     private val mAdapter = DiffUtilAdapter()
     // private val mAdapter = TestAdapter()
     // private val mAdapter = Test1Adapter()
@@ -42,7 +45,7 @@ class TestFragment : BaseFragment<MainVm, TtComRefreshListBinding>() {
     private fun setAdapter() {
         mDatabind.smartListView.rcvCommon.linear().setup {
             addType<DiffEntity>(R.layout.item_differ)
-            addType<SwitchVideoModel>(R.layout.head_view)
+            addType<HoverHeaderModel>(R.layout.head_view)
             itemDifferCallback = object : ItemDifferCallback {
                 override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
                     return if (oldItem is DiffEntity && newItem is DiffEntity) {
@@ -56,6 +59,11 @@ class TestFragment : BaseFragment<MainVm, TtComRefreshListBinding>() {
             }
             onCreate {
                 //getBinding<ItemDifferBinding>().tvTitle.text = getModel<DiffEntity>().title//"文本内容"
+                when (itemViewType) {
+                    R.layout.head_view -> {
+                        val bind = getBinding<HeadViewBinding>()
+                    }
+                }
             }
             onBind {
                 /* when (getBinding<ViewBinding>()) {
@@ -73,7 +81,7 @@ class TestFragment : BaseFragment<MainVm, TtComRefreshListBinding>() {
                         // val model = getModel<DiffEntity>()
                         getBinding<ItemDifferBinding>().tvTitle.text = model.title
                     }
-                    is SwitchVideoModel -> {
+                    is HoverHeaderModel -> {
                         /* model.input = "评论内容"
                         model.notifyChange()*/
                         // val model = getModel<DiffEntity>()
@@ -98,10 +106,20 @@ class TestFragment : BaseFragment<MainVm, TtComRefreshListBinding>() {
                         // findView<TextView>(R.id.tvTitle).text = getModel<DiffEntity>().title
                     }*/
             }
-        }.models = entities
+            onClick(R.id.lltItem) {
+                when (itemViewType) {
+                    R.layout.head_view -> myToast("悬停条目")
+                    else -> myToast("普通条目")
+                }
+            }
+        }
+        mDatabind.smartListView.rcvCommon.addModels(arrayListOf(HoverHeaderModel(url = "", name = "head")))
+        mDatabind.smartListView.rcvCommon.addModels(entities)
+        mDatabind.smartListView.smartCommon.setEnableLoadMore(false)
         mDatabind.smartListView.smartCommon.setOnLoadMoreListener {
             mDatabind.smartListView.smartCommon.finishLoadMore()
-            mDatabind.smartListView.rcvCommon.bindingAdapter.addModels(getDiffUtilMore())
+            mDatabind.smartListView.rcvCommon.bindingAdapter.addModels(entities)
+            mDatabind.smartListView.smartCommon.finishLoadMoreWithNoMoreData()
         }
         mDatabind.smartListView.smartCommon.setOnRefreshListener {
             mDatabind.smartListView.smartCommon.finishRefresh()

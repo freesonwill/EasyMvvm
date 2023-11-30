@@ -1,4 +1,4 @@
-package com.xcjh.app.ui.details.fragment.index
+package com.xcjh.app.ui.details.fragment.liveup
 
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
@@ -10,13 +10,14 @@ import com.xcjh.app.bean.MsgBean
 import com.xcjh.app.bean.NoticeBean
 import com.xcjh.app.bean.OddsDetailBean
 import com.xcjh.app.databinding.FragmentDetailTabIndexTab1Binding
+import com.xcjh.app.databinding.FragmentDetailTabLiveupTabBinding
 import com.xcjh.app.ui.details.DetailVm
 
 /**
  * 其他直播间列表
- * matchType 1足球，2篮球
+ * type 0客队，1主队
  */
-class Index1Fragment() : BaseFragment<DetailVm, FragmentDetailTabIndexTab1Binding>() {
+class BasketballFragment(var type: Int = 0, ) : BaseFragment<DetailVm, FragmentDetailTabLiveupTabBinding>() {
     private val vm by lazy {
         ViewModelProvider(requireActivity())[DetailVm::class.java]
     }
@@ -25,9 +26,13 @@ class Index1Fragment() : BaseFragment<DetailVm, FragmentDetailTabIndexTab1Bindin
     }
 
     override fun createObserver() {
-        vm.odds.observe(this) {
+        vm.basket.observe(this) {
             if (it != null) {
-                mDatabind.viewSFTable.setData(it.euInfo)
+                if (type==0){
+                    mDatabind.viewBasketballLineup.setData(it.away)
+                }else{
+                    mDatabind.viewBasketballLineup.setData(it.home)
+                }
             }
         }
     }
