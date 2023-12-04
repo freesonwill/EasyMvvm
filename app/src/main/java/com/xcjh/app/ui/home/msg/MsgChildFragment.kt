@@ -1,13 +1,16 @@
 package com.xcjh.app.ui.home.msg
 
 import  android.os.Bundle
+import com.drake.brv.utils.addModels
 import com.drake.brv.utils.models
+import com.xcjh.app.MyApplication
 import com.xcjh.app.R
 import com.xcjh.app.adapter.MsgListAdapter
 import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseFragment
 import com.xcjh.app.bean.MsgListBean
 import com.xcjh.app.databinding.FrMsgchildBinding
+import com.xcjh.app.ui.room.MsgBeanData
 import com.xcjh.app.utils.CacheUtil
 import com.xcjh.app.websocket.MyWsManager
 import com.xcjh.app.websocket.bean.ReceiveChangeMsg
@@ -17,6 +20,8 @@ import com.xcjh.app.websocket.listener.C2CListener
 import com.xcjh.base_lib.utils.LogUtils
 import com.xcjh.base_lib.utils.distance
 import com.xcjh.base_lib.utils.vertical
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 
 class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
@@ -197,6 +202,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
     }
 
     fun refshMsg(msg: ReceiveChatMsg) {
+        addData(msg)
         updataMsg(listdata)
         var hasMsg = false
         for (i in 0 until listdata.size) {
@@ -262,4 +268,22 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
 
     }
 
+    fun addData(chat: ReceiveChatMsg) {
+        if (chat.from==chat.anchorId) {
+            var beanmy: MsgBeanData = MsgBeanData()
+            beanmy.anchorId = chat.anchorId
+            beanmy.fromId = chat.from
+            beanmy.content = chat.content
+            beanmy.chatType = chat.chatType
+            beanmy.cmd = 11
+            beanmy.msgType = chat.msgType
+            beanmy.createTime = chat.createTime
+
+            GlobalScope.launch {
+
+                MyApplication.dataBase!!.chatDao?.insert(beanmy)
+
+            }
+        }
+    }
 }

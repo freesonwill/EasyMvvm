@@ -27,10 +27,18 @@
             android:id="@+id/google_progress"
             android:layout_width="30dp"
             android:layout_height="30dp"
-
+            android:visibility="gone"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@id/ivpic"
             android:layout_gravity="center"/>
+        <ImageView
+            android:id="@+id/ivfaile"
+            android:layout_width="@dimen/dp_30"
+            android:layout_centerVertical="true"
+            android:visibility="gone"
+            android:background="@drawable/arrows_red_down"
+            android:layout_toLeftOf="@id/ivpic"
+            android:layout_height="@dimen/dp_30"/>
         <com.makeramen.roundedimageview.RoundedImageView
             android:id="@+id/ivpic"
             android:layout_width="wrap_content"

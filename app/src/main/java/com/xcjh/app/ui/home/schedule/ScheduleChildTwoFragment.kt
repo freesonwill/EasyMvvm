@@ -795,13 +795,13 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
         if (isResh) {
             isResh = false
-            mDatabind.smartCommon.autoRefresh()
+            getData()
         }
     }
 
     override fun lazyLoadData() {
         super.lazyLoadData()
-        mDatabind.smartCommon.autoRefresh()
+        getData()
     }
 
     override fun lazyLoadTime(): Long {

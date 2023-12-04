@@ -97,7 +97,7 @@ class ScheduleVm : BaseViewModel() {
                 )
                 myToast(it.errorMsg)
 
-            }, false
+            }, true
         )
     }
 }

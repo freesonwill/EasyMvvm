@@ -8,6 +8,7 @@ import com.xcjh.app.bean.MsgBean
 import com.xcjh.app.bean.PostClreaMsgBean
 import com.xcjh.app.bean.HistoryMsgReq
 import com.xcjh.app.net.apiService
+import com.xcjh.app.ui.room.MsgBeanData
 import com.xcjh.app.utils.CacheUtil
 import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.base.BaseViewModel
@@ -25,12 +26,12 @@ class ChatVm : BaseViewModel() {
     var feedbackOk = BooleanLiveData()
     var upPic = UnPeekLiveData<String>()
     var clearMsg = UnPeekLiveData<Boolean>()
-    var hisMsgList = UnPeekLiveData<MutableList<MsgBean>>()
+    var hisMsgList = UnPeekLiveData<MutableList<MsgBeanData>>()
     fun getHisMsgList(smartCommon:SmartRefreshLayout, offset: String, serchId:String?) {
 
         request(
             {
-                apiService.getHistoryMsg(
+                apiService.getHistoryMsgPr(
                     HistoryMsgReq("2",null,offset, CacheUtil.getUser()?.id!!, serchId!!)
                 )
             },

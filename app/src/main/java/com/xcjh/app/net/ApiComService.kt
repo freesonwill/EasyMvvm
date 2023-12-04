@@ -1,6 +1,7 @@
 package com.xcjh.app.net
 
 import com.xcjh.app.bean.*
+import com.xcjh.app.ui.room.MsgBeanData
 import com.xcjh.base_lib.bean.ApiResponse
 import okhttp3.MultipartBody
 import retrofit2.http.*
@@ -197,8 +198,12 @@ interface ApiComService {
      * 消息列表页面：历史消息查询 复用型接口
      */
     @POST("app/msg/history")
+    suspend fun getHistoryMsgPr(@Body req: HistoryMsgReq): ApiResponse<MutableList<MsgBeanData>>
+    /**
+     * 消息列表页面：历史消息查询 复用型接口
+     */
+    @POST("app/msg/history")
     suspend fun getHistoryMsg(@Body req: HistoryMsgReq): ApiResponse<MutableList<MsgBean>>
-
     /**
      * 获取用户基本信息
      * /app/user/getUserInfo

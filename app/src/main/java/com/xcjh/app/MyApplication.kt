@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ProcessLifecycleOwner
+import androidx.room.Room
 import com.drake.statelayout.StateConfig
 import com.hjq.language.MultiLanguages
 import com.hjq.toast.Toaster
@@ -25,6 +26,7 @@ import com.shuyu.gsyvideoplayer.player.PlayerFactory
 import com.tencent.mmkv.MMKV
 import com.xcjh.app.event.AppViewModel
 import com.xcjh.app.event.EventViewModel
+import com.xcjh.app.ui.room.MyRoomDataBase
 import com.xcjh.app.utils.DynamicTimeFormat
 import com.xcjh.app.view.callback.EmptyCallback
 import com.xcjh.app.view.callback.LoadingCallback
@@ -49,6 +51,7 @@ val eventViewModel: EventViewModel by lazy {
 class MyApplication : App() , LifecycleObserver{
 
     companion object {
+        lateinit var dataBase: MyRoomDataBase
         lateinit var appViewModelInstance: AppViewModel
         lateinit var eventViewModelInstance: EventViewModel
     }
@@ -66,6 +69,8 @@ class MyApplication : App() , LifecycleObserver{
             .setDefaultCallback(SuccessCallback::class.java)//设置默认加载状态页
             .commit()
         initDialogX()
+        dataBase =
+            Room.databaseBuilder(this, MyRoomDataBase::class.java, "userDataBase").build()
         appViewModelInstance = getAppViewModelProvider()[AppViewModel::class.java]
         eventViewModelInstance = getAppViewModelProvider()[EventViewModel::class.java]
         Toaster.init(this);
