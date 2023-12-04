@@ -28,6 +28,13 @@ data class ReceiveChangeMsg(
     var scoresDetail: List<List<Int>>? = listOf(),
 )
 /**
+ * 推送维度消息
+ *
+ */
+data class NoReadMsg(
+    val totalCount: Int
+)
+/**
  * 群聊和私聊消息内容
  *
  */

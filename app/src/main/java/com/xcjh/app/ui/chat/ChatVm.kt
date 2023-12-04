@@ -59,7 +59,25 @@ class ChatVm : BaseViewModel() {
         var fileRequestBody = RequestBody.create(MediaType.parse("image/jpeg"), file)
         var part = MultipartBody.Part.createFormData("file", file.name, fileRequestBody)
         request(
-            { apiService.upLoadChatPic(part) },
+            { apiService.upLoadChatPic(part)
+            },
+            {
+
+                upPic.value = it
+
+            }, {
+                //请求失败
+                upPic.value = ""
+                myToast(appContext.getString(R.string.http_txt_err_meg))
+
+            }
+        )
+    }
+    fun upLoadPic(file: MultipartBody.Part) {
+
+        request(
+            { apiService.upLoadChatPic(file)
+            },
             {
 
                 upPic.value = it

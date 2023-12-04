@@ -144,7 +144,7 @@ data class MsgBean(
     val identityType: Int? = 0,//发送者身份身份(0：普通用户，1主播 2助手 3运营)
     var msgType: Int? = 0, //消息类型，文字：0， 图片：1
     val readable: Int? = 0,//是否已读：0 未读 1 已读
-    var sent: Int? = 0,//是否已发送: 0 未发送 1 已发送
+    var sent: Int? = 0,//是否已发送: 0 正在发送 1 已发送 2 发送失败
     val toId: String? = "",
     val updateTime: String? = "",
     var lastShowTimeStamp:  Long = 0,

@@ -1,22 +1,28 @@
 package com.xcjh.app.ui.chat
 
-import android.R.string
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
+import android.view.Gravity
 import android.view.View
+import android.view.View.OnLongClickListener
+import android.widget.TextView
+import com.blankj.utilcode.util.ToastUtils
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.drake.brv.utils.addModels
+import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.google.gson.Gson
 import com.gyf.immersionbar.ImmersionBar
+import com.kongzue.dialogx.dialogs.CustomDialog
+import com.kongzue.dialogx.interfaces.OnBindView
 import com.luck.picture.lib.basic.PictureSelector
 import com.luck.picture.lib.config.SelectMimeType
 import com.luck.picture.lib.entity.LocalMedia
@@ -31,6 +37,8 @@ import com.xcjh.app.databinding.ItemChatPicLeftBinding
 import com.xcjh.app.databinding.ItemChatPicRightBinding
 import com.xcjh.app.databinding.ItemChatTxtLeftBinding
 import com.xcjh.app.databinding.ItemChatTxtRightBinding
+import com.xcjh.app.net.CountingRequestBody
+import com.xcjh.app.net.ProgressListener
 import com.xcjh.app.utils.CacheUtil
 import com.xcjh.app.utils.GlideEngine
 import com.xcjh.app.utils.nice.Utils
@@ -43,11 +51,14 @@ import com.xcjh.app.websocket.bean.SendChatMsgBean
 import com.xcjh.app.websocket.bean.SendCommonWsBean
 import com.xcjh.app.websocket.listener.C2CListener
 import com.xcjh.base_lib.Constants
-import com.xcjh.base_lib.utils.LogUtils
 import com.xcjh.base_lib.utils.TAG
 import com.xcjh.base_lib.utils.TimeUtil
+import com.xcjh.base_lib.utils.copyToClipboard
 import com.xcjh.base_lib.utils.setOnclickNoRepeat
-import kotlinx.android.synthetic.main.activity_chat.rv
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import okhttp3.MultipartBody
 import java.io.File
 
 
@@ -148,7 +159,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
 
                         binding.tvcontent.text = ad.content
                         binding.tvtime.text =
-                            TimeUtil.timeStamp2Date(ad.createTime!!, null)!!.substring(0,16)
+                            TimeUtil.timeStamp2Date(ad.createTime!!, null)!!.substring(0, 16)
                         binding.tvtime.visibility = View.GONE
                         Glide.with(this@ChatActivity).load(userhead)
                             .placeholder(R.drawable.default_anchor_icon).into(binding.ivhead)
@@ -166,7 +177,10 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                             lastShowTimeStamp = ad.createTime!!
                             binding.tvtime.visibility = View.VISIBLE
                         }
-
+                        binding.tvcontent.setOnLongClickListener(OnLongClickListener {
+                            initLongClick(binding.tvcontent, ad.content)
+                            true
+                        })
 
                     }
 
@@ -174,13 +188,35 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                         var binding = getBinding<ItemChatTxtRightBinding>()
                         var matchBeanNew = _data as MsgBean
 
-                        if (matchBeanNew.sent==1){
-                            binding.googleProgress.visibility=View.GONE
-                        }else{
-                            binding.googleProgress.visibility=View.VISIBLE
+                        when (matchBeanNew.sent) {
+                            0 -> {//正在发送
+                                binding.googleProgress.visibility = View.VISIBLE
+                                GlobalScope.launch {
+                                    delay(5000)
+                                    if (matchBeanNew.sent == 0) {
+                                        runOnUiThread {
+                                            binding.googleProgress.setBackgroundResource(
+                                                R.drawable.basketball
+                                            )
+                                        }
+
+                                    }
+                                }
+                            }
+
+                            1 -> {//发送成功
+                                binding.googleProgress.visibility = View.GONE
+                            }
+
+                            2 -> {//发送失败
+                                binding.googleProgress.visibility = View.GONE
+                            }
+
                         }
+
                         binding.tvtime.text =
-                            TimeUtil.timeStamp2Date(matchBeanNew.createTime!!, null)!!.substring(0,16)
+                            TimeUtil.timeStamp2Date(matchBeanNew.createTime!!, null)!!
+                                .substring(0, 16)
                         binding.tvtime.visibility = View.GONE
                         binding.tvcontent.text =
                             matchBeanNew.content
@@ -201,14 +237,47 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                             lastShowTimeStamp = matchBeanNew.createTime!!
                             binding.tvtime.visibility = View.VISIBLE
                         }
+                        binding.tvcontent.setOnLongClickListener(OnLongClickListener {
+                            initLongClick(binding.tvcontent, matchBeanNew.content)
+                            true
+                        })
+
 
                     }
 
                     R.layout.item_chat_pic_right -> {//右边图片
                         var binding = getBinding<ItemChatPicRightBinding>()
                         var matchBeanNew = _data as MsgBean
+
+                        when (matchBeanNew.sent) {
+                            0 -> {//正在发送
+                                binding.googleProgress.visibility = View.VISIBLE
+                                GlobalScope.launch {
+                                    upLoadPic(matchBeanNew.content, binding.tvpross)
+                                    delay(5000)
+                                    if (matchBeanNew.sent == 0) {
+                                        runOnUiThread {
+                                            binding.googleProgress.setBackgroundResource(
+                                                R.drawable.basketball
+                                            )
+                                        }
+
+                                    }
+                                }
+                            }
+
+                            1 -> {//发送成功
+                                binding.googleProgress.visibility = View.GONE
+                            }
+
+                            2 -> {//发送失败
+                                binding.googleProgress.visibility = View.GONE
+                            }
+
+                        }
                         binding.tvtime.text =
-                            TimeUtil.timeStamp2Date(matchBeanNew.createTime!!, null)!!.substring(0,16)
+                            TimeUtil.timeStamp2Date(matchBeanNew.createTime!!, null)!!
+                                .substring(0, 16)
                         binding.tvtime.visibility = View.GONE
                         Glide.with(this@ChatActivity).load(CacheUtil.getUser()?.head)
                             .placeholder(R.drawable.icon_avatar)
@@ -249,7 +318,8 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                         var binding = getBinding<ItemChatPicLeftBinding>()
                         var matchBeanNew = _data as MsgBean
                         binding.tvtime.text =
-                            TimeUtil.timeStamp2Date(matchBeanNew.createTime!!, null)!!.substring(0,16)
+                            TimeUtil.timeStamp2Date(matchBeanNew.createTime!!, null)!!
+                                .substring(0, 16)
                         binding.tvtime.visibility = View.GONE
                         Glide.with(this@ChatActivity).load(matchBeanNew.content)
                             .dontAnimate().into(binding.ivpic)
@@ -343,9 +413,9 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                     }
                                     mDatabind.ivexpent.performClick()
                                     if (!TextUtils.isEmpty(path)) {
-                                        mViewModel.upLoadPic(File(path))
-
                                         msgType = 1
+                                        msgContent = path
+                                        sendMsg()
 
                                     }
                                 }
@@ -380,11 +450,11 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
 
             override fun onSendMsgIsOk(isOk: Boolean, bean: ReceiveWsBean<*>) {
 
-                if (isOk){
-                    for (i in 0 until  mDatabind.rv.models!!.size){
+                if (isOk) {
+                    for (i in 0 until mDatabind.rv.models!!.size) {
                         var beanmy: MsgBean = mDatabind.rv.models!![i] as MsgBean
-                        if (beanmy.content==bean.msg){
-                            beanmy.sent=1
+                        if (beanmy.content == bean.msg) {
+                            beanmy.sent = 1
                         }
                     }
 
@@ -393,25 +463,15 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
 
             override fun onC2CReceive(chat: ReceiveChatMsg) {
                 mViewModel.clearMsg(userId)
-                for (i in 0 until  mDatabind.rv.models!!.size){
+                for (i in 0 until mDatabind.rv.models!!.size) {
                     var beanmy: MsgBean = mDatabind.rv.models!![i] as MsgBean
-                    if (beanmy.content==chat.content&&beanmy.createTime==chat.createTime){
-                        beanmy.id=chat.id
+                    if (beanmy.id == chat.sendId) {
+                        beanmy.sent = 1
+                        mDatabind.rv.bindingAdapter.notifyItemChanged(i)
+                        break
                     }
                 }
-//                var beanmy: MsgBean = MsgBean()
-//                beanmy.fromId = chat.from
-//                beanmy.content = chat.content
-//                beanmy.chatType = 2
-//                beanmy.cmd = 11
-//                beanmy.msgType = chat.msgType
-//                beanmy.createTime = System.currentTimeMillis()
-//                var listdata1: MutableList<MsgBean> = ArrayList<MsgBean>()
-//                listdata1.add(beanmy)
-//                mDatabind.rv.addModels(listdata1, index = 0)
-//                mDatabind.rv.scrollToPosition(0) // 保证最新一条消息显示
 
-                //appViewModel.updateMsgEvent.postValue(beanmy)
 
             }
 
@@ -425,6 +485,47 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
         mViewModel.getHisMsgList(mDatabind.smartCommon, offset, userId)
     }
 
+    fun upLoadPic(path: String, view: TextView) {
+        val file = File(path)
+
+        val requestBody = CountingRequestBody(file, "image/*", object :
+            ProgressListener {
+            override fun onProgress(bytesWritten: Long, contentLength: Long) {
+                // 在此处更新进度
+                val progress = 100.0 * bytesWritten / contentLength
+                runOnUiThread {
+                    view.text = progress.toInt().toString() + "%"
+                    println("Upload progress: ${progress.toInt()}" + "%")
+                }
+
+            }
+        })
+
+        val multipartBody = MultipartBody.Part.createFormData("file", file.name, requestBody)
+        mViewModel.upLoadPic(multipartBody)
+    }
+
+    fun initLongClick(view: View, content: String) {
+        CustomDialog.show(object : OnBindView<CustomDialog>(R.layout.layout_custom_dialog_align) {
+            private var btnSelectPositive: TextView? = null
+            override fun onBind(dialog: CustomDialog, v: View) {
+                btnSelectPositive = v.findViewById<TextView>(R.id.btn_selectPositive)
+                btnSelectPositive!!.setOnClickListener(View.OnClickListener {
+                    copyToClipboard(content)
+                    ToastUtils.showShort(resources.getString(R.string.copy_success))
+                    dialog.dismiss()
+                })
+            }
+        })
+            .setCancelable(true)
+            .setMaskColor(resources.getColor(R.color.translet))
+//            .setEnterAnimResId(R.anim.anim_custom_pop_enter)
+//            .setExitAnimResId(R.anim.anim_custom_pop_exit)
+            .setAlignBaseViewGravity(view, Gravity.TOP or Gravity.CENTER_HORIZONTAL)
+            // .setBaseViewMarginBottom(-dip2px(45f))
+            .show()
+    }
+
     fun initData() {
         mDatabind.smartCommon.setOnRefreshListener {
             mViewModel.getHisMsgList(mDatabind.smartCommon, offset, userId)
@@ -435,8 +536,8 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
         super.createObserver()
         mViewModel.upPic.observe(this) {
             if (it.isNotEmpty()) {
-                msgContent = it
-                sendMsg()
+//                msgContent = it
+//                sendMsg()
             }
         }
         mViewModel.hisMsgList.observeForever {
@@ -487,6 +588,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
     fun sendMsg() {
         // initMyMsg()
 
+        var creatime = System.currentTimeMillis()
         var bean = SendChatMsgBean(
             2,
             msgType,
@@ -496,8 +598,8 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
             userId,
             msgContent,
             "0",
-            System.currentTimeMillis(),
-            CacheUtil.getUser()?.id,
+            creatime,
+            userId + creatime,
             if (userhead.isEmpty()) "" else userhead,
             if (nickname.isEmpty()) "" else nickname,
             if (CacheUtil.getUser()?.head!!.isEmpty()) "" else CacheUtil.getUser()?.head,
@@ -512,10 +614,11 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
         beanmy.fromId = bean.from
         beanmy.content = bean.content!!
         beanmy.chatType = 2
+        beanmy.id = userId + creatime
         beanmy.cmd = 11
-        beanmy.sent=0
+        beanmy.sent = 0
         beanmy.msgType = bean.msgType
-        beanmy.createTime = System.currentTimeMillis()
+        beanmy.createTime = creatime
         var listdata1: MutableList<MsgBean> = ArrayList<MsgBean>()
         listdata1.add(beanmy)
         mDatabind.rv.addModels(listdata1, index = 0)

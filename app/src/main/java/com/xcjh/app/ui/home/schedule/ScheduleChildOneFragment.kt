@@ -25,7 +25,8 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
     var isVisble = false
     var calendarTime: String = ""
     var mTabPosition = 0
-    var mPushPosition = 0
+    var mOneTabIndex = 0
+    var mTwoTabIndex = 0
     companion object {
         var mTitles: Array<out String>? = null
         private val MATCHTYPE = "matchtype"
@@ -52,7 +53,7 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
     }
     override fun onResume() {
         super.onResume()
-        isVisble = mTabPosition == mPushPosition
+       // isVisble = mTabPosition == mPushPosition
         if (!hasData) {
 
             mViewModel.getHotMatchData(matchtypeOld!!, status)
@@ -67,13 +68,13 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
             matchtype = bundle.getString(ScheduleChildOneFragment.MATCHTYPE)!!
             matchtypeOld = matchtype
             status = bundle.getInt(ScheduleChildOneFragment.STATUS)
-            mTabPosition = bundle.getInt(ScheduleChildOneFragment.TAB)
+            mOneTabIndex = bundle.getInt(ScheduleChildOneFragment.TAB)
         }
         mViewModel.getHotMatchData(matchtypeOld!!, status)
         mDatabind.vp.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                //appViewModel.updateSchedulePosition.postValue(position)
+                appViewModel.updateScheduleTwoPosition.postValue(position)
 
                 if (position==(mFragments.size-1)){
                     appViewModel.updateViewpager.postValue(true)
@@ -83,14 +84,7 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
             }
 
         })
-        appViewModel.updateSchedulePosition.observeForever {
-            if (isAdded) {
-                mPushPosition = it
-                isVisble = mTabPosition == it
-               // mDatabind.smartCommon.autoRefresh()
-                calendarTime = ""
-            }
-        }
+
         setOnclickNoRepeat(mDatabind.ivMeau) {
             when (it.id) {
                 R.id.iv_meau -> {
@@ -141,9 +135,10 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
 
     }
     private fun initEvent(datas:ArrayList<HotMatchBean>) {
+        mFragments.clear()
         var titles: MutableList<String> = ArrayList<String>()
         for (i in 0 until  datas!!.size) {
-            mFragments.add(ScheduleChildTwoFragment.newInstance(datas[i].matchType,datas[i].competitionId,status,i))
+            mFragments.add(ScheduleChildTwoFragment.newInstance(datas[i].matchType,datas[i].competitionId,status,mOneTabIndex,i))
             titles.add(datas[i].competitionName)
         }
         mDatabind.vp.initActivity(requireActivity(), mFragments, true)
@@ -162,13 +157,7 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
 //        mDatabind.vp.currentItem = 0
 //        mDatabind.vp.offscreenPageLimit=4
 
-        mDatabind.vp.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                super.onPageSelected(position)
-                appViewModel.updateScheduleTwoPosition.postValue(position)
-            }
 
-        })
 
     }
 }

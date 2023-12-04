@@ -77,7 +77,17 @@ interface OtherPushListener {
     fun onChangeMatchData(matchList: ArrayList<ReceiveChangeMsg>){}
 
 }
+/**
+ * 未读消息总数
+ */
+interface NoReadMsgPushListener {
 
+    /**
+     * 收到比赛实时推送数据
+     */
+    fun onNoReadMsgNums(nums: String){}
+
+}
 /**
  * 与主播单聊相关
  */

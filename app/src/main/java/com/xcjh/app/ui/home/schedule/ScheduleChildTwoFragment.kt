@@ -18,6 +18,7 @@ import com.drake.brv.utils.models
 import com.drake.brv.utils.mutable
 import com.drake.brv.utils.setDifferModels
 import com.drake.brv.utils.setup
+import com.scwang.smart.refresh.header.ClassicsHeader
 import com.xcjh.app.R
 import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseFragment
@@ -59,37 +60,39 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
     lateinit var strTimeRuslt: String
     lateinit var endTimeResult: String
     var tabName: String? = ""
+    var mOneTabIndex = 0
+    var mTwoTabIndex = 0
+    var mCurrentOneTabIndex = 0
+    var mCurrentTwoTabIndex = 0
+    var isResh = false
 
     companion object {
         var mTitles: Array<out String>? = null
         private val MATCHTYPE = "matchtype"
         private val COMID = "competitionId"
         private val STATUS = "status"
-        private val TAB = "tab"
+        private val OneIndex = "oneIndex"
+        private val TwoIndex = "TwoIndex"
         fun newInstance(
             matchtype: String,
             competitionId: String,
             status: Int,
-            po: Int
+            oneindex: Int,
+            twoindex: Int,
         ): ScheduleChildTwoFragment {
             val args = Bundle()
             args.putString(MATCHTYPE, matchtype);
             args.putString(COMID, competitionId);
             args.putInt(STATUS, status);
-            args.putInt(TAB, po);
+            args.putInt(OneIndex, oneindex);
+            args.putInt(TwoIndex, twoindex);
             val fragment = ScheduleChildTwoFragment()
             fragment.arguments = args
             return fragment
         }
     }
 
-    override fun onHiddenChanged(hidden: Boolean) {
-        super.onHiddenChanged(hidden)
-    }
 
-    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
-        super.setUserVisibleHint(isVisibleToUser)
-    }
     fun initTime() {
         LogUtils.d("本页面tabname=$tabName")
         strTime = TimeUtil.gettimenowYear().toString()
@@ -135,8 +138,10 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                 matchtype = bundle.getString(ScheduleChildTwoFragment.MATCHTYPE)!!
                 competitionId = bundle.getString(ScheduleChildTwoFragment.COMID)!!
                 status = bundle.getInt(ScheduleChildTwoFragment.STATUS)
+                mOneTabIndex = bundle.getInt(ScheduleChildTwoFragment.OneIndex)
+                mTwoTabIndex = bundle.getInt(ScheduleChildTwoFragment.TwoIndex)
             }
-
+            mDatabind.smartCommon.setRefreshHeader(ClassicsHeader(requireContext()))
             mDatabind.recBottom.run {
                 distance(0, 0, 0, 15)
             }
@@ -708,20 +713,61 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
 
             }
-            appViewModel.updateganlerTime.observeForever() {
-                if (isAdded&&isVisble) {
+            appViewModel.updateganlerTime.observe(this) {
 
+                if (isAdded && mCurrentOneTabIndex == mOneTabIndex && mCurrentTwoTabIndex == mTwoTabIndex) {
+                    calendarTime = it
                     getData()
 
 
                 }
             }
+            appViewModel.updateSchedulePosition.observeForever {
+
+                mCurrentOneTabIndex = it
+            }
             appViewModel.updateScheduleTwoPosition.observeForever {
+                mCurrentTwoTabIndex = it
+//                if (isAdded) {
+//                    mTabPosition = it
+//                    isVisble = mPushPosition == mTabPosition
+//
+//                    calendarTime = ""
+//                }
+            }
+            appViewModel.appPushMsg.observeForever {
                 if (isAdded) {
-                    mPushPosition = it
-                    isVisble = mTabPosition == it
-                    // mDatabind.smartCommon.autoRefresh()
-                    calendarTime = ""
+
+                    if (isVisble) {
+                        for (j in 0 until it.size) {
+                            for (i in 0 until mDatabind.recBottom.models?.size!!) {
+                                var bean: MatchBean = mDatabind.recBottom.models!![i] as MatchBean
+                                // if (bean.homeHalfScore == "1") {
+                                if (bean.matchId == it[j].matchId.toString() && bean.matchType == it[j].matchType.toString()) {
+                                    bean.awayHalfScore = it[j].awayHalfScore.toString()
+                                    bean.awayScore = it[j].awayScore.toString()
+                                    bean.homeHalfScore = it[j].homeHalfScore.toString()
+                                    bean.homeScore = it[j].homeScore.toString()
+                                    bean.runTime = it[j].runTime.toString()
+                                    bean.status = it[j].status.toString()
+                                    mDatabind.recBottom.bindingAdapter.notifyItemChanged(i)
+                                }
+                            }
+                        }
+                    } else {
+                        for (j in 0 until it.size) {
+                            for (i in 0 until mDatabind.recBottom.models?.size!!) {
+                                var bean: MatchBean = mDatabind.recBottom.models!![i] as MatchBean
+                                // if (bean.homeHalfScore == "1") {
+                                if (bean.matchId == it[j].matchId.toString() && bean.matchType == it[j].matchType.toString() && bean.status != it[j].status.toString()) {
+                                    isResh = true
+                                    break
+                                }
+                            }
+                        }
+                    }
+
+
                 }
             }
         } catch (e: Exception) {
@@ -730,9 +776,36 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
     }
 
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        //  isVisble = isVisibleToUser
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        // isVisble = false
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (isResh) {
+            isResh = false
+            mDatabind.smartCommon.autoRefresh()
+        }
+    }
+
     override fun lazyLoadData() {
         super.lazyLoadData()
-        getData()
+        mDatabind.smartCommon.autoRefresh()
+    }
+
+    override fun lazyLoadTime(): Long {
+        return 0
     }
 
     fun getData() {

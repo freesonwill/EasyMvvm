@@ -7,6 +7,7 @@ import android.util.Log
 import android.widget.Toast
 import com.xcjh.app.R
 import com.xcjh.app.websocket.bean.LiveStatus
+import com.xcjh.app.websocket.bean.NoReadMsg
 import com.xcjh.app.websocket.bean.ReceiveChangeMsg
 import com.xcjh.app.websocket.bean.ReceiveChatMsg
 import com.xcjh.app.websocket.bean.ReceiveWsBean
@@ -247,6 +248,15 @@ class MyWsManager private constructor(private val mContext: Context) {
                 }
             }
 
+            29 -> {//未读消息推送
+                //接收消息
+                val wsBean2 = jsonToObject2<ReceiveWsBean<ReceiveChatMsg>>(msg)
+                val chatMsgBean = wsBean2?.data as NoReadMsg
+                mNoReadMsgListener.forEach {
+                    it.toPair().second.onNoReadMsgNums(chatMsgBean.totalCount.toString())
+                }
+            }
+
             30 -> {
                 val string = wsBean.data.toString()
                 val wsBean2 = jsonToList<ReceiveChangeMsg>(string)
@@ -306,6 +316,17 @@ class MyWsManager private constructor(private val mContext: Context) {
         }
     }
 
+    private val mNoReadMsgListener = linkedMapOf<String, NoReadMsgPushListener>()
+    fun setNoReadMsgListener(tag: String, listener: NoReadMsgPushListener) {
+        mNoReadMsgListener[tag] = listener
+    }
+
+    fun removeNoReadMsgListener(tag: String) {
+        if (mNoReadMsgListener[tag] != null) {
+            mNoReadMsgListener.remove(tag)
+        }
+    }
+
     /**
      * 直播流状态
      */
@@ -350,6 +371,7 @@ class MyWsManager private constructor(private val mContext: Context) {
             mReadListener.remove(tag)
         }
     }
+
     /**
      * 其他推送消息监听
      */

@@ -16,6 +16,7 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
+import com.drake.brv.utils.models
 import com.google.gson.Gson
 import com.king.app.dialog.AppDialog
 import com.king.app.updater.AppUpdater
@@ -24,6 +25,7 @@ import com.xcjh.app.BuildConfig
 import com.xcjh.app.R
 import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseActivity
+import com.xcjh.app.bean.MsgBean
 import com.xcjh.app.databinding.ActivityHomeBinding
 import com.xcjh.app.ui.home.home.HomeFragment
 import com.xcjh.app.ui.home.msg.MsgFragment
@@ -34,7 +36,12 @@ import com.xcjh.app.utils.CacheUtil
 import com.xcjh.app.utils.judgeLogin
 import com.xcjh.app.vm.MainVm
 import com.xcjh.app.websocket.MyWsManager
+import com.xcjh.app.websocket.bean.ReceiveChangeMsg
+import com.xcjh.app.websocket.bean.ReceiveChatMsg
+import com.xcjh.app.websocket.bean.ReceiveWsBean
 import com.xcjh.app.websocket.bean.SendCommonWsBean
+import com.xcjh.app.websocket.listener.C2CListener
+import com.xcjh.app.websocket.listener.NoReadMsgPushListener
 import com.xcjh.base_lib.utils.initActivity
 import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.view.clickNoRepeat
@@ -146,14 +153,27 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         timer?.schedule(task, delay, period)
 
         appViewModel.updateMainMsgNum.observeForever {
-            if (it>0){
-                mDatabind.tvnums.text=it.toString()
-                mDatabind.tvnums.visibility=View.VISIBLE
-            }else{
-                mDatabind.tvnums.visibility=View.GONE
-            }
+//            if (it>0){
+//                mDatabind.tvnums.text=it.toString()
+//                mDatabind.tvnums.visibility=View.VISIBLE
+//            }else{
+//                mDatabind.tvnums.visibility=View.GONE
+//            }
         }
+        MyWsManager.getInstance(this)?.setNoReadMsgListener(javaClass.name, object :
+            NoReadMsgPushListener {
+            override fun onNoReadMsgNums(nums: String) {
+                super.onNoReadMsgNums(nums)
+                if (nums.toInt()>0){
+                    mDatabind.tvnums.text=nums
+                    mDatabind.tvnums.visibility=View.VISIBLE
+                }else{
+                    mDatabind.tvnums.visibility=View.GONE
+                }
+            }
 
+
+        })
     }
 
     public override fun onStart() {
