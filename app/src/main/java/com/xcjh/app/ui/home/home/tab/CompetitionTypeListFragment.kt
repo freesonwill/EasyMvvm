@@ -64,7 +64,42 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
         MyWsManager.getInstance(App.app)
             ?.setLiveStatusListener(this.toString(), object : LiveStatusListener {
                 override fun onOpenLive(bean: LiveStatus) {
-                    mViewModel.getNowLive(true,type = type.toString())
+                    var isShow=false
+                    if(mDatabind.rcvRecommend.models!=null){
+                        for (i in 0 until  mDatabind.rcvRecommend.mutable.size){
+                            if(mDatabind.rcvRecommend.mutable[i] is MainTxtBean){
+                                for (j in 0 until  (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.size){
+                                    if((mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].userId.equals(bean.anchorId)){
+                                        isShow=true
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                    if(!isShow){
+                        mViewModel.getOngoingMatchList(bean.id)
+                    }
+                }
+
+                override fun onCloseLive(bean: LiveStatus) {
+                    super.onCloseLive(bean)
+                    if(mDatabind.rcvRecommend.models!=null){
+                        for (i in 0 until  mDatabind.rcvRecommend.mutable.size){
+                            if(mDatabind.rcvRecommend.mutable[i] is MainTxtBean){
+                                for (j in 0 until  (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.size){
+                                    if((mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].userId.equals(bean.anchorId)){
+                                        (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.removeAt(j)
+                                        mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
+                                    }
+                                }
+
+
+
+                            }
+
+                        }
+                    }
                 }
             })
 
@@ -131,7 +166,18 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
 
     override fun createObserver() {
         super.createObserver()
-
+        //打开直播的时候获取到详情
+        mViewModel.beingLive.observe(this){
+            if(mDatabind.rcvRecommend.models!=null){
+                for (i in 0 until mDatabind.rcvRecommend.mutable!!.size) {
+                    if(mDatabind.rcvRecommend.mutable[i] is MainTxtBean){
+                        (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.add(it)
+                        mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
+                        return@observe
+                    }
+                }
+            }
+        }
         //登录或者登出
         appViewModel.updateLoginEvent.observe(this){
             mViewModel.getNowLive(true,type = type.toString())
