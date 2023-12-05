@@ -723,17 +723,30 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                 }
             }
             appViewModel.updateSchedulePosition.observeForever {
-
+                if (isResh) {
+                    isResh = false
+                    getData()
+                }
                 mCurrentOneTabIndex = it
+                if (mOneTabIndex==mCurrentOneTabIndex&&mTwoTabIndex==mCurrentTwoTabIndex) {
+
+                    isVisble = true
+
+                    calendarTime = ""
+                }else{
+                    isVisble = false
+                }
             }
             appViewModel.updateScheduleTwoPosition.observeForever {
                 mCurrentTwoTabIndex = it
-//                if (isAdded) {
-//                    mTabPosition = it
-//                    isVisble = mPushPosition == mTabPosition
-//
-//                    calendarTime = ""
-//                }
+                if (mOneTabIndex==mCurrentOneTabIndex&&mTwoTabIndex==mCurrentTwoTabIndex) {
+
+                    isVisble = true
+
+                    calendarTime = ""
+                }else{
+                    isVisble = false
+                }
             }
             appViewModel.appPushMsg.observeForever {
                 if (isAdded) {

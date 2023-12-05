@@ -1,5 +1,6 @@
 package com.xcjh.app.ui.chat
 
+import com.haibin.calendarview.Calendar
 import com.kunminx.architecture.ui.callback.UnPeekLiveData
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
 import com.xcjh.app.R
@@ -12,13 +13,18 @@ import com.xcjh.app.ui.room.MsgBeanData
 import com.xcjh.app.utils.CacheUtil
 import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.base.BaseViewModel
+import com.xcjh.base_lib.bean.ApiResponse
 import com.xcjh.base_lib.callback.livedata.BooleanLiveData
 import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.request
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.withContext
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import java.io.File
+import java.io.IOException
 
 
 class ChatVm : BaseViewModel() {
@@ -27,19 +33,19 @@ class ChatVm : BaseViewModel() {
     var upPic = UnPeekLiveData<String>()
     var clearMsg = UnPeekLiveData<Boolean>()
     var hisMsgList = UnPeekLiveData<MutableList<MsgBeanData>>()
-    fun getHisMsgList(smartCommon:SmartRefreshLayout, offset: String, serchId:String?) {
+    fun getHisMsgList(smartCommon: SmartRefreshLayout, offset: String, serchId: String?) {
 
         request(
             {
                 apiService.getHistoryMsgPr(
-                    HistoryMsgReq("2",null,offset, CacheUtil.getUser()?.id!!, serchId!!)
+                    HistoryMsgReq("2", null, offset, CacheUtil.getUser()?.id!!, serchId!!)
                 )
             },
 
             {
                 smartCommon.finishRefresh()
                 smartCommon.resetNoMoreData()
-                if (it.size>0) {
+                if (it.size > 0) {
                     hisMsgList.value = it
                 }
             }, {
@@ -49,18 +55,20 @@ class ChatVm : BaseViewModel() {
                     //请求失败
 
                     myToast(it.errorMsg)
-                }catch (e:Exception){
+                } catch (e: Exception) {
                     e.printStackTrace()
                 }
 
             }, false
         )
     }
+
     fun upLoadPic(file: File) {
         var fileRequestBody = RequestBody.create(MediaType.parse("image/jpeg"), file)
         var part = MultipartBody.Part.createFormData("file", file.name, fileRequestBody)
         request(
-            { apiService.upLoadChatPic(part)
+            {
+                apiService.upLoadChatPic(part)
             },
             {
 
@@ -74,10 +82,12 @@ class ChatVm : BaseViewModel() {
             }
         )
     }
+
     fun upLoadPic(file: MultipartBody.Part) {
 
         request(
-            { apiService.upLoadChatPic(file)
+            {
+                apiService.upLoadChatPic(file)
             },
             {
 
@@ -91,6 +101,24 @@ class ChatVm : BaseViewModel() {
             }
         )
     }
+
+    suspend fun upLoadPicSuspend(file: MultipartBody.Part, block: (data: String) -> Unit) {
+        //同时异步请求2个接口，请求完成后合并数据
+        //  var data = ""
+        withContext(Dispatchers.IO) {
+
+            try {
+                val data = async { apiService.upLoadChatPic(file) }
+                block.invoke(data.await().data)
+            } catch (e: IOException) {
+                block.invoke("FAILE")
+            }
+
+
+        }
+
+    }
+
     /**
      * 反馈
      */
@@ -115,7 +143,7 @@ class ChatVm : BaseViewModel() {
             {
 
                 CacheUtil.setUser(it)
-                appViewModel.userInfo.value=it
+                appViewModel.userInfo.value = it
             }, {
 
             }

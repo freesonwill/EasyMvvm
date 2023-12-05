@@ -10,6 +10,7 @@ import androidx.room.Update
 
 @Dao
 interface ChatDao {
+    //    @Query("select * from chat_db order by [id] desc  limit  :start,:count ")
     @Query("SELECT * FROM chat_db WHERE anchorId = :anchorId ORDER BY createTime DESC")
     fun getMessagesByName(anchorId: String): MutableList<MsgBeanData >
 
