@@ -85,17 +85,6 @@ class MatchDetailActivity :
         }
     }
 
-    private val tabs by lazy {
-        arrayListOf(
-            TabBean(1, name = resources.getStringArray(R.array.str_football_detail_tab)[0]),
-            TabBean(2, name = resources.getStringArray(R.array.str_football_detail_tab)[1]),
-            TabBean(3, name = resources.getStringArray(R.array.str_football_detail_tab)[2]),
-            TabBean(4, name = resources.getStringArray(R.array.str_football_detail_tab)[3]),
-            TabBean(5, name = resources.getStringArray(R.array.str_football_detail_tab)[4]),
-            TabBean(6, name = resources.getStringArray(R.array.str_football_detail_tab)[5]),
-        )
-    }
-
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
@@ -468,7 +457,7 @@ class MatchDetailActivity :
             })
         }
 
-        appViewModel.appPolling.observe(this) {
+       /* appViewModel.appPolling.observe(this) {
             try {
                 //防止数据未初始化的情况
                 if (::matchDetail.isInitialized && matchDetail.status in 0..if (matchType == "1") 7 else 9) {
@@ -477,7 +466,7 @@ class MatchDetailActivity :
             } catch (_: Exception) {
             }
 
-        }
+        }*/
     }
 
     /**
@@ -509,7 +498,6 @@ class MatchDetailActivity :
             signalPos,
             mTitles,
             mFragList,
-            tabs,
             isHasAnchor,
             anchor?.userId,
             matchDetail,

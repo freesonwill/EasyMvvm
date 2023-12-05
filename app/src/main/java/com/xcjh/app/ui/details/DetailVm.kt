@@ -2,7 +2,20 @@ package com.xcjh.app.ui.details
 
 import androidx.lifecycle.viewModelScope
 import com.kunminx.architecture.ui.callback.UnPeekLiveData
-import com.xcjh.app.bean.*
+import com.xcjh.app.bean.AnchorListBean
+import com.xcjh.app.bean.BasketballLineupBean
+import com.xcjh.app.bean.BasketballSBean
+import com.xcjh.app.bean.BasketballScoreBean
+import com.xcjh.app.bean.BeingLiveBean
+import com.xcjh.app.bean.DetailAnchorBean
+import com.xcjh.app.bean.FootballLineupBean
+import com.xcjh.app.bean.IncidentsBean
+import com.xcjh.app.bean.LiveReq
+import com.xcjh.app.bean.LiveTextBean
+import com.xcjh.app.bean.MatchDetailBean
+import com.xcjh.app.bean.OddsBean
+import com.xcjh.app.bean.ScrollTextBean
+import com.xcjh.app.bean.StatusBean
 import com.xcjh.app.net.apiService
 import com.xcjh.base_lib.base.BaseViewModel
 import com.xcjh.base_lib.bean.ListDataUiState

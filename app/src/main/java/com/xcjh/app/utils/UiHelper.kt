@@ -145,7 +145,16 @@ fun setMatchStatusTime(
         }
     }
 }
-
+private val tabs by lazy {
+    arrayListOf(
+        TabBean(1, name = appContext.resources.getStringArray(R.array.str_football_detail_tab)[0]),
+        TabBean(2, name = appContext.resources.getStringArray(R.array.str_football_detail_tab)[1]),
+        TabBean(3, name = appContext.resources.getStringArray(R.array.str_football_detail_tab)[2]),
+        TabBean(4, name = appContext.resources.getStringArray(R.array.str_football_detail_tab)[3]),
+        TabBean(5, name = appContext.resources.getStringArray(R.array.str_football_detail_tab)[4]),
+        TabBean(6, name = appContext.resources.getStringArray(R.array.str_football_detail_tab)[5]),
+    )
+}
 /**
  * 设置新的Tab+Vp
  */
@@ -153,7 +162,6 @@ fun setNewViewPager(
     signalPos: Int,
     mTitles: ArrayList<String>,
     mFragList: ArrayList<Fragment>,
-    tabs: ArrayList<TabBean>,
     isHasAnchor: Boolean,
     anchorId: String?,
     detailBean: MatchDetailBean,
