@@ -21,7 +21,7 @@ class AppViewModel : BaseViewModel() {
     //更新选择的日期
     var updateganlerTime = EventLiveData<String>()
     //更新首页消息数
-    var updateMainMsgNum= EventLiveData<Int>()
+    var updateMainMsgNum= EventLiveData<String>()
     var updateHistory = EventLiveData<Boolean>()//0 首页历史数据
     //更新用户信息
     var userInfo: UnPeekLiveData<UserInfo> = UnPeekLiveData.Builder<UserInfo>().setAllowNullValue(true).create()

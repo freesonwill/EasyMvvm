@@ -10,6 +10,7 @@ import android.view.Gravity
 import android.view.View
 import android.view.View.OnLongClickListener
 import android.widget.TextView
+import androidx.recyclerview.widget.SimpleItemAnimator
 import com.blankj.utilcode.util.ToastUtils
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -33,7 +34,6 @@ import com.xcjh.app.MyApplication
 import com.xcjh.app.R
 import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseActivity
-import com.xcjh.app.bean.MsgBean
 import com.xcjh.app.databinding.ActivityChatBinding
 import com.xcjh.app.databinding.ItemChatPicLeftBinding
 import com.xcjh.app.databinding.ItemChatPicRightBinding
@@ -122,7 +122,8 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
         mDatabind.titleTop.tvTitle.text = nickname
         Glide.with(this).load(userhead).placeholder(R.drawable.default_anchor_icon)
             .into(mDatabind.titleTop.ivhead)
-
+        (mDatabind.rv.itemAnimator as SimpleItemAnimator).supportsChangeAnimations =
+            false//防止item刷新的时候闪烁
         mDatabind.rv.setup {
             addType<MsgBeanData> {
                 when (fromId) {
@@ -289,7 +290,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                 binding.googleProgress.visibility = View.VISIBLE
                                 binding.ivfaile.visibility = View.GONE
                                 GlobalScope.launch {
-                                  var dd=  bindingAdapterPosition
+
                                     upLoadPic(
                                         matchBeanNew.content, binding.tvpross,
                                         matchBeanNew.id!!

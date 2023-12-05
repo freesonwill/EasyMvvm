@@ -250,7 +250,7 @@ class MyWsManager private constructor(private val mContext: Context) {
 
             29 -> {//未读消息推送
                 //接收消息
-                val wsBean2 = jsonToObject2<ReceiveWsBean<ReceiveChatMsg>>(msg)
+                val wsBean2 = jsonToObject2<ReceiveWsBean<NoReadMsg>>(msg)
                 val chatMsgBean = wsBean2?.data as NoReadMsg
                 mNoReadMsgListener.forEach {
                     it.toPair().second.onNoReadMsgNums(chatMsgBean.totalCount.toString())

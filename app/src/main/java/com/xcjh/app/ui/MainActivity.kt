@@ -153,27 +153,26 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         timer?.schedule(task, delay, period)
 
         appViewModel.updateMainMsgNum.observeForever {
-//            if (it>0){
-//                mDatabind.tvnums.text=it.toString()
-//                mDatabind.tvnums.visibility=View.VISIBLE
-//            }else{
-//                mDatabind.tvnums.visibility=View.GONE
-//            }
+            initMsgNums(it)
         }
         MyWsManager.getInstance(this)?.setNoReadMsgListener(javaClass.name, object :
             NoReadMsgPushListener {
             override fun onNoReadMsgNums(nums: String) {
                 super.onNoReadMsgNums(nums)
-                if (nums.toInt()>0){
-                    mDatabind.tvnums.text=nums
-                    mDatabind.tvnums.visibility=View.VISIBLE
-                }else{
-                    mDatabind.tvnums.visibility=View.GONE
-                }
+                initMsgNums(nums)
+
             }
 
 
         })
+    }
+    fun initMsgNums(nums:String){
+        if (nums.toInt()>0){
+            mDatabind.tvnums.text=nums
+            mDatabind.tvnums.visibility=View.VISIBLE
+        }else{
+            mDatabind.tvnums.visibility=View.GONE
+        }
     }
 
     public override fun onStart() {

@@ -137,7 +137,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
         for (i in 0 until list.size){
             num += list[i].noReadSum
         }
-        appViewModel.updateMainMsgNum.postValue(num)
+       // appViewModel.updateMainMsgNum.postValue(num)
     }
 
     override fun createObserver() {
@@ -160,7 +160,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                         listdata.addAll(it.listData)
                         mAdapter.submitList(listdata)
                         mAdapter.notifyDataSetChanged()
-                        updataMsg(listdata)
+                       // updataMsg(listdata)
 
 
                     }
@@ -174,7 +174,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                             mDatabind.smartCommon.finishLoadMore()
 
                             mAdapter.addAll(it.listData)
-                            updataMsg(it.listData)
+                           // updataMsg(it.listData)
                         }
 
                     }
@@ -192,6 +192,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
             }
         }
         mViewModel.clreaAllMsg.observe(this) {
+            appViewModel.updateMainMsgNum.postValue("0")
             mViewModel.getMsgList(true, "")
         }
     }
@@ -203,7 +204,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
 
     fun refshMsg(msg: ReceiveChatMsg) {
         addData(msg)
-        updataMsg(listdata)
+       // updataMsg(listdata)
         var hasMsg = false
         for (i in 0 until listdata.size) {
             if (msg.anchorId == listdata[i].anchorId) {
