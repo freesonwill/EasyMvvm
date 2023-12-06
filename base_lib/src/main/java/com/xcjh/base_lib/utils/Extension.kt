@@ -249,13 +249,13 @@ fun MagicIndicator.bindViewPager2(
             if (lineIndicatorColor!=0){
                 val indicator = LinePagerIndicator(context)
                 indicator.mode = LinePagerIndicator.MODE_EXACTLY
-                indicator.lineHeight = dp2px(2).toFloat()
-                indicator.lineWidth = dp2px(28).toFloat()
-                indicator.roundRadius = dp2px(2).toFloat()
+                indicator.lineHeight = dp2px(3).toFloat()
+                indicator.lineWidth = dp2px(23).toFloat()
+                indicator.roundRadius = dp2px(40).toFloat()
                 indicator.startInterpolator = AccelerateInterpolator()
                 indicator.endInterpolator = DecelerateInterpolator(2.0f)
                 indicator.setColors(ContextCompat.getColor(context,lineIndicatorColor))
-                //indicator.yOffset = dp2px(-1).toFloat()
+                indicator.yOffset = dp2px(2).toFloat()
                 return indicator
             }else{
                 return CommonPagerIndicator(context).apply {

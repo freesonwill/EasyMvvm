@@ -40,7 +40,7 @@ class HomeFragment : BaseFragment<MainVm, FragmentHomeBinding>() {
         mFragList.add(MainNewsListFragment())
 
         ImmersionBar.with(this)
-            .statusBarDarkFont(false)//黑色
+            .statusBarDarkFont(true)//黑色
             .titleBar(mDatabind.rlTitle)
             .init()
 
@@ -54,10 +54,10 @@ class HomeFragment : BaseFragment<MainVm, FragmentHomeBinding>() {
                 getString(R.string.main_txt_basketball),
                 getString(R.string.main_txt_news)
             ),
-            R.color.c_f5f5f5,
-            R.color.c_8a91a0,
-            18f, 18f, false, false,
-            R.color.c_f5f5f5, margin = 28
+            R.color.c_37373d,
+            R.color.c_94999f,
+            18f, 16f, true, false,
+            R.color.c_34a853, margin = 30
         )
         mDatabind.viewPager.offscreenPageLimit = mFragList.size
 

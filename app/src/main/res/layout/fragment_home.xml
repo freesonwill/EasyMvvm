@@ -9,31 +9,36 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/black"
+        android:background="@color/c_f2f3f7"
         android:orientation="vertical">
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/ivHomeGg"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="fitXY"
-            app:srcCompat="@drawable/icon_home_bg"/>
+
         <RelativeLayout
             android:id="@+id/rlTitle"
+            android:background="@color/c_ffffff"
             android:layout_width="match_parent"
             android:layout_height="@dimen/title_h">
 
             <net.lucode.hackware.magicindicator.MagicIndicator
                 android:id="@+id/magicIndicator"
-                android:layout_width="228dp"
-                android:layout_height="match_parent"
-                android:layout_centerHorizontal="true" />
+                android:layout_width="222dp"
+                android:layout_marginBottom="@dimen/dp_8"
+                android:layout_height="match_parent" />
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <RelativeLayout
                 android:id="@+id/ivHomeSearch"
-                android:layout_width="@dimen/dp_50"
+                android:layout_width="50dp"
+                android:layout_marginBottom="@dimen/dp_8"
                 android:layout_height="match_parent"
-                android:layout_alignParentRight="true"
-                app:srcCompat="@drawable/ic_search" />
+                android:layout_alignParentRight="true"  >
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="@dimen/dp_20"
+                    android:layout_height="@dimen/dp_20"
+                    android:layout_marginRight="@dimen/dp_12"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    app:srcCompat="@drawable/ic_search" />
+            </RelativeLayout>
 
         </RelativeLayout>
 

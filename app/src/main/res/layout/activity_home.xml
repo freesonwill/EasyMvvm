@@ -37,7 +37,7 @@
 
                <androidx.appcompat.widget.LinearLayoutCompat
                    android:layout_width="match_parent"
-                   android:layout_height="@dimen/dp_50"
+                   android:layout_height="@dimen/dp_83"
                    android:orientation="horizontal">
                    <androidx.appcompat.widget.AppCompatTextView
                        android:id="@+id/txtHome"

@@ -4,16 +4,16 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
-    android:layout_marginTop="22dp">
+    android:layout_marginLeft="12dp"
+    android:layout_marginRight="12dp"
+    android:layout_marginTop="15dp">
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/txtTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/sp_16"
-        android:textColor="@color/white"
-        android:layout_marginBottom="@dimen/dp_16"
+        android:textColor="@color/c_37373d"
+        android:layout_marginBottom="@dimen/dp_12"
         android:text="@string/main_txt_on_the_air"/>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvExplore"

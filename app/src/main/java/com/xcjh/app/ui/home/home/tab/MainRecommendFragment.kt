@@ -421,26 +421,26 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                         //在布局文件中使用指示器，这样更灵活
                         binding.banner.setIndicator(binding.indicator, false)
                         //选中的宽度
-                        binding.banner.setIndicatorSelectedWidth(BannerUtils.dp2px(10f))
+                        binding.banner.setIndicatorSelectedWidth(BannerUtils.dp2px(20f))
                         binding.banner.setIndicatorSelectedColor(ContextCompat.getColor(requireContext(),
                             com.xcjh.base_lib.R.color.white))
                         binding.banner.setIndicatorNormalColor(ContextCompat.getColor(requireContext(),R.color.c_8c8c8c))
                         //间距
-                        binding.banner.setIndicatorSpace(BannerUtils.dp2px(8f))
+                        binding.banner.setIndicatorSpace(BannerUtils.dp2px(5f))
                         //未选择的宽度 和选择的
-                        binding.banner.setIndicatorWidth(BannerUtils.dp2px(4f),BannerUtils.dp2px(8f))
+                        binding.banner.setIndicatorWidth(BannerUtils.dp2px(5f),BannerUtils.dp2px(20f))
 //                        //高度
-                        binding.banner.setIndicatorHeight(BannerUtils.dp2px(4f))
+                        binding.banner.setIndicatorHeight(BannerUtils.dp2px(5f))
 
                     }
                     R.layout.item_main_proceed -> {//正在进行中的比赛
                         var binding=getBinding<ItemMainProceedBinding>()
                         var matchBeanNew=_data as MatchBean
-                        if(matchBeanNew.list.size>0){
-                            val date = Date(matchBeanNew.list[0].matchTime.toLong())
-                            var formatter = SimpleDateFormat("MM月dd日", Locale.getDefault())
-                            binding.tvProceedDate.text = resources.getString(R.string.main_txt_date,formatter.format(date))
-                        }
+//                        if(matchBeanNew.list.size>0){
+//                            val date = Date(matchBeanNew.list[0].matchTime.toLong())
+//                            var formatter = SimpleDateFormat("MM月dd日", Locale.getDefault())
+//                            binding.tvProceedDate.text = resources.getString(R.string.main_txt_date,formatter.format(date))
+//                        }
                         binding.tvProceedSession.text=resources.getString(R.string.main_txt_session,"${matchBeanNew.list.size}")
                         binding.rcvReProceed.layoutManager=LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
                         binding.rcvReProceed.setup{
@@ -470,6 +470,8 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                                         binding.txtCompetition.text=matchBean.competitionName
                                         binding.txtMatchAnimation.visibility=View.GONE
                                         //比赛类型：1：足球；2：篮球,可用值:1,2
+                                        binding.txtMatchTime.visibility=View.GONE
+                                        binding.txtMatchIsStart.visibility=View.GONE
                                         if(matchBean.matchType.equals("2")){
 
                                             Glide.with(requireContext())
@@ -498,32 +500,39 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                                             }else if(matchBean.status.equals("1")||matchBean.status.equals("10")
                                                 ||matchBean.status.equals("11")||matchBean.status.equals("12")||matchBean.status.equals("13")
                                                 ||matchBean.status.equals("14")||matchBean.status.equals("15")){
-                                                binding.txtMatchStatus.visibility=View.VISIBLE
+                                                binding.txtMatchStatus.visibility=View.GONE
                                                 binding.txtMatchStatus.setTextColor(ContextCompat.getColor(requireContext(),R.color.c_f5f5f5))
                                                 val date = Date(matchBean.matchTime.toLong())
                                                 var formatter = SimpleDateFormat("MM-dd HH:mm", Locale.getDefault())
-                                                binding.txtMatchStatus.text=formatter.format(date)
+                                                binding.txtMatchTime.text=formatter.format(date)
+                                                binding.txtMatchTime.visibility=View.VISIBLE
+
 
                                             }else if(matchBean.status.equals("2")||matchBean.status.equals("3")){
                                                 binding.txtMatchStatus.visibility=View.VISIBLE
-                                                binding.txtMatchStatus.setTextColor(ContextCompat.getColor(requireContext(),R.color.c_fe4848))
+                                                binding.txtMatchStatus.setTextColor(ContextCompat.getColor(requireContext(),R.color.c_f69521))
                                                 binding.txtMatchStatus.text=resources.getString(R.string.main_txt_basketball_phase,"一")
+                                                binding.txtMatchIsStart.visibility=View.VISIBLE
                                             }else if(matchBean.status.equals("4")||matchBean.status.equals("5")){
                                                 binding.txtMatchStatus.visibility=View.VISIBLE
-                                                binding.txtMatchStatus.setTextColor(ContextCompat.getColor(requireContext(),R.color.c_fe4848))
+                                                binding.txtMatchStatus.setTextColor(ContextCompat.getColor(requireContext(),R.color.c_f69521))
                                                 binding.txtMatchStatus.text=resources.getString(R.string.main_txt_basketball_phase,"二")
+                                                binding.txtMatchIsStart.visibility=View.VISIBLE
                                             }else if(matchBean.status.equals("6")||matchBean.status.equals("7")){
                                                 binding.txtMatchStatus.visibility=View.VISIBLE
-                                                binding.txtMatchStatus.setTextColor(ContextCompat.getColor(requireContext(),R.color.c_fe4848))
+                                                binding.txtMatchStatus.setTextColor(ContextCompat.getColor(requireContext(),R.color.c_f69521))
                                                 binding.txtMatchStatus.text=resources.getString(R.string.main_txt_basketball_phase,"三")
+                                                binding.txtMatchIsStart.visibility=View.VISIBLE
                                             }else if(matchBean.status.equals("8")){
                                                 binding.txtMatchStatus.visibility=View.VISIBLE
-                                                binding.txtMatchStatus.setTextColor(ContextCompat.getColor(requireContext(),R.color.c_fe4848))
+                                                binding.txtMatchStatus.setTextColor(ContextCompat.getColor(requireContext(),R.color.c_f69521))
                                                 binding.txtMatchStatus.text=resources.getString(R.string.main_txt_basketball_phase,"四")
+                                                binding.txtMatchIsStart.visibility=View.VISIBLE
                                             }else if(matchBean.status.equals("9")){
                                                 binding.txtMatchStatus.visibility=View.VISIBLE
-                                                binding.txtMatchStatus.setTextColor(ContextCompat.getColor(requireContext(),R.color.c_fe4848))
+                                                binding.txtMatchStatus.setTextColor(ContextCompat.getColor(requireContext(),R.color.c_f69521))
                                                 binding.txtMatchStatus.text=resources.getString(R.string.over_time)
+                                                binding.txtMatchIsStart.visibility=View.VISIBLE
                                             }
                                         }else{
 
@@ -566,14 +575,16 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
 
                                                 val date = Date(matchBean.matchTime.toLong())
                                                 var formatter = SimpleDateFormat("MM-dd HH:mm", Locale.getDefault())
-
-                                                binding.txtMatchStatus.text=formatter.format(date)
+                                                binding.txtMatchTime.visibility=View.VISIBLE
+                                                binding.txtMatchTime.text=formatter.format(date)
                                             }else if(matchBean.status.equals("2")||matchBean.status.equals("4")){
                                                 binding.txtMatchStatus.visibility=View.VISIBLE
                                                 binding.txtMatchAnimation.visibility=View.VISIBLE
-                                                binding.txtMatchStatus.setTextColor(ContextCompat.getColor(requireContext(),R.color.c_fe4848))
+                                                binding.txtMatchIsStart.visibility=View.VISIBLE
+                                                binding.txtMatchStatus.setTextColor(ContextCompat.getColor(requireContext(),R.color.c_f69521))
                                                 if(matchBean.runTime!=null){
-                                                    binding.txtMatchStatus.text=resources.getString(R.string.main_txt_under,matchBean.runTime)
+//                                                    binding.txtMatchStatus.text=resources.getString(R.string.main_txt_under,matchBean.runTime)
+                                                    binding.txtMatchStatus.text=matchBean.runTime
                                                 }
 
                                                 val fadeIn = ObjectAnimator.ofFloat(binding.txtMatchAnimation, "alpha", 0f, 1f)
@@ -692,12 +703,12 @@ fun BindingAdapter.BindingViewHolder.setLiveMatchItem() {
     if (layoutPosition % 2 == 0) {
         val layoutParams =
             bindingItem.llLiveSpacing.layoutParams as ViewGroup.MarginLayoutParams
-        layoutParams.setMargins(0, 0, context.dp2px(8), context.dp2px(16))
+        layoutParams.setMargins(0, 0, context.dp2px(3), context.dp2px(8))
         bindingItem.llLiveSpacing.layoutParams = layoutParams
     } else {
         val layoutParams =
             bindingItem.llLiveSpacing.layoutParams as ViewGroup.MarginLayoutParams
-        layoutParams.setMargins(context.dp2px(8), 0, 0, context.dp2px(16))
+        layoutParams.setMargins(context.dp2px(3), 0, 0, context.dp2px(8))
         bindingItem.llLiveSpacing.layoutParams = layoutParams
     }
 }
