@@ -67,8 +67,8 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
             }
         }
         mDatabind.smartCommon.setHeaderHeight(40f)
-        mDatabind.smartCommon.setDisableContentWhenRefresh(true);//是否在刷新的时候禁止列表的操作
-        mDatabind.smartCommon.setDisableContentWhenLoading(true);//是否在加载的时候禁止列表的操作
+        mDatabind.smartCommon.setDisableContentWhenRefresh(true)//是否在刷新的时候禁止列表的操作
+        mDatabind.smartCommon.setDisableContentWhenLoading(true)//是否在加载的时候禁止列表的操作
         mDatabind.smartCommon.setRefreshHeader( ClassicsHeader(requireContext()))
         MyWsManager.getInstance(App.app)
             ?.setLiveStatusListener(this.toString(), object : LiveStatusListener {
@@ -176,7 +176,7 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
         mViewModel.getBannerList()
         mViewModel.getOngoingMatchList(HotReq())
         mViewModel.getNowLive(true)
-        //设置下拉刷新的高度
+        //设置下拉刷新的高度-----
         mDatabind.smartCommon.setFooterHeight(20F)
         mDatabind.smartCommon.setOnRefreshLoadMoreListener(object : OnRefreshLoadMoreListener {
             override fun onRefresh(refreshLayout: RefreshLayout) {
