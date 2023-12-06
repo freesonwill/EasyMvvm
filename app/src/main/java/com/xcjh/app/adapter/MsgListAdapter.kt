@@ -3,6 +3,7 @@ package com.xcjh.app.adapter
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.chad.library.adapter.base.BaseQuickAdapter
@@ -11,19 +12,20 @@ import com.xcjh.app.R
 import com.xcjh.app.bean.MsgListBean
 import com.xcjh.app.ui.chat.ChatActivity
 import com.xcjh.app.ui.feed.FeedNoticeActivity
+import com.xcjh.app.ui.room.MsgListNewData
 import com.xcjh.app.utils.ChatTimeUtile
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.startNewActivity
 import com.xcjh.base_lib.utils.view.CircleImageView
 
-class MsgListAdapter: BaseQuickAdapter<MsgListBean, QuickViewHolder>() {
+class MsgListAdapter: BaseQuickAdapter<MsgListNewData, QuickViewHolder>() {
 
     override fun onCreateViewHolder(context: Context, parent: ViewGroup, viewType: Int): QuickViewHolder {
         // 返回一个 ViewHolder
         return QuickViewHolder(R.layout.item_msglist, parent)
     }
 
-    override fun onBindViewHolder(holder: QuickViewHolder, position: Int, item: MsgListBean?) {
+    override fun onBindViewHolder(holder: QuickViewHolder, position: Int, item: MsgListNewData?) {
         // 设置item数据
 
 
@@ -56,6 +58,11 @@ class MsgListAdapter: BaseQuickAdapter<MsgListBean, QuickViewHolder>() {
                 holder.getView<TextView>(R.id.tvnums2).text = item!!.noReadSum.toString()
             }
 
+        }
+        if (item.sent==2){//发送失败
+            holder.getView<ImageView>(R.id.ivfaile).visibility=View.VISIBLE
+        }else{
+            holder.getView<ImageView>(R.id.ivfaile).visibility=View.GONE
         }
         if (item.fromId=="0"){//反馈通知
             holder.getView<TextView>(R.id.tvname).text =context.resources.getString(R.string.txt_feedtitle)

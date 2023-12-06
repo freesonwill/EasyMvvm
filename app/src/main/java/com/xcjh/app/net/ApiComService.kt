@@ -2,6 +2,7 @@ package com.xcjh.app.net
 
 import com.xcjh.app.bean.*
 import com.xcjh.app.ui.room.MsgBeanData
+import com.xcjh.app.ui.room.MsgListNewData
 import com.xcjh.base_lib.bean.ApiResponse
 import okhttp3.MultipartBody
 import retrofit2.http.*
@@ -96,7 +97,7 @@ interface ApiComService {
      * 消息列表页面：消息分页查询 返回对象fromId=0代表这条数据为反馈通知
      */
     @POST("app/msg/msgPage")
-    suspend fun getMsgListPage(@Body req: PostGetMsgBean): ApiResponse<MyListPages<MsgListBean>>
+    suspend fun getMsgListPage(@Body req: PostGetMsgBean): ApiResponse<MyListPages<MsgListNewData>>
     /**
      * 上传聊天照片
      */

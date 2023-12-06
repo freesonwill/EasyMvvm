@@ -26,6 +26,7 @@ import com.shuyu.gsyvideoplayer.player.PlayerFactory
 import com.tencent.mmkv.MMKV
 import com.xcjh.app.event.AppViewModel
 import com.xcjh.app.event.EventViewModel
+import com.xcjh.app.ui.room.MyRoomChatList
 import com.xcjh.app.ui.room.MyRoomDataBase
 import com.xcjh.app.utils.DynamicTimeFormat
 import com.xcjh.app.view.callback.EmptyCallback
@@ -52,6 +53,7 @@ class MyApplication : App() , LifecycleObserver{
 
     companion object {
         lateinit var dataBase: MyRoomDataBase
+        lateinit var dataChatList: MyRoomChatList
         lateinit var appViewModelInstance: AppViewModel
         lateinit var eventViewModelInstance: EventViewModel
     }
@@ -71,6 +73,8 @@ class MyApplication : App() , LifecycleObserver{
         initDialogX()
         dataBase =
             Room.databaseBuilder(this, MyRoomDataBase::class.java, "userDataBase").build()
+        dataChatList =
+            Room.databaseBuilder(this, MyRoomChatList::class.java, "chatLiSTBase").build()
         appViewModelInstance = getAppViewModelProvider()[AppViewModel::class.java]
         eventViewModelInstance = getAppViewModelProvider()[EventViewModel::class.java]
         Toaster.init(this);

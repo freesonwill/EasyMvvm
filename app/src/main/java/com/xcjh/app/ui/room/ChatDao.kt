@@ -18,5 +18,8 @@ interface ChatDao {
     suspend fun insert(message: MsgBeanData)
     @Update
     fun updateData(entity: MsgBeanData?)
-
+    @Delete
+    fun delete(message: MsgBeanData)
+    @Query("DELETE FROM chat_db WHERE anchorId = :anchorId")
+    fun deleteAllZeroId(anchorId:String)
 }

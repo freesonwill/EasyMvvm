@@ -9,6 +9,7 @@ import android.view.View
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.drake.brv.listener.ItemDifferCallback
@@ -145,6 +146,8 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
             mDatabind.recBottom.run {
                 distance(0, 0, 0, 15)
             }
+            (mDatabind.recBottom.itemAnimator as SimpleItemAnimator).supportsChangeAnimations =
+                false//防止item刷新的时候闪烁
             mDatabind.recBottom.linear().setup {
                 addType<MatchBean>(R.layout.item_sch_all)
 

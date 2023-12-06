@@ -3,6 +3,7 @@ package com.xcjh.app.event
 import com.kunminx.architecture.ui.callback.UnPeekLiveData
 import com.xcjh.app.bean.MsgBean
 import com.xcjh.app.bean.UserInfo
+import com.xcjh.app.ui.room.MsgBeanData
 import com.xcjh.app.utils.CacheUtil
 import com.xcjh.app.websocket.bean.ReceiveChangeMsg
 import com.xcjh.base_lib.base.BaseViewModel
@@ -34,6 +35,8 @@ class AppViewModel : BaseViewModel() {
     var appPushMsg=EventLiveData< ArrayList<ReceiveChangeMsg>>()
     //更新消息列表
     var updateMsgEvent = EventLiveData<String>()
+    //更新消息列表数据
+    var updateMsgListEvent = EventLiveData<MsgBeanData>()
     var updateSchedulePosition = EventLiveData<Int>()
     var updateScheduleTwoPosition = EventLiveData<Int>()
     //更首页显示ViewPager切换  -1是切换到首页并且是推荐页面
