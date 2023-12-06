@@ -34,7 +34,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
     var listdata: MutableList<MsgListNewData> = ArrayList<MsgListNewData>()
 
     var chatId = "0"
-
+    val empty by lazy { layoutInflater!!.inflate(R.layout.layout_empty, null) }
     companion object {
 
         fun newInstance(): MsgChildFragment {
@@ -57,10 +57,9 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
         mAdapter.addOnItemChildClickListener(R.id.lltDelete) { adapter, view, position ->
             var bean: MsgListNewData? =mAdapter.getItem(position)
             mViewModel.getDelMsg(bean?.anchorId.toString())
-            mAdapter.removeAt(position)
             deltDataToList(bean!!)
+            mAdapter.removeAt(position)
             if (listdata.size == 0) {
-                val empty = layoutInflater!!.inflate(R.layout.layout_empty, null)
                 mAdapter.emptyView = empty
             }
         }
@@ -68,6 +67,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
             mViewModel.getMsgList(true, "")
             mDatabind.smartCommon.setOnRefreshListener {
 
+                getRoomAllData()
                 mViewModel.getMsgList(true, "")
             }.setOnLoadMoreListener {
                 mViewModel.getMsgList(false, "")
@@ -77,8 +77,10 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
         //登录或者登出
         appViewModel.updateLoginEvent.observe(this) {
             if (it) {
+                getRoomAllData()
                 mViewModel.getMsgList(true, "")
                 mDatabind.smartCommon.setOnRefreshListener {
+                    getRoomAllData()
                     mViewModel.getMsgList(true, "")
                 }.setOnLoadMoreListener {
                     mViewModel.getMsgList(false, "")
@@ -98,13 +100,15 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
     fun getRoomAllData(){
         GlobalScope.launch {
             val data = getAll().await()
+
             if (data.isNotEmpty()) {
                 listdata.addAll(data)
                 mAdapter.submitList(listdata)
+
             } else {
-
+                mAdapter.emptyView = empty
             }
-
+            mDatabind.smartCommon.finishRefresh()
         }
     }
     override fun onResume() {
@@ -174,7 +178,6 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
     }
 
     override fun createObserver() {
-        val empty = layoutInflater!!.inflate(R.layout.layout_empty, null)
 
         mViewModel.msgList.observe(this) {
 //            if (it.isSuccess) {
@@ -342,8 +345,13 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
           var bean=  MyApplication.dataChatList!!.chatDao?.findMessagesById(data.id!!)
 
             data.idd=bean!!.idd
+            //删除会显示在聊天列表的记录数据
             MyApplication.dataChatList!!.chatDao?.delete(data)
+
+            //删除跟这个主播相关的连天记录
+            MyApplication.dataBase!!.chatDao?.deleteAllZeroId(data.anchorId!!)
 
         }
     }
+
 }

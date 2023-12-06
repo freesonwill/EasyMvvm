@@ -89,6 +89,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
     var msgType = 0//消息类型，文字：0， 图片：1
     var msgContent = ""
     var isUpdata = false
+    private val delayTime:Long=10000
     private val listPic = java.util.ArrayList<LocalMedia>()
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -206,11 +207,13 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                 binding.googleProgress.visibility = View.VISIBLE
                                 binding.ivfaile.visibility = View.GONE
                                 GlobalScope.launch {
-                                    delay(5000)
+                                    delay(delayTime)
 
                                     if (matchBeanNew.sent == 0) {//发送失败
                                         matchBeanNew.sent = 2
-                                        appViewModel.updateMsgListEvent.postValue(matchBeanNew)
+                                        if (bindingAdapterPosition==0) {
+                                            appViewModel.updateMsgListEvent.postValue(matchBeanNew)
+                                        }
                                         runOnUiThread {
                                             binding.googleProgress.visibility = View.GONE
                                             binding.ivfaile.visibility = View.VISIBLE
@@ -296,11 +299,13 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                         matchBeanNew.content, binding.tvpross,
                                         matchBeanNew.id!!
                                     )
-                                    delay(5000)
+                                    delay(delayTime)
 
                                     if (matchBeanNew.sent == 0) {//发送失败
                                         matchBeanNew.sent = 2
-                                        appViewModel.updateMsgListEvent.postValue(matchBeanNew)
+                                        if (bindingAdapterPosition==0) {
+                                            appViewModel.updateMsgListEvent.postValue(matchBeanNew)
+                                        }
                                         runOnUiThread {
                                             binding.googleProgress.visibility = View.GONE
                                             binding.ivfaile.visibility = View.VISIBLE

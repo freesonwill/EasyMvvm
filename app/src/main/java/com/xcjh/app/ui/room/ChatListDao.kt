@@ -38,4 +38,5 @@ interface ChatListDao {
     @Delete
     fun delete(message: MsgListNewData)
 
+
 }
