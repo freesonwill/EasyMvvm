@@ -11,11 +11,12 @@ import com.xcjh.app.R
 import com.xcjh.app.bean.MsgListBean
 import com.xcjh.app.ui.chat.ChatActivity
 import com.xcjh.app.ui.feed.FeedNoticeActivity
+import com.xcjh.app.ui.room.MsgListNewData
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.startNewActivity
 import com.xcjh.base_lib.utils.view.CircleImageView
 
-class SearchMsgAdapter : BaseQuickAdapter<MsgListBean, QuickViewHolder>() {
+class SearchMsgAdapter : BaseQuickAdapter<MsgListNewData, QuickViewHolder>() {
 
     override fun onCreateViewHolder(
         context: Context,
@@ -26,7 +27,7 @@ class SearchMsgAdapter : BaseQuickAdapter<MsgListBean, QuickViewHolder>() {
         return QuickViewHolder(R.layout.item_search_msg, parent)
     }
 
-    override fun onBindViewHolder(holder: QuickViewHolder, position: Int, item: MsgListBean?) {
+    override fun onBindViewHolder(holder: QuickViewHolder, position: Int, item: MsgListNewData?) {
         // 设置item数据
         when(item?.msgType){//	消息类型(0:text、1:image、2:voice、3:video、4:music、5:news)
             0->{

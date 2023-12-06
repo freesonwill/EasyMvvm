@@ -3,6 +3,7 @@ package com.xcjh.app.ui.home.msg
 import com.kunminx.architecture.ui.callback.UnPeekLiveData
 import com.xcjh.app.bean.*
 import com.xcjh.app.net.apiService
+import com.xcjh.app.ui.room.MsgListNewData
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.Constants.Companion.BASE_PAGE_SIZE
 import com.xcjh.base_lib.base.BaseViewModel
@@ -15,7 +16,7 @@ class MsgVm : BaseViewModel() {
     private var pageNoFriend = 1
 
     //进行中的比赛
-    var msgList = UnPeekLiveData<ListDataUiState<MsgListBean>>()
+    var msgList = UnPeekLiveData<ListDataUiState<MsgListNewData>>()
     var frendList = UnPeekLiveData<ListDataUiState<FriendListBean>>()
     var clreaMsg = UnPeekLiveData<Boolean>()
     var delMsg = UnPeekLiveData<Boolean>()

@@ -210,6 +210,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
 
                                     if (matchBeanNew.sent == 0) {//发送失败
                                         matchBeanNew.sent = 2
+                                        appViewModel.updateMsgListEvent.postValue(matchBeanNew)
                                         runOnUiThread {
                                             binding.googleProgress.visibility = View.GONE
                                             binding.ivfaile.visibility = View.VISIBLE
@@ -299,6 +300,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
 
                                     if (matchBeanNew.sent == 0) {//发送失败
                                         matchBeanNew.sent = 2
+                                        appViewModel.updateMsgListEvent.postValue(matchBeanNew)
                                         runOnUiThread {
                                             binding.googleProgress.visibility = View.GONE
                                             binding.ivfaile.visibility = View.VISIBLE
