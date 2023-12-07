@@ -16,12 +16,10 @@
         android:orientation="horizontal"
         android:paddingLeft="@dimen/dp_12"
         android:layout_gravity="center"
-
         android:paddingRight="@dimen/dp_12">
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
             android:orientation="horizontal">
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/txtCompetition"
@@ -42,7 +40,7 @@
                     android:id="@+id/txtMatchStatus"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0"
+                    android:text="第二节"
                     android:textSize="11sp"
                     android:textColor="@color/c_f69521"/>
                 <androidx.appcompat.widget.AppCompatTextView
@@ -63,14 +61,13 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/txtMatchTime"
                 android:text="12/10/17:20"
-                android:visibility="gone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/sp_11"
                 android:textColor="@color/c_94999f"/>
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:id="@+id/txtMatchIsStart"
-
+                    android:visibility="gone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"

@@ -41,6 +41,7 @@ class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
         ImmersionBar.with(this)
             .statusBarDarkFont(false)
             .titleBar(mDatabind.titleTop.root)
+            .navigationBarColor(R.color.c_ffffff)
             .init()
         intent?.let {
             url = it.getStringExtra(Constants.WEB_URL).toString()
@@ -98,9 +99,10 @@ class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
                         view!!.evaluateJavascript("javascript:(function() { " +
                                 "var elements = document.querySelectorAll(':not(h4)');" +
                                 "for(var i = 0; i < elements.length; i++) {" +
-                                "   elements[i].style.color = 'white';" +
+                                "   elements[i].style.color = '#37373D';" +
                                 "}" +
                                 "})()", null)
+
 
 //                        val javascript = "javascript:(function() { " +
 //                                "var imgs = document.getElementsByTagName('img');" +
@@ -131,7 +133,7 @@ class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
             .ready().get()
         val webView = agentWeb.webCreator.webView
 // 设置加载中背景色为灰色
-        webView.setBackgroundColor(ContextCompat.getColor(this, R.color.c_07061d))
+        webView.setBackgroundColor(ContextCompat.getColor(this, R.color.c_ffffff))
         if(type==0){
             agentWeb.urlLoader.loadUrl(url)
         }
@@ -158,18 +160,23 @@ class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
 
     override fun createObserver() {
         super.createObserver()
-        //获取到网页详情
+        //获取到网页详情 新闻列表
         mViewModel.newsBeanValue.observe(this){
             var sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
             var dateTimeString:String=""
             var title:String=""
-            title="<p style=\" color: white; font-size: 20px; font-weight: bold;\">${it.title}</p>"
+            title="<p style=\" color: #37373D; font-size: 18px; font-weight: bold;\">${it.title}</p>"
             if(it.publishTime.isNotEmpty()){
                 dateTimeString= sdf.format(Date(it.publishTime.toLong()))
-                title += "<h4 style=\" color: #8A91A0; font-size: 14px;\">${dateTimeString}</h4>"
+                title += "<div style=\" display: flex; align-items: center;\"> " +
+                        "<div style=\"display: flex; align-items: center;\">" +
+                        "<img src=\"file:///android_asset/football.png\"  alt=\"Example\" width=\"20px\" height=\"2px\"  >" +
+                        " <h4 style=\"font-size: 12px; color: #575762; font-weight: normal;\">体育直播</h4>" +
+                        "</div>"+
+                        "<h4 style=\" color: #94999F; font-size: 11px; margin-left: auto; font-weight: normal;\">${dateTimeString}发布</h5></div>"
             }
             title += it.content
-            title="<body style=\"background-color: #07061D; margin: 0; padding: 24px;\">${title}</body>"
+            title="<body style=\"background-color: white; margin: 0; padding: 24px;\">${title}</body>"
             agentWeb.urlLoader.loadDataWithBaseURL(
                 null,
                 title,
@@ -184,13 +191,13 @@ class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
             var sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
             var dateTimeString:String=""
             var title:String=""
-            title="<p style=\" color: white; font-size: 20px; font-weight: bold;\">${it.title}</p>"
+            title="<p style=\" color: #37373D; font-size: 18px; font-weight: bold;\">${it.title}</p>"
             if(it.updateTime .isNotEmpty()){
                 dateTimeString= sdf.format(Date(it.updateTime.toLong()))
-                title += "<h4 style=\" color: #8A91A0; font-size: 14px;\">${dateTimeString}</h4>"
+                title += "<h4 style=\" color: #94999F; font-size: 14px;\">${dateTimeString}发布</h4>"
             }
             title += it.content
-            title="<body style=\"background-color: #07061D; margin: 0; padding: 24px;\">${title}</body>"
+            title="<body style=\"background-color: white; margin: 0; padding: 24px;\">${title}</body>"
             agentWeb.urlLoader.loadDataWithBaseURL(
                 null,
                 title,

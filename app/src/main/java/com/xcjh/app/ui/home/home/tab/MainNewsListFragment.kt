@@ -2,11 +2,15 @@ package com.xcjh.app.ui.home.home.tab
 
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.drake.brv.utils.*
+import com.drake.engine.utils.dp
+import com.drake.spannable.replaceSpan
+import com.drake.spannable.span.GlideImageSpan
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
 import com.xcjh.app.R
@@ -61,16 +65,43 @@ class MainNewsListFragment  : BaseFragment<MainNewsListVm, FragmentMainNewsListB
                     R.layout.item_news_list -> {
                         var bindingItem=getBinding<ItemNewsListBinding>()
                         var  bean=_data as NewsBean
-                        Glide.with(context)
-                            .load(bean.pic) // 替换为您要加载的图片 URL
-                            .error(R.drawable.main_banner_load)
-                            .apply(RequestOptions().transform(RoundedCorners(context.dp2px(8))))
-                            .placeholder(R.drawable.main_banner_load)
-                            .into(bindingItem.ivNewsIcon)
-                        bindingItem.txtNewsName.text=bean.title
-                        val date = Date(bean.publishTime.toLong())
-                        var formatter = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
-                        bindingItem.txtNewsDate.text=formatter.format(date)
+
+                        if(modelPosition==0){
+                            bindingItem.rlNewsShowHot.visibility= View.VISIBLE
+                            bindingItem.rlNewsShowList.visibility= View.GONE
+                            Glide.with(context)
+                                .load(bean.pic) // 替换为您要加载的图片 URL
+                                .error(R.drawable.main_banner_load)
+                                .placeholder(R.drawable.main_banner_load)
+                                .into(bindingItem.ivNewsBe)
+                            var name="%s"+bean.title
+                           bindingItem.txtNewsHot.text=name.replaceSpan("%s") {
+                               GlideImageSpan(bindingItem.txtNewsHot, R.drawable.icon_news_hot)
+                                   .setRequestOption(RequestOptions.centerCropTransform())
+                                   .setDrawableSize(50.dp,15.dp)
+                           }
+
+                        }else{
+                            bindingItem.rlNewsShowHot.visibility= View.GONE
+                            bindingItem.rlNewsShowList.visibility= View.VISIBLE
+                            Glide.with(context)
+                                .load(bean.pic) // 替换为您要加载的图片 URL
+                                .error(R.drawable.main_banner_load)
+                                .placeholder(R.drawable.main_banner_load)
+                                .into(bindingItem.ivNewsIcon)
+//                            Glide.with(context)
+//                                .load(bean.pic) // 替换为您要加载的图片 URL
+//                                .error(R.drawable.main_banner_load)
+//                                .apply(RequestOptions().transform(RoundedCorners(context.dp2px(8))))
+//                                .placeholder(R.drawable.main_banner_load)
+//                                .into(bindingItem.ivNewsIcon)
+                            bindingItem.txtNewsName.text=bean.title
+                            val date = Date(bean.publishTime.toLong())
+                            var formatter = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
+                            bindingItem.txtNewsDate.text=formatter.format(date)
+
+                        }
+
 
 
                     }

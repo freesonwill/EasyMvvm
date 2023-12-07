@@ -143,11 +143,11 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
 
                         if(layoutPosition%2==0){
                             val layoutParams = bindingItem.llLiveSpacing.layoutParams as ViewGroup.MarginLayoutParams
-                            layoutParams.setMargins(0, 0, context.dp2px(6), context.dp2px(20))
+                            layoutParams.setMargins(0, 0, context.dp2px(4), context.dp2px(8))
                             bindingItem.llLiveSpacing.layoutParams =layoutParams
                         }else{
                             val layoutParams = bindingItem.llLiveSpacing.layoutParams as ViewGroup.MarginLayoutParams
-                            layoutParams.setMargins(context.dp2px(6), 0, 0, context.dp2px(20))
+                            layoutParams.setMargins(context.dp2px(4), 0, 0, context.dp2px(8))
                             bindingItem.llLiveSpacing.layoutParams =layoutParams
                         }
                     }

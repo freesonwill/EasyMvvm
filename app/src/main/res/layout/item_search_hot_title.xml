@@ -2,18 +2,31 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/dp_16">
+    android:orientation="horizontal"
+    android:gravity="center|left"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginBottom="@dimen/dp_20">
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivHotRanking"
+        android:layout_width="9dp"
+        android:layout_height="@dimen/dp_19"
+       app:srcCompat="@drawable/search_icon_yi"/>
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/txtHotNAme"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingRight="16dp"
-        android:paddingLeft="16dp"
-        android:paddingTop="9dp"
-        android:paddingBottom="9dp"
         android:singleLine="true"
         android:ellipsize="end"
-        android:textColor="@color/c_f5f5f5"
-        android:text="NBA 利雅得胜利 VS 青岛海牛"
-        android:background="@drawable/shape_r4_18152a"/>
+        android:textSize="@dimen/sp_14"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:textColor="@color/c_575762"
+
+        android:text="NBA 利雅得胜利 VS 青岛海牛" />
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivHotHeat"
+        android:layout_width="@dimen/dp_18"
+        android:layout_height="@dimen/dp_18"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:visibility="gone"
+        app:srcCompat="@drawable/search_icon_hot"/>
 </LinearLayout>

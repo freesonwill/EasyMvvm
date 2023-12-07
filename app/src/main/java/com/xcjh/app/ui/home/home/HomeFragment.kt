@@ -42,6 +42,7 @@ class HomeFragment : BaseFragment<MainVm, FragmentHomeBinding>() {
         ImmersionBar.with(this)
             .statusBarDarkFont(true)//黑色
             .titleBar(mDatabind.rlTitle)
+            .navigationBarColor(R.color.c_ffffff)
             .init()
 
         //初始化viewpager2

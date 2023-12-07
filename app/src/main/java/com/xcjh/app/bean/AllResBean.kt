@@ -278,6 +278,9 @@ data class BeingLiveBean(
     var liveStatus: String = "",//	直播状态,1:未开始，2：直播中，3：已关播,可用值:1,2,3
     var hotValue: Int = 0,//	总热度
     var onlineUser: Int = 0,//	在线人数
+    var hottest: Boolean = false,//	是否是热门
+    var newest: Boolean = false,//	是否是最新
+
 ) : Serializable
 
 /**

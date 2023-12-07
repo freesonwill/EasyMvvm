@@ -155,9 +155,6 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                         }
                     }
 
-
-
-
                 }
 
 
@@ -261,8 +258,6 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                             (mDatabind.rcvRecommend.mutable[1] as MatchBean).list.clear()
                             (mDatabind.rcvRecommend.mutable[1] as MatchBean).list.addAll(it)
                             mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
-
-
                      }else{
                             var matchBean=MatchBean()
                             matchBean.list.addAll(it)
@@ -473,7 +468,7 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                                         binding.txtMatchTime.visibility=View.GONE
                                         binding.txtMatchIsStart.visibility=View.GONE
                                         if(matchBean.matchType.equals("2")){
-
+                                            binding.txtMatchStatus.visibility=View.GONE
                                             Glide.with(requireContext())
                                                 .load(matchBean.awayLogo) // 替换为您要加载的图片 URL
                                                 .error(R.drawable.default_team_logo)
@@ -495,9 +490,7 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                                                 binding.txtHomeScore.text=matchBean.awayScore
                                                 binding.txtGuestScore.text=matchBean. homeScore
                                             }
-                                            if(matchBean.status.equals("0")){
-                                                binding.txtMatchStatus.visibility=View.GONE
-                                            }else if(matchBean.status.equals("1")||matchBean.status.equals("10")
+                                            if(matchBean.status.equals("0")||matchBean.status.equals("1")||matchBean.status.equals("10")
                                                 ||matchBean.status.equals("11")||matchBean.status.equals("12")||matchBean.status.equals("13")
                                                 ||matchBean.status.equals("14")||matchBean.status.equals("15")){
                                                 binding.txtMatchStatus.visibility=View.GONE
@@ -553,7 +546,7 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
 
 
                                             binding.txtHomeName.text=matchBean.homeName
-
+                                            binding.txtMatchStatus.visibility=View.GONE
                                             if(matchBean.status.equals("1")){
                                                 binding.txtHomeScore.text=""
                                                 binding.txtGuestScore.text=""
@@ -570,14 +563,18 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                                                 binding.txtMatchStatus.visibility=View.GONE
 
                                             }else if(matchBean.status.equals("1")){
-                                                binding.txtMatchStatus.visibility=View.VISIBLE
+                                                binding.txtMatchStatus.visibility=View.GONE
                                                 binding.txtMatchStatus.setTextColor(ContextCompat.getColor(requireContext(),R.color.c_f5f5f5))
 
                                                 val date = Date(matchBean.matchTime.toLong())
                                                 var formatter = SimpleDateFormat("MM-dd HH:mm", Locale.getDefault())
                                                 binding.txtMatchTime.visibility=View.VISIBLE
                                                 binding.txtMatchTime.text=formatter.format(date)
-                                            }else if(matchBean.status.equals("2")||matchBean.status.equals("4")){
+                                            }else if(matchBean.status.equals("3")){
+                                                binding.txtMatchStatus.visibility=View.VISIBLE
+                                                binding.txtMatchStatus.text=resources.getString(R.string.zc)
+                                                binding.txtMatchStatus.setTextColor(ContextCompat.getColor(requireContext(),R.color.c_f69521))
+                                            } else if(matchBean.status.equals("2")||matchBean.status.equals("4")){
                                                 binding.txtMatchStatus.visibility=View.VISIBLE
                                                 binding.txtMatchAnimation.visibility=View.VISIBLE
                                                 binding.txtMatchIsStart.visibility=View.VISIBLE

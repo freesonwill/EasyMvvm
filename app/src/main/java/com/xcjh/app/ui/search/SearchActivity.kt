@@ -29,9 +29,12 @@ class SearchActivity  : BaseActivity<SearchVm, ActivitySearchBinding>() {
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         ImmersionBar.with(this)
-            .statusBarDarkFont(false)
+            .statusBarDarkFont(true)
             .titleBar(mDatabind.rlSearchTitle)
+            .navigationBarColor(R.color.c_ffffff)
             .init()
+
+
         mViewModel.getHotOngoingMatch()
         adapter()
 
@@ -39,7 +42,7 @@ class SearchActivity  : BaseActivity<SearchVm, ActivitySearchBinding>() {
             if (it.isNotEmpty()) {
                 mDatabind.ivClear.visibility=View.VISIBLE
                 searchType=0
-                mDatabind.txtSearchClick.text=resources.getString(R.string.search)
+//                mDatabind.txtSearchClick.text=resources.getString(R.string.search)
             }else{
                 mDatabind.ivClear.visibility=View.GONE
             }
@@ -57,7 +60,7 @@ class SearchActivity  : BaseActivity<SearchVm, ActivitySearchBinding>() {
             }else{
                 mViewModel.getNowLive(mDatabind.etSearchInput.text.toString().trim())
                 searchType=1
-                mDatabind.txtSearchClick.text=resources.getString(R.string.cancel)
+//                mDatabind.txtSearchClick.text=resources.getString(R.string.cancel)
                 mDatabind.llSearchShow.visibility=View.GONE
                 mDatabind.state.visibility=View.VISIBLE
             }
@@ -67,28 +70,29 @@ class SearchActivity  : BaseActivity<SearchVm, ActivitySearchBinding>() {
 
         //根据是否搜索来判断
         mDatabind.txtSearchClick.clickNoRepeat{
-            if(mDatabind.etSearchInput.text.toString().trim().isEmpty()){
-                myToast(getString(R.string.contact_hint_input))
-                return@clickNoRepeat
-            }
-
-            if(searchType==0){
-                mViewModel.getNowLive(mDatabind.etSearchInput.text.toString().trim())
-                searchType=1
-                mDatabind.txtSearchClick.text=resources.getString(R.string.cancel)
-                mDatabind.llSearchShow.visibility=View.GONE
-                mDatabind.state.visibility=View.VISIBLE
-            }else{
-                searchType=0
-                mDatabind.txtSearchClick.text=resources.getString(R.string.search)
-                mDatabind.llSearchShow.visibility=View.VISIBLE
-                mDatabind.state.visibility=View.GONE
-                mDatabind.etSearchInput.setText("")
-                if(mDatabind.rcSearchList.models!=null){
-                    mDatabind.rcSearchList.mutable.clear()
-                }
-
-            }
+            finish()
+//            if(mDatabind.etSearchInput.text.toString().trim().isEmpty()){
+//                myToast(getString(R.string.contact_hint_input))
+//                return@clickNoRepeat
+//            }
+//
+//            if(searchType==0){
+//                mViewModel.getNowLive(mDatabind.etSearchInput.text.toString().trim())
+//                searchType=1
+//                mDatabind.txtSearchClick.text=resources.getString(R.string.cancel)
+//                mDatabind.llSearchShow.visibility=View.GONE
+//                mDatabind.state.visibility=View.VISIBLE
+//            }else{
+//                searchType=0
+//                mDatabind.txtSearchClick.text=resources.getString(R.string.search)
+//                mDatabind.llSearchShow.visibility=View.VISIBLE
+//                mDatabind.state.visibility=View.GONE
+//                mDatabind.etSearchInput.setText("")
+//                if(mDatabind.rcSearchList.models!=null){
+//                    mDatabind.rcSearchList.mutable.clear()
+//                }
+//
+//            }
         }
     }
 
@@ -106,6 +110,30 @@ class SearchActivity  : BaseActivity<SearchVm, ActivitySearchBinding>() {
                             bindingItem.txtHotNAme.text="${bean.competitionName}\n\n${bean.homeTeamName}VS${bean.awayTeamName}"
                         }else{
                             bindingItem.txtHotNAme.text="${bean.competitionName}\n\n${bean.awayTeamName }VS${bean.homeTeamName}"
+                        }
+                        bindingItem.ivHotRanking.visibility=View.VISIBLE
+                        if(modelPosition==0){
+                            bindingItem.ivHotRanking.setImageDrawable(ContextCompat.getDrawable(this@SearchActivity,R.drawable.search_icon_yi))
+                        }else if(modelPosition==1){
+                            bindingItem.ivHotRanking.setImageDrawable(ContextCompat.getDrawable(this@SearchActivity,R.drawable.search_icon_er))
+                        }else if(modelPosition==2){
+                            bindingItem.ivHotRanking.setImageDrawable(ContextCompat.getDrawable(this@SearchActivity,R.drawable.search_icon_san))
+                        }else if(modelPosition==3){
+                            bindingItem.ivHotRanking.setImageDrawable(ContextCompat.getDrawable(this@SearchActivity,R.drawable.search_icon_si))
+                        }else if(modelPosition==4){
+                            bindingItem.ivHotRanking.setImageDrawable(ContextCompat.getDrawable(this@SearchActivity,R.drawable.search_icon_wu))
+                        }else{
+                            bindingItem.ivHotRanking.visibility=View.GONE
+                        }
+                        //是热门
+                        if(bean.hottest){
+                            bindingItem.ivHotHeat.visibility=View.VISIBLE
+                            bindingItem.ivHotHeat.setImageDrawable(ContextCompat.getDrawable(this@SearchActivity,R.drawable.search_icon_hot))
+                        }else if(bean.newest){//最新的
+                            bindingItem.ivHotHeat.visibility=View.VISIBLE
+                            bindingItem.ivHotHeat.setImageDrawable(ContextCompat.getDrawable(this@SearchActivity,R.drawable.search_icon_new))
+                        }else{
+                            bindingItem.ivHotHeat.visibility=View.GONE
                         }
 
 

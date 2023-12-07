@@ -91,21 +91,21 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         mDatabind.viewPager.registerOnPageChangeCallback(pageChangeCallback)
 
         //点击首页
-        mDatabind.txtHome.setOnClickListener {
+        mDatabind.llHomeSelectMain.setOnClickListener {
             if(currentPage!=0){
                 vibrate(this)
             }
             setHome(0)
         }
         //点击赛程
-        mDatabind.txtHomeSchedule.setOnClickListener {
+        mDatabind.llHomeSelectSchedule.setOnClickListener {
             if(currentPage!=1){
                 vibrate(this)
             }
             setHome(1)
         }
         //点击消息
-        mDatabind.txtHomeMsg.setOnClickListener {
+        mDatabind.llHomeSelectMsg.setOnClickListener {
             judgeLogin {
                 if(currentPage!=2){
                     vibrate(this)
@@ -114,7 +114,7 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
             }
         }
         //点击我的
-        mDatabind.txtHomeMine.setOnClickListener {
+        mDatabind.llHomeSelectMine.setOnClickListener {
             if(currentPage!=3){
                 vibrate(this)
             }
@@ -283,25 +283,46 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
     fun setHome(page: Int) {
         currentPage=page
         if (page == 0) {
-            mDatabind.txtHome.setTextColor(ContextCompat.getColor(this, R.color.c_f5f5f5))
-            mDatabind.txtHomeSchedule.setTextColor(ContextCompat.getColor(this, R.color.c_8e8c9d))
-            mDatabind.txtHomeMsg.setTextColor(ContextCompat.getColor(this, R.color.c_8e8c9d))
-            mDatabind.txtHomeMine.setTextColor(ContextCompat.getColor(this, R.color.c_8e8c9d))
+            mDatabind.txtHome.setTextColor(ContextCompat.getColor(this, R.color.c_37373d))
+            mDatabind.txtHomeSchedule.setTextColor(ContextCompat.getColor(this, R.color.c_aeb4ba))
+            mDatabind.txtHomeMsg.setTextColor(ContextCompat.getColor(this, R.color.c_aeb4ba))
+            mDatabind.txtHomeMine.setTextColor(ContextCompat.getColor(this, R.color.c_aeb4ba))
+
+            mDatabind.ivHomeMain.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_main_select))
+            mDatabind.ivHomeCourse.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_saicheng_no))
+            mDatabind.ivHomeMsg.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_xiaoxi_no))
+            mDatabind.ivHomeMy.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_wode_no))
+
         } else if (page == 1) {
-            mDatabind.txtHome.setTextColor(ContextCompat.getColor(this, R.color.c_8e8c9d))
-            mDatabind.txtHomeSchedule.setTextColor(ContextCompat.getColor(this, R.color.c_f5f5f5))
-            mDatabind.txtHomeMsg.setTextColor(ContextCompat.getColor(this, R.color.c_8e8c9d))
-            mDatabind.txtHomeMine.setTextColor(ContextCompat.getColor(this, R.color.c_8e8c9d))
+            mDatabind.txtHome.setTextColor(ContextCompat.getColor(this, R.color.c_aeb4ba))
+            mDatabind.txtHomeSchedule.setTextColor(ContextCompat.getColor(this, R.color.c_37373d))
+            mDatabind.txtHomeMsg.setTextColor(ContextCompat.getColor(this, R.color.c_aeb4ba))
+            mDatabind.txtHomeMine.setTextColor(ContextCompat.getColor(this, R.color.c_aeb4ba))
+
+            mDatabind.ivHomeMain.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_main_no))
+            mDatabind.ivHomeCourse.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_saicheng_select))
+            mDatabind.ivHomeMsg.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_xiaoxi_no))
+            mDatabind.ivHomeMy.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_wode_no))
         } else if (page == 2) {
-            mDatabind.txtHome.setTextColor(ContextCompat.getColor(this, R.color.c_8e8c9d))
-            mDatabind.txtHomeSchedule.setTextColor(ContextCompat.getColor(this, R.color.c_8e8c9d))
-            mDatabind.txtHomeMsg.setTextColor(ContextCompat.getColor(this, R.color.c_f5f5f5))
-            mDatabind.txtHomeMine.setTextColor(ContextCompat.getColor(this, R.color.c_8e8c9d))
+            mDatabind.txtHome.setTextColor(ContextCompat.getColor(this, R.color.c_aeb4ba))
+            mDatabind.txtHomeSchedule.setTextColor(ContextCompat.getColor(this, R.color.c_aeb4ba))
+            mDatabind.txtHomeMsg.setTextColor(ContextCompat.getColor(this, R.color.c_37373d))
+            mDatabind.txtHomeMine.setTextColor(ContextCompat.getColor(this, R.color.c_aeb4ba))
+
+            mDatabind.ivHomeMain.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_main_no))
+            mDatabind.ivHomeCourse.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_saicheng_no))
+            mDatabind.ivHomeMsg.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_xiaoxi_select))
+            mDatabind.ivHomeMy.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_wode_no))
         } else if (page == 3) {
-            mDatabind.txtHome.setTextColor(ContextCompat.getColor(this, R.color.c_8e8c9d))
-            mDatabind.txtHomeSchedule.setTextColor(ContextCompat.getColor(this, R.color.c_8e8c9d))
-            mDatabind.txtHomeMsg.setTextColor(ContextCompat.getColor(this, R.color.c_8e8c9d))
-            mDatabind.txtHomeMine.setTextColor(ContextCompat.getColor(this, R.color.c_f5f5f5))
+            mDatabind.txtHome.setTextColor(ContextCompat.getColor(this, R.color.c_aeb4ba))
+            mDatabind.txtHomeSchedule.setTextColor(ContextCompat.getColor(this, R.color.c_aeb4ba))
+            mDatabind.txtHomeMsg.setTextColor(ContextCompat.getColor(this, R.color.c_aeb4ba))
+            mDatabind.txtHomeMine.setTextColor(ContextCompat.getColor(this, R.color.c_37373d))
+
+            mDatabind.ivHomeMain.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_main_no))
+            mDatabind.ivHomeCourse.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_saicheng_no))
+            mDatabind.ivHomeMsg.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_xiaoxi_no))
+            mDatabind.ivHomeMy.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_wode_select))
         }
         mDatabind.viewPager.currentItem = page
     }
