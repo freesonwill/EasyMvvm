@@ -10,7 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/base_color"
+        android:background="@color/white"
         android:orientation="vertical">
         <net.lucode.hackware.magicindicator.MagicIndicator
             android:id="@+id/magicIndicator"

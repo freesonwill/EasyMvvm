@@ -16,8 +16,7 @@
                 <com.xcjh.app.view.balldetail.result.FootballDataView
                     android:id="@+id/viewFootballStatus"
                     android:visibility="visible"
-                    android:layout_marginTop="@dimen/dp_16"
-                    android:layout_marginHorizontal="@dimen/dp_16"
+                    android:layout_margin="@dimen/dp_12"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
                 <LinearLayout
@@ -65,8 +64,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginVertical="@dimen/dp_16"
-                        android:layout_marginHorizontal="@dimen/dp_16"
+                        android:layout_margin="@dimen/dp_12"
                         android:orientation="vertical">
 
                         <com.xcjh.app.view.balldetail.result.BasketballTableView
@@ -78,7 +76,7 @@
                             android:id="@+id/view_basketball_data"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/dp_10" />
+                            android:layout_marginTop="@dimen/dp_20" />
                     </LinearLayout>
                 </androidx.core.widget.NestedScrollView>
                 <androidx.viewpager2.widget.ViewPager2

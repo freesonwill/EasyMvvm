@@ -30,11 +30,6 @@ import com.xcjh.app.databinding.ItemJsBinding
 import com.xcjh.app.databinding.ItemSchAllBinding
 import com.xcjh.app.ui.details.MatchDetailActivity
 import com.xcjh.app.utils.selectTime
-import com.xcjh.app.websocket.MyWsManager
-import com.xcjh.app.websocket.bean.ReceiveChangeMsg
-import com.xcjh.app.websocket.bean.ReceiveChatMsg
-import com.xcjh.app.websocket.bean.ReceiveWsBean
-import com.xcjh.app.websocket.listener.C2CListener
 import com.xcjh.base_lib.utils.LogUtils
 import com.xcjh.base_lib.utils.TimeUtil
 import com.xcjh.base_lib.utils.distance
@@ -43,7 +38,6 @@ import com.xcjh.base_lib.utils.setOnclickNoRepeat
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import kotlin.concurrent.thread
 
 
 /***
@@ -240,7 +234,7 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                                     binding.tvstatus.setTextColor(
                                         ContextCompat.getColor(
                                             context,
-                                            R.color.c_fe4848
+                                            R.color.c_pb_bar
                                         )
                                     )
                                     binding.tvstatus.text = context.resources.getString(
@@ -261,7 +255,7 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                                     binding.tvstatus.setTextColor(
                                         ContextCompat.getColor(
                                             context,
-                                            R.color.c_fe4848
+                                            R.color.c_pb_bar
                                         )
                                     )
                                     binding.tvstatus.text = context.resources.getString(
@@ -276,7 +270,7 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                                     binding.tvstatus.setTextColor(
                                         ContextCompat.getColor(
                                             context,
-                                            R.color.c_fe4848
+                                            R.color.c_pb_bar
                                         )
                                     )
                                     binding.tvstatus.text = context.resources.getString(
@@ -297,7 +291,7 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                                     binding.tvstatus.setTextColor(
                                         ContextCompat.getColor(
                                             context,
-                                            R.color.c_fe4848
+                                            R.color.c_pb_bar
                                         )
                                     )
                                     binding.tvstatus.text = context.resources.getString(
@@ -319,7 +313,7 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                                     binding.tvstatus.setTextColor(
                                         ContextCompat.getColor(
                                             context,
-                                            R.color.c_fe4848
+                                            R.color.c_pb_bar
                                         )
                                     )
                                     binding.tvstatus.text = context.resources.getString(
@@ -474,7 +468,7 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                                     binding.tvstatus.setTextColor(
                                         ContextCompat.getColor(
                                             context,
-                                            R.color.c_fe4848
+                                            R.color.c_pb_bar
                                         )
                                     )
                                     binding.tvstatus.text =
@@ -493,7 +487,7 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                                     binding.tvstatus.setTextColor(
                                         ContextCompat.getColor(
                                             context,
-                                            R.color.c_fe4848
+                                            R.color.c_pb_bar
                                         )
                                     )
                                     binding.tvstatus.text =
@@ -512,7 +506,7 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                                     binding.tvstatus.setTextColor(
                                         ContextCompat.getColor(
                                             context,
-                                            R.color.c_fe4848
+                                            R.color.c_pb_bar
                                         )
                                     )
                                     binding.tvstatus.text =
@@ -531,7 +525,7 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                                     binding.tvstatus.setTextColor(
                                         ContextCompat.getColor(
                                             context,
-                                            R.color.c_fe4848
+                                            R.color.c_pb_bar
                                         )
                                     )
                                     binding.tvstatus.text =
@@ -549,7 +543,7 @@ class ScheduleChildFragment : BaseFragment<ScheduleVm, FrConmentBinding>() {
                                     binding.tvstatus.setTextColor(
                                         ContextCompat.getColor(
                                             context,
-                                            R.color.c_fe4848
+                                            R.color.c_pb_bar
                                         )
                                     )
                                     binding.tvstatus.text =

@@ -82,7 +82,7 @@ class FootballMultiTableView : LinearLayout {
 
     private fun setColor(text: TextView, a: Float, b: Float) {
         if (a < b) {
-            text.setTextColor(context.getColor(R.color.c_fe4848))
+            text.setTextColor(context.getColor(R.color.c_pb_bar))
         } else if (a > b) {
             text.setTextColor(context.getColor(R.color.c_48fe4f))
         } else {

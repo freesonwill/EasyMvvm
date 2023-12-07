@@ -84,6 +84,14 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
             }
 
         })
+        appViewModel.updateSchedulePosition.observeForever {
+
+            if (mOneTabIndex==it){
+                var index= mDatabind.vp.currentItem
+                appViewModel.updateScheduleTwoPosition.postValue(index)
+            }
+
+        }
 
         setOnclickNoRepeat(mDatabind.ivMeau) {
             when (it.id) {
@@ -145,9 +153,9 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
         //初始化 magic_indicator
         mDatabind.magicIndicator.bindViewPager2(
             mDatabind.vp, titles,
-            R.color.c_f5f5f5,
-            R.color.c_8a91a0,
-            18f, 18f, false, true,
+            R.color.c_34a853,
+            R.color.c_94999f,
+            15f, 14f, true, true,
             R.color.translet, margin = 8
         )
         mDatabind.vp.offscreenPageLimit = mFragments.size

@@ -212,6 +212,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                     if (matchBeanNew.sent == 0) {//发送失败
                                         matchBeanNew.sent = 2
                                         if (bindingAdapterPosition==0) {
+
                                             appViewModel.updateMsgListEvent.postValue(matchBeanNew)
                                         }
                                         runOnUiThread {
@@ -724,6 +725,8 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
             beanmy.fromId = bean.from
             beanmy.content = bean.content!!
             beanmy.chatType = 2
+            beanmy.nick=nickname
+            beanmy.avatar=userhead
             beanmy.id = sendID
             beanmy.cmd = 11
             beanmy.sent = 0

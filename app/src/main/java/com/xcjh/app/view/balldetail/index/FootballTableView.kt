@@ -8,7 +8,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.xcjh.app.R
 import com.xcjh.app.bean.OddsDetailBean
-import com.xcjh.app.databinding.ItemDetailMultiTableBinding
 import com.xcjh.app.databinding.ItemDetailTableBinding
 import com.xcjh.app.databinding.LayoutEmptyBinding
 
@@ -78,7 +77,7 @@ class FootballTableView : LinearLayout {
 
     private fun setColor(text: TextView, a: Float, b: Float) {
         if (a < b) {
-            text.setTextColor(context.getColor(R.color.c_fe4848))
+            text.setTextColor(context.getColor(R.color.c_pb_bar))
         } else if (a > b) {
             text.setTextColor(context.getColor(R.color.c_48fe4f))
         } else {

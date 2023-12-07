@@ -71,10 +71,10 @@ class ScheduleFragment : BaseFragment<MainVm, FrCourseBinding>() {
                 mTitles!![2],
                 mTitles!![3]
             ),
-            R.color.c_f5f5f5,
-            R.color.c_8a91a0,
-            18f, 18f, false, false,
-            R.color.c_f5f5f5, margin = 28
+            R.color.c_37373d,
+            R.color.c_94999f,
+            18f, 16f, true, false,
+            R.color.c_34a853, margin = 30
         )
         mDatabind.vp.offscreenPageLimit = 4
        // mDatabind.vp.isUserInputEnabled = false

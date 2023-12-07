@@ -9,18 +9,17 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="wrap_content"
-        android:minWidth="@dimen/dp_40"
-        android:background="@color/c_18152a"
+        android:background="@color/c_181819"
         android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/tv_title"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_44"
-            android:background="#201D35"
+            android:layout_height="37dp"
+            android:background="@color/c_1f1f20"
             android:gravity="center"
             tools:text="@string/total"
-            android:textColor="@color/white"
+            android:textColor="@color/c_94999f"
             android:textSize="@dimen/sp_12" />
 
         <TextView
@@ -29,9 +28,11 @@
             android:layout_height="@dimen/dp_44"
             android:gravity="center"
             android:text="-"
-            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textColor="@color/c_d7d7e7"
             android:textSize="@dimen/sp_12" />
         <View
+            android:visibility="invisible"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
             android:background="@color/c_29283A" />
@@ -42,7 +43,8 @@
             android:layout_height="@dimen/dp_44"
             android:gravity="center"
             android:text="-"
-            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textColor="@color/c_d7d7e7"
             android:textSize="@dimen/sp_12" />
     </LinearLayout>
 </layout>

@@ -249,7 +249,7 @@ fun showSignalDialog(
                         val model = getModel<AnchorListBean>()
                         findView<TextView>(R.id.tvContent).apply {
                             if (signalPos == modelPosition) {
-                                this.setTextColor(context.getColor(R.color.c_6D48FE))
+                                this.setTextColor(context.getColor(R.color.c_pb_bg))
                             } else {
                                 this.setTextColor(context.getColor(R.color.c_F5F5F5))
                             }

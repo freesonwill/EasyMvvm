@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import android.graphics.LinearGradient
 import android.graphics.Shader
 import android.os.Bundle
-import android.util.Log
+import android.text.method.LinkMovementMethod
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
@@ -15,7 +15,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
-import com.drake.brv.animation.SlideLeftItemAnimation
 import com.drake.brv.layoutmanager.HoverLinearLayoutManager
 import com.drake.brv.utils.addModels
 import com.drake.brv.utils.models
@@ -31,12 +30,9 @@ import com.xcjh.app.bean.*
 import com.xcjh.app.databinding.*
 import com.xcjh.app.isTopActivity
 import com.xcjh.app.ui.details.DetailVm
-import com.xcjh.app.ui.details.common.MyItemAnimator
 import com.xcjh.app.ui.details.common.RoomChatVm
-import com.xcjh.app.ui.details.common.SlideInLeftAnimator
 import com.xcjh.app.utils.*
 import com.xcjh.app.websocket.MyWsManager
-import com.xcjh.app.websocket.bean.LiveStatus
 import com.xcjh.app.websocket.bean.ReceiveChatMsg
 import com.xcjh.app.websocket.bean.ReceiveWsBean
 import com.xcjh.app.websocket.bean.SendChatMsgBean
@@ -45,6 +41,7 @@ import com.xcjh.base_lib.App
 import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.utils.SpanUtil
 import com.xcjh.base_lib.utils.loge
+import com.xcjh.base_lib.utils.toHtml
 import com.xcjh.base_lib.utils.view.visibleOrGone
 import kotlinx.android.synthetic.main.fragment_detail_tab_chat.view.*
 
@@ -101,7 +98,7 @@ class DetailChatFragment(
                     val aa = expandableText.height
                     noticeBean.isOpen = !noticeBean.isOpen
                     startImageRotate(expandCollapse, noticeBean.isOpen)
-                    expandableText.maxLines = if (noticeBean.isOpen) 10 else 2
+                    expandableText.maxLines = if (noticeBean.isOpen) 20 else 2
                     mDatabind.rcvChat.postDelayed({
                         val bb = expandableText.height
                         val params = mDatabind.rcvChat.layoutParams
@@ -244,7 +241,23 @@ class DetailChatFragment(
         vm.anchor.observe(this) { it ->
             if (it != null) {
                 noticeBean.notice = it.notice ?: ""
-                mDatabind.notice.expandableText.text = it.notice //主播公告
+                mDatabind.notice.expandableText.movementMethod = LinkMovementMethod.getInstance()
+               /* val richText = ("<font color=\"red\">红色样式</font><br />"
+                        + "<big>大号字样式</big><br />"
+                        + "<small>小号字样式</small><br />"
+                        + "<i>斜体样式</i><br />"
+                        + "<b>粗体样式</b><br />"
+                        + "<tt>等t宽t样式</tt><br />"
+                        + "<p>段落样式</p><br />"
+                        +"<img src=\"https://5b0988e595225.cdn.sohucs.com/images/20180615/0338b5602889474d9935ec4214de9695.jpeg\" title=\"abcjpg\">"
+                        + "<a href=\"http://www.baidu.com\">百度一下</a>")
+                richText.toHtml {
+                    Handler(Looper.getMainLooper()).post {
+
+                        mDatabind.notice.expandableText.text = it
+                    }
+                }*/
+                mDatabind.notice.expandableText.text = it.notice?.toHtml() //主播公告
                 mDatabind.rcvChat.postDelayed({
                     try {
                         val params = mDatabind.rcvChat.layoutParams
