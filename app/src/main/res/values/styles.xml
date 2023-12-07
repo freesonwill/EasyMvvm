@@ -67,12 +67,6 @@
         <attr name="max" format="integer" />
         <attr name="showTextProgress" format="boolean" />
     </declare-styleable>
-    android:layout_centerVertical="true"
-    android:gravity="center"
-    android:text="@string/_0"
-    android:textStyle="bold"
-    android:textColor="@color/white"
-    android:textSize="@dimen/sp_14"
     <!--赛况得分-->
     <style name="matchResultBoldNum">
         <item name="android:layout_width">30dp</item>
@@ -83,6 +77,20 @@
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:textSize">@dimen/sp_14</item>
+    </style>
+    <!--文字直播底部图标-->
+    <style name="matchResultImg">
+        <item name="android:layout_width">@dimen/dp_20</item>
+        <item name="android:layout_height">@dimen/dp_20</item>
+        <item name="android:scaleType">fitXY</item>
+    </style>
+    <!--文字直播底部文字-->
+    <style name="matchResultText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">2.5dp</item>
+        <item name="android:textColor">@color/c_d7d7e7</item>
+        <item name="android:textSize">@dimen/sp_11</item>
     </style>
     <style name="BaseDialog" parent="android:Theme.Light">
         <item name="android:windowFrame">@null</item>

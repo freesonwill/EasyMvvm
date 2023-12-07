@@ -57,13 +57,48 @@ class TextLiveAdapter : BaseQuickAdapter<LiveTextBean, QuickViewHolder>() {
                 // 21-射正  22-射偏  23-进攻  24-危险进攻  25-控球率  
                 // 26-加时赛结束  27-点球大战结束  28-VAR(视频助理裁判)  
                 // 29-点球(点球大战)  30-点球未进(点球大战)
-                1, 6, 7, 8, 16, 17 -> {
+                1 -> {
                     ivType.setImageResource(R.drawable.football)
+                }
+                2 -> {
+                    ivType.setImageResource(R.drawable.sk_jiaoqiu)
                 }
                 3 ->
                     ivType.setImageResource(R.drawable.yellow_card)
-                4, 15 ->
+                4 ->
                     ivType.setImageResource(R.drawable.red_card)
+                5 ->
+                    ivType.setImageResource(R.drawable.default_txt_placeholder)
+                6 ->
+                    ivType.setImageResource(R.drawable.default_txt_placeholder)
+                7 ->
+                    ivType.setImageResource(R.drawable.default_txt_placeholder)
+                8 ->
+                    ivType.setImageResource(R.drawable.sk_dianqiu_icon)//
+                9 ->
+                    ivType.setImageResource(R.drawable.sk_huanren_icon)
+                10 ->
+                    ivType.setImageResource(R.drawable.ic_match_start)
+                12 ->
+                    ivType.setImageResource(R.drawable.ic_match_start)
+                15 ->//两黄变红
+                    ivType.setImageResource(R.drawable.sk_lianghuangyihong_icon)
+                16 ->
+                    ivType.setImageResource(R.drawable.sk_dianqiuweijing_icon)
+                17 ->
+                    ivType.setImageResource(R.drawable.sk_wulongqiu_icon)//
+                18 ->
+                    ivType.setImageResource(R.drawable.sk_zhugong_icon)
+                21 ->
+                    ivType.setImageResource(R.drawable.sk_shezheng_icon)
+                22 ->
+                    ivType.setImageResource(R.drawable.sk_shepian_icon)
+                28 ->
+                    ivType.setImageResource(R.drawable.sk_var_icon)
+                29 ->
+                    ivType.setImageResource(R.drawable.sk_dianqiu_icon)
+                30 ->
+                    ivType.setImageResource(R.drawable.sk_dianqiuweijing_icon)
                 else -> {
                     ivType.setImageResource(R.drawable.default_txt_placeholder)
                 }

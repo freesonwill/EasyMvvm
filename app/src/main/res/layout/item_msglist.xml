@@ -50,7 +50,7 @@
                 android:layout_width="@dimen/dp_10"
                 android:layout_centerVertical="true"
                 android:visibility="gone"
-                android:background="@drawable/arrows_red_down"
+                android:background="@drawable/arrows_down"
                 android:layout_toLeftOf="@id/tvcontent"
                 app:layout_constraintLeft_toRightOf="@id/ivhead"
                 app:layout_constraintBottom_toBottomOf="@id/ivhead"

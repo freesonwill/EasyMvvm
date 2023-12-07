@@ -503,7 +503,8 @@ fun MagicIndicator.bindHomeSelectImageViewPager(
 }
 
 /**
- * 通用背景指示器
+ *
+ * 带内外框背景的指示器
  */
 fun MagicIndicator.bindBgViewPager2(
     viewPager: ViewPager2,
@@ -542,18 +543,17 @@ fun MagicIndicator.bindBgViewPager2(
             val titleText: TextView
 
             if (scrollEnable) {
-                customLayout =
-                    LayoutInflater.from(context).inflate(R.layout.live_tab_title_layout2, null)
+                customLayout = LayoutInflater.from(context).inflate(R.layout.live_tab_title_layout2, null)
                 titleText = customLayout.findViewById(R.id.title_text)
                 val layoutParams = titleText.layoutParams as LinearLayout.LayoutParams
                 layoutParams.marginStart= appContext.dp2px(marginStart)
                 layoutParams.marginEnd = appContext.dp2px(marginEnd)
                 if (!isLineIndicator){
                     titleText.setPadding(
-                        UIUtil.dip2px(context, 16.0),
-                        UIUtil.dip2px(context, 8.0),
-                        UIUtil.dip2px(context, 16.0),
-                        UIUtil.dip2px(context, 8.0),
+                        UIUtil.dip2px(context, 19.0),
+                        UIUtil.dip2px(context, 6.0),
+                        UIUtil.dip2px(context, 19.0),
+                        UIUtil.dip2px(context, 6.0),
                     )
                 }
                 titleText.layoutParams = layoutParams
@@ -571,14 +571,8 @@ fun MagicIndicator.bindBgViewPager2(
             commonPagerTitleView.setContentView(customLayout)
             commonPagerTitleView.onPagerTitleChangeListener = object : OnPagerTitleChangeListener {
                 override fun onSelected(index: Int, totalCount: Int) {
-                    // titleText.setTextColor(Color.WHITE)
                     titleText.textSize = selectSize
                     titleText.setTextColor(ContextCompat.getColor(context, selectColor))
-                    if (!isLineIndicator){
-                        titleText.setBackgroundResource(R.drawable.shape_white_r4)
-                        titleText.backgroundTintList=ColorStateList.valueOf(ContextCompat.getColor(context,lineIndicatorColor))
-                    }
-
                     if (typefaceBold) {
                         setTextBold(titleText, true)
                     }
@@ -587,10 +581,6 @@ fun MagicIndicator.bindBgViewPager2(
                 override fun onDeselected(index: Int, totalCount: Int) {
                     titleText.textSize = unSelectSize
                     titleText.setTextColor(ContextCompat.getColor(context, normalColor))
-                    if (!isLineIndicator){
-                        titleText.setBackgroundResource(R.drawable.shape_white_r4)
-                        titleText.backgroundTintList=ColorStateList.valueOf(ContextCompat.getColor(context,R.color.white))
-                    }
                     if (typefaceBold) {
                         setTextBold(titleText, false)
                     }
@@ -601,16 +591,14 @@ fun MagicIndicator.bindBgViewPager2(
                     totalCount: Int,
                     leavePercent: Float,
                     leftToRight: Boolean
-                ) {
-                }
+                ) {}
 
                 override fun onEnter(
                     index: Int,
                     totalCount: Int,
                     enterPercent: Float,
                     leftToRight: Boolean
-                ) {
-                }
+                ) {}
             }
 
             commonPagerTitleView.setOnClickListener {
@@ -624,10 +612,10 @@ fun MagicIndicator.bindBgViewPager2(
 
         override fun getIndicator(context: Context): IPagerIndicator? {
             val indicator = LinePagerIndicator(context)
-            val lineHeight = context.resources.getDimension(R.dimen.dp_32)
+            val lineHeight = context.resources.getDimension(R.dimen.dp_30)
             val borderWidth = UIUtil.dip2px(context, paddingWidth).toFloat()
             indicator.lineHeight = lineHeight
-            indicator.roundRadius =UIUtil.dip2px(context, 4.0).toFloat()
+            indicator.roundRadius =UIUtil.dip2px(context, 24.0).toFloat()
             indicator.yOffset = borderWidth
             indicator.setColors(ContextCompat.getColor(context,lineIndicatorColor))
             return if (isLineIndicator){

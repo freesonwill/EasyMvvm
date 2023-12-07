@@ -21,6 +21,7 @@ import com.xcjh.app.databinding.LayoutEmptyBinding
 import com.xcjh.app.ui.details.DetailVm
 import com.xcjh.base_lib.utils.distance
 import com.xcjh.base_lib.utils.vertical
+import com.xcjh.base_lib.utils.view.visibleOrGone
 
 /**
  * 其他直播间列表
@@ -47,6 +48,7 @@ class FootballFragment(var type: Int = 0, private var match: MatchDetailBean) :
             adapter = if (type == 0) textAdapter else eventAdapter
             distance(0, 0, 0, 0)
         }
+       mDatabind.footballBottom.visibleOrGone(type==0)
     }
 
     override fun createObserver() {

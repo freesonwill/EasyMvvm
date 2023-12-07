@@ -40,7 +40,7 @@
             android:layout_width="@dimen/dp_30"
             android:layout_centerVertical="true"
             android:visibility="gone"
-            android:background="@drawable/arrows_red_down"
+            android:background="@drawable/arrows_down"
             android:layout_toLeftOf="@id/tvcontent"
             android:layout_height="@dimen/dp_30"/>
         <TextView

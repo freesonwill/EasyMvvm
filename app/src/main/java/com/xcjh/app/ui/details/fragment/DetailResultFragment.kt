@@ -1,35 +1,29 @@
 package com.xcjh.app.ui.details.fragment
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
-import com.google.gson.Gson
 import com.xcjh.app.R
-import com.xcjh.app.adapter.ImportEventAdapter
-import com.xcjh.app.adapter.TextLiveAdapter
+import com.xcjh.app.adapter.ViewPager2Adapter
 import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseVpFragment
 import com.xcjh.app.bean.BasketballScoreBean
-import com.xcjh.app.bean.IncidentsBean
 import com.xcjh.app.bean.MatchDetailBean
 import com.xcjh.app.databinding.FragmentDetailTabResultBinding
-import com.xcjh.app.databinding.LayoutEmptyBinding
 import com.xcjh.app.ui.details.DetailVm
 import com.xcjh.app.ui.details.MatchDetailActivity
-import com.xcjh.app.ui.details.fragment.index.Index1Fragment
-import com.xcjh.app.ui.details.fragment.index.Index2Fragment
-import com.xcjh.app.ui.details.fragment.index.Index3Fragment
 import com.xcjh.app.ui.details.fragment.result.FootballFragment
+import com.xcjh.app.utils.initChangeActivity
+import com.xcjh.app.utils.setScroll
+import com.xcjh.app.utils.setUnScroll
 import com.xcjh.app.websocket.MyWsManager
 import com.xcjh.app.websocket.bean.ReceiveChangeMsg
 import com.xcjh.app.websocket.listener.OtherPushListener
 import com.xcjh.base_lib.App
-import com.xcjh.base_lib.utils.distance
+import com.xcjh.base_lib.utils.bindBgViewPager2
+import com.xcjh.base_lib.utils.bindViewPager2
 import com.xcjh.base_lib.utils.initFragment
 import com.xcjh.base_lib.utils.loge
-import com.xcjh.base_lib.utils.vertical
 import com.xcjh.base_lib.utils.view.visibleOrGone
 import java.math.BigDecimal
 
@@ -47,7 +41,7 @@ class DetailResultFragment(private var match: MatchDetailBean) :
 
     override fun initView(savedInstanceState: Bundle?) {
         mDatabind.viewFootballStatus.visibleOrGone("1" == match.matchType)
-        mDatabind.lltFootball.visibleOrGone("1" == match.matchType)
+        mDatabind.lltTab.visibleOrGone("1" == match.matchType)
         mDatabind.viewPager.visibleOrGone("1" == match.matchType)
         mDatabind.lltBasketball.visibleOrGone("2" == match.matchType)
         if ("1" == match.matchType) {//1：足球；2：篮球
@@ -57,27 +51,22 @@ class DetailResultFragment(private var match: MatchDetailBean) :
                 match.awayLogo,
                 match.awayName
             )
-           
-            //文字直播按钮
-            mDatabind.btnTextLive.isSelected = true
-            mDatabind.btnTextLive.setOnClickListener {
-                changeUI(0)
-            }
-            //重要事件按钮
-            mDatabind.btnImportEvent.setOnClickListener {
-                changeUI(1)
-            }
-            mDatabind.viewPager.initFragment(
-                this,
-                arrayListOf(FootballFragment(0,match), FootballFragment(1,match))
+            mDatabind.viewPager.initFragment(this, arrayListOf(FootballFragment(0,match), FootballFragment(1,match)))
+            mDatabind.magicIndicator.setBackgroundResource(R.drawable.round_indicator_bg)
+            mDatabind.magicIndicator.bindBgViewPager2(
+                mDatabind.viewPager,
+                arrayListOf(getString(R.string.text_live), getString(R.string.import_event)),
+                selectSize = 13f,
+                unSelectSize = 13f,
+                selectColor = com.xcjh.base_lib.R.color.white,
+                normalColor = R.color.c_94999f,
+                typefaceBold = true,
+                scrollEnable = false,
+                lineIndicatorColor = R.color.c_323235,
+                marginStart = 4,
+                marginEnd = 14
             )
             mDatabind.viewPager.offscreenPageLimit = 2
-            mDatabind.viewPager.registerOnPageChangeCallback(object :
-                ViewPager2.OnPageChangeCallback() {
-                override fun onPageSelected(position: Int) {
-                    changeUI(position)
-                }
-            })
         } else {
 
             //设置篮球赛况第一个表格里主客队头像和名称
@@ -132,11 +121,7 @@ class DetailResultFragment(private var match: MatchDetailBean) :
                 }
             })
     }
-    private fun changeUI(pos: Int) {
-        mDatabind.viewPager.currentItem = pos
-        mDatabind.btnTextLive.isSelected = pos == 0
-        mDatabind.btnImportEvent.isSelected = pos == 1
-    }
+
     private fun loadData() {
         if ("1" == match.matchType) {//1：足球；2：篮球
             //获取足球赛况技术统计表格的数据

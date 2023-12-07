@@ -19,37 +19,21 @@
                     android:layout_margin="@dimen/dp_12"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
+
                 <LinearLayout
-                    android:visibility="gone"
-                    android:id="@+id/lltFootball"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingVertical="@dimen/dp_10"
-                    android:layout_marginHorizontal="@dimen/dp_16"
                     app:isSticky="true"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:id="@+id/btn_text_live"
-                        android:layout_width="@dimen/dp_100"
-                        android:layout_height="@dimen/dp_36"
-                        android:background="@drawable/bg_btn_detail_tab"
-                        android:gravity="center"
-                        android:text="@string/text_live"
-                        android:textColor="@color/c_F5F5F5"
-                        android:textSize="@dimen/sp_14" />
-
-                    <TextView
-                        android:id="@+id/btn_import_event"
-                        android:layout_width="@dimen/dp_100"
-                        android:layout_height="@dimen/dp_36"
-                        android:layout_marginStart="@dimen/dp_12"
-                        android:background="@drawable/bg_btn_detail_tab"
-                        android:gravity="center"
-                        android:text="@string/import_event"
-                        android:textColor="@color/c_F5F5F5"
-                        android:textSize="@dimen/sp_14" />
+                    android:id="@+id/lltTab"
+                    android:gravity="center"
+                    android:paddingTop="@dimen/dp_5"
+                    android:paddingBottom="@dimen/dp_15"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <net.lucode.hackware.magicindicator.MagicIndicator
+                        android:id="@+id/magic_indicator"
+                        android:layout_width="200dp"
+                        android:layout_height="42dp"
+                      />
                 </LinearLayout>
-
 
             </com.xcjh.app.view.hover.StickyLinearLayout>
             <com.xcjh.app.view.ViewPager2Container
