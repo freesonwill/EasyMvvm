@@ -2,13 +2,29 @@ package com.xcjh.base_lib.utils
 
 import android.content.ClipData
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import android.graphics.Matrix
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
+import android.os.Build
 import android.provider.Settings
 import android.text.Html
+import android.text.Html.ImageGetter
 import android.text.Spanned
 import android.text.TextUtils
+import android.util.Log
 import android.view.View
+import android.widget.TextView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.SimpleTarget
+import com.bumptech.glide.request.transition.Transition
 import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.utils.view.clickNoRepeat
+import java.net.HttpURLConnection
+import java.net.URL
+
 
 /**
  * 获取屏幕宽度
@@ -131,11 +147,50 @@ fun setOnclickNoRepeat(vararg views: View?, interval: Long = 500, onClick: (View
 }
 
 fun String.toHtml(flag: Int = Html.FROM_HTML_MODE_LEGACY): Spanned {
-    return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
         Html.fromHtml(this, flag)
     } else {
         Html.fromHtml(this)
     }
 }
+fun String.toHtml( action: (Spanned?) -> Unit ){
+    Thread {
+        val imageGetter = ImageGetter { source ->
+            val drawable: Drawable? = getImageNetwork(source)
+            if (drawable != null) {
+                drawable.setBounds(0, 0, drawable.minimumWidth, drawable.minimumHeight)
+            } else {
+                return@ImageGetter null
+            }
+            drawable
+        }
+        val charSequence = Html.fromHtml(this.trim { it <= ' ' }, imageGetter, null)
+        action.invoke(charSequence)
+    }.start()
+}
 
+/**
+ * 连接网络获得相对应的图片
+ * @param imageUrl Only the original thread that created a view hierarchy can touch its views.
+ * @return
+ */
+fun getImageNetwork(imageUrl: String?): Drawable? {
+    var myFileUrl: URL? = null
+    var drawable: Drawable? = null
+    try {
+        myFileUrl = URL(imageUrl)
+        val conn = myFileUrl
+            .openConnection() as HttpURLConnection
+        conn.doInput = true
+        conn.connect()
+        val `is` = conn.inputStream
+        // 在这一步最好先将图片进行压缩，避免消耗内存过多
+        val bitmap = BitmapFactory.decodeStream(`is`)
+        drawable = BitmapDrawable(bitmap)
+        `is`.close()
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+    return drawable
+}
 

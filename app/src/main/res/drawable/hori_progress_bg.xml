@@ -1,19 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- 进度条背景色 -->
+<!--<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    &lt;!&ndash; 进度条背景色 &ndash;&gt;
     <item android:id="@android:id/background">
         <shape>
             <corners android:radius="@dimen/dp_2" />
-            <solid android:color="@color/c_6D48FE"/>
+            <solid android:color="@color/c_pb_bg"/>
         </shape>
     </item>
-    <!-- 进度条颜色 -->
+    &lt;!&ndash; 进度条颜色 &ndash;&gt;
     <item android:id="@android:id/progress">
         <clip>
             <shape>
                 <corners android:radius="@dimen/dp_2" />
-                <solid android:color="@color/c_fe4848"/>
+                <solid android:color="@color/c_pb_bar"/>
             </shape>
         </clip>
     </item>
 </layer-list>
+    <?xml version="1.0" encoding="utf-8"?>-->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+<item>
+    <shape>
+        <corners android:radius="11dp" />
+        <solid android:color="@color/c_pb_bg" />
+    </shape>
+</item>
+<item>
+    <scale android:scaleWidth="100%">
+        <shape>
+            <corners android:radius="11dp" />
+            <solid android:color="@color/c_pb_bar" />
+        </shape>
+    </scale>
+</item>
+</layer-list>
+

@@ -310,6 +310,7 @@
 
     <string name="two_s_percent">2分%</string>
     <string name="three_s_percent">3分%</string>
+    <string name="fq_s_percent">罚球%</string>
     <string name="dis_focus">已关注</string>
     <string name="add_focus">+关注</string>
     <string name="share_match">分享比赛</string>

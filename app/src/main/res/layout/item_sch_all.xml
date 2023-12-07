@@ -91,7 +91,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="''"
-            android:textColor="@color/c_fe4848"
+            android:textColor="@color/c_pb_bar"
             android:textSize="10sp"
             android:textStyle="bold"
             android:visibility="gone"

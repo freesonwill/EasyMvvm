@@ -73,7 +73,7 @@ class SchtitleAdapter : BaseQuickAdapter<MatchBean, QuickViewHolder>() {
                         tvstatus.setTextColor(
                             ContextCompat.getColor(
                                 context,
-                                R.color.c_fe4848
+                                R.color.c_pb_bar
                             )
                         )
                         tvstatus.text = context.resources.getString(R.string.main_txt_under, " ")
@@ -133,7 +133,7 @@ class SchtitleAdapter : BaseQuickAdapter<MatchBean, QuickViewHolder>() {
                     }
                     "2","3" -> {
                         tvstatus.visibility = View.VISIBLE
-                        tvstatus.setTextColor(ContextCompat.getColor(context, R.color.c_fe4848))
+                        tvstatus.setTextColor(ContextCompat.getColor(context, R.color.c_pb_bar))
                         tvstatus.text =
                             context.resources.getString(R.string.main_txt_basketball_phase, "一")
 
@@ -141,7 +141,7 @@ class SchtitleAdapter : BaseQuickAdapter<MatchBean, QuickViewHolder>() {
 
                     "4","5" -> {
                         tvstatus.visibility = View.VISIBLE
-                        tvstatus.setTextColor(ContextCompat.getColor(context, R.color.c_fe4848))
+                        tvstatus.setTextColor(ContextCompat.getColor(context, R.color.c_pb_bar))
                         tvstatus.text =
                             context.resources.getString(R.string.main_txt_basketball_phase, "二")
 
@@ -149,7 +149,7 @@ class SchtitleAdapter : BaseQuickAdapter<MatchBean, QuickViewHolder>() {
 
                     "6" ,"7"-> {
                         tvstatus.visibility = View.VISIBLE
-                        tvstatus.setTextColor(ContextCompat.getColor(context, R.color.c_fe4848))
+                        tvstatus.setTextColor(ContextCompat.getColor(context, R.color.c_pb_bar))
                         tvstatus.text =
                             context.resources.getString(R.string.main_txt_basketball_phase, "三")
 
@@ -157,7 +157,7 @@ class SchtitleAdapter : BaseQuickAdapter<MatchBean, QuickViewHolder>() {
 
                     "8","9" -> {
                         tvstatus.visibility = View.VISIBLE
-                        tvstatus.setTextColor(ContextCompat.getColor(context, R.color.c_fe4848))
+                        tvstatus.setTextColor(ContextCompat.getColor(context, R.color.c_pb_bar))
                         tvstatus.text =
                             context.resources.getString(R.string.main_txt_basketball_phase, "四")
 

@@ -51,10 +51,13 @@ public class ProgressBarView extends View {
         bgPaint.setStrokeWidth(ringWidth);
         bgPaint.setAntiAlias(true);
 
-        ringProgressPaint = new Paint();
+        ringProgressPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         ringProgressPaint.setColor(ringProgressColor);
         ringProgressPaint.setStrokeWidth(ringWidth);
         ringProgressPaint.setAntiAlias(true);
+        //设置画笔的画出的形状
+        ringProgressPaint.setStrokeJoin(Paint.Join.ROUND);
+        ringProgressPaint.setStrokeCap(Paint.Cap.ROUND);
         ringProgressPaint.setStyle(Paint.Style.STROKE);
     }
 
@@ -78,7 +81,7 @@ public class ProgressBarView extends View {
         canvas.drawCircle(xCenter, yCenter, radius, bgPaint);
         // 绘制进度圆
         RectF rectF = new RectF(xCenter - radius, yCenter - radius, xCenter + radius, yCenter + radius);
-        canvas.drawArc(rectF, 90, progress * 360 / max, false, ringProgressPaint);
+        canvas.drawArc(rectF, -90, -progress * 360 / max, false, ringProgressPaint);
 
     }
 

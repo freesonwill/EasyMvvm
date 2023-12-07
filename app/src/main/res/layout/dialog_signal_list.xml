@@ -55,6 +55,6 @@
         android:layout_height="@dimen/dp_60"
         android:gravity="center"
         android:text="@string/cancel"
-        android:textColor="@color/c_fe4848"
+        android:textColor="@color/c_pb_bar"
         android:textSize="@dimen/sp_14" />
 </LinearLayout>

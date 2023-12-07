@@ -15,20 +15,16 @@ import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.models
 import com.drake.brv.utils.mutable
 import com.drake.brv.utils.setup
-import com.flyco.tablayout.listener.CustomTabEntity
 import com.gyf.immersionbar.ImmersionBar
 import com.xcjh.app.R
-import com.xcjh.app.adapter.FeedNoticeAdapter
 import com.xcjh.app.adapter.SchtitleAdapter
 import com.xcjh.app.base.BaseActivity
 import com.xcjh.app.bean.AnchorBean
 import com.xcjh.app.bean.MatchBean
-import com.xcjh.app.databinding.ActivityFeednoticeBinding
 import com.xcjh.app.databinding.ActivityMynoticeBinding
 import com.xcjh.app.databinding.ItemJsBinding
 import com.xcjh.app.databinding.ItemSchAllBinding
 import com.xcjh.app.ui.details.MatchDetailActivity
-import com.xcjh.app.vm.MainVm
 import com.xcjh.base_lib.Constants.Companion.BASE_PAGE_SIZE
 import com.xcjh.base_lib.utils.LogUtils
 import com.xcjh.base_lib.utils.TimeUtil
@@ -117,7 +113,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
                                         context,
-                                        R.color.c_fe4848
+                                        R.color.c_pb_bar
                                     )
                                 )
                                 binding.tvstatus.text = context.resources.getString(
@@ -137,7 +133,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
                                         context,
-                                        R.color.c_fe4848
+                                        R.color.c_pb_bar
                                     )
                                 )
                                 binding.tvstatus.text = context.resources.getString(
@@ -151,7 +147,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
                                         context,
-                                        R.color.c_fe4848
+                                        R.color.c_pb_bar
                                     )
                                 )
                                 binding.tvstatus.text = context.resources.getString(
@@ -171,7 +167,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
                                         context,
-                                        R.color.c_fe4848
+                                        R.color.c_pb_bar
                                     )
                                 )
                                 binding.tvstatus.text = context.resources.getString(
@@ -192,7 +188,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
                                         context,
-                                        R.color.c_fe4848
+                                        R.color.c_pb_bar
                                     )
                                 )
                                 binding.tvstatus.text = context.resources.getString(
@@ -344,7 +340,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
                                         context,
-                                        R.color.c_fe4848
+                                        R.color.c_pb_bar
                                     )
                                 )
                                 binding.tvstatus.text =
@@ -363,7 +359,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
                                         context,
-                                        R.color.c_fe4848
+                                        R.color.c_pb_bar
                                     )
                                 )
                                 binding.tvstatus.text =
@@ -382,7 +378,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
                                         context,
-                                        R.color.c_fe4848
+                                        R.color.c_pb_bar
                                     )
                                 )
                                 binding.tvstatus.text =
@@ -401,7 +397,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
                                         context,
-                                        R.color.c_fe4848
+                                        R.color.c_pb_bar
                                     )
                                 )
                                 binding.tvstatus.text =
@@ -420,7 +416,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
                                         context,
-                                        R.color.c_fe4848
+                                        R.color.c_pb_bar
                                     )
                                 )
                                 binding.tvstatus.text =

@@ -7,11 +7,9 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
-import com.google.gson.Gson
 import com.xcjh.app.R
 import com.xcjh.app.bean.BasketballTeamMemberBean
 import com.xcjh.app.databinding.ItemDetailLineupBasketballBinding
-import com.xcjh.base_lib.utils.loge
 
 class BasketballLineupView : LinearLayout {
     private lateinit var layout: LinearLayout
@@ -77,7 +75,7 @@ class BasketballLineupView : LinearLayout {
                 backgroundTintList = ColorStateList.valueOf(
                     ContextCompat.getColor(
                         context,
-                        if (it.data.first == "0") R.color.c_fe4848 else R.color.c_8a91a0
+                        if (it.data.first == "0") R.color.c_pb_bar else R.color.c_8a91a0
                     )
                 )
                 text = it.number.toString()

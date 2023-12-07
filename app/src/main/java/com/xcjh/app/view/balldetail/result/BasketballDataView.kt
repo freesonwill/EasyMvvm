@@ -16,10 +16,10 @@ import com.xcjh.app.view.ProgressBarView
 import kotlin.math.roundToInt
 
 class BasketballDataView : RelativeLayout {
-    private lateinit var iv_icon_home: ImageView
+  /*  private lateinit var iv_icon_home: ImageView
     private lateinit var iv_icon_away: ImageView
     private lateinit var iv_name_home: TextView
-    private lateinit var iv_name_away: TextView
+    private lateinit var iv_name_away: TextView*/
     private lateinit var tvHit2Home: TextView
     private lateinit var tvHit3Home: TextView
     private lateinit var tvPenaltyHome: TextView
@@ -59,10 +59,10 @@ class BasketballDataView : RelativeLayout {
     @SuppressLint("MissingInflatedId")
     fun initView(context: Context?) {
         val v = LayoutInflater.from(context).inflate(R.layout.view_basketball_data, this)
-        iv_icon_home = v.findViewById(R.id.iv_icon_home)
+       /* iv_icon_home = v.findViewById(R.id.iv_icon_home)
         iv_icon_away = v.findViewById(R.id.iv_icon_away)
         iv_name_home = v.findViewById(R.id.iv_name_home)
-        iv_name_away = v.findViewById(R.id.iv_name_away)
+        iv_name_away = v.findViewById(R.id.iv_name_away)*/
 
         //2f
         pgTwoPercent = v.findViewById(R.id.pgTwoPercent)
@@ -95,10 +95,10 @@ class BasketballDataView : RelativeLayout {
     }
 
     fun setTitleBar(homeIcon: String?, homeName: String?, awayIcon: String?, awayName: String?) {
-        Glide.with(this).load(homeIcon).placeholder(com.xcjh.base_lib.R.drawable.ic_default_bg).into(iv_icon_home)
+       /* Glide.with(this).load(homeIcon).placeholder(com.xcjh.base_lib.R.drawable.ic_default_bg).into(iv_icon_home)
         Glide.with(this).load(awayIcon).placeholder(com.xcjh.base_lib.R.drawable.ic_default_bg).into(iv_icon_away)
         iv_name_home.text = homeName?:""
-        iv_name_away.text = awayName?:""
+        iv_name_away.text = awayName?:""*/
     }
 
     var homeV2 = 0 //2分球命中率 *100
