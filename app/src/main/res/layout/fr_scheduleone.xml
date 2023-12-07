@@ -10,35 +10,43 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-        <FrameLayout
-            android:id="@+id/frrl"
-            android:layout_width="@dimen/dp_40"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_marginTop="@dimen/dp_10"
-            android:layout_height="@dimen/dp_40">
-            <ImageView
-                android:id="@+id/iv_meau"
-                android:layout_width="@dimen/dp_20"
-                android:background="@drawable/ic_menu"
-                android:layout_gravity="center"
 
-                android:layout_height="@dimen/dp_20"/>
-
-        </FrameLayout>
         <net.lucode.hackware.magicindicator.MagicIndicator
             android:id="@+id/magicIndicator"
 
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             app:layout_constraintTop_toTopOf="@id/frrl"
             app:layout_constraintBottom_toBottomOf="@id/frrl"
             app:layout_constraintLeft_toRightOf="@id/frrl"
             app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginRight="34dp"
             android:layout_height="@dimen/dp_50"
             android:layout_centerHorizontal="true" />
+        <LinearLayout
+            android:id="@+id/frrl"
+            android:layout_width="@dimen/dp_62"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginRight="12dp"
+            android:orientation="horizontal"
+            android:layout_height="@dimen/dp_20">
+            <View
+                android:layout_width="40dp"
+                android:background="@drawable/white_shad"
+                android:layout_height="match_parent"/>
+            <ImageView
+                android:id="@+id/iv_meau"
+                android:layout_width="@dimen/dp_20"
+                android:background="@drawable/ic_menu"
+
+
+                android:layout_height="@dimen/dp_20"/>
+
+        </LinearLayout>
         <com.xcjh.app.view.ViewPager2Container
             android:layout_width="match_parent"
-            app:layout_constraintTop_toBottomOf="@id/frrl"
+            app:layout_constraintTop_toBottomOf="@id/magicIndicator"
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_height="0dp">
             <androidx.viewpager2.widget.ViewPager2

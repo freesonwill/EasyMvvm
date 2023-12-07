@@ -102,6 +102,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
             val data = getAll().await()
 
             if (data.isNotEmpty()) {
+                listdata.clear()
                 listdata.addAll(data)
                 mAdapter.submitList(listdata)
 
@@ -249,8 +250,14 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                 var bean = MsgListNewData()
                 if (msg.anchorId == msg.from) {//主播发送的消息
                     bean.avatar = msg.fromAvatar!!
+                    if (chatId == msg.anchorId) {
+                        bean.noReadSum = 0
+                    } else {
+                        bean.noReadSum = listdata[i].noReadSum + 1
+                    }
                 } else {
                     bean.avatar = msg.toAvatar!!
+                    bean.noReadSum = 0
                 }
                 bean.content = msg.content.toString()
                 bean.createTime = msg.createTime!!
@@ -265,11 +272,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                 } else {
                     bean.nick = msg.toNickName!!
                 }
-                if (chatId == msg.anchorId) {
-                    bean.noReadSum = 0
-                } else {
-                    bean.noReadSum = listdata[i].noReadSum + 1
-                }
+
 
                 mAdapter[i] = bean//更新Item数据
                 mAdapter.swap(i, 0)
@@ -281,8 +284,14 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
             var bean = MsgListNewData()
             if (msg.anchorId == msg.from) {//主播发送的消息
                 bean.avatar = msg.fromAvatar!!
+                if (chatId == msg.anchorId) {
+                    bean.noReadSum = 0
+                } else {
+                    bean.noReadSum = 1
+                }
             } else {
                 bean.avatar = msg.toAvatar!!
+                bean.noReadSum = 0
             }
             bean.content = msg.content.toString()
             bean.createTime = msg.createTime!!
@@ -296,11 +305,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
             } else {
                 bean.nick = msg.toNickName!!
             }
-            if (chatId == msg.anchorId) {
-                bean.noReadSum = 0
-            } else {
-                bean.noReadSum = 1
-            }
+
             addDataToList(bean)
             mAdapter.add(0, bean)
         }

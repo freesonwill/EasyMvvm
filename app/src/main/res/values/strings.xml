@@ -70,7 +70,7 @@
     <string name="txt_feedcontent">反馈内容</string>
     <string name="txt_feedresult">反馈结果</string>
     <string name="txt_feddtime">反馈时间</string>
-    <string name="txt_jiesuo">主播\n解说</string>
+    <string name="txt_jiesuo">主播解说</string>
     <string name="txt_choosecountry">请选择区号</string>
     <string name="cancel">取消</string>
     <string name="no_data_hint">暂无数据</string>
@@ -122,6 +122,7 @@
     <string name="set_new_psw">设置新密码</string>
     <string name="set_new_psw_again">再次确定新密码</string>
     <string name="finish">完成</string>
+    <string name="finis">完</string>
     <string name="hint_psw_8_20">（8–20位英文，数字，下划线的两种组合）</string>
     <string name="watch_info">看资讯</string>
     <string name="watch_info_content">最新一手资讯都在这里</string>
