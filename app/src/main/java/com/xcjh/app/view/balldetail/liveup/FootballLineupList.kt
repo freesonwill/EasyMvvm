@@ -4,6 +4,8 @@ import android.content.Context
 import android.util.AttributeSet
 import android.widget.LinearLayout
 import android.view.LayoutInflater
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.drake.brv.annotaion.DividerOrientation
@@ -24,6 +26,9 @@ import com.xcjh.base_lib.utils.view.visibleOrInvisible
  * 首发、替补阵容
  */
 class FootballLineupList : LinearLayout {
+    private lateinit var ivHomeIcon: ImageView
+    private lateinit var tvTitle: TextView
+    private lateinit var ivAwayIcon: ImageView
     private lateinit var rcvPlayer: RecyclerView
 
     constructor(context: Context) : super(context) {
@@ -51,12 +56,15 @@ class FootballLineupList : LinearLayout {
 
     fun initView(context: Context) {
         val v = LayoutInflater.from(context).inflate(R.layout.view_detail_game_substitute, this)
+        ivHomeIcon = v.findViewById(R.id.ivHomeIcon)
+        tvTitle = v.findViewById(R.id.tvTitle)
+        ivAwayIcon = v.findViewById(R.id.ivAwayIcon)
         rcvPlayer = v.findViewById(R.id.rcvPlayer)
         rcvPlayer.grid(2).divider {
            // setDrawable(R.drawable.divider_horizontal)
-            setDivider(1, false)
-            setColor("#666777")
-            orientation = DividerOrientation.HORIZONTAL
+            setDivider(1, true)
+            setColor("#27272A")
+            orientation = DividerOrientation.GRID
         }.setup {
             addType<MatchTeam> {
                 R.layout.item_detail_game_substitute_top
@@ -68,7 +76,7 @@ class FootballLineupList : LinearLayout {
                 when (val item = _data) {
                     is MatchTeam -> {
                         val binding = getBinding<ItemDetailGameSubstituteTopBinding>()
-                        Glide.with(context).load(item.logo).placeholder(R.drawable.default_team_logo).into(binding.ivIcon)
+
                         binding.rltItem.setBackgroundColor(context.getColor(if(this.modelPosition%2==0) R.color.c_21152a else R.color.c_18152A ))
                         binding.tvName.text = item.name ?: ""
                     }
@@ -77,8 +85,8 @@ class FootballLineupList : LinearLayout {
                         binding.ivIcon.visibleOrInvisible(item.name.isNotEmpty())
                         binding.tvPlayerNum.visibleOrInvisible(item.name.isNotEmpty())
                         binding.tvPosition.visibleOrInvisible(item.name.isNotEmpty())
-                        Glide.with(context).load(if(this.modelPosition%2==0) R.drawable.icon_red_cloth else R.drawable.icon_team_blue).into(binding.ivIcon)
-                        binding.ctlItem.setBackgroundColor(context.getColor(if(this.modelPosition%2==0) R.color.c_21152a else R.color.c_18152A ))
+                        Glide.with(context).load(if(this.modelPosition%2==0) R.drawable.icon_team_red else R.drawable.icon_team_blue).into(binding.ivIcon)
+                       /// binding.ctlItem.setBackgroundColor(context.getColor(if(this.modelPosition%2==0) R.color.c_21152a else R.color.c_18152A ))
                         binding.tvPlayerNum.text = item.shirtNumber.toString()
                         binding.tvName.text = item.name
                         binding.tvPosition.text = getPlayerPos(item.position)
@@ -114,8 +122,13 @@ class FootballLineupList : LinearLayout {
     fun setData(data: FootballLineupBean, match: MatchDetailBean,first:Int=0) {
         list.clear()
 
-        list.add(MatchTeam(name = match.homeName, logo = data.homeLogo))
-        list.add(MatchTeam(name = match.awayName, logo = data.awayLogo))
+        if ( first==1){
+            tvTitle.text= context.getString(R.string.first_z)
+            Glide.with(context).load(data.homeLogo).placeholder(R.drawable.default_team_logo).into(ivHomeIcon)
+            Glide.with(context).load(data.awayLogo).placeholder(R.drawable.default_team_logo).into(ivAwayIcon)
+        }else{
+            tvTitle.text= context.getString(R.string.ti)
+        }
         val home = data.home.filter {
             it.first == first
         }

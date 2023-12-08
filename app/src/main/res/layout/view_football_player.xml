@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="MissingDefaultResource">
 
     <data>
@@ -9,38 +9,39 @@
 
     <RelativeLayout
         android:layout_width="@dimen/dp_50"
-        android:layout_height="@dimen/dp_60">
+        android:layout_height="@dimen/dp_50">
 
         <ImageView
             android:id="@+id/ivPlayer"
-            android:layout_width="33dp"
-            android:layout_height="33dp"
+            android:layout_width="30dp"
+            android:layout_height="25dp"
             android:layout_centerHorizontal="true"
-            android:background="@drawable/icon_red_cloth" />
+            android:src="@drawable/icon_team_red" />
 
         <TextView
             android:id="@+id/tvPlayerNum"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:gravity="center"
             android:layout_alignTop="@id/ivPlayer"
             android:layout_alignBottom="@id/ivPlayer"
-            tools:text="37"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
             android:textColor="@color/white"
-            android:textSize="@dimen/sp_12" />
+            android:textSize="@dimen/sp_12"
+            android:textStyle="bold"
+            tools:text="37" />
 
         <TextView
             android:id="@+id/tvPlayerName"
-            android:layout_below="@id/ivPlayer"
             android:layout_width="@dimen/dp_60"
             android:layout_height="wrap_content"
+            android:layout_below="@id/ivPlayer"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/dp_5"
-            tools:text="周正凯123456"
             android:gravity="center"
             android:singleLine="true"
-            android:textColor="@color/c_F5F5F5"
-            android:textSize="@dimen/sp_10" />
+            android:textColor="@color/c_AEBAB1"
+            android:textSize="@dimen/sp_10"
+            tools:text="周正凯123456" />
     </RelativeLayout>
 </layout>

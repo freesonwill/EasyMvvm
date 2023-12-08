@@ -11,7 +11,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/c_07061d"
+        android:background="@color/c_181819"
         android:orientation="vertical">
 
         <RelativeLayout
@@ -187,11 +187,11 @@
             </LinearLayout>
         </RelativeLayout>
 
-        <!--主要界面-->
+        <!--主要界面 android:background="@drawable/icon_home_bg"-->
         <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:background="@color/c_181819"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/icon_home_bg">
+            android:layout_height="match_parent">
 
             <com.google.android.material.appbar.AppBarLayout
                 android:id="@+id/appBayLayout"

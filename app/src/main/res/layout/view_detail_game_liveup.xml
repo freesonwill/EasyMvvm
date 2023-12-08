@@ -4,41 +4,36 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/lltShow"
         android:visibility="invisible"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-
-        <RelativeLayout
+        <com.xcjh.app.view.balldetail.liveup.FootballLiveUpMiddleView
+            android:id="@+id/lineUpMiddleView"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_40"
-            android:background="@drawable/bg_sj_top">
+            android:layout_height="wrap_content" />
 
-            <TextView
-                android:id="@+id/tv_match_home_lineup"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="@dimen/dp_12"
-                android:textColor="@color/c_F5F5F5"
-                android:textSize="@dimen/sp_12"
-                android:textStyle="bold"
-                tools:text="阵型：4-4-2"/>
-
+        <LinearLayout
+            android:orientation="vertical"
+           android:layout_centerInParent="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentEnd="true"
-                android:layout_marginEnd="@dimen/dp_12"
-                android:orientation="horizontal">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-                <ImageView
-                    android:layout_width="@dimen/dp_10"
-                    android:layout_height="@dimen/dp_10"
-                    android:layout_gravity="center_vertical"
-                    android:background="@drawable/icon_money" />
+                <TextView
+                    android:id="@+id/tv_match_home_lineup"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_marginTop="@dimen/dp_1"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_10"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_10"
+                    tools:text="阵型：4-4-2"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -46,100 +41,62 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="@dimen/dp_4"
                     android:text="@string/substitute"
-                    android:textColor="@color/c_8a91a0"
-                    android:textSize="@dimen/sp_12" />
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_10" />
 
                 <TextView
                     android:id="@+id/tv_match_home_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="@dimen/dp_10"
                     android:layout_marginStart="@dimen/dp_4"
-                    android:textColor="@color/c_F5F5F5"
-                    android:textSize="@dimen/sp_12"
-                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_10"
                     tools:text="0欧元"/>
             </LinearLayout>
-        </RelativeLayout>
-
-        <com.xcjh.app.view.balldetail.liveup.FootballLiveUpMiddleView
-            android:id="@+id/lineUpMiddleView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_40"
-            android:background="@drawable/bg_sj_bottom">
-
-            <TextView
-                android:id="@+id/tv_match_away_lineup"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="@dimen/dp_12"
-                tools:text="阵型：4-4-2"
-                android:textStyle="bold"
-                android:textColor="@color/c_F5F5F5"
-                android:textSize="@dimen/sp_12" />
-
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentEnd="true"
-                android:layout_marginEnd="@dimen/dp_12"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="@dimen/dp_10"
-                    android:layout_height="@dimen/dp_10"
-                    android:layout_gravity="center_vertical"
-                    android:background="@drawable/icon_money" />
+                android:layout_marginTop="@dimen/dp_12"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/tv_match_away_lineup"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_10"
+                    tools:text="阵型：4-4-2"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_10" />
 
                 <TextView
+                    android:layout_marginTop="1dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="@dimen/dp_4"
                     android:text="@string/substitute"
-                    android:textColor="@color/c_8a91a0"
-                    android:textSize="@dimen/sp_12" />
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_10" />
 
                 <TextView
+                    android:layout_marginTop="1dp"
                     android:id="@+id/tv_match_away_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/dp_10"
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="@dimen/dp_4"
                     tools:text="0欧元"
-                    android:textStyle="bold"
-                    android:textColor="@color/c_F5F5F5"
-                    android:textSize="@dimen/sp_12" />
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_10" />
             </LinearLayout>
-        </RelativeLayout>
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/lltHide"
-        android:visibility="invisible"
-        android:orientation="vertical"
+        </LinearLayout>
+    </RelativeLayout>
+    <com.xcjh.app.view.balldetail.liveup.FootballLineupList
+        android:id="@+id/firstTable"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginTop="@dimen/dp_16"
-            android:text="@string/first_z"
-            android:textColor="@color/c_F5F5F5"
-            android:textSize="@dimen/sp_16" />
-
-        <com.xcjh.app.view.balldetail.liveup.FootballLineupList
-            android:id="@+id/firstTable"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_10"
-            android:layout_marginBottom="@dimen/dp_30"
-            android:visibility="visible"/>
-    </LinearLayout>
-
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_10"
+        android:visibility="visible"/>
 </RelativeLayout>

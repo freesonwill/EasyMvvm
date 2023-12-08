@@ -79,7 +79,7 @@ class DetailLineUpFragment(var match: MatchDetailBean) :
                 val away = it.away.filter {
                     it.first == 0
                 }
-                mDatabind.lltTb.visibleOrGone(!(home.size==away.size && home.isEmpty()))
+                mDatabind.matchTable.visibleOrGone(!(home.size==away.size && home.isEmpty()))
                 mDatabind.matchTable.setData(it,match,0)
             }
         }
