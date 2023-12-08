@@ -20,7 +20,7 @@
         android:id="@+id/root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/base_color"
+        android:background="@color/white"
         android:gravity="center_horizontal"
         android:orientation="vertical"
         tools:context=".ui.activity.MainActivity">
@@ -33,6 +33,7 @@
             android:id="@+id/smart_common"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:background="@color/c_f2f3f7"
             android:layout_weight="1"
             app:srlEnableLoadMore="false"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -44,14 +45,12 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv"
-                android:layout_marginTop="@dimen/dp_20"
-
                 android:paddingBottom="@dimen/dp_20"
-
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
+                android:background="@color/c_f2f3f7"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/dp_13"
+                android:paddingRight="13dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:reverseLayout="true" />
 
@@ -66,18 +65,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingLeft="@dimen/dp_15"
-            android:paddingRight="@dimen/dp_15"
-            android:paddingBottom="25dp"
+            android:paddingTop="8dp"
+            android:paddingLeft="@dimen/dp_12"
+            android:paddingRight="@dimen/dp_12"
+            android:paddingBottom="39dp"
             app:layout_constraintBottom_toBottomOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/shape8_18152a"
-                android:paddingLeft="@dimen/dp_12"
+
+
                 android:paddingTop="@dimen/dp_6"
-                android:paddingRight="@dimen/dp_12"
+
                 android:paddingBottom="@dimen/dp_6">
 
                 <ImageView
@@ -92,36 +92,43 @@
                 <EditText
                     android:id="@+id/edtcontent"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="36dp"
                     android:layout_marginLeft="5dp"
-                    android:background="@null"
+                    android:background="@drawable/shape8_18152a"
                     android:hint="@string/say_something"
                     android:lineSpacingExtra="@dimen/dp_5"
+                    android:layout_marginRight="15dp"
                     android:maxHeight="227dp"
                     android:maxLength="200"
+                    android:inputType="text|textCapSentences"
+                    android:singleLine="true"
+                    android:imeOptions="actionSend"
+                    android:paddingLeft="15dp"
                     android:maxLines="3"
-                    android:textColor="@color/white"
-                    android:textColorHint="@color/c_8A8C90"
+                    android:textColor="@color/c_37373d"
+                    android:textColorHint="@color/c_94999f"
                     android:textSize="@dimen/sp_14"
                     android:textStyle="normal"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintLeft_toRightOf="@+id/ivface"
+                    app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toLeftOf="@id/ivexpent" />
 
                 <ImageView
                     android:id="@+id/ivexpent"
-                    android:layout_width="@dimen/dp_36"
-                    android:layout_height="@dimen/dp_36"
-                    android:layout_marginRight="@dimen/dp_16"
+                    android:layout_width="@dimen/dp_30"
+                    android:layout_height="@dimen/dp_30"
+
                     android:background="@drawable/send_add"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintRight_toLeftOf="@+id/ivsend" />
+                    app:layout_constraintTop_toTopOf="@id/edtcontent"
+                    app:layout_constraintBottom_toBottomOf="@id/edtcontent"
+                    app:layout_constraintRight_toRightOf="parent" />
 
                 <ImageView
                     android:id="@+id/ivsend"
                     android:layout_width="@dimen/dp_36"
                     android:layout_height="@dimen/dp_36"
+                    android:visibility="gone"
                     android:background="@drawable/send_msg"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintRight_toRightOf="parent" />
@@ -139,26 +146,25 @@
 
                 <LinearLayout
                     android:id="@+id/linphote"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:background="@drawable/shape8_18152a"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
-
                     android:orientation="vertical"
                     android:paddingTop="@dimen/dp_6"
                     android:paddingBottom="@dimen/dp_6">
 
                     <ImageView
 
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
                         android:background="@drawable/ic_photo_album" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/phote_book"
-                        android:textColor="@color/c_8a91a0"
+                        android:layout_marginTop="8dp"
+                        android:textColor="@color/c_575762"
                         android:textSize="12sp"
                         android:textStyle="bold" />
 
@@ -166,20 +172,20 @@
 
                 <LinearLayout
                     android:id="@+id/lincanmer"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_30"
-                    android:background="@drawable/shape8_18152a"
+
                     android:gravity="center_horizontal"
                     android:orientation="vertical"
                     android:paddingTop="@dimen/dp_6"
                     android:paddingBottom="@dimen/dp_6"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
                     <ImageView
 
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
                         android:background="@drawable/ic_photograph" />
 
                     <TextView
@@ -187,7 +193,8 @@
                         android:layout_height="wrap_content"
                         android:text="@string/canmei"
 
-                        android:textColor="@color/c_8a91a0"
+                        android:layout_marginTop="8dp"
+                        android:textColor="@color/c_575762"
                         android:textSize="12sp"
                         android:textStyle="bold" />
 

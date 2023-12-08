@@ -170,7 +170,8 @@ fun selectDate(context: Context, timeOld: String, block: (time: String) -> Unit)
                 if (dialog!!.dialogImpl.imgTab != null) {
                     dialog!!.dialogImpl.imgTab.setBackgroundResource(R.drawable.dilogx_eff1f5)
                 }
-                val dateTimePickerView: DateWheelLayout = v.findViewById<DateWheelLayout>(R.id.datewheel)
+                val dateTimePickerView: DateWheelLayout =
+                    v.findViewById<DateWheelLayout>(R.id.datewheel)
                 val ivclose = v.findViewById<ImageView>(R.id.ivNext)
                 val tvcz = v.findViewById<TextView>(R.id.tvcz)
                 val tvsure = v.findViewById<TextView>(R.id.tvsure)
@@ -186,12 +187,16 @@ fun selectDate(context: Context, timeOld: String, block: (time: String) -> Unit)
                 dateTimePickerView.setResetWhenLinkage(false)
                 ivclose.setOnClickListener { dialog?.dismiss() }
                 tvcz.setOnClickListener {
-                    dateTimePickerView.setDefaultValue( defaultValue)
+                    dateTimePickerView.setDefaultValue(defaultValue)
 
                 }
                 tvsure.setOnClickListener {
-                    block.invoke(dateTimePickerView.selectedYear.toString()+"-"+
-                            TimeUtil.checkTimeSingle(dateTimePickerView.selectedMonth)+"-"+TimeUtil.checkTimeSingle(dateTimePickerView.selectedDay))
+                    block.invoke(
+                        dateTimePickerView.selectedYear.toString() + "-" +
+                                TimeUtil.checkTimeSingle(dateTimePickerView.selectedMonth) + "-" + TimeUtil.checkTimeSingle(
+                            dateTimePickerView.selectedDay
+                        )
+                    )
                     dialog?.dismiss()
                 }
 
@@ -203,7 +208,7 @@ fun selectDate(context: Context, timeOld: String, block: (time: String) -> Unit)
             ContextCompat.getColor(context, com.xcjh.base_lib.R.color.blacks_tr)
         )
 
-        .show().isAllowInterceptTouch=false
+        .show().isAllowInterceptTouch = false
 }
 
 /**
@@ -267,9 +272,9 @@ private fun getSchemeCalendar(
  * 清楚消息弹窗
  */
 fun clearMsg(context: Context, block: (isSure: Boolean) -> Unit) {
-    MessageDialog.build()
-        .setCustomView(object : OnBindView<MessageDialog?>(R.layout.layout_dialogx_clearmsg) {
-            override fun onBind(dialog: MessageDialog?, v: View) {
+    CustomDialog.build()
+        .setCustomView(object : OnBindView<CustomDialog?>(R.layout.layout_dialogx_clearmsg) {
+            override fun onBind(dialog: CustomDialog?, v: View) {
                 val tvcancle = v.findViewById<TextView>(R.id.tvcancle)
                 val tvsure = v.findViewById<TextView>(R.id.tvsure)
                 tvcancle.setOnClickListener {
@@ -281,7 +286,9 @@ fun clearMsg(context: Context, block: (isSure: Boolean) -> Unit) {
                     dialog?.dismiss()
                 }
             }
-        }).setRadius(8f).setBackgroundColor(Color.parseColor("#2B2156")).show()
+        }).setAlign(CustomDialog.ALIGN.CENTER) .setMaskColor(//背景遮罩
+            ContextCompat.getColor(context, com.xcjh.base_lib.R.color.blacks_tr)
+        ).show()
 }
 
 /**

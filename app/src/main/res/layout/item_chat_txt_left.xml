@@ -10,8 +10,8 @@
         android:id="@+id/tvtime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/c_8a91a0"
-        android:textSize="@dimen/sp_12"
+        android:textColor="@color/c_94999f"
+        android:textSize="@dimen/sp_11"
         android:layout_gravity="center_horizontal"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -25,27 +25,34 @@
         android:orientation="horizontal">
         <com.xcjh.base_lib.utils.view.CircleImageView
             android:id="@+id/ivhead"
-            android:layout_width="@dimen/dp_40"
-            android:layout_height="@dimen/dp_40"
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50"
 
             android:src="@drawable/basketball"
             android:layout_alignParentLeft="true" />
+        <ImageView
+            android:id="@+id/ivv"
+            android:layout_width="7dp"
+            android:background="@drawable/ic_white_left"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginTop="25dp"
+            android:layout_toRightOf="@id/ivhead"
+            android:layout_height="7dp"/>
         <TextView
             android:id="@+id/tvcontent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/dp_60"
-            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginRight="72dp"
             android:background="@drawable/shape_r10_18152a_leftbootm"
-            android:layout_toRightOf="@id/ivhead"
-            android:padding="@dimen/dp_11"
+            android:layout_toRightOf="@id/ivv"
+            android:layout_centerVertical="true"
+            android:padding="@dimen/dp_14"
             android:text="dsfxsf"
-            android:textColor="@color/white"
-            android:textSize="@dimen/sp_16"
+            android:textColor="@color/c_37373d"
+            android:textSize="15sp"
             android:textStyle="bold"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/ivhead"
-            app:layout_constraintTop_toTopOf="@id/ivhead" />
+       />
+
 
 
     </RelativeLayout>

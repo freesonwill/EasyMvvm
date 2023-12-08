@@ -26,7 +26,7 @@
 
     <string name="phote_book">相册</string>
     <string name="canmei">拍摄</string>
-    <string name="txt_clear_msg">清除所有消息的红点提示，但消息变为“已读”</string>
+    <string name="txt_clear_msg">确定清除全部的未读信息吗？</string>
     <string name="history_record">历史记录</string>
 
     <!--setting-->
@@ -212,6 +212,7 @@
     <string name="ks">客胜</string>
     <string name="pf">赔付率</string>
     <string name="all">全部</string>
+    <string name="all_read">全部已读</string>
     <string name="foot_scr">足球比分</string>
     <string name="bas_scr">篮球比分</string>
     <string-array name="str_schedule_tab_top">

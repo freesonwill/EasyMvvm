@@ -49,7 +49,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
         mDatabind.rec.run {
             vertical()
             adapter = mAdapter
-            distance(0, 0, 0, 0)
+            distance(0, 0, 0, 30)
         }
         (mDatabind.rec.itemAnimator as SimpleItemAnimator).supportsChangeAnimations =
             false//防止item刷新的时候闪烁

@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import androidx.viewpager2.widget.ViewPager2
 import com.flyco.tablayout.listener.OnTabSelectListener
 import com.xcjh.app.R
 import com.xcjh.app.appViewModel
@@ -14,6 +15,8 @@ import com.xcjh.app.ui.search.SeacherFriendActivity
 import com.xcjh.app.ui.search.SeacherMsgActivity
 import com.xcjh.app.utils.clearMsg
 import com.xcjh.base_lib.Constants
+import com.xcjh.base_lib.utils.bindViewPager2
+import com.xcjh.base_lib.utils.initActivity
 import com.xcjh.base_lib.utils.setOnclickNoRepeat
 
 
@@ -36,20 +39,30 @@ class MsgFragment : BaseFragment<MsgVm, FrMsgBinding>() {
 
         mFragments.add(MsgChildFragment.newInstance())
         mFragments.add(MsFriendFragment.newInstance())
-        mDatabind.vp.adapter = MyPagerAdapter(childFragmentManager);
-        mDatabind.slide.setViewPager(mDatabind.vp)
-        mDatabind.vp.currentItem = 0
-        mDatabind.slide.setOnTabSelectListener(object : OnTabSelectListener{
-            override fun onTabSelect(position: Int) {
 
+        mDatabind.vp.initActivity(requireActivity(), mFragments, false)
+
+        //初始化 magic_indicator
+        mDatabind.magicIndicator.bindViewPager2(
+            mDatabind.vp, arrayListOf(
+                mTitles!![0],
+                mTitles!![1]
+            ),
+            R.color.c_37373d,
+            R.color.c_94999f,
+            18f, 16f, true, false,
+            R.color.c_34a853, margin = 30
+        )
+
+        mDatabind.vp.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
                 index=position
             }
 
-            override fun onTabReselect(position: Int) {
-
-            }
-
         })
+
         setOnclickNoRepeat(mDatabind.ivclear,mDatabind.linsre) {
             when (it.id) {
                 R.id.ivclear -> {
