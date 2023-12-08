@@ -111,7 +111,7 @@ class MyApplication : App() , LifecycleObserver{
         DialogX.init(this)
         DialogX.implIMPLMode = DialogX.IMPL_MODE.VIEW
         DialogX.useHaptic = true
-        DialogX.globalTheme = DialogX.THEME.DARK
+        DialogX.globalTheme = DialogX.THEME.LIGHT
         DialogX.globalStyle = MaterialStyle()
         /*    DialogX.globalTheme = DialogX.THEME.AUTO
           DialogX.onlyOnePopTip = false*/

@@ -2,8 +2,8 @@ plugins {
     //id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
-   // id 'com.google.firebase.crashlytics'
-    id  'kotlinx-serialization'
+    // id 'com.google.firebase.crashlytics'
+    id 'kotlinx-serialization'
     // id 'com.google.gms.google-services'  // Google Services plugin
 }
 apply plugin: 'kotlin-android-extensions'
@@ -120,6 +120,9 @@ dependencies {
     kapt "androidx.room:room-compiler:2.5.1"
     //图文混排
     implementation 'com.github.liangjingkanji:spannable:1.2.7'
+
+    implementation 'com.github.gzu-liyujiang.AndroidPicker:WheelPicker:4.1.13'
+
 
 }
 //获取编译时间

@@ -110,6 +110,7 @@
     <string name="email_login">邮箱登录</string>
 
     <string name="changPsw">修改密码</string>
+    <string name="rechang">重置</string>
     <string name="changNewPsw">重置密码</string>
     <string name="changPhonePsw">重置手机密码</string>
     <string name="changEmailPsw">重置邮箱密码</string>
@@ -150,6 +151,10 @@
     <string name="main_txt_basketball_phase">第%s节</string>
     <string name="zb_notice">主播公告</string>
     <string name="anchor">主播</string>
+    <string name="str_year">年份</string>
+    <string name="str_mouth">月份</string>
+    <string name="str_day">天</string>
+    <string name="str_choosetime">选择日期</string>
     <string name="main_txt_under">进行中 %s</string>
     <string name="main_txt_wks">未开赛</string>
     <string name="main_txt_over">已完场</string>
