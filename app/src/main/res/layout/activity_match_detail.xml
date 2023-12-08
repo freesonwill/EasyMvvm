@@ -440,14 +440,16 @@
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
-
                 <net.lucode.hackware.magicindicator.MagicIndicator
                     android:id="@+id/magic_indicator"
+                    android:layout_width="387dp"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@color/c_181819"
+                    android:layout_height="@dimen/dp_44" />
+                <View
                     android:layout_width="match_parent"
-                    android:background="#07061D"
-                    android:layout_height="@dimen/dp_56"
-                    android:paddingHorizontal="@dimen/dp_16"
-                    android:paddingVertical="@dimen/dp_12" />
+                    android:layout_height="@dimen/dp_1"
+                    android:background="@color/c_27272a"/>
             </com.google.android.material.appbar.AppBarLayout>
 
             <androidx.viewpager2.widget.ViewPager2

@@ -62,9 +62,8 @@ class DetailResultFragment(private var match: MatchDetailBean) :
                 normalColor = R.color.c_94999f,
                 typefaceBold = true,
                 scrollEnable = false,
+                paddingH = 19.0,
                 lineIndicatorColor = R.color.c_323235,
-                marginStart = 4,
-                marginEnd = 14
             )
             mDatabind.viewPager.offscreenPageLimit = 2
         } else {

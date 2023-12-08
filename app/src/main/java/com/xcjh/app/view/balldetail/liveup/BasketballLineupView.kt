@@ -9,6 +9,7 @@ import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import com.xcjh.app.R
 import com.xcjh.app.bean.BasketballTeamMemberBean
+import com.xcjh.app.bean.FootballPlayer
 import com.xcjh.app.databinding.ItemDetailLineupBasketballBinding
 
 class BasketballLineupView : LinearLayout {
@@ -67,11 +68,26 @@ class BasketballLineupView : LinearLayout {
         list.sortWith(compareBy({ it.data.score.toInt() }, { it.data.assists.toInt() }))
         val list = list.reversed() */
 
-
-        list.forEach {
+        for ((i, it) in list.withIndex()) {
             val binding =
                 ItemDetailLineupBasketballBinding.inflate(LayoutInflater.from(context), this, false)
+
+            if (i == list.size-1){
+                //binding.root.setBackgroundDrawable(context.getDrawable(R.drawable.shape_bottom_r10))
+                binding.root.setBackgroundResource(R.drawable.shape_bottom_r10)
+            }
+            binding.root.backgroundTintList =  ColorStateList.valueOf(
+                ContextCompat.getColor(
+                    context,
+                    if (i%2==0) R.color.c_181819 else R.color.c_1D1D1D
+                )
+            )
             binding.tvPlayerNum.apply {
+                if (it.data.first == "0"){
+                    this.setBackgroundResource(R.drawable.ic_basket_team_first)
+                }else{
+                    this.setBackgroundResource(R.drawable.ic_basket_team_tb)
+                }
                 backgroundTintList = ColorStateList.valueOf(
                     ContextCompat.getColor(
                         context,
@@ -88,6 +104,5 @@ class BasketballLineupView : LinearLayout {
             binding.tvShot.text = it.data.hitAndShot
             layout.addView(binding.root)
         }
-
     }
 }

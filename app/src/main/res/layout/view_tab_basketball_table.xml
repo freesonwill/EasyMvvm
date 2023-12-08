@@ -2,76 +2,79 @@
 <LinearLayout android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@drawable/shape_r8"
-    android:backgroundTint="@color/c_201D35"
-    android:paddingBottom="@dimen/dp_8"
+    android:background="@drawable/shape_r10_ring"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_44"
+        android:layout_height="37dp"
+        android:background="@drawable/shape_top_r10"
         android:orientation="horizontal">
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="131"
+            android:layout_weight="98"
             android:gravity="start|center_vertical"
-            android:paddingStart="@dimen/dp_20"
+            android:paddingHorizontal="@dimen/dp_15"
             android:text="@string/player"
-            android:textColor="@color/c_F5F5F5"
+            android:textColor="@color/c_94999f"
             android:textSize="@dimen/sp_12" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="40"
+            android:layout_weight="49"
             android:gravity="center"
             android:text="@string/time"
-            android:textColor="@color/c_F5F5F5"
+            android:textColor="@color/c_94999f"
             android:textSize="@dimen/sp_12" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="40"
+            android:layout_weight="49"
             android:gravity="center"
             android:text="@string/score"
-            android:textColor="@color/c_F5F5F5"
+            android:textColor="@color/c_94999f"
             android:textSize="@dimen/sp_12" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="40"
+            android:layout_weight="49"
             android:gravity="center"
             android:text="@string/floor"
-            android:textColor="@color/c_F5F5F5"
+            android:textColor="@color/c_94999f"
             android:textSize="@dimen/sp_12" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="40"
+            android:layout_weight="49"
             android:gravity="center"
             android:text="@string/assist"
-            android:textColor="@color/c_F5F5F5"
+            android:textColor="@color/c_94999f"
             android:textSize="@dimen/sp_12" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="54"
-            android:paddingEnd="@dimen/dp_14"
+            android:layout_weight="57"
+            android:paddingEnd="@dimen/dp_15"
+            android:paddingStart="@dimen/dp_0"
             android:gravity="center"
             android:text="@string/shoot"
-            android:textColor="@color/c_F5F5F5"
+            android:textColor="@color/c_94999f"
             android:textSize="@dimen/sp_12" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/layout_table"
+        android:layout_marginHorizontal="@dimen/dp_1"
+        android:layout_marginBottom="@dimen/dp_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:minHeight="55dp"
         android:orientation="vertical" />
 </LinearLayout>

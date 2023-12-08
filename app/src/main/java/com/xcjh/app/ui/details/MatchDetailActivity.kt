@@ -134,17 +134,17 @@ class MatchDetailActivity :
         mDatabind.viewPager.initChangeActivity(this, mFragList, true)
         pager2Adapter = mDatabind.viewPager.adapter as ViewPager2Adapter
         //初始化Tab控件
-        mDatabind.magicIndicator.bindViewPager2(
+        mDatabind.magicIndicator.bindMatchViewPager2(
             mDatabind.viewPager,
             mTitles,
-            selectSize = 16f,
-            unSelectSize = 16f,
-            selectColor = R.color.c_F5F5F5,
-            normalColor = com.xcjh.base_lib.R.color.c_8a91a0,
+            selectSize = 15f,
+            unSelectSize = 14f,
+            selectColor = R.color.c_ffffff,
+            normalColor = R.color.c_94999f,
             typefaceBold = true,
             scrollEnable = true,
-            lineIndicatorColor = R.color.c_F5F5F5,
-            margin = 12
+            lineIndicatorColor = R.color.c_34a853,
+            margin = 18
         ) {
             if (it == 0) {
                 setUnScroll(mDatabind.lltFold)
