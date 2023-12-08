@@ -76,7 +76,7 @@ class BasketballLineupView : LinearLayout {
                 //binding.root.setBackgroundDrawable(context.getDrawable(R.drawable.shape_bottom_r10))
                 binding.root.setBackgroundResource(R.drawable.shape_bottom_r10)
             }
-            binding.root.backgroundTintList =  ColorStateList.valueOf(
+            binding.root.backgroundTintList = ColorStateList.valueOf(
                 ContextCompat.getColor(
                     context,
                     if (i%2==0) R.color.c_181819 else R.color.c_1D1D1D
@@ -88,12 +88,6 @@ class BasketballLineupView : LinearLayout {
                 }else{
                     this.setBackgroundResource(R.drawable.ic_basket_team_tb)
                 }
-                backgroundTintList = ColorStateList.valueOf(
-                    ContextCompat.getColor(
-                        context,
-                        if (it.data.first == "0") R.color.c_pb_bar else R.color.c_8a91a0
-                    )
-                )
                 text = it.number.toString()
             }
             binding.tvPlayerName.text = it.name

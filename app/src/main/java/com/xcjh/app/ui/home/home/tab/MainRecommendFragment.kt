@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -670,8 +671,16 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
     }
 }
 
-fun BindingAdapter.BindingViewHolder.setLiveMatchItem() {
+fun BindingAdapter.BindingViewHolder.setLiveMatchItem(type:Int=0) {
     val bindingItem= getBinding<ItemMainLiveListBinding>()
+    if (type != 0){
+        bindingItem.llLiveSpacing.backgroundTintList = ColorStateList.valueOf(
+            ContextCompat.getColor(context, R.color.c_1f1f20)
+        )
+        bindingItem.txtLiveTeam.setTextColor( ContextCompat.getColor(context, R.color.c_ffffff))
+        bindingItem.txtLiveName.setTextColor( ContextCompat.getColor(context, R.color.c_94999f))
+    }
+
     val bean = _data as BeingLiveBean
     Glide.with(context)
         .load(bean.titlePage)
@@ -700,7 +709,7 @@ fun BindingAdapter.BindingViewHolder.setLiveMatchItem() {
     if (layoutPosition % 2 == 0) {
         val layoutParams =
             bindingItem.llLiveSpacing.layoutParams as ViewGroup.MarginLayoutParams
-        layoutParams.setMargins(0, 0, context.dp2px(3), context.dp2px(8))
+        layoutParams.setMargins(0, 0, context.dp2px(3.5), context.dp2px(8))
         bindingItem.llLiveSpacing.layoutParams = layoutParams
     } else {
         val layoutParams =

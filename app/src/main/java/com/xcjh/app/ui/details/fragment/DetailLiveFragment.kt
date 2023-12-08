@@ -55,7 +55,7 @@ class DetailLiveFragment(var matchId: String, var matchType: String) :
                 onBind {
                     when (itemViewType) {
                         R.layout.item_main_live_list -> {
-                            setLiveMatchItem()
+                            setLiveMatchItem(1)
                         }
                     }
                 }

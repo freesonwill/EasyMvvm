@@ -66,6 +66,10 @@ fun Context.dp2px(dp: Int): Int {
     val scale = resources.displayMetrics.density
     return (dp * scale + 0.5f).toInt()
 }
+fun Context.dp2px(dp: Double): Int {
+    val scale = resources.displayMetrics.density
+    return (dp * scale + 0.5f).toInt()
+}
 
 /**
  * px值转换成dp

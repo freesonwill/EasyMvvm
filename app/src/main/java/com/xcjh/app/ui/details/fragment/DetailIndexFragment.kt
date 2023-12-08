@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
+import com.xcjh.app.R
 import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseVpFragment
 import com.xcjh.app.databinding.FragmentDetailTabIndexBinding
@@ -12,6 +13,8 @@ import com.xcjh.app.ui.details.MatchDetailActivity
 import com.xcjh.app.ui.details.fragment.index.Index1Fragment
 import com.xcjh.app.ui.details.fragment.index.Index2Fragment
 import com.xcjh.app.ui.details.fragment.index.Index3Fragment
+import com.xcjh.app.ui.details.fragment.liveup.BasketballFragment
+import com.xcjh.base_lib.utils.bindBgViewPager2
 import com.xcjh.base_lib.utils.initFragment
 
 /**
@@ -41,40 +44,27 @@ class DetailIndexFragment(var matchId: String = "", var matchType: String = "1")
     override fun initView(savedInstanceState: Bundle?) {
 
         if ("1" == matchType) {//1：足球；2：篮球，这个版本篮球暂时不做，因为没有数据
-            //mDatabind.layTabIndexFootball.visibility = View.VISIBLE
-            mDatabind.tvTabIndexSf.isSelected = true
-            mDatabind.viewPager.initFragment(
-                this,
-                arrayListOf(Index1Fragment(), Index2Fragment(), Index3Fragment())
+            mDatabind.viewPager.initFragment(this, arrayListOf(Index1Fragment(), Index2Fragment(), Index3Fragment()),isUserInputEnabled=false)
+            mDatabind.magicIndicator.setBackgroundResource(R.drawable.round_indicator_bg)
+            mDatabind.magicIndicator.bindBgViewPager2(
+                mDatabind.viewPager,
+                arrayListOf(getString(R.string.win_loss),getString(R.string.handicap),getString(R.string.goal_num)),
+                selectSize = 13f,
+                unSelectSize = 13f,
+                selectColor = com.xcjh.base_lib.R.color.white,
+                normalColor = R.color.c_94999f,
+                typefaceBold = true,
+                scrollEnable = false,
+                lineIndicatorColor = R.color.c_323235,
             )
             mDatabind.viewPager.offscreenPageLimit = 3
-            mDatabind.viewPager.registerOnPageChangeCallback(object :
-                ViewPager2.OnPageChangeCallback() {
-                override fun onPageSelected(position: Int) {
-                    changeUI(pos = position + 1)
-                }
-            })
         } else {
             //mDatabind.layTabIndexFootball.visibility = View.GONE
         }
-        mDatabind.tvTabIndexSf.setOnClickListener {
-            changeUI(pos = 1)
-        }
-        mDatabind.tvTabIndexRq.setOnClickListener {
-            changeUI(pos = 2)
-        }
-        mDatabind.tvTabIndexJq.setOnClickListener {
-            changeUI(pos = 3)
-        }
+
         loadData()
     }
 
-    private fun changeUI(pos: Int) {
-        mDatabind.viewPager.currentItem = pos-1
-        mDatabind.tvTabIndexSf.isSelected = pos == 1
-        mDatabind.tvTabIndexRq.isSelected = pos == 2
-        mDatabind.tvTabIndexJq.isSelected = pos == 3
-    }
 
     override fun createObserver() {
         //appViewModel.appPolling.observeForever {

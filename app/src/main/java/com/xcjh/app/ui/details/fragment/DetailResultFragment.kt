@@ -51,7 +51,7 @@ class DetailResultFragment(private var match: MatchDetailBean) :
                 match.awayLogo,
                 match.awayName
             )
-            mDatabind.viewPager.initFragment(this, arrayListOf(FootballFragment(0,match), FootballFragment(1,match)))
+            mDatabind.viewPager.initFragment(this, arrayListOf(FootballFragment(0,match), FootballFragment(1,match)),isUserInputEnabled=false)
             mDatabind.magicIndicator.setBackgroundResource(R.drawable.round_indicator_bg)
             mDatabind.magicIndicator.bindBgViewPager2(
                 mDatabind.viewPager,

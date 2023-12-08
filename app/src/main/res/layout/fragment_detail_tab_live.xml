@@ -12,10 +12,11 @@
             android:id="@+id/rcvRecommend"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            app:layoutManager="com.drake.brv.layoutmanager.HoverGridLayoutManager"
+            app:spanCount="2"
             tools:listitem="@layout/item_main_live_list"
             android:overScrollMode="never"
-            android:paddingTop="@dimen/dp_16"
-            android:paddingHorizontal="@dimen/dp_16" />
+            android:layout_margin="@dimen/dp_12" />
 
     </com.drake.brv.PageRefreshLayout>
 </layout>
