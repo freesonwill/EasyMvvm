@@ -266,14 +266,13 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                             R.color.c_34a853
                                         )
                                     )
-                                    binding.tvstatus.text = context.resources.getString(
-                                        R.string.main_txt_sbc,
+                                    binding.tvstatus.text =
                                         if (item.runTime == null)
                                             "0"
                                         else {
                                             item.runTime
                                         }
-                                    )
+
                                     initAnimation(binding.txtMatchAnimation)
                                 }
 
@@ -314,14 +313,12 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                             R.color.c_34a853
                                         )
                                     )
-                                    binding.tvstatus.text = context.resources.getString(
-                                        R.string.main_txt_xbc,
+                                    binding.tvstatus.text =
                                         if (item.runTime == null)
                                             "0"
                                         else {
                                             item.runTime
                                         }
-                                    )
                                     initAnimation(binding.txtMatchAnimation)
                                 }
 
@@ -341,14 +338,12 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                             R.color.c_34a853
                                         )
                                     )
-                                    binding.tvstatus.text = context.resources.getString(
-                                        R.string.main_txt_under,
+                                    binding.tvstatus.text =
                                         if (item.runTime == null)
                                             "0"
                                         else {
                                             item.runTime
                                         }
-                                    )
                                     initAnimation(binding.txtMatchAnimation)
 
                                 }
