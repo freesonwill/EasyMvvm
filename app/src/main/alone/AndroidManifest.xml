@@ -46,6 +46,7 @@
         android:allowBackup="false"
         android:icon="@drawable/app_logo"
         android:label="${app_name}"
+        tools:replace="android:allowBackup"
         android:networkSecurityConfig="${networkConfig}"
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@drawable/app_logo"

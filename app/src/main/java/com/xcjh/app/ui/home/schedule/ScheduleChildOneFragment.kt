@@ -9,6 +9,7 @@ import com.xcjh.app.base.BaseFragment
 import com.xcjh.app.bean.HotMatchBean
 import com.xcjh.app.bean.PostSchMatchListBean
 import com.xcjh.app.databinding.FrScheduleoneBinding
+import com.xcjh.app.utils.selectDate
 import com.xcjh.app.utils.selectTime
 import com.xcjh.base_lib.utils.TimeUtil
 import com.xcjh.base_lib.utils.bindViewPager2
@@ -97,12 +98,9 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
             when (it.id) {
                 R.id.iv_meau -> {
 
-                    selectTime(requireActivity(), calendarTime) { start, end ->
+                    selectDate(requireActivity(), calendarTime) { time ->
 
-                        calendarTime =
-                            start.year.toString() + "-" + TimeUtil.checkTimeSingle(start.month) + "-" + TimeUtil.checkTimeSingle(
-                                start.day
-                            )
+                        calendarTime =time
 
                         appViewModel.updateganlerTime.postValue(calendarTime)
                     }

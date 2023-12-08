@@ -8,6 +8,8 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.drake.brv.utils.setup
+import com.github.gzuliyujiang.wheelpicker.entity.DateEntity
+import com.github.gzuliyujiang.wheelpicker.widget.DateWheelLayout
 import com.github.gzuliyujiang.wheelpicker.widget.OptionWheelLayout
 import com.haibin.calendarview.Calendar
 import com.haibin.calendarview.CalendarView
@@ -18,12 +20,13 @@ import com.kongzue.dialogx.interfaces.OnBindView
 import com.xcjh.app.R
 import com.xcjh.app.bean.AnchorListBean
 import com.xcjh.base_lib.App
+import com.xcjh.base_lib.utils.TimeUtil
 
 
 /**
  * 日历选择
  */
-fun selectTime(context: Context, timeOld:String,block: (start: Calendar,end:Calendar) -> Unit) {
+fun selectTime(context: Context, timeOld: String, block: (start: Calendar, end: Calendar) -> Unit) {
     //对于未实例化的布局：
     //DialogX.globalStyle = MaterialYouStyle.style()
 
@@ -47,19 +50,21 @@ fun selectTime(context: Context, timeOld:String,block: (start: Calendar,end:Cale
                 val day: Int = mCalendarView.curDay
 
                 val map: MutableMap<String, Calendar?> = HashMap()
-                if (timeOld.isNotEmpty()){
-                    var year1:Int=timeOld.substring(0,4).toInt()
-                    var month1:Int=timeOld.substring(5,7).toInt()
-                    var day1:Int=timeOld.substring(8,10).toInt()
+                if (timeOld.isNotEmpty()) {
+                    var year1: Int = timeOld.substring(0, 4).toInt()
+                    var month1: Int = timeOld.substring(5, 7).toInt()
+                    var day1: Int = timeOld.substring(8, 10).toInt()
                     map[getSchemeCalendar(year1, month1, day1, -0xffffff, "").toString()] =
                         getSchemeCalendar(year1, month1, day1, -0xffffff, "")
                 }
 
-                map[getSchemeCalendar(year,
+                map[getSchemeCalendar(
+                    year,
                     month,
                     day,
                     Color.parseColor("#F7DA73"),
-                    "").toString()] =
+                    ""
+                ).toString()] =
                     getSchemeCalendar(year, month, day, Color.parseColor("#F7DA73"), "")
                 //此方法在巨大的数据量上不影响遍历性能，推荐使用
                 mCalendarView.setSchemeDate(map)
@@ -75,7 +80,7 @@ fun selectTime(context: Context, timeOld:String,block: (start: Calendar,end:Cale
                         calendar: Calendar?,
                         isOutOfMinRange: Boolean,
                     ) {
-                       // Log.e("====", "onSelectOutOfRange: =====" + calendar?.timeInMillis)
+                        // Log.e("====", "onSelectOutOfRange: =====" + calendar?.timeInMillis)
                     }
 
                     override fun onCalendarRangeSelect(calendar: Calendar, isEnd: Boolean) {
@@ -104,11 +109,11 @@ fun selectTime(context: Context, timeOld:String,block: (start: Calendar,end:Cale
 //                        } else if (n == 1) {
 //                            calendarEnd = calendar
 //                            block.invoke(calendarStart!!, calendarEnd!!)
-                            mCalendarView.postDelayed(
-                                {
-                                    dialog?.dismiss()
-                                }, 500
-                           )
+                        mCalendarView.postDelayed(
+                            {
+                                dialog?.dismiss()
+                            }, 500
+                        )
 //                        }
 
                         // Log.e("====", "onCalendarRangeSelect: =====" +calendar.toString())
@@ -152,9 +157,59 @@ fun selectTime(context: Context, timeOld:String,block: (start: Calendar,end:Cale
 }
 
 /**
+ * 日期选择
+ */
+fun selectDate(context: Context, timeOld: String, block: (time: String) -> Unit) {
+    //对于未实例化的布局：
+    //DialogX.globalStyle = MaterialYouStyle.style()
+
+
+    BottomDialog.build()
+        .setCustomView(object : OnBindView<BottomDialog?>(R.layout.dialog_select_date) {
+            override fun onBind(dialog: BottomDialog?, v: View) {
+                if (dialog!!.dialogImpl.imgTab != null) {
+                    dialog!!.dialogImpl.imgTab.setBackgroundResource(R.drawable.dilogx_eff1f5)
+                }
+                val dateTimePickerView: DateWheelLayout = v.findViewById<DateWheelLayout>(R.id.datewheel)
+                val ivclose = v.findViewById<ImageView>(R.id.ivNext)
+                val tvcz = v.findViewById<TextView>(R.id.tvcz)
+                val tvsure = v.findViewById<TextView>(R.id.tvsure)
+                val calendar = java.util.Calendar.getInstance()
+                val currentYear = calendar[java.util.Calendar.YEAR]
+                val currentMonth = calendar[java.util.Calendar.MONTH] + 1
+                val currentDay = calendar[java.util.Calendar.DAY_OF_MONTH]
+                val startValue = DateEntity.target(currentYear - 1, 1, 1)
+                val endValue = DateEntity.target(currentYear, 12, 12)
+                val defaultValue = DateEntity.target(currentYear, currentMonth, currentDay)
+                dateTimePickerView.setRange(startValue, endValue, defaultValue)
+                dateTimePickerView.setDateFormatter(com.xcjh.app.view.BirthdayFormatter())
+                dateTimePickerView.setResetWhenLinkage(false)
+                ivclose.setOnClickListener { dialog?.dismiss() }
+                tvcz.setOnClickListener {
+                    dateTimePickerView.setDefaultValue( defaultValue)
+
+                }
+                tvsure.setOnClickListener {
+                    block.invoke(dateTimePickerView.selectedYear.toString()+"-"+
+                            TimeUtil.checkTimeSingle(dateTimePickerView.selectedMonth)+"-"+TimeUtil.checkTimeSingle(dateTimePickerView.selectedDay))
+                    dialog?.dismiss()
+                }
+
+
+            }
+        }).setBackgroundColor(Color.parseColor("#FFFFFF"))
+
+        .setMaskColor(//背景遮罩
+            ContextCompat.getColor(context, com.xcjh.base_lib.R.color.blacks_tr)
+        )
+
+        .show().isAllowInterceptTouch=false
+}
+
+/**
  * 日历选择
  */
-fun selectCountry(context: Context, list:List<String>, block: (bean: String) -> Unit) {
+fun selectCountry(context: Context, list: List<String>, block: (bean: String) -> Unit) {
     //对于未实例化的布局：
     //DialogX.globalStyle = MaterialYouStyle.style()
 
@@ -191,6 +246,7 @@ fun selectCountry(context: Context, list:List<String>, block: (bean: String) -> 
 
         .show().isAllowInterceptTouch = false
 }
+
 private fun getSchemeCalendar(
     year: Int,
     month: Int,
