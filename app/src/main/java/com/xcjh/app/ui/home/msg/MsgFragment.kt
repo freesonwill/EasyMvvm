@@ -1,11 +1,13 @@
 package com.xcjh.app.ui.home.msg
 
 import android.os.Bundle
+import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.flyco.tablayout.listener.OnTabSelectListener
+import com.gyf.immersionbar.ImmersionBar
 import com.xcjh.app.R
 import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseFragment
@@ -25,7 +27,11 @@ class MsgFragment : BaseFragment<MsgVm, FrMsgBinding>() {
     private var mTitles: Array<out String>? = null
     var index=0
     override fun initView(savedInstanceState: Bundle?) {
-
+        ImmersionBar.with(this)
+            .statusBarDarkFont(true)//黑色
+            .titleBar(mDatabind.rlTitle)
+            .navigationBarColor(R.color.c_ffffff)
+            .init()
         initEvent()
     }
 
@@ -59,6 +65,11 @@ class MsgFragment : BaseFragment<MsgVm, FrMsgBinding>() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 index=position
+                if (position==0){
+                    mDatabind.ivclear.visibility=View.VISIBLE
+                }else{
+                    mDatabind.ivclear.visibility=View.GONE
+                }
             }
 
         })

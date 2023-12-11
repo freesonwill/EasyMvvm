@@ -122,7 +122,7 @@ dependencies {
     implementation 'com.github.liangjingkanji:spannable:1.2.7'
 
     implementation 'com.github.gzu-liyujiang.AndroidPicker:WheelPicker:4.1.13'
-
+    implementation 'com.belerweb:pinyin4j:2.5.1'
 
 }
 //获取编译时间

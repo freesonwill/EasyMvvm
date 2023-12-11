@@ -11,12 +11,14 @@
 
     <string name="title">标题</string>
     <string name="login">登录</string>
+    <string name="loginandre">登录注册</string>
     <string name="login_waiting">"正在登录…"</string>
     <string name="find">发现</string>
     <string name="other_login">第三方登录</string>
     <string name="other">其他</string>
     <string name="login_or_enroll">注册/登录</string>
     <string name="hint_email_account">邮箱账号</string>
+    <string name="email">邮箱</string>
     <string name="hint_code">验证码</string>
     <string name="get_code">获取验证码</string>
     <string name="register_code_s">%d s</string>
@@ -107,6 +109,7 @@
 
     <string name="choose_area_title">请选择区号</string>
     <string name="phone_login">手机号登录</string>
+    <string name="phone">手机号</string>
     <string name="email_login">邮箱登录</string>
 
     <string name="changPsw">修改密码</string>

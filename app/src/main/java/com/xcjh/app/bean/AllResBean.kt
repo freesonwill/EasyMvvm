@@ -191,10 +191,29 @@ data class FriendListBean(
     var anchorId: String,
     var fans: Int,
     var head: String = "",
+    var pinyin: String = "",
     var liveId: Int,
     var nickName: String = ""
-) : Serializable
 
+)
+@Keep
+data class FriendModel(
+    var initial: String = "",
+    var list: List<Friend> = listOf()
+) {
+    data class Friend(
+        var anchorId: String,
+        var fans: Int,
+        var head: String = "",
+        var pinyin: String = "",
+        var liveId: Int,
+        var nickName: String = ""
+    ): Serializable
+
+    // 悬停要求实现接口
+    // data class 会自动重写equals方法, 方便匹配索引查询
+    data class FriendLetter(val letter: String, override var itemHover: Boolean = true) : ItemHover
+}
 @Keep
 data class LetterBean(
     var cn: String, var en: String, var phone_code: String = ""

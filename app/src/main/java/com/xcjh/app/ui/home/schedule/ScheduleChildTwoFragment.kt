@@ -908,7 +908,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
             mDatabind.smartCommon.setOnRefreshListener {
 
                 mDatabind.smartCommon.showLoading()
-                getData()
+                getData(true)
 
 
             }
@@ -916,7 +916,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
                 if (isAdded && mCurrentOneTabIndex == mOneTabIndex && mCurrentTwoTabIndex == mTwoTabIndex) {
                     calendarTime = it
-                    getData()
+                    getData(true)
 
 
                 }
@@ -924,7 +924,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
             appViewModel.updateSchedulePosition.observeForever {
                 if (isResh) {
                     isResh = false
-                    getData()
+                    getData(false)
                 }
                 mCurrentOneTabIndex = it
                 if (mOneTabIndex==mCurrentOneTabIndex&&mTwoTabIndex==mCurrentTwoTabIndex) {
@@ -945,6 +945,12 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                     calendarTime = ""
                 }else{
                     isVisble = false
+                }
+            }
+            appViewModel.updateCollection.observeForever {
+
+                if (it){
+                    getData(false)
                 }
             }
             appViewModel.appPushMsg.observeForever {
@@ -1007,23 +1013,23 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
         if (isResh) {
             isResh = false
-            getData()
+            getData(false)
         }
     }
 
     override fun lazyLoadData() {
         super.lazyLoadData()
-        getData()
+        getData(false)
     }
 
     override fun lazyLoadTime(): Long {
         return 0
     }
 
-    fun getData() {
+    fun getData(iLoading:Boolean) {
         initTime()
         mViewModel.getHotMatchDataList(
-            true, PostSchMatchListBean(
+            iLoading, PostSchMatchListBean(
                 competitionId, page,
                 endTime,
                 matchtype!!, pageSize, strTime,

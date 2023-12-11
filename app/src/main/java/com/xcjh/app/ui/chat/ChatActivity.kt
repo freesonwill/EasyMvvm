@@ -103,7 +103,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
 
 
         ImmersionBar.with(this)
-            .statusBarDarkFont(false)
+            .statusBarDarkFont(true)
             .keyboardEnable(true)
             .titleBar(mDatabind.titleTop.root)
             .init()

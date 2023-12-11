@@ -155,6 +155,7 @@ fun MagicIndicator.bindViewPager2(
     typefaceBold: Boolean = false,//是否粗体
     scrollEnable: Boolean = false,//滚动
     lineIndicatorColor:Int = 0,//横线指示器
+    lineIndicatorWidth:Int = 23,//横线指示器宽度
     smoothScroll:Boolean = true,//切换页面是否有滚动动画
     margin: Int = 15,   // 左右间距
     action: (index: Int) -> Unit = {}
@@ -250,7 +251,7 @@ fun MagicIndicator.bindViewPager2(
                 val indicator = LinePagerIndicator(context)
                 indicator.mode = LinePagerIndicator.MODE_EXACTLY
                 indicator.lineHeight = dp2px(3).toFloat()
-                indicator.lineWidth = dp2px(23).toFloat()
+                indicator.lineWidth = dp2px(lineIndicatorWidth).toFloat()
                 indicator.roundRadius = dp2px(40).toFloat()
                 indicator.startInterpolator = AccelerateInterpolator()
                 indicator.endInterpolator = DecelerateInterpolator(2.0f)
