@@ -11,6 +11,7 @@ import com.bumptech.glide.Glide
 import com.google.android.material.appbar.AppBarLayout
 import com.google.gson.Gson
 import com.gyf.immersionbar.ImmersionBar
+import com.gyf.immersionbar.ImmersionBar.getStatusBarHeight
 import com.shuyu.gsyvideoplayer.builder.GSYVideoOptionBuilder
 import com.shuyu.gsyvideoplayer.utils.GSYVideoType
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer
@@ -92,6 +93,9 @@ class MatchDetailActivity :
         super.initView(savedInstanceState)
         ImmersionBar.with(this).statusBarDarkFont(false)//黑色
             .titleBar(mDatabind.rltTop).init()
+        //解决toolbar左边距问题
+        mDatabind.toolbar.setContentInsetsAbsolute(0, 0)
+        mDatabind.viewTopBg.layoutParams.height= getStatusBarHeight(this)
         mViewModel.tt = 5
         intent.extras?.apply {
             matchType = getString("matchType", "1")
@@ -122,10 +126,10 @@ class MatchDetailActivity :
         //比赛类型
         if (matchType == "1") {
             mDatabind.ivMatchBg.setBackgroundResource(R.drawable.bg_status_football)
-            mDatabind.rltTop.setBackgroundResource(R.drawable.bg_top_football)
+            mDatabind.toolbar.setBackgroundResource(if (isHasAnchor)R.color.translet else R.drawable.bg_top_football)
         } else {
             mDatabind.ivMatchBg.setBackgroundResource(R.drawable.bg_status_basketball)
-            mDatabind.rltTop.setBackgroundResource(R.drawable.bg_top_basketball)
+            mDatabind.toolbar.setBackgroundResource(if (isHasAnchor)R.color.translet else R.drawable.bg_top_basketball)
         }
         startTimeAnimator(mDatabind.tvTopMatchStatusTimeS)
         startTimeAnimator(mDatabind.tvMatchStatusTimeS)
@@ -163,7 +167,7 @@ class MatchDetailActivity :
     private fun initOther() {
         ///跑马灯设置
         mDatabind.marqueeView.isSelected = true
-        mDatabind.rltTop.background.alpha = 0
+        mDatabind.toolbar.background.alpha = 0
         ///滑动监听
         mDatabind.appBayLayout.addOnOffsetChangedListener(object :
             AppBarLayout.OnOffsetChangedListener {
@@ -174,7 +178,7 @@ class MatchDetailActivity :
                 mDatabind.lltMatchTitle.alpha = 1 - v
                 //折叠后显示top
                 mDatabind.cslTopMatchStatus.alpha = v
-                mDatabind.rltTop.background.alpha = (v * 255).toInt()
+                mDatabind.toolbar.background.alpha = (v * 255).toInt()
                 mDatabind.lltSignal.isClickable = !(v < 2 && v > 0.8)
             }
         })
@@ -252,19 +256,7 @@ class MatchDetailActivity :
     }
 
     private fun setBaseListener() {
-        //私聊按钮
-        mDatabind.tvToChat.setOnClickListener {
-            //聊天界面还在开发中，先占位
-            if (anchor != null) {
-                judgeLogin {
-                    startNewActivity<ChatActivity>() {
-                        putExtra(Constants.USER_ID, anchor?.userId)
-                        putExtra(Constants.USER_NICK, anchor?.nickName)
-                        putExtra(Constants.USER_HEAD, anchor?.userLogo)
-                    }
-                }
-            }
-        }
+
         //分享按钮
         mDatabind.tvToShare.setOnClickListener {
             //分享 固定地址
@@ -468,7 +460,7 @@ class MatchDetailActivity :
                 setFocusUI(it.focus)
                 Glide.with(this).load(it.head).placeholder(mDatabind.ivTabAnchorAvatar.drawable)
                     .into(mDatabind.ivTabAnchorAvatar) //主播头像
-                //点击私信跳转聊天界面逻辑，根据传参来跳转，介于聊天界面还在开发中，这里先占位
+                //点击私信跳转聊天界面逻辑，根据传参来跳转
                 mDatabind.tvTabAnchorChat.setOnClickListener { v ->
                     judgeLogin {
                         startNewActivity<ChatActivity>() {
@@ -550,7 +542,13 @@ class MatchDetailActivity :
         mDatabind.ivNoLive.visibleOrGone(false)
         mDatabind.videoPlayer.visibleOrGone(isShowVideo)
         mDatabind.cslMatchStatus.visibleOrGone(!isShowVideo)
-        mDatabind.tvToChat.visibleOrGone(isHasAnchor)
+        mDatabind.cslAnchor.visibleOrGone(isHasAnchor)
+        mDatabind.viewTopBg.visibleOrGone(isHasAnchor)
+        if (matchType == "1") {
+            mDatabind.toolbar.setBackgroundResource(if (isHasAnchor)R.color.translet else R.drawable.bg_top_football)
+        } else {
+            mDatabind.toolbar.setBackgroundResource(if (isHasAnchor)R.color.translet else R.drawable.bg_top_basketball)
+        }
         setNewViewPager(
             signalPos,
             mTitles,
@@ -574,6 +572,7 @@ class MatchDetailActivity :
                 200
             )
         }
+
     }
 
     private fun getAnchor(match: MatchDetailBean, action: (String?) -> Unit = {}) {

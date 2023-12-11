@@ -1,10 +1,9 @@
 package com.xcjh.app.utils
 
 import android.app.Activity
-import android.content.Context
 import android.graphics.Rect
 import android.view.View
-import android.widget.LinearLayout
+import android.view.ViewGroup
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.core.view.ViewCompat
@@ -17,13 +16,18 @@ import com.xcjh.app.R
 import com.xcjh.app.adapter.ViewPager2Adapter
 import com.xcjh.app.bean.MatchDetailBean
 import com.xcjh.app.bean.TabBean
-import com.xcjh.app.ui.details.fragment.*
+import com.xcjh.app.ui.details.fragment.DetailAnchorFragment
+import com.xcjh.app.ui.details.fragment.DetailChatFragment
+import com.xcjh.app.ui.details.fragment.DetailIndexFragment
+import com.xcjh.app.ui.details.fragment.DetailLineUpFragment
+import com.xcjh.app.ui.details.fragment.DetailLiveFragment
+import com.xcjh.app.ui.details.fragment.DetailResultFragment
 import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.utils.view.visibleOrGone
 import net.lucode.hackware.magicindicator.MagicIndicator
 
 
-fun setUnScroll(lltFold: LinearLayout) {
+fun setUnScroll(lltFold: ViewGroup) {
     val params = lltFold.layoutParams as AppBarLayout.LayoutParams
     //设置不能滑动
     params.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_NO_SCROLL
@@ -34,11 +38,11 @@ fun setUnScroll(lltFold: LinearLayout) {
     lltFold.layoutParams = params
 }
 //SCROLL_FLAG_SNAP 会就近惯性折叠伸展
-fun setScroll(lltFold: LinearLayout) {
+fun setScroll(lltFold: ViewGroup) {
     //重新设置布局可以滑动
     val params = lltFold.layoutParams as AppBarLayout.LayoutParams
     params.scrollFlags =
-        (AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL /*or AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP*/)
+        (AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED)
     lltFold.layoutParams = params
 }
 

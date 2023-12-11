@@ -46,7 +46,7 @@
 
                         <ImageView
                             style="@style/matchResultImg"
-                            android:src="@drawable/football" />
+                            android:src="@drawable/sk_jingqiu_icon" />
 
                         <TextView
                             style="@style/matchResultText"

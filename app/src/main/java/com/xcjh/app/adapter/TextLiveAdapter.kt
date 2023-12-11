@@ -58,7 +58,7 @@ class TextLiveAdapter : BaseQuickAdapter<LiveTextBean, QuickViewHolder>() {
                 // 26-加时赛结束  27-点球大战结束  28-VAR(视频助理裁判)  
                 // 29-点球(点球大战)  30-点球未进(点球大战)
                 1 -> {
-                    ivType.setImageResource(R.drawable.football)
+                    ivType.setImageResource(R.drawable.sk_jingqiu_icon)
                 }
                 2 -> {
                     ivType.setImageResource(R.drawable.sk_jiaoqiu)
