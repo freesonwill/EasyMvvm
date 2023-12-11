@@ -22,7 +22,7 @@
             android:id="@+id/lltContent"
             android:layout_width="match_parent"
             android:layout_height="47dp"
-            android:background="@color/c_27272a"
+            android:background="@color/c_181819"
             android:orientation="horizontal"
             tools:ignore="MissingConstraints">
 

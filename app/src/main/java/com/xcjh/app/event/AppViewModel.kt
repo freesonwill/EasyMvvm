@@ -39,6 +39,7 @@ class AppViewModel : BaseViewModel() {
     var updateMsgListEvent = EventLiveData<MsgBeanData>()
     var updateSchedulePosition = EventLiveData<Int>()
     var updateScheduleTwoPosition = EventLiveData<Int>()
+    var updateCollection = EventLiveData<Boolean>()
     //更首页显示ViewPager切换  -1是切换到首页并且是推荐页面
     var mainViewPagerEvent= EventLiveData<Int>()
     //切换home的ViewPager的切换  0就是推荐依次类推

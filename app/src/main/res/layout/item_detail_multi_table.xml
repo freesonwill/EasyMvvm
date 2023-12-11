@@ -12,19 +12,22 @@
         android:orientation="vertical">
 
         <View
+            android:id="@+id/vLine"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
-            android:background="@color/c_0dffffff" />
+            android:background="@color/c_27272a" />
 
         <LinearLayout
+            android:id="@+id/lltContent"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_72"
+            android:background="@color/c_181819"
+            android:layout_height="94dp"
             android:orientation="horizontal">
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="89">
+                android:layout_weight="65">
 
                 <TextView
                     android:id="@+id/tvCompany"
@@ -35,78 +38,83 @@
                     tools:text="夏*"
                     android:maxLines="4"
                     android:ellipsize="end"
-                    android:textColor="@color/c_F5F5F5"
+                    android:textColor="@color/c_ffffff"
                     android:textSize="@dimen/sp_12" />
             </LinearLayout>
 
             <View
                 android:layout_width="@dimen/dp_1"
                 android:layout_height="match_parent"
-                android:background="@color/c_0dffffff" />
+                android:background="@color/c_27272a" />
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="252"
+                android:layout_weight="285"
                 android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_36"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
                     android:orientation="horizontal">
 
                     <TextView
                         android:layout_width="@dimen/dp_0"
                         android:layout_height="match_parent"
-                        android:layout_weight="44"
+                        android:layout_weight="42"
                         android:gravity="center"
                         android:text="@string/first"
-                        android:textColor="@color/c_F5F5F5"
+                        android:textColor="@color/c_94999f"
                         android:textSize="@dimen/sp_12" />
 
                     <View
                         android:layout_width="@dimen/dp_1"
                         android:layout_height="match_parent"
-                        android:background="@color/c_0dffffff" />
+                        android:background="@color/c_27272a" />
 
                     <TextView
                         android:id="@+id/tv_chu_home"
                         android:layout_width="@dimen/dp_0"
                         android:layout_height="match_parent"
-                        android:layout_weight="52"
+                        android:layout_weight="61"
                         android:gravity="center"
                         tools:text="1.05"
-                        android:textColor="@color/c_F5F5F5"
+                        android:textStyle="normal"
+                        android:textColor="@color/c_d7d7e7"
                         android:textSize="@dimen/sp_12" />
 
                     <TextView
                         android:id="@+id/tv_chu_pin"
                         android:layout_width="@dimen/dp_0"
                         android:layout_height="match_parent"
-                        android:layout_weight="52"
+                        android:layout_weight="61"
                         android:gravity="center"
                         tools:text="1.05"
-                        android:textColor="@color/c_F5F5F5"
+                        android:textStyle="normal"
+                        android:textColor="@color/c_d7d7e7"
                         android:textSize="@dimen/sp_12" />
 
                     <TextView
                         android:id="@+id/tv_chu_ke"
                         android:layout_width="@dimen/dp_0"
                         android:layout_height="match_parent"
-                        android:layout_weight="52"
+                        android:layout_weight="61"
                         android:gravity="center"
                         tools:text="1.05"
-                        android:textColor="@color/c_F5F5F5"
+                        android:textStyle="normal"
+                        android:textColor="@color/c_d7d7e7"
                         android:textSize="@dimen/sp_12" />
 
                     <TextView
                         android:id="@+id/tv_chu_pf"
                         android:layout_width="@dimen/dp_0"
                         android:layout_height="match_parent"
-                        android:layout_weight="52"
+                        android:layout_weight="61"
                         android:gravity="center"
                         tools:text="1.05"
-                        android:textColor="@color/c_F5F5F5"
+                        android:textStyle="normal"
+                        android:textColor="@color/c_d7d7e7"
                         android:textSize="@dimen/sp_12" />
 
                 </LinearLayout>
@@ -114,68 +122,72 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_1"
-                    android:background="@color/c_0dffffff" />
+                    android:background="@color/c_27272a" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_36"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
                     android:orientation="horizontal">
 
                     <TextView
                         android:layout_width="@dimen/dp_0"
                         android:layout_height="match_parent"
-                        android:layout_weight="44"
+                        android:layout_weight="42"
                         android:gravity="center"
                         android:text="@string/then"
-                        android:textColor="@color/c_F5F5F5"
+                        android:textColor="@color/c_94999f"
                         android:textSize="@dimen/sp_12" />
 
                     <View
                         android:layout_width="@dimen/dp_1"
                         android:layout_height="match_parent"
-                        android:background="@color/c_0dffffff" />
+                        android:background="@color/c_27272a" />
 
                     <TextView
                         android:id="@+id/tv_ji_home"
                         android:layout_width="@dimen/dp_0"
                         android:layout_height="match_parent"
-                        android:layout_weight="52"
+                        android:layout_weight="61"
                         android:gravity="center"
                         tools:text="1.05"
-                        android:textColor="@color/c_F5F5F5"
+                        android:textStyle="normal"
+                        android:textColor="@color/c_d7d7e7"
                         android:textSize="@dimen/sp_12" />
 
                     <TextView
                         android:id="@+id/tv_ji_pin"
                         android:layout_width="@dimen/dp_0"
                         android:layout_height="match_parent"
-                        android:layout_weight="52"
+                        android:layout_weight="61"
                         android:gravity="center"
                         tools:text="1.05"
-                        android:textColor="@color/c_F5F5F5"
+                        android:textStyle="normal"
+                        android:textColor="@color/c_d7d7e7"
                         android:textSize="@dimen/sp_12" />
 
                     <TextView
                         android:id="@+id/tv_ji_away"
                         android:layout_width="@dimen/dp_0"
                         android:layout_height="match_parent"
-                        android:layout_weight="52"
+                        android:layout_weight="61"
                         android:gravity="center"
                         tools:text="1.05"
-                        android:textColor="@color/c_F5F5F5"
+                        android:textStyle="normal"
+                        android:textColor="@color/c_d7d7e7"
                         android:textSize="@dimen/sp_12" />
 
                     <TextView
                         android:id="@+id/tv_ji_pf"
                         android:layout_width="@dimen/dp_0"
                         android:layout_height="match_parent"
-                        android:layout_weight="52"
+                        android:layout_weight="61"
                         android:gravity="center"
                         tools:text="1.05"
-                        android:textColor="@color/c_F5F5F5"
+                        android:textStyle="normal"
+                        android:textColor="@color/c_d7d7e7"
                         android:textSize="@dimen/sp_12" />
                 </LinearLayout>
-
 
             </LinearLayout>
         </LinearLayout>

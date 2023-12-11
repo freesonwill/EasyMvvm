@@ -197,6 +197,7 @@
                 android:id="@+id/appBayLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:elevation="0dp"
                 android:background="@color/trans"
                 android:orientation="vertical">
 
@@ -439,6 +440,82 @@
                                 android:textSize="@dimen/sp_12" />
                         </LinearLayout>
                     </LinearLayout>
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:padding="@dimen/dp_12"
+                        android:visibility="gone"
+                        android:id="@+id/cslAnchor"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <com.xcjh.base_lib.utils.view.CircleImageView
+                            android:id="@+id/iv_tab_anchor_avatar"
+                            android:layout_width="@dimen/dp_30"
+                            android:layout_height="@dimen/dp_30"
+                            android:src="@drawable/default_anchor_icon"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/tv_tab_anchor_nick"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/dp_5"
+                            android:textColor="@color/c_ffffff"
+                            android:textSize="@dimen/sp_12"
+                            app:layout_constraintBottom_toTopOf="@id/tv_detail_tab_anchor_fans"
+                            app:layout_constraintStart_toEndOf="@id/iv_tab_anchor_avatar"
+                            app:layout_constraintEnd_toStartOf="@id/tv_tab_anchor_chat"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintVertical_chainStyle="packed"
+                            tools:text="henrrery noway" />
+
+                        <TextView
+                            android:id="@+id/tv_detail_tab_anchor_fans"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/dp_4"
+                            android:gravity="center_vertical"
+                            android:textColor="@color/c_94999f"
+                            android:drawableStart="@drawable/ic_gray_fire_hot"
+                            android:drawablePadding="2.5dp"
+                            android:textSize="@dimen/sp_10"
+                            android:textStyle="normal"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="@id/tv_tab_anchor_nick"
+                            app:layout_constraintTop_toBottomOf="@id/tv_tab_anchor_nick"
+                            tools:text="0" />
+
+                        <TextView
+                            android:id="@+id/tv_tab_anchor_chat"
+                            android:layout_width="@dimen/dp_60"
+                            android:layout_height="@dimen/dp_24"
+                            app:layout_constraintTop_toTopOf="@id/iv_tab_anchor_avatar"
+                            app:layout_constraintBottom_toBottomOf="@id/iv_tab_anchor_avatar"
+                            android:layout_marginEnd="@dimen/dp_10"
+                            app:layout_constraintEnd_toStartOf="@id/tv_tab_anchor_follow"
+                            android:background="@drawable/shape_red_pressed_r20"
+                            android:backgroundTint="@color/c_pb_bar"
+                            android:gravity="center"
+                            android:textStyle="bold"
+                            android:text="@string/chat"
+                            android:textColor="@color/c_ffffff"
+                            android:textSize="@dimen/sp_12" />
+
+                        <TextView
+                            android:id="@+id/tv_tab_anchor_follow"
+                            android:layout_width="@dimen/dp_60"
+                            android:layout_height="@dimen/dp_24"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="@id/iv_tab_anchor_avatar"
+                            app:layout_constraintBottom_toBottomOf="@id/iv_tab_anchor_avatar"
+                            android:background="@drawable/shape_line_r20"
+                            android:gravity="center"
+                            android:text="@string/follow"
+                            android:textColor="@color/c_pb_bar"
+                            android:textSize="@dimen/sp_12" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
                 </LinearLayout>
                 <net.lucode.hackware.magicindicator.MagicIndicator
                     android:id="@+id/magic_indicator"

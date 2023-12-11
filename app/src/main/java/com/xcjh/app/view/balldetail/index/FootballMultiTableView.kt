@@ -2,14 +2,17 @@ package com.xcjh.app.view.balldetail.index
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.ColorStateList
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import com.xcjh.app.R
 import com.xcjh.app.bean.OddsDetailBean
 import com.xcjh.app.databinding.ItemDetailMultiTableBinding
 import com.xcjh.app.databinding.LayoutEmptyBinding
+import com.xcjh.base_lib.utils.view.visibleOrGone
 
 class FootballMultiTableView : LinearLayout {
     private var layout: LinearLayout? = null
@@ -41,9 +44,19 @@ class FootballMultiTableView : LinearLayout {
             layout?.addView(binding.root)
             return
         }
-        list.forEach {
+        for ((i, it) in list.withIndex()) {
             val binding =
                 ItemDetailMultiTableBinding.inflate(LayoutInflater.from(context), this, false)
+            if (i == 0){
+                //binding.root.setBackgroundDrawable(context.getDrawable(R.drawable.shape_bottom_r10))
+                binding.vLine.visibleOrGone(false)
+            }
+            if (i == list.size-1){
+                binding.lltContent.setBackgroundResource(R.drawable.shape_bottom_r10)
+            }
+            binding.lltContent.backgroundTintList = ColorStateList.valueOf(
+                ContextCompat.getColor(context, if (i%2==0) R.color.c_181819 else R.color.c_1D1D1D)
+            )
             if (it.companyName.isNotEmpty()) {
                 if (it.companyName.length > 2) {
                     binding.tvCompany.text = it.companyName.substring(0 until 2) + "*"
@@ -58,7 +71,7 @@ class FootballMultiTableView : LinearLayout {
             binding.tvChuKe.text = it.firstAwayWin
             binding.tvChuPf.text = it.firstLossRatio//赔付率
             if (it.close == 1) {
-                //即盘数据
+                //即盘数据 封
                 binding.tvJiHome.text = context.getString(R.string.close_win_p) //主胜
                 binding.tvJiPin.text = context.getString(R.string.close_win_p)
                 binding.tvJiAway.text = context.getString(R.string.close_win_p)
@@ -82,11 +95,11 @@ class FootballMultiTableView : LinearLayout {
 
     private fun setColor(text: TextView, a: Float, b: Float) {
         if (a < b) {
-            text.setTextColor(context.getColor(R.color.c_pb_bar))
+            text.setTextColor(context.getColor(R.color.c_D63823))
         } else if (a > b) {
-            text.setTextColor(context.getColor(R.color.c_48fe4f))
+            text.setTextColor(context.getColor(R.color.c_pb_bar))
         } else {
-            text.setTextColor(context.getColor(R.color.c_F5F5F5))
+            text.setTextColor(context.getColor(R.color.c_d7d7e7))
         }
     }
 }

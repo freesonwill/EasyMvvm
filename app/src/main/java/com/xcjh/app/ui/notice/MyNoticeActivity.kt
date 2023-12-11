@@ -18,6 +18,7 @@ import com.drake.brv.utils.setup
 import com.gyf.immersionbar.ImmersionBar
 import com.xcjh.app.R
 import com.xcjh.app.adapter.SchtitleAdapter
+import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseActivity
 import com.xcjh.app.bean.AnchorBean
 import com.xcjh.app.bean.MatchBean
@@ -51,7 +52,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
     var strTimeZu: MutableList<String> = ArrayList<String>()
     override fun initView(savedInstanceState: Bundle?) {
         ImmersionBar.with(this)
-            .statusBarDarkFont(false)
+            .statusBarDarkFont(true)
             .titleBar(mDatabind.titleTop.root)
             .init()
 
@@ -921,6 +922,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
         mViewModel.unnoticeData.observe(this) {
             mview!!.setBackgroundResource(R.drawable.ic_focus_n)
             //mAdapter.getItem(index)!!.focus = false
+            appViewModel.updateCollection.postValue(true)
             mDatabind.rec.mutable.removeAt(index)
             mDatabind.rec.bindingAdapter.notifyItemRemoved(index) // 通知更新
 

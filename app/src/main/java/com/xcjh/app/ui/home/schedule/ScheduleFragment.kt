@@ -9,6 +9,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.models
 import com.flyco.tablayout.listener.OnTabSelectListener
+import com.gyf.immersionbar.ImmersionBar
 import com.xcjh.app.R
 import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseFragment
@@ -31,7 +32,11 @@ class ScheduleFragment : BaseFragment<MainVm, FrCourseBinding>() {
     private val mtypes = arrayOf("0", "1", "2", "3")
     private val status = arrayOf(0, 0, 0, 99)
     override fun initView(savedInstanceState: Bundle?) {
-
+        ImmersionBar.with(this)
+            .statusBarDarkFont(true)//黑色
+            .titleBar(mDatabind.rlTitle)
+            .navigationBarColor(R.color.c_ffffff)
+            .init()
         initEvent()
         MyWsManager.getInstance(requireActivity())!!
             .setC2CListener(javaClass.name, object : C2CListener {

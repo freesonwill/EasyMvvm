@@ -87,7 +87,7 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
         })
         appViewModel.updateSchedulePosition.observeForever {
 
-            if (mOneTabIndex==it){
+            if (mOneTabIndex==it&&isAdded){
                 var index= mDatabind.vp.currentItem
                 appViewModel.updateScheduleTwoPosition.postValue(index)
             }

@@ -148,10 +148,10 @@ fun setMatchStatusTime(
 private val tabs by lazy {
     arrayListOf(
         TabBean(1, name = appContext.resources.getStringArray(R.array.str_football_detail_tab)[0]),
-        TabBean(2, name = appContext.resources.getStringArray(R.array.str_football_detail_tab)[1]),
         TabBean(3, name = appContext.resources.getStringArray(R.array.str_football_detail_tab)[2]),
         TabBean(4, name = appContext.resources.getStringArray(R.array.str_football_detail_tab)[3]),
         TabBean(5, name = appContext.resources.getStringArray(R.array.str_football_detail_tab)[4]),
+        TabBean(2, name = appContext.resources.getStringArray(R.array.str_football_detail_tab)[1]),
         TabBean(6, name = appContext.resources.getStringArray(R.array.str_football_detail_tab)[5]),
     )
 }
@@ -174,34 +174,34 @@ fun setNewViewPager(
     val newTabs = arrayListOf<TabBean>()
     newTabs.addAll(tabs)
     val iterator = newTabs.iterator()
-    for (i in iterator) {
+    for (tab in iterator) {
         if (!isHasAnchor) { // 主播tab 隐藏
-            if (i.type == 2) {
+            if (tab.type == 2) {
                 iterator.remove()
             }
-            /*  if (i.type == 6) {
+            /*  if (tab.type == 6) {
                 iterator.remove()
             }*/
         }
         if (!detailBean.matchData.hasStata) { // 赛况 隐藏
-            if (i.type == 3) {
+            if (tab.type == 3) {
                 iterator.remove()
             }
         }
         if (!detailBean.matchData.hasLineup) { // 阵容 隐藏
-            if (i.type == 4) {
+            if (tab.type == 4) {
                 iterator.remove()
             }
         }
         if (detailBean.matchType == "1") {
             if (!detailBean.matchData.hasOdds) { // 指数 隐藏
-                if (i.type == 5) {
+                if (tab.type == 5) {
                     iterator.remove()
                 }
             }
         } else {
             //篮球没有指数
-            if (i.type == 5) {
+            if (tab.type == 5) {
                 iterator.remove()
             }
         }
