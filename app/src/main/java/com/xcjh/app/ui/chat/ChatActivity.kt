@@ -7,9 +7,12 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.view.Gravity
+import android.view.KeyEvent
 import android.view.View
 import android.view.View.OnLongClickListener
+import android.view.inputmethod.EditorInfo
 import android.widget.TextView
+import android.widget.TextView.OnEditorActionListener
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.blankj.utilcode.util.ToastUtils
 import com.bumptech.glide.Glide
@@ -89,7 +92,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
     var msgType = 0//消息类型，文字：0， 图片：1
     var msgContent = ""
     var isUpdata = false
-    private val delayTime:Long=10000
+    private val delayTime: Long = 10000
     private val listPic = java.util.ArrayList<LocalMedia>()
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -211,7 +214,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
 
                                     if (matchBeanNew.sent == 0) {//发送失败
                                         matchBeanNew.sent = 2
-                                        if (bindingAdapterPosition==0) {
+                                        if (bindingAdapterPosition == 0) {
 
                                             appViewModel.updateMsgListEvent.postValue(matchBeanNew)
                                         }
@@ -304,7 +307,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
 
                                     if (matchBeanNew.sent == 0) {//发送失败
                                         matchBeanNew.sent = 2
-                                        if (bindingAdapterPosition==0) {
+                                        if (bindingAdapterPosition == 0) {
                                             appViewModel.updateMsgListEvent.postValue(matchBeanNew)
                                         }
                                         runOnUiThread {
@@ -353,10 +356,10 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                             Glide.with(this@ChatActivity).load(matchBeanNew.content).dontAnimate()
                                 .skipMemoryCache(false)
                                 .dontAnimate()
+                                .placeholder(R.drawable.xx)
                                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                                 .into(binding.ivpic)//这里第二次刷新的时候 又加载了一次图片导致闪屏
                         }
-
 
 
                         binding.ivpic.setOnClickListener {
@@ -397,6 +400,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                 .substring(0, 16)
                         binding.tvtime.visibility = View.GONE
                         Glide.with(this@ChatActivity).load(matchBeanNew.content)
+                            .placeholder(R.drawable.xx)
                             .dontAnimate().into(binding.ivpic)
                         Glide.with(this@ChatActivity).load(userhead)
                             .placeholder(R.drawable.default_anchor_icon).into(binding.ivhead)
@@ -521,6 +525,22 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                 }
             }
         }
+        mDatabind.edtcontent.setOnEditorActionListener(OnEditorActionListener { v, actionId, event ->
+            if ((event != null && (event.keyCode == KeyEvent.KEYCODE_ENTER))
+                || (actionId == EditorInfo.IME_ACTION_SEND)) {
+                // 在这里执行相应的操作
+                val searchText = v.text.toString()
+                if (searchText.isNotEmpty()) {
+                    msgType = 0
+                    msgContent = searchText
+                    sendMsg("", true)
+                }
+                true // 返回 true 表示已处理事件
+            } else false
+            // 返回 false 表示未处理事件
+        })
+
+
         MyWsManager.getInstance(this)?.setC2CListener(javaClass.name, object : C2CListener {
 
             override fun onSendMsgIsOk(isOk: Boolean, bean: ReceiveWsBean<*>) {
@@ -617,7 +637,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
 
                 msgType = 1
                 msgContent = it
-                  sendMsg(sendId, true)
+                sendMsg(sendId, true)
 
             }
         } catch (e: Exception) {
@@ -725,8 +745,8 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
             beanmy.fromId = bean.from
             beanmy.content = bean.content!!
             beanmy.chatType = 2
-            beanmy.nick=nickname
-            beanmy.avatar=userhead
+            beanmy.nick = nickname
+            beanmy.avatar = userhead
             beanmy.id = sendID
             beanmy.cmd = 11
             beanmy.sent = 0

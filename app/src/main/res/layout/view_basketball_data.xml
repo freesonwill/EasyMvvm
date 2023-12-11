@@ -186,10 +186,8 @@
             android:layout_marginBottom="@dimen/dp_15"
             android:orientation="horizontal">
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/dp_15"
-                android:layout_weight="1">
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:id="@+id/tv1"
@@ -216,7 +214,7 @@
                     app:progressValue="50"
                     app:ringColor="@color/c_pb_bg"
                     app:ringProgressColor="@color/c_pb_bar"
-                    app:ringWidth="@dimen/dp_10" />
+                    app:ringWidth="9dp" />
 
                 <TextView
                     android:id="@+id/tv2Away"
@@ -246,9 +244,8 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/dp_15"
                 android:layout_weight="1">
 
                 <TextView
@@ -276,7 +273,7 @@
                     app:progressValue="50"
                     app:ringColor="@color/c_pb_bg"
                     app:ringProgressColor="@color/c_pb_bar"
-                    app:ringWidth="@dimen/dp_10" />
+                    app:ringWidth="9dp" />
 
                 <TextView
                     android:id="@+id/tv3Away"
@@ -306,10 +303,8 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_15"
-                android:layout_weight="1">
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:id="@+id/tv3"
@@ -336,7 +331,7 @@
                     app:progressValue="50"
                     app:ringColor="@color/c_pb_bg"
                     app:ringProgressColor="@color/c_pb_bar"
-                    app:ringWidth="@dimen/dp_10" />
+                    app:ringWidth="9dp" />
 
                 <TextView
                     android:id="@+id/tvFqAway"

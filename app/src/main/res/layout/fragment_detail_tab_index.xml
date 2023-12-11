@@ -22,47 +22,19 @@
                     android:layout_height="200dp" />
                 <!-- isSticky布局 -->
                 <LinearLayout
-                    android:id="@+id/stickyView"
                     app:isSticky="true"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:paddingVertical="@dimen/dp_5"
-                    android:background="@color/trans"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/tvTabIndexSf"
-                        android:layout_width="@dimen/dp_100"
-                        android:layout_height="@dimen/dp_36"
-                        android:background="@drawable/bg_btn_detail_tab"
-                        android:gravity="center"
-                        android:text="@string/win_loss"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/sp_14" />
-
-                    <TextView
-                        android:id="@+id/tvTabIndexRq"
-                        android:layout_width="@dimen/dp_100"
-                        android:layout_height="@dimen/dp_36"
-                        android:layout_marginStart="@dimen/dp_12"
-                        android:background="@drawable/bg_btn_detail_tab"
-                        android:gravity="center"
-                        android:text="@string/handicap"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/sp_14" />
-
-                    <TextView
-                        android:id="@+id/tvTabIndexJq"
-                        android:layout_width="@dimen/dp_100"
-                        android:layout_height="@dimen/dp_36"
-                        android:layout_marginStart="@dimen/dp_12"
-                        android:background="@drawable/bg_btn_detail_tab"
-                        android:gravity="center"
-                        android:text="@string/goal_num"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/sp_14" />
+                    android:id="@+id/lltTab"
+                    android:gravity="center"
+                    android:paddingTop="@dimen/dp_12"
+                    android:paddingBottom="@dimen/dp_15"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <net.lucode.hackware.magicindicator.MagicIndicator
+                        android:id="@+id/magic_indicator"
+                        android:layout_width="300dp"
+                        android:layout_height="42dp" />
                 </LinearLayout>
+
                 <!-- 布局 -->
 
             </com.xcjh.app.view.hover.StickyLinearLayout>

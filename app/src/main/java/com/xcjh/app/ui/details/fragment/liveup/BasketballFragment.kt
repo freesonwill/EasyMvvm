@@ -17,10 +17,12 @@ import com.xcjh.app.ui.details.DetailVm
  * 其他直播间列表
  * type 0客队，1主队
  */
-class BasketballFragment(var type: Int = 0, ) : BaseFragment<DetailVm, FragmentDetailTabLiveupTabBinding>() {
+class BasketballFragment(var type: Int = 0) :
+    BaseFragment<DetailVm, FragmentDetailTabLiveupTabBinding>() {
     private val vm by lazy {
         ViewModelProvider(requireActivity())[DetailVm::class.java]
     }
+
     override fun initView(savedInstanceState: Bundle?) {
 
     }
@@ -28,9 +30,9 @@ class BasketballFragment(var type: Int = 0, ) : BaseFragment<DetailVm, FragmentD
     override fun createObserver() {
         vm.basket.observe(this) {
             if (it != null) {
-                if (type==0){
+                if (type == 0) {
                     mDatabind.viewBasketballLineup.setData(it.away)
-                }else{
+                } else {
                     mDatabind.viewBasketballLineup.setData(it.home)
                 }
             }

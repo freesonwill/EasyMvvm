@@ -14,7 +14,7 @@ import com.xcjh.base_lib.utils.dp2px
 import com.xcjh.base_lib.utils.loge
 
 /**
- * 足球阵容
+ * 足球阵容 阵型排版
  */
 class FootballLiveUpMiddleView @JvmOverloads constructor(
     context: Context,
@@ -29,7 +29,7 @@ class FootballLiveUpMiddleView @JvmOverloads constructor(
         // postDelayed({setData("")},200)
         this.post {
             mWidth = measuredWidth
-            mHight = measuredWidth * 768 / 343
+            mHight = measuredWidth * 630 / 351
             // setData("")
         }
     }

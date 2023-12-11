@@ -181,9 +181,14 @@ class MyWsClientService : Service() {
      * 发送消息
      */
     fun sendMsg(msg: String?) {
-        if (null != client && client!!.isOpen) {
-            client!!.send(msg)
+        try {
+            if (null != client && client?.isOpen == true) {
+                client?.send(msg)
+            }
+        }catch (e :Exception){
+
         }
+
     }
 
     /**

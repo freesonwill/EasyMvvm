@@ -20,7 +20,7 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="89"
+                android:layout_weight="97"
                 android:gravity="center"
                 android:text="@string/company"
                 android:textColor="@color/c_F5F5F5"
