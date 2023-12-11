@@ -10,7 +10,6 @@ import com.gyf.immersionbar.ImmersionBar
 import com.xcjh.app.R
 import com.xcjh.app.base.BaseActivity
 import com.xcjh.app.databinding.ActivityEditProfileBinding
-import com.xcjh.app.databinding.ActivityPersonalDataBinding
 import com.xcjh.app.utils.CacheUtil
 import com.xcjh.app.vm.MainVm
 import com.xcjh.base_lib.base.BaseViewModel
@@ -28,6 +27,7 @@ class EditProfileActivity : BaseActivity<EditProfileVm, ActivityEditProfileBindi
             .statusBarDarkFont(false)
             .titleBar(mDatabind.titleTop.root)
             .init()
+
 
        var  user= CacheUtil.getUser()
         if(user!=null){

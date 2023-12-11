@@ -7,63 +7,73 @@
 
     </data>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/c_07061d"
+        android:background="@color/c_f2f3f7"
         android:orientation="vertical" >
-        <RelativeLayout
+        <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="match_parent"
-            android:layout_height="210dp"
-            android:layout_marginBottom="@dimen/dp_28">
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="fitXY"
-                app:srcCompat="@drawable/home_my_bg"/>
-            <LinearLayout
+            android:layout_height="180dp"
+            android:scaleType="fitXY"
+            app:srcCompat="@drawable/my_wd_bj"/>
+        <RelativeLayout
+            android:id="@+id/rlMyTopyi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_20">
+
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_24"
-                android:layout_marginRight="@dimen/dp_24"
+                android:layout_marginLeft="@dimen/dp_15"
+                android:layout_marginRight="@dimen/dp_15"
                 android:layout_marginTop="70dp"
                 android:orientation="horizontal">
-            <com.xcjh.app.utils.nice.NiceImageView
-                android:id="@+id/ivMyHead"
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                app:border_width="@dimen/dp_2"
-                android:scaleType="fitXY"
-                app:border_color="@color/c_80fffff"
-                app:srcCompat="@drawable/icon_avatar"
-                app:is_circle="true"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <com.xcjh.app.utils.nice.NiceImageView
+                    android:id="@+id/ivMyHead"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    app:border_width="@dimen/dp_2"
+                    android:scaleType="fitXY"
+                    app:border_color="@color/c_80fffff"
+                    app:srcCompat="@drawable/my_icon_title"
+                    app:is_circle="true"/>
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center|left"
                     android:layout_marginLeft="12dp"
                     android:orientation="vertical">
-                     <androidx.appcompat.widget.AppCompatTextView
-                         android:id="@+id/txtMyName"
-                         android:layout_width="wrap_content"
-                         android:layout_height="wrap_content"
-                         android:textSize="@dimen/sp_16"
-                         android:textColor="@color/c_f5f5f5"
-                         android:text="@string/my_txt_click_login"/>
-                    <LinearLayout
-                        android:id="@+id/iiIsShowLeve"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:visibility="gone"
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/txtMyName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp_10"
+                        android:textSize="@dimen/sp_16"
+                        android:textColor="@color/c_37373d"
+                        android:text="@string/my_txt_click_login"/>
+                    <LinearLayout
+                        android:id="@+id/iiIsShowLeve"
+                        android:gravity="center"
+                        android:visibility="gone"
+                        android:background="@drawable/shape20_e4e6ed"
+                        android:paddingRight="@dimen/dp_5"
+                        android:paddingLeft="@dimen/dp_5"
+                        android:paddingTop="2dp"
+                        android:paddingBottom="@dimen/dp_2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
                         android:orientation="horizontal">
 
                         <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/ivIvLevel"
-                            android:layout_width="@dimen/dp_30"
-                            android:layout_height="@dimen/dp_15"
+                            android:layout_width="12dp"
+                            android:layout_height="12dp"
                             android:scaleType="fitXY"
                             app:srcCompat="@drawable/icon_level_yi"/>
 
@@ -72,175 +82,251 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/dp_8"
-                            android:textColor="@color/c_f5f5f5"
+                            android:textColor="@color/c_575762"
                             android:textSize="@dimen/sp_12"
-                            android:text="Lv.1 白银会员"/>
+                            android:text="黄金2"/>
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
-            
-            <RelativeLayout
-                android:id="@+id/rlClickLevel"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_48"
-                android:layout_alignParentBottom="true"
-                android:layout_marginLeft="24dp"
-                android:layout_marginRight="@dimen/dp_24"
-                android:paddingLeft="@dimen/dp_16"
-                android:paddingRight="@dimen/dp_16"
-                android:background="@drawable/gradation_top8_1e285a">
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/ivMyLevelAdd"
-                        android:layout_width="30dp"
-                        android:layout_height="20dp"
-                        android:visibility="gone"
-                        android:layout_marginRight="@dimen/dp_4"
-                        app:srcCompat="@drawable/level_yi"/>
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/txtMyTxt"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="12sp"
-                        android:textColor="@color/c_8a91a0"
-                        android:text="@string/my_txt_leve"/>
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivMySet"
+                    android:layout_width="@dimen/dp_20"
+                    android:layout_height="@dimen/dp_18"
                     android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/txtMyView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/c_8a91a0"
-                        android:textSize="@dimen/sp_12"
-                        android:text="@string/my_txt_view"/>
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/ivMyNext"
-                        android:layout_width="@dimen/dp_16"
-                        android:layout_height="@dimen/dp_16"
-                        app:srcCompat="@drawable/icon_my_next_no"/>
-                </LinearLayout>
+                    app:srcCompat="@drawable/my_icon_set"/>
             </RelativeLayout>
+            
+
         </RelativeLayout>
+
         <LinearLayout
+            android:layout_below="@+id/rlMyTopyi"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginRight="24dp"
-            android:layout_marginLeft="@dimen/dp_24"
+            android:layout_marginRight="@dimen/dp_15"
+            android:layout_marginLeft="@dimen/dp_15"
             android:orientation="vertical">
             <com.xcjh.app.utils.nice.NiceImageView
                 android:id="@+id/ivMyAdvertising"
-                android:visibility="gone"
                 android:layout_width="match_parent"
-                android:layout_height="99dp"
+                android:layout_height="80dp"
                 android:scaleType="centerCrop"
-                android:layout_marginBottom="43dp"
+                android:layout_marginBottom="20dp"
                 app:srcCompat="@drawable/app_bg"
                 app:corner_radius="@dimen/dp_8"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="38dp"
-                android:orientation="horizontal">
-                <LinearLayout
-                    android:id="@+id/llMyClickSubscribe"
-                    android:layout_width="@dimen/dp_0"
+                android:padding="@dimen/dp_15"
+                android:background="@drawable/shape_r10"
+                android:orientation="vertical">
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:orientation="vertical">
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="@dimen/dp_28"
-                        android:layout_height="@dimen/dp_28"
-                        android:scaleType="fitXY"
-                        app:srcCompat="@drawable/ic_mine_subscription"/>
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="11dp"
-                        android:textSize="@dimen/sp_14"
-                        android:textColor="@color/c_ffffff"
-                        android:text="@string/my_txt_subscribe"/>
+                    android:textSize="@dimen/sp_14"
+                    android:textColor="@color/c_37373d"
+                    android:text="@string/my_txt_common"/>
+               <LinearLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_marginTop="12dp"
+                   android:orientation="horizontal">
 
-                </LinearLayout>
-                <LinearLayout
-                    android:id="@+id/llMyClickEvents"
-                    android:layout_width="@dimen/dp_0"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:orientation="vertical">
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="@dimen/dp_28"
-                        android:layout_height="@dimen/dp_28"
-                        android:scaleType="fitXY"
-                        app:srcCompat="@drawable/ic_mine_act_center"/>
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="11dp"
-                        android:textSize="@dimen/sp_14"
-                        android:textColor="@color/c_ffffff"
-                        android:text="@string/events_txt_title"/>
+                   <LinearLayout
+                       android:id="@+id/llMyClickSubscribe"
+                       android:layout_width="@dimen/dp_0"
+                       android:layout_height="wrap_content"
+                       android:layout_weight="1"
+                       android:layout_gravity="center"
+                       android:gravity="center"
+                       android:orientation="vertical">
+                       <androidx.appcompat.widget.AppCompatImageView
+                           android:layout_width="@dimen/dp_35"
+                           android:layout_height="@dimen/dp_35"
+                           android:scaleType="fitXY"
+                           app:srcCompat="@drawable/my_wd_dy_icon"/>
+                       <androidx.appcompat.widget.AppCompatTextView
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:layout_marginTop="8dp"
+                           android:textSize="@dimen/sp_13"
 
-                </LinearLayout>
-                <LinearLayout
-                    android:id="@+id/llMyClickFollow"
-                    android:layout_width="@dimen/dp_0"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:orientation="vertical">
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="@dimen/dp_28"
-                        android:layout_height="@dimen/dp_28"
-                        android:scaleType="fitXY"
-                        app:srcCompat="@drawable/ic_mine_focus"/>
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="11dp"
-                        android:textSize="@dimen/sp_14"
-                        android:textColor="@color/c_ffffff"
-                        android:text="@string/follow_txt_title"/>
+                           android:textColor="@color/c_37373d"
+                           android:text="@string/my_txt_subscribe"/>
 
-                </LinearLayout>
-                <LinearLayout
-                    android:id="@+id/llMyClickHistory"
-                    android:layout_width="@dimen/dp_0"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:orientation="vertical">
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="@dimen/dp_28"
-                        android:layout_height="@dimen/dp_28"
-                        android:scaleType="fitXY"
-                        app:srcCompat="@drawable/ic_mine_history"/>
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="11dp"
-                        android:textSize="@dimen/sp_14"
-                        android:textColor="@color/c_ffffff"
-                        android:text="@string/viewing_txt_title"/>
+                   </LinearLayout>
+                   <LinearLayout
+                       android:id="@+id/llMyClickEvents"
+                       android:layout_width="@dimen/dp_0"
+                       android:layout_height="wrap_content"
+                       android:layout_weight="1"
+                       android:layout_gravity="center"
+                       android:gravity="center"
+                       android:orientation="vertical">
+                       <androidx.appcompat.widget.AppCompatImageView
+                           android:layout_width="@dimen/dp_35"
+                           android:layout_height="@dimen/dp_35"
+                           android:scaleType="fitXY"
+                           app:srcCompat="@drawable/my_wd_hdzx_icon"/>
+                       <androidx.appcompat.widget.AppCompatTextView
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:layout_marginTop="8dp"
+                           android:textSize="@dimen/sp_13"
+                           android:textColor="@color/c_37373d"
+                           android:text="@string/events_txt_title"/>
 
-                </LinearLayout>
+                   </LinearLayout>
+                   <LinearLayout
+                       android:id="@+id/llMyClickFollow"
+                       android:layout_width="@dimen/dp_0"
+                       android:layout_height="wrap_content"
+                       android:layout_weight="1"
+                       android:layout_gravity="center"
+                       android:gravity="center"
+                       android:orientation="vertical">
+                       <androidx.appcompat.widget.AppCompatImageView
+                           android:layout_width="@dimen/dp_35"
+                           android:layout_height="@dimen/dp_35"
+                           android:scaleType="fitXY"
+                           app:srcCompat="@drawable/my_wd_wdgz_icon"/>
+                       <androidx.appcompat.widget.AppCompatTextView
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:layout_marginTop="8dp"
+                           android:textSize="@dimen/sp_13"
+                           android:textColor="@color/c_37373d"
+                           android:text="@string/follow_txt_title"/>
+
+                   </LinearLayout>
+                   <LinearLayout
+                       android:id="@+id/llMyClickHistory"
+                       android:layout_width="@dimen/dp_0"
+                       android:layout_height="wrap_content"
+                       android:layout_weight="1"
+                       android:layout_gravity="center"
+                       android:gravity="center"
+                       android:orientation="vertical">
+                       <androidx.appcompat.widget.AppCompatImageView
+                           android:layout_width="@dimen/dp_35"
+                           android:layout_height="@dimen/dp_35"
+                           android:scaleType="fitXY"
+                           app:srcCompat="@drawable/my_wd_gkls_icon"/>
+                       <androidx.appcompat.widget.AppCompatTextView
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:layout_marginTop="8dp"
+                           android:textSize="@dimen/sp_13"
+                           android:textColor="@color/c_37373d"
+                           android:text="@string/viewing_txt_title"/>
+
+                   </LinearLayout>
+
+               </LinearLayout>
             </LinearLayout>
+            <RelativeLayout
+                android:id="@+id/rlClickLevel"
+                android:layout_width="match_parent"
+                android:layout_height="53dp"
+                android:paddingLeft="@dimen/dp_10"
+                android:paddingRight="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_15"
+                android:background="@drawable/shape_r8">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="33dp"
+                        android:layout_height="33dp"
+                        app:srcCompat="@drawable/wd_wddj_icon"/>
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/sp_14"
+                        android:textColor="@color/c_37373d"
+                        android:layout_marginLeft="@dimen/dp_8"
+                        android:text="@string/my_txt_leve"/>
+                </LinearLayout>
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="5dp"
+                    android:layout_height="@dimen/dp_10"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    app:srcCompat="@drawable/wd_gengduo_icon"/>
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/rlMyClickInvite"
+                android:layout_width="match_parent"
+                android:layout_height="53dp"
+                android:paddingLeft="@dimen/dp_10"
+                android:paddingRight="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_15"
+                android:background="@drawable/shape_r8">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="33dp"
+                        android:layout_height="33dp"
+                        app:srcCompat="@drawable/wd_fxhy_icon"/>
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/sp_14"
+                        android:textColor="@color/c_37373d"
+                        android:layout_marginLeft="@dimen/dp_8"
+                        android:text="@string/my_txt_invite"/>
+                </LinearLayout>
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="5dp"
+                    android:layout_height="@dimen/dp_10"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    app:srcCompat="@drawable/wd_gengduo_icon"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rlMyClickContact"
+                android:layout_width="match_parent"
+                android:layout_height="53dp"
+                android:paddingLeft="@dimen/dp_10"
+                android:paddingRight="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_15"
+                android:background="@drawable/shape_r8">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="33dp"
+                        android:layout_height="33dp"
+                        app:srcCompat="@drawable/wd_yjfk_icon"/>
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/sp_14"
+                        android:textColor="@color/c_37373d"
+                        android:layout_marginLeft="@dimen/dp_8"
+                        android:text="@string/feedback"/>
+                </LinearLayout>
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="5dp"
+                    android:layout_height="@dimen/dp_10"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    app:srcCompat="@drawable/wd_gengduo_icon"/>
+            </RelativeLayout>
             <RelativeLayout
                 android:id="@+id/rlMyClickEdit"
                 android:layout_width="match_parent"
@@ -253,46 +339,6 @@
                     android:textStyle="bold"
                     android:layout_centerVertical="true"
                     android:text="@string/my_txt_edit_data"/>
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:layout_width="@dimen/dp_16"
-                    android:layout_height="@dimen/dp_16"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    app:srcCompat="@drawable/ic_next"/>
-            </RelativeLayout>
-            <RelativeLayout
-                android:id="@+id/rlMyClickInvite"
-                android:layout_width="match_parent"
-                android:layout_marginTop="@dimen/dp_10"
-                android:layout_height="44dp">
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/c_ffffff"
-                    android:textSize="@dimen/sp_14"
-                    android:textStyle="bold"
-                    android:layout_centerVertical="true"
-                    android:text="@string/my_txt_invite"/>
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:layout_width="@dimen/dp_16"
-                    android:layout_height="@dimen/dp_16"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    app:srcCompat="@drawable/ic_next"/>
-            </RelativeLayout>
-            <RelativeLayout
-                android:id="@+id/rlMyClickContact"
-                android:layout_width="match_parent"
-                android:layout_marginTop="@dimen/dp_10"
-                android:layout_height="44dp">
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/c_ffffff"
-                    android:textSize="@dimen/sp_14"
-                    android:textStyle="bold"
-                    android:layout_centerVertical="true"
-                    android:text="@string/contact_us"/>
                 <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="@dimen/dp_16"
                     android:layout_height="@dimen/dp_16"
@@ -321,7 +367,8 @@
                     android:layout_centerVertical="true"
                     app:srcCompat="@drawable/ic_next"/>
             </RelativeLayout>
+
         </LinearLayout>
 
-    </LinearLayout>
+    </RelativeLayout>
 </layout>

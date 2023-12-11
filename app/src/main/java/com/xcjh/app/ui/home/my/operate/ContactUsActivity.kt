@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.RelativeLayout
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
@@ -215,14 +216,20 @@ class ContactUsActivity : BaseActivity<ContactUsVm, ActivityContactUsBinding>() 
 
                 holder.txtContactName = view.findViewById(R.id.txtContactName)
                 holder.rlClick=view.findViewById(R.id.rlClick)
+                holder.ivIsShowSelect=view.findViewById(R.id.ivIsShowSelect)
+
             } else {
                 holder = view!!.tag as Holder
             }
             holder.txtContactName.text= list!![position].name
             if(list!![position].select){
-                holder.rlClick.background=ContextCompat.getDrawable(context!!,R.drawable.shape_r8_6d48fe)
+                holder.rlClick.background=ContextCompat.getDrawable(context!!,R.drawable.fillet_frame4_34a853)
+                holder.txtContactName.setTextColor(ContextCompat.getColor(context!!,R.color.c_pb_bar))
+                holder.ivIsShowSelect.visibility=View.VISIBLE
             }else{
-                holder.rlClick.background=ContextCompat.getDrawable(context!!,R.drawable.shape_r8_18152b)
+                holder.rlClick.background=ContextCompat.getDrawable(context!!,R.drawable.fillet_frame4_d7d7e7)
+                holder.txtContactName.setTextColor(ContextCompat.getColor(context!!,R.color.c_94999f))
+                holder.ivIsShowSelect.visibility=View.GONE
             }
 
             holder.rlClick.clickNoRepeat {
@@ -247,6 +254,7 @@ class ContactUsActivity : BaseActivity<ContactUsVm, ActivityContactUsBinding>() 
     class Holder {
 
         lateinit var txtContactName: AppCompatTextView
+        lateinit var ivIsShowSelect: AppCompatImageView
         lateinit var rlClick: RelativeLayout
 
 

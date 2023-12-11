@@ -54,7 +54,7 @@
         android:paddingEnd="@dimen/dp_20"
         android:paddingStart="@dimen/dp_20"
         android:textSize="@dimen/sp_16"
-        android:textColor="@color/c_f5f5f5"
+        android:textColor="@color/c_37373d"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"/>
 </RelativeLayout>

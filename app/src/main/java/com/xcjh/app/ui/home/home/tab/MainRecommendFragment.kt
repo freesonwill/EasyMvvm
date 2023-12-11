@@ -524,7 +524,7 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                                             }else if(matchBean.status.equals("9")){
                                                 binding.txtMatchStatus.visibility=View.VISIBLE
                                                 binding.txtMatchStatus.setTextColor(ContextCompat.getColor(requireContext(),R.color.c_f69521))
-                                                binding.txtMatchStatus.text=resources.getString(R.string.over_time)
+                                                binding.txtMatchStatus.text=resources.getString(R.string.home_txt_overtime)
                                                 binding.txtMatchIsStart.visibility=View.VISIBLE
                                             }
                                         }else{

@@ -51,6 +51,17 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
 
 
         }
+        //设置
+        mDatabind.ivMySet.clickNoRepeat {
+            if(CacheUtil.isLogin()){
+                startNewActivity<SetUpActivity>()
+            }else{
+                startNewActivity<LoginActivity>()
+            }
+
+
+        }
+
         //点击我的名字
         mDatabind.txtMyName.clickNoRepeat {
             if(!CacheUtil.isLogin()){
@@ -154,15 +165,9 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
         appViewModel.updateLoginEvent.observe(this){
              if(it){
                  mDatabind.rlMyClickLogOut.visibility=View.VISIBLE
-                 mDatabind.ivMyLevelAdd.visibility=View.VISIBLE
-                 mDatabind.txtMyTxt.setTextColor(ContextCompat.getColor(requireContext(),R.color.c_f5f5f5))
-                 mDatabind.txtMyView.setTextColor(ContextCompat.getColor(requireContext(),R.color.c_f5f5f5))
-                 mDatabind.ivMyNext.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.icon_next))
+
             }else{
-                 mDatabind.ivMyLevelAdd.visibility=View.GONE
-                 mDatabind.txtMyTxt.setTextColor(ContextCompat.getColor(requireContext(),R.color.c_8a91a0))
-                 mDatabind.txtMyView.setTextColor(ContextCompat.getColor(requireContext(),R.color.c_8a91a0))
-                 mDatabind.ivMyNext.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.icon_my_next_no))
+
                  notLogin()
 
             }
@@ -192,49 +197,40 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
 
                 if (user!!.lvNum.equals("1")){
 //                    mDatabind.ivMyLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_yi))
-                    mDatabind.ivMyLevelAdd.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_yi))
 
                     mDatabind.ivIvLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.icon_level_yi))
 
                 }else if (user!!.lvNum.equals("2")){
 //                    mDatabind.ivMyLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_er))
-                    mDatabind.ivMyLevelAdd.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_er))
 
                     mDatabind.ivIvLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.icon_level_er))
 
                 }else if (user!!.lvNum.equals("3")){
 //                    mDatabind.ivMyLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_san))
-                    mDatabind.ivMyLevelAdd.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_san))
 
                     mDatabind.ivIvLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.icon_level_san))
                 }else if (user!!.lvNum.equals("4")){
 //                    mDatabind.ivMyLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_si))
-                    mDatabind.ivMyLevelAdd.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_si))
 
                     mDatabind.ivIvLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.icon_level_si))
                 }else if (user!!.lvNum.equals("5")){
 //                    mDatabind.ivMyLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_wu))
-                    mDatabind.ivMyLevelAdd.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_wu))
 
                     mDatabind.ivIvLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.icon_level_wu))
                 }else if (user!!.lvNum.equals("6")){
 //                    mDatabind.ivMyLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_liu))
-                    mDatabind.ivMyLevelAdd.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_liu))
 
                     mDatabind.ivIvLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.icon_level_liu))
                 }else if (user!!.lvNum.equals("7")){
 //                    mDatabind.ivMyLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_qi))
-                    mDatabind.ivMyLevelAdd.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_qi))
 
                     mDatabind.ivIvLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.icon_level_qi))
                 }else if (user!!.lvNum.equals("8")){
 //                    mDatabind.ivMyLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_ba))
-                    mDatabind.ivMyLevelAdd.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_ba))
 
                     mDatabind.ivIvLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.icon_level_ba))
                 }else  {
 //                    mDatabind.ivMyLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_yi))
-                    mDatabind.ivMyLevelAdd.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_yi))
 
                     mDatabind.ivIvLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.icon_level_yi))
                 }
@@ -260,8 +256,7 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
         mDatabind.txtMyName.text=resources.getString(R.string.my_txt_click_login)
         mDatabind.iiIsShowLeve.visibility= View.GONE
         mDatabind.rlMyClickLogOut.visibility=View.GONE
-        mDatabind.rlClickLevel.background=ContextCompat.getDrawable(requireContext(),R.drawable.gradation_top8_1e285a)
-    }
+     }
 
     override fun createObserver() {
         super.createObserver()
@@ -309,21 +304,21 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
      * 弹出框是否退出
      */
     fun isLoginOut(){
-        CustomDialog.show(object :OnBindView<CustomDialog>(R.layout.dialog_login_out){
-            override fun onBind(dialog: CustomDialog?, view: View?) {
-               var txtOutVerify= view!!.findViewById<AppCompatTextView>(R.id.txtOutVerify)
-               var txtOutCancel= view!!.findViewById<AppCompatTextView>(R.id.txtOutCancel)
-                txtOutVerify.clickNoRepeat {
-
+//        CustomDialog.show(object :OnBindView<CustomDialog>(R.layout.dialog_login_out){
+//            override fun onBind(dialog: CustomDialog?, view: View?) {
+//               var txtOutVerify= view!!.findViewById<AppCompatTextView>(R.id.txtOutVerify)
+//               var txtOutCancel= view!!.findViewById<AppCompatTextView>(R.id.txtOutCancel)
+//                txtOutVerify.clickNoRepeat {
+//
                     mViewModel.exitLogin()
-                    dialog!!.dismiss()
-                }
-                txtOutCancel.clickNoRepeat {
-                    dialog!!.dismiss()
-                }
-            }
-
-        })
+//                    dialog!!.dismiss()
+//                }
+//                txtOutCancel.clickNoRepeat {
+//                    dialog!!.dismiss()
+//                }
+//            }
+//
+//        })
     }
 
 

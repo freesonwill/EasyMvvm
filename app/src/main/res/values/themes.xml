@@ -8,7 +8,7 @@
         <item name="colorOnPrimary">@color/white</item>
         <item name="colorAccent">@color/mColorAccent</item>
         <item name="android:windowBackground">@color/base_bg</item>
-      <!--  <item name="android:windowAnimationStyle">@android:style/Animation.Activity</item>-->
+        <!--  <item name="android:windowAnimationStyle">@android:style/Animation.Activity</item>-->
         <item name="android:windowAnimationStyle">@style/activityAnim</item>
         <!-- 设置底部导航栏半透明，默认false黑色，设置true半透明 -->
         <item name="android:windowTranslucentNavigation">true</item>
@@ -26,11 +26,13 @@
         <item name="windowNoTitle">true</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:navigationBarColor">@color/trans</item>
-        <item name="android:statusBarColor">@android:color/transparent</item> <!-- Android 5.0+，设置状态栏全透明透明 -->
+        <item name="android:statusBarColor">@android:color/transparent
+        </item> <!-- Android 5.0+，设置状态栏全透明透明 -->
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowAnimationStyle">@style/Animation_Splash</item>
         <item name="android:windowTranslucentStatus">true</item> <!-- 设置状态栏半透明——解除注释 -->
-        <item name="android:windowLayoutInDisplayCutoutMode" tools:targetApi="o_mr1">shortEdges</item>
+        <item name="android:windowLayoutInDisplayCutoutMode" tools:targetApi="o_mr1">shortEdges
+        </item>
     </style>
 
 
@@ -46,7 +48,9 @@
         <!-- 动画图标必需 Google建议不超过1000毫秒。-->
         <item name="windowSplashScreenAnimationDuration">1000</item>
         <!-- 设置直接跟随初始屏幕的活动主题。 -->
-        <item name="android:windowSplashScreenBrandingImage" tools:targetApi="s">@drawable/app_logo</item>
+        <item name="android:windowSplashScreenBrandingImage" tools:targetApi="s">
+            @drawable/app_logo
+        </item>
         <!-- 必须 -->
         <item name="postSplashScreenTheme">@style/ChatAppTheme</item>
     </style>
@@ -54,7 +58,6 @@
     <style name="Theme.MyApplication.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.MyApplication.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
 
 
 </resources>

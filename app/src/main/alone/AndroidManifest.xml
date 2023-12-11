@@ -32,6 +32,7 @@
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.VIBRATE" />
+
     <queries package="${applicationId}">
         <intent>
             <action android:name="android.media.action.IMAGE_CAPTURE" />
@@ -46,13 +47,16 @@
         android:allowBackup="false"
         android:icon="@drawable/app_logo"
         android:label="${app_name}"
-        tools:replace="android:allowBackup"
         android:networkSecurityConfig="${networkConfig}"
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@drawable/app_logo"
         android:supportsRtl="true"
         android:theme="@style/ChatAppTheme"
-        android:usesCleartextTraffic="true">
+        android:usesCleartextTraffic="true"
+        tools:replace="android:allowBackup">
+        <activity
+            android:name=".ui.home.my.operate.SetUpActivity"
+            android:exported="false"   />
         <activity
             android:name=".ui.home.my.operate.LevelMissionActivity"
             android:exported="false" />
@@ -91,6 +95,7 @@
             android:theme="@style/ChatLauncher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -99,10 +104,11 @@
             android:exported="true"
             android:launchMode="singleTask"
             android:screenOrientation="portrait">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
+
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
         <activity
             android:name=".web.WebActivity"
@@ -140,8 +146,10 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
@@ -153,9 +161,11 @@
         <meta-data
             android:name="firebase_crashlytics_collection_enabled"
             android:value="${is_release}" />
+
         <service
-            android:name="com.xcjh.app.websocket.MyWsClientService"
+            android:name=".websocket.MyWsClientService"
             android:enabled="true"
             android:exported="true" />
     </application>
+
 </manifest>

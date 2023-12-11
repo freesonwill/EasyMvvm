@@ -34,6 +34,7 @@ class MyFollowListActivity : BaseActivity<MyFollowListVm, ActivityMyFollowListBi
         ImmersionBar.with(this)
             .statusBarDarkFont(false)
             .titleBar(mDatabind.titleTop.root)
+            .navigationBarColor(R.color.c_ffffff)
             .init()
         val displayMetrics = DisplayMetrics()
         val windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
@@ -66,7 +67,7 @@ class MyFollowListActivity : BaseActivity<MyFollowListVm, ActivityMyFollowListBi
                         var  bean=_data as FollowAnchorBean
                         bindingItem.txtFollowName.text=bean.nickName
                         //计算text显示的宽度
-                        bindingItem.txtFollowName.maxWidth=screenWidth-context.dp2px(105)-context.dp2px(56)-context.dp2px(84)
+//                        bindingItem.txtFollowName.maxWidth=screenWidth-context.dp2px(105)-context.dp2px(56)-context.dp2px(84)
                         Glide.with(context)
                             .load(bean.head) // 替换为您要加载的图片 URL
                             .error(R.drawable.default_anchor_icon)
@@ -74,13 +75,13 @@ class MyFollowListActivity : BaseActivity<MyFollowListVm, ActivityMyFollowListBi
                             .into(bindingItem.ivLiveHead)
                         bindingItem.txtFollowFansNum.text=resources.getString(R.string.follow_txt_fans_num,"${bean.fans}")
                         //判断是否在直播
-                        if(bean.liveId!=null&&bean.liveId.isNotEmpty()){
-                             bindingItem.txtMyLiveType.text=resources.getString(R.string.main_txt_on_the_air)
-                            bindingItem.txtMyLiveType.background=ContextCompat.getDrawable(this@MyFollowListActivity,R.drawable.shape_r4_ff5151)
-                        }else{
-                            bindingItem.txtMyLiveType.text=resources.getString(R.string.live_txt_0ff_air)
-                            bindingItem.txtMyLiveType.background=ContextCompat.getDrawable(this@MyFollowListActivity,R.drawable.shape_r4_8a91a0)
-                        }
+//                        if(bean.liveId!=null&&bean.liveId.isNotEmpty()){
+//                             bindingItem.txtMyLiveType.text=resources.getString(R.string.main_txt_on_the_air)
+//                            bindingItem.txtMyLiveType.background=ContextCompat.getDrawable(this@MyFollowListActivity,R.drawable.shape_r4_ff5151)
+//                        }else{
+//                            bindingItem.txtMyLiveType.text=resources.getString(R.string.live_txt_0ff_air)
+//                            bindingItem.txtMyLiveType.background=ContextCompat.getDrawable(this@MyFollowListActivity,R.drawable.shape_r4_8a91a0)
+//                        }
                     }
 
                 }

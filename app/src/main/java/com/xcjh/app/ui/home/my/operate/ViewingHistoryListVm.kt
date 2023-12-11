@@ -16,7 +16,7 @@ class ViewingHistoryListVm  : BaseViewModel() {
 
 
     /**
-     * 获取首页热门比赛
+     * 观看历史记录
      */
     fun getHistoryLive(isRefresh: Boolean){
         if (isRefresh) {

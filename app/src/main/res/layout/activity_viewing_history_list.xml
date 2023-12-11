@@ -10,11 +10,11 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/base_color"
+        android:background="@color/c_f2f3f7"
         android:orientation="vertical" >
         <include
             android:id="@+id/titleTop"
-            layout="@layout/com_title_transparent" />
+            layout="@layout/com_title" />
         <com.scwang.smart.refresh.layout.SmartRefreshLayout
             android:id="@+id/smartCommon"
             android:layout_marginTop="18dp"

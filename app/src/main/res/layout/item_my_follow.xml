@@ -2,28 +2,32 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="65dp"
-    android:layout_marginTop="@dimen/dp_17" >
+    android:layout_height="80dp"
+    android:paddingLeft="@dimen/dp_15"
+    android:paddingRight="@dimen/dp_15"
+    android:background="@drawable/shape_r10"
+    android:layout_marginTop="@dimen/dp_12" >
     <RelativeLayout
         android:id="@+id/rlFollowShow"
+        android:layout_centerVertical="true"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:id="@+id/llFollowLeft"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+
             android:layout_marginRight="105dp"
             android:orientation="horizontal" >
 
             <com.xcjh.app.utils.nice.NiceImageView
                 android:id="@+id/ivLiveHead"
-                android:layout_width="@dimen/dp_48"
-                android:layout_height="@dimen/dp_48"
+                android:layout_width="@dimen/dp_50"
+                android:layout_height="@dimen/dp_50"
                 android:scaleType="fitXY"
                 app:is_circle="true"
-                android:layout_marginRight="@dimen/dp_12"
+                android:layout_marginRight="@dimen/dp_10"
                 app:srcCompat="@drawable/load_round" />
 
             <LinearLayout
@@ -38,10 +42,9 @@
                         android:id="@+id/txtFollowName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/c_ffffff"
-                        android:textSize="@dimen/sp_14"
+                        android:textColor="@color/c_37373d"
+                        android:textSize="15sp"
                         android:singleLine="true"
-                        android:textStyle="bold"
                         android:text="桑稚isweet桑稚桑"
                         android:ellipsize="end"/>
                     <androidx.appcompat.widget.AppCompatTextView
@@ -53,7 +56,7 @@
                         android:singleLine="true"
                         android:ellipsize="end"
                         android:layout_marginTop="@dimen/dp_8"
-                        android:textColor="@color/c_8a91a0"/>
+                        android:textColor="@color/c_94999f"/>
 
                 </LinearLayout>
                 <androidx.appcompat.widget.AppCompatTextView
@@ -62,6 +65,7 @@
                     android:layout_height="18dp"
                     android:textSize="@dimen/sp_10"
                     android:gravity="center"
+                    android:visibility="gone"
                     android:layout_marginLeft="2dp"
                     android:background="@drawable/shape_r4_ff5151"
                     android:text="@string/main_txt_on_the_air"
@@ -72,21 +76,16 @@
         </LinearLayout>
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/txtFollowIsFollow"
-            android:layout_width="68dp"
-            android:layout_height="29dp"
-            android:textColor="@color/c_8a91a0"
+            android:layout_width="60dp"
+            android:layout_height="27dp"
+            android:textColor="@color/c_94999f"
             android:textSize="@dimen/sp_12"
             android:gravity="center"
-            android:layout_marginRight="@dimen/dp_16"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:background="@drawable/shape_r4_338a91a0"
+            android:background="@drawable/shape_r20_f2f3f7"
             android:text="@string/follow_txt_followed"/>
 
     </RelativeLayout>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
-        android:layout_alignParentBottom="true"
-        android:background="@color/c_22qd3d"/>
+
 </RelativeLayout>

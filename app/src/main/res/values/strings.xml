@@ -262,10 +262,11 @@
     <string name="personal_txt_title">个人资料</string>
     <string name="personal_txt_nickname">昵称</string>
     <string name="http_txt_err_meg">网络连接错误</string>
-    <string name="contact_txt_type">类型</string>
-    <string name="contact_txt_content">内容</string>
+    <string name="contact_txt_type">问题类型</string>
+    <string name="contact_txt_content">反馈内容</string>
     <string name="contact_hint_input">请输入内容</string>
-    <string name="contact_txt_add_image">添加图片 （最多三张）</string>
+    <string name="contact_txt_add_image">添加图片 </string>
+    <string name="contact_txt_add_most">(最多三张) </string>
     <string name="contact_txt_submit_succeed">提交反馈成功！</string>
     <string name="txt_msg_pic">[ 图片 ]</string>
     <string name="update_title">更新提示</string>
@@ -341,5 +342,12 @@
     <string name="head_update">上次加载 M-d HH:mm</string>
     <string name="no_chat_t">您已被禁言</string>
     <string name="close_win_p">封</string>
+    <string name="home_txt_overtime">加时</string>
+    <string name="my_txt_common">常用功能</string>
+    <string name="set_txt_push">推送设置</string>
+    <string name="set_txt_vibrate">震动设置</string>
+    <string name="data_txt_err_update">每个月只能修改一次昵称，长度不能超过8个字符</string>
+    <string name="data_txt_save">保存</string>
+    <string name="add_image_upload">上传图片</string>
 
 </resources>

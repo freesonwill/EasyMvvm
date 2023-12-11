@@ -39,7 +39,7 @@ class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
     private var urlID:String=""
     override fun initView(savedInstanceState: Bundle?) {
         ImmersionBar.with(this)
-            .statusBarDarkFont(false)
+            .statusBarDarkFont(true)
             .titleBar(mDatabind.titleTop.root)
             .navigationBarColor(R.color.c_ffffff)
             .init()
@@ -194,7 +194,12 @@ class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
             title="<p style=\" color: #37373D; font-size: 18px; font-weight: bold;\">${it.title}</p>"
             if(it.updateTime .isNotEmpty()){
                 dateTimeString= sdf.format(Date(it.updateTime.toLong()))
-                title += "<h4 style=\" color: #94999F; font-size: 14px;\">${dateTimeString}发布</h4>"
+                title +=   "<div style=\" display: flex; align-items: center;\"> " +
+                        "<div style=\"display: flex; align-items: center;\">" +
+                        "<img src=\"file:///android_asset/football.png\"  alt=\"Example\" width=\"20px\" height=\"2px\"  >" +
+                        " <h4 style=\"font-size: 12px; color: #575762; font-weight: normal;\">体育直播</h4>" +
+                        "</div>"+
+                        "<h4 style=\" color: #94999F; font-size: 11px; margin-left: auto; font-weight: normal;\">${dateTimeString}发布</h5></div>"
             }
             title += it.content
             title="<body style=\"background-color: white; margin: 0; padding: 24px;\">${title}</body>"

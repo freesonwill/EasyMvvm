@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -81,11 +82,15 @@ public class GridImageAdapter extends RecyclerView.Adapter<GridImageAdapter.View
         ImageView mIvDel;
         TextView tvDuration;
 
+        LinearLayout llAddShow;
+
         public ViewHolder(View view) {
             super(view);
             mImg = view.findViewById(R.id.fiv);
             mIvDel = view.findViewById(R.id.iv_del);
             tvDuration = view.findViewById(R.id.tv_duration);
+            llAddShow = view.findViewById(R.id.llAddShow);
+
         }
     }
 
@@ -128,7 +133,9 @@ public class GridImageAdapter extends RecyclerView.Adapter<GridImageAdapter.View
     public void onBindViewHolder(final ViewHolder viewHolder, final int position) {
         //少于MaxSize张，显示继续添加的图标
         if (getItemViewType(position) == TYPE_CAMERA) {
-            viewHolder.mImg.setImageResource(R.drawable.ic_add_image);
+//            viewHolder.mImg.setImageResource(R.drawable.ic_add_image);
+            viewHolder.mImg.setImageResource(R.drawable.shape_r10_f2f3f7);
+            viewHolder.llAddShow.setVisibility(View.VISIBLE);
             viewHolder.mImg.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -178,6 +185,7 @@ public class GridImageAdapter extends RecyclerView.Adapter<GridImageAdapter.View
                         .placeholder(R.color.app_color_f6)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .into(viewHolder.mImg);
+                viewHolder.llAddShow.setVisibility(View.GONE);
             }
             //itemView 的点击事件
             if (mItemClickListener != null) {

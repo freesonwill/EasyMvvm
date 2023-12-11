@@ -3,7 +3,9 @@ package com.xcjh.app.ui.home.my.personal
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.activity.viewModels
+import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.gyf.immersionbar.ImmersionBar
@@ -24,6 +26,8 @@ import com.xcjh.app.utils.GlideEngine
 import com.xcjh.app.utils.picture.ImageFileCompressEngine
 import com.xcjh.app.utils.picture.ImageFileCropEngine
 import com.xcjh.app.vm.MainVm
+import com.xcjh.base_lib.utils.bindadapter.CustomBindAdapter.afterTextChanged
+import com.xcjh.base_lib.utils.dp2px
 import com.xcjh.base_lib.utils.view.clickNoRepeat
 import java.io.File
 
@@ -33,12 +37,19 @@ import java.io.File
 class PersonalDataActivity : BaseActivity<PersonalDataVm, ActivityPersonalDataBinding>() {
     var user: UserInfo?=null
     private val mainVm: MainVm by viewModels()
+    //是否可以修改
+    private var isSave:Boolean=false
     override fun initView(savedInstanceState: Bundle?) {
         ImmersionBar.with(this)
-            .statusBarDarkFont(false)
-            .titleBar(mDatabind.titleTop.root)
+            .statusBarDarkFont(true)
+            .titleBar(mDatabind.rltTop)
+            .navigationBarColor(R.color.c_ffffff)
             .init()
-        mDatabind.titleTop.tvTitle.text=resources.getString(R.string.personal_txt_title)
+        mDatabind.tvTitle.text=resources.getString(R.string.personal_txt_title)
+        mDatabind.ivBack.clickNoRepeat {
+            finish()
+        }
+
           user= CacheUtil.getUser()
         if(user!=null){
             Glide.with(this)
@@ -47,15 +58,24 @@ class PersonalDataActivity : BaseActivity<PersonalDataVm, ActivityPersonalDataBi
                 .placeholder(R.drawable.icon_avatar)
                 .into(mDatabind.ivPersonalHead)
             if(user!!.name!=null&&!user!!.name.equals("")){
-                mDatabind.txtPersonalNickname.text=user!!.name
+                mDatabind.txtPersonalNickname.setText(user!!.name)
+            }
+
+        }
+
+        mDatabind.tvOption.clickNoRepeat {
+
+            if(isSave){
+                user!!.name=mDatabind.txtPersonalNickname.text.toString().trim()
+                mViewModel.setUserInfo( mDatabind.txtPersonalNickname.text.toString().trim(),user!!.head)
             }
 
         }
 
 
         //选择头像
-        mDatabind.llPersonalClickHead.clickNoRepeat{
-            com.luck.picture.lib.R.anim.ps_anim_enter
+        mDatabind.ivPersonalHead.clickNoRepeat{
+
             PictureSelector.create(this)
                 .openGallery(SelectMimeType.ofImage())
                 .setImageEngine(GlideEngine.createGlideEngine())
@@ -99,8 +119,24 @@ class PersonalDataActivity : BaseActivity<PersonalDataVm, ActivityPersonalDataBi
                 })
         }
         //编辑名称
-        mDatabind.rlPersonalClickName.clickNoRepeat {
-            startNewActivity<EditProfileActivity> { }
+//        mDatabind.rlPersonalClickName.clickNoRepeat {
+//            startNewActivity<EditProfileActivity> { }
+//
+//        }
+
+        //监听输入的文字
+        mDatabind.txtPersonalNickname.afterTextChanged{
+            dataIsSave()
+            if(it.isNotEmpty()){
+
+                if(it.length>8){
+                    mDatabind.llDataShowErr.visibility=View.VISIBLE
+                }else{
+                    mDatabind.llDataShowErr.visibility=View.GONE
+                }
+            }else{
+                mDatabind.llDataShowErr.visibility=View.VISIBLE
+            }
 
         }
 
@@ -115,7 +151,7 @@ class PersonalDataActivity : BaseActivity<PersonalDataVm, ActivityPersonalDataBi
                         .placeholder(R.drawable.icon_avatar)
                         .into(mDatabind.ivPersonalHead)
 
-                    mDatabind.txtPersonalNickname.text=user!!.name
+                    mDatabind.txtPersonalNickname.setText(user!!.name)
                 }
 
             }
@@ -125,10 +161,35 @@ class PersonalDataActivity : BaseActivity<PersonalDataVm, ActivityPersonalDataBi
 
     override fun createObserver() {
         super.createObserver()
+
         mViewModel.update.observe(this){
+
+            dataIsSave()
+            user!!.head=it
+            Glide.with(this)
+                .load(it) // 替换为您要加载的图片 URL
+                .error(R.drawable.icon_avatar)
+                .placeholder(R.drawable.icon_avatar)
+                .into(mDatabind.ivPersonalHead)
+//            mainVm.getUserInfo()
+        }
+        mViewModel.updateData.observe(this){
             mainVm.getUserInfo()
         }
+
+
     }
 
-
+    fun dataIsSave(){
+        if(mDatabind.txtPersonalNickname.text.toString().trim().isNotEmpty()&&
+            mDatabind.txtPersonalNickname.text.toString().trim().length<=8){
+            isSave=true
+            mDatabind.tvOption.setTextColor(ContextCompat.getColor(this,R.color.c_ffffff))
+            mDatabind.tvOption.background=ContextCompat.getDrawable(this,R.drawable.shape_r28_34a853)
+        }else{
+            isSave=false
+            mDatabind.tvOption.setTextColor(ContextCompat.getColor(this,R.color.c_94999f))
+            mDatabind.tvOption.background=ContextCompat.getDrawable(this,R.drawable.shape_r28_f2f3f7)
+        }
+    }
 }

@@ -15,7 +15,7 @@ import java.io.File
 
 class PersonalDataVm : BaseViewModel() {
     var update= UnPeekLiveData<String>()
-
+    var updateData=UnPeekLiveData<String>()
 
 
 
@@ -29,7 +29,8 @@ class PersonalDataVm : BaseViewModel() {
             { apiService.upLoadPic(part) },
             {
                 if(it.isNotEmpty()){
-                    setUserInfo(name = null, head = it)
+                    update.value = it
+//                    setUserInfo(name = null, head = it)
                 }else{
                     myToast(appContext.getString(R.string.http_txt_err_meg))
                 }
@@ -51,7 +52,7 @@ class PersonalDataVm : BaseViewModel() {
         request(
             { apiService.updateInfo(InfoReq(name = name, head = head)) },
             {
-                update.value = head!!
+                updateData.value = head!!
 
             }, {
                 myToast(it.errorMsg)

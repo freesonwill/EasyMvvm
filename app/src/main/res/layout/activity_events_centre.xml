@@ -10,16 +10,15 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/base_color"
+        android:background="@color/c_f2f3f7"
         android:orientation="vertical" >
         <include
             android:id="@+id/titleTop"
-            layout="@layout/com_title_transparent" />
+            layout="@layout/com_title" />
         <com.scwang.smart.refresh.layout.SmartRefreshLayout
             android:id="@+id/smartCommon"
             android:layout_marginTop="18dp"
-            android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_16"
+
             android:layout_width="match_parent"
             android:layout_height="match_parent" >
             <com.scwang.smart.refresh.header.MaterialHeader
@@ -34,6 +33,9 @@
                     android:id="@+id/rcvRecommend"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:paddingLeft="12dp"
+                    android:paddingRight="12dp"
+                    android:background="@color/c_ffffff"
                     tools:listitem="@layout/item_events_centre"
                     android:overScrollMode="never" />
             </com.drake.statelayout.StateLayout>
