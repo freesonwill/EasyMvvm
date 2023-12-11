@@ -128,7 +128,7 @@
             android:id="@+id/txtSetExit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/c_ffffff"
+            android:textColor="@color/c_d63823"
             android:textSize="15sp"
             android:text="@string/my_txt_out"
             android:layout_alignParentBottom="true"
@@ -137,6 +137,6 @@
             android:padding="@dimen/dp_10"
             android:layout_marginRight="@dimen/dp_12"
             android:layout_marginLeft="@dimen/dp_12"
-            android:background="@drawable/shape_24_37373d"/>
+            android:background="@drawable/shape_r24"/>
     </RelativeLayout>
 </layout>

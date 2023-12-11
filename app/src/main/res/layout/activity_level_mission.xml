@@ -10,19 +10,40 @@
    <RelativeLayout
        android:layout_width="match_parent"
        android:layout_height="match_parent"
-       android:background="@color/c_07061d">
+       android:background="@color/c_181819">
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="match_parent"
-            android:layout_height="249dp"
+            android:layout_height="336dp"
             android:scaleType="fitXY"
-            app:srcCompat="@drawable/level_icon_bg"/>
-       <LinearLayout
+            app:srcCompat="@drawable/leve_be_yi"/>
+       <RelativeLayout
+           android:id="@+id/titleTop"
            android:layout_width="match_parent"
-           android:layout_height="match_parent"
+           android:layout_height="@dimen/dp_44">
+           <androidx.appcompat.widget.AppCompatImageView
+               android:layout_width="wrap_content"
+               android:layout_height="match_parent"
+               android:paddingRight="12dp"
+               android:paddingLeft="12dp"
+               app:srcCompat="@drawable/leve_icon_left"/>
+           <androidx.appcompat.widget.AppCompatTextView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:textColor="@color/c_ffffff"
+               android:textSize="@dimen/sp_16"
+               android:layout_centerInParent="true"
+               android:text="@string/my_txt_leve"/>
+
+       </RelativeLayout>
+       <LinearLayout
+
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:visibility="gone"
            android:orientation="vertical" >
-           <include
-               android:id="@+id/titleTop"
-               layout="@layout/com_title_transparent" />
+
+
+
            <LinearLayout
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
@@ -35,7 +56,7 @@
                    android:layout_height="@dimen/dp_64"
                    app:is_circle="true"
                    android:scaleType="fitXY"
-                   app:srcCompat="@drawable/icon_avatar"/>
+                   app:srcCompat="@drawable/icon_my_head"/>
                <LinearLayout
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
@@ -75,6 +96,8 @@
 
                </LinearLayout>
            </LinearLayout>
+
+
            <LinearLayout
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
@@ -214,5 +237,22 @@
 
 
        </LinearLayout>
+
+       <RelativeLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:layout_below="@+id/titleTop"
+           android:layout_marginRight="12dp"
+           android:layout_marginLeft="12dp"
+           android:layout_marginTop="@dimen/dp_16">
+           <RelativeLayout
+               android:layout_width="match_parent"
+               android:layout_height="126dp"
+               android:background="@drawable/gradual_level_yi">
+
+
+           </RelativeLayout>
+
+       </RelativeLayout>
    </RelativeLayout>
 </layout>

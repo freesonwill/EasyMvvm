@@ -111,14 +111,7 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
 
         }
 
-        //编辑资料
-        mDatabind.rlMyClickEdit.clickNoRepeat {
-            if(CacheUtil.isLogin()){
-                startNewActivity<PersonalDataActivity>()
-            }else{
-                startNewActivity<LoginActivity>()
-            }
-        }
+
 
         //联系我们
         mDatabind.rlMyClickContact.clickNoRepeat {
@@ -141,11 +134,7 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
             }
         }
 
-        //退出登录
-        mDatabind.rlMyClickLogOut.clickNoRepeat {
 
-            isLoginOut()
-        }
         //更新用户信息
         appViewModel.userInfo.observe(this){
             setData()
@@ -155,21 +144,12 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
 
         mViewModel.getIndividualCenter()
 
-        if(CacheUtil.isLogin()){
-            mDatabind.rlMyClickLogOut.visibility=View.VISIBLE
-        }else{
-            mDatabind.rlMyClickLogOut.visibility=View.GONE
-        }
+
 
         //登录或者登出
         appViewModel.updateLoginEvent.observe(this){
-             if(it){
-                 mDatabind.rlMyClickLogOut.visibility=View.VISIBLE
-
-            }else{
-
+             if(!it){
                  notLogin()
-
             }
         }
 
@@ -188,8 +168,8 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
                 mDatabind.iiIsShowLeve.visibility= View.VISIBLE
                 Glide.with(requireContext())
                     .load(user!!.head) // 替换为您要加载的图片 URL
-                    .error(R.drawable.icon_avatar)
-                    .placeholder(R.drawable.icon_avatar)
+                    .error(R.drawable.icon_my_head)
+                    .placeholder(R.drawable.icon_my_head)
                     .into(mDatabind.ivMyHead)
                 mDatabind.txtMyName.text=user!!.name
                 mDatabind.txtMyNum.text="${user!!.lvName}"
@@ -252,10 +232,10 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
      * 没有登录
      */
     fun notLogin(){
-        mDatabind.ivMyHead.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.icon_avatar))
+        mDatabind.ivMyHead.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.icon_my_head))
         mDatabind.txtMyName.text=resources.getString(R.string.my_txt_click_login)
         mDatabind.iiIsShowLeve.visibility= View.GONE
-        mDatabind.rlMyClickLogOut.visibility=View.GONE
+
      }
 
     override fun createObserver() {

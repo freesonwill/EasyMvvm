@@ -29,7 +29,7 @@ class MyUseVm : BaseViewModel() {
                 //请求失败
 //                myToast(appContext.getString(R.string.http_txt_err_meg))
 
-            },isShowDialog=true
+            }
         )
     }
 

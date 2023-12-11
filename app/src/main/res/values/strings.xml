@@ -274,7 +274,7 @@
     <string name="update_not_updated">暂不更新</string>
     <string name="update_update_now">立即更新</string>
     <string name="update_content_txt">1.VersionCheckLib V2版震撼来袭\n2.链式编程，调用简单\n3.强大的自定义功能，一行代码轻松搞定\n4.欢迎Star和Issue\n5.github:</string>
-    <string name="my_txt_click_login">点击登录</string>
+    <string name="my_txt_click_login">登录/注册</string>
     <string name="my_txt_leve">我的等级</string>
     <string name="my_txt_view">查看</string>
     <string name="my_txt_subscribe">我的订阅</string>
@@ -347,8 +347,17 @@
     <string name="my_txt_common">常用功能</string>
     <string name="set_txt_push">推送设置</string>
     <string name="set_txt_vibrate">震动设置</string>
-    <string name="data_txt_err_update">每个月只能修改一次昵称，长度不能超过8个字符</string>
+    <string name="data_txt_err_update">长度不能超过8个字符</string>
     <string name="data_txt_save">保存</string>
     <string name="add_image_upload">上传图片</string>
-
+    <string name="vibrate_txt_title">震动设置</string>
+    <string name="vibrate_txt_debut">主播开播震动</string>
+    <string name="vibrate_txt_navbar">导航栏震动</string>
+    <string name="push_txt_title">推送设置</string>
+    <string name="push_txt_set">消息通知设置</string>
+    <string name="push_txt_suggest">建议开启，及时获得最新动态</string>
+    <string name="push_txt_open">去开启</string>
+    <string name="push_txt_already">已开启</string>
+    <string name="push_txt_concern">关注比赛通知</string>
+    <string name="push_txt_debut">主播开播通知</string>
 </resources>

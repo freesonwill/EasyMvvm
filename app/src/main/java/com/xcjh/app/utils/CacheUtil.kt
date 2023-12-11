@@ -135,4 +135,38 @@ object CacheUtil {
         return kv.encode("No_more_prompts", prompts)
     }
 
+
+    /**
+     *是否打开主播震动  默认是打开
+     */
+    fun isAnchorVibrate(): Boolean {
+        val kv = MMKV.mmkvWithID("app")
+        return kv.decodeBool("anchorVibrate", true)
+    }
+
+
+    /**
+     * 设置是否主播开播震动
+     */
+    fun setAnchorVibrate(anchor: Boolean): Boolean {
+        val kv = MMKV.mmkvWithID("app")
+        return kv.encode("anchorVibrate", anchor)
+    }
+
+
+    /**
+     *是否打开导航栏震动  默认是打开
+     */
+    fun isNavigationVibrate(): Boolean {
+        val kv = MMKV.mmkvWithID("app")
+        return kv.decodeBool("navigationVibrate", true)
+    }
+
+    /**
+     * 设置是否导航栏震动
+     */
+    fun setNavigationVibrate(navigation: Boolean): Boolean {
+        val kv = MMKV.mmkvWithID("app")
+        return kv.encode("navigationVibrate", navigation)
+    }
 }

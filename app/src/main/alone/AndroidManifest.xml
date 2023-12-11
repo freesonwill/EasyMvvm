@@ -33,6 +33,11 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
+
+
+    <!-- 适配Android 13，应用弹出通知必须权限-->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+
     <queries package="${applicationId}">
         <intent>
             <action android:name="android.media.action.IMAGE_CAPTURE" />
@@ -55,8 +60,14 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:allowBackup">
         <activity
+            android:name=".ui.home.my.operate.PushSetActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.home.my.operate.VibrateSetActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.home.my.operate.SetUpActivity"
-            android:exported="false"   />
+            android:exported="false" />
         <activity
             android:name=".ui.home.my.operate.LevelMissionActivity"
             android:exported="false" />

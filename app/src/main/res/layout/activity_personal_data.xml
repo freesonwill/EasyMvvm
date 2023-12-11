@@ -60,6 +60,7 @@
             <TextView
                 android:id="@+id/tvOption"
                 tools:text="@string/data_txt_save"
+                android:text="@string/data_txt_save"
                 android:layout_alignParentEnd="true"
                 android:gravity="center"
                 android:background="@drawable/shape_r28_f2f3f7"
@@ -68,7 +69,9 @@
                 android:paddingBottom="@dimen/dp_6"
                 android:paddingTop="@dimen/dp_6"
                 android:textSize="@dimen/sp_13"
+                android:layout_alignParentBottom="true"
                 android:layout_marginRight="12dp"
+                android:layout_marginBottom="@dimen/dp_5"
                 android:textColor="@color/c_94999f"
                 android:layout_centerVertical="true"
                 android:layout_width="wrap_content"

@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:textSize="15sp"
             android:padding="@dimen/dp_15"
-            android:textColor="@color/c_37373d"
+            android:textColor="@color/c_d63823"
             android:layout_gravity="center"
             android:text="@string/my_txt_out"/>
         <View

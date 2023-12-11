@@ -28,7 +28,7 @@ class LevelMissionActivity  : BaseActivity<LevelMissionVm, ActivityLevelMissionB
     override fun initView(savedInstanceState: Bundle?) {
         ImmersionBar.with(this)
             .statusBarDarkFont(false)//黑色
-            .titleBar(mDatabind.titleTop.rltTop)
+            .titleBar(mDatabind.titleTop)
             .init()
 
         //更新用户信息
@@ -40,7 +40,7 @@ class LevelMissionActivity  : BaseActivity<LevelMissionVm, ActivityLevelMissionB
 
         mainVm.getUserInfo()
 
-        mDatabind.titleTop.tvTitle.text=resources.getString(R.string.level_txt_title)
+//        mDatabind.titleTop.tvTitle.text=resources.getString(R.string.level_txt_title)
         //进入首页
         mDatabind.txtLevelClickInteraction.clickNoRepeat {
             appViewModel.mainViewPagerEvent.value=-1

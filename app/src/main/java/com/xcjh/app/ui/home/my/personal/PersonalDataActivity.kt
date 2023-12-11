@@ -28,6 +28,7 @@ import com.xcjh.app.utils.picture.ImageFileCropEngine
 import com.xcjh.app.vm.MainVm
 import com.xcjh.base_lib.utils.bindadapter.CustomBindAdapter.afterTextChanged
 import com.xcjh.base_lib.utils.dp2px
+import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.view.clickNoRepeat
 import java.io.File
 
@@ -51,21 +52,25 @@ class PersonalDataActivity : BaseActivity<PersonalDataVm, ActivityPersonalDataBi
         }
 
           user= CacheUtil.getUser()
+
+
         if(user!=null){
             Glide.with(this)
                 .load(user!!.head) // 替换为您要加载的图片 URL
-                .error(R.drawable.icon_avatar)
-                .placeholder(R.drawable.icon_avatar)
+                .error(R.drawable.icon_my_head)
+                .placeholder(R.drawable.icon_my_head)
                 .into(mDatabind.ivPersonalHead)
             if(user!!.name!=null&&!user!!.name.equals("")){
                 mDatabind.txtPersonalNickname.setText(user!!.name)
             }
 
         }
+//        dataIsSave()
 
         mDatabind.tvOption.clickNoRepeat {
 
             if(isSave){
+                myToast("成功")
                 user!!.name=mDatabind.txtPersonalNickname.text.toString().trim()
                 mViewModel.setUserInfo( mDatabind.txtPersonalNickname.text.toString().trim(),user!!.head)
             }
@@ -98,7 +103,7 @@ class PersonalDataActivity : BaseActivity<PersonalDataVm, ActivityPersonalDataBi
                             }
                             Glide.with(this@PersonalDataActivity)
                                 .load(path)
-                                .placeholder(R.drawable.icon_avatar)
+                                .placeholder(R.drawable.icon_my_head)
                                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                                 .into(mDatabind.ivPersonalHead)
 
@@ -127,11 +132,12 @@ class PersonalDataActivity : BaseActivity<PersonalDataVm, ActivityPersonalDataBi
         //监听输入的文字
         mDatabind.txtPersonalNickname.afterTextChanged{
             dataIsSave()
+            user!!.name=it
             if(it.isNotEmpty()){
-
                 if(it.length>8){
                     mDatabind.llDataShowErr.visibility=View.VISIBLE
                 }else{
+
                     mDatabind.llDataShowErr.visibility=View.GONE
                 }
             }else{
@@ -147,8 +153,8 @@ class PersonalDataActivity : BaseActivity<PersonalDataVm, ActivityPersonalDataBi
                 if(user!!.name!=null&&!user!!.name.equals("")){
                     Glide.with(this)
                         .load(user!!.head) // 替换为您要加载的图片 URL
-                        .error(R.drawable.icon_avatar)
-                        .placeholder(R.drawable.icon_avatar)
+                        .error(R.drawable.icon_my_head)
+                        .placeholder(R.drawable.icon_my_head)
                         .into(mDatabind.ivPersonalHead)
 
                     mDatabind.txtPersonalNickname.setText(user!!.name)
@@ -163,18 +169,18 @@ class PersonalDataActivity : BaseActivity<PersonalDataVm, ActivityPersonalDataBi
         super.createObserver()
 
         mViewModel.update.observe(this){
-
             dataIsSave()
             user!!.head=it
             Glide.with(this)
                 .load(it) // 替换为您要加载的图片 URL
-                .error(R.drawable.icon_avatar)
-                .placeholder(R.drawable.icon_avatar)
+                .error(R.drawable.icon_my_head)
+                .placeholder(R.drawable.icon_my_head)
                 .into(mDatabind.ivPersonalHead)
 //            mainVm.getUserInfo()
         }
         mViewModel.updateData.observe(this){
             mainVm.getUserInfo()
+            finish()
         }
 
 

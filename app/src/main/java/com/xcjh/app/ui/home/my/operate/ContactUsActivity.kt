@@ -328,11 +328,11 @@ class ContactUsActivity : BaseActivity<ContactUsVm, ActivityContactUsBinding>() 
 
     fun isSelect(){
         if(selectType!=null&& mDatabind.editContactInput.text.toString().trim().isNotEmpty()){
-            mDatabind.txtContactSub.background=ContextCompat.getDrawable(this@ContactUsActivity,R.drawable.shape_r8_6d48fe)
+            mDatabind.txtContactSub.background=ContextCompat.getDrawable(this@ContactUsActivity,R.drawable.shape_r24_34a853)
             mDatabind.txtContactSub.setTextColor(ContextCompat.getColor(this,R.color.c_ffffff))
         }else{
-            mDatabind.txtContactSub.background=ContextCompat.getDrawable(this@ContactUsActivity,R.drawable.shape_r8_2b2b2b)
-            mDatabind.txtContactSub.setTextColor(ContextCompat.getColor(this,R.color.c_4dfffff))
+            mDatabind.txtContactSub.background=ContextCompat.getDrawable(this@ContactUsActivity,R.drawable.shape_24_f2f3f7)
+            mDatabind.txtContactSub.setTextColor(ContextCompat.getColor(this,R.color.c_94999f))
         }
     }
 

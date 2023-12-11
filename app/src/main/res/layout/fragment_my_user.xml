@@ -327,46 +327,8 @@
                     android:layout_centerVertical="true"
                     app:srcCompat="@drawable/wd_gengduo_icon"/>
             </RelativeLayout>
-            <RelativeLayout
-                android:id="@+id/rlMyClickEdit"
-                android:layout_width="match_parent"
-                android:layout_height="44dp">
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/c_ffffff"
-                    android:textSize="@dimen/sp_14"
-                    android:textStyle="bold"
-                    android:layout_centerVertical="true"
-                    android:text="@string/my_txt_edit_data"/>
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:layout_width="@dimen/dp_16"
-                    android:layout_height="@dimen/dp_16"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    app:srcCompat="@drawable/ic_next"/>
-            </RelativeLayout>
-            <RelativeLayout
-                android:id="@+id/rlMyClickLogOut"
-                android:layout_width="match_parent"
-                android:layout_marginTop="@dimen/dp_10"
-                android:visibility="gone"
-                android:layout_height="44dp">
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/c_ffffff"
-                    android:textSize="@dimen/sp_14"
-                    android:textStyle="bold"
-                    android:layout_centerVertical="true"
-                    android:text="@string/my_txt_out"/>
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:layout_width="@dimen/dp_16"
-                    android:layout_height="@dimen/dp_16"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    app:srcCompat="@drawable/ic_next"/>
-            </RelativeLayout>
+
+
 
         </LinearLayout>
 

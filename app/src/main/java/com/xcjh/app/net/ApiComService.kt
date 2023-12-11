@@ -351,6 +351,18 @@ interface ApiComService {
     @POST("app/home/living/info")
     suspend fun getLiveInfo(@Query("id")  id:String): ApiResponse<BeingLiveBean>
 
+    /**
+     * 获取当前APP用户推送设置信息
+     */
+    @GET("app/notice/config/getInfo")
+    suspend fun getInfo(): ApiResponse<PushBean>
 
+
+    /**
+     * 推送通知设置切换[name参数 liveOpen:切换主播开播通知 followMatch:切换关注比赛通知; status参数 1开 0关]
+     *
+     */
+    @PUT("app/notice/config/switch/{name}/{status}")
+    suspend fun setSwitch(@Path("name") userId: String,@Path("status") status: Int):  ApiResponse<*>
 
 }

@@ -656,3 +656,21 @@ data class BasketballScore(
     val homeScore: String = "-",//
     val awayScore: String = "-"//
 ): Serializable
+
+/**
+ * 推送状态
+ */
+@Keep
+data class PushBean(
+    val ynFollowMatch: Int = 1,//	是否开启关注比赛通知 1是 0否
+    val ynLiveOpen: Int = 1,//是否开启主播开播通知 1是 0否
+): Serializable
+
+/**
+ * 推送错误时的返回值
+ */
+@Keep
+data class PushErrBean(
+    var name: String = "",// 推送类型 liveOpen:切换主播开播通知 followMatch:切换关注比赛通知
+    var state: Boolean =false, //
+): Serializable

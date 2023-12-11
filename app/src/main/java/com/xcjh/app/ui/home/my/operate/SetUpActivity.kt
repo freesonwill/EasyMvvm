@@ -33,7 +33,13 @@ class SetUpActivity  : BaseActivity<SetUpVm, ActivitySetUpBinding>() {
             startNewActivity<PersonalDataActivity>()
         }
 
+        mDatabind.rlSetPush.clickNoRepeat {
+            startNewActivity<PushSetActivity>()
+        }
 
+        mDatabind.rlSetVibrate.clickNoRepeat {
+            startNewActivity<VibrateSetActivity>()
+        }
         mDatabind.txtSetExit.clickNoRepeat {
             BottomMenu.show(object :OnBindView<BottomDialog>(R.layout.dialog_login_out){
                 override fun onBind(dialog: BottomDialog?, view: View?) {

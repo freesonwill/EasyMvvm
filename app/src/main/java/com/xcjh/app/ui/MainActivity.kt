@@ -36,11 +36,6 @@ import com.xcjh.app.utils.CacheUtil
 import com.xcjh.app.utils.judgeLogin
 import com.xcjh.app.vm.MainVm
 import com.xcjh.app.websocket.MyWsManager
-import com.xcjh.app.websocket.bean.ReceiveChangeMsg
-import com.xcjh.app.websocket.bean.ReceiveChatMsg
-import com.xcjh.app.websocket.bean.ReceiveWsBean
-import com.xcjh.app.websocket.bean.SendCommonWsBean
-import com.xcjh.app.websocket.listener.C2CListener
 import com.xcjh.app.websocket.listener.NoReadMsgPushListener
 import com.xcjh.base_lib.utils.initActivity
 import com.xcjh.base_lib.utils.myToast
@@ -93,14 +88,21 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         //点击首页
         mDatabind.llHomeSelectMain.setOnClickListener {
             if(currentPage!=0){
-                vibrate(this)
+                if(CacheUtil.isNavigationVibrate()){
+                    vibrate(this)
+
+                }
+
             }
             setHome(0)
         }
         //点击赛程
         mDatabind.llHomeSelectSchedule.setOnClickListener {
             if(currentPage!=1){
-                vibrate(this)
+                if(CacheUtil.isNavigationVibrate()){
+                    vibrate(this)
+
+                }
             }
             setHome(1)
         }
@@ -108,7 +110,10 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         mDatabind.llHomeSelectMsg.setOnClickListener {
             judgeLogin {
                 if(currentPage!=2){
-                    vibrate(this)
+                    if(CacheUtil.isNavigationVibrate()){
+                        vibrate(this)
+
+                    }
                 }
                 setHome(2)
             }
@@ -116,7 +121,10 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         //点击我的
         mDatabind.llHomeSelectMine.setOnClickListener {
             if(currentPage!=3){
-                vibrate(this)
+                if(CacheUtil.isNavigationVibrate()){
+                    vibrate(this)
+
+                }
             }
             setHome(3)
         }
