@@ -350,5 +350,7 @@
     <string name="data_txt_err_update">每个月只能修改一次昵称，长度不能超过8个字符</string>
     <string name="data_txt_save">保存</string>
     <string name="add_image_upload">上传图片</string>
+    <string name="expand">展开</string>
+    <string name="pack_up">收起</string>
 
 </resources>

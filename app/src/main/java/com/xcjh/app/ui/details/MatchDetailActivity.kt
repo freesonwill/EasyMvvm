@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.text.method.LinkMovementMethod
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
@@ -34,6 +35,7 @@ import com.xcjh.app.websocket.listener.OtherPushListener
 import com.xcjh.base_lib.App
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.*
+import com.xcjh.base_lib.utils.view.textString
 import com.xcjh.base_lib.utils.view.visibleOrGone
 import java.math.BigDecimal
 import java.util.*
@@ -456,7 +458,54 @@ class MatchDetailActivity :
 
             })
         }
+        //主播详情接口返回监听处理
+        mViewModel.anchor.observe(this) {
+            if (it != null) {
+                this.anchorId = it.id
+                mDatabind.tvTabAnchorNick.text = it.nickName  //主播昵称
+                mDatabind.tvDetailTabAnchorFans.text = it.fansCount //主播粉丝数量
 
+                setFocusUI(it.focus)
+                Glide.with(this).load(it.head).placeholder(mDatabind.ivTabAnchorAvatar.drawable)
+                    .into(mDatabind.ivTabAnchorAvatar) //主播头像
+                //点击私信跳转聊天界面逻辑，根据传参来跳转，介于聊天界面还在开发中，这里先占位
+                mDatabind.tvTabAnchorChat.setOnClickListener { v ->
+                    judgeLogin {
+                        startNewActivity<ChatActivity>() {
+                            putExtra(Constants.USER_ID, it.id)
+                            putExtra(Constants.USER_NICK, it.nickName)
+                            putExtra(Constants.USER_HEAD, it.head)
+                        }
+                    }
+                }
+                //点击关注或者取消关注
+                mDatabind.tvTabAnchorFollow.setOnClickListener {
+                    judgeLogin {
+                        if (!focus) {
+                            mViewModel.followAnchor(anchorId?:"")
+                        } else {
+                            mViewModel.unFollowAnchor(anchorId?:"")
+                        }
+                    }
+                }
+            }
+        }
+        mViewModel.isfocus.observe(this) {
+            if (it) {
+                appViewModel.updateSomeData.postValue("friends")
+                setFocusUI(true)
+                mDatabind.tvDetailTabAnchorFans.text =
+                    (mDatabind.tvDetailTabAnchorFans.textString().toInt() + 1).toString() //主播粉丝数量+1
+            }
+        }
+        mViewModel.isUnFocus.observe(this) {
+            if (it) {
+                appViewModel.updateSomeData.postValue("friends")
+                setFocusUI(false)
+                mDatabind.tvDetailTabAnchorFans.text =
+                    (mDatabind.tvDetailTabAnchorFans.textString().toInt() - 1).toString() //主播粉丝数量-1
+            }
+        }
        /* appViewModel.appPolling.observe(this) {
             try {
                 //防止数据未初始化的情况
@@ -468,7 +517,15 @@ class MatchDetailActivity :
 
         }*/
     }
-
+    private var focus: Boolean = false
+    private fun setFocusUI(focus: Boolean) {
+        this.focus = focus
+        if (this.focus) {
+            mDatabind.tvTabAnchorFollow.text = getString(R.string.dis_focus)
+        } else {
+            mDatabind.tvTabAnchorFollow.text = getString(R.string.add_focus)
+        }
+    }
     /**
      * 根据状态更新比赛运行时间
      */

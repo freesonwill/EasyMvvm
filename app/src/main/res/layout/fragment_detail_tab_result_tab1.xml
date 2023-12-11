@@ -18,7 +18,7 @@
                 android:layout_marginBottom="@dimen/dp_10"
                 android:background="@drawable/shape_r10"
                 android:backgroundTint="@color/c_1f1f20"
-                android:minHeight="200dp"
+                android:minHeight="100dp"
                 android:overScrollMode="never"
                 android:paddingVertical="@dimen/dp_15" />
 

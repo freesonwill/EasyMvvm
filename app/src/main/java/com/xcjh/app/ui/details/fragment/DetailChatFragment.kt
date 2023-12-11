@@ -1,12 +1,16 @@
 package com.xcjh.app.ui.details.fragment
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.LinearGradient
 import android.graphics.Shader
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
@@ -41,6 +45,7 @@ import com.xcjh.base_lib.App
 import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.utils.SpanUtil
 import com.xcjh.base_lib.utils.loge
+import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.toHtml
 import com.xcjh.base_lib.utils.view.visibleOrGone
 import kotlinx.android.synthetic.main.fragment_detail_tab_chat.view.*
@@ -94,9 +99,10 @@ class DetailChatFragment(
             mDatabind.notice.root.visibility = View.VISIBLE
             mDatabind.notice.apply {
                 expandableText.text = noticeBean.notice
-                expandCollapse.setOnClickListener {
+                lltExpandCollapse.setOnClickListener {
                     val aa = expandableText.height
                     noticeBean.isOpen = !noticeBean.isOpen
+                    tvArrow.text=if (noticeBean.isOpen) getString(R.string.pack_up) else getString(R.string.expand)
                     startImageRotate(expandCollapse, noticeBean.isOpen)
                     expandableText.maxLines = if (noticeBean.isOpen) 20 else 2
                     mDatabind.rcvChat.postDelayed({
@@ -131,15 +137,6 @@ class DetailChatFragment(
             onBind {
                 when (val item = _data) {
                     is NoticeBean -> {
-                        val binding = getBinding<ItemDetailChatNoticeBinding>()
-                        binding.expandableText.text = item.notice
-                        binding.expandCollapse.setOnClickListener {
-                            item.isOpen = !item.isOpen
-                            startImageRotate(binding.expandCollapse, item.isOpen)
-                            getBinding<ItemDetailChatNoticeBinding>().expandableText.maxLines =
-                                if (item.isOpen) 10 else 2
-                            // mDatabind.rcvChat.scrollToPosition(modelPosition)
-                        }
 
                     }
 
@@ -147,10 +144,10 @@ class DetailChatFragment(
                         val binding = getBinding<ItemDetailChatBinding>()
                         if (item.identityType == 0) {
                             binding.ivImage.visibleOrGone(false)
-                            binding.tvType.text = getLeverNum(item.level)
-                            binding.tvType.paint.shader =
+                            binding.tvLevel.text = getLeverNum(item.level)
+                            binding.tvLevel.paint.shader =
                                 LinearGradient(
-                                    0f, 0f, 0f, binding.tvType.lineHeight.toFloat(),
+                                    0f, 0f, 0f, binding.tvLevel.lineHeight.toFloat(),
                                     if (item.level == "7") appContext.getColor(R.color.c_v7) else setLeverColor(
                                         item.level
                                     ),
@@ -159,16 +156,16 @@ class DetailChatFragment(
                                     ),
                                     Shader.TileMode.CLAMP
                                 )
-                            binding.tvType.setBackgroundResource(setLeverDrawable(item.level))
+                            binding.tvLevel.setBackgroundResource(setLeverDrawable(item.level))
                             // binding.sltLevel.setStrokeColor(setLeverColor(item.level))
-                            //binding.tvType.setTextColor(setLeverColor(item.level))
+                            //binding.tvLevel.setTextColor(setLeverColor(item.level))
                         } else {
-                            binding.tvType.text = getString(R.string.anchor)
-                            binding.tvType.setBackgroundResource(setLeverDrawable("2"))
-                            //binding.tvType.setTextColor(setLeverColor("2"))
-                            binding.tvType.paint.shader =
+                            binding.tvLevel.text = getString(R.string.anchor)
+                            binding.tvLevel.setBackgroundResource(setLeverDrawable("2"))
+                            //binding.tvLevel.setTextColor(setLeverColor("2"))
+                            binding.tvLevel.paint.shader =
                                 LinearGradient(
-                                    0f, 0f, 0f, binding.tvType.lineHeight.toFloat(),
+                                    0f, 0f, 0f, binding.tvLevel.lineHeight.toFloat(),
                                     setLeverColor("2"), setLeverColor("2"), Shader.TileMode.CLAMP
                                 )
                             binding.ivImage.visibleOrGone(item.msgType == 1)
@@ -202,11 +199,11 @@ class DetailChatFragment(
                         SpanUtil.create()
                             .addForeColorSection(
                                 item.nick + " : ",
-                                ContextCompat.getColor(context, R.color.c_8a91a0)
+                                ContextCompat.getColor(context, R.color.c_94999f)
                             )
                             .addForeColorSection(
                                 if (item.msgType == 1) "" else item.content,
-                                ContextCompat.getColor(context, R.color.c_F5F5F5)
+                                ContextCompat.getColor(context, R.color.c_ffffff)
                             )
                             .showIn(binding.tvContent) //显示到控件TextView中
                     }
@@ -229,6 +226,12 @@ class DetailChatFragment(
             if (hasFocus) {
                 judgeLogin()
             }
+        }
+        mDatabind.edtChatMsg.setOnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_SEND) {
+                sendMsg()
+            }
+            true
         }
     }
 
@@ -419,32 +422,36 @@ class DetailChatFragment(
     override fun onClick(v: View?) {
         when (v) {
             mDatabind.sendChat -> {
-                hideSoftInput()
-                mDatabind.edtChatMsg.clearFocus()
-                mDatabind.sendChat.postDelayed({
-                    judgeLogin {
-                        CacheUtil.getUser()?.apply {
-                            MyWsManager.getInstance(App.app)?.sendMessage(
-                                Gson().toJson(SendChatMsgBean(
-                                    1, 0, 11,
-                                    from = id,
-                                    fromAvatar = head,
-                                    fromNickName = name,
-                                    content = mViewModel.input.get(),
-                                    identityType = "0",
-                                    createTime = System.currentTimeMillis(),
-                                    level = lvNum,
-                                    groupId = liveId,
-                                ).apply {
-                                })
-                            )
-
-                        }
-                        mViewModel.input.set("")
-                    }
-                }, 400)
+                sendMsg()
             }
         }
+    }
+
+    private fun sendMsg() {
+        hideSoftInput()
+        mDatabind.edtChatMsg.clearFocus()
+        mDatabind.sendChat.postDelayed({
+            judgeLogin {
+                CacheUtil.getUser()?.apply {
+                    MyWsManager.getInstance(App.app)?.sendMessage(
+                        Gson().toJson(SendChatMsgBean(
+                            1, 0, 11,
+                            from = id,
+                            fromAvatar = head,
+                            fromNickName = name,
+                            content = mViewModel.input.get(),
+                            identityType = "0",
+                            createTime = System.currentTimeMillis(),
+                            level = lvNum,
+                            groupId = liveId,
+                        ).apply {
+                        })
+                    )
+
+                }
+                mViewModel.input.set("")
+            }
+        }, 400)
     }
 
     /**
