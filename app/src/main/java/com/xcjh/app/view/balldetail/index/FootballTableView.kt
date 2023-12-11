@@ -93,7 +93,7 @@ class FootballTableView : LinearLayout {
         if (a < b) {
             text.setTextColor(context.getColor(R.color.c_D63823))
         } else if (a > b) {
-            text.setTextColor(context.getColor(R.color.c_48fe4f))
+            text.setTextColor(context.getColor(R.color.c_pb_bar))
         } else {
             text.setTextColor(context.getColor(R.color.c_d7d7e7))
         }
