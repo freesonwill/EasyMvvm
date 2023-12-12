@@ -123,6 +123,7 @@ dependencies {
     implementation 'com.kyleduo.switchbutton:library:2.1.0'
     implementation 'com.github.gzu-liyujiang.AndroidPicker:WheelPicker:4.1.13'
     implementation 'com.belerweb:pinyin4j:2.5.1'
+    implementation 'com.github.li-xiaojun:XPopup:2.10.0'
 
 }
 //获取编译时间

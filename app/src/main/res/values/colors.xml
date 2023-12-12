@@ -124,5 +124,18 @@
     <color name="c_fe4848">#fe4848</color>
     <color name="c_e4e6ed">#E4E6ED</color>
     <color name="c_d63823">#D63823</color>
+    <color name="c_a5502f">#A5502F</color>
+    <color name="c_cb6741">#CB6741</color>
+    <color name="c_5c5c5c">#5C5C5C</color>
+    <color name="c_929292">#929292</color>
+    <color name="c_f0a248">#F0A248</color>
+    <color name="c_62aeb8">#62AEB8</color>
+    <color name="c_a474c8">#A474C8</color>
+    <color name="c_737ed6">#737ED6</color>
+    <color name="c_727272">#727272</color>
+    <color name="c_8f612c">#8F612C</color>
+    <color name="c_51858c">#51858C</color>
+    <color name="c_865aa8">#865AA8</color>
+    <color name="c_5a64b7">#5A64B7</color>
 
 </resources>

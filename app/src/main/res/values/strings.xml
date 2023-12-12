@@ -290,6 +290,7 @@
     <string name="level_txt_task">我的任务</string>
     <string name="level_txt_chat">每日直播聊天室互动</string>
     <string name="level_txt_grow_add">+2成长值</string>
+    <string name="level_txt_grow_add_wu">+5成长值</string>
     <string name="level_txt_to_complete">去完成</string>
     <string name="level_txt_watch">每日观看直播10分钟以上</string>
     <string name="my_txt_confirm_exit">是否确认退出登录</string>
@@ -336,6 +337,8 @@
     <string name="level6">铂金</string>
     <string name="level7">钻石</string>
     <string name="level8">超凡</string>
+    <string name="level9">白金</string>
+    <string name="level10">星耀</string>
 
     <string name="head_pulling">下拉加载更多记录</string>
     <string name="head_refreshing">正在加载更多…</string>
@@ -365,5 +368,6 @@
     <string name="push_txt_debut">主播开播通知</string>
     <string name="expand">展开</string>
     <string name="pack_up">收起</string>
+    <string name="dialog_txt_goto">前往</string>
 
 </resources>

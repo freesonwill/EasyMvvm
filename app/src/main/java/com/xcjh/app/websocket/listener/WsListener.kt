@@ -1,5 +1,6 @@
 package com.xcjh.app.websocket.listener
 
+import com.xcjh.app.bean.BeingLiveBean
 import com.xcjh.app.websocket.bean.LiveStatus
 import com.xcjh.app.websocket.bean.ReceiveChangeMsg
 import com.xcjh.app.websocket.bean.ReceiveChatMsg
@@ -75,6 +76,11 @@ interface OtherPushListener {
      * 收到比赛实时推送数据
      */
     fun onChangeMatchData(matchList: ArrayList<ReceiveChangeMsg>){}
+
+    /**
+     * 首页主播开播推送
+     */
+    fun onAnchorStartLevel(beingLiveBean: BeingLiveBean){}
 
 }
 /**

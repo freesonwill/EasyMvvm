@@ -6,6 +6,7 @@ import android.os.IBinder
 import android.util.Log
 import android.widget.Toast
 import com.xcjh.app.R
+import com.xcjh.app.bean.BeingLiveBean
 import com.xcjh.app.websocket.bean.LiveStatus
 import com.xcjh.app.websocket.bean.NoReadMsg
 import com.xcjh.app.websocket.bean.ReceiveChangeMsg
@@ -265,6 +266,14 @@ class MyWsManager private constructor(private val mContext: Context) {
                 }
                 mOtherPushListener.forEach {
                     it.toPair().second.onChangeMatchData(wsBean2)
+                }
+            }
+
+            34->{
+                val wsBean2 = jsonToObject2<ReceiveWsBean<BeingLiveBean>>(msg)
+                val chatMsgBean = wsBean2?.data as BeingLiveBean
+                mOtherPushListener.forEach{
+                    it.toPair().second.onAnchorStartLevel(chatMsgBean)
                 }
             }
 

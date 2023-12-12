@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="84dp" >
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginRight="@dimen/dp_12"
+        android:layout_marginLeft="@dimen/dp_12"
+        android:background="@drawable/shape_r10">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivCardClose"
+            android:layout_width="@dimen/dp_18"
+            android:layout_height="@dimen/dp_18"
+            app:srcCompat="@drawable/card_icon_close"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:paddingTop="@dimen/dp_5"
+            android:paddingRight="@dimen/dp_5"
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_19"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:orientation="horizontal">
+            <com.xcjh.app.utils.nice.NiceImageView
+                android:id="@+id/ivCardHead"
+                android:layout_width="@dimen/dp_48"
+                android:layout_height="@dimen/dp_48"
+                app:is_circle="true"
+                android:scaleType="fitXY"
+                app:srcCompat="@drawable/my_icon_title"/>
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_marginLeft="11dp"
+                android:orientation="vertical">
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/txtCardName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/c_37373d"
+                    android:textSize="15sp"
+                    android:text="名字"
+                    android:singleLine="true"/>
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/txtCardMatch"
+                    android:text="比赛"
+                    android:textSize="@dimen/sp_13"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_6"
+                    android:textColor="@color/c_575762"/>
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </LinearLayout>
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txtDialogClick"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_13"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/dp_20"
+            android:text="@string/dialog_txt_goto"
+            android:paddingTop="@dimen/dp_5"
+            android:paddingRight="@dimen/dp_15"
+            android:paddingLeft="@dimen/dp_15"
+            android:paddingBottom="@dimen/dp_5"
+            android:background="@drawable/shape_r39_34a853"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/c_ffffff"/>
+
+    </RelativeLayout>
+
+    </RelativeLayout>

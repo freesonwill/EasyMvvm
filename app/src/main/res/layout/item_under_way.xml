@@ -47,7 +47,7 @@
                     android:id="@+id/txtMatchAnimation"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="''"
+                    android:text="'"
                     android:visibility="gone"
                     android:textSize="11sp"
                     android:textColor="@color/c_f69521"/>

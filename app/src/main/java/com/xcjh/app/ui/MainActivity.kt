@@ -21,10 +21,17 @@ import com.google.gson.Gson
 import com.king.app.dialog.AppDialog
 import com.king.app.updater.AppUpdater
 import com.king.app.updater.http.OkHttpManager
+import com.kongzue.dialogx.dialogs.PopNotification
+import com.kongzue.dialogx.interfaces.OnBindView
+import com.lxj.xpopup.XPopup
+import com.lxj.xpopup.core.BasePopupView
+import com.lxj.xpopup.enums.PopupAnimation
 import com.xcjh.app.BuildConfig
 import com.xcjh.app.R
+import com.xcjh.app.adapter.PushCardPopup
 import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseActivity
+import com.xcjh.app.bean.BeingLiveBean
 import com.xcjh.app.bean.MsgBean
 import com.xcjh.app.databinding.ActivityHomeBinding
 import com.xcjh.app.ui.home.home.HomeFragment
@@ -37,6 +44,7 @@ import com.xcjh.app.utils.judgeLogin
 import com.xcjh.app.vm.MainVm
 import com.xcjh.app.websocket.MyWsManager
 import com.xcjh.app.websocket.listener.NoReadMsgPushListener
+import com.xcjh.base_lib.utils.dp2px
 import com.xcjh.base_lib.utils.initActivity
 import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.view.clickNoRepeat
@@ -55,7 +63,7 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
     val period: Long = 1 * 60 * 1000 // 执行间隔时间，单位为毫秒（这里设置为1分钟）
     private var mAppUpdater: AppUpdater? = null
     private var currentPage:Int=0
-
+    var popup : BasePopupView?=null
 
     private var mFragList: ArrayList<Fragment> = arrayListOf(
         HomeFragment(),
@@ -87,6 +95,8 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
 
         //点击首页
         mDatabind.llHomeSelectMain.setOnClickListener {
+
+//            showDialog()
             if(currentPage!=0){
                 if(CacheUtil.isNavigationVibrate()){
                     vibrate(this)
@@ -333,6 +343,47 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
             mDatabind.ivHomeMy.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_wode_select))
         }
         mDatabind.viewPager.currentItem = page
+    }
+
+    fun showDialog(){
+//       var dilog= PopNotification
+//           .show(object : OnBindView<PopNotification>(R.layout.dialog_push_card){
+//            override fun onBind(dialog: PopNotification?, v: View?) {
+//
+//            }
+//        }).setRadius(42f)
+//           .setRootPadding(dp2px(12),dp2px(0),dp2px(12),dp2px(0))
+//           .setMargin(dp2px(12),dp2px(0),dp2px(12),dp2px(0))
+//           .showLong()
+        var pushCardPopup=PushCardPopup(this, BeingLiveBean())
+        if(popup!=null){
+           if( popup!!.isShow){
+               popup!!.dismiss()
+           }
+        }
+
+        popup=XPopup.Builder(this)
+            .isDestroyOnDismiss(true)
+            .popupAnimation(PopupAnimation.TranslateFromTop)
+            .offsetY(80)
+            .hasShadowBg(false)
+            .isTouchThrough(true)
+            .isLightStatusBar(true)
+            .dismissOnTouchOutside(false)
+            .asCustom(pushCardPopup)
+            .show()
+        pushCardPopup.pushCardPopupListener=object :PushCardPopup.PushCardPopupListener{
+            override fun clicktClose() {
+                popup!!.dismiss()
+            }
+
+            override fun selectGoto(beingLiveBean: BeingLiveBean) {
+                popup!!.dismiss()
+            }
+
+        }
+
+
     }
 
 
