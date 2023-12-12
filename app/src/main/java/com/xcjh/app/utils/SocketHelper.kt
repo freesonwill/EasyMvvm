@@ -118,7 +118,7 @@ fun getLeverNum(level: String?): String {
         "7" -> name = appContext.getString(R.string.level7)
         "8" -> name = appContext.getString(R.string.level8)
     }
-    return "v$level$name"
+    return name
 }
 
 fun setLeverColor(level: String?): Int {
@@ -145,8 +145,8 @@ fun setLeverDrawable(level: String?): Int {
         "4" -> drawable = R.drawable.ic_user_level4
         "5" -> drawable = R.drawable.ic_user_level5
         "6" -> drawable = R.drawable.ic_user_level6
-        "7" -> drawable = R.drawable.ic_user_level7
-        "8" -> drawable = R.drawable.ic_user_level8
+       /* "7" -> drawable = R.drawable.ic_user_level7
+        "8" -> drawable = R.drawable.ic_user_level8*/
     }
     return drawable
 }

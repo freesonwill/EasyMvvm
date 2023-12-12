@@ -131,17 +131,26 @@ fun setMatchStatusTime(
         if (status in 2..7) {
             tvTime.text = runTime.toString()
             tvTimeS.text = " '"
-            tvTime.visibleOrGone(false)
+            tvTime.visibleOrGone(true)
             tvTimeS.visibleOrGone(true)
         } else {
-            tvTime.visibleOrGone(false)
             tvTimeS.visibleOrGone(false)
         }
     } else {
         if (status in 2..9) {
-            tvTime.text = runTime.toString()
+            tvTime.text = when (status) {
+                 2 -> "第一节"
+                 3 -> "第一节完"
+                 4 -> "第二节"
+                 5 -> "第二节完"
+                 6 -> "第三节"
+                 7 -> "第三节完"
+                 8 -> "第四节"
+                 9 -> "加时"
+                else -> "比赛异常"
+            }
             tvTimeS.text = " '"
-            tvTime.visibleOrGone(false)
+            tvTime.visibleOrGone(true)
             tvTimeS.visibleOrGone(true)
         } else {
             tvTime.visibleOrGone(false)

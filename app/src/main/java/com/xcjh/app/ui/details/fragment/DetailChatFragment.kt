@@ -2,6 +2,7 @@ package com.xcjh.app.ui.details.fragment
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.LinearGradient
 import android.graphics.Shader
 import android.os.Bundle
@@ -144,40 +145,23 @@ class DetailChatFragment(
                         val binding = getBinding<ItemDetailChatBinding>()
                         if (item.identityType == 0) {
                             binding.ivImage.visibleOrGone(false)
+                            binding.ivLevel.visibleOrGone(true)
+                            binding.lltLevel.backgroundTintList= ColorStateList.valueOf(
+                                ContextCompat.getColor(context, R.color.c_1AFFFFFF)
+                            )
+                            binding.ivLevel.setImageResource(setLeverDrawable(item.level))
                             binding.tvLevel.text = getLeverNum(item.level)
-                            binding.tvLevel.paint.shader =
-                                LinearGradient(
-                                    0f, 0f, 0f, binding.tvLevel.lineHeight.toFloat(),
-                                    if (item.level == "7") appContext.getColor(R.color.c_v7) else setLeverColor(
-                                        item.level
-                                    ),
-                                    if (item.level == "7") appContext.getColor(R.color.c_v77) else setLeverColor(
-                                        item.level
-                                    ),
-                                    Shader.TileMode.CLAMP
-                                )
-                            binding.tvLevel.setBackgroundResource(setLeverDrawable(item.level))
-                            // binding.sltLevel.setStrokeColor(setLeverColor(item.level))
-                            //binding.tvLevel.setTextColor(setLeverColor(item.level))
                         } else {
                             binding.tvLevel.text = getString(R.string.anchor)
-                            binding.tvLevel.setBackgroundResource(setLeverDrawable("2"))
-                            //binding.tvLevel.setTextColor(setLeverColor("2"))
-                            binding.tvLevel.paint.shader =
-                                LinearGradient(
-                                    0f, 0f, 0f, binding.tvLevel.lineHeight.toFloat(),
-                                    setLeverColor("2"), setLeverColor("2"), Shader.TileMode.CLAMP
-                                )
+                            binding.lltLevel.backgroundTintList= ColorStateList.valueOf(
+                                ContextCompat.getColor(context, R.color.c_3334A853)
+                            )
+                            binding.ivLevel.visibleOrGone(false)
                             binding.ivImage.visibleOrGone(item.msgType == 1)
                             if (item.msgType == 1) {//图片
                                 Glide.with(context)
                                     .load(item.content)
-                                    .apply(
-                                        RequestOptions().transform(
-                                            CenterCrop(),
-                                            RoundedCorners(dp2px(8f))
-                                        )
-                                    )
+                                    .apply(RequestOptions().transform(CenterCrop(), RoundedCorners(dp2px(6f))))
                                     .placeholder(R.drawable.load_square)
                                     .into(binding.ivImage)
                                 binding.ivImage.setOnClickListener {

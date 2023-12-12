@@ -48,7 +48,7 @@ public class MatchVideoPlayer extends StandardGSYVideoPlayer {
         mCoverImage = (ImageView) findViewById(R.id.thumbImage);
         setViewShowState(mThumbImageViewLayout, VISIBLE);
         setViewShowState(mLoadingProgressBar, VISIBLE);
-        setViewShowState(mFullscreenButton, VISIBLE);
+        setViewShowState(mFullscreenButton, GONE);
 
    /*     OrientationUtils orientationUtils = new OrientationUtils((Activity) mContext, this, getOrientationOption());
         getFullscreenButton().setOnClickListener(view -> {

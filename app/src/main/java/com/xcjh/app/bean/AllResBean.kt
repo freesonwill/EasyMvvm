@@ -482,7 +482,7 @@ data class MatchDetailBean(
     var awayHalfScore: Int = 0,//客队半场比分
     val awayLogo: String? = "",//客队Logo
     val awayName: String? = "",//客队名称
-    var awayScore: Int = 0,//客队比分
+    var awayScore: Int? = 0,//客队比分
 
     var competitionId: String = "",// 赛事ID
     val competitionName: String = "",//赛事名称
@@ -492,7 +492,7 @@ data class MatchDetailBean(
     var homeHalfScore: Int = 0,
     val homeLogo: String? = "",
     val homeName: String? = "",
-    var homeScore: Int = 0,
+    var homeScore: Int? = 0,
 
     val matchData: MatchDataBean = MatchDataBean(),
 

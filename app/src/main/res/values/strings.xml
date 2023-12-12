@@ -310,7 +310,7 @@
     <string name="floor">篮板</string>
     <string name="assist">助攻</string>
     <string name="shoot">投篮</string>
-    <string name="choose_live_resource">选择直播源</string>
+    <string name="choose_live_resource">选择信号源</string>
     <string name="anchor_notice">喜欢记录分享自己的生活！有当网红的心愿～如果以上任何一点击中了你，那就快来加入我们吧！喜欢记录分享自己的生活！有当网红的心愿～如果以上任何一点击中了你，那就快来加入我们吧喜欢记录分享自己的生活！有当网红的心愿～如果以上任何一点击中了你，那就快来加入我们吧喜欢记录分享自己的生活！有当网红的心愿～如果以上任何一点击中了你，那就快来加入我们吧</string>
     <string name="qf">前锋</string>
     <string name="zc">中场</string>
@@ -365,5 +365,6 @@
     <string name="push_txt_debut">主播开播通知</string>
     <string name="expand">展开</string>
     <string name="pack_up">收起</string>
+    <string name="anchor_no_live">主播暂未开播</string>
 
 </resources>

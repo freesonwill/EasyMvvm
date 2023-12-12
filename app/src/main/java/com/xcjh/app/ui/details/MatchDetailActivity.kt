@@ -92,10 +92,10 @@ class MatchDetailActivity :
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         ImmersionBar.with(this).statusBarDarkFont(false)//黑色
-            .titleBar(mDatabind.rltTop).init()
+            .titleBarMarginTop(mDatabind.rltTop).init()
         //解决toolbar左边距问题
         mDatabind.toolbar.setContentInsetsAbsolute(0, 0)
-        mDatabind.viewTopBg.layoutParams.height= getStatusBarHeight(this)
+        mDatabind.viewTopBg.layoutParams.height = getStatusBarHeight(this)
         mViewModel.tt = 5
         intent.extras?.apply {
             matchType = getString("matchType", "1")
@@ -104,7 +104,6 @@ class MatchDetailActivity :
             anchorId = getString("anchorId", null)
             //  playUrl = getString("videoUrl", null)
             isHasAnchor = !anchorId.isNullOrEmpty()
-            //mDatabind.lltSignal.visibleOrGone(isHasAnchor)
             setData()
         }
         initStaticUI()
@@ -122,17 +121,39 @@ class MatchDetailActivity :
     private fun initStaticUI() {
         //进入界面需要传：比赛类型(1：足球；2：篮球)、比赛ID、比赛名称、主队客队名称头像、比赛时间、状态、公告、在线视频，后面改成传bean
         //比赛名称
-        mDatabind.tvTitle.text = matchName ?: ""
+        mDatabind.topLiveTitle.text = matchName ?: ""
         //比赛类型
         if (matchType == "1") {
             mDatabind.ivMatchBg.setBackgroundResource(R.drawable.bg_status_football)
-            mDatabind.toolbar.setBackgroundResource(if (isHasAnchor)R.color.translet else R.drawable.bg_top_football)
+            mDatabind.toolbar.setBackgroundResource(if (isHasAnchor) R.color.translet else R.drawable.bg_top_football)
         } else {
             mDatabind.ivMatchBg.setBackgroundResource(R.drawable.bg_status_basketball)
-            mDatabind.toolbar.setBackgroundResource(if (isHasAnchor)R.color.translet else R.drawable.bg_top_basketball)
+            mDatabind.toolbar.setBackgroundResource(if (isHasAnchor) R.color.translet else R.drawable.bg_top_basketball)
         }
-        startTimeAnimator(mDatabind.tvTopMatchStatusTimeS)
-        startTimeAnimator(mDatabind.tvMatchStatusTimeS)
+        startTimeAnimator(mDatabind.tvMatchTimeS)
+        showHideLive()
+    }
+
+    private fun showHideLive(isClose: Boolean = false) {
+        mDatabind.apply {
+            if (isClose) {
+                rltVideo.visibleOrGone(false)
+                cslMatchInfo.visibleOrGone(false)
+                lltNoLive.visibleOrGone(true)
+                topLiveTitle.visibleOrGone(true)
+                topNoLiveTitle.visibleOrGone(false)
+            } else {
+                lltNoLive.visibleOrGone(false)
+                //有视频布局
+                rltVideo.visibleOrGone(isShowVideo)
+                topLiveTitle.visibleOrGone(isShowVideo)
+                viewTopBg.visibleOrGone(isHasAnchor)
+                //无视频纯净流布局
+                cslMatchInfo.visibleOrGone(!isShowVideo)
+                topNoLiveTitle.visibleOrGone(!isShowVideo)
+            }
+        }
+
     }
 
     private fun initVp() {
@@ -175,11 +196,11 @@ class MatchDetailActivity :
                 if (verticalOffset > 0) return
                 val v = myDivide(abs(verticalOffset), appBarLayout.totalScrollRange)
                 //折叠时隐藏的top布局
-                mDatabind.lltMatchTitle.alpha = 1 - v
+                mDatabind.layoutNotFold.alpha = 1 - v
                 //折叠后显示top
-                mDatabind.cslTopMatchStatus.alpha = v
+                mDatabind.layoutTopFold.alpha = v
                 mDatabind.toolbar.background.alpha = (v * 255).toInt()
-                mDatabind.lltSignal.isClickable = !(v < 2 && v > 0.8)
+                // mDatabind.tvSignal.isClickable = !(v < 2 && v > 0.8)
             }
         })
         initVideoBuilderMode()
@@ -188,9 +209,7 @@ class MatchDetailActivity :
                 override fun onOpenLive(bean: LiveStatus) {
                     if (anchor?.liveId == bean.id && matchId == bean.matchId) {
                         isShowVideo = true
-                        mDatabind.ivNoLive.visibleOrGone(false)
-                        mDatabind.videoPlayer.visibleOrGone(true)
-                        mDatabind.cslMatchStatus.visibleOrGone(false)
+                        showHideLive()
                         if (isTopActivity(this@MatchDetailActivity) && !isPause) {
                             startVideo(anchor?.playUrl)
                         }
@@ -201,9 +220,7 @@ class MatchDetailActivity :
                     if (anchor?.liveId == bean.id && matchId == bean.matchId) {
                         mDatabind.videoPlayer.release()
                         isShowVideo = false
-                        mDatabind.ivNoLive.visibleOrGone(true)
-                        mDatabind.videoPlayer.visibleOrGone(false)
-                        mDatabind.cslMatchStatus.visibleOrGone(false)
+                        showHideLive(true)
                     }
                 }
 
@@ -211,9 +228,7 @@ class MatchDetailActivity :
                     if (isShowVideo) {
                         if (anchor?.liveId == bean.id && matchId == bean.matchId) {
                             anchor?.playUrl = bean.playUrl
-                            mDatabind.ivNoLive.visibleOrGone(false)
-                            mDatabind.videoPlayer.visibleOrGone(true)
-                            mDatabind.cslMatchStatus.visibleOrGone(false)
+                            showHideLive()
                             if (isTopActivity(this@MatchDetailActivity) && !isPause) {
                                 startVideo(anchor?.playUrl)
                             }
@@ -272,36 +287,45 @@ class MatchDetailActivity :
             //jumpOut(ad.data!![0].targetUrl)
         }
         //信号源
-        mDatabind.lltSignal.setOnClickListener {
-            //
-            if (matchDetail.anchorList?.isNotEmpty() == true) {
-                showSignalDialog(matchDetail.anchorList!!, signalPos) { anchor, pos ->
-                    signalPos = pos
-                    if (this.anchor?.userId == anchor.userId) {
-                        //无改变
-                        return@showSignalDialog
-                    }
-                    //切换主播
-                    this.anchor = anchor
-                    if (anchor.pureFlow) {
-                        isHasAnchor = false
-                        isShowVideo = !anchor.playUrl.isNullOrEmpty()
-                    } else {
-                        isHasAnchor = true
-                        isShowVideo = true
-                    }
-                    if (isShowVideo) {
-                        startVideo(anchor.playUrl)
-                    } else {
-                        mDatabind.videoPlayer.release()
-                    }
-                    changeUI()
-                    //更新聊天室
-                    mViewModel.anchorInfo.value = anchor
+        mDatabind.tvSignal.setOnClickListener {
+            showSignal()
+        }
+        mDatabind.tvSignal2.setOnClickListener {
+            showSignal()
+        }
+        mDatabind.tvSignal3.setOnClickListener {
+            showSignal()
+        }
+    }
+
+    private fun showSignal() {
+        if (matchDetail.anchorList?.isNotEmpty() == true) {
+            showSignalDialog(matchDetail.anchorList!!, signalPos) { anchor, pos ->
+                signalPos = pos
+                if (this.anchor?.userId == anchor.userId) {
+                    //无改变
+                    return@showSignalDialog
                 }
-            } else {
-                myToast("no data")
+                //切换主播
+                this.anchor = anchor
+                if (anchor.pureFlow) {
+                    isHasAnchor = false
+                    isShowVideo = !anchor.playUrl.isNullOrEmpty()
+                } else {
+                    isHasAnchor = true
+                    isShowVideo = true
+                }
+                if (isShowVideo) {
+                    startVideo(anchor.playUrl)
+                } else {
+                    mDatabind.videoPlayer.release()
+                }
+                changeUI()
+                //更新聊天室
+                mViewModel.anchorInfo.value = anchor
             }
+        } else {
+            myToast("no data")
         }
     }
 
@@ -309,11 +333,7 @@ class MatchDetailActivity :
      * 设置基础UI
      */
     private fun showBaseUI() {
-        matchName = matchDetail.competitionName + "  " +
-                if (matchType == "1") {
-                    "${matchDetail.homeName ?: ""} VS ${matchDetail.awayName ?: ""}"
-                } else "${matchDetail.awayName ?: ""} VS ${matchDetail.homeName ?: ""}"
-        mDatabind.tvTitle.text = matchName
+
         if (matchType == "1") {//足球
             //主队名称以及图标
             mDatabind.tvHomeName.text = matchDetail.homeName ?: ""
@@ -339,10 +359,24 @@ class MatchDetailActivity :
             TimeUtil.timeStamp2Date(matchDetail.matchTime.toLong(), "yyyy-MM-dd HH:mm")
         needWsToUpdateUI()
     }
+
     /**
      * 需要实时更新的UI
      */
     private fun needWsToUpdateUI() {
+        matchName = if (matchDetail.status in 2..if (matchType == "1") 8 else 10){
+            matchDetail.competitionName + "  " +
+                    if (matchType == "1") {
+                        "${matchDetail.homeName ?: ""} ${matchDetail.homeScore ?: ""}:${matchDetail.awayScore ?: ""} ${matchDetail.awayName ?: ""}"
+                    } else "${matchDetail.awayName ?: ""}  ${matchDetail.awayScore ?: ""}:${matchDetail.homeScore ?: ""}${matchDetail.homeName ?: ""}"
+        }else{
+            matchDetail.competitionName + "  " +
+                    if (matchType == "1") {
+                        "${matchDetail.homeName ?: ""} VS ${matchDetail.awayName ?: ""}"
+                    } else "${matchDetail.awayName ?: ""} VS ${matchDetail.homeName ?: ""}"
+        }
+
+        mDatabind.topLiveTitle.text = matchName
         //上滑停靠栏
         getMatchStatus(mDatabind.tvTopMatchStatus, matchDetail.matchType, matchDetail.status)
         //比赛状态
@@ -412,7 +446,9 @@ class MatchDetailActivity :
                 showBaseUI()
                 if (isNeedInit) {
                     isNeedInit = false
-                    mViewModel.startTimeRepeat(match.runTime)
+                    if (match.status in 2..if (matchType == "1") 7 else 9) {
+                        mViewModel.startTimeRepeat(match.runTime)
+                    }
                     ///判断当前是否展示直播
                     getAnchor(match) {
                         startVideo(it)
@@ -432,7 +468,8 @@ class MatchDetailActivity :
                 //滚动条广告
                 mDatabind.marqueeView.isSelected = true
                 val random = (0..list.size).random() % list.size
-                mDatabind.marqueeView.text = list[random].name    /*+"                                                                                             "*/
+                mDatabind.marqueeView.text =
+                    list[random].name    /*+"                                                                                             "*/
                 mDatabind.marqueeView.setOnClickListener {
                     jumpOutUrl(list[random].targetUrl)
                 }
@@ -474,9 +511,9 @@ class MatchDetailActivity :
                 mDatabind.tvTabAnchorFollow.setOnClickListener {
                     judgeLogin {
                         if (!focus) {
-                            mViewModel.followAnchor(anchorId?:"")
+                            mViewModel.followAnchor(anchorId ?: "")
                         } else {
-                            mViewModel.unFollowAnchor(anchorId?:"")
+                            mViewModel.unFollowAnchor(anchorId ?: "")
                         }
                     }
                 }
@@ -498,17 +535,18 @@ class MatchDetailActivity :
                     (mDatabind.tvDetailTabAnchorFans.textString().toInt() - 1).toString() //主播粉丝数量-1
             }
         }
-       /* appViewModel.appPolling.observe(this) {
-            try {
-                //防止数据未初始化的情况
-                if (::matchDetail.isInitialized && matchDetail.status in 0..if (matchType == "1") 7 else 9) {
-                    // mViewModel.getMatchDetail(matchId, matchType)
-                }
-            } catch (_: Exception) {
-            }
+        /* appViewModel.appPolling.observe(this) {
+             try {
+                 //防止数据未初始化的情况
+                 if (::matchDetail.isInitialized && matchDetail.status in 0..if (matchType == "1") 7 else 9) {
+                     // mViewModel.getMatchDetail(matchId, matchType)
+                 }
+             } catch (_: Exception) {
+             }
 
-        }*/
+         }*/
     }
+
     private var focus: Boolean = false
     private fun setFocusUI(focus: Boolean) {
         this.focus = focus
@@ -518,36 +556,29 @@ class MatchDetailActivity :
             mDatabind.tvTabAnchorFollow.text = getString(R.string.add_focus)
         }
     }
+
     /**
      * 根据状态更新比赛运行时间
      */
     private fun updateRunTime() {
-        setMatchStatusTime(
-            mDatabind.tvTopMatchStatusTime,
-            mDatabind.tvTopMatchStatusTimeS,
-            matchDetail.matchType,
-            matchDetail.status,
-            matchDetail.runTime
-        )
-        setMatchStatusTime(
-            mDatabind.tvMatchStatusTime,
-            mDatabind.tvMatchStatusTimeS,
-            matchDetail.matchType,
-            matchDetail.status,
-            matchDetail.runTime
-        )
+        if (matchDetail.status in 2..if (matchType == "1") 7 else 9) {
+            setMatchStatusTime(
+                mDatabind.tvMatchTime,
+                mDatabind.tvMatchTimeS,
+                matchDetail.matchType,
+                matchDetail.status,
+                matchDetail.runTime
+            )
+        }
     }
 
     private fun changeUI() {
-        mDatabind.ivNoLive.visibleOrGone(false)
-        mDatabind.videoPlayer.visibleOrGone(isShowVideo)
-        mDatabind.cslMatchStatus.visibleOrGone(!isShowVideo)
+        showHideLive()
         mDatabind.cslAnchor.visibleOrGone(isHasAnchor)
-        mDatabind.viewTopBg.visibleOrGone(isHasAnchor)
         if (matchType == "1") {
-            mDatabind.toolbar.setBackgroundResource(if (isHasAnchor)R.color.translet else R.drawable.bg_top_football)
+            mDatabind.toolbar.setBackgroundResource(if (isHasAnchor) R.color.translet else R.drawable.bg_top_football)
         } else {
-            mDatabind.toolbar.setBackgroundResource(if (isHasAnchor)R.color.translet else R.drawable.bg_top_basketball)
+            mDatabind.toolbar.setBackgroundResource(if (isHasAnchor) R.color.translet else R.drawable.bg_top_basketball)
         }
         setNewViewPager(
             signalPos,

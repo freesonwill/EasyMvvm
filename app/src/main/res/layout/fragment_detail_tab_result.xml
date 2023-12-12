@@ -21,7 +21,7 @@
                     android:layout_height="wrap_content" />
 
                 <LinearLayout
-                    app:isSticky="false"
+                    app:isSticky="true"
                     android:id="@+id/lltTab"
                     android:gravity="center"
                     android:paddingTop="@dimen/dp_5"
