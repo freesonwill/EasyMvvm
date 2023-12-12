@@ -74,7 +74,7 @@ class MsgFragment : BaseFragment<MsgVm, FrMsgBinding>() {
 
         })
 
-        setOnclickNoRepeat(mDatabind.ivclear,mDatabind.linsre) {
+        setOnclickNoRepeat(mDatabind.ivclear) {
             when (it.id) {
                 R.id.ivclear -> {
                     clearMsg(requireActivity()) { it ->
@@ -85,13 +85,7 @@ class MsgFragment : BaseFragment<MsgVm, FrMsgBinding>() {
 
                     }
                 }
-                R.id.linsre->{
-                    if (index==0) {
-                        startNewActivity<SeacherMsgActivity>()
-                    }else{
-                        startNewActivity<SeacherFriendActivity>()
-                    }
-                }
+
             }
         }
 

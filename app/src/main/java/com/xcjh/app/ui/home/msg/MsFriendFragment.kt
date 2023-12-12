@@ -1,7 +1,6 @@
 package com.xcjh.app.ui.home.msg
 
 import android.os.Bundle
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.drake.brv.utils.addModels
 import com.drake.brv.utils.models
@@ -15,17 +14,17 @@ import com.xcjh.app.databinding.FrMsgfriendBinding
 import com.xcjh.app.databinding.ItemMsgfrienddelBinding
 import com.xcjh.app.ui.chat.ChatActivity
 import com.xcjh.app.utils.CacheUtil
+import com.xcjh.app.view.SideBarLayout.OnSideBarLayoutListener
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.LogUtils
 import com.xcjh.base_lib.utils.distance
 import com.xcjh.base_lib.utils.vertical
-import net.sourceforge.pinyin4j.PinyinHelper
-import java.util.Locale
 
 
 class MsFriendFragment : BaseFragment<MsgVm, FrMsgfriendBinding>() {
     private val mAdapter by lazy { MsgFriendAdapter() }
     var listdata: MutableList<FriendListBean> = ArrayList<FriendListBean>()
+    var mLetters = mutableListOf<String>()
 
     companion object {
 
@@ -103,16 +102,16 @@ class MsFriendFragment : BaseFragment<MsgVm, FrMsgfriendBinding>() {
             }
         }
 // 索引列表
-        mDatabind.indexBar.setOnTouchingLetterChangeListener {
-            var ss=findFriendByPinyin(mDatabind.rec.models as List<FriendListBean>,it)
-            val indexOf = mDatabind.rec.models?.indexOf(ss) ?: -1
-            if (indexOf != -1) {
-                (mDatabind.rec.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(
-                    indexOf,
-                    0
-                )
+        mDatabind.indexBar.setSideBarLayout(OnSideBarLayoutListener { word -> //根据自己业务实现
+            for (i in mDatabind.rec.models!!.indices) {
+                var ss = mDatabind.rec.models!![i] as FriendListBean
+                if (ss.shortName == word) {
+                    mDatabind.rec.smoothScrollToPosition(i)
+                    break
+                }
             }
-        }
+        })
+
     }
 
     override fun onResume() {
@@ -141,8 +140,8 @@ class MsFriendFragment : BaseFragment<MsgVm, FrMsgfriendBinding>() {
                     it.isRefresh -> {
                         mDatabind.smartCommon.finishRefresh()
                         mDatabind.smartCommon.resetNoMoreData()
-                        var list=getPinyinList(it.listData)
-                        mDatabind.rec.models=list
+                        var list = getPinyinList(it.listData)
+                        mDatabind.rec.models = list
 
 
                     }
@@ -154,7 +153,7 @@ class MsFriendFragment : BaseFragment<MsgVm, FrMsgfriendBinding>() {
                         } else {
                             mDatabind.smartCommon.setEnableLoadMore(true)
                             mDatabind.smartCommon.finishLoadMore()
-                            var list=getPinyinList(it.listData)
+                            var list = getPinyinList(it.listData)
                             mDatabind.rec.addModels(list)
                         }
 
@@ -178,10 +177,12 @@ class MsFriendFragment : BaseFragment<MsgVm, FrMsgfriendBinding>() {
             }
         }
     }
+
     private fun getPinyinFirstLetter(str: String): String {
         val firstChar = str[0].toUpperCase()
         return if (firstChar.isLetter()) {
             firstChar.toString()
+
         } else {
             "#"
         }
@@ -191,15 +192,22 @@ class MsFriendFragment : BaseFragment<MsgVm, FrMsgfriendBinding>() {
         val pinyinList = mutableListOf<FriendListBean>()
 
         for (item in list) {
-            val firstLetter = getPinyinFirstLetter(item.nickName)
+            val firstLetter =item.shortName
+            if (!mLetters.contains(firstLetter)) {
+                mLetters.add(firstLetter)
+            }
             item.pinyin = firstLetter
+
             pinyinList.add(item)
         }
 
         pinyinList.sortBy { it.pinyin }
 
+
+        mDatabind.indexBar.setNewLetter(mLetters)
         return pinyinList
     }
+
     fun findFriendByPinyin(friendList: List<FriendListBean>, pinyin: String): FriendListBean? {
         LogUtils.d("")
         return friendList.find { it.pinyin.startsWith(pinyin, ignoreCase = true) }

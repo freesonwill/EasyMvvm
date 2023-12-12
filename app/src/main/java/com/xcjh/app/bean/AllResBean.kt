@@ -193,7 +193,8 @@ data class FriendListBean(
     var head: String = "",
     var pinyin: String = "",
     var liveId: Int,
-    var nickName: String = ""
+    var nickName: String = "",
+    var shortName: String = ""
 
 )
 @Keep
