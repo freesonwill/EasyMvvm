@@ -1,17 +1,12 @@
 package com.xcjh.app.ui.details.fragment
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.res.ColorStateList
-import android.graphics.LinearGradient
-import android.graphics.Shader
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
@@ -43,10 +38,8 @@ import com.xcjh.app.websocket.bean.ReceiveWsBean
 import com.xcjh.app.websocket.bean.SendChatMsgBean
 import com.xcjh.app.websocket.listener.LiveRoomListener
 import com.xcjh.base_lib.App
-import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.utils.SpanUtil
 import com.xcjh.base_lib.utils.loge
-import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.toHtml
 import com.xcjh.base_lib.utils.view.visibleOrGone
 import kotlinx.android.synthetic.main.fragment_detail_tab_chat.view.*
@@ -180,7 +173,7 @@ class DetailChatFragment(
                         if (modelPosition == 0) {
                             offset = item.id ?: ""
                         }
-                        SpanUtil.create()
+                        val section = SpanUtil.create()
                             .addForeColorSection(
                                 item.nick + " : ",
                                 ContextCompat.getColor(context, R.color.c_94999f)
@@ -189,7 +182,16 @@ class DetailChatFragment(
                                 if (item.msgType == 1) "" else item.content,
                                 ContextCompat.getColor(context, R.color.c_ffffff)
                             )
-                            .showIn(binding.tvContent) //显示到控件TextView中
+                        if (item.identityType == 0) {
+                            binding.tvContent.text = section.spanStrBuilder
+                          //  binding.tvContent.text = "<font color=\"#94999F\">${item.nick} : </font>${item.content}".toHtml()
+                        }else{
+                            //主播加入超链接
+                            binding.tvContent.text = "<font color=\"#94999F\">${item.nick} : </font>${item.content}".toHtml()
+                            binding.tvContent.movementMethod = LinkMovementMethod.getInstance()
+                        }
+
+                        //.showIn(binding.tvContent) //显示到控件TextView中
                     }
                 }
             }
@@ -257,6 +259,7 @@ class DetailChatFragment(
                                     it.head,
                                     it.nickName,
                                     "0",
+                                    //richText,
                                     it.firstMessage ?: "",
                                     identityType = 1
                                 )
