@@ -76,7 +76,7 @@
                     android:id="@+id/iv_home_shot_icon"
                     android:layout_width="@dimen/dp_20"
                     android:layout_height="@dimen/dp_20"
-                    android:src="@drawable/football"
+                    android:src="@drawable/sk_jingqiu_icon"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -216,7 +216,7 @@
                     android:layout_height="@dimen/dp_20"
                     android:layout_alignParentEnd="true"
                     android:layout_marginEnd="@dimen/dp_6"
-                    android:src="@drawable/football"
+                    android:src="@drawable/sk_jingqiu_icon"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 

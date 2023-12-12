@@ -1,16 +1,12 @@
 package com.xcjh.app.ui.details.fragment
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.graphics.LinearGradient
-import android.graphics.Shader
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
@@ -42,10 +38,8 @@ import com.xcjh.app.websocket.bean.ReceiveWsBean
 import com.xcjh.app.websocket.bean.SendChatMsgBean
 import com.xcjh.app.websocket.listener.LiveRoomListener
 import com.xcjh.base_lib.App
-import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.utils.SpanUtil
 import com.xcjh.base_lib.utils.loge
-import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.toHtml
 import com.xcjh.base_lib.utils.view.visibleOrGone
 import kotlinx.android.synthetic.main.fragment_detail_tab_chat.view.*
@@ -144,40 +138,23 @@ class DetailChatFragment(
                         val binding = getBinding<ItemDetailChatBinding>()
                         if (item.identityType == 0) {
                             binding.ivImage.visibleOrGone(false)
+                            binding.ivLevel.visibleOrGone(true)
+                            binding.lltLevel.backgroundTintList= ColorStateList.valueOf(
+                                ContextCompat.getColor(context, R.color.c_1AFFFFFF)
+                            )
+                            binding.ivLevel.setImageResource(setLeverDrawable(item.level))
                             binding.tvLevel.text = getLeverNum(item.level)
-                            binding.tvLevel.paint.shader =
-                                LinearGradient(
-                                    0f, 0f, 0f, binding.tvLevel.lineHeight.toFloat(),
-                                    if (item.level == "7") appContext.getColor(R.color.c_v7) else setLeverColor(
-                                        item.level
-                                    ),
-                                    if (item.level == "7") appContext.getColor(R.color.c_v77) else setLeverColor(
-                                        item.level
-                                    ),
-                                    Shader.TileMode.CLAMP
-                                )
-                            binding.tvLevel.setBackgroundResource(setLeverDrawable(item.level))
-                            // binding.sltLevel.setStrokeColor(setLeverColor(item.level))
-                            //binding.tvLevel.setTextColor(setLeverColor(item.level))
                         } else {
                             binding.tvLevel.text = getString(R.string.anchor)
-                            binding.tvLevel.setBackgroundResource(setLeverDrawable("2"))
-                            //binding.tvLevel.setTextColor(setLeverColor("2"))
-                            binding.tvLevel.paint.shader =
-                                LinearGradient(
-                                    0f, 0f, 0f, binding.tvLevel.lineHeight.toFloat(),
-                                    setLeverColor("2"), setLeverColor("2"), Shader.TileMode.CLAMP
-                                )
+                            binding.lltLevel.backgroundTintList= ColorStateList.valueOf(
+                                ContextCompat.getColor(context, R.color.c_3334A853)
+                            )
+                            binding.ivLevel.visibleOrGone(false)
                             binding.ivImage.visibleOrGone(item.msgType == 1)
                             if (item.msgType == 1) {//图片
                                 Glide.with(context)
                                     .load(item.content)
-                                    .apply(
-                                        RequestOptions().transform(
-                                            CenterCrop(),
-                                            RoundedCorners(dp2px(8f))
-                                        )
-                                    )
+                                    .apply(RequestOptions().transform(CenterCrop(), RoundedCorners(dp2px(6f))))
                                     .placeholder(R.drawable.load_square)
                                     .into(binding.ivImage)
                                 binding.ivImage.setOnClickListener {
@@ -196,7 +173,7 @@ class DetailChatFragment(
                         if (modelPosition == 0) {
                             offset = item.id ?: ""
                         }
-                        SpanUtil.create()
+                        val section = SpanUtil.create()
                             .addForeColorSection(
                                 item.nick + " : ",
                                 ContextCompat.getColor(context, R.color.c_94999f)
@@ -205,7 +182,16 @@ class DetailChatFragment(
                                 if (item.msgType == 1) "" else item.content,
                                 ContextCompat.getColor(context, R.color.c_ffffff)
                             )
-                            .showIn(binding.tvContent) //显示到控件TextView中
+                        if (item.identityType == 0) {
+                            binding.tvContent.text = section.spanStrBuilder
+                          //  binding.tvContent.text = "<font color=\"#94999F\">${item.nick} : </font>${item.content}".toHtml()
+                        }else{
+                            //主播加入超链接
+                            binding.tvContent.text = "<font color=\"#94999F\">${item.nick} : </font>${item.content}".toHtml()
+                            binding.tvContent.movementMethod = LinkMovementMethod.getInstance()
+                        }
+
+                        //.showIn(binding.tvContent) //显示到控件TextView中
                     }
                 }
             }
@@ -273,6 +259,7 @@ class DetailChatFragment(
                                     it.head,
                                     it.nickName,
                                     "0",
+                                    //richText,
                                     it.firstMessage ?: "",
                                     identityType = 1
                                 )

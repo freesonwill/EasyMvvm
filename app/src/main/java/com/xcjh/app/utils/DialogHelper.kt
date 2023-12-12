@@ -300,9 +300,12 @@ fun showSignalDialog(
     action: (AnchorListBean, Int) -> Unit,
 ) {
     //模式数据
-    CustomDialog.build()
-        .setCustomView(object : OnBindView<CustomDialog?>(R.layout.dialog_signal_list) {
-            override fun onBind(dialog: CustomDialog?, v: View) {
+    BottomDialog.build()
+        .setCustomView(object : OnBindView<BottomDialog>(R.layout.dialog_signal_list) {
+            override fun onBind(dialog: BottomDialog, v: View) {
+                if (dialog.dialogImpl.imgTab != null) {
+                    dialog.dialogImpl.imgTab.setBackgroundResource(R.drawable.dilogx_eff1f5)
+                }
                 val rcvSignal = v.findViewById<RecyclerView>(R.id.rcvSignal)
                 val tvCancel = v.findViewById<TextView>(R.id.tvCancel)
                 rcvSignal.setup {
@@ -312,9 +315,11 @@ fun showSignalDialog(
                         val model = getModel<AnchorListBean>()
                         findView<TextView>(R.id.tvContent).apply {
                             if (signalPos == modelPosition) {
-                                this.setTextColor(context.getColor(R.color.c_pb_bg))
+                                this.setTextColor(context.getColor(R.color.c_34a853))
+                                paint?.isFakeBoldText = true
                             } else {
-                                this.setTextColor(context.getColor(R.color.c_F5F5F5))
+                                this.setTextColor(context.getColor(R.color.c_37373d))
+                                paint?.isFakeBoldText = false
                             }
                             this.text =
                                 if (model.pureFlow) model.nickName else model.nickName.ifEmpty {
@@ -334,7 +339,7 @@ fun showSignalDialog(
                 rcvSignal.scrollToPosition(signalPos)
             }
         })
-        .setAlign(CustomDialog.ALIGN.BOTTOM)
+       // .setAlign(CustomDialog.ALIGN.BOTTOM)
         .setMaskColor(ContextCompat.getColor(App.app, com.xcjh.base_lib.R.color.blacks_tr))
         .setCancelable(true)
         .show()

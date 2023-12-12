@@ -157,6 +157,10 @@ fun String.toHtml(flag: Int = Html.FROM_HTML_MODE_LEGACY): Spanned {
         Html.fromHtml(this)
     }
 }
+
+/**
+ * 有图片的富文本
+ */
 fun String.toHtml( action: (Spanned?) -> Unit ){
     Thread {
         val imageGetter = ImageGetter { source ->

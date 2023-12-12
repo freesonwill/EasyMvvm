@@ -40,14 +40,14 @@
 
     <moe.codeest.enviews.ENPlayView
         android:id="@+id/start"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginBottom="36dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
     <ImageView
-        android:visibility="visible"
+        android:visibility="gone"
         android:id="@+id/fullscreen"
         android:layout_width="@dimen/dp_30"
         android:layout_height="@dimen/dp_30"
