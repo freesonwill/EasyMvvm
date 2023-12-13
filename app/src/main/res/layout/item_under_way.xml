@@ -20,6 +20,7 @@
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:orientation="horizontal">
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/txtCompetition"
@@ -35,6 +36,8 @@
                 android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
                 android:layout_marginLeft="@dimen/dp_10"
+                android:layout_gravity="center"
+                android:gravity="center"
                 android:orientation="horizontal">
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txtMatchStatus"
@@ -61,20 +64,19 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/txtMatchTime"
                 android:text="12/10/17:20"
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/sp_11"
                 android:textColor="@color/c_94999f"/>
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:id="@+id/txtMatchIsStart"
-                    android:visibility="gone"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="18dp"
+                    android:visibility="gone"
                     android:orientation="horizontal"
                     android:paddingLeft="5dp"
-                    android:paddingBottom="@dimen/dp_2"
                     android:paddingRight="@dimen/dp_5"
-                    android:paddingTop="2dp"
                     android:gravity="center"
                     android:background="@drawable/shape_24_ff6f7fa">
                     <androidx.appcompat.widget.AppCompatImageView

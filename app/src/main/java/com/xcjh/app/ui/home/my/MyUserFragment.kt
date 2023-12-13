@@ -178,41 +178,41 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
                 if (user!!.lvNum.equals("1")){
 //                    mDatabind.ivMyLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_yi))
 
-                    mDatabind.ivIvLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.icon_level_yi))
+                    mDatabind.ivIvLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.ic_user_level1))
 
                 }else if (user!!.lvNum.equals("2")){
 //                    mDatabind.ivMyLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_er))
 
-                    mDatabind.ivIvLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.icon_level_er))
+                    mDatabind.ivIvLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.ic_user_level2))
 
                 }else if (user!!.lvNum.equals("3")){
 //                    mDatabind.ivMyLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_san))
 
-                    mDatabind.ivIvLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.icon_level_san))
+                    mDatabind.ivIvLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.ic_user_level3))
                 }else if (user!!.lvNum.equals("4")){
 //                    mDatabind.ivMyLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_si))
 
-                    mDatabind.ivIvLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.icon_level_si))
+                    mDatabind.ivIvLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.ic_user_level4))
                 }else if (user!!.lvNum.equals("5")){
 //                    mDatabind.ivMyLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_wu))
 
-                    mDatabind.ivIvLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.icon_level_wu))
+                    mDatabind.ivIvLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.ic_user_level5))
                 }else if (user!!.lvNum.equals("6")){
 //                    mDatabind.ivMyLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_liu))
 
-                    mDatabind.ivIvLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.icon_level_liu))
+                    mDatabind.ivIvLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.ic_user_level6))
                 }else if (user!!.lvNum.equals("7")){
 //                    mDatabind.ivMyLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_qi))
 
-                    mDatabind.ivIvLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.icon_level_qi))
+                    mDatabind.ivIvLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.ic_user_level7))
                 }else if (user!!.lvNum.equals("8")){
 //                    mDatabind.ivMyLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_ba))
 
-                    mDatabind.ivIvLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.icon_level_ba))
+                    mDatabind.ivIvLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.ic_user_level8))
                 }else  {
 //                    mDatabind.ivMyLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.level_yi))
 
-                    mDatabind.ivIvLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.icon_level_yi))
+                    mDatabind.ivIvLevel.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.ic_user_level1))
                 }
 
             }else{

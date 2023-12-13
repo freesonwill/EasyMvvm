@@ -38,7 +38,6 @@
                     android:id="@+id/ivMyHead"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    app:border_width="@dimen/dp_2"
                     android:scaleType="fitXY"
                     app:border_color="@color/c_80fffff"
                     app:srcCompat="@drawable/my_icon_title"
@@ -81,7 +80,7 @@
                             android:id="@+id/txtMyNum"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/dp_8"
+                            android:layout_marginLeft="3dp"
                             android:textColor="@color/c_575762"
                             android:textSize="@dimen/sp_12"
                             android:text="黄金2"/>

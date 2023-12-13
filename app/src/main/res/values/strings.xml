@@ -370,5 +370,6 @@
     <string name="pack_up">收起</string>
     <string name="anchor_no_live">主播暂未开播</string>
     <string name="dialog_txt_goto">前往</string>
+    <string name="popup_txt_level_name">正在直播%s</string>
 
 </resources>

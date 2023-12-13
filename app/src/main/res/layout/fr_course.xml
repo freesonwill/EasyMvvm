@@ -25,8 +25,7 @@
                 android:id="@+id/magicIndicator"
                 android:layout_width="228dp"
                 android:layout_marginBottom="@dimen/dp_8"
-                android:layout_height="match_parent"
-                />
+                android:layout_height="match_parent" />
         </RelativeLayout>
 
         <com.flyco.tablayout.SlidingTabLayout

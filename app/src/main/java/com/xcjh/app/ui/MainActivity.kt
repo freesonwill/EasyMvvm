@@ -1,28 +1,24 @@
 package com.xcjh.app.ui
 
 
-import android.annotation.SuppressLint
+
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.os.VibrationEffect
 import android.os.Vibrator
-import android.os.VibratorManager
 import android.view.LayoutInflater
 import android.view.View
 import androidx.activity.OnBackPressedCallback
-import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
-import com.drake.brv.utils.models
-import com.google.gson.Gson
 import com.king.app.dialog.AppDialog
 import com.king.app.updater.AppUpdater
 import com.king.app.updater.http.OkHttpManager
-import com.kongzue.dialogx.dialogs.PopNotification
-import com.kongzue.dialogx.interfaces.OnBindView
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
 import com.lxj.xpopup.enums.PopupAnimation
@@ -32,19 +28,18 @@ import com.xcjh.app.adapter.PushCardPopup
 import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseActivity
 import com.xcjh.app.bean.BeingLiveBean
-import com.xcjh.app.bean.MsgBean
 import com.xcjh.app.databinding.ActivityHomeBinding
+import com.xcjh.app.ui.details.MatchDetailActivity
 import com.xcjh.app.ui.home.home.HomeFragment
 import com.xcjh.app.ui.home.msg.MsgFragment
 import com.xcjh.app.ui.home.my.MyUserFragment
 import com.xcjh.app.ui.home.schedule.ScheduleFragment
-import com.xcjh.app.ui.login.LoginActivity
 import com.xcjh.app.utils.CacheUtil
 import com.xcjh.app.utils.judgeLogin
 import com.xcjh.app.vm.MainVm
 import com.xcjh.app.websocket.MyWsManager
 import com.xcjh.app.websocket.listener.NoReadMsgPushListener
-import com.xcjh.base_lib.utils.dp2px
+import com.xcjh.app.websocket.listener.OtherPushListener
 import com.xcjh.base_lib.utils.initActivity
 import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.view.clickNoRepeat
@@ -57,13 +52,15 @@ import java.util.*
  *
  */
 class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
-    // 创建 Timer 对象并调度定时任务
+    // 创建 Timer 对象并调度定时任务 1分钟刷新一下数据
     private var timer: Timer? = null
     val delay: Long = 0  // 延迟时间，单位为毫秒
     val period: Long = 1 * 60 * 1000 // 执行间隔时间，单位为毫秒（这里设置为1分钟）
     private var mAppUpdater: AppUpdater? = null
     private var currentPage:Int=0
     var popup : BasePopupView?=null
+    //是否显示卡片
+    var isShowPush:Boolean=true
 
     private var mFragList: ArrayList<Fragment> = arrayListOf(
         HomeFragment(),
@@ -95,12 +92,9 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
 
         //点击首页
         mDatabind.llHomeSelectMain.setOnClickListener {
-
-//            showDialog()
             if(currentPage!=0){
                 if(CacheUtil.isNavigationVibrate()){
                     vibrate(this)
-
                 }
 
             }
@@ -130,6 +124,12 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         }
         //点击我的
         mDatabind.llHomeSelectMine.setOnClickListener {
+            if(popup!=null){
+                if( popup!!.isShow){
+                    popup!!.dismiss()
+                }
+            }
+
             if(currentPage!=3){
                 if(CacheUtil.isNavigationVibrate()){
                     vibrate(this)
@@ -183,6 +183,18 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
 
 
         })
+        //获取到要推送的比赛
+        MyWsManager.getInstance(this)?.setOtherPushListener(javaClass.name,object :
+            OtherPushListener{
+            override fun onAnchorStartLevel(beingLiveBean: BeingLiveBean) {
+                super.onAnchorStartLevel(beingLiveBean)
+                 if(currentPage!=3&&CacheUtil.isLogin()){
+                     showDialog(beingLiveBean)
+                 }
+
+            }
+            })
+
     }
     fun initMsgNums(nums:String){
         if (nums.toInt()>0){
@@ -345,27 +357,21 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         mDatabind.viewPager.currentItem = page
     }
 
-    fun showDialog(){
-//       var dilog= PopNotification
-//           .show(object : OnBindView<PopNotification>(R.layout.dialog_push_card){
-//            override fun onBind(dialog: PopNotification?, v: View?) {
-//
-//            }
-//        }).setRadius(42f)
-//           .setRootPadding(dp2px(12),dp2px(0),dp2px(12),dp2px(0))
-//           .setMargin(dp2px(12),dp2px(0),dp2px(12),dp2px(0))
-//           .showLong()
-        var pushCardPopup=PushCardPopup(this, BeingLiveBean())
+    fun showDialog(beingLiveBean:BeingLiveBean){
+        var pushCardPopup=PushCardPopup(this, beingLiveBean)
         if(popup!=null){
            if( popup!!.isShow){
                popup!!.dismiss()
            }
         }
+        if(CacheUtil.isAnchorVibrate()){
+            vibrate(this)
+        }
 
         popup=XPopup.Builder(this)
             .isDestroyOnDismiss(true)
             .popupAnimation(PopupAnimation.TranslateFromTop)
-            .offsetY(80)
+            .offsetY(90)
             .hasShadowBg(false)
             .isTouchThrough(true)
             .isLightStatusBar(true)
@@ -379,12 +385,41 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
 
             override fun selectGoto(beingLiveBean: BeingLiveBean) {
                 popup!!.dismiss()
+                MatchDetailActivity.open(matchType =beingLiveBean.matchType, matchId = beingLiveBean.matchId,
+                                           matchName = "${beingLiveBean.homeTeamName}VS${beingLiveBean.awayTeamName}",
+                                           anchorId = beingLiveBean.userId)
+
             }
 
+        }
+        if(popup!=null){
+            if( popup!!.isShow){
+                Handler(Looper.getMainLooper()).postDelayed(
+                    Runnable {
+                        if(popup!=null){
+                            if( popup!!.isShow){
+                                popup!!.dismiss()
+                            }
+                        }
+                    }, 3000)
+            }
         }
 
 
     }
 
+    override fun onResume() {
+        super.onResume()
+        isShowPush=true
+    }
 
+    override fun onStop() {
+        super.onStop()
+        isShowPush=false
+        if(popup!=null){
+            if( popup!!.isShow){
+                popup!!.dismiss()
+            }
+        }
+    }
 }

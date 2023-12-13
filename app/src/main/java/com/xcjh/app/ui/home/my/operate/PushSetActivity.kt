@@ -39,7 +39,7 @@ class PushSetActivity : BaseActivity<PushSetVm, ActivityPushSetBinding>() {
 
             if(!XXPermissions.isGranted(this, Permission.POST_NOTIFICATIONS)){
                 getXXPermissionsPush(this){
-
+                    setDate()
                     mViewModel.getInfoPush()
                 }
 

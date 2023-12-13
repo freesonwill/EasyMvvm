@@ -254,7 +254,7 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
             if(it.size>=1){
                 try {
 
-                    if(mDatabind.rcvRecommend.mutable.size>=1){
+                    if(mDatabind.rcvRecommend.mutable.size>1){
                         if (mDatabind.rcvRecommend.mutable[1] is MatchBean) {
                             (mDatabind.rcvRecommend.mutable[1] as MatchBean).list.clear()
                             (mDatabind.rcvRecommend.mutable[1] as MatchBean).list.addAll(it)

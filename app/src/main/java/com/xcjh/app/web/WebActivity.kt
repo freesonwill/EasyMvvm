@@ -165,7 +165,7 @@ class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
             var sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
             var dateTimeString:String=""
             var title:String=""
-            title="<p style=\" color: #37373D; font-size: 18px; font-weight: bold;\">${it.title}</p>"
+            title="<p style=\" color: #37373D; font-size: 18px; font-weight: bold; margin: 0;\">${it.title}</p>"
             if(it.publishTime.isNotEmpty()){
                 dateTimeString= sdf.format(Date(it.publishTime.toLong()))
                 title += "<div style=\" display: flex; align-items: center;\"> " +
