@@ -3,7 +3,11 @@ package com.xcjh.app.ui.home.home.tab
 import android.os.Bundle
 import android.util.Log
 import android.view.ViewGroup
+import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.appcompat.widget.AppCompatTextView
+import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.drake.brv.utils.*
 import com.drake.statelayout.StateConfig
@@ -18,6 +22,7 @@ import com.xcjh.app.bean.MainTxtBean
 import com.xcjh.app.databinding.FragmentCompetitionTypeListBinding
 import com.xcjh.app.databinding.ItemMainLiveListBinding
 import com.xcjh.app.ui.details.MatchDetailActivity
+import com.xcjh.app.view.NestedScrollView
 import com.xcjh.app.websocket.MyWsManager
 import com.xcjh.app.websocket.bean.LiveStatus
 import com.xcjh.app.websocket.listener.LiveStatusListener
@@ -52,12 +57,13 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
         })
 
         mDatabind.state.apply {
-            StateConfig.setRetryIds(R.id.ivEmptyIcon, R.id.txtEmptyName)
+            StateConfig.setRetryIds(R.id.ivEmptyIcon, R.id.txtEmptyName )
             onEmpty {
-//                this.findViewById<TextView>(R.id.txtEmptyName) .setOnClickListener {
-//
-//
-//                }
+                var icon=this.findViewById<AppCompatImageView>(R.id.ivEmptyIcon)
+                var txt=this.findViewById<AppCompatTextView>(R.id.txtEmptyName)
+                icon.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.zwt_zwzb))
+                txt.text=resources.getString(R.string.empty_txt_no_anchor)
+
             }
 
         }

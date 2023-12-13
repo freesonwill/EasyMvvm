@@ -78,13 +78,13 @@
         android:textColor="@color/c_ffffff"
         android:paddingRight="@dimen/dp_8"
         android:paddingLeft="@dimen/dp_8"
-        android:paddingTop="3dp"
-        android:background="@drawable/shape_r4_ff5151"
-        android:paddingBottom="3dp"
-        android:layout_marginEnd="@dimen/dp_4"
-        android:layout_marginTop="@dimen/dp_4"
-        android:layout_alignParentEnd="true"
         android:visibility="gone"
+        android:paddingTop="4dp"
+        android:background="@drawable/shape_r33_34a853"
+        android:paddingBottom="4dp"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_8"
+
         android:text="@string/main_txt_on_the_air"/>
 
 

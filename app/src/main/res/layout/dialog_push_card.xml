@@ -17,6 +17,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+
+
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/ivCardClose"
                 android:layout_width="@dimen/dp_18"
@@ -34,13 +36,31 @@
                 android:layout_centerVertical="true"
                 android:gravity="center"
                 android:orientation="horizontal">
-                <com.xcjh.app.utils.nice.NiceImageView
-                    android:id="@+id/ivCardHead"
-                    android:layout_width="@dimen/dp_48"
-                    android:layout_height="@dimen/dp_48"
-                    app:is_circle="true"
-                    android:scaleType="fitXY"
-                    app:srcCompat="@drawable/my_icon_title"/>
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <com.airbnb.lottie.LottieAnimationView
+                        android:id="@+id/stateLoadingImg"
+                        android:layout_width="65dp"
+                        android:layout_height="65dp"
+                        app:lottie_autoPlay="false"
+                        app:lottie_loop="true"
+                        android:scaleType="centerCrop"
+                        app:lottie_fileName="xxts_head.json"
+                        android:layout_centerHorizontal="true" />
+                    <com.xcjh.app.utils.nice.NiceImageView
+                        android:id="@+id/ivCardHead"
+                        android:layout_width="@dimen/dp_48"
+                        android:layout_height="@dimen/dp_48"
+                        app:is_circle="true"
+                        android:layout_centerInParent="true"
+                        android:scaleType="fitXY"
+                        app:srcCompat="@drawable/my_icon_title"/>
+
+                </RelativeLayout>
+
+
+
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

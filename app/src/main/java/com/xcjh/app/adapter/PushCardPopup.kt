@@ -3,6 +3,7 @@ package com.xcjh.app.adapter
 import android.content.Context
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
+import com.airbnb.lottie.LottieAnimationView
 import com.bumptech.glide.Glide
 import com.lxj.xpopup.core.PositionPopupView
 import com.xcjh.app.R
@@ -23,10 +24,12 @@ class PushCardPopup(content: Context,var beingLiveBean: BeingLiveBean) : Positio
         var  txtCardName=findViewById<AppCompatTextView>(R.id.txtCardName)
         var  txtCardMatch=findViewById<AppCompatTextView>(R.id.txtCardMatch)
         var  ivCardHead=findViewById<NiceImageView>(R.id.ivCardHead)
+        var  stateLoadingImg=findViewById<LottieAnimationView>(R.id.stateLoadingImg)
+        stateLoadingImg.playAnimation()
         Glide.with(context)
             .load(beingLiveBean.userLogo) // 替换为您要加载的图片 URL
-            .error(R.drawable.my_icon_title)
-            .placeholder(R.drawable.my_icon_title)
+            .error(R.drawable.default_anchor_icon)
+            .placeholder(R.drawable.default_anchor_icon)
             .into(ivCardHead)
         txtCardName.text=beingLiveBean.nickName
             //比赛类型 1足球，2篮球

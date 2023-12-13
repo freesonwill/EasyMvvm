@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="80dp"
+    android:id="@+id/rlRoot"
     android:paddingLeft="@dimen/dp_15"
     android:paddingRight="@dimen/dp_15"
     android:background="@drawable/shape_r10"
@@ -17,8 +18,6 @@
             android:id="@+id/llFollowLeft"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
-            android:layout_marginRight="105dp"
             android:orientation="horizontal" >
 
             <com.xcjh.app.utils.nice.NiceImageView
@@ -31,22 +30,57 @@
                 app:srcCompat="@drawable/load_round" />
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/txtFollowName"
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:id="@+id/llMyShow"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/c_37373d"
-                        android:textSize="15sp"
-                        android:singleLine="true"
-                        android:text="桑稚isweet桑稚桑"
-                        android:ellipsize="end"/>
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/txtFollowName"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/c_37373d"
+                            android:textSize="15sp"
+                            android:singleLine="true"
+                            android:ellipsize="end"
+                            android:text="" />
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:orientation="horizontal">
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/txtMyLiveType"
+                                android:layout_width="@dimen/dp_52"
+                                android:layout_height="18dp"
+                                android:textSize="@dimen/sp_13"
+                                android:gravity="center"
+                                android:layout_marginLeft="9dp"
+                                android:text="@string/main_txt_on_the_air"
+                                android:textColor="@color/c_34a853"/>
+                            <com.airbnb.lottie.LottieAnimationView
+                                android:id="@+id/stateLoadingImg"
+                                android:layout_width="@dimen/dp_12"
+                                android:layout_height="12dp"
+                                android:layout_marginLeft="4dp"
+                                app:lottie_autoPlay="false"
+                                app:lottie_loop="true"
+                                android:scaleType="centerCrop"
+                                app:lottie_fileName="schedule_live.json"
+                                android:layout_centerHorizontal="true" />
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/txtFollowFansNum"
                         android:layout_width="wrap_content"
@@ -59,17 +93,7 @@
                         android:textColor="@color/c_94999f"/>
 
                 </LinearLayout>
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/txtMyLiveType"
-                    android:layout_width="@dimen/dp_56"
-                    android:layout_height="18dp"
-                    android:textSize="@dimen/sp_10"
-                    android:gravity="center"
-                    android:visibility="gone"
-                    android:layout_marginLeft="2dp"
-                    android:background="@drawable/shape_r4_ff5151"
-                    android:text="@string/main_txt_on_the_air"
-                    android:textColor="@color/c_ffffff"/>
+
 
             </LinearLayout>
 

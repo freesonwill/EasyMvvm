@@ -30,9 +30,9 @@ class ImageTitleAdapter(data: MutableList<AdvertisementBanner>?)  : BannerAdapte
         if(data!=null){
             Glide.with(holder!!.itemView)
                 .load(data!!.imgUrl) // 替换为您要加载的图片 URL
-                .transform(RoundedCorners(appContext.dp2px(8))) // 设置圆角半径，单位为像素
-                .error(R.drawable.main_banner_load)
-                .placeholder(R.drawable.main_banner_load)
+                .transform(RoundedCorners(appContext.dp2px(10))) // 设置圆角半径，单位为像素
+                .error(R.drawable.zwt_banner)
+                .placeholder(R.drawable.zwt_banner)
                 .into(holder.imageView!!)
         }
 

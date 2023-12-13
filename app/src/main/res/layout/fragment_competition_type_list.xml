@@ -14,9 +14,6 @@
 
         <com.scwang.smart.refresh.layout.SmartRefreshLayout
             android:id="@+id/smartCommon"
-            android:layout_marginTop="12dp"
-            android:layout_marginRight="@dimen/dp_12"
-            android:layout_marginLeft="@dimen/dp_12"
             android:layout_width="match_parent"
             android:layout_height="match_parent" >
             <com.scwang.smart.refresh.header.ClassicsHeader
@@ -29,6 +26,9 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rcvRecommend"
+                    android:layout_marginRight="@dimen/dp_12"
+                    android:layout_marginLeft="@dimen/dp_12"
+                    android:layout_marginTop="12dp"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:overScrollMode="never" />

@@ -57,14 +57,12 @@ class ViewingHistoryListActivity : BaseActivity<ViewingHistoryListVm, ActivityVi
                     R.layout.item_main_live_list -> {
                         var bindingItem=getBinding<ItemMainLiveListBinding>()
                         var  bean=_data as BeingLiveBean
-//                        bindingItem.txtLiveIsBroadcast.visibility=ViewGroup.VISIBLE
-//                        if(bean.liveStatus.equals("2")){
-//                            bindingItem.txtLiveIsBroadcast.background=(ContextCompat.getDrawable(this@ViewingHistoryListActivity,R.drawable.shape_r4_ff5151))
-//                            bindingItem.txtLiveIsBroadcast.text=resources.getString(R.string.main_txt_on_the_air)
-//                        }else{
-//                            bindingItem.txtLiveIsBroadcast.background=(ContextCompat.getDrawable(this@ViewingHistoryListActivity,R.drawable.shape_r4_8a91a0))
-//                            bindingItem.txtLiveIsBroadcast.text=resources.getString(R.string.live_txt_0ff_air)
-//                        }
+//
+                        if(bean.liveStatus.equals("2")){
+                            bindingItem.txtLiveIsBroadcast.visibility=ViewGroup.VISIBLE
+                        }else{
+                            bindingItem.txtLiveIsBroadcast.visibility=ViewGroup.GONE
+                        }
 
                         Glide.with(context)
                             .load(bean.titlePage) // 替换为您要加载的图片 URL

@@ -472,10 +472,9 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                                             binding.txtMatchStatus.visibility=View.GONE
                                             Glide.with(requireContext())
                                                 .load(matchBean.awayLogo) // 替换为您要加载的图片 URL
-                                                .error(R.drawable.default_team_logo)
-                                                .placeholder(R.drawable.default_team_logo)
+                                                .error(R.drawable.zwt_basketball)
+                                                .placeholder(R.drawable.zwt_basketball)
                                                 .into(binding.txtWayHome)
-
                                             //客队
                                             Glide.with(requireContext())
                                                 .load(matchBean.homeLogo) // 替换为您要加载的图片 URL
@@ -532,16 +531,16 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
 
                                             Glide.with(requireContext())
                                                 .load(matchBean.homeLogo) // 替换为您要加载的图片 URL
-                                                .error(R.drawable.default_team_logo)
-                                                .placeholder(R.drawable.default_team_logo)
+                                                .error(R.drawable.zwt_footboll)
+                                                .placeholder(R.drawable.zwt_footboll)
                                                 .into(binding.txtWayHome)
 
 
                                             //客队
                                             Glide.with(requireContext())
                                                 .load(matchBean.awayLogo) // 替换为您要加载的图片 URL
-                                                .error(R.drawable.default_team_logo)
-                                                .placeholder(R.drawable.default_team_logo)
+                                                .error(R.drawable.zwt_footboll)
+                                                .placeholder(R.drawable.zwt_footboll)
                                                 .into(binding.ivGuestIcon)
 
 

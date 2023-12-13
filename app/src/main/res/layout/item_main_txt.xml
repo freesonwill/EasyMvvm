@@ -30,20 +30,19 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:visibility="gone"
-        android:layout_marginTop="@dimen/dp_90"
+        android:layout_marginTop="27dp"
         android:layout_centerHorizontal="true"
         android:orientation="vertical">
         <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="@dimen/dp_80"
-            android:layout_height="@dimen/dp_80"
-            app:srcCompat="@drawable/empty_home"/>
+            android:layout_width="170dp"
+            android:layout_height="130dp"
+            app:srcCompat="@drawable/zwt_zwzb"/>
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/txtNoLive"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/sp_14"
+            android:textSize="@dimen/sp_13"
             android:gravity="center"
-            android:layout_marginTop="12dp"
             android:text="@string/main_txt_no_live"
             android:textColor="@color/c_8a91a0"/>
     </LinearLayout>

@@ -371,5 +371,6 @@
     <string name="anchor_no_live">主播暂未开播</string>
     <string name="dialog_txt_goto">前往</string>
     <string name="popup_txt_level_name">正在直播%s</string>
+    <string name="empty_txt_no_anchor">暂无主播</string>
 
 </resources>
