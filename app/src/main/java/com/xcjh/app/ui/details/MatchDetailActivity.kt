@@ -4,7 +4,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.text.method.LinkMovementMethod
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
@@ -20,7 +19,6 @@ import com.xcjh.app.adapter.ViewPager2Adapter
 import com.xcjh.app.appViewModel
 import com.xcjh.app.bean.AnchorListBean
 import com.xcjh.app.bean.MatchDetailBean
-import com.xcjh.app.bean.TabBean
 import com.xcjh.app.databinding.ActivityMatchDetailBinding
 import com.xcjh.app.isTopActivity
 import com.xcjh.app.net.ApiComService
@@ -28,6 +26,7 @@ import com.xcjh.app.ui.chat.ChatActivity
 import com.xcjh.app.ui.details.common.GSYBaseActivity
 import com.xcjh.app.ui.details.fragment.*
 import com.xcjh.app.utils.*
+import com.xcjh.app.view.balldetail.ControlShowListener
 import com.xcjh.app.websocket.MyWsManager
 import com.xcjh.app.websocket.bean.LiveStatus
 import com.xcjh.app.websocket.bean.ReceiveChangeMsg
@@ -40,7 +39,6 @@ import com.xcjh.base_lib.utils.view.textString
 import com.xcjh.base_lib.utils.view.visibleOrGone
 import java.math.BigDecimal
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.math.abs
 
 /**
@@ -131,7 +129,10 @@ class MatchDetailActivity :
             mDatabind.toolbar.setBackgroundResource(if (isHasAnchor) R.color.translet else R.drawable.bg_top_basketball)
         }
         startTimeAnimator(mDatabind.tvMatchTimeS)
-        showHideLive()
+        mDatabind.apply {
+            topLiveTitle.visibleOrGone(isHasAnchor)
+        }
+
     }
 
     private fun showHideLive(isClose: Boolean = false) {
@@ -315,6 +316,7 @@ class MatchDetailActivity :
                     isHasAnchor = true
                     isShowVideo = true
                 }
+                mDatabind.tvToShare.visibleOrGone(true)
                 if (isShowVideo) {
                     startVideo(anchor.playUrl)
                 } else {
@@ -425,7 +427,7 @@ class MatchDetailActivity :
         //先停
         // stopVideo()
         //再开
-        mDatabind.videoPlayer.setUp(url)
+        mDatabind.videoPlayer.setUp(url, false, "")
         mDatabind.videoPlayer.startPlayLogic()
         mDatabind.videoPlayer.setGSYStateUiListener {
             //it.toString().loge("======")
@@ -434,8 +436,26 @@ class MatchDetailActivity :
                 GSYVideoType.setShowType(GSYVideoType.SCREEN_TYPE_FULL)
             }
         }
+        mDatabind.videoPlayer.setControlListener(object :ControlShowListener{
+            override fun onShow() {
+                if (isShowVideo){
+                    mDatabind.topLiveTitle.visibleOrGone(true)
+                    mDatabind.tvToShare.visibleOrGone(true)
+                    mDatabind.tvSignal.visibleOrGone(true)
+                }
+            }
+            override fun onHide() {
+                if (isShowVideo){
+                    mDatabind.topLiveTitle.visibleOrGone(false)
+                    mDatabind.tvToShare.visibleOrGone(false)
+                    mDatabind.tvSignal.visibleOrGone(false)
+                }
+            }
+        })
     }
-
+    override fun onPlayError(url: String, vararg objects: Any) {
+        "video error=====================".loge("====")
+    }
     //数据处理
     override fun createObserver() {
         //比赛详情接口返回监听处理
@@ -492,7 +512,6 @@ class MatchDetailActivity :
             if (it != null) {
                 this.anchorId = it.id
                 mDatabind.tvTabAnchorNick.text = it.nickName  //主播昵称
-                mDatabind.tvDetailTabAnchorFans.text = it.fansCount //主播粉丝数量
 
                 setFocusUI(it.focus)
                 Glide.with(this).load(it.head).placeholder(mDatabind.ivTabAnchorAvatar.drawable)
@@ -575,6 +594,7 @@ class MatchDetailActivity :
     private fun changeUI() {
         showHideLive()
         mDatabind.cslAnchor.visibleOrGone(isHasAnchor)
+        mDatabind.tvDetailTabAnchorFans.text = anchor?.hotValue //热度
         if (matchType == "1") {
             mDatabind.toolbar.setBackgroundResource(if (isHasAnchor) R.color.translet else R.drawable.bg_top_football)
         } else {

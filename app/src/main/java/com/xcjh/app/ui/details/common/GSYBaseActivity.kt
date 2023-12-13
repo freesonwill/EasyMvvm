@@ -1,7 +1,6 @@
 package com.xcjh.app.ui.details.common
 
 import android.content.res.Configuration
-import android.util.Log
 import androidx.databinding.ViewDataBinding
 import com.shuyu.gsyvideoplayer.GSYVideoManager
 import com.shuyu.gsyvideoplayer.builder.GSYVideoOptionBuilder
@@ -38,6 +37,8 @@ abstract class GSYBaseActivity<VM : BaseViewModel, DB : ViewDataBinding,T : GSYB
                 clickForFullScreen()
             }
         }
+        gSYVideoPlayer!!.isNeedShowWifiTip = true
+        gSYVideoPlayer!!.dismissControlTime = 3000
     }
 
     /**

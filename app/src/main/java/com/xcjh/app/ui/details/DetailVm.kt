@@ -152,7 +152,7 @@ class DetailVm : BaseViewModel() {
             pageNo = 1
         }
         request({
-            apiService.getNowLive(LiveReq(current = pageNo, size = 10, matchType = type, exceptId = exceptId))
+            apiService.getNowLive(LiveReq(current = pageNo, size = 100, matchType = type, exceptId = exceptId))
         }, {
             pageNo++
             liveList.value = ListDataUiState(

@@ -513,6 +513,7 @@ data class AnchorListBean(
     var userId: String? = null,
     var nickName: String = "",
     var userLogo: String = "",
+    var hotValue: String = "",//热度
     var playUrl: String? = null,//播放地址
     var isSelect: Boolean = false,
 ) : Serializable

@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide
 import com.drake.brv.listener.ItemDifferCallback
 import com.drake.brv.utils.addModels
 import com.drake.brv.utils.bindingAdapter
+import com.drake.brv.utils.linear
 import com.drake.brv.utils.models
 import com.drake.brv.utils.mutable
 import com.drake.brv.utils.setup
@@ -62,7 +63,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
            // adapter=mAdapter
             distance(0, 0, 0, 16)
         }
-        mDatabind.rec.setup {
+        mDatabind.rec.linear().setup {
             addType<MatchBean>(R.layout.item_sch_all)
 
             onBind {
@@ -171,7 +172,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
                                         context,
-                                        R.color.c_34a853
+                                        R.color.c_e6820c
                                     )
                                 )
                                 binding.tvvs.setTextColor(
@@ -197,7 +198,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
                                         context,
-                                        R.color.c_34a853
+                                        R.color.c_e6820c
                                     )
                                 )
                                 binding.tvvs.setTextColor(
@@ -218,7 +219,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
                                         context,
-                                        R.color.c_34a853
+                                        R.color.c_e6820c
                                     )
                                 )
                                 binding.tvvs.setTextColor(
@@ -243,7 +244,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
                                         context,
-                                        R.color.c_34a853
+                                        R.color.c_e6820c
                                     )
                                 )
                                 binding.tvvs.setTextColor(
@@ -269,7 +270,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
                                         context,
-                                        R.color.c_34a853
+                                        R.color.c_e6820c
                                     )
                                 )
                                 binding.tvvs.setTextColor(
@@ -292,7 +293,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
                                         context,
-                                        R.color.c_F7DA73
+                                        R.color.c_999999
                                     )
                                 )
                                 binding.tvvs.setTextColor(
@@ -477,13 +478,13 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
                                         context,
-                                        R.color.c_34a853
+                                        R.color.c_e6820c
                                     )
                                 )
                                 binding.tvvs.setTextColor(
                                     ContextCompat.getColor(
                                         context,
-                                        R.color.c_34a853
+                                        R.color.c_e6820c
                                     )
                                 )
                                 binding.tvstatus.text =
@@ -501,7 +502,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
                                         context,
-                                        R.color.c_34a853
+                                        R.color.c_e6820c
                                     )
                                 )
                                 binding.tvvs.setTextColor(
@@ -528,7 +529,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
                                         context,
-                                        R.color.c_34a853
+                                        R.color.c_e6820c
                                     )
                                 )
                                 binding.tvvs.setTextColor(
@@ -552,7 +553,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
                                         context,
-                                        R.color.c_34a853
+                                        R.color.c_e6820c
                                     )
                                 )
                                 binding.tvvs.setTextColor(
@@ -578,7 +579,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
                                         context,
-                                        R.color.c_34a853
+                                        R.color.c_e6820c
                                     )
                                 )
                                 binding.tvvs.setTextColor(
@@ -602,7 +603,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
                                         context,
-                                        R.color.c_34a853
+                                        R.color.c_e6820c
                                     )
                                 )
                                 binding.tvvs.setTextColor(
@@ -628,7 +629,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
                                         context,
-                                        R.color.c_34a853
+                                        R.color.c_e6820c
                                     )
                                 )
                                 binding.tvvs.setTextColor(
@@ -652,7 +653,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
                                         context,
-                                        R.color.c_34a853
+                                        R.color.c_e6820c
                                     )
                                 )
                                 binding.tvvs.setTextColor(
@@ -673,7 +674,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
                                         context,
-                                        R.color.c_F7DA73
+                                        R.color.c_999999
                                     )
                                 )
                                 binding.tvvs.setTextColor(
@@ -694,7 +695,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
                                         context,
-                                        R.color.c_8a91a0
+                                        R.color.c_999999
                                     )
                                 )
                                 binding.tvvs.setTextColor(
@@ -743,7 +744,26 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                             distance(30, 30, 0, 0)
                         }
                     }
+                    binding.stateLoadingImg.addAnimatorListener(object : Animator.AnimatorListener {
 
+                        override fun onAnimationStart(animation: Animator) {
+                            // 在动画开始时执行的操作（可选）
+                        }
+
+                        override fun onAnimationEnd(animation: Animator) {
+                            // 在动画结束时重新开始动画
+                            binding.stateLoadingImg.playAnimation()
+                        }
+
+                        override fun onAnimationCancel(animation: Animator) {
+                            // 在动画取消时执行的操作（可选）
+                        }
+
+                        override fun onAnimationRepeat(animation: Animator) {
+                            // 在动画结束时重新开始动画
+                        }
+                    })
+                    binding.stateLoadingImg.playAnimation()
                     binding.rec.setup {
                         addType<AnchorBean>(R.layout.item_js)
                         onBind {
@@ -770,7 +790,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                     binding.conlive.visibility = View.GONE
                 }
 
-                binding.tvcollect.setOnClickListener {
+                binding.relcoolect.setOnClickListener {
                     mview = binding.tvcollect
                     index = modelPosition
                     if (item!!.focus) {
@@ -806,11 +826,11 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
             }
             itemDifferCallback = object : ItemDifferCallback {
                 override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
-                    return oldItem == newItem
+                    return (oldItem as MatchBean).matchId == (newItem as MatchBean).matchId
                 }
 
                 override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
-                    return oldItem == newItem
+                    return (oldItem as MatchBean).homeHalfScore == (newItem as MatchBean).homeHalfScore
                 }
 
                 override fun getChangePayload(oldItem: Any, newItem: Any): Any? {

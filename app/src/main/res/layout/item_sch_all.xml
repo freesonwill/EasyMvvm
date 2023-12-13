@@ -257,6 +257,7 @@
                 android:id="@+id/linzb"
                 android:layout_width="wrap_content"
                 android:orientation="horizontal"
+                android:gravity="center_vertical"
                 android:layout_marginTop="@dimen/dp_10"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
@@ -277,6 +278,8 @@
                     android:layout_width="@dimen/dp_12"
                     android:layout_height="12dp"
                     android:layout_marginLeft="4dp"
+                    app:lottie_loop="true"
+                    app:lottie_autoPlay="true"
                     app:layout_constraintVertical_chainStyle="packed"
                     app:lottie_fileName="schedule_live.json"
                     />
