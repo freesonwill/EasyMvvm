@@ -245,9 +245,8 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
             mDatabind.ivMyAdvertising.visibility=View.VISIBLE
             Glide.with(requireContext())
                 .load(it.imgUrl) // 替换为您要加载的图片 URL
-                .transform(RoundedCorners(appContext.dp2px(8))) // 设置圆角半径，单位为像素
-                .error(R.drawable.main_banner_load)
-                .placeholder(R.drawable.main_banner_load)
+                .error(R.drawable.zwt_banner)
+                .placeholder(R.drawable.zwt_banner)
                 .into(mDatabind.ivMyAdvertising)
         }
         //获取广告失败

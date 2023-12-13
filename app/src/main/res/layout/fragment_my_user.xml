@@ -112,7 +112,7 @@
                 android:layout_height="80dp"
                 android:scaleType="centerCrop"
                 android:layout_marginBottom="20dp"
-                app:srcCompat="@drawable/app_bg"
+                app:srcCompat="@drawable/zwt_banner"
                 app:corner_radius="@dimen/dp_8"/>
             <LinearLayout
                 android:layout_width="match_parent"
