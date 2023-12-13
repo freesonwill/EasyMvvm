@@ -856,7 +856,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                         binding.conlive.visibility = View.GONE
                     }
 
-                    binding.tvcollect.setOnClickListener {
+                    binding.relcoolect.setOnClickListener {
                         mview = binding.tvcollect
                         index = modelPosition
                         if (item!!.focus) {
