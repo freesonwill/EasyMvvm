@@ -116,6 +116,7 @@ class DetailChatFragment(
     @SuppressLint("ClickableViewAccessibility")
     private fun initRcv() {
         mDatabind.smartChat.setEnableLoadMore(false)
+        mDatabind.smartChat.setEnableOverScrollBounce(false)
         mDatabind.smartChat.setOnRefreshListener {
             mViewModel.getHisMsgList(liveId, offset)
         }

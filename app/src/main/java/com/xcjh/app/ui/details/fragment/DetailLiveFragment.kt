@@ -23,6 +23,7 @@ import com.xcjh.app.utils.smartListData
 import com.xcjh.app.utils.smartPageListData
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.dp2px
+import kotlinx.android.synthetic.main.fragment_detail_tab_chat.view.smartChat
 
 /**
  * 其他直播间列表
@@ -72,6 +73,7 @@ class DetailLiveFragment(var matchId: String, var matchType: String) :
                 }
             }
         // 下拉刷新
+        mDatabind.page.setEnableOverScrollBounce(false)
         mDatabind.page.onRefresh {
             mViewModel.getNowLive(true, matchType, matchId)
         }
@@ -97,6 +99,8 @@ class DetailLiveFragment(var matchId: String, var matchType: String) :
         mViewModel.liveList.observe(this) {
             if (it != null) {
                 smartPageListData(it, mDatabind.rcvRecommend, mDatabind.page)
+                mDatabind.page.finishLoadMoreWithNoMoreData()
+              //  mDatabind.page.setEnableFooterFollowWhenNoMoreData(true)
             }
         }
 

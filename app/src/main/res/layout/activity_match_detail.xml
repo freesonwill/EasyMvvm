@@ -77,14 +77,6 @@
                                 android:layout_below="@id/viewTopBg"
                                 android:visibility="visible" />
 
-                            <ImageView
-                                android:id="@+id/ivPlay"
-                                android:layout_width="@dimen/dp_20"
-                                android:layout_height="@dimen/dp_20"
-                                android:layout_alignParentBottom="true"
-                                android:layout_marginStart="@dimen/dp_12"
-                                android:layout_marginBottom="@dimen/dp_35" />
-
                             <TextView
                                 android:id="@+id/tvSignal"
                                 android:layout_width="wrap_content"
@@ -517,7 +509,7 @@
                             android:alpha="1"
                             android:orientation="horizontal"
                             tools:ignore="RelativeOverlap">
-                            <!--直播中标题 直播中会隐藏，点击在显示处理-->
+                            <!--直播中标题 直播中会隐藏，点击显示-->
                             <TextView
                                 android:id="@+id/topLiveTitle"
                                 android:layout_width="match_parent"
@@ -582,11 +574,11 @@
                         <!--分享 直播中会隐藏，点击在显示处理-->
                         <ImageView
                             android:id="@+id/tvToShare"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
                             android:layout_alignParentEnd="true"
                             android:layout_centerVertical="true"
-                            android:layout_marginEnd="@dimen/dp_14"
+                            android:layout_marginEnd="@dimen/dp_10"
                             android:padding="2dp"
                             android:src="@drawable/icon_share" />
                     </RelativeLayout>
