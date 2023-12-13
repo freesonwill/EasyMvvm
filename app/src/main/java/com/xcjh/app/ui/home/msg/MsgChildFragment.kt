@@ -27,8 +27,10 @@ import com.xcjh.base_lib.utils.LogUtils
 import com.xcjh.base_lib.utils.distance
 import com.xcjh.base_lib.utils.vertical
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
@@ -69,9 +71,9 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
         }
         mAdapter.addOnItemChildClickListener(R.id.lltItem) { adapter, view, position ->
             var item: MsgListNewData = mAdapter.getItem(position)!!
-            if (item.dataType==2){//反馈通知
+            if (item.dataType == 2) {//反馈通知
                 com.xcjh.base_lib.utils.startNewActivity<FeedNoticeActivity>()
-            }else{
+            } else {
                 com.xcjh.base_lib.utils.startNewActivity<ChatActivity>() {
                     if (item?.anchorId?.isNotEmpty() == true) {
                         this.putExtra(Constants.USER_ID, item?.anchorId)
@@ -91,7 +93,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
 
                 }
             }
-            item.noReadSum=0
+            item.noReadSum = 0
             mViewModel.getDelMsg(item?.anchorId.toString())
             mAdapter[position] = item!!//更新Item数据
             addDataToList(item!!)
@@ -224,15 +226,15 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
 
         chat.sent = it.sent
         chat.dataType = it.dataType
-        if (it.avatar==null){
-            chat.toAvatar =""
-        }else{
+        if (it.avatar == null) {
+            chat.toAvatar = ""
+        } else {
             chat.toAvatar = it.avatar
         }
-        if (it.dataType==2){
+        if (it.dataType == 2) {
             chat.from = "-1"
             chat.anchorId = "-1"
-        }else{
+        } else {
             chat.from = it.fromId
             chat.anchorId = it.anchorId
         }
@@ -248,9 +250,10 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
 
         mViewModel.msgList.observe(this) {
             if (it.isSuccess) {
-                var hasData=false
+                var hasData = false
 
-                val notInList2 = it.listData.filter { p -> listdata.none { it.anchorId == p.anchorId } }
+                val notInList2 =
+                    it.listData.filter { p -> listdata.none { it.anchorId == p.anchorId } }
                 if (listdata.size > 0) {
                     for (i in 0 until it.listData.size) {
                         for (j in 0 until listdata.size) {
@@ -266,7 +269,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                             }
                         }
                     }
-                }else{
+                } else {
                     updataMsg(it.listData[0])
                 }
 
@@ -285,7 +288,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
     }
 
     fun refshMsg(msg: ReceiveChatMsg) {
-       // addData(msg)
+        // addData(msg)
 
         // updataMsg(listdata)
         var hasMsg = false
@@ -294,7 +297,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                 hasMsg = true
                 var bean = MsgListNewData()
                 if (msg.anchorId == msg.from) {//主播发送的消息
-                    bean.avatar = msg.fromAvatar?:""
+                    bean.avatar = msg.fromAvatar ?: ""
                     if (chatId == msg.anchorId) {
                         bean.noReadSum = 0
                     } else {
@@ -321,7 +324,11 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
 
 
                 mAdapter[i] = bean//更新Item数据
-              //  mAdapter.swap(i, 0)
+                GlobalScope.launch(Dispatchers.Main) {
+                    delay(500) // 延迟1秒
+                    mAdapter.swap(i, 0)
+                }
+                //
                 addDataToList(bean)
                 break
             }
@@ -329,7 +336,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
         if (!hasMsg) {
             var bean = MsgListNewData()
             if (msg.anchorId == msg.from) {//主播发送的消息
-                bean.avatar = msg.fromAvatar?:""
+                bean.avatar = msg.fromAvatar ?: ""
                 if (chatId == msg.anchorId) {
                     bean.noReadSum = 0
                 } else {
@@ -343,14 +350,14 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
             bean.createTime = msg.createTime!!
             bean.msgType = msg.msgType!!
             bean.dataType = msg.dataType!!
-            bean.fromId = msg.from?:""
-            bean.anchorId = msg.anchorId?:""
+            bean.fromId = msg.from ?: ""
+            bean.anchorId = msg.anchorId ?: ""
             bean.id = msg.id
             bean.sent = msg.sent
             if (msg.anchorId == msg.from) {//主播发送的消息
-                bean.nick = msg.fromNickName?:""
+                bean.nick = msg.fromNickName ?: ""
             } else {
-                bean.nick = msg.toNickName?:""
+                bean.nick = msg.toNickName ?: ""
             }
 
             addDataToList(bean)

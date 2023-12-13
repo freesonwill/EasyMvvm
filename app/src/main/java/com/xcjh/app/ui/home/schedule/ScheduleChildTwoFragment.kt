@@ -257,7 +257,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                     binding.tvstatus.setTextColor(
                                         ContextCompat.getColor(
                                             context,
-                                            R.color.c_34a853
+                                            R.color.c_e6820c
                                         )
                                     )
                                     binding.tvvs.setTextColor(
@@ -283,7 +283,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                     binding.tvstatus.setTextColor(
                                         ContextCompat.getColor(
                                             context,
-                                            R.color.c_34a853
+                                            R.color.c_e6820c
                                         )
                                     )
                                     binding.tvvs.setTextColor(
@@ -304,7 +304,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                     binding.tvstatus.setTextColor(
                                         ContextCompat.getColor(
                                             context,
-                                            R.color.c_34a853
+                                            R.color.c_e6820c
                                         )
                                     )
                                     binding.tvvs.setTextColor(
@@ -329,7 +329,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                     binding.tvstatus.setTextColor(
                                         ContextCompat.getColor(
                                             context,
-                                            R.color.c_34a853
+                                            R.color.c_e6820c
                                         )
                                     )
                                     binding.tvvs.setTextColor(
@@ -355,7 +355,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                     binding.tvstatus.setTextColor(
                                         ContextCompat.getColor(
                                             context,
-                                            R.color.c_34a853
+                                            R.color.c_e6820c
                                         )
                                     )
                                     binding.tvvs.setTextColor(
@@ -378,7 +378,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                     binding.tvstatus.setTextColor(
                                         ContextCompat.getColor(
                                             context,
-                                            R.color.c_F7DA73
+                                            R.color.c_999999
                                         )
                                     )
                                     binding.tvvs.setTextColor(
@@ -563,13 +563,13 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                     binding.tvstatus.setTextColor(
                                         ContextCompat.getColor(
                                             context,
-                                            R.color.c_34a853
+                                            R.color.c_e6820c
                                         )
                                     )
                                     binding.tvvs.setTextColor(
                                         ContextCompat.getColor(
                                             context,
-                                            R.color.c_34a853
+                                            R.color.c_e6820c
                                         )
                                     )
                                     binding.tvstatus.text =
@@ -587,7 +587,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                     binding.tvstatus.setTextColor(
                                         ContextCompat.getColor(
                                             context,
-                                            R.color.c_34a853
+                                            R.color.c_e6820c
                                         )
                                     )
                                    binding.tvvs.setTextColor(
@@ -614,7 +614,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                     binding.tvstatus.setTextColor(
                                         ContextCompat.getColor(
                                             context,
-                                            R.color.c_34a853
+                                            R.color.c_e6820c
                                         )
                                     )
                                     binding.tvvs.setTextColor(
@@ -638,7 +638,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                     binding.tvstatus.setTextColor(
                                         ContextCompat.getColor(
                                             context,
-                                            R.color.c_34a853
+                                            R.color.c_e6820c
                                         )
                                     )
                                     binding.tvvs.setTextColor(
@@ -664,7 +664,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                     binding.tvstatus.setTextColor(
                                         ContextCompat.getColor(
                                             context,
-                                            R.color.c_34a853
+                                            R.color.c_e6820c
                                         )
                                     )
                                     binding.tvvs.setTextColor(
@@ -688,7 +688,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                     binding.tvstatus.setTextColor(
                                         ContextCompat.getColor(
                                             context,
-                                            R.color.c_34a853
+                                            R.color.c_e6820c
                                         )
                                     )
                                     binding.tvvs.setTextColor(
@@ -714,7 +714,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                     binding.tvstatus.setTextColor(
                                         ContextCompat.getColor(
                                             context,
-                                            R.color.c_34a853
+                                            R.color.c_e6820c
                                         )
                                     )
                                     binding.tvvs.setTextColor(
@@ -738,7 +738,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                     binding.tvstatus.setTextColor(
                                         ContextCompat.getColor(
                                             context,
-                                            R.color.c_34a853
+                                            R.color.c_e6820c
                                         )
                                     )
                                     binding.tvvs.setTextColor(
@@ -759,7 +759,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                     binding.tvstatus.setTextColor(
                                         ContextCompat.getColor(
                                             context,
-                                            R.color.c_F7DA73
+                                            R.color.c_999999
                                         )
                                     )
                                     binding.tvvs.setTextColor(
@@ -780,7 +780,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                     binding.tvstatus.setTextColor(
                                         ContextCompat.getColor(
                                             context,
-                                            R.color.c_8a91a0
+                                            R.color.c_999999
                                         )
                                     )
                                     binding.tvvs.setTextColor(
@@ -829,7 +829,26 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                 distance(30, 30, 0, 0)
                             }
                         }
+                        binding.stateLoadingImg.addAnimatorListener(object : Animator.AnimatorListener {
 
+                            override fun onAnimationStart(animation: Animator) {
+                                // 在动画开始时执行的操作（可选）
+                            }
+
+                            override fun onAnimationEnd(animation: Animator) {
+                                // 在动画结束时重新开始动画
+                                binding.stateLoadingImg.playAnimation()
+                            }
+
+                            override fun onAnimationCancel(animation: Animator) {
+                                // 在动画取消时执行的操作（可选）
+                            }
+
+                            override fun onAnimationRepeat(animation: Animator) {
+                                // 在动画结束时重新开始动画
+                            }
+                        })
+                        binding.stateLoadingImg.playAnimation()
                         binding.rec.setup {
                             addType<AnchorBean>(R.layout.item_js)
                             onBind {

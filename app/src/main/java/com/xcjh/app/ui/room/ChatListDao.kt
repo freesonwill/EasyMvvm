@@ -12,7 +12,7 @@ import androidx.room.Update
 
 @Dao
 interface ChatListDao {
-    @Query("SELECT * FROM chat_listdb")
+    @Query("SELECT * FROM chat_listdb ORDER BY createTime DESC")
     fun getAll(): List<MsgListNewData>
 
     @Query("SELECT * FROM chat_listdb WHERE anchorId = :id LIMIT 1")

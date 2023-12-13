@@ -179,7 +179,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="'"
-                android:textColor="@color/c_34a853"
+                android:textColor="@color/c_e6820c"
                 android:textSize="10sp"
                 android:textStyle="bold"
                 android:visibility="gone"
@@ -271,6 +271,14 @@
                     android:textColor="@color/c121212"
                     android:textSize="12sp"
                     android:textStyle="bold"
+                    />
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/state_loading_img"
+                    android:layout_width="@dimen/dp_12"
+                    android:layout_height="12dp"
+                    android:layout_marginLeft="4dp"
+                    app:layout_constraintVertical_chainStyle="packed"
+                    app:lottie_fileName="schedule_live.json"
                     />
             </LinearLayout>
 
