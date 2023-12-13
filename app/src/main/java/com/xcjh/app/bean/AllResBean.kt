@@ -163,10 +163,12 @@ data class MsgBean(
 }
 
 data class FeedBackBean(
-    val feedbackContent: String,
-    val feedbackResult: String,
-    val feedbackTime: String,
-    val feedbackType: String,//	反馈类型：1：更新问题，2：直播相关，3：产品体验，4：聊天相关，5：比赛相关，6：其他,可用值:1,2,3,4,5,6
+    val type: Int,
+    val title: String,
+    val notice: String,
+    val createTime: String,
+    val bizId: String,
+    val readFlag: String,//	反馈类型：1：更新问题，2：直播相关，3：产品体验，4：聊天相关，5：比赛相关，6：其他,可用值:1,2,3,4,5,6
     val id: Int
 )
 

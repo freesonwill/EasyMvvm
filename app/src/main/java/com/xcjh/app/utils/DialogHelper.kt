@@ -10,12 +10,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.drake.brv.utils.setup
 import com.github.gzuliyujiang.wheelpicker.entity.DateEntity
 import com.github.gzuliyujiang.wheelpicker.widget.DateWheelLayout
+import com.github.gzuliyujiang.wheelpicker.widget.LinkageWheelLayout
 import com.github.gzuliyujiang.wheelpicker.widget.OptionWheelLayout
+import com.github.gzuliyujiang.wheelview.annotation.CurtainCorner
 import com.haibin.calendarview.Calendar
 import com.haibin.calendarview.CalendarView
 import com.kongzue.dialogx.dialogs.BottomDialog
 import com.kongzue.dialogx.dialogs.CustomDialog
-import com.kongzue.dialogx.dialogs.MessageDialog
 import com.kongzue.dialogx.interfaces.OnBindView
 import com.xcjh.app.R
 import com.xcjh.app.bean.AnchorListBean
@@ -182,6 +183,12 @@ fun selectDate(context: Context, timeOld: String, block: (time: String) -> Unit)
                 val startValue = DateEntity.target(currentYear - 1, 1, 1)
                 val endValue = DateEntity.target(currentYear, 12, 12)
                 val defaultValue = DateEntity.target(currentYear, currentMonth, currentDay)
+
+                dateTimePickerView.yearWheelView.curtainCorner = CurtainCorner.LEFT
+                dateTimePickerView.monthWheelView.curtainCorner = CurtainCorner.NONE
+                dateTimePickerView.dayWheelView.curtainCorner = CurtainCorner.RIGHT
+
+
                 dateTimePickerView.setRange(startValue, endValue, defaultValue)
                 dateTimePickerView.setDateFormatter(com.xcjh.app.view.BirthdayFormatter())
                 dateTimePickerView.setResetWhenLinkage(false)
@@ -208,7 +215,7 @@ fun selectDate(context: Context, timeOld: String, block: (time: String) -> Unit)
             ContextCompat.getColor(context, com.xcjh.base_lib.R.color.blacks_tr)
         )
 
-        .show().isAllowInterceptTouch = false
+        .show().isAllowInterceptTouch=false
 }
 
 /**

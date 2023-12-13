@@ -7,48 +7,48 @@
 
     </data>
 
-    <com.scwang.smart.refresh.layout.SmartRefreshLayout
+
+    <com.drake.brv.PageRefreshLayout
         android:id="@+id/smart_common"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        app:srlEnableLoadMore="false"
-        app:srlEnableRefresh="false"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/frrl">
+        app:layout_constraintTop_toBottomOf="@id/frrl"
+        app:srlEnableLoadMore="false">
 
-        <com.scwang.smart.refresh.header.MaterialHeader
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-        <FrameLayout
+        <com.drake.statelayout.StateLayout
+            android:id="@+id/state"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rec"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical" />
-
-            <com.xcjh.app.view.SideBarLayout
-                android:id="@+id/indexBar"
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:sidebarSelectTextColor="@color/c_34a853"
-                app:sidebarUnSelectTextColor="@color/c_94999f"
-                app:sidebarSelectTextSize="12sp"
-                app:sidebarUnSelectTextSize="10sp"
-                app:sidebarWordBackground="@drawable/sort_text_bg"
-                app:sidebarWordTextColor="@color/white"
-                app:sidebarWordTextSize="45sp">
+                android:layout_height="match_parent">
 
-            </com.xcjh.app.view.SideBarLayout>
 
-        </FrameLayout>
-        <com.scwang.smart.refresh.footer.ClassicsFooter
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </com.scwang.smart.refresh.layout.SmartRefreshLayout>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rec"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical" />
+
+                <com.xcjh.app.view.SideBarLayout
+                    android:id="@+id/indexBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:sidebarSelectTextColor="@color/c_34a853"
+                    app:sidebarSelectTextSize="12sp"
+                    app:sidebarUnSelectTextColor="@color/c_94999f"
+                    app:sidebarUnSelectTextSize="10sp"
+                    app:sidebarWordBackground="@drawable/sort_text_bg"
+                    app:sidebarWordTextColor="@color/white"
+                    app:sidebarWordTextSize="45sp">
+
+                </com.xcjh.app.view.SideBarLayout>
+
+            </FrameLayout>
+        </com.drake.statelayout.StateLayout>
+    </com.drake.brv.PageRefreshLayout>
 
 </layout>

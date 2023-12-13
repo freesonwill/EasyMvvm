@@ -64,92 +64,18 @@
             android:layout_marginTop="15dp"
             app:layout_constraintTop_toBottomOf="@+id/view0"
             app:layout_constraintLeft_toLeftOf="parent"
-            android:text="@string/txt_feedtype"
-            android:textSize="@dimen/sp_15"
-            android:textColor="@color/c_37373d"
-            android:layout_height="wrap_content"/>
-        <TextView
-            android:id="@+id/tv11"
-            android:layout_width="wrap_content"
-
-
-            app:layout_constraintTop_toTopOf="@id/tv1"
-            app:layout_constraintLeft_toRightOf="@id/tv1"
-            android:layout_marginLeft="13dp"
-            android:text="@string/txt_feedtype"
+            android:text="11111111111111111111111111111111111111111111111111111111111111111111111111"
             android:textSize="@dimen/sp_15"
             android:textColor="@color/c_37373d"
             android:layout_height="wrap_content"/>
         <TextView
             android:id="@+id/tv2"
             android:layout_width="wrap_content"
-
-
-            app:layout_constraintTop_toBottomOf="@id/tv1"
+            android:layout_marginTop="15dp"
+            app:layout_constraintTop_toBottomOf="@+id/tv1"
             app:layout_constraintLeft_toLeftOf="parent"
-            android:text="@string/txt_feedcontent"
-            android:layout_marginTop="@dimen/dp_11"
             android:textSize="@dimen/sp_15"
-            android:textColor="@color/c_37373d"
-            android:layout_height="wrap_content"/>
-        <TextView
-            android:id="@+id/tv22"
-            android:layout_width="0dp"
-
-
-            app:layout_constraintTop_toTopOf="@id/tv2"
-            app:layout_constraintLeft_toRightOf="@id/tv2"
-            app:layout_constraintRight_toRightOf="parent"
-            android:layout_marginLeft="13dp"
-            android:textSize="@dimen/sp_15"
-            android:textColor="@color/c_37373d"
-            android:layout_height="wrap_content"/>
-        <TextView
-            android:id="@+id/tv3"
-            android:layout_width="wrap_content"
-
-
-            app:layout_constraintTop_toBottomOf="@id/tv22"
-            app:layout_constraintLeft_toLeftOf="parent"
-            android:text="@string/txt_feedresult"
-            android:layout_marginTop="@dimen/dp_11"
-            android:textSize="@dimen/sp_15"
-            android:textColor="@color/c_37373d"
-            android:layout_height="wrap_content"/>
-        <TextView
-            android:id="@+id/tv33"
-            android:layout_width="0dp"
-
-            app:layout_constraintTop_toTopOf="@id/tv3"
-            app:layout_constraintLeft_toRightOf="@id/tv3"
-            app:layout_constraintRight_toRightOf="parent"
-            android:layout_marginLeft="13dp"
-            android:text="@string/txt_feedtype"
-            android:textSize="@dimen/sp_15"
-            android:textColor="@color/c_37373d"
-            android:layout_height="wrap_content"/>
-        <TextView
-            android:id="@+id/tv4"
-            android:layout_width="wrap_content"
-
-
-            app:layout_constraintTop_toBottomOf="@id/tv3"
-            android:layout_marginTop="@dimen/dp_11"
-            app:layout_constraintLeft_toLeftOf="parent"
-            android:text="@string/txt_feddtime"
-            android:textSize="@dimen/sp_15"
-            android:textColor="@color/c_37373d"
-            android:layout_height="wrap_content"/>
-        <TextView
-            android:id="@+id/tv44"
-            android:layout_width="wrap_content"
-
-
-            app:layout_constraintTop_toTopOf="@id/tv4"
-            app:layout_constraintLeft_toRightOf="@id/tv4"
-            android:layout_marginLeft="13dp"
-            android:text="@string/txt_feedtype"
-            android:textSize="@dimen/sp_15"
+            android:visibility="gone"
             android:textColor="@color/c_37373d"
             android:layout_height="wrap_content"/>
 

@@ -75,6 +75,9 @@
             android:name=".ui.home.my.operate.ContactUsActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.feed.FeedNoticeActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.home.my.personal.EditProfileActivity"
             android:exported="false" />
         <activity

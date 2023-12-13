@@ -15,17 +15,20 @@ interface ChatListDao {
     @Query("SELECT * FROM chat_listdb")
     fun getAll(): List<MsgListNewData>
 
-    @Query("SELECT * FROM chat_listdb WHERE id = :id LIMIT 1")
+    @Query("SELECT * FROM chat_listdb WHERE anchorId = :id LIMIT 1")
     fun findMessagesById(id: String): MsgListNewData
     @Transaction
     fun insertOrUpdate(message: MsgListNewData) {
-        val oldMessage = findMessagesById(message.id!!)
+        val data = getAll()
+        val oldMessage = findMessagesById(message.anchorId!!)
         Log.d("MessageDao", "oldMessage: $oldMessage")
 
         if (oldMessage != null) {
-            Log.d("MessageDao", "Updating message...")
+
             message.idd=oldMessage.idd
             update(message)
+            val data = getAll()
+            Log.d("MessageDao", "Updating message...")
         } else {
             Log.d("MessageDao", "Inserting new message...")
             insertAll(message)

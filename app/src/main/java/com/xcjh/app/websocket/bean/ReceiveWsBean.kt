@@ -42,6 +42,7 @@ data class ReceiveChatMsg(
     var id: String? = "",   // 消息ID
     var chatType: Int? = 1,   // 聊天类型，群聊：1， 私聊：2
     var msgType: Int? = 0, //消息类型，文字：0， 图片：1  (如：0:text、1:image、2:voice、3:video、4:music、5:news)
+    var dataType: Int? = 0,
     var cmd: Int? = 11,   // 消息命令码 6，对应的cmd：5
     var anchorId: String? = null,   // 当前聊天主播的id【私聊独有，不管是发送还是接收】
     var content: String = "",   // 消息内容
@@ -56,6 +57,7 @@ data class ReceiveChatMsg(
     var fromNickName: String? = "", //发送者昵称（主播、运营、助手均显示主播昵称）
     var level: String? = "0", //用户等级（发送者为用户时必填）
     val identityType: Int = 0, //发送者身份身份(0：普通用户，1主播 2助手 3运营)
+    var noReadSum: Int = 0
 )
 
 /**

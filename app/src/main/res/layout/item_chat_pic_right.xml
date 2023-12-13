@@ -25,28 +25,27 @@
         android:orientation="horizontal">
         <ProgressBar
             android:id="@+id/google_progress"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
             android:visibility="gone"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@id/ivpic"
             android:layout_gravity="center"/>
         <ImageView
             android:id="@+id/ivfaile"
-            android:layout_width="@dimen/dp_30"
+            android:layout_width="18dp"
             android:layout_centerVertical="true"
             android:visibility="gone"
-            android:background="@drawable/arrows_down"
+            android:layout_marginRight="@dimen/dp_12"
+            android:background="@drawable/ic_red_erro"
             android:layout_toLeftOf="@id/ivpic"
-            android:layout_height="@dimen/dp_30"/>
+            android:layout_height="18dp"/>
         <com.makeramen.roundedimageview.RoundedImageView
             android:id="@+id/ivpic"
             android:layout_width="wrap_content"
             android:adjustViewBounds="true"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@id/ivhead"
-
-            android:layout_marginRight="@dimen/dp_12"
             android:layout_toLeftOf="@id/ivhead"
             android:scaleType="centerCrop"
             android:background="@drawable/xx"
