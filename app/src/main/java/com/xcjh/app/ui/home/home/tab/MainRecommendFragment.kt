@@ -683,8 +683,8 @@ fun BindingAdapter.BindingViewHolder.setLiveMatchItem(type:Int=0) {
     val bean = _data as BeingLiveBean
     Glide.with(context)
         .load(bean.titlePage)
-        .error(R.drawable.main_top_load)
-        .placeholder(R.drawable.main_top_load)
+        .error(if(type==0) R.drawable.main_top_load else  R.drawable.zwt_zbj_zb)
+        .placeholder(if(type==0) R.drawable.main_top_load else  R.drawable.zwt_zbj_zb)
         .into(bindingItem.ivLiveBe)
     Glide.with(context)
         .load(bean.userLogo) // 替换为您要加载的图片 URL
