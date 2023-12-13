@@ -16,10 +16,11 @@ class MsgListNewData {
     var createTime: Long = 0
 
     @ColumnInfo(name = "msgType")
-    var msgType: Int? = null
-
+    var msgType: Int = 0
+    @ColumnInfo(name = "dataType")
+    var dataType: Int = 1
     @ColumnInfo(name = "fromId")
-    var fromId: String? = null
+    var fromId: String = ""
     @ColumnInfo(name = "sent")
     var sent: Int? = 0//是否已发送: 0 正在发送 1 已发送 2 发送失败
     @ColumnInfo(name = "anchorId")

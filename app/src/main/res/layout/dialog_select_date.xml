@@ -41,24 +41,25 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="0.5dp"
         android:layout_marginLeft="@dimen/dp_12"
 
         android:layout_marginTop="15dp"
         android:layout_marginRight="12dp"
-        android:background="@color/c_d9d9d9" />
+        android:background="@color/c_E8eaef" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_12"
+        android:layout_marginRight="@dimen/dp_12"
         android:layout_marginTop="8dp"
         android:orientation="horizontal">
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="1.2"
             android:gravity="center"
             android:text="@string/str_year"
             android:textColor="@color/c_37373d"
@@ -89,15 +90,15 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="0.5dp"
         android:layout_marginLeft="@dimen/dp_12"
 
         android:layout_marginTop="8dp"
         android:layout_marginRight="12dp"
-        android:background="@color/c_d9d9d9" />
+        android:background="@color/c_E8eaef" />
 
 
-    <com.xcjh.app.view.BottomDialogScrollView
+    <com.xcjh.app.view.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="none"
@@ -109,14 +110,19 @@
             android:layout_height="200dp"
             android:layout_gravity="center_horizontal"
             app:wheel_dateMode="year_month_day"
-
+            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginRight="@dimen/dp_12"
+            app:wheel_curtainRadius="5dp"
+            app:wheel_curtainEnabled="true"
+            app:wheel_curtainCorner="left"
+            app:wheel_curtainColor="@color/c_f4f4f5"
             app:wheel_indicatorEnabled="false"
             app:wheel_itemTextBoldSelected="true"
             app:wheel_itemTextColor="@color/c_94999f"
             app:wheel_itemTextColorSelected="@color/c_34a853"
             app:wheel_itemTextSize="15sp" />
 
-    </com.xcjh.app.view.BottomDialogScrollView>
+    </com.xcjh.app.view.NestedScrollView>
 
     <LinearLayout
         android:layout_width="match_parent"

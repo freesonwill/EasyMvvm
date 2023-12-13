@@ -86,7 +86,7 @@ interface ApiComService {
     /**
      * 反馈通知页面：分页查询
      */
-    @POST("app/msg/feedbackPage")
+    @POST("app/user/notice/getInfos")
     suspend fun getFeedNoticeList(@Body req: BasePage): ApiResponse<MyListPages<FeedBackBean>>
     /**
      * 我的好友分页查询

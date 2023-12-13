@@ -28,21 +28,7 @@ class MsgListAdapter: BaseQuickAdapter<MsgListNewData, QuickViewHolder>() {
     override fun onBindViewHolder(holder: QuickViewHolder, position: Int, item: MsgListNewData?) {
         // 设置item数据
 
-
-
-        when(item?.msgType){//	消息类型(0:text、1:image、2:voice、3:video、4:music、5:news)
-            0->{
-                holder.getView<TextView>(R.id.tvcontent).text =item!!.content
-            }
-            1->{
-                holder.getView<TextView>(R.id.tvcontent).text =context.resources.getString(R.string.txt_msg_pic)
-            }
-            else->{
-                holder.getView<TextView>(R.id.tvcontent).text =item!!.content
-            }
-
-        }
-        when(item.noReadSum){
+        when(item?.noReadSum){
             0->{
                 holder.getView<TextView>(R.id.tvnums1).visibility=View.GONE
                 holder.getView<TextView>(R.id.tvnums2).visibility=View.GONE
@@ -64,10 +50,26 @@ class MsgListAdapter: BaseQuickAdapter<MsgListNewData, QuickViewHolder>() {
         }else{
             holder.getView<ImageView>(R.id.ivfaile).visibility=View.GONE
         }
-        if (item.fromId=="0"){//反馈通知
+        if (item.dataType==2){//反馈通知
             holder.getView<TextView>(R.id.tvname).text =context.resources.getString(R.string.txt_feedtitle)
-            holder.getView<CircleImageView>(R.id.ivhead).setBackgroundResource(R.drawable.ic_notify)
+            holder.getView<TextView>(R.id.tvcontent).text =item!!.content
+            Glide.with(context)
+                .load(R.drawable.ic_notify)
+                .into(holder.getView<CircleImageView>(R.id.ivhead))
+
         }else{
+            when(item?.msgType){//	消息类型(0:text、1:image、2:voice、3:video、4:music、5:news)
+                0->{
+                    holder.getView<TextView>(R.id.tvcontent).text =item!!.content
+                }
+                1->{
+                    holder.getView<TextView>(R.id.tvcontent).text =context.resources.getString(R.string.txt_msg_pic)
+                }
+                else->{
+                    holder.getView<TextView>(R.id.tvcontent).text =item!!.content
+                }
+
+            }
             holder.getView<TextView>(R.id.tvname).text =item!!.nick
             Glide.with(context).load(item.avatar).placeholder(R.drawable.default_anchor_icon).into(holder.getView<CircleImageView>(R.id.ivhead))
         }
@@ -76,33 +78,6 @@ class MsgListAdapter: BaseQuickAdapter<MsgListNewData, QuickViewHolder>() {
         )!!
         holder.getView<TextView>(R.id.tvtime).text =time
 
-        holder.getView<View>(R.id.lltItem).setOnClickListener {
-            if (item.fromId=="0"){//反馈通知
-                startNewActivity<FeedNoticeActivity>()
-            }else{
-                item.noReadSum=0
-                notifyItemChanged(position)
-                startNewActivity<ChatActivity>() {
-                    if (item?.anchorId?.isNotEmpty() == true) {
-                        this.putExtra(Constants.USER_ID, item?.anchorId)
-                    } else {
-                        this.putExtra(Constants.USER_ID, "")
-                    }
-                    if (item?.nick?.isNotEmpty() == true) {
-                        this.putExtra(Constants.USER_NICK, item?.nick)
-                    } else {
-                        this.putExtra(Constants.USER_NICK, "")
-                    }
-                    if (item?.avatar?.isNotEmpty() == true) {
-                        this.putExtra(Constants.USER_HEAD, item?.avatar)
-                    } else {
-                        this.putExtra(Constants.USER_HEAD, "")
-                    }
-
-                }
-            }
-
-        }
 
     }
 }

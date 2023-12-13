@@ -12,6 +12,8 @@ import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseFragment
 import com.xcjh.app.bean.MsgListBean
 import com.xcjh.app.databinding.FrMsgchildBinding
+import com.xcjh.app.ui.chat.ChatActivity
+import com.xcjh.app.ui.feed.FeedNoticeActivity
 import com.xcjh.app.ui.room.MsgBeanData
 import com.xcjh.app.ui.room.MsgListNewData
 import com.xcjh.app.utils.CacheUtil
@@ -20,6 +22,7 @@ import com.xcjh.app.websocket.bean.ReceiveChangeMsg
 import com.xcjh.app.websocket.bean.ReceiveChatMsg
 import com.xcjh.app.websocket.bean.ReceiveWsBean
 import com.xcjh.app.websocket.listener.C2CListener
+import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.LogUtils
 import com.xcjh.base_lib.utils.distance
 import com.xcjh.base_lib.utils.vertical
@@ -35,6 +38,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
 
     var chatId = "0"
     val empty by lazy { layoutInflater!!.inflate(R.layout.layout_empty, null) }
+
     companion object {
 
         fun newInstance(): MsgChildFragment {
@@ -55,7 +59,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
             false//防止item刷新的时候闪烁
         mAdapter.isEmptyViewEnable = true
         mAdapter.addOnItemChildClickListener(R.id.lltDelete) { adapter, view, position ->
-            var bean: MsgListNewData? =mAdapter.getItem(position)
+            var bean: MsgListNewData? = mAdapter.getItem(position)
             mViewModel.getDelMsg(bean?.anchorId.toString())
             deltDataToList(bean!!)
             mAdapter.removeAt(position)
@@ -63,6 +67,38 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                 mAdapter.emptyView = empty
             }
         }
+        mAdapter.addOnItemChildClickListener(R.id.lltItem) { adapter, view, position ->
+            var item: MsgListNewData = mAdapter.getItem(position)!!
+            if (item.dataType==2){//反馈通知
+                com.xcjh.base_lib.utils.startNewActivity<FeedNoticeActivity>()
+            }else{
+                com.xcjh.base_lib.utils.startNewActivity<ChatActivity>() {
+                    if (item?.anchorId?.isNotEmpty() == true) {
+                        this.putExtra(Constants.USER_ID, item?.anchorId)
+                    } else {
+                        this.putExtra(Constants.USER_ID, "")
+                    }
+                    if (item?.nick?.isNotEmpty() == true) {
+                        this.putExtra(Constants.USER_NICK, item?.nick)
+                    } else {
+                        this.putExtra(Constants.USER_NICK, "")
+                    }
+                    if (item?.avatar?.isNotEmpty() == true) {
+                        this.putExtra(Constants.USER_HEAD, item?.avatar)
+                    } else {
+                        this.putExtra(Constants.USER_HEAD, "")
+                    }
+
+                }
+            }
+            item.noReadSum=0
+            mViewModel.getDelMsg(item?.anchorId.toString())
+            mAdapter[position] = item!!//更新Item数据
+            addDataToList(item!!)
+
+
+        }
+
         if (CacheUtil.isLogin()) {
             mViewModel.getMsgList(true, "")
             mDatabind.smartCommon.setOnRefreshListener {
@@ -97,14 +133,14 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
 
     }
 
-    fun getRoomAllData(){
+    fun getRoomAllData() {
         GlobalScope.launch {
             val data = getAll().await()
 
             if (data.isNotEmpty()) {
                 listdata.clear()
                 listdata.addAll(data)
-                mAdapter.submitList(listdata)
+                mAdapter.submitList(data)
 
             } else {
                 mAdapter.emptyView = empty
@@ -112,6 +148,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
             mDatabind.smartCommon.finishRefresh()
         }
     }
+
     override fun onResume() {
         super.onResume()
 
@@ -148,85 +185,93 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
         appViewModel.updateMsgListEvent.observeForever {
             if (isAdded) {
 
-                var chat=ReceiveChatMsg()
-                chat.id=it.id
-                chat.chatType=it.chatType
-                chat.msgType=it.msgType
-                chat.cmd=it.cmd
-                chat.anchorId=it.anchorId
-                chat.content=it.content
-                chat.createTime=it.createTime
-                chat.from=it.fromId
-                chat.sent=it.sent
-                chat.groupId=it.groupId
-                chat.toAvatar=it.avatar
-                chat.toNickName=it.nick
-                chat.fromAvatar=it.avatar
-                chat.fromNickName=it.nick
-                chat.level=it.level
+                var chat = ReceiveChatMsg()
+                chat.id = it.id
+                chat.chatType = it.chatType
+                chat.msgType = it.msgType
+                chat.cmd = it.cmd
+                chat.anchorId = it.anchorId
+                chat.content = it.content
+                chat.createTime = it.createTime
+                chat.from = it.fromId
+                chat.sent = it.sent
+                chat.groupId = it.groupId
+                chat.toAvatar = it.avatar
+                chat.toNickName = it.nick
+                chat.fromAvatar = it.avatar
+                chat.fromNickName = it.nick
+                chat.level = it.level
                 refshMsg(chat)
             }
         }
     }
 
-    fun updataMsg(list: MutableList<MsgListBean>) {
 
-        var num = 0
-        for (i in 0 until list.size) {
-            num += list[i].noReadSum
+    /***
+     * 返回后一个时间戳是否比前一个时间戳早的布尔值
+     */
+    private fun isTimestampEarlier(timestamp1: Long, timestamp2: Long): Boolean {
+        return timestamp2 < timestamp1
+    }
+
+    fun updataMsg(it: MsgListNewData) {
+        var chat = ReceiveChatMsg()
+        chat.id = it.id
+        chat.msgType = it.msgType
+
+        chat.content = it.content!!
+        chat.createTime = it.createTime
+
+        chat.sent = it.sent
+        chat.dataType = it.dataType
+        if (it.avatar==null){
+            chat.toAvatar =""
+        }else{
+            chat.toAvatar = it.avatar
         }
-        // appViewModel.updateMainMsgNum.postValue(num)
+        if (it.dataType==2){
+            chat.from = "-1"
+            chat.anchorId = "-1"
+        }else{
+            chat.from = it.fromId
+            chat.anchorId = it.anchorId
+        }
+        chat.noReadSum = it.noReadSum
+        chat.toNickName = it.nick
+        chat.fromAvatar = it.avatar
+        chat.fromNickName = it.nick
+        refshMsg(chat)
+
     }
 
     override fun createObserver() {
 
         mViewModel.msgList.observe(this) {
-//            if (it.isSuccess) {
-//                //成功
-//                when {
-//                    //第一页并没有数据 显示空布局界面
-//                    it.isFirstEmpty -> {
-//                        mDatabind.smartCommon.finishRefresh()
-//                        mAdapter.emptyView = empty
-//                    }
-//                    //是第一页
-//                    it.isRefresh -> {
-//                        mDatabind.smartCommon.finishRefresh()
-//                        mDatabind.smartCommon.resetNoMoreData()
-//                        listdata.clear()
-//                        listdata.addAll(it.listData)
-//                        mAdapter.submitList(listdata)
-//                        mAdapter.notifyDataSetChanged()
-//                        // updataMsg(listdata)
-//
-//
-//                    }
-//                    //不是第一页
-//                    else -> {
-//                        if (it.listData.isEmpty()) {
-//                            mDatabind.smartCommon.setEnableLoadMore(false)
-//                            mDatabind.smartCommon.finishLoadMoreWithNoMoreData()
-//                        } else {
-//                            mDatabind.smartCommon.setEnableLoadMore(true)
-//                            mDatabind.smartCommon.finishLoadMore()
-//
-//                            mAdapter.addAll(it.listData)
-//                            // updataMsg(it.listData)
-//                        }
-//
-//                    }
-//                }
-//            } else {
-//                mAdapter.emptyView = empty
-//                //失败
-//                if (it.isRefresh) {
-//                    mDatabind.smartCommon.finishRefresh()
-//                    //如果是第一页，则显示错误界面，并提示错误信息
-//                    mAdapter.submitList(null)
-//                } else {
-//                    mDatabind.smartCommon.finishLoadMore(false)
-//                }
-//            }
+            if (it.isSuccess) {
+                var hasData=false
+
+                val notInList2 = it.listData.filter { p -> listdata.none { it.anchorId == p.anchorId } }
+                if (listdata.size > 0) {
+                    for (i in 0 until it.listData.size) {
+                        for (j in 0 until listdata.size) {
+                            if (listdata[j].anchorId == it.listData[i].anchorId) {
+                                if (isTimestampEarlier(
+                                        it.listData[i].createTime,
+                                        listdata[j].createTime
+                                    )
+                                ) {
+                                    updataMsg(it.listData[i])
+                                    break
+                                }
+                            }
+                        }
+                    }
+                }else{
+                    updataMsg(it.listData[0])
+                }
+
+
+            }
         }
         mViewModel.clreaAllMsg.observe(this) {
             appViewModel.updateMainMsgNum.postValue("0")
@@ -240,7 +285,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
     }
 
     fun refshMsg(msg: ReceiveChatMsg) {
-        addData(msg)
+       // addData(msg)
 
         // updataMsg(listdata)
         var hasMsg = false
@@ -249,7 +294,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                 hasMsg = true
                 var bean = MsgListNewData()
                 if (msg.anchorId == msg.from) {//主播发送的消息
-                    bean.avatar = msg.fromAvatar!!
+                    bean.avatar = msg.fromAvatar?:""
                     if (chatId == msg.anchorId) {
                         bean.noReadSum = 0
                     } else {
@@ -262,9 +307,10 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                 bean.content = msg.content.toString()
                 bean.createTime = msg.createTime!!
                 bean.msgType = msg.msgType!!
+                bean.dataType = msg.dataType!!
                 bean.fromId = msg.from.toString()
                 bean.anchorId = msg.anchorId.toString()
-                bean.sent=msg.sent
+                bean.sent = msg.sent
                 bean.id = listdata[i].id
 
                 if (msg.anchorId == msg.from) {//主播发送的消息
@@ -275,7 +321,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
 
 
                 mAdapter[i] = bean//更新Item数据
-                mAdapter.swap(i, 0)
+              //  mAdapter.swap(i, 0)
                 addDataToList(bean)
                 break
             }
@@ -283,11 +329,11 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
         if (!hasMsg) {
             var bean = MsgListNewData()
             if (msg.anchorId == msg.from) {//主播发送的消息
-                bean.avatar = msg.fromAvatar!!
+                bean.avatar = msg.fromAvatar?:""
                 if (chatId == msg.anchorId) {
                     bean.noReadSum = 0
                 } else {
-                    bean.noReadSum = 1
+                    bean.noReadSum = msg.noReadSum
                 }
             } else {
                 bean.avatar = msg.toAvatar!!
@@ -296,14 +342,15 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
             bean.content = msg.content.toString()
             bean.createTime = msg.createTime!!
             bean.msgType = msg.msgType!!
-            bean.fromId = msg.from!!
-            bean.anchorId = msg.anchorId!!
+            bean.dataType = msg.dataType!!
+            bean.fromId = msg.from?:""
+            bean.anchorId = msg.anchorId?:""
             bean.id = msg.id
-            bean.sent=msg.sent
+            bean.sent = msg.sent
             if (msg.anchorId == msg.from) {//主播发送的消息
-                bean.nick = msg.fromNickName!!
+                bean.nick = msg.fromNickName?:""
             } else {
-                bean.nick = msg.toNickName!!
+                bean.nick = msg.toNickName?:""
             }
 
             addDataToList(bean)
@@ -332,12 +379,18 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
         }
     }
 
+    /***
+     * 索取所有消息缓存
+     */
     fun getAll(): Deferred<List<MsgListNewData>> {
         return GlobalScope.async {
             MyApplication.dataChatList!!.chatDao!!.getAll()
         }
     }
 
+    /***
+     * 添加或者更新新的数据
+     */
     fun addDataToList(data: MsgListNewData) {
         GlobalScope.launch {
             MyApplication.dataChatList!!.chatDao?.insertOrUpdate(data)
@@ -345,11 +398,15 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
 
         }
     }
+
+    /***
+     * 删除数据
+     */
     fun deltDataToList(data: MsgListNewData) {
         GlobalScope.launch {
-          var bean=  MyApplication.dataChatList!!.chatDao?.findMessagesById(data.id!!)
+            var bean = MyApplication.dataChatList!!.chatDao?.findMessagesById(data.id!!)
 
-            data.idd=bean!!.idd
+            data.idd = bean!!.idd
             //删除会显示在聊天列表的记录数据
             MyApplication.dataChatList!!.chatDao?.delete(data)
 

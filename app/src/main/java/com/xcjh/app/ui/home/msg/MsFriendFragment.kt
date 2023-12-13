@@ -134,12 +134,13 @@ class MsFriendFragment : BaseFragment<MsgVm, FrMsgfriendBinding>() {
                     //第一页并没有数据 显示空布局界面
                     it.isFirstEmpty -> {
                         mDatabind.smartCommon.finishRefresh()
-                        mAdapter.emptyView = empty
+                        mDatabind.smartCommon.showEmpty()
                     }
                     //是第一页
                     it.isRefresh -> {
                         mDatabind.smartCommon.finishRefresh()
                         mDatabind.smartCommon.resetNoMoreData()
+                        mDatabind.smartCommon.showContent()
                         var list = getPinyinList(it.listData)
                         mDatabind.rec.models = list
 
@@ -147,6 +148,7 @@ class MsFriendFragment : BaseFragment<MsgVm, FrMsgfriendBinding>() {
                     }
                     //不是第一页
                     else -> {
+                        mDatabind.smartCommon.showContent()
                         if (it.listData.isEmpty()) {
                             mDatabind.smartCommon.setEnableLoadMore(false)
                             mDatabind.smartCommon.finishLoadMoreWithNoMoreData()
@@ -160,6 +162,7 @@ class MsFriendFragment : BaseFragment<MsgVm, FrMsgfriendBinding>() {
                     }
                 }
             } else {
+                mDatabind.smartCommon.showEmpty()
                 mAdapter.emptyView = empty
                 //失败
                 if (it.isRefresh) {

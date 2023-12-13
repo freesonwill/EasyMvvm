@@ -171,7 +171,7 @@
                 android:id="@+id/txtMatchAnimation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="''"
+                android:text="'"
                 android:textColor="@color/c_34a853"
                 android:textSize="10sp"
                 android:textStyle="bold"

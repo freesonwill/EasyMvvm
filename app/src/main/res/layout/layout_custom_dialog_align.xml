@@ -3,18 +3,13 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/img_bkg"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
 
-        />
 
     <TextView
         android:id="@+id/btn_selectPositive"
         android:layout_width="wrap_content"
         android:layout_height="36dp"
-        android:background="@drawable/button_dialogx_material_light"
+        android:background="@drawable/shape_r4_37373d"
         android:clickable="true"
         android:gravity="center"
         android:paddingLeft="15dp"
@@ -22,7 +17,15 @@
         android:text="@string/copy"
         android:textStyle="bold"
         android:layout_centerHorizontal="true"
-        android:textColor="@color/colorAccent"
-        android:textSize="15dp" />
+        android:textColor="@color/white"
+        android:textSize="15sp" />
+    <ImageView
+        android:id="@+id/img_bkg"
+        android:layout_width="9dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/btn_selectPositive"
+        android:background="@drawable/ic_arrw_down_black"
+        android:layout_height="6dp"
 
+        />
 </RelativeLayout>
