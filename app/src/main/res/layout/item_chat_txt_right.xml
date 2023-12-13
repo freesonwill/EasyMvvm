@@ -36,16 +36,21 @@
             android:layout_marginLeft="70dp"
             android:layout_toLeftOf="@id/ivv"
             android:layout_height="wrap_content">
-            <ProgressBar
+
+            <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/google_progress"
                 android:layout_width="18dp"
                 android:layout_height="18dp"
-                android:layout_centerVertical="true"
-
                 android:layout_marginRight="10dp"
+                android:layout_centerVertical="true"
                 android:layout_gravity="center"
                 android:layout_toLeftOf="@id/ince"
-                android:visibility="gone" />
+                android:visibility="gone"
+                app:lottie_loop="true"
+                app:lottie_autoPlay="true"
+                app:layout_constraintVertical_chainStyle="packed"
+                app:lottie_fileName="sendmsging.json"
+                />
             <ImageView
                 android:id="@+id/ivfaile"
                 android:layout_width="18dp"

@@ -207,6 +207,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                             0 -> {//正在发送
 
                                 //  addData(matchBeanNew)
+
                                 binding.googleProgress.visibility = View.VISIBLE
                                 binding.ivfaile.visibility = View.GONE
                                 GlobalScope.launch {
