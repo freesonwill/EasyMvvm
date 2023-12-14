@@ -49,6 +49,7 @@ class SetUpActivity  : BaseActivity<SetUpVm, ActivitySetUpBinding>() {
                         dialog!!.dismiss()
                     }
                     txtDialogLogin.clickNoRepeat {
+                        mViewModel.unbindPush()
                         mViewModel.exitLogin()
 
                         dialog!!.dismiss()

@@ -365,4 +365,11 @@ interface ApiComService {
     @PUT("app/notice/config/switch/{name}/{status}")
     suspend fun setSwitch(@Path("name") userId: String,@Path("status") status: Int):  ApiResponse<*>
 
+
+    /**
+     * 解绑极光推送
+     */
+    @GET("app/jpush/unbind/regId/{regId}")
+    suspend fun unbindPush(@Path("regId") regId: String): ApiResponse<*>
+
 }
