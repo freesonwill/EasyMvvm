@@ -86,7 +86,33 @@ ext {
                     manifestPlaceholders = [
                             app_name     : "@string/my_app_name",
                             is_release   : true,
-                            networkConfig: "@xml/network_security_config"//https 协议 加密政策
+                            networkConfig: "@xml/network_security_config",//https 协议 加密政策
+                            // appKey，需要与控制台上的一样，与packageName是一对一关系
+                            ENGAGELAB_PRIVATES_APPKEY : "fc8d210ae169fa35288c7913",
+                            // engagelab appChannel，用于渠道统计
+                            ENGAGELAB_PRIVATES_CHANNEL: "developer",
+                            // engagelab process，engagelab sdk工作所在的进程，注意:开头
+                            ENGAGELAB_PRIVATES_PROCESS: ":remote",
+                            //数据中心名称，填空""时，默认"Singapore"数据中心
+                            ENGAGELAB_PRIVATES_SITE_NAME: "Singapore",
+                            // mi client 配置，需要与小米控制台上的一样，还需要在Portal控制台配置 server 配置
+                            XIAOMI_APPID            : "",//MI-您的，对应平台信息
+                            XIAOMI_APPKEY           : "",//MI-您的，对应平台信息
+                            // mi global client 配置，需要与小米控制台上的一样，还需要在Portal控制台配置 server 配置
+                            XIAOMI_GLOBAL_APPID            : "",//MI-您的，对应平台信息
+                            XIAOMI_GLOBAL_APPKEY           : "",//MI-您的，对应平台信息
+                            // mz client 配置，需要与魅族控制台上的一样，还需要在Portal控制台配置 server 配置
+                            MEIZU_APPID             : "",//MZ-您的，对应平台信息
+                            MEIZU_APPKEY            : "",//MZ-您的，对应平台信息
+                            // oppo client 配置，需要与oppo控制台上的一样，还需要在Portal控制台配置 server 配置
+                            OPPO_APPID              : "",//OP-您的，对应平台信息
+                            OPPO_APPKEY             : "",//OP-您的，对应平台信息
+                            OPPO_APPSECRET          : "",//OP-您的，对应平台信息
+                            // vivo client 配置，需要与vivo控制台上的一样，还需要在Portal控制台配置 server 配置
+                            VIVO_APPID              : "",
+                            VIVO_APPKEY             : "",
+                            // honor client 配置，需要与honor控制台上的一样，还需要在Portal控制台配置 server 配置
+                            HONOR_APPID             : ""
                     ]
                 }
                 debug {
@@ -100,7 +126,34 @@ ext {
                     manifestPlaceholders = [
                             app_name     : "@string/my_app_name_test",
                             is_release   : false,
-                            networkConfig: "@xml/network_security_config2"//http 协议 绕过加密政策
+                            networkConfig: "@xml/network_security_config2",//http 协议 绕过加密政策
+
+                            // appKey，需要与控制台上的一样，与packageName是一对一关系
+                            ENGAGELAB_PRIVATES_APPKEY : "fc8d210ae169fa35288c7913",
+                            // engagelab appChannel，用于渠道统计
+                            ENGAGELAB_PRIVATES_CHANNEL: "developer",
+                            // engagelab process，engagelab sdk工作所在的进程，注意:开头
+                            ENGAGELAB_PRIVATES_PROCESS: ":remote",
+                            //数据中心名称，填空""时，默认"Singapore"数据中心
+                            ENGAGELAB_PRIVATES_SITE_NAME: "Singapore",
+                            // mi client 配置，需要与小米控制台上的一样，还需要在Portal控制台配置 server 配置
+                            XIAOMI_APPID            : "",//MI-您的，对应平台信息
+                            XIAOMI_APPKEY           : "",//MI-您的，对应平台信息
+                            // mi global client 配置，需要与小米控制台上的一样，还需要在Portal控制台配置 server 配置
+                            XIAOMI_GLOBAL_APPID            : "",//MI-您的，对应平台信息
+                            XIAOMI_GLOBAL_APPKEY           : "",//MI-您的，对应平台信息
+                            // mz client 配置，需要与魅族控制台上的一样，还需要在Portal控制台配置 server 配置
+                            MEIZU_APPID             : "",//MZ-您的，对应平台信息
+                            MEIZU_APPKEY            : "",//MZ-您的，对应平台信息
+                            // oppo client 配置，需要与oppo控制台上的一样，还需要在Portal控制台配置 server 配置
+                            OPPO_APPID              : "",//OP-您的，对应平台信息
+                            OPPO_APPKEY             : "",//OP-您的，对应平台信息
+                            OPPO_APPSECRET          : "",//OP-您的，对应平台信息
+                            // vivo client 配置，需要与vivo控制台上的一样，还需要在Portal控制台配置 server 配置
+                            VIVO_APPID              : "",
+                            VIVO_APPKEY             : "",
+                            // honor client 配置，需要与honor控制台上的一样，还需要在Portal控制台配置 server 配置
+                            HONOR_APPID             : ""
                     ]
                 }
             }

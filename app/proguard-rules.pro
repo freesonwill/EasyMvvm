@@ -234,3 +234,34 @@
 -keep class com.king.app.updater.**{ *;}
 -keep class * extends com.king.app.updater.**{ *;}
 -keep class * implements com.king.app.updater.**{ *;}
+
+#==========推送
+#Engagelab
+-keep class com.engagelab.** {*;}
+-dontwarn com.engagelab.**
+#huawei
+-keep class com.google.**{*;}
+-dontwarn com.google.**
+
+#xiaomi
+-keep class com.xiaomi.** {*;}
+-dontwarn com.xiaomi.**
+
+#meizu，如果使用R8混淆，可能会导致拿不到token
+-keep class com.meizu.** {*;}
+-dontwarn com.meizu.**
+
+#oppo
+-keep class com.heytap.** {*;}
+-dontwarn com.heytap.**
+
+#vivo
+-keep class com.vivo.** {*;}
+-dontwarn com.vivo.**
+
+
+-keep class com.huawei.hianalytics.**{*;}
+-keep class com.huawei.updatesdk.**{*;}
+-keep class com.huawei.hms.**{*;}
+-keep class com.hihonor.push.**{*; }
+ #==========推送
