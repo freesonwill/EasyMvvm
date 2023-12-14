@@ -36,7 +36,7 @@ public class UserReceiver extends MTCommonReceiver {
     @Override
     public void onNotificationStatus(Context context, boolean enable) {
         Log.i(TAG, "onNotificationStatus:" + enable);
-        Toast.makeText(context.getApplicationContext(), "onNotificationStatus " + enable, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(context.getApplicationContext(), "onNotificationStatus " + enable, Toast.LENGTH_SHORT).show();
         ExampleGlobal.isNotificationEnable = enable;
         if (StatusObserver.getInstance().getListener() != null) {
             StatusObserver.getInstance().getListener().onNotificationStatus(enable);
@@ -52,7 +52,7 @@ public class UserReceiver extends MTCommonReceiver {
     @Override
     public void onConnectStatus(Context context, boolean enable) {
         Log.i(TAG, "onConnectState:" + enable);
-        Toast.makeText(context.getApplicationContext(), "onConnectStatus " + enable, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(context.getApplicationContext(), "onConnectStatus " + enable, Toast.LENGTH_SHORT).show();
         ExampleGlobal.isConnectEnable = enable;
         if (StatusObserver.getInstance().getListener() != null) {
             StatusObserver.getInstance().getListener().onConnectStatus(enable);
@@ -158,7 +158,7 @@ public class UserReceiver extends MTCommonReceiver {
                 message = "tagMessage:" + tagMessage.toString();
                 break;
         }
-        Toast.makeText(context.getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(context.getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -185,7 +185,7 @@ public class UserReceiver extends MTCommonReceiver {
                 message = "aliasMessage:" + aliasMessage.toString();
                 break;
         }
-        Toast.makeText(context.getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+       // Toast.makeText(context.getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     /**
