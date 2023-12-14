@@ -61,6 +61,21 @@ public class SideBarSortView extends View {
         super(context, attrs);
     }
 
+//    @Override
+//    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+//        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+//        int desiredHeight = MeasureSpec.getSize(heightMeasureSpec);
+//
+//        // 计算每个字母项的高度
+//        int letterHeight = desiredHeight / mList.size();
+//
+//        // 设置自定义视图的测量高度
+//        setMeasuredDimension(getMeasuredWidth(), desiredHeight);
+//
+//        // 设置自定义视图的高度为整体垂直居中
+//        int paddingTop = (desiredHeight - letterHeight * mList.size()) / 2;
+//        setPadding(getPaddingLeft(), paddingTop, getPaddingRight(), getPaddingBottom());
+//    }
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -71,16 +86,13 @@ public class SideBarSortView extends View {
     public void setNewLetter(ArrayList<String> mLists ){
         mList.clear();
         mList.addAll(mLists);
+      //  requestLayout(); // 重新布局
         invalidate();
 
     }
     private void paintText() {
         //计算每一个字母的高度,总告诉除以字母集合的高度就可以
-        int size=mList.size();
-        if (size==0){
-            size=1;
-        }
-        int height = (getHeight()) / (size);
+        int height = (getHeight()) / 27;
         for (int i = 0; i < mList.size(); i++) {
             if (i == mSelectIndex) {
                 paint.setColor(mTextColorChoose);

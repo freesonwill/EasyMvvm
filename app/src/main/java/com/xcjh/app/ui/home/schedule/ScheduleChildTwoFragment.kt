@@ -6,6 +6,8 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -19,6 +21,7 @@ import com.drake.brv.utils.models
 import com.drake.brv.utils.mutable
 import com.drake.brv.utils.setDifferModels
 import com.drake.brv.utils.setup
+import com.drake.statelayout.StateConfig
 import com.scwang.smart.refresh.header.ClassicsHeader
 import com.xcjh.app.R
 import com.xcjh.app.appViewModel
@@ -141,6 +144,14 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                 status = bundle.getInt(ScheduleChildTwoFragment.STATUS)
                 mOneTabIndex = bundle.getInt(ScheduleChildTwoFragment.OneIndex)
                 mTwoTabIndex = bundle.getInt(ScheduleChildTwoFragment.TwoIndex)
+            }
+            mDatabind.state.apply {
+                StateConfig.setRetryIds(R.id.ivEmptyIcon, R.id.txtEmptyName)
+                onEmpty {
+                    this.findViewById<TextView>(R.id.txtEmptyName).text =
+                        resources.getString(R.string.nomatch)
+                    this.findViewById<ImageView>(R.id.ivEmptyIcon).setImageDrawable(resources.getDrawable(R.drawable.ic_empet_all))
+                }
             }
             mDatabind.smartCommon.setRefreshHeader(ClassicsHeader(requireContext()))
             mDatabind.recBottom.run {
@@ -907,7 +918,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
             mDatabind.smartCommon.setOnRefreshListener {
 
-                mDatabind.smartCommon.showLoading()
+                mDatabind.state.showLoading()
                 getData(true)
 
 
@@ -1095,7 +1106,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                             mDatabind.recBottom.bindingAdapter.notifyDataSetChanged()
                         }
                         mDatabind.smartCommon.finishRefresh()
-                        mDatabind.smartCommon.showEmpty()
+                        mDatabind.state.showEmpty()
 
                     }
                     //是第一页
@@ -1113,7 +1124,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 //                        } else {
 //                            mDatabind.recBottom.setDifferModels(it.listData, false)
 //                        }
-                        mDatabind.smartCommon.showContent()
+                        mDatabind.state.showContent()
 
                         //listdata.addAll(it.listData)
                         //it.listData[0].homeName=it.listData[0].homeName+index1
@@ -1129,7 +1140,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                             // mDatabind.smartCommon.setEnableLoadMore(true)
                             mDatabind.smartCommon.finishLoadMore()
                             mDatabind.recBottom.setDifferModels(it.listData, true)
-                            mDatabind.smartCommon.showContent()
+                            mDatabind.state.showContent()
                         }
 
                     }
@@ -1143,7 +1154,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                     if (mDatabind.recBottom.models != null) {
                         //  mDatabind.recBottom.mutable.clear()
                     }
-                    mDatabind.smartCommon.showEmpty()
+                    mDatabind.state.showEmpty()
                 } else {
                     mDatabind.smartCommon.finishLoadMore(false)
                 }

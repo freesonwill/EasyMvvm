@@ -8,8 +8,8 @@
     </data>
 
 
-    <com.drake.brv.PageRefreshLayout
-        android:id="@+id/smart_common"
+    <com.scwang.smart.refresh.layout.SmartRefreshLayout
+        android:id="@+id/smartCommon"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
@@ -17,10 +17,15 @@
         app:layout_constraintTop_toBottomOf="@id/frrl"
         app:srlEnableLoadMore="false">
 
+        <com.scwang.smart.refresh.header.ClassicsHeader
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
         <com.drake.statelayout.StateLayout
             android:id="@+id/state"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -36,7 +41,9 @@
                 <com.xcjh.app.view.SideBarLayout
                     android:id="@+id/indexBar"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:layout_gravity="center_vertical"
                     app:sidebarSelectTextColor="@color/c_34a853"
                     app:sidebarSelectTextSize="12sp"
                     app:sidebarUnSelectTextColor="@color/c_94999f"
@@ -49,6 +56,12 @@
 
             </FrameLayout>
         </com.drake.statelayout.StateLayout>
-    </com.drake.brv.PageRefreshLayout>
+
+
+        <com.scwang.smart.refresh.footer.ClassicsFooter
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </com.scwang.smart.refresh.layout.SmartRefreshLayout>
 
 </layout>

@@ -1,31 +1,68 @@
 package com.xcjh.app.bean;
 
 public class LetterBeann {
-    public String getCn() {
-        return cn;
+
+    /**
+     * areaCode : 86
+     * enName : China
+     * name : 中国
+     * id : 37
+     * selfName : 中国
+     * abbreviate : CN
+     */
+
+    private String areaCode;
+    private String enName;
+    private String name;
+    private int id;
+    private String selfName;
+    private String abbreviate;
+
+    public String getAreaCode() {
+        return areaCode;
     }
 
-    public void setCn(String cn) {
-        this.cn = cn;
+    public void setAreaCode(String areaCode) {
+        this.areaCode = areaCode;
     }
 
-    public String getEn() {
-        return en;
+    public String getEnName() {
+        return enName;
     }
 
-    public void setEn(String en) {
-        this.en = en;
+    public void setEnName(String enName) {
+        this.enName = enName;
     }
 
-    public String getPhone_code() {
-        return phone_code;
+    public String getName() {
+        return name;
     }
 
-    public void setPhone_code(String phone_code) {
-        this.phone_code = phone_code;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    private String cn;
-    private String en;
-    private String phone_code;
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getSelfName() {
+        return selfName;
+    }
+
+    public void setSelfName(String selfName) {
+        this.selfName = selfName;
+    }
+
+    public String getAbbreviate() {
+        return abbreviate;
+    }
+
+    public void setAbbreviate(String abbreviate) {
+        this.abbreviate = abbreviate;
+    }
 }

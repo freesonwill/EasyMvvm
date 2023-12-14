@@ -250,7 +250,7 @@ fun selectCountry(context: Context, list: List<String>, block: (bean: String) ->
 
 
             }
-        }).setBackgroundColor(Color.parseColor("#2b2156"))
+        }).setBackgroundColor(Color.parseColor("#ffffff"))
 
         .setMaskColor(//背景遮罩
             ContextCompat.getColor(context, com.xcjh.base_lib.R.color.blacks_tr)

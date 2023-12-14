@@ -319,7 +319,10 @@
     <string name="smy">守门员</string>
     <string name="wz">未知</string>
     <string name="_0">0</string>
-
+    <string name="nomatch">暂无比赛</string>
+    <string name="nomsg">暂无消息</string>
+    <string name="nofriends">暂无好友</string>
+    <string name="nomsgrecoder">暂无聊天记录</string>
     <string name="two_s_percent">2分%</string>
     <string name="three_s_percent">3分%</string>
     <string name="fq_s_percent">罚球%</string>
