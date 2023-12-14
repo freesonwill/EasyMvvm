@@ -1,10 +1,13 @@
 package com.xcjh.app.ui.home.msg
 
 import  android.os.Bundle
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.test.internal.util.LogUtil
 import com.drake.brv.utils.addModels
 import com.drake.brv.utils.models
+import com.drake.statelayout.StateConfig
 import com.xcjh.app.MyApplication
 import com.xcjh.app.R
 import com.xcjh.app.adapter.MsgListAdapter
@@ -60,13 +63,21 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
         (mDatabind.rec.itemAnimator as SimpleItemAnimator).supportsChangeAnimations =
             false//防止item刷新的时候闪烁
         mAdapter.isEmptyViewEnable = true
+        mDatabind.state.apply {
+            StateConfig.setRetryIds(R.id.ivEmptyIcon, R.id.txtEmptyName)
+            onEmpty {
+                this.findViewById<TextView>(R.id.txtEmptyName).text =
+                    resources.getString(R.string.nomsg)
+                this.findViewById<ImageView>(R.id.ivEmptyIcon).setImageDrawable(resources.getDrawable(R.drawable.ic_empety_msg))
+            }
+        }
         mAdapter.addOnItemChildClickListener(R.id.lltDelete) { adapter, view, position ->
             var bean: MsgListNewData? = mAdapter.getItem(position)
             mViewModel.getDelMsg(bean?.anchorId.toString())
             deltDataToList(bean!!)
             mAdapter.removeAt(position)
             if (listdata.size == 0) {
-                mAdapter.emptyView = empty
+              mDatabind.state.showEmpty()
             }
         }
         mAdapter.addOnItemChildClickListener(R.id.lltItem) { adapter, view, position ->
@@ -411,7 +422,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
      */
     fun deltDataToList(data: MsgListNewData) {
         GlobalScope.launch {
-            var bean = MyApplication.dataChatList!!.chatDao?.findMessagesById(data.id!!)
+            var bean = MyApplication.dataChatList!!.chatDao?.findMessagesById(data.anchorId!!)
 
             data.idd = bean!!.idd
             //删除会显示在聊天列表的记录数据

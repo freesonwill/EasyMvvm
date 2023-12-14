@@ -6,6 +6,8 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
@@ -16,6 +18,7 @@ import com.drake.brv.utils.linear
 import com.drake.brv.utils.models
 import com.drake.brv.utils.mutable
 import com.drake.brv.utils.setup
+import com.drake.statelayout.StateConfig
 import com.gyf.immersionbar.ImmersionBar
 import com.xcjh.app.R
 import com.xcjh.app.adapter.SchtitleAdapter
@@ -56,7 +59,14 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
             .statusBarDarkFont(true)
             .titleBar(mDatabind.titleTop.root)
             .init()
-
+        mDatabind.state.apply {
+            StateConfig.setRetryIds(R.id.ivEmptyIcon, R.id.txtEmptyName)
+            onEmpty {
+                this.findViewById<TextView>(R.id.txtEmptyName).text =
+                    resources.getString(R.string.no_data_hint)
+                this.findViewById<ImageView>(R.id.ivEmptyIcon).setImageDrawable(resources.getDrawable(R.drawable.ic_empet_all))
+            }
+        }
         mDatabind.titleTop.tvTitle.text = resources.getString(R.string.my_txt_subscribe)
         mDatabind.rec.run {
             vertical()

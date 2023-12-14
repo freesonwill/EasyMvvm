@@ -487,7 +487,22 @@ class LoginActivity : BaseActivity<LoginVm, ActivityLoaginBinding>() {
             JSONObject.parseArray(str, LetterBeann::class.java)
 
         for (i in 0 until models.size) {
-            listStr.add(models[i].cn + " (" + models[i].phone_code + ")")
+           var county= getGQ(models[i].abbreviate)
+            listStr.add(county+"  "+models[i].selfName + " (" + models[i].areaCode + ")")
+        }
+
+    }
+    fun getGQ(country:String):String{
+        try {
+            val flagOffset = 0x1F1E6
+            val asciiOffset = 0x41
+            val firstChar =
+                Character.codePointAt(country, 0) - asciiOffset + flagOffset
+            val secondChar =
+                Character.codePointAt(country, 1) - asciiOffset + flagOffset
+            return String(Character.toChars(firstChar)) + String(Character.toChars(secondChar))
+        }catch (e:Exception){
+            return ""
         }
 
     }

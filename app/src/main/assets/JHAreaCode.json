@@ -1,1152 +1,1707 @@
 [
     {
-        "cn": "阿尔巴尼亚",
-        "en": "Albania",
-        "phone_code": "+355"
+        "areaCode": "86",
+        "enName": "China",
+        "name": "中国",
+        "id": 37,
+        "selfName": "中国",
+        "abbreviate": "CN"
+    },
+    {
+        "areaCode": "93",
+        "enName": "Afghanistan",
+        "name": "阿富汗",
+        "id": 2,
+        "selfName": "‫افغانستان‬",
+        "abbreviate": "AF"
+    },
+    {
+        "areaCode": "355",
+        "enName": "Albania",
+        "name": "阿尔巴尼亚",
+        "id": 3,
+        "selfName": "Shqipëria",
+        "abbreviate": "AL"
+    },
+    {
+        "areaCode": "213",
+        "enName": "Algeria",
+        "name": "阿尔及利亚",
+        "id": 4,
+        "selfName": "‫الجزائر‬",
+        "abbreviate": "DZ"
+    },
+    {
+        "areaCode": "1684",
+        "enName": "American Samoa",
+        "name": "美属萨摩亚",
+        "id": 251,
+        "selfName": "American Samoa",
+        "abbreviate": "AS"
+    },
+    {
+        "areaCode": "376",
+        "enName": "Andorra",
+        "name": "安道尔共和国",
+        "id": 5,
+        "selfName": "Andorra",
+        "abbreviate": "AD"
+    },
+    {
+        "areaCode": "244",
+        "enName": "Angola",
+        "name": "安哥拉",
+        "id": 1,
+        "selfName": "Angola",
+        "abbreviate": "AO"
+    },
+    {
+        "areaCode": "1264",
+        "enName": "Anguilla",
+        "name": "安圭拉岛",
+        "id": 6,
+        "selfName": "Anguilla",
+        "abbreviate": "AI"
+    },
+    {
+        "areaCode": "1268",
+        "enName": "Antigua and Barbuda",
+        "name": "安提瓜和巴布达",
+        "id": 7,
+        "selfName": "Antigua and Barbuda",
+        "abbreviate": "AG"
+    },
+    {
+        "areaCode": "54",
+        "enName": "Argentina",
+        "name": "阿根廷",
+        "id": 8,
+        "selfName": "Argentina",
+        "abbreviate": "AR"
+    },
+    {
+        "areaCode": "374",
+        "enName": "Armenia",
+        "name": "亚美尼亚",
+        "id": 9,
+        "selfName": "Հայաստան",
+        "abbreviate": "AM"
+    },
+    {
+        "areaCode": "297",
+        "enName": "Aruba",
+        "name": "阿鲁巴",
+        "id": 212,
+        "selfName": "Aruba",
+        "abbreviate": "AW"
+    },
+    {
+        "areaCode": "247",
+        "enName": "Ascension",
+        "name": "阿森松",
+        "id": 10,
+        "selfName": "Ascension Island",
+        "abbreviate": "AC"
     },
     {
-        "cn": "阿尔及利亚",
-        "en": "Algeria",
-        "phone_code": "+213"
+        "areaCode": "61",
+        "enName": "Australia",
+        "name": "澳大利亚",
+        "id": 11,
+        "selfName": "Australia",
+        "abbreviate": "AU"
     },
     {
-        "cn": "阿富汗",
-        "en": "Afghanistan",
-        "phone_code": "+93"
+        "areaCode": "43",
+        "enName": "Austria",
+        "name": "奥地利",
+        "id": 12,
+        "selfName": "Österreich",
+        "abbreviate": "AT"
     },
     {
-        "cn": "阿根廷",
-        "en": "Argentina",
-        "phone_code": "+54"
+        "areaCode": "994",
+        "enName": "Azerbaijan",
+        "name": "阿塞拜疆",
+        "id": 13,
+        "selfName": "Azərbaycan",
+        "abbreviate": "AZ"
     },
     {
-        "cn": "阿拉伯联合酋长国",
-        "en": "United Arab Emirates",
-        "phone_code": "+971"
+        "areaCode": "1242",
+        "enName": "Bahamas",
+        "name": "巴哈马",
+        "id": 14,
+        "selfName": "Bahamas",
+        "abbreviate": "BS"
     },
     {
-        "cn": "阿鲁巴",
-        "en": "Aruba",
-        "phone_code": "+297"
+        "areaCode": "973",
+        "enName": "Bahrain",
+        "name": "巴林",
+        "id": 15,
+        "selfName": "‫البحرين‬",
+        "abbreviate": "BH"
     },
     {
-        "cn": "阿曼",
-        "en": "Oman",
-        "phone_code": "+968"
+        "areaCode": "880",
+        "enName": "Bangladesh",
+        "name": "孟加拉国",
+        "id": 16,
+        "selfName": "বাংলাদেশ",
+        "abbreviate": "BD"
     },
     {
-        "cn": "阿塞拜疆",
-        "en": "Azerbaijan",
-        "phone_code": "+994"
+        "areaCode": "1246",
+        "enName": "Barbados",
+        "name": "巴巴多斯",
+        "id": 17,
+        "selfName": "Barbados",
+        "abbreviate": "BB"
     },
     {
-        "cn": "埃及",
-        "en": "Egypt",
-        "phone_code": "+20"
+        "areaCode": "375",
+        "enName": "Belarus",
+        "name": "白俄罗斯",
+        "id": 18,
+        "selfName": "Беларусь",
+        "abbreviate": "BY"
     },
     {
-        "cn": "埃塞俄比亚",
-        "en": "Ethiopia",
-        "phone_code": "+251"
+        "areaCode": "32",
+        "enName": "Belgium",
+        "name": "比利时",
+        "id": 19,
+        "selfName": "België",
+        "abbreviate": "BE"
     },
     {
-        "cn": "爱尔兰",
-        "en": "Ireland",
-        "phone_code": "+353"
+        "areaCode": "501",
+        "enName": "Belize",
+        "name": "伯利兹",
+        "id": 20,
+        "selfName": "Belize",
+        "abbreviate": "BZ"
     },
     {
-        "cn": "爱沙尼亚",
-        "en": "Estonia",
-        "phone_code": "+372"
+        "areaCode": "229",
+        "enName": "Benin",
+        "name": "贝宁",
+        "id": 21,
+        "selfName": "Bénin",
+        "abbreviate": "BJ"
     },
     {
-        "cn": "安道尔",
-        "en": "Andorra",
-        "phone_code": "+376"
+        "areaCode": "1441",
+        "enName": "Bermuda",
+        "name": "百慕大",
+        "id": 248,
+        "selfName": "Bermuda",
+        "abbreviate": "BM"
     },
     {
-        "cn": "安哥拉",
-        "en": "Angola",
-        "phone_code": "+244"
+        "areaCode": "975",
+        "enName": "Bhutan",
+        "name": "不丹",
+        "id": 238,
+        "selfName": "འབྲུག",
+        "abbreviate": "BT"
     },
     {
-        "cn": "安圭拉",
-        "en": "Anguilla",
-        "phone_code": "+1264"
+        "areaCode": "591",
+        "enName": "Bolivia",
+        "name": "玻利维亚",
+        "id": 23,
+        "selfName": "Bolivia",
+        "abbreviate": "BO"
     },
     {
-        "cn": "安提瓜和巴布达",
-        "en": "Antigua and Barbuda",
-        "phone_code": "+1268"
+        "areaCode": "387",
+        "enName": "Bosnia and Herzegovina",
+        "name": "波斯尼亚与赫塞哥维纳",
+        "id": 221,
+        "selfName": "Босна и Херцеговина",
+        "abbreviate": "BA"
     },
     {
-        "cn": "奥地利",
-        "en": "Austria",
-        "phone_code": "+43"
+        "areaCode": "267",
+        "enName": "Botswana",
+        "name": "博茨瓦纳",
+        "id": 24,
+        "selfName": "Botswana",
+        "abbreviate": "BW"
     },
     {
-        "cn": "澳大利亚",
-        "en": "Australia",
-        "phone_code": "+61"
+        "areaCode": "55",
+        "enName": "Brazil",
+        "name": "巴西",
+        "id": 25,
+        "selfName": "Brasil",
+        "abbreviate": "BR"
     },
     {
-        "cn": "澳门",
-        "en": "Macao",
-        "phone_code": "+853"
+        "areaCode": "673",
+        "enName": "Brunei",
+        "name": "文莱",
+        "id": 26,
+        "selfName": "Brunei",
+        "abbreviate": "BN"
     },
     {
-        "cn": "巴巴多斯",
-        "en": "Barbados",
-        "phone_code": "+1246"
+        "areaCode": "359",
+        "enName": "Bulgaria",
+        "name": "保加利亚",
+        "id": 27,
+        "selfName": "България",
+        "abbreviate": "BG"
     },
     {
-        "cn": "巴布亚新几内亚",
-        "en": "Papua New Guinea",
-        "phone_code": "+675"
+        "areaCode": "226",
+        "enName": "Burkina-faso",
+        "name": "布基纳法索",
+        "id": 28,
+        "selfName": "Burkina Faso",
+        "abbreviate": "BF"
     },
     {
-        "cn": "巴哈马",
-        "en": "The Bahamas",
-        "phone_code": "+1242"
+        "areaCode": "95",
+        "enName": "Burma",
+        "name": "缅甸",
+        "id": 29,
+        "selfName": "မြန်မာ",
+        "abbreviate": "MM"
     },
     {
-        "cn": "巴基斯坦",
-        "en": "Pakistan",
-        "phone_code": "+92"
+        "areaCode": "257",
+        "enName": "Burundi",
+        "name": "布隆迪",
+        "id": 30,
+        "selfName": "Uburundi",
+        "abbreviate": "BI"
     },
     {
-        "cn": "巴拉圭",
-        "en": "Paraguay",
-        "phone_code": "+595"
+        "areaCode": "237",
+        "enName": "Cameroon",
+        "name": "喀麦隆",
+        "id": 31,
+        "selfName": "Cameroun",
+        "abbreviate": "CM"
     },
     {
-        "cn": "巴林",
-        "en": "Bahrain",
-        "phone_code": "+973"
+        "areaCode": "001",
+        "enName": "Canada",
+        "name": "加拿大",
+        "id": 32,
+        "selfName": "Canada",
+        "abbreviate": "CA"
     },
     {
-        "cn": "巴拿马",
-        "en": "Panama",
-        "phone_code": "+507"
+        "areaCode": "238",
+        "enName": "Cape Verde",
+        "name": "佛得角",
+        "id": 201,
+        "selfName": "Kabu Verdi",
+        "abbreviate": "CV"
     },
     {
-        "cn": "巴西",
-        "en": "Brazil",
-        "phone_code": "+55"
+        "areaCode": "1345",
+        "enName": "Cayman Is.",
+        "name": "开曼群岛",
+        "id": 33,
+        "selfName": "Cayman Islands",
+        "abbreviate": "KY"
     },
     {
-        "cn": "白俄罗斯",
-        "en": "Belarus",
-        "phone_code": "+375"
+        "areaCode": "236",
+        "enName": "Central African Republic",
+        "name": "中非共和国",
+        "id": 34,
+        "selfName": "République centrafricaine",
+        "abbreviate": "CF"
     },
     {
-        "cn": "百慕大",
-        "en": "Bermuda",
-        "phone_code": "+1441"
+        "areaCode": "235",
+        "enName": "Chad",
+        "name": "乍得",
+        "id": 35,
+        "selfName": "Tchad",
+        "abbreviate": "TD"
     },
     {
-        "cn": "保加利亚",
-        "en": "Bulgaria",
-        "phone_code": "+359"
+        "areaCode": "56",
+        "enName": "Chile",
+        "name": "智利",
+        "id": 36,
+        "selfName": "Chile",
+        "abbreviate": "CL"
     },
     {
-        "cn": "北马里亚纳",
-        "en": "Northern Mariana Islands",
-        "phone_code": "+1"
+        "areaCode": "57",
+        "enName": "Colombia",
+        "name": "哥伦比亚",
+        "id": 38,
+        "selfName": "Colombia",
+        "abbreviate": "CO"
     },
     {
-        "cn": "贝宁",
-        "en": "Benin",
-        "phone_code": "+229"
+        "areaCode": "269",
+        "enName": "Comoros",
+        "name": "科摩罗",
+        "id": 210,
+        "selfName": "‫جزر القمر‬",
+        "abbreviate": "KM"
     },
     {
-        "cn": "比利时",
-        "en": "Belgium",
-        "phone_code": "+32"
+        "areaCode": "242",
+        "enName": "Congo",
+        "name": "刚果",
+        "id": 39,
+        "selfName": "Congo-Brazzaville",
+        "abbreviate": "CG"
     },
     {
-        "cn": "冰岛",
-        "en": "Iceland",
-        "phone_code": "+354"
+        "areaCode": "243",
+        "enName": "Congo, the Democratic Republic of the",
+        "name": "刚果民主共和国",
+        "id": 205,
+        "selfName": "Jamhuri ya Kidemokrasia ya Kongo",
+        "abbreviate": "CD"
     },
     {
-        "cn": "波多黎各",
-        "en": "Puerto Rico",
-        "phone_code": "+1809"
+        "areaCode": "682",
+        "enName": "Cook Is.",
+        "name": "库克群岛",
+        "id": 40,
+        "selfName": "Cook Islands",
+        "abbreviate": "CK"
     },
     {
-        "cn": "波黑",
-        "en": "Bosnia and Herzegovina",
-        "phone_code": "+387"
+        "areaCode": "506",
+        "enName": "Costa Rica",
+        "name": "哥斯达黎加",
+        "id": 41,
+        "selfName": "Costa Rica",
+        "abbreviate": "CR"
     },
     {
-        "cn": "波兰",
-        "en": "Poland",
-        "phone_code": "+48"
+        "areaCode": "385",
+        "enName": "Croatia",
+        "name": "克罗地亚",
+        "id": 220,
+        "selfName": "Hrvatska",
+        "abbreviate": "HR"
     },
     {
-        "cn": "玻利维亚",
-        "en": "Bolivia",
-        "phone_code": "+591"
+        "areaCode": "53",
+        "enName": "Cuba",
+        "name": "古巴",
+        "id": 42,
+        "selfName": "Cuba",
+        "abbreviate": "CU"
     },
     {
-        "cn": "伯利兹",
-        "en": "Belize",
-        "phone_code": "+501"
+        "areaCode": "599",
+        "enName": "Curacao",
+        "name": "库拉索",
+        "id": 226,
+        "selfName": "Curacao",
+        "abbreviate": "CW"
     },
     {
-        "cn": "博茨瓦纳",
-        "en": "Botswana",
-        "phone_code": "+267"
+        "areaCode": "357",
+        "enName": "Cyprus",
+        "name": "塞浦路斯",
+        "id": 43,
+        "selfName": "Κύπρος",
+        "abbreviate": "CY"
     },
     {
-        "cn": "不丹",
-        "en": "Bhutan",
-        "phone_code": "+975"
+        "areaCode": "420",
+        "enName": "Czech Republic",
+        "name": "捷克",
+        "id": 44,
+        "selfName": "Česká republika",
+        "abbreviate": "CZ"
     },
     {
-        "cn": "布基纳法索",
-        "en": "Burkina Faso",
-        "phone_code": "+226"
+        "areaCode": "45",
+        "enName": "Denmark",
+        "name": "丹麦",
+        "id": 45,
+        "selfName": "Danmark",
+        "abbreviate": "DK"
     },
     {
-        "cn": "布隆迪",
-        "en": "Burundi",
-        "phone_code": "+257"
+        "areaCode": "253",
+        "enName": "Djibouti",
+        "name": "吉布提",
+        "id": 46,
+        "selfName": "Djibouti",
+        "abbreviate": "DJ"
     },
     {
-        "cn": "朝鲜",
-        "en": "North Korea",
-        "phone_code": "+850"
+        "areaCode": "1767",
+        "enName": "Dominica",
+        "name": "多米尼克",
+        "id": 252,
+        "selfName": "Dominica",
+        "abbreviate": "DM"
     },
     {
-        "cn": "赤道几内亚",
-        "en": "Equatorial Guinea",
-        "phone_code": "+240"
+        "areaCode": "1809",
+        "enName": "Dominica Rep.",
+        "name": "多米尼加共和国",
+        "id": 47,
+        "selfName": "República Dominicana",
+        "abbreviate": "DO"
     },
     {
-        "cn": "丹麦",
-        "en": "Denmark",
-        "phone_code": "+45"
+        "areaCode": "593",
+        "enName": "Ecuador",
+        "name": "厄瓜多尔",
+        "id": 48,
+        "selfName": "Ecuador",
+        "abbreviate": "EC"
     },
     {
-        "cn": "德国",
-        "en": "Germany",
-        "phone_code": "+49"
+        "areaCode": "20",
+        "enName": "Egypt",
+        "name": "埃及",
+        "id": 49,
+        "selfName": "‫مصر‬",
+        "abbreviate": "EG"
     },
     {
-        "cn": "多哥",
-        "en": "Togo",
-        "phone_code": "+228"
+        "areaCode": "503",
+        "enName": "EISalvador",
+        "name": "萨尔瓦多",
+        "id": 50,
+        "selfName": "El Salvador",
+        "abbreviate": "SV"
     },
     {
-        "cn": "多米尼加",
-        "en": "Dominican Republic",
-        "phone_code": "+1809"
+        "areaCode": "240",
+        "enName": "Equatorial Guinea",
+        "name": "赤道几内亚",
+        "id": 203,
+        "selfName": "Guinea Ecuatorial",
+        "abbreviate": "GQ"
     },
     {
-        "cn": "多米尼克",
-        "en": "Dominica",
-        "phone_code": "+1767"
+        "areaCode": "372",
+        "enName": "Estonia",
+        "name": "爱沙尼亚",
+        "id": 51,
+        "selfName": "Eesti",
+        "abbreviate": "EE"
     },
     {
-        "cn": "俄罗斯",
-        "en": "Russia",
-        "phone_code": "+7"
+        "areaCode": "251",
+        "enName": "Ethiopia",
+        "name": "埃塞俄比亚",
+        "id": 52,
+        "selfName": "Ethiopia",
+        "abbreviate": "ET"
     },
     {
-        "cn": "厄瓜多尔",
-        "en": "Ecuador",
-        "phone_code": "+593"
+        "areaCode": "298",
+        "enName": "Faroe Islands",
+        "name": "法罗群岛",
+        "id": 213,
+        "selfName": "Føroyar",
+        "abbreviate": "FO"
     },
     {
-        "cn": "厄立特里亚",
-        "en": "Eritrea",
-        "phone_code": "+291"
+        "areaCode": "679",
+        "enName": "Fiji",
+        "name": "斐济",
+        "id": 53,
+        "selfName": "Fiji",
+        "abbreviate": "FJ"
     },
     {
-        "cn": "法国",
-        "en": "France",
-        "phone_code": "+33"
+        "areaCode": "358",
+        "enName": "Finland",
+        "name": "芬兰",
+        "id": 54,
+        "selfName": "Suomi",
+        "abbreviate": "FI"
     },
     {
-        "cn": "法罗群岛",
-        "en": "Faroe Islands",
-        "phone_code": "+298"
+        "areaCode": "33",
+        "enName": "France",
+        "name": "法国",
+        "id": 55,
+        "selfName": "France",
+        "abbreviate": "FR"
     },
     {
-        "cn": "法属波利尼西亚",
-        "en": "French Polynesia",
-        "phone_code": "+689"
+        "areaCode": "594",
+        "enName": "French Guiana",
+        "name": "法属圭亚那",
+        "id": 56,
+        "selfName": "Guyane française",
+        "abbreviate": "GF"
     },
     {
-        "cn": "法属圭亚那",
-        "en": "French Guiana",
-        "phone_code": "+594"
+        "areaCode": "689",
+        "enName": "French Polynesia",
+        "name": "法属玻利尼西亚",
+        "id": 136,
+        "selfName": "Polynésie française",
+        "abbreviate": "PF"
     },
     {
-        "cn": "梵蒂冈",
-        "en": "Holy See (Vatican City)",
-        "phone_code": "+379"
+        "areaCode": "241",
+        "enName": "Gabon",
+        "name": "加蓬",
+        "id": 57,
+        "selfName": "Gabon",
+        "abbreviate": "GA"
     },
     {
-        "cn": "菲律宾",
-        "en": "Philippines",
-        "phone_code": "+63"
+        "areaCode": "220",
+        "enName": "Gambia",
+        "name": "冈比亚",
+        "id": 58,
+        "selfName": "Gambia",
+        "abbreviate": "GM"
     },
     {
-        "cn": "斐济",
-        "en": "Fiji",
-        "phone_code": "+679"
+        "areaCode": "995",
+        "enName": "Georgia",
+        "name": "格鲁吉亚",
+        "id": 59,
+        "selfName": "საქართველო",
+        "abbreviate": "GE"
     },
     {
-        "cn": "芬兰",
-        "en": "Finland",
-        "phone_code": "+358"
+        "areaCode": "49",
+        "enName": "Germany",
+        "name": "德国",
+        "id": 60,
+        "selfName": "Deutschland",
+        "abbreviate": "DE"
     },
     {
-        "cn": "佛得角",
-        "en": "Cape Verde",
-        "phone_code": "+238"
+        "areaCode": "233",
+        "enName": "Ghana",
+        "name": "加纳",
+        "id": 61,
+        "selfName": "Gaana",
+        "abbreviate": "GH"
     },
     {
-        "cn": "福克兰群岛（马尔维纳斯）",
-        "en": "Falkland Islands (Islas Malvinas)",
-        "phone_code": "+500"
+        "areaCode": "350",
+        "enName": "Gibraltar",
+        "name": "直布罗陀",
+        "id": 62,
+        "selfName": "Gibraltar",
+        "abbreviate": "GI"
     },
     {
-        "cn": "冈比亚",
-        "en": "The Gambia",
-        "phone_code": "+220"
+        "areaCode": "30",
+        "enName": "Greece",
+        "name": "希腊",
+        "id": 63,
+        "selfName": "Ελλάδα",
+        "abbreviate": "GR"
     },
     {
-        "cn": "刚果（布）",
-        "en": "Republic of the Congo",
-        "phone_code": "+242"
+        "areaCode": "299",
+        "enName": "Greenland",
+        "name": "格陵兰",
+        "id": 214,
+        "selfName": "Kalaallit Nunaat",
+        "abbreviate": "GL"
     },
     {
-        "cn": "刚果（金）",
-        "en": "Democratic Republic of the Congo",
-        "phone_code": "+243"
+        "areaCode": "1473",
+        "enName": "Grenada",
+        "name": "格林纳达",
+        "id": 64,
+        "selfName": "Grenada",
+        "abbreviate": "GD"
     },
     {
-        "cn": "哥伦比亚",
-        "en": "Colombia",
-        "phone_code": "+57"
+        "areaCode": "1671",
+        "enName": "Guam",
+        "name": "关岛",
+        "id": 65,
+        "selfName": "Guam",
+        "abbreviate": "GU"
     },
     {
-        "cn": "哥斯达黎加",
-        "en": "Costa Rica",
-        "phone_code": "+506"
+        "areaCode": "502",
+        "enName": "Guatemala",
+        "name": "危地马拉",
+        "id": 66,
+        "selfName": "Guatemala",
+        "abbreviate": "GT"
     },
     {
-        "cn": "格林纳达",
-        "en": "Grenada",
-        "phone_code": "+1473"
+        "areaCode": "224",
+        "enName": "Guinea",
+        "name": "几内亚",
+        "id": 67,
+        "selfName": "Guinée",
+        "abbreviate": "GN"
     },
     {
-        "cn": "格陵兰",
-        "en": "Greenland",
-        "phone_code": "+299"
+        "areaCode": "245",
+        "enName": "Guinea",
+        "name": "几内亚比绍",
+        "id": 206,
+        "selfName": "Guiné Bissau",
+        "abbreviate": "GW"
     },
     {
-        "cn": "格鲁吉亚",
-        "en": "Georgia",
-        "phone_code": "+995"
+        "areaCode": "592",
+        "enName": "Guyana",
+        "name": "圭亚那",
+        "id": 68,
+        "selfName": "Guyana",
+        "abbreviate": "GY"
     },
     {
-        "cn": "根西岛",
-        "en": "Guernsey",
-        "phone_code": "+1481"
+        "areaCode": "509",
+        "enName": "Haiti",
+        "name": "海地",
+        "id": 69,
+        "selfName": "Haiti",
+        "abbreviate": "HT"
     },
     {
-        "cn": "古巴",
-        "en": "Cuba",
-        "phone_code": "+53"
+        "areaCode": "504",
+        "enName": "Honduras",
+        "name": "洪都拉斯",
+        "id": 70,
+        "selfName": "Honduras",
+        "abbreviate": "HN"
     },
     {
-        "cn": "瓜德罗普",
-        "en": "Guadeloupe",
-        "phone_code": "+590"
+        "areaCode": "852",
+        "enName": "Hongkong",
+        "name": "中国香港",
+        "id": 71,
+        "selfName": "中国香港",
+        "abbreviate": "HK"
     },
     {
-        "cn": "关岛",
-        "en": "Guam",
-        "phone_code": "+1671"
+        "areaCode": "36",
+        "enName": "Hungary",
+        "name": "匈牙利",
+        "id": 72,
+        "selfName": "Magyarország",
+        "abbreviate": "HU"
     },
     {
-        "cn": "圭亚那",
-        "en": "Guyana",
-        "phone_code": "+592"
+        "areaCode": "354",
+        "enName": "Iceland",
+        "name": "冰岛",
+        "id": 73,
+        "selfName": "Ísland",
+        "abbreviate": "IS"
     },
     {
-        "cn": "哈萨克斯坦",
-        "en": "Kazakhstan",
-        "phone_code": "+73"
+        "areaCode": "91",
+        "enName": "India",
+        "name": "印度",
+        "id": 74,
+        "selfName": "भारत",
+        "abbreviate": "IN"
     },
     {
-        "cn": "海地",
-        "en": "Haiti",
-        "phone_code": "+509"
+        "areaCode": "62",
+        "enName": "Indonesia",
+        "name": "印度尼西亚",
+        "id": 75,
+        "selfName": "Indonesia",
+        "abbreviate": "ID"
     },
     {
-        "cn": "韩国",
-        "en": "South Korea",
-        "phone_code": "+82"
+        "areaCode": "98",
+        "enName": "Iran",
+        "name": "伊朗",
+        "id": 76,
+        "selfName": "‫ایران‬",
+        "abbreviate": "IR"
     },
     {
-        "cn": "荷兰",
-        "en": "Netherlands",
-        "phone_code": "+31"
+        "areaCode": "964",
+        "enName": "Iraq",
+        "name": "伊拉克",
+        "id": 77,
+        "selfName": "‫العراق‬",
+        "abbreviate": "IQ"
     },
     {
-        "cn": "荷属安的列斯",
-        "en": "Netherlands Antilles",
-        "phone_code": "+599"
+        "areaCode": "353",
+        "enName": "Ireland",
+        "name": "爱尔兰",
+        "id": 78,
+        "selfName": "Ireland",
+        "abbreviate": "IE"
     },
     {
-        "cn": "洪都拉斯",
-        "en": "Honduras",
-        "phone_code": "+504"
+        "areaCode": "353",
+        "enName": "Ireland",
+        "name": "爱尔兰共和国",
+        "id": 216,
+        "selfName": "Ireland",
+        "abbreviate": "IE"
     },
     {
-        "cn": "基里巴斯",
-        "en": "Kiribati",
-        "phone_code": "+686"
+        "areaCode": "972",
+        "enName": "Israel",
+        "name": "以色列",
+        "id": 79,
+        "selfName": "‫ישראל‬",
+        "abbreviate": "IL"
     },
     {
-        "cn": "吉布提",
-        "en": "Djibouti",
-        "phone_code": "+253"
+        "areaCode": "39",
+        "enName": "Italy",
+        "name": "意大利",
+        "id": 80,
+        "selfName": "Italia",
+        "abbreviate": "IT"
     },
     {
-        "cn": "吉尔吉斯斯坦",
-        "en": "Kyrgyzstan",
-        "phone_code": "+996"
+        "areaCode": "225",
+        "enName": "IvoryCoast",
+        "name": "科特迪瓦",
+        "id": 81,
+        "selfName": "Côte d’Ivoire",
+        "abbreviate": "CI"
     },
     {
-        "cn": "几内亚",
-        "en": "Guinea",
-        "phone_code": "+224"
+        "areaCode": "1876",
+        "enName": "Jamaica",
+        "name": "牙买加",
+        "id": 82,
+        "selfName": "Jamaica",
+        "abbreviate": "JM"
     },
     {
-        "cn": "几内亚比绍",
-        "en": "Guinea-Bissau",
-        "phone_code": "+245"
+        "areaCode": "81",
+        "enName": "Japan",
+        "name": "日本",
+        "id": 83,
+        "selfName": "日本",
+        "abbreviate": "JP"
     },
     {
-        "cn": "加拿大",
-        "en": "Canada",
-        "phone_code": "+1"
+        "areaCode": "962",
+        "enName": "Jordan",
+        "name": "约旦",
+        "id": 84,
+        "selfName": "‫الأردن‬",
+        "abbreviate": "JO"
     },
     {
-        "cn": "加纳",
-        "en": "Ghana",
-        "phone_code": "+233"
+        "areaCode": "855",
+        "enName": "Kampuchea (Cambodia )",
+        "name": "柬埔寨",
+        "id": 85,
+        "selfName": "កម្ពុជា",
+        "abbreviate": "KH"
     },
     {
-        "cn": "加蓬",
-        "en": "Gabon",
-        "phone_code": "+241"
+        "areaCode": "7",
+        "enName": "Kazakhstan",
+        "name": "哈萨克",
+        "id": 193,
+        "selfName": "Kazakhstan",
+        "abbreviate": "KZ"
     },
     {
-        "cn": "柬埔寨",
-        "en": "Cambodia",
-        "phone_code": "+855"
+        "areaCode": "254",
+        "enName": "Kenya",
+        "name": "肯尼亚",
+        "id": 87,
+        "selfName": "Kenya",
+        "abbreviate": "KE"
     },
     {
-        "cn": "捷克",
-        "en": "Czech Republic",
-        "phone_code": "+420"
+        "areaCode": "686",
+        "enName": "Kiribati",
+        "name": "基里巴斯",
+        "id": 232,
+        "selfName": "Kiribati",
+        "abbreviate": "KI"
     },
     {
-        "cn": "津巴布韦",
-        "en": "Zimbabwe",
-        "phone_code": "+263"
+        "areaCode": "82",
+        "enName": "Korea",
+        "name": "韩国",
+        "id": 88,
+        "selfName": "대한민국",
+        "abbreviate": "KR"
     },
     {
-        "cn": "喀麦隆",
-        "en": "Cameroon",
-        "phone_code": "+237"
+        "areaCode": "965",
+        "enName": "Kuwait",
+        "name": "科威特",
+        "id": 89,
+        "selfName": "‫الكويت‬",
+        "abbreviate": "KW"
     },
     {
-        "cn": "卡塔尔",
-        "en": "Qatar",
-        "phone_code": "+974"
+        "areaCode": "996",
+        "enName": "Kyrgyzstan",
+        "name": "吉尔吉斯坦",
+        "id": 90,
+        "selfName": "Kyrgyzstan",
+        "abbreviate": "KG"
     },
     {
-        "cn": "开曼群岛",
-        "en": "Cayman Islands",
-        "phone_code": "+1345"
+        "areaCode": "856",
+        "enName": "Laos",
+        "name": "老挝",
+        "id": 91,
+        "selfName": "Laos",
+        "abbreviate": "LA"
     },
     {
-        "cn": "科科斯（基林）群岛",
-        "en": "Cocos (Keeling) Islands",
-        "phone_code": "+61"
+        "areaCode": "371",
+        "enName": "Latvia",
+        "name": "拉脱维亚",
+        "id": 92,
+        "selfName": "Latvija",
+        "abbreviate": "LV"
     },
     {
-        "cn": "科摩罗",
-        "en": "Comoros",
-        "phone_code": "+269"
+        "areaCode": "961",
+        "enName": "Lebanon",
+        "name": "黎巴嫩",
+        "id": 93,
+        "selfName": "‫لبنان‬",
+        "abbreviate": "LB"
     },
     {
-        "cn": "科特迪瓦",
-        "en": "Cote d’Ivoire",
-        "phone_code": "+225"
+        "areaCode": "266",
+        "enName": "Lesotho",
+        "name": "莱索托",
+        "id": 94,
+        "selfName": "Lesotho",
+        "abbreviate": "LS"
     },
     {
-        "cn": "科威特",
-        "en": "Kuwait",
-        "phone_code": "+965"
+        "areaCode": "231",
+        "enName": "Liberia",
+        "name": "利比里亚",
+        "id": 95,
+        "selfName": "Liberia",
+        "abbreviate": "LR"
     },
     {
-        "cn": "克罗地亚",
-        "en": "Croatia",
-        "phone_code": "+385"
+        "areaCode": "218",
+        "enName": "Libya",
+        "name": "利比亚",
+        "id": 96,
+        "selfName": "‫ليبيا‬",
+        "abbreviate": "LY"
     },
     {
-        "cn": "肯尼亚",
-        "en": "Kenya",
-        "phone_code": "+254"
+        "areaCode": "423",
+        "enName": "Liechtenstein",
+        "name": "列支敦士登",
+        "id": 97,
+        "selfName": "Liechtenstein",
+        "abbreviate": "LI"
     },
     {
-        "cn": "库克群岛",
-        "en": "Cook Islands",
-        "phone_code": "+682"
+        "areaCode": "370",
+        "enName": "Lithuania",
+        "name": "立陶宛",
+        "id": 98,
+        "selfName": "Lietuva",
+        "abbreviate": "LT"
     },
     {
-        "cn": "拉脱维亚",
-        "en": "Latvia",
-        "phone_code": "+371"
+        "areaCode": "352",
+        "enName": "Luxembourg",
+        "name": "卢森堡",
+        "id": 99,
+        "selfName": "Luxembourg",
+        "abbreviate": "LU"
     },
     {
-        "cn": "莱索托",
-        "en": "Lesotho",
-        "phone_code": "+266"
+        "areaCode": "853",
+        "enName": "Macao",
+        "name": "中国澳门",
+        "id": 100,
+        "selfName": "中国澳门",
+        "abbreviate": "MO"
     },
     {
-        "cn": "老挝",
-        "en": "Laos",
-        "phone_code": "+856"
+        "areaCode": "389",
+        "enName": "Macedonia, the former Yugoslav Republic of",
+        "name": "马其顿",
+        "id": 215,
+        "selfName": "Македонија",
+        "abbreviate": "MK"
     },
     {
-        "cn": "黎巴嫩",
-        "en": "Lebanon",
-        "phone_code": "+961"
+        "areaCode": "261",
+        "enName": "Madagascar",
+        "name": "马达加斯加",
+        "id": 101,
+        "selfName": "Madagasikara",
+        "abbreviate": "MG"
     },
     {
-        "cn": "立陶宛",
-        "en": "Lithuania",
-        "phone_code": "+370"
+        "areaCode": "265",
+        "enName": "Malawi",
+        "name": "马拉维",
+        "id": 102,
+        "selfName": "Malawi",
+        "abbreviate": "MW"
     },
     {
-        "cn": "利比里亚",
-        "en": "Liberia",
-        "phone_code": "+231"
+        "areaCode": "60",
+        "enName": "Malaysia",
+        "name": "马来西亚",
+        "id": 103,
+        "selfName": "Malaysia",
+        "abbreviate": "MY"
     },
     {
-        "cn": "利比亚",
-        "en": "Libya",
-        "phone_code": "+218"
+        "areaCode": "960",
+        "enName": "Maldives",
+        "name": "马尔代夫",
+        "id": 104,
+        "selfName": "Maldives",
+        "abbreviate": "MV"
     },
     {
-        "cn": "列支敦士登",
-        "en": "Liechtenstein",
-        "phone_code": "+423"
+        "areaCode": "223",
+        "enName": "Mali",
+        "name": "马里",
+        "id": 105,
+        "selfName": "Mali",
+        "abbreviate": "ML"
     },
     {
-        "cn": "留尼汪",
-        "en": "Reunion",
-        "phone_code": "+262"
+        "areaCode": "356",
+        "enName": "Malta",
+        "name": "马耳他",
+        "id": 106,
+        "selfName": "Malta",
+        "abbreviate": "MT"
     },
     {
-        "cn": "卢森堡",
-        "en": "Luxembourg",
-        "phone_code": "+352"
+        "areaCode": "596",
+        "enName": "Martinique",
+        "name": "马提尼克",
+        "id": 108,
+        "selfName": "Martinique",
+        "abbreviate": "MQ"
     },
     {
-        "cn": "卢旺达",
-        "en": "Rwanda",
-        "phone_code": "+250"
+        "areaCode": "222",
+        "enName": "Mauritania",
+        "name": "毛里塔尼亚",
+        "id": 196,
+        "selfName": "‫موريتانيا‬",
+        "abbreviate": "MR"
     },
     {
-        "cn": "罗马尼亚",
-        "en": "Romania",
-        "phone_code": "+40"
+        "areaCode": "230",
+        "enName": "Mauritius",
+        "name": "毛里求斯",
+        "id": 109,
+        "selfName": "Moris",
+        "abbreviate": "MU"
     },
     {
-        "cn": "马达加斯加",
-        "en": "Madagascar",
-        "phone_code": "+261"
+        "areaCode": "269",
+        "enName": "Mayotte",
+        "name": "马约特",
+        "id": 211,
+        "selfName": "Mayotte",
+        "abbreviate": "YT"
     },
     {
-        "cn": "马尔代夫",
-        "en": "Maldives",
-        "phone_code": "+960"
+        "areaCode": "52",
+        "enName": "Mexico",
+        "name": "墨西哥",
+        "id": 110,
+        "selfName": "México",
+        "abbreviate": "MX"
     },
     {
-        "cn": "马耳他",
-        "en": "Malta",
-        "phone_code": "+356"
+        "areaCode": "373",
+        "enName": "Moldova, Republic of",
+        "name": "摩尔多瓦",
+        "id": 111,
+        "selfName": "Republica Moldova",
+        "abbreviate": "MD"
     },
     {
-        "cn": "马拉维",
-        "en": "Malawi",
-        "phone_code": "+265"
+        "areaCode": "377",
+        "enName": "Monaco",
+        "name": "摩纳哥",
+        "id": 112,
+        "selfName": "Monaco",
+        "abbreviate": "MC"
     },
     {
-        "cn": "马来西亚",
-        "en": "Malaysia",
-        "phone_code": "+60"
+        "areaCode": "976",
+        "enName": "Mongolia",
+        "name": "蒙古",
+        "id": 113,
+        "selfName": "Монгол",
+        "abbreviate": "MN"
     },
     {
-        "cn": "马里",
-        "en": "Mali",
-        "phone_code": "+223"
+        "areaCode": "382",
+        "enName": "Montenegro",
+        "name": "黑山共和国",
+        "id": 219,
+        "selfName": "Crna Gora",
+        "abbreviate": "MNE"
     },
     {
-        "cn": "马绍尔群岛",
-        "en": "Marshall Islands",
-        "phone_code": "+692"
+        "areaCode": "212",
+        "enName": "Morocco",
+        "name": "摩洛哥",
+        "id": 115,
+        "selfName": "‫المغرب‬",
+        "abbreviate": "MA"
     },
     {
-        "cn": "马提尼克",
-        "en": "Martinique",
-        "phone_code": "+596"
+        "areaCode": "258",
+        "enName": "Mozambique",
+        "name": "莫桑比克",
+        "id": 116,
+        "selfName": "Moçambique",
+        "abbreviate": "MZ"
     },
     {
-        "cn": "马约特",
-        "en": "Mayotte",
-        "phone_code": "+269"
+        "areaCode": "264",
+        "enName": "Namibia",
+        "name": "纳米比亚",
+        "id": 117,
+        "selfName": "Namibia",
+        "abbreviate": "NA"
     },
     {
-        "cn": "毛里求斯",
-        "en": "Mauritius",
-        "phone_code": "+230"
+        "areaCode": "977",
+        "enName": "Nepal",
+        "name": "尼泊尔",
+        "id": 119,
+        "selfName": "नेपाल",
+        "abbreviate": "NP"
     },
     {
-        "cn": "毛里塔尼亚",
-        "en": "Mauritania",
-        "phone_code": "+222"
+        "areaCode": "31",
+        "enName": "Netherlands",
+        "name": "荷兰",
+        "id": 121,
+        "selfName": "Nederland",
+        "abbreviate": "NL"
     },
     {
-        "cn": "美国",
-        "en": "United States",
-        "phone_code": "+1"
+        "areaCode": "687",
+        "enName": "New Caledonia",
+        "name": "新喀里多尼亚",
+        "id": 233,
+        "selfName": "Nouvelle-Calédonie",
+        "abbreviate": "NC"
     },
     {
-        "cn": "美属萨摩亚",
-        "en": "American Samoa",
-        "phone_code": "+684"
+        "areaCode": "64",
+        "enName": "NewZealand",
+        "name": "新西兰",
+        "id": 122,
+        "selfName": "New Zealand",
+        "abbreviate": "NZ"
     },
     {
-        "cn": "美属维尔京群岛",
-        "en": "Virgin Islands",
-        "phone_code": "+1340"
+        "areaCode": "505",
+        "enName": "Nicaragua",
+        "name": "尼加拉瓜",
+        "id": 123,
+        "selfName": "Nicaragua",
+        "abbreviate": "NI"
     },
     {
-        "cn": "蒙古",
-        "en": "Mongolia",
-        "phone_code": "+976"
+        "areaCode": "227",
+        "enName": "Niger",
+        "name": "尼日尔",
+        "id": 124,
+        "selfName": "Nijar",
+        "abbreviate": "NE"
     },
     {
-        "cn": "蒙特塞拉特",
-        "en": "Montserrat",
-        "phone_code": "+1664"
+        "areaCode": "234",
+        "enName": "Nigeria",
+        "name": "尼日利亚",
+        "id": 125,
+        "selfName": "Nigeria",
+        "abbreviate": "NG"
     },
     {
-        "cn": "孟加拉国",
-        "en": "Bangladesh",
-        "phone_code": "+880"
+        "areaCode": "47",
+        "enName": "Norway",
+        "name": "挪威",
+        "id": 127,
+        "selfName": "Norge",
+        "abbreviate": "NO"
     },
     {
-        "cn": "秘鲁",
-        "en": "Peru",
-        "phone_code": "+51"
+        "areaCode": "968",
+        "enName": "Oman",
+        "name": "阿曼",
+        "id": 128,
+        "selfName": "‫عُمان‬",
+        "abbreviate": "OM"
     },
     {
-        "cn": "密克罗尼西亚",
-        "en": "Federated States of Micronesia",
-        "phone_code": "+691"
+        "areaCode": "92",
+        "enName": "Pakistan",
+        "name": "巴基斯坦",
+        "id": 129,
+        "selfName": "‫پاکستان‬",
+        "abbreviate": "PK"
     },
     {
-        "cn": "缅甸",
-        "en": "Burma",
-        "phone_code": "+95"
+        "areaCode": "680",
+        "enName": "Palau",
+        "name": "帕劳",
+        "id": 230,
+        "selfName": "Palau",
+        "abbreviate": "PW"
     },
     {
-        "cn": "摩尔多瓦",
-        "en": "Moldova",
-        "phone_code": "+373"
+        "areaCode": "930",
+        "enName": "Palestine, State of",
+        "name": "巴勒斯坦",
+        "id": 236,
+        "selfName": "Palestine, State of",
+        "abbreviate": "PS"
     },
     {
-        "cn": "摩洛哥",
-        "en": "Morocco",
-        "phone_code": "+212"
+        "areaCode": "507",
+        "enName": "Panama",
+        "name": "巴拿马",
+        "id": 130,
+        "selfName": "Panamá",
+        "abbreviate": "PA"
     },
     {
-        "cn": "摩纳哥",
-        "en": "Monaco",
-        "phone_code": "+377"
+        "areaCode": "675",
+        "enName": "Papua New Cuinea",
+        "name": "巴布亚新几内亚",
+        "id": 131,
+        "selfName": "Papua New Guinea",
+        "abbreviate": "PG"
     },
     {
-        "cn": "莫桑比克",
-        "en": "Mozambique",
-        "phone_code": "+258"
+        "areaCode": "595",
+        "enName": "Paraguay",
+        "name": "巴拉圭",
+        "id": 132,
+        "selfName": "Paraguay",
+        "abbreviate": "PY"
     },
     {
-        "cn": "墨西哥",
-        "en": "Mexico",
-        "phone_code": "+52"
+        "areaCode": "51",
+        "enName": "Peru",
+        "name": "秘鲁",
+        "id": 133,
+        "selfName": "Perú",
+        "abbreviate": "PE"
     },
     {
-        "cn": "纳米尼亚",
-        "en": "Namibia",
-        "phone_code": "+264"
+        "areaCode": "63",
+        "enName": "Philippines",
+        "name": "菲律宾",
+        "id": 134,
+        "selfName": "Philippines",
+        "abbreviate": "PH"
     },
     {
-        "cn": "南非",
-        "en": "South Africa",
-        "phone_code": "+27"
+        "areaCode": "48",
+        "enName": "Poland",
+        "name": "波兰",
+        "id": 135,
+        "selfName": "Polska",
+        "abbreviate": "PL"
     },
     {
-        "cn": "南极洲",
-        "en": "Antarctica",
-        "phone_code": "+672"
+        "areaCode": "351",
+        "enName": "Portugal",
+        "name": "葡萄牙",
+        "id": 137,
+        "selfName": "Portugal",
+        "abbreviate": "PT"
     },
     {
-        "cn": "瑙鲁",
-        "en": "Nauru",
-        "phone_code": "+674"
+        "areaCode": "1787",
+        "enName": "PuertoRico",
+        "name": "波多黎各",
+        "id": 138,
+        "selfName": "Puerto Rico",
+        "abbreviate": "PR"
     },
     {
-        "cn": "尼加拉瓜",
-        "en": "Nicaragua",
-        "phone_code": "+505"
+        "areaCode": "974",
+        "enName": "Qatar",
+        "name": "卡塔尔",
+        "id": 139,
+        "selfName": "‫قطر‬",
+        "abbreviate": "QA"
     },
     {
-        "cn": "尼泊尔",
-        "en": "Nepal",
-        "phone_code": "+977"
+        "areaCode": "262",
+        "enName": "Réunion",
+        "name": "留尼汪",
+        "id": 209,
+        "selfName": "Réunion",
+        "abbreviate": "RE"
     },
     {
-        "cn": "尼日尔",
-        "en": "Niger",
-        "phone_code": "+227"
+        "areaCode": "40",
+        "enName": "Romania",
+        "name": "罗马尼亚",
+        "id": 141,
+        "selfName": "România",
+        "abbreviate": "RO"
     },
     {
-        "cn": "尼日利亚",
-        "en": "Nigeria",
-        "phone_code": "+234"
+        "areaCode": "7",
+        "enName": "Russia",
+        "name": "俄罗斯",
+        "id": 142,
+        "selfName": "Россия",
+        "abbreviate": "RU"
     },
     {
-        "cn": "纽埃",
-        "en": "Niue",
-        "phone_code": "+683"
+        "areaCode": "250",
+        "enName": "Rwanda",
+        "name": "卢旺达",
+        "id": 208,
+        "selfName": "Rwanda",
+        "abbreviate": "RW"
     },
     {
-        "cn": "挪威",
-        "en": "Norway",
-        "phone_code": "+47"
+        "areaCode": "1869",
+        "enName": "Saint Kitts and Nevis",
+        "name": "圣克里斯多福与尼维斯",
+        "id": 254,
+        "selfName": "Saint Kitts and Nevis",
+        "abbreviate": "KN"
     },
     {
-        "cn": "诺福克岛",
-        "en": "Norfolk Island",
-        "phone_code": "+6723"
+        "areaCode": "1758",
+        "enName": "Saint Lueia",
+        "name": "圣卢西亚",
+        "id": 143,
+        "selfName": "Saint Lucia",
+        "abbreviate": "LC"
     },
     {
-        "cn": "帕劳",
-        "en": "Palau",
-        "phone_code": "+680"
+        "areaCode": "508",
+        "enName": "Saint Pierre and Miquelon",
+        "name": "圣皮耶与密克隆群岛",
+        "id": 222,
+        "selfName": "Saint-Pierre-et-Miquelon",
+        "abbreviate": "PM"
     },
     {
-        "cn": "葡萄牙",
-        "en": "Portugal",
-        "phone_code": "+351"
+        "areaCode": "685",
+        "enName": "Samoa",
+        "name": "萨摩亚",
+        "id": 231,
+        "selfName": "Samoa",
+        "abbreviate": "WS"
     },
     {
-        "cn": "前南马其顿",
-        "en": "The Former Yugoslav Republic of Macedonia",
-        "phone_code": "+389"
+        "areaCode": "378",
+        "enName": "San Marino",
+        "name": "圣马力诺",
+        "id": 147,
+        "selfName": "San Marino",
+        "abbreviate": "SM"
     },
     {
-        "cn": "日本",
-        "en": "Japan",
-        "phone_code": "+81"
+        "areaCode": "239",
+        "enName": "Sao Tome and Principe",
+        "name": "圣多美和普林西比",
+        "id": 148,
+        "selfName": "São Tomé e Príncipe",
+        "abbreviate": "ST"
     },
     {
-        "cn": "瑞典",
-        "en": "Sweden",
-        "phone_code": "+46"
+        "areaCode": "966",
+        "enName": "Saudi Arabia",
+        "name": "沙特阿拉伯",
+        "id": 149,
+        "selfName": "‫المملكة العربية السعودية‬",
+        "abbreviate": "SA"
     },
     {
-        "cn": "瑞士",
-        "en": "Switzerland",
-        "phone_code": "+41"
+        "areaCode": "221",
+        "enName": "Senegal",
+        "name": "塞内加尔",
+        "id": 150,
+        "selfName": "Sénégal",
+        "abbreviate": "SN"
     },
     {
-        "cn": "萨尔瓦多",
-        "en": "El Salvador",
-        "phone_code": "+503"
+        "areaCode": "381",
+        "enName": "Serbia",
+        "name": "塞尔维亚共和国",
+        "id": 218,
+        "selfName": "Србија",
+        "abbreviate": "RS"
     },
     {
-        "cn": "萨摩亚",
-        "en": "Samoa",
-        "phone_code": "+685"
+        "areaCode": "248",
+        "enName": "Seychelles",
+        "name": "塞舌尔",
+        "id": 151,
+        "selfName": "Seychelles",
+        "abbreviate": "SC"
     },
     {
-        "cn": "塞尔维亚和黑山",
-        "en": "Serbia and Montenegro",
-        "phone_code": "+381"
+        "areaCode": "232",
+        "enName": "Sierra Leone",
+        "name": "塞拉利昂",
+        "id": 152,
+        "selfName": "Sierra Leone",
+        "abbreviate": "SL"
     },
     {
-        "cn": "塞拉利",
-        "en": "Sierra Leone",
-        "phone_code": "+232"
+        "areaCode": "65",
+        "enName": "Singapore",
+        "name": "新加坡",
+        "id": 153,
+        "selfName": "Singapore",
+        "abbreviate": "SG"
     },
     {
-        "cn": "塞内加尔",
-        "en": "Senegal",
-        "phone_code": "+221"
+        "areaCode": "421",
+        "enName": "Slovakia",
+        "name": "斯洛伐克",
+        "id": 154,
+        "selfName": "Slovensko",
+        "abbreviate": "SK"
     },
     {
-        "cn": "塞浦路斯",
-        "en": "Cyprus",
-        "phone_code": "+357"
+        "areaCode": "386",
+        "enName": "Slovenia",
+        "name": "斯洛文尼亚",
+        "id": 155,
+        "selfName": "Slovenija",
+        "abbreviate": "SI"
     },
     {
-        "cn": "塞舌尔",
-        "en": "Seychelles",
-        "phone_code": "+248"
+        "areaCode": "677",
+        "enName": "Solomon Is",
+        "name": "所罗门群岛",
+        "id": 156,
+        "selfName": "Solomon Islands",
+        "abbreviate": "SB"
     },
     {
-        "cn": "沙特阿拉伯",
-        "en": "Saudi Arabia",
-        "phone_code": "+966"
+        "areaCode": "252",
+        "enName": "Somali",
+        "name": "索马里",
+        "id": 157,
+        "selfName": "Soomaaliya",
+        "abbreviate": "SO"
     },
     {
-        "cn": "圣诞岛",
-        "en": "Christmas Island",
-        "phone_code": "+61"
+        "areaCode": "27",
+        "enName": "South Africa",
+        "name": "南非",
+        "id": 158,
+        "selfName": "South Africa",
+        "abbreviate": "ZA"
     },
     {
-        "cn": "圣多美和普林西比",
-        "en": "Sao Tome and Principe",
-        "phone_code": "+239"
+        "areaCode": "211",
+        "enName": "South Sudan",
+        "name": "南苏丹",
+        "id": 195,
+        "selfName": "‫جنوب السودان‬",
+        "abbreviate": "SS"
     },
     {
-        "cn": "圣赫勒拿",
-        "en": "Saint Helena",
-        "phone_code": "+290"
+        "areaCode": "34",
+        "enName": "Spain",
+        "name": "西班牙",
+        "id": 159,
+        "selfName": "España",
+        "abbreviate": "ES"
     },
     {
-        "cn": "圣基茨和尼维斯",
-        "en": "Saint Kitts and Nevis",
-        "phone_code": "+1869"
+        "areaCode": "94",
+        "enName": "Sri Lanka",
+        "name": "斯里兰卡",
+        "id": 160,
+        "selfName": "ශ්‍රී ලංකාව",
+        "abbreviate": "LK"
     },
     {
-        "cn": "圣卢西亚",
-        "en": "Saint Lucia",
-        "phone_code": "+1758"
+        "areaCode": "249",
+        "enName": "Sudan",
+        "name": "苏丹",
+        "id": 163,
+        "selfName": "‫السودان‬",
+        "abbreviate": "SD"
     },
     {
-        "cn": "圣马力诺",
-        "en": "San Marino",
-        "phone_code": "+378"
+        "areaCode": "597",
+        "enName": "Suriname",
+        "name": "苏里南",
+        "id": 164,
+        "selfName": "Suriname",
+        "abbreviate": "SR"
     },
     {
-        "cn": "圣皮埃尔和密克隆",
-        "en": "Saint Pierre and Miquelon",
-        "phone_code": "+508"
+        "areaCode": "268",
+        "enName": "Swaziland",
+        "name": "斯威士兰",
+        "id": 165,
+        "selfName": "Swaziland",
+        "abbreviate": "SZ"
     },
     {
-        "cn": "圣文森特和格林纳丁斯",
-        "en": "Saint Vincent and the Grenadines",
-        "phone_code": "+1784"
+        "areaCode": "46",
+        "enName": "Sweden",
+        "name": "瑞典",
+        "id": 166,
+        "selfName": "Sverige",
+        "abbreviate": "SE"
     },
     {
-        "cn": "斯里兰卡",
-        "en": "Sri Lanka",
-        "phone_code": "+94"
+        "areaCode": "41",
+        "enName": "Switzerland",
+        "name": "瑞士",
+        "id": 167,
+        "selfName": "Schweiz",
+        "abbreviate": "CH"
     },
     {
-        "cn": "斯洛伐克",
-        "en": "Slovakia",
-        "phone_code": "+421"
+        "areaCode": "963",
+        "enName": "Syria",
+        "name": "叙利亚",
+        "id": 168,
+        "selfName": "‫سوريا‬",
+        "abbreviate": "SY"
     },
     {
-        "cn": "斯洛文尼亚",
-        "en": "Slovenia",
-        "phone_code": "+386"
+        "areaCode": "886",
+        "enName": "Taiwan",
+        "name": "中国台湾",
+        "id": 169,
+        "selfName": "中国台湾",
+        "abbreviate": "CN"
     },
     {
-        "cn": "斯瓦尔巴岛和扬马延岛",
-        "en": "Svalbard",
-        "phone_code": "+47"
+        "areaCode": "992",
+        "enName": "Tajikistan",
+        "name": "塔吉克",
+        "id": 240,
+        "selfName": "Tajikistan",
+        "abbreviate": "TJ"
     },
     {
-        "cn": "斯威士兰",
-        "en": "Swaziland",
-        "phone_code": "+268"
+        "areaCode": "255",
+        "enName": "Tanzania",
+        "name": "坦桑尼亚",
+        "id": 171,
+        "selfName": "Tanzania",
+        "abbreviate": "TZ"
     },
     {
-        "cn": "苏丹",
-        "en": "Sudan",
-        "phone_code": "+249"
+        "areaCode": "66",
+        "enName": "Thailand",
+        "name": "泰国",
+        "id": 172,
+        "selfName": "ไทย",
+        "abbreviate": "TH"
     },
     {
-        "cn": "苏里南",
-        "en": "Suriname",
-        "phone_code": "+597"
+        "areaCode": "670",
+        "enName": "Timor",
+        "name": "东帝汶",
+        "id": 227,
+        "selfName": "Timor-Leste",
+        "abbreviate": "TL"
     },
     {
-        "cn": "所罗门群岛",
-        "en": "Solomon Islands",
-        "phone_code": "+677"
+        "areaCode": "228",
+        "enName": "Togo",
+        "name": "多哥",
+        "id": 173,
+        "selfName": "Togo",
+        "abbreviate": "TG"
     },
     {
-        "cn": "索马里",
-        "en": "Somalia",
-        "phone_code": "+252"
+        "areaCode": "676",
+        "enName": "Tonga",
+        "name": "汤加",
+        "id": 174,
+        "selfName": "Tonga",
+        "abbreviate": "TO"
     },
     {
-        "cn": "塔吉克斯坦",
-        "en": "Tajikistan",
-        "phone_code": "+992"
+        "areaCode": "1868",
+        "enName": "Trinidad and Tobago",
+        "name": "特立尼达和多巴哥",
+        "id": 175,
+        "selfName": "Trinidad and Tobago",
+        "abbreviate": "TT"
     },
     {
-        "cn": "台湾",
-        "en": "Taiwan",
-        "phone_code": "+886"
+        "areaCode": "216",
+        "enName": "Tunisia",
+        "name": "突尼斯",
+        "id": 176,
+        "selfName": "‫تونس‬",
+        "abbreviate": "TN"
     },
     {
-        "cn": "泰国",
-        "en": "Thailand",
-        "phone_code": "+66"
+        "areaCode": "90",
+        "enName": "Turkey",
+        "name": "土耳其",
+        "id": 177,
+        "selfName": "Türkiye",
+        "abbreviate": "TR"
     },
     {
-        "cn": "坦桑尼亚",
-        "en": "Tanzania",
-        "phone_code": "+255"
+        "areaCode": "993",
+        "enName": "Turkmenistan",
+        "name": "土库曼斯坦",
+        "id": 178,
+        "selfName": "Turkmenistan",
+        "abbreviate": "TM"
     },
     {
-        "cn": "汤加",
-        "en": "Tonga",
-        "phone_code": "+676"
+        "areaCode": "256",
+        "enName": "Uganda",
+        "name": "乌干达",
+        "id": 179,
+        "selfName": "Uganda",
+        "abbreviate": "UG"
     },
     {
-        "cn": "特克斯和凯科斯群岛",
-        "en": "Turks and Caicos Islands",
-        "phone_code": "+1649"
+        "areaCode": "380",
+        "enName": "Ukraine",
+        "name": "乌克兰",
+        "id": 180,
+        "selfName": "Україна",
+        "abbreviate": "UA"
     },
     {
-        "cn": "特立尼达和多巴哥",
-        "en": "Trinidad and Tobago",
-        "phone_code": "+1868"
-    },
-    {
-        "cn": "突尼斯",
-        "en": "Tunisia",
-        "phone_code": "+216"
-    },
-    {
-        "cn": "图瓦卢",
-        "en": "Tuvalu",
-        "phone_code": "+688"
-    },
-    {
-        "cn": "土耳其",
-        "en": "Turkey",
-        "phone_code": "+90"
-    },
-    {
-        "cn": "土库曼斯坦",
-        "en": "Turkmenistan",
-        "phone_code": "+993"
-    },
-    {
-        "cn": "托克劳",
-        "en": "Tokelau",
-        "phone_code": "+690"
-    },
-    {
-        "cn": "瓦利斯和富图纳",
-        "en": "Wallis and Futuna",
-        "phone_code": "+681"
-    },
-    {
-        "cn": "瓦努阿图",
-        "en": "Vanuatu",
-        "phone_code": "+678"
-    },
-    {
-        "cn": "危地马拉",
-        "en": "Guatemala",
-        "phone_code": "+502"
-    },
-    {
-        "cn": "委内瑞拉",
-        "en": "Venezuela",
-        "phone_code": "+58"
-    },
-    {
-        "cn": "文莱",
-        "en": "Brunei Darussalam",
-        "phone_code": "+673"
-    },
-    {
-        "cn": "乌干达",
-        "en": "Uganda",
-        "phone_code": "+256"
-    },
-    {
-        "cn": "乌克兰",
-        "en": "Ukraine",
-        "phone_code": "+380"
-    },
-    {
-        "cn": "乌拉圭",
-        "en": "Uruguay",
-        "phone_code": "+598"
-    },
-    {
-        "cn": "乌兹别克斯坦",
-        "en": "Uzbekistan",
-        "phone_code": "+998"
-    },
-    {
-        "cn": "西班牙",
-        "en": "Spain",
-        "phone_code": "+34"
-    },
-    {
-        "cn": "希腊",
-        "en": "Greece",
-        "phone_code": "+30"
-    },
-    {
-        "cn": "香港",
-        "en": "Hong Kong (SAR)",
-        "phone_code": "+852"
-    },
-    {
-        "cn": "新加坡",
-        "en": "Singapore",
-        "phone_code": "+65"
-    },
-    {
-        "cn": "新喀里多尼亚",
-        "en": "New Caledonia",
-        "phone_code": "+687"
-    },
-    {
-        "cn": "新西兰",
-        "en": "New Zealand",
-        "phone_code": "+64"
-    },
-    {
-        "cn": "匈牙利",
-        "en": "Hungary",
-        "phone_code": "+36"
-    },
-    {
-        "cn": "叙利亚",
-        "en": "Syria",
-        "phone_code": "+963"
-    },
-    {
-        "cn": "牙买加",
-        "en": "Jamaica",
-        "phone_code": "+1876"
-    },
-    {
-        "cn": "亚美尼亚",
-        "en": "Armenia",
-        "phone_code": "+374"
-    },
-    {
-        "cn": "也门",
-        "en": "Yemen",
-        "phone_code": "+967"
-    },
-    {
-        "cn": "伊拉克",
-        "en": "Iraq",
-        "phone_code": "+964"
-    },
-    {
-        "cn": "伊朗",
-        "en": "Iran",
-        "phone_code": "+98"
-    },
-    {
-        "cn": "以色列",
-        "en": "Israel",
-        "phone_code": "+972"
-    },
-    {
-        "cn": "意大利",
-        "en": "Italy",
-        "phone_code": "+39"
-    },
-    {
-        "cn": "印度",
-        "en": "India",
-        "phone_code": "+91"
-    },
-    {
-        "cn": "印度尼西亚",
-        "en": "Indonesia",
-        "phone_code": "+62"
-    },
-    {
-        "cn": "英国",
-        "en": "United Kingdom",
-        "phone_code": "+44"
-    },
-    {
-        "cn": "英属维尔京群岛",
-        "en": "British Virgin Islands",
-        "phone_code": "+1284"
-    },
-    {
-        "cn": "约旦",
-        "en": "Jordan",
-        "phone_code": "+962"
-    },
-    {
-        "cn": "越南",
-        "en": "Vietnam",
-        "phone_code": "+84"
-    },
-    {
-        "cn": "赞比亚",
-        "en": "Zambia",
-        "phone_code": "+260"
-    },
-    {
-        "cn": "乍得",
-        "en": "Chad",
-        "phone_code": "+235"
-    },
-    {
-        "cn": "直布罗陀",
-        "en": "Gibraltar",
-        "phone_code": "+350"
-    },
-    {
-        "cn": "智利",
-        "en": "Chile",
-        "phone_code": "+56"
-    },
-    {
-        "cn": "中非",
-        "en": "Central African Republic",
-        "phone_code": "+236"
-    },
-    {
-        "cn": "中国",
-        "en": "China",
-        "phone_code": "+86"
+        "areaCode": "971",
+        "enName": "United Arab Emirates",
+        "name": "阿拉伯联合酋长国",
+        "id": 181,
+        "selfName": "‫الإمارات العربية المتحدة‬",
+        "abbreviate": "AE"
+    },
+    {
+        "areaCode": "44",
+        "enName": "United Kingdom",
+        "name": "英国",
+        "id": 182,
+        "selfName": "United Kingdom",
+        "abbreviate": "GB"
+    },
+    {
+        "areaCode": "1",
+        "enName": "United States of America",
+        "name": "美国",
+        "id": 183,
+        "selfName": "United States of America",
+        "abbreviate": "US"
+    },
+    {
+        "areaCode": "1340",
+        "enName": "United States Virgin Islands",
+        "name": "美属维尔京群岛",
+        "id": 247,
+        "selfName": "U.S. Virgin Islands",
+        "abbreviate": "US"
+    },
+    {
+        "areaCode": "598",
+        "enName": "Uruguay",
+        "name": "乌拉圭",
+        "id": 184,
+        "selfName": "Uruguay",
+        "abbreviate": "UY"
+    },
+    {
+        "areaCode": "998",
+        "enName": "Uzbekistan",
+        "name": "乌兹别克斯坦",
+        "id": 185,
+        "selfName": "Ўзбекистон",
+        "abbreviate": "UZ"
+    },
+    {
+        "areaCode": "678",
+        "enName": "Vanuatu",
+        "name": "瓦努阿图",
+        "id": 229,
+        "selfName": "Vanuatu",
+        "abbreviate": "VU"
+    },
+    {
+        "areaCode": "58",
+        "enName": "Venezuela",
+        "name": "委内瑞拉",
+        "id": 186,
+        "selfName": "Venezuela",
+        "abbreviate": "VE"
+    },
+    {
+        "areaCode": "84",
+        "enName": "Vietnam",
+        "name": "越南",
+        "id": 187,
+        "selfName": "Việt Nam",
+        "abbreviate": "VN"
+    },
+    {
+        "areaCode": "1284",
+        "enName": "Virgin Islands, U.S.",
+        "name": "英属维尔京群岛",
+        "id": 246,
+        "selfName": "British Virgin Islands",
+        "abbreviate": "VG"
+    },
+    {
+        "areaCode": "967",
+        "enName": "Yemen",
+        "name": "也门",
+        "id": 188,
+        "selfName": "‫اليمن‬",
+        "abbreviate": "YE"
+    },
+    {
+        "areaCode": "260",
+        "enName": "Zambia",
+        "name": "赞比亚",
+        "id": 192,
+        "selfName": "Zambia",
+        "abbreviate": "ZM"
+    },
+    {
+        "areaCode": "263",
+        "enName": "Zimbabwe",
+        "name": "津巴布韦",
+        "id": 190,
+        "selfName": "Zimbabwe",
+        "abbreviate": "ZW"
     }
 ]
+

@@ -29,35 +29,36 @@
             android:id="@+id/titleTop"
             layout="@layout/com_title_transparent_chat" />
 
-        <com.scwang.smart.refresh.layout.SmartRefreshLayout
+        <com.drake.brv.PageRefreshLayout
             android:id="@+id/smart_common"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:background="@color/c_f2f3f7"
             android:layout_weight="1"
-            app:srlEnableLoadMore="false"
+            android:background="@color/c_f2f3f7"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/titleTop">
+            app:layout_constraintTop_toBottomOf="@id/titleTop"
+            app:srlEnableLoadMore="false">
 
-            <com.scwang.smart.refresh.header.MaterialHeader
+            <com.drake.statelayout.StateLayout
+                android:id="@+id/state"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="match_parent">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv"
-                android:paddingBottom="@dimen/dp_20"
-                android:background="@color/c_f2f3f7"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/dp_13"
-                android:paddingRight="13dp"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:reverseLayout="true" />
 
-            <com.scwang.smart.refresh.footer.ClassicsFooter
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </com.scwang.smart.refresh.layout.SmartRefreshLayout>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/c_f2f3f7"
+                    android:paddingLeft="@dimen/dp_13"
+                    android:paddingRight="13dp"
+                    android:paddingBottom="@dimen/dp_20"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:reverseLayout="true" />
+
+
+            </com.drake.statelayout.StateLayout>
+        </com.drake.brv.PageRefreshLayout>
 
 
         <LinearLayout
@@ -65,8 +66,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingTop="8dp"
             android:paddingLeft="@dimen/dp_12"
+            android:paddingTop="8dp"
             android:paddingRight="@dimen/dp_12"
             android:paddingBottom="39dp"
             app:layout_constraintBottom_toBottomOf="parent">
@@ -84,8 +85,8 @@
                     android:id="@+id/ivface"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:visibility="gone"
                     android:background="@drawable/send_face"
+                    android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent" />
 
@@ -94,25 +95,25 @@
                     android:layout_width="0dp"
                     android:layout_height="36dp"
                     android:layout_marginLeft="5dp"
+                    android:layout_marginRight="15dp"
                     android:background="@drawable/shape8_18152a"
                     android:hint="@string/say_something"
+                    android:imeOptions="actionSend"
+                    android:inputType="text|textCapSentences"
                     android:lineSpacingExtra="@dimen/dp_5"
-                    android:layout_marginRight="15dp"
                     android:maxHeight="227dp"
                     android:maxLength="200"
-                    android:inputType="text|textCapSentences"
-                    android:singleLine="true"
-                    android:imeOptions="actionSend"
-                    android:paddingLeft="15dp"
                     android:maxLines="3"
+                    android:paddingLeft="15dp"
+                    android:singleLine="true"
                     android:textColor="@color/c_37373d"
                     android:textColorHint="@color/c_94999f"
                     android:textSize="@dimen/sp_14"
                     android:textStyle="normal"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toLeftOf="@id/ivexpent" />
+                    app:layout_constraintRight_toLeftOf="@id/ivexpent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
                     android:id="@+id/ivexpent"
@@ -120,16 +121,16 @@
                     android:layout_height="@dimen/dp_30"
 
                     android:background="@drawable/send_add"
-                    app:layout_constraintTop_toTopOf="@id/edtcontent"
                     app:layout_constraintBottom_toBottomOf="@id/edtcontent"
-                    app:layout_constraintRight_toRightOf="parent" />
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/edtcontent" />
 
                 <ImageView
                     android:id="@+id/ivsend"
                     android:layout_width="@dimen/dp_36"
                     android:layout_height="@dimen/dp_36"
-                    android:visibility="gone"
                     android:background="@drawable/send_msg"
+                    android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintRight_toRightOf="parent" />
 
@@ -162,8 +163,8 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/phote_book"
                         android:layout_marginTop="8dp"
+                        android:text="@string/phote_book"
                         android:textColor="@color/c_575762"
                         android:textSize="12sp"
                         android:textStyle="bold" />
@@ -191,9 +192,9 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/canmei"
-
                         android:layout_marginTop="8dp"
+
+                        android:text="@string/canmei"
                         android:textColor="@color/c_575762"
                         android:textSize="12sp"
                         android:textStyle="bold" />

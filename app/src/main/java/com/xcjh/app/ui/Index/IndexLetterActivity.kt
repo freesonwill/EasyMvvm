@@ -25,34 +25,34 @@ import java.io.InputStreamReader
 class IndexLetterActivity : BaseActivity<FeedVm, FragmentLetterIndexBinding>() {
     private var models = mutableListOf<LetterBeann>()
     override fun initView(savedInstanceState: Bundle?) {
-        ImmersionBar.with(this)
-            .statusBarDarkFont(false)
-            .keyboardEnable(true)
-            .titleBar(mDatabind.titleTop.root)
-            .init()
-        mDatabind.rv.linear().setup {
-            addType<LetterBeann>(R.layout.item_city)
-            onBind {
-                when (itemViewType) {
-                    //左边文字消息
-                    R.layout.item_city -> {
-                        var binding = getBinding<ItemCityBinding>()
-                        var ad = _data as LetterBeann
-
-                        binding.tvname.text = ad.cn +"  ("+ad.phone_code +")"
-                        binding.tvname.setOnClickListener {
-                            PHONE_CODE=ad.phone_code
-                            finish()
-                        }
-
-                    }
-
-
-                }
-
-
-            }
-        }.models=models
+//        ImmersionBar.with(this)
+//            .statusBarDarkFont(false)
+//            .keyboardEnable(true)
+//            .titleBar(mDatabind.titleTop.root)
+//            .init()
+//        mDatabind.rv.linear().setup {
+//            addType<LetterBeann>(R.layout.item_city)
+//            onBind {
+//                when (itemViewType) {
+//                    //左边文字消息
+//                    R.layout.item_city -> {
+//                        var binding = getBinding<ItemCityBinding>()
+//                        var ad = _data as LetterBeann
+//
+//                        binding.tvname.text = ad.cn +"  ("+ad.phone_code +")"
+//                        binding.tvname.setOnClickListener {
+//                            PHONE_CODE=ad.phone_code
+//                            finish()
+//                        }
+//
+//                    }
+//
+//
+//                }
+//
+//
+//            }
+//        }.models=models
 
 
         initMaps()

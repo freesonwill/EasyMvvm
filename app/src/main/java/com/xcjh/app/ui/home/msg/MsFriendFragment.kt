@@ -1,12 +1,16 @@
 package com.xcjh.app.ui.home.msg
 
 import android.os.Bundle
+import android.widget.ImageView
+import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.drake.brv.utils.addModels
+import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.models
+import com.drake.brv.utils.mutable
 import com.drake.brv.utils.setup
+import com.drake.statelayout.StateConfig
 import com.xcjh.app.R
-import com.xcjh.app.adapter.MsgFriendAdapter
 import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseFragment
 import com.xcjh.app.bean.FriendListBean
@@ -22,7 +26,7 @@ import com.xcjh.base_lib.utils.vertical
 
 
 class MsFriendFragment : BaseFragment<MsgVm, FrMsgfriendBinding>() {
-    private val mAdapter by lazy { MsgFriendAdapter() }
+
     var listdata: MutableList<FriendListBean> = ArrayList<FriendListBean>()
     var mLetters = mutableListOf<String>()
 
@@ -41,6 +45,14 @@ class MsFriendFragment : BaseFragment<MsgVm, FrMsgfriendBinding>() {
             vertical()
             distance(0, 0, 0, 16)
         }
+        mDatabind.state.apply {
+            StateConfig.setRetryIds(R.id.ivEmptyIcon, R.id.txtEmptyName)
+            onEmpty {
+                this.findViewById<TextView>(R.id.txtEmptyName).text =
+                    resources.getString(R.string.nofriends)
+                this.findViewById<ImageView>(R.id.ivEmptyIcon).setImageDrawable(resources.getDrawable(R.drawable.ic_empety_msg))
+            }
+        }
         mDatabind.rec.setup {
             addType<FriendListBean> {
 
@@ -51,7 +63,8 @@ class MsFriendFragment : BaseFragment<MsgVm, FrMsgfriendBinding>() {
                 var item = _data as FriendListBean
                 Glide.with(context).load(item?.head).placeholder(R.drawable.default_anchor_icon)
                     .into(binding.ivhead)
-                binding.tvname.text = item?.nickName
+
+                binding.tvname.text = item.nickName
                 // 设置item数据
                 binding.lltItem.setOnClickListener {
 
@@ -74,6 +87,11 @@ class MsFriendFragment : BaseFragment<MsgVm, FrMsgfriendBinding>() {
 
                     }
                 }
+                binding.lltDelete.setOnClickListener{
+                    mViewModel.getUnNoticeFriend(item.anchorId)
+                    mDatabind.rec.mutable.removeAt(bindingAdapterPosition)
+                    mDatabind.rec.bindingAdapter.notifyItemRemoved(bindingAdapterPosition) // 通知更新
+                }
 
 
             }
@@ -84,21 +102,16 @@ class MsFriendFragment : BaseFragment<MsgVm, FrMsgfriendBinding>() {
         }
         mDatabind.smartCommon.setOnRefreshListener { mViewModel.getFriendList(true, "") }
             .setOnLoadMoreListener { mViewModel.getFriendList(false, "") }
-// mViewModel.getNoticeUser()
-// 需要传递控件 id
-        mAdapter.addOnItemChildClickListener(R.id.lltDelete) { adapter, view, position ->
 
-            mViewModel.getUnNoticeFriend(mAdapter.getItem(position)?.anchorId.toString())
-            mAdapter.removeAt(position)
-        }
+
 //登录或者登出
         appViewModel.updateLoginEvent.observe(this) {
             if (it) {
                 mViewModel.getMsgList(true, "")
             } else {
                 listdata.clear()
-                mAdapter.submitList(listdata)
-                mAdapter.notifyDataSetChanged()
+                mDatabind.rec.models=listdata
+
             }
         }
 // 索引列表
@@ -125,7 +138,7 @@ class MsFriendFragment : BaseFragment<MsgVm, FrMsgfriendBinding>() {
     }
 
     override fun createObserver() {
-        val empty = layoutInflater!!.inflate(R.layout.layout_empty, null)
+
 
         mViewModel.frendList.observe(this) {
             if (it.isSuccess) {
@@ -134,13 +147,13 @@ class MsFriendFragment : BaseFragment<MsgVm, FrMsgfriendBinding>() {
                     //第一页并没有数据 显示空布局界面
                     it.isFirstEmpty -> {
                         mDatabind.smartCommon.finishRefresh()
-                        mDatabind.smartCommon.showEmpty()
+                        mDatabind.state.showEmpty()
                     }
                     //是第一页
                     it.isRefresh -> {
                         mDatabind.smartCommon.finishRefresh()
                         mDatabind.smartCommon.resetNoMoreData()
-                        mDatabind.smartCommon.showContent()
+                        mDatabind.state.showContent()
                         var list = getPinyinList(it.listData)
                         mDatabind.rec.models = list
 
@@ -148,7 +161,7 @@ class MsFriendFragment : BaseFragment<MsgVm, FrMsgfriendBinding>() {
                     }
                     //不是第一页
                     else -> {
-                        mDatabind.smartCommon.showContent()
+                        mDatabind.state.showContent()
                         if (it.listData.isEmpty()) {
                             mDatabind.smartCommon.setEnableLoadMore(false)
                             mDatabind.smartCommon.finishLoadMoreWithNoMoreData()
@@ -162,8 +175,8 @@ class MsFriendFragment : BaseFragment<MsgVm, FrMsgfriendBinding>() {
                     }
                 }
             } else {
-                mDatabind.smartCommon.showEmpty()
-                mAdapter.emptyView = empty
+                mDatabind.state.showEmpty()
+                //mAdapter.emptyView = empty
                 //失败
                 if (it.isRefresh) {
                     mDatabind.smartCommon.finishRefresh()

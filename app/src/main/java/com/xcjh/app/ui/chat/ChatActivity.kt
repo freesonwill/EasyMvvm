@@ -11,6 +11,7 @@ import android.view.KeyEvent
 import android.view.View
 import android.view.View.OnLongClickListener
 import android.view.inputmethod.EditorInfo
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.TextView.OnEditorActionListener
 import androidx.recyclerview.widget.SimpleItemAnimator
@@ -24,6 +25,7 @@ import com.drake.brv.utils.addModels
 import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
+import com.drake.statelayout.StateConfig
 import com.google.gson.Gson
 import com.gyf.immersionbar.ImmersionBar
 import com.kongzue.dialogx.dialogs.CustomDialog
@@ -116,6 +118,14 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                 )
             )
         )
+        mDatabind.state.apply {
+            StateConfig.setRetryIds(R.id.ivEmptyIcon, R.id.txtEmptyName)
+            onEmpty {
+                this.findViewById<TextView>(R.id.txtEmptyName).text =
+                    resources.getString(R.string.nomsg)
+                this.findViewById<ImageView>(R.id.ivEmptyIcon).setImageDrawable(resources.getDrawable(R.drawable.ic_empety_msg))
+            }
+        }
         // 键盘弹出平滑动画
         userId = intent.getStringExtra(Constants.USER_ID) ?: ""
         nickname = intent.getStringExtra(Constants.USER_NICK) ?: ""
@@ -559,6 +569,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
 
             override fun onC2CReceive(chat: ReceiveChatMsg) {
                 mViewModel.clearMsg(userId)
+                mDatabind.state.showContent()
                 if (chat.sendId!!.isEmpty()) {//收到消息
                     var beanmy: MsgBeanData = MsgBeanData()
                     beanmy.anchorId = chat.anchorId
@@ -603,8 +614,10 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
             val data = seacherData(userId).await()
             if (data.size > 0) {
                 listdata.addAll(data)
+                mDatabind.state.showContent()
             } else {
 
+                mDatabind.state.showEmpty()
             }
             mViewModel.getHisMsgList(mDatabind.smartCommon, offset, userId)
         }
@@ -755,6 +768,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
             beanmy.createTime = creatime
             var listdata1: MutableList<MsgBeanData> = ArrayList<MsgBeanData>()
             listdata1.add(beanmy)
+            mDatabind.state.showContent()
             mDatabind.rv.addModels(listdata1, index = 0)
             mDatabind.rv.scrollToPosition(0) // 保证最新一条消息显示
         }
