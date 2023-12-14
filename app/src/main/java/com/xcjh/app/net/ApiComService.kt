@@ -17,8 +17,8 @@ interface ApiComService {
         const val SERVER_URL = "http://192.168.101.15:6003/apis/"//app通用 开发
         const val SHARE_IP = "http://192.168.101.180:1820/"//比赛分享链接
         //test 预发布
- /*        const val SERVER_URL = "https://app.cbd246.com/apis/"//app通用 测试
-         const val SHARE_IP = "https://app.cbd246.com/"//比赛分享链接*/
+        /*        const val SERVER_URL = "https://app.cbd246.com/apis/"//app通用 测试
+                const val SHARE_IP = "https://app.cbd246.com/"//比赛分享链接*/
         //正式
 //         const val SERVER_URL = "https://holdem.news/apis/"//app通用 正式
 //         const val SHARE_IP = "https://www.2web3.net/user-user/"//比赛分享链接
@@ -38,12 +38,11 @@ interface ApiComService {
     suspend fun uploadVideoOss(@Part file: MultipartBody.Part): ApiResponse<Any>
 
 
-
     /**
      * 获取首页广告列表
      *
      */
-    @GET( "app/advertising/banner/list")
+    @GET("app/advertising/banner/list")
     suspend fun getBannerList(): ApiResponse<ArrayList<AdvertisementBanner>>
 
 
@@ -52,21 +51,25 @@ interface ApiComService {
      */
     @POST("app/schedule/latestMatch")
     suspend fun getOngoingMatch(@Body req: HotReq): ApiResponse<ArrayList<MatchBean>>
+
     /**
      *赛程热门赛事列表查询
      */
     @POST("app/schedule/getHotMatchList")
     suspend fun getHotMatch(@Body req: HotMatchReq): ApiResponse<ArrayList<HotMatchBean>?>
+
     /**
      *消除所有红点提示
      */
     @PUT("app/msg/cancelAllUnread")
     suspend fun getClreaAllMsg(): ApiResponse<*>
+
     /**
      *消除红点提示,读取该来源用户所有消息
      */
     @PUT("app/msg/cancelUnread")
     suspend fun getClreaMsg(@Body req: PostClreaMsgBean): ApiResponse<*>
+
     /**
      *赛程比赛分页查询
      */
@@ -78,42 +81,56 @@ interface ApiComService {
      */
     @POST("app/home/living/page")
     suspend fun getNowLive(@Body req: LiveReq): ApiResponse<MyListPages<BeingLiveBean>>
+
     /**
      * 我关注的比赛分页查询
      */
     @POST("app/follow/matchPage")
     suspend fun getMyNoticeList(@Body req: BasePage): ApiResponse<MyListPages<MatchBean>>
+
     /**
      * 反馈通知页面：分页查询
      */
     @POST("app/user/notice/getInfos")
     suspend fun getFeedNoticeList(@Body req: BasePage): ApiResponse<MyListPages<FeedBackBean>>
+
     /**
      * 我的好友分页查询
      */
     @POST("app/follow/myFriendsPage")
     suspend fun getFriendsList(@Body req: PostGetMsgBean): ApiResponse<MyListPages<FriendListBean>>
+
     /**
      * 消息列表页面：消息分页查询 返回对象fromId=0代表这条数据为反馈通知
      */
     @POST("app/msg/msgPage")
     suspend fun getMsgListPage(@Body req: PostGetMsgBean): ApiResponse<MyListPages<MsgListNewData>>
+
     /**
      * 上传聊天照片
      */
     @Multipart
     @POST("app/file/chat/image")
     suspend fun upLoadChatPic(@Part file: MultipartBody.Part): ApiResponse<String>
+
     /**
      * APP用户登录注册
      */
     @POST("app/common/login")
     suspend fun getLogin(@Body req: PostLoaginBean): ApiResponse<String>
+
+    /**
+     * 极光推送绑定用户
+     */
+    @GET("app/jpush/regId/{regId}")
+    suspend fun jPushBind(@Path("regId") regId: String): ApiResponse<String>
+
     /**
      * 获取验证码
      */
     @GET("app/common/getKaptchaImage")
     suspend fun getTypeCode(@Body req: PostLoaginBean): ApiResponse<String>
+
     /**
      * 关注比赛
      */
@@ -122,31 +139,36 @@ interface ApiComService {
         @Path("matchId") matchId: String,
         @Path("matchType") matchType: String
     ): ApiResponse<*>
+
     /**
      * 关注主播
      */
     @POST("app/follow/anchor/follow/{anchorId}")
-    suspend fun getNoticeUser(@Path("anchorId") anchorId: String
+    suspend fun getNoticeUser(
+        @Path("anchorId") anchorId: String
     ): ApiResponse<*>
 
     /**
      * 取消关注比赛
      */
     @POST("app/follow/match/unfollow/{matchId}/{matchType}")
-    suspend fun getUnNoticeRaise( @Path("matchId") matchId: String,
-                                   @Path("matchType") matchType: String): ApiResponse<*>
+    suspend fun getUnNoticeRaise(
+        @Path("matchId") matchId: String,
+        @Path("matchType") matchType: String
+    ): ApiResponse<*>
+
     /**
      * 取消好友
      */
     @POST("app/follow/anchor/unfriend/{anchorId}")
-    suspend fun getUnNoticeFriend( @Path("anchorId") matchId: String): ApiResponse<*>
+    suspend fun getUnNoticeFriend(@Path("anchorId") matchId: String): ApiResponse<*>
 
     /**
      * 根据主播ID，删除聊天记录
      * /apis/app/msg/delRecordsByAnchorId
      */
-    @PUT( "app/msg/delRecordsByAnchorId")
-    suspend fun delMsgByid(@Body req: DelMsgBean):  ApiResponse<*>
+    @PUT("app/msg/delRecordsByAnchorId")
+    suspend fun delMsgByid(@Body req: DelMsgBean): ApiResponse<*>
 
     /**
      * 获取首页新闻列表
@@ -200,24 +222,26 @@ interface ApiComService {
      */
     @POST("app/msg/history")
     suspend fun getHistoryMsgPr(@Body req: HistoryMsgReq): ApiResponse<MutableList<MsgBeanData>>
+
     /**
      * 消息列表页面：历史消息查询 复用型接口
      */
     @POST("app/msg/history")
     suspend fun getHistoryMsg(@Body req: HistoryMsgReq): ApiResponse<MutableList<MsgBean>>
+
     /**
      * 获取用户基本信息
      * /app/user/getUserInfo
      */
-    @GET( "app/user/getUserInfo")
-    suspend fun getUserBaseInfo():  ApiResponse<UserInfo>
+    @GET("app/user/getUserInfo")
+    suspend fun getUserBaseInfo(): ApiResponse<UserInfo>
 
     /**
      * 修改个人信息
      * /apis/app/user/updateInfo
      */
-    @PUT( "app/user/updateInfo")
-    suspend fun updateInfo(@Body req: InfoReq):  ApiResponse<*>
+    @PUT("app/user/updateInfo")
+    suspend fun updateInfo(@Body req: InfoReq): ApiResponse<*>
 
     /**
      * 上传头像照片
@@ -234,6 +258,7 @@ interface ApiComService {
     @Multipart
     @POST("app/file/common/image")
     suspend fun upLoadImage(@Part file: MultipartBody.Part): ApiResponse<String>
+
     /**
      * 直播详情界面中主播详情接口
      */
@@ -287,14 +312,17 @@ interface ApiComService {
      * matchType比赛类型：1：足球；2：篮球,可用值:1,2
      */
     @POST("app/schedule/match/{matchId}/{matchType}")
-    suspend fun getMatchDetail(@Path("matchId") matchId: String, @Path("matchType") matchType: String?): ApiResponse<MatchDetailBean>
+    suspend fun getMatchDetail(
+        @Path("matchId") matchId: String,
+        @Path("matchType") matchType: String?
+    ): ApiResponse<MatchDetailBean>
 
     /**
      * 获取是否更新
      * 	渠道：1：安卓 2：IOS
      */
     @POST("app/version/getLatestVersion/{channel}")
-    suspend fun getLatestVersion(@Path("channel") channel: String="1"): ApiResponse<AppUpdateBean>
+    suspend fun getLatestVersion(@Path("channel") channel: String = "1"): ApiResponse<AppUpdateBean>
 
     /**
      * 个人中心广告
@@ -342,14 +370,14 @@ interface ApiComService {
     /**
      * APP退出
      */
-    @DELETE( "app/user/logout")
+    @DELETE("app/user/logout")
     suspend fun exitLogin(): ApiResponse<*>
 
     /**
      * 获取直播间详情
      */
     @POST("app/home/living/info")
-    suspend fun getLiveInfo(@Query("id")  id:String): ApiResponse<BeingLiveBean>
+    suspend fun getLiveInfo(@Query("id") id: String): ApiResponse<BeingLiveBean>
 
     /**
      * 获取当前APP用户推送设置信息
@@ -363,7 +391,7 @@ interface ApiComService {
      *
      */
     @PUT("app/notice/config/switch/{name}/{status}")
-    suspend fun setSwitch(@Path("name") userId: String,@Path("status") status: Int):  ApiResponse<*>
+    suspend fun setSwitch(@Path("name") userId: String, @Path("status") status: Int): ApiResponse<*>
 
 
     /**

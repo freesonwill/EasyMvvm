@@ -68,7 +68,8 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
             onEmpty {
                 this.findViewById<TextView>(R.id.txtEmptyName).text =
                     resources.getString(R.string.nomsg)
-                this.findViewById<ImageView>(R.id.ivEmptyIcon).setImageDrawable(resources.getDrawable(R.drawable.ic_empety_msg))
+                this.findViewById<ImageView>(R.id.ivEmptyIcon)
+                    .setImageDrawable(resources.getDrawable(R.drawable.ic_empety_msg))
             }
         }
         mAdapter.addOnItemChildClickListener(R.id.lltDelete) { adapter, view, position ->
@@ -77,7 +78,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
             deltDataToList(bean!!)
             mAdapter.removeAt(position)
             if (listdata.size == 0) {
-              mDatabind.state.showEmpty()
+                mDatabind.state.showEmpty()
             }
         }
         mAdapter.addOnItemChildClickListener(R.id.lltItem) { adapter, view, position ->
@@ -139,6 +140,22 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                 listdata.clear()
                 mAdapter.submitList(listdata)
                 mAdapter.notifyDataSetChanged()
+                GlobalScope.launch {
+                    val data = getAll().await()
+
+                    if (data.isNotEmpty()) {
+                        for (i in data.indices) {
+                            var bean =
+                                MyApplication.dataChatList!!.chatDao?.findMessagesById(data[i].anchorId!!)
+                            data[i].idd = bean!!.idd
+                            //删除会显示在聊天列表的记录数据
+                            MyApplication.dataChatList!!.chatDao?.delete(data[i])
+                            //删除跟这个主播相关的连天记录
+                            MyApplication.dataBase!!.chatDao?.deleteAllZeroId(data[i].anchorId!!)
+                        }
+
+                    }
+                }
             }
         }
 

@@ -5,29 +5,33 @@ import android.content.res.Resources
 import com.xcjh.app.R
 import com.xcjh.base_lib.utils.LogUtils
 import com.xcjh.base_lib.utils.TimeConstant
+import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
 
 object ChatTimeUtile {
-    fun getRecentTimeSpanByNow(contenx:Context, millis: Long): String? {
-        val now = System.currentTimeMillis()
-        val span = now - millis
-        LogUtils.d(now.toString()+"--"+millis+"间隔时间=$span")
-        return if (span < 1000) {
-            contenx.resources.getString(R.string.txt_time_gg)
-        } else if (span < TimeConstant.MIN) {
-            java.lang.String.format(Locale.getDefault(),  contenx.resources.getString(R.string.txttime_sencend), span / TimeConstant.SEC)
-        } else if (span < TimeConstant.HOUR) {
-            java.lang.String.format(Locale.getDefault(), contenx.resources.getString(R.string.txttime_minits), span / TimeConstant.MIN)
-        } else if (span < TimeConstant.DAY) {
-            java.lang.String.format(Locale.getDefault(), contenx.resources.getString(R.string.txttime_hours), span / TimeConstant.HOUR)
-        } else if (span < TimeConstant.MONTH) {
-            java.lang.String.format(Locale.getDefault(), contenx.resources.getString(R.string.txttime_days), span / TimeConstant.DAY)
-        } else if (span < TimeConstant.YEAR) {
-            java.lang.String.format(Locale.getDefault(), contenx.resources.getString(R.string.txttime_mouth), span / TimeConstant.MONTH)
-        } else if (span > TimeConstant.YEAR) {
-            java.lang.String.format(Locale.getDefault(), contenx.resources.getString(R.string.txttime_years), span / TimeConstant.YEAR)
-        } else {
-            String.format("%tF", millis)
+    fun formatTimestamp(contenx:Context, timestamp: Long): String {
+        val currentTime = System.currentTimeMillis()
+        val diff = currentTime - timestamp
+
+        val seconds = diff / 1000
+        if (seconds < 60) {
+            return contenx.resources.getString(R.string.txt_time_gg)
         }
+
+        val minutes = seconds / 60
+        if (minutes < 60) {
+            return "$minutes"+ contenx.resources.getString(R.string.txttime_minits)
+        }
+
+        val hours = minutes / 60
+        if (hours < 24) {
+            val format = SimpleDateFormat("HH:mm", Locale.getDefault())
+            return format.format(Date(timestamp))
+        }
+
+        val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        return format.format(Date(timestamp))
     }
+
 }
