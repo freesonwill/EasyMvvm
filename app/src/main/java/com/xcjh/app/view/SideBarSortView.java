@@ -106,7 +106,8 @@ public class SideBarSortView extends View {
             //计算每一个字母x轴
             float paintX = getWidth() / 2F - paint.measureText(mList.get(i)) / 2;
             //计算每一个字母Y轴
-            int paintY = height * i + height;
+            int paintY = ((27-mList.size())/2*height)+i*height;
+           // int paintY = height * i + height;
             //绘画出来这个TextView
             mCanvas.drawText(mList.get(i), paintX, paintY, paint);
             //画完一个以后重置画笔
@@ -120,7 +121,9 @@ public class SideBarSortView extends View {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
             case MotionEvent.ACTION_MOVE:
-                int index = (int) (event.getY() / getHeight() * mList.size());
+                int aa= (int) event.getY();
+                int aa1=getHeight()/2;
+                int index = (int) (event.getY() / aa1 * mList.size());
                 if (index >= 0 && index < mList.size() && mSelectIndex != index) {
                     if (mClickListener != null) {
                         mClickListener.onSideBarScrollUpdateItem(mList.get(index));
