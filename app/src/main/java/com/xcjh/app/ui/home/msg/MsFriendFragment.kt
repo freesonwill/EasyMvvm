@@ -50,7 +50,8 @@ class MsFriendFragment : BaseFragment<MsgVm, FrMsgfriendBinding>() {
             onEmpty {
                 this.findViewById<TextView>(R.id.txtEmptyName).text =
                     resources.getString(R.string.nofriends)
-                this.findViewById<ImageView>(R.id.ivEmptyIcon).setImageDrawable(resources.getDrawable(R.drawable.ic_empety_msg))
+                this.findViewById<ImageView>(R.id.ivEmptyIcon)
+                    .setImageDrawable(resources.getDrawable(R.drawable.ic_empety_msg))
             }
         }
         mDatabind.rec.setup {
@@ -87,10 +88,18 @@ class MsFriendFragment : BaseFragment<MsgVm, FrMsgfriendBinding>() {
 
                     }
                 }
-                binding.lltDelete.setOnClickListener{
+                binding.lltDelete.setOnClickListener {
                     mViewModel.getUnNoticeFriend(item.anchorId)
                     mDatabind.rec.mutable.removeAt(bindingAdapterPosition)
                     mDatabind.rec.bindingAdapter.notifyItemRemoved(bindingAdapterPosition) // 通知更新
+
+                    var bean = mDatabind.rec.models as List<FriendListBean>
+                    if (bean.isEmpty()) {
+                        mDatabind.state.showEmpty()
+                    }
+                    var list = getPinyinList(bean)
+
+
                 }
 
 
@@ -110,7 +119,7 @@ class MsFriendFragment : BaseFragment<MsgVm, FrMsgfriendBinding>() {
                 mViewModel.getMsgList(true, "")
             } else {
                 listdata.clear()
-                mDatabind.rec.models=listdata
+                mDatabind.rec.models = listdata
 
             }
         }
@@ -205,10 +214,11 @@ class MsFriendFragment : BaseFragment<MsgVm, FrMsgfriendBinding>() {
     }
 
     fun getPinyinList(list: List<FriendListBean>): List<FriendListBean> {
+        mLetters.clear()
         val pinyinList = mutableListOf<FriendListBean>()
 
         for (item in list) {
-            val firstLetter =item.shortName
+            val firstLetter = item.shortName
             if (!mLetters.contains(firstLetter)) {
                 mLetters.add(firstLetter)
             }
@@ -218,7 +228,6 @@ class MsFriendFragment : BaseFragment<MsgVm, FrMsgfriendBinding>() {
         }
 
         pinyinList.sortBy { it.pinyin }
-
 
         mDatabind.indexBar.setNewLetter(mLetters)
         return pinyinList

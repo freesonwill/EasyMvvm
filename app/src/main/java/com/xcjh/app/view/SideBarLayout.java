@@ -36,10 +36,7 @@ public class SideBarLayout extends RelativeLayout implements SideBarSortView.OnI
     private int wordTextColor;
     private float wordTextSize;
     private Drawable wordBackground;
-    public ArrayList<String> mList = new ArrayList<>(Arrays.asList(
-            "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S",
-            "T", "U", "V", "W", "X", "Y", "Z", "#"
-    ));
+    public ArrayList<String> mList = new ArrayList<>();
 
     public SideBarLayout(Context context) {
         super(context);
@@ -88,7 +85,11 @@ public class SideBarLayout extends RelativeLayout implements SideBarSortView.OnI
 
         int hegaht = 1920 / 27 * mList.size();
 // 设置自定义视图的宽高
-        RelativeLayout.LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, hegaht);
+        RelativeLayout.LayoutParams layoutParams = (LayoutParams) mSortView.getLayoutParams();
+        int[] location = new int[2];
+        mSortView.getLocationOnScreen(location);
+        int x = location[0];
+        int y = location[1];
        // mSortView.setLayoutParams(layoutParams);
         mSortView.setmTextColor(unselectTextColor);
         mSortView.setmTextSize(unselectTextSize);
@@ -107,7 +108,7 @@ public class SideBarLayout extends RelativeLayout implements SideBarSortView.OnI
         mList.clear();
         mList.addAll(mLists);
       //  initView();
-        mSortView.setNewLetter((ArrayList<String>) mList);
+        mSortView.setNewLetter((ArrayList<String>) mLists);
 
     }
 

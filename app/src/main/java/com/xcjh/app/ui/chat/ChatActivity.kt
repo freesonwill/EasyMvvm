@@ -123,7 +123,8 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
             onEmpty {
                 this.findViewById<TextView>(R.id.txtEmptyName).text =
                     resources.getString(R.string.nomsg)
-                this.findViewById<ImageView>(R.id.ivEmptyIcon).setImageDrawable(resources.getDrawable(R.drawable.ic_empety_msg))
+                this.findViewById<ImageView>(R.id.ivEmptyIcon)
+                    .setImageDrawable(resources.getDrawable(R.drawable.ic_empety_msg))
             }
         }
         // 键盘弹出平滑动画
@@ -460,24 +461,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                     if (isShowBottom) {
                         hd = 0f
                     }
-                    val rotationYAnimator =
-                        ObjectAnimator.ofFloat(mDatabind.ivexpent, "rotation", 0f, hd)
-                    rotationYAnimator.duration = 50
-
-                    rotationYAnimator.addListener(object : AnimatorListenerAdapter() {
-                        override fun onAnimationEnd(animation: Animator) {
-                            super.onAnimationEnd(animation)
-                            if (isShowBottom) {
-                                isShowBottom = false
-                                mDatabind.linbottom.visibility = View.GONE
-                            } else {
-                                isShowBottom = true
-                                mDatabind.linbottom.visibility = View.VISIBLE
-                            }
-
-                        }
-                    })
-                    rotationYAnimator.start()
+                    startAnmila(hd)
 
 
                 }
@@ -538,7 +522,8 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
         }
         mDatabind.edtcontent.setOnEditorActionListener(OnEditorActionListener { v, actionId, event ->
             if ((event != null && (event.keyCode == KeyEvent.KEYCODE_ENTER))
-                || (actionId == EditorInfo.IME_ACTION_SEND)) {
+                || (actionId == EditorInfo.IME_ACTION_SEND)
+            ) {
                 // 在这里执行相应的操作
                 val searchText = v.text.toString()
                 if (searchText.isNotEmpty()) {
@@ -622,6 +607,27 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
             mViewModel.getHisMsgList(mDatabind.smartCommon, offset, userId)
         }
 
+    }
+
+    fun startAnmila(hd: Float) {
+        val rotationYAnimator =
+            ObjectAnimator.ofFloat(mDatabind.ivexpent, "rotation", 0f, hd)
+        rotationYAnimator.duration = 50
+
+        rotationYAnimator.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator) {
+                super.onAnimationEnd(animation)
+                if (isShowBottom) {
+                    isShowBottom = false
+                    mDatabind.linbottom.visibility = View.GONE
+                } else {
+                    isShowBottom = true
+                    mDatabind.linbottom.visibility = View.VISIBLE
+                }
+
+            }
+        })
+        rotationYAnimator.start()
     }
 
     suspend fun upLoadPic(path: String, view: TextView, sendId: String) {
@@ -769,6 +775,9 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
             var listdata1: MutableList<MsgBeanData> = ArrayList<MsgBeanData>()
             listdata1.add(beanmy)
             mDatabind.state.showContent()
+            if (isShowBottom) {
+                mDatabind.ivexpent.performClick()
+            }
             mDatabind.rv.addModels(listdata1, index = 0)
             mDatabind.rv.scrollToPosition(0) // 保证最新一条消息显示
         }
