@@ -70,7 +70,6 @@ class PersonalDataActivity : BaseActivity<PersonalDataVm, ActivityPersonalDataBi
         mDatabind.tvOption.clickNoRepeat {
 
             if(isSave){
-                myToast("成功")
                 user!!.name=mDatabind.txtPersonalNickname.text.toString().trim()
                 mViewModel.setUserInfo( mDatabind.txtPersonalNickname.text.toString().trim(),user!!.head)
             }
@@ -170,12 +169,22 @@ class PersonalDataActivity : BaseActivity<PersonalDataVm, ActivityPersonalDataBi
 
         mViewModel.update.observe(this){
             dataIsSave()
-            user!!.head=it
-            Glide.with(this)
-                .load(it) // 替换为您要加载的图片 URL
-                .error(R.drawable.icon_my_head)
-                .placeholder(R.drawable.icon_my_head)
-                .into(mDatabind.ivPersonalHead)
+
+            if(it.isNotEmpty()){
+                user!!.head=it
+                Glide.with(this)
+                    .load(it) // 替换为您要加载的图片 URL
+                    .error(R.drawable.icon_my_head)
+                    .placeholder(R.drawable.icon_my_head)
+                    .into(mDatabind.ivPersonalHead)
+            }else{
+                Glide.with(this)
+                    .load(user!!.head) // 替换为您要加载的图片 URL
+                    .error(R.drawable.icon_my_head)
+                    .placeholder(R.drawable.icon_my_head)
+                    .into(mDatabind.ivPersonalHead)
+            }
+
 //            mainVm.getUserInfo()
         }
         mViewModel.updateData.observe(this){

@@ -32,6 +32,7 @@ class PersonalDataVm : BaseViewModel() {
                     update.value = it
 //                    setUserInfo(name = null, head = it)
                 }else{
+                    update.value =""
                     myToast(appContext.getString(R.string.http_txt_err_meg))
                 }
 
@@ -53,7 +54,6 @@ class PersonalDataVm : BaseViewModel() {
             { apiService.updateInfo(InfoReq(name = name, head = head)) },
             {
                 updateData.value = head!!
-
             }, {
                 myToast(it.errorMsg)
             },isShowDialog=true

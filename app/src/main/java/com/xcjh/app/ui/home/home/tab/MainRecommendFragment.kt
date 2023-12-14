@@ -573,6 +573,7 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                                             }else if(matchBean.status.equals("3")){
                                                 binding.txtMatchStatus.visibility=View.VISIBLE
                                                 binding.txtMatchStatus.text=resources.getString(R.string.zc)
+                                                binding.txtMatchIsStart.visibility=View.VISIBLE
                                                 binding.txtMatchStatus.setTextColor(ContextCompat.getColor(requireContext(),R.color.c_f69521))
                                             } else if(matchBean.status.equals("2")||matchBean.status.equals("4")){
                                                 binding.txtMatchStatus.visibility=View.VISIBLE
