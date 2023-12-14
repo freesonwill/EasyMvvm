@@ -373,9 +373,11 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
 
 
                 mAdapter[i] = bean//更新Item数据
-                GlobalScope.launch(Dispatchers.Main) {
-                    delay(500) // 延迟1秒
-                    mAdapter.swap(i, 0)
+                if (i!=0) {
+                    GlobalScope.launch(Dispatchers.Main) {
+                        delay(500) // 延迟1秒
+                        mAdapter.swap(i, 0)
+                    }
                 }
                 //
                 addDataToList(bean)
