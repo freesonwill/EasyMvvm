@@ -23,6 +23,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
@@ -49,14 +50,21 @@ import java.util.*
 
 /**
  * 任务完成提示
+ * isDeep是否是深色模式，默认是浅色，当isDeep=true的时候是深色界面使用
  */
-@SuppressLint("WrongConstant")
-fun myToast(whiteStr: String?, yellowStr: String? = null) {
+@SuppressLint("WrongConstant", "MissingInflatedId")
+fun myToast(whiteStr: String?, yellowStr: String? = null,isDeep:Boolean=false) {
     Handler(Looper.getMainLooper()).post {
         val view: View = LayoutInflater.from(appContext).inflate(R.layout.view_toast_my_task, null)
         val tvMsg = view.findViewById<View>(R.id.tvToast) as TextView
+        val llToastBe = view.findViewById<View>(R.id.llToastBe) as LinearLayout
+        var txtColor=ContextCompat.getColor(tvMsg.context, R.color.white)
+        if(isDeep){
+            txtColor=ContextCompat.getColor(tvMsg.context, R.color.black)
+            llToastBe.background=ContextCompat.getDrawable(llToastBe.context,R.drawable.shape_4_ffffff)
+        }
         SpanUtil.create()
-            .addForeColorSection(whiteStr, ContextCompat.getColor(tvMsg.context, R.color.white))
+            .addForeColorSection(whiteStr, txtColor)
             .addForeColorSection(
                 yellowStr ?: "",
                 ContextCompat.getColor(tvMsg.context, R.color.successColor)

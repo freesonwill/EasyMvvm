@@ -3,11 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/shape_solid_c000_r8"
-    android:backgroundTint="#cc1e1e1e"
+    android:id="@+id/llToastBe"
+    android:background="@drawable/shape_4_22232480"
     android:gravity="center"
     android:orientation="horizontal">
-
+<!--shape_solid_c000_r8   android:backgroundTint="#cc1e1e1e"-->
     <TextView
         android:id="@+id/tvToast"
         android:layout_width="wrap_content"
@@ -16,8 +16,8 @@
         android:layout_marginTop="14dp"
         android:layout_marginEnd="@dimen/dp_30"
         android:layout_marginBottom="14dp"
-        android:textColor="#fff"
-        android:textSize="14sp"
+        android:textColor="@color/white_tran_cc"
+        android:textSize="13sp"
         tools:text="Toast" />
 
 </LinearLayout>

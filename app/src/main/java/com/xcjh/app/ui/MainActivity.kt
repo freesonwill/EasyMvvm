@@ -36,6 +36,7 @@ import com.xcjh.app.ui.home.my.MyUserFragment
 import com.xcjh.app.ui.home.schedule.ScheduleFragment
 import com.xcjh.app.utils.CacheUtil
 import com.xcjh.app.utils.judgeLogin
+import com.xcjh.app.utils.showLoadingExt
 import com.xcjh.app.vm.MainVm
 import com.xcjh.app.websocket.MyWsManager
 import com.xcjh.app.websocket.listener.NoReadMsgPushListener
@@ -98,6 +99,8 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
                 }
 
             }
+
+//            showLoadingExt()
             setHome(0)
         }
         //点击赛程

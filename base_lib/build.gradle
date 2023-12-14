@@ -86,4 +86,7 @@ dependencies {
     // 软键盘事件监听/平滑键盘弹出动画
     api 'com.github.liangjingkanji:soft-input-event:1.0.9'
 
+    //lottie动画
+    api "com.airbnb.android:lottie:5.2.0"
+
 }

@@ -1,22 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/loading"
-    android:layout_width="100dp"
-    android:layout_height="100dp"
+    android:layout_width="80dp"
+    android:layout_height="80dp"
     android:orientation="vertical"
-    android:background="@drawable/layout_corners_round_bg">
+    android:gravity="center"
+    android:background="@drawable/shape_r10_b4b4c0">
+<!--layout_corners_round_bg-->
 
-
-    <ProgressBar
-        android:id="@+id/progressBar1"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="14dp"
-        android:layout_gravity="center_horizontal"
-        android:indeterminateBehavior="repeat"
-        android:indeterminateOnly="true"
-        android:indeterminateDrawable="@drawable/loading_img" />
+<!--    <ProgressBar-->
+<!--        android:id="@+id/progressBar1"-->
+<!--        android:layout_width="50dp"-->
+<!--        android:layout_height="50dp"-->
+<!--        android:layout_marginBottom="8dp"-->
+<!--        android:layout_marginTop="14dp"-->
+<!--        android:layout_gravity="center_horizontal"-->
+<!--        android:indeterminateBehavior="repeat"-->
+<!--        android:indeterminateOnly="true"-->
+<!--        android:indeterminateDrawable="@drawable/loading_img" />-->
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/stateLoadingImg"
+        android:layout_width="@dimen/dp_45"
+        android:layout_height="@dimen/dp_50"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        android:scaleType="centerCrop"
+        app:lottie_fileName="loading.json"
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:id="@+id/text"
@@ -25,6 +36,7 @@
         android:layout_gravity="center_horizontal"
         android:gravity="center"
         android:text="loading"
+        android:visibility="gone"
         android:textColor="@android:color/white"
         android:textSize="14sp" />
 
