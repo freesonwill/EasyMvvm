@@ -52,6 +52,7 @@ import com.xcjh.app.utils.GlideEngine
 import com.xcjh.app.utils.nice.Utils
 import com.xcjh.app.utils.picture.ImageFileCompressEngine
 import com.xcjh.app.websocket.MyWsManager
+import com.xcjh.app.websocket.bean.FeedSystemNoticeBean
 import com.xcjh.app.websocket.bean.ReceiveChangeMsg
 import com.xcjh.app.websocket.bean.ReceiveChatMsg
 import com.xcjh.app.websocket.bean.ReceiveWsBean
@@ -550,6 +551,10 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                     }
 
                 }
+            }
+
+            override fun onSystemMsgReceive(chat: FeedSystemNoticeBean) {
+
             }
 
             override fun onC2CReceive(chat: ReceiveChatMsg) {

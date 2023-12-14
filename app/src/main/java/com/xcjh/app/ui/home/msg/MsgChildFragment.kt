@@ -21,6 +21,7 @@ import com.xcjh.app.ui.room.MsgBeanData
 import com.xcjh.app.ui.room.MsgListNewData
 import com.xcjh.app.utils.CacheUtil
 import com.xcjh.app.websocket.MyWsManager
+import com.xcjh.app.websocket.bean.FeedSystemNoticeBean
 import com.xcjh.app.websocket.bean.ReceiveChangeMsg
 import com.xcjh.app.websocket.bean.ReceiveChatMsg
 import com.xcjh.app.websocket.bean.ReceiveWsBean
@@ -191,6 +192,26 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                     if (isOk) {
 
                     }
+                }
+
+                override fun onSystemMsgReceive(it: FeedSystemNoticeBean) {
+                    //系统反馈通知推送消息
+                    var chat = ReceiveChatMsg()
+                    chat.id = it.noticeId.toString()
+                    chat.msgType = 1
+                    chat.content = it.reason!!
+                    chat.createTime = it.createTime
+                    chat.sent = 1
+                    chat.dataType = 2
+                    chat.toAvatar = ""
+                    chat.from = "-1"
+                    chat.anchorId = "-1"
+                    chat.noReadSum = 1
+                    chat.toNickName = ""
+                    chat.fromAvatar = ""
+                    chat.fromNickName =""
+                    refshMsg(chat)
+
                 }
 
                 override fun onC2CReceive(chat: ReceiveChatMsg) {

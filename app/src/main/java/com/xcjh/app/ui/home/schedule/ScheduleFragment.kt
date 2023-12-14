@@ -17,6 +17,7 @@ import com.xcjh.app.bean.MatchBean
 import com.xcjh.app.databinding.FrCourseBinding
 import com.xcjh.app.vm.MainVm
 import com.xcjh.app.websocket.MyWsManager
+import com.xcjh.app.websocket.bean.FeedSystemNoticeBean
 import com.xcjh.app.websocket.bean.ReceiveChangeMsg
 import com.xcjh.app.websocket.bean.ReceiveChatMsg
 import com.xcjh.app.websocket.bean.ReceiveWsBean
@@ -41,6 +42,10 @@ class ScheduleFragment : BaseFragment<MainVm, FrCourseBinding>() {
         MyWsManager.getInstance(requireActivity())!!
             .setC2CListener(javaClass.name, object : C2CListener {
                 override fun onSendMsgIsOk(isOk: Boolean, bean: ReceiveWsBean<*>) {
+
+                }
+
+                override fun onSystemMsgReceive(chat: FeedSystemNoticeBean) {
 
                 }
 
