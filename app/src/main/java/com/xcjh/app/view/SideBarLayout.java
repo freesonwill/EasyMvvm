@@ -9,12 +9,14 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xcjh.app.R;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -34,6 +36,10 @@ public class SideBarLayout extends RelativeLayout implements SideBarSortView.OnI
     private int wordTextColor;
     private float wordTextSize;
     private Drawable wordBackground;
+    public ArrayList<String> mList = new ArrayList<>(Arrays.asList(
+            "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S",
+            "T", "U", "V", "W", "X", "Y", "Z", "#"
+    ));
 
     public SideBarLayout(Context context) {
         super(context);
@@ -73,13 +79,17 @@ public class SideBarLayout extends RelativeLayout implements SideBarSortView.OnI
     }
 
     private void initView() {
+        this.removeAllViews();
         //引入布局
         mLayout = LayoutInflater.from(mContext).inflate(R.layout.view_sidebar_layout, null, true);
         mTvTips = (TextView) mLayout.findViewById(R.id.tvTips);
         mSortView = (SideBarSortView) mLayout.findViewById(R.id.sortView);
         mSortView.setIndexChangedListener(this);
 
-
+        int hegaht = 1920 / 27 * mList.size();
+// 设置自定义视图的宽高
+        RelativeLayout.LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, hegaht);
+       // mSortView.setLayoutParams(layoutParams);
         mSortView.setmTextColor(unselectTextColor);
         mSortView.setmTextSize(unselectTextSize);
 
@@ -92,8 +102,12 @@ public class SideBarLayout extends RelativeLayout implements SideBarSortView.OnI
         mTvTips.setBackground(wordBackground);
         this.addView(mLayout); //将子布局添加到父容器,才显示控件
     }
-    public void setNewLetter(List<String> mLists ){
-        mSortView.setNewLetter((ArrayList<String>) mLists);
+
+    public void setNewLetter(List<String> mLists) {
+        mList.clear();
+        mList.addAll(mLists);
+      //  initView();
+        mSortView.setNewLetter((ArrayList<String>) mList);
 
     }
 
@@ -113,6 +127,7 @@ public class SideBarLayout extends RelativeLayout implements SideBarSortView.OnI
 
     /**
      * 侧边栏滑动 更新Item
+     *
      * @param word 字母
      */
     @Override
@@ -134,6 +149,7 @@ public class SideBarLayout extends RelativeLayout implements SideBarSortView.OnI
 
     /**
      * Item滚动更新 侧边栏
+     *
      * @param word
      */
     public void onItemScrollUpdateSideBarText(String word) {
