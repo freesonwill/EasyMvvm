@@ -1,11 +1,16 @@
 package com.xcjh.app
 
 import android.app.Activity
-import android.content.Context
+import android.util.Log
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.room.Room
 import com.drake.statelayout.StateConfig
+import com.engagelab.privates.common.global.MTGlobal.context
+import com.engagelab.privates.core.api.MTCorePrivatesApi
+import com.engagelab.privates.push.api.MTPushPrivatesApi
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
 import com.hjq.language.MultiLanguages
 import com.hjq.toast.Toaster
 import com.kingja.loadsir.callback.SuccessCallback
@@ -13,22 +18,16 @@ import com.kingja.loadsir.core.LoadSir
 import com.kongzue.dialogx.DialogX
 import com.kongzue.dialogx.style.MaterialStyle
 import com.scwang.smart.refresh.footer.ClassicsFooter
-import com.scwang.smart.refresh.header.ClassicsHeader
 import com.scwang.smart.refresh.header.MaterialHeader
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
-import com.scwang.smart.refresh.layout.api.RefreshFooter
-import com.scwang.smart.refresh.layout.api.RefreshHeader
-import com.scwang.smart.refresh.layout.api.RefreshLayout
-import com.scwang.smart.refresh.layout.listener.DefaultRefreshFooterCreator
-import com.scwang.smart.refresh.layout.listener.DefaultRefreshHeaderCreator
 import com.shuyu.gsyvideoplayer.player.IjkPlayerManager
 import com.shuyu.gsyvideoplayer.player.PlayerFactory
 import com.tencent.mmkv.MMKV
+import com.xcjh.app.component.UserReceiver
 import com.xcjh.app.event.AppViewModel
 import com.xcjh.app.event.EventViewModel
 import com.xcjh.app.ui.room.MyRoomChatList
 import com.xcjh.app.ui.room.MyRoomDataBase
-import com.xcjh.app.utils.DynamicTimeFormat
 import com.xcjh.app.view.callback.EmptyCallback
 import com.xcjh.app.view.callback.LoadingCallback
 import com.xcjh.base_lib.App
@@ -102,9 +101,12 @@ class MyApplication : App() , LifecycleObserver{
         SmartRefreshLayout.setDefaultRefreshHeaderCreator { context, layout -> MaterialHeader(this) }
         SmartRefreshLayout.setDefaultRefreshFooterCreator { context, layout -> ClassicsFooter(this) }
 
-
-
-
+        // 必须在application.onCreate中配置，不要判断进程，sdk内部有判断
+        MTCorePrivatesApi.configDebugMode(this, true)
+        // 后台没升级tag: V3.5.4-newportal-20210823-gamma.57版本，前端必须调用此方法，否则通知点击跳转有问题
+        MTPushPrivatesApi.configOldPushVersion(this)
+        // 初始化推送
+        MTPushPrivatesApi.init(this)
     }
 
     private fun initDialogX() {

@@ -29,14 +29,17 @@
     <uses-permission android:name="android.permission.WRITE_MEDIA_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <!--FCM-->
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <!-- 通知震动 -->
     <uses-permission android:name="android.permission.VIBRATE" />
 
 
-
     <!-- 适配Android 13，应用弹出通知必须权限-->
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <queries package="${applicationId}">
         <intent>
@@ -172,14 +175,77 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
             android:screenOrientation="portrait" />
 
-        <meta-data
+       <!-- <meta-data
             android:name="firebase_crashlytics_collection_enabled"
-            android:value="${is_release}" />
+            android:value="${is_release}" />-->
 
         <service
             android:name=".websocket.MyWsClientService"
             android:enabled="true"
             android:exported="true" />
+        <!--push start*******************-->
+        <service
+            android:name=".component.MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <!-- 用于演示通知点击跳转 -->
+      <!--  <activity
+            android:name="com.xcjh.app.component.UserActivity400"
+            android:exported="false"
+            android:launchMode="singleTask" />-->
+
+        <!-- 用于演示deepLink的通知点击跳转 -->
+        <activity
+            android:name="com.xcjh.app.component.UserActivity400"
+            android:exported="true">
+            <intent-filter>
+                <data android:scheme="你的scheme" />
+                <data android:host="你的host" />
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+        </activity>
+        <!-- 用于演示自定义消息展示 -->
+        <activity
+            android:name="com.xcjh.app.component.CustomMessageActivity"
+            android:exported="false" />
+        <!-- 由于此类具有长连接功能，手机厂商省电优化时可能直接杀死包名带Engagelab字样的service -->
+        <!-- 所以需要开发者继承com.engagelab.app.component.MTCommonService，提升长连接存活率，已达到提高消息到达率的目的 -->
+        <service
+            android:name="com.xcjh.app.component.UserService"
+            android:exported="false"
+            android:process="${ENGAGELAB_PRIVATES_PROCESS}">
+            <intent-filter>
+                <action android:name="com.engagelab.privates.intent.USER_SERVICE" />
+            </intent-filter>
+        </service>
+
+        <!-- 用于接收Engagelab业务的回调，包含了长连接状态/通知开关状态/通知消息到达/通知消息点击/通知消息删除/自定义消息/tag操作/alias操作/厂商token回调 -->
+        <!-- 不需要配置子进程，此回调中在主进程中，方便业务操作 -->
+        <receiver
+            android:name="com.xcjh.app.component.UserReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.engagelab.privates.intent.USER_RECEIVER" />
+            </intent-filter>
+        </receiver>
+
+        <!-- google push need -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/app_logo" />
+
+        <!-- huawei push need -->
+        <meta-data
+            android:name="com.huawei.messaging.default_notification_icon"
+            android:resource="@drawable/app_logo" />
+        <!--push end-->
+
+
     </application>
 
 </manifest>

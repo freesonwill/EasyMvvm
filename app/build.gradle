@@ -4,7 +4,8 @@ plugins {
     id 'kotlin-kapt'
     // id 'com.google.firebase.crashlytics'
     id 'kotlinx-serialization'
-    // id 'com.google.gms.google-services'  // Google Services plugin
+    id 'com.google.gms.google-services'  // Google Services plugin
+    //id 'com.huawei.agconnect' //huawei
 }
 apply plugin: 'kotlin-android-extensions'
 def isApp = rootProject.ext.state.chatToApp
@@ -13,15 +14,15 @@ android {
     androidClosure(it, isApp, rootProject.ext.appId.appId)
     //统一资源前缀，规范资源引用
     // resourcePrefix "chat_"
-    applicationVariants.all { variant ->
-        variant.outputs.all {
+    applicationVariants.configureEach { variant ->
+        variant.outputs.configureEach {
             outputFileName = "sportLive_${variant.versionCode}_${variant.versionName}_${releaseTime()}.apk"
         }
     }
 }
 
 configurations {
-    all {
+    configureEach {
         exclude group: 'com.google.guava', module: 'listenablefuture'
     }
 }
@@ -33,8 +34,8 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:30.3.1')
     implementation 'com.google.firebase:firebase-common-ktx:20.3.1'
     //bug统计
-    implementation 'com.google.firebase:firebase-crashlytics-ktx'
-    implementation 'com.google.firebase:firebase-analytics-ktx'
+//    implementation 'com.google.firebase:firebase-crashlytics-ktx'
+//    implementation 'com.google.firebase:firebase-analytics-ktx'
     //统计
     implementation 'com.google.firebase:firebase-analytics'
 
@@ -125,7 +126,31 @@ dependencies {
     implementation 'com.belerweb:pinyin4j:2.5.1'
     implementation 'com.github.li-xiaojun:XPopup:2.10.0'
 
-
+    // 必需： 主包********极光推送***********
+    implementation 'com.engagelab:engagelab:4.3.5' //
+    // google push need，不需要 google 通道，则删除
+    implementation 'com.google.firebase:firebase-messaging:23.4.0'
+    // huawei push need，不需要 huawei 通道，则删除
+    //implementation 'com.huawei.hms:push:6.11.0.300'
+    // Optional: Google vendor
+    implementation 'com.engagelab.plugin:google:4.3.5' //
+    // Optional: Honor vendor
+    implementation 'com.engagelab.plugin:honor:4.3.5' //
+    implementation 'com.engagelab.plugin:honor_th_push:4.3.5' //
+    // Optional: Huawei vendor
+    implementation 'com.engagelab.plugin:huawei:4.3.5' //
+    // Optional: Xiaomi vendor, Chinese version
+    /* implementation 'com.engagelab.plugin:mi:4.3.5' //
+     // Optional: Xiaomi vendor, Global version
+     implementation 'com.engagelab.plugin:mi_global:4.3.5' //
+     // Optional: Meizu vendor
+     implementation 'com.engagelab.plugin:meizu:4.3.5' //
+     // Optional: Oppo vendor
+     implementation 'com.engagelab.plugin:oppo:4.3.5' //
+     implementation 'com.engagelab.plugin:oppo_th_push:4.3.5' //
+     // Optional: Vivo vendor
+     implementation 'com.engagelab.plugin:vivo:4.3.5' //*/
+    //        ********极光推送***********
 }
 //获取编译时间
 static def releaseTime() {

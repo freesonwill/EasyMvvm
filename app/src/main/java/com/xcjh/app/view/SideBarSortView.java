@@ -45,10 +45,7 @@ public class SideBarSortView extends View {
     public void setmTextColorChoose(int mTextColorChoose) {
         this.mTextColorChoose = mTextColorChoose;
     }
-    public ArrayList<String> mList = new ArrayList<>(Arrays.asList(
-            "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S",
-            "T", "U", "V", "W", "X", "Y", "Z", "#"
-    ));
+    public ArrayList<String> mList = new ArrayList<>();
 
 
     public Paint paint = new Paint();
@@ -61,21 +58,22 @@ public class SideBarSortView extends View {
         super(context, attrs);
     }
 
-//    @Override
-//    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-//        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-//        int desiredHeight = MeasureSpec.getSize(heightMeasureSpec);
-//
-//        // 计算每个字母项的高度
-//        int letterHeight = desiredHeight / mList.size();
-//
-//        // 设置自定义视图的测量高度
-//        setMeasuredDimension(getMeasuredWidth(), desiredHeight);
-//
-//        // 设置自定义视图的高度为整体垂直居中
-//        int paddingTop = (desiredHeight - letterHeight * mList.size()) / 2;
-//        setPadding(getPaddingLeft(), paddingTop, getPaddingRight(), getPaddingBottom());
-//    }
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        int desiredHeight = MeasureSpec.getSize(heightMeasureSpec);
+
+        // 计算每个字母项的高度
+        int letterHeight = desiredHeight / 27;
+
+        // 设置自定义视图的测量高度
+        setMeasuredDimension(getMeasuredWidth(), letterHeight*mList.size()+30);
+        int x=this.getHeight();
+
+        // 设置自定义视图的高度为整体垂直居中
+       // int paddingTop = (desiredHeight - letterHeight * mList.size()) / 2;
+       // setPadding(getPaddingLeft(), paddingTop, getPaddingRight(), getPaddingBottom());
+    }
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -86,13 +84,16 @@ public class SideBarSortView extends View {
     public void setNewLetter(ArrayList<String> mLists ){
         mList.clear();
         mList.addAll(mLists);
-      //  requestLayout(); // 重新布局
+        requestLayout(); // 重新布局
         invalidate();
 
     }
     private void paintText() {
+
+
         //计算每一个字母的高度,总告诉除以字母集合的高度就可以
-        int height = (getHeight()) / 27;
+        int height =1920/ 27;
+        int y = getTop()+height;
         for (int i = 0; i < mList.size(); i++) {
             if (i == mSelectIndex) {
                 paint.setColor(mTextColorChoose);
@@ -106,7 +107,8 @@ public class SideBarSortView extends View {
             //计算每一个字母x轴
             float paintX = getWidth() / 2F - paint.measureText(mList.get(i)) / 2;
             //计算每一个字母Y轴
-            int paintY = ((27-mList.size())/2*height)+i*height;
+            int paintY = y+height*i;
+            //int paintY = ((27-mList.size())/2*height)+i*height;
            // int paintY = height * i + height;
             //绘画出来这个TextView
             mCanvas.drawText(mList.get(i), paintX, paintY, paint);
@@ -121,9 +123,8 @@ public class SideBarSortView extends View {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
             case MotionEvent.ACTION_MOVE:
-                int aa= (int) event.getY();
-                int aa1=getHeight()/2;
-                int index = (int) (event.getY() / aa1 * mList.size());
+
+                int index = (int) (event.getY() / getHeight() * mList.size());
                 if (index >= 0 && index < mList.size() && mSelectIndex != index) {
                     if (mClickListener != null) {
                         mClickListener.onSideBarScrollUpdateItem(mList.get(index));

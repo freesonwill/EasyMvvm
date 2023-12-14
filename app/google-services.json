@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "844513966430",
+    "project_id": "sport-live-z",
+    "storage_bucket": "sport-live-z.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:844513966430:android:cc02510b5ffd508ae077cf",
+        "android_client_info": {
+          "package_name": "com.innofun.sl_live.android"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDeuFMgnWycOEe1M-ktB0SIZp7rHaWMbgQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
