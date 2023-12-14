@@ -30,5 +30,20 @@ class LoginVm : BaseViewModel() {
             }, true
         )
     }
+    /**
+     * 极光推送绑定用户
+     */
+    fun jPUSHbIND(id:String) {
+        request(
+            { apiService.jPushBind(id) },
 
+            {
+
+
+            }, {
+                //请求失败
+
+            }, false
+        )
+    }
 }

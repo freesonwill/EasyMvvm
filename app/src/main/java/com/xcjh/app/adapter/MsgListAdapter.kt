@@ -73,7 +73,7 @@ class MsgListAdapter: BaseQuickAdapter<MsgListNewData, QuickViewHolder>() {
             holder.getView<TextView>(R.id.tvname).text =item!!.nick
             Glide.with(context).load(item.avatar).placeholder(R.drawable.default_anchor_icon).into(holder.getView<CircleImageView>(R.id.ivhead))
         }
-        val time: String = ChatTimeUtile.getRecentTimeSpanByNow(context,
+        val time: String = ChatTimeUtile.formatTimestamp(context,
             item.createTime
         )!!
         holder.getView<TextView>(R.id.tvtime).text =time

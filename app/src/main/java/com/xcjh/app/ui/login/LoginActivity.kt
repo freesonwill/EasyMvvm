@@ -1,6 +1,5 @@
 package com.xcjh.app.ui.login
 
-import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.text.Editable
@@ -11,14 +10,13 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.alibaba.fastjson.JSONObject
-import com.drake.brv.utils.models
+import com.engagelab.privates.core.api.MTCorePrivatesApi
 import com.gyf.immersionbar.ImmersionBar
 import com.xcjh.app.R
 import com.xcjh.app.base.BaseActivity
 import com.xcjh.app.bean.LetterBeann
 import com.xcjh.app.bean.PostLoaginBean
 import com.xcjh.app.databinding.ActivityLoaginBinding
-import com.xcjh.app.ui.Index.IndexLetterActivity
 import com.xcjh.app.utils.selectCountry
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.bindViewPager2
@@ -57,7 +55,7 @@ class LoginActivity : BaseActivity<LoginVm, ActivityLoaginBinding>() {
             R.color.black,
             R.color.black,
             16f, 16f, true, false,
-            R.color.c_34a853,38, margin = 30
+            R.color.c_34a853, 38, margin = 30
         )
         mDatabind.vp.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
 
@@ -450,7 +448,10 @@ class LoginActivity : BaseActivity<LoginVm, ActivityLoaginBinding>() {
 
         mViewModel.logain.observe(this) {
             if (it.isNotEmpty()) {
-                //成功
+                //极光推送绑定用户
+                val registrationId: String = MTCorePrivatesApi.getRegistrationId(this)
+                mViewModel.jPUSHbIND(registrationId)
+
                 finish()
 
             } else {
@@ -487,12 +488,13 @@ class LoginActivity : BaseActivity<LoginVm, ActivityLoaginBinding>() {
             JSONObject.parseArray(str, LetterBeann::class.java)
 
         for (i in 0 until models.size) {
-           var county= getGQ(models[i].abbreviate)
-            listStr.add(county+"  "+models[i].selfName + " (" + models[i].areaCode + ")")
+            var county = getGQ(models[i].abbreviate)
+            listStr.add(county + "  " + models[i].selfName + " (" + models[i].areaCode + ")")
         }
 
     }
-    fun getGQ(country:String):String{
+
+    fun getGQ(country: String): String {
         try {
             val flagOffset = 0x1F1E6
             val asciiOffset = 0x41
@@ -501,7 +503,7 @@ class LoginActivity : BaseActivity<LoginVm, ActivityLoaginBinding>() {
             val secondChar =
                 Character.codePointAt(country, 1) - asciiOffset + flagOffset
             return String(Character.toChars(firstChar)) + String(Character.toChars(secondChar))
-        }catch (e:Exception){
+        } catch (e: Exception) {
             return ""
         }
 

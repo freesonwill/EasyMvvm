@@ -7,6 +7,7 @@ import android.util.Log
 import android.widget.Toast
 import com.xcjh.app.R
 import com.xcjh.app.bean.BeingLiveBean
+import com.xcjh.app.websocket.bean.FeedSystemNoticeBean
 import com.xcjh.app.websocket.bean.LiveStatus
 import com.xcjh.app.websocket.bean.NoReadMsg
 import com.xcjh.app.websocket.bean.ReceiveChangeMsg
@@ -249,6 +250,14 @@ class MyWsManager private constructor(private val mContext: Context) {
                 }
             }
 
+            28 -> {//服务器主动推送用户反馈通知消息
+                val wsBean2 = jsonToObject2<ReceiveWsBean<FeedSystemNoticeBean>>(msg)
+                val feedMsgBean = wsBean2?.data as FeedSystemNoticeBean
+                mLiveStatusListener.forEach {
+                    // it.toPair().second.onChangeLive(chatMsgBean)
+                }
+            }
+
             29 -> {//未读消息推送
                 //接收消息
                 val wsBean2 = jsonToObject2<ReceiveWsBean<NoReadMsg>>(msg)
@@ -269,10 +278,10 @@ class MyWsManager private constructor(private val mContext: Context) {
                 }
             }
 
-            34->{
+            34 -> {
                 val wsBean2 = jsonToObject2<ReceiveWsBean<BeingLiveBean>>(msg)
                 val chatMsgBean = wsBean2?.data as BeingLiveBean
-                mOtherPushListener.forEach{
+                mOtherPushListener.forEach {
                     it.toPair().second.onAnchorStartLevel(chatMsgBean)
                 }
             }

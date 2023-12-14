@@ -27,8 +27,15 @@ data class ReceiveChangeMsg(
     val runTime: Long,//
     var scoresDetail: List<List<Int>>? = listOf(),
 )
-/**
- * 推送维度消息
+data class FeedSystemNoticeBean(
+    val bizId: Long,//业务ID，反馈信息ID
+    val createTime: Long,//通知时间
+    val noticeId: Long,//通知ID
+    val reason: String,//禁言原因或者备注信息
+    val title: String,//前端展示标题
+    val userId: Long//用户ID
+)
+/** 推送维度消息
  *
  */
 data class NoReadMsg(
