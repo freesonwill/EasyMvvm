@@ -36,7 +36,12 @@ data class PayBeanReq(
     var productId: String? = null,
     var purchaseToken: String? = null,
 )
-
+//赛程
+@Keep
+data class CurrentIndex(
+    var currtOne: Int = 0,
+    var currtTwo: Int = 0
+)
 //充值订单
 @Keep
 data class PayReq(
