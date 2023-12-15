@@ -124,7 +124,8 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
         //邀请好友
         mDatabind.rlMyClickInvite.clickNoRepeat {
           requireContext().copyToClipboard(ApiComService.SHARE_IP)
-            showCopyLink()
+            myToast(resources.getString(R.string.my_txt_copy_link))
+//            showCopyLink()
         }
         //广告
         mDatabind.ivMyAdvertising.clickNoRepeat {
