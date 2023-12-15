@@ -15,6 +15,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.TextView.OnEditorActionListener
 import androidx.recyclerview.widget.SimpleItemAnimator
+import com.alibaba.fastjson.JSONObject
 import com.blankj.utilcode.util.ToastUtils
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -47,11 +48,13 @@ import com.xcjh.app.databinding.ItemChatTxtRightBinding
 import com.xcjh.app.net.CountingRequestBody
 import com.xcjh.app.net.ProgressListener
 import com.xcjh.app.ui.room.MsgBeanData
+import com.xcjh.app.ui.room.MsgListNewData
 import com.xcjh.app.utils.CacheUtil
 import com.xcjh.app.utils.GlideEngine
 import com.xcjh.app.utils.nice.Utils
 import com.xcjh.app.utils.picture.ImageFileCompressEngine
 import com.xcjh.app.websocket.MyWsManager
+import com.xcjh.app.websocket.bean.FeedSystemNoticeBean
 import com.xcjh.app.websocket.bean.ReceiveChangeMsg
 import com.xcjh.app.websocket.bean.ReceiveChatMsg
 import com.xcjh.app.websocket.bean.ReceiveWsBean
@@ -217,7 +220,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                         when (matchBeanNew.sent) {
                             0 -> {//正在发送
 
-                                //  addData(matchBeanNew)
+                                addDataToList(matchBeanNew)
 
                                 binding.googleProgress.visibility = View.VISIBLE
                                 binding.ivfaile.visibility = View.GONE
@@ -226,6 +229,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
 
                                     if (matchBeanNew.sent == 0) {//发送失败
                                         matchBeanNew.sent = 2
+                                        addDataToList(matchBeanNew)
                                         if (bindingAdapterPosition == 0) {
 
                                             appViewModel.updateMsgListEvent.postValue(matchBeanNew)
@@ -239,15 +243,12 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                         matchBeanNew.sent = 1
 
                                     }
-                                    addData(matchBeanNew)
+
                                 }
                             }
 
-                            1 -> {//发送成功
-                                // if (isUpdata) {
+                            1 ,3-> {//发送成功
 
-                                upData(matchBeanNew)
-                                // }
                                 binding.googleProgress.visibility = View.GONE
                                 binding.ivfaile.visibility = View.GONE
                             }
@@ -306,7 +307,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                         when (matchBeanNew.sent) {
                             0 -> {//正在发送
 
-                                //  addData(matchBeanNew)
+                                addDataToList(matchBeanNew)
                                 binding.googleProgress.visibility = View.VISIBLE
                                 binding.ivfaile.visibility = View.GONE
                                 GlobalScope.launch {
@@ -319,6 +320,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
 
                                     if (matchBeanNew.sent == 0) {//发送失败
                                         matchBeanNew.sent = 2
+                                        addDataToList(matchBeanNew)
                                         if (bindingAdapterPosition == 0) {
                                             appViewModel.updateMsgListEvent.postValue(matchBeanNew)
                                         }
@@ -331,12 +333,11 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                         matchBeanNew.sent = 1
 
                                     }
-                                    addData(matchBeanNew)
+
                                 }
                             }
 
                             1, 3 -> {//发送成功
-                                upData(matchBeanNew)
                                 binding.googleProgress.visibility = View.GONE
                                 binding.ivfaile.visibility = View.GONE
                             }
@@ -552,6 +553,10 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                 }
             }
 
+            override fun onSystemMsgReceive(chat: FeedSystemNoticeBean) {
+
+            }
+
             override fun onC2CReceive(chat: ReceiveChatMsg) {
                 mViewModel.clearMsg(userId)
                 mDatabind.state.showContent()
@@ -571,14 +576,13 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                     //  addData(listdata1)
 
                 } else {//发送消息
+                    LogUtils.d("发送成功一条数据"+JSONObject.toJSONString(chat))
                     for (i in 0 until mDatabind.rv.models!!.size) {
                         var beanmy: MsgBeanData = mDatabind.rv.models!![i] as MsgBeanData
                         if (beanmy.id == chat.sendId) {
                             beanmy.sent = 1
-//                            if (chat.msgType==1){
-//                                beanmy.content=chat.content
-//                                beanmy.sent =3
-//                            }
+                            LogUtils.d("1发送成功一条数据"+JSONObject.toJSONString(beanmy))
+                            addDataToList(beanmy)
                             mDatabind.rv.bindingAdapter.notifyItemChanged(i)
                             break
                         }
@@ -768,6 +772,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
             beanmy.nick = nickname
             beanmy.avatar = userhead
             beanmy.id = sendID
+            beanmy.sendId = sendID
             beanmy.cmd = 11
             beanmy.sent = 0
             beanmy.msgType = bean.msgType
@@ -800,22 +805,16 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
         }
     }
 
-    fun addData(data: MsgBeanData) {
+    /***
+     * 添加或者更新新的数据
+     */
+    fun addDataToList(data: MsgBeanData) {
         GlobalScope.launch {
+            MyApplication.dataBase!!.chatDao?.insertOrUpdate(data)
 
-            MyApplication.dataBase!!.chatDao?.insert(data)
 
         }
     }
-
-    fun upData(data: MsgBeanData) {
-        GlobalScope.launch {
-
-            MyApplication.dataBase!!.chatDao?.updateData(data)
-
-        }
-    }
-
     fun seacherData(id: String): Deferred<MutableList<MsgBeanData>> {
         return GlobalScope.async {
             MyApplication.dataBase!!.chatDao?.getMessagesByName(id)!!

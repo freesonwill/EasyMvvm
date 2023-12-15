@@ -32,6 +32,8 @@ class MsgBeanData {
     var groupId: String? = ""//群组ID
     @ColumnInfo(name = "id")
     var id: String? = ""
+    @ColumnInfo(name = "sendId")
+    var sendId: String? = "0" //消息唯一性，用来判断回调
     @ColumnInfo(name = "identityType")
     var identityType: Int? = 0//发送者身份身份(0：普通用户，1主播 2助手 3运营)
     @ColumnInfo(name = "msgType")

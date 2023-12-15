@@ -1,12 +1,16 @@
 package com.xcjh.app.ui.room
 
+import android.util.Log
 import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
+import com.alibaba.fastjson.JSONObject
+import com.xcjh.base_lib.utils.LogUtils
 
 @Dao
 interface ChatDao {
@@ -14,6 +18,25 @@ interface ChatDao {
     @Query("SELECT * FROM chat_db WHERE anchorId = :anchorId ORDER BY createTime DESC")
     fun getMessagesByName(anchorId: String): MutableList<MsgBeanData >
 
+    @Query("SELECT * FROM chat_db WHERE sendId = :sendId LIMIT 1")
+    fun findMessagesById(sendId: String): MsgBeanData
+    @Transaction
+    suspend fun insertOrUpdate(message: MsgBeanData) {
+
+        val oldMessage = findMessagesById(message.sendId!!)
+        Log.d("MessageDao", "oldMessage: $oldMessage")
+
+        if (oldMessage != null) {
+
+            message.idd=oldMessage.idd
+            updateData(message)
+            LogUtils.d("私聊修改一条数据"+JSONObject.toJSONString(message))
+
+        } else {
+            LogUtils.d("私聊增加一条数据"+ JSONObject.toJSONString(message))
+            insert(message)
+        }
+    }
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(message: MsgBeanData)
     @Update

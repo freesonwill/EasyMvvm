@@ -41,6 +41,7 @@ import com.xcjh.app.databinding.ItemUnderWayBinding
 import com.xcjh.app.ui.details.MatchDetailActivity
 import com.xcjh.app.web.WebActivity
 import com.xcjh.app.websocket.MyWsManager
+import com.xcjh.app.websocket.bean.FeedSystemNoticeBean
 import com.xcjh.app.websocket.bean.LiveStatus
 import com.xcjh.app.websocket.bean.ReceiveChangeMsg
 import com.xcjh.app.websocket.bean.ReceiveChatMsg
@@ -117,6 +118,10 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
         MyWsManager.getInstance(App.app)?.setC2CListener(javaClass.name, object : C2CListener {
 
             override fun onSendMsgIsOk(isOk: Boolean, bean: ReceiveWsBean<*>) {
+
+            }
+
+            override fun onSystemMsgReceive(chat: FeedSystemNoticeBean) {
 
             }
 
