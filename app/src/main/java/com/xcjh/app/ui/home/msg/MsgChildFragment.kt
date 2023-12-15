@@ -430,8 +430,8 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
 
                     LogUtils.d("更新了哈哈$i")
                     listdata!![i] = bean
-                    mDatabind.rec.bindingAdapter.notifyItemMoved(i, 0)
-
+                   // mDatabind.rec.bindingAdapter.notifyItemMoved(i, 0)
+                    mDatabind.rec.bindingAdapter.notifyItemChanged(i)
                     if (i != 0) {
                         GlobalScope.launch {
                             delay(2000) // 暂停协程执行 1 秒钟
