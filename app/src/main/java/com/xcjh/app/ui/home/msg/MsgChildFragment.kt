@@ -410,9 +410,10 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
             } else {
                 bean.nick = msg.toNickName ?: ""
             }
-
+            listdata.add(bean)
             addDataToList(bean)
             mAdapter.add(0, bean)
+
         }
 
 
