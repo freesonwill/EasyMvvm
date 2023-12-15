@@ -30,9 +30,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.hjq.permissions.OnPermissionCallback
 import com.hjq.permissions.Permission
@@ -199,7 +197,12 @@ fun shareImage(bitmap: Bitmap) {
     intent = Intent.createChooser(intent, "分享")
     KtxActivityManger.currentActivity?.startActivity(intent)
 }
-
+fun shareText(context: Context, shareText: String?) {
+    val intent = Intent(Intent.ACTION_SEND)
+    intent.type = "text/plain"
+    intent.putExtra(Intent.EXTRA_TEXT, shareText)
+    context.startActivity(Intent.createChooser(intent, "分享"))
+}
 /**
  * View转Bitmap==================================================
  */

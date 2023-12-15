@@ -282,15 +282,14 @@ class MatchDetailActivity :
         mDatabind.tvToShare.setOnClickListener {
             //分享 固定地址
             //复制链接成功
-            var url = if (isHasAnchor) {
+            val url = if (isHasAnchor) {
                 ApiComService.SHARE_IP + "#/roomDetail?id=${matchId}&liveId=${anchor?.liveId}&type=${matchType}&userId=${anchor?.userId}"
             } else {
                 ApiComService.SHARE_IP + "#/roomDetail?id=${matchId}&type=${matchType}&pureFlow=true"
             }
-
-            copyToClipboard(url)
-            myToast(getString(R.string.copy_success))
-            //jumpOut(ad.data!![0].targetUrl)
+          /*  copyToClipboard(url)
+            myToast(getString(R.string.copy_success))*/
+            shareText(this,url)
         }
         //信号源
         mDatabind.tvSignal.setOnClickListener {
