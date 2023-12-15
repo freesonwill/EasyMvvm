@@ -51,7 +51,11 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
         super.onHiddenChanged(hidden)
     }
 
+    override fun lazyLoadData() {
+        super.lazyLoadData()
+        mViewModel.getHotMatchData(matchtypeOld!!, status)
 
+    }
 
     override fun onPause() {
         super.onPause()
@@ -61,7 +65,7 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
         super.onResume()
        // isVisble = mTabPosition == mPushPosition
 
-        if (!hasData) {
+        if (!isFirst&&!hasData) {
 
             mViewModel.getHotMatchData(matchtypeOld!!, status)
 
@@ -86,7 +90,7 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
             status = bundle.getInt(ScheduleChildOneFragment.STATUS)
             mOneTabIndex = bundle.getInt(ScheduleChildOneFragment.TAB)
         }
-        mViewModel.getHotMatchData(matchtypeOld!!, status)
+
         mDatabind.vp.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)

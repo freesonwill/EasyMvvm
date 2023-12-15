@@ -1055,8 +1055,8 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
     override fun lazyLoadData() {
         super.lazyLoadData()
-        // getData(false)
-        mDatabind.smartCommon.autoRefresh()
+         getData(false)
+
     }
 
     override fun lazyLoadTime(): Long {
