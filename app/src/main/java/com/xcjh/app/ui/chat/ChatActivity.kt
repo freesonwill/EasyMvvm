@@ -129,6 +129,12 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                 this.findViewById<ImageView>(R.id.ivEmptyIcon)
                     .setImageDrawable(resources.getDrawable(R.drawable.ic_empety_msg))
             }
+            onLoading {
+                LogUtils.d("")
+            }
+            onRefresh {
+                LogUtils.d("")
+            }
         }
         // 键盘弹出平滑动画
         userId = intent.getStringExtra(Constants.USER_ID) ?: ""
@@ -783,6 +789,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
             if (isShowBottom) {
                 mDatabind.ivexpent.performClick()
             }
+
             mDatabind.rv.addModels(listdata1, index = 0)
             mDatabind.rv.scrollToPosition(0) // 保证最新一条消息显示
         }
