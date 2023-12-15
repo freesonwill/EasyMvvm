@@ -171,6 +171,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                     resources.getString(R.string.nomsg)
                 this.findViewById<ImageView>(R.id.ivEmptyIcon)
                     .setImageDrawable(resources.getDrawable(R.drawable.ic_empety_msg))
+                this.findViewById<ImageView>(R.id.ivEmptyIcon).setOnClickListener {  }
             }
         }
 

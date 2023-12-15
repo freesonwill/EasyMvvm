@@ -150,6 +150,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                         resources.getString(R.string.nomatch)
                     this.findViewById<ImageView>(R.id.ivEmptyIcon)
                         .setImageDrawable(resources.getDrawable(R.drawable.ic_empet_all))
+                    this.findViewById<ImageView>(R.id.ivEmptyIcon).setOnClickListener {  }
                 }
             }
             mDatabind.smartCommon.setRefreshHeader(ClassicsHeader(requireContext()))
@@ -919,7 +920,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
             mDatabind.smartCommon.setOnRefreshListener {
 
-                mDatabind.state.showLoading()
+                //mDatabind.state.showLoading()
                 getData(true)
 
 
