@@ -35,6 +35,7 @@ class SetUpVm : BaseViewModel() {
      * 解绑推送
      */
 
+    @SuppressLint("SuspiciousIndentation")
     fun unbindPush(){
       var regId=  MTCorePrivatesApi.getRegistrationId(appContext)
         request(
