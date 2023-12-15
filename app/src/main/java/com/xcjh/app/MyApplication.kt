@@ -72,6 +72,13 @@ class MyApplication : App() , LifecycleObserver{
         initDialogX()
         dataBase =
             Room.databaseBuilder(this, MyRoomDataBase::class.java, "userDataBase").build()
+        //.addMigrations(object : Migration(1, 2) {
+        //    override fun migrate(database: SupportSQLiteDatabase) {
+        //        // 执行从旧版本升级到新版本的 SQL 语句
+        //        database.execSQL("ALTER TABLE my_table ADD COLUMN new_column INTEGER DEFAULT 0 NOT NULL")
+        //    }
+        //} ) //迁移脚本
+        //.fallbackToDestructiveMigration() //数据库升级过程中删除旧表格并创建新表格，但可能会导致数据丢失，因此请谨慎使用
         dataChatList =
             Room.databaseBuilder(this, MyRoomChatList::class.java, "chatLiSTBase").build()
         appViewModelInstance = getAppViewModelProvider()[AppViewModel::class.java]

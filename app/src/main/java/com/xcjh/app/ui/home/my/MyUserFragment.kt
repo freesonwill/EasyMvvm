@@ -10,6 +10,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.gyf.immersionbar.ImmersionBar
 import com.kongzue.dialogx.dialogs.CustomDialog
 import com.kongzue.dialogx.interfaces.OnBindView
 import com.xcjh.app.R
@@ -41,6 +42,11 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
 
 
     override fun initView(savedInstanceState: Bundle?) {
+        ImmersionBar.with(this)
+            .statusBarDarkFont(true)//黑色
+            .titleBar(mDatabind.rlMyTopyi)
+            .navigationBarColor(R.color.c_ffffff)
+            .init()
         //查看等级任务
         mDatabind.rlClickLevel.clickNoRepeat {
             if(CacheUtil.isLogin()){

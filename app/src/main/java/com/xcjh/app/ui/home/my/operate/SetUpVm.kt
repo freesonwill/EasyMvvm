@@ -41,9 +41,11 @@ class SetUpVm : BaseViewModel() {
         request(
             { apiService.unbindPush(regId) },
             {
+                exitLogin()
             }, {
                 //请求失败
                 myToast(it.errorMsg)
+                exitLogin()
 
             },isShowDialog=true
         )

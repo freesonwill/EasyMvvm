@@ -342,7 +342,7 @@ fun <T> smartPageListData(
     data: ListDataUiState<T>,
     rcv: RecyclerView,
     pageRefreshLayout: PageRefreshLayout,
-    imgEmptyId: Int = R.drawable.tp_empty,//图片
+    imgEmptyId: Int = R.drawable.zwt_zwbs,//图片
     notice: String = appContext.getString(R.string.no_data),//提示
 ) {
     pageRefreshLayout.emptyLayout=R.layout.layout_empty

@@ -215,7 +215,7 @@ fun selectDate(context: Context, timeOld: String, block: (time: String) -> Unit)
             ContextCompat.getColor(context, com.xcjh.base_lib.R.color.blacks_tr)
         )
 
-        .show().isAllowInterceptTouch=false
+        .show().isAllowInterceptTouch = false
 }
 
 /**
@@ -293,7 +293,7 @@ fun clearMsg(context: Context, block: (isSure: Boolean) -> Unit) {
                     dialog?.dismiss()
                 }
             }
-        }).setAlign(CustomDialog.ALIGN.CENTER) .setMaskColor(//背景遮罩
+        }).setAlign(CustomDialog.ALIGN.CENTER).setMaskColor(//背景遮罩
             ContextCompat.getColor(context, com.xcjh.base_lib.R.color.blacks_tr)
         ).show()
 }
@@ -302,10 +302,19 @@ fun clearMsg(context: Context, block: (isSure: Boolean) -> Unit) {
  * 信号源选择
  */
 fun showSignalDialog(
-    anchorList: List<AnchorListBean>,
-    signalPos: Int,
+    anchorList: List<AnchorListBean>?,
     action: (AnchorListBean, Int) -> Unit,
 ) {
+    var pos = 0
+    if (anchorList != null) {
+        for ((i, item) in anchorList.withIndex()) {
+            if (item.isSelect) {
+                pos = i
+                break
+            }
+        }
+    }
+
     //模式数据
     BottomDialog.build()
         .setCustomView(object : OnBindView<BottomDialog>(R.layout.dialog_signal_list) {
@@ -321,7 +330,7 @@ fun showSignalDialog(
                     onBind {
                         val model = getModel<AnchorListBean>()
                         findView<TextView>(R.id.tvContent).apply {
-                            if (signalPos == modelPosition) {
+                            if (model.isSelect) {
                                 this.setTextColor(context.getColor(R.color.c_34a853))
                                 paint?.isFakeBoldText = true
                             } else {
@@ -337,16 +346,17 @@ fun showSignalDialog(
                     onClick(R.id.lltItem) {
                         val model = getModel<AnchorListBean>()
                         action.invoke(model, modelPosition)
-                        dialog?.dismiss()
+                        dialog.dismiss()
                     }
                 }.models = anchorList
+
                 tvCancel.setOnClickListener {
-                    dialog?.dismiss()
+                    dialog.dismiss()
                 }
-                rcvSignal.scrollToPosition(signalPos)
+                rcvSignal.scrollToPosition(pos)
             }
         })
-       // .setAlign(CustomDialog.ALIGN.BOTTOM)
+        // .setAlign(CustomDialog.ALIGN.BOTTOM)
         .setMaskColor(ContextCompat.getColor(App.app, com.xcjh.base_lib.R.color.blacks_tr))
         .setCancelable(true)
         .show()

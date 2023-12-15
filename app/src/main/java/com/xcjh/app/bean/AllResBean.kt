@@ -479,7 +479,7 @@ data class IncidentsBean(
  */
 @Keep
 data class MatchDetailBean(
-    val anchorList: List<AnchorListBean>? = listOf(),//主播列表
+    var anchorList: ArrayList<AnchorListBean>? = arrayListOf(),//主播列表
 
     var awayHalfScore: Int = 0,//客队半场比分
     val awayLogo: String? = "",//客队Logo
@@ -516,7 +516,11 @@ data class AnchorListBean(
     var hotValue: String = "",//热度
     var playUrl: String? = null,//播放地址
     var isSelect: Boolean = false,
-) : Serializable
+) : Serializable/*, Comparable<PlayerBean> {
+    override fun compareTo(other: PlayerBean): Int {
+        return  other.score.toInt()-this.hotValue.toInt()
+    }
+}*/
 
 @Keep
 data class MatchDataBean(
@@ -696,4 +700,16 @@ data class PushBean(
 data class PushErrBean(
     var name: String = "",// 推送类型 liveOpen:切换主播开播通知 followMatch:切换关注比赛通知
     var state: Boolean =false, //
+): Serializable
+
+/**
+ * 站外推送消息
+ */
+@Keep
+data class PushMsgExtras(
+    var matchId: String = "",// 比赛ID
+    var isPureFlow: Boolean = false,// 是否纯净流
+    var matchType: String = "",// 1足球 2篮球
+    var anchorId: String? = "",// 主播id
+    var liveId: String? = "", //聊天室id
 ): Serializable
