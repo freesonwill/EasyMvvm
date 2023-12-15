@@ -349,12 +349,9 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                             R.color.c_34a853
                                         )
                                     )
-                                    binding.tvstatus.text =
-                                        if (item.runTime == null)
-                                            "0"
-                                        else {
-                                            item.runTime
-                                        }
+                                    binding.tvstatus.text = context.resources.getString(
+                                        R.string.over_time
+                                    )
                                     initAnimation(binding.txtMatchAnimation)
 
                                 }
@@ -378,7 +375,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                     binding.tvstatus.text = context.resources.getString(
                                         R.string.main_dqdz
                                     )
-                                    // initAnimation(binding.txtMatchAnimation)
+                                     initAnimation(binding.txtMatchAnimation)
 
                                 }
 
@@ -568,7 +565,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                 }
 
                                 "2" -> {
-                                    binding.txtMatchAnimation.visibility = View.GONE
+                                    binding.txtMatchAnimation.visibility = View.VISIBLE
                                     binding.tvvs.text = item.awayScore + "-" + item.homeScore
                                     binding.tvstatus.visibility = View.VISIBLE
                                     binding.tvstatus.setTextColor(
@@ -588,7 +585,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                             R.string.main_txt_basketball_phase,
                                             "一"
                                         )
-                                    //initAnimation(binding.txtMatchAnimation)
+                                    initAnimation(binding.txtMatchAnimation)
 
                                 }
                                "3" -> {
@@ -619,7 +616,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                 }
 
                                 "4" -> {
-                                    binding.txtMatchAnimation.visibility = View.GONE
+                                    binding.txtMatchAnimation.visibility = View.VISIBLE
                                     binding.tvvs.text = item.awayScore + "-" + item.homeScore
                                     binding.tvstatus.visibility = View.VISIBLE
                                     binding.tvstatus.setTextColor(
@@ -639,7 +636,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                             R.string.main_txt_basketball_phase,
                                             "二"
                                         )
-                                    // initAnimation(binding.txtMatchAnimation)
+                                     initAnimation(binding.txtMatchAnimation)
 
                                 }
                                 "5" -> {
@@ -669,7 +666,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
                                 }
                                 "6" -> {
-                                    binding.txtMatchAnimation.visibility = View.GONE
+                                    binding.txtMatchAnimation.visibility = View.VISIBLE
                                     binding.tvvs.text = item.awayScore + "-" + item.homeScore
                                     binding.tvstatus.visibility = View.VISIBLE
                                     binding.tvstatus.setTextColor(
@@ -689,7 +686,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                             R.string.main_txt_basketball_phase,
                                             "三"
                                         )
-                                    // initAnimation(binding.txtMatchAnimation)
+                                     initAnimation(binding.txtMatchAnimation)
 
                                 }
                                 "7" -> {
@@ -719,7 +716,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
                                 }
                                 "8" -> {
-                                    binding.txtMatchAnimation.visibility = View.GONE
+                                    binding.txtMatchAnimation.visibility = View.VISIBLE
                                     binding.tvvs.text = item.awayScore + "-" + item.homeScore
                                     binding.tvstatus.visibility = View.VISIBLE
                                     binding.tvstatus.setTextColor(
@@ -739,11 +736,11 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                             R.string.main_txt_basketball_phase,
                                             "四"
                                         )
-                                    // initAnimation(binding.txtMatchAnimation)
+                                     initAnimation(binding.txtMatchAnimation)
                                 }
 
                                 "9" -> {
-                                    binding.txtMatchAnimation.visibility = View.GONE
+                                    binding.txtMatchAnimation.visibility = View.VISIBLE
                                     binding.tvvs.text = item.awayScore + "-" + item.homeScore
                                     binding.tvstatus.visibility = View.VISIBLE
                                     binding.tvstatus.setTextColor(
@@ -760,7 +757,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                     )
                                     binding.tvstatus.text =
                                         context.resources.getString(R.string.over_time)
-                                    // initAnimation(binding.txtMatchAnimation)
+                                     initAnimation(binding.txtMatchAnimation)
                                 }
 
                                 "10" -> {

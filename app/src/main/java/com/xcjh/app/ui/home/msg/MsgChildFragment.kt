@@ -5,6 +5,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.test.internal.util.LogUtil
+import com.alibaba.fastjson.JSONObject
 import com.drake.brv.utils.addModels
 import com.drake.brv.utils.models
 import com.drake.statelayout.StateConfig
@@ -40,7 +41,7 @@ import kotlinx.coroutines.launch
 
 class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
     private val mAdapter by lazy { MsgListAdapter() }
-    var listdata: MutableList<MsgListNewData> = ArrayList<MsgListNewData>()
+
 
     var chatId = "0"
     val empty by lazy { layoutInflater!!.inflate(R.layout.layout_empty, null) }
@@ -78,6 +79,8 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
             mViewModel.getDelMsg(bean?.anchorId.toString())
             deltDataToList(bean!!)
             mAdapter.removeAt(position)
+            var listdata: MutableList<MsgListNewData> =
+                mAdapter.items as MutableList<MsgListNewData>
             if (listdata.size == 0) {
                 mDatabind.state.showEmpty()
             }
@@ -138,6 +141,8 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                 }
                 initEvent()
             } else {
+                var listdata: MutableList<MsgListNewData> =
+                    mAdapter.items as MutableList<MsgListNewData>
                 listdata.clear()
                 mAdapter.submitList(listdata)
                 mAdapter.notifyDataSetChanged()
@@ -169,8 +174,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
             val data = getAll().await()
 
             if (data.isNotEmpty()) {
-                listdata.clear()
-                listdata.addAll(data)
+
                 mAdapter.submitList(data)
 
             } else {
@@ -209,7 +213,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                     chat.noReadSum = 1
                     chat.toNickName = ""
                     chat.fromAvatar = ""
-                    chat.fromNickName =""
+                    chat.fromNickName = ""
                     refshMsg(chat)
 
                 }
@@ -299,10 +303,8 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
 
         mViewModel.msgList.observe(this) {
             if (it.isSuccess) {
-                var hasData = false
-
-                val notInList2 =
-                    it.listData.filter { p -> listdata.none { it.anchorId == p.anchorId } }
+                var listdata: MutableList<MsgListNewData> =
+                    mAdapter.items as MutableList<MsgListNewData>
                 if (listdata.size > 0) {
                     for (i in 0 until it.listData.size) {
                         for (j in 0 until listdata.size) {
@@ -337,20 +339,64 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
     }
 
     fun refshMsg(msg: ReceiveChatMsg) {
-        // addData(msg)
 
-        // updataMsg(listdata)
-        var hasMsg = false
-        for (i in 0 until listdata.size) {
-            if (msg.anchorId == listdata[i].anchorId) {
-                hasMsg = true
+        try {
+            var listdata: MutableList<MsgListNewData> =
+                mAdapter.items as MutableList<MsgListNewData>
+            var hasMsg = false
+            for (i in 0 until listdata.size) {
+                if (msg.anchorId == listdata[i].anchorId) {
+                    hasMsg = true
+                    var bean = MsgListNewData()
+                    if (msg.anchorId == msg.from) {//主播发送的消息
+                        bean.avatar = msg.fromAvatar ?: ""
+                        if (chatId == msg.anchorId) {
+                            bean.noReadSum = 0
+                        } else {
+                            bean.noReadSum = listdata[i].noReadSum + 1
+                        }
+                    } else {
+                        bean.avatar = msg.toAvatar!!
+                        bean.noReadSum = 0
+                    }
+                    bean.content = msg.content.toString()
+                    bean.createTime = msg.createTime!!
+                    bean.msgType = msg.msgType!!
+                    bean.dataType = msg.dataType!!
+                    bean.fromId = msg.from.toString()
+                    bean.anchorId = msg.anchorId.toString()
+                    bean.sent = msg.sent
+                    bean.id = listdata[i].id
+
+                    if (msg.anchorId == msg.from) {//主播发送的消息
+                        bean.nick = msg.fromNickName!!
+                    } else {
+                        bean.nick = msg.toNickName!!
+                    }
+
+                    LogUtils.d("更新了哈哈$i")
+
+                    mAdapter[i] = bean//更新Item数据
+                    if (i != 0) {
+                        GlobalScope.launch() {
+                            delay(1000) // 延迟1秒
+                            mAdapter.swap(i, 0)
+                        }
+                    }
+
+                    //
+                    addDataToList(bean)
+                    break
+                }
+            }
+            if (!hasMsg) {
                 var bean = MsgListNewData()
                 if (msg.anchorId == msg.from) {//主播发送的消息
                     bean.avatar = msg.fromAvatar ?: ""
                     if (chatId == msg.anchorId) {
                         bean.noReadSum = 0
                     } else {
-                        bean.noReadSum = listdata[i].noReadSum + 1
+                        bean.noReadSum = msg.noReadSum
                     }
                 } else {
                     bean.avatar = msg.toAvatar!!
@@ -360,60 +406,23 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                 bean.createTime = msg.createTime!!
                 bean.msgType = msg.msgType!!
                 bean.dataType = msg.dataType!!
-                bean.fromId = msg.from.toString()
-                bean.anchorId = msg.anchorId.toString()
+                bean.fromId = msg.from ?: ""
+                bean.anchorId = msg.anchorId ?: ""
+                bean.id = msg.id
                 bean.sent = msg.sent
-                bean.id = listdata[i].id
-
                 if (msg.anchorId == msg.from) {//主播发送的消息
-                    bean.nick = msg.fromNickName!!
+                    bean.nick = msg.fromNickName ?: ""
                 } else {
-                    bean.nick = msg.toNickName!!
+                    bean.nick = msg.toNickName ?: ""
                 }
+                LogUtils.d("鞥加了哈哈")
 
-
-                mAdapter[i] = bean//更新Item数据
-                if (i!=0) {
-                    GlobalScope.launch(Dispatchers.Main) {
-                        delay(500) // 延迟1秒
-                        mAdapter.swap(i, 0)
-                    }
-                }
-                //
                 addDataToList(bean)
-                break
-            }
-        }
-        if (!hasMsg) {
-            var bean = MsgListNewData()
-            if (msg.anchorId == msg.from) {//主播发送的消息
-                bean.avatar = msg.fromAvatar ?: ""
-                if (chatId == msg.anchorId) {
-                    bean.noReadSum = 0
-                } else {
-                    bean.noReadSum = msg.noReadSum
-                }
-            } else {
-                bean.avatar = msg.toAvatar!!
-                bean.noReadSum = 0
-            }
-            bean.content = msg.content.toString()
-            bean.createTime = msg.createTime!!
-            bean.msgType = msg.msgType!!
-            bean.dataType = msg.dataType!!
-            bean.fromId = msg.from ?: ""
-            bean.anchorId = msg.anchorId ?: ""
-            bean.id = msg.id
-            bean.sent = msg.sent
-            if (msg.anchorId == msg.from) {//主播发送的消息
-                bean.nick = msg.fromNickName ?: ""
-            } else {
-                bean.nick = msg.toNickName ?: ""
-            }
-            listdata.add(bean)
-            addDataToList(bean)
-            mAdapter.add(0, bean)
+                mAdapter.add(0, bean)
 
+            }
+        } catch (e: Exception) {
+            LogUtils.d("出错了" + e.printStackTrace())
         }
 
 
