@@ -44,7 +44,11 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
     }
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
-        isVisble = isVisibleToUser
+        //  isVisble = isVisibleToUser
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
     }
 
 

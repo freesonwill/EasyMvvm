@@ -21,6 +21,7 @@ import com.drake.brv.utils.setDifferModels
 import com.drake.brv.utils.setup
 import com.drake.statelayout.StateConfig
 import com.scwang.smart.refresh.header.ClassicsHeader
+import com.xcjh.app.MyApplication
 import com.xcjh.app.R
 import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseFragment
@@ -35,6 +36,8 @@ import com.xcjh.base_lib.utils.LogUtils
 import com.xcjh.base_lib.utils.TimeUtil
 import com.xcjh.base_lib.utils.distance
 import com.xcjh.base_lib.utils.horizontal
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -939,7 +942,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                         isVisble = true
                         calendarTime = ""
                         isResh = false
-                        getData(false)
+                        mDatabind.smartCommon.autoRefresh()
                     } else {
                         isVisble = false
                     }
@@ -974,7 +977,9 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                     mDatabind.recBottom.bindingAdapter.notifyItemChanged(i)
                                     when (mCurrentOneTabIndex) {//已完成比赛下次要刷新
                                         0, 1, 2 -> {
-                                            if (it[j].status.toString() == "10" && it[j].matchType.toString() == "8") {
+                                            if ((bean.status == "10" && bean.matchType == "2") ||
+                                                (bean.status == "8" && bean.matchType == "1")
+                                            ) {
                                                 isResh = true
                                             }
                                         }
@@ -1004,6 +1009,20 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                     }
                 }
             }
+            appViewModel.updateLoginEvent.observe(this) {
+                if (it) {
+
+                } else {
+                    if (isAdded) {
+                        if (mCurrentOneTabIndex == mOneTabIndex && mCurrentTwoTabIndex == mTwoTabIndex) {
+                            mDatabind.smartCommon.autoRefresh()
+                        } else {
+
+                            isResh = true
+                        }
+                    }
+                }
+            }
         } catch (e: Exception) {
 
         }
@@ -1027,16 +1046,16 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
     override fun onResume() {
         super.onResume()
         LogUtils.d("第1及页面索引==" + mCurrentOneTabIndex + "第2及页面索引==" + mCurrentTwoTabIndex)
-        if (isResh) {
-            isResh = false
-            mDatabind.smartCommon.autoRefresh()
-            //getData(false)
-        }
+//        if (isResh) {
+//            isResh = false
+//            mDatabind.smartCommon.autoRefresh()
+//            //getData(false)
+//        }
     }
 
     override fun lazyLoadData() {
         super.lazyLoadData()
-       // getData(false)
+        // getData(false)
         mDatabind.smartCommon.autoRefresh()
     }
 

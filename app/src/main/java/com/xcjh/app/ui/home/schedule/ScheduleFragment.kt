@@ -62,7 +62,14 @@ class ScheduleFragment : BaseFragment<MainVm, FrCourseBinding>() {
         super.onResume()
 
     }
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        //  isVisble = isVisibleToUser
+    }
 
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+    }
     fun getCurrentIndex(): Int {
         // 子 Fragment 的逻辑操作
         return mDatabind.vp.currentItem
