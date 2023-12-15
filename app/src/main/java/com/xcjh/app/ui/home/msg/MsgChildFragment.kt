@@ -232,6 +232,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
             if (data.isNotEmpty()) {
                 listdata.clear()
                 listdata.addAll(data)
+                mDatabind.state.showContent()
 
             } else {
                 mDatabind.state.showEmpty()
@@ -482,6 +483,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                 var listdata: MutableList<MsgListNewData> = ArrayList<MsgListNewData>()
                 listdata.add(bean)
                 mDatabind.rec.addModels(listdata, index = 0)
+                mDatabind.state.showContent()
 
 
             }
