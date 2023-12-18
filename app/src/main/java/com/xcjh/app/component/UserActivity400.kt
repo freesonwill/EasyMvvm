@@ -35,7 +35,7 @@ class UserActivity400 : Activity() {
 
     private fun onIntent(intent: Intent?) {
         try {
-            Toast.makeText(applicationContext, TAG, Toast.LENGTH_SHORT).show()
+            //Toast.makeText(applicationContext, TAG, Toast.LENGTH_SHORT).show()
             if (intent == null) {
                 return
             }

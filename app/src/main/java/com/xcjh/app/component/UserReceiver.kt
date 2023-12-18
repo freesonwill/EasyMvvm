@@ -13,7 +13,9 @@ import com.engagelab.privates.push.api.NotificationMessage
 import com.engagelab.privates.push.api.PlatformTokenMessage
 import com.engagelab.privates.push.api.TagMessage
 import com.xcjh.app.component.listener.StatusObserver
+import com.xcjh.app.ui.MainActivity
 import com.xcjh.app.ui.details.MatchDetailActivity
+import com.xcjh.base_lib.utils.startNewActivity
 import java.util.Arrays
 
 /**
@@ -86,7 +88,7 @@ class UserReceiver : MTCommonReceiver() {
      */
     override fun onNotificationClicked(context: Context, notificationMessage: NotificationMessage) {
         Log.i(TAG, "onNotificationClicked:$notificationMessage")
-        notificationMessage.extras.apply {
+        /*notificationMessage.extras.apply {
             val matchId = getString("matchId")
             val isPureFlow = getString("isPureFlow")
             val matchType = getString("matchType")
@@ -103,8 +105,13 @@ class UserReceiver : MTCommonReceiver() {
                 putExtra("videoUrl", "")
             }
             context.startActivity(intent)
-        }
 
+        }*/
+
+        startNewActivity<MainActivity> {
+            putExtras(notificationMessage.extras)
+           // putExtra("","")
+        }
     }
 
     /**

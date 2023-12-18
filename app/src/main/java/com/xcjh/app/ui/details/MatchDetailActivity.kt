@@ -7,10 +7,14 @@ import android.os.Bundle
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.appbar.AppBarLayout
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
 import com.gyf.immersionbar.ImmersionBar
 import com.gyf.immersionbar.ImmersionBar.getStatusBarHeight
+import com.huawei.hms.aaid.HmsInstanceId
+import com.huawei.hms.push.HmsMessaging.DEFAULT_TOKEN_SCOPE
 import com.shuyu.gsyvideoplayer.builder.GSYVideoOptionBuilder
 import com.shuyu.gsyvideoplayer.utils.GSYVideoType
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer
@@ -22,6 +26,7 @@ import com.xcjh.app.bean.MatchDetailBean
 import com.xcjh.app.databinding.ActivityMatchDetailBinding
 import com.xcjh.app.isTopActivity
 import com.xcjh.app.net.ApiComService
+import com.xcjh.app.ui.MainActivity
 import com.xcjh.app.ui.chat.ChatActivity
 import com.xcjh.app.ui.details.common.GSYBaseActivity
 import com.xcjh.app.ui.details.fragment.*
@@ -90,6 +95,32 @@ class MatchDetailActivity :
         super.initView(savedInstanceState)
         ImmersionBar.with(this).statusBarDarkFont(false)//黑色
             .titleBarMarginTop(mDatabind.rltTop).init()
+      /*  Thread() {
+           *//* try {
+                HmsInstanceId.getInstance(this).getToken("109888465",DEFAULT_TOKEN_SCOPE).loge("push====token===")
+                //FirebaseInstanceId.getInstance().getInstanceId()
+            } catch (e: Exception) {
+                "token failed! Catch exception : $e".loge("push====token===")
+            }*//*
+            try {
+
+                FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+                    if (!task.isSuccessful) {
+                        //Log.w(TAG, "Fetching FCM registration token failed", task.exception)
+                        "Fetching FCM registration token failed".loge("push====token===")
+                        return@OnCompleteListener
+                    }
+
+                    // Get new FCM registration token
+                    val token = task.result
+                    token.loge("push====token===")
+                })
+            } catch (e: Exception) {
+                "token failed! Catch exception : $e".loge("push====token===")
+            }
+
+        }.start()*/
+
         //解决toolbar左边距问题
         mDatabind.toolbar.setContentInsetsAbsolute(0, 0)
         mDatabind.viewTopBg.layoutParams.height = getStatusBarHeight(this)
@@ -463,6 +494,7 @@ class MatchDetailActivity :
 
     override fun onPlayError(url: String, vararg objects: Any) {
         "video error=====================".loge("====")
+        showHideLive(true)
     }
 
     //数据处理

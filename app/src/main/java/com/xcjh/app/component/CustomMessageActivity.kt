@@ -29,7 +29,6 @@ class CustomMessageActivity : Activity() {
 
     private fun onIntent(intent: Intent?) {
         try {
-            Toast.makeText(this, TAG, Toast.LENGTH_SHORT).show()
             if (intent == null) {
                 return
             }
@@ -43,8 +42,6 @@ class CustomMessageActivity : Activity() {
                 val anchorId = getString("anchorId")
                 MatchDetailActivity.open(matchType = matchType, matchId = matchId, anchorId = anchorId)
             }
-
-
         } catch (throwable: Throwable) {
             throwable.printStackTrace()
             Log.d(TAG, "onIntent failed:" + throwable.message)

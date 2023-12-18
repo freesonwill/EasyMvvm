@@ -3,12 +3,14 @@ package com.xcjh.app.ui
 
 
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.VibrationEffect
 import android.os.Vibrator
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import androidx.activity.OnBackPressedCallback
@@ -17,6 +19,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.engagelab.privates.core.api.MTCorePrivatesApi
+import com.engagelab.privates.push.api.CustomMessage
 import com.engagelab.privates.push.api.MTPushPrivatesApi
 import com.king.app.dialog.AppDialog
 import com.king.app.updater.AppUpdater
@@ -30,6 +33,7 @@ import com.xcjh.app.adapter.PushCardPopup
 import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseActivity
 import com.xcjh.app.bean.BeingLiveBean
+import com.xcjh.app.component.UserActivity400
 import com.xcjh.app.databinding.ActivityHomeBinding
 import com.xcjh.app.ui.details.MatchDetailActivity
 import com.xcjh.app.ui.home.home.HomeFragment
@@ -76,6 +80,7 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         //MTPushPrivatesApi.clearNotification(this)
+        onIntent(intent)
         MTPushPrivatesApi.setNotificationBadge(this,0)
         CacheUtil.setFirst(false)
         mViewModel.appUpdate()
@@ -202,6 +207,32 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
             })
 
     }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        onIntent(intent)
+    }
+
+    private fun onIntent(intent: Intent?) {
+        try {
+            if (intent == null) {
+                return
+            }
+            if (intent.extras == null) {
+                return
+            }
+            intent.extras?.apply {
+                val matchId = getString("matchId","")
+                val isPureFlow = getString("isPureFlow")
+                val matchType = getString("matchType","1")
+                val liveId = getString("liveId")
+                val anchorId = getString("anchorId",null)
+                MatchDetailActivity.open(matchType = matchType, matchId = matchId, anchorId = anchorId)
+            }
+        } catch (throwable: Throwable) {
+            throwable.printStackTrace()
+        }
+    }
     fun initMsgNums(nums:String){
         if (nums.toInt()>0){
             mDatabind.tvnums.text=nums
@@ -239,7 +270,7 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
             timer?.cancel()
             timer?.purge()
         }
-
+        MTPushPrivatesApi.setNotificationBadge(this,0)
         super.onDestroy()
     }
 

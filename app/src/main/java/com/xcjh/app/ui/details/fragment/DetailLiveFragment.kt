@@ -91,7 +91,7 @@ class DetailLiveFragment(var matchId: String, var matchType: String) :
     }
 
     private fun loadData() {
-        mDatabind.page.showLoading()
+        mDatabind.page.refresh()
         // mViewModel.getNowLive(true,matchType,matchId)
     }
 

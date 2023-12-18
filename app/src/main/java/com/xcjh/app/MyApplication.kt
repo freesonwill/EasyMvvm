@@ -1,16 +1,12 @@
 package com.xcjh.app
 
 import android.app.Activity
-import android.util.Log
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.room.Room
 import com.drake.statelayout.StateConfig
-import com.engagelab.privates.common.global.MTGlobal.context
 import com.engagelab.privates.core.api.MTCorePrivatesApi
 import com.engagelab.privates.push.api.MTPushPrivatesApi
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.firebase.messaging.FirebaseMessaging
 import com.hjq.language.MultiLanguages
 import com.hjq.toast.Toaster
 import com.kingja.loadsir.callback.SuccessCallback
@@ -23,7 +19,6 @@ import com.scwang.smart.refresh.layout.SmartRefreshLayout
 import com.shuyu.gsyvideoplayer.player.IjkPlayerManager
 import com.shuyu.gsyvideoplayer.player.PlayerFactory
 import com.tencent.mmkv.MMKV
-import com.xcjh.app.component.UserReceiver
 import com.xcjh.app.event.AppViewModel
 import com.xcjh.app.event.EventViewModel
 import com.xcjh.app.ui.room.MyRoomChatList
