@@ -22,7 +22,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/sp_16"
-
+                android:textStyle="bold"
                 android:text="@string/search_txt_hot_race"
                 android:textColor="@color/c_37373d"/>
         </LinearLayout>

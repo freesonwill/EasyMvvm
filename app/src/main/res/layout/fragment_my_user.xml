@@ -39,7 +39,7 @@
                     android:scaleType="fitXY"
                     app:border_color="@color/c_80fffff"
                     app:is_circle="true"
-                    app:srcCompat="@drawable/my_icon_title" />
+                    app:srcCompat="@drawable/icon_my_head" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"

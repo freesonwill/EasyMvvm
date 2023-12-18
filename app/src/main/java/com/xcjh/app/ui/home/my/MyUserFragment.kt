@@ -27,6 +27,7 @@ import com.xcjh.app.web.WebActivity
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.copyToClipboard
 import com.xcjh.base_lib.utils.myToast
+import com.xcjh.base_lib.utils.shareText
 import com.xcjh.base_lib.utils.view.clickNoRepeat
 
 
@@ -124,9 +125,11 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
         }
         //邀请好友
         mDatabind.rlMyClickInvite.clickNoRepeat {
-          requireContext().copyToClipboard(ApiComService.SHARE_IP)
-            myToast(resources.getString(R.string.my_txt_copy_link))
-//            showCopyLink()
+            shareText(requireContext(),ApiComService.SHARE_IP)
+
+//          requireContext().copyToClipboard(ApiComService.SHARE_IP)
+//            myToast(resources.getString(R.string.my_txt_copy_link))
+//
         }
         //广告
         mDatabind.ivMyAdvertising.clickNoRepeat {
