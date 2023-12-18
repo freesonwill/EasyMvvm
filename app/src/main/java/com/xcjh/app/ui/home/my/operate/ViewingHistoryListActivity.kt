@@ -94,7 +94,7 @@ class ViewingHistoryListActivity : BaseActivity<ViewingHistoryListVm, ActivityVi
                             bindingItem.llLiveSpacing.layoutParams =layoutParams
                         }else{
                             val layoutParams = bindingItem.llLiveSpacing.layoutParams as ViewGroup.MarginLayoutParams
-                            layoutParams.setMargins(0, 0, 0, context.dp2px(8))
+                            layoutParams.setMargins(0, 0, context.dp2px(0), context.dp2px(8))
                             bindingItem.llLiveSpacing.layoutParams =layoutParams
                         }
                     }
