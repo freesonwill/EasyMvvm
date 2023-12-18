@@ -81,7 +81,7 @@ class FootballLineupView : LinearLayout {
             //首发无阵型 直接展示列表
             lltShow?.visibleOrInvisible(false)
             firstTable?.visibleOrInvisible(true)
-            firstTable?.setData(it, match, 1)
+            firstTable?.setData(it, 1)
         }
     }
 

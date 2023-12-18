@@ -345,20 +345,20 @@ class MatchDetailActivity :
         if (matchType == "1") {//足球
             //主队名称以及图标
             mDatabind.tvHomeName.text = matchDetail.homeName ?: ""
-            Glide.with(this).load(matchDetail.homeLogo).placeholder(R.drawable.default_team_logo)
+            Glide.with(this).load(matchDetail.homeLogo).placeholder(R.drawable.def_football)
                 .into(mDatabind.ivHomeIcon)
             //客队名称以及图标
             mDatabind.tvAwayName.text = matchDetail.awayName
-            Glide.with(this).load(matchDetail.awayLogo).placeholder(R.drawable.default_team_logo)
+            Glide.with(this).load(matchDetail.awayLogo).placeholder(R.drawable.def_football)
                 .into(mDatabind.ivAwayIcon)
         } else {
             //主队名称以及图标
             mDatabind.tvAwayName.text = "${matchDetail.homeName}\n(主)"
-            Glide.with(this).load(matchDetail.homeLogo).placeholder(R.drawable.default_team_logo)
+            Glide.with(this).load(matchDetail.homeLogo).placeholder(R.drawable.def_basketball)
                 .into(mDatabind.ivAwayIcon)
             //客队名称以及图标
             mDatabind.tvHomeName.text = matchDetail.awayName
-            Glide.with(this).load(matchDetail.awayLogo).placeholder(R.drawable.default_team_logo)
+            Glide.with(this).load(matchDetail.awayLogo).placeholder(R.drawable.def_basketball)
                 .into(mDatabind.ivHomeIcon)
         }
         //赛事名字和比赛时间
@@ -393,9 +393,9 @@ class MatchDetailActivity :
         //有比分的情况 足球status正在比赛是[2,8] 篮球是[2,10]
         if (matchType == "1") {
             //足球
-            Glide.with(this).load(matchDetail.homeLogo).placeholder(R.drawable.default_team_logo)
+            Glide.with(this).load(matchDetail.homeLogo).placeholder(R.drawable.def_football)
                 .into(mDatabind.ivTopHomeIcon)
-            Glide.with(this).load(matchDetail.awayLogo).placeholder(R.drawable.default_team_logo)
+            Glide.with(this).load(matchDetail.awayLogo).placeholder(R.drawable.def_football)
                 .into(mDatabind.ivTopAwayIcon)
             mDatabind.tvTopHomeScore.text =
                 if (matchDetail.status in 2..8) matchDetail.homeScore.toString() else ""
@@ -410,9 +410,9 @@ class MatchDetailActivity :
                 mDatabind.tvMatchVs.text = getString(R.string.vs)
             }
         } else {
-            Glide.with(this).load(matchDetail.awayLogo).placeholder(R.drawable.default_team_logo)
+            Glide.with(this).load(matchDetail.awayLogo).placeholder(R.drawable.def_basketball)
                 .into(mDatabind.ivTopHomeIcon)
-            Glide.with(this).load(matchDetail.homeLogo).placeholder(R.drawable.default_team_logo)
+            Glide.with(this).load(matchDetail.homeLogo).placeholder(R.drawable.def_basketball)
                 .into(mDatabind.ivTopAwayIcon)
             mDatabind.tvTopHomeScore.text =
                 if (matchDetail.status in 2..10) matchDetail.awayScore.toString() else ""

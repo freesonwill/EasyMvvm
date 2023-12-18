@@ -107,16 +107,15 @@ fun onWsUserExitRoom(groupId: String) {
 8超凡    #6B2BF4  #74619C               #6C2FED
  */
 fun getLeverNum(level: String?): String {
-    var name = appContext.getString(R.string.level1)
-    when (level) {
-        "1" -> name = appContext.getString(R.string.level1)
-        "2" -> name = appContext.getString(R.string.level2)
-        "3" -> name = appContext.getString(R.string.level3)
-        "4" -> name = appContext.getString(R.string.level4)
-        "5" -> name = appContext.getString(R.string.level5)
-        "6" -> name = appContext.getString(R.string.level6)
-        "7" -> name = appContext.getString(R.string.level7)
-        "8" -> name = appContext.getString(R.string.level8)
+    val name: String = when (level) {
+        "0" -> appContext.getString(R.string.level1)
+        "1" -> appContext.getString(R.string.level1)
+        "2" -> appContext.getString(R.string.level2)
+        "3" -> appContext.getString(R.string.level3)
+        "4" -> appContext.getString(R.string.level4)
+        "5" -> appContext.getString(R.string.level5)
+        "6" -> appContext.getString(R.string.level6)
+        else -> appContext.getString(R.string.level6)
     }
     return name
 }

@@ -36,6 +36,7 @@
                     android:id="@+id/txtEmptyName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_5"
                     android:textSize="@dimen/sp_13"
                     android:text="@string/no_data_hint"
                     android:textColor="@color/c_b88bdc9" />

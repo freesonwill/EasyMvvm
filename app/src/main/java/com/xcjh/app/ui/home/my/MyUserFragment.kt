@@ -23,6 +23,7 @@ import com.xcjh.app.ui.home.my.operate.*
 import com.xcjh.app.ui.login.LoginActivity
 import com.xcjh.app.ui.notice.MyNoticeActivity
 import com.xcjh.app.utils.CacheUtil
+import com.xcjh.app.utils.judgeLogin
 import com.xcjh.app.web.WebActivity
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.copyToClipboard
@@ -45,13 +46,9 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
             .init()
         //查看等级任务
         mDatabind.rlClickLevel.clickNoRepeat {
-            if(CacheUtil.isLogin()){
+            judgeLogin {
                 startNewActivity<LevelMissionActivity>()
-            }else{
-                startNewActivity<LoginActivity>()
             }
-
-
         }
         //设置
         mDatabind.ivMySet.clickNoRepeat {

@@ -332,16 +332,12 @@
     <string name="in_chat_oto">私聊</string>
     <string name="over_time">加时</string>
 
-    <string name="level1">黑铁</string>
-    <string name="level2">黄铜</string>
-    <string name="level3">青铜</string>
-    <string name="level4">白银</string>
-    <string name="level5">黄金</string>
-    <string name="level6">铂金</string>
-    <string name="level7">钻石</string>
-    <string name="level8">超凡</string>
-    <string name="level9">白金</string>
-    <string name="level10">星耀</string>
+    <string name="level1">黄铜</string>
+    <string name="level2">白银</string>
+    <string name="level3">黄金</string>
+    <string name="level4">铂金</string>
+    <string name="level5">钻石</string>
+    <string name="level6">星耀</string>
 
     <string name="head_pulling">下拉加载更多记录</string>
     <string name="head_refreshing">正在加载更多…</string>
