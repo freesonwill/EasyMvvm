@@ -6,12 +6,10 @@ import androidx.viewpager2.widget.ViewPager2
 import com.xcjh.app.R
 import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseFragment
+import com.xcjh.app.bean.CurrentIndex
 import com.xcjh.app.bean.HotMatchBean
-import com.xcjh.app.bean.PostSchMatchListBean
 import com.xcjh.app.databinding.FrScheduleoneBinding
 import com.xcjh.app.utils.selectDate
-import com.xcjh.app.utils.selectTime
-import com.xcjh.base_lib.utils.TimeUtil
 import com.xcjh.base_lib.utils.bindViewPager2
 import com.xcjh.base_lib.utils.initActivity
 import com.xcjh.base_lib.utils.setOnclickNoRepeat
@@ -28,6 +26,7 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
     var mTabPosition = 0
     var mOneTabIndex = 0
     var mTwoTabIndex = 0
+    private lateinit var parentFragment: ScheduleFragment
     companion object {
         var mTitles: Array<out String>? = null
         private val MATCHTYPE = "matchtype"
@@ -45,7 +44,17 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
     }
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
-        isVisble = isVisibleToUser
+        //  isVisble = isVisibleToUser
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+    }
+
+    override fun lazyLoadData() {
+        super.lazyLoadData()
+        mViewModel.getHotMatchData(matchtypeOld!!, status)
+
     }
 
     override fun onPause() {
@@ -55,12 +64,22 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
     override fun onResume() {
         super.onResume()
        // isVisble = mTabPosition == mPushPosition
-        if (!hasData) {
+
+        if (!isFirst&&!hasData) {
 
             mViewModel.getHotMatchData(matchtypeOld!!, status)
 
         }
 
+    }
+    fun setPanrent(mparentFragment: ScheduleFragment){
+        parentFragment=mparentFragment
+        // 子 Fragment 的逻辑操作
+
+    }
+    fun getCurrentIndex():Int {
+        // 子 Fragment 的逻辑操作
+        return mDatabind.vp.currentItem
     }
     override fun initView(savedInstanceState: Bundle?) {
 
@@ -71,28 +90,29 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
             status = bundle.getInt(ScheduleChildOneFragment.STATUS)
             mOneTabIndex = bundle.getInt(ScheduleChildOneFragment.TAB)
         }
-        mViewModel.getHotMatchData(matchtypeOld!!, status)
+
         mDatabind.vp.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                appViewModel.updateScheduleTwoPosition.postValue(position)
 
-                if (position==(mFragments.size-1)){
-                    appViewModel.updateViewpager.postValue(true)
-                }else{
-                    appViewModel.updateViewpager.postValue(false)
+                if (parentFragment!=null) {
+                    var bean = CurrentIndex()
+                    bean.currtOne = parentFragment!!.getCurrentIndex()
+                    bean.currtTwo = position
+                    appViewModel.updateSchedulePosition.postValue(bean)
                 }
+
             }
 
         })
-        appViewModel.updateSchedulePosition.observeForever {
-
-            if (mOneTabIndex==it&&isAdded){
-                var index= mDatabind.vp.currentItem
-                appViewModel.updateScheduleTwoPosition.postValue(index)
-            }
-
-        }
+//        appViewModel.updateSchedulePosition.observeForever {
+//
+//            if (mOneTabIndex==it&&isAdded){
+//                var index= mDatabind.vp.currentItem
+//                appViewModel.updateScheduleTwoPosition.postValue(index)
+//            }
+//
+//        }
 
         setOnclickNoRepeat(mDatabind.ivMeau) {
             when (it.id) {

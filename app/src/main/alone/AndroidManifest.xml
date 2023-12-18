@@ -184,13 +184,13 @@
             android:enabled="true"
             android:exported="true" />
         <!--push start*******************-->
-        <service
+       <!-- <service
             android:name=".component.MyFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
-        </service>
+        </service>-->
         <!-- 用于演示通知点击跳转 -->
       <!--  <activity
             android:name="com.xcjh.app.component.UserActivity400"

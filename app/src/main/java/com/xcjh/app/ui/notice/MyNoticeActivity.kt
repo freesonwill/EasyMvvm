@@ -65,6 +65,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                 this.findViewById<TextView>(R.id.txtEmptyName).text =
                     resources.getString(R.string.no_data_hint)
                 this.findViewById<ImageView>(R.id.ivEmptyIcon).setImageDrawable(resources.getDrawable(R.drawable.ic_empet_all))
+                this.findViewById<ImageView>(R.id.ivEmptyIcon).setOnClickListener {  }
             }
         }
         mDatabind.titleTop.tvTitle.text = resources.getString(R.string.my_txt_subscribe)

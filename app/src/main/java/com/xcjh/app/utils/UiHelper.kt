@@ -23,6 +23,7 @@ import com.xcjh.app.ui.details.fragment.DetailLineUpFragment
 import com.xcjh.app.ui.details.fragment.DetailLiveFragment
 import com.xcjh.app.ui.details.fragment.DetailResultFragment
 import com.xcjh.base_lib.appContext
+import com.xcjh.base_lib.utils.notNull
 import com.xcjh.base_lib.utils.view.visibleOrGone
 import net.lucode.hackware.magicindicator.MagicIndicator
 
@@ -172,7 +173,6 @@ private val tabs by lazy {
  * 设置新的Tab+Vp
  */
 fun setNewViewPager(
-    signalPos: Int,
     mTitles: ArrayList<String>,
     mFragList: ArrayList<Fragment>,
     isHasAnchor: Boolean,
@@ -219,8 +219,12 @@ fun setNewViewPager(
             }
         }
     }
-    val liveId = detailBean.anchorList?.get(signalPos)?.liveId
-        ?: "${detailBean.matchType}${detailBean.matchId}"
+    var liveId = ""
+    detailBean.anchorList?.forEach {
+        if (it.isSelect){
+            liveId = if (it.liveId.isNullOrEmpty()) "${detailBean.matchType}${detailBean.matchId}" else it.liveId
+        }
+    }
     newTabs.forEach { t ->
         mTitles.add(t.name)
         when (t.type) {

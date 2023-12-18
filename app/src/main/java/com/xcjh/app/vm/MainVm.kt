@@ -54,6 +54,16 @@ class MainVm : BaseViewModel() {
         )
     }
     /**
+     * 极光推送绑定用户
+     */
+    fun jPushBind(id:String) {
+        request(
+            { apiService.jPushBind(id) },
+            {
+            },
+        )
+    }
+    /**
      * 获取app是否更新
      */
     fun appUpdate() {

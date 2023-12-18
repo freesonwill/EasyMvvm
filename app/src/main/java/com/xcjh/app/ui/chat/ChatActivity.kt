@@ -128,6 +128,13 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                     resources.getString(R.string.nomsg)
                 this.findViewById<ImageView>(R.id.ivEmptyIcon)
                     .setImageDrawable(resources.getDrawable(R.drawable.ic_empety_msg))
+                this.findViewById<ImageView>(R.id.ivEmptyIcon).setOnClickListener {  }
+            }
+            onLoading {
+                LogUtils.d("")
+            }
+            onRefresh {
+                LogUtils.d("")
             }
         }
         // 键盘弹出平滑动画
@@ -783,6 +790,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
             if (isShowBottom) {
                 mDatabind.ivexpent.performClick()
             }
+
             mDatabind.rv.addModels(listdata1, index = 0)
             mDatabind.rv.scrollToPosition(0) // 保证最新一条消息显示
         }

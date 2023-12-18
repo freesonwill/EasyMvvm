@@ -7,8 +7,11 @@ import android.view.ViewGroup
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
+import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.activity.viewModels
+import com.drake.statelayout.StateConfig
 import com.gyf.immersionbar.ImmersionBar
 import com.just.agentweb.AgentWeb
 import com.just.agentweb.WebChromeClient
@@ -38,7 +41,6 @@ class FeedNoticeActivity : BaseActivity<FeedVm, ActivityFeednoticeBinding>() {
             .statusBarDarkFont(true)
             .titleBar(mDatabind.titleTop.root)
             .init()
-
         mDatabind.titleTop.tvTitle.text = resources.getString(R.string.txt_feedtitle)
         mDatabind.rec.run {
             vertical()

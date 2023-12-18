@@ -175,7 +175,7 @@ fun <T> smartListData(
     data: ListDataUiState<T>,
     baseQuickAdapter: BaseQuickAdapter<T, *>,
     smartRefresh: SmartRefreshLayout,
-    imgEmptyId: Int = R.drawable.tp_empty,//图片
+    imgEmptyId: Int = R.drawable.zwt_zwbs,//图片
     notice: String = appContext.getString(R.string.no_data),//提示
     block: (() -> Unit)? = null
 ) {
@@ -229,7 +229,7 @@ fun <T> smartDifferListData(
     data: ListDataUiState<T>,
     baseQuickAdapter: BaseDifferAdapter<T, *>,
     smartRefresh: SmartRefreshLayout,
-    imgEmptyId: Int = R.drawable.tp_empty,//图片
+    imgEmptyId: Int = R.drawable.zwt_zwbs,//图片
     notice: String = appContext.getString(R.string.no_data),//提示
     block: (() -> Unit)? = null
 ) {
@@ -279,7 +279,7 @@ fun <T> smartDifferListData(
 
 fun setTpEmpty(
     activity: Context,
-    imgEmptyId: Int = R.drawable.tp_empty,//图片
+    imgEmptyId: Int = R.drawable.zwt_zwbs,//图片
     notice: String = appContext.getString(R.string.no_data),//提示
     block: (() -> Unit)? = null
 ): View {
@@ -342,13 +342,17 @@ fun <T> smartPageListData(
     data: ListDataUiState<T>,
     rcv: RecyclerView,
     pageRefreshLayout: PageRefreshLayout,
-    imgEmptyId: Int = R.drawable.tp_empty,//图片
+    imgEmptyId: Int = R.drawable.zwt_zwbs,//图片
     notice: String = appContext.getString(R.string.no_data),//提示
 ) {
     pageRefreshLayout.emptyLayout=R.layout.layout_empty
+
     pageRefreshLayout.stateLayout?.onEmpty {
         val emptyImg = findViewById<ImageView>(R.id.ivEmptyIcon)
         val emptyHint = findViewById<TextView>(R.id.txtEmptyName)
+        emptyImg.setOnClickListener {
+
+        }
         emptyImg.setImageResource(imgEmptyId)
         emptyHint.text = notice
     }

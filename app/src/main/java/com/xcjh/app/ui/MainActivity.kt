@@ -16,6 +16,8 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
+import com.engagelab.privates.core.api.MTCorePrivatesApi
+import com.engagelab.privates.push.api.MTPushPrivatesApi
 import com.king.app.dialog.AppDialog
 import com.king.app.updater.AppUpdater
 import com.king.app.updater.http.OkHttpManager
@@ -73,7 +75,8 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-
+        //MTPushPrivatesApi.clearNotification(this)
+        MTPushPrivatesApi.setNotificationBadge(this,0)
         CacheUtil.setFirst(false)
         mViewModel.appUpdate()
         //runOnUiThread {  }
@@ -157,6 +160,7 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         //如果登录了就查询一下用户信息
         if (CacheUtil.isLogin()) {
             mViewModel.getUserInfo()
+            mViewModel.jPushBind(MTCorePrivatesApi.getRegistrationId(this))
         }
 
         // 创建 Timer 对象

@@ -10,9 +10,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.SimpleItemAnimator
-import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.drake.brv.listener.ItemDifferCallback
 import com.drake.brv.utils.bindingAdapter
@@ -23,15 +21,13 @@ import com.drake.brv.utils.setDifferModels
 import com.drake.brv.utils.setup
 import com.drake.statelayout.StateConfig
 import com.scwang.smart.refresh.header.ClassicsHeader
+import com.xcjh.app.MyApplication
 import com.xcjh.app.R
 import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseFragment
 import com.xcjh.app.bean.AnchorBean
-import com.xcjh.app.bean.HotMatchBean
 import com.xcjh.app.bean.MatchBean
 import com.xcjh.app.bean.PostSchMatchListBean
-import com.xcjh.app.databinding.FrConmentBinding
-import com.xcjh.app.databinding.FrScheduleoneBinding
 import com.xcjh.app.databinding.FrScheduletwoBinding
 import com.xcjh.app.databinding.ItemJsBinding
 import com.xcjh.app.databinding.ItemSchAllBinding
@@ -40,6 +36,8 @@ import com.xcjh.base_lib.utils.LogUtils
 import com.xcjh.base_lib.utils.TimeUtil
 import com.xcjh.base_lib.utils.distance
 import com.xcjh.base_lib.utils.horizontal
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -100,8 +98,8 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
     fun initTime() {
         LogUtils.d("本页面tabname=$tabName")
         strTime = TimeUtil.gettimenowYear().toString()
-        if ((mCurrentOneTabIndex!=3&&mCurrentTwoTabIndex==0)||
-            (mCurrentOneTabIndex==3&&(mCurrentTwoTabIndex==0||mCurrentTwoTabIndex==1))
+        if ((mCurrentOneTabIndex != 3 && mCurrentTwoTabIndex == 0) ||
+            (mCurrentOneTabIndex == 3 && (mCurrentTwoTabIndex == 0 || mCurrentTwoTabIndex == 1))
         ) {//只取一天
             if (calendarTime.isNotEmpty()) {
                 strTime = calendarTime
@@ -150,7 +148,9 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                 onEmpty {
                     this.findViewById<TextView>(R.id.txtEmptyName).text =
                         resources.getString(R.string.nomatch)
-                    this.findViewById<ImageView>(R.id.ivEmptyIcon).setImageDrawable(resources.getDrawable(R.drawable.ic_empet_all))
+                    this.findViewById<ImageView>(R.id.ivEmptyIcon)
+                        .setImageDrawable(resources.getDrawable(R.drawable.ic_empet_all))
+                    this.findViewById<ImageView>(R.id.ivEmptyIcon).setOnClickListener {  }
                 }
             }
             mDatabind.smartCommon.setRefreshHeader(ClassicsHeader(requireContext()))
@@ -349,12 +349,9 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                             R.color.c_34a853
                                         )
                                     )
-                                    binding.tvstatus.text =
-                                        if (item.runTime == null)
-                                            "0"
-                                        else {
-                                            item.runTime
-                                        }
+                                    binding.tvstatus.text = context.resources.getString(
+                                        R.string.over_time
+                                    )
                                     initAnimation(binding.txtMatchAnimation)
 
                                 }
@@ -378,7 +375,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                     binding.tvstatus.text = context.resources.getString(
                                         R.string.main_dqdz
                                     )
-                                    // initAnimation(binding.txtMatchAnimation)
+                                    initAnimation(binding.txtMatchAnimation)
 
                                 }
 
@@ -568,7 +565,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                 }
 
                                 "2" -> {
-                                    binding.txtMatchAnimation.visibility = View.GONE
+                                    binding.txtMatchAnimation.visibility = View.VISIBLE
                                     binding.tvvs.text = item.awayScore + "-" + item.homeScore
                                     binding.tvstatus.visibility = View.VISIBLE
                                     binding.tvstatus.setTextColor(
@@ -588,10 +585,11 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                             R.string.main_txt_basketball_phase,
                                             "一"
                                         )
-                                    //initAnimation(binding.txtMatchAnimation)
+                                    initAnimation(binding.txtMatchAnimation)
 
                                 }
-                               "3" -> {
+
+                                "3" -> {
                                     binding.txtMatchAnimation.visibility = View.GONE
                                     binding.tvvs.text = item.awayScore + "-" + item.homeScore
                                     binding.tvstatus.visibility = View.VISIBLE
@@ -601,17 +599,17 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                             R.color.c_e6820c
                                         )
                                     )
-                                   binding.tvvs.setTextColor(
-                                       ContextCompat.getColor(
-                                           context,
-                                           R.color.c_34a853
-                                       )
-                                   )
+                                    binding.tvvs.setTextColor(
+                                        ContextCompat.getColor(
+                                            context,
+                                            R.color.c_34a853
+                                        )
+                                    )
                                     binding.tvstatus.text =
                                         context.resources.getString(
                                             R.string.main_txt_basketball_phase,
                                             "一"
-                                        )+ context.resources.getString(
+                                        ) + context.resources.getString(
                                             R.string.finis
                                         )
                                     //initAnimation(binding.txtMatchAnimation)
@@ -619,7 +617,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                 }
 
                                 "4" -> {
-                                    binding.txtMatchAnimation.visibility = View.GONE
+                                    binding.txtMatchAnimation.visibility = View.VISIBLE
                                     binding.tvvs.text = item.awayScore + "-" + item.homeScore
                                     binding.tvstatus.visibility = View.VISIBLE
                                     binding.tvstatus.setTextColor(
@@ -639,9 +637,10 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                             R.string.main_txt_basketball_phase,
                                             "二"
                                         )
-                                    // initAnimation(binding.txtMatchAnimation)
+                                    initAnimation(binding.txtMatchAnimation)
 
                                 }
+
                                 "5" -> {
                                     binding.txtMatchAnimation.visibility = View.GONE
                                     binding.tvvs.text = item.awayScore + "-" + item.homeScore
@@ -662,14 +661,15 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                         context.resources.getString(
                                             R.string.main_txt_basketball_phase,
                                             "二"
-                                        )+ context.resources.getString(
+                                        ) + context.resources.getString(
                                             R.string.finis
                                         )
                                     //initAnimation(binding.txtMatchAnimation)
 
                                 }
+
                                 "6" -> {
-                                    binding.txtMatchAnimation.visibility = View.GONE
+                                    binding.txtMatchAnimation.visibility = View.VISIBLE
                                     binding.tvvs.text = item.awayScore + "-" + item.homeScore
                                     binding.tvstatus.visibility = View.VISIBLE
                                     binding.tvstatus.setTextColor(
@@ -689,9 +689,10 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                             R.string.main_txt_basketball_phase,
                                             "三"
                                         )
-                                    // initAnimation(binding.txtMatchAnimation)
+                                    initAnimation(binding.txtMatchAnimation)
 
                                 }
+
                                 "7" -> {
                                     binding.txtMatchAnimation.visibility = View.GONE
                                     binding.tvvs.text = item.awayScore + "-" + item.homeScore
@@ -712,14 +713,15 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                         context.resources.getString(
                                             R.string.main_txt_basketball_phase,
                                             "三"
-                                        )+ context.resources.getString(
+                                        ) + context.resources.getString(
                                             R.string.finis
                                         )
                                     // initAnimation(binding.txtMatchAnimation)
 
                                 }
+
                                 "8" -> {
-                                    binding.txtMatchAnimation.visibility = View.GONE
+                                    binding.txtMatchAnimation.visibility = View.VISIBLE
                                     binding.tvvs.text = item.awayScore + "-" + item.homeScore
                                     binding.tvstatus.visibility = View.VISIBLE
                                     binding.tvstatus.setTextColor(
@@ -739,11 +741,11 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                             R.string.main_txt_basketball_phase,
                                             "四"
                                         )
-                                    // initAnimation(binding.txtMatchAnimation)
+                                    initAnimation(binding.txtMatchAnimation)
                                 }
 
                                 "9" -> {
-                                    binding.txtMatchAnimation.visibility = View.GONE
+                                    binding.txtMatchAnimation.visibility = View.VISIBLE
                                     binding.tvvs.text = item.awayScore + "-" + item.homeScore
                                     binding.tvstatus.visibility = View.VISIBLE
                                     binding.tvstatus.setTextColor(
@@ -760,7 +762,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                     )
                                     binding.tvstatus.text =
                                         context.resources.getString(R.string.over_time)
-                                    // initAnimation(binding.txtMatchAnimation)
+                                    initAnimation(binding.txtMatchAnimation)
                                 }
 
                                 "10" -> {
@@ -918,7 +920,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
             mDatabind.smartCommon.setOnRefreshListener {
 
-                mDatabind.state.showLoading()
+                //mDatabind.state.showLoading()
                 getData(true)
 
 
@@ -933,45 +935,39 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                 }
             }
             appViewModel.updateSchedulePosition.observeForever {
-                if (isResh) {
-                    isResh = false
-                    getData(false)
-                }
-                mCurrentOneTabIndex = it
-                if (mOneTabIndex==mCurrentOneTabIndex&&mTwoTabIndex==mCurrentTwoTabIndex) {
 
-                    isVisble = true
+                if (isAdded) {
+                    mCurrentOneTabIndex = it.currtOne
+                    mCurrentTwoTabIndex = it.currtTwo
+                    if (isResh && mCurrentOneTabIndex == mOneTabIndex && mCurrentTwoTabIndex == mTwoTabIndex) {
+                        isVisble = true
+                        calendarTime = ""
+                        isResh = false
+                        mDatabind.smartCommon.autoRefresh()
+                    } else {
+                        isVisble = false
+                    }
 
-                    calendarTime = ""
-                }else{
-                    isVisble = false
-                }
-            }
-            appViewModel.updateScheduleTwoPosition.observeForever {
-                mCurrentTwoTabIndex = it
-                if (mOneTabIndex==mCurrentOneTabIndex&&mTwoTabIndex==mCurrentTwoTabIndex) {
+                    LogUtils.d("第1及页面索引==" + mCurrentOneTabIndex + "第2及页面索引==" + mCurrentTwoTabIndex)
 
-                    isVisble = true
-
-                    calendarTime = ""
-                }else{
-                    isVisble = false
                 }
             }
+
             appViewModel.updateCollection.observeForever {
-
-                if (it){
-                    getData(false)
+                if (isAdded) {
+                    if (it) {
+                        getData(false)
+                    }
                 }
             }
             appViewModel.appPushMsg.observeForever {
                 if (isAdded) {
-
-                    if (isVisble) {
+                    if (mCurrentOneTabIndex == mOneTabIndex && mCurrentTwoTabIndex == mTwoTabIndex) {
                         for (j in 0 until it.size) {
                             for (i in 0 until mDatabind.recBottom.models?.size!!) {
                                 var bean: MatchBean = mDatabind.recBottom.models!![i] as MatchBean
                                 // if (bean.homeHalfScore == "1") {
+
                                 if (bean.matchId == it[j].matchId.toString() && bean.matchType == it[j].matchType.toString()) {
                                     bean.awayHalfScore = it[j].awayHalfScore.toString()
                                     bean.awayScore = it[j].awayScore.toString()
@@ -980,10 +976,27 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                     bean.runTime = it[j].runTime.toString()
                                     bean.status = it[j].status.toString()
                                     mDatabind.recBottom.bindingAdapter.notifyItemChanged(i)
+                                    when (mCurrentOneTabIndex) {//已完成比赛下次要刷新
+                                        0, 1, 2 -> {
+                                            if ((bean.status == "10" && bean.matchType == "2") ||
+                                                (bean.status == "8" && bean.matchType == "1")
+                                            ) {
+                                                isResh = true
+                                            }
+                                        }
+
+                                        3 -> {
+
+
+                                        }
+
+                                    }
                                 }
                             }
                         }
                     } else {
+
+
                         for (j in 0 until it.size) {
                             for (i in 0 until mDatabind.recBottom.models?.size!!) {
                                 var bean: MatchBean = mDatabind.recBottom.models!![i] as MatchBean
@@ -995,8 +1008,20 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                             }
                         }
                     }
+                }
+            }
+            appViewModel.updateLoginEvent.observe(this) {
+                if (it) {
 
+                } else {
+                    if (isAdded) {
+                        if (mCurrentOneTabIndex == mOneTabIndex && mCurrentTwoTabIndex == mTwoTabIndex) {
+                            mDatabind.smartCommon.autoRefresh()
+                        } else {
 
+                            isResh = true
+                        }
+                    }
                 }
             }
         } catch (e: Exception) {
@@ -1021,23 +1046,25 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
     override fun onResume() {
         super.onResume()
-
-        if (isResh) {
-            isResh = false
-            getData(false)
-        }
+        LogUtils.d("第1及页面索引==" + mCurrentOneTabIndex + "第2及页面索引==" + mCurrentTwoTabIndex)
+//        if (isResh) {
+//            isResh = false
+//            mDatabind.smartCommon.autoRefresh()
+//            //getData(false)
+//        }
     }
 
     override fun lazyLoadData() {
         super.lazyLoadData()
-        getData(false)
+         getData(false)
+
     }
 
     override fun lazyLoadTime(): Long {
         return 0
     }
 
-    fun getData(iLoading:Boolean) {
+    fun getData(iLoading: Boolean) {
         initTime()
         mViewModel.getHotMatchDataList(
             iLoading, PostSchMatchListBean(

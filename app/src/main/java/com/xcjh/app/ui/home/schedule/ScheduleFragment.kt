@@ -4,16 +4,12 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_DRAGGING
 import androidx.viewpager2.widget.ViewPager2
-import com.drake.brv.utils.bindingAdapter
-import com.drake.brv.utils.models
-import com.flyco.tablayout.listener.OnTabSelectListener
 import com.gyf.immersionbar.ImmersionBar
 import com.xcjh.app.R
 import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseFragment
-import com.xcjh.app.bean.MatchBean
+import com.xcjh.app.bean.CurrentIndex
 import com.xcjh.app.databinding.FrCourseBinding
 import com.xcjh.app.vm.MainVm
 import com.xcjh.app.websocket.MyWsManager
@@ -66,11 +62,24 @@ class ScheduleFragment : BaseFragment<MainVm, FrCourseBinding>() {
         super.onResume()
 
     }
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        //  isVisble = isVisibleToUser
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+    }
+    fun getCurrentIndex(): Int {
+        // 子 Fragment 的逻辑操作
+        return mDatabind.vp.currentItem
+    }
 
     private fun initEvent() {
         mTitles = resources.getStringArray(R.array.str_schedule_tab_top)
         for (i in 0 until mTitles!!.size) {
             mFragments.add(ScheduleChildOneFragment.newInstance(mtypes[i], status[i], i))
+            (mFragments[i] as ScheduleChildOneFragment).setPanrent(this@ScheduleFragment)
         }
         mDatabind.vp.initActivity(requireActivity(), mFragments, true)
         //初始化 magic_indicator
@@ -87,7 +96,7 @@ class ScheduleFragment : BaseFragment<MainVm, FrCourseBinding>() {
             R.color.c_34a853, margin = 30
         )
         mDatabind.vp.offscreenPageLimit = 4
-       // mDatabind.vp.isUserInputEnabled = false
+        // mDatabind.vp.isUserInputEnabled = false
 
 //        mDatabind.vp.adapter= MyPagerAdapter(childFragmentManager);
 //        mDatabind.slide.setViewPager(mDatabind.vp)
@@ -95,14 +104,18 @@ class ScheduleFragment : BaseFragment<MainVm, FrCourseBinding>() {
 //        mDatabind.vp.offscreenPageLimit=4
         appViewModel.updateViewpager.observeForever {
 
-           // mDatabind.vp.isUserInputEnabled = it
+            // mDatabind.vp.isUserInputEnabled = it
         }
 
         mDatabind.vp.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
 
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                appViewModel.updateSchedulePosition.postValue(position)
+                var bean = CurrentIndex()
+                bean.currtOne = position
+                bean.currtTwo =
+                    (mFragments[position] as ScheduleChildOneFragment).getCurrentIndex()
+                appViewModel.updateSchedulePosition.postValue(bean)
             }
 
         })

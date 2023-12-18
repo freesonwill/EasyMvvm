@@ -42,13 +42,13 @@
                     android:layout_width="@dimen/dp_16"
                     android:layout_height="@dimen/dp_16"
                     android:src="@drawable/default_team_logo"
+                    android:layout_marginEnd="@dimen/dp_8"
                     android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/tv_name_away"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_8"
                     android:ellipsize="end"
                     android:maxLines="2"
                     android:textColor="@color/c_d7d7e7"
@@ -74,13 +74,13 @@
                     android:layout_width="@dimen/dp_16"
                     android:layout_height="@dimen/dp_16"
                     android:src="@drawable/default_team_logo"
+                    android:layout_marginEnd="@dimen/dp_8"
                     android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/tv_name_home"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_8"
                     android:ellipsize="end"
                     android:maxLines="2"
                     android:textColor="@color/c_d7d7e7"
