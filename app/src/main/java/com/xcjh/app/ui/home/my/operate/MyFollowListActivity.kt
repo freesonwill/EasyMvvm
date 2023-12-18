@@ -68,7 +68,7 @@ class MyFollowListActivity : BaseActivity<MyFollowListVm, ActivityMyFollowListBi
                         var bindingItem=getBinding<ItemMyFollowBinding>()
                         var  bean=_data as FollowAnchorBean
                         bindingItem.txtFollowName.text=bean.nickName
-                        Glide.with(context)
+                         Glide.with(context)
                             .load(bean.head) // 替换为您要加载的图片 URL
                             .error(R.drawable.default_anchor_icon)
                             .placeholder(R.drawable.default_anchor_icon)
@@ -89,13 +89,13 @@ class MyFollowListActivity : BaseActivity<MyFollowListVm, ActivityMyFollowListBi
                         //判断是否在直播 //计算text显示的宽度
                         if(bean.liveId!=null&&bean.liveId.isNotEmpty()){
 
-                            bindingItem.txtFollowName.maxWidth=screenWidth-context.dp2px(158)-context.dp2px(100)
+                            bindingItem.txtFollowName.maxWidth=screenWidth-context.dp2px(158)-context.dp2px(103)
                             bindingItem.txtMyLiveType.visibility=View.VISIBLE
                             bindingItem.stateLoadingImg.visibility=View.VISIBLE
                             bindingItem.stateLoadingImg.playAnimation()
 
                         }else{
-                            bindingItem.txtFollowName.maxWidth=screenWidth-context.dp2px(85)-context.dp2px(100)
+                            bindingItem.txtFollowName.maxWidth=screenWidth-context.dp2px(85)
 //                            bindingItem.txtFollowName.maxWidth=screenWidth
                             bindingItem.txtMyLiveType.visibility=View.GONE
                             bindingItem.stateLoadingImg.visibility= View.GONE
