@@ -60,10 +60,10 @@ public class SideBarLayout extends RelativeLayout implements SideBarSortView.OnI
         //获取自定义属性
         if (attrs != null) {
             TypedArray ta = mContext.obtainStyledAttributes(attrs, R.styleable.SideBarView);
-            unselectTextColor = ta.getColor(R.styleable.SideBarView_sidebarUnSelectTextColor, Color.parseColor("#1ABDE6"));
-            selectTextColor = ta.getColor(R.styleable.SideBarView_sidebarSelectTextColor, Color.parseColor("#2E56D7"));
-            selectTextSize = ta.getDimension(R.styleable.SideBarView_sidebarSelectTextSize, dip2px(mContext, 12));
-            unselectTextSize = ta.getDimension(R.styleable.SideBarView_sidebarUnSelectTextSize, dip2px(mContext, 10));
+            unselectTextColor = ta.getColor(R.styleable.SideBarView_sidebarUnSelectTextColor, Color.parseColor("#94999f"));
+            selectTextColor = ta.getColor(R.styleable.SideBarView_sidebarSelectTextColor, Color.parseColor("#94999f"));
+            selectTextSize = ta.getDimension(R.styleable.SideBarView_sidebarSelectTextSize, dip2px(mContext, 11));
+            unselectTextSize = ta.getDimension(R.styleable.SideBarView_sidebarUnSelectTextSize, dip2px(mContext, 11));
 
             wordTextSize = ta.getDimension(R.styleable.SideBarView_sidebarWordTextSize, px2sp(mContext, 45));
             wordTextColor = ta.getColor(R.styleable.SideBarView_sidebarWordTextColor, Color.parseColor("#FFFFFF"));
@@ -83,14 +83,6 @@ public class SideBarLayout extends RelativeLayout implements SideBarSortView.OnI
         mSortView = (SideBarSortView) mLayout.findViewById(R.id.sortView);
         mSortView.setIndexChangedListener(this);
 
-        int hegaht = 1920 / 27 * mList.size();
-// 设置自定义视图的宽高
-        RelativeLayout.LayoutParams layoutParams = (LayoutParams) mSortView.getLayoutParams();
-        int[] location = new int[2];
-        mSortView.getLocationOnScreen(location);
-        int x = location[0];
-        int y = location[1];
-       // mSortView.setLayoutParams(layoutParams);
         mSortView.setmTextColor(unselectTextColor);
         mSortView.setmTextSize(unselectTextSize);
 

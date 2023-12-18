@@ -20,6 +20,7 @@ import com.kongzue.dialogx.dialogs.CustomDialog
 import com.kongzue.dialogx.interfaces.OnBindView
 import com.xcjh.app.R
 import com.xcjh.app.bean.AnchorListBean
+import com.xcjh.app.view.MyDateWheelLayout
 import com.xcjh.base_lib.App
 import com.xcjh.base_lib.utils.TimeUtil
 
@@ -171,8 +172,8 @@ fun selectDate(context: Context, timeOld: String, block: (time: String) -> Unit)
                 if (dialog!!.dialogImpl.imgTab != null) {
                     dialog!!.dialogImpl.imgTab.setBackgroundResource(R.drawable.dilogx_eff1f5)
                 }
-                val dateTimePickerView: DateWheelLayout =
-                    v.findViewById<DateWheelLayout>(R.id.datewheel)
+                val dateTimePickerView: MyDateWheelLayout =
+                    v.findViewById<MyDateWheelLayout>(R.id.datewheel)
                 val ivclose = v.findViewById<ImageView>(R.id.ivNext)
                 val tvcz = v.findViewById<TextView>(R.id.tvcz)
                 val tvsure = v.findViewById<TextView>(R.id.tvsure)
@@ -297,7 +298,28 @@ fun clearMsg(context: Context, block: (isSure: Boolean) -> Unit) {
             ContextCompat.getColor(context, com.xcjh.base_lib.R.color.blacks_tr)
         ).show()
 }
-
+/***
+ * 删除消息弹窗
+ */
+fun delMsgDilog(context: Context, block: (isSure: Boolean) -> Unit) {
+    CustomDialog.build()
+        .setCustomView(object : OnBindView<CustomDialog?>(R.layout.layout_dialogx_delmsg) {
+            override fun onBind(dialog: CustomDialog?, v: View) {
+                val tvcancle = v.findViewById<TextView>(R.id.tvcancle)
+                val tvsure = v.findViewById<TextView>(R.id.tvsure)
+                tvcancle.setOnClickListener {
+                    block.invoke(false)
+                    dialog?.dismiss()
+                }
+                tvsure.setOnClickListener {
+                    block.invoke(true)
+                    dialog?.dismiss()
+                }
+            }
+        }).setAlign(CustomDialog.ALIGN.CENTER).setMaskColor(//背景遮罩
+            ContextCompat.getColor(context, com.xcjh.base_lib.R.color.blacks_tr)
+        ).show()
+}
 /**
  * 信号源选择
  */

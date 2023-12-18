@@ -104,7 +104,7 @@
         android:scrollbars="none"
         android:tag="ScrollController">
 
-        <com.github.gzuliyujiang.wheelpicker.widget.DateWheelLayout
+        <com.xcjh.app.view.MyDateWheelLayout
             android:id="@+id/datewheel"
             android:layout_width="match_parent"
             android:layout_height="200dp"

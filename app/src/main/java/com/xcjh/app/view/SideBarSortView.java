@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by lzj on 2019/12/31
@@ -29,6 +30,7 @@ public class SideBarSortView extends View {
     private int mTextColorChoose;
     //标记 避免重复调用
     private boolean isDown = false;
+    private int lettersize=40;
 
     public void setmTextSize(float mTextSize) {
         this.mTextSize = mTextSize;
@@ -64,10 +66,10 @@ public class SideBarSortView extends View {
         int desiredHeight = MeasureSpec.getSize(heightMeasureSpec);
 
         // 计算每个字母项的高度
-        int letterHeight = desiredHeight / 27;
+        int letterHeight = desiredHeight / lettersize;
 
         // 设置自定义视图的测量高度
-        setMeasuredDimension(getMeasuredWidth(), letterHeight*mList.size()+30);
+        setMeasuredDimension(getMeasuredWidth(), letterHeight*mList.size()+40);
         int x=this.getHeight();
 
         // 设置自定义视图的高度为整体垂直居中
@@ -92,18 +94,18 @@ public class SideBarSortView extends View {
 
 
         //计算每一个字母的高度,总告诉除以字母集合的高度就可以
-        int height =1920/ 27;
-        int y = getTop()+height;
+        int height =1920/ lettersize;
+        int y = getTop()+height/2;
         for (int i = 0; i < mList.size(); i++) {
             if (i == mSelectIndex) {
-                paint.setColor(mTextColorChoose);
+                paint.setColor(mTextColor);
                 paint.setTextSize(mTextSizeChoose);
             } else {
                 paint.setColor(mTextColor);
-                paint.setTextSize(mTextSize);
+                paint.setTextSize(mTextSizeChoose);
             }
             paint.setAntiAlias(true);//设置抗锯齿
-            paint.setTypeface(Typeface.DEFAULT_BOLD);
+            //paint.setTypeface(Typeface.DEFAULT_BOLD);
             //计算每一个字母x轴
             float paintX = getWidth() / 2F - paint.measureText(mList.get(i)) / 2;
             //计算每一个字母Y轴

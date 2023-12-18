@@ -24,6 +24,8 @@ import com.xcjh.app.ui.room.MsgBeanData
 import com.xcjh.app.ui.room.MsgListNewData
 import com.xcjh.app.utils.CacheUtil
 import com.xcjh.app.utils.ChatTimeUtile
+import com.xcjh.app.utils.clearMsg
+import com.xcjh.app.utils.delMsgDilog
 import com.xcjh.app.websocket.MyWsManager
 import com.xcjh.app.websocket.bean.FeedSystemNoticeBean
 import com.xcjh.app.websocket.bean.ReceiveChangeMsg
@@ -128,14 +130,20 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                 )!!
                 binding.tvtime.text = time
                 binding.lltDelete.setOnClickListener {
-                    mViewModel.getDelMsg(item?.anchorId.toString())
-                    deltDataToList(item!!)
-                    mDatabind.rec.mutable.removeAt(bindingAdapterPosition)
-                    mDatabind.rec.bindingAdapter.notifyItemRemoved(bindingAdapterPosition)
+                    delMsgDilog(requireActivity()) { it ->
+                        if (it){//点击了确定
+                            mViewModel.getDelMsg(item?.anchorId.toString())
+                            deltDataToList(item!!)
+                            mDatabind.rec.mutable.removeAt(bindingAdapterPosition)
+                            mDatabind.rec.bindingAdapter.notifyItemRemoved(bindingAdapterPosition)
 
-                    if (mDatabind.rec.models!!.isEmpty()) {
-                        mDatabind.state.showEmpty()
+                            if (mDatabind.rec.models!!.isEmpty()) {
+                                mDatabind.state.showEmpty()
+                            }
+                        }
+
                     }
+
                 }
                 binding.lltItem.setOnClickListener {
                     com.xcjh.base_lib.utils.startNewActivity<ChatActivity>() {

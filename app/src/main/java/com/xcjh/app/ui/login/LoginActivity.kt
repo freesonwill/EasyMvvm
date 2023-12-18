@@ -38,6 +38,7 @@ class LoginActivity : BaseActivity<LoginVm, ActivityLoaginBinding>() {
     var type = 1//1是手机号登录，2是邮箱登录
     private var models = mutableListOf<LetterBeann>()
     private var listStr = mutableListOf<String>()
+    var code="+86"
     override fun initView(savedInstanceState: Bundle?) {
         ImmersionBar.with(this)
             .statusBarDarkFont(true)
@@ -98,7 +99,7 @@ class LoginActivity : BaseActivity<LoginVm, ActivityLoaginBinding>() {
                             }
                             mViewModel.getLogin(
                                 PostLoaginBean(
-                                    mDatabind.edtphone.text.toString(),
+                                     mDatabind.edtphone.text.toString(),
                                     null,
                                     mDatabind.edtcodePhone.text.toString(),
                                     null,
@@ -176,14 +177,11 @@ class LoginActivity : BaseActivity<LoginVm, ActivityLoaginBinding>() {
 
                     }
                 }
-
-                R.id.tvgo, R.id.ivgo -> {
-
-                    selectCountry(this, listStr) {
-                        mDatabind.tvgo.text = it.substring(it.indexOf("(") + 1, it.length - 1)
-
-                    }
-                    // com.xcjh.base_lib.utils.startNewActivity<IndexLetterActivity>()
+                R.id.tvgo-> {
+                    com.xcjh.base_lib.utils.startNewActivity<LetterCountryActivity>()
+                }
+                R.id.ivgo -> {
+                     com.xcjh.base_lib.utils.startNewActivity<LetterCountryActivity>()
                 }
             }
         }
@@ -442,7 +440,11 @@ class LoginActivity : BaseActivity<LoginVm, ActivityLoaginBinding>() {
 
     override fun onResume() {
         super.onResume()
-        mDatabind.tvgo.text = Constants.PHONE_CODE
+        if (Constants.PHONE_CODE.isNotEmpty()) {
+            code=Constants.PHONE_CODE
+            mDatabind.tvgo.text = Constants.PHONE_CODE
+            Constants.PHONE_CODE=""
+        }
     }
 
     override fun createObserver() {

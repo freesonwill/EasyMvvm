@@ -4,13 +4,17 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.ScaleAnimation
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.SimpleItemAnimator
+import com.airbnb.lottie.LottieAnimationView
 import com.bumptech.glide.Glide
 import com.drake.brv.listener.ItemDifferCallback
 import com.drake.brv.utils.bindingAdapter
@@ -150,7 +154,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                         resources.getString(R.string.nomatch)
                     this.findViewById<ImageView>(R.id.ivEmptyIcon)
                         .setImageDrawable(resources.getDrawable(R.drawable.ic_empet_all))
-                    this.findViewById<ImageView>(R.id.ivEmptyIcon).setOnClickListener {  }
+                    this.findViewById<ImageView>(R.id.ivEmptyIcon).setOnClickListener { }
                 }
             }
             mDatabind.smartCommon.setRefreshHeader(ClassicsHeader(requireContext()))
@@ -234,9 +238,9 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                             binding.tvnameLeft.text = item.homeName
                             binding.tvnameRight.text = item.awayName
                             Glide.with(context).load(item.homeLogo)
-                                .placeholder(R.drawable.default_team_logo).into(binding.tvflagLeft)
+                                .placeholder(R.drawable.def_football).into(binding.tvflagLeft)
                             Glide.with(context).load(item.awayLogo)
-                                .placeholder(R.drawable.default_team_logo).into(binding.tvflagRight)
+                                .placeholder(R.drawable.def_football).into(binding.tvflagRight)
                             binding.ivtype.setBackgroundResource(R.drawable.football)
                             when (item.status) {
                                 "0" -> binding.tvstatus.visibility = View.GONE
@@ -537,9 +541,9 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                             binding.tvnameLeft.text = item.awayName
                             binding.tvnameRight.text = item.homeName
                             Glide.with(context).load(item.awayLogo)
-                                .placeholder(R.drawable.default_team_logo).into(binding.tvflagLeft)
+                                .placeholder(R.drawable.def_basketball).into(binding.tvflagLeft)
                             Glide.with(context).load(item.homeLogo)
-                                .placeholder(R.drawable.default_team_logo).into(binding.tvflagRight)
+                                .placeholder(R.drawable.def_basketball).into(binding.tvflagRight)
                             binding.ivtype.setBackgroundResource(R.drawable.basketball)
                             when (item.status) {
                                 "0" -> binding.tvstatus.visibility = View.GONE
@@ -870,6 +874,8 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                     }
 
                     binding.relcoolect.setOnClickListener {
+                        startAn(binding.tvcollect)
+                        stopAn(binding.tvcollect)
                         mview = binding.tvcollect
                         index = modelPosition
                         if (item!!.focus) {
@@ -880,6 +886,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
 
                         } else {
+                            startAn(binding.tvcollect)
                             mViewModel.getNotice(
                                 item!!.matchId,
                                 item!!.matchType
@@ -1029,6 +1036,38 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
         }
 
     }
+    @SuppressLint("UseRequireInsteadOfGet")
+    fun stopAn(view: LottieAnimationView) {
+        // 定义缩放动画
+        val scaleFactor = 1f // 缩放比例，0.5 表示缩小为原来的一半
+        val scaleAnimation = ScaleAnimation(
+            1f, scaleFactor, 1f, scaleFactor,
+            Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f
+        )
+
+// 设置动画属性
+        scaleAnimation.duration = 250 // 动画持续时间，单位为毫秒
+        scaleAnimation.repeatCount = 0 // 设置动画不重复播放
+
+// 启动动画
+        view.startAnimation(scaleAnimation)
+    }
+    @SuppressLint("UseRequireInsteadOfGet")
+    fun startAn(view: LottieAnimationView) {
+        // 定义缩放动画
+        val scaleFactor = 1.28f // 缩放比例，0.5 表示缩小为原来的一半
+        val scaleAnimation = ScaleAnimation(
+            1f, scaleFactor, 1f, scaleFactor,
+            Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f
+        )
+
+// 设置动画属性
+        scaleAnimation.duration = 250 // 动画持续时间，单位为毫秒
+        scaleAnimation.repeatCount = 0 // 设置动画不重复播放
+
+// 启动动画
+        view!!.startAnimation(scaleAnimation)
+    }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
@@ -1056,7 +1095,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
     override fun lazyLoadData() {
         super.lazyLoadData()
-         getData(false)
+        getData(false)
 
     }
 

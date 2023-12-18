@@ -610,10 +610,11 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
         GlobalScope.launch {
             val data = seacherData(userId).await()
             if (data.size > 0) {
+                LogUtils.d("私聊有数据缓存")
                 listdata.addAll(data)
                 mDatabind.state.showContent()
             } else {
-
+                LogUtils.d("私聊无数据缓存")
                 mDatabind.state.showEmpty()
             }
             mViewModel.getHisMsgList(mDatabind.smartCommon, offset, userId)

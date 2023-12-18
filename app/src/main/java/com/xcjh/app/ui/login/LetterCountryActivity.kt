@@ -1,7 +1,9 @@
 package com.xcjh.app.ui.login
 
 import android.os.Bundle
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.drake.brv.listener.ItemDifferCallback
+import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.linear
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
@@ -12,14 +14,20 @@ import com.hankcs.hanlp.dictionary.py.Pinyin
 import com.xcjh.app.R
 import com.xcjh.app.base.BaseActivity
 import com.xcjh.app.bean.CityModel
+import com.xcjh.app.bean.FriendListBean
 import com.xcjh.app.bean.InitialLocation
 import com.xcjh.app.bean.LetterBeann
 import com.xcjh.app.bean.Location
 import com.xcjh.app.bean.MatchBean
 import com.xcjh.app.databinding.ActivityLettercountryBinding
+import com.xcjh.app.databinding.ItemChatPicRightBinding
 import com.xcjh.app.databinding.ItemCityBinding
 import com.xcjh.app.databinding.ItemCityLetterBinding
 import com.xcjh.app.databinding.ItemSchAllBinding
+import com.xcjh.app.ui.room.MsgBeanData
+import com.xcjh.app.utils.CacheUtil
+import com.xcjh.app.view.SideBarLayout
+import com.xcjh.base_lib.Constants.Companion.PHONE_CODE
 import com.xcjh.base_lib.utils.distance
 import com.xcjh.base_lib.utils.vertical
 import java.io.BufferedReader
@@ -33,53 +41,79 @@ import java.io.InputStreamReader
 
 class LetterCountryActivity : BaseActivity<LoginVm, ActivityLettercountryBinding>() {
     private val models = mutableListOf<Any>()
-    private var listStr = mutableListOf<String>()
+    private val mLetters = arrayOf(
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "I",
+        "J",
+        "K",
+        "L",
+        "M",
+        "N",
+        "O",
+        "P",
+        "Q",
+        "R",
+        "S",
+        "T",
+        "U",
+        "V",
+        "W",
+        "X",
+        "Y",
+        "Z",
+        "#"
+    )
     override fun initView(savedInstanceState: Bundle?) {
         ImmersionBar.with(this)
             .statusBarDarkFont(true)
             .titleBar(mDatabind.titleTop.root)
             .navigationBarColor(R.color.c_ffffff)
             .init()
-        mDatabind.titleTop.tvTitle.text = resources.getString(R.string.loginandre)
+        mDatabind.titleTop.tvTitle.text = resources.getString(R.string.str_choosecountry)
 
-        mDatabind.rec.linear().setup {
+        mDatabind.rec.setup {
+
             addType<CityModel.CityLetter>(R.layout.item_city_letter)
             addType<CityModel.City>(R.layout.item_city)
-
             onBind {
-
-                // findView<TextView>(R.id.tvname).text = getModel<MatchBean>().competitionName
-                var binding = getBinding<ItemCityLetterBinding>()
-                var item = _data as CityModel.CityLetter
-                binding.tvname.text=item.letter
-
-            }
-            onBind {
-
-                // findView<TextView>(R.id.tvname).text = getModel<MatchBean>().competitionName
-                var binding = getBinding<ItemCityBinding>()
-                var item = _data as CityModel.City
-                binding.name1.text=item.name
-
-            }
-            itemDifferCallback = object : ItemDifferCallback {
-                override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
-                    return (oldItem as MatchBean).matchId == (newItem as MatchBean).matchId
-                }
-
-                override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
-                    return (oldItem as MatchBean).homeHalfScore == (newItem as MatchBean).homeHalfScore
-                }
-
-                override fun getChangePayload(oldItem: Any, newItem: Any): Any? {
-                    return true
+                if (_data is CityModel.CityLetter) {
+                    var binding = getBinding<ItemCityLetterBinding>()
+                    var matchBeanNew = _data as CityModel.CityLetter
+                    binding.tvname.text = matchBeanNew.letter
+                } else {
+                    var binding = getBinding<ItemCityBinding>()
+                    var matchBeanNew = _data as CityModel.City
+                    binding.name1.text = matchBeanNew.name
+                    binding.code.text = matchBeanNew.code
+                    binding.name1.setOnClickListener {
+                        PHONE_CODE =matchBeanNew.code
+                        finish()
+                    }
+                    binding.code.setOnClickListener {
+                        PHONE_CODE =matchBeanNew.code
+                        finish()
+                    }
                 }
             }
-        }.models = listStr
+
+
+        }
         initMaps()
-
+        mDatabind.indexBar.setSideBarLayout(SideBarLayout.OnSideBarLayoutListener { word -> //根据自己业务实现
+            var ss=CityModel.CityLetter(word)
+            val indexOf = mDatabind.rec.models?.indexOf(ss) ?: -1
+            if (indexOf != -1) {
+                (mDatabind.rec.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(indexOf, 0)
+            }
+        })
     }
-
 
 
     private fun initMaps() {
@@ -110,29 +144,33 @@ class LetterCountryActivity : BaseActivity<LoginVm, ActivityLettercountryBinding
         val initialLocations = locations.groupBy { getPinyinFirstLetter(it.name) }
             .map { (initial, list) ->
                 CityModel(initial, list.map { location ->
-                    CityModel.City(location.areaCode, location.name, "", "${location.name}${location.areaCode}")
+                    var county = getGQ(location.abbreviate)
+                    CityModel.City(
+                        "+" + location.areaCode,
+                        county + "  " + location.name,
+                        "",
+                        "${location.name}${location.areaCode}"
+                    )
                 })
             }
-        initialLocations.forEach {
+        val sortedCities = initialLocations.sortedBy { it.initial }
+        sortedCities.forEach {
             models.add(CityModel.CityLetter(it.initial)) // 转换为支持悬停的数据模型
             models.addAll(it.list)
         }
 
+        mDatabind.rec.models = models
+        mDatabind.indexBar.setNewLetter(mLetters.toMutableList())
 
-
-        mDatabind.rec.models=initialLocations
-
-//        for (i in 0 until models.size) {
-//            var county = getGQ(models[i].abbreviate)
-//            listStr.add(county + "  " + models[i].selfName + " (" + models[i].areaCode + ")")
-//        }
 
     }
+
     fun getFirstChar(chineseString: String): String {
         val segment = chineseToPinyin(chineseString)
         val firstChar = segment[0]
         return firstChar.toUpperCase().toString()
     }
+
     fun chineseToPinyin(chineseString: String): String {
         val pinyinList: MutableList<Pinyin> = HanLP.convertToPinyinList(chineseString)
         val stringBuilder = StringBuilder()
@@ -141,11 +179,13 @@ class LetterCountryActivity : BaseActivity<LoginVm, ActivityLettercountryBinding
         }
         return stringBuilder.toString()
     }
-    fun getPinyinFirstLetter(chineseString:String) : String{
+
+    fun getPinyinFirstLetter(chineseString: String): String {
 
         return getFirstChar(chineseString)
 
     }
+
     fun getGQ(country: String): String {
         try {
             val flagOffset = 0x1F1E6

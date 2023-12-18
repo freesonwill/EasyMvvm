@@ -14,6 +14,7 @@
     <string name="loginandre">登录注册</string>
     <string name="login_waiting">"正在登录…"</string>
     <string name="find">发现</string>
+    <string name="str_choosecountry">选择国家和地区</string>
     <string name="other_login">第三方登录</string>
     <string name="other">其他</string>
     <string name="login_or_enroll">注册/登录</string>
@@ -28,7 +29,8 @@
 
     <string name="phote_book">相册</string>
     <string name="canmei">拍摄</string>
-    <string name="txt_clear_msg">确定清除全部的未读信息吗？</string>
+    <string name="txt_clear_msg">确定清除全部的未读信息吗?</string>
+    <string name="txt_del_msg">确定删除该条消息?</string>
     <string name="history_record">历史记录</string>
 
     <!--setting-->
