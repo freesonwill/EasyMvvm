@@ -18,20 +18,15 @@ import com.xcjh.app.base.BaseFragment
 import com.xcjh.app.bean.LoginInfo
 import com.xcjh.app.databinding.FragmentMyUserBinding
 import com.xcjh.app.net.ApiComService
-import com.xcjh.app.ui.home.home.tab.MainRecommendVm
 import com.xcjh.app.ui.home.my.operate.*
-import com.xcjh.app.ui.home.my.personal.PersonalDataActivity
 import com.xcjh.app.ui.login.LoginActivity
 import com.xcjh.app.ui.notice.MyNoticeActivity
 import com.xcjh.app.utils.CacheUtil
 import com.xcjh.app.web.WebActivity
 import com.xcjh.base_lib.Constants
-import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.utils.copyToClipboard
-import com.xcjh.base_lib.utils.dp2px
 import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.view.clickNoRepeat
-import kotlin.random.Random
 
 
 /**

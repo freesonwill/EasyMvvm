@@ -76,14 +76,14 @@ class MyFollowListActivity : BaseActivity<MyFollowListVm, ActivityMyFollowListBi
                         if(bean.liveId!=null&&bean.liveId.isNotEmpty()){
 
                             bindingItem.txtFollowName.maxWidth=screenWidth-context.dp2px(158)-context.dp2px(100)
-                            bindingItem.txtMyLiveType.visibility= View.VISIBLE
-                            bindingItem.stateLoadingImg.visibility= View.VISIBLE
+                            bindingItem.txtMyLiveType.visibility=View.VISIBLE
+                            bindingItem.stateLoadingImg.visibility=View.VISIBLE
                             bindingItem.stateLoadingImg.playAnimation()
 
                         }else{
                             bindingItem.txtFollowName.maxWidth=screenWidth-context.dp2px(85)-context.dp2px(100)
 //                            bindingItem.txtFollowName.maxWidth=screenWidth
-                            bindingItem.txtMyLiveType.visibility= View.GONE
+                            bindingItem.txtMyLiveType.visibility=View.GONE
                             bindingItem.stateLoadingImg.visibility= View.GONE
                         }
                     }

@@ -89,8 +89,7 @@ class MyApplication : App() , LifecycleObserver{
         StateConfig.apply {
             emptyLayout = R.layout.layout_empty
             errorLayout = R.layout.layout_empty
-            loadingLayout = R.layout.layout_loading
-            setRetryIds(R.id.ivEmptyIcon, R.id.txtEmptyName)
+//            setRetryIds(R.id.ivEmptyIcon, R.id.txtEmptyName)
 
             onLoading {
                 // 此生命周期可以拿到LoadingLayout创建的视图对象, 可以进行动画设置或点击事件.

@@ -1,11 +1,9 @@
 package com.xcjh.base_lib.utils
 
 import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Canvas
-import android.graphics.Matrix
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Build
@@ -14,12 +12,8 @@ import android.text.Html
 import android.text.Html.ImageGetter
 import android.text.Spanned
 import android.text.TextUtils
-import android.util.Log
 import android.view.View
-import android.widget.TextView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.SimpleTarget
-import com.bumptech.glide.request.transition.Transition
+import androidx.core.content.ContextCompat
 import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.utils.view.clickNoRepeat
 import java.net.HttpURLConnection
@@ -101,7 +95,13 @@ fun View.px2dp(px: Int): Int {
 fun Context.copyToClipboard(text: String, label: String = appContext.packageName) {
     val clipData = ClipData.newPlainText(label, text)
     clipboardManager?.setPrimaryClip(clipData)
+
+
+
 }
+
+
+
 
 /**
  * 检查是否启用无障碍服务

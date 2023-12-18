@@ -6,6 +6,7 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -130,6 +131,7 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
             }
 
             override fun onChangeReceive(chat: ArrayList<ReceiveChangeMsg>) {
+
                 var refresh=ArrayList<Int>()
                 if(mDatabind.rcvRecommend.models!=null){
                     for (i in 0 until  mDatabind.rcvRecommend.mutable.size){
@@ -155,6 +157,7 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                     if(refresh.size>0){
                         for (i in 0 until  mDatabind.rcvRecommend.mutable.size){
                             if(mDatabind.rcvRecommend.mutable[i] is MatchBean){
+
 //                                mDatabind.rcvRecommend.bindingAdapter.notifyItemChanged(i)
                             }
 
@@ -258,8 +261,7 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
         mViewModel.hotList.observe(this){
             if(it.size>=1){
                 try {
-
-                    if(mDatabind.rcvRecommend.mutable.size>1){
+                    if(mDatabind.rcvRecommend.mutable.size>=1){
                         if (mDatabind.rcvRecommend.mutable[1] is MatchBean) {
                             (mDatabind.rcvRecommend.mutable[1] as MatchBean).list.clear()
                             (mDatabind.rcvRecommend.mutable[1] as MatchBean).list.addAll(it)
@@ -282,8 +284,6 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                         mainHaveList.add(matchBean)
                         mDatabind.rcvRecommend.addModels(mainHaveList, index = 1)
                         mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
-
-
                     }
 
 
@@ -302,7 +302,7 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
             // 调度定时任务
 //            timer.scheduleAtFixedRate(MyTimerTask(), delay, period)
         }
-        //正在直播的热门比赛
+        //正在直播的比赛
         mViewModel.liveList.observe(this){
             if (it.isSuccess) {
                 //成功

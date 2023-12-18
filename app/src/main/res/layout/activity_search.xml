@@ -58,7 +58,7 @@
             android:textSize="@dimen/sp_16"
             android:gravity="center"
             android:paddingRight="12dp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="18dp"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:text="@string/cancel"/>

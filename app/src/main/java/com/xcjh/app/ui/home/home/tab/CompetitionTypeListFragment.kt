@@ -57,7 +57,6 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
         })
 
         mDatabind.state.apply {
-            StateConfig.setRetryIds(R.id.ivEmptyIcon, R.id.txtEmptyName )
             onEmpty {
                 var icon=this.findViewById<AppCompatImageView>(R.id.ivEmptyIcon)
                 var txt=this.findViewById<AppCompatTextView>(R.id.txtEmptyName)

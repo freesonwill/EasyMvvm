@@ -1,9 +1,11 @@
 package com.xcjh.app.ui.search
 
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.drake.brv.utils.*
@@ -34,7 +36,7 @@ class SearchActivity  : BaseActivity<SearchVm, ActivitySearchBinding>() {
             .navigationBarColor(R.color.c_ffffff)
             .init()
 
-
+        showSoftKeyboard()
         mViewModel.getHotOngoingMatch()
         adapter()
 
@@ -50,6 +52,8 @@ class SearchActivity  : BaseActivity<SearchVm, ActivitySearchBinding>() {
         //删除输入的内容
         mDatabind.ivClear.clickNoRepeat{
             mDatabind.etSearchInput.setText("")
+            mDatabind.llSearchShow.visibility=View.VISIBLE
+            mDatabind.state.visibility=View.GONE
         }
 
 
@@ -244,6 +248,12 @@ class SearchActivity  : BaseActivity<SearchVm, ActivitySearchBinding>() {
 
 
 
+    }
+
+    private fun showSoftKeyboard() {
+        mDatabind.etSearchInput.requestFocus() // 获取焦点
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput( mDatabind.etSearchInput, InputMethodManager.SHOW_IMPLICIT) // 打开软键盘
     }
 
 }

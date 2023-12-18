@@ -61,9 +61,12 @@ class ContactUsActivity : BaseActivity<ContactUsVm, ActivityContactUsBinding>() 
     override fun initView(savedInstanceState: Bundle?) {
 
         ImmersionBar.with(this)
-            .statusBarDarkFont(false)
+            .statusBarDarkFont(true)
             .titleBar(mDatabind.titleTop.root)
+            .navigationBarColor(R.color.c_ffffff)
             .init()
+
+
         mDatabind.titleTop.tvTitle.text=resources.getString(R.string.contact_us)
         var contactBean=ContactBean(1,resources.getString(R.string.txt_feedtype1))
         questionList.add(contactBean)
