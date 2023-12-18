@@ -195,7 +195,7 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
             override fun onAnchorStartLevel(beingLiveBean: BeingLiveBean) {
                 super.onAnchorStartLevel(beingLiveBean)
                  if(currentPage!=3&&CacheUtil.isLogin()){
-//                     showDialog(beingLiveBean)
+                     showDialog(beingLiveBean)
                  }
 
             }
