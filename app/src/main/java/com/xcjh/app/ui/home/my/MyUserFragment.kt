@@ -122,7 +122,7 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
         }
         //邀请好友
         mDatabind.rlMyClickInvite.clickNoRepeat {
-            shareText(requireContext(),ApiComService.SHARE_IP)
+            shareText(requireContext(),ApiComService.SHARE_IP+"#/home")
 
 //          requireContext().copyToClipboard(ApiComService.SHARE_IP)
 //            myToast(resources.getString(R.string.my_txt_copy_link))
