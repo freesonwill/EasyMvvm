@@ -375,5 +375,7 @@
     <string name="dialog_txt_goto">前往</string>
     <string name="popup_txt_level_name">正在直播%s</string>
     <string name="empty_txt_no_anchor">暂无主播</string>
+    <string name="search_txt_empty_name">暂无搜索内容</string>
+    <string name="follow_txt_add">+关注</string>
 
 </resources>

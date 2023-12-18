@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.drake.brv.utils.*
 import com.gyf.immersionbar.ImmersionBar
@@ -16,6 +17,7 @@ import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
 import com.xcjh.app.R
 import com.xcjh.app.base.BaseActivity
 import com.xcjh.app.bean.FollowAnchorBean
+import com.xcjh.app.bean.MatchBean
 import com.xcjh.app.databinding.ActivityMyFollowListBinding
 import com.xcjh.app.databinding.ItemMyFollowBinding
 import com.xcjh.app.ui.details.MatchDetailActivity
@@ -72,6 +74,18 @@ class MyFollowListActivity : BaseActivity<MyFollowListVm, ActivityMyFollowListBi
                             .placeholder(R.drawable.default_anchor_icon)
                             .into(bindingItem.ivLiveHead)
                         bindingItem.txtFollowFansNum.text=resources.getString(R.string.follow_txt_fans_num,"${bean.fans}")
+                        //是否关注
+                        if (bean.isFollow){
+                            bindingItem.txtFollowIsFollow.text=resources.getText(R.string.follow_txt_followed)
+                            bindingItem.txtFollowIsFollow.setTextColor(ContextCompat.getColor(context,R.color.c_94999f))
+                            bindingItem.txtFollowIsFollow.background=ContextCompat.getDrawable(context,R.drawable.shape_r20_f2f3f7)
+                        }else{
+                            bindingItem.txtFollowIsFollow.text=resources.getText(R.string.follow_txt_add)
+                            bindingItem.txtFollowIsFollow.setTextColor(ContextCompat.getColor(context,R.color.c_ffffff))
+                            bindingItem.txtFollowIsFollow.background=ContextCompat.getDrawable(context,R.drawable.shape_r20_34a853)
+
+                        }
+
                         //判断是否在直播 //计算text显示的宽度
                         if(bean.liveId!=null&&bean.liveId.isNotEmpty()){
 
@@ -86,13 +100,21 @@ class MyFollowListActivity : BaseActivity<MyFollowListVm, ActivityMyFollowListBi
                             bindingItem.txtMyLiveType.visibility=View.GONE
                             bindingItem.stateLoadingImg.visibility= View.GONE
                         }
+
+
+
                     }
 
                 }
             }
             R.id.txtFollowIsFollow.onClick {
                 var  bean=_data as FollowAnchorBean
-                mViewModel.unfollowAnchor(bean.anchorId,layoutPosition)
+                if(bean.isFollow){
+                    mViewModel.unfollowAnchor(bean.anchorId,layoutPosition)
+                }else{
+                    mViewModel.followAnchor(bean.anchorId,layoutPosition)
+                }
+
 
             }
 
@@ -122,15 +144,23 @@ class MyFollowListActivity : BaseActivity<MyFollowListVm, ActivityMyFollowListBi
         //取消关注
         mViewModel.unfollow.observe(this){
 
-            mDatabind.rcvRecommend!!.mutable.removeAt(it) // 删除数据
-            mDatabind.rcvRecommend.adapter!!.notifyItemRemoved(it)
+            (mDatabind.rcvRecommend.mutable[it] as FollowAnchorBean).isFollow=false
+            mDatabind.rcvRecommend.bindingAdapter.notifyItemChanged(it)
+//            mDatabind.rcvRecommend!!.mutable.removeAt(it) // 删除数据
+//            mDatabind.rcvRecommend.adapter!!.notifyItemRemoved(it)
 
-            if(mDatabind.rcvRecommend.models!!.isEmpty()){
-                mDatabind.state.showEmpty()
-            }
+//            if(mDatabind.rcvRecommend.models!!.isEmpty()){
+//                mDatabind.state.showEmpty()
+//            }
 //            mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
 
         }
+        //关注主播
+        mViewModel.followValue.observe(this){
+            (mDatabind.rcvRecommend.mutable[it] as FollowAnchorBean).isFollow=true
+            mDatabind.rcvRecommend.bindingAdapter.notifyItemChanged(it)
+        }
+
 
         mViewModel.followList.observe(this){
             if (it.isSuccess) {

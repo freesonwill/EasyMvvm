@@ -107,7 +107,7 @@ data class MatchBean(
     var status: String = "0",
     var focus: Boolean = false,//是否关注
     var anchorList: ArrayList<AnchorBean> = arrayListOf(),//正在进行比赛对应的主播列表
-    var list: ArrayList<MatchBean> = arrayListOf(),
+    var list: ArrayList<MatchBean> = arrayListOf(),//首页热门比赛
     var matchData: ArrayList<ConditionsBean> = arrayListOf(),//比赛是否有赛况、阵容、指数
     var runTime: String? = "0",//比赛进行时间（分钟）进行中足球比赛有此信息
     var ishsow: Boolean = true
@@ -360,6 +360,7 @@ data class FollowAnchorBean(
     var liveId: String = "",// 正在直播ID
     var matchId:String="",//比赛ID
     var matchType:String,////比赛类型 1足球，2篮球,可用值:1,2
+    var isFollow:Boolean=true//是否关注
 ) : Serializable
 
 /**

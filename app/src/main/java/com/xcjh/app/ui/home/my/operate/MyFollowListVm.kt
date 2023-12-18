@@ -15,7 +15,10 @@ import com.xcjh.base_lib.utils.request
 class MyFollowListVm : BaseViewModel() {
     //进行中的比赛
     var followList = UnPeekLiveData<ListDataUiState<FollowAnchorBean>>()
+    //取消关注
     var unfollow=UnPeekLiveData<Int>()
+    //关注主播
+    var followValue=UnPeekLiveData<Int>()
 
     private var pageNo = 1
 
@@ -31,6 +34,9 @@ class MyFollowListVm : BaseViewModel() {
             { apiService.getAnchorPageList(ListReq(current=pageNo)) },
             {
                 pageNo++
+                it.records.forEach {
+                    it.isFollow=true
+                }
                 followList.value = ListDataUiState(
                     isSuccess = true,
                     isRefresh = isRefresh,
@@ -65,6 +71,19 @@ class MyFollowListVm : BaseViewModel() {
 
             },isShowDialog=true
         )
+    }
+
+    /**
+     * 关注主播
+     */
+    fun followAnchor(id: String,position:Int) {
+        request({
+            apiService.getNoticeUser(id)
+        }, {
+            followValue.value=position
+        }, {
+            myToast(it.errorMsg)
+        },isShowDialog=true)
     }
 
 }

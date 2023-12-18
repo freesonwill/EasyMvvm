@@ -52,6 +52,7 @@ import com.xcjh.app.websocket.listener.LiveStatusListener
 import com.xcjh.base_lib.App
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.dp2px
+import com.xcjh.base_lib.utils.view.clickNoRepeat
 import com.youth.banner.util.BannerUtils
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -298,6 +299,20 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
 
                 }
             }
+            //最后处理
+            if(mDatabind.rcvRecommend.models!=null){
+                if(mDatabind.rcvRecommend.mutable.size>3){
+                    if (mDatabind.rcvRecommend.mutable[mDatabind.rcvRecommend.mutable.size-1] is MatchBean) {
+                        mDatabind.rcvRecommend.mutable.removeAt(mDatabind.rcvRecommend.mutable.size-1) // 删除数据
+                        mDatabind.rcvRecommend.bindingAdapter.notifyItemRemoved(mDatabind.rcvRecommend.mutable.size-1) // 通知更新
+                        mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
+                   }
+                }
+
+            }
+
+
+
 
             // 调度定时任务
 //            timer.scheduleAtFixedRate(MyTimerTask(), delay, period)

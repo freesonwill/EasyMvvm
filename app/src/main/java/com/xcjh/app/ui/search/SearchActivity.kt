@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.drake.brv.utils.*
@@ -39,6 +41,17 @@ class SearchActivity  : BaseActivity<SearchVm, ActivitySearchBinding>() {
         showSoftKeyboard()
         mViewModel.getHotOngoingMatch()
         adapter()
+
+        mDatabind.state.apply {
+            onEmpty {
+                var icon=this.findViewById<AppCompatImageView>(R.id.ivEmptyIcon)
+                var txt=this.findViewById<AppCompatTextView>(R.id.txtEmptyName)
+                icon.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.zwt_search))
+                txt.text=resources.getString(R.string.search_txt_empty_name)
+
+            }
+
+        }
 
         mDatabind.etSearchInput.afterTextChanged{
             if (it.isNotEmpty()) {
