@@ -58,6 +58,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
         ImmersionBar.with(this)
             .statusBarDarkFont(true)
             .titleBar(mDatabind.titleTop.root)
+            .navigationBarColor(R.color.c_f2f3f7)
             .init()
         mDatabind.state.apply {
             StateConfig.setRetryIds(R.id.ivEmptyIcon, R.id.txtEmptyName)

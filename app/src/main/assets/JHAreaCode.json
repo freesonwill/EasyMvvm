@@ -1,12 +1,5 @@
 [
-    {
-        "areaCode": "86",
-        "enName": "China",
-        "name": "中国",
-        "id": 37,
-        "selfName": "中国",
-        "abbreviate": "CN"
-    },
+
     {
         "areaCode": "93",
         "enName": "Afghanistan",
@@ -1702,6 +1695,14 @@
         "id": 190,
         "selfName": "Zimbabwe",
         "abbreviate": "ZW"
+    },
+    {
+        "areaCode": "86",
+        "enName": "China",
+        "name": "中国",
+        "id": 37,
+        "selfName": "中国",
+        "abbreviate": "CN"
     }
 ]
 

@@ -112,7 +112,34 @@ data class MatchBean(
     var runTime: String? = "0",//比赛进行时间（分钟）进行中足球比赛有此信息
     var ishsow: Boolean = true
 ) : Serializable
+data class InitialLocation(
+    val initial: String,
+    val list: List<Location>
+)
+data class Location(
+    val code: String,
+    val name: String,
+    val pinyin: String,
+    val label: String
+)
+@kotlinx.serialization.Serializable
+data class CityModel(
+    var initial: String = "",
+    var list: List<City> = listOf()
+) {
+    @kotlinx.serialization.Serializable
+    data class City(
+        var code: String = "",
+        var name: String = "",
+        var pinyin: String = "",
+        var label: String = ""
+    )
 
+
+    // 悬停要求实现接口
+    // data class 会自动重写equals方法, 方便匹配索引查询
+    data class CityLetter(val letter: String, override var itemHover: Boolean = true) : ItemHover
+}
 /**
  * 热门赛程对象
  */

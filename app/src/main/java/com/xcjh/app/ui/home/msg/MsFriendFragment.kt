@@ -204,15 +204,7 @@ class MsFriendFragment : BaseFragment<MsgVm, FrMsgfriendBinding>() {
         }
     }
 
-    private fun getPinyinFirstLetter(str: String): String {
-        val firstChar = str[0].toUpperCase()
-        return if (firstChar.isLetter()) {
-            firstChar.toString()
 
-        } else {
-            "#"
-        }
-    }
 
     fun getPinyinList(list: List<FriendListBean>): List<FriendListBean> {
         mLetters.clear()

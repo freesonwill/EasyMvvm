@@ -144,6 +144,9 @@
             android:name=".ui.notice.MyNoticeActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".ui.login.LetterCountryActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".ui.search.SeacherMsgActivity"
             android:screenOrientation="portrait" />
 

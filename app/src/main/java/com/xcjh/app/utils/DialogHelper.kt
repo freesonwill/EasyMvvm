@@ -181,7 +181,7 @@ fun selectDate(context: Context, timeOld: String, block: (time: String) -> Unit)
                 val currentMonth = calendar[java.util.Calendar.MONTH] + 1
                 val currentDay = calendar[java.util.Calendar.DAY_OF_MONTH]
                 val startValue = DateEntity.target(currentYear - 1, 1, 1)
-                val endValue = DateEntity.target(currentYear, 12, 12)
+                val endValue = DateEntity.target(currentYear+1, 12, 31)
                 val defaultValue = DateEntity.target(currentYear, currentMonth, currentDay)
 
                 dateTimePickerView.yearWheelView.curtainCorner = CurtainCorner.LEFT
