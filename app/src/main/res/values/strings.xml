@@ -377,5 +377,6 @@
     <string name="empty_txt_no_anchor">暂无主播</string>
     <string name="search_txt_empty_name">暂无搜索内容</string>
     <string name="follow_txt_add">+关注</string>
+    <string name="news_txt_details">新闻详情</string>
 
 </resources>

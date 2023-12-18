@@ -122,7 +122,7 @@ class MainNewsListFragment  : BaseFragment<MainNewsListVm, FragmentMainNewsListB
                     this.putExtra(Constants.WEB_URL, bean.sourceUrl)
                     this.putExtra(Constants.WEB_VIEW_TYPE, 1)
                     this.putExtra(Constants.WEB_VIEW_ID, bean.id)
-                    this.putExtra(Constants.CHAT_TITLE, getString(R.string.my_app_name))
+                    this.putExtra(Constants.CHAT_TITLE, getString(R.string.news_txt_details))
                 }
                 mViewModel.getNewsInfo(bean.id)
             }
