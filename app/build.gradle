@@ -139,6 +139,7 @@ dependencies {
     implementation 'com.engagelab.plugin:honor_th_push:4.3.5' //
     // Optional: Huawei vendor
     implementation 'com.engagelab.plugin:huawei:4.3.5' //
+    implementation 'com.hankcs:hanlp:portable-1.8.4'//强大的中文自然语言处理
     // Optional: Xiaomi vendor, Chinese version
     /* implementation 'com.engagelab.plugin:mi:4.3.5' //
      // Optional: Xiaomi vendor, Global version

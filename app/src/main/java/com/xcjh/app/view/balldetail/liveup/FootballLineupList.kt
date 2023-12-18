@@ -119,13 +119,12 @@ class FootballLineupList : LinearLayout {
     }
 
     val list = arrayListOf<Any>()
-    fun setData(data: FootballLineupBean, match: MatchDetailBean,first:Int=0) {
+    fun setData(data: FootballLineupBean, first:Int=0) {
         list.clear()
-
+        Glide.with(context).load(data.homeLogo).placeholder(R.drawable.def_football).into(ivHomeIcon)
+        Glide.with(context).load(data.awayLogo).placeholder(R.drawable.def_football).into(ivAwayIcon)
         if ( first==1){
             tvTitle.text= context.getString(R.string.first_z)
-            Glide.with(context).load(data.homeLogo).placeholder(R.drawable.default_team_logo).into(ivHomeIcon)
-            Glide.with(context).load(data.awayLogo).placeholder(R.drawable.default_team_logo).into(ivAwayIcon)
         }else{
             tvTitle.text= context.getString(R.string.ti)
         }

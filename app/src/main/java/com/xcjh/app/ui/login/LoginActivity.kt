@@ -17,6 +17,7 @@ import com.xcjh.app.base.BaseActivity
 import com.xcjh.app.bean.LetterBeann
 import com.xcjh.app.bean.PostLoaginBean
 import com.xcjh.app.databinding.ActivityLoaginBinding
+import com.xcjh.app.ui.Index.IndexLetterActivity
 import com.xcjh.app.utils.selectCountry
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.bindViewPager2

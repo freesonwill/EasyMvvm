@@ -60,6 +60,7 @@ class FootballLiveUpMiddleView @JvmOverloads constructor(
         homeList.forEach { player ->
             val child =
                 ViewFootballPlayerBinding.inflate(LayoutInflater.from(context), null, false)
+            child.ivPlayer.setImageResource(R.drawable.icon_team_red)
             child.tvPlayerNum.text = player.shirtNumber.toString()
             child.tvPlayerName.text = player.name
             val lp = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
@@ -76,7 +77,7 @@ class FootballLiveUpMiddleView @JvmOverloads constructor(
         awayList.forEach { player ->
             val child =
                 ViewFootballPlayerBinding.inflate(LayoutInflater.from(context), null, false)
-            child.ivPlayer.setBackgroundResource(R.drawable.icon_team_blue)
+            child.ivPlayer.setImageResource(R.drawable.icon_team_blue)
             child.tvPlayerNum.text = player.shirtNumber.toString()
             child.tvPlayerName.text = player.name
             val lp = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)

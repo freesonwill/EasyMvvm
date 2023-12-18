@@ -72,7 +72,7 @@ class DetailLineUpFragment(var match: MatchDetailBean) :
                     it.first == 0
                 }
                 mDatabind.matchTable.visibleOrGone(!(home.size==away.size && home.isEmpty()))
-                mDatabind.matchTable.setData(it,match,0)
+                mDatabind.matchTable.setData(it,0)
             }
         }
     }

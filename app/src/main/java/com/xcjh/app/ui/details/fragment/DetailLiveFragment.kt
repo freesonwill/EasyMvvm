@@ -23,6 +23,7 @@ import com.xcjh.app.utils.smartListData
 import com.xcjh.app.utils.smartPageListData
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.dp2px
+import kotlinx.android.synthetic.main.fragment_detail_tab_chat.notice
 import kotlinx.android.synthetic.main.fragment_detail_tab_chat.view.smartChat
 
 /**
@@ -98,7 +99,7 @@ class DetailLiveFragment(var matchId: String, var matchType: String) :
         //直播列表接口返回监听处理
         mViewModel.liveList.observe(this) {
             if (it != null) {
-                smartPageListData(it, mDatabind.rcvRecommend, mDatabind.page)
+                smartPageListData(it, mDatabind.rcvRecommend, mDatabind.page, imgEmptyId = R.drawable.zwt_zwzb,notice=resources.getString(R.string.empty_txt_no_anchor))
                 mDatabind.page.finishLoadMoreWithNoMoreData()
               //  mDatabind.page.setEnableFooterFollowWhenNoMoreData(true)
             }

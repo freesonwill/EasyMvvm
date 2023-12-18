@@ -2,6 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+
     <data>
 
 
@@ -9,13 +10,12 @@
     </data>
 
     <TextView
-        android:id="@+id/name1"
+        android:id="@+id/tvname"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/white"
+        android:layout_height="40dp"
+        android:background="@color/c_94999f"
         android:gravity="center_vertical"
         android:paddingLeft="16dp"
-
-        android:textSize="14dp"
-        tools:text="北京" />
+        android:textStyle="bold"
+        tools:text="A" />
 </layout>

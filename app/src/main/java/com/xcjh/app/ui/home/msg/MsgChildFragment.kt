@@ -233,6 +233,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
             if (data.isNotEmpty()) {
                 listdata.clear()
                 listdata.addAll(data)
+                mDatabind.rec.models=listdata
                 mDatabind.state.showContent()
 
             } else {
@@ -431,21 +432,21 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                     }
 
                     LogUtils.d("更新了哈哈$i")
-                    listdata!![i] = bean
-                   // mDatabind.rec.bindingAdapter.notifyItemMoved(i, 0)
-                    mDatabind.rec.bindingAdapter.notifyItemChanged(i)
-                    if (i != 0) {
-                        GlobalScope.launch {
-                            delay(2000) // 暂停协程执行 1 秒钟
-                            mDatabind.rec!!.post {
-                                // 在此执行需要在主线程上执行的 UI 操作
-                              //  mDatabind.rec.bindingAdapter.notifyItemChanged(i)
-                            }
-
-                        }
-
-
-                    }
+//                    listdata!![i] = bean
+//                   // mDatabind.rec.bindingAdapter.notifyItemMoved(i, 0)
+//                    mDatabind.rec.bindingAdapter.notifyItemChanged(i)
+//                    if (i != 0) {
+//                        GlobalScope.launch {
+//                            delay(2000) // 暂停协程执行 1 秒钟
+//                            mDatabind.rec!!.post {
+//                                // 在此执行需要在主线程上执行的 UI 操作
+//                              //  mDatabind.rec.bindingAdapter.notifyItemChanged(i)
+//                            }
+//
+//                        }
+//
+//
+//                    }
 
                     //
                     addDataToList(bean)
@@ -481,10 +482,10 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                 LogUtils.d("鞥加了哈哈")
 
                 addDataToList(bean)
-                var listdata: MutableList<MsgListNewData> = ArrayList<MsgListNewData>()
-                listdata.add(bean)
-                mDatabind.rec.addModels(listdata, index = 0)
-                mDatabind.state.showContent()
+//                var listdata: MutableList<MsgListNewData> = ArrayList<MsgListNewData>()
+//                listdata.add(bean)
+//                mDatabind.rec.addModels(listdata, index = 0)
+//                mDatabind.state.showContent()
 
 
             }
@@ -530,6 +531,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
         GlobalScope.launch {
             MyApplication.dataChatList!!.chatDao?.insertOrUpdate(data)
 
+            getRoomAllData()
 
         }
     }

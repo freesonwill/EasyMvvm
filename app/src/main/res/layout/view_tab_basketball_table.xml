@@ -75,6 +75,6 @@
         android:layout_marginBottom="@dimen/dp_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="55dp"
+        android:minHeight="25dp"
         android:orientation="vertical" />
 </LinearLayout>
