@@ -197,7 +197,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                 this.findViewById<ImageView>(R.id.ivEmptyIcon).setOnClickListener { }
             }
         }
-
+        getRoomAllData()
 
         if (CacheUtil.isLogin()) {
             mViewModel.getMsgList(true, "")
@@ -245,7 +245,6 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
             }
         }
 
-        getRoomAllData()
 
     }
 
@@ -414,8 +413,19 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
             }
         }
         mViewModel.clreaAllMsg.observe(this) {
+            noReadMsgs = 0
             appViewModel.updateMainMsgNum.postValue("0")
-            mViewModel.getMsgList(true, "")
+
+            for (i in 0 until listdata.size) {
+                if (listdata[i].noReadSum > 0) {
+                    listdata[i].noReadSum = 0
+                    addDataToList(listdata[i])
+                }
+            }
+            getRoomAllData()
+
+
+            // mViewModel.getMsgList(true, "")
         }
     }
 
@@ -524,24 +534,6 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
 
     }
 
-    fun addData(chat: ReceiveChatMsg) {
-        if (chat.from == chat.anchorId) {
-            var beanmy: MsgBeanData = MsgBeanData()
-            beanmy.anchorId = chat.anchorId
-            beanmy.fromId = chat.from
-            beanmy.content = chat.content
-            beanmy.chatType = chat.chatType
-            beanmy.cmd = 11
-            beanmy.msgType = chat.msgType
-            beanmy.createTime = chat.createTime
-
-            GlobalScope.launch {
-
-                MyApplication.dataBase!!.chatDao?.insert(beanmy)
-
-            }
-        }
-    }
 
     /***
      * 索取所有消息缓存

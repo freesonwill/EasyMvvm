@@ -42,7 +42,7 @@
             android:id="@+id/tvcontent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="72dp"
+            android:layout_marginRight="70dp"
             android:background="@drawable/shape_r10_18152a_leftbootm"
             android:layout_toRightOf="@id/ivv"
             android:layout_centerVertical="true"
