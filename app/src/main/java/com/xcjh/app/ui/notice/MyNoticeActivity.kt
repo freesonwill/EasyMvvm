@@ -75,7 +75,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
            // adapter=mAdapter
             distance(0, 0, 0, 16)
         }
-        mDatabind.rec.linear().setup {
+        mDatabind.recBottom.linear().setup {
             addType<MatchBean>(R.layout.item_sch_all)
 
             onBind {
@@ -150,15 +150,15 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                         binding.tvnameLeft.text = item.homeName
                         binding.tvnameRight.text = item.awayName
                         Glide.with(context).load(item.homeLogo)
-                            .placeholder(R.drawable.default_team_logo).into(binding.tvflagLeft)
+                            .placeholder(R.drawable.def_football).into(binding.tvflagLeft)
                         Glide.with(context).load(item.awayLogo)
-                            .placeholder(R.drawable.default_team_logo).into(binding.tvflagRight)
+                            .placeholder(R.drawable.def_football).into(binding.tvflagRight)
                         binding.ivtype.setBackgroundResource(R.drawable.football)
                         when (item.status) {
                             "0" -> binding.tvstatus.visibility = View.GONE
                             "1" -> {
                                 binding.tvvs.text = "VS"
-                                binding.txtMatchAnimation.visibility = View.GONE
+                                binding.txtMatchAnimation.text=""
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
@@ -179,7 +179,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
 
                             "2" -> {
                                 binding.tvstatus.visibility = View.VISIBLE
-                                binding.txtMatchAnimation.visibility = View.VISIBLE
+                                binding.txtMatchAnimation.text="'"
                                 binding.tvvs.text = item.homeScore + "-" + item.awayScore
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
@@ -205,7 +205,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
 
                             "3" -> {
                                 binding.tvstatus.visibility = View.VISIBLE
-                                binding.txtMatchAnimation.visibility = View.GONE
+                                binding.txtMatchAnimation.text=""
                                 binding.tvvs.text = item.homeScore + "-" + item.awayScore
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
@@ -226,7 +226,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
 
                             "4" -> {
                                 binding.tvstatus.visibility = View.VISIBLE
-                                binding.txtMatchAnimation.visibility = View.VISIBLE
+                                binding.txtMatchAnimation.text="'"
                                 binding.tvvs.text = item.homeScore + "-" + item.awayScore
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
@@ -251,7 +251,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
 
                             "5", "6" -> {
                                 binding.tvstatus.visibility = View.VISIBLE
-                                binding.txtMatchAnimation.visibility = View.VISIBLE
+                                binding.txtMatchAnimation.text="'"
                                 binding.tvvs.text = item.homeScore + "-" + item.awayScore
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
@@ -265,19 +265,16 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                                         R.color.c_34a853
                                     )
                                 )
-                                binding.tvstatus.text =
-                                    if (item.runTime == null)
-                                        "0"
-                                    else {
-                                        item.runTime
-                                    }
+                                binding.tvstatus.text = context.resources.getString(
+                                    R.string.over_time
+                                )
                                 initAnimation(binding.txtMatchAnimation)
 
                             }
 
                             "7" -> {
                                 binding.tvstatus.visibility = View.VISIBLE
-                                binding.txtMatchAnimation.visibility = View.GONE
+                                binding.txtMatchAnimation.text=""
                                 binding.tvvs.text = item.homeScore + "-" + item.awayScore
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
@@ -294,12 +291,12 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                                 binding.tvstatus.text = context.resources.getString(
                                     R.string.main_dqdz
                                 )
-                                // initAnimation(binding.txtMatchAnimation)
+                                initAnimation(binding.txtMatchAnimation)
 
                             }
 
                             "8" -> {
-                                binding.txtMatchAnimation.visibility = View.GONE
+                                binding.txtMatchAnimation.text=""
                                 binding.tvvs.text = item.homeScore + "-" + item.awayScore
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.tvstatus.setTextColor(
@@ -320,7 +317,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                             }
 
                             "9" -> {
-                                binding.txtMatchAnimation.visibility = View.GONE
+                                binding.txtMatchAnimation.text=""
                                 binding.tvvs.text = item.homeScore + "-" + item.awayScore
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.tvstatus.setTextColor(
@@ -341,7 +338,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                             }
 
                             "10" -> {
-                                binding.txtMatchAnimation.visibility = View.GONE
+                                binding.txtMatchAnimation.text=""
                                 binding.tvvs.text = item.homeScore + "-" + item.awayScore
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.tvstatus.setTextColor(
@@ -362,7 +359,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                             }
 
                             "11" -> {
-                                binding.txtMatchAnimation.visibility = View.GONE
+                                binding.txtMatchAnimation.text=""
                                 binding.tvvs.text = item.homeScore + "-" + item.awayScore
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.tvstatus.setTextColor(
@@ -383,7 +380,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                             }
 
                             "12" -> {
-                                binding.txtMatchAnimation.visibility = View.GONE
+                                binding.txtMatchAnimation.text=""
                                 binding.tvvs.text = item.homeScore + "-" + item.awayScore
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.tvstatus.setTextColor(
@@ -404,7 +401,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                             }
 
                             "13" -> {
-                                binding.txtMatchAnimation.visibility = View.GONE
+                                binding.txtMatchAnimation.text=""
                                 binding.tvvs.text = item.homeScore + "-" + item.awayScore
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.tvstatus.setTextColor(
@@ -425,7 +422,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                             }
 
                             else -> {
-                                binding.txtMatchAnimation.visibility = View.GONE
+                                binding.txtMatchAnimation.text=""
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
@@ -456,15 +453,15 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                         binding.tvnameLeft.text = item.awayName
                         binding.tvnameRight.text = item.homeName
                         Glide.with(context).load(item.awayLogo)
-                            .placeholder(R.drawable.default_team_logo).into(binding.tvflagLeft)
+                            .placeholder(R.drawable.def_basketball).into(binding.tvflagLeft)
                         Glide.with(context).load(item.homeLogo)
-                            .placeholder(R.drawable.default_team_logo).into(binding.tvflagRight)
+                            .placeholder(R.drawable.def_basketball).into(binding.tvflagRight)
                         binding.ivtype.setBackgroundResource(R.drawable.basketball)
                         when (item.status) {
                             "0" -> binding.tvstatus.visibility = View.GONE
                             "1" -> {
                                 binding.tvvs.text = "VS"
-                                binding.txtMatchAnimation.visibility = View.GONE
+                                binding.txtMatchAnimation.text=""
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
@@ -484,7 +481,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                             }
 
                             "2" -> {
-                                binding.txtMatchAnimation.visibility = View.GONE
+                                binding.txtMatchAnimation.text="'"
                                 binding.tvvs.text = item.awayScore + "-" + item.homeScore
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.tvstatus.setTextColor(
@@ -504,11 +501,12 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                                         R.string.main_txt_basketball_phase,
                                         "一"
                                     )
-                                //initAnimation(binding.txtMatchAnimation)
+                                initAnimation(binding.txtMatchAnimation)
 
                             }
+
                             "3" -> {
-                                binding.txtMatchAnimation.visibility = View.GONE
+                                binding.txtMatchAnimation.text=""
                                 binding.tvvs.text = item.awayScore + "-" + item.homeScore
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.tvstatus.setTextColor(
@@ -527,7 +525,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                                     context.resources.getString(
                                         R.string.main_txt_basketball_phase,
                                         "一"
-                                    )+ context.resources.getString(
+                                    ) + context.resources.getString(
                                         R.string.finis
                                     )
                                 //initAnimation(binding.txtMatchAnimation)
@@ -535,7 +533,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                             }
 
                             "4" -> {
-                                binding.txtMatchAnimation.visibility = View.GONE
+                                binding.txtMatchAnimation.text="'"
                                 binding.tvvs.text = item.awayScore + "-" + item.homeScore
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.tvstatus.setTextColor(
@@ -555,11 +553,12 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                                         R.string.main_txt_basketball_phase,
                                         "二"
                                     )
-                                // initAnimation(binding.txtMatchAnimation)
+                                initAnimation(binding.txtMatchAnimation)
 
                             }
+
                             "5" -> {
-                                binding.txtMatchAnimation.visibility = View.GONE
+                                binding.txtMatchAnimation.text=""
                                 binding.tvvs.text = item.awayScore + "-" + item.homeScore
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.tvstatus.setTextColor(
@@ -578,14 +577,15 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                                     context.resources.getString(
                                         R.string.main_txt_basketball_phase,
                                         "二"
-                                    )+ context.resources.getString(
+                                    ) + context.resources.getString(
                                         R.string.finis
                                     )
                                 //initAnimation(binding.txtMatchAnimation)
 
                             }
+
                             "6" -> {
-                                binding.txtMatchAnimation.visibility = View.GONE
+                                binding.txtMatchAnimation.text="'"
                                 binding.tvvs.text = item.awayScore + "-" + item.homeScore
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.tvstatus.setTextColor(
@@ -605,11 +605,12 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                                         R.string.main_txt_basketball_phase,
                                         "三"
                                     )
-                                // initAnimation(binding.txtMatchAnimation)
+                                initAnimation(binding.txtMatchAnimation)
 
                             }
+
                             "7" -> {
-                                binding.txtMatchAnimation.visibility = View.GONE
+                                binding.txtMatchAnimation.text=""
                                 binding.tvvs.text = item.awayScore + "-" + item.homeScore
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.tvstatus.setTextColor(
@@ -628,14 +629,15 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                                     context.resources.getString(
                                         R.string.main_txt_basketball_phase,
                                         "三"
-                                    )+ context.resources.getString(
+                                    ) + context.resources.getString(
                                         R.string.finis
                                     )
                                 // initAnimation(binding.txtMatchAnimation)
 
                             }
+
                             "8" -> {
-                                binding.txtMatchAnimation.visibility = View.GONE
+                                binding.txtMatchAnimation.text="'"
                                 binding.tvvs.text = item.awayScore + "-" + item.homeScore
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.tvstatus.setTextColor(
@@ -655,11 +657,11 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                                         R.string.main_txt_basketball_phase,
                                         "四"
                                     )
-                                // initAnimation(binding.txtMatchAnimation)
+                                initAnimation(binding.txtMatchAnimation)
                             }
 
                             "9" -> {
-                                binding.txtMatchAnimation.visibility = View.GONE
+                                binding.txtMatchAnimation.text="'"
                                 binding.tvvs.text = item.awayScore + "-" + item.homeScore
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.tvstatus.setTextColor(
@@ -676,11 +678,11 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                                 )
                                 binding.tvstatus.text =
                                     context.resources.getString(R.string.over_time)
-                                // initAnimation(binding.txtMatchAnimation)
+                                initAnimation(binding.txtMatchAnimation)
                             }
 
                             "10" -> {
-                                binding.txtMatchAnimation.visibility = View.GONE
+                                binding.txtMatchAnimation.text=""
                                 binding.tvvs.text = item.awayScore + "-" + item.homeScore
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.tvstatus.setTextColor(
@@ -701,7 +703,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                             }
 
                             "11", "12", "13", "14", "15" -> {
-                                binding.txtMatchAnimation.visibility = View.GONE
+                                binding.txtMatchAnimation.text=""
                                 binding.tvvs.text = item.awayScore + "-" + item.homeScore
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.tvstatus.setTextColor(
@@ -756,26 +758,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                             distance(30, 30, 0, 0)
                         }
                     }
-                    binding.stateLoadingImg.addAnimatorListener(object : Animator.AnimatorListener {
 
-                        override fun onAnimationStart(animation: Animator) {
-                            // 在动画开始时执行的操作（可选）
-                        }
-
-                        override fun onAnimationEnd(animation: Animator) {
-                            // 在动画结束时重新开始动画
-                            binding.stateLoadingImg.playAnimation()
-                        }
-
-                        override fun onAnimationCancel(animation: Animator) {
-                            // 在动画取消时执行的操作（可选）
-                        }
-
-                        override fun onAnimationRepeat(animation: Animator) {
-                            // 在动画结束时重新开始动画
-                        }
-                    })
-                    binding.stateLoadingImg.playAnimation()
                     binding.rec.setup {
                         addType<AnchorBean>(R.layout.item_js)
                         onBind {
@@ -803,6 +786,8 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                 }
 
                 binding.relcoolect.setOnClickListener {
+                    startAn(binding.tvcollect)
+                    stopAn(binding.tvcollect)
                     mview = binding.tvcollect
                     index = modelPosition
                     if (item!!.focus) {
@@ -813,6 +798,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
 
 
                     } else {
+                        startAn(binding.tvcollect)
                         mViewModel.getNotice(
                             item!!.matchId,
                             item!!.matchType

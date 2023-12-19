@@ -119,8 +119,8 @@
                        <TextView
                            android:id="@+id/tvnums"
                            android:layout_toRightOf="@+id/llHomeCenter"
-                           android:layout_width="@dimen/dp_20"
-                           android:layout_height="@dimen/dp_20"
+                           android:layout_width="@dimen/dp_13"
+                           android:layout_height="@dimen/dp_13"
                            android:textColor="@color/white"
                            android:layout_marginTop="@dimen/dp_10"
                            android:background="@drawable/shape_red_cirle"

@@ -216,7 +216,7 @@ fun selectDate(context: Context, timeOld: String, block: (time: String) -> Unit)
             ContextCompat.getColor(context, com.xcjh.base_lib.R.color.blacks_tr)
         )
 
-        .show().isAllowInterceptTouch = false
+        .show().isAllowInterceptTouch = true
 }
 
 /**

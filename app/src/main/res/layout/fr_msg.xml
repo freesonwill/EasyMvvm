@@ -27,7 +27,7 @@
                 android:layout_width="111dp"
                 android:layout_height="match_parent"
 
-                android:layout_marginBottom="@dimen/dp_8" />
+                />
 
             <TextView
                 android:id="@+id/ivclear"
