@@ -32,8 +32,8 @@
                 android:layout_alignParentRight="true"  >
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:layout_width="@dimen/dp_16"
-                    android:layout_height="@dimen/dp_15"
+                    android:layout_width="@dimen/dp_20"
+                    android:layout_height="@dimen/dp_20"
                     android:layout_marginRight="@dimen/dp_12"
                     android:layout_centerVertical="true"
                     android:layout_alignParentRight="true"

@@ -1,5 +1,6 @@
 package com.xcjh.app.adapter
 
+import android.animation.Animator
 import android.content.Context
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
@@ -19,7 +20,7 @@ class PushCardPopup(content: Context,var beingLiveBean: BeingLiveBean) : Positio
 
     override fun onCreate() {
         super.onCreate()
-        var  ivCardClose=findViewById<AppCompatImageView>(R.id.ivCardClose)
+        var  ivCardClose=findViewById<LottieAnimationView>(R.id.stateLoadingDelete)
         var  txtDialogClick=findViewById<AppCompatTextView>(R.id.txtDialogClick)
         var  txtCardName=findViewById<AppCompatTextView>(R.id.txtCardName)
         var  txtCardMatch=findViewById<AppCompatTextView>(R.id.txtCardMatch)
@@ -41,6 +42,29 @@ class PushCardPopup(content: Context,var beingLiveBean: BeingLiveBean) : Positio
         ivCardClose.clickNoRepeat {
             pushCardPopupListener!!.clicktClose()
         }
+
+        ivCardClose.addAnimatorListener(object : Animator.AnimatorListener {
+
+            override fun onAnimationStart(animation: Animator) {
+                // 在动画开始时执行的操作（可选）
+            }
+
+            override fun onAnimationEnd(animation: Animator) {
+                // 在动画结束时
+                dismiss()
+            }
+
+            override fun onAnimationCancel(animation: Animator) {
+                // 在动画取消时执行的操作（可选）
+            }
+
+            override fun onAnimationRepeat(animation: Animator) {
+                // 在动画结束时重新开始动画
+            }
+        })
+        ivCardClose.playAnimation()
+
+
         txtDialogClick.clickNoRepeat {
             pushCardPopupListener!!.selectGoto(beingLiveBean)
         }

@@ -44,6 +44,8 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
             .titleBar(mDatabind.rlMyTopyi)
             .navigationBarColor(R.color.c_ffffff)
             .init()
+
+        setData()
         //查看等级任务
         mDatabind.rlClickLevel.clickNoRepeat {
             judgeLogin {
@@ -165,7 +167,6 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
     fun setData(){
         if(CacheUtil.isLogin()){
             if(CacheUtil.getUser()!=null){
-
                 var user=CacheUtil.getUser()
                 mDatabind.iiIsShowLeve.visibility= View.VISIBLE
                 Glide.with(requireContext())

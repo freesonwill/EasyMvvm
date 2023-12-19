@@ -497,9 +497,9 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                                                 .into(binding.txtWayHome)
                                             //客队
                                             Glide.with(requireContext())
-                                                .load(matchBean.homeLogo) // 替换为您要加载的图片 URL
-                                                .error(R.drawable.main_load_icon)
-                                                .placeholder(R.drawable.main_load_icon)
+                                                .load( matchBean.homeLogo ) // 替换为您要加载的图片 URL
+                                                .error(R.drawable.def_basketball)
+                                                .placeholder(R.drawable.def_basketball)
                                                 .into(binding.ivGuestIcon)
                                             binding.txtHomeName.text=matchBean.awayName
                                             binding.txtGuestName.text=matchBean.homeName
@@ -526,26 +526,126 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                                                 binding.txtMatchStatus.setTextColor(ContextCompat.getColor(requireContext(),R.color.c_f69521))
                                                 binding.txtMatchStatus.text=resources.getString(R.string.main_txt_basketball_phase,"一")
                                                 binding.txtMatchIsStart.visibility=View.VISIBLE
+                                                binding.txtMatchAnimation.visibility=View.VISIBLE
+
+                                                val fadeIn = ObjectAnimator.ofFloat(binding.txtMatchAnimation, "alpha", 0f, 1f)
+                                                fadeIn.duration = 500
+                                                fadeIn.startDelay = 200 // 延迟200毫秒开始动画
+                                                val fadeOut = ObjectAnimator.ofFloat(binding.txtMatchAnimation, "alpha", 1f, 0f)
+                                                fadeOut.duration = 500
+                                                fadeOut.startDelay = 200 // 延迟200毫秒开始动画
+                                                val animatorSet = AnimatorSet()
+                                                animatorSet.playSequentially(fadeIn, fadeOut) // 顺序播放渐显和渐隐动画
+                                                animatorSet.startDelay = 200 // 延迟200毫秒开始第一次播放动画
+                                                animatorSet.addListener(object : AnimatorListenerAdapter() {
+                                                    override fun onAnimationEnd(animation: Animator) {
+                                                        // 动画结束时重新播放
+                                                        super.onAnimationEnd(animation)
+                                                        animatorSet.start()
+                                                    }
+                                                })
+                                                animatorSet.cancel()
+                                                animatorSet.start()
                                             }else if(matchBean.status.equals("4")||matchBean.status.equals("5")){
                                                 binding.txtMatchStatus.visibility=View.VISIBLE
                                                 binding.txtMatchStatus.setTextColor(ContextCompat.getColor(requireContext(),R.color.c_f69521))
                                                 binding.txtMatchStatus.text=resources.getString(R.string.main_txt_basketball_phase,"二")
                                                 binding.txtMatchIsStart.visibility=View.VISIBLE
+                                                binding.txtMatchAnimation.visibility=View.VISIBLE
+
+                                                val fadeIn = ObjectAnimator.ofFloat(binding.txtMatchAnimation, "alpha", 0f, 1f)
+                                                fadeIn.duration = 500
+                                                fadeIn.startDelay = 200 // 延迟200毫秒开始动画
+                                                val fadeOut = ObjectAnimator.ofFloat(binding.txtMatchAnimation, "alpha", 1f, 0f)
+                                                fadeOut.duration = 500
+                                                fadeOut.startDelay = 200 // 延迟200毫秒开始动画
+                                                val animatorSet = AnimatorSet()
+                                                animatorSet.playSequentially(fadeIn, fadeOut) // 顺序播放渐显和渐隐动画
+                                                animatorSet.startDelay = 200 // 延迟200毫秒开始第一次播放动画
+                                                animatorSet.addListener(object : AnimatorListenerAdapter() {
+                                                    override fun onAnimationEnd(animation: Animator) {
+                                                        // 动画结束时重新播放
+                                                        super.onAnimationEnd(animation)
+                                                        animatorSet.start()
+                                                    }
+                                                })
+                                                animatorSet.cancel()
+                                                animatorSet.start()
                                             }else if(matchBean.status.equals("6")||matchBean.status.equals("7")){
                                                 binding.txtMatchStatus.visibility=View.VISIBLE
                                                 binding.txtMatchStatus.setTextColor(ContextCompat.getColor(requireContext(),R.color.c_f69521))
                                                 binding.txtMatchStatus.text=resources.getString(R.string.main_txt_basketball_phase,"三")
                                                 binding.txtMatchIsStart.visibility=View.VISIBLE
+                                                binding.txtMatchAnimation.visibility=View.VISIBLE
+
+                                                val fadeIn = ObjectAnimator.ofFloat(binding.txtMatchAnimation, "alpha", 0f, 1f)
+                                                fadeIn.duration = 500
+                                                fadeIn.startDelay = 200 // 延迟200毫秒开始动画
+                                                val fadeOut = ObjectAnimator.ofFloat(binding.txtMatchAnimation, "alpha", 1f, 0f)
+                                                fadeOut.duration = 500
+                                                fadeOut.startDelay = 200 // 延迟200毫秒开始动画
+                                                val animatorSet = AnimatorSet()
+                                                animatorSet.playSequentially(fadeIn, fadeOut) // 顺序播放渐显和渐隐动画
+                                                animatorSet.startDelay = 200 // 延迟200毫秒开始第一次播放动画
+                                                animatorSet.addListener(object : AnimatorListenerAdapter() {
+                                                    override fun onAnimationEnd(animation: Animator) {
+                                                        // 动画结束时重新播放
+                                                        super.onAnimationEnd(animation)
+                                                        animatorSet.start()
+                                                    }
+                                                })
+                                                animatorSet.cancel()
+                                                animatorSet.start()
                                             }else if(matchBean.status.equals("8")){
                                                 binding.txtMatchStatus.visibility=View.VISIBLE
                                                 binding.txtMatchStatus.setTextColor(ContextCompat.getColor(requireContext(),R.color.c_f69521))
                                                 binding.txtMatchStatus.text=resources.getString(R.string.main_txt_basketball_phase,"四")
                                                 binding.txtMatchIsStart.visibility=View.VISIBLE
+                                                binding.txtMatchAnimation.visibility=View.VISIBLE
+
+                                                val fadeIn = ObjectAnimator.ofFloat(binding.txtMatchAnimation, "alpha", 0f, 1f)
+                                                fadeIn.duration = 500
+                                                fadeIn.startDelay = 200 // 延迟200毫秒开始动画
+                                                val fadeOut = ObjectAnimator.ofFloat(binding.txtMatchAnimation, "alpha", 1f, 0f)
+                                                fadeOut.duration = 500
+                                                fadeOut.startDelay = 200 // 延迟200毫秒开始动画
+                                                val animatorSet = AnimatorSet()
+                                                animatorSet.playSequentially(fadeIn, fadeOut) // 顺序播放渐显和渐隐动画
+                                                animatorSet.startDelay = 200 // 延迟200毫秒开始第一次播放动画
+                                                animatorSet.addListener(object : AnimatorListenerAdapter() {
+                                                    override fun onAnimationEnd(animation: Animator) {
+                                                        // 动画结束时重新播放
+                                                        super.onAnimationEnd(animation)
+                                                        animatorSet.start()
+                                                    }
+                                                })
+                                                animatorSet.cancel()
+                                                animatorSet.start()
                                             }else if(matchBean.status.equals("9")){
                                                 binding.txtMatchStatus.visibility=View.VISIBLE
                                                 binding.txtMatchStatus.setTextColor(ContextCompat.getColor(requireContext(),R.color.c_f69521))
                                                 binding.txtMatchStatus.text=resources.getString(R.string.home_txt_overtime)
                                                 binding.txtMatchIsStart.visibility=View.VISIBLE
+                                                binding.txtMatchAnimation.visibility=View.VISIBLE
+
+                                                val fadeIn = ObjectAnimator.ofFloat(binding.txtMatchAnimation, "alpha", 0f, 1f)
+                                                fadeIn.duration = 500
+                                                fadeIn.startDelay = 200 // 延迟200毫秒开始动画
+                                                val fadeOut = ObjectAnimator.ofFloat(binding.txtMatchAnimation, "alpha", 1f, 0f)
+                                                fadeOut.duration = 500
+                                                fadeOut.startDelay = 200 // 延迟200毫秒开始动画
+                                                val animatorSet = AnimatorSet()
+                                                animatorSet.playSequentially(fadeIn, fadeOut) // 顺序播放渐显和渐隐动画
+                                                animatorSet.startDelay = 200 // 延迟200毫秒开始第一次播放动画
+                                                animatorSet.addListener(object : AnimatorListenerAdapter() {
+                                                    override fun onAnimationEnd(animation: Animator) {
+                                                        // 动画结束时重新播放
+                                                        super.onAnimationEnd(animation)
+                                                        animatorSet.start()
+                                                    }
+                                                })
+                                                animatorSet.cancel()
+                                                animatorSet.start()
                                             }
                                         }else{
 

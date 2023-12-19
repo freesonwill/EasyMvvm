@@ -17,7 +17,8 @@
         <LinearLayout
             android:id="@+id/llFollowLeft"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+             android:gravity="center|left"
             android:orientation="horizontal" >
 
             <com.xcjh.app.utils.nice.NiceImageView
@@ -32,6 +33,8 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:gravity="center|left"
                 android:orientation="horizontal">
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -98,17 +101,24 @@
             </LinearLayout>
 
         </LinearLayout>
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/txtFollowIsFollow"
-            android:layout_width="60dp"
-            android:layout_height="27dp"
-            android:textColor="@color/c_94999f"
-            android:textSize="@dimen/sp_12"
-            android:gravity="center"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:background="@drawable/shape_r20_f2f3f7"
-            android:text="@string/follow_txt_followed"/>
+       <RelativeLayout
+           android:id="@+id/rlClickNo"
+           android:layout_width="wrap_content"
+           android:layout_height="match_parent"
+           android:layout_alignParentRight="true">
+           <androidx.appcompat.widget.AppCompatTextView
+               android:id="@+id/txtFollowIsFollow"
+               android:layout_width="60dp"
+               android:layout_height="27dp"
+               android:textColor="@color/c_94999f"
+               android:textSize="@dimen/sp_12"
+               android:gravity="center"
+
+               android:layout_centerVertical="true"
+               android:background="@drawable/shape_r20_f2f3f7"
+               android:text="@string/follow_txt_followed"/>
+
+       </RelativeLayout>
 
     </RelativeLayout>
 

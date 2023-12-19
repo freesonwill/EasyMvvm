@@ -123,12 +123,15 @@ class MyFollowListActivity : BaseActivity<MyFollowListVm, ActivityMyFollowListBi
 //                mViewModel.unfollowAnchor(bean.anchorId,layoutPosition)
 //
 //            }
-            R.id.rlFollowShow.onClick {
+            R.id.llFollowLeft.onClick {
                 var  bean=_data as FollowAnchorBean
                 if(bean.liveId!=null&&bean.liveId.isNotEmpty()){
                     MatchDetailActivity.open(matchType =bean.matchType, matchId = bean.matchId, anchorId = bean.anchorId  )
                 }
 
+
+            }
+            R.id.rlClickNo.onClick {
 
             }
         }

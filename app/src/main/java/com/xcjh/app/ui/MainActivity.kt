@@ -429,18 +429,18 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
             }
 
         }
-        if(popup!=null){
-            if( popup!!.isShow){
-                Handler(Looper.getMainLooper()).postDelayed(
-                    Runnable {
-                        if(popup!=null){
-                            if( popup!!.isShow){
-                                popup!!.dismiss()
-                            }
-                        }
-                    }, 3000)
-            }
-        }
+//        if(popup!=null){
+//            if( popup!!.isShow){
+//                Handler(Looper.getMainLooper()).postDelayed(
+//                    Runnable {
+//                        if(popup!=null){
+//                            if( popup!!.isShow){
+//                                popup!!.dismiss()
+//                            }
+//                        }
+//                    }, 3000)
+//            }
+//        }
 
 
     }

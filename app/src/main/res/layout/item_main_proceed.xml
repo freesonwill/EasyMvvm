@@ -42,7 +42,7 @@
         android:id="@+id/rcvReProceed"
         android:layout_marginTop="@dimen/dp_12"
         android:layout_width="match_parent"
-        android:layout_height="122dp"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_12"
         tools:listitem="@layout/item_under_way"
         tools:itemCount="1"
