@@ -3,13 +3,16 @@ package com.xcjh.app.ui.home.schedule
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
+import com.lxj.xpopup.XPopup
 import com.xcjh.app.R
 import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseFragment
 import com.xcjh.app.bean.CurrentIndex
 import com.xcjh.app.bean.HotMatchBean
 import com.xcjh.app.databinding.FrScheduleoneBinding
+import com.xcjh.app.listener.OnChooseDateListener
 import com.xcjh.app.utils.selectDate
+import com.xcjh.app.view.XPBottomPopu
 import com.xcjh.base_lib.utils.bindViewPager2
 import com.xcjh.base_lib.utils.initActivity
 import com.xcjh.base_lib.utils.setOnclickNoRepeat
@@ -27,6 +30,8 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
     var mOneTabIndex = 0
     var mTwoTabIndex = 0
     private lateinit var parentFragment: ScheduleFragment
+    lateinit var bottomDilog: XPBottomPopu
+
     companion object {
         var mTitles: Array<out String>? = null
         private val MATCHTYPE = "matchtype"
@@ -42,6 +47,7 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
             return fragment
         }
     }
+
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
         //  isVisble = isVisibleToUser
@@ -61,26 +67,30 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
         super.onPause()
         isVisble = false
     }
+
     override fun onResume() {
         super.onResume()
-       // isVisble = mTabPosition == mPushPosition
+        // isVisble = mTabPosition == mPushPosition
 
-        if (!isFirst&&!hasData) {
+        if (!isFirst && !hasData) {
 
             mViewModel.getHotMatchData(matchtypeOld!!, status)
 
         }
 
     }
-    fun setPanrent(mparentFragment: ScheduleFragment){
-        parentFragment=mparentFragment
+
+    fun setPanrent(mparentFragment: ScheduleFragment) {
+        parentFragment = mparentFragment
         // 子 Fragment 的逻辑操作
 
     }
-    fun getCurrentIndex():Int {
+
+    fun getCurrentIndex(): Int {
         // 子 Fragment 的逻辑操作
         return mDatabind.vp.currentItem
     }
+
     override fun initView(savedInstanceState: Bundle?) {
 
         val bundle = arguments
@@ -95,7 +105,7 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
 
-                if (parentFragment!=null) {
+                if (parentFragment != null) {
                     var bean = CurrentIndex()
                     bean.currtOne = parentFragment!!.getCurrentIndex()
                     bean.currtTwo = position
@@ -117,13 +127,33 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
         setOnclickNoRepeat(mDatabind.ivMeau) {
             when (it.id) {
                 R.id.iv_meau -> {
+                    bottomDilog = XPBottomPopu(requireActivity())
+                    var popwindow = XPopup.Builder(context)
+                        .hasShadowBg(true)
+                        .moveUpToKeyboard(false) //如果不加这个，评论弹窗会移动到软键盘上面
+                        .isViewMode(true)
+                        .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                        //                        .isThreeDrag(true) //是否开启三阶拖拽，如果设置enableDrag(false)则无效
+                        .asCustom(bottomDilog).show()
+                    bottomDilog.setOnLister(calendarTime, object : OnChooseDateListener {
+                        override fun onDismiss() {
+                            popwindow.dismiss()
 
-                    selectDate(requireActivity(), calendarTime) { time ->
+                        }
 
-                        calendarTime =time
+                        override fun onSure(time: String?) {
+                            calendarTime = time!!
 
-                        appViewModel.updateganlerTime.postValue(calendarTime)
-                    }
+                            appViewModel.updateganlerTime.postValue(calendarTime)
+                        }
+                    })
+
+//                    selectDate(requireActivity(), calendarTime) { time ->
+//
+//                        calendarTime = time
+//
+//                        appViewModel.updateganlerTime.postValue(calendarTime)
+//                    }
                 }
             }
         }
@@ -160,11 +190,20 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
 
 
     }
-    private fun initEvent(datas:ArrayList<HotMatchBean>) {
+
+    private fun initEvent(datas: ArrayList<HotMatchBean>) {
         mFragments.clear()
         var titles: MutableList<String> = ArrayList<String>()
-        for (i in 0 until  datas!!.size) {
-            mFragments.add(ScheduleChildTwoFragment.newInstance(datas[i].matchType,datas[i].competitionId,status,mOneTabIndex,i))
+        for (i in 0 until datas!!.size) {
+            mFragments.add(
+                ScheduleChildTwoFragment.newInstance(
+                    datas[i].matchType,
+                    datas[i].competitionId,
+                    status,
+                    mOneTabIndex,
+                    i
+                )
+            )
             titles.add(datas[i].competitionName)
         }
         mDatabind.vp.initActivity(requireActivity(), mFragments, true)
@@ -182,7 +221,6 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
 //        mDatabind.slide.setViewPager(mDatabind.vp)
 //        mDatabind.vp.currentItem = 0
 //        mDatabind.vp.offscreenPageLimit=4
-
 
 
     }
