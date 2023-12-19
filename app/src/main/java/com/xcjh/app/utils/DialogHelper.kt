@@ -9,8 +9,6 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.drake.brv.utils.setup
 import com.github.gzuliyujiang.wheelpicker.entity.DateEntity
-import com.github.gzuliyujiang.wheelpicker.widget.DateWheelLayout
-import com.github.gzuliyujiang.wheelpicker.widget.LinkageWheelLayout
 import com.github.gzuliyujiang.wheelpicker.widget.OptionWheelLayout
 import com.github.gzuliyujiang.wheelview.annotation.CurtainCorner
 import com.haibin.calendarview.Calendar
@@ -18,9 +16,11 @@ import com.haibin.calendarview.CalendarView
 import com.kongzue.dialogx.dialogs.BottomDialog
 import com.kongzue.dialogx.dialogs.CustomDialog
 import com.kongzue.dialogx.interfaces.OnBindView
+import com.lxj.xpopup.XPopup
 import com.xcjh.app.R
 import com.xcjh.app.bean.AnchorListBean
 import com.xcjh.app.view.MyDateWheelLayout
+import com.xcjh.app.view.XPBottomPopu
 import com.xcjh.base_lib.App
 import com.xcjh.base_lib.utils.TimeUtil
 

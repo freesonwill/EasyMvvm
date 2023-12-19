@@ -14,12 +14,12 @@ package com.xcjh.app.view;
  */
 
 
-
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewParent;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -442,23 +442,74 @@ public class MyDateWheelLayout extends BaseWheelLayout implements ScrollControll
                 return 30;
         }
     }
+    float startX=0,startY=0;
     @Override
-    public boolean onTouchEvent(MotionEvent ev) {
-        switch (ev.getAction()) {
+    public boolean onTouchEvent(MotionEvent event) {
+        switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                // 处理按下事件
+                startX = event.getX();
+                startY = event.getY();
                 break;
             case MotionEvent.ACTION_MOVE:
-                // 处理滑动事件
-                break;
-            case MotionEvent.ACTION_UP:
-                // 处理抬起事件
+                float endX = event.getX();
+                float endY = event.getY();
+
+                // 判断滑动距离是否达到你需要的条件
+                if (Math.abs(endY - startY) > Math.abs(endX - startX)) {
+                    // 纵向滑动，拦截事件并自己处理
+                    // 这里是你自己处理滑动逻辑的地方
+                    ViewParent view3=getParent();
+                    ViewParent view1=getParent().getParent();
+                    ViewParent view2=getParent().getParent().getParent();
+                    ViewParent view4=getParent().getParent().getParent().getParent();
+                    ViewParent view5=getParent().getParent().getParent().getParent().getParent();
+                    view1.requestDisallowInterceptTouchEvent(true);
+                    view2.requestDisallowInterceptTouchEvent(true);
+                    view3.requestDisallowInterceptTouchEvent(true);
+                    view4.requestDisallowInterceptTouchEvent(true);
+                    view5.requestDisallowInterceptTouchEvent(true);
+                    return true;
+                }
                 break;
         }
 
-        // 返回true表示已经处理了触摸事件
-        return true;
+        return super.onTouchEvent(event);
     }
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                startX = event.getX();
+                startY = event.getY();
+                break;
+            case MotionEvent.ACTION_MOVE:
+                float endX = event.getX();
+                float endY = event.getY();
+
+                // 判断滑动距离是否达到你需要的条件
+                if (Math.abs(endY - startY) > Math.abs(endX - startX)) {
+                    // 纵向滑动，拦截事件并自己处理
+                    ViewParent view3=getParent();
+                    ViewParent view1=getParent().getParent();
+                    ViewParent view2=getParent().getParent().getParent();
+                    ViewParent view4=getParent().getParent().getParent().getParent();
+                    ViewParent view5=getParent().getParent().getParent().getParent().getParent();
+                    view1.requestDisallowInterceptTouchEvent(true);
+                    view2.requestDisallowInterceptTouchEvent(true);
+                    view3.requestDisallowInterceptTouchEvent(true);
+                    view4.requestDisallowInterceptTouchEvent(true);
+                    view5.requestDisallowInterceptTouchEvent(true);
+                    return true;
+                }
+                break;
+        }
+
+        return super.onInterceptTouchEvent(event);
+    }
+
+
+
+
     @Override
 //请按照固定写法
     public boolean isLockScroll() {
@@ -470,9 +521,8 @@ public class MyDateWheelLayout extends BaseWheelLayout implements ScrollControll
     @Override
 //请按照固定写法
     public void lockScroll(boolean lockScroll) {
-        this.lockScroll=lockScroll;
+        this.lockScroll = lockScroll;
     }
-
 
 
     @Override
