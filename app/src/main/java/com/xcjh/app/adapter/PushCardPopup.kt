@@ -6,6 +6,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import com.airbnb.lottie.LottieAnimationView
 import com.bumptech.glide.Glide
+import com.lihang.ShadowLayout
 import com.lxj.xpopup.core.PositionPopupView
 import com.xcjh.app.R
 import com.xcjh.app.bean.BeingLiveBean
@@ -26,6 +27,7 @@ class PushCardPopup(content: Context,var beingLiveBean: BeingLiveBean) : Positio
         var  txtCardMatch=findViewById<AppCompatTextView>(R.id.txtCardMatch)
         var  ivCardHead=findViewById<NiceImageView>(R.id.ivCardHead)
         var  stateLoadingImg=findViewById<LottieAnimationView>(R.id.stateLoadingImg)
+        var  sltBottom=findViewById<ShadowLayout>(R.id.sltBottom)
         stateLoadingImg.playAnimation()
         Glide.with(context)
             .load(beingLiveBean.userLogo) // 替换为您要加载的图片 URL
@@ -65,7 +67,7 @@ class PushCardPopup(content: Context,var beingLiveBean: BeingLiveBean) : Positio
         ivCardClose.playAnimation()
 
 
-        txtDialogClick.clickNoRepeat {
+        sltBottom.clickNoRepeat {
             pushCardPopupListener!!.selectGoto(beingLiveBean)
         }
     }

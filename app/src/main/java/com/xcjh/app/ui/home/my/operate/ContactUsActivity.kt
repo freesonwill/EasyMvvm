@@ -235,7 +235,7 @@ class ContactUsActivity : BaseActivity<ContactUsVm, ActivityContactUsBinding>() 
                 holder.ivIsShowSelect.visibility=View.GONE
             }
 
-            holder.rlClick.clickNoRepeat {
+            holder.rlClick.clickNoRepeat(100){
 
                 list!!.forEach {
                     it.select=false

@@ -18,7 +18,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.engagelab.privates.core.api.MTCorePrivatesApi
-import com.engagelab.privates.push.api.CustomMessage
 import com.engagelab.privates.push.api.MTPushPrivatesApi
 import com.king.app.dialog.AppDialog
 import com.king.app.updater.AppUpdater
