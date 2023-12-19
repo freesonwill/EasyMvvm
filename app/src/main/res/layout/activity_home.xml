@@ -126,10 +126,28 @@
                            android:background="@drawable/shape_red_cirle"
                            android:textSize="@dimen/sp_10"
                            android:gravity="center"
-                           android:padding="3dp"
                            android:visibility="gone"
                            android:layout_marginRight="15dp"
                            android:textStyle="bold" />
+                       <TextView
+                           android:id="@+id/tvnums2"
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:textColor="@color/white"
+                           android:layout_toRightOf="@+id/llHomeCenter"
+                           android:background="@drawable/shape_red_100"
+                           android:textSize="@dimen/sp_10"
+                           android:gravity="center"
+                           android:layout_marginTop="@dimen/dp_10"
+
+                           android:text="0"
+                           android:visibility="gone"
+                           android:paddingTop="3dp"
+                           android:paddingBottom="3dp"
+                           android:paddingRight="9dp"
+                           android:paddingLeft="9dp"
+                           android:textStyle="bold"
+                      />
                    </RelativeLayout>
 
 
