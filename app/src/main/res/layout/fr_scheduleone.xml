@@ -27,6 +27,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintRight_toRightOf="parent"
 
+            android:layout_marginTop="@dimen/dp_5"
             android:layout_marginRight="12dp"
             android:orientation="horizontal"
             android:layout_height="@dimen/dp_20">
