@@ -36,6 +36,7 @@ import com.github.gzuliyujiang.wheelview.annotation.ScrollState;
 import com.github.gzuliyujiang.wheelview.contract.WheelFormatter;
 import com.github.gzuliyujiang.wheelview.widget.NumberWheelView;
 import com.github.gzuliyujiang.wheelview.widget.WheelView;
+import com.kongzue.dialogx.interfaces.ScrollController;
 
 import java.util.Arrays;
 import java.util.List;
@@ -47,7 +48,7 @@ import java.util.List;
  * @since 2021/6/5 16:12
  */
 @SuppressWarnings("unused")
-public class MyDateWheelLayout extends BaseWheelLayout {
+public class MyDateWheelLayout extends BaseWheelLayout implements ScrollController {
     private NumberWheelView yearWheelView;
     private NumberWheelView monthWheelView;
     private NumberWheelView dayWheelView;
@@ -441,6 +442,49 @@ public class MyDateWheelLayout extends BaseWheelLayout {
                 return 30;
         }
     }
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        switch (ev.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                // 处理按下事件
+                break;
+            case MotionEvent.ACTION_MOVE:
+                // 处理滑动事件
+                break;
+            case MotionEvent.ACTION_UP:
+                // 处理抬起事件
+                break;
+        }
 
+        // 返回true表示已经处理了触摸事件
+        return true;
+    }
+    @Override
+//请按照固定写法
+    public boolean isLockScroll() {
+        return lockScroll;
+    }
+
+    boolean lockScroll;
+
+    @Override
+//请按照固定写法
+    public void lockScroll(boolean lockScroll) {
+        this.lockScroll=lockScroll;
+    }
+
+
+
+    @Override
+//获取已滚动距离，请注意不同组件的获取方式不同，请按照根据实际情况调整
+    public int getScrollDistance() {
+        return getScrollY();
+    }
+
+    @Override
+//固定写法
+    public boolean isCanScroll() {
+        return true;
+    }
 }
 

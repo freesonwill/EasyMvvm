@@ -20,6 +20,7 @@ import com.xcjh.app.base.BaseFragment
 import com.xcjh.app.databinding.FrMsgchildBinding
 import com.xcjh.app.databinding.ItemMsglistBinding
 import com.xcjh.app.ui.chat.ChatActivity
+import com.xcjh.app.ui.feed.FeedNoticeActivity
 import com.xcjh.app.ui.room.MsgBeanData
 import com.xcjh.app.ui.room.MsgListNewData
 import com.xcjh.app.utils.CacheUtil
@@ -146,24 +147,35 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
 
                 }
                 binding.lltItem.setOnClickListener {
-                    com.xcjh.base_lib.utils.startNewActivity<ChatActivity>() {
-                        if (item?.anchorId?.isNotEmpty() == true) {
-                            this.putExtra(Constants.USER_ID, item?.anchorId)
-                        } else {
-                            this.putExtra(Constants.USER_ID, "")
-                        }
-                        if (item?.nick?.isNotEmpty() == true) {
-                            this.putExtra(Constants.USER_NICK, item?.nick)
-                        } else {
-                            this.putExtra(Constants.USER_NICK, "")
-                        }
-                        if (item?.avatar?.isNotEmpty() == true) {
-                            this.putExtra(Constants.USER_HEAD, item?.avatar)
-                        } else {
-                            this.putExtra(Constants.USER_HEAD, "")
-                        }
-
+                    if (item.noReadSum>0){//去除红点
+                        item.noReadSum=0
+                        addDataToList(item)
+                        notifyItemChanged(bindingAdapterPosition)
                     }
+
+                    if (item?.anchorId=="-1"){
+                        com.xcjh.base_lib.utils.startNewActivity<FeedNoticeActivity>()
+                    }else{
+                        com.xcjh.base_lib.utils.startNewActivity<ChatActivity>() {
+                            if (item?.anchorId?.isNotEmpty() == true) {
+                                this.putExtra(Constants.USER_ID, item?.anchorId)
+                            } else {
+                                this.putExtra(Constants.USER_ID, "")
+                            }
+                            if (item?.nick?.isNotEmpty() == true) {
+                                this.putExtra(Constants.USER_NICK, item?.nick)
+                            } else {
+                                this.putExtra(Constants.USER_NICK, "")
+                            }
+                            if (item?.avatar?.isNotEmpty() == true) {
+                                this.putExtra(Constants.USER_HEAD, item?.avatar)
+                            } else {
+                                this.putExtra(Constants.USER_HEAD, "")
+                            }
+
+                        }
+                    }
+
                 }
 
 

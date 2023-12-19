@@ -52,8 +52,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_12"
-        android:layout_marginRight="@dimen/dp_12"
         android:layout_marginTop="8dp"
+        android:layout_marginRight="@dimen/dp_12"
         android:orientation="horizontal">
 
         <TextView
@@ -98,31 +98,25 @@
         android:background="@color/c_E8eaef" />
 
 
-    <com.xcjh.app.view.NestedScrollView
+    <com.xcjh.app.view.MyDateWheelLayout
+        android:id="@+id/datewheel"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="none"
-        android:tag="ScrollController">
+        android:layout_height="200dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="@dimen/dp_12"
+        android:layout_marginRight="@dimen/dp_12"
+        android:tag="ScrollController"
+        app:wheel_curtainColor="@color/c_f4f4f5"
+        app:wheel_curtainCorner="left"
+        app:wheel_curtainEnabled="true"
+        app:wheel_curtainRadius="5dp"
+        app:wheel_dateMode="year_month_day"
+        app:wheel_indicatorEnabled="false"
+        app:wheel_itemTextBoldSelected="true"
+        app:wheel_itemTextColor="@color/c_94999f"
+        app:wheel_itemTextColorSelected="@color/c_34a853"
+        app:wheel_itemTextSize="15sp" />
 
-        <com.xcjh.app.view.MyDateWheelLayout
-            android:id="@+id/datewheel"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_gravity="center_horizontal"
-            app:wheel_dateMode="year_month_day"
-            android:layout_marginLeft="@dimen/dp_12"
-            android:layout_marginRight="@dimen/dp_12"
-            app:wheel_curtainRadius="5dp"
-            app:wheel_curtainEnabled="true"
-            app:wheel_curtainCorner="left"
-            app:wheel_curtainColor="@color/c_f4f4f5"
-            app:wheel_indicatorEnabled="false"
-            app:wheel_itemTextBoldSelected="true"
-            app:wheel_itemTextColor="@color/c_94999f"
-            app:wheel_itemTextColorSelected="@color/c_34a853"
-            app:wheel_itemTextSize="15sp" />
-
-    </com.xcjh.app.view.NestedScrollView>
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -142,9 +142,7 @@ fun dip2px(dipValue: Float): Int {
 
 
 
-/**
- * 通用指示器
- */
+
 fun MagicIndicator.bindViewPager2(
     viewPager: ViewPager2,
     mStringList: List<String> = arrayListOf(),
@@ -205,7 +203,7 @@ fun MagicIndicator.bindViewPager2(
                     titleText.textSize = selectSize
                     titleText.setTextColor(ContextCompat.getColor(context, selectColor))
                     if (typefaceBold) {
- //                       titleText.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
+                        //                       titleText.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
                         setTextBold(titleText, true)
                     }
                 }
@@ -239,7 +237,7 @@ fun MagicIndicator.bindViewPager2(
             commonPagerTitleView.setOnClickListener {
                 action.invoke(index)
                 viewPager.setCurrentItem(index, smoothScroll)
-               // viewPager.currentItem = index
+                // viewPager.currentItem = index
             }
 
             return commonPagerTitleView
@@ -256,7 +254,7 @@ fun MagicIndicator.bindViewPager2(
                 indicator.startInterpolator = AccelerateInterpolator()
                 indicator.endInterpolator = DecelerateInterpolator(2.0f)
                 indicator.setColors(ContextCompat.getColor(context,lineIndicatorColor))
-                indicator.yOffset = dp2px(2).toFloat()
+                indicator.yOffset = dp2px(6).toFloat()
                 return indicator
             }else{
                 return CommonPagerIndicator(context).apply {
