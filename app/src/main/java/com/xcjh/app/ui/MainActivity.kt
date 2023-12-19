@@ -1,7 +1,6 @@
 package com.xcjh.app.ui
 
 
-
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -64,10 +63,11 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
     val delay: Long = 0  // 延迟时间，单位为毫秒
     val period: Long = 1 * 60 * 1000 // 执行间隔时间，单位为毫秒（这里设置为1分钟）
     private var mAppUpdater: AppUpdater? = null
-    private var currentPage:Int=0
-    var popup : BasePopupView?=null
+    private var currentPage: Int = 0
+    var popup: BasePopupView? = null
+
     //是否显示卡片
-    var isShowPush:Boolean=true
+    var isShowPush: Boolean = true
 
     private var mFragList: ArrayList<Fragment> = arrayListOf(
         HomeFragment(),
@@ -81,7 +81,7 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         super.initView(savedInstanceState)
         //MTPushPrivatesApi.clearNotification(this)
         onIntent(intent)
-        MTPushPrivatesApi.setNotificationBadge(this,0)
+        MTPushPrivatesApi.setNotificationBadge(this, 0)
         CacheUtil.setFirst(false)
         mViewModel.appUpdate()
         //runOnUiThread {  }
@@ -101,8 +101,8 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
 
         //点击首页
         mDatabind.llHomeSelectMain.setOnClickListener {
-            if(currentPage!=0){
-                if(CacheUtil.isNavigationVibrate()){
+            if (currentPage != 0) {
+                if (CacheUtil.isNavigationVibrate()) {
                     vibrate(this)
                 }
 
@@ -112,8 +112,8 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         }
         //点击赛程
         mDatabind.llHomeSelectSchedule.setOnClickListener {
-            if(currentPage!=1){
-                if(CacheUtil.isNavigationVibrate()){
+            if (currentPage != 1) {
+                if (CacheUtil.isNavigationVibrate()) {
                     vibrate(this)
 
                 }
@@ -123,8 +123,8 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         //点击消息
         mDatabind.llHomeSelectMsg.setOnClickListener {
             judgeLogin {
-                if(currentPage!=2){
-                    if(CacheUtil.isNavigationVibrate()){
+                if (currentPage != 2) {
+                    if (CacheUtil.isNavigationVibrate()) {
                         vibrate(this)
 
                     }
@@ -134,14 +134,14 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         }
         //点击我的
         mDatabind.llHomeSelectMine.setOnClickListener {
-            if(popup!=null){
-                if( popup!!.isShow){
+            if (popup != null) {
+                if (popup!!.isShow) {
                     popup!!.dismiss()
                 }
             }
 
-            if(currentPage!=3){
-                if(CacheUtil.isNavigationVibrate()){
+            if (currentPage != 3) {
+                if (CacheUtil.isNavigationVibrate()) {
                     vibrate(this)
 
                 }
@@ -195,16 +195,17 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
 
         })
         //获取到要推送的比赛
-        MyWsManager.getInstance(this)?.setOtherPushListener(javaClass.name,object :
-            OtherPushListener{
+        MyWsManager.getInstance(this)?.setOtherPushListener(javaClass.name, object :
+            OtherPushListener {
             override fun onAnchorStartLevel(beingLiveBean: BeingLiveBean) {
                 super.onAnchorStartLevel(beingLiveBean)
-                 if(currentPage!=3&&CacheUtil.isLogin()){
-                     showDialog(beingLiveBean)
-                 }
+                if (currentPage != 3 && CacheUtil.isLogin()) {
+                    showDialog(beingLiveBean)
+                }
 
             }
-            })
+        })
+
 
     }
 
@@ -222,23 +223,40 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
                 return
             }
             intent.extras?.apply {
-                val matchId = getString("matchId","")
+                val matchId = getString("matchId", "")
                 val isPureFlow = getString("isPureFlow")
-                val matchType = getString("matchType","1")
+                val matchType = getString("matchType", "1")
                 val liveId = getString("liveId")
-                val anchorId = getString("anchorId",null)
-                MatchDetailActivity.open(matchType = matchType, matchId = matchId, anchorId = anchorId)
+                val anchorId = getString("anchorId", null)
+                MatchDetailActivity.open(
+                    matchType = matchType,
+                    matchId = matchId,
+                    anchorId = anchorId
+                )
             }
         } catch (throwable: Throwable) {
             throwable.printStackTrace()
         }
     }
-    fun initMsgNums(nums:String){
-        if (nums.toInt()>0){
-            mDatabind.tvnums.text=nums
-            mDatabind.tvnums.visibility=View.VISIBLE
-        }else{
-            mDatabind.tvnums.visibility=View.GONE
+
+    fun initMsgNums(nums: String) {
+        when(nums.toInt()){
+            0 -> {
+                mDatabind.tvnums.visibility = View.GONE
+                mDatabind.tvnums2.visibility = View.GONE
+            }
+
+            in 1..9 -> {
+                mDatabind.tvnums.text = nums
+                mDatabind.tvnums.visibility = View.VISIBLE
+                mDatabind.tvnums2.visibility = View.GONE
+            }
+
+            else -> {
+                mDatabind.tvnums2.text = nums
+                mDatabind.tvnums.visibility = View.GONE
+                mDatabind.tvnums2.visibility = View.VISIBLE
+            }
         }
     }
 
@@ -247,14 +265,12 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
     }
 
 
-
-
     fun vibrate(context: Context) {
         val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Android 8.0及以上版本可以使用VibrationEffect来定义震动模式
-            val amplitude =30 // 自定义震动强度（0-255）
-            val  duration:Long = 100 // 震动持续时间（毫秒）
+            val amplitude = 30 // 自定义震动强度（0-255）
+            val duration: Long = 100 // 震动持续时间（毫秒）
             val effect = VibrationEffect.createOneShot(duration, amplitude)
             vibrator.vibrate(effect)
         } else {
@@ -270,7 +286,7 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
             timer?.cancel()
             timer?.purge()
         }
-        MTPushPrivatesApi.setNotificationBadge(this,0)
+        MTPushPrivatesApi.setNotificationBadge(this, 0)
         super.onDestroy()
     }
 
@@ -348,17 +364,37 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
     }
 
     fun setHome(page: Int) {
-        currentPage=page
+        currentPage = page
         if (page == 0) {
             mDatabind.txtHome.setTextColor(ContextCompat.getColor(this, R.color.c_37373d))
             mDatabind.txtHomeSchedule.setTextColor(ContextCompat.getColor(this, R.color.c_aeb4ba))
             mDatabind.txtHomeMsg.setTextColor(ContextCompat.getColor(this, R.color.c_aeb4ba))
             mDatabind.txtHomeMine.setTextColor(ContextCompat.getColor(this, R.color.c_aeb4ba))
 
-            mDatabind.ivHomeMain.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_main_select))
-            mDatabind.ivHomeCourse.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_saicheng_no))
-            mDatabind.ivHomeMsg.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_xiaoxi_no))
-            mDatabind.ivHomeMy.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_wode_no))
+            mDatabind.ivHomeMain.setImageDrawable(
+                ContextCompat.getDrawable(
+                    this,
+                    R.drawable.tab_main_select
+                )
+            )
+            mDatabind.ivHomeCourse.setImageDrawable(
+                ContextCompat.getDrawable(
+                    this,
+                    R.drawable.tab_saicheng_no
+                )
+            )
+            mDatabind.ivHomeMsg.setImageDrawable(
+                ContextCompat.getDrawable(
+                    this,
+                    R.drawable.tab_xiaoxi_no
+                )
+            )
+            mDatabind.ivHomeMy.setImageDrawable(
+                ContextCompat.getDrawable(
+                    this,
+                    R.drawable.tab_wode_no
+                )
+            )
 
         } else if (page == 1) {
             mDatabind.txtHome.setTextColor(ContextCompat.getColor(this, R.color.c_aeb4ba))
@@ -366,46 +402,106 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
             mDatabind.txtHomeMsg.setTextColor(ContextCompat.getColor(this, R.color.c_aeb4ba))
             mDatabind.txtHomeMine.setTextColor(ContextCompat.getColor(this, R.color.c_aeb4ba))
 
-            mDatabind.ivHomeMain.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_main_no))
-            mDatabind.ivHomeCourse.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_saicheng_select))
-            mDatabind.ivHomeMsg.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_xiaoxi_no))
-            mDatabind.ivHomeMy.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_wode_no))
+            mDatabind.ivHomeMain.setImageDrawable(
+                ContextCompat.getDrawable(
+                    this,
+                    R.drawable.tab_main_no
+                )
+            )
+            mDatabind.ivHomeCourse.setImageDrawable(
+                ContextCompat.getDrawable(
+                    this,
+                    R.drawable.tab_saicheng_select
+                )
+            )
+            mDatabind.ivHomeMsg.setImageDrawable(
+                ContextCompat.getDrawable(
+                    this,
+                    R.drawable.tab_xiaoxi_no
+                )
+            )
+            mDatabind.ivHomeMy.setImageDrawable(
+                ContextCompat.getDrawable(
+                    this,
+                    R.drawable.tab_wode_no
+                )
+            )
         } else if (page == 2) {
             mDatabind.txtHome.setTextColor(ContextCompat.getColor(this, R.color.c_aeb4ba))
             mDatabind.txtHomeSchedule.setTextColor(ContextCompat.getColor(this, R.color.c_aeb4ba))
             mDatabind.txtHomeMsg.setTextColor(ContextCompat.getColor(this, R.color.c_37373d))
             mDatabind.txtHomeMine.setTextColor(ContextCompat.getColor(this, R.color.c_aeb4ba))
 
-            mDatabind.ivHomeMain.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_main_no))
-            mDatabind.ivHomeCourse.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_saicheng_no))
-            mDatabind.ivHomeMsg.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_xiaoxi_select))
-            mDatabind.ivHomeMy.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_wode_no))
+            mDatabind.ivHomeMain.setImageDrawable(
+                ContextCompat.getDrawable(
+                    this,
+                    R.drawable.tab_main_no
+                )
+            )
+            mDatabind.ivHomeCourse.setImageDrawable(
+                ContextCompat.getDrawable(
+                    this,
+                    R.drawable.tab_saicheng_no
+                )
+            )
+            mDatabind.ivHomeMsg.setImageDrawable(
+                ContextCompat.getDrawable(
+                    this,
+                    R.drawable.tab_xiaoxi_select
+                )
+            )
+            mDatabind.ivHomeMy.setImageDrawable(
+                ContextCompat.getDrawable(
+                    this,
+                    R.drawable.tab_wode_no
+                )
+            )
         } else if (page == 3) {
             mDatabind.txtHome.setTextColor(ContextCompat.getColor(this, R.color.c_aeb4ba))
             mDatabind.txtHomeSchedule.setTextColor(ContextCompat.getColor(this, R.color.c_aeb4ba))
             mDatabind.txtHomeMsg.setTextColor(ContextCompat.getColor(this, R.color.c_aeb4ba))
             mDatabind.txtHomeMine.setTextColor(ContextCompat.getColor(this, R.color.c_37373d))
 
-            mDatabind.ivHomeMain.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_main_no))
-            mDatabind.ivHomeCourse.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_saicheng_no))
-            mDatabind.ivHomeMsg.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_xiaoxi_no))
-            mDatabind.ivHomeMy.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_wode_select))
+            mDatabind.ivHomeMain.setImageDrawable(
+                ContextCompat.getDrawable(
+                    this,
+                    R.drawable.tab_main_no
+                )
+            )
+            mDatabind.ivHomeCourse.setImageDrawable(
+                ContextCompat.getDrawable(
+                    this,
+                    R.drawable.tab_saicheng_no
+                )
+            )
+            mDatabind.ivHomeMsg.setImageDrawable(
+                ContextCompat.getDrawable(
+                    this,
+                    R.drawable.tab_xiaoxi_no
+                )
+            )
+            mDatabind.ivHomeMy.setImageDrawable(
+                ContextCompat.getDrawable(
+                    this,
+                    R.drawable.tab_wode_select
+                )
+            )
         }
         mDatabind.viewPager.currentItem = page
     }
 
-    fun showDialog(beingLiveBean:BeingLiveBean){
-        var pushCardPopup=PushCardPopup(this, beingLiveBean)
-        if(popup!=null){
-           if( popup!!.isShow){
-               popup!!.dismiss()
-           }
+    fun showDialog(beingLiveBean: BeingLiveBean) {
+        var pushCardPopup = PushCardPopup(this, beingLiveBean)
+        if (popup != null) {
+            if (popup!!.isShow) {
+                popup!!.dismiss()
+            }
         }
-        if(CacheUtil.isAnchorVibrate()){
+        if (CacheUtil.isAnchorVibrate()) {
             vibrate(this)
         }
 
-        popup=XPopup.Builder(this)
+        popup = XPopup.Builder(this)
             .isDestroyOnDismiss(true)
             .popupAnimation(PopupAnimation.TranslateFromTop)
             .offsetY(90)
@@ -415,30 +511,33 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
             .dismissOnTouchOutside(false)
             .asCustom(pushCardPopup)
             .show()
-        pushCardPopup.pushCardPopupListener=object :PushCardPopup.PushCardPopupListener{
+        pushCardPopup.pushCardPopupListener = object : PushCardPopup.PushCardPopupListener {
             override fun clicktClose() {
                 popup!!.dismiss()
             }
 
             override fun selectGoto(beingLiveBean: BeingLiveBean) {
                 popup!!.dismiss()
-                MatchDetailActivity.open(matchType =beingLiveBean.matchType, matchId = beingLiveBean.matchId,
-                                           matchName = "${beingLiveBean.homeTeamName}VS${beingLiveBean.awayTeamName}",
-                                           anchorId = beingLiveBean.userId)
+                MatchDetailActivity.open(
+                    matchType = beingLiveBean.matchType, matchId = beingLiveBean.matchId,
+                    matchName = "${beingLiveBean.homeTeamName}VS${beingLiveBean.awayTeamName}",
+                    anchorId = beingLiveBean.userId
+                )
 
             }
 
         }
-        if(popup!=null){
-            if( popup!!.isShow){
+        if (popup != null) {
+            if (popup!!.isShow) {
                 Handler(Looper.getMainLooper()).postDelayed(
                     Runnable {
-                        if(popup!=null){
-                            if( popup!!.isShow){
+                        if (popup != null) {
+                            if (popup!!.isShow) {
                                 popup!!.dismiss()
                             }
                         }
-                    }, 3000)
+                    }, 3000
+                )
             }
         }
 
@@ -447,14 +546,14 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
 
     override fun onResume() {
         super.onResume()
-        isShowPush=true
+        isShowPush = true
     }
 
     override fun onStop() {
         super.onStop()
-        isShowPush=false
-        if(popup!=null){
-            if( popup!!.isShow){
+        isShowPush = false
+        if (popup != null) {
+            if (popup!!.isShow) {
                 popup!!.dismiss()
             }
         }

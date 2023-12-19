@@ -49,6 +49,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
     var listdata: MutableList<MsgListNewData> = ArrayList<MsgListNewData>()
     var chatId = "0"
     val empty by lazy { layoutInflater!!.inflate(R.layout.layout_empty, null) }
+    var noReadMsgs = 0
 
     companion object {
 
@@ -74,7 +75,9 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
             onBind {
                 var binding = getBinding<ItemMsglistBinding>()
                 var item = _data as MsgListNewData
+                noReadMsgs += item?.noReadSum!!
                 when (item?.noReadSum) {
+
                     0 -> {
                         binding.tvnums1.visibility = View.GONE
                         binding.tvnums2.visibility = View.GONE
@@ -132,7 +135,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                 binding.tvtime.text = time
                 binding.lltDelete.setOnClickListener {
                     delMsgDilog(requireActivity()) { it ->
-                        if (it){//点击了确定
+                        if (it) {//点击了确定
                             mViewModel.getDelMsg(item?.anchorId.toString())
                             deltDataToList(item!!)
                             mDatabind.rec.mutable.removeAt(bindingAdapterPosition)
@@ -147,15 +150,15 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
 
                 }
                 binding.lltItem.setOnClickListener {
-                    if (item.noReadSum>0){//去除红点
-                        item.noReadSum=0
+                    if (item.noReadSum > 0) {//去除红点
+                        item.noReadSum = 0
                         addDataToList(item)
                         notifyItemChanged(bindingAdapterPosition)
                     }
 
-                    if (item?.anchorId=="-1"){
+                    if (item?.anchorId == "-1") {
                         com.xcjh.base_lib.utils.startNewActivity<FeedNoticeActivity>()
-                    }else{
+                    } else {
                         com.xcjh.base_lib.utils.startNewActivity<ChatActivity>() {
                             if (item?.anchorId?.isNotEmpty() == true) {
                                 this.putExtra(Constants.USER_ID, item?.anchorId)
@@ -191,7 +194,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                     resources.getString(R.string.nomsg)
                 this.findViewById<ImageView>(R.id.ivEmptyIcon)
                     .setImageDrawable(resources.getDrawable(R.drawable.ic_empety_msg))
-                this.findViewById<ImageView>(R.id.ivEmptyIcon).setOnClickListener {  }
+                this.findViewById<ImageView>(R.id.ivEmptyIcon).setOnClickListener { }
             }
         }
 
@@ -250,16 +253,21 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
         GlobalScope.launch {
             val data = getAll().await()
 
-            if (data.isNotEmpty()) {
-                listdata.clear()
-                listdata.addAll(data)
-                mDatabind.rec.models=listdata
-                mDatabind.state.showContent()
 
-            } else {
-                mDatabind.state.showEmpty()
+            requireActivity().runOnUiThread {
+                if (data.isNotEmpty()) {
+                    noReadMsgs = 0
+                    listdata.clear()
+                    listdata.addAll(data)
+                    mDatabind.rec.models = listdata
+                    mDatabind.state.showContent()
+
+                } else {
+                    mDatabind.state.showEmpty()
+                }
+                mDatabind.smartCommon.finishRefresh()
             }
-            mDatabind.smartCommon.finishRefresh()
+
         }
     }
 

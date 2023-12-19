@@ -75,7 +75,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
            // adapter=mAdapter
             distance(0, 0, 0, 16)
         }
-        mDatabind.recBottom.linear().setup {
+        mDatabind.rec.linear().setup {
             addType<MatchBean>(R.layout.item_sch_all)
 
             onBind {
@@ -786,8 +786,8 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                 }
 
                 binding.relcoolect.setOnClickListener {
-                    startAn(binding.tvcollect)
-                    stopAn(binding.tvcollect)
+//                    startAn(binding.tvcollect)
+//                    stopAn(binding.tvcollect)
                     mview = binding.tvcollect
                     index = modelPosition
                     if (item!!.focus) {
@@ -798,7 +798,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
 
 
                     } else {
-                        startAn(binding.tvcollect)
+                       // startAn(binding.tvcollect)
                         mViewModel.getNotice(
                             item!!.matchId,
                             item!!.matchType
