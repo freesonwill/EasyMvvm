@@ -234,7 +234,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                 binding.ivfaile.visibility = View.GONE
                                 GlobalScope.launch {
                                     delay(delayTime)
-
+                                    LogUtils.d("发送成功或者失败"+JSONObject.toJSONString(matchBeanNew))
                                     if (matchBeanNew.sent == 0) {//发送失败
                                         matchBeanNew.sent = 2
                                         addDataToList(matchBeanNew)
@@ -257,6 +257,8 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
 
                             1 ,3-> {//发送成功
 
+                                matchBeanNew.sent=1
+                                addDataToList(matchBeanNew)
                                 binding.googleProgress.visibility = View.GONE
                                 binding.ivfaile.visibility = View.GONE
                             }
@@ -314,23 +316,27 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
 
                         when (matchBeanNew.sent) {
                             0 -> {//正在发送
-
-                                addDataToList(matchBeanNew)
+                                LogUtils.d(bindingAdapterPosition.toString()+"准备发送"+
+                                        JSONObject.toJSONString(_data as MsgBeanData))
+                                addDataToList( (_data as MsgBeanData))
                                 binding.googleProgress.visibility = View.VISIBLE
                                 binding.ivfaile.visibility = View.GONE
                                 GlobalScope.launch {
 
                                     upLoadPic(
                                         matchBeanNew.content, binding.tvpross,
-                                        matchBeanNew.id!!
+                                        matchBeanNew.sendId!!
                                     )
                                     delay(delayTime)
-
-                                    if (matchBeanNew.sent == 0) {//发送失败
-                                        matchBeanNew.sent = 2
-                                        addDataToList(matchBeanNew)
+                                    LogUtils.d(bindingAdapterPosition.toString()+"99检查发送"+
+                                            JSONObject.toJSONString(_data as MsgBeanData))
+                                    if ( (_data as MsgBeanData).sent == 0) {//发送失败
+                                        (_data as MsgBeanData).sent = 2
+                                        LogUtils.d(bindingAdapterPosition.toString()+"99发送失败"+
+                                                JSONObject.toJSONString(_data as MsgBeanData))
+                                        addDataToList( (_data as MsgBeanData))
                                         if (bindingAdapterPosition == 0) {
-                                            appViewModel.updateMsgListEvent.postValue(matchBeanNew)
+                                            appViewModel.updateMsgListEvent.postValue( (_data as MsgBeanData))
                                         }
                                         runOnUiThread {
                                             binding.googleProgress.visibility = View.GONE
@@ -338,7 +344,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                         }
 
                                     } else {//发送成功
-                                        matchBeanNew.sent = 1
+                                        (_data as MsgBeanData).sent = 1
 
                                     }
 
@@ -346,18 +352,26 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                             }
 
                             1, 3 -> {//发送成功
+                                (_data as MsgBeanData).sent=1
+                                addDataToList( (_data as MsgBeanData))
                                 binding.googleProgress.visibility = View.GONE
                                 binding.ivfaile.visibility = View.GONE
+                                LogUtils.d(bindingAdapterPosition.toString()+"99发送chenggong"+
+                                        JSONObject.toJSONString(_data as MsgBeanData))
                             }
 
                             2 -> {//发送失败
                                 binding.googleProgress.visibility = View.GONE
                                 binding.ivfaile.visibility = View.VISIBLE
                             }
+                            else ->{
+                                binding.googleProgress.visibility = View.GONE
+                                binding.ivfaile.visibility = View.GONE
+                            }
 
                         }
                         binding.ivfaile.setOnClickListener {
-                            matchBeanNew.sent = 0
+                            (_data as MsgBeanData).sent = 0
                             notifyItemChanged(bindingAdapterPosition)
                         }
                         binding.tvtime.text =
@@ -568,7 +582,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
             override fun onC2CReceive(chat: ReceiveChatMsg) {
                 mViewModel.clearMsg(userId)
                 mDatabind.state.showContent()
-                if (chat.sendId!!.isEmpty()) {//收到消息
+                if (chat.from==userId) {//收到消息
                     var beanmy: MsgBeanData = MsgBeanData()
                     beanmy.anchorId = chat.anchorId
                     beanmy.fromId = chat.from
@@ -581,15 +595,15 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                     listdata1.add(beanmy)
                     mDatabind.rv.addModels(listdata1, index = 0)
                     mDatabind.rv.scrollToPosition(0)
-                    //  addData(listdata1)
+                   addDataToList(beanmy)
 
                 } else {//发送消息
-                    LogUtils.d("发送成功一条数据"+JSONObject.toJSONString(chat))
+                   // LogUtils.d("发送成功一条数据"+JSONObject.toJSONString(chat))
                     for (i in 0 until mDatabind.rv.models!!.size) {
                         var beanmy: MsgBeanData = mDatabind.rv.models!![i] as MsgBeanData
                         if (beanmy.id == chat.sendId) {
                             beanmy.sent = 1
-                            LogUtils.d("1发送成功一条数据"+JSONObject.toJSONString(beanmy))
+                            LogUtils.d(i.toString()+"1发送成功一条数据"+JSONObject.toJSONString(beanmy))
                             addDataToList(beanmy)
                             mDatabind.rv.bindingAdapter.notifyItemChanged(i)
                             break

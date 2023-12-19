@@ -229,614 +229,613 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
                     LogUtils.d("直播数据" + item.anchorList)
 
-                    when (item.matchType) {//比赛类型：1：足球；2：篮球,可用值:1,2
-                        "1" -> {
-                            binding.tvhafl.text =
-                                context.resources.getString(R.string.hafl_rices) + "" + item.homeHalfScore + "-" + item.awayHalfScore
-                            binding.tvtime.text = time!!.substring(11, 16)
-                            binding.tvname.text = item.competitionName
-                            binding.tvnameLeft.text = item.homeName
-                            binding.tvnameRight.text = item.awayName
-                            Glide.with(context).load(item.homeLogo)
-                                .placeholder(R.drawable.def_football).into(binding.tvflagLeft)
-                            Glide.with(context).load(item.awayLogo)
-                                .placeholder(R.drawable.def_football).into(binding.tvflagRight)
-                            binding.ivtype.setBackgroundResource(R.drawable.football)
-                            when (item.status) {
-                                "0" -> binding.tvstatus.visibility = View.GONE
-                                "1" -> {
-                                    binding.tvvs.text = "VS"
-                                    binding.txtMatchAnimation.text=""
-                                    binding.tvstatus.visibility = View.VISIBLE
-                                    binding.tvstatus.setTextColor(
-                                        ContextCompat.getColor(
-                                            context,
-                                            R.color.c_94999f
-                                        )
+                    if (item.matchType.equals("1")) {//比赛类型：1：足球；2：篮球,可用值:1,2
+                        binding.tvhafl.text =
+                            context.resources.getString(R.string.hafl_rices) + "" + item.homeHalfScore + "-" + item.awayHalfScore
+                        binding.tvtime.text = time!!.substring(11, 16)
+                        binding.tvname.text = item.competitionName
+                        binding.tvnameLeft.text = item.homeName
+                        binding.tvnameRight.text = item.awayName
+                        Glide.with(context).load(item.homeLogo)
+                            .placeholder(R.drawable.def_football).into(binding.tvflagLeft)
+                        Glide.with(context).load(item.awayLogo)
+                            .placeholder(R.drawable.def_football).into(binding.tvflagRight)
+                        binding.ivtype.setBackgroundResource(R.drawable.football)
+                        when (item.status) {
+                            "0" ->{ binding.tvstatus.visibility = View.GONE}
+                            "1" -> {
+                                binding.tvvs.text = "VS"
+                                binding.txtMatchAnimation.visibility = View.GONE
+                                binding.tvstatus.visibility = View.VISIBLE
+                                binding.tvstatus.setTextColor(
+                                    ContextCompat.getColor(
+                                        context,
+                                        R.color.c_94999f
                                     )
-                                    binding.tvvs.setTextColor(
-                                        ContextCompat.getColor(
-                                            context,
-                                            R.color.c_37373d
-                                        )
+                                )
+                                binding.tvvs.setTextColor(
+                                    ContextCompat.getColor(
+                                        context,
+                                        R.color.c_37373d
                                     )
-                                    binding.tvstatus.text =
-                                        context.resources.getString(R.string.main_txt_wks)
+                                )
+                                binding.tvstatus.text =
+                                    context.resources.getString(R.string.main_txt_wks)
 
-                                }
-
-                                "2" -> {
-                                    binding.tvstatus.visibility = View.VISIBLE
-                                    binding.txtMatchAnimation.text="'"
-                                    binding.tvvs.text = item.homeScore + "-" + item.awayScore
-                                    binding.tvstatus.setTextColor(
-                                        ContextCompat.getColor(
-                                            context,
-                                            R.color.c_e6820c
-                                        )
-                                    )
-                                    binding.tvvs.setTextColor(
-                                        ContextCompat.getColor(
-                                            context,
-                                            R.color.c_34a853
-                                        )
-                                    )
-                                    binding.tvstatus.text =
-                                        if (item.runTime == null)
-                                            "0"
-                                        else {
-                                            item.runTime
-                                        }
-
-                                    initAnimation(binding.txtMatchAnimation)
-                                }
-
-                                "3" -> {
-                                    binding.tvstatus.visibility = View.VISIBLE
-                                    binding.txtMatchAnimation.text=""
-                                    binding.tvvs.text = item.homeScore + "-" + item.awayScore
-                                    binding.tvstatus.setTextColor(
-                                        ContextCompat.getColor(
-                                            context,
-                                            R.color.c_e6820c
-                                        )
-                                    )
-                                    binding.tvvs.setTextColor(
-                                        ContextCompat.getColor(
-                                            context,
-                                            R.color.c_34a853
-                                        )
-                                    )
-                                    binding.tvstatus.text = context.resources.getString(
-                                        R.string.zc
-                                    )
-                                }
-
-                                "4" -> {
-                                    binding.tvstatus.visibility = View.VISIBLE
-                                    binding.txtMatchAnimation.text="'"
-                                    binding.tvvs.text = item.homeScore + "-" + item.awayScore
-                                    binding.tvstatus.setTextColor(
-                                        ContextCompat.getColor(
-                                            context,
-                                            R.color.c_e6820c
-                                        )
-                                    )
-                                    binding.tvvs.setTextColor(
-                                        ContextCompat.getColor(
-                                            context,
-                                            R.color.c_34a853
-                                        )
-                                    )
-                                    binding.tvstatus.text =
-                                        if (item.runTime == null)
-                                            "0"
-                                        else {
-                                            item.runTime
-                                        }
-                                    initAnimation(binding.txtMatchAnimation)
-                                }
-
-                                "5", "6" -> {
-                                    binding.tvstatus.visibility = View.VISIBLE
-                                    binding.txtMatchAnimation.text="'"
-                                    binding.tvvs.text = item.homeScore + "-" + item.awayScore
-                                    binding.tvstatus.setTextColor(
-                                        ContextCompat.getColor(
-                                            context,
-                                            R.color.c_e6820c
-                                        )
-                                    )
-                                    binding.tvvs.setTextColor(
-                                        ContextCompat.getColor(
-                                            context,
-                                            R.color.c_34a853
-                                        )
-                                    )
-                                    binding.tvstatus.text = context.resources.getString(
-                                        R.string.over_time
-                                    )
-                                    initAnimation(binding.txtMatchAnimation)
-
-                                }
-
-                                "7" -> {
-                                    binding.tvstatus.visibility = View.VISIBLE
-                                    binding.txtMatchAnimation.text=""
-                                    binding.tvvs.text = item.homeScore + "-" + item.awayScore
-                                    binding.tvstatus.setTextColor(
-                                        ContextCompat.getColor(
-                                            context,
-                                            R.color.c_e6820c
-                                        )
-                                    )
-                                    binding.tvvs.setTextColor(
-                                        ContextCompat.getColor(
-                                            context,
-                                            R.color.c_34a853
-                                        )
-                                    )
-                                    binding.tvstatus.text = context.resources.getString(
-                                        R.string.main_dqdz
-                                    )
-                                    initAnimation(binding.txtMatchAnimation)
-
-                                }
-
-                                "8" -> {
-                                    binding.txtMatchAnimation.text=""
-                                    binding.tvvs.text = item.homeScore + "-" + item.awayScore
-                                    binding.tvstatus.visibility = View.VISIBLE
-                                    binding.tvstatus.setTextColor(
-                                        ContextCompat.getColor(
-                                            context,
-                                            R.color.c_999999
-                                        )
-                                    )
-                                    binding.tvvs.setTextColor(
-                                        ContextCompat.getColor(
-                                            context,
-                                            R.color.c_34a853
-                                        )
-                                    )
-                                    binding.tvstatus.text =
-                                        context.resources.getString(R.string.main_txt_over)
-
-                                }
-
-                                "9" -> {
-                                    binding.txtMatchAnimation.text=""
-                                    binding.tvvs.text = item.homeScore + "-" + item.awayScore
-                                    binding.tvstatus.visibility = View.VISIBLE
-                                    binding.tvstatus.setTextColor(
-                                        ContextCompat.getColor(
-                                            context,
-                                            R.color.c_F7DA73
-                                        )
-                                    )
-                                    binding.tvvs.setTextColor(
-                                        ContextCompat.getColor(
-                                            context,
-                                            R.color.c_37373d
-                                        )
-                                    )
-                                    binding.tvstatus.text =
-                                        context.resources.getString(R.string.main_txt_tc)
-
-                                }
-
-                                "10" -> {
-                                    binding.txtMatchAnimation.text=""
-                                    binding.tvvs.text = item.homeScore + "-" + item.awayScore
-                                    binding.tvstatus.visibility = View.VISIBLE
-                                    binding.tvstatus.setTextColor(
-                                        ContextCompat.getColor(
-                                            context,
-                                            R.color.c_F7DA73
-                                        )
-                                    )
-                                    binding.tvvs.setTextColor(
-                                        ContextCompat.getColor(
-                                            context,
-                                            R.color.c_37373d
-                                        )
-                                    )
-                                    binding.tvstatus.text =
-                                        context.resources.getString(R.string.main_txt_zd)
-
-                                }
-
-                                "11" -> {
-                                    binding.txtMatchAnimation.text=""
-                                    binding.tvvs.text = item.homeScore + "-" + item.awayScore
-                                    binding.tvstatus.visibility = View.VISIBLE
-                                    binding.tvstatus.setTextColor(
-                                        ContextCompat.getColor(
-                                            context,
-                                            R.color.c_8a91a0
-                                        )
-                                    )
-                                    binding.tvvs.setTextColor(
-                                        ContextCompat.getColor(
-                                            context,
-                                            R.color.c_37373d
-                                        )
-                                    )
-                                    binding.tvstatus.text =
-                                        context.resources.getString(R.string.main_txt_yz)
-
-                                }
-
-                                "12" -> {
-                                    binding.txtMatchAnimation.text=""
-                                    binding.tvvs.text = item.homeScore + "-" + item.awayScore
-                                    binding.tvstatus.visibility = View.VISIBLE
-                                    binding.tvstatus.setTextColor(
-                                        ContextCompat.getColor(
-                                            context,
-                                            R.color.c_8a91a0
-                                        )
-                                    )
-                                    binding.tvvs.setTextColor(
-                                        ContextCompat.getColor(
-                                            context,
-                                            R.color.c_37373d
-                                        )
-                                    )
-                                    binding.tvstatus.text =
-                                        context.resources.getString(R.string.main_txt_qx)
-
-                                }
-
-                                "13" -> {
-                                    binding.txtMatchAnimation.text=""
-                                    binding.tvvs.text = item.homeScore + "-" + item.awayScore
-                                    binding.tvstatus.visibility = View.VISIBLE
-                                    binding.tvstatus.setTextColor(
-                                        ContextCompat.getColor(
-                                            context,
-                                            R.color.c_8a91a0
-                                        )
-                                    )
-                                    binding.tvvs.setTextColor(
-                                        ContextCompat.getColor(
-                                            context,
-                                            R.color.c_37373d
-                                        )
-                                    )
-                                    binding.tvstatus.text =
-                                        context.resources.getString(R.string.main_txt_dd)
-
-                                }
-
-                                else -> {
-                                    binding.txtMatchAnimation.text=""
-                                    binding.tvstatus.visibility = View.VISIBLE
-                                    binding.tvstatus.setTextColor(
-                                        ContextCompat.getColor(
-                                            context,
-                                            R.color.c_8a91a0
-                                        )
-                                    )
-                                    binding.tvvs.setTextColor(
-                                        ContextCompat.getColor(
-                                            context,
-                                            R.color.c_37373d
-                                        )
-                                    )
-                                    val date = Date(item.matchTime.toLong())
-                                    var formatter =
-                                        SimpleDateFormat("MM-dd HH:mm", Locale.getDefault())
-                                    binding.tvstatus.text =
-                                        context.resources.getString(R.string.main_txt_over)
-                                }
                             }
-                        }
 
-                        "2" -> {
-                            binding.tvhafl.text =
-                                context.resources.getString(R.string.hafl_rices) + "" + item.awayHalfScore + "-" + item.homeHalfScore
-                            binding.tvtime.text = time!!.substring(11, 16)
-                            binding.tvname.text = item.competitionName
-                            binding.tvnameLeft.text = item.awayName
-                            binding.tvnameRight.text = item.homeName
-                            Glide.with(context).load(item.awayLogo)
-                                .placeholder(R.drawable.def_basketball).into(binding.tvflagLeft)
-                            Glide.with(context).load(item.homeLogo)
-                                .placeholder(R.drawable.def_basketball).into(binding.tvflagRight)
-                            binding.ivtype.setBackgroundResource(R.drawable.basketball)
-                            when (item.status) {
-                                "0" -> binding.tvstatus.visibility = View.GONE
-                                "1" -> {
-                                    binding.tvvs.text = "VS"
-                                    binding.txtMatchAnimation.text=""
-                                    binding.tvstatus.visibility = View.VISIBLE
-                                    binding.tvstatus.setTextColor(
-                                        ContextCompat.getColor(
-                                            context,
-                                            R.color.c_94999f
-                                        )
+                            "2" -> {
+                                binding.tvstatus.visibility = View.VISIBLE
+                                binding.txtMatchAnimation.visibility = View.VISIBLE
+                                binding.tvvs.text = item.homeScore + "-" + item.awayScore
+                                binding.tvstatus.setTextColor(
+                                    ContextCompat.getColor(
+                                        context,
+                                        R.color.c_e6820c
                                     )
-                                    binding.tvvs.setTextColor(
-                                        ContextCompat.getColor(
-                                            context,
-                                            R.color.c_37373d
-                                        )
+                                )
+                                binding.tvvs.setTextColor(
+                                    ContextCompat.getColor(
+                                        context,
+                                        R.color.c_34a853
                                     )
-                                    binding.tvstatus.text =
-                                        context.resources.getString(R.string.main_txt_wks)
-
-                                }
-
-                                "2" -> {
-                                    binding.txtMatchAnimation.text="'"
-                                    binding.tvvs.text = item.awayScore + "-" + item.homeScore
-                                    binding.tvstatus.visibility = View.VISIBLE
-                                    binding.tvstatus.setTextColor(
-                                        ContextCompat.getColor(
-                                            context,
-                                            R.color.c_e6820c
-                                        )
-                                    )
-                                    binding.tvvs.setTextColor(
-                                        ContextCompat.getColor(
-                                            context,
-                                            R.color.c_e6820c
-                                        )
-                                    )
-                                    binding.tvstatus.text =
-                                        context.resources.getString(
-                                            R.string.main_txt_basketball_phase,
-                                            "一"
-                                        )
-                                    initAnimation(binding.txtMatchAnimation)
-
-                                }
-
-                                "3" -> {
-                                    binding.txtMatchAnimation.text=""
-                                    binding.tvvs.text = item.awayScore + "-" + item.homeScore
-                                    binding.tvstatus.visibility = View.VISIBLE
-                                    binding.tvstatus.setTextColor(
-                                        ContextCompat.getColor(
-                                            context,
-                                            R.color.c_e6820c
-                                        )
-                                    )
-                                    binding.tvvs.setTextColor(
-                                        ContextCompat.getColor(
-                                            context,
-                                            R.color.c_34a853
-                                        )
-                                    )
-                                    binding.tvstatus.text =
-                                        context.resources.getString(
-                                            R.string.main_txt_basketball_phase,
-                                            "一"
-                                        ) + context.resources.getString(
-                                            R.string.finis
-                                        )
-                                    //initAnimation(binding.txtMatchAnimation)
-
-                                }
-
-                                "4" -> {
-                                    binding.txtMatchAnimation.text="'"
-                                    binding.tvvs.text = item.awayScore + "-" + item.homeScore
-                                    binding.tvstatus.visibility = View.VISIBLE
-                                    binding.tvstatus.setTextColor(
-                                        ContextCompat.getColor(
-                                            context,
-                                            R.color.c_e6820c
-                                        )
-                                    )
-                                    binding.tvvs.setTextColor(
-                                        ContextCompat.getColor(
-                                            context,
-                                            R.color.c_34a853
-                                        )
-                                    )
-                                    binding.tvstatus.text =
-                                        context.resources.getString(
-                                            R.string.main_txt_basketball_phase,
-                                            "二"
-                                        )
-                                    initAnimation(binding.txtMatchAnimation)
-
-                                }
-
-                                "5" -> {
-                                    binding.txtMatchAnimation.text=""
-                                    binding.tvvs.text = item.awayScore + "-" + item.homeScore
-                                    binding.tvstatus.visibility = View.VISIBLE
-                                    binding.tvstatus.setTextColor(
-                                        ContextCompat.getColor(
-                                            context,
-                                            R.color.c_e6820c
-                                        )
-                                    )
-                                    binding.tvvs.setTextColor(
-                                        ContextCompat.getColor(
-                                            context,
-                                            R.color.c_34a853
-                                        )
-                                    )
-                                    binding.tvstatus.text =
-                                        context.resources.getString(
-                                            R.string.main_txt_basketball_phase,
-                                            "二"
-                                        ) + context.resources.getString(
-                                            R.string.finis
-                                        )
-                                    //initAnimation(binding.txtMatchAnimation)
-
-                                }
-
-                                "6" -> {
-                                    binding.txtMatchAnimation.text="'"
-                                    binding.tvvs.text = item.awayScore + "-" + item.homeScore
-                                    binding.tvstatus.visibility = View.VISIBLE
-                                    binding.tvstatus.setTextColor(
-                                        ContextCompat.getColor(
-                                            context,
-                                            R.color.c_e6820c
-                                        )
-                                    )
-                                    binding.tvvs.setTextColor(
-                                        ContextCompat.getColor(
-                                            context,
-                                            R.color.c_34a853
-                                        )
-                                    )
-                                    binding.tvstatus.text =
-                                        context.resources.getString(
-                                            R.string.main_txt_basketball_phase,
-                                            "三"
-                                        )
-                                    initAnimation(binding.txtMatchAnimation)
-
-                                }
-
-                                "7" -> {
-                                    binding.txtMatchAnimation.text=""
-                                    binding.tvvs.text = item.awayScore + "-" + item.homeScore
-                                    binding.tvstatus.visibility = View.VISIBLE
-                                    binding.tvstatus.setTextColor(
-                                        ContextCompat.getColor(
-                                            context,
-                                            R.color.c_e6820c
-                                        )
-                                    )
-                                    binding.tvvs.setTextColor(
-                                        ContextCompat.getColor(
-                                            context,
-                                            R.color.c_34a853
-                                        )
-                                    )
-                                    binding.tvstatus.text =
-                                        context.resources.getString(
-                                            R.string.main_txt_basketball_phase,
-                                            "三"
-                                        ) + context.resources.getString(
-                                            R.string.finis
-                                        )
-                                    // initAnimation(binding.txtMatchAnimation)
-
-                                }
-
-                                "8" -> {
-                                    binding.txtMatchAnimation.text="'"
-                                    binding.tvvs.text = item.awayScore + "-" + item.homeScore
-                                    binding.tvstatus.visibility = View.VISIBLE
-                                    binding.tvstatus.setTextColor(
-                                        ContextCompat.getColor(
-                                            context,
-                                            R.color.c_e6820c
-                                        )
-                                    )
-                                    binding.tvvs.setTextColor(
-                                        ContextCompat.getColor(
-                                            context,
-                                            R.color.c_34a853
-                                        )
-                                    )
-                                    binding.tvstatus.text =
-                                        context.resources.getString(
-                                            R.string.main_txt_basketball_phase,
-                                            "四"
-                                        )
-                                    initAnimation(binding.txtMatchAnimation)
-                                }
-
-                                "9" -> {
-                                    binding.txtMatchAnimation.text="'"
-                                    binding.tvvs.text = item.awayScore + "-" + item.homeScore
-                                    binding.tvstatus.visibility = View.VISIBLE
-                                    binding.tvstatus.setTextColor(
-                                        ContextCompat.getColor(
-                                            context,
-                                            R.color.c_e6820c
-                                        )
-                                    )
-                                    binding.tvvs.setTextColor(
-                                        ContextCompat.getColor(
-                                            context,
-                                            R.color.c_34a853
-                                        )
-                                    )
-                                    binding.tvstatus.text =
-                                        context.resources.getString(R.string.over_time)
-                                    initAnimation(binding.txtMatchAnimation)
-                                }
-
-                                "10" -> {
-                                    binding.txtMatchAnimation.text=""
-                                    binding.tvvs.text = item.awayScore + "-" + item.homeScore
-                                    binding.tvstatus.visibility = View.VISIBLE
-                                    binding.tvstatus.setTextColor(
-                                        ContextCompat.getColor(
-                                            context,
-                                            R.color.c_999999
-                                        )
-                                    )
-                                    binding.tvvs.setTextColor(
-                                        ContextCompat.getColor(
-                                            context,
-                                            R.color.c_34a853
-                                        )
-                                    )
-                                    binding.tvstatus.text =
-                                        context.resources.getString(R.string.main_txt_over)
-
-                                }
-
-                                "11", "12", "13", "14", "15" -> {
-                                    binding.txtMatchAnimation.text=""
-                                    binding.tvvs.text = item.awayScore + "-" + item.homeScore
-                                    binding.tvstatus.visibility = View.VISIBLE
-                                    binding.tvstatus.setTextColor(
-                                        ContextCompat.getColor(
-                                            context,
-                                            R.color.c_999999
-                                        )
-                                    )
-                                    binding.tvvs.setTextColor(
-                                        ContextCompat.getColor(
-                                            context,
-                                            R.color.c_37373d
-                                        )
-                                    )
-                                    when (item.status) {
-                                        "11" -> {
-                                            binding.tvstatus.text =
-                                                context.resources.getString(R.string.main_txt_zd)
-                                        }
-
-                                        "12" -> {
-                                            binding.tvstatus.text =
-                                                context.resources.getString(R.string.main_txt_qx)
-                                        }
-
-                                        "13" -> {
-                                            binding.tvstatus.text =
-                                                context.resources.getString(R.string.main_txt_zd)
-                                        }
-
-                                        "14" -> {
-                                            binding.tvstatus.text =
-                                                context.resources.getString(R.string.main_txt_yz)
-                                        }
-
-                                        "15" -> {
-                                            binding.tvstatus.text =
-                                                context.resources.getString(R.string.main_txt_dd)
-                                        }
+                                )
+                                binding.tvstatus.text =
+                                    if (item.runTime == null)
+                                        "0"
+                                    else {
+                                        item.runTime
                                     }
 
-                                }
+                                initAnimation(binding.txtMatchAnimation)
+                            }
+
+                            "3" -> {
+                                binding.tvstatus.visibility = View.VISIBLE
+                                binding.txtMatchAnimation.visibility = View.GONE
+                                binding.tvvs.text = item.homeScore + "-" + item.awayScore
+                                binding.tvstatus.setTextColor(
+                                    ContextCompat.getColor(
+                                        context,
+                                        R.color.c_e6820c
+                                    )
+                                )
+                                binding.tvvs.setTextColor(
+                                    ContextCompat.getColor(
+                                        context,
+                                        R.color.c_34a853
+                                    )
+                                )
+                                binding.tvstatus.text = context.resources.getString(
+                                    R.string.zc
+                                )
+                            }
+
+                            "4" -> {
+                                binding.tvstatus.visibility = View.VISIBLE
+                                binding.txtMatchAnimation.visibility = View.VISIBLE
+                                binding.tvvs.text = item.homeScore + "-" + item.awayScore
+                                binding.tvstatus.setTextColor(
+                                    ContextCompat.getColor(
+                                        context,
+                                        R.color.c_e6820c
+                                    )
+                                )
+                                binding.tvvs.setTextColor(
+                                    ContextCompat.getColor(
+                                        context,
+                                        R.color.c_34a853
+                                    )
+                                )
+                                binding.tvstatus.text =
+                                    if (item.runTime == null)
+                                        "0"
+                                    else {
+                                        item.runTime
+                                    }
+                                initAnimation(binding.txtMatchAnimation)
+                            }
+
+                            "5", "6" -> {
+                                binding.tvstatus.visibility = View.VISIBLE
+                                binding.txtMatchAnimation.visibility = View.VISIBLE
+                                binding.tvvs.text = item.homeScore + "-" + item.awayScore
+                                binding.tvstatus.setTextColor(
+                                    ContextCompat.getColor(
+                                        context,
+                                        R.color.c_e6820c
+                                    )
+                                )
+                                binding.tvvs.setTextColor(
+                                    ContextCompat.getColor(
+                                        context,
+                                        R.color.c_34a853
+                                    )
+                                )
+                                binding.tvstatus.text = context.resources.getString(
+                                    R.string.over_time
+                                )
+                                initAnimation(binding.txtMatchAnimation)
+
+                            }
+
+                            "7" -> {
+                                binding.tvstatus.visibility = View.VISIBLE
+                                binding.txtMatchAnimation.visibility = View.GONE
+                                binding.tvvs.text = item.homeScore + "-" + item.awayScore
+                                binding.tvstatus.setTextColor(
+                                    ContextCompat.getColor(
+                                        context,
+                                        R.color.c_e6820c
+                                    )
+                                )
+                                binding.tvvs.setTextColor(
+                                    ContextCompat.getColor(
+                                        context,
+                                        R.color.c_34a853
+                                    )
+                                )
+                                binding.tvstatus.text = context.resources.getString(
+                                    R.string.main_dqdz
+                                )
+                                initAnimation(binding.txtMatchAnimation)
+
+                            }
+
+                            "8" -> {
+                                binding.txtMatchAnimation.visibility = View.GONE
+                                binding.tvvs.text = item.homeScore + "-" + item.awayScore
+                                binding.tvstatus.visibility = View.VISIBLE
+                                binding.tvstatus.setTextColor(
+                                    ContextCompat.getColor(
+                                        context,
+                                        R.color.c_999999
+                                    )
+                                )
+                                binding.tvvs.setTextColor(
+                                    ContextCompat.getColor(
+                                        context,
+                                        R.color.c_34a853
+                                    )
+                                )
+                                binding.tvstatus.text =
+                                    context.resources.getString(R.string.main_txt_over)
+
+                            }
+
+                            "9" -> {
+                                binding.txtMatchAnimation.visibility = View.GONE
+                                binding.tvvs.text = item.homeScore + "-" + item.awayScore
+                                binding.tvstatus.visibility = View.VISIBLE
+                                binding.tvstatus.setTextColor(
+                                    ContextCompat.getColor(
+                                        context,
+                                        R.color.c_F7DA73
+                                    )
+                                )
+                                binding.tvvs.setTextColor(
+                                    ContextCompat.getColor(
+                                        context,
+                                        R.color.c_37373d
+                                    )
+                                )
+                                binding.tvstatus.text =
+                                    context.resources.getString(R.string.main_txt_tc)
+
+                            }
+
+                            "10" -> {
+                                binding.txtMatchAnimation.visibility = View.GONE
+                                binding.tvvs.text = item.homeScore + "-" + item.awayScore
+                                binding.tvstatus.visibility = View.VISIBLE
+                                binding.tvstatus.setTextColor(
+                                    ContextCompat.getColor(
+                                        context,
+                                        R.color.c_F7DA73
+                                    )
+                                )
+                                binding.tvvs.setTextColor(
+                                    ContextCompat.getColor(
+                                        context,
+                                        R.color.c_37373d
+                                    )
+                                )
+                                binding.tvstatus.text =
+                                    context.resources.getString(R.string.main_txt_zd)
+
+                            }
+
+                            "11" -> {
+                                binding.txtMatchAnimation.visibility = View.GONE
+                                binding.tvvs.text = item.homeScore + "-" + item.awayScore
+                                binding.tvstatus.visibility = View.VISIBLE
+                                binding.tvstatus.setTextColor(
+                                    ContextCompat.getColor(
+                                        context,
+                                        R.color.c_8a91a0
+                                    )
+                                )
+                                binding.tvvs.setTextColor(
+                                    ContextCompat.getColor(
+                                        context,
+                                        R.color.c_37373d
+                                    )
+                                )
+                                binding.tvstatus.text =
+                                    context.resources.getString(R.string.main_txt_yz)
+
+                            }
+
+                            "12" -> {
+                                binding.txtMatchAnimation.visibility = View.GONE
+                                binding.tvvs.text = item.homeScore + "-" + item.awayScore
+                                binding.tvstatus.visibility = View.VISIBLE
+                                binding.tvstatus.setTextColor(
+                                    ContextCompat.getColor(
+                                        context,
+                                        R.color.c_8a91a0
+                                    )
+                                )
+                                binding.tvvs.setTextColor(
+                                    ContextCompat.getColor(
+                                        context,
+                                        R.color.c_37373d
+                                    )
+                                )
+                                binding.tvstatus.text =
+                                    context.resources.getString(R.string.main_txt_qx)
+
+                            }
+
+                            "13" -> {
+                                binding.txtMatchAnimation.visibility = View.GONE
+                                binding.tvvs.text = item.homeScore + "-" + item.awayScore
+                                binding.tvstatus.visibility = View.VISIBLE
+                                binding.tvstatus.setTextColor(
+                                    ContextCompat.getColor(
+                                        context,
+                                        R.color.c_8a91a0
+                                    )
+                                )
+                                binding.tvvs.setTextColor(
+                                    ContextCompat.getColor(
+                                        context,
+                                        R.color.c_37373d
+                                    )
+                                )
+                                binding.tvstatus.text =
+                                    context.resources.getString(R.string.main_txt_dd)
+
+                            }
+
+                            else -> {
+                                binding.txtMatchAnimation.visibility = View.GONE
+                                binding.tvstatus.visibility = View.VISIBLE
+                                binding.tvstatus.setTextColor(
+                                    ContextCompat.getColor(
+                                        context,
+                                        R.color.c_8a91a0
+                                    )
+                                )
+                                binding.tvvs.setTextColor(
+                                    ContextCompat.getColor(
+                                        context,
+                                        R.color.c_37373d
+                                    )
+                                )
+                                val date = Date(item.matchTime.toLong())
+                                var formatter =
+                                    SimpleDateFormat("MM-dd HH:mm", Locale.getDefault())
+                                binding.tvstatus.text =
+                                    context.resources.getString(R.string.main_txt_over)
                             }
                         }
+                    }else{
+                        binding.tvhafl.text =
+                            context.resources.getString(R.string.hafl_rices) + "" + item.awayHalfScore + "-" + item.homeHalfScore
+                        binding.tvtime.text = time!!.substring(11, 16)
+                        binding.tvname.text = item.competitionName
+                        binding.tvnameLeft.text = item.awayName
+                        binding.tvnameRight.text = item.homeName
+                        Glide.with(context).load(item.awayLogo)
+                            .placeholder(R.drawable.def_basketball).into(binding.tvflagLeft)
+                        Glide.with(context).load(item.homeLogo)
+                            .placeholder(R.drawable.def_basketball).into(binding.tvflagRight)
+                        binding.ivtype.setBackgroundResource(R.drawable.basketball)
+                        when (item.status) {
+                            "0" -> {binding.tvstatus.visibility = View.GONE}
+                            "1" -> {
+                                binding.tvvs.text = "VS"
+                                binding.txtMatchAnimation.visibility = View.GONE
+                                binding.tvstatus.visibility = View.VISIBLE
+                                binding.tvstatus.setTextColor(
+                                    ContextCompat.getColor(
+                                        context,
+                                        R.color.c_94999f
+                                    )
+                                )
+                                binding.tvvs.setTextColor(
+                                    ContextCompat.getColor(
+                                        context,
+                                        R.color.c_37373d
+                                    )
+                                )
+                                binding.tvstatus.text =
+                                    context.resources.getString(R.string.main_txt_wks)
+
+                            }
+
+                            "2" -> {
+                                binding.txtMatchAnimation.visibility = View.VISIBLE
+                                binding.tvvs.text = item.awayScore + "-" + item.homeScore
+                                binding.tvstatus.visibility = View.VISIBLE
+                                binding.tvstatus.setTextColor(
+                                    ContextCompat.getColor(
+                                        context,
+                                        R.color.c_e6820c
+                                    )
+                                )
+                                binding.tvvs.setTextColor(
+                                    ContextCompat.getColor(
+                                        context,
+                                        R.color.c_e6820c
+                                    )
+                                )
+                                binding.tvstatus.text =
+                                    context.resources.getString(
+                                        R.string.main_txt_basketball_phase,
+                                        "一"
+                                    )
+                                initAnimation(binding.txtMatchAnimation)
+
+                            }
+
+                            "3" -> {
+                                binding.txtMatchAnimation.visibility = View.GONE
+                                binding.tvvs.text = item.awayScore + "-" + item.homeScore
+                                binding.tvstatus.visibility = View.VISIBLE
+                                binding.tvstatus.setTextColor(
+                                    ContextCompat.getColor(
+                                        context,
+                                        R.color.c_e6820c
+                                    )
+                                )
+                                binding.tvvs.setTextColor(
+                                    ContextCompat.getColor(
+                                        context,
+                                        R.color.c_34a853
+                                    )
+                                )
+                                binding.tvstatus.text =
+                                    context.resources.getString(
+                                        R.string.main_txt_basketball_phase,
+                                        "一"
+                                    ) + context.resources.getString(
+                                        R.string.finis
+                                    )
+                                //initAnimation(binding.txtMatchAnimation)
+
+                            }
+
+                            "4" -> {
+                                binding.txtMatchAnimation.visibility = View.VISIBLE
+                                binding.tvvs.text = item.awayScore + "-" + item.homeScore
+                                binding.tvstatus.visibility = View.VISIBLE
+                                binding.tvstatus.setTextColor(
+                                    ContextCompat.getColor(
+                                        context,
+                                        R.color.c_e6820c
+                                    )
+                                )
+                                binding.tvvs.setTextColor(
+                                    ContextCompat.getColor(
+                                        context,
+                                        R.color.c_34a853
+                                    )
+                                )
+                                binding.tvstatus.text =
+                                    context.resources.getString(
+                                        R.string.main_txt_basketball_phase,
+                                        "二"
+                                    )
+                                initAnimation(binding.txtMatchAnimation)
+
+                            }
+
+                            "5" -> {
+                                binding.txtMatchAnimation.visibility = View.GONE
+                                binding.tvvs.text = item.awayScore + "-" + item.homeScore
+                                binding.tvstatus.visibility = View.VISIBLE
+                                binding.tvstatus.setTextColor(
+                                    ContextCompat.getColor(
+                                        context,
+                                        R.color.c_e6820c
+                                    )
+                                )
+                                binding.tvvs.setTextColor(
+                                    ContextCompat.getColor(
+                                        context,
+                                        R.color.c_34a853
+                                    )
+                                )
+                                binding.tvstatus.text =
+                                    context.resources.getString(
+                                        R.string.main_txt_basketball_phase,
+                                        "二"
+                                    ) + context.resources.getString(
+                                        R.string.finis
+                                    )
+                                //initAnimation(binding.txtMatchAnimation)
+
+                            }
+
+                            "6" -> {
+                                binding.txtMatchAnimation.visibility = View.VISIBLE
+                                binding.tvvs.text = item.awayScore + "-" + item.homeScore
+                                binding.tvstatus.visibility = View.VISIBLE
+                                binding.tvstatus.setTextColor(
+                                    ContextCompat.getColor(
+                                        context,
+                                        R.color.c_e6820c
+                                    )
+                                )
+                                binding.tvvs.setTextColor(
+                                    ContextCompat.getColor(
+                                        context,
+                                        R.color.c_34a853
+                                    )
+                                )
+                                binding.tvstatus.text =
+                                    context.resources.getString(
+                                        R.string.main_txt_basketball_phase,
+                                        "三"
+                                    )
+                                initAnimation(binding.txtMatchAnimation)
+
+                            }
+
+                            "7" -> {
+                                binding.txtMatchAnimation.visibility = View.GONE
+                                binding.tvvs.text = item.awayScore + "-" + item.homeScore
+                                binding.tvstatus.visibility = View.VISIBLE
+                                binding.tvstatus.setTextColor(
+                                    ContextCompat.getColor(
+                                        context,
+                                        R.color.c_e6820c
+                                    )
+                                )
+                                binding.tvvs.setTextColor(
+                                    ContextCompat.getColor(
+                                        context,
+                                        R.color.c_34a853
+                                    )
+                                )
+                                binding.tvstatus.text =
+                                    context.resources.getString(
+                                        R.string.main_txt_basketball_phase,
+                                        "三"
+                                    ) + context.resources.getString(
+                                        R.string.finis
+                                    )
+                                // initAnimation(binding.txtMatchAnimation)
+
+                            }
+
+                            "8" -> {
+                                binding.txtMatchAnimation.visibility = View.VISIBLE
+                                binding.tvvs.text = item.awayScore + "-" + item.homeScore
+                                binding.tvstatus.visibility = View.VISIBLE
+                                binding.tvstatus.setTextColor(
+                                    ContextCompat.getColor(
+                                        context,
+                                        R.color.c_e6820c
+                                    )
+                                )
+                                binding.tvvs.setTextColor(
+                                    ContextCompat.getColor(
+                                        context,
+                                        R.color.c_34a853
+                                    )
+                                )
+                                binding.tvstatus.text =
+                                    context.resources.getString(
+                                        R.string.main_txt_basketball_phase,
+                                        "四"
+                                    )
+                                initAnimation(binding.txtMatchAnimation)
+                            }
+
+                            "9" -> {
+                                binding.txtMatchAnimation.visibility = View.VISIBLE
+                                binding.tvvs.text = item.awayScore + "-" + item.homeScore
+                                binding.tvstatus.visibility = View.VISIBLE
+                                binding.tvstatus.setTextColor(
+                                    ContextCompat.getColor(
+                                        context,
+                                        R.color.c_e6820c
+                                    )
+                                )
+                                binding.tvvs.setTextColor(
+                                    ContextCompat.getColor(
+                                        context,
+                                        R.color.c_34a853
+                                    )
+                                )
+                                binding.tvstatus.text =
+                                    context.resources.getString(R.string.over_time)
+                                initAnimation(binding.txtMatchAnimation)
+                            }
+
+                            "10" -> {
+                                binding.txtMatchAnimation.visibility = View.GONE
+                                binding.tvvs.text = item.awayScore + "-" + item.homeScore
+                                binding.tvstatus.visibility = View.VISIBLE
+                                binding.tvstatus.setTextColor(
+                                    ContextCompat.getColor(
+                                        context,
+                                        R.color.c_999999
+                                    )
+                                )
+                                binding.tvvs.setTextColor(
+                                    ContextCompat.getColor(
+                                        context,
+                                        R.color.c_34a853
+                                    )
+                                )
+                                binding.tvstatus.text =
+                                    context.resources.getString(R.string.main_txt_over)
+
+                            }
+
+                            "11", "12", "13", "14", "15" -> {
+                                binding.txtMatchAnimation.visibility = View.GONE
+                                binding.tvvs.text = item.awayScore + "-" + item.homeScore
+                                binding.tvstatus.visibility = View.VISIBLE
+                                binding.tvstatus.setTextColor(
+                                    ContextCompat.getColor(
+                                        context,
+                                        R.color.c_999999
+                                    )
+                                )
+                                binding.tvvs.setTextColor(
+                                    ContextCompat.getColor(
+                                        context,
+                                        R.color.c_37373d
+                                    )
+                                )
+                                when (item.status) {
+                                    "11" -> {
+                                        binding.tvstatus.text =
+                                            context.resources.getString(R.string.main_txt_zd)
+                                    }
+
+                                    "12" -> {
+                                        binding.tvstatus.text =
+                                            context.resources.getString(R.string.main_txt_qx)
+                                    }
+
+                                    "13" -> {
+                                        binding.tvstatus.text =
+                                            context.resources.getString(R.string.main_txt_zd)
+                                    }
+
+                                    "14" -> {
+                                        binding.tvstatus.text =
+                                            context.resources.getString(R.string.main_txt_yz)
+                                    }
+
+                                    "15" -> {
+                                        binding.tvstatus.text =
+                                            context.resources.getString(R.string.main_txt_dd)
+                                    }
+                                }
+
+                            }
+                        }
+
                     }
+
+
 
                     if (item.anchorList != null && item.anchorList.isNotEmpty()) {
                         binding.conlive.visibility = View.VISIBLE
@@ -950,7 +949,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                         isVisble = true
                         calendarTime = ""
                         isResh = false
-                        getData(true)
+                        mDatabind.smartCommon.autoRefresh()
                     } else {
                         isVisble = false
                     }
@@ -1023,7 +1022,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                 } else {
                     if (isAdded) {
                         if (mCurrentOneTabIndex == mOneTabIndex && mCurrentTwoTabIndex == mTwoTabIndex) {
-                            getData(true)
+                            mDatabind.smartCommon.autoRefresh()
                         } else {
 
                             isResh = true
@@ -1036,7 +1035,6 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
         }
 
     }
-
     @SuppressLint("UseRequireInsteadOfGet")
     fun stopAn(view: LottieAnimationView) {
         // 定义缩放动画
@@ -1053,7 +1051,6 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 // 启动动画
         view.startAnimation(scaleAnimation)
     }
-
     @SuppressLint("UseRequireInsteadOfGet")
     fun startAn(view: LottieAnimationView) {
         // 定义缩放动画
@@ -1097,7 +1094,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
     override fun lazyLoadData() {
         super.lazyLoadData()
-        getData(true)
+        getData(false)
 
     }
 
@@ -1118,48 +1115,41 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
     }
 
     fun initAnimation(view: AppCompatTextView) {
-        try {
+        animatorSet.removeAllListeners()
+        view.clearAnimation()
+        val fadeIn =
+            ObjectAnimator.ofFloat(
+                view,
+                "alpha",
+                0f,
+                1f
+            )
+        fadeIn.duration = 500
+        fadeIn.startDelay = 200 // 延迟200毫秒开始动画
 
-            animatorSet.removeAllListeners()
-            view.clearAnimation()
-            val fadeIn =
-                ObjectAnimator.ofFloat(
-                    view,
-                    "alpha",
-                    0f,
-                    1f
-                )
-            fadeIn.duration = 500
-            fadeIn.startDelay = 200 // 延迟200毫秒开始动画
-
-            val fadeOut =
-                ObjectAnimator.ofFloat(
-                    view,
-                    "alpha",
-                    1f,
-                    0f
-                )
-            fadeOut.duration = 500
-            fadeOut.startDelay = 200 // 延迟200毫秒开始动画
+        val fadeOut =
+            ObjectAnimator.ofFloat(
+                view,
+                "alpha",
+                1f,
+                0f
+            )
+        fadeOut.duration = 500
+        fadeOut.startDelay = 200 // 延迟200毫秒开始动画
 
 
-            animatorSet.playSequentially(fadeIn, fadeOut) // 顺序播放渐显和渐隐动画
-            animatorSet.startDelay = 200 // 延迟200毫秒开始第一次播放动画
-            animatorSet.addListener(object : AnimatorListenerAdapter() {
+        animatorSet.playSequentially(fadeIn, fadeOut) // 顺序播放渐显和渐隐动画
+        animatorSet.startDelay = 200 // 延迟200毫秒开始第一次播放动画
+        animatorSet.addListener(object : AnimatorListenerAdapter() {
 
 
-                override fun onAnimationEnd(animation: Animator) {
-                    // 动画结束时重新播放
-                    super.onAnimationEnd(animation)
-                    //view.visibility = View.VISIBLE
-                    animatorSet.start()
-                }
-            })
-            animatorSet.start()
-
-        } catch (e: Exception) {
-            LogUtils.d("动画报错" + e.message)
-        }
+            override fun onAnimationEnd(animation: Animator) {
+                // 动画结束时重新播放
+                super.onAnimationEnd(animation)
+                animatorSet.start()
+            }
+        })
+        animatorSet.start()
     }
 
     override fun createObserver() {
