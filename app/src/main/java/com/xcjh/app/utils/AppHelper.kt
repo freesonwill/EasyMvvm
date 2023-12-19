@@ -13,6 +13,8 @@ import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -37,6 +39,7 @@ import com.xcjh.app.view.callback.EmptyCallback
 import com.xcjh.app.view.callback.LoadingCallback
 import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.bean.ListDataUiState
+import com.xcjh.base_lib.utils.dp2px
 import com.xcjh.base_lib.utils.layoutInflater
 import com.xcjh.base_lib.utils.setLm
 import com.xcjh.base_lib.utils.startNewActivity
@@ -344,12 +347,15 @@ fun <T> smartPageListData(
     pageRefreshLayout: PageRefreshLayout,
     imgEmptyId: Int = R.drawable.zwt_zwbs,//图片
     notice: String = appContext.getString(R.string.no_data),//提示
+    marginT: Int = 100,//空布局距离顶部距离
 ) {
     pageRefreshLayout.emptyLayout=R.layout.layout_empty
-
     pageRefreshLayout.stateLayout?.onEmpty {
+        val lltContent = findViewById<LinearLayout>(R.id.lltContent)
         val emptyImg = findViewById<ImageView>(R.id.ivEmptyIcon)
         val emptyHint = findViewById<TextView>(R.id.txtEmptyName)
+        val lp = lltContent.layoutParams as RelativeLayout.LayoutParams
+        lp.topMargin= dp2px(marginT)
         emptyImg.setOnClickListener {
 
         }

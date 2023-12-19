@@ -269,6 +269,60 @@
                                 android:textStyle="bold" />
 
                         </LinearLayout>
+                        <!--播放异常-->
+                        <LinearLayout
+                            android:id="@+id/lltLiveError"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_above="@id/marqueeView"
+                            android:gravity="center_horizontal"
+                            android:orientation="vertical"
+                            android:visibility="gone">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginHorizontal="@dimen/dp_5"
+                                android:text="加载失败,请重试或切换信号"
+                                android:textColor="@color/c_ffffff"
+                                android:textSize="@dimen/sp_13"
+                                android:textStyle="bold" />
+
+                            <LinearLayout
+                                android:layout_marginTop="@dimen/dp_15"
+                                android:layout_marginBottom="@dimen/dp_30"
+                                android:orientation="horizontal"
+                                android:gravity="center_horizontal"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+                                <TextView
+                                    android:id="@+id/tvReload"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="25dp"
+                                    android:background="@drawable/shape_background_signal"
+                                    android:gravity="center"
+                                    android:paddingHorizontal="@dimen/dp_8"
+                                    android:text="重新加载"
+                                    android:textColor="@color/c_ffffff"
+                                    android:textSize="@dimen/sp_12"
+                                    android:textStyle="bold" />
+                                <TextView
+                                    android:id="@+id/tvSignal4"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="25dp"
+                                    android:layout_marginStart="@dimen/dp_25"
+                                    android:background="@drawable/shape_background_signal"
+                                    android:gravity="center"
+                                    android:paddingHorizontal="@dimen/dp_14"
+                                    android:text="@string/signal_source"
+                                    android:textColor="@color/c_ffffff"
+                                    android:textSize="@dimen/sp_12"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+
+                        </LinearLayout>
 
                         <!--视频下边的广告-->
                         <TextView

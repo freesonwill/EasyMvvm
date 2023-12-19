@@ -6,6 +6,10 @@ import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -39,6 +43,7 @@ import com.xcjh.app.websocket.bean.SendChatMsgBean
 import com.xcjh.app.websocket.listener.LiveRoomListener
 import com.xcjh.base_lib.App
 import com.xcjh.base_lib.utils.SpanUtil
+import com.xcjh.base_lib.utils.dp2px
 import com.xcjh.base_lib.utils.loge
 import com.xcjh.base_lib.utils.toHtml
 import com.xcjh.base_lib.utils.view.visibleOrGone
@@ -96,7 +101,8 @@ class DetailChatFragment(
                 lltExpandCollapse.setOnClickListener {
                     val aa = expandableText.height
                     noticeBean.isOpen = !noticeBean.isOpen
-                    tvArrow.text=if (noticeBean.isOpen) getString(R.string.pack_up) else getString(R.string.expand)
+                    tvArrow.text =
+                        if (noticeBean.isOpen) getString(R.string.pack_up) else getString(R.string.expand)
                     startImageRotate(expandCollapse, noticeBean.isOpen)
                     expandableText.maxLines = if (noticeBean.isOpen) 20 else 2
                     mDatabind.rcvChat.postDelayed({
@@ -117,6 +123,19 @@ class DetailChatFragment(
     private fun initRcv() {
         mDatabind.smartChat.setEnableLoadMore(false)
         mDatabind.smartChat.setEnableOverScrollBounce(false)
+        mDatabind.smartChat.emptyLayout = R.layout.layout_empty
+        mDatabind.smartChat.stateLayout?.onEmpty {
+            val emptyImg = findViewById<ImageView>(R.id.ivEmptyIcon)
+            val emptyHint = findViewById<TextView>(R.id.txtEmptyName)
+            val lltContent = findViewById<LinearLayout>(R.id.lltContent)
+            val lp = lltContent.layoutParams as RelativeLayout.LayoutParams
+            lp.topMargin = dp2px(60)
+            emptyImg.setOnClickListener {
+
+            }
+            emptyImg.setImageResource(R.drawable.ic_empty_detail_chat)
+            emptyHint.text = "暂无聊天内容"
+        }
         mDatabind.smartChat.setOnRefreshListener {
             mViewModel.getHisMsgList(liveId, offset)
         }
@@ -140,14 +159,14 @@ class DetailChatFragment(
                         if (item.identityType == 0) {
                             binding.ivImage.visibleOrGone(false)
                             binding.ivLevel.visibleOrGone(true)
-                            binding.lltLevel.backgroundTintList= ColorStateList.valueOf(
+                            binding.lltLevel.backgroundTintList = ColorStateList.valueOf(
                                 ContextCompat.getColor(context, R.color.c_1AFFFFFF)
                             )
                             binding.ivLevel.setImageResource(setLeverDrawable(item.level))
                             binding.tvLevel.text = getLeverNum(item.level)
                         } else {
                             binding.tvLevel.text = getString(R.string.anchor)
-                            binding.lltLevel.backgroundTintList= ColorStateList.valueOf(
+                            binding.lltLevel.backgroundTintList = ColorStateList.valueOf(
                                 ContextCompat.getColor(context, R.color.c_3334A853)
                             )
                             binding.ivLevel.visibleOrGone(false)
@@ -155,7 +174,12 @@ class DetailChatFragment(
                             if (item.msgType == 1) {//图片
                                 Glide.with(context)
                                     .load(item.content)
-                                    .apply(RequestOptions().transform(CenterCrop(), RoundedCorners(dp2px(6f))))
+                                    .apply(
+                                        RequestOptions().transform(
+                                            CenterCrop(),
+                                            RoundedCorners(dp2px(6f))
+                                        )
+                                    )
                                     .placeholder(R.drawable.load_square)
                                     .into(binding.ivImage)
                                 binding.ivImage.setOnClickListener {
@@ -185,10 +209,11 @@ class DetailChatFragment(
                             )
                         if (item.identityType == 0) {
                             binding.tvContent.text = section.spanStrBuilder
-                          //  binding.tvContent.text = "<font color=\"#94999F\">${item.nick} : </font>${item.content}".toHtml()
-                        }else{
+                            //  binding.tvContent.text = "<font color=\"#94999F\">${item.nick} : </font>${item.content}".toHtml()
+                        } else {
                             //主播加入超链接
-                            binding.tvContent.text = "<font color=\"#94999F\">${item.nick} : </font>${item.content}".toHtml()
+                            binding.tvContent.text =
+                                "<font color=\"#94999F\">${item.nick} : </font>${item.content}".toHtml()
                             binding.tvContent.movementMethod = LinkMovementMethod.getInstance()
                         }
 
@@ -232,21 +257,21 @@ class DetailChatFragment(
             if (it != null) {
                 noticeBean.notice = it.notice ?: ""
                 mDatabind.notice.expandableText.movementMethod = LinkMovementMethod.getInstance()
-               /* val richText = ("<font color=\"red\">红色样式</font><br />"
-                        + "<big>大号字样式</big><br />"
-                        + "<small>小号字样式</small><br />"
-                        + "<i>斜体样式</i><br />"
-                        + "<b>粗体样式</b><br />"
-                        + "<tt>等t宽t样式</tt><br />"
-                        + "<p>段落样式</p><br />"
-                        +"<img src=\"https://5b0988e595225.cdn.sohucs.com/images/20180615/0338b5602889474d9935ec4214de9695.jpeg\" title=\"abcjpg\">"
-                        + "<a href=\"http://www.baidu.com\">百度一下</a>")
-                richText.toHtml {
-                    Handler(Looper.getMainLooper()).post {
+                /* val richText = ("<font color=\"red\">红色样式</font><br />"
+                         + "<big>大号字样式</big><br />"
+                         + "<small>小号字样式</small><br />"
+                         + "<i>斜体样式</i><br />"
+                         + "<b>粗体样式</b><br />"
+                         + "<tt>等t宽t样式</tt><br />"
+                         + "<p>段落样式</p><br />"
+                         +"<img src=\"https://5b0988e595225.cdn.sohucs.com/images/20180615/0338b5602889474d9935ec4214de9695.jpeg\" title=\"abcjpg\">"
+                         + "<a href=\"http://www.baidu.com\">百度一下</a>")
+                 richText.toHtml {
+                     Handler(Looper.getMainLooper()).post {
 
-                        mDatabind.notice.expandableText.text = it
-                    }
-                }*/
+                         mDatabind.notice.expandableText.text = it
+                     }
+                 }*/
                 mDatabind.notice.expandableText.text = it.notice?.toHtml() //主播公告
                 mDatabind.rcvChat.postDelayed({
                     try {
@@ -282,13 +307,22 @@ class DetailChatFragment(
                 if (it.listData.isEmpty()) {
                     //mDatabind.smartChat.setEnableRefresh(false)
                     mDatabind.smartChat.finishRefreshWithNoMoreData()
+                    if (it.isRefresh && userId.isNullOrEmpty()) {
+                        mDatabind.smartChat.showEmpty()
+                    }
                 } else {
+                    mDatabind.smartChat.showContent()
                     mDatabind.rcvChat.addModels(it.listData, index = 0) // 添加一条消息
                     if (it.isRefresh) {
                         mDatabind.rcvChat.smoothScrollToPosition(
                             mDatabind.rcvChat.models?.size ?: 0
                         )
                     }
+                }
+            } else {
+                if (it.isRefresh && userId.isNullOrEmpty()) {
+                    mDatabind.rcvChat.addModels(null)
+                    mDatabind.smartChat.showEmpty()
                 }
             }
         }
@@ -317,10 +351,10 @@ class DetailChatFragment(
         //setWindowSoftInput(float = mDatabind.llInput, setPadding = true)
         mDatabind.smartChat.postDelayed({
             try {
-              /*  mDatabind.root.height.toString().loge("========onResume===")
-                mDatabind.notice.root.height.toString().loge("=onResume===")
-                mDatabind.smartChat.height.toString().loge("=onResume===")
-                mDatabind.rcvChat.height.toString().loge("=onResume===")*/
+                /*  mDatabind.root.height.toString().loge("========onResume===")
+                  mDatabind.notice.root.height.toString().loge("=onResume===")
+                  mDatabind.smartChat.height.toString().loge("=onResume===")
+                  mDatabind.rcvChat.height.toString().loge("=onResume===")*/
                 val params = mDatabind.rcvChat.layoutParams
                 params.height = mDatabind.smartChat.height
                 mDatabind.rcvChat.layoutParams = params
@@ -457,8 +491,10 @@ class DetailChatFragment(
                 val params = mDatabind.rcvChat.layoutParams
                 params.height = mDatabind.smartChat.height
                 mDatabind.rcvChat.layoutParams = params
-            } catch (_: Exception) { }
+            } catch (_: Exception) {
+            }
             mDatabind.rcvChat.models = arrayListOf()
+            mDatabind.smartChat.showContent()
             onWsUserEnterRoom(liveId)
             getHistoryData()
         }, 200)

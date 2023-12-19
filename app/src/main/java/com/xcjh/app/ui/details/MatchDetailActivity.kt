@@ -173,6 +173,7 @@ class MatchDetailActivity :
                 lltNoLive.visibleOrGone(true)
                 topLiveTitle.visibleOrGone(true)
                 topNoLiveTitle.visibleOrGone(false)
+                lltLiveError.visibleOrGone(false)
             } else {
                 lltNoLive.visibleOrGone(false)
                 //有视频布局
@@ -182,6 +183,7 @@ class MatchDetailActivity :
                 //无视频纯净流布局
                 cslMatchInfo.visibleOrGone(!isShowVideo)
                 topNoLiveTitle.visibleOrGone(!isShowVideo)
+                lltLiveError.visibleOrGone(false)
             }
         }
 
@@ -330,6 +332,9 @@ class MatchDetailActivity :
             showSignal()
         }
         mDatabind.tvSignal3.setOnClickListener {
+            showSignal()
+        }
+        mDatabind.tvSignal4.setOnClickListener {
             showSignal()
         }
     }
@@ -492,10 +497,6 @@ class MatchDetailActivity :
         })
     }
 
-    override fun onPlayError(url: String, vararg objects: Any) {
-        "video error=====================".loge("====")
-        showHideLive(true)
-    }
 
     //数据处理
     override fun createObserver() {
@@ -777,7 +778,21 @@ class MatchDetailActivity :
     override fun clickForFullScreen() {
         //Log.e("TAG", "clickForFullScreen: ===")
     }
-
+    override fun onPlayError(url: String, vararg objects: Any) {
+        "video error=====================".loge("====")
+        //showHideLive(true)
+        mDatabind.apply {
+            if (isShowVideo){
+                //有视频布局
+                rltVideo.visibleOrGone(false)
+                lltLiveError.visibleOrGone(true)
+                tvReload.setOnClickListener {
+                    startVideo(anchor?.playUrl)
+                    showHideLive()
+                }
+            }
+        }
+    }
     override val detailOrientationRotateAuto: Boolean
         get() = false
 

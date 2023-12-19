@@ -36,7 +36,7 @@
             android:id="@+id/notice"
             android:visibility="visible"
             layout="@layout/item_detail_chat_notice" />
-        <com.scwang.smart.refresh.layout.SmartRefreshLayout
+        <com.drake.brv.PageRefreshLayout
             android:id="@+id/smartChat"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -65,51 +65,56 @@
                 tools:itemCount="3"
                 tools:listitem="@layout/item_detail_chat" />
 
-        </com.scwang.smart.refresh.layout.SmartRefreshLayout>
+        </com.drake.brv.PageRefreshLayout>
 
         <RelativeLayout
             android:id="@+id/llInput"
             android:layout_alignParentBottom="true"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_36"
-            android:layout_marginTop="@dimen/dp_8"
-            android:layout_marginHorizontal="@dimen/dp_12"
-            android:background="@drawable/shape_chat_input">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edt_chat_msg"
+            android:layout_height="wrap_content">
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="@dimen/dp_15"
-                android:layout_marginEnd="65dp"
-                android:background="@null"
-                android:hint="@string/say_something"
-                android:text="@={m.input}"
-                android:imeOptions="flagNoExtractUi|actionSend"
-                android:inputType="text|textCapSentences"
-                android:maxLength="500"
-                android:textColor="@color/white"
-                android:textColorHint="@color/c_94999f"
-                android:textSize="@dimen/sp_14" />
+                android:layout_height="@dimen/dp_36"
+                android:layout_marginVertical="@dimen/dp_10"
+                android:layout_marginHorizontal="@dimen/dp_12"
+                android:background="@drawable/shape_chat_input">
 
-            <View
-                android:background="#3E3E40"
-                android:layout_centerVertical="true"
-                android:layout_toStartOf="@id/sendChat"
-                android:layout_width="@dimen/dp_1"
-                android:layout_height="20dp"/>
-            <ImageView
-                android:id="@+id/sendChat"
-                android:layout_width="@dimen/dp_50"
-                android:layout_height="@dimen/dp_30"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:paddingVertical="5dp"
-                android:paddingHorizontal="@dimen/dp_15"
-                android:src="@drawable/icon_send"
-                android:enabled="@{m.sendEnable}"
-                app:click="@{v}" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edt_chat_msg"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="@dimen/dp_15"
+                    android:layout_marginEnd="65dp"
+                    android:background="@null"
+                    android:hint="@string/say_something"
+                    android:text="@={m.input}"
+                    android:imeOptions="flagNoExtractUi|actionSend"
+                    android:inputType="text|textCapSentences"
+                    android:maxLength="500"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/c_94999f"
+                    android:textSize="@dimen/sp_14" />
+
+                <View
+                    android:background="#3E3E40"
+                    android:layout_centerVertical="true"
+                    android:layout_toStartOf="@id/sendChat"
+                    android:layout_width="@dimen/dp_1"
+                    android:layout_height="20dp"/>
+                <ImageView
+                    android:id="@+id/sendChat"
+                    android:layout_width="@dimen/dp_50"
+                    android:layout_height="@dimen/dp_30"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:paddingVertical="5dp"
+                    android:paddingHorizontal="@dimen/dp_15"
+                    android:src="@drawable/icon_send"
+                    android:enabled="@{m.sendEnable}"
+                    app:click="@{v}" />
+            </RelativeLayout>
         </RelativeLayout>
+
     </RelativeLayout>
 </layout>

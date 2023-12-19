@@ -99,7 +99,7 @@ class DetailLiveFragment(var matchId: String, var matchType: String) :
         //直播列表接口返回监听处理
         mViewModel.liveList.observe(this) {
             if (it != null) {
-                smartPageListData(it, mDatabind.rcvRecommend, mDatabind.page, imgEmptyId = R.drawable.zwt_zwzb,notice=resources.getString(R.string.empty_txt_no_anchor))
+                smartPageListData(it, mDatabind.rcvRecommend, mDatabind.page, imgEmptyId = R.drawable.ic_empty_detail_live,notice="暂无其他主播",72)
                 mDatabind.page.finishLoadMoreWithNoMoreData()
               //  mDatabind.page.setEnableFooterFollowWhenNoMoreData(true)
             }
