@@ -364,14 +364,15 @@
                         android:id="@+id/cslAnchor"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="@dimen/dp_12"
                         android:visibility="gone">
 
                         <com.xcjh.base_lib.utils.view.CircleImageView
                             android:id="@+id/iv_tab_anchor_avatar"
+                            android:layout_marginStart="@dimen/dp_12"
                             android:layout_width="@dimen/dp_30"
                             android:layout_height="@dimen/dp_30"
-                            android:src="@drawable/default_anchor_icon"
+                            tools:src="@drawable/default_anchor_icon"
+                            android:scaleType="centerCrop"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -426,6 +427,7 @@
                             android:id="@+id/tv_tab_anchor_follow"
                             android:layout_width="@dimen/dp_60"
                             android:layout_height="@dimen/dp_24"
+                            android:layout_marginEnd="@dimen/dp_12"
                             android:background="@drawable/shape_line_r20"
                             android:gravity="center"
                             android:text="@string/follow"
@@ -434,6 +436,13 @@
                             app:layout_constraintBottom_toBottomOf="@id/iv_tab_anchor_avatar"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="@id/iv_tab_anchor_avatar" />
+                        <View
+                            app:layout_constraintTop_toBottomOf="@id/iv_tab_anchor_avatar"
+                            android:layout_marginTop="@dimen/dp_12"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dp_1"
+                            android:background="@color/c_27272a" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </LinearLayout>

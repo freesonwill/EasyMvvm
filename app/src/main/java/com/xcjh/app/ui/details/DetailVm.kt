@@ -22,6 +22,7 @@ import com.xcjh.base_lib.bean.ListDataUiState
 import com.xcjh.base_lib.bean.UpdateUiState
 import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.request
+import com.xcjh.base_lib.utils.requestNoDialog
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -64,6 +65,8 @@ class DetailVm : BaseViewModel() {
                 apiService.getMatchDetail(matchId, matchType)
             }, {
                 detail.value = it
+                getScrollTextList()
+                getShowAd()
             }, {
                 myToast(it.errorMsg)
             }, showD
@@ -72,7 +75,7 @@ class DetailVm : BaseViewModel() {
 
     //查询滚动文字列表
     fun getScrollTextList() {
-        request(
+        requestNoDialog(
             {
                 apiService.getScrollTextList()
             }, {
@@ -80,13 +83,13 @@ class DetailVm : BaseViewModel() {
             }, {
                 scrollTextList.value = UpdateUiState(false, null, it.errorMsg)
               //  myToast(it.errorMsg)
-            }, false
+            }
         )
     }
 
     //获取比赛详情
     fun getShowAd() {
-        request(
+        requestNoDialog(
             {
                 apiService.getShowAd()
             }, {
@@ -94,13 +97,13 @@ class DetailVm : BaseViewModel() {
             }, {
                 showAd.value = UpdateUiState(false, null, it.errorMsg)
                 //myToast(it.errorMsg)
-            }, false
+            }
         )
     }
 
     //获取主播详情接口，DetailAnchorFragment界面调用
     fun getDetailAnchorInfo(id: String?="") {
-        request({
+        requestNoDialog({
             apiService.getDetailAnchorInfo(id?:"")
         }, {
             anchor.postValue(it)
@@ -114,11 +117,10 @@ class DetailVm : BaseViewModel() {
         request({
             apiService.getNoticeUser(id)
         }, {
-            isfocus.value=true
+            isfocus.postValue(true)
         }, {
-            myToast(it.errorMsg)
-            isfocus.value=false
-        },true)
+            isfocus.postValue(false)
+        },false)
     }
     var isUnFocus = UnPeekLiveData<Boolean>()
     //取消关注主播接口，DetailAnchorFragment界面调用
@@ -126,11 +128,10 @@ class DetailVm : BaseViewModel() {
         request({
             apiService.unfollowAnchor(id)
         }, {
-            isUnFocus.value=true
+            isUnFocus.postValue(true)
         }, {
-            myToast(it.errorMsg)
-            isUnFocus.value=true
-        },true)
+            isUnFocus.postValue(false)
+        },false)
     }
 
     //获取指数接口，DetailAnchorFragment界面调用

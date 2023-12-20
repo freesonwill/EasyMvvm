@@ -97,6 +97,7 @@ class DetailChatFragment(
         if (!userId.isNullOrEmpty()) {
             mDatabind.notice.root.visibility = View.VISIBLE
             mDatabind.notice.apply {
+                expandableText.movementMethod = LinkMovementMethod.getInstance()
                 expandableText.text = noticeBean.notice
                 lltExpandCollapse.setOnClickListener {
                     val aa = expandableText.height
@@ -213,7 +214,7 @@ class DetailChatFragment(
                         } else {
                             //主播加入超链接
                             binding.tvContent.text =
-                                "<font color=\"#94999F\">${item.nick} : </font>${item.content}".toHtml()
+                                "<font color=\"#34A853\" font-weight=\"500\">${item.nick} : </font>${item.content}".toHtml()
                             binding.tvContent.movementMethod = LinkMovementMethod.getInstance()
                         }
 
@@ -256,7 +257,7 @@ class DetailChatFragment(
         vm.anchor.observe(this) { it ->
             if (it != null) {
                 noticeBean.notice = it.notice ?: ""
-                mDatabind.notice.expandableText.movementMethod = LinkMovementMethod.getInstance()
+
                 /* val richText = ("<font color=\"red\">红色样式</font><br />"
                          + "<big>大号字样式</big><br />"
                          + "<small>小号字样式</small><br />"
@@ -273,6 +274,11 @@ class DetailChatFragment(
                      }
                  }*/
                 mDatabind.notice.expandableText.text = it.notice?.toHtml() //主播公告
+                mDatabind.notice.expandableText.maxLines =  2
+                /*mDatabind.rcvChat.postDelayed({
+
+                }, 200)*/
+
                 mDatabind.rcvChat.postDelayed({
                     try {
                         val params = mDatabind.rcvChat.layoutParams

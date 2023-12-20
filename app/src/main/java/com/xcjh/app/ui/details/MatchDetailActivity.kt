@@ -1,15 +1,21 @@
 package com.xcjh.app.ui.details
 
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.widget.ImageView
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.appbar.AppBarLayout
+import com.google.firebase.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.messaging.messaging
 import com.google.gson.Gson
 import com.gyf.immersionbar.ImmersionBar
 import com.gyf.immersionbar.ImmersionBar.getStatusBarHeight
@@ -95,31 +101,33 @@ class MatchDetailActivity :
         super.initView(savedInstanceState)
         ImmersionBar.with(this).statusBarDarkFont(false)//黑色
             .titleBarMarginTop(mDatabind.rltTop).init()
-      /*  Thread() {
-           *//* try {
-                HmsInstanceId.getInstance(this).getToken("109888465",DEFAULT_TOKEN_SCOPE).loge("push====token===")
+        Thread() {
+            try {
+                //HmsInstanceId.getInstance(this).getToken("109888465",DEFAULT_TOKEN_SCOPE).loge("push====token===")
                 //FirebaseInstanceId.getInstance().getInstanceId()
             } catch (e: Exception) {
                 "token failed! Catch exception : $e".loge("push====token===")
-            }*//*
+            }
             try {
 
-                FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
-                    if (!task.isSuccessful) {
-                        //Log.w(TAG, "Fetching FCM registration token failed", task.exception)
-                        "Fetching FCM registration token failed".loge("push====token===")
-                        return@OnCompleteListener
-                    }
+                Firebase.messaging.token.addOnCompleteListener {
+                    OnCompleteListener { task ->
+                        if (!task.isSuccessful) {
+                            "Fetching FCM registration token failed".loge("push====token===")
+                            return@OnCompleteListener
+                        }
 
-                    // Get new FCM registration token
-                    val token = task.result
-                    token.loge("push====token===")
-                })
+                        // Get new FCM registration token
+                        val token = task.result
+                        token.loge("push====token===")
+
+                    }
+                }
             } catch (e: Exception) {
                 "token failed! Catch exception : $e".loge("push====token===")
             }
 
-        }.start()*/
+        }.start()
 
         //解决toolbar左边距问题
         mDatabind.toolbar.setContentInsetsAbsolute(0, 0)
@@ -142,8 +150,9 @@ class MatchDetailActivity :
 
     private fun setData() {
         mViewModel.getMatchDetail(matchId, matchType, true)
-        mViewModel.getScrollTextList()
-        mViewModel.getShowAd()
+        if (isHasAnchor){
+            mViewModel.getDetailAnchorInfo(anchorId)
+        }
     }
 
     private fun initStaticUI() {
@@ -540,9 +549,7 @@ class MatchDetailActivity :
         //固定广告
         mViewModel.showAd.observe(this) { ad ->
             ad.data.notNull({ bean ->
-                Glide.with(this).load(bean.imgUrl)
-                    .placeholder(com.xcjh.base_lib.R.drawable.ic_default_bg)
-                    .into(mDatabind.ivShowAd)
+                loadImage(this,bean.imgUrl,mDatabind.ivShowAd, com.xcjh.base_lib.R.drawable.ic_default_bg)
                 mDatabind.ivShowAd.setOnClickListener {
                     jumpOutUrl(bean.targetUrl)
                 }
@@ -553,47 +560,24 @@ class MatchDetailActivity :
         mViewModel.anchor.observe(this) {
             if (it != null) {
                 this.anchorId = it.id
-                mDatabind.tvTabAnchorNick.text = it.nickName  //主播昵称
-
                 setFocusUI(it.focus)
-                Glide.with(this).load(it.head).placeholder(mDatabind.ivTabAnchorAvatar.drawable)
-                    .into(mDatabind.ivTabAnchorAvatar) //主播头像
-                //点击私信跳转聊天界面逻辑，根据传参来跳转
-                mDatabind.tvTabAnchorChat.setOnClickListener { v ->
-                    judgeLogin {
-                        startNewActivity<ChatActivity>() {
-                            putExtra(Constants.USER_ID, it.id)
-                            putExtra(Constants.USER_NICK, it.nickName)
-                            putExtra(Constants.USER_HEAD, it.head)
-                        }
-                    }
-                }
-                //点击关注或者取消关注
-                mDatabind.tvTabAnchorFollow.setOnClickListener {
-                    judgeLogin {
-                        if (!focus) {
-                            mViewModel.followAnchor(anchorId ?: "")
-                        } else {
-                            mViewModel.unFollowAnchor(anchorId ?: "")
-                        }
-                    }
-                }
             }
         }
         mViewModel.isfocus.observe(this) {
             if (it) {
                 appViewModel.updateSomeData.postValue("friends")
                 setFocusUI(true)
-                mDatabind.tvDetailTabAnchorFans.text =
-                    (mDatabind.tvDetailTabAnchorFans.textString().toInt() + 1).toString() //主播粉丝数量+1
+                anchor?.hotValue= anchor?.hotValue?.toInt()?.plus(1).toString()
+                mDatabind.tvDetailTabAnchorFans.text =  anchor?.hotValue+"热度值" //主播粉丝数量+1
             }
         }
         mViewModel.isUnFocus.observe(this) {
             if (it) {
                 appViewModel.updateSomeData.postValue("friends")
                 setFocusUI(false)
+                anchor?.hotValue= anchor?.hotValue?.toInt()?.minus(1).toString()
                 mDatabind.tvDetailTabAnchorFans.text =
-                    (mDatabind.tvDetailTabAnchorFans.textString().toInt() - 1).toString() //主播粉丝数量-1
+                    anchor?.hotValue+"热度值" //主播粉丝数量-1
             }
         }
         /* appViewModel.appPolling.observe(this) {
@@ -613,8 +597,16 @@ class MatchDetailActivity :
         this.focus = focus
         if (this.focus) {
             mDatabind.tvTabAnchorFollow.text = getString(R.string.dis_focus)
+            mDatabind.tvTabAnchorFollow.setTextColor(getColor(R.color.c_94999f))
+            mDatabind.tvTabAnchorFollow.setBackgroundResource(R.drawable.shape_red_pressed_r20)
+            mDatabind.tvTabAnchorFollow.backgroundTintList= ColorStateList.valueOf(
+                ContextCompat.getColor(this, R.color.c_1f1f20)
+            )
         } else {
             mDatabind.tvTabAnchorFollow.text = getString(R.string.add_focus)
+            mDatabind.tvTabAnchorFollow.setTextColor(getColor(R.color.c_34a853))
+            mDatabind.tvTabAnchorFollow.setBackgroundResource(R.drawable.shape_line_r20)
+            mDatabind.tvTabAnchorFollow.backgroundTintList= null
         }
     }
 
@@ -635,8 +627,7 @@ class MatchDetailActivity :
 
     private fun changeUI() {
         showHideLive()
-        mDatabind.cslAnchor.visibleOrGone(isHasAnchor)
-        mDatabind.tvDetailTabAnchorFans.text = anchor?.hotValue //热度
+        setAnchorUI()
         if (matchType == "1") {
             mDatabind.toolbar.setBackgroundResource(if (isHasAnchor) R.color.translet else R.drawable.bg_top_football)
         } else {
@@ -666,6 +657,34 @@ class MatchDetailActivity :
         }
 
     }
+
+    private fun setAnchorUI() {
+        mDatabind.cslAnchor.visibleOrGone(isHasAnchor)
+        mDatabind.tvDetailTabAnchorFans.text = anchor?.hotValue+"热度值" //热度
+        mDatabind.tvTabAnchorNick.text = anchor?.nickName  //主播昵称
+        loadImage(this,anchor?.userLogo,mDatabind.ivTabAnchorAvatar,R.drawable.default_anchor_icon) //主播头像
+        //点击私信跳转聊天界面逻辑，根据传参来跳转
+        mDatabind.tvTabAnchorChat.setOnClickListener { v ->
+            judgeLogin {
+                startNewActivity<ChatActivity>() {
+                    putExtra(Constants.USER_ID, anchor?.userId)
+                    putExtra(Constants.USER_NICK, anchor?.nickName)
+                    putExtra(Constants.USER_HEAD, anchor?.userLogo)
+                }
+            }
+        }
+        //点击关注或者取消关注
+        mDatabind.tvTabAnchorFollow.setOnClickListener {
+            judgeLogin {
+                if (!focus) {
+                    mViewModel.followAnchor(anchorId ?: "")
+                } else {
+                    mViewModel.unFollowAnchor(anchorId ?: "")
+                }
+            }
+        }
+    }
+
 
     private fun getAnchor( action: (String?) -> Unit = {}) {
         matchDetail.anchorList.notNull({ list ->

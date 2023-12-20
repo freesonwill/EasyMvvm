@@ -69,13 +69,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_10">
-                <TextView
+                <com.xcjh.app.view.balldetail.EllipsizeTextView
                     android:id="@+id/expandableText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     tools:text="ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss"
                     android:ellipsize="end"
-                    android:maxLines="2"
+                    android:maxLines="1"
                     android:textColor="@color/c_94999f"
                     android:textSize="@dimen/sp_14" />
             </LinearLayout>

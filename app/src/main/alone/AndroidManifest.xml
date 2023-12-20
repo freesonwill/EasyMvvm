@@ -112,8 +112,9 @@
             android:theme="@style/ChatLauncher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
         <activity
@@ -187,13 +188,13 @@
             android:enabled="true"
             android:exported="true" />
         <!--push start*******************-->
-       <!-- <service
+        <service
             android:name=".component.MyFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
-        </service>-->
+        </service>
         <!-- 用于演示通知点击跳转 -->
       <!--  <activity
             android:name="com.xcjh.app.component.UserActivity400"
@@ -204,13 +205,13 @@
         <activity
             android:name="com.xcjh.app.component.UserActivity400"
             android:exported="true">
-            <intent-filter>
+          <!--  <intent-filter>
                 <data android:scheme="你的scheme" />
                 <data android:host="你的host" />
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-            </intent-filter>
+            </intent-filter>-->
         </activity>
         <!-- 用于演示自定义消息展示 -->
         <activity
