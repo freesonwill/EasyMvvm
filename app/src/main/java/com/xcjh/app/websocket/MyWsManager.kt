@@ -250,7 +250,7 @@ class MyWsManager private constructor(private val mContext: Context) {
                 }
             }
 
-            28 -> {//服务器主动推送用户反馈通知消息
+            28,32,33 -> {//服务器主动推送用户反馈通知消息
                 val wsBean2 = jsonToObject2<ReceiveWsBean<FeedSystemNoticeBean>>(msg)
                 val feedMsgBean = wsBean2?.data as FeedSystemNoticeBean
                 mC2CListener.forEach {

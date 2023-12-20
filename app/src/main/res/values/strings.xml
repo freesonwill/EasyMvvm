@@ -159,6 +159,7 @@
     <string name="str_year">年份</string>
     <string name="str_mouth">月份</string>
     <string name="str_day">天</string>
+    <string name="str_resend">重新发送该消息</string>
     <string name="str_choosetime">选择日期</string>
     <string name="main_txt_under">进行中 %s</string>
     <string name="main_txt_wks">未开赛</string>

@@ -218,7 +218,42 @@ fun selectDate(context: Context, timeOld: String, block: (time: String) -> Unit)
 
         .show().isAllowInterceptTouch = true
 }
+/**
+ * 重新发送消息
+ */
+fun reSendMsgDialog(context: Context, block: (isSure: String) -> Unit) {
+    //对于未实例化的布局：
+    //DialogX.globalStyle = MaterialYouStyle.style()
 
+
+    BottomDialog.build()
+        .setCustomView(object : OnBindView<BottomDialog?>(R.layout.dialog_resendmsg) {
+            override fun onBind(dialog: BottomDialog?, v: View) {
+                if (dialog!!.dialogImpl.imgTab != null) {
+                    dialog!!.dialogImpl.imgTab.setBackgroundResource(R.drawable.dilogx_eff1f5)
+                }
+
+                val tvsure = v.findViewById<TextView>(R.id.tvsure)
+                val tvcancle = v.findViewById<TextView>(R.id.tvcancle)
+                tvsure.setOnClickListener {
+                    block.invoke(
+                        ""
+                    )
+                    dialog?.dismiss()
+                }
+                tvcancle.setOnClickListener {
+                    dialog?.dismiss()
+                }
+
+            }
+        }).setBackgroundColor(Color.parseColor("#FFFFFF"))
+
+        .setMaskColor(//背景遮罩
+            ContextCompat.getColor(context, com.xcjh.base_lib.R.color.blacks_tr)
+        )
+
+        .show().isAllowInterceptTouch = true
+}
 /**
  * 日历选择
  */
