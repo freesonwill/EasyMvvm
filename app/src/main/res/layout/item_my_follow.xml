@@ -78,6 +78,7 @@
                                 android:layout_marginLeft="4dp"
                                 app:lottie_autoPlay="false"
                                 app:lottie_loop="true"
+                                android:layout_marginBottom="@dimen/dp_2"
                                 android:scaleType="centerCrop"
                                 app:lottie_fileName="schedule_live.json"
                                 android:layout_centerHorizontal="true" />

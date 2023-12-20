@@ -100,7 +100,7 @@
             android:id="@+id/ivLiveHead"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:scaleType="fitXY"
+            android:scaleType="centerCrop"
             app:is_circle="true"
             app:srcCompat="@drawable/default_anchor_icon"/>
 
