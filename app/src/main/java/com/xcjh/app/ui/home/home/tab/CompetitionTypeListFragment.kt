@@ -69,15 +69,12 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
         MyWsManager.getInstance(App.app)
             ?.setLiveStatusListener(this.toString(), object : LiveStatusListener {
                 override fun onOpenLive(bean: LiveStatus) {
+
                     var isShow=false
                     if(mDatabind.rcvRecommend.models!=null){
                         for (i in 0 until  mDatabind.rcvRecommend.mutable.size){
-                            if(mDatabind.rcvRecommend.mutable[i] is MainTxtBean){
-                                for (j in 0 until  (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.size){
-                                    if((mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].userId.equals(bean.anchorId)){
-                                        isShow=true
-                                    }
-                                }
+                            if((mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).userId.equals(bean.anchorId)){
+                                isShow=true
                             }
 
                         }
@@ -89,18 +86,13 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
 
                 override fun onCloseLive(bean: LiveStatus) {
                     super.onCloseLive(bean)
+
                     if(mDatabind.rcvRecommend.models!=null){
                         for (i in 0 until  mDatabind.rcvRecommend.mutable.size){
-                            if(mDatabind.rcvRecommend.mutable[i] is MainTxtBean){
-                                for (j in 0 until  (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.size){
-                                    if((mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].userId.equals(bean.anchorId)){
-                                        (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.removeAt(j)
-                                        mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
-                                    }
-                                }
-
-
-
+                            if((mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).userId.equals(bean.anchorId)){
+                                mDatabind.rcvRecommend.mutable.removeAt(i)
+                                mDatabind.rcvRecommend.bindingAdapter.notifyItemRemoved(i) // 通知更新
+                                mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
                             }
 
                         }
@@ -173,15 +165,10 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
         super.createObserver()
         //打开直播的时候获取到详情
         mViewModel.beingLive.observe(this){
-            if(mDatabind.rcvRecommend.models!=null){
-                for (i in 0 until mDatabind.rcvRecommend.mutable!!.size) {
-                    if(mDatabind.rcvRecommend.mutable[i] is MainTxtBean){
-                        (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.add(it)
-                        mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
-                        return@observe
-                    }
-                }
-            }
+            var list =ArrayList<BeingLiveBean>()
+            list.add(it)
+            mDatabind.rcvRecommend.addModels(list)
+            mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
         }
         //登录或者登出
         appViewModel.updateLoginEvent.observe(this){
