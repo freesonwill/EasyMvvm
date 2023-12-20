@@ -187,7 +187,7 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
             NoReadMsgPushListener {
             override fun onNoReadMsgNums(nums: String) {
                 super.onNoReadMsgNums(nums)
-                initMsgNums(nums)
+              //  initMsgNums(nums)
 
             }
 
@@ -250,9 +250,13 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
                 mDatabind.tvnums.visibility = View.VISIBLE
                 mDatabind.tvnums2.visibility = View.GONE
             }
-
+            in 10..99 -> {
+                mDatabind.tvnums.text = nums
+                mDatabind.tvnums.visibility = View.VISIBLE
+                mDatabind.tvnums2.visibility = View.GONE
+            }
             else -> {
-                mDatabind.tvnums2.text = nums
+                mDatabind.tvnums2.text = "99+"
                 mDatabind.tvnums.visibility = View.GONE
                 mDatabind.tvnums2.visibility = View.VISIBLE
             }

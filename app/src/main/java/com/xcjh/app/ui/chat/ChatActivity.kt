@@ -3,6 +3,7 @@ package com.xcjh.app.ui.chat
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
+import android.app.Activity
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
@@ -11,6 +12,7 @@ import android.view.KeyEvent
 import android.view.View
 import android.view.View.OnLongClickListener
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.TextView.OnEditorActionListener
@@ -48,7 +50,6 @@ import com.xcjh.app.databinding.ItemChatTxtRightBinding
 import com.xcjh.app.net.CountingRequestBody
 import com.xcjh.app.net.ProgressListener
 import com.xcjh.app.ui.room.MsgBeanData
-import com.xcjh.app.ui.room.MsgListNewData
 import com.xcjh.app.utils.CacheUtil
 import com.xcjh.app.utils.GlideEngine
 import com.xcjh.app.utils.nice.Utils
@@ -143,6 +144,9 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
         nickname = intent.getStringExtra(Constants.USER_NICK) ?: ""
         userhead = intent.getStringExtra(Constants.USER_HEAD) ?: ""
 
+        mDatabind.smartCommon.setOnClickListener {
+            hideSoftKeyBoard(this)
+        }
 
         appViewModel.updateMsgEvent.postValue(userId)
         mDatabind.titleTop.tvTitle.text = nickname
@@ -218,6 +222,9 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                             initLongClick(binding.tvcontent, ad.content)
                             true
                         })
+                        binding.linroot.setOnClickListener {
+                            hideSoftKeyBoard(this@ChatActivity)
+                        }
 
                     }
 
@@ -306,7 +313,9 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                             initLongClick(binding.tvcontent, matchBeanNew.content)
                             true
                         })
-
+                        binding.linroot.setOnClickListener {
+                            hideSoftKeyBoard(this@ChatActivity)
+                        }
 
                     }
 
@@ -423,7 +432,9 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                             binding.tvtime.visibility = View.VISIBLE
 
                         }
-
+                        binding.linroot.setOnClickListener {
+                            hideSoftKeyBoard(this@ChatActivity)
+                        }
 
                     }
 
@@ -449,6 +460,9 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                 .openPreview()
                                 .setImageEngine(GlideEngine.createGlideEngine())
                                 .startActivityPreview(0, false, listPic)
+                        }
+                        binding.linroot.setOnClickListener {
+                            hideSoftKeyBoard(this@ChatActivity)
                         }
                         if (matchBeanNew.lastShowTimeStamp!! == baseLong) {
                             matchBeanNew.lastShowTimeStamp = lastShowTimeStamp
@@ -595,7 +609,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                     listdata1.add(beanmy)
                     mDatabind.rv.addModels(listdata1, index = 0)
                     mDatabind.rv.scrollToPosition(0)
-                   addDataToList(beanmy)
+                    //addDataToList(beanmy)
 
                 } else {//发送消息
                    // LogUtils.d("发送成功一条数据"+JSONObject.toJSONString(chat))
@@ -844,5 +858,11 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
             MyApplication.dataBase!!.chatDao?.getMessagesByName(id)!!
         }
     }
-
+    fun hideSoftKeyBoard(activity: Activity) {
+        val localView = activity.currentFocus
+        val imm = activity.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        if (localView != null && imm != null) {
+            imm.hideSoftInputFromWindow(localView.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+        }
+    }
 }
