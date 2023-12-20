@@ -75,7 +75,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
             onBind {
                 var binding = getBinding<ItemMsglistBinding>()
                 var item = _data as MsgListNewData
-             //   noReadMsgs += item?.noReadSum!!
+                //   noReadMsgs += item?.noReadSum!!
                 when (item?.noReadSum) {
 
                     0 -> {
@@ -258,9 +258,9 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                     noReadMsgs = 0
                     listdata.clear()
                     listdata.addAll(data)
-                    for (i in 0 until listdata.size){
-                        if (listdata[i].noReadSum>0){
-                            noReadMsgs+=listdata[i].noReadSum
+                    for (i in 0 until listdata.size) {
+                        if (listdata[i].noReadSum > 0) {
+                            noReadMsgs += listdata[i].noReadSum
                         }
                     }
                     appViewModel.updateMainMsgNum.postValue(noReadMsgs.toString())
@@ -296,7 +296,13 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                     var chat = ReceiveChatMsg()
                     chat.id = it.noticeId.toString()
                     chat.msgType = 1
-                    chat.content = it.reason!!
+                    if (it.reason==null)//取消禁言
+                    {
+                        chat.content = it.title
+                    } else {//禁言
+                        chat.content = it.reason!!
+                    }
+
                     chat.createTime = it.createTime
                     chat.sent = 1
                     chat.dataType = 2
@@ -313,13 +319,13 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
 
                 override fun onC2CReceive(chat: ReceiveChatMsg) {
                     refshMsg(chat)
-                    if (chat.from!=CacheUtil.getUser()?.id) {//收到消息
+                    if (chat.from != CacheUtil.getUser()?.id) {//收到消息
                         var beanmy: MsgBeanData = MsgBeanData()
                         beanmy.anchorId = chat.anchorId
                         beanmy.fromId = chat.from
                         beanmy.content = chat.content
                         beanmy.chatType = chat.chatType
-                        beanmy.sendId=chat.sendId
+                        beanmy.sendId = chat.sendId
                         beanmy.cmd = 11
                         beanmy.msgType = chat.msgType
                         beanmy.createTime = chat.createTime
@@ -476,10 +482,10 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                         if (chatId == msg.anchorId) {
                             bean.noReadSum = 0
                         } else {
-                            var count= listdata[i].noReadSum + 1
-                            if (msg.noReadSum>count){
-                                bean.noReadSum =msg.noReadSum
-                            }else{
+                            var count = listdata[i].noReadSum + 1
+                            if (msg.noReadSum > count) {
+                                bean.noReadSum = msg.noReadSum
+                            } else {
                                 bean.noReadSum = listdata[i].noReadSum + 1
                             }
 
@@ -532,7 +538,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                     if (chatId == msg.anchorId) {
                         bean.noReadSum = 0
                     } else {
-                        bean.noReadSum = msg.noReadSum+1
+                        bean.noReadSum = msg.noReadSum + 1
                     }
                 } else {
                     bean.avatar = msg.toAvatar!!
@@ -577,6 +583,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
             MyApplication.dataChatList!!.chatDao!!.getAll()
         }
     }
+
     /***
      * 添加或者更新私聊新的数据
      */
@@ -587,6 +594,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
 
         }
     }
+
     /***
      * 添加或者更新新的数据
      */

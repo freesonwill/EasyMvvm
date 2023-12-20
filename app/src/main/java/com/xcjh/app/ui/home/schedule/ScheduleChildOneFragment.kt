@@ -183,7 +183,23 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
                 initEvent(it)
 
             } else {
+                var listthis=ArrayList<HotMatchBean>()
+                hasData = true
+                if (matchtypeOld != "3") {
+                    var bean = HotMatchBean(
+                        "", resources.getString(R.string.all), 0,
+                        matchtype.toString()
+                    )
+                    listthis.add(0, bean)
+                } else {
+                    matchtype = "1"
+                    var bean1 = HotMatchBean("", resources.getString(R.string.foot_scr), 0, "1")
+                    listthis.add(0, bean1)
+                    var bean2 = HotMatchBean("", resources.getString(R.string.bas_scr), 0, "2")
+                    listthis.add(1, bean2)
+                }
 
+                initEvent(listthis)
             }
 
         }
