@@ -1,17 +1,17 @@
 package com.xcjh.app.ui
 
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
@@ -19,6 +19,10 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.engagelab.privates.core.api.MTCorePrivatesApi
 import com.engagelab.privates.push.api.MTPushPrivatesApi
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.FirebaseMessaging
 import com.king.app.dialog.AppDialog
 import com.king.app.updater.AppUpdater
 import com.king.app.updater.http.OkHttpManager
@@ -31,7 +35,6 @@ import com.xcjh.app.adapter.PushCardPopup
 import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseActivity
 import com.xcjh.app.bean.BeingLiveBean
-import com.xcjh.app.component.UserActivity400
 import com.xcjh.app.databinding.ActivityHomeBinding
 import com.xcjh.app.ui.details.MatchDetailActivity
 import com.xcjh.app.ui.home.home.HomeFragment
@@ -40,7 +43,6 @@ import com.xcjh.app.ui.home.my.MyUserFragment
 import com.xcjh.app.ui.home.schedule.ScheduleFragment
 import com.xcjh.app.utils.CacheUtil
 import com.xcjh.app.utils.judgeLogin
-import com.xcjh.app.utils.showLoadingExt
 import com.xcjh.app.vm.MainVm
 import com.xcjh.app.websocket.MyWsManager
 import com.xcjh.app.websocket.listener.NoReadMsgPushListener
@@ -76,12 +78,30 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
     )
 
 
+    @SuppressLint("SuspiciousIndentation")
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         //MTPushPrivatesApi.clearNotification(this)
+
         onIntent(intent)
         MTPushPrivatesApi.setNotificationBadge(this, 0)
         CacheUtil.setFirst(false)
+
+       FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener{task ->
+           if (!task.isSuccessful) {
+               Log.w("TAG", "Fetching FCM registration token failed", task.exception)
+               return@OnCompleteListener
+           }
+
+           // Get new FCM registration token
+           val token = task.result
+
+           // Log and toast
+           val msg = token
+           Log.d("TAG", msg)
+           Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
+        })
+
         mViewModel.appUpdate()
         //runOnUiThread {  }
         //初始化viewpager2
@@ -560,4 +580,8 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
             }
         }
     }
+
+
+
+
 }
