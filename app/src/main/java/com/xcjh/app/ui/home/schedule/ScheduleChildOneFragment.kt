@@ -135,7 +135,7 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
                         .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                         //                        .isThreeDrag(true) //是否开启三阶拖拽，如果设置enableDrag(false)则无效
                         .asCustom(bottomDilog).show()
-                    bottomDilog.setOnLister(calendarTime, object : OnChooseDateListener {
+                    bottomDilog.setOnLister(calendarTime, matchtypeOld!!, object : OnChooseDateListener {
                         override fun onDismiss() {
                             popwindow.dismiss()
 

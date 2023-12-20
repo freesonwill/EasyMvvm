@@ -1,8 +1,13 @@
 package com.xcjh.base_lib.utils
 
+import android.annotation.SuppressLint
+import android.os.Build
 import android.text.TextUtils
+import androidx.annotation.RequiresApi
 import java.text.ParseException
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
@@ -43,8 +48,8 @@ object TimeUtil {
 
         try {
 
-            var xx:Long=0
-            if (endTime!! <=0){
+            var xx: Long = 0
+            if (endTime!! <= 0) {
                 LogUtils.d("true时间差===")
                 return true
             }
@@ -56,7 +61,7 @@ object TimeUtil {
             val second = diff / 1000 - days * 24 * 60 * 60 - hours * 60 * 60 - minutes * 60
 
             LogUtils.d("时间差===$days--$hours--$minutes")
-            if (days > 0||hours > 0||minutes > 300000) {
+            if (days > 0 || hours > 0 || minutes > 300000) {
                 LogUtils.d("true时间差===")
                 return true
             }
@@ -69,6 +74,43 @@ object TimeUtil {
         LogUtils.d("false时间差===")
         return false
     }
+
+    /***
+     * 比较两个日期的大小，如果返回值为负数，则 date1 小于 date2；如果返回值为正数，则 date1
+     * 大于 date2；如果返回值为零，则 date1 等于 date2
+     */
+    @SuppressLint("SimpleDateFormat")
+    @RequiresApi(Build.VERSION_CODES.M)
+    fun compareDates(date1: String, date2: String): Int {
+        val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val parsedDate1 = formatter.parse(date1)
+        val parsedDate2 = formatter.parse(date2)
+
+        return parsedDate1.compareTo(parsedDate2)
+    }
+    /***
+     * 传入日期  和天数  得到 加减后的日期
+     */
+    @SuppressLint("SimpleDateFormat")
+    @RequiresApi(Build.VERSION_CODES.N)
+    fun getMyCurrentDay(dateStr: String, daysToAdd: Int): String? {
+
+
+        val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val date = formatter.parse(dateStr)
+
+        val calendar = Calendar.getInstance()
+        calendar.time = date
+        calendar.add(Calendar.DAY_OF_MONTH, daysToAdd)
+
+        val result = calendar.time
+        val resultStr = formatter.format(result)
+
+        println("原始日期: $dateStr")
+        println("加上 $daysToAdd 天后的日期: $resultStr")
+        return resultStr
+    }
+
 
     /***
      * 当前日期加几天
@@ -96,6 +138,7 @@ object TimeUtil {
         }
         return timee
     }
+
     fun getDateStr(day: String?, Num: Int): String? {
         val df = SimpleDateFormat("yyyy-MM-dd")
         var nowDate: Date? = null
@@ -133,12 +176,14 @@ object TimeUtil {
         val sdf = SimpleDateFormat(format)
         return sdf.format(Date(seconds))
     }
+
     fun gettimenowYear(): String? {
         val date = Date()
         val time = date.toLocaleString()
         val dateFormat = SimpleDateFormat("yyyy-MM-dd")
         return dateFormat.format(date)
     }
+
     fun gettimenowSences(): String? {
         val date = Date()
         val time = date.toLocaleString()
