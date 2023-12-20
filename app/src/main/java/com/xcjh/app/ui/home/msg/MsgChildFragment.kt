@@ -75,7 +75,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
             onBind {
                 var binding = getBinding<ItemMsglistBinding>()
                 var item = _data as MsgListNewData
-                noReadMsgs += item?.noReadSum!!
+             //   noReadMsgs += item?.noReadSum!!
                 when (item?.noReadSum) {
 
                     0 -> {
@@ -223,7 +223,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                 }
                 initEvent()
             } else {
-
+                MyWsManager.getInstance(requireActivity())!!.removeC2CListener(javaClass.name)
                 mDatabind.rec.models = mutableListOf()
 
                 GlobalScope.launch {
@@ -258,6 +258,12 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                     noReadMsgs = 0
                     listdata.clear()
                     listdata.addAll(data)
+                    for (i in 0 until listdata.size){
+                        if (listdata[i].noReadSum>0){
+                            noReadMsgs+=listdata[i].noReadSum
+                        }
+                    }
+                    appViewModel.updateMainMsgNum.postValue(noReadMsgs.toString())
                     mDatabind.rec.models = listdata
                     mDatabind.state.showContent()
 
@@ -276,8 +282,9 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
     }
 
     private fun initEvent() {
+        LogUtils.d("消息列表监听")
         MyWsManager.getInstance(requireActivity())!!
-            .setC2CListener(javaClass.name, object : C2CListener {
+            .setC2CListener("MsgChildFragment", object : C2CListener {
                 override fun onSendMsgIsOk(isOk: Boolean, bean: ReceiveWsBean<*>) {
                     if (isOk) {
 
@@ -306,6 +313,20 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
 
                 override fun onC2CReceive(chat: ReceiveChatMsg) {
                     refshMsg(chat)
+                    if (chat.from!=CacheUtil.getUser()?.id) {//收到消息
+                        var beanmy: MsgBeanData = MsgBeanData()
+                        beanmy.anchorId = chat.anchorId
+                        beanmy.fromId = chat.from
+                        beanmy.content = chat.content
+                        beanmy.chatType = chat.chatType
+                        beanmy.sendId=chat.sendId
+                        beanmy.cmd = 11
+                        beanmy.msgType = chat.msgType
+                        beanmy.createTime = chat.createTime
+
+                        addDataToChatList(beanmy)
+
+                    }
                 }
 
                 override fun onChangeReceive(chat: ArrayList<ReceiveChangeMsg>) {
@@ -374,7 +395,8 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
             chat.from = "-1"
             chat.anchorId = "-1"
         } else {
-            chat.from = it.fromId
+
+            chat.from = it.anchorId
             chat.anchorId = it.anchorId
         }
         chat.noReadSum = it.noReadSum
@@ -390,24 +412,30 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
         mViewModel.msgList.observe(this) {
             if (it.isSuccess) {
 
-                if (listdata.size > 0) {
+                if (it.listData.size > 0) {
                     for (i in 0 until it.listData.size) {
                         for (j in 0 until listdata.size) {
                             if (listdata[j].anchorId == it.listData[i].anchorId) {
-                                if (isTimestampEarlier(
-                                        it.listData[i].createTime,
-                                        listdata[j].createTime
-                                    )
-                                ) {
+                                if (it.listData[i].noReadSum > listdata[j].noReadSum) {
                                     updataMsg(it.listData[i])
-                                    break
                                 }
                             }
+//                                if (isTimestampEarlier(
+//                                        it.listData[i].createTime,
+//                                        listdata[j].createTime
+//                                    )
+//                                ) {
+//                                    updataMsg(it.listData[i])
+//                                    break
+//                                }
+//                            } else {
+//
                         }
                     }
-                } else {
-                    updataMsg(it.listData[0])
                 }
+                // } else {
+                //  updataMsg(it.listData[0])
+                //  }
 
 
             }
@@ -448,7 +476,13 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                         if (chatId == msg.anchorId) {
                             bean.noReadSum = 0
                         } else {
-                            bean.noReadSum = listdata[i].noReadSum + 1
+                            var count= listdata[i].noReadSum + 1
+                            if (msg.noReadSum>count){
+                                bean.noReadSum =msg.noReadSum
+                            }else{
+                                bean.noReadSum = listdata[i].noReadSum + 1
+                            }
+
                         }
                     } else {
                         bean.avatar = msg.toAvatar!!
@@ -498,7 +532,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                     if (chatId == msg.anchorId) {
                         bean.noReadSum = 0
                     } else {
-                        bean.noReadSum = msg.noReadSum
+                        bean.noReadSum = msg.noReadSum+1
                     }
                 } else {
                     bean.avatar = msg.toAvatar!!
@@ -543,7 +577,16 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
             MyApplication.dataChatList!!.chatDao!!.getAll()
         }
     }
+    /***
+     * 添加或者更新私聊新的数据
+     */
+    fun addDataToChatList(data: MsgBeanData) {
+        GlobalScope.launch {
+            MyApplication.dataBase!!.chatDao?.insertOrUpdate(data)
 
+
+        }
+    }
     /***
      * 添加或者更新新的数据
      */
@@ -561,7 +604,8 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
      */
     fun deltDataToList(data: MsgListNewData) {
         GlobalScope.launch {
-            var bean = MyApplication.dataChatList!!.chatDao?.findMessagesById(data.anchorId!!)
+            var bean =
+                MyApplication.dataChatList!!.chatDao?.findMessagesById(data.anchorId!!)
 
             data.idd = bean!!.idd
             //删除会显示在聊天列表的记录数据
