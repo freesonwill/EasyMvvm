@@ -31,7 +31,7 @@ class Constants {
         const val CHAT_DATA = "CHAT_DATA"//数据
         const val WEB_URL = "WEB_URL"//网站地址
         var PHONE_CODE = ""//手机区号
-        var ISSTOP_TALK = "0"//手机区号
+        var ISSTOP_TALK = "0"//全局是否禁言 0shi fou
         const val VIDEO_DATA = "VIDEO_DATA"//视频详情
         const val BUNDLE_DATA = "BUNDLE_DATA"//详情数据
         const val TOURNAMENT_DATA = "TOURNAMENT_DATA"//锦标赛详情
