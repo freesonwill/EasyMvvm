@@ -89,4 +89,13 @@ data class LiveStatus(
     val playUrl: String = "", // 播放地址
     val liveStatus: Int = 0,// 直播间状态：2：开播 3：关播
     val matchId: String = "",//比赛ID
+    val awayTeamName:String="",//客队名字
+    val competitionName:String="",//赛事名称
+    val homeTeamName:String="",//主队名称
+    val hotValue:String="",//热度值
+    val nickName:String="",//主播昵称
+    val rank:String="",//主播排名
+    val userLogo:String="",//主播头像
+    val matchType:String="",//比赛类型
+
 )
