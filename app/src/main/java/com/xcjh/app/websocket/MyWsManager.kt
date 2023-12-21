@@ -14,6 +14,7 @@ import com.xcjh.app.websocket.bean.ReceiveChangeMsg
 import com.xcjh.app.websocket.bean.ReceiveChatMsg
 import com.xcjh.app.websocket.bean.ReceiveWsBean
 import com.xcjh.app.websocket.listener.*
+import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.utils.*
 import org.java_websocket.client.WebSocketClient
@@ -152,9 +153,11 @@ class MyWsManager private constructor(private val mContext: Context) {
      */
     private fun parsingServiceLogin(msg: String) {
         val wsBean = jsonToObject2<ReceiveWsBean<Any>>(msg)
-        if (wsBean?.code == "10114") {
-            myToast(appContext.getString(R.string.no_chat_t))
-            return
+        if (wsBean?.command == 32) {
+            Constants.ISSTOP_TALK = "1"
+        }
+        if (wsBean?.command == 33) {
+            Constants.ISSTOP_TALK = "0"
         }
         when (wsBean?.command) {
             6 -> {
@@ -250,11 +253,11 @@ class MyWsManager private constructor(private val mContext: Context) {
                 }
             }
 
-            28,32,33 -> {//服务器主动推送用户反馈通知消息
+            28, 32, 33 -> {//服务器主动推送用户反馈通知消息
                 val wsBean2 = jsonToObject2<ReceiveWsBean<FeedSystemNoticeBean>>(msg)
                 val feedMsgBean = wsBean2?.data as FeedSystemNoticeBean
                 mC2CListener.forEach {
-                     it.toPair().second.onSystemMsgReceive(feedMsgBean)
+                    it.toPair().second.onSystemMsgReceive(feedMsgBean)
                 }
             }
 

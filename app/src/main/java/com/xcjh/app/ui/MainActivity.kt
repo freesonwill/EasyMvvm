@@ -274,8 +274,8 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
 
             in 10..99 -> {
                 mDatabind.tvnums.text = nums
-                mDatabind.tvnums.visibility = View.VISIBLE
-                mDatabind.tvnums2.visibility = View.GONE
+                mDatabind.tvnums.visibility = View.GONE
+                mDatabind.tvnums2.visibility = View.VISIBLE
             }
 
             else -> {

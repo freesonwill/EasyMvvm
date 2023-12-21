@@ -70,6 +70,7 @@ import com.xcjh.base_lib.utils.LogUtils
 import com.xcjh.base_lib.utils.TAG
 import com.xcjh.base_lib.utils.TimeUtil
 import com.xcjh.base_lib.utils.copyToClipboard
+import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.setOnclickNoRepeat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -529,6 +530,10 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                 }
 
                 R.id.linphote -> {
+                    if (Constants.ISSTOP_TALK != "0") {
+                        myToast(resources.getString(R.string.str_stoptalk))
+                        return@setOnclickNoRepeat
+                    }
                     PictureCacheManager.deleteAllCacheDirRefreshFile(this);//清除图库缓存产生的临时文件
 
                     PictureSelector.create(this)
@@ -772,7 +777,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
         mViewModel.upPic.observe(this) {
             if (it.isNotEmpty()) {
                 msgContent = it
-//                sendMsg()
+
             }
         }
         mViewModel.hisMsgList.observeForever {
@@ -852,7 +857,10 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
 
 
     fun sendMsg(sendid: String, isSend: Boolean) {
-        // initMyMsg()
+        if (Constants.ISSTOP_TALK != "0") {
+            myToast(resources.getString(R.string.str_stoptalk))
+            return
+        }
         var creatime = System.currentTimeMillis()
         var sendID = ""
         if (sendid.isEmpty()) {
@@ -958,6 +966,10 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
         view2: ImageView,
         index: Int
     ) {
+        if (Constants.ISSTOP_TALK != "0") {
+            myToast(resources.getString(R.string.str_stoptalk))
+            return
+        }
         reSendMsgDialog(this) { isSure ->
             matchBeanNew.sent = 0
             if (matchBeanNew.msgType == 0) {
