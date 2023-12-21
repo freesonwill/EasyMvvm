@@ -156,8 +156,8 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
 
         appViewModel.updateMsgEvent.postValue(userId)
         mDatabind.titleTop.tvTitle.text = nickname
-        Glide.with(this).load(userhead).placeholder(R.drawable.default_anchor_icon)
-            .into(mDatabind.titleTop.ivhead)
+//        Glide.with(this).load(userhead).placeholder(R.drawable.default_anchor_icon)
+//            .into(mDatabind.titleTop.ivhead)
         (mDatabind.rv.itemAnimator as SimpleItemAnimator).supportsChangeAnimations =
             false//防止item刷新的时候闪烁
         mDatabind.rv.setup {
