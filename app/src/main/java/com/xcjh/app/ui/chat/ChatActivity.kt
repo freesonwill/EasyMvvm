@@ -71,11 +71,15 @@ import com.xcjh.base_lib.utils.TAG
 import com.xcjh.base_lib.utils.TimeUtil
 import com.xcjh.base_lib.utils.copyToClipboard
 import com.xcjh.base_lib.utils.setOnclickNoRepeat
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import okhttp3.MultipartBody
 import java.io.File
 
@@ -286,7 +290,12 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
 
                         binding.ivfaile.setOnClickListener {
 
-                            reSendMsg(matchBeanNew,binding.googleProgress,binding.ivfaile,bindingAdapterPosition)
+                            reSendMsg(
+                                matchBeanNew,
+                                binding.googleProgress,
+                                binding.ivfaile,
+                                bindingAdapterPosition
+                            )
 
                         }
                         binding.tvtime.text =
@@ -392,7 +401,12 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
 
                         }
                         binding.ivfaile.setOnClickListener {
-                            reSendMsg(matchBeanNew,binding.googleProgress,binding.ivfaile,bindingAdapterPosition)
+                            reSendMsg(
+                                matchBeanNew,
+                                binding.googleProgress,
+                                binding.ivfaile,
+                                bindingAdapterPosition
+                            )
 
                         }
                         binding.tvtime.text =
@@ -649,8 +663,15 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
             }
 
         })
-        mViewModel.clearMsg(userId)
+        // mViewModel.clearMsg(userId)
         initData()
+        getAllData()
+        mViewModel.getHisMsgList(mDatabind.smartCommon, offset, userId)
+        // getAllData()
+
+    }
+
+    fun getAllData() {
         GlobalScope.launch {
             val data = seacherData(userId).await()
             if (data.size > 0) {
@@ -661,9 +682,8 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                 LogUtils.d("私聊无数据缓存")
                 mDatabind.state.showEmpty()
             }
-            mViewModel.getHisMsgList(mDatabind.smartCommon, offset, userId)
-        }
 
+        }
     }
 
     fun startAnmila(hd: Float) {
@@ -757,29 +777,78 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
             }
         }
         mViewModel.hisMsgList.observeForever {
+            if (it.size > 0) {
 
-            var i = 0
-            var j: Int = it.size - 1
-            while (i < j) {
-                val temp: MsgBeanData = it[i]
-                it[i] = it[j]
-                it[j] = temp
-                i++
-                j--
+                if (listdata.size == 0) {//没有本地数据
+                    var i = 0
+                    var j: Int = it.size - 1
+                    while (i < j) {
+                        val temp: MsgBeanData = it[i]
+                        it[i] = it[j]
+                        it[j] = temp
+                        i++
+                        j--
+                    }
+                    listdata.addAll(it)
+                    mDatabind.state.showContent()
+                    for (i in 0 until it.size) {
+                        if (it[i].sendId == "0") {
+                            it[i].sendId = userId + it[i].createTime
+                        }
+                        addDataToList(it[i])
+                    }
+                } else {
+                    for (data in it) {
+                        val foundData = listdata.find { it.id == data.id }
+                        if (foundData == null) {
+                            data?.let { it1 ->
+                                if (it1.sendId == "0") {
+                                    it1.sendId = userId + it1.createTime
+                                }
+                                addDataToList(data)
+                                var listdata1: MutableList<MsgBeanData> = ArrayList<MsgBeanData>()
+                                listdata1.add(data)
+                                mDatabind.rv.addModels(listdata1, index = 0)
+                                mDatabind.rv.scrollToPosition(0) // 保证最新一条消息显示
+                            }
+                        }
+                    }
+//                    runBlocking {
+//                        var ss = waitAddData(it)
+//                        getAllData()
+//                    }
+
+                }
             }
+
             // mDatabind.rv.addModels(it)
             offset = it[it.size - 1].id!!
+
 
             if (it.size < 50) {
                 mDatabind.smartCommon.setEnableRefresh(false)
             }
 
-            if (listdata.size == 0) {
-                mDatabind.rv.addModels(it)
-                addData(it)
+        }
+
+    }
+
+    private suspend fun waitAddData(it: MutableList<MsgBeanData>): String {
+        coroutineScope {
+            for (data in it) {
+                val foundData = listdata.find { it.id == data.id }
+                if (foundData == null) {
+                    data?.let { it1 ->
+                        if (it1.sendId == "0") {
+                            it1.sendId = userId + it1.createTime
+                        }
+                        MyApplication.dataBase!!.chatDao?.insertOrUpdate(data)
+                    }
+                }
             }
         }
 
+        return ""
     }
 
 
@@ -844,7 +913,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
 
     override fun onDestroy() {
         MyWsManager.getInstance(this)?.removeC2CListener(javaClass.name)
-        appViewModel.updateMsgEvent.postValue("0")
+        appViewModel.updateMsgEvent.postValue("-2")
         super.onDestroy()
     }
 
@@ -884,16 +953,21 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
         }
     }
 
-    fun reSendMsg(matchBeanNew:MsgBeanData,view1: LottieAnimationView,view2: ImageView,index:Int) {
+    fun reSendMsg(
+        matchBeanNew: MsgBeanData,
+        view1: LottieAnimationView,
+        view2: ImageView,
+        index: Int
+    ) {
         reSendMsgDialog(this) { isSure ->
             matchBeanNew.sent = 0
-            if (matchBeanNew.msgType==0){
+            if (matchBeanNew.msgType == 0) {
                 view1.visibility = View.VISIBLE
                 view2.visibility = View.GONE
                 msgType = matchBeanNew.msgType!!
                 msgContent = matchBeanNew.content
                 sendMsg(matchBeanNew.id!!, true)
-            }else{
+            } else {
                 mDatabind.rv.bindingAdapter.notifyItemChanged(index)
             }
 
