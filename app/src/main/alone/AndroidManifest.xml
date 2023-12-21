@@ -37,6 +37,8 @@
     <!-- 通知震动 -->
     <uses-permission android:name="android.permission.VIBRATE" />
 
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
+
 
     <!-- 适配Android 13，应用弹出通知必须权限-->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
