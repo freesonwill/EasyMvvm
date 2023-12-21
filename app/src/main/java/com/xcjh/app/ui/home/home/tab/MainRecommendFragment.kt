@@ -77,22 +77,42 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
         MyWsManager.getInstance(App.app)
             ?.setLiveStatusListener(this.toString(), object : LiveStatusListener {
                 override fun onOpenLive(bean: LiveStatus) {
-                    var isShow=false
+
                     if(mDatabind.rcvRecommend.models!=null){
                         for (i in 0 until  mDatabind.rcvRecommend.mutable.size){
                             if(mDatabind.rcvRecommend.mutable[i] is MainTxtBean){
                                 for (j in 0 until  (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.size){
                                     if((mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].userId.equals(bean.anchorId)){
-                                        isShow=true
+                                        (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.removeAt(j)
+
                                     }
                                 }
                             }
 
                         }
                     }
-                    if(!isShow){
-                        mViewModel.getOngoingMatchList(bean.id)
-                    }
+
+//                        mViewModel.getOngoingMatchList(bean.id)
+
+                        var being=BeingLiveBean()
+                        being.matchType=bean.matchType
+                        being.matchId=bean.matchId
+                        being.homeTeamName=bean.homeTeamName
+                        being.awayTeamName=bean.awayTeamName
+                        being.userId=bean.anchorId
+                        being.playUrl=bean.playUrl
+
+
+                        if(mDatabind.rcvRecommend.models!=null){
+                            for (i in 0 until mDatabind.rcvRecommend.mutable!!.size) {
+                                if(mDatabind.rcvRecommend.mutable[i] is MainTxtBean){
+                                    (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.add(being)
+                                    mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
+
+                                }
+                            }
+                        }
+
                 }
 
                 override fun onCloseLive(bean: LiveStatus) {

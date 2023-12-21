@@ -70,18 +70,33 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
             ?.setLiveStatusListener(this.toString(), object : LiveStatusListener {
                 override fun onOpenLive(bean: LiveStatus) {
 
-                    var isShow=false
                     if(mDatabind.rcvRecommend.models!=null){
                         for (i in 0 until  mDatabind.rcvRecommend.mutable.size){
                             if((mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).userId.equals(bean.anchorId)){
-                                isShow=true
+                                  mDatabind.rcvRecommend.mutable.removeAt(i)
+                                mDatabind.rcvRecommend.bindingAdapter.notifyItemRemoved(i) // 通知更新
+//                                mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
+
                             }
 
                         }
                     }
-                    if(!isShow){
-                        mViewModel.getOngoingMatchList(bean.id)
-                    }
+
+//                        mViewModel.getOngoingMatchList(bean.id)
+
+                        var being=BeingLiveBean()
+                        being.matchType=bean.matchType
+                        being.matchId=bean.matchId
+                        being.homeTeamName=bean.homeTeamName
+                        being.awayTeamName=bean.awayTeamName
+                        being.userId=bean.anchorId
+                        being.playUrl=bean.playUrl
+                        var list =ArrayList<BeingLiveBean>()
+                        list.add(being)
+                        mDatabind.rcvRecommend.addModels(list)
+                        mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
+                            mDatabind.state.showContent()
+
                 }
 
                 override fun onCloseLive(bean: LiveStatus) {
@@ -93,6 +108,13 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
                                 mDatabind.rcvRecommend.mutable.removeAt(i)
                                 mDatabind.rcvRecommend.bindingAdapter.notifyItemRemoved(i) // 通知更新
                                 mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
+                                if(mDatabind.rcvRecommend.models!=null&& mDatabind.rcvRecommend.models!!.isNotEmpty()){
+                                    mDatabind.state.showContent()
+                                }else{
+                                    mDatabind.state.showEmpty()
+                                }
+
+
                             }
 
                         }
