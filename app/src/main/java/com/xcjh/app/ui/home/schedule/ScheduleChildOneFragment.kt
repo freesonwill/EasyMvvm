@@ -1,6 +1,8 @@
 package com.xcjh.app.ui.home.schedule
 
+import android.os.Build
 import android.os.Bundle
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.lxj.xpopup.XPopup
@@ -91,6 +93,7 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
         return mDatabind.vp.currentItem
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun initView(savedInstanceState: Bundle?) {
 
         val bundle = arguments

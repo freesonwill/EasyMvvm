@@ -47,7 +47,7 @@ import kotlinx.coroutines.launch
 class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
 
     var listdata: MutableList<MsgListNewData> = ArrayList<MsgListNewData>()
-    var chatId = "0"
+    var chatId = "-2"
     val empty by lazy { layoutInflater!!.inflate(R.layout.layout_empty, null) }
     var noReadMsgs = 0
 
@@ -156,7 +156,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                         notifyItemChanged(bindingAdapterPosition)
                     }
 
-                    if (item?.anchorId == "-1") {
+                    if (item?.anchorId == "0") {
                         com.xcjh.base_lib.utils.startNewActivity<FeedNoticeActivity>()
                     } else {
                         com.xcjh.base_lib.utils.startNewActivity<ChatActivity>() {
@@ -296,19 +296,20 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                     var chat = ReceiveChatMsg()
                     chat.id = it.noticeId.toString()
                     chat.msgType = 1
-                    if (it.reason==null)//取消禁言
-                    {
-                        chat.content = it.title
-                    } else {//禁言
-                        chat.content = it.reason!!
-                    }
+                    chat.content = it.title
+//                    if (it.reason==null)//取消禁言
+//                    {
+//                        chat.content = it.title
+//                    } else {//禁言
+//                        chat.content = it.reason!!
+//                    }
 
                     chat.createTime = it.createTime
                     chat.sent = 1
                     chat.dataType = 2
                     chat.toAvatar = ""
-                    chat.from = "-1"
-                    chat.anchorId = "-1"
+                    chat.from = "0"
+                    chat.anchorId = "0"
                     chat.noReadSum = 1
                     chat.toNickName = ""
                     chat.fromAvatar = ""
@@ -398,8 +399,8 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
             chat.toAvatar = it.avatar
         }
         if (it.dataType == 2) {
-            chat.from = "-1"
-            chat.anchorId = "-1"
+            chat.from = "0"
+            chat.anchorId = "0"
         } else {
 
             chat.from = it.anchorId
@@ -425,17 +426,11 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                                 if (it.listData[i].noReadSum > listdata[j].noReadSum) {
                                     updataMsg(it.listData[i])
                                 }
+                            }else{
+                                if (it.listData[i].noReadSum > 0) {
+                                    updataMsg(it.listData[i])
+                                }
                             }
-//                                if (isTimestampEarlier(
-//                                        it.listData[i].createTime,
-//                                        listdata[j].createTime
-//                                    )
-//                                ) {
-//                                    updataMsg(it.listData[i])
-//                                    break
-//                                }
-//                            } else {
-//
                         }
                     }
                 }
@@ -504,29 +499,13 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                     bean.id = listdata[i].id
 
                     if (msg.anchorId == msg.from) {//主播发送的消息
-                        bean.nick = msg.fromNickName!!
+                        bean.nick = if (msg.fromNickName==null)"" else msg.fromNickName!!
                     } else {
-                        bean.nick = msg.toNickName!!
+                        bean.nick = if (msg.toNickName==null)"" else msg.toNickName!!
                     }
 
                     LogUtils.d("更新了哈哈$i")
-//                    listdata!![i] = bean
-//                   // mDatabind.rec.bindingAdapter.notifyItemMoved(i, 0)
-//                    mDatabind.rec.bindingAdapter.notifyItemChanged(i)
-//                    if (i != 0) {
-//                        GlobalScope.launch {
-//                            delay(2000) // 暂停协程执行 1 秒钟
-//                            mDatabind.rec!!.post {
-//                                // 在此执行需要在主线程上执行的 UI 操作
-//                              //  mDatabind.rec.bindingAdapter.notifyItemChanged(i)
-//                            }
-//
-//                        }
-//
-//
-//                    }
 
-                    //
                     addDataToList(bean)
                     break
                 }
@@ -560,10 +539,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                 LogUtils.d("鞥加了哈哈")
 
                 addDataToList(bean)
-//                var listdata: MutableList<MsgListNewData> = ArrayList<MsgListNewData>()
-//                listdata.add(bean)
-//                mDatabind.rec.addModels(listdata, index = 0)
-//                mDatabind.state.showContent()
+
 
 
             }

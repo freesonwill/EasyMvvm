@@ -46,11 +46,15 @@ class FeedNoticeActivity : BaseActivity<FeedVm, ActivityFeednoticeBinding>() {
         mDatabind.rec.run {
             vertical()
             adapter = mAdapter
-            distance(0, 0, 0, 16)
+            distance(0, 0, 0, 0)
         }
         mAdapter.isEmptyViewEnable=true
         mViewModel.getFeedNoticeList(true)
-
+        mDatabind.smartCommon.setOnRefreshListener {
+            mViewModel.getFeedNoticeList(true)
+        }.setOnLoadMoreListener {
+            mViewModel.getFeedNoticeList(false)
+        }
     }
 
     override fun createObserver() {

@@ -26,7 +26,7 @@ class FeedVm : BaseViewModel() {
             { apiService.getFeedNoticeList(BasePage(pageNo,BASE_PAGE_SIZE)) },
 
             {
-                pageNo
+                pageNo++
                 feedList.value = ListDataUiState(
                     isSuccess = true,
                     isRefresh = isRefresh,

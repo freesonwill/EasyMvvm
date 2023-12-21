@@ -190,7 +190,7 @@ data class MsgBean(
 }
 
 data class FeedBackBean(
-    val type: Int,
+    val type: Int,//通知类型(0系统通知 1反馈结果 2禁言通知 3解禁通知)
     val title: String,
     val notice: String,
     val createTime: String,
