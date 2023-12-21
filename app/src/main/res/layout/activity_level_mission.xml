@@ -66,7 +66,7 @@
                         android:layout_height="@dimen/dp_30"
                         app:is_circle="true"
                         android:scaleType="fitXY"
-                        app:srcCompat="@drawable/icon_my_head"/>
+                        app:srcCompat="@drawable/icon_login_my_head"/>
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/txtLevelName"
                         android:layout_width="wrap_content"
@@ -74,7 +74,7 @@
                         android:textColor="@color/c_37373d"
                         android:textSize="@dimen/sp_15"
                         android:layout_marginLeft="10dp"
-                        android:text="这是个名字"/>
+                        android:text=""/>
                 </LinearLayout>
 
 
@@ -93,14 +93,14 @@
                             android:id="@+id/ivLevelTxt"
                             android:layout_width="@dimen/dp_48"
                             android:layout_height="32dp"
-                            app:srcCompat="@drawable/wd_dj_huangjing_wenzi"/>
+                            app:srcCompat="@drawable/wd_dj_huangtong_wenzi"/>
                         <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/txtLevelGrow"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textSize="@dimen/sp_12"
                             android:textColor="@color/c_a5502f"
-                            android:text="@string/level_txt_grow"
+                            android:text="@string/level_txt_grow_no"
                             android:layout_marginBottom="2dp"
                             android:layout_marginLeft="@dimen/dp_5"
                             android:layout_alignParentRight="true"/>

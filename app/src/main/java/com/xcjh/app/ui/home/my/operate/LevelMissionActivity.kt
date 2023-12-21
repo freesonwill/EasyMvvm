@@ -60,8 +60,8 @@ class LevelMissionActivity  : BaseActivity<LevelMissionVm, ActivityLevelMissionB
                 var user=CacheUtil.getUser()
                 Glide.with(this)
                     .load(user!!.head) // 替换为您要加载的图片 URL
-                    .error(R.drawable.icon_avatar)
-                    .placeholder(R.drawable.icon_avatar)
+                    .error(R.drawable.icon_login_my_head)
+                    .placeholder(R.drawable.icon_login_my_head)
                     .into(mDatabind.ivLevelHead)
                 mDatabind.txtLevelName.text=user!!.name
                 if(user!!.growthValueNext!=null){

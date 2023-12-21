@@ -70,17 +70,19 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
             ?.setLiveStatusListener(this.toString(), object : LiveStatusListener {
                 override fun onOpenLive(bean: LiveStatus) {
 
-                    if(mDatabind.rcvRecommend.models!=null){
-                        for (i in 0 until  mDatabind.rcvRecommend.mutable.size){
-                            if((mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).userId.equals(bean.anchorId)){
-                                  mDatabind.rcvRecommend.mutable.removeAt(i)
-                                mDatabind.rcvRecommend.bindingAdapter.notifyItemRemoved(i) // 通知更新
+                    //比赛类型 1足球，2篮球
+                    if(type.toString().equals(bean.matchType)){
+                        if(mDatabind.rcvRecommend.models!=null){
+                            for (i in 0 until  mDatabind.rcvRecommend.mutable.size){
+                                if((mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).userId.equals(bean.anchorId)){
+                                    mDatabind.rcvRecommend.mutable.removeAt(i)
+                                    mDatabind.rcvRecommend.bindingAdapter.notifyItemRemoved(i) // 通知更新
 //                                mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
 
-                            }
+                                }
 
+                            }
                         }
-                    }
 
 //                        mViewModel.getOngoingMatchList(bean.id)
 
@@ -91,11 +93,16 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
                         being.awayTeamName=bean.awayTeamName
                         being.userId=bean.anchorId
                         being.playUrl=bean.playUrl
+                        being.hotValue=bean.hotValue
+                        being.titlePage=bean.coverImg
                         var list =ArrayList<BeingLiveBean>()
                         list.add(being)
                         mDatabind.rcvRecommend.addModels(list)
                         mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
-                            mDatabind.state.showContent()
+                        mDatabind.state.showContent()
+                    }
+
+
 
                 }
 

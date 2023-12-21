@@ -21,7 +21,7 @@ abstract class BaseActivity<VM : BaseViewModel, DB : ViewDataBinding> : BaseVmDb
 
     override fun initView(savedInstanceState: Bundle?){
         ImmersionBar.with(this)
-            .statusBarDarkFont(false)//白色
+            .statusBarDarkFont(true)//白色
             .init()
     }
     /**

@@ -101,8 +101,8 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                         being.awayTeamName=bean.awayTeamName
                         being.userId=bean.anchorId
                         being.playUrl=bean.playUrl
-
-
+                        being.hotValue=bean.hotValue
+                           being.titlePage=bean.coverImg
                         if(mDatabind.rcvRecommend.models!=null){
                             for (i in 0 until mDatabind.rcvRecommend.mutable!!.size) {
                                 if(mDatabind.rcvRecommend.mutable[i] is MainTxtBean){
@@ -253,6 +253,7 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
             if(it.size>0){
             try {
                 if(mDatabind.rcvRecommend.mutable!=null){
+
                     if (mDatabind.rcvRecommend.mutable[0] is AdvertisementBanner) {
                         (mDatabind.rcvRecommend.mutable[0] as AdvertisementBanner).list.clear()
                         (mDatabind.rcvRecommend.mutable[0] as AdvertisementBanner).list.addAll(it)
@@ -280,14 +281,39 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
         }
         //获取首页的热门比赛
         mViewModel.hotList.observe(this){
+
             if(it.size>=1){
                 try {
-                    if(mDatabind.rcvRecommend.mutable.size>=1){
-                        if (mDatabind.rcvRecommend.mutable[1] is MatchBean) {
-                            (mDatabind.rcvRecommend.mutable[1] as MatchBean).list.clear()
-                            (mDatabind.rcvRecommend.mutable[1] as MatchBean).list.addAll(it)
-                            mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
-                     }else{
+                    if(mDatabind.rcvRecommend.mutable.size==1){
+
+                        var matchBean=MatchBean()
+                        matchBean.list.addAll(it)
+                        //热门赛事
+                        var mainHaveList=ArrayList<MatchBean>()
+                        mainHaveList.add(matchBean)
+                        mDatabind.rcvRecommend.addModels(mainHaveList, index = 0)
+                        mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
+
+                    }else if(mDatabind.rcvRecommend.mutable.size==2){
+                        //判断是否有热门比赛，默认是没有
+                        var isRe=false
+                        var num=0
+                        for (i in 0 until mDatabind.rcvRecommend.mutable!!.size) {
+                            if (mDatabind.rcvRecommend.mutable[i] is MatchBean) {
+                                 isRe=true
+                                 num=i
+                              }
+
+                        }
+                        //有热门比赛
+                        if(isRe){
+                            if (mDatabind.rcvRecommend.mutable[num] is MatchBean) {
+                                (mDatabind.rcvRecommend.mutable[num] as MatchBean).list.clear()
+                                (mDatabind.rcvRecommend.mutable[num] as MatchBean).list.addAll(it)
+                                mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
+                            }
+                        }else{
+
                             var matchBean=MatchBean()
                             matchBean.list.addAll(it)
                             //热门赛事
@@ -295,7 +321,8 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                             mainHaveList.add(matchBean)
                             mDatabind.rcvRecommend.addModels(mainHaveList, index = 1)
                             mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
-                     }
+
+                        }
 
                     }else{
                         var matchBean=MatchBean()
@@ -303,7 +330,7 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                         //热门赛事
                         var mainHaveList=ArrayList<MatchBean>()
                         mainHaveList.add(matchBean)
-                        mDatabind.rcvRecommend.addModels(mainHaveList, index = 1)
+                        mDatabind.rcvRecommend.addModels(mainHaveList, index =0)
                         mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
                     }
 

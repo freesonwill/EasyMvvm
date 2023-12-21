@@ -56,8 +56,8 @@ class PersonalDataActivity : BaseActivity<PersonalDataVm, ActivityPersonalDataBi
         if(user!=null){
             Glide.with(this)
                 .load(user!!.head) // 替换为您要加载的图片 URL
-                .error(R.drawable.icon_my_head)
-                .placeholder(R.drawable.icon_my_head)
+                .error(R.drawable.icon_login_my_head)
+                .placeholder(R.drawable.icon_login_my_head)
                 .into(mDatabind.ivPersonalHead)
             if(user!!.name!=null&&!user!!.name.equals("")){
                 mDatabind.txtPersonalNickname.setText(user!!.name)
@@ -101,7 +101,7 @@ class PersonalDataActivity : BaseActivity<PersonalDataVm, ActivityPersonalDataBi
                             }
                             Glide.with(this@PersonalDataActivity)
                                 .load(path)
-                                .placeholder(R.drawable.icon_my_head)
+                                .placeholder(R.drawable.icon_login_my_head)
                                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                                 .into(mDatabind.ivPersonalHead)
 

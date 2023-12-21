@@ -7,7 +7,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.PowerManager
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.provider.Settings
@@ -19,8 +18,11 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
+import com.engagelab.privates.common.global.MTGlobal.context
 import com.engagelab.privates.core.api.MTCorePrivatesApi
 import com.engagelab.privates.push.api.MTPushPrivatesApi
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
 import com.king.app.dialog.AppDialog
 import com.king.app.updater.AppUpdater
@@ -103,20 +105,14 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
 
         //点击首页
         mDatabind.llHomeSelectMain.setOnClickListener {
-//            val intent = Intent(Intent.ACTION_POWER_USAGE_SUMMARY)
-//            startActivity(intent)
 
-//            val packageName = packageName // 替换为你的应用程序包名
-//            val pm = getSystemService(Context.POWER_SERVICE) as PowerManager
-//
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//                if (!pm.isIgnoringBatteryOptimizations(packageName)) {
-//                    val intent = Intent()
-//                    intent.action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
-//                    intent.data = Uri.parse("package:$packageName")
-//                    startActivity(intent)
-//                }
-//            }
+//            var i =   Intent();
+//            i.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+//            //data为应用包名
+//            i.setData(Uri.parse("package:" + packageName));
+//            startActivity(i);
+
+
             if (currentPage != 0) {
                 if (CacheUtil.isNavigationVibrate()) {
                     vibrate(this)

@@ -59,7 +59,7 @@ class MainRecommendVm  : BaseViewModel() {
 
 
     /**
-     * 获取首页热门比赛
+     * 获取首页正在直播比赛
      */
     fun getNowLive(isRefresh: Boolean){
         if (isRefresh) {

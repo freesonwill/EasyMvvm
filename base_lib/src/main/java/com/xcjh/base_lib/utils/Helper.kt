@@ -306,6 +306,29 @@ fun getXXPermissionsPush(activity: Activity,action: () -> Unit = {}){
 }
 
 /**
+ * 是否获取电池限制权限
+ */
+fun getXXPermissionsBattery(activity: Activity,action: () -> Unit = {}){
+    XXPermissions.with(activity)
+        .permission(Permission.POST_NOTIFICATIONS)
+        .request(object : OnPermissionCallback {
+            override fun onGranted(permissions: MutableList<String>, all: Boolean) {
+                if (all) {
+                    action.invoke()
+                }else{
+                    XXPermissions.startPermissionActivity(activity, permissions)
+                }
+            }
+
+            override fun onDenied(permissions: MutableList<String>, never: Boolean) {
+                super.onDenied(permissions, never)
+                // gotoAppDetailIntent(this@LoginActivity)
+                XXPermissions.startPermissionActivity(activity, permissions)
+            }
+        })
+}
+
+/**
  * view转bitmap
  *
  * @param view view

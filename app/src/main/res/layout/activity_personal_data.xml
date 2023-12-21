@@ -102,7 +102,7 @@
                     android:layout_height="50dp"
                     android:scaleType="fitXY"
                     android:layout_alignParentRight="true"
-                    app:srcCompat="@drawable/load_head"
+                    app:srcCompat="@drawable/icon_login_my_head"
                     app:is_circle="true" />
             </RelativeLayout>
 

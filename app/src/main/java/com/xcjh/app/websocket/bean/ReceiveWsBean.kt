@@ -92,10 +92,11 @@ data class LiveStatus(
     val awayTeamName:String="",//客队名字
     val competitionName:String="",//赛事名称
     val homeTeamName:String="",//主队名称
-    val hotValue:String="",//热度值
+    val hotValue:Int=0,//热度值
     val nickName:String="",//主播昵称
     val rank:String="",//主播排名
     val userLogo:String="",//主播头像
     val matchType:String="",//比赛类型
+    val coverImg:String="",//封面图
 
 )

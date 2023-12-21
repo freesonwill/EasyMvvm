@@ -1,6 +1,8 @@
 package com.xcjh.app.ui.home.home
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.gyf.immersionbar.ImmersionBar
@@ -85,11 +87,13 @@ class HomeFragment : BaseFragment<MainVm, FragmentHomeBinding>() {
         })
     }
 
+
     override fun onResume() {
         super.onResume()
 //        ImmersionBar.with(this)
 //            .statusBarDarkFont(false)//黑色
 //            .titleBar(mDatabind.rlTitle)
+//            .navigationBarColor(R.color.c_34a853)
 //            .init()
     }
 
