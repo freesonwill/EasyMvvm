@@ -845,6 +845,9 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
 
                     if (item.anchorList != null && item.anchorList.isNotEmpty()) {
+                        if (item.anchorList.size>5){
+                            item.anchorList= item.anchorList.subList(0,5) as ArrayList<AnchorBean>;
+                        }
                         binding.conlive.visibility = View.VISIBLE
                         if (binding.rec.itemDecorationCount == 0) {//加个判断
                             binding.rec.run {
@@ -1043,212 +1046,225 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                     (mDatabind.recBottom.models!![i] as MatchBean).anchorList = list
                                     mDatabind.recBottom.bindingAdapter.notifyItemChanged(i)
                                 } else {
-                                    if (it.liveStatus == 2){//开播
-                                    var mybean = AnchorBean()
-                                    mybean.liveId = it.id
-                                    mybean.userId = it.anchorId
-                                    mybean.nickName = it.nickName
-                                    mybean.userLogo = it.userLogo
-                                    (mDatabind.recBottom.models!![i] as MatchBean).anchorList.add(
-                                        mybean
-                                    )
-                                    mDatabind.recBottom.bindingAdapter.notifyItemChanged(i)
-                                }else{//关播
-                                    for (i in 0 until bean.anchorList.size){
-                                        if (bean.anchorList[i].userId==it.anchorId){
-                                            bean.anchorList.removeAt(i)
+                                    if (it.liveStatus == 2) {//开播
+
+                                        var hasdata=false
+                                        for (i in 0 until bean.anchorList.size){
+                                            if (bean.anchorList[i].userId==it.anchorId){
+                                                hasdata=true
+                                                break
+                                            }
+                                        }
+                                        if (!hasdata){
+                                            var mybean = AnchorBean()
+                                            mybean.liveId = it.id
+                                            mybean.userId = it.anchorId
+                                            mybean.nickName = it.nickName
+                                            mybean.userLogo = it.userLogo
+                                            bean.anchorList.add(mybean)
                                             mDatabind.recBottom.bindingAdapter.notifyItemChanged(i)
                                             break
                                         }
+
+                                    } else {//关播
+                                        for (i in 0 until bean.anchorList.size) {
+                                            if (bean.anchorList[i].userId == it.anchorId) {
+                                                bean.anchorList.removeAt(i)
+                                                mDatabind.recBottom.bindingAdapter.notifyItemChanged(
+                                                    i
+                                                )
+                                                break
+                                            }
+                                        }
+                                        break
                                     }
                                 }
+                                break
                             }
+
+                        }
+                    }
+                } else {
+                    for (i in 0 until mDatabind.recBottom.models?.size!!) {
+                        var bean: MatchBean = mDatabind.recBottom.models!![i] as MatchBean
+                        // if (bean.homeHalfScore == "1") {
+                        if (bean.matchId == it.matchId) {
+                            isResh = true
+                            break
                         }
 
                     }
-                }
-            } else {
-                for (i in 0 until mDatabind.recBottom.models?.size!!) {
-                    var bean: MatchBean = mDatabind.recBottom.models!![i] as MatchBean
-                    // if (bean.homeHalfScore == "1") {
-                    if (bean.matchId == it.matchId) {
-                        isResh = true
-                        break
-                    }
 
                 }
-
             }
-        }
-        appViewModel.updateLoginEvent.observe(this) {
-            if (it) {
+            appViewModel.updateLoginEvent.observe(this) {
+                if (it) {
 
-            } else {
-                if (isAdded) {
-                    if (mCurrentOneTabIndex == mOneTabIndex && mCurrentTwoTabIndex == mTwoTabIndex) {
-                        mDatabind.smartCommon.autoRefresh()
-                    } else {
+                } else {
+                    if (isAdded) {
+                        if (mCurrentOneTabIndex == mOneTabIndex && mCurrentTwoTabIndex == mTwoTabIndex) {
+                            mDatabind.smartCommon.autoRefresh()
+                        } else {
 
-                        isResh = true
+                            isResh = true
+                        }
                     }
                 }
             }
+        } catch (e: Exception) {
+
         }
-    } catch (e: Exception)
-    {
 
     }
 
-}
-
-@SuppressLint("UseRequireInsteadOfGet")
-fun stopAn(view: LottieAnimationView) {
-    // 定义缩放动画
-    val scaleFactor = 1f // 缩放比例，0.5 表示缩小为原来的一半
-    val scaleAnimation = ScaleAnimation(
-        1f, scaleFactor, 1f, scaleFactor,
-        Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f
-    )
+    @SuppressLint("UseRequireInsteadOfGet")
+    fun stopAn(view: LottieAnimationView) {
+        // 定义缩放动画
+        val scaleFactor = 1f // 缩放比例，0.5 表示缩小为原来的一半
+        val scaleAnimation = ScaleAnimation(
+            1f, scaleFactor, 1f, scaleFactor,
+            Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f
+        )
 
 // 设置动画属性
-    scaleAnimation.duration = 250 // 动画持续时间，单位为毫秒
-    scaleAnimation.repeatCount = 0 // 设置动画不重复播放
+        scaleAnimation.duration = 250 // 动画持续时间，单位为毫秒
+        scaleAnimation.repeatCount = 0 // 设置动画不重复播放
 
 // 启动动画
-    view.startAnimation(scaleAnimation)
-}
+        view.startAnimation(scaleAnimation)
+    }
 
-@SuppressLint("UseRequireInsteadOfGet")
-fun startAn(view: LottieAnimationView) {
-    // 定义缩放动画
-    val scaleFactor = 1.28f // 缩放比例，0.5 表示缩小为原来的一半
-    val scaleAnimation = ScaleAnimation(
-        1f, scaleFactor, 1f, scaleFactor,
-        Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f
-    )
+    @SuppressLint("UseRequireInsteadOfGet")
+    fun startAn(view: LottieAnimationView) {
+        // 定义缩放动画
+        val scaleFactor = 1.28f // 缩放比例，0.5 表示缩小为原来的一半
+        val scaleAnimation = ScaleAnimation(
+            1f, scaleFactor, 1f, scaleFactor,
+            Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f
+        )
 
 // 设置动画属性
-    scaleAnimation.duration = 250 // 动画持续时间，单位为毫秒
-    scaleAnimation.repeatCount = 0 // 设置动画不重复播放
+        scaleAnimation.duration = 250 // 动画持续时间，单位为毫秒
+        scaleAnimation.repeatCount = 0 // 设置动画不重复播放
 
 // 启动动画
-    view!!.startAnimation(scaleAnimation)
-}
+        view!!.startAnimation(scaleAnimation)
+    }
 
-override fun setUserVisibleHint(isVisibleToUser: Boolean) {
-    super.setUserVisibleHint(isVisibleToUser)
-    //  isVisble = isVisibleToUser
-}
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        //  isVisble = isVisibleToUser
+    }
 
-override fun onHiddenChanged(hidden: Boolean) {
-    super.onHiddenChanged(hidden)
-}
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+    }
 
-override fun onPause() {
-    super.onPause()
-    // isVisble = false
-}
+    override fun onPause() {
+        super.onPause()
+        // isVisble = false
+    }
 
-override fun onResume() {
-    super.onResume()
-    LogUtils.d("第1及页面索引==" + mCurrentOneTabIndex + "第2及页面索引==" + mCurrentTwoTabIndex)
+    override fun onResume() {
+        super.onResume()
+        LogUtils.d("第1及页面索引==" + mCurrentOneTabIndex + "第2及页面索引==" + mCurrentTwoTabIndex)
 //        if (isResh) {
 //            isResh = false
 //            mDatabind.smartCommon.autoRefresh()
 //            //getData(false)
 //        }
-}
+    }
 
-override fun lazyLoadData() {
-    super.lazyLoadData()
-    getData(false)
+    override fun lazyLoadData() {
+        super.lazyLoadData()
+        getData(false)
 
-}
+    }
 
-override fun lazyLoadTime(): Long {
-    return 0
-}
+    override fun lazyLoadTime(): Long {
+        return 0
+    }
 
-fun getData(iLoading: Boolean) {
-    initTime()
-    mViewModel.getHotMatchDataList(
-        iLoading, PostSchMatchListBean(
-            competitionId, page,
-            endTime,
-            matchtype!!, pageSize, strTime,
-            status
+    fun getData(iLoading: Boolean) {
+        initTime()
+        mViewModel.getHotMatchDataList(
+            iLoading, PostSchMatchListBean(
+                competitionId, page,
+                endTime,
+                matchtype!!, pageSize, strTime,
+                status
+            )
         )
-    )
-}
+    }
 
-fun initAnimation(view: AppCompatTextView) {
-    animatorSet.removeAllListeners()
-    view.clearAnimation()
-    val fadeIn =
-        ObjectAnimator.ofFloat(
-            view,
-            "alpha",
-            0f,
-            1f
-        )
-    fadeIn.duration = 500
-    fadeIn.startDelay = 200 // 延迟200毫秒开始动画
+    fun initAnimation(view: AppCompatTextView) {
+        animatorSet.removeAllListeners()
+        view.clearAnimation()
+        val fadeIn =
+            ObjectAnimator.ofFloat(
+                view,
+                "alpha",
+                0f,
+                1f
+            )
+        fadeIn.duration = 500
+        fadeIn.startDelay = 200 // 延迟200毫秒开始动画
 
-    val fadeOut =
-        ObjectAnimator.ofFloat(
-            view,
-            "alpha",
-            1f,
-            0f
-        )
-    fadeOut.duration = 500
-    fadeOut.startDelay = 200 // 延迟200毫秒开始动画
-
-
-    animatorSet.playSequentially(fadeIn, fadeOut) // 顺序播放渐显和渐隐动画
-    animatorSet.startDelay = 200 // 延迟200毫秒开始第一次播放动画
-    animatorSet.addListener(object : AnimatorListenerAdapter() {
+        val fadeOut =
+            ObjectAnimator.ofFloat(
+                view,
+                "alpha",
+                1f,
+                0f
+            )
+        fadeOut.duration = 500
+        fadeOut.startDelay = 200 // 延迟200毫秒开始动画
 
 
-        override fun onAnimationEnd(animation: Animator) {
-            // 动画结束时重新播放
-            super.onAnimationEnd(animation)
-            animatorSet.start()
-        }
-    })
-    animatorSet.start()
-}
-
-override fun createObserver() {
-    val empty = requireActivity().layoutInflater!!.inflate(R.layout.layout_empty, null)
+        animatorSet.playSequentially(fadeIn, fadeOut) // 顺序播放渐显和渐隐动画
+        animatorSet.startDelay = 200 // 延迟200毫秒开始第一次播放动画
+        animatorSet.addListener(object : AnimatorListenerAdapter() {
 
 
-    mViewModel.hotMatchList.observe(this) {
-        mDatabind.recBottom.mutable.clear()
-        mDatabind.recBottom.scrollToPosition(0)
-        mDatabind.recBottom.bindingAdapter.notifyDataSetChanged()
-        if (it.isSuccess) {
-            strTimeZu.clear()
-            //成功
-            when {
-                //第一页并没有数据 显示空布局界面
-                it.isFirstEmpty -> {
-                    if (mDatabind.recBottom.models?.size != null) {
-                        mDatabind.recBottom.mutable.clear()
-                        mDatabind.recBottom.bindingAdapter.notifyDataSetChanged()
+            override fun onAnimationEnd(animation: Animator) {
+                // 动画结束时重新播放
+                super.onAnimationEnd(animation)
+                animatorSet.start()
+            }
+        })
+        animatorSet.start()
+    }
+
+    override fun createObserver() {
+        val empty = requireActivity().layoutInflater!!.inflate(R.layout.layout_empty, null)
+
+
+        mViewModel.hotMatchList.observe(this) {
+            mDatabind.recBottom.mutable.clear()
+            mDatabind.recBottom.scrollToPosition(0)
+            mDatabind.recBottom.bindingAdapter.notifyDataSetChanged()
+            if (it.isSuccess) {
+                strTimeZu.clear()
+                //成功
+                when {
+                    //第一页并没有数据 显示空布局界面
+                    it.isFirstEmpty -> {
+                        if (mDatabind.recBottom.models?.size != null) {
+                            mDatabind.recBottom.mutable.clear()
+                            mDatabind.recBottom.bindingAdapter.notifyDataSetChanged()
+                        }
+                        mDatabind.smartCommon.finishRefresh()
+                        mDatabind.state.showEmpty()
+
                     }
-                    mDatabind.smartCommon.finishRefresh()
-                    mDatabind.state.showEmpty()
-
-                }
-                //是第一页
-                it.isRefresh -> {
+                    //是第一页
+                    it.isRefresh -> {
 
 
-                    mDatabind.smartCommon.finishRefresh()
-                    mDatabind.smartCommon.resetNoMoreData()
-                    // mAdapter.submitList(null)
-                    mDatabind.recBottom.models = it.listData
+                        mDatabind.smartCommon.finishRefresh()
+                        mDatabind.smartCommon.resetNoMoreData()
+                        // mAdapter.submitList(null)
+                        mDatabind.recBottom.models = it.listData
 //                        if (mDatabind.recBottom.models != null && isClick) {
 //                            mDatabind.recBottom.mutable.clear()
 //                            // listdata.clear()
@@ -1256,52 +1272,52 @@ override fun createObserver() {
 //                        } else {
 //                            mDatabind.recBottom.setDifferModels(it.listData, false)
 //                        }
-                    mDatabind.state.showContent()
-
-                    //listdata.addAll(it.listData)
-                    //it.listData[0].homeName=it.listData[0].homeName+index1
-
-
-                }
-                //不是第一页
-                else -> {
-                    if (it.listData.isEmpty()) {
-                        // mDatabind.smartCommon.setEnableLoadMore(false)
-                        mDatabind.smartCommon.finishLoadMoreWithNoMoreData()
-                    } else {
-                        // mDatabind.smartCommon.setEnableLoadMore(true)
-                        mDatabind.smartCommon.finishLoadMore()
-                        mDatabind.recBottom.setDifferModels(it.listData, true)
                         mDatabind.state.showContent()
+
+                        //listdata.addAll(it.listData)
+                        //it.listData[0].homeName=it.listData[0].homeName+index1
+
+
                     }
+                    //不是第一页
+                    else -> {
+                        if (it.listData.isEmpty()) {
+                            // mDatabind.smartCommon.setEnableLoadMore(false)
+                            mDatabind.smartCommon.finishLoadMoreWithNoMoreData()
+                        } else {
+                            // mDatabind.smartCommon.setEnableLoadMore(true)
+                            mDatabind.smartCommon.finishLoadMore()
+                            mDatabind.recBottom.setDifferModels(it.listData, true)
+                            mDatabind.state.showContent()
+                        }
 
+                    }
                 }
-            }
-        } else {
-
-            //失败
-            if (it.isRefresh) {
-                mDatabind.smartCommon.finishRefresh()
-                //如果是第一页，则显示错误界面，并提示错误信息
-                if (mDatabind.recBottom.models != null) {
-                    //  mDatabind.recBottom.mutable.clear()
-                }
-                mDatabind.state.showEmpty()
             } else {
-                mDatabind.smartCommon.finishLoadMore(false)
+
+                //失败
+                if (it.isRefresh) {
+                    mDatabind.smartCommon.finishRefresh()
+                    //如果是第一页，则显示错误界面，并提示错误信息
+                    if (mDatabind.recBottom.models != null) {
+                        //  mDatabind.recBottom.mutable.clear()
+                    }
+                    mDatabind.state.showEmpty()
+                } else {
+                    mDatabind.smartCommon.finishLoadMore(false)
+                }
             }
         }
+        mViewModel.unnoticeData.observe(this) {
+            mview!!.setBackgroundResource(R.drawable.ic_focus_n)
+            //mAdapter.getItem(index)!!.focus = false
+            mDatabind.recBottom.bindingAdapter.getModel<MatchBean>(index).focus = false
+            mDatabind.recBottom.bindingAdapter.notifyItemChanged(index)
+        }
+        mViewModel.noticeData.observe(this) {
+            mview!!.setBackgroundResource(R.drawable.ic_focus_s)
+            mDatabind.recBottom.bindingAdapter.getModel<MatchBean>(index).focus = true
+            mDatabind.recBottom.bindingAdapter.notifyItemChanged(index)
+        }
     }
-    mViewModel.unnoticeData.observe(this) {
-        mview!!.setBackgroundResource(R.drawable.ic_focus_n)
-        //mAdapter.getItem(index)!!.focus = false
-        mDatabind.recBottom.bindingAdapter.getModel<MatchBean>(index).focus = false
-        mDatabind.recBottom.bindingAdapter.notifyItemChanged(index)
-    }
-    mViewModel.noticeData.observe(this) {
-        mview!!.setBackgroundResource(R.drawable.ic_focus_s)
-        mDatabind.recBottom.bindingAdapter.getModel<MatchBean>(index).focus = true
-        mDatabind.recBottom.bindingAdapter.notifyItemChanged(index)
-    }
-}
 }

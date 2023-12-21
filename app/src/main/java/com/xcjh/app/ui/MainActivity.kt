@@ -24,6 +24,7 @@ import com.engagelab.privates.push.api.MTPushPrivatesApi
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
+import com.gyf.immersionbar.ktx.showStatusBar
 import com.king.app.dialog.AppDialog
 import com.king.app.updater.AppUpdater
 import com.king.app.updater.http.OkHttpManager
@@ -83,6 +84,7 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         //MTPushPrivatesApi.clearNotification(this)
+        showStatusBar()
         onIntent(intent)
         MTPushPrivatesApi.setNotificationBadge(this, 0)
         CacheUtil.setFirst(false)

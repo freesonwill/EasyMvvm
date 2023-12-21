@@ -26,8 +26,8 @@
         <item name="windowNoTitle">true</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:navigationBarColor">@color/trans</item>
-        <item name="android:statusBarColor">@android:color/transparent
-        </item> <!-- Android 5.0+，设置状态栏全透明透明 -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <!-- Android 5.0+，设置状态栏全透明透明 -->
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowAnimationStyle">@style/Animation_Splash</item>
         <item name="android:windowTranslucentStatus">true</item> <!-- 设置状态栏半透明——解除注释 -->

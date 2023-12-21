@@ -91,7 +91,7 @@ class MatchDetailActivity :
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-        ImmersionBar.with(this).statusBarDarkFont(false)//黑色
+        ImmersionBar.with(this).statusBarDarkFont(false)//白色
             .titleBarMarginTop(mDatabind.rltTop).init()
         //解决toolbar左边距问题
         mDatabind.toolbar.setContentInsetsAbsolute(0, 0)
