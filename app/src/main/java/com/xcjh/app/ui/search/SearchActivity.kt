@@ -37,6 +37,7 @@ class SearchActivity  : BaseActivity<SearchVm, ActivitySearchBinding>() {
             .titleBar(mDatabind.rlSearchTitle)
             .init()
 
+
         showSoftKeyboard()
         mViewModel.getHotOngoingMatch()
         adapter()
