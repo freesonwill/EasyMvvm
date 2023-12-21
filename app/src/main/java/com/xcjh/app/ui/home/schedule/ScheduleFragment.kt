@@ -32,7 +32,6 @@ class ScheduleFragment : BaseFragment<MainVm, FrCourseBinding>() {
         ImmersionBar.with(this)
             .statusBarDarkFont(true)//黑色
             .titleBar(mDatabind.rlTitle)
-            .navigationBarColor(R.color.c_ffffff)
             .init()
         initEvent()
         MyWsManager.getInstance(requireActivity())!!

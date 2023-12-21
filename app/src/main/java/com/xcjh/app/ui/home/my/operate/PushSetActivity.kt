@@ -24,7 +24,6 @@ class PushSetActivity : BaseActivity<PushSetVm, ActivityPushSetBinding>() {
         ImmersionBar.with(this)
             .statusBarDarkFont(true)
             .titleBar(mDatabind.titleTop.root)
-            .navigationBarColor(R.color.c_ffffff)
             .init()
         mDatabind.titleTop.tvTitle.text=resources.getString(R.string.push_txt_title)
         if(XXPermissions.isGranted(this, Permission.POST_NOTIFICATIONS)){

@@ -40,7 +40,6 @@ class FeedNoticeActivity : BaseActivity<FeedVm, ActivityFeednoticeBinding>() {
         ImmersionBar.with(this)
             .statusBarDarkFont(true)
             .titleBar(mDatabind.titleTop.root)
-            .navigationBarColor(R.color.c_f2f3f7)
             .init()
         mDatabind.titleTop.tvTitle.text = resources.getString(R.string.txt_feedtitle)
         mDatabind.rec.run {

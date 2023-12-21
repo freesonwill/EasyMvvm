@@ -30,7 +30,6 @@ class MsgFragment : BaseFragment<MsgVm, FrMsgBinding>() {
         ImmersionBar.with(this)
             .statusBarDarkFont(true)//黑色
             .titleBar(mDatabind.rlTitle)
-            .navigationBarColor(R.color.c_ffffff)
             .init()
         initEvent()
     }

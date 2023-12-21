@@ -41,7 +41,6 @@ class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
         ImmersionBar.with(this)
             .statusBarDarkFont(true)
             .titleBar(mDatabind.titleTop.root)
-            .navigationBarColor(R.color.c_ffffff)
             .init()
         intent?.let {
             url = it.getStringExtra(Constants.WEB_URL).toString()

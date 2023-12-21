@@ -22,7 +22,7 @@ class SetUpVm : BaseViewModel() {
                 exitLive.value=true
 
             }, {
-                exitLive.value=false
+                exitLive.value=true
 
                 //请求失败
                 myToast(it.errorMsg)

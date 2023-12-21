@@ -35,7 +35,6 @@ class EventsCentreActivity : BaseActivity<EventsCentreVm, ActivityEventsCentreBi
         ImmersionBar.with(this)
             .statusBarDarkFont(true)
             .titleBar(mDatabind.titleTop.root)
-            .navigationBarColor(R.color.c_ffffff)
             .init()
         mDatabind.titleTop.tvTitle.text=resources.getString(R.string.events_txt_title)
         adapter()

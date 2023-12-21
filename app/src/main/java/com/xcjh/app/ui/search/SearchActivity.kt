@@ -35,7 +35,6 @@ class SearchActivity  : BaseActivity<SearchVm, ActivitySearchBinding>() {
         ImmersionBar.with(this)
             .statusBarDarkFont(true)
             .titleBar(mDatabind.rlSearchTitle)
-            .navigationBarColor(R.color.c_ffffff)
             .init()
 
         showSoftKeyboard()

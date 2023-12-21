@@ -63,7 +63,6 @@ class ContactUsActivity : BaseActivity<ContactUsVm, ActivityContactUsBinding>() 
         ImmersionBar.with(this)
             .statusBarDarkFont(true)
             .titleBar(mDatabind.titleTop.root)
-            .navigationBarColor(R.color.c_ffffff)
             .init()
 
 

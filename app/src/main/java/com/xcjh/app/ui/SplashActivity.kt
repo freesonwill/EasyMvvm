@@ -29,7 +29,6 @@ class SplashActivity : BaseActivity<BaseViewModel, ActivitySplashBinding>() {
         super.initView(savedInstanceState)
           ImmersionBar.with(this)
             .statusBarDarkFont(true)
-            .navigationBarColor(R.color.c_ffffff)
             .init()
         onIntent(intent)
         //createTimer(2)

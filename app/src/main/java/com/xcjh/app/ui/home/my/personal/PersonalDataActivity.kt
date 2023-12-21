@@ -44,7 +44,6 @@ class PersonalDataActivity : BaseActivity<PersonalDataVm, ActivityPersonalDataBi
         ImmersionBar.with(this)
             .statusBarDarkFont(true)
             .titleBar(mDatabind.rltTop)
-            .navigationBarColor(R.color.c_ffffff)
             .init()
         mDatabind.tvTitle.text=resources.getString(R.string.personal_txt_title)
         mDatabind.ivBack.clickNoRepeat {
