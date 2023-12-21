@@ -133,7 +133,7 @@ dependencies {
     // 必需： 主包********极光推送***********
     implementation 'com.engagelab:engagelab:4.3.5' //
     // google push need，不需要 google 通道，则删除
-    implementation 'com.google.firebase:firebase-messaging:23.4.0'
+    implementation 'com.google.firebase:firebase-messaging:23.2.0'
     // huawei push need，不需要 huawei 通道，则删除
     implementation 'com.huawei.hms:push:6.11.0.300'
     // Optional: Google vendor
