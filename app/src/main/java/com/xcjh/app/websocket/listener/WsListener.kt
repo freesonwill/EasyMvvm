@@ -66,6 +66,8 @@ interface LiveStatusListener {
      * 服务器主动推送直播间直播地址修改
      */
     fun onChangeLive (bean:LiveStatus){}
+    /// 收到推送比分消息
+    fun onChangeReceive(chat: ArrayList<ReceiveChangeMsg>){}
 }
 
 /**

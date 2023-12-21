@@ -14,10 +14,12 @@ import com.xcjh.app.databinding.FrCourseBinding
 import com.xcjh.app.vm.MainVm
 import com.xcjh.app.websocket.MyWsManager
 import com.xcjh.app.websocket.bean.FeedSystemNoticeBean
+import com.xcjh.app.websocket.bean.LiveStatus
 import com.xcjh.app.websocket.bean.ReceiveChangeMsg
 import com.xcjh.app.websocket.bean.ReceiveChatMsg
 import com.xcjh.app.websocket.bean.ReceiveWsBean
 import com.xcjh.app.websocket.listener.C2CListener
+import com.xcjh.app.websocket.listener.LiveStatusListener
 import com.xcjh.base_lib.utils.LogUtils
 import com.xcjh.base_lib.utils.bindViewPager2
 import com.xcjh.base_lib.utils.initActivity
@@ -28,6 +30,7 @@ class ScheduleFragment : BaseFragment<MainVm, FrCourseBinding>() {
     private var mTitles: Array<out String>? = null
     private val mtypes = arrayOf("0", "1", "2", "3")
     private val status = arrayOf(0, 0, 0, 99)
+    var tags="ScheduleFragment"
     override fun initView(savedInstanceState: Bundle?) {
         ImmersionBar.with(this)
             .statusBarDarkFont(true)//黑色
@@ -35,32 +38,35 @@ class ScheduleFragment : BaseFragment<MainVm, FrCourseBinding>() {
             .init()
         initEvent()
         MyWsManager.getInstance(requireActivity())!!
-            .setC2CListener(javaClass.name, object : C2CListener {
-                override fun onSendMsgIsOk(isOk: Boolean, bean: ReceiveWsBean<*>) {
-
-                }
-
-                override fun onSystemMsgReceive(chat: FeedSystemNoticeBean) {
-
-                }
-
-                override fun onC2CReceive(chat: ReceiveChatMsg) {
-
-                }
+            .setLiveStatusListener(tags, object : LiveStatusListener {
 
                 override fun onChangeReceive(chat: ArrayList<ReceiveChangeMsg>) {
-                    LogUtils.d("收到推送消息")
-
+                    super.onChangeReceive(chat)
                     appViewModel.appPushMsg.postValue(chat)
+                }
 
+                override fun onOpenLive(bean: LiveStatus) {
+                    super.onOpenLive(bean)
+                    appViewModel.appPushLive.postValue(bean)
+                }
+
+                override fun onCloseLive(bean: LiveStatus) {
+                    super.onCloseLive(bean)
+                    appViewModel.appPushLive.postValue(bean)
                 }
             })
+    }
+
+    override fun onDestroy() {
+          MyWsManager.getInstance(requireActivity())!!.removeLiveStatusListener(tags)
+        super.onDestroy()
     }
 
     override fun onResume() {
         super.onResume()
 
     }
+
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
         //  isVisble = isVisibleToUser
@@ -69,6 +75,7 @@ class ScheduleFragment : BaseFragment<MainVm, FrCourseBinding>() {
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
     }
+
     fun getCurrentIndex(): Int {
         // 子 Fragment 的逻辑操作
         return mDatabind.vp.currentItem
