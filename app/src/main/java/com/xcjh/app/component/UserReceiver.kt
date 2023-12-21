@@ -134,7 +134,7 @@ class UserReceiver : MTCommonReceiver() {
      */
     override fun onCustomMessage(context: Context, customMessage: CustomMessage) {
         Log.i(TAG, "onCustomMessage:$customMessage")
-        myToast("onCustomMessage")
+        //myToast("onCustomMessage")
         // 用于演示自定义消息展示
            val intent = Intent()
            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -170,7 +170,7 @@ class UserReceiver : MTCommonReceiver() {
      */
     override fun onPlatformToken(context: Context, platformTokenMessage: PlatformTokenMessage) {
         Log.i(TAG, "onPlatformToken:$platformTokenMessage")
-        myToast("onPlatformToken")
+        //myToast("onPlatformToken")
     }
 
     /**

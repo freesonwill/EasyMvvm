@@ -511,7 +511,7 @@ class MatchDetailActivity :
         }
         //跑马灯广告
         mViewModel.scrollTextList.observe(this) { stl ->
-            mDatabind.marqueeView.visibleOrGone(stl.isSuccess && stl.data!!.size > 0)
+           // mDatabind.marqueeView.visibleOrGone(stl.isSuccess && stl.data!!.size > 0)
             stl.data.notNull({ list ->
                 //滚动条广告
                 mDatabind.marqueeView.isSelected = true
@@ -526,11 +526,11 @@ class MatchDetailActivity :
         //固定广告
         mViewModel.showAd.observe(this) { ad ->
             ad.data.notNull({ bean ->
-                loadImage(this,bean.imgUrl,mDatabind.ivShowAd, com.xcjh.base_lib.R.drawable.ic_default_bg)
+                mDatabind.marqueeView.visibleOrGone(true)
+                loadImage(this,ad.data?.imgUrl,mDatabind.ivShowAd, R.drawable.ic_ad_def)
                 mDatabind.ivShowAd.setOnClickListener {
                     jumpOutUrl(bean.targetUrl)
                 }
-
             })
         }
         //主播详情接口返回监听处理

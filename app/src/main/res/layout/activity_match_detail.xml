@@ -346,19 +346,13 @@
                     </RelativeLayout>
 
                     <!--ad -->
-                    <LinearLayout
+                    <ImageView
+                        android:id="@+id/ivShowAd"
+                        android:visibility="gone"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/dp_48"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:id="@+id/ivShowAd"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:scaleType="fitXY"
-                            tools:src="@drawable/ic_default_bg" />
-                    </LinearLayout>
+                        android:layout_height="48dp"
+                        android:scaleType="fitXY"
+                        tools:src="@drawable/ic_ad_def" />
                     <!--主播信息-->
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/cslAnchor"
