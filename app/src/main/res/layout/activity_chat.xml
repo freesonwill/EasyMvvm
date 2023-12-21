@@ -24,11 +24,9 @@
         android:gravity="center_horizontal"
         android:orientation="vertical"
         tools:context=".ui.activity.MainActivity">
-
         <include
             android:id="@+id/titleTop"
-            layout="@layout/com_title_transparent_chat" />
-
+            layout="@layout/com_title_transparent" />
         <com.drake.brv.PageRefreshLayout
             android:id="@+id/smart_common"
             android:layout_width="match_parent"
