@@ -6,6 +6,7 @@ import android.view.View
 import androidx.databinding.ViewDataBinding
 import androidx.viewbinding.ViewBinding
 import com.gyf.immersionbar.ImmersionBar
+import com.gyf.immersionbar.ktx.showStatusBar
 import com.xcjh.base_lib.base.BaseViewModel
 import com.xcjh.base_lib.base.activity.BaseVmVbActivity
 import com.xcjh.app.utils.dismissLoadingExt
@@ -21,7 +22,8 @@ abstract class BaseActivity<VM : BaseViewModel, DB : ViewDataBinding> : BaseVmDb
 
     override fun initView(savedInstanceState: Bundle?){
         ImmersionBar.with(this)
-            .statusBarDarkFont(false)//白色
+            .statusBarDarkFont(true)//黑色
+            .supportActionBar(true)
             .init()
     }
     /**
