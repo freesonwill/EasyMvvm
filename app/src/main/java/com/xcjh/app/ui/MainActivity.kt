@@ -23,6 +23,7 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
+import com.google.gson.Gson
 import com.king.app.dialog.AppDialog
 import com.king.app.updater.AppUpdater
 import com.king.app.updater.http.OkHttpManager
@@ -35,6 +36,8 @@ import com.xcjh.app.adapter.PushCardPopup
 import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseActivity
 import com.xcjh.app.bean.BeingLiveBean
+import com.xcjh.app.component.UserActivity400
+import com.xcjh.app.component.UserReceiver
 import com.xcjh.app.databinding.ActivityHomeBinding
 import com.xcjh.app.ui.details.MatchDetailActivity
 import com.xcjh.app.ui.home.home.HomeFragment
@@ -48,6 +51,7 @@ import com.xcjh.app.websocket.MyWsManager
 import com.xcjh.app.websocket.listener.NoReadMsgPushListener
 import com.xcjh.app.websocket.listener.OtherPushListener
 import com.xcjh.base_lib.utils.initActivity
+import com.xcjh.base_lib.utils.loge
 import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.view.clickNoRepeat
 import kotlinx.android.synthetic.main.activity_home.*
@@ -82,25 +86,9 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         //MTPushPrivatesApi.clearNotification(this)
-
         onIntent(intent)
         MTPushPrivatesApi.setNotificationBadge(this, 0)
         CacheUtil.setFirst(false)
-
-       FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener{task ->
-           if (!task.isSuccessful) {
-               Log.w("TAG", "Fetching FCM registration token failed", task.exception)
-               return@OnCompleteListener
-           }
-
-           // Get new FCM registration token
-           val token = task.result
-
-           // Log and toast
-           val msg = token
-           Log.d("TAG", msg)
-//           Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
-        })
 
         mViewModel.appUpdate()
         //runOnUiThread {  }
@@ -207,7 +195,7 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
             NoReadMsgPushListener {
             override fun onNoReadMsgNums(nums: String) {
                 super.onNoReadMsgNums(nums)
-              //  initMsgNums(nums)
+                //  initMsgNums(nums)
 
             }
 
@@ -235,6 +223,10 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
 
     private fun onIntent(intent: Intent?) {
         try {
+            Log.i("push===UserReceiver", "onIntent:${intent?.extras?.toString()}")
+            Log.i("push===UserReceiver", "onIntentgson:${Gson().toJson(intent?.extras)}")
+            val notificationMessage = intent?.getStringExtra("message_json")
+            Log.i("push===UserReceiver", "message_json:${notificationMessage}")
             if (intent == null) {
                 return
             }
@@ -247,11 +239,13 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
                 val matchType = getString("matchType", "1")
                 val liveId = getString("liveId")
                 val anchorId = getString("anchorId", null)
-                MatchDetailActivity.open(
-                    matchType = matchType,
-                    matchId = matchId,
-                    anchorId = anchorId
-                )
+                if (!matchId.isNullOrEmpty()) {
+                    MatchDetailActivity.open(
+                        matchType = matchType,
+                        matchId = matchId,
+                        anchorId = anchorId
+                    )
+                }
             }
         } catch (throwable: Throwable) {
             throwable.printStackTrace()
@@ -259,7 +253,7 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
     }
 
     fun initMsgNums(nums: String) {
-        when(nums.toInt()){
+        when (nums.toInt()) {
             0 -> {
                 mDatabind.tvnums.visibility = View.GONE
                 mDatabind.tvnums2.visibility = View.GONE
@@ -270,11 +264,13 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
                 mDatabind.tvnums.visibility = View.VISIBLE
                 mDatabind.tvnums2.visibility = View.GONE
             }
+
             in 10..99 -> {
                 mDatabind.tvnums.text = nums
                 mDatabind.tvnums.visibility = View.VISIBLE
                 mDatabind.tvnums2.visibility = View.GONE
             }
+
             else -> {
                 mDatabind.tvnums2.text = "99+"
                 mDatabind.tvnums.visibility = View.GONE
@@ -580,8 +576,6 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
             }
         }
     }
-
-
 
 
 }

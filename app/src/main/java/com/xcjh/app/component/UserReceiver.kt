@@ -15,6 +15,7 @@ import com.engagelab.privates.push.api.TagMessage
 import com.xcjh.app.component.listener.StatusObserver
 import com.xcjh.app.ui.MainActivity
 import com.xcjh.app.ui.details.MatchDetailActivity
+import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.startNewActivity
 import java.util.Arrays
 
@@ -108,6 +109,7 @@ class UserReceiver : MTCommonReceiver() {
 
         }*/
 
+        //myToast("onNotificationClicked")
         startNewActivity<MainActivity> {
             putExtras(notificationMessage.extras)
            // putExtra("","")
@@ -132,6 +134,7 @@ class UserReceiver : MTCommonReceiver() {
      */
     override fun onCustomMessage(context: Context, customMessage: CustomMessage) {
         Log.i(TAG, "onCustomMessage:$customMessage")
+        myToast("onCustomMessage")
         // 用于演示自定义消息展示
            val intent = Intent()
            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -140,51 +143,7 @@ class UserReceiver : MTCommonReceiver() {
            context.startActivity(intent)
     }
 
-    /**
-     * 标签消息回调
-     *
-     * @param context    不为空
-     * @param tagMessage 标签消息
-     */
-    override fun onTagMessage(context: Context, tagMessage: TagMessage) {
-        Log.i(TAG, "onTagMessage:$tagMessage")
-        val message: String = when (tagMessage.sequence) {
-            ExampleGlobal.TAG_ADD -> """
-     addTag code:${tagMessage.code}
-     tag:
-     """.trimIndent() + Arrays.toString(tagMessage.tags)
 
-            ExampleGlobal.TAG_DELETE -> """
-     deleteTag code:${tagMessage.code}
-     tag:
-     """.trimIndent() + Arrays.toString(
-                tagMessage.tags
-            )
-
-            ExampleGlobal.TAG_UPDATE -> """
-     updateTag code:${tagMessage.code}
-     tag:
-     """.trimIndent() + Arrays.toString(
-                tagMessage.tags
-            )
-
-            ExampleGlobal.TAG_QUERY -> """
-                queryTag code:${tagMessage.code}
-                tag:${tagMessage.queryTag},valid:${tagMessage.isQueryTagValid}
-                """.trimIndent()
-
-            ExampleGlobal.TAG_DELETE_ALL -> "deleteAllTag code:" + tagMessage.code
-            ExampleGlobal.TAG_QUERY_ALL -> """
-     queryAllTag code:${tagMessage.code}
-     tag:
-     """.trimIndent() + Arrays.toString(
-                tagMessage.tags
-            )
-
-            else -> "tagMessage:$tagMessage"
-        }
-        //Toast.makeText(context.getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-    }
 
     /**
      * 别名消息回调
@@ -211,6 +170,7 @@ class UserReceiver : MTCommonReceiver() {
      */
     override fun onPlatformToken(context: Context, platformTokenMessage: PlatformTokenMessage) {
         Log.i(TAG, "onPlatformToken:$platformTokenMessage")
+        myToast("onPlatformToken")
     }
 
     /**

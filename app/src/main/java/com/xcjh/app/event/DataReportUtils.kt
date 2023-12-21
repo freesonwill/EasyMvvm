@@ -1,3 +1,4 @@
+/*
 package com.xcjh.app.event
 
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -6,19 +7,23 @@ import android.os.Bundle
 import com.xcjh.base_lib.appContext
 import kotlin.jvm.Volatile
 
+*/
 /**
  * @author zobo
- */
+ *//*
+
 class DataReportUtils {
     init {
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(appContext)
     }
-    /**
+    */
+/**
      * 埋点
      *
      * @param key
      * @param value
-     */
+     *//*
+
     @JvmOverloads
     fun report(key: String, value: Bundle? = null) {
         mFirebaseAnalytics.logEvent(key, value)
@@ -36,4 +41,4 @@ class DataReportUtils {
             private set
         private lateinit var mFirebaseAnalytics: FirebaseAnalytics
     }
-}
+}*/
