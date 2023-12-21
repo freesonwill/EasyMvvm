@@ -258,7 +258,7 @@ class DetailChatFragment(
             if (it != null) {
                 noticeBean.notice = it.notice ?: ""
 
-                /* val richText = ("<font color=\"red\">红色样式</font><br />"
+               /*  val richText = ("<font color=\"red\">红色样式</font><br />"
                          + "<big>大号字样式</big><br />"
                          + "<small>小号字样式</small><br />"
                          + "<i>斜体样式</i><br />"
@@ -266,15 +266,23 @@ class DetailChatFragment(
                          + "<tt>等t宽t样式</tt><br />"
                          + "<p>段落样式</p><br />"
                          +"<img src=\"https://5b0988e595225.cdn.sohucs.com/images/20180615/0338b5602889474d9935ec4214de9695.jpeg\" title=\"abcjpg\">"
-                         + "<a href=\"http://www.baidu.com\">百度一下</a>")
-                 richText.toHtml {
+                         + "<font color='#F7DA73'><a href =\"http://www.baidu.com\">百度一下</a></font>")*/
+               /*  richText.toHtml {
                      Handler(Looper.getMainLooper()).post {
 
                          mDatabind.notice.expandableText.text = it
                      }
                  }*/
-                mDatabind.notice.expandableText.text = it.notice?.toHtml() //主播公告
-                mDatabind.notice.expandableText.maxLines =  2
+
+                mDatabind.notice.expandableText.text =  it.notice?.toHtml() //主播公告
+                val lineCount: Int = mDatabind.notice.expandableText.layout.lineCount
+                mDatabind.notice.lltExpandCollapse.visibleOrGone(lineCount > 2)
+                if (lineCount > 2) {
+                    // 内容超过了两行
+                    mDatabind.notice.expandableText.maxLines =  2
+                } else {
+                    // 内容没有超过两行
+                }
                 /*mDatabind.rcvChat.postDelayed({
 
                 }, 200)*/

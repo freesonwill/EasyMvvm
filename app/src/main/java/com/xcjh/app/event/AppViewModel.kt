@@ -6,6 +6,7 @@ import com.xcjh.app.bean.MsgBean
 import com.xcjh.app.bean.UserInfo
 import com.xcjh.app.ui.room.MsgBeanData
 import com.xcjh.app.utils.CacheUtil
+import com.xcjh.app.websocket.bean.LiveStatus
 import com.xcjh.app.websocket.bean.ReceiveChangeMsg
 import com.xcjh.base_lib.base.BaseViewModel
 import com.xcjh.base_lib.callback.livedata.event.EventLiveData
@@ -34,6 +35,8 @@ class AppViewModel : BaseViewModel() {
     var appPolling=EventLiveData<Boolean>()
     //比分推送通知
     var appPushMsg=EventLiveData< ArrayList<ReceiveChangeMsg>>()
+    //主播开播推送
+    var appPushLive=EventLiveData<LiveStatus>()
     //更新消息列表
     var updateMsgEvent = EventLiveData<String>()
     //更新消息列表数据

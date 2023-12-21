@@ -145,6 +145,7 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
                         }
 
                         override fun onSure(time: String?) {
+                            popwindow.dismiss()
                             calendarTime = time!!
 
                             appViewModel.updateganlerTime.postValue(calendarTime)

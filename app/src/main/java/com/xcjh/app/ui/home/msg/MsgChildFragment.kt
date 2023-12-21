@@ -50,7 +50,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
     var chatId = "-2"
     val empty by lazy { layoutInflater!!.inflate(R.layout.layout_empty, null) }
     var noReadMsgs = 0
-
+    var tags="MsgChildFragment"
     companion object {
 
         fun newInstance(): MsgChildFragment {
@@ -223,7 +223,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                 }
                 initEvent()
             } else {
-                MyWsManager.getInstance(requireActivity())!!.removeC2CListener(javaClass.name)
+                MyWsManager.getInstance(requireActivity())!!.removeC2CListener(tags)
                 mDatabind.rec.models = mutableListOf()
 
                 GlobalScope.launch {
@@ -284,7 +284,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
     private fun initEvent() {
         LogUtils.d("消息列表监听")
         MyWsManager.getInstance(requireActivity())!!
-            .setC2CListener("MsgChildFragment", object : C2CListener {
+            .setC2CListener(tags, object : C2CListener {
                 override fun onSendMsgIsOk(isOk: Boolean, bean: ReceiveWsBean<*>) {
                     if (isOk) {
 
@@ -459,7 +459,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
     }
 
     override fun onDestroy() {
-        MyWsManager.getInstance(requireActivity())!!.removeC2CListener(javaClass.name)
+        MyWsManager.getInstance(requireActivity())!!.removeC2CListener(tags)
         super.onDestroy()
     }
 
