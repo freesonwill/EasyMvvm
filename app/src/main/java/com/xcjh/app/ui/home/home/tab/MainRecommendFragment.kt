@@ -99,10 +99,11 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                         being.matchId=bean.matchId
                         being.homeTeamName=bean.homeTeamName
                         being.awayTeamName=bean.awayTeamName
+                        being.nickName=bean.nickName
                         being.userId=bean.anchorId
                         being.playUrl=bean.playUrl
                         being.hotValue=bean.hotValue
-                           being.titlePage=bean.coverImg
+                        being.titlePage=bean.coverImg
                         if(mDatabind.rcvRecommend.models!=null){
                             for (i in 0 until mDatabind.rcvRecommend.mutable!!.size) {
                                 if(mDatabind.rcvRecommend.mutable[i] is MainTxtBean){

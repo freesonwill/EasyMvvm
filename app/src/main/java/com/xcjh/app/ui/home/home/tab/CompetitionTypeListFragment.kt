@@ -94,6 +94,7 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
                         being.userId=bean.anchorId
                         being.playUrl=bean.playUrl
                         being.hotValue=bean.hotValue
+                        being.nickName=bean.nickName
                         being.titlePage=bean.coverImg
                         var list =ArrayList<BeingLiveBean>()
                         list.add(being)
