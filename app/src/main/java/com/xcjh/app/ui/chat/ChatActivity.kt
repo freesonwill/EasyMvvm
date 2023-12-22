@@ -346,9 +346,9 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                 binding.ivfaile.visibility = View.GONE
                                 GlobalScope.launch {
 
-                                    upLoadPic(
-                                        matchBeanNew.content, binding.tvpross,
-                                        matchBeanNew.sendId!!
+                                    upLoadPic(matchBeanNew,
+                                         binding.tvpross,
+                                        binding.ivfaile
                                     )
                                     delay(delayTime)
                                     LogUtils.d(
@@ -647,7 +647,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                         var beanmy: MsgBeanData = mDatabind.rv.models!![i] as MsgBeanData
                         if (beanmy.sendId == chat.sendId) {
                             beanmy.sent = 1
-                            beanmy.id=chat.id
+                            beanmy.id = chat.id
                             LogUtils.d(
                                 i.toString() + "1发送成功一条数据" + JSONObject.toJSONString(
                                     beanmy
@@ -712,10 +712,10 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
         rotationYAnimator.start()
     }
 
-    suspend fun upLoadPic(path: String, view: TextView, sendId: String) {
+    suspend fun upLoadPic(bean:MsgBeanData, view: TextView, image: ImageView) {
         try {
 
-            val file = File(path)
+            val file = File(bean.content)
 
             runOnUiThread { view.visibility = View.VISIBLE }
             val requestBody = CountingRequestBody(file, "image/*", object :
@@ -737,10 +737,16 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
             val multipartBody = MultipartBody.Part.createFormData("file", file.name, requestBody)
             mViewModel.upLoadPicSuspend(multipartBody) {
 
-                msgType = 1
-                msgContent = it
-                sendMsg(sendId, true)
-
+                if (it != "FAILE") {
+                    msgType = 1
+                    msgContent = it
+                    sendMsg(bean.sendId!!, true)
+                }else{
+                    view.visibility = View.GONE
+                    image.visibility=View.VISIBLE
+                    bean.sent=2
+                    addDataToList(bean)
+                }
             }
         } catch (e: Exception) {
         }
