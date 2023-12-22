@@ -226,9 +226,11 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                 }
                 initEvent()
             } else {
-                MyWsManager.getInstance(requireActivity())!!.removeC2CListener(tags)
+                // MyWsManager.getInstance(requireActivity())!!.removeC2CListener(tags)
+                listdata.clear()
                 mDatabind.rec.models = mutableListOf()
 
+                initNoreadMsg(listdata)
                 GlobalScope.launch {
                     val data = getAll().await()
 
@@ -535,7 +537,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                     if (chatId == msg.anchorId) {
                         bean.noReadSum = 0
                     } else {
-                        bean.noReadSum = msg.noReadSum + 1
+                        bean.noReadSum = msg.noReadSum
                     }
                 } else {
                     bean.avatar = msg.toAvatar!!
