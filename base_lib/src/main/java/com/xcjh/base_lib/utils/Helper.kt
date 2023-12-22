@@ -283,12 +283,11 @@ fun getXXPermissions(activity: Activity,action: () -> Unit = {}){
 }
 
 /**
- * 是否获取推送权限 和电池优化
+ * 是否获取推送权限
  */
 fun getXXPermissionsPush(activity: Activity,action: () -> Unit = {}){
     XXPermissions.with(activity)
-        .permission(Permission.POST_NOTIFICATIONS,Permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
-        )
+        .permission(Permission.POST_NOTIFICATIONS)
         .request(object : OnPermissionCallback {
             override fun onGranted(permissions: MutableList<String>, all: Boolean) {
                 if (all) {
@@ -305,7 +304,28 @@ fun getXXPermissionsPush(activity: Activity,action: () -> Unit = {}){
             }
         })
 }
+/**
+ * 是否获取电池优化
+ */
+fun getXXPermissionsBattery(activity: Activity,action: () -> Unit = {}){
+    XXPermissions.with(activity)
+        .permission(Permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
+        .request(object : OnPermissionCallback {
+            override fun onGranted(permissions: MutableList<String>, all: Boolean) {
+                if (all) {
+                    action.invoke()
+                }else{
+                    XXPermissions.startPermissionActivity(activity, permissions)
+                }
+            }
 
+            override fun onDenied(permissions: MutableList<String>, never: Boolean) {
+                super.onDenied(permissions, never)
+                // gotoAppDetailIntent(this@LoginActivity)
+                XXPermissions.startPermissionActivity(activity, permissions)
+            }
+        })
+}
 
 
 /**
