@@ -3,6 +3,7 @@ package com.xcjh.base_lib.base.activity
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.ViewModelProvider
 import com.xcjh.base_lib.base.BaseViewModel
 import com.xcjh.base_lib.network.manager.NetState
@@ -29,7 +30,7 @@ abstract class BaseVmActivity<VM : BaseViewModel> : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        installSplashScreen()
         initDataBind().notNull({
             setContentView(it)
         }, {

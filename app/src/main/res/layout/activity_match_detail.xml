@@ -327,6 +327,7 @@
                         <!--视频下边的广告-->
                         <TextView
                             android:id="@+id/marqueeView"
+                            android:visibility="invisible"
                             android:layout_width="match_parent"
                             android:layout_height="27dp"
                             android:layout_alignParentBottom="true"

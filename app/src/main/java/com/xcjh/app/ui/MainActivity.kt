@@ -16,6 +16,8 @@ import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
+import androidx.core.splashscreen.SplashScreen
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.engagelab.privates.common.global.MTGlobal.context
@@ -84,6 +86,7 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
     @SuppressLint("SuspiciousIndentation")
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
+
         //MTPushPrivatesApi.clearNotification(this)
         showStatusBar()
         onIntent(intent)

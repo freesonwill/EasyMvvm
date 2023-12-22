@@ -29,6 +29,7 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
         <!-- Android 5.0+，设置状态栏全透明透明 -->
         <item name="android:windowFullscreen">true</item>
+      <!--  <item name="android:windowAnimationStyle">@style/Animation_Splash</item>-->
         <item name="android:windowAnimationStyle">@style/Animation_Splash</item>
         <item name="android:windowTranslucentStatus">true</item> <!-- 设置状态栏半透明——解除注释 -->
         <item name="android:windowLayoutInDisplayCutoutMode" tools:targetApi="o_mr1">shortEdges
@@ -39,20 +40,27 @@
     <!--启动页-->
     <!-- https://developer.android.com/guide/topics/ui/splash-screen/migrate?hl=zh-cn -->
     <style name="ChatStarting" parent="Theme.SplashScreen">
-        <!-- 设置初始屏幕背景、动画图标和动画持续时间。 -->
-        <item name="windowSplashScreenBackground">@android:color/holo_orange_light</item>
-        <item name="windowSplashScreenIconBackgroundColor">@android:color/holo_purple</item>
-        <item name="android:windowBackground">@drawable/chat_splash_background</item>
-        <!-- 使用窗口初始屏幕动画图标添加可绘制对象或动画可绘制对象。其中之一是必需的。 -->
-        <item name="windowSplashScreenAnimatedIcon">@drawable/app_logo</item>
+
+        <!-- 向下兼容。================start-->
+        <!-- 启动画面背景颜色 -->
+        <item name="windowSplashScreenBackground">@android:color/white</item>
+        <!-- 启动画面中心的图标 -->
+       <!-- <item name="windowSplashScreenAnimatedIcon">@drawable/app_logo</item>-->
+        <item name="windowSplashScreenAnimatedIcon">@drawable/white_radius</item>
+        <!--指定成你的App原来的主题。这样，当SplashScreen结束时，你的主题就能够被复原，从而不会影响到你的App的主题外观。-->
+        <item name="postSplashScreenTheme">@style/ChatLauncher</item>
+        <!-- 向下兼容。 ==============end-->
+
+
+        <!--android 12新增-->
+        <!-- 设置图标的背景颜色。 -->
+        <item name="windowSplashScreenIconBackgroundColor">@android:color/transparent</item>
+        <!--<item name="android:windowBackground">@drawable/chat_splash_background</item>-->
+
         <!-- 动画图标必需 Google建议不超过1000毫秒。-->
         <item name="windowSplashScreenAnimationDuration">1000</item>
-        <!-- 设置直接跟随初始屏幕的活动主题。 -->
-        <item name="android:windowSplashScreenBrandingImage" tools:targetApi="s">
-            @drawable/app_logo
-        </item>
-        <!-- 必须 -->
-        <item name="postSplashScreenTheme">@style/ChatAppTheme</item>
+        <!-- 启动画面启动画面底部的图片。 -->
+        <item name="android:windowSplashScreenBrandingImage" tools:targetApi="s">@drawable/ic_launch_bottom</item>
     </style>
 
     <style name="Theme.MyApplication.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
