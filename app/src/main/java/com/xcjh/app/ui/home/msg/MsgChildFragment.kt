@@ -199,9 +199,10 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                 this.findViewById<ImageView>(R.id.ivEmptyIcon).setOnClickListener { }
             }
         }
-        getRoomAllData()
+
 
         if (CacheUtil.isLogin()) {
+            getRoomAllData()
             mViewModel.getMsgList(true, "")
             mDatabind.smartCommon.setOnRefreshListener {
 
@@ -256,7 +257,9 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
             noReadMsgs = 0
             for (i in 0 until data.size) {
                 if (data[i].noReadSum > 0) {
+
                     noReadMsgs += data[i].noReadSum
+                    LogUtils.d(noReadMsgs.toString() + "==未读消息==" + data[i].noReadSum)
                 }
             }
             appViewModel.updateMainMsgNum.postValue(noReadMsgs.toString())
@@ -435,23 +438,23 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
             if (it.isSuccess) {
 
                 if (it.listData.size > 0) {
-                    for (i in 0 until it.listData.size) {
-                        for (j in 0 until listdata.size) {
-                            if (listdata[j].anchorId == it.listData[i].anchorId) {
-                                if (it.listData[i].noReadSum > listdata[j].noReadSum) {
-                                    updataMsg(it.listData[i])
+                    for ((index, data) in it.listData.withIndex()) {
+                        val foundData = listdata.find { it.anchorId == data.anchorId }
+                        if (foundData == null) {
+                            data?.let { it1 ->
+                                if (it1.sendId == "0") {
+                                    it1.sendId = data.anchorId + it1.createTime
                                 }
-                            } else {
-                                if (it.listData[i].noReadSum > 0) {
-                                    updataMsg(it.listData[i])
-                                }
+                                updataMsg(data)
+
+                            }
+                        } else {
+                            if (data.noReadSum > listdata[index].noReadSum) {
+                                updataMsg(data)
                             }
                         }
                     }
                 }
-                // } else {
-                //  updataMsg(it.listData[0])
-                //  }
 
 
             }
