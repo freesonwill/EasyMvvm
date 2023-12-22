@@ -82,6 +82,15 @@ data class AdvertisementBanner(
     var list: ArrayList<AdvertisementBanner> = arrayListOf(),//问题ID集合
 ) : Serializable
 
+data class CountryListBean(
+    val cn: String,
+    val dialingCode: String,
+    val en: String,
+    val full: String,
+    val icon: String,
+    val shortName: String
+)
+
 /**
  * 赛程对象
  */
@@ -112,16 +121,19 @@ data class MatchBean(
     var runTime: String? = "0",//比赛进行时间（分钟）进行中足球比赛有此信息
     var ishsow: Boolean = true
 ) : Serializable
+
 data class InitialLocation(
     val initial: String,
     val list: List<Location>
 )
+
 data class Location(
     val code: String,
     val name: String,
     val pinyin: String,
     val label: String
 )
+
 @kotlinx.serialization.Serializable
 data class CityModel(
     var initial: String = "",
@@ -130,7 +142,8 @@ data class CityModel(
     @kotlinx.serialization.Serializable
     data class City(
         var code: String = "",
-        var name: String = "",
+        var cnname: String = "",
+        var enname: String = "",
         var pinyin: String = "",
         var label: String = ""
     )
@@ -140,6 +153,7 @@ data class CityModel(
     // data class 会自动重写equals方法, 方便匹配索引查询
     data class CityLetter(val letter: String, override var itemHover: Boolean = true) : ItemHover
 }
+
 /**
  * 热门赛程对象
  */
@@ -174,9 +188,9 @@ data class MsgBean(
     var sent: Int? = 0,//是否已发送: 0 正在发送 1 已发送 2 发送失败
     val toId: String? = "",
     val updateTime: String? = "",
-    var lastShowTimeStamp:  Long = 0,
+    var lastShowTimeStamp: Long = 0,
     val updater: String? = ""
-): ItemAttached {
+) : ItemAttached {
     var visibility: Boolean = false // 显示隐藏
     override fun onViewAttachedToWindow(holder: BindingAdapter.BindingViewHolder) {
         //由隐变显
@@ -226,6 +240,7 @@ data class FriendListBean(
     var shortName: String = ""
 
 )
+
 @Keep
 data class FriendModel(
     var initial: String = "",
@@ -238,12 +253,13 @@ data class FriendModel(
         var pinyin: String = "",
         var liveId: Int,
         var nickName: String = ""
-    ): Serializable
+    ) : Serializable
 
     // 悬停要求实现接口
     // data class 会自动重写equals方法, 方便匹配索引查询
     data class FriendLetter(val letter: String, override var itemHover: Boolean = true) : ItemHover
 }
+
 @Keep
 data class LetterBean(
     var cn: String, var en: String, var phone_code: String = ""
@@ -251,14 +267,14 @@ data class LetterBean(
 
 @Keep
 data class MsgListBean(
-    val avatar: String?=null,
-    var content: String?=null,
+    val avatar: String? = null,
+    var content: String? = null,
     val createTime: Long,
-    val msgType: Int?=null,
-    val fromId: String?=null,
-    val anchorId: String?=null,
-    val id: String?=null,
-    val nick: String?=null,
+    val msgType: Int? = null,
+    val fromId: String? = null,
+    val anchorId: String? = null,
+    val id: String? = null,
+    val nick: String? = null,
     var noReadSum: Int
 ) : Serializable
 
@@ -385,9 +401,9 @@ data class FollowAnchorBean(
     var head: String = "",// 头像
     var fans: String = "",// 粉丝数
     var liveId: String = "",// 正在直播ID
-    var matchId:String="",//比赛ID
-    var matchType:String,////比赛类型 1足球，2篮球,可用值:1,2
-    var isFollow:Boolean=true//是否关注
+    var matchId: String = "",//比赛ID
+    var matchType: String,////比赛类型 1足球，2篮球,可用值:1,2
+    var isFollow: Boolean = true//是否关注
 ) : Serializable
 
 /**
@@ -424,7 +440,7 @@ data class NoticeBean(
     var notice: String = "",// 公告
     var isOpen: Boolean = false,// 是否展开
     override var itemHover: Boolean = true,
-) : ItemHover , Serializable
+) : ItemHover, Serializable
 
 /**
  * 比赛详情界面阵容tab下主播阵容数据
@@ -475,6 +491,7 @@ data class LiveTextBean(
     var time: String = "",// 事件时间(分钟)
     var type: Int = 0,// 类型，详见状态码->技术统计
 ) : Serializable
+
 /**
  * 足球重要事件
  */
@@ -552,16 +569,17 @@ data class AnchorListBean(
 
 @Keep
 data class MatchDataBean(
-    var hasStata: Boolean=false, //是否有赛况tab
-    var hasLineup: Boolean=false,//是否有阵容tab
-    var hasOdds: Boolean=false,  //是否有指数tab
+    var hasStata: Boolean = false, //是否有赛况tab
+    var hasLineup: Boolean = false,//是否有阵容tab
+    var hasOdds: Boolean = false,  //是否有指数tab
 ) : Serializable
 
 //切换tab
-class TabBean (
+class TabBean(
     val type: Int = 0,
     val name: String = "",
 )
+
 /**
  * 获取app 升级信息
  */
@@ -609,7 +627,7 @@ data class BasketballLineupBean(
 data class MatchTeam(
     var logo: String? = "",//logo
     val name: String? = "",
-): Serializable
+) : Serializable
 
 @Keep
 data class FootballPlayer(
@@ -625,7 +643,8 @@ data class FootballPlayer(
     val teamId: Int = 0,
     val x: Int = 0,
     val y: Int = 0
-): Serializable
+) : Serializable
+
 @Keep
 data class BasketballTeamMemberBean(
     var number: Int = 0,//球衣号
@@ -644,12 +663,12 @@ data class PlayerBean(
     var score: String = "0",//得分
 ) : Serializable, Comparable<PlayerBean> {
     override fun compareTo(other: PlayerBean): Int {
-      /*  return if (this.score == other.score) {
-           // this.assists.compareTo(other.assists)
-            other.assists.toInt() - this.assists.toInt()
-        } else {
-            other.score.toInt() - this.score.toInt()
-        }*/
+        /*  return if (this.score == other.score) {
+             // this.assists.compareTo(other.assists)
+              other.assists.toInt() - this.assists.toInt()
+          } else {
+              other.score.toInt() - this.score.toInt()
+          }*/
         return other.score.toInt() - this.score.toInt()
     }
 }
@@ -676,6 +695,7 @@ data class StatusBean(
     val home: Int,
     val away: Int,
 ) : Serializable
+
 /**
  * 篮球技术统计
  */
@@ -704,13 +724,14 @@ data class BasketballSkill(
     val shot2: Int = 0,//
     val shot3: Int = 0,//
     val steals: Int = 0//抢断数
-): Serializable
+) : Serializable
+
 @Keep
 data class BasketballScore(
     val name: String = "",//
     val homeScore: String = "-",//
     val awayScore: String = "-"//
-): Serializable
+) : Serializable
 
 /**
  * 推送状态
@@ -719,7 +740,7 @@ data class BasketballScore(
 data class PushBean(
     val ynFollowMatch: Int = 1,//	是否开启关注比赛通知 1是 0否
     val ynLiveOpen: Int = 1,//是否开启主播开播通知 1是 0否
-): Serializable
+) : Serializable
 
 /**
  * 推送错误时的返回值
@@ -727,8 +748,8 @@ data class PushBean(
 @Keep
 data class PushErrBean(
     var name: String = "",// 推送类型 liveOpen:切换主播开播通知 followMatch:切换关注比赛通知
-    var state: Boolean =false, //
-): Serializable
+    var state: Boolean = false, //
+) : Serializable
 
 /**
  * 站外推送消息
@@ -740,4 +761,4 @@ data class PushMsgExtras(
     var matchType: String = "",// 1足球 2篮球
     var anchorId: String? = "",// 主播id
     var liveId: String? = "", //聊天室id
-): Serializable
+) : Serializable

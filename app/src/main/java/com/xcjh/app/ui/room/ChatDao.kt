@@ -10,6 +10,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import com.alibaba.fastjson.JSONObject
+import com.xcjh.app.MyApplication
 import com.xcjh.base_lib.utils.LogUtils
 
 @Dao
@@ -36,6 +37,8 @@ interface ChatDao {
             LogUtils.d("私聊增加一条数据"+ JSONObject.toJSONString(message))
             insert(message)
         }
+        val Message = getMessagesByName(message.anchorId!!)!!
+        LogUtils.d("一条数据"+Message)
     }
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(message: MsgBeanData)

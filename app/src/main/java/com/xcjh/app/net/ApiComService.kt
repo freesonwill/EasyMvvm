@@ -118,7 +118,11 @@ interface ApiComService {
      */
     @POST("app/common/login")
     suspend fun getLogin(@Body req: PostLoaginBean): ApiResponse<String>
-
+    /**
+     * 获取国家和地区
+     */
+    @POST("app/country/list")
+    suspend fun getCountrys(): ApiResponse<ArrayList<CountryListBean>>
     /**
      * 极光推送绑定用户
      */
