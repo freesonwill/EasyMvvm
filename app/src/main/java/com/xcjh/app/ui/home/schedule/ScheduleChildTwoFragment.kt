@@ -40,6 +40,7 @@ import com.xcjh.app.ui.details.MatchDetailActivity
 import com.xcjh.base_lib.utils.LogUtils
 import com.xcjh.base_lib.utils.TimeUtil
 import com.xcjh.base_lib.utils.distance
+import com.xcjh.base_lib.utils.grid
 import com.xcjh.base_lib.utils.horizontal
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -53,7 +54,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
     var mview: View? = null
     var index: Int = 0
     var page = 1
-    var status = 0
+    var status = ""
     var pageSize = 1000
     var matchtype: String? = ""
     var competitionId: String = ""
@@ -72,6 +73,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
     var mCurrentOneTabIndex = 0
     var mCurrentTwoTabIndex = 0
     var isResh = false
+
 
     companion object {
         var mTitles: Array<out String>? = null
@@ -144,7 +146,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
             if (bundle != null) {
                 matchtype = bundle.getString(ScheduleChildTwoFragment.MATCHTYPE)!!
                 competitionId = bundle.getString(ScheduleChildTwoFragment.COMID)!!
-                status = bundle.getInt(ScheduleChildTwoFragment.STATUS)
+                status = bundle.getString(ScheduleChildTwoFragment.STATUS)!!
                 mOneTabIndex = bundle.getInt(ScheduleChildTwoFragment.OneIndex)
                 mTwoTabIndex = bundle.getInt(ScheduleChildTwoFragment.TwoIndex)
             }
@@ -858,8 +860,8 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                         binding.conlive.visibility = View.VISIBLE
                         if (binding.rec.itemDecorationCount == 0) {//加个判断
                             binding.rec.run {
-                                horizontal()
-                                distance(0, 30, 0, 0)
+                                grid(5)
+                                distance(0, 0, 0, 0)
                             }
                         }
 
@@ -1184,7 +1186,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
     override fun lazyLoadData() {
         super.lazyLoadData()
-        getData(false)
+        getData(true)
 
     }
 
