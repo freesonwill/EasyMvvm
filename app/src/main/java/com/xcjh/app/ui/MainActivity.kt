@@ -86,7 +86,6 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
     @SuppressLint("SuspiciousIndentation")
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-
         //MTPushPrivatesApi.clearNotification(this)
         showStatusBar()
         onIntent(intent)
