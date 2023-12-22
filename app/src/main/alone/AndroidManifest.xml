@@ -66,45 +66,59 @@
         tools:replace="android:allowBackup">
         <activity
             android:name=".ui.home.my.operate.PushSetActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".ui.home.my.operate.VibrateSetActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".ui.home.my.operate.SetUpActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".ui.home.my.operate.LevelMissionActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".ui.home.my.operate.ContactUsActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".ui.feed.FeedNoticeActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".ui.home.my.personal.EditProfileActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".ui.home.my.personal.PersonalDataActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".ui.home.my.operate.ViewingHistoryListActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".ui.search.SeacherFriendActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".ui.home.my.operate.MyFollowListActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".ui.Index.IndexLetterActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".web.WebRichTextActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".ui.home.my.operate.EventsCentreActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <!-- android:noHistory="true" 有广告时使用-->
         <activity
@@ -131,6 +145,7 @@
         </activity>
         <activity
             android:name=".web.WebActivity"
+            android:exported="false"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.chat.ChatActivity"
@@ -144,6 +159,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.notice.MyNoticeActivity"
+            android:exported="false"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.login.LetterCountryActivity"

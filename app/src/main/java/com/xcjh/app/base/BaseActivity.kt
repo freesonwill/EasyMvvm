@@ -1,6 +1,7 @@
 package com.xcjh.app.base
 
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.View
 import androidx.databinding.ViewDataBinding
@@ -24,6 +25,7 @@ abstract class BaseActivity<VM : BaseViewModel, DB : ViewDataBinding> : BaseVmDb
         ImmersionBar.with(this)
             .statusBarDarkFont(true)//黑色
             .init()
+
     }
     /**
      * 创建liveData观察者

@@ -344,14 +344,19 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                 }
             }else{
 
-                for (i in 0 until mDatabind.rcvRecommend.mutable!!.size) {
-                    if (mDatabind.rcvRecommend.mutable[i] is MatchBean) {
-                        mDatabind.rcvRecommend.mutable.removeAt(i)
-                        mDatabind.rcvRecommend.bindingAdapter.notifyItemRemoved(i) // 通知更新
-                        mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
+                    if(mDatabind.rcvRecommend.mutable!=null){
+                        for (i in 0 until mDatabind.rcvRecommend.mutable!!.size) {
+                            if (mDatabind.rcvRecommend.mutable[i] is MatchBean) {
+                                mDatabind.rcvRecommend.mutable.removeAt(i)
+                                mDatabind.rcvRecommend.bindingAdapter.notifyItemRemoved(i) // 通知更新
+                                mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
+                            }
+
+                        }
                     }
 
-                }
+
+
 
             }
             //最后处理

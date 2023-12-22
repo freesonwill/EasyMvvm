@@ -44,7 +44,7 @@ class SetUpVm : BaseViewModel() {
                 exitLogin()
             }, {
                 //请求失败
-                myToast(it.errorMsg)
+//                myToast(it.errorMsg)
                 exitLogin()
 
             },isShowDialog=true
