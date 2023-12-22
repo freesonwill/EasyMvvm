@@ -939,6 +939,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
      * 添加或者更新新的数据
      */
     fun addDataToList(data: MsgBeanData) {
+        LogUtils.d("嘿嘿开始添加数据")
         GlobalScope.launch {
             MyApplication.dataBase!!.chatDao?.insertOrUpdate(data)
 

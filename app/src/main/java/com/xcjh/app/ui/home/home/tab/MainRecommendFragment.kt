@@ -113,6 +113,7 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                             }
                         }
 
+
                 }
 
                 override fun onCloseLive(bean: LiveStatus) {
@@ -285,7 +286,6 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
             if(it.size>=1){
                 try {
                     if(mDatabind.rcvRecommend.mutable.size==1){
-
                         var matchBean=MatchBean()
                         matchBean.list.addAll(it)
                         //热门赛事
@@ -294,7 +294,7 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                         mDatabind.rcvRecommend.addModels(mainHaveList, index = 0)
                         mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
 
-                    }else if(mDatabind.rcvRecommend.mutable.size==2){
+                    }else if(mDatabind.rcvRecommend.mutable.size>=2){
                         //判断是否有热门比赛，默认是没有
                         var isRe=false
                         var num=0

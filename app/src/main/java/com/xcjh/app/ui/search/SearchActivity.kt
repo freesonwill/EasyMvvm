@@ -192,9 +192,9 @@ class SearchActivity  : BaseActivity<SearchVm, ActivitySearchBinding>() {
                         bindingItem.txtLiveName.text=bean.nickName
                         //比赛类型 1足球，2篮球,可用值:1,2
                         if(bean.matchType.equals("1")){
-                            bindingItem.txtLiveTeam.text="${bean.homeTeamName}VS${bean.awayTeamName}"
+                            bindingItem.txtLiveTeam.text="${bean.homeTeamName} VS ${bean.awayTeamName}"
                         }else{
-                            bindingItem.txtLiveTeam.text="${bean.awayTeamName }VS${bean.homeTeamName}"
+                            bindingItem.txtLiveTeam.text="${bean.awayTeamName } VS ${bean.homeTeamName}"
                         }
 
                         bindingItem.txtLiveCompetition.text=bean.competitionName
