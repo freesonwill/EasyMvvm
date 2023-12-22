@@ -140,12 +140,18 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
 
         //更新用户信息
         appViewModel.userInfo.observe(this){
-            setData()
-            mViewModel.getIndividualCenter()
+            if(isAdded){
+                setData()
+                mViewModel.getIndividualCenter()
+            }
+
 
         }
+        if(isAdded){
 
-        mViewModel.getIndividualCenter()
+            mViewModel.getIndividualCenter()
+        }
+
 
 
 
