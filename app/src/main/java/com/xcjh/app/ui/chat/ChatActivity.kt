@@ -163,8 +163,8 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
         mDatabind.titleTop.tvTitle.text = nickname
 //        Glide.with(this).load(userhead).placeholder(R.drawable.default_anchor_icon)
 //            .into(mDatabind.titleTop.ivhead)
-        (mDatabind.rv.itemAnimator as SimpleItemAnimator).supportsChangeAnimations =
-            false//防止item刷新的时候闪烁
+//        (mDatabind.rv.itemAnimator as SimpleItemAnimator).supportsChangeAnimations =
+//            false//防止item刷新的时候闪烁
         mDatabind.rv.setup {
             addType<MsgBeanData> {
                 when (fromId) {
@@ -950,6 +950,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
 
             mDatabind.rv.addModels(listdata1, index = 0)
             mDatabind.rv.scrollToPosition(0) // 保证最新一条消息显示
+
         }
     }
 

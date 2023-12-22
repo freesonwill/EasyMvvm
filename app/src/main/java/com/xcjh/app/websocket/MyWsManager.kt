@@ -6,6 +6,7 @@ import android.os.IBinder
 import android.util.Log
 import android.widget.Toast
 import com.xcjh.app.R
+import com.xcjh.app.appViewModel
 import com.xcjh.app.bean.BeingLiveBean
 import com.xcjh.app.websocket.bean.FeedSystemNoticeBean
 import com.xcjh.app.websocket.bean.LiveStatus

@@ -55,6 +55,17 @@ class MyApplication : App() , LifecycleObserver{
     override fun onCreate() {
         super.onCreate()
         MMKV.initialize(appContext)
+        appViewModelInstance = getAppViewModelProvider()[AppViewModel::class.java]
+        eventViewModelInstance = getAppViewModelProvider()[EventViewModel::class.java]
+        ProcessLifecycleOwner.get().lifecycle.addObserver(this)
+        //ijk内核，默认模式
+        PlayerFactory.setPlayManager(IjkPlayerManager::class.java)
+        initDataBase()
+        initUI()
+        initPush()
+    }
+
+    private fun initUI() {
         // 初始化语种切换框架
         MultiLanguages.init(this)
         //界面加载管理 初始化
@@ -64,7 +75,29 @@ class MyApplication : App() , LifecycleObserver{
             .addCallback(EmptyCallback())//空
             .setDefaultCallback(SuccessCallback::class.java)//设置默认加载状态页
             .commit()
+        Toaster.init(this);
+
+        /**
+         *  推荐在Application中进行全局配置缺省页, 当然同样每个页面可以单独指定缺省页.
+         *  具体查看 https://github.com/liangjingkanji/StateLayout
+         */
+        StateConfig.apply {
+            emptyLayout = R.layout.layout_empty
+            errorLayout = R.layout.layout_empty
+    //            setRetryIds(R.id.ivEmptyIcon, R.id.txtEmptyName)
+
+            onLoading {
+                // 此生命周期可以拿到LoadingLayout创建的视图对象, 可以进行动画设置或点击事件.
+            }
+        }
+        /* PageRefreshLayout.refreshEnableWhenError = false
+        PageRefreshLayout.refreshEnableWhenEmpty = false*/
+        SmartRefreshLayout.setDefaultRefreshHeaderCreator { context, layout -> MaterialHeader(this) }
+        SmartRefreshLayout.setDefaultRefreshFooterCreator { context, layout -> ClassicsFooter(this) }
         initDialogX()
+    }
+
+    private fun initDataBase() {
         dataBase =
             Room.databaseBuilder(this, MyRoomDataBase::class.java, "userDataBase").build()
         //.addMigrations(object : Migration(1, 2) {
@@ -76,32 +109,9 @@ class MyApplication : App() , LifecycleObserver{
         //.fallbackToDestructiveMigration() //数据库升级过程中删除旧表格并创建新表格，但可能会导致数据丢失，因此请谨慎使用
         dataChatList =
             Room.databaseBuilder(this, MyRoomChatList::class.java, "chatLiSTBase").build()
-        appViewModelInstance = getAppViewModelProvider()[AppViewModel::class.java]
-        eventViewModelInstance = getAppViewModelProvider()[EventViewModel::class.java]
-        Toaster.init(this);
-        ProcessLifecycleOwner.get().lifecycle.addObserver(this)
-        //
+    }
 
-        //ijk内核，默认模式
-        PlayerFactory.setPlayManager(IjkPlayerManager::class.java)
-        /**
-         *  推荐在Application中进行全局配置缺省页, 当然同样每个页面可以单独指定缺省页.
-         *  具体查看 https://github.com/liangjingkanji/StateLayout
-         */
-        StateConfig.apply {
-            emptyLayout = R.layout.layout_empty
-            errorLayout = R.layout.layout_empty
-//            setRetryIds(R.id.ivEmptyIcon, R.id.txtEmptyName)
-
-            onLoading {
-                // 此生命周期可以拿到LoadingLayout创建的视图对象, 可以进行动画设置或点击事件.
-            }
-        }
-       /* PageRefreshLayout.refreshEnableWhenError = false
-        PageRefreshLayout.refreshEnableWhenEmpty = false*/
-        SmartRefreshLayout.setDefaultRefreshHeaderCreator { context, layout -> MaterialHeader(this) }
-        SmartRefreshLayout.setDefaultRefreshFooterCreator { context, layout -> ClassicsFooter(this) }
-
+    private fun initPush() {
         // 必须在application.onCreate中配置，不要判断进程，sdk内部有判断
         MTCorePrivatesApi.configDebugMode(this, true)
         // 后台没升级tag: V3.5.4-newportal-20210823-gamma.57版本，前端必须调用此方法，否则通知点击跳转有问题

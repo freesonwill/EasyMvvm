@@ -1,5 +1,6 @@
 package com.xcjh.base_lib.base.activity
 
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -30,6 +31,9 @@ abstract class BaseVmActivity<VM : BaseViewModel> : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S){
+            installSplashScreen()
+        }
         installSplashScreen()
         initDataBind().notNull({
             setContentView(it)

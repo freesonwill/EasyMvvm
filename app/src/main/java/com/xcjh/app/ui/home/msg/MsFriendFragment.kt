@@ -117,7 +117,7 @@ class MsFriendFragment : BaseFragment<MsgVm, FrMsgfriendBinding>() {
 //登录或者登出
         appViewModel.updateLoginEvent.observe(this) {
             if (it) {
-                mViewModel.getMsgList(true, "")
+                mViewModel.getFriendList(true, "")
             } else {
                 listdata.clear()
                 mDatabind.rec.models = listdata
