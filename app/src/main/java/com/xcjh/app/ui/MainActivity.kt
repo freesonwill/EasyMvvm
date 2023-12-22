@@ -49,6 +49,7 @@ import com.xcjh.app.vm.MainVm
 import com.xcjh.app.websocket.MyWsManager
 import com.xcjh.app.websocket.listener.NoReadMsgPushListener
 import com.xcjh.app.websocket.listener.OtherPushListener
+import com.xcjh.base_lib.utils.getXXPermissionsPush
 import com.xcjh.base_lib.utils.initActivity
 import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.view.clickNoRepeat
@@ -108,11 +109,23 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         //点击首页
         mDatabind.llHomeSelectMain.setOnClickListener {
 
-//            var i =   Intent();
-//            i.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
-//            //data为应用包名
-//            i.setData(Uri.parse("package:" + packageName));
-//            startActivity(i);
+
+
+//            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+//                var intent =   Intent()
+//                intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
+//                //data为应用包名
+//                intent.setData(Uri.parse("package:" + packageName))
+//                if (intent.resolveActivity(getPackageManager()) != null) {
+//                    startActivity(intent)
+//
+//                }
+//
+//            }
+            //获取推送和
+//            getXXPermissionsPush(this){
+//
+//            }
 
 
             if (currentPage != 0) {

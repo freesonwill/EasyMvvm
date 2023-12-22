@@ -234,7 +234,11 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
      * 没有登录
      */
     fun notLogin(){
-        mDatabind.ivMyHead.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.icon_my_head))
+        Glide.with(requireContext())
+            .load(R.drawable.icon_my_head) // 替换为您要加载的图片 URL
+            .error(R.drawable.icon_my_head)
+            .placeholder(R.drawable.icon_my_head)
+            .into(mDatabind.ivMyHead)
         mDatabind.txtMyName.text=resources.getString(R.string.my_txt_click_login)
         mDatabind.iiIsShowLeve.visibility= View.GONE
 
