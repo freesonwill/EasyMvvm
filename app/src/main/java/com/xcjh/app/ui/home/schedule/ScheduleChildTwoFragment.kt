@@ -37,6 +37,7 @@ import com.xcjh.app.databinding.FrScheduletwoBinding
 import com.xcjh.app.databinding.ItemJsBinding
 import com.xcjh.app.databinding.ItemSchAllBinding
 import com.xcjh.app.ui.details.MatchDetailActivity
+import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.LogUtils
 import com.xcjh.base_lib.utils.TimeUtil
 import com.xcjh.base_lib.utils.distance
@@ -589,7 +590,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                 binding.tvvs.setTextColor(
                                     ContextCompat.getColor(
                                         context,
-                                        R.color.c_e6820c
+                                        R.color.c_34a853
                                     )
                                 )
                                 binding.tvstatus.text =
@@ -1186,7 +1187,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
     override fun lazyLoadData() {
         super.lazyLoadData()
-        getData(true)
+        getData(Constants.isLoading)
 
     }
 
@@ -1195,6 +1196,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
     }
 
     fun getData(iLoading: Boolean) {
+        Constants.isLoading=true
         initTime()
         mViewModel.getHotMatchDataList(
             iLoading, PostSchMatchListBean(
