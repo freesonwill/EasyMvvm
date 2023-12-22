@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.View
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
@@ -249,6 +250,11 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
         mDatabind.iiIsShowLeve.visibility= View.GONE
 
      }
+
+    override fun onResume() {
+        super.onResume()
+//        Log.i("FFFFFFFFF","44444444444")
+    }
 
     override fun createObserver() {
         super.createObserver()

@@ -62,6 +62,8 @@ import java.util.Locale
  * 首页推荐页面碎片
  */
 class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommendBinding>() {
+
+
     override fun initView(savedInstanceState: Bundle?) {
 
         //首页轮询

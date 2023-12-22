@@ -65,7 +65,13 @@ class SearchActivity  : BaseActivity<SearchVm, ActivitySearchBinding>() {
         //删除输入的内容
         mDatabind.ivClear.clickNoRepeat{
             mDatabind.etSearchInput.setText("")
-            mDatabind.llSearchShow.visibility=View.VISIBLE
+            if(mDatabind.rcHotRace.models!=null&& mDatabind.rcHotRace.models!!.isNotEmpty()){
+
+                mDatabind.llSearchShow.visibility=View.VISIBLE
+            }else{
+                mDatabind.llSearchShow.visibility=View.GONE
+            }
+
             mDatabind.state.visibility=View.GONE
         }
 

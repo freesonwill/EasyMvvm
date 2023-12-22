@@ -1,6 +1,7 @@
 package com.xcjh.app.ui.home.msg
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -36,7 +37,7 @@ class MsgFragment : BaseFragment<MsgVm, FrMsgBinding>() {
 
     override fun onResume() {
         super.onResume()
-
+//        Log.i("FFFFFFFFF","3333333333333333")
     }
 
     private fun initEvent() {
