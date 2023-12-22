@@ -645,8 +645,9 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                     // LogUtils.d("发送成功一条数据"+JSONObject.toJSONString(chat))
                     for (i in 0 until mDatabind.rv.models!!.size) {
                         var beanmy: MsgBeanData = mDatabind.rv.models!![i] as MsgBeanData
-                        if (beanmy.id == chat.sendId) {
+                        if (beanmy.sendId == chat.sendId) {
                             beanmy.sent = 1
+                            beanmy.id=chat.id
                             LogUtils.d(
                                 i.toString() + "1发送成功一条数据" + JSONObject.toJSONString(
                                     beanmy

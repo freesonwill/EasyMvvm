@@ -9,17 +9,24 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
+        android:paddingLeft="@dimen/dp_12"
+        android:paddingRight="@dimen/dp_12"
         android:layout_height="@dimen/dp_50">
 
+        <ImageView
+            android:id="@+id/ivgq"
+            android:layout_width="30dp"
+            android:layout_centerVertical="true"
+            android:layout_height="20dp"/>
         <TextView
             android:id="@+id/name1"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
+            android:layout_toRightOf="@id/ivgq"
             android:gravity="center_vertical"
             android:paddingLeft="16dp"
             android:textColor="@color/black"
             android:layout_toLeftOf="@id/code"
-            android:layout_alignParentLeft="true"
 
             android:textSize="15dp"
             tools:text="北京" />
