@@ -40,6 +40,7 @@ import com.xcjh.base_lib.App
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.*
 import com.xcjh.base_lib.utils.view.visibleOrGone
+import com.xcjh.base_lib.utils.view.visibleOrInvisible
 import java.math.BigDecimal
 import java.util.*
 import kotlin.math.abs
@@ -128,7 +129,7 @@ class MatchDetailActivity :
     private fun setData() {
         mViewModel.getMatchDetail(matchId, matchType, true)
         if (isHasAnchor){
-            mViewModel.getDetailAnchorInfo(anchorId)
+           // mViewModel.getDetailAnchorInfo(anchorId)
         }
     }
 
@@ -511,7 +512,7 @@ class MatchDetailActivity :
         }
         //跑马灯广告
         mViewModel.scrollTextList.observe(this) { stl ->
-           // mDatabind.marqueeView.visibleOrGone(stl.isSuccess && stl.data!!.size > 0)
+            mDatabind.marqueeView.visibleOrInvisible(stl.isSuccess && stl.data!!.size > 0)
             stl.data.notNull({ list ->
                 //滚动条广告
                 mDatabind.marqueeView.isSelected = true
