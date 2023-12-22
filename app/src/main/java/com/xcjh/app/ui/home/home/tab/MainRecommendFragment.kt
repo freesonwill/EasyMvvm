@@ -276,6 +276,12 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                 mDatabind.rcvRecommend.addModels(list)
                 mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
                  }
+            }else{
+                if (mDatabind.rcvRecommend.mutable[0] is AdvertisementBanner) {
+                     mDatabind.rcvRecommend.mutable.removeAt(0)
+                     mDatabind.rcvRecommend.bindingAdapter.notifyItemRemoved(0) // 通知更新
+                    mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
+                }
             }
 
 
@@ -324,17 +330,7 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
 
                         }
 
-                    }else{
-                        var matchBean=MatchBean()
-                        matchBean.list.addAll(it)
-                        //热门赛事
-                        var mainHaveList=ArrayList<MatchBean>()
-                        mainHaveList.add(matchBean)
-                        mDatabind.rcvRecommend.addModels(mainHaveList, index =0)
-                        mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
                     }
-
-
                 }catch (e:NullPointerException){
                     var matchBean=MatchBean()
                     matchBean.list.addAll(it)
@@ -345,6 +341,17 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                     mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
 
                 }
+            }else{
+
+                for (i in 0 until mDatabind.rcvRecommend.mutable!!.size) {
+                    if (mDatabind.rcvRecommend.mutable[i] is MatchBean) {
+                        mDatabind.rcvRecommend.mutable.removeAt(i)
+                        mDatabind.rcvRecommend.bindingAdapter.notifyItemRemoved(i) // 通知更新
+                        mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
+                    }
+
+                }
+
             }
             //最后处理
             if(mDatabind.rcvRecommend.models!=null){
