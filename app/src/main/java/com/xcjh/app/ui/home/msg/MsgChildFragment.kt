@@ -339,6 +339,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                         beanmy.anchorId = chat.anchorId
                         beanmy.fromId = chat.from
                         beanmy.content = chat.content
+                        beanmy.id = chat.id
                         beanmy.chatType = chat.chatType
                         beanmy.sendId = chat.sendId
                         beanmy.cmd = 11
@@ -577,6 +578,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
      * 添加或者更新私聊新的数据
      */
     fun addDataToChatList(data: MsgBeanData) {
+        LogUtils.d("嘿嘿开始添加数据")
         GlobalScope.launch {
             MyApplication.dataBase!!.chatDao?.insertOrUpdate(data)
 
