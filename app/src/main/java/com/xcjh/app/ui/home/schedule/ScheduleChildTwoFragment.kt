@@ -83,14 +83,14 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
         fun newInstance(
             matchtype: String,
             competitionId: String,
-            status: Int,
+            status: String,
             oneindex: Int,
             twoindex: Int,
         ): ScheduleChildTwoFragment {
             val args = Bundle()
             args.putString(MATCHTYPE, matchtype);
             args.putString(COMID, competitionId);
-            args.putInt(STATUS, status);
+            args.putString(STATUS, status);
             args.putInt(OneIndex, oneindex);
             args.putInt(TwoIndex, twoindex);
             val fragment = ScheduleChildTwoFragment()
@@ -408,13 +408,14 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                             }
 
                             "9" -> {
+
                                 binding.txtMatchAnimation.visibility = View.GONE
-                                binding.tvvs.text = item.homeScore + "-" + item.awayScore
+                                binding.tvvs.text = "VS"
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
                                         context,
-                                        R.color.c_F7DA73
+                                        R.color.c_8a91a0
                                     )
                                 )
                                 binding.tvvs.setTextColor(
@@ -430,12 +431,12 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
                             "10" -> {
                                 binding.txtMatchAnimation.visibility = View.GONE
-                                binding.tvvs.text = item.homeScore + "-" + item.awayScore
+                                binding.tvvs.text = "VS"
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
                                         context,
-                                        R.color.c_F7DA73
+                                        R.color.c_8a91a0
                                     )
                                 )
                                 binding.tvvs.setTextColor(
@@ -451,7 +452,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
                             "11" -> {
                                 binding.txtMatchAnimation.visibility = View.GONE
-                                binding.tvvs.text = item.homeScore + "-" + item.awayScore
+                                binding.tvvs.text = "VS"
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
@@ -472,7 +473,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
                             "12" -> {
                                 binding.txtMatchAnimation.visibility = View.GONE
-                                binding.tvvs.text = item.homeScore + "-" + item.awayScore
+                                binding.tvvs.text = "VS"
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
@@ -493,7 +494,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
                             "13" -> {
                                 binding.txtMatchAnimation.visibility = View.GONE
-                                binding.tvvs.text = item.homeScore + "-" + item.awayScore
+                                binding.tvvs.text = "VS"
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
@@ -515,6 +516,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                             else -> {
                                 binding.txtMatchAnimation.visibility = View.GONE
                                 binding.tvstatus.visibility = View.VISIBLE
+                                binding.tvvs.text = "VS"
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
                                         context,
@@ -796,12 +798,12 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
                             "11", "12", "13", "14", "15" -> {
                                 binding.txtMatchAnimation.visibility = View.GONE
-                                binding.tvvs.text = item.awayScore + "-" + item.homeScore
+                                binding.tvvs.text = "VS"
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
                                         context,
-                                        R.color.c_999999
+                                        R.color.c_8a91a0
                                     )
                                 )
                                 binding.tvvs.setTextColor(
@@ -846,13 +848,18 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
                     if (item.anchorList != null && item.anchorList.isNotEmpty()) {
                         if (item.anchorList.size>5){
-                            item.anchorList= item.anchorList.subList(0,5) as ArrayList<AnchorBean>;
+                            for (i in 0 until item.anchorList.size){
+                                if (i>4){
+                                    item.anchorList.removeAt(i)
+                                }
+                            }
+                            item.anchorList= item.anchorList
                         }
                         binding.conlive.visibility = View.VISIBLE
                         if (binding.rec.itemDecorationCount == 0) {//加个判断
                             binding.rec.run {
                                 horizontal()
-                                distance(30, 30, 0, 0)
+                                distance(0, 30, 0, 0)
                             }
                         }
 

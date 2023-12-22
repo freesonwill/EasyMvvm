@@ -24,7 +24,7 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
     private var mTitles: Array<out String>? = null
     var matchtype: String? = ""
     var matchtypeOld: String? = ""
-    var status = 0
+    var status = ""
     var hasData = false
     var isVisble = false
     var calendarTime: String = ""
@@ -39,10 +39,10 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
         private val MATCHTYPE = "matchtype"
         private val STATUS = "status"
         private val TAB = "tab"
-        fun newInstance(matchtype: String, status: Int, po: Int): ScheduleChildOneFragment {
+        fun newInstance(matchtype: String, status: String, po: Int): ScheduleChildOneFragment {
             val args = Bundle()
             args.putString(MATCHTYPE, matchtype);
-            args.putInt(STATUS, status);
+            args.putString(STATUS, status);
             args.putInt(TAB, po);
             val fragment = ScheduleChildOneFragment()
             fragment.arguments = args
@@ -100,8 +100,9 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
         if (bundle != null) {
             matchtype = bundle.getString(ScheduleChildOneFragment.MATCHTYPE)!!
             matchtypeOld = matchtype
-            status = bundle.getInt(ScheduleChildOneFragment.STATUS)
+            status = bundle.getString(ScheduleChildOneFragment.STATUS)!!
             mOneTabIndex = bundle.getInt(ScheduleChildOneFragment.TAB)
+
         }
 
         mDatabind.vp.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {

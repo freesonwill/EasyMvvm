@@ -87,7 +87,7 @@ data class HotReq(
 @Keep
 data class HotMatchReq(
     var matchType: String? = null,//比赛类型：1：足球；2：篮球,可用值:1,2
-    var status: Int = 0
+    var status: String = ""
 
 )
 @Keep

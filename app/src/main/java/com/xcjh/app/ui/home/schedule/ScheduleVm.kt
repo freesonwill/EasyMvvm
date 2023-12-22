@@ -55,7 +55,7 @@ class ScheduleVm : BaseViewModel() {
     /**
      * 反馈
      */
-    fun getHotMatchData(id: String,staus:Int) {
+    fun getHotMatchData(id: String,staus:String) {
         request(
             { apiService.getHotMatch(HotMatchReq(id, staus)) },
 

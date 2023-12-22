@@ -4,6 +4,8 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.app.Activity
+import android.content.Context
+import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
@@ -16,6 +18,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.TextView.OnEditorActionListener
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.airbnb.lottie.LottieAnimationView
 import com.alibaba.fastjson.JSONObject
@@ -36,7 +39,10 @@ import com.kongzue.dialogx.dialogs.CustomDialog
 import com.kongzue.dialogx.interfaces.OnBindView
 import com.luck.picture.lib.basic.PictureSelector
 import com.luck.picture.lib.config.SelectMimeType
+import com.luck.picture.lib.engine.CompressFileEngine
+import com.luck.picture.lib.engine.CropFileEngine
 import com.luck.picture.lib.entity.LocalMedia
+import com.luck.picture.lib.interfaces.OnKeyValueResultCallbackListener
 import com.luck.picture.lib.interfaces.OnResultCallbackListener
 import com.luck.picture.lib.manager.PictureCacheManager
 import com.xcjh.app.MyApplication
@@ -56,7 +62,6 @@ import com.xcjh.app.utils.GlideEngine
 import com.xcjh.app.utils.nice.Utils
 import com.xcjh.app.utils.picture.ImageFileCompressEngine
 import com.xcjh.app.utils.reSendMsgDialog
-import com.xcjh.app.utils.selectDate
 import com.xcjh.app.websocket.MyWsManager
 import com.xcjh.app.websocket.bean.FeedSystemNoticeBean
 import com.xcjh.app.websocket.bean.ReceiveChangeMsg
@@ -72,16 +77,15 @@ import com.xcjh.base_lib.utils.TimeUtil
 import com.xcjh.base_lib.utils.copyToClipboard
 import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.setOnclickNoRepeat
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import okhttp3.MultipartBody
+import top.zibin.luban.Luban
+import top.zibin.luban.OnNewCompressListener
 import java.io.File
 
 
@@ -569,7 +573,31 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                 }
 
                 R.id.lincanmer -> {
+                    PictureSelector.create(this)
 
+                        .openCamera(SelectMimeType.ofImage())
+                        .setCompressEngine(ImageFileCompressEngine())
+                        .forResult(object : OnResultCallbackListener<LocalMedia?> {
+                            override fun onResult(result: ArrayList<LocalMedia?>) {
+                                for (localMedia in result) {
+                                    var path: String = ""
+                                    Log.i(TAG, "onActivityResult: $path")
+                                    if (localMedia?.compressPath != null) {
+                                        path = localMedia?.compressPath!!
+                                    } else {
+                                        path = localMedia?.realPath!!
+                                    }
+                                    mDatabind.ivexpent.performClick()
+                                    if (!TextUtils.isEmpty(path)) {
+                                        msgType = 1
+                                        msgContent = path
+                                        sendMsg("", false)
+
+                                    }
+                                }
+                            }
+                            override fun onCancel() {}
+                        })
 
                 }
 

@@ -29,7 +29,7 @@ class ScheduleFragment : BaseFragment<MainVm, FrCourseBinding>() {
     private val mFragments: ArrayList<Fragment> = ArrayList<Fragment>()
     private var mTitles: Array<out String>? = null
     private val mtypes = arrayOf("0", "1", "2", "3")
-    private val status = arrayOf(0, 0, 0, 99)
+    private val status = arrayOf("", "", "", "99")
     var tags="ScheduleFragment"
     override fun initView(savedInstanceState: Bundle?) {
         ImmersionBar.with(this)
