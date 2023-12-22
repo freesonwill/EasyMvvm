@@ -3,6 +3,8 @@ package com.xcjh.app.ui.details.fragment
 import android.annotation.SuppressLint
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.method.LinkMovementMethod
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -175,12 +177,6 @@ class DetailChatFragment(
                             if (item.msgType == 1) {//图片
                                 Glide.with(context)
                                     .load(item.content)
-                                    .apply(
-                                        RequestOptions().transform(
-                                            CenterCrop(),
-                                            RoundedCorners(dp2px(6f))
-                                        )
-                                    )
                                     .placeholder(R.drawable.load_square)
                                     .into(binding.ivImage)
                                 binding.ivImage.setOnClickListener {
@@ -212,10 +208,20 @@ class DetailChatFragment(
                             binding.tvContent.text = section.spanStrBuilder
                             //  binding.tvContent.text = "<font color=\"#94999F\">${item.nick} : </font>${item.content}".toHtml()
                         } else {
-                            //主播加入超链接
-                            binding.tvContent.text =
-                                "<font color=\"#34A853\" font-weight=\"500\">${item.nick} : </font>${item.content}".toHtml()
-                            binding.tvContent.movementMethod = LinkMovementMethod.getInstance()
+                            if (item.msgType == 0){
+                                //主播加入超链接
+                                /* "<font color=\"#34A853\" font-weight=\"500\">${item.nick} : </font>${item.content}".toHtml {
+                                     Handler(Looper.getMainLooper()).post {
+                                         binding.tvContent.text = it
+                                     }
+                                 }*/
+                                binding.tvContent.text =
+                                    "<font color=\"#34A853\" font-weight=\"500\">${item.nick} : </font>${item.content}".toHtml()
+                                binding.tvContent.movementMethod = LinkMovementMethod.getInstance()
+                            }else{
+                                binding.tvContent.text =
+                                    "<font color=\"#34A853\" font-weight=\"500\">${item.nick} : ".toHtml()
+                            }
                         }
 
                         //.showIn(binding.tvContent) //显示到控件TextView中

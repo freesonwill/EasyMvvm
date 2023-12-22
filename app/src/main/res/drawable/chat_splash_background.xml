@@ -9,11 +9,11 @@
                 android:height="820dp" />
         </shape>
     </item>
-    <item>
+  <!--  <item>
         <bitmap
             android:gravity="center"
             android:src="@drawable/app_logo" />
-    </item>
+    </item>-->
     <item android:bottom="75dp">
         <bitmap
             android:gravity="bottom"
