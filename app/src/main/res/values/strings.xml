@@ -71,7 +71,7 @@
     <string name="say_something">说点什么吧…</string>
     <string name="txt_ser_his">搜索聊天记录</string>
     <string name="txt_feedtitle">系统通知</string>
-    <string name="txt_feedtype">系统提醒</string>
+    <string name="txt_feedtype">系统通知</string>
     <string name="txt_feedcontent">反馈内容</string>
     <string name="txt_feedresult">反馈结果</string>
     <string name="txt_feddtime">反馈时间</string>
