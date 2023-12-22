@@ -50,7 +50,8 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
     var chatId = "-2"
     val empty by lazy { layoutInflater!!.inflate(R.layout.layout_empty, null) }
     var noReadMsgs = 0
-    var tags="MsgChildFragment"
+    var tags = "MsgChildFragment"
+
     companion object {
 
         fun newInstance(): MsgChildFragment {
@@ -140,6 +141,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                             deltDataToList(item!!)
                             mDatabind.rec.mutable.removeAt(bindingAdapterPosition)
                             mDatabind.rec.bindingAdapter.notifyItemRemoved(bindingAdapterPosition)
+                            initNoreadMsg(mDatabind.rec.mutable as MutableList<MsgListNewData>)
 
                             if (mDatabind.rec.models!!.isEmpty()) {
                                 mDatabind.state.showEmpty()
@@ -248,6 +250,22 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
 
     }
 
+
+    fun initNoreadMsg(data: MutableList<MsgListNewData>) {
+        if (data.isNotEmpty()) {
+            noReadMsgs = 0
+            for (i in 0 until data.size) {
+                if (data[i].noReadSum > 0) {
+                    noReadMsgs += data[i].noReadSum
+                }
+            }
+            appViewModel.updateMainMsgNum.postValue(noReadMsgs.toString())
+
+        } else {
+            appViewModel.updateMainMsgNum.postValue("0")
+        }
+    }
+
     fun getRoomAllData() {
         GlobalScope.launch {
             val data = getAll().await()
@@ -258,12 +276,8 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                     noReadMsgs = 0
                     listdata.clear()
                     listdata.addAll(data)
-                    for (i in 0 until listdata.size) {
-                        if (listdata[i].noReadSum > 0) {
-                            noReadMsgs += listdata[i].noReadSum
-                        }
-                    }
-                    appViewModel.updateMainMsgNum.postValue(noReadMsgs.toString())
+
+                    initNoreadMsg(data as MutableList<MsgListNewData>)
                     mDatabind.rec.models = listdata
                     mDatabind.state.showContent()
 
@@ -426,7 +440,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                                 if (it.listData[i].noReadSum > listdata[j].noReadSum) {
                                     updataMsg(it.listData[i])
                                 }
-                            }else{
+                            } else {
                                 if (it.listData[i].noReadSum > 0) {
                                     updataMsg(it.listData[i])
                                 }
@@ -499,9 +513,9 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                     bean.id = listdata[i].id
 
                     if (msg.anchorId == msg.from) {//主播发送的消息
-                        bean.nick = if (msg.fromNickName==null)"" else msg.fromNickName!!
+                        bean.nick = if (msg.fromNickName == null) "" else msg.fromNickName!!
                     } else {
-                        bean.nick = if (msg.toNickName==null)"" else msg.toNickName!!
+                        bean.nick = if (msg.toNickName == null) "" else msg.toNickName!!
                     }
 
                     LogUtils.d("更新了哈哈$i")
@@ -539,7 +553,6 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                 LogUtils.d("鞥加了哈哈")
 
                 addDataToList(bean)
-
 
 
             }
@@ -597,6 +610,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
 
             //删除跟这个主播相关的连天记录
             MyApplication.dataBase!!.chatDao?.deleteAllZeroId(data.anchorId!!)
+
 
         }
     }

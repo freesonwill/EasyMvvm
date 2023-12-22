@@ -18,6 +18,7 @@ class Constants {
         const val NEEDLOAGIN_CODE = 401
         const val APP_ID = "8888"
         const val BASE_PAGE_SIZE = 20
+
         //微信
         const val WX_APPID = "wx5568f9de502defe3"
         const val WX_APPSecret = "35758f387da2633589629f33fd90cc2c"
@@ -29,7 +30,8 @@ class Constants {
         const val USER_HEAD = "USER_HEAD"//主播头像
         const val CHAT_DATA = "CHAT_DATA"//数据
         const val WEB_URL = "WEB_URL"//网站地址
-         var PHONE_CODE = ""//手机区号
+        var PHONE_CODE = ""//手机区号
+        var ISSTOP_TALK = "0"//全局是否禁言 0shi fou
         const val VIDEO_DATA = "VIDEO_DATA"//视频详情
         const val BUNDLE_DATA = "BUNDLE_DATA"//详情数据
         const val TOURNAMENT_DATA = "TOURNAMENT_DATA"//锦标赛详情
@@ -42,7 +44,8 @@ class Constants {
         const val ANCHOR_ID = "anchor_id"//主播id
         const val MATCH_TYPE = "type"//足球比赛还是篮球比赛
         const val WEB_VIEW_TYPE = "type"//是加载普通url或者是一段html
-        const val WEB_VIEW_ID= "WEB_VIEW_ID"//获取url详情id
+        const val WEB_VIEW_ID = "WEB_VIEW_ID"//获取url详情id
+
         //test
 //        const val RewardedAdUnitId = "ca-app-pub-3940256099942544/5224354917"//激励视频
 //        const val NativeAdUnitId = "ca-app-pub-3940256099942544/2247696110"//原生广告
