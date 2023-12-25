@@ -123,6 +123,7 @@
     <string name="changEmailPsw">重置邮箱密码</string>
     <string name="please_input_phone_num">请输入手机号</string>
     <string name="please_input_email">请输入邮箱号</string>
+    <string name="please_inputcureet_email">邮箱格式错误</string>
     <string name="please_input_email_1">输入邮箱号</string>
     <string name="please_input_phone_code">请输入验证码</string>
     <string name="please_input_psw">请输入密码</string>

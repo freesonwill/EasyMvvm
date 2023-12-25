@@ -873,7 +873,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                 var item1 = _data as AnchorBean
                                 binding1.tvname.text = item1.nickName
                                 Glide.with(context).load(item1.userLogo)
-                                    .placeholder(R.drawable.icon_avatar).into(binding1.ivhead)
+                                    .placeholder(R.drawable.default_anchor_icon).into(binding1.ivhead)
                                 binding1.linroot.setOnClickListener {
                                     MatchDetailActivity.open(
                                         matchType = item.matchType,
