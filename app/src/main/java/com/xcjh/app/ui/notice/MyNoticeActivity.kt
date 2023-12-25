@@ -30,6 +30,7 @@ import com.xcjh.app.databinding.ActivityMynoticeBinding
 import com.xcjh.app.databinding.ItemJsBinding
 import com.xcjh.app.databinding.ItemSchAllBinding
 import com.xcjh.app.ui.details.MatchDetailActivity
+import com.xcjh.app.view.CustomHeader
 import com.xcjh.base_lib.Constants.Companion.BASE_PAGE_SIZE
 import com.xcjh.base_lib.utils.LogUtils
 import com.xcjh.base_lib.utils.TimeUtil
@@ -70,6 +71,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                 this.findViewById<ImageView>(R.id.ivEmptyIcon).setOnClickListener { }
             }
         }
+        mDatabind.smartCommon.setRefreshHeader( CustomHeader(this))
         mDatabind.titleTop.tvTitle.text = resources.getString(R.string.my_txt_subscribe)
         mDatabind.rec.run {
             vertical()
@@ -104,14 +106,14 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                                     binding.tvmiddletime.visibility = View.GONE
                                     item.visbleTime = 2
                                 } else {
-                                    binding.tvmiddletime.visibility = View.VISIBLE
+                                    binding.tvmiddletime.visibility = View.GONE
                                     item.visbleTime = 1
                                     strTimeZu.add(time!!.substring(0, 10))
                                 }
                             }
                         } else {
                             if (strTimeZu.size == 0) {
-                                binding.tvmiddletime.visibility = View.VISIBLE
+                                binding.tvmiddletime.visibility = View.GONE
                                 item.visbleTime = 1
                                 strTimeZu.add(time!!.substring(0, 10))
                             } else {
@@ -119,7 +121,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                                     binding.tvmiddletime.visibility = View.GONE
                                     item.visbleTime = 2
                                 } else {
-                                    binding.tvmiddletime.visibility = View.VISIBLE
+                                    binding.tvmiddletime.visibility = View.GONE
                                     item.visbleTime = 1
                                     strTimeZu.add(time!!.substring(0, 10))
                                 }
@@ -131,7 +133,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                     }
 
                     1 -> {//显示
-                        binding.tvmiddletime.visibility = View.VISIBLE
+                        binding.tvmiddletime.visibility = View.GONE
                     }
 
                     2 -> {//不显示
