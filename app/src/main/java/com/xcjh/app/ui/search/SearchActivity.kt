@@ -5,7 +5,9 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.ImageView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
@@ -37,6 +39,10 @@ class SearchActivity  : BaseActivity<SearchVm, ActivitySearchBinding>() {
             .titleBar(mDatabind.rlSearchTitle)
             .init()
 
+        // 将搜索按钮始终设为可用
+//        mDatabind.etSearchInput.isEnablesReturnKeyAutomatically = false
+        // 将搜索 EditText 的 imeOptions 设置为 actionSearch
+
 
         showSoftKeyboard()
         mViewModel.getHotOngoingMatch()
@@ -54,6 +60,8 @@ class SearchActivity  : BaseActivity<SearchVm, ActivitySearchBinding>() {
         }
 
         mDatabind.etSearchInput.afterTextChanged{
+
+
             if (it.isNotEmpty()) {
                 mDatabind.ivClear.visibility=View.VISIBLE
                 searchType=0
@@ -77,11 +85,12 @@ class SearchActivity  : BaseActivity<SearchVm, ActivitySearchBinding>() {
 
 
         mDatabind.etSearchInput.setOnEditorActionListener { v, actionId, event ->
-            if(mDatabind.etSearchInput.text.toString().trim().isEmpty()){
+
+            if(mDatabind.etSearchInput.text.toString().isEmpty()){
                 myToast(getString(R.string.contact_hint_input))
 
             }else{
-                mViewModel.getNowLive(mDatabind.etSearchInput.text.toString().trim())
+                mViewModel.getNowLive(mDatabind.etSearchInput.text.toString())
                 searchType=1
 //                mDatabind.txtSearchClick.text=resources.getString(R.string.cancel)
                 mDatabind.llSearchShow.visibility=View.GONE

@@ -16,6 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="57dp"
         android:background="@color/c_ffffff" >
+<!--        TYPE_CLASS_TEXT-->
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/etSearchInput"
             android:layout_width="match_parent"
@@ -31,6 +32,7 @@
             android:inputType="text"
             android:paddingStart="@dimen/dp_12"
             android:paddingEnd="@dimen/dp_12"
+            android:singleLine="true"
             android:textColor="@color/c_37373d"
             android:textColorHint="@color/c_94999f"
             android:textCursorDrawable="@drawable/shape_et_cursor_blue"
