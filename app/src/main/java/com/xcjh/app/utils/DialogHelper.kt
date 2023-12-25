@@ -355,6 +355,28 @@ fun delMsgDilog(context: Context, block: (isSure: Boolean) -> Unit) {
             ContextCompat.getColor(context, com.xcjh.base_lib.R.color.blacks_tr)
         ).show()
 }
+/***
+ * 删除好友弹窗
+ */
+fun delFriDilog(context: Context, block: (isSure: Boolean) -> Unit) {
+    CustomDialog.build()
+        .setCustomView(object : OnBindView<CustomDialog?>(R.layout.layout_dialogx_delfriend) {
+            override fun onBind(dialog: CustomDialog?, v: View) {
+                val tvcancle = v.findViewById<TextView>(R.id.tvcancle)
+                val tvsure = v.findViewById<TextView>(R.id.tvsure)
+                tvcancle.setOnClickListener {
+                    block.invoke(false)
+                    dialog?.dismiss()
+                }
+                tvsure.setOnClickListener {
+                    block.invoke(true)
+                    dialog?.dismiss()
+                }
+            }
+        }).setAlign(CustomDialog.ALIGN.CENTER).setMaskColor(//背景遮罩
+            ContextCompat.getColor(context, com.xcjh.base_lib.R.color.blacks_tr)
+        ).show()
+}
 /**
  * 信号源选择
  */
