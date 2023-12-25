@@ -21,7 +21,6 @@ import com.drake.brv.utils.models
 import com.drake.brv.utils.mutable
 import com.drake.brv.utils.setDifferModels
 import com.drake.brv.utils.setup
-import com.scwang.smart.refresh.header.ClassicsHeader
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
 import com.xcjh.app.R
@@ -40,6 +39,7 @@ import com.xcjh.app.databinding.ItemMainProceedBinding
 import com.xcjh.app.databinding.ItemMainTxtBinding
 import com.xcjh.app.databinding.ItemUnderWayBinding
 import com.xcjh.app.ui.details.MatchDetailActivity
+import com.xcjh.app.view.CustomHeader
 import com.xcjh.app.web.WebActivity
 import com.xcjh.app.websocket.MyWsManager
 import com.xcjh.app.websocket.bean.FeedSystemNoticeBean
@@ -75,7 +75,8 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
         mDatabind.smartCommon.setHeaderHeight(40f)
         mDatabind.smartCommon.setDisableContentWhenRefresh(true)//是否在刷新的时候禁止列表的操作
         mDatabind.smartCommon.setDisableContentWhenLoading(true)//是否在加载的时候禁止列表的操作
-        mDatabind.smartCommon.setRefreshHeader( ClassicsHeader(requireContext()))
+//        mDatabind.smartCommon.setRefreshHeader( ClassicsHeader(requireContext()))
+        mDatabind.smartCommon.setRefreshHeader( CustomHeader(requireContext()))
         MyWsManager.getInstance(App.app)
             ?.setLiveStatusListener(this.toString(), object : LiveStatusListener {
                 override fun onOpenLive(bean: LiveStatus) {
@@ -106,6 +107,8 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                         being.playUrl=bean.playUrl
                         being.hotValue=bean.hotValue
                         being.titlePage=bean.coverImg
+                         being.competitionName=bean.competitionName
+                        being.userLogo=bean.userLogo
                         if(mDatabind.rcvRecommend.models!=null){
                             for (i in 0 until mDatabind.rcvRecommend.mutable!!.size) {
                                 if(mDatabind.rcvRecommend.mutable[i] is MainTxtBean){
@@ -254,6 +257,8 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
 
         //获取广告
         mViewModel.bannerList.observe(this){
+            mDatabind.smartCommon.finishRefresh()
+            mDatabind.smartCommon.resetNoMoreData()
             if(it.size>0){
             try {
                 if(mDatabind.rcvRecommend.mutable!=null){
@@ -291,7 +296,8 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
         }
         //获取首页的热门比赛
         mViewModel.hotList.observe(this){
-
+            mDatabind.smartCommon.finishRefresh()
+            mDatabind.smartCommon.resetNoMoreData()
             if(it.size>=1){
                 try {
                     if(mDatabind.rcvRecommend.mutable.size==1){
@@ -346,14 +352,15 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                 }
             }else{
 
-                    if(mDatabind.rcvRecommend.mutable!=null){
+                    if(mDatabind.rcvRecommend.mutable!=null&&mDatabind.rcvRecommend.mutable.isNotEmpty()){
                         for (i in 0 until mDatabind.rcvRecommend.mutable!!.size) {
-                            if (mDatabind.rcvRecommend.mutable[i] is MatchBean) {
-                                mDatabind.rcvRecommend.mutable.removeAt(i)
-                                mDatabind.rcvRecommend.bindingAdapter.notifyItemRemoved(i) // 通知更新
-                                mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
+                            if(i <=mDatabind.rcvRecommend.mutable!!.size-1){
+                                if (mDatabind.rcvRecommend.mutable[i] is MatchBean) {
+                                    mDatabind.rcvRecommend.mutable.removeAt(i)
+                                    mDatabind.rcvRecommend.bindingAdapter.notifyItemRemoved(i) // 通知更新
+                                    mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
+                                }
                             }
-
                         }
                     }
 
@@ -381,12 +388,14 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
         }
         //正在直播的比赛
         mViewModel.liveList.observe(this){
+
             if (it.isSuccess) {
                 //成功
                 when {
                     //第一页并没有数据 显示空布局界面
                     it.isFirstEmpty -> {
                         mDatabind.smartCommon.finishRefresh()
+                        mDatabind.smartCommon.resetNoMoreData()
                        if(mDatabind.rcvRecommend.models!=null){
                            for (i in 0 until mDatabind.rcvRecommend.mutable!!.size) {
                                if(mDatabind.rcvRecommend.mutable[i] is MainTxtBean){

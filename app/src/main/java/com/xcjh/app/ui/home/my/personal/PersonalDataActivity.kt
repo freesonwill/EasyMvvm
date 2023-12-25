@@ -45,7 +45,7 @@ class PersonalDataActivity : BaseActivity<PersonalDataVm, ActivityPersonalDataBi
             .statusBarDarkFont(true)
             .titleBar(mDatabind.rltTop)
             .init()
-        mDatabind.tvTitle.text=resources.getString(R.string.personal_txt_title)
+        mDatabind.tvTitle.text=resources.getString(R.string.personal_update_title)
         mDatabind.ivBack.clickNoRepeat {
             finish()
         }
@@ -133,13 +133,13 @@ class PersonalDataActivity : BaseActivity<PersonalDataVm, ActivityPersonalDataBi
             user!!.name=it
             if(it.isNotEmpty()){
                 if(it.length>8){
-                    mDatabind.llDataShowErr.visibility=View.VISIBLE
+//                    mDatabind.llDataShowErr.visibility=View.VISIBLE
                 }else{
 
-                    mDatabind.llDataShowErr.visibility=View.GONE
+//                    mDatabind.llDataShowErr.visibility=View.GONE
                 }
             }else{
-                mDatabind.llDataShowErr.visibility=View.VISIBLE
+//                mDatabind.llDataShowErr.visibility=View.VISIBLE
             }
 
         }
