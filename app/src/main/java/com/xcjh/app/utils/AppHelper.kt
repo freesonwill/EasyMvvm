@@ -5,6 +5,14 @@ import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.BitmapShader
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.RectF
+import android.graphics.Shader
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import android.os.Looper
 import android.util.Log
 import android.view.View
@@ -17,10 +25,20 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool
+import com.bumptech.glide.load.resource.bitmap.BitmapTransformation
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.chad.library.adapter.base.BaseDifferAdapter
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.drake.brv.PageRefreshLayout
@@ -39,16 +57,76 @@ import com.xcjh.app.view.callback.EmptyCallback
 import com.xcjh.app.view.callback.LoadingCallback
 import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.bean.ListDataUiState
+import com.xcjh.base_lib.utils.LogUtils
 import com.xcjh.base_lib.utils.dp2px
 import com.xcjh.base_lib.utils.layoutInflater
 import com.xcjh.base_lib.utils.setLm
 import com.xcjh.base_lib.utils.startNewActivity
+import java.security.MessageDigest
 import java.text.DecimalFormat
 
 
 //顶层方法类 全是静态方法 并存在在HelperKt类中
 fun doSomething() {
     println("======")
+}
+
+
+
+
+fun ImageView.loadImageWithGlide(context: Context, imageUrl: String) {
+    val maxImageWidth = dp2px(150)
+    val maxImageHeight = dp2px(102)
+    val cornerRadius = context.resources.getDimensionPixelSize(R.dimen.dp_8)
+    val placeholderColor = context.resources.getColor(R.color.c_fe4848)
+    Glide.with(context)
+        .asBitmap()
+        .load(imageUrl)
+        .thumbnail(Glide.with(context).asBitmap().load(imageUrl).apply(RequestOptions().override(50, 50)))
+        .apply(RequestOptions()
+            .diskCacheStrategy(DiskCacheStrategy.ALL))
+        .into(object : CustomTarget<Bitmap>() {
+            override fun onLoadStarted(placeholder: Drawable?) {
+                this@loadImageWithGlide.setImageDrawable(ColorDrawable(placeholderColor))
+            }
+            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                val imageWidth = resource.width
+                val imageHeight = resource.height
+                val aspectRatio = imageWidth.toFloat() / imageHeight.toFloat()
+
+                val scaledWidth: Int
+                val scaledHeight: Int
+                val roundedCornerRadius: Float
+                LogUtils.d("$imageWidth=加载图片的宽高=$imageHeight")
+
+                if (imageWidth <= maxImageWidth && imageHeight <= maxImageHeight) {
+                    scaledWidth = imageWidth
+                    scaledHeight = imageHeight
+                    roundedCornerRadius = 0f
+                } else {
+                    scaledWidth = maxImageWidth
+                    scaledHeight = maxImageHeight
+//                    if (aspectRatio > maxImageWidth.toFloat() / maxImageHeight.toFloat()) {
+//                        scaledWidth = maxImageWidth
+//                        scaledHeight = (maxImageWidth.toFloat() / aspectRatio).toInt()
+//                    } else {
+//                        scaledWidth = (maxImageHeight.toFloat() * aspectRatio).toInt()
+//                        scaledHeight = maxImageHeight
+//                    }
+                    roundedCornerRadius = cornerRadius.toFloat()
+                }
+
+                val scaledBitmap = Bitmap.createScaledBitmap(resource, scaledWidth, scaledHeight, true)
+                val drawable = RoundedBitmapDrawableFactory.create(resources, scaledBitmap).apply {
+                    isCircular = false
+                    setCornerRadius(roundedCornerRadius)
+                }
+
+                this@loadImageWithGlide.setImageDrawable(drawable)
+            }
+
+            override fun onLoadCleared(placeholder: Drawable?) {}
+        })
 }
 
 //除法
