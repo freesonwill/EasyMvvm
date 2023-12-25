@@ -37,6 +37,7 @@ import com.xcjh.app.databinding.FrScheduletwoBinding
 import com.xcjh.app.databinding.ItemJsBinding
 import com.xcjh.app.databinding.ItemSchAllBinding
 import com.xcjh.app.ui.details.MatchDetailActivity
+import com.xcjh.app.view.CustomHeader
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.LogUtils
 import com.xcjh.base_lib.utils.TimeUtil
@@ -153,6 +154,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                 mOneTabIndex = bundle.getInt(ScheduleChildTwoFragment.OneIndex)
                 mTwoTabIndex = bundle.getInt(ScheduleChildTwoFragment.TwoIndex)
             }
+
             mDatabind.state.apply {
                 StateConfig.setRetryIds(R.id.ivEmptyIcon, R.id.txtEmptyName)
                 onEmpty {
@@ -163,7 +165,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                     this.findViewById<ImageView>(R.id.ivEmptyIcon).setOnClickListener { }
                 }
             }
-            mDatabind.smartCommon.setRefreshHeader(ClassicsHeader(requireContext()))
+            mDatabind.smartCommon.setRefreshHeader( CustomHeader(requireContext()))
             mDatabind.recBottom.run {
                 distance(0, 0, 0, 15)
             }

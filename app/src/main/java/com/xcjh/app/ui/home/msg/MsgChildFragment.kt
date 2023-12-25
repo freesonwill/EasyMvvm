@@ -27,6 +27,7 @@ import com.xcjh.app.utils.CacheUtil
 import com.xcjh.app.utils.ChatTimeUtile
 import com.xcjh.app.utils.clearMsg
 import com.xcjh.app.utils.delMsgDilog
+import com.xcjh.app.view.CustomHeader
 import com.xcjh.app.websocket.MyWsManager
 import com.xcjh.app.websocket.bean.FeedSystemNoticeBean
 import com.xcjh.app.websocket.bean.ReceiveChangeMsg
@@ -188,7 +189,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
         }.models = listdata
         (mDatabind.rec.itemAnimator as SimpleItemAnimator).supportsChangeAnimations =
             false//防止item刷新的时候闪烁
-
+        mDatabind.smartCommon.setRefreshHeader( CustomHeader(requireContext()))
         mDatabind.state.apply {
             StateConfig.setRetryIds(R.id.ivEmptyIcon, R.id.txtEmptyName)
             onEmpty {

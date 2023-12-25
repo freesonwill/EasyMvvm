@@ -24,9 +24,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_weight="1">
 
-            <com.scwang.smart.refresh.header.MaterialHeader
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+
             <com.drake.statelayout.StateLayout
                 android:id="@+id/state"
                 android:layout_width="match_parent"

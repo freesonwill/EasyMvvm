@@ -21,6 +21,7 @@ import com.xcjh.app.ui.room.MsgListNewData
 import com.xcjh.app.utils.CacheUtil
 import com.xcjh.app.utils.delFriDilog
 import com.xcjh.app.utils.delMsgDilog
+import com.xcjh.app.view.CustomHeader
 import com.xcjh.app.view.SideBarLayout.OnSideBarLayoutListener
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.LogUtils
@@ -58,6 +59,7 @@ class MsFriendFragment : BaseFragment<MsgVm, FrMsgfriendBinding>() {
                 this.findViewById<ImageView>(R.id.ivEmptyIcon).setOnClickListener {  }
             }
         }
+        mDatabind.smartCommon.setRefreshHeader( CustomHeader(requireContext()))
         mDatabind.rec.setup {
             addType<FriendListBean> {
 

@@ -16,9 +16,7 @@
             app:srlEnableLoadMore="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/frrl">
-        <com.scwang.smart.refresh.header.ClassicsHeader
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+
         <com.drake.statelayout.StateLayout
             android:id="@+id/state"
             android:layout_width="match_parent"

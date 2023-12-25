@@ -24,6 +24,7 @@ import com.xcjh.app.base.BaseActivity
 import com.xcjh.app.bean.MatchBean
 import com.xcjh.app.databinding.ActivityFeednoticeBinding
 import com.xcjh.app.databinding.ActivityWebBinding
+import com.xcjh.app.view.CustomHeader
 import com.xcjh.app.vm.MainVm
 import com.xcjh.base_lib.utils.distance
 import com.xcjh.base_lib.utils.vertical
@@ -42,6 +43,7 @@ class FeedNoticeActivity : BaseActivity<FeedVm, ActivityFeednoticeBinding>() {
             .titleBar(mDatabind.titleTop.root)
             .init()
         mDatabind.titleTop.tvTitle.text = resources.getString(R.string.txt_feedtitle)
+        mDatabind.smartCommon.setRefreshHeader( CustomHeader(this))
         mDatabind.rec.run {
             vertical()
             adapter = mAdapter
