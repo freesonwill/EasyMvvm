@@ -72,7 +72,7 @@ class EventsCentreActivity : BaseActivity<EventsCentreVm, ActivityEventsCentreBi
                         bindingItem.txtEventsTitle.text=bean.title
                         val date = Date(bean.updateTime.toLong())
                         var formatter = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
-                        bindingItem.txtEventsTime.text=formatter.format(date)
+                        bindingItem.txtEventsTime.text="${formatter.format(date)} ${resources.getString(R.string.release_txt_name)}"
 
 
                     }

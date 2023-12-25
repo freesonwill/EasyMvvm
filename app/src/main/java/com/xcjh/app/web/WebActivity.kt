@@ -161,7 +161,7 @@ class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
         super.createObserver()
         //获取到网页详情 新闻列表
         mViewModel.newsBeanValue.observe(this){
-            var sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+            var sdf = SimpleDateFormat("yyyy-MM-dd HH:mm")
             var dateTimeString:String=""
             var title:String=""
             title="<p style=\" color: #37373D; font-size: 18px; font-weight: bold; margin: 0;\">${it.title}</p>"
@@ -169,7 +169,7 @@ class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
                 dateTimeString= sdf.format(Date(it.publishTime.toLong()))
                 title += "<div style=\" display: flex; align-items: center;\"> " +
                         "<div style=\"display: flex; align-items: center;\">" +
-                        "<img src=\"file:///android_asset/football.png\"  alt=\"Example\" width=\"20px\" height=\"2px\"  >" +
+                        "<img src=\"file:///android_asset/football.png\"  alt=\"Example\" width=\"20px\" height=\"20px\"  >" +
                         " <h4 style=\"font-size: 12px; color: #575762; font-weight: normal;\">体育直播</h4>" +
                         "</div>"+
                         "<h4 style=\" color: #94999F; font-size: 11px; margin-left: auto; font-weight: normal;\">${dateTimeString}发布</h5></div>"

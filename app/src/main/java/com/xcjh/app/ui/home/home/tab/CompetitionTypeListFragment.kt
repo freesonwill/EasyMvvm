@@ -22,6 +22,7 @@ import com.xcjh.app.bean.MainTxtBean
 import com.xcjh.app.databinding.FragmentCompetitionTypeListBinding
 import com.xcjh.app.databinding.ItemMainLiveListBinding
 import com.xcjh.app.ui.details.MatchDetailActivity
+import com.xcjh.app.view.CustomHeader
 import com.xcjh.app.view.NestedScrollView
 import com.xcjh.app.websocket.MyWsManager
 import com.xcjh.app.websocket.bean.LiveStatus
@@ -44,7 +45,7 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
         adapter()
 
         mViewModel.getNowLive(true, type = type.toString())
-
+        mDatabind.smartCommon.setRefreshHeader( CustomHeader(requireContext()))
         mDatabind.smartCommon.setOnRefreshLoadMoreListener(object : OnRefreshLoadMoreListener {
             override fun onRefresh(refreshLayout: RefreshLayout) {
                 mViewModel.getNowLive(true,type = type.toString())
@@ -96,6 +97,8 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
                         being.hotValue=bean.hotValue
                         being.nickName=bean.nickName
                         being.titlePage=bean.coverImg
+                        being.competitionName=bean.competitionName
+                        being.userLogo=bean.userLogo
                         var list =ArrayList<BeingLiveBean>()
                         list.add(being)
                         mDatabind.rcvRecommend.addModels(list)
