@@ -17,7 +17,10 @@ import com.xcjh.app.bean.FriendListBean
 import com.xcjh.app.databinding.FrMsgfriendBinding
 import com.xcjh.app.databinding.ItemMsgfrienddelBinding
 import com.xcjh.app.ui.chat.ChatActivity
+import com.xcjh.app.ui.room.MsgListNewData
 import com.xcjh.app.utils.CacheUtil
+import com.xcjh.app.utils.delFriDilog
+import com.xcjh.app.utils.delMsgDilog
 import com.xcjh.app.view.SideBarLayout.OnSideBarLayoutListener
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.LogUtils
@@ -90,15 +93,21 @@ class MsFriendFragment : BaseFragment<MsgVm, FrMsgfriendBinding>() {
                     }
                 }
                 binding.lltDelete.setOnClickListener {
-                    mViewModel.getUnNoticeFriend(item.anchorId)
-                    mDatabind.rec.mutable.removeAt(bindingAdapterPosition)
-                    mDatabind.rec.bindingAdapter.notifyItemRemoved(bindingAdapterPosition) // 通知更新
+                    delFriDilog(requireActivity()) { it ->
+                        if (it) {//点击了确定
+                            mViewModel.getUnNoticeFriend(item.anchorId)
+                            mDatabind.rec.mutable.removeAt(bindingAdapterPosition)
+                            mDatabind.rec.bindingAdapter.notifyItemRemoved(bindingAdapterPosition) // 通知更新
 
-                    var bean = mDatabind.rec.models as List<FriendListBean>
-                    if (bean.isEmpty()) {
-                        mDatabind.state.showEmpty()
+                            var bean = mDatabind.rec.models as List<FriendListBean>
+                            if (bean.isEmpty()) {
+                                mDatabind.state.showEmpty()
+                            }
+                        }
+
                     }
-                    var list = getPinyinList(bean)
+
+
 
 
                 }

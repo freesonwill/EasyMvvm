@@ -31,6 +31,7 @@
     <string name="canmei">拍摄</string>
     <string name="txt_clear_msg">确定清除全部的未读信息吗?</string>
     <string name="txt_del_msg">确定删除该条消息?</string>
+    <string name="txt_del_fri">确定删除该好友?</string>
     <string name="history_record">历史记录</string>
 
     <!--setting-->

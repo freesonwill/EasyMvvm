@@ -54,6 +54,7 @@ import com.xcjh.app.websocket.listener.OtherPushListener
 import com.xcjh.base_lib.utils.getXXPermissionsPush
 import com.xcjh.base_lib.utils.initActivity
 import com.xcjh.base_lib.utils.myToast
+import com.xcjh.base_lib.utils.setOnclickNoRepeat
 import com.xcjh.base_lib.utils.view.clickNoRepeat
 import kotlinx.android.synthetic.main.activity_home.*
 import java.util.*
@@ -108,74 +109,58 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         }
         mDatabind.viewPager.registerOnPageChangeCallback(pageChangeCallback)
 
-        //点击首页
-        mDatabind.llHomeSelectMain.setOnClickListener {
-
-
-
-//            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-//                var intent =   Intent()
-//                intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
-//                //data为应用包名
-//                intent.setData(Uri.parse("package:" + packageName))
-//                if (intent.resolveActivity(getPackageManager()) != null) {
-//                    startActivity(intent)
-//
-//                }
-//
-//            }
-            //获取推送和
-//            getXXPermissionsPush(this){
-//
-//            }
-
-
-            if (currentPage != 0) {
-                if (CacheUtil.isNavigationVibrate()) {
-                    vibrate(this)
-                }
-
-            }
-
-            setHome(0)
-        }
-        //点击赛程
-        mDatabind.llHomeSelectSchedule.setOnClickListener {
-            if (currentPage != 1) {
-                if (CacheUtil.isNavigationVibrate()) {
-                    vibrate(this)
-
-                }
-            }
-            setHome(1)
-        }
-        //点击消息
-        mDatabind.llHomeSelectMsg.setOnClickListener {
-            judgeLogin {
-                if (currentPage != 2) {
-                    if (CacheUtil.isNavigationVibrate()) {
-                        vibrate(this)
+        setOnclickNoRepeat(
+            mDatabind.llHomeSelectMain, mDatabind.llHomeSelectSchedule,
+            mDatabind.llHomeSelectMsg, mDatabind.llHomeSelectMine
+        ) {
+            when (it.id) {
+                R.id.llHomeSelectMain -> {
+                    if (currentPage != 0) {
+                        if (CacheUtil.isNavigationVibrate()) {
+                            vibrate(this)
+                        }
 
                     }
+
+                    setHome(0)
                 }
-                setHome(2)
-            }
-        }
-        //点击我的
-        mDatabind.llHomeSelectMine.setOnClickListener {
-            if (popup != null) {
-                if (popup!!.isShow) {
-                    popup!!.dismiss()
+                R.id.llHomeSelectSchedule -> {
+                    if (currentPage != 1) {
+                        if (CacheUtil.isNavigationVibrate()) {
+                            vibrate(this)
+
+                        }
+                    }
+                    setHome(1)
+                }
+                R.id.llHomeSelectMsg -> {
+                    judgeLogin {
+                        if (currentPage != 2) {
+                            if (CacheUtil.isNavigationVibrate()) {
+                                vibrate(this)
+
+                            }
+                        }
+                        setHome(2)
+                    }
+                }
+                R.id.llHomeSelectMine -> {
+                    if (popup != null) {
+                        if (popup!!.isShow) {
+                            popup!!.dismiss()
+                        }
+                    }
+
+                    if (currentPage != 3) {
+                        if (CacheUtil.isNavigationVibrate()) {
+                            vibrate(this)
+
+                        }
+                    }
+                    setHome(3)
                 }
             }
 
-            if (currentPage != 3) {
-                if (CacheUtil.isNavigationVibrate()) {
-                    vibrate(this)
-
-                }
-            }
-            setHome(3)
         }
 
 

@@ -80,7 +80,7 @@ class MsgVm : BaseViewModel() {
                 apiService.getMsgListPage(
                     PostGetMsgBean(
                         pageNo,
-                        Constants.BASE_PAGE_SIZE, userName.toString()
+                        100, userName.toString()
                     )
                 )
             },
@@ -103,7 +103,7 @@ class MsgVm : BaseViewModel() {
                     listData = arrayListOf()
                 )
                 myToast(it.errorMsg)
-            }, false
+            }, isRefresh
         )
     }
 
@@ -139,7 +139,7 @@ class MsgVm : BaseViewModel() {
                     listData = arrayListOf()
                 )
                 myToast(it.errorMsg)
-            }, false
+            }, isRefresh
         )
     }
 }
