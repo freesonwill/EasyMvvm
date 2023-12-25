@@ -437,6 +437,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
     override fun createObserver() {
 
         mViewModel.msgList.observe(this) {
+            LogUtils.d("拿到消息")
             if (it.isSuccess) {
 
                 if (it.listData.size > 0) {
@@ -537,7 +538,12 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                     if (chatId == msg.anchorId) {
                         bean.noReadSum = 0
                     } else {
-                        bean.noReadSum = msg.noReadSum
+                        if (msg.noReadSum == 0) {
+                            bean.noReadSum = 1
+                        } else {
+                            bean.noReadSum = msg.noReadSum
+                        }
+
                     }
                 } else {
                     bean.avatar = msg.toAvatar!!

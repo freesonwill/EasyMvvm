@@ -5,6 +5,14 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapShader
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.RectF
+import android.graphics.Shader
+import android.graphics.drawable.Drawable
+
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
@@ -18,6 +26,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.TextView.OnEditorActionListener
+import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.airbnb.lottie.LottieAnimationView
@@ -25,9 +34,13 @@ import com.alibaba.fastjson.JSONObject
 import com.blankj.utilcode.util.ToastUtils
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool
+import com.bumptech.glide.load.resource.bitmap.BitmapTransformation
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.drake.brv.utils.addModels
 import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.models
@@ -59,6 +72,7 @@ import com.xcjh.app.net.ProgressListener
 import com.xcjh.app.ui.room.MsgBeanData
 import com.xcjh.app.utils.CacheUtil
 import com.xcjh.app.utils.GlideEngine
+import com.xcjh.app.utils.loadImageWithGlide
 import com.xcjh.app.utils.nice.Utils
 import com.xcjh.app.utils.picture.ImageFileCompressEngine
 import com.xcjh.app.utils.reSendMsgDialog
@@ -75,6 +89,7 @@ import com.xcjh.base_lib.utils.LogUtils
 import com.xcjh.base_lib.utils.TAG
 import com.xcjh.base_lib.utils.TimeUtil
 import com.xcjh.base_lib.utils.copyToClipboard
+import com.xcjh.base_lib.utils.dp2px
 import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.setOnclickNoRepeat
 import kotlinx.coroutines.Deferred
@@ -87,6 +102,7 @@ import okhttp3.MultipartBody
 import top.zibin.luban.Luban
 import top.zibin.luban.OnNewCompressListener
 import java.io.File
+import java.security.MessageDigest
 
 
 /***
@@ -350,8 +366,9 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                 binding.ivfaile.visibility = View.GONE
                                 GlobalScope.launch {
 
-                                    upLoadPic(matchBeanNew,
-                                         binding.tvpross,
+                                    upLoadPic(
+                                        matchBeanNew,
+                                        binding.tvpross,
                                         binding.ivfaile
                                     )
                                     delay(delayTime)
@@ -427,12 +444,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                         }
                         if (binding.ivpic.tag == null || binding.ivpic.tag != matchBeanNew.content) {
                             binding.ivpic.tag = matchBeanNew.content
-                            Glide.with(this@ChatActivity).load(matchBeanNew.content).dontAnimate()
-                                .skipMemoryCache(false)
-                                .dontAnimate()
-                                .placeholder(R.drawable.xx)
-                                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                .into(binding.ivpic)//这里第二次刷新的时候 又加载了一次图片导致闪屏
+                            binding.ivpic.loadImageWithGlide(context, matchBeanNew.content)
                         }
 
 
@@ -475,9 +487,50 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                             TimeUtil.timeStamp2Date(matchBeanNew.createTime!!, null)!!
                                 .substring(0, 16)
                         binding.tvtime.visibility = View.GONE
-                        Glide.with(this@ChatActivity).load(matchBeanNew.content)
-                            .placeholder(R.drawable.xx)
-                            .dontAnimate().into(binding.ivpic)
+                        binding.ivpic.loadImageWithGlide(context, matchBeanNew.content)
+//                        Glide.with(context)
+//                            .load(matchBeanNew.content)
+//                            .override(dp2px(150), dp2px(102))
+//                            .apply(requestOptions)
+//                            .fitCenter()
+//                            .into(object : CustomTarget<Drawable>() {
+//                                override fun onResourceReady(
+//                                    resource: Drawable,
+//                                    transition: Transition<in Drawable>?
+//                                ) {
+//                                    // 获取Drawable对象
+//                                    val bitmap = resource.toBitmap()
+//                                    LogUtils.d(bitmap.width.toString() + "=加载图片的宽高=" + bitmap.height+"----"+matchBeanNew.content)
+//                                    // 处理宽高低于最大宽高的图片
+//                                    if (bitmap.width <= dp2px(150) && bitmap.height <= dp2px(102)) {
+//                                        binding.ivpic.setImageBitmap(bitmap)
+//
+//                                    } else {
+//                                        // 计算缩放比例，并缩放图片到最大宽高
+//                                        val scale = Math.min(
+//                                            dp2px(150) / bitmap.width,
+//                                            dp2px(102) / bitmap.height
+//                                        )
+//                                        val newWidth = (bitmap.width * scale).toInt()
+//                                        val newHeight = (bitmap.height * scale).toInt()
+//                                        val scaledBitmap = Bitmap.createScaledBitmap(
+//                                            bitmap,
+//                                            newWidth,
+//                                            newHeight,
+//                                            true
+//                                        )
+//                                        binding.ivpic.setImageBitmap(scaledBitmap)
+//                                    }
+//                                }
+//
+//                                override fun onLoadCleared(placeholder: Drawable?) {
+//                                    // Do nothing
+//                                }
+//                            })
+
+
+
+
                         Glide.with(this@ChatActivity).load(userhead)
                             .placeholder(R.drawable.default_anchor_icon).into(binding.ivhead)
                         binding.ivpic.setOnClickListener {
@@ -596,6 +649,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                     }
                                 }
                             }
+
                             override fun onCancel() {}
                         })
 
@@ -703,6 +757,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
         // getAllData()
 
     }
+// 将Drawable转换为Bitmap
 
     fun getAllData() {
         GlobalScope.launch {
@@ -740,7 +795,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
         rotationYAnimator.start()
     }
 
-    suspend fun upLoadPic(bean:MsgBeanData, view: TextView, image: ImageView) {
+    suspend fun upLoadPic(bean: MsgBeanData, view: TextView, image: ImageView) {
         try {
 
             val file = File(bean.content)
@@ -769,10 +824,10 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                     msgType = 1
                     msgContent = it
                     sendMsg(bean.sendId!!, true)
-                }else{
+                } else {
                     view.visibility = View.GONE
-                    image.visibility=View.VISIBLE
-                    bean.sent=2
+                    image.visibility = View.VISIBLE
+                    bean.sent = 2
                     addDataToList(bean)
                 }
             }
@@ -1022,4 +1077,5 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
 
         }
     }
+
 }

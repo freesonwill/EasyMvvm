@@ -45,7 +45,7 @@ class LoginActivity : BaseActivity<LoginVm, ActivityLoaginBinding>() {
             .titleBar(mDatabind.titleTop.root)
             .init()
         mDatabind.titleTop.tvTitle.text = resources.getString(R.string.loginandre)
-        initMaps()
+
         mFragments.add(Fragment())
         mFragments.add(Fragment())
         mDatabind.vp.initActivity(this, mFragments, false)
@@ -138,6 +138,11 @@ class LoginActivity : BaseActivity<LoginVm, ActivityLoaginBinding>() {
                         if (mDatabind.edtemail.text.toString().isEmpty()) {
 
                             myToast(resources.getString(R.string.please_input_email))
+                            return@setOnclickNoRepeat
+                        }
+                        if (!isEmailValid(mDatabind.edtemail.text.toString())) {
+
+                            myToast(resources.getString(R.string.please_inputcureet_email))
                             return@setOnclickNoRepeat
                         }
                         mDatabind.tvgetcodeEmalie.setTextColor(
@@ -465,50 +470,10 @@ class LoginActivity : BaseActivity<LoginVm, ActivityLoaginBinding>() {
 
     }
 
-    private fun initMaps() {
-        // 解析Json数据
-        val newstringBuilder = StringBuilder()
-        var inputStream: InputStream? = null
-        try {
-            inputStream = resources.assets.open("JHAreaCode.json")
-            val isr = InputStreamReader(inputStream)
-            val reader = BufferedReader(isr)
-            var jsonLine: String?
-            while (reader.readLine().also { jsonLine = it } != null) {
-                newstringBuilder.append(jsonLine)
-            }
-            reader.close()
-            isr.close()
-            inputStream.close()
-        } catch (e: IOException) {
-            e.printStackTrace()
-            // LogUtil.("得到数据chuck==$e")
-        }
-        val str = newstringBuilder.toString()
-        str.length
-        //LogUtil.d("得到数据==$str")
-        models =
-            JSONObject.parseArray(str, LetterBeann::class.java)
 
-        for (i in 0 until models.size) {
-            var county = getGQ(models[i].abbreviate)
-            listStr.add(county + "  " + models[i].selfName + " (" + models[i].areaCode + ")")
-        }
-
+    fun isEmailValid(email: String): Boolean {
+        val emailRegex = Regex("^\\w+([.-]?\\w+)*@\\w+([.-]?\\w+)*(\\.\\w{2,3})+$")
+        return email.matches(emailRegex)
     }
 
-    fun getGQ(country: String): String {
-        try {
-            val flagOffset = 0x1F1E6
-            val asciiOffset = 0x41
-            val firstChar =
-                Character.codePointAt(country, 0) - asciiOffset + flagOffset
-            val secondChar =
-                Character.codePointAt(country, 1) - asciiOffset + flagOffset
-            return String(Character.toChars(firstChar)) + String(Character.toChars(secondChar))
-        } catch (e: Exception) {
-            return ""
-        }
-
-    }
 }
