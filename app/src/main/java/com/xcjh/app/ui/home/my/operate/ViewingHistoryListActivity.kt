@@ -17,6 +17,7 @@ import com.xcjh.app.databinding.ActivityMyFollowListBinding
 import com.xcjh.app.databinding.ActivityViewingHistoryListBinding
 import com.xcjh.app.databinding.ItemMainLiveListBinding
 import com.xcjh.app.ui.details.MatchDetailActivity
+import com.xcjh.app.view.CustomHeader
 import com.xcjh.base_lib.utils.dp2px
 
 /**
@@ -32,7 +33,7 @@ class ViewingHistoryListActivity : BaseActivity<ViewingHistoryListVm, ActivityVi
             .init()
         mDatabind.titleTop.tvTitle.text=resources.getString(R.string.viewing_txt_title)
         adapter()
-
+        mDatabind.smartCommon.setRefreshHeader( CustomHeader(this))
         mDatabind.smartCommon.setOnRefreshLoadMoreListener(object : OnRefreshLoadMoreListener {
             override fun onRefresh(refreshLayout: RefreshLayout) {
                 mViewModel.getHistoryLive(true)

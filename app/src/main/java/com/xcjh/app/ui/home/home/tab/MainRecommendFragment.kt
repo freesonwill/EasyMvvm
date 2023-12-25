@@ -75,6 +75,7 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
         mDatabind.smartCommon.setHeaderHeight(40f)
         mDatabind.smartCommon.setDisableContentWhenRefresh(true)//是否在刷新的时候禁止列表的操作
         mDatabind.smartCommon.setDisableContentWhenLoading(true)//是否在加载的时候禁止列表的操作
+        mDatabind.smartCommon.setEnableOverScrollBounce(false)
 //        mDatabind.smartCommon.setRefreshHeader( ClassicsHeader(requireContext()))
         mDatabind.smartCommon.setRefreshHeader( CustomHeader(requireContext()))
         MyWsManager.getInstance(App.app)

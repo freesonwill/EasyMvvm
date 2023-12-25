@@ -131,11 +131,29 @@ class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
             .createAgentWeb()
             .ready().get()
         val webView = agentWeb.webCreator.webView
-// 设置加载中背景色为灰色
+        val webSettings: WebSettings = webView.settings
+        // 设置加载中背景色为灰色
         webView.setBackgroundColor(ContextCompat.getColor(this, R.color.c_ffffff))
-        if(type==0){
+        // 禁止缩放
+        webSettings.setSupportZoom(false)//设置可以支持缩放
+        webSettings.builtInZoomControls = false//设置出现缩放工具
+        webSettings.useWideViewPort = false//扩大比例的缩放
+        webSettings.displayZoomControls = false//隐藏缩放控件
+
+
+
+         if(type==0){
             agentWeb.urlLoader.loadUrl(url)
         }
+            //。如果触摸事件的 pointerCount（触摸点数）大于 1，表示用户正在进行多指操作，这时我们返回 true 来拦截触摸事件
+        webView.setOnTouchListener { _, event ->
+            if (event.pointerCount > 1) {
+                // 多指触摸时，禁止缩放手势
+                return@setOnTouchListener true
+            }
+            false
+        }
+
 
     }
 
@@ -170,7 +188,7 @@ class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
                 title += "<div style=\" display: flex; align-items: center;\"> " +
                         "<div style=\"display: flex; align-items: center;\">" +
                         "<img src=\"file:///android_asset/football.png\"  alt=\"Example\" width=\"20px\" height=\"20px\"  >" +
-                        " <h4 style=\"font-size: 12px; color: #575762; font-weight: normal;\">体育直播</h4>" +
+                        " <h4 style=\"font-size: 12px; color: #575762; font-weight: normal; margin-left: 4px;\">体育直播</h4>" +
                         "</div>"+
                         "<h4 style=\" color: #94999F; font-size: 11px; margin-left: auto; font-weight: normal;\">${dateTimeString}发布</h5></div>"
             }

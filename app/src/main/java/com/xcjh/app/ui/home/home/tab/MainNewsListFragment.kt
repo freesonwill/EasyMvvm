@@ -25,6 +25,7 @@ import com.xcjh.app.bean.NewsBean
 import com.xcjh.app.databinding.FragmentMainNewsListBinding
 import com.xcjh.app.databinding.ItemMainLiveListBinding
 import com.xcjh.app.databinding.ItemNewsListBinding
+import com.xcjh.app.view.CustomHeader
 import com.xcjh.app.web.WebActivity
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.dp2px
@@ -46,7 +47,7 @@ class MainNewsListFragment  : BaseFragment<MainNewsListVm, FragmentMainNewsListB
 
 
 
-
+        mDatabind.smartCommon.setRefreshHeader( CustomHeader(requireContext()))
         mDatabind.smartCommon.setOnRefreshLoadMoreListener(object : OnRefreshLoadMoreListener {
             override fun onRefresh(refreshLayout: RefreshLayout) {
                 mViewModel.getNewsList(true)

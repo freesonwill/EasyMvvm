@@ -21,6 +21,7 @@ import com.xcjh.app.bean.MatchBean
 import com.xcjh.app.databinding.ActivityMyFollowListBinding
 import com.xcjh.app.databinding.ItemMyFollowBinding
 import com.xcjh.app.ui.details.MatchDetailActivity
+import com.xcjh.app.view.CustomHeader
 import com.xcjh.base_lib.utils.dp2px
 
 
@@ -44,7 +45,7 @@ class MyFollowListActivity : BaseActivity<MyFollowListVm, ActivityMyFollowListBi
         mDatabind.titleTop.tvTitle.text=resources.getString(R.string.follow_txt_title)
         adapter()
         mViewModel.getAnchorPageList(true)
-
+        mDatabind.smartCommon.setRefreshHeader( CustomHeader(this))
         mDatabind.smartCommon.setOnRefreshLoadMoreListener(object : OnRefreshLoadMoreListener {
             override fun onRefresh(refreshLayout: RefreshLayout) {
                 mViewModel.getAnchorPageList(true)

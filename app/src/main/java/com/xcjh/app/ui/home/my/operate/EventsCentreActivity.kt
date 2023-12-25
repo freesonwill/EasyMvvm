@@ -18,6 +18,7 @@ import com.xcjh.app.databinding.ActivitySearchBinding
 import com.xcjh.app.databinding.ItemEventsCentreBinding
 import com.xcjh.app.databinding.ItemNewsListBinding
 import com.xcjh.app.ui.search.SearchVm
+import com.xcjh.app.view.CustomHeader
 import com.xcjh.app.web.WebActivity
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.dp2px
@@ -39,6 +40,7 @@ class EventsCentreActivity : BaseActivity<EventsCentreVm, ActivityEventsCentreBi
         mDatabind.titleTop.tvTitle.text=resources.getString(R.string.events_txt_title)
         adapter()
         mViewModel.getEventsList(true)
+        mDatabind.smartCommon.setRefreshHeader( CustomHeader(this))
         mDatabind.smartCommon.setOnRefreshLoadMoreListener(object : OnRefreshLoadMoreListener {
             override fun onRefresh(refreshLayout: RefreshLayout) {
                 mViewModel.getEventsList(true)
