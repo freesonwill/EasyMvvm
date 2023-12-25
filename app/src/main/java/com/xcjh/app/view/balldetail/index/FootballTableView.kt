@@ -12,6 +12,7 @@ import com.xcjh.app.R
 import com.xcjh.app.bean.OddsDetailBean
 import com.xcjh.app.databinding.ItemDetailTableBinding
 import com.xcjh.app.databinding.LayoutEmptyBinding
+import com.xcjh.app.utils.setEmpty
 import com.xcjh.base_lib.utils.view.visibleOrGone
 
 class FootballTableView : LinearLayout {
@@ -41,8 +42,7 @@ class FootballTableView : LinearLayout {
     fun setData(list: ArrayList<OddsDetailBean>?) {
         layout!!.removeAllViews()
         if (list == null || list.size == 0) {
-            val binding = LayoutEmptyBinding.inflate(LayoutInflater.from(context), this, false)
-            layout?.addView(binding.root)
+            layout?.addView(setEmpty(context, isCenter = false, marginT = 32, marginB = 52))
             return
         }
         for ((i, it) in list.withIndex()) {

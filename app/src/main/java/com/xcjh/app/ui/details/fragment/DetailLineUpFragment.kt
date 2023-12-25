@@ -36,7 +36,7 @@ class DetailLineUpFragment(var match: MatchDetailBean) :
             mDatabind.magicIndicator.setBackgroundResource(R.drawable.round_indicator_bg)
             mDatabind.magicIndicator.bindBgViewPager2(
                 mDatabind.viewPager,
-                arrayListOf(match.homeName?:"", match.awayName?:""),
+                arrayListOf(match.awayName?:"", match.homeName?:""),
                 selectSize = 13f,
                 unSelectSize = 13f,
                 selectColor = com.xcjh.base_lib.R.color.white,

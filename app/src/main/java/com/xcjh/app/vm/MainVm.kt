@@ -1,5 +1,6 @@
 package com.xcjh.app.vm
 
+import androidx.lifecycle.viewModelScope
 import com.kunminx.architecture.ui.callback.UnPeekLiveData
 import com.xcjh.app.appViewModel
 import com.xcjh.app.bean.*
@@ -12,11 +13,21 @@ import com.xcjh.base_lib.bean.ListDataUiState
 import com.xcjh.base_lib.callback.livedata.BooleanLiveData
 import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.request
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 class MainVm : BaseViewModel() {
 
+    private var dataLoaded: Boolean = false
 
+    fun mockDataLoading(): Boolean {
+        viewModelScope.launch {
+            delay(2500)
+            dataLoaded = true
+        }
+        return dataLoaded
+    }
     var update = UnPeekLiveData<AppUpdateBean>()
 
     //新闻详情

@@ -57,13 +57,13 @@ fun getMatchStatusStr(matchType: String, status: Int): String {
         return when (status) {
             0 -> "比赛异常"//此处可以隐藏处理，看UI设计
             1 -> "未开赛"
-            2 -> "上半场"
+            2 -> "比赛中"//"上半场"
             3 -> "中场"
-            4 -> "下半场"
+            4 -> "比赛中"//"下半场"
             5 -> "加时赛"
             6 -> "加时赛"
             7 -> "点球决战"
-            8 -> "已结束"
+            8 -> "已完赛"
             9 -> "推迟"
             10 -> "中断"
             11 -> "腰斩"
@@ -86,7 +86,7 @@ fun getMatchStatusStr(matchType: String, status: Int): String {
             7 -> "第三节完"
             8 -> "第四节"
             9 -> "加时"*/
-            10 -> "已结束"
+            10 -> "已完赛"
             11 -> "中断"
             12 -> "取消"
             13 -> "延期"
@@ -280,4 +280,14 @@ fun hasNavigationBar(view: View): Boolean {
         ).bottom > 0
     }
     return false
+}
+fun setProgressValue(progress: Int): Int {
+
+    var p = progress
+    if (progress < 20) {
+        p = 20
+    } else if (progress > 80) {
+        p = 80
+    }
+    return p
 }

@@ -57,7 +57,16 @@ class DetailAnchorFragment(
 
             }
         }
-
+        vm.isfocus.observe(this) {
+            if (it) {
+                mDatabind.tvDetailTabAnchorFans.text = mDatabind.tvDetailTabAnchorFans.text.toString().toInt().plus(1).toString() //主播粉丝数量
+            }
+        }
+        vm.isUnFocus.observe(this) {
+            if (it) {
+                mDatabind.tvDetailTabAnchorFans.text = mDatabind.tvDetailTabAnchorFans.text.toString().toInt().minus(1).toString()
+            }
+        }
         vm.anchorInfo.observe(this) {
             updateInfo(it.userId)
         }

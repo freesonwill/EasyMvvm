@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide
 import com.xcjh.app.R
 import com.xcjh.app.bean.BasketballSBean
 import com.xcjh.app.utils.myDivide
+import com.xcjh.app.utils.setProgressValue
 import com.xcjh.app.view.ProgressBarView
 import kotlin.math.roundToInt
 
@@ -140,75 +141,22 @@ class BasketballDataView : RelativeLayout {
             tvPenaltyAway.text = (1 * penaltyHit).toString()
         }
         //===============命中率===============
-        if (homeV2 == 0 && awayV2 == 0) {
-            pgTwoPercent.progress = 50
-        } else {
-            if (awayV2 == 0) {
-                pgTwoPercent.progress = 0
-            } else if (homeV2 == 0) {
-                pgTwoPercent.progress = 100
-            } else {
-                pgTwoPercent.progress = awayV2 * 100 / (homeV2 + awayV2)
-            }
-        }
+        pgTwoPercent.progress= getProgress(homeV2,awayV2)
+        pgThreePercent.progress= getProgress(homeV3,awayV3)
+        pgFqPercent.progress= getProgress(homeP,awayP)
 
-        if (homeV3 == 0 && awayV3 == 0) {
-            pgThreePercent.progress = 50
-        } else {
-            if (awayV3 == 0) {
-                pgThreePercent.progress = 0
-            } else if (homeV3 == 0) {
-                pgThreePercent.progress = 100
-            } else {
-                pgThreePercent.progress = awayV3 * 100 / (homeV3 + awayV3)
-            }
-        }
-        if (homeP == 0 && awayP == 0) {
-            pgFqPercent.progress = 50
-        } else {
-            if (awayP == 0) {
-                pgFqPercent.progress = 0
-            } else if (homeP == 0) {
-                pgFqPercent.progress = 100
-            } else {
-                pgFqPercent.progress = awayP * 100 / (homeP + awayP)
-            }
-        }
         ////=========比分========
-        if (bean.home.hit2 == 0 && bean.away.hit2 == 0) {
-            pro_two_point.progress = 50
-        } else {
-            if (bean.away.hit2 == 0) {
-                pro_two_point.progress = 0
-            } else if (bean.home.hit2 == 0) {
-                pro_two_point.progress = 100
-            } else {
-                pro_two_point.progress = bean.away.hit2 * 100 / (bean.home.hit2 + bean.away.hit2)
-            }
-        }
-        if (bean.home.hit3 == 0 && bean.away.hit3 == 0) {
-            pro_three_point.progress = 50
-        } else {
-            if (bean.away.hit3 == 0) {
-                pro_three_point.progress = 0
-            } else if (bean.home.hit3 == 0) {
-                pro_three_point.progress = 100
-            } else {
-                pro_three_point.progress = bean.away.hit3 * 100 / (bean.home.hit3 + bean.away.hit3)
-            }
-        }
-        if (bean.home.penaltyHit == 0 && bean.away.penaltyHit == 0) {
-            pro_penalty.progress = 50
-        } else {
-            if (bean.away.penaltyHit == 0) {
-                pro_penalty.progress = 0
-            } else if (bean.home.penaltyHit == 0) {
-                pro_penalty.progress = 100
-            } else {
-                pro_penalty.progress =
-                    bean.away.penaltyHit * 100 / (bean.home.penaltyHit + bean.away.penaltyHit)
-            }
-        }
+        pro_two_point.progress= getProgress(bean.home.hit2,bean.away.hit2)
+        pro_three_point.progress= getProgress(bean.home.hit3,bean.away.hit3)
+        pro_penalty.progress= getProgress(bean.home.penaltyHit,bean.away.penaltyHit)
 
     }
+
+    /**
+     * 客队分母
+     */
+    private fun getProgress(home:Int,away:Int):Int {
+       return setProgressValue( if (home == away && home == 0) 50 else away * 100 / (home + away))
+    }
+
 }

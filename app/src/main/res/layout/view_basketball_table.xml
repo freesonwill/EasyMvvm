@@ -50,7 +50,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
-                    android:maxLines="2"
+                    android:maxLines="1"
                     android:textColor="@color/c_d7d7e7"
                     android:textSize="@dimen/sp_12"
                     android:textStyle="bold" />
@@ -82,7 +82,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
-                    android:maxLines="2"
+                    android:maxLines="1"
                     android:textColor="@color/c_d7d7e7"
                     android:textSize="@dimen/sp_12"
                     android:textStyle="bold" />

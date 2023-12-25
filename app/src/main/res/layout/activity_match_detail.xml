@@ -453,6 +453,7 @@
                         android:id="@+id/rltTop"
                         android:layout_width="match_parent"
                         android:gravity="center_vertical"
+                        android:background="@drawable/shape_gradient_detail_top"
                         android:layout_height="44dp">
                         <!--返回键 一直显示-->
                         <ImageView
