@@ -28,7 +28,7 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
     var hasData = false
     var isVisble = false
     var calendarTime: String = ""
-    var mTabPosition = 0
+    var currentCount= 0
     var mOneTabIndex = 0
     var mTwoTabIndex = 0
     private lateinit var parentFragment: ScheduleFragment
@@ -109,6 +109,7 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
 
+                currentCount=position
                 if (parentFragment != null) {
                     var bean = CurrentIndex()
                     bean.currtOne = parentFragment!!.getCurrentIndex()
@@ -131,6 +132,7 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
         setOnclickNoRepeat(mDatabind.ivMeau) {
             when (it.id) {
                 R.id.iv_meau -> {
+                    calendarTime=  (mFragments[currentCount] as ScheduleChildTwoFragment).getCanleTime()
                     bottomDilog = XPBottomPopu(requireActivity())
                     var popwindow = XPopup.Builder(context)
                         .hasShadowBg(true)

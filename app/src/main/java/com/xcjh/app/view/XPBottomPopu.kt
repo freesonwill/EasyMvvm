@@ -32,6 +32,7 @@ class XPBottomPopu(context: Context) : BottomPopupView(context) {
     var type = ""
     var maxTime = ""
     var minTime = ""
+    var calendarTime = ""
     var listre: OnChooseDateListener? = null
     val calendar = java.util.Calendar.getInstance()
     val currentYear = calendar[java.util.Calendar.YEAR]
@@ -41,8 +42,9 @@ class XPBottomPopu(context: Context) : BottomPopupView(context) {
 
 
     @RequiresApi(Build.VERSION_CODES.N)
-    fun setOnLister(time: String, type: String, mlistre: OnChooseDateListener) {
+    fun setOnLister(mcalendarTime: String, type: String, mlistre: OnChooseDateListener) {
         listre = mlistre
+        calendarTime=mcalendarTime
         if (type != "3") {
             minTime = currentTime
             maxTime = TimeUtil.getMyCurrentDay(currentTime, 30)!!
@@ -52,6 +54,7 @@ class XPBottomPopu(context: Context) : BottomPopupView(context) {
             minTime = TimeUtil.getMyCurrentDay(currentTime, -30)!!
 
         }
+
         println("你得到的日期是maxTime=$maxTime  minTime=$minTime")
     }
 
@@ -66,7 +69,11 @@ class XPBottomPopu(context: Context) : BottomPopupView(context) {
 
         val startValue = DateEntity.target(currentYear - 5, 1, 1)
         val endValue = DateEntity.target(currentYear + 5, 12, 31)
-        val defaultValue = DateEntity.target(currentYear, currentMonth, currentDay)
+        var defaultValue = DateEntity.target(currentYear, currentMonth, currentDay)
+        if (calendarTime!=null&&calendarTime.isNotEmpty()){
+            defaultValue=DateEntity.target(calendarTime.substring(0,4).toInt(),
+                calendarTime.substring(5,7).toInt(), calendarTime.substring(8,calendarTime.length).toInt())
+        }
         dateTimePickerView?.yearWheelView?.curtainCorner = CurtainCorner.LEFT
         dateTimePickerView?.monthWheelView?.curtainCorner = CurtainCorner.NONE
         dateTimePickerView?.dayWheelView?.curtainCorner = CurtainCorner.RIGHT

@@ -1,9 +1,11 @@
 package com.xcjh.app.ui.home.msg
 
 import com.kunminx.architecture.ui.callback.UnPeekLiveData
+import com.xcjh.app.appViewModel
 import com.xcjh.app.bean.*
 import com.xcjh.app.net.apiService
 import com.xcjh.app.ui.room.MsgListNewData
+import com.xcjh.app.utils.CacheUtil
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.Constants.Companion.BASE_PAGE_SIZE
 import com.xcjh.base_lib.base.BaseViewModel
@@ -20,8 +22,26 @@ class MsgVm : BaseViewModel() {
     var frendList = UnPeekLiveData<ListDataUiState<FriendListBean>>()
     var clreaMsg = UnPeekLiveData<Boolean>()
     var delMsg = UnPeekLiveData<Boolean>()
+    var upUserInfo = UnPeekLiveData<Boolean>()
     var clreaAllMsg = UnPeekLiveData<Boolean>()
     var unNoticeFri = UnPeekLiveData<Boolean>()
+    /**
+     * 获取用户信息
+     */
+    fun getUserInfo() {
+        request(
+            { apiService.getUserBaseInfo() },
+            {
+
+                CacheUtil.setUser(it)
+                Constants.ISSTOP_TALK = it.ynForbidden!!
+                appViewModel.userInfo.value = it
+                upUserInfo.value=true
+            }, {
+                upUserInfo.value=false
+            }
+        )
+    }
     fun getNoticeUser() {//测试用
         request({
             apiService.getNoticeUser("1694272771701133312")

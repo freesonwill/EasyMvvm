@@ -12,14 +12,14 @@ import androidx.room.Update
 
 @Dao
 interface ChatListDao {
-    @Query("SELECT * FROM chat_listdb ORDER BY createTime DESC")
-    fun getAll(): List<MsgListNewData>
+    @Query("SELECT * FROM chat_listdb WHERE withId = :id ORDER BY createTime DESC")
+    fun getAll(id:String): List<MsgListNewData>
 
     @Query("SELECT * FROM chat_listdb WHERE anchorId = :id LIMIT 1")
     fun findMessagesById(id: String): MsgListNewData
     @Transaction
     fun insertOrUpdate(message: MsgListNewData) {
-        val data = getAll()
+
         val oldMessage = findMessagesById(message.anchorId!!)
         Log.d("MessageDao", "oldMessage: $oldMessage")
 
@@ -27,7 +27,7 @@ interface ChatListDao {
 
             message.idd=oldMessage.idd
             update(message)
-            val data = getAll()
+
             Log.d("MessageDao", "Updating message...")
         } else {
             Log.d("MessageDao", "Inserting new message...")

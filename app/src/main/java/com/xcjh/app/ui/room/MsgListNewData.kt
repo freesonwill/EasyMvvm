@@ -25,6 +25,8 @@ class MsgListNewData {
     var sent: Int? = 0//是否已发送: 0 正在发送 1 已发送 2 发送失败
     @ColumnInfo(name = "anchorId")
     var anchorId: String? = null
+    @ColumnInfo(name = "withId")
+    var withId: String? = null
     @ColumnInfo(name = "sendId")
     var sendId: String? = "0" //消息唯一性，用来判断回调
     @ColumnInfo(name = "id")
