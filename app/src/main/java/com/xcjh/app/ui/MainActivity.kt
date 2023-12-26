@@ -365,16 +365,9 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
             )
         )
         mDatabind.viewPager.setCurrentItem(pos, false)
-            mDatabind.ivHomeMy.setImageDrawable(
-                ContextCompat.getDrawable(
-                    this,
-                    R.drawable.tab_wode_select
-                )
-            )
-        }
-        mDatabind.viewPager.setCurrentItem(page, false)
 
-    }
+        }
+
 
     fun showDialog(beingLiveBean: BeingLiveBean) {
         var pushCardPopup = PushCardPopup(this, beingLiveBean)
@@ -443,7 +436,7 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
             vibrator.vibrate(100)
         }
     }
-    public override fun onStart() {
+     override fun onStart() {
         super.onStart()
     }
 
@@ -462,7 +455,7 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         }
     }
 
-    public override fun onDestroy() {
+      override fun onDestroy() {
         //MyWsManager.getInstance(this)?.stopService()
         // 销毁 Timer 对象
         if (timer != null) {
