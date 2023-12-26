@@ -355,7 +355,7 @@
     <string name="head_finish">加载完成</string>
     <string name="head_failed">加载失败</string>
     <string name="head_update">上次加载 M-d HH:mm</string>
-    <string name="no_chat_t">您已被禁言</string>
+    <string name="no_chat_t">你已被禁言</string>
     <string name="close_win_p">封</string>
     <string name="home_txt_overtime">加时</string>
     <string name="my_txt_common">常用功能</string>

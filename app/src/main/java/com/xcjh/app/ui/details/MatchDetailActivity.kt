@@ -245,27 +245,42 @@ class MatchDetailActivity :
                                 playUrl = bean.playUrl,
                                 hotValue = bean.hotValue.toString()
                             )
+                            anchor?.apply {
+                                userId = bean.id?:""
+                                nickName = bean.nickName?:""
+                                playUrl = bean.playUrl?:""
+                            }
                             matchDetail.anchorList?.forEach {
                                 if (it.userId == bean.anchorId) {
                                     it.isOpen = true
                                     it.playUrl = bean.playUrl
                                 }
-
                             }
                             if (isTopActivity(this@MatchDetailActivity) && !isPause) {
                                 startVideo(bean.playUrl)
                             }
                         } else {
                             //增加主播
-                            matchDetail.anchorList?.add(
-                                AnchorListBean(
-                                    liveId = bean.id,
-                                    userId = bean.anchorId,
-                                    nickName = bean.nickName,
-                                    playUrl = bean.playUrl,
-                                    hotValue = bean.hotValue.toString()
+                            var add = true
+                            matchDetail.anchorList?.forEach {
+                                if (it.userId == bean.anchorId) {
+                                    //在列表中 不用添加
+                                    it.playUrl = bean.playUrl
+                                    add = false
+                                }
+                            }
+                            //在列表中没找到就添加
+                            if (add){
+                                matchDetail.anchorList?.add(
+                                    AnchorListBean(
+                                        liveId = bean.id,
+                                        userId = bean.anchorId,
+                                        nickName = bean.nickName,
+                                        playUrl = bean.playUrl,
+                                        hotValue = bean.hotValue.toString()
+                                    )
                                 )
-                            )
+                            }
                             matchDetail.anchorList?.sortByDescending {
                                 it.hotValue
                             }
@@ -447,7 +462,7 @@ class MatchDetailActivity :
         //赛事名字和比赛时间
         mDatabind.tvCompetitionName.text = matchDetail.competitionName
         mDatabind.tvMatchTime.text =
-            TimeUtil.timeStamp2Date(matchDetail.matchTime.toLong(), "yyyy-MM-dd HH:mm")
+            TimeUtil.timeStamp2Date(matchDetail.matchTime.toLong(), "MM-dd HH:mm")
         needWsToUpdateUI()
     }
 
@@ -599,8 +614,14 @@ class MatchDetailActivity :
         //主播详情接口返回监听处理
         mViewModel.anchor.observe(this) {
             if (it != null) {
+                anchor?.apply {
+                    userId = it.id?:""
+                    nickName = it.nickName?:""
+                    userLogo = it.head?:""
+                }
                 this.anchorId = it.id
                 setFocusUI(it.focus)
+                setAnchorUI()
             }
         }
         mViewModel.isfocus.observe(this) {

@@ -20,7 +20,9 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="97"
-                android:gravity="center"
+                android:gravity="center_vertical"
+                android:paddingStart="@dimen/dp_12"
+                android:paddingEnd="@dimen/dp_10"
                 android:text="@string/company"
                 android:textColor="@color/c_F5F5F5"
                 android:textSize="@dimen/sp_12" />
