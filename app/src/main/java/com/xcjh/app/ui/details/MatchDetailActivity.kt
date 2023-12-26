@@ -431,7 +431,7 @@ class MatchDetailActivity :
 
             }
         } else {
-            myToast("no data")
+            myToast("no data",isDeep=true)
         }
     }
 

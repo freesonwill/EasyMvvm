@@ -140,7 +140,11 @@ class DetailChatFragment(
             emptyHint.text = "暂无聊天内容"
         }
         mDatabind.smartChat.setOnRefreshListener {
-            mViewModel.getHisMsgList(liveId, offset)
+            if (!mDatabind.rcvChat.models.isNullOrEmpty() && offset.isEmpty()){
+                mDatabind.smartChat.finishRefresh(1000)
+            }else{
+                mViewModel.getHisMsgList(liveId, offset)
+            }
         }
         mDatabind.rcvChat.apply {
             layoutManager = mLayoutManager
@@ -430,6 +434,7 @@ class DetailChatFragment(
         if (chat.groupId != liveId) {
             return
         }
+        mDatabind.smartChat.showContent()
         mDatabind.rcvChat.models?.apply {
             if (this.size > 3 && lastVisible < 1) {
                 isShowBottom = true

@@ -68,7 +68,7 @@ class DetailVm : BaseViewModel() {
                 getScrollTextList()
                 getShowAd()
             }, {
-                myToast(it.errorMsg)
+                myToast(it.errorMsg,isDeep=true)
             }, showD
         )
     }
