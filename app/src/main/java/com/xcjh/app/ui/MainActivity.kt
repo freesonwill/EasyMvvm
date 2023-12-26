@@ -111,7 +111,7 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
 
         setOnclickNoRepeat(
             mDatabind.llHomeSelectMain, mDatabind.llHomeSelectSchedule,
-            mDatabind.llHomeSelectMsg, mDatabind.llHomeSelectMine
+            mDatabind.llHomeSelectMsg, mDatabind.llHomeSelectMine,interval=200
         ) {
             when (it.id) {
                 R.id.llHomeSelectMain -> {
