@@ -160,6 +160,10 @@ class MyWsManager private constructor(private val mContext: Context) {
         if (wsBean?.command == 33) {
             Constants.ISSTOP_TALK = "0"
         }
+        if (wsBean?.code == "10114") {
+            myToast(appContext.getString(R.string.no_chat_t),"",true)
+            return
+        }
         when (wsBean?.command) {
             6 -> {
                 mLoginOrOutListener.forEach {

@@ -4,6 +4,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.ViewModelProvider
 import com.xcjh.base_lib.base.BaseViewModel
@@ -28,13 +29,13 @@ abstract class BaseVmActivity<VM : BaseViewModel> : AppCompatActivity() {
     abstract fun showLoading(message: String = "请求网络中...")
 
     abstract fun dismissLoading()
-
+    lateinit var  splashScreen: SplashScreen
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S){
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S){
             installSplashScreen()
-        }
-        installSplashScreen()
+        }*/
+        splashScreen = installSplashScreen()
         initDataBind().notNull({
             setContentView(it)
         }, {

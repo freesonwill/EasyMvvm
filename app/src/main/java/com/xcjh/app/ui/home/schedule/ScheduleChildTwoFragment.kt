@@ -105,7 +105,10 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
         }
     }
 
-
+    fun getCanleTime(): String {
+        // 子 Fragment 的逻辑操作
+        return calendarTime
+    }
     fun initTime() {
         LogUtils.d("本页面tabname=$tabName")
         strTime = TimeUtil.gettimenowYear().toString()
@@ -974,7 +977,6 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                     mCurrentTwoTabIndex = it.currtTwo
                     if (isResh && mCurrentOneTabIndex == mOneTabIndex && mCurrentTwoTabIndex == mTwoTabIndex) {
                         isVisble = true
-                        calendarTime = ""
                         isResh = false
                         mDatabind.smartCommon.autoRefresh()
                     } else {

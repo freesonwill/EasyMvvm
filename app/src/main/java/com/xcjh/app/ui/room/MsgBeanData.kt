@@ -22,6 +22,8 @@ class MsgBeanData {
     var cmd: Int? = 0
     @ColumnInfo(name = "anchorId")
     var anchorId: String? = ""//主播ID
+    @ColumnInfo(name = "withId")
+    var withId: String? = null
     @ColumnInfo(name = "createTime")
     var createTime: Long? = 0
     @ColumnInfo(name = "creator")

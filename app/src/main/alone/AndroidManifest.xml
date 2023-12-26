@@ -61,7 +61,7 @@
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@drawable/app_logo"
         android:supportsRtl="true"
-        android:theme="@style/ChatAppTheme"
+        android:theme="@style/App.Theme"
         android:usesCleartextTraffic="true"
         tools:replace="android:allowBackup">
         <!-- android:noHistory="true" 有广告时使用-->
@@ -70,14 +70,14 @@
             android:exported="true"
             android:noHistory="true"
             android:screenOrientation="portrait"
-            android:theme="@style/ChatStarting">
+            android:theme="@style/Theme.Starting">
 
         </activity>
         <activity
             android:name=".ui.MainActivity"
             android:exported="true"
             android:launchMode="singleTask"
-            android:theme="@style/ChatStarting"
+            android:theme="@style/Theme.Starting"
             android:screenOrientation="portrait">
 
             <intent-filter>

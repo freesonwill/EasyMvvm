@@ -47,7 +47,7 @@ class MsFriendFragment : BaseFragment<MsgVm, FrMsgfriendBinding>() {
     override fun initView(savedInstanceState: Bundle?) {
         mDatabind.rec.run {
             vertical()
-            distance(0, 0, 0, 16)
+            distance(0, 0, 0, 0)
         }
         mDatabind.state.apply {
             StateConfig.setRetryIds(R.id.ivEmptyIcon, R.id.txtEmptyName)

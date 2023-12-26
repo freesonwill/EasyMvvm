@@ -529,8 +529,6 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
 //                            })
 
 
-
-
                         Glide.with(this@ChatActivity).load(userhead)
                             .placeholder(R.drawable.default_anchor_icon).into(binding.ivhead)
                         binding.ivpic.setOnClickListener {
@@ -706,7 +704,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
             }
 
             override fun onC2CReceive(chat: ReceiveChatMsg) {
-                mViewModel.clearMsg(userId)
+                // mViewModel.clearMsg(userId)
                 mDatabind.state.showContent()
                 if (chat.from == userId) {//收到消息
                     var beanmy: MsgBeanData = MsgBeanData()
@@ -761,8 +759,13 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
 
     fun getAllData() {
         GlobalScope.launch {
-            val data = seacherData(userId).await()
+            val data = seacherData().await()
             if (data.size > 0) {
+                for (i in 0 until data.size) {
+                    if (data[i].sent == 0) {
+                        data[i].sent = 1
+                    }
+                }
                 LogUtils.d("私聊有数据缓存")
                 listdata.addAll(data)
                 mDatabind.state.showContent()
@@ -927,24 +930,6 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
 
     }
 
-    private suspend fun waitAddData(it: MutableList<MsgBeanData>): String {
-        coroutineScope {
-            for (data in it) {
-                val foundData = listdata.find { it.id == data.id }
-                if (foundData == null) {
-                    data?.let { it1 ->
-                        if (it1.sendId == "0") {
-                            it1.sendId = userId + it1.createTime
-                        }
-                        MyApplication.dataBase!!.chatDao?.insertOrUpdate(data)
-                    }
-                }
-            }
-        }
-
-        return ""
-    }
-
 
     fun sendMsg(sendid: String, isSend: Boolean) {
         if (Constants.ISSTOP_TALK != "0") {
@@ -1031,16 +1016,20 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
      */
     fun addDataToList(data: MsgBeanData) {
         LogUtils.d("嘿嘿开始添加数据")
-        GlobalScope.launch {
-            MyApplication.dataBase!!.chatDao?.insertOrUpdate(data)
+        if (CacheUtil.getUser() != null) {
+            data.withId = CacheUtil.getUser()?.id!!
+            GlobalScope.launch {
+                MyApplication.dataBase!!.chatDao?.insertOrUpdate(data)
 
 
+            }
         }
     }
 
-    fun seacherData(id: String): Deferred<MutableList<MsgBeanData>> {
+    fun seacherData(): Deferred<MutableList<MsgBeanData>> {
         return GlobalScope.async {
-            MyApplication.dataBase!!.chatDao?.getMessagesByName(id)!!
+
+            MyApplication.dataBase!!.chatDao?.getMessagesByName(userId, CacheUtil.getUser()?.id!!)!!
         }
     }
 

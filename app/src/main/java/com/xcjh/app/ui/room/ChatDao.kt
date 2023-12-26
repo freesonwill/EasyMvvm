@@ -16,8 +16,8 @@ import com.xcjh.base_lib.utils.LogUtils
 @Dao
 interface ChatDao {
     //    @Query("select * from chat_db order by [id] desc  limit  :start,:count ")
-    @Query("SELECT * FROM chat_db WHERE anchorId = :anchorId ORDER BY createTime DESC")
-    fun getMessagesByName(anchorId: String): MutableList<MsgBeanData >
+    @Query("SELECT * FROM chat_db WHERE anchorId = :anchorId AND  withId = :id ORDER BY createTime DESC")
+    fun getMessagesByName(anchorId: String,id: String): MutableList<MsgBeanData >
 
     @Query("SELECT * FROM chat_db WHERE sendId = :sendId LIMIT 1")
     fun findMessagesById(sendId: String): MsgBeanData
@@ -37,8 +37,7 @@ interface ChatDao {
             LogUtils.d("私聊增加一条数据"+ JSONObject.toJSONString(message))
             insert(message)
         }
-        val Message = getMessagesByName(message.anchorId!!)!!
-        LogUtils.d("一条数据"+Message)
+
     }
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(message: MsgBeanData)

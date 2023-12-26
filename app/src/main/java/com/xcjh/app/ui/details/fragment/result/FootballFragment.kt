@@ -1,24 +1,19 @@
 package com.xcjh.app.ui.details.fragment.result
 
 import android.os.Bundle
-import android.view.LayoutInflater
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import androidx.lifecycle.ViewModelProvider
-import com.drake.brv.utils.linear
-import com.drake.brv.utils.models
-import com.drake.brv.utils.setup
 import com.xcjh.app.R
 import com.xcjh.app.adapter.ImportEventAdapter
 import com.xcjh.app.adapter.TextLiveAdapter
 import com.xcjh.app.base.BaseFragment
 import com.xcjh.app.bean.IncidentsBean
 import com.xcjh.app.bean.MatchDetailBean
-import com.xcjh.app.bean.MsgBean
-import com.xcjh.app.bean.NoticeBean
-import com.xcjh.app.bean.OddsDetailBean
-import com.xcjh.app.databinding.FragmentDetailTabIndexTab1Binding
 import com.xcjh.app.databinding.FragmentDetailTabResultTab1Binding
-import com.xcjh.app.databinding.LayoutEmptyBinding
 import com.xcjh.app.ui.details.DetailVm
+import com.xcjh.app.utils.nice.Utils.dp2px
+import com.xcjh.app.utils.setEmpty
 import com.xcjh.base_lib.utils.distance
 import com.xcjh.base_lib.utils.vertical
 import com.xcjh.base_lib.utils.view.visibleOrGone
@@ -94,8 +89,7 @@ class FootballFragment(var type: Int = 0, private var match: MatchDetailBean) :
             } else {
                 eventAdapter.submitList(null)
                 eventAdapter.isEmptyViewEnable = true
-                eventAdapter.emptyView =
-                    LayoutEmptyBinding.inflate(LayoutInflater.from(context), null, false).root
+                eventAdapter.emptyView = setEmpty(requireContext(), isCenter = false, marginT = 32, marginB = 52)
             }
         }
     }

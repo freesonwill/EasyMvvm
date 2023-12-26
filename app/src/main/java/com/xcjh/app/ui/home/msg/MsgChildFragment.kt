@@ -189,7 +189,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
         }.models = listdata
         (mDatabind.rec.itemAnimator as SimpleItemAnimator).supportsChangeAnimations =
             false//防止item刷新的时候闪烁
-        mDatabind.smartCommon.setRefreshHeader( CustomHeader(requireContext()))
+        mDatabind.smartCommon.setRefreshHeader(CustomHeader(requireContext()))
         mDatabind.state.apply {
             StateConfig.setRetryIds(R.id.ivEmptyIcon, R.id.txtEmptyName)
             onEmpty {
@@ -200,54 +200,33 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                 this.findViewById<ImageView>(R.id.ivEmptyIcon).setOnClickListener { }
             }
         }
-
+        mDatabind.smartCommon.setOnRefreshListener {
+            getRoomAllData()
+            mViewModel.getMsgList(true, "")
+        }.setOnLoadMoreListener {
+            mViewModel.getMsgList(false, "")
+        }
 
         if (CacheUtil.isLogin()) {
             getRoomAllData()
             mViewModel.getMsgList(true, "")
-            mDatabind.smartCommon.setOnRefreshListener {
 
-                getRoomAllData()
-                mViewModel.getMsgList(true, "")
-            }.setOnLoadMoreListener {
-                mViewModel.getMsgList(false, "")
-            }
-            initEvent()
+
         }
+        initEvent()
         //登录或者登出
         appViewModel.updateLoginEvent.observe(this) {
             if (it) {
-                getRoomAllData()
-                mViewModel.getMsgList(true, "")
-                mDatabind.smartCommon.setOnRefreshListener {
-                    getRoomAllData()
-                    mViewModel.getMsgList(true, "")
-                }.setOnLoadMoreListener {
-                    mViewModel.getMsgList(false, "")
-                }
-                initEvent()
+                mViewModel.getUserInfo()
+
+                // initEvent()
             } else {
                 // MyWsManager.getInstance(requireActivity())!!.removeC2CListener(tags)
                 listdata.clear()
                 mDatabind.rec.models = mutableListOf()
 
                 initNoreadMsg(listdata)
-                GlobalScope.launch {
-                    val data = getAll().await()
 
-                    if (data.isNotEmpty()) {
-                        for (i in data.indices) {
-                            var bean =
-                                MyApplication.dataChatList!!.chatDao?.findMessagesById(data[i].anchorId!!)
-                            data[i].idd = bean!!.idd
-                            //删除会显示在聊天列表的记录数据
-                            MyApplication.dataChatList!!.chatDao?.delete(data[i])
-                            //删除跟这个主播相关的连天记录
-                            MyApplication.dataBase!!.chatDao?.deleteAllZeroId(data[i].anchorId!!)
-                        }
-
-                    }
-                }
             }
         }
 
@@ -273,6 +252,10 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
     }
 
     fun getRoomAllData() {
+        if (CacheUtil.getUser() == null) {
+            mViewModel.getUserInfo()
+            return
+        }
         GlobalScope.launch {
             val data = getAll().await()
 
@@ -437,6 +420,11 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
 
     override fun createObserver() {
 
+        mViewModel.upUserInfo.observe(this) {
+            getRoomAllData()
+            mViewModel.getMsgList(true, "")
+
+        }
         mViewModel.msgList.observe(this) {
             LogUtils.d("拿到消息")
             if (it.isSuccess) {
@@ -446,11 +434,12 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                         val foundData = listdata.find { it.anchorId == data.anchorId }
                         if (foundData == null) {
                             data?.let { it1 ->
-                                if (it1.sendId == "0") {
-                                    it1.sendId = data.anchorId + it1.createTime
+                                if (it1.noReadSum > 0) {
+                                    if (it1.sendId == "0") {
+                                        it1.sendId = data.anchorId + it1.createTime
+                                    }
+                                    updataMsg(data)
                                 }
-                                updataMsg(data)
-
                             }
                         } else {
                             if (data.noReadSum > listdata[index].noReadSum) {
@@ -582,7 +571,8 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
      */
     fun getAll(): Deferred<List<MsgListNewData>> {
         return GlobalScope.async {
-            MyApplication.dataChatList!!.chatDao!!.getAll()
+
+            MyApplication.dataChatList!!.chatDao!!.getAll(CacheUtil.getUser()?.id!!)
         }
     }
 
@@ -591,10 +581,11 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
      */
     fun addDataToChatList(data: MsgBeanData) {
         LogUtils.d("嘿嘿开始添加数据")
-        GlobalScope.launch {
-            MyApplication.dataBase!!.chatDao?.insertOrUpdate(data)
-
-
+        if (CacheUtil.getUser() != null) {
+            data.withId = CacheUtil.getUser()?.id!!
+            GlobalScope.launch {
+                MyApplication.dataBase!!.chatDao?.insertOrUpdate(data)
+            }
         }
     }
 
@@ -602,6 +593,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
      * 添加或者更新新的数据
      */
     fun addDataToList(data: MsgListNewData) {
+        data.withId = CacheUtil.getUser()?.id!!
         GlobalScope.launch {
             MyApplication.dataChatList!!.chatDao?.insertOrUpdate(data)
 
@@ -629,4 +621,13 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
         }
     }
 
+    /***
+     * 添加或者更新新的数据
+     */
+    fun delAllRoom() {
+        GlobalScope.launch {
+            MyApplication.dataChatList!!.clearAllTables()
+            MyApplication.dataBase!!.clearAllTables()
+        }
+    }
 }
