@@ -73,12 +73,15 @@ class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
             .setWebChromeClient(object : WebChromeClient() {
                 override fun onProgressChanged(view: WebView?, newProgress: Int) {
                     super.onProgressChanged(view, newProgress)
+
+
                 }
             })
             .setWebViewClient(object : com.just.agentweb.WebViewClient() {
                 override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                     super.onPageStarted(view, url, favicon)
                     Log.e("TAG", "===-----onPageStarted------ $url")
+
                 }
 
                 override fun onReceivedError(
@@ -135,12 +138,10 @@ class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
         // 设置加载中背景色为灰色
         webView.setBackgroundColor(ContextCompat.getColor(this, R.color.c_ffffff))
         // 禁止缩放
-        webSettings.setSupportZoom(false)//设置可以支持缩放
-        webSettings.builtInZoomControls = false//设置出现缩放工具
-        webSettings.useWideViewPort = false//扩大比例的缩放
-        webSettings.displayZoomControls = false//隐藏缩放控件
-
-
+//        webSettings.setSupportZoom(false)//设置可以支持缩放
+//        webSettings.builtInZoomControls = false//设置出现缩放工具
+//        webSettings.useWideViewPort = false//扩大比例的缩放
+//        webSettings.displayZoomControls = false//隐藏缩放控件
 
          if(type==0){
             agentWeb.urlLoader.loadUrl(url)
@@ -205,7 +206,7 @@ class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
 
         //获取到活动网页详情
         mViewModel.events.observe(this){
-            var sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+            var sdf = SimpleDateFormat("yyyy-MM-dd HH:mm")
             var dateTimeString:String=""
             var title:String=""
             title="<p style=\" color: #37373D; font-size: 18px; font-weight: bold;\">${it.title}</p>"
@@ -214,7 +215,7 @@ class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
                 title +=   "<div style=\" display: flex; align-items: center;\"> " +
                         "<div style=\"display: flex; align-items: center;\">" +
                         "<img src=\"file:///android_asset/football.png\"  alt=\"Example\" width=\"20px\" height=\"2px\"  >" +
-                        " <h4 style=\"font-size: 12px; color: #575762; font-weight: normal;\">体育直播</h4>" +
+                        " <h4 style=\"font-size: 12px; color: #575762; font-weight: normal; margin-left: 4px;\">体育直播</h4>" +
                         "</div>"+
                         "<h4 style=\" color: #94999F; font-size: 11px; margin-left: auto; font-weight: normal;\">${dateTimeString}发布</h5></div>"
             }

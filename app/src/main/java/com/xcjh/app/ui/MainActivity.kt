@@ -93,16 +93,6 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         //初始化viewpager2
         mDatabind.viewPager.initActivity(this, mFragList, false)
 
-        val pageChangeCallback: OnPageChangeCallback = object : OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                viewPager.post(Runnable {
-                    // 立即切换页面，取消动画
-                    val currentItem: Int = viewPager.currentItem
-                    viewPager.setCurrentItem(currentItem, false)
-                })
-            }
-        }
-        mDatabind.viewPager.registerOnPageChangeCallback(pageChangeCallback)
 
         setOnclickNoRepeat(
             mDatabind.llHomeSelectMain, mDatabind.llHomeSelectSchedule,
@@ -508,7 +498,8 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
                 )
             )
         }
-        mDatabind.viewPager.currentItem = page
+        mDatabind.viewPager.setCurrentItem(page, false)
+
     }
 
     fun showDialog(beingLiveBean: BeingLiveBean) {

@@ -89,12 +89,17 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <RelativeLayout
                 android:id="@+id/ivMySet"
-                android:layout_width="@dimen/dp_20"
-                android:layout_height="@dimen/dp_18"
-                android:layout_alignParentEnd="true"
-                app:srcCompat="@drawable/my_icon_set" />
+                android:layout_width="@dimen/dp_30"
+                android:layout_height="@dimen/dp_30"
+                android:layout_alignParentEnd="true">
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="@dimen/dp_20"
+                    android:layout_height="@dimen/dp_18"
+                    android:layout_alignParentEnd="true"
+                    app:srcCompat="@drawable/my_icon_set" />
+            </RelativeLayout>
 
         </RelativeLayout>
 

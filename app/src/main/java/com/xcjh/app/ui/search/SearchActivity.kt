@@ -30,7 +30,6 @@ import com.xcjh.base_lib.utils.view.clickNoRepeat
 
 class SearchActivity  : BaseActivity<SearchVm, ActivitySearchBinding>() {
     private var searchType:Int=0  //0是搜索  1是取消
-//    MatchDetailActivity.open(matchType =bean.matchType, matchId = bean.matchId,matchName = "", anchorId = bean.userId,videoUrl = bean.playUrl )
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
