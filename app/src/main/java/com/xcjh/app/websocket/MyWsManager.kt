@@ -281,6 +281,9 @@ class MyWsManager private constructor(private val mContext: Context) {
                 mC2CListener.forEach {
                     it.toPair().second.onChangeReceive(wsBean2)
                 }
+                mLiveStatusListener.forEach {
+                    it.toPair().second.onChangeReceive(wsBean2)
+                }
                 mOtherPushListener.forEach {
                     it.toPair().second.onChangeMatchData(wsBean2)
                 }
