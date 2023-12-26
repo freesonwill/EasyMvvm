@@ -761,6 +761,11 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
         GlobalScope.launch {
             val data = seacherData().await()
             if (data.size > 0) {
+                for (i in 0 until data.size) {
+                    if (data[i].sent == 0) {
+                        data[i].sent = 1
+                    }
+                }
                 LogUtils.d("私聊有数据缓存")
                 listdata.addAll(data)
                 mDatabind.state.showContent()

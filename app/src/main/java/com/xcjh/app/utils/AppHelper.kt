@@ -85,7 +85,7 @@ fun ImageView.loadImageWithGlide(context: Context, imageUrl: String) {
     Glide.with(context)
         .asBitmap()
         .load(imageUrl)
-        .thumbnail(0.2f)
+        .thumbnail(0.1f)
         .apply(RequestOptions()
             .diskCacheStrategy(DiskCacheStrategy.ALL))
         .into(object : CustomTarget<Bitmap>() {
