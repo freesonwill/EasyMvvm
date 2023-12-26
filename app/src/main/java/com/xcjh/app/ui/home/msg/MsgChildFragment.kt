@@ -187,8 +187,8 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
 
             }
         }.models = listdata
-        (mDatabind.rec.itemAnimator as SimpleItemAnimator).supportsChangeAnimations =
-            false//防止item刷新的时候闪烁
+//        (mDatabind.rec.itemAnimator as SimpleItemAnimator).supportsChangeAnimations =
+//            false//防止item刷新的时候闪烁
         mDatabind.smartCommon.setRefreshHeader(CustomHeader(requireContext()))
         mDatabind.state.apply {
             StateConfig.setRetryIds(R.id.ivEmptyIcon, R.id.txtEmptyName)
@@ -483,7 +483,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                 if (msg.anchorId == listdata[i].anchorId) {
                     hasMsg = true
                     var bean = MsgListNewData()
-                    if (msg.anchorId == msg.from) {//主播发送的消息
+                    if (CacheUtil.getUser()?.id!= msg.from) {//主播发送的消息
                         bean.avatar = msg.fromAvatar ?: ""
                         if (chatId == msg.anchorId) {
                             bean.noReadSum = 0
@@ -509,7 +509,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                     bean.sent = msg.sent
                     bean.id = listdata[i].id
 
-                    if (msg.anchorId == msg.from) {//主播发送的消息
+                    if (CacheUtil.getUser()?.id!= msg.from) {//主播发送的消息
                         bean.nick = if (msg.fromNickName == null) "" else msg.fromNickName!!
                     } else {
                         bean.nick = if (msg.toNickName == null) "" else msg.toNickName!!
@@ -523,7 +523,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
             }
             if (!hasMsg) {
                 var bean = MsgListNewData()
-                if (msg.anchorId == msg.from) {//主播发送的消息
+                if (CacheUtil.getUser()?.id!= msg.from) {//主播发送的消息
                     bean.avatar = msg.fromAvatar ?: ""
                     if (chatId == msg.anchorId) {
                         bean.noReadSum = 0
@@ -547,7 +547,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                 bean.anchorId = msg.anchorId ?: ""
                 bean.id = msg.id
                 bean.sent = msg.sent
-                if (msg.anchorId == msg.from) {//主播发送的消息
+                if (CacheUtil.getUser()?.id!= msg.from) {//主播发送的消息
                     bean.nick = msg.fromNickName ?: ""
                 } else {
                     bean.nick = msg.toNickName ?: ""

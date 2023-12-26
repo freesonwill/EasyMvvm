@@ -63,7 +63,7 @@ class MyNoticeVm : BaseViewModel() {
             { apiService.getMyNoticeList(BasePage(pageNo,BASE_PAGE_SIZE)) },
 
             {
-                pageNo
+                pageNo++
                 hotMatchList.value = ListDataUiState(
                     isSuccess = true,
                     isRefresh = isRefresh,

@@ -470,6 +470,9 @@ class DetailChatFragment(
     }
 
     private fun sendMsg() {
+        if (mViewModel.input.get().isEmpty()){
+            return
+        }
         hideSoftInput()
         mDatabind.edtChatMsg.clearFocus()
         mDatabind.sendChat.postDelayed({

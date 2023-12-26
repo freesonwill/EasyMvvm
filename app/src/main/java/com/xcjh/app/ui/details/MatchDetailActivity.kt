@@ -97,7 +97,7 @@ class MatchDetailActivity :
         //解决toolbar左边距问题
         mDatabind.toolbar.setContentInsetsAbsolute(0, 0)
         mDatabind.viewTopBg.layoutParams.height = getStatusBarHeight(this)
-        mDatabind.toolbar.layoutParams.height = getStatusBarHeight(this)+ dip2px(44f)
+        mDatabind.toolbar.layoutParams.height = getStatusBarHeight(this) + dip2px(44f)
         mViewModel.tt = 5
         intent.extras?.apply {
             matchType = getString("matchType", "1")
@@ -107,7 +107,7 @@ class MatchDetailActivity :
             //  playUrl = getString("videoUrl", null)
             isHasAnchor = !anchorId.isNullOrEmpty()
             setData()
-            FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener{ task ->
+            FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
                 if (!task.isSuccessful) {
                     "Fetching FCM registration token failed===${task.exception}".loge("push====token===")
                     return@OnCompleteListener
@@ -129,8 +129,8 @@ class MatchDetailActivity :
 
     private fun setData() {
         mViewModel.getMatchDetail(matchId, matchType, true)
-        if (isHasAnchor){
-           // mViewModel.getDetailAnchorInfo(anchorId)
+        if (isHasAnchor) {
+            // mViewModel.getDetailAnchorInfo(anchorId)
         }
     }
 
@@ -154,6 +154,7 @@ class MatchDetailActivity :
     }
 
     private fun showHideLive(isClose: Boolean = false) {
+        mDatabind.tvToShare.visibleOrGone(true)
         mDatabind.apply {
             if (isClose) {
                 rltVideo.visibleOrGone(false)
@@ -231,27 +232,56 @@ class MatchDetailActivity :
         MyWsManager.getInstance(App.app)
             ?.setLiveStatusListener(this.toString(), object : LiveStatusListener {
                 override fun onOpenLive(bean: LiveStatus) {
-                    if (matchId == bean.matchId && anchor?.userId == bean.anchorId) {
-                        if (anchor?.userId == bean.anchorId){
+                    if (matchId == bean.matchId) {
+                        if (anchor?.userId == bean.anchorId) {
                             isShowVideo = true
                             anchor?.playUrl = bean.playUrl
                             showHideLive()
                             //更新聊天
-                            mViewModel.anchorInfo.value = anchor
+                            mViewModel.anchorInfo.value = AnchorListBean(
+                                liveId = bean.id,
+                                userId = bean.anchorId,
+                                nickName = bean.nickName,
+                                playUrl = bean.playUrl,
+                                hotValue = bean.hotValue.toString()
+                            )
+                            anchor?.apply {
+                                userId = bean.id?:""
+                                nickName = bean.nickName?:""
+                                playUrl = bean.playUrl?:""
+                            }
                             matchDetail.anchorList?.forEach {
-                                if (it.userId == bean.anchorId){
+                                if (it.userId == bean.anchorId) {
                                     it.isOpen = true
                                     it.playUrl = bean.playUrl
                                 }
-
                             }
                             if (isTopActivity(this@MatchDetailActivity) && !isPause) {
-                                startVideo(anchor?.playUrl)
+                                startVideo(bean.playUrl)
                             }
-                        }else{
+                        } else {
                             //增加主播
-                            matchDetail.anchorList?.add(AnchorListBean(liveId=bean.id, userId = bean.anchorId, nickName = bean.nickName, playUrl = bean.playUrl, hotValue = bean.hotValue.toString() ))
-                            matchDetail.anchorList?.sortByDescending  {
+                            var add = true
+                            matchDetail.anchorList?.forEach {
+                                if (it.userId == bean.anchorId) {
+                                    //在列表中 不用添加
+                                    it.playUrl = bean.playUrl
+                                    add = false
+                                }
+                            }
+                            //在列表中没找到就添加
+                            if (add){
+                                matchDetail.anchorList?.add(
+                                    AnchorListBean(
+                                        liveId = bean.id,
+                                        userId = bean.anchorId,
+                                        nickName = bean.nickName,
+                                        playUrl = bean.playUrl,
+                                        hotValue = bean.hotValue.toString()
+                                    )
+                                )
+                            }
+                            matchDetail.anchorList?.sortByDescending {
                                 it.hotValue
                             }
                         }
@@ -261,36 +291,47 @@ class MatchDetailActivity :
 
                 override fun onCloseLive(bean: LiveStatus) {
                     //"onReceive========${bean.id}===${anchor?.liveId}".loge()
-                    if (matchId == bean.matchId && anchor?.userId == bean.anchorId) {
-                        mDatabind.videoPlayer.release()
-                        isShowVideo = false
-                        showHideLive(true)
-                        anchor?.isOpen=false
-                        matchDetail.anchorList?.forEach {
-                            it.isOpen = it.userId != bean.anchorId
-                        }
-                      /*  matchDetail.anchorList?.forEach { it ->
-                            if (it.liveId == anchor?.liveId) {
-                                matchDetail.anchorList?.remove(it)
+                    if (matchId == bean.matchId) {
+                        if (anchor?.userId == bean.anchorId) {
+                            mDatabind.videoPlayer.release()
+                            isShowVideo = false
+                            showHideLive(true)
+                            anchor?.isOpen = false
+                            matchDetail.anchorList?.forEach {
+                                it.isOpen = it.userId != bean.anchorId
                             }
-                        }*/
+                        } else {
+                            val iterator = matchDetail.anchorList?.iterator()
+                            if (iterator != null) {
+                                for (tab in iterator) {
+                                    if (tab.userId == bean.anchorId) {
+                                        iterator.remove()
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
 
                 override fun onChangeLive(bean: LiveStatus) {
-                    if (isShowVideo) {
-                        if (matchId == bean.matchId && anchor?.userId == bean.anchorId) {
+                    if (matchId == bean.matchId) {
+                        if (anchor?.userId == bean.anchorId) {
                             anchor?.playUrl = bean.playUrl
                             showHideLive()
-                            if (isTopActivity(this@MatchDetailActivity) && !isPause) {
-                                startVideo(anchor?.playUrl)
+                            if (isShowVideo) {
+                                if (isTopActivity(this@MatchDetailActivity) && !isPause) {
+                                    startVideo(anchor?.playUrl)
+                                }
+                            }
+                        } else {
+                            matchDetail.anchorList?.forEach {
+                                if (it.userId == bean.anchorId) {
+                                    it.playUrl = bean.playUrl
+                                }
                             }
                         }
-                    } else {
-                        if (matchId == bean.matchId && anchor?.userId == bean.anchorId) {
-                            anchor?.playUrl = bean.playUrl
-                        }
                     }
+
                 }
             })
         MyWsManager.getInstance(App.app)
@@ -334,9 +375,9 @@ class MatchDetailActivity :
             } else {
                 ApiComService.SHARE_IP + "#/roomDetail?id=${matchId}&type=${matchType}&pureFlow=true"
             }
-          /*  copyToClipboard(url)
-            myToast(getString(R.string.copy_success))*/
-            shareText(this,url)
+            /*  copyToClipboard(url)
+              myToast(getString(R.string.copy_success))*/
+            shareText(this, url)
         }
         //信号源
         mDatabind.tvSignal.setOnClickListener {
@@ -387,8 +428,7 @@ class MatchDetailActivity :
                     mDatabind.videoPlayer.release()
                 }
                 changeUI()
-                //更新聊天室
-                mViewModel.anchorInfo.value = anchor
+
             }
         } else {
             myToast("no data")
@@ -422,7 +462,7 @@ class MatchDetailActivity :
         //赛事名字和比赛时间
         mDatabind.tvCompetitionName.text = matchDetail.competitionName
         mDatabind.tvMatchTime.text =
-            TimeUtil.timeStamp2Date(matchDetail.matchTime.toLong(), "yyyy-MM-dd HH:mm")
+            TimeUtil.timeStamp2Date(matchDetail.matchTime.toLong(), "MM-dd HH:mm")
         needWsToUpdateUI()
     }
 
@@ -565,7 +605,7 @@ class MatchDetailActivity :
         mViewModel.showAd.observe(this) { ad ->
             ad.data.notNull({ bean ->
                 mDatabind.marqueeView.visibleOrGone(true)
-                loadImage(this,ad.data?.imgUrl,mDatabind.ivShowAd, R.drawable.ic_ad_def)
+                loadImage(this, ad.data?.imgUrl, mDatabind.ivShowAd, R.drawable.ic_ad_def)
                 mDatabind.ivShowAd.setOnClickListener {
                     jumpOutUrl(bean.targetUrl)
                 }
@@ -574,24 +614,30 @@ class MatchDetailActivity :
         //主播详情接口返回监听处理
         mViewModel.anchor.observe(this) {
             if (it != null) {
+                anchor?.apply {
+                    userId = it.id?:""
+                    nickName = it.nickName?:""
+                    userLogo = it.head?:""
+                }
                 this.anchorId = it.id
                 setFocusUI(it.focus)
+                setAnchorUI()
             }
         }
         mViewModel.isfocus.observe(this) {
             if (it) {
                 appViewModel.updateSomeData.postValue("friends")
                 setFocusUI(true)
-               /* anchor?.hotValue = anchor?.hotValue?.toInt()?.plus(1).toString()
-                mDatabind.tvDetailTabAnchorFans.text = anchor?.hotValue+"热度值" //主播粉丝数量+1*/
+                /* anchor?.hotValue = anchor?.hotValue?.toInt()?.plus(1).toString()
+                 mDatabind.tvDetailTabAnchorFans.text = anchor?.hotValue+"热度值" //主播粉丝数量+1*/
             }
         }
         mViewModel.isUnFocus.observe(this) {
             if (it) {
                 appViewModel.updateSomeData.postValue("friends")
                 setFocusUI(false)
-               /* anchor?.hotValue = anchor?.hotValue?.toInt()?.minus(1).toString()
-                mDatabind.tvDetailTabAnchorFans.text = anchor?.hotValue+"热度值" //主播粉丝数量-1*/
+                /* anchor?.hotValue = anchor?.hotValue?.toInt()?.minus(1).toString()
+                 mDatabind.tvDetailTabAnchorFans.text = anchor?.hotValue+"热度值" //主播粉丝数量-1*/
             }
         }
         mViewModel.anchorInfo.observe(this) {
@@ -616,14 +662,14 @@ class MatchDetailActivity :
             mDatabind.tvTabAnchorFollow.text = getString(R.string.dis_focus)
             mDatabind.tvTabAnchorFollow.setTextColor(getColor(R.color.c_94999f))
             mDatabind.tvTabAnchorFollow.setBackgroundResource(R.drawable.shape_red_pressed_r20)
-            mDatabind.tvTabAnchorFollow.backgroundTintList= ColorStateList.valueOf(
+            mDatabind.tvTabAnchorFollow.backgroundTintList = ColorStateList.valueOf(
                 ContextCompat.getColor(this, R.color.c_1f1f20)
             )
         } else {
             mDatabind.tvTabAnchorFollow.text = getString(R.string.add_focus)
             mDatabind.tvTabAnchorFollow.setTextColor(getColor(R.color.c_34a853))
             mDatabind.tvTabAnchorFollow.setBackgroundResource(R.drawable.shape_line_r20)
-            mDatabind.tvTabAnchorFollow.backgroundTintList= null
+            mDatabind.tvTabAnchorFollow.backgroundTintList = null
         }
     }
 
@@ -662,24 +708,27 @@ class MatchDetailActivity :
         )
         //有主播
         if (isHasAnchor) {
-            mDatabind.viewPager.postDelayed(
-                {
-                    if (CacheUtil.isLogin()) {
-                        mViewModel.addLiveHistory(anchor?.liveId)
-                    }
-                    mViewModel.getDetailAnchorInfo(anchor?.userId)
-                },
-                200
-            )
-        }
+            mDatabind.viewPager.postDelayed({
+                if (CacheUtil.isLogin()) {
+                    mViewModel.addLiveHistory(anchor?.liveId)
+                }
 
+            }, 200)
+        }
+        //更新聊天室
+        mViewModel.anchorInfo.value = anchor
     }
 
     private fun setAnchorUI() {
         mDatabind.cslAnchor.visibleOrGone(isHasAnchor)
-        mDatabind.tvDetailTabAnchorFans.text = anchor?.hotValue+"热度值" //热度
+        mDatabind.tvDetailTabAnchorFans.text = anchor?.hotValue + "热度值" //热度
         mDatabind.tvTabAnchorNick.text = anchor?.nickName  //主播昵称
-        loadImage(this,anchor?.userLogo,mDatabind.ivTabAnchorAvatar,R.drawable.default_anchor_icon) //主播头像
+        loadImage(
+            this,
+            anchor?.userLogo,
+            mDatabind.ivTabAnchorAvatar,
+            R.drawable.default_anchor_icon
+        ) //主播头像
         //点击私信跳转聊天界面逻辑，根据传参来跳转
         mDatabind.tvTabAnchorChat.setOnClickListener { v ->
             judgeLogin {
@@ -703,11 +752,11 @@ class MatchDetailActivity :
     }
 
 
-    private fun getAnchor( action: (String?) -> Unit = {}) {
+    private fun getAnchor(action: (String?) -> Unit = {}) {
         matchDetail.anchorList.notNull({ list ->
             "anchorList===${Gson().toJson(list)}".loge()
             //降序 sortByDescending可变列表的排序； sortedBytDescending 不可变列表的排序，需创建一个新的列表来保存排序后的结果
-           list.sortByDescending  {
+            list.sortByDescending {
                 it.hotValue
             }
             // 是否找到流
@@ -716,7 +765,7 @@ class MatchDetailActivity :
                 if (isHasAnchor) {
                     if (anchorId == item.userId) {
                         isShowVideo = true
-                        item.isSelect =true
+                        item.isSelect = true
                         anchor = item
                         action.invoke(item.playUrl)
                         findAnchor = true
@@ -747,7 +796,7 @@ class MatchDetailActivity :
                 }
             }
             //没找到主播流
-            if (!findAnchor){
+            if (!findAnchor) {
                 for ((i, item) in list.withIndex()) {
                     if (i == 0) {
                         item.isSelect = true
@@ -814,11 +863,12 @@ class MatchDetailActivity :
     override fun clickForFullScreen() {
         //Log.e("TAG", "clickForFullScreen: ===")
     }
+
     override fun onPlayError(url: String, vararg objects: Any) {
         "video error=====================".loge("====")
         //showHideLive(true)
         mDatabind.apply {
-            if (isShowVideo){
+            if (isShowVideo) {
                 //有视频布局
                 rltVideo.visibleOrGone(false)
                 lltLiveError.visibleOrGone(true)
@@ -829,6 +879,7 @@ class MatchDetailActivity :
             }
         }
     }
+
     override val detailOrientationRotateAuto: Boolean
         get() = false
 

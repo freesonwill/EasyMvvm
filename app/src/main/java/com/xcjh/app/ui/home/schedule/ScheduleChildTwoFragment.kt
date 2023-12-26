@@ -77,7 +77,8 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
     var mCurrentOneTabIndex = 0
     var mCurrentTwoTabIndex = 0
     var isResh = false
-
+    var strYes = "'"
+    var strNo = "2"
 
     companion object {
         var mTitles: Array<out String>? = null
@@ -109,6 +110,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
         // 子 Fragment 的逻辑操作
         return calendarTime
     }
+
     fun initTime() {
         LogUtils.d("本页面tabname=$tabName")
         strTime = TimeUtil.gettimenowYear().toString()
@@ -168,12 +170,12 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                     this.findViewById<ImageView>(R.id.ivEmptyIcon).setOnClickListener { }
                 }
             }
-            mDatabind.smartCommon.setRefreshHeader( CustomHeader(requireContext()))
+            mDatabind.smartCommon.setRefreshHeader(CustomHeader(requireContext()))
             mDatabind.recBottom.run {
                 distance(0, 0, 0, 15)
             }
-            (mDatabind.recBottom.itemAnimator as SimpleItemAnimator).supportsChangeAnimations =
-                false//防止item刷新的时候闪烁
+//            (mDatabind.recBottom.itemAnimator as SimpleItemAnimator).supportsChangeAnimations =
+//                false//防止item刷新的时候闪烁
             mDatabind.recBottom.linear().setup {
                 addType<MatchBean>(R.layout.item_sch_all)
 
@@ -239,7 +241,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                     }
 
                     LogUtils.d("直播数据" + item.anchorList)
-
+                    binding.txtMatchAnimation.visibility=View.VISIBLE
                     if (item.matchType == "1") {//比赛类型：1：足球；2：篮球,可用值:1,2
                         binding.tvhafl.text =
                             context.resources.getString(R.string.hafl_rices) + "" + item.homeHalfScore + "-" + item.awayHalfScore
@@ -252,14 +254,17 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                         Glide.with(context).load(item.awayLogo)
                             .placeholder(R.drawable.def_football).into(binding.tvflagRight)
                         binding.ivtype.setBackgroundResource(R.drawable.football)
+
                         when (item.status) {
                             "0" -> {
+                                binding.txtMatchAnimation.visibility=View.GONE
                                 binding.tvstatus.visibility = View.GONE
+                              //  clearAnimation(binding.txtMatchAnimation)
                             }
 
                             "1" -> {
                                 binding.tvvs.text = "VS"
-                                binding.txtMatchAnimation.text = ""
+                                binding.txtMatchAnimation.visibility=View.GONE
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
@@ -275,12 +280,12 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                 )
                                 binding.tvstatus.text =
                                     context.resources.getString(R.string.main_txt_wks)
-
+                                clearAnimation(binding.txtMatchAnimation)
                             }
 
                             "2" -> {
                                 binding.tvstatus.visibility = View.VISIBLE
-                                binding.txtMatchAnimation.text = "'"
+                                binding.txtMatchAnimation.visibility=View.VISIBLE
                                 binding.tvvs.text = item.homeScore + "-" + item.awayScore
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
@@ -306,7 +311,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
                             "3" -> {
                                 binding.tvstatus.visibility = View.VISIBLE
-                                binding.txtMatchAnimation.text = "'"
+                                binding.txtMatchAnimation.visibility=View.VISIBLE
                                 binding.tvvs.text = item.homeScore + "-" + item.awayScore
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
@@ -323,11 +328,12 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                 binding.tvstatus.text = context.resources.getString(
                                     R.string.zc
                                 )
+                                initAnimation(binding.txtMatchAnimation)
                             }
 
                             "4" -> {
                                 binding.tvstatus.visibility = View.VISIBLE
-                                binding.txtMatchAnimation.text = "'"
+                                binding.txtMatchAnimation.visibility=View.VISIBLE
                                 binding.tvvs.text = item.homeScore + "-" + item.awayScore
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
@@ -352,7 +358,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
                             "5", "6" -> {
                                 binding.tvstatus.visibility = View.VISIBLE
-                                binding.txtMatchAnimation.text = "'"
+                                binding.txtMatchAnimation.visibility=View.VISIBLE
                                 binding.tvvs.text = item.homeScore + "-" + item.awayScore
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
@@ -375,7 +381,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
                             "7" -> {
                                 binding.tvstatus.visibility = View.VISIBLE
-                                binding.txtMatchAnimation.text = "'"
+                                binding.txtMatchAnimation.visibility=View.VISIBLE
                                 binding.tvvs.text = item.homeScore + "-" + item.awayScore
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
@@ -397,7 +403,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                             }
 
                             "8" -> {
-                                binding.txtMatchAnimation.text = ""
+                                binding.txtMatchAnimation.visibility=View.GONE
                                 binding.tvvs.text = item.homeScore + "-" + item.awayScore
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.tvstatus.setTextColor(
@@ -414,12 +420,13 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                 )
                                 binding.tvstatus.text =
                                     context.resources.getString(R.string.main_txt_over)
+                                clearAnimation(binding.txtMatchAnimation)
 
                             }
 
                             "9" -> {
 
-                                binding.txtMatchAnimation.text = ""
+                                binding.txtMatchAnimation.visibility=View.GONE
                                 binding.tvvs.text = "VS"
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.tvstatus.setTextColor(
@@ -436,11 +443,12 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                 )
                                 binding.tvstatus.text =
                                     context.resources.getString(R.string.main_txt_tc)
+                                clearAnimation(binding.txtMatchAnimation)
 
                             }
 
                             "10" -> {
-                                binding.txtMatchAnimation.text = ""
+                                binding.txtMatchAnimation.visibility=View.GONE
                                 binding.tvvs.text = "VS"
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.tvstatus.setTextColor(
@@ -457,11 +465,12 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                 )
                                 binding.tvstatus.text =
                                     context.resources.getString(R.string.main_txt_zd)
+                                clearAnimation(binding.txtMatchAnimation)
 
                             }
 
                             "11" -> {
-                                binding.txtMatchAnimation.text = ""
+                                binding.txtMatchAnimation.visibility=View.GONE
                                 binding.tvvs.text = "VS"
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.tvstatus.setTextColor(
@@ -479,10 +488,11 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                 binding.tvstatus.text =
                                     context.resources.getString(R.string.main_txt_yz)
 
+                                clearAnimation(binding.txtMatchAnimation)
                             }
 
                             "12" -> {
-                                binding.txtMatchAnimation.text = ""
+                                binding.txtMatchAnimation.visibility=View.GONE
                                 binding.tvvs.text = "VS"
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.tvstatus.setTextColor(
@@ -499,11 +509,11 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                 )
                                 binding.tvstatus.text =
                                     context.resources.getString(R.string.main_txt_qx)
-
+                                clearAnimation(binding.txtMatchAnimation)
                             }
 
                             "13" -> {
-                                binding.txtMatchAnimation.text = ""
+                                binding.txtMatchAnimation.visibility=View.GONE
                                 binding.tvvs.text = "VS"
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.tvstatus.setTextColor(
@@ -520,12 +530,12 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                 )
                                 binding.tvstatus.text =
                                     context.resources.getString(R.string.main_txt_dd)
-
+                                clearAnimation(binding.txtMatchAnimation)
                             }
 
                             else -> {
                                 LogUtils.d("走这里了 哈哈哈")
-                                binding.txtMatchAnimation.text = ""
+                                binding.txtMatchAnimation.visibility=View.GONE
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.tvvs.text = "VS"
                                 binding.tvstatus.setTextColor(
@@ -540,6 +550,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                         R.color.c_37373d
                                     )
                                 )
+                                clearAnimation(binding.txtMatchAnimation)
                                 val date = Date(item.matchTime.toLong())
                                 var formatter =
                                     SimpleDateFormat("MM-dd HH:mm", Locale.getDefault())
@@ -561,12 +572,14 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                         binding.ivtype.setBackgroundResource(R.drawable.basketball)
                         when (item.status) {
                             "0" -> {
+                                binding.txtMatchAnimation.visibility=View.GONE
                                 binding.tvstatus.visibility = View.GONE
+                                clearAnimation(binding.txtMatchAnimation)
                             }
 
                             "1" -> {
                                 binding.tvvs.text = "VS"
-                                binding.txtMatchAnimation.text = ""
+                                binding.txtMatchAnimation.visibility=View.GONE
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.tvstatus.setTextColor(
                                     ContextCompat.getColor(
@@ -582,11 +595,12 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                 )
                                 binding.tvstatus.text =
                                     context.resources.getString(R.string.main_txt_wks)
+                                clearAnimation(binding.txtMatchAnimation)
 
                             }
 
                             "2" -> {
-                                binding.txtMatchAnimation.text = "'"
+                                binding.txtMatchAnimation.visibility=View.VISIBLE
                                 binding.tvvs.text = item.awayScore + "-" + item.homeScore
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.tvstatus.setTextColor(
@@ -611,7 +625,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                             }
 
                             "3" -> {
-                                binding.txtMatchAnimation.text = "'"
+                                binding.txtMatchAnimation.visibility=View.VISIBLE
                                 binding.tvvs.text = item.awayScore + "-" + item.homeScore
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.tvstatus.setTextColor(
@@ -638,7 +652,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                             }
 
                             "4" -> {
-                                binding.txtMatchAnimation.text = "'"
+                                binding.txtMatchAnimation.visibility=View.VISIBLE
                                 binding.tvvs.text = item.awayScore + "-" + item.homeScore
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.tvstatus.setTextColor(
@@ -663,7 +677,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                             }
 
                             "5" -> {
-                                binding.txtMatchAnimation.text = "'"
+                                binding.txtMatchAnimation.visibility=View.VISIBLE
                                 binding.tvvs.text = item.awayScore + "-" + item.homeScore
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.tvstatus.setTextColor(
@@ -690,7 +704,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                             }
 
                             "6" -> {
-                                binding.txtMatchAnimation.text = "'"
+                                binding.txtMatchAnimation.visibility=View.VISIBLE
                                 binding.tvvs.text = item.awayScore + "-" + item.homeScore
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.tvstatus.setTextColor(
@@ -715,7 +729,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                             }
 
                             "7" -> {
-                                binding.txtMatchAnimation.text = "'"
+                                binding.txtMatchAnimation.visibility=View.VISIBLE
                                 binding.tvvs.text = item.awayScore + "-" + item.homeScore
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.tvstatus.setTextColor(
@@ -742,7 +756,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                             }
 
                             "8" -> {
-                                binding.txtMatchAnimation.text = "'"
+                                binding.txtMatchAnimation.visibility=View.VISIBLE
                                 binding.tvvs.text = item.awayScore + "-" + item.homeScore
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.tvstatus.setTextColor(
@@ -766,7 +780,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                             }
 
                             "9" -> {
-                                binding.txtMatchAnimation.text = "'"
+                                binding.txtMatchAnimation.visibility=View.VISIBLE
                                 binding.tvvs.text = item.awayScore + "-" + item.homeScore
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.tvstatus.setTextColor(
@@ -787,7 +801,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                             }
 
                             "10" -> {
-                                binding.txtMatchAnimation.text = ""
+                                binding.txtMatchAnimation.visibility=View.GONE
                                 binding.tvvs.text = item.awayScore + "-" + item.homeScore
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.tvstatus.setTextColor(
@@ -804,11 +818,13 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                 )
                                 binding.tvstatus.text =
                                     context.resources.getString(R.string.main_txt_over)
+                                clearAnimation(binding.txtMatchAnimation)
 
                             }
 
                             "11", "12", "13", "14", "15" -> {
-                                binding.txtMatchAnimation.text = ""
+                                binding.txtMatchAnimation.visibility=View.GONE
+                                clearAnimation(binding.txtMatchAnimation)
                                 binding.tvvs.text = "VS"
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.tvstatus.setTextColor(
@@ -1217,42 +1233,47 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
         )
     }
 
-    fun initAnimation(view: AppCompatTextView) {
-        animatorSet.removeAllListeners()
-        view.clearAnimation()
-        val fadeIn =
-            ObjectAnimator.ofFloat(
-                view,
-                "alpha",
-                0f,
-                1f
-            )
-        fadeIn.duration = 500
-        fadeIn.startDelay = 200 // 延迟200毫秒开始动画
+    fun clearAnimation(view: LottieAnimationView) {
+//        animatorSet.removeAllListeners()
+//        view.clearAnimation()
+    }
 
-        val fadeOut =
-            ObjectAnimator.ofFloat(
-                view,
-                "alpha",
-                1f,
-                0f
-            )
-        fadeOut.duration = 500
-        fadeOut.startDelay = 200 // 延迟200毫秒开始动画
+    fun initAnimation(view: LottieAnimationView) {
 
-
-        animatorSet.playSequentially(fadeIn, fadeOut) // 顺序播放渐显和渐隐动画
-        animatorSet.startDelay = 200 // 延迟200毫秒开始第一次播放动画
-        animatorSet.addListener(object : AnimatorListenerAdapter() {
-
-
-            override fun onAnimationEnd(animation: Animator) {
-                // 动画结束时重新播放
-                super.onAnimationEnd(animation)
-                animatorSet.start()
-            }
-        })
-        animatorSet.start()
+//        clearAnimation(view)
+//        val fadeIn =
+//            ObjectAnimator.ofFloat(
+//                view,
+//                "alpha",
+//                0f,
+//                1f
+//            )
+//        fadeIn.duration = 500
+//        fadeIn.startDelay = 200 // 延迟200毫秒开始动画
+//
+//        val fadeOut =
+//            ObjectAnimator.ofFloat(
+//                view,
+//                "alpha",
+//                1f,
+//                0f
+//            )
+//        fadeOut.duration = 500
+//        fadeOut.startDelay = 200 // 延迟200毫秒开始动画
+//
+//
+//        animatorSet.playSequentially(fadeIn, fadeOut) // 顺序播放渐显和渐隐动画
+//        animatorSet.startDelay = 200 // 延迟200毫秒开始第一次播放动画
+//        animatorSet.addListener(object : AnimatorListenerAdapter() {
+//
+//
+//            override fun onAnimationEnd(animation: Animator) {
+//                // 动画结束时重新播放
+//                super.onAnimationEnd(animation)
+//                animatorSet.start()
+//            }
+//        })
+//        animatorSet.start()
     }
 
     override fun createObserver() {

@@ -154,7 +154,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
             StateConfig.setRetryIds(R.id.ivEmptyIcon, R.id.txtEmptyName)
             onEmpty {
                 this.findViewById<TextView>(R.id.txtEmptyName).text =
-                    resources.getString(R.string.nomsg)
+                    resources.getString(R.string.nomsgrecoder)
                 this.findViewById<ImageView>(R.id.ivEmptyIcon)
                     .setImageDrawable(resources.getDrawable(R.drawable.ic_empety_msg))
                 this.findViewById<ImageView>(R.id.ivEmptyIcon).setOnClickListener { }
@@ -706,7 +706,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
             override fun onC2CReceive(chat: ReceiveChatMsg) {
                 // mViewModel.clearMsg(userId)
                 mDatabind.state.showContent()
-                if (chat.from == userId) {//收到消息
+                if (chat.from != CacheUtil.getUser()?.id) {//收到消息
                     var beanmy: MsgBeanData = MsgBeanData()
                     beanmy.anchorId = chat.anchorId
                     beanmy.fromId = chat.from
@@ -822,7 +822,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
 
             val multipartBody = MultipartBody.Part.createFormData("file", file.name, requestBody)
             mViewModel.upLoadPicSuspend(multipartBody) {
-
+                LogUtils.d("Upload progress:$it")
                 if (it != "FAILE") {
                     msgType = 1
                     msgContent = it

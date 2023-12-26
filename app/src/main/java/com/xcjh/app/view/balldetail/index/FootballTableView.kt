@@ -59,10 +59,20 @@ class FootballTableView : LinearLayout {
                 ContextCompat.getColor(context, if (i%2==0) R.color.c_181819 else R.color.c_1D1D1D)
             )
             if (it.companyName.isNotEmpty()) {
-                if (it.companyName.length > 2) {
-                    binding.tvCompany.text = it.companyName.substring(0 until 2) + "*"
-                } else {
-                    binding.tvCompany.text = it.companyName.substring(0 until 1) + "*"
+                when (it.companyName.length) {
+                    in 3..6 -> {
+                        binding.tvCompany.text = it.companyName.substring(0 until 2) + "*".repeat(it.companyName.length-2)
+                    }
+                    2 -> {
+                        binding.tvCompany.text = it.companyName.substring(0 until 1) + "*"
+                    }
+                    1 -> {
+                        binding.tvCompany.text = it.companyName
+                    }
+                    else -> {
+                        //大于6个字
+                        binding.tvCompany.text = it.companyName.substring(0 until 2) + "****"
+                    }
                 }
             }
             //初盘数据
