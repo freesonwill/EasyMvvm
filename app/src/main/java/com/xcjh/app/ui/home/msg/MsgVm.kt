@@ -123,7 +123,7 @@ class MsgVm : BaseViewModel() {
                     listData = arrayListOf()
                 )
                 myToast(it.errorMsg)
-            }, isRefresh
+            }, false
         )
     }
 
@@ -159,7 +159,7 @@ class MsgVm : BaseViewModel() {
                     listData = arrayListOf()
                 )
                 myToast(it.errorMsg)
-            }, isRefresh
+            }, false
         )
     }
 }

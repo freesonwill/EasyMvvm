@@ -70,7 +70,7 @@ class ScheduleVm : BaseViewModel() {
     /**
      * 反馈
      */
-    fun getHotMatchDataList(isRefresh: Boolean, bean: PostSchMatchListBean) {
+    fun getHotMatchDataList(isRefresh: Boolean,isLoading: Boolean, bean: PostSchMatchListBean) {
         LogUtils.d("请求参数==="+com.alibaba.fastjson.JSONObject.toJSONString(bean))
         if (isRefresh) {
             pageNo = 1
@@ -97,7 +97,7 @@ class ScheduleVm : BaseViewModel() {
                 )
                 myToast(it.errorMsg)
 
-            }, isRefresh
+            }, isLoading
         )
     }
 }

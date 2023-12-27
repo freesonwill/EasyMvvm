@@ -973,7 +973,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
             mDatabind.smartCommon.setOnRefreshListener {
 
                 //mDatabind.state.showLoading()
-                getData(true)
+                getData(false,true)
 
 
             }
@@ -981,7 +981,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
                 if (isAdded && mCurrentOneTabIndex == mOneTabIndex && mCurrentTwoTabIndex == mTwoTabIndex) {
                     calendarTime = it
-                    getData(true)
+                    getData(true,false)
 
 
                 }
@@ -1007,7 +1007,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
             appViewModel.updateCollection.observeForever {
                 if (isAdded) {
                     if (it) {
-                        getData(false)
+                        getData(false,false)
                     }
                 }
             }
@@ -1212,7 +1212,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
     override fun lazyLoadData() {
         super.lazyLoadData()
-        getData(Constants.isLoading)
+        getData(Constants.isLoading,false)
 
     }
 
@@ -1220,10 +1220,10 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
         return 0
     }
 
-    fun getData(iLoading: Boolean) {
+    fun getData(iLoading: Boolean,isresh: Boolean) {
         Constants.isLoading = true
         initTime()
-        mViewModel.getHotMatchDataList(
+        mViewModel.getHotMatchDataList(isresh,
             iLoading, PostSchMatchListBean(
                 competitionId, page,
                 endTime,
