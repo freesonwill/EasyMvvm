@@ -854,6 +854,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                     if (it1.sendId == "0") {
                                         it1.sendId = userId + it1.createTime
                                     }
+                                    data.sent=1
                                     addDataToList("10",data)
                                     var listdata1: MutableList<MsgBeanData> =
                                         ArrayList<MsgBeanData>()
