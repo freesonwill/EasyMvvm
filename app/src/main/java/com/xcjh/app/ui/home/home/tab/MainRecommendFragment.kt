@@ -21,6 +21,9 @@ import com.drake.brv.utils.models
 import com.drake.brv.utils.mutable
 import com.drake.brv.utils.setDifferModels
 import com.drake.brv.utils.setup
+import com.kongzue.dialogx.dialogs.CustomDialog
+import com.kongzue.dialogx.dialogs.MessageDialog
+import com.kongzue.dialogx.interfaces.OnBindView
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
 import com.xcjh.app.R
@@ -65,14 +68,10 @@ import java.util.Locale
 class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommendBinding>() {
         //是第一次加载数据
         var  initialLoading:Boolean=true
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        initialLoading=true
-
-    }
+        var customDialog: CustomDialog?=null
 
     override fun initView(savedInstanceState: Bundle?) {
-        showLoading("")
+        loadingDialog()
 
 
         //首页轮询
@@ -401,7 +400,11 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
         //正在直播的比赛
         mViewModel.liveList.observe(this){
             if(initialLoading){
-                dismissLoading()
+                if(customDialog!=null){
+                    if(customDialog!!.isShow){
+                        customDialog!!.dismiss()
+                    }
+                }
             }
             if (it.isSuccess) {
                 //成功
@@ -881,6 +884,19 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
 
         }
     }
+
+    /**
+     * 第一次加载数据的时候
+     */
+    fun loadingDialog(){
+        customDialog=  CustomDialog.show(object :OnBindView<CustomDialog>(com.xcjh.base_lib.R.layout.loadingbar){
+            override fun onBind(dialog: CustomDialog?, v: View?) {
+
+            }
+
+
+        })
+    }
 }
 
 fun BindingAdapter.BindingViewHolder.setLiveMatchItem(type:Int=0) {
@@ -929,4 +945,6 @@ fun BindingAdapter.BindingViewHolder.setLiveMatchItem(type:Int=0) {
         layoutParams.setMargins(context.dp2px(3), 0, 0, context.dp2px(8))
         bindingItem.llLiveSpacing.layoutParams = layoutParams
     }
+
+
 }

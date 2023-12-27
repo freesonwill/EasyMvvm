@@ -76,7 +76,6 @@ class ScheduleVm : BaseViewModel() {
         if (isRefresh) {
             pageNo = 1
         }
-        Log.i("VVVVVVVV","====="+isLoading)
         request(
             { apiService.getHotMatchChildList(bean) },
 
