@@ -76,6 +76,8 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import okhttp3.MultipartBody
 import java.io.File
 
@@ -103,7 +105,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
     var isUpdata = false
     private val delayTime: Long = 10000
     private val listPic = java.util.ArrayList<LocalMedia>()
-
+    private val mutex = Mutex()
     override fun initView(savedInstanceState: Bundle?) {
 
         options = RequestOptions()
@@ -237,7 +239,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                         when (matchBeanNew.sent) {
                             0 -> {//正在发送
 
-                                addDataToList(matchBeanNew)
+                                addDataToList("1",matchBeanNew)
 
                                 binding.googleProgress.visibility = View.VISIBLE
                                 binding.ivfaile.visibility = View.GONE
@@ -250,7 +252,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                     )
                                     if (matchBeanNew.sent == 0) {//发送失败
                                         matchBeanNew.sent = 2
-                                        addDataToList(matchBeanNew)
+                                        addDataToList("2",matchBeanNew)
                                         if (bindingAdapterPosition == 0) {
 
                                             appViewModel.updateMsgListEvent.postValue(matchBeanNew)
@@ -271,7 +273,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                             1, 3 -> {//发送成功
 
                                 matchBeanNew.sent = 1
-                                addDataToList(matchBeanNew)
+                                addDataToList("3",matchBeanNew)
                                 binding.googleProgress.visibility = View.GONE
                                 binding.ivfaile.visibility = View.GONE
                             }
@@ -336,7 +338,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                     bindingAdapterPosition.toString() + "准备发送" +
                                             JSONObject.toJSONString(_data as MsgBeanData)
                                 )
-                                addDataToList((_data as MsgBeanData))
+                                addDataToList("4",(_data as MsgBeanData))
                                 binding.googleProgress.visibility = View.VISIBLE
                                 binding.ivfaile.visibility = View.GONE
                                 GlobalScope.launch {
@@ -357,7 +359,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                             bindingAdapterPosition.toString() + "99发送失败" +
                                                     JSONObject.toJSONString(_data as MsgBeanData)
                                         )
-                                        addDataToList((_data as MsgBeanData))
+                                        addDataToList("5",(_data as MsgBeanData))
                                         if (bindingAdapterPosition == 0) {
                                             appViewModel.updateMsgListEvent.postValue((_data as MsgBeanData))
                                         }
@@ -376,7 +378,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
 
                             1, 3 -> {//发送成功
                                 (_data as MsgBeanData).sent = 1
-                                addDataToList((_data as MsgBeanData))
+                                addDataToList("6",(_data as MsgBeanData))
                                 binding.googleProgress.visibility = View.GONE
                                 binding.ivfaile.visibility = View.GONE
                                 LogUtils.d(
@@ -634,15 +636,6 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
 
             override fun onSendMsgIsOk(isOk: Boolean, bean: ReceiveWsBean<*>) {
 
-                if (isOk) {
-                    for (i in 0 until mDatabind.rv.models!!.size) {
-                        var beanmy: MsgBeanData = mDatabind.rv.models!![i] as MsgBeanData
-                        if (beanmy.content == bean.msg) {
-                            beanmy.sent = 1
-                        }
-                    }
-
-                }
             }
 
             override fun onSystemMsgReceive(chat: FeedSystemNoticeBean) {
@@ -671,7 +664,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                     // LogUtils.d("发送成功一条数据"+JSONObject.toJSONString(chat))
                     for (i in 0 until mDatabind.rv.models!!.size) {
                         var beanmy: MsgBeanData = mDatabind.rv.models!![i] as MsgBeanData
-                        if (beanmy.sendId == chat.sendId||beanmy.id == chat.sendId) {
+                        if (beanmy.sendId == chat.sendId || beanmy.id == chat.sendId) {
                             beanmy.sent = 1
                             beanmy.id = chat.id
                             LogUtils.d(
@@ -679,7 +672,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                     beanmy
                                 )
                             )
-                            addDataToList(beanmy)
+                            addDataToList("7",beanmy)
                             mDatabind.rv.bindingAdapter.notifyItemChanged(i)
                             break
                         }
@@ -696,10 +689,10 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
         })
         // mViewModel.clearMsg(userId)
         initData()
+
+
         getAllData()
         mViewModel.getHisMsgList(mDatabind.smartCommon, offset, userId)
-        // getAllData()
-
     }
 // 将Drawable转换为Bitmap
 
@@ -712,12 +705,19 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                         data[i].sent = 1
                     }
                 }
-                LogUtils.d("私聊有数据缓存")
+                LogUtils.d("私聊有数据缓存" + JSONObject.toJSONString(data))
                 listdata.addAll(data)
-                mDatabind.state.showContent()
+                runOnUiThread {
+                    mDatabind.rv.models = listdata
+                    mDatabind.state.showContent()
+                }
+
             } else {
-                LogUtils.d("私聊无数据缓存")
-                mDatabind.state.showEmpty()
+                runOnUiThread {
+                    LogUtils.d("私聊无数据缓存")
+                    mDatabind.state.showEmpty()
+                }
+
             }
 
         }
@@ -777,7 +777,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                     view.visibility = View.GONE
                     image.visibility = View.VISIBLE
                     bean.sent = 2
-                    addDataToList(bean)
+                    addDataToList("8",bean)
                 }
             }
         } catch (e: Exception) {
@@ -838,22 +838,29 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                         if (it[i].sendId == "0") {
                             it[i].sendId = userId + it[i].createTime
                         }
-                        addDataToList(it[i])
+                        addDataToList("9",it[i])
                     }
                 } else {
                     for ((index, data) in it.withIndex()) {
                         val foundData = listdata.find { it.id == data.id }
                         if (foundData == null) {
+                            LogUtils.d("有新的消息需要加入缓存===" + JSONObject.toJSONString(data))
                             data?.let { it1 ->
-                                if (it1.sendId == "0") {
-                                    it1.sendId = userId + it1.createTime
+                                if (TimeUtil.isEarlier(
+                                        data.createTime!!,
+                                        listdata[0].createTime!!
+                                    )
+                                ) {
+                                    if (it1.sendId == "0") {
+                                        it1.sendId = userId + it1.createTime
+                                    }
+                                    addDataToList("10",data)
+                                    var listdata1: MutableList<MsgBeanData> =
+                                        ArrayList<MsgBeanData>()
+                                    listdata1.add(data)
+                                    mDatabind.rv.addModels(listdata1, index = 0)
+                                    mDatabind.rv.scrollToPosition(0) // 保证最新一条消息显示
                                 }
-                                addDataToList(data)
-//                                var listdata1: MutableList<MsgBeanData> = ArrayList<MsgBeanData>()
-//                                listdata1.add(data)
-//                                mDatabind.rv.addModels(listdata1, index = 0)
-//                                mDatabind.rv.scrollToPosition(0) // 保证最新一条消息显示
-                                getAllData()
                             }
                         }
                     }
@@ -866,7 +873,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
             }
 
             // mDatabind.rv.addModels(it)
-            offset = it[it.size - 1].id!!
+            //offset = it[it.size - 1].id!!
 
 
             if (it.size < 50) {
@@ -961,14 +968,15 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
     /***
      * 添加或者更新新的数据
      */
-    fun addDataToList(data: MsgBeanData) {
-        LogUtils.d("嘿嘿开始添加数据")
-        if (CacheUtil.getUser() != null) {
-            data.withId = CacheUtil.getUser()?.id!!
-            GlobalScope.launch {
-                MyApplication.dataBase!!.chatDao?.insertOrUpdate(data)
+    fun addDataToList(index:String,data: MsgBeanData) {
+        LogUtils.d(index+"嘿嘿开始添加数据"+JSONObject.toJSONString(data))
 
-
+        GlobalScope.launch {
+            mutex.withLock {
+                if (CacheUtil.getUser() != null) {
+                    data.withId = CacheUtil.getUser()?.id!!
+                    MyApplication.dataBase!!.chatDao?.insertOrUpdate(data)
+                }
             }
         }
     }

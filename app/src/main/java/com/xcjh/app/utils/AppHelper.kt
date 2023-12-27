@@ -114,7 +114,9 @@ fun ImageView.loadImageWithGlide(context: Context, imageUrl: String) {
 //                            setCornerRadius(roundedCornerRadius)
 //                        }
 
-                    Glide.with(context).load(resource).override(maxImageWidth, maxImageHeight)
+                    Glide.with(context).load(resource).override(maxImageWidth, maxImageHeight).placeholder(R.drawable.xx)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .skipMemoryCache(false)
                         .into(this@loadImageWithGlide)
                     // this@loadImageWithGlide.setImageDrawable(drawable)
                 } else {

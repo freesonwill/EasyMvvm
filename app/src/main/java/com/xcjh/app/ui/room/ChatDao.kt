@@ -12,39 +12,47 @@ import androidx.room.Update
 import com.alibaba.fastjson.JSONObject
 import com.xcjh.app.MyApplication
 import com.xcjh.base_lib.utils.LogUtils
+import kotlinx.coroutines.sync.Mutex
 
 @Dao
 interface ChatDao {
+
     //    @Query("select * from chat_db order by [id] desc  limit  :start,:count ")
     @Query("SELECT * FROM chat_db WHERE anchorId = :anchorId AND  withId = :id ORDER BY createTime DESC")
-    fun getMessagesByName(anchorId: String,id: String): MutableList<MsgBeanData >
+    fun getMessagesByName(anchorId: String, id: String): MutableList<MsgBeanData>
 
     @Query("SELECT * FROM chat_db WHERE sendId = :sendId LIMIT 1")
     fun findMessagesById(sendId: String): MsgBeanData
+
     @Transaction
     suspend fun insertOrUpdate(message: MsgBeanData) {
 
-        val oldMessage = findMessagesById(message.sendId!!)
-        Log.d("MessageDao", "oldMessage: $oldMessage")
+            var oldMessage: MsgBeanData?
+            oldMessage = findMessagesById(message.sendId!!)
+            Log.d("MessageDao", "oldMessage: $oldMessage")
 
-        if (oldMessage != null) {
+            if (oldMessage != null) {
 
-            message.idd=oldMessage.idd
-            updateData(message)
-            LogUtils.d("私聊修改一条数据"+JSONObject.toJSONString(message))
+                message.idd = oldMessage!!.idd
+                updateData(message)
+                LogUtils.d("私聊修改一条数据" + JSONObject.toJSONString(message))
 
-        } else {
-            LogUtils.d("私聊增加一条数据"+ JSONObject.toJSONString(message))
-            insert(message)
+            } else {
+                LogUtils.d("私聊增加一条数据" + JSONObject.toJSONString(message))
+                insert(message)
+
         }
-
     }
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(message: MsgBeanData)
+
     @Update
     fun updateData(entity: MsgBeanData?)
+
     @Delete
     fun delete(message: MsgBeanData)
+
     @Query("DELETE FROM chat_db WHERE anchorId = :anchorId")
-    fun deleteAllZeroId(anchorId:String)
+    fun deleteAllZeroId(anchorId: String)
 }
