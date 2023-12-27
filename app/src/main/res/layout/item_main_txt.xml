@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         android:textSize="@dimen/sp_16"
         android:textStyle="bold"
+        android:visibility="gone"
         android:textColor="@color/c_37373d"
         android:layout_marginBottom="@dimen/dp_12"
         android:text="@string/main_txt_on_the_air"/>

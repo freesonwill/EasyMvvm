@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="226dp"
-    android:layout_height="132dp"
+    android:layout_height="127dp"
     android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingBottom="@dimen/dp_12"
@@ -11,7 +11,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="26dp"
+        android:layout_height="19dp"
         android:layout_marginTop="@dimen/dp_12"
         android:orientation="horizontal"
         android:paddingLeft="@dimen/dp_12"

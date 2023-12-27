@@ -271,11 +271,12 @@
     <string name="personal_txt_head">头像</string>
     <string name="personal_txt_name">名称</string>
     <string name="personal_txt_title">个人资料</string>
-    <string name="personal_txt_nickname">昵称</string>
+    <string name="personal_txt_nickname">请输入昵称</string>
     <string name="http_txt_err_meg">网络连接错误</string>
     <string name="contact_txt_type">问题类型</string>
     <string name="contact_txt_content">反馈内容</string>
     <string name="contact_hint_input">请输入内容</string>
+    <string name="contact_hint_input_new">请输入反馈内容</string>
     <string name="contact_txt_add_image">添加图片 </string>
     <string name="contact_txt_add_most">(最多三张) </string>
     <string name="contact_txt_submit_succeed">提交反馈成功！</string>

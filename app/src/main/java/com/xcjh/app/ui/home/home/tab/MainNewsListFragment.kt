@@ -78,8 +78,8 @@ class MainNewsListFragment  : BaseFragment<MainNewsListVm, FragmentMainNewsListB
                             bindingItem.rlNewsShowList.visibility= View.GONE
                             Glide.with(context)
                                 .load(bean.pic) // 替换为您要加载的图片 URL
-                                .error(R.drawable.main_banner_load)
-                                .placeholder(R.drawable.main_banner_load)
+                                .error(R.drawable.zwt_banner)
+                                .placeholder(R.drawable.zwt_banner)
                                 .into(bindingItem.ivNewsBe)
                             var name="%s"+bean.title
                            bindingItem.txtNewsHot.text=name.replaceSpan("%s") {
@@ -93,8 +93,8 @@ class MainNewsListFragment  : BaseFragment<MainNewsListVm, FragmentMainNewsListB
                             bindingItem.rlNewsShowList.visibility= View.VISIBLE
                             Glide.with(context)
                                 .load(bean.pic) // 替换为您要加载的图片 URL
-                                .error(R.drawable.main_banner_load)
-                                .placeholder(R.drawable.main_banner_load)
+                                .error(R.drawable.zwt_banner)
+                                .placeholder(R.drawable.zwt_banner)
                                 .into(bindingItem.ivNewsIcon)
 //                            Glide.with(context)
 //                                .load(bean.pic) // 替换为您要加载的图片 URL

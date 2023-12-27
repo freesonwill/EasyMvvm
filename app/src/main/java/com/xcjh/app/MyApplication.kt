@@ -130,6 +130,7 @@ class MyApplication : App() , LifecycleObserver{
           DialogX.onlyOnePopTip = false*/
     }
 
+
 }
 
 /**
@@ -138,3 +139,4 @@ class MyApplication : App() , LifecycleObserver{
 fun isTopActivity(activity: Activity?): Boolean {
     return KtxActivityManger.currentActivity.toString() == activity.toString()
 }
+

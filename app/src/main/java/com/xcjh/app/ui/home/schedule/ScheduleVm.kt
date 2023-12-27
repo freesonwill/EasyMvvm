@@ -1,5 +1,6 @@
 package com.xcjh.app.ui.home.schedule
 
+import android.util.Log
 import com.kunminx.architecture.ui.callback.UnPeekLiveData
 import com.xcjh.app.bean.HotMatchBean
 import com.xcjh.app.bean.HotMatchReq
@@ -75,6 +76,7 @@ class ScheduleVm : BaseViewModel() {
         if (isRefresh) {
             pageNo = 1
         }
+        Log.i("VVVVVVVV","====="+isLoading)
         request(
             { apiService.getHotMatchChildList(bean) },
 

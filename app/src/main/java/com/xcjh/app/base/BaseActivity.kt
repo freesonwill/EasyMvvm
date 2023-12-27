@@ -1,32 +1,31 @@
 package com.xcjh.app.base
 
 import android.content.Intent
-import android.content.pm.ActivityInfo
+import android.content.res.Configuration
+import android.content.res.Resources
 import android.os.Bundle
 import android.view.View
 import androidx.databinding.ViewDataBinding
-import androidx.viewbinding.ViewBinding
 import com.gyf.immersionbar.ImmersionBar
-import com.gyf.immersionbar.ktx.showStatusBar
-import com.xcjh.base_lib.base.BaseViewModel
-import com.xcjh.base_lib.base.activity.BaseVmVbActivity
 import com.xcjh.app.utils.dismissLoadingExt
 import com.xcjh.app.utils.showLoadingExt
+import com.xcjh.base_lib.base.BaseViewModel
 import com.xcjh.base_lib.base.activity.BaseVmDbActivity
 
 /**
  * @author zobo
  * 2023.02.15
  */
-abstract class BaseActivity<VM : BaseViewModel, DB : ViewDataBinding> : BaseVmDbActivity<VM, DB>()  {
+abstract class BaseActivity<VM : BaseViewModel, DB : ViewDataBinding> : BaseVmDbActivity<VM, DB>() {
 
 
-    override fun initView(savedInstanceState: Bundle?){
+    override fun initView(savedInstanceState: Bundle?) {
         ImmersionBar.with(this)
             .statusBarDarkFont(true)//黑色
             .init()
 
     }
+
     /**
      * 创建liveData观察者
      */
@@ -54,10 +53,27 @@ abstract class BaseActivity<VM : BaseViewModel, DB : ViewDataBinding> : BaseVmDb
      * 泛型的高级特性 泛型实例化
      * 跳转
      */
-    inline fun <reified T> startNewActivity( block: Intent.() -> Unit = {}) {
+    inline fun <reified T> startNewActivity(block: Intent.() -> Unit = {}) {
         val intent = Intent(this, T::class.java)
         //把intent实例 传入block 函数类型参数
         intent.block()
         startActivity(intent)
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        if (newConfig.fontScale != 1f) { //设置字体大小不跟随系统
+            resources
+        }
+        super.onConfigurationChanged(newConfig)
+    }
+
+    override fun getResources(): Resources {
+        val resources = super.getResources()
+        val configContext = createConfigurationContext(resources.configuration)
+
+        return configContext.resources.apply {
+            configuration.fontScale = 1.0f
+            displayMetrics.scaledDensity = displayMetrics.density * configuration.fontScale
+        }
     }
 }

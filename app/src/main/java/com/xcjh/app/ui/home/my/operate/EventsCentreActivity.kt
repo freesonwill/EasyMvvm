@@ -67,9 +67,9 @@ class EventsCentreActivity : BaseActivity<EventsCentreVm, ActivityEventsCentreBi
                         var  bean=_data as EventsBean
                         Glide.with(context)
                             .load(bean.mainPic) // 替换为您要加载的图片 URL
-                            .error(R.drawable.load_square)
+                            .error(R.drawable.zwt_banner)
                             .apply(RequestOptions().transform(RoundedCorners(context.dp2px(8))))
-                            .placeholder(R.drawable.load_square)
+                            .placeholder(R.drawable.zwt_banner)
                             .into(bindingItem.ivNewsIcon)
                         bindingItem.txtEventsTitle.text=bean.title
                         val date = Date(bean.updateTime.toLong())

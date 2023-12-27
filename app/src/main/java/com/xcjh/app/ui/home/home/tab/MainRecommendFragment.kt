@@ -52,6 +52,7 @@ import com.xcjh.app.websocket.listener.LiveStatusListener
 import com.xcjh.base_lib.App
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.dp2px
+import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.view.clickNoRepeat
 import com.youth.banner.util.BannerUtils
 import java.text.SimpleDateFormat
@@ -62,9 +63,17 @@ import java.util.Locale
  * 首页推荐页面碎片
  */
 class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommendBinding>() {
+        //是第一次加载数据
+        var  initialLoading:Boolean=true
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initialLoading=true
 
+    }
 
     override fun initView(savedInstanceState: Bundle?) {
+        showLoading("")
+
 
         //首页轮询
         appViewModel.appPolling.observeForever{
@@ -76,7 +85,6 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
         mDatabind.smartCommon.setDisableContentWhenRefresh(true)//是否在刷新的时候禁止列表的操作
         mDatabind.smartCommon.setDisableContentWhenLoading(true)//是否在加载的时候禁止列表的操作
         mDatabind.smartCommon.setEnableOverScrollBounce(false)
-//        mDatabind.smartCommon.setRefreshHeader( ClassicsHeader(requireContext()))
         mDatabind.smartCommon.setRefreshHeader( CustomHeader(requireContext()))
         MyWsManager.getInstance(App.app)
             ?.setLiveStatusListener(this.toString(), object : LiveStatusListener {
@@ -108,7 +116,7 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                         being.playUrl=bean.playUrl
                         being.hotValue=bean.hotValue
                         being.titlePage=bean.coverImg
-                         being.competitionName=bean.competitionName
+                        being.competitionName=bean.competitionName
                         being.userLogo=bean.userLogo
                         if(mDatabind.rcvRecommend.models!=null){
                             for (i in 0 until mDatabind.rcvRecommend.mutable!!.size) {
@@ -215,6 +223,8 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
         mDatabind.smartCommon.setFooterHeight(20F)
         mDatabind.smartCommon.setOnRefreshLoadMoreListener(object : OnRefreshLoadMoreListener {
             override fun onRefresh(refreshLayout: RefreshLayout) {
+
+                initialLoading=false
                 mViewModel.getBannerList()
                 mViewModel.getOngoingMatchList(HotReq())
                 mViewModel.getNowLive(true)
@@ -258,6 +268,7 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
 
         //获取广告
         mViewModel.bannerList.observe(this){
+
             mDatabind.smartCommon.finishRefresh()
             mDatabind.smartCommon.resetNoMoreData()
             if(it.size>0){
@@ -389,7 +400,9 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
         }
         //正在直播的比赛
         mViewModel.liveList.observe(this){
-
+            if(initialLoading){
+                dismissLoading()
+            }
             if (it.isSuccess) {
                 //成功
                 when {
@@ -852,8 +865,15 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                             }
                             binding.rvExplore.addModels(mainTxtBean.list)
                         }else{
-                            binding.rvExplore.visibility= View.GONE
-                            binding.llShowTxt.visibility= View.VISIBLE
+
+                            if(initialLoading){
+                                binding.rvExplore.visibility= View.GONE
+                                binding.llShowTxt.visibility= View.GONE
+                            }else{
+                                binding.rvExplore.visibility= View.GONE
+                                binding.llShowTxt.visibility= View.VISIBLE
+                            }
+
                         }
                     }
                 }
