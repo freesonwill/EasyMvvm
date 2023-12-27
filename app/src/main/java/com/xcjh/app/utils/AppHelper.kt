@@ -75,8 +75,6 @@ fun doSomething() {
 }
 
 
-
-
 fun ImageView.loadImageWithGlide(context: Context, imageUrl: String) {
     val maxImageWidth = dp2px(150)
     val maxImageHeight = dp2px(102)
@@ -86,12 +84,15 @@ fun ImageView.loadImageWithGlide(context: Context, imageUrl: String) {
         .asBitmap()
         .load(imageUrl)
         .thumbnail(0.1f)
-        .apply(RequestOptions()
-            .diskCacheStrategy(DiskCacheStrategy.ALL))
+        .apply(
+            RequestOptions()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+        )
         .into(object : CustomTarget<Bitmap>() {
             override fun onLoadStarted(placeholder: Drawable?) {
                 this@loadImageWithGlide.setImageDrawable(ColorDrawable(placeholderColor))
             }
+
             override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                 val imageWidth = resource.width
                 val imageHeight = resource.height
@@ -102,34 +103,64 @@ fun ImageView.loadImageWithGlide(context: Context, imageUrl: String) {
                 val roundedCornerRadius: Float
                 LogUtils.d("$imageWidth=加载图片的宽高=$imageHeight")
 
-                if (imageWidth <= maxImageWidth && imageHeight <= maxImageHeight) {
+                if (imageWidth > maxImageWidth && imageHeight > maxImageHeight) {
+                    // 图片尺寸超过最大尺寸，进行裁剪并显示最大的宽高
+
+                    roundedCornerRadius = cornerRadius.toFloat()
+                    val scaledBitmap = cropBitmap(resource, 0, maxImageWidth, maxImageHeight)
+                    val drawable =
+                        RoundedBitmapDrawableFactory.create(resources, scaledBitmap).apply {
+                            isCircular = false
+                            setCornerRadius(roundedCornerRadius)
+                        }
+
+                    this@loadImageWithGlide.setImageDrawable(drawable)
+                } else if (imageWidth > maxImageWidth) {
+                    roundedCornerRadius = cornerRadius.toFloat()
+                    val scaledBitmap = cropBitmap(resource, 0, maxImageWidth, imageHeight)
+                    val drawable =
+                        RoundedBitmapDrawableFactory.create(resources, scaledBitmap).apply {
+                            isCircular = false
+                            setCornerRadius(roundedCornerRadius)
+                        }
+
+                    this@loadImageWithGlide.setImageDrawable(drawable)
+                } else if (imageHeight > maxImageHeight) {
+                    roundedCornerRadius = cornerRadius.toFloat()
+                    val scaledBitmap = cropBitmap(resource, 0, imageWidth, maxImageHeight)
+                    val drawable =
+                        RoundedBitmapDrawableFactory.create(resources, scaledBitmap).apply {
+                            isCircular = false
+                            setCornerRadius(roundedCornerRadius)
+                        }
+
+                    this@loadImageWithGlide.setImageDrawable(drawable)
+                } else {
+                    // 图片尺寸小于等于最大尺寸，不进行缩放，直接使用原图尺寸
                     scaledWidth = imageWidth
                     scaledHeight = imageHeight
                     roundedCornerRadius = 0f
-                } else {
-                    scaledWidth = maxImageWidth
-                    scaledHeight = maxImageHeight
-//                    if (aspectRatio > maxImageWidth.toFloat() / maxImageHeight.toFloat()) {
-//                        scaledWidth = maxImageWidth
-//                        scaledHeight = (maxImageWidth.toFloat() / aspectRatio).toInt()
-//                    } else {
-//                        scaledWidth = (maxImageHeight.toFloat() * aspectRatio).toInt()
-//                        scaledHeight = maxImageHeight
-//                    }
-                    roundedCornerRadius = cornerRadius.toFloat()
+                    val scaledBitmap =
+                        Bitmap.createScaledBitmap(resource, scaledWidth, scaledHeight, true)
+                    val drawable =
+                        RoundedBitmapDrawableFactory.create(resources, scaledBitmap).apply {
+                            isCircular = false
+                            setCornerRadius(roundedCornerRadius)
+                        }
+
+                    this@loadImageWithGlide.setImageDrawable(drawable)
                 }
 
-                val scaledBitmap = Bitmap.createScaledBitmap(resource, scaledWidth, scaledHeight, true)
-                val drawable = RoundedBitmapDrawableFactory.create(resources, scaledBitmap).apply {
-                    isCircular = false
-                    setCornerRadius(roundedCornerRadius)
-                }
 
-                this@loadImageWithGlide.setImageDrawable(drawable)
             }
 
             override fun onLoadCleared(placeholder: Drawable?) {}
         })
+}
+
+fun cropBitmap(bitmap: Bitmap, startX: Int, width: Int, height: Int): Bitmap {
+    val startY = bitmap.height / 2 // 获取图片高度的一半
+    return Bitmap.createBitmap(bitmap, startX, startY, width, height)
 }
 
 //除法
@@ -141,7 +172,7 @@ fun myDivide(a: Int, b: Int): Float {
     val dF = DecimalFormat("0.00000000")
     return try {
         dF.format((a.toFloat() / b).toDouble()).toFloat()
-    }catch (e:Exception){
+    } catch (e: Exception) {
         0f
     }
 }
@@ -231,7 +262,7 @@ fun ViewPager2.initChangeActivity(
 ): ViewPager2 {
     this.isUserInputEnabled = isUserInputEnabled
     //设置适配器
-    adapter = ViewPager2Adapter(acivity,fragments)
+    adapter = ViewPager2Adapter(acivity, fragments)
     setLm(this)
     isSaveEnabled = false
     return this
@@ -305,6 +336,7 @@ fun <T> smartListData(
         }
     }
 }
+
 /**
  * 普通加载Differ列表数据
  */
@@ -430,13 +462,13 @@ fun <T> smartPageListData(
     notice: String = appContext.getString(R.string.no_data),//提示
     marginT: Int = 100,//空布局距离顶部距离
 ) {
-    pageRefreshLayout.emptyLayout=R.layout.layout_empty
+    pageRefreshLayout.emptyLayout = R.layout.layout_empty
     pageRefreshLayout.stateLayout?.onEmpty {
         val lltContent = findViewById<LinearLayout>(R.id.lltContent)
         val emptyImg = findViewById<ImageView>(R.id.ivEmptyIcon)
         val emptyHint = findViewById<TextView>(R.id.txtEmptyName)
         val lp = lltContent.layoutParams as RelativeLayout.LayoutParams
-        lp.topMargin= dp2px(marginT)
+        lp.topMargin = dp2px(marginT)
         emptyImg.setOnClickListener {
 
         }
@@ -449,7 +481,7 @@ fun <T> smartPageListData(
             //第一页并没有数据 显示空布局界面
             data.isFirstEmpty -> {
                 pageRefreshLayout.finishRefresh()
-                rcv.models=(null)
+                rcv.models = (null)
                 pageRefreshLayout.showEmpty()
             }
             //是第一页
@@ -457,7 +489,7 @@ fun <T> smartPageListData(
                 pageRefreshLayout.finishRefresh()
                 pageRefreshLayout.resetNoMoreData()
                 pageRefreshLayout.showContent()
-                rcv.models=(data.listData)
+                rcv.models = (data.listData)
             }
             //不是第一页
             else -> {
@@ -481,6 +513,7 @@ fun <T> smartPageListData(
         }
     }
 }
+
 /**
  * 加载 LoadService+列表数据
  */
@@ -548,6 +581,7 @@ fun <T> setEmptyOrError(
     baseQuickAdapter.submitList(null)
     baseQuickAdapter.emptyView = empty
 }
+
 /**
  * 加载列表空布局
  */
@@ -558,18 +592,18 @@ fun setEmpty(
     isCenter: Boolean = true,//布局居中，后面得设置将无效
     marginT: Int = 75,//提示
     marginB: Int = 75,//提示
-):View {
+): View {
     val binding = LayoutEmptyBinding.inflate(LayoutInflater.from(context), null, false)//.root
     binding.ivEmptyIcon.setImageResource(imgId)
     binding.txtEmptyName.text = notice
     val lp = binding.lltContent.layoutParams as RelativeLayout.LayoutParams
-    if (isCenter){
-        lp.topMargin= context.dp2px(0)
-        lp.bottomMargin= context.dp2px(0)
+    if (isCenter) {
+        lp.topMargin = context.dp2px(0)
+        lp.bottomMargin = context.dp2px(0)
         lp.addRule(RelativeLayout.CENTER_IN_PARENT)
-    }else{
-        lp.topMargin= context.dp2px(marginT)
-        lp.bottomMargin= context.dp2px(marginB)
+    } else {
+        lp.topMargin = context.dp2px(marginT)
+        lp.bottomMargin = context.dp2px(marginB)
         lp.addRule(RelativeLayout.CENTER_HORIZONTAL)
     }
 
@@ -591,18 +625,19 @@ fun getVerName(context: Context): String {
     }
     return "V$verName"
 }
+
 /**
  * 获取版本号名称
  *
  * @param context 上下文
  * @return
  */
-fun getVerCode(context: Context):  Long{
-    var versionCode:Long=0
+fun getVerCode(context: Context): Long {
+    var versionCode: Long = 0
     try {
-       var  packageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
+        var packageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
 
-          versionCode = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+        versionCode = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
             packageInfo.longVersionCode
         } else {
             packageInfo.versionCode.toLong()
@@ -630,6 +665,7 @@ fun getH5Content(htmlStr: String): String {
     val regTag = "<[^>]*>"
     return htmlStr.replace(regFormat.toRegex(), "").replace(regTag.toRegex(), "")
 }
+
 /**
  * 获取 h5 标签中的内容
  * 保留原始 空格\t、回车\r、换行符\n、制表符\t
@@ -646,7 +682,8 @@ fun getH5Content3(htmlStr: String): String {
     val regFormat = "\n"
     return htmlStr.replace(regFormat.toRegex(), "<br>")
 }
-fun setWeb(mWebView :WebView) {
+
+fun setWeb(mWebView: WebView) {
     mWebView.webViewClient = object : WebViewClient() {
         override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
             super.onPageStarted(view, url, favicon)
@@ -671,6 +708,7 @@ fun setWeb(mWebView :WebView) {
     settings.javaScriptEnabled = true
     settings.defaultTextEncodingName = "UTF-8"
 }
+
 fun clearWebView(webView: WebView?) {
     val m = webView ?: return
     if (Looper.myLooper() != Looper.getMainLooper()) {

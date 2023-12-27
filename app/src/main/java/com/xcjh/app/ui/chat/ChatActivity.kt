@@ -4,16 +4,6 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.app.Activity
-import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapShader
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.RectF
-import android.graphics.Shader
-import android.graphics.drawable.Drawable
-
-import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
@@ -26,21 +16,13 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.TextView.OnEditorActionListener
-import androidx.core.graphics.drawable.toBitmap
-import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.SimpleItemAnimator
 import com.airbnb.lottie.LottieAnimationView
 import com.alibaba.fastjson.JSONObject
 import com.blankj.utilcode.util.ToastUtils
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool
-import com.bumptech.glide.load.resource.bitmap.BitmapTransformation
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.drake.brv.utils.addModels
 import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.models
@@ -52,12 +34,11 @@ import com.kongzue.dialogx.dialogs.CustomDialog
 import com.kongzue.dialogx.interfaces.OnBindView
 import com.luck.picture.lib.basic.PictureSelector
 import com.luck.picture.lib.config.SelectMimeType
-import com.luck.picture.lib.engine.CompressFileEngine
-import com.luck.picture.lib.engine.CropFileEngine
 import com.luck.picture.lib.entity.LocalMedia
-import com.luck.picture.lib.interfaces.OnKeyValueResultCallbackListener
 import com.luck.picture.lib.interfaces.OnResultCallbackListener
 import com.luck.picture.lib.manager.PictureCacheManager
+import com.lxj.xpopup.XPopup
+import com.lxj.xpopup.util.SmartGlideImageLoader
 import com.xcjh.app.MyApplication
 import com.xcjh.app.R
 import com.xcjh.app.appViewModel
@@ -89,20 +70,15 @@ import com.xcjh.base_lib.utils.LogUtils
 import com.xcjh.base_lib.utils.TAG
 import com.xcjh.base_lib.utils.TimeUtil
 import com.xcjh.base_lib.utils.copyToClipboard
-import com.xcjh.base_lib.utils.dp2px
 import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.setOnclickNoRepeat
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
-import top.zibin.luban.Luban
-import top.zibin.luban.OnNewCompressListener
 import java.io.File
-import java.security.MessageDigest
 
 
 /***
@@ -325,7 +301,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                         binding.tvcontent.text =
                             matchBeanNew.content
                         Glide.with(this@ChatActivity).load(CacheUtil.getUser()?.head)
-                            .placeholder(R.drawable.icon_avatar)
+                            .placeholder(R.drawable.icon_login_my_head)
                             .into(binding.ivhead)
                         if (matchBeanNew.lastShowTimeStamp!! == baseLong) {
                             matchBeanNew.lastShowTimeStamp = lastShowTimeStamp
@@ -439,7 +415,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                         if (binding.ivhead.tag == null) {
                             binding.ivhead.tag = CacheUtil.getUser()?.head
                             Glide.with(this@ChatActivity).load(CacheUtil.getUser()?.head)
-                                .placeholder(R.drawable.icon_avatar)
+                                .placeholder(R.drawable.icon_login_my_head)
                                 .into(binding.ivhead)
                         }
                         if (binding.ivpic.tag == null || binding.ivpic.tag != matchBeanNew.content) {
@@ -457,6 +433,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                             PictureSelector.create(this@ChatActivity)
                                 .openPreview()
                                 .setImageEngine(GlideEngine.createGlideEngine())
+                                .isPreviewFullScreenMode(false)
                                 .startActivityPreview(0, false, listPic)
                         }
                         if (matchBeanNew.lastShowTimeStamp!! == baseLong) {
@@ -488,46 +465,6 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                 .substring(0, 16)
                         binding.tvtime.visibility = View.GONE
                         binding.ivpic.loadImageWithGlide(context, matchBeanNew.content)
-//                        Glide.with(context)
-//                            .load(matchBeanNew.content)
-//                            .override(dp2px(150), dp2px(102))
-//                            .apply(requestOptions)
-//                            .fitCenter()
-//                            .into(object : CustomTarget<Drawable>() {
-//                                override fun onResourceReady(
-//                                    resource: Drawable,
-//                                    transition: Transition<in Drawable>?
-//                                ) {
-//                                    // 获取Drawable对象
-//                                    val bitmap = resource.toBitmap()
-//                                    LogUtils.d(bitmap.width.toString() + "=加载图片的宽高=" + bitmap.height+"----"+matchBeanNew.content)
-//                                    // 处理宽高低于最大宽高的图片
-//                                    if (bitmap.width <= dp2px(150) && bitmap.height <= dp2px(102)) {
-//                                        binding.ivpic.setImageBitmap(bitmap)
-//
-//                                    } else {
-//                                        // 计算缩放比例，并缩放图片到最大宽高
-//                                        val scale = Math.min(
-//                                            dp2px(150) / bitmap.width,
-//                                            dp2px(102) / bitmap.height
-//                                        )
-//                                        val newWidth = (bitmap.width * scale).toInt()
-//                                        val newHeight = (bitmap.height * scale).toInt()
-//                                        val scaledBitmap = Bitmap.createScaledBitmap(
-//                                            bitmap,
-//                                            newWidth,
-//                                            newHeight,
-//                                            true
-//                                        )
-//                                        binding.ivpic.setImageBitmap(scaledBitmap)
-//                                    }
-//                                }
-//
-//                                override fun onLoadCleared(placeholder: Drawable?) {
-//                                    // Do nothing
-//                                }
-//                            })
-
 
                         Glide.with(this@ChatActivity).load(userhead)
                             .placeholder(R.drawable.default_anchor_icon).into(binding.ivhead)
@@ -537,8 +474,10 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                             localMedia?.path = matchBeanNew.content
                             localMedia?.cutPath = matchBeanNew.content
                             listPic.add(localMedia)
+
                             PictureSelector.create(this@ChatActivity)
                                 .openPreview()
+                                .isPreviewFullScreenMode(false)
                                 .setImageEngine(GlideEngine.createGlideEngine())
                                 .startActivityPreview(0, false, listPic)
                         }
