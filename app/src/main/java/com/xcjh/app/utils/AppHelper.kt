@@ -103,38 +103,20 @@ fun ImageView.loadImageWithGlide(context: Context, imageUrl: String) {
                 val roundedCornerRadius: Float
                 LogUtils.d("$imageWidth=加载图片的宽高=$imageHeight")
 
-                if (imageWidth > maxImageWidth && imageHeight > maxImageHeight) {
+                if (imageWidth > maxImageWidth || imageHeight > maxImageHeight) {
                     // 图片尺寸超过最大尺寸，进行裁剪并显示最大的宽高
 
                     roundedCornerRadius = cornerRadius.toFloat()
-                    val scaledBitmap = cropBitmap(resource, 0, maxImageWidth, maxImageHeight)
-                    val drawable =
-                        RoundedBitmapDrawableFactory.create(resources, scaledBitmap).apply {
-                            isCircular = false
-                            setCornerRadius(roundedCornerRadius)
-                        }
+//                    val scaledBitmap = cropBitmap(resource, 0, imageWidth, maxImageHeight)
+//                    val drawable =
+//                        RoundedBitmapDrawableFactory.create(resources, scaledBitmap).apply {
+//                            isCircular = false
+//                            setCornerRadius(roundedCornerRadius)
+//                        }
 
-                    this@loadImageWithGlide.setImageDrawable(drawable)
-                } else if (imageWidth > maxImageWidth) {
-                    roundedCornerRadius = cornerRadius.toFloat()
-                    val scaledBitmap = cropBitmap(resource, 0, maxImageWidth, imageHeight)
-                    val drawable =
-                        RoundedBitmapDrawableFactory.create(resources, scaledBitmap).apply {
-                            isCircular = false
-                            setCornerRadius(roundedCornerRadius)
-                        }
-
-                    this@loadImageWithGlide.setImageDrawable(drawable)
-                } else if (imageHeight > maxImageHeight) {
-                    roundedCornerRadius = cornerRadius.toFloat()
-                    val scaledBitmap = cropBitmap(resource, 0, imageWidth, maxImageHeight)
-                    val drawable =
-                        RoundedBitmapDrawableFactory.create(resources, scaledBitmap).apply {
-                            isCircular = false
-                            setCornerRadius(roundedCornerRadius)
-                        }
-
-                    this@loadImageWithGlide.setImageDrawable(drawable)
+                    Glide.with(context).load(resource).override(maxImageWidth, maxImageHeight)
+                        .into(this@loadImageWithGlide)
+                    // this@loadImageWithGlide.setImageDrawable(drawable)
                 } else {
                     // 图片尺寸小于等于最大尺寸，不进行缩放，直接使用原图尺寸
                     scaledWidth = imageWidth

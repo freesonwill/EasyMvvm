@@ -96,6 +96,7 @@ class MyWsClientService : Service() {
             }
 
             override fun onMessage(message: String) {
+                "onMessage====------------  $message".loge()
                 val intent = Intent()
                 intent.action = WebSocketAction.WEB_ACTION
                 intent.putExtra("message", message)

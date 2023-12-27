@@ -33,12 +33,11 @@ import com.gyf.immersionbar.ImmersionBar
 import com.kongzue.dialogx.dialogs.CustomDialog
 import com.kongzue.dialogx.interfaces.OnBindView
 import com.luck.picture.lib.basic.PictureSelector
+import com.luck.picture.lib.config.InjectResourceSource
 import com.luck.picture.lib.config.SelectMimeType
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.interfaces.OnResultCallbackListener
 import com.luck.picture.lib.manager.PictureCacheManager
-import com.lxj.xpopup.XPopup
-import com.lxj.xpopup.util.SmartGlideImageLoader
 import com.xcjh.app.MyApplication
 import com.xcjh.app.R
 import com.xcjh.app.appViewModel
@@ -434,6 +433,10 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                 .openPreview()
                                 .setImageEngine(GlideEngine.createGlideEngine())
                                 .isPreviewFullScreenMode(false)
+                                .setInjectLayoutResourceListener { context, resourceSource ->
+                                    return@setInjectLayoutResourceListener if (resourceSource == InjectResourceSource.PREVIEW_LAYOUT_RESOURCE)
+                                        R.layout.ps_custom_fragment_preview else InjectResourceSource.DEFAULT_LAYOUT_RESOURCE
+                                }
                                 .startActivityPreview(0, false, listPic)
                         }
                         if (matchBeanNew.lastShowTimeStamp!! == baseLong) {
@@ -479,6 +482,10 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                 .openPreview()
                                 .isPreviewFullScreenMode(false)
                                 .setImageEngine(GlideEngine.createGlideEngine())
+                                .setInjectLayoutResourceListener { context, resourceSource ->//预览无标题栏
+                                    return@setInjectLayoutResourceListener if (resourceSource == InjectResourceSource.PREVIEW_LAYOUT_RESOURCE)
+                                        R.layout.ps_custom_fragment_preview else InjectResourceSource.DEFAULT_LAYOUT_RESOURCE
+                                }
                                 .startActivityPreview(0, false, listPic)
                         }
                         binding.linroot.setOnClickListener {
@@ -664,7 +671,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                     // LogUtils.d("发送成功一条数据"+JSONObject.toJSONString(chat))
                     for (i in 0 until mDatabind.rv.models!!.size) {
                         var beanmy: MsgBeanData = mDatabind.rv.models!![i] as MsgBeanData
-                        if (beanmy.sendId == chat.sendId) {
+                        if (beanmy.sendId == chat.sendId||beanmy.id == chat.sendId) {
                             beanmy.sent = 1
                             beanmy.id = chat.id
                             LogUtils.d(
@@ -834,7 +841,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                         addDataToList(it[i])
                     }
                 } else {
-                    for (data in it) {
+                    for ((index, data) in it.withIndex()) {
                         val foundData = listdata.find { it.id == data.id }
                         if (foundData == null) {
                             data?.let { it1 ->
@@ -842,10 +849,11 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                     it1.sendId = userId + it1.createTime
                                 }
                                 addDataToList(data)
-                                var listdata1: MutableList<MsgBeanData> = ArrayList<MsgBeanData>()
-                                listdata1.add(data)
-                                mDatabind.rv.addModels(listdata1, index = 0)
-                                mDatabind.rv.scrollToPosition(0) // 保证最新一条消息显示
+//                                var listdata1: MutableList<MsgBeanData> = ArrayList<MsgBeanData>()
+//                                listdata1.add(data)
+//                                mDatabind.rv.addModels(listdata1, index = 0)
+//                                mDatabind.rv.scrollToPosition(0) // 保证最新一条消息显示
+                                getAllData()
                             }
                         }
                     }
