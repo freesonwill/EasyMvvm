@@ -28,7 +28,7 @@
             android:id="@+id/ivhead"
             android:layout_width="@dimen/dp_50"
             android:layout_height="@dimen/dp_50"
-
+            android:scaleType="centerCrop"
             android:src="@drawable/basketball"
             android:layout_alignParentLeft="true" />
         <ImageView

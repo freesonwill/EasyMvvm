@@ -28,6 +28,7 @@
             android:id="@+id/ivhead"
             android:layout_width="@dimen/dp_50"
             android:layout_height="@dimen/dp_50"
+            android:scaleType="centerCrop"
             android:src="@drawable/basketball" />
         <com.xcjh.base_lib.utils.view.RoundImageView
             android:id="@+id/ivpic"

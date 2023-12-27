@@ -90,11 +90,11 @@ class LoginActivity : BaseActivity<LoginVm, ActivityLoaginBinding>() {
                         1 -> {
                             if (mDatabind.edtphone.text.toString().isEmpty()) {
 
-                                myToast(resources.getString(R.string.please_input_phone_num))
+                               // myToast(resources.getString(R.string.please_input_phone_num))
                                 return@setOnclickNoRepeat
                             }
                             if (mDatabind.edtcodePhone.text.toString().isEmpty()) {
-                                myToast(resources.getString(R.string.please_input_phone_code))
+                              //  myToast(resources.getString(R.string.please_input_phone_code))
                                 return@setOnclickNoRepeat
                             }
                             mViewModel.getLogin(
@@ -111,11 +111,11 @@ class LoginActivity : BaseActivity<LoginVm, ActivityLoaginBinding>() {
                         2 -> {
                             if (mDatabind.edtemail.text.toString().isEmpty()) {
 
-                                myToast(resources.getString(R.string.please_input_email))
+                              //  myToast(resources.getString(R.string.please_input_email))
                                 return@setOnclickNoRepeat
                             }
                             if (mDatabind.edtcodePhone.text.toString().isEmpty()) {
-                                myToast(resources.getString(R.string.please_input_phone_code))
+                               // myToast(resources.getString(R.string.please_input_phone_code))
                                 return@setOnclickNoRepeat
                             }
                             mViewModel.getLogin(

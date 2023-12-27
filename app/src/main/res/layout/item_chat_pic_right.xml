@@ -86,7 +86,7 @@
             android:layout_width="@dimen/dp_50"
             android:layout_height="@dimen/dp_50"
             android:layout_alignParentRight="true"
-
+            android:scaleType="centerCrop"
             android:src="@drawable/basketball" />
     </RelativeLayout>
 </LinearLayout>

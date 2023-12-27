@@ -91,6 +91,7 @@
             android:id="@+id/ivhead"
             android:layout_width="@dimen/dp_50"
             android:layout_height="@dimen/dp_50"
+            android:scaleType="centerCrop"
             android:layout_alignParentRight="true"
 
             />
