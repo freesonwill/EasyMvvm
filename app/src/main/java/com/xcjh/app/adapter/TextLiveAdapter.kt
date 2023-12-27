@@ -17,6 +17,9 @@ import com.xcjh.app.bean.LiveTextBean
 import com.xcjh.base_lib.utils.view.visibleOrGone
 import com.xcjh.base_lib.utils.view.visibleOrInvisible
 
+/**
+ * 文字直播
+ */
 class TextLiveAdapter : BaseQuickAdapter<LiveTextBean, QuickViewHolder>() {
 
     override fun onCreateViewHolder(

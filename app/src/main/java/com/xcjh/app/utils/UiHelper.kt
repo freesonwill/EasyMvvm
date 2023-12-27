@@ -1,29 +1,46 @@
 package com.xcjh.app.utils
 
 import android.app.Activity
+import android.content.res.ColorStateList
 import android.graphics.Rect
+import android.text.method.LinkMovementMethod
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.blankj.utilcode.util.SizeUtils
+import com.bumptech.glide.Glide
+import com.drake.brv.layoutmanager.HoverLinearLayoutManager
+import com.drake.brv.utils.setup
+import com.drake.engine.base.app
 import com.google.android.material.appbar.AppBarLayout
+import com.luck.picture.lib.basic.PictureSelector
+import com.luck.picture.lib.entity.LocalMedia
 import com.xcjh.app.R
 import com.xcjh.app.adapter.ViewPager2Adapter
 import com.xcjh.app.bean.MatchDetailBean
+import com.xcjh.app.bean.MsgBean
+import com.xcjh.app.bean.NoticeBean
 import com.xcjh.app.bean.TabBean
+import com.xcjh.app.databinding.ItemDetailChatBinding
 import com.xcjh.app.ui.details.fragment.DetailAnchorFragment
+import com.xcjh.app.ui.details.fragment.DetailChat2Fragment
 import com.xcjh.app.ui.details.fragment.DetailChatFragment
 import com.xcjh.app.ui.details.fragment.DetailIndexFragment
 import com.xcjh.app.ui.details.fragment.DetailLineUpFragment
 import com.xcjh.app.ui.details.fragment.DetailLiveFragment
 import com.xcjh.app.ui.details.fragment.DetailResultFragment
 import com.xcjh.base_lib.appContext
+import com.xcjh.base_lib.utils.SpanUtil
+import com.xcjh.base_lib.utils.loge
 import com.xcjh.base_lib.utils.notNull
+import com.xcjh.base_lib.utils.toHtml
 import com.xcjh.base_lib.utils.view.visibleOrGone
 import net.lucode.hackware.magicindicator.MagicIndicator
 
@@ -130,7 +147,11 @@ fun setMatchStatusTime(
 ) {
     if (matchType == "1") {
         if (status in 2..7) {
-            tvTime.text = runTime.toString()
+            tvTime.text = when (status) {
+                5 -> "加时"
+                7 -> "点球"
+                else -> runTime.toString()
+            }
             tvTimeS.text = " '"
             tvTime.visibleOrGone(true)
             tvTimeS.visibleOrGone(true)
@@ -229,6 +250,7 @@ fun setNewViewPager(
         mTitles.add(t.name)
         when (t.type) {
             1 -> mFragList.add(DetailChatFragment(liveId, anchorId))
+          //  1 ->mFragList.add(DetailChat2Fragment(liveId, anchorId))
             2 -> mFragList.add(DetailAnchorFragment(anchorId ?: ""))
             3 -> mFragList.add(DetailResultFragment(detailBean))//赛况
             4 -> mFragList.add(DetailLineUpFragment(detailBean))//阵容
@@ -291,3 +313,108 @@ fun setProgressValue(progress: Int): Int {
     }
     return p
 }
+
+/**
+ * 聊天列表
+ * @isReverse 是否翻转 默认不
+ */
+fun setChatRoomRcv(rcvChat : RecyclerView, mLayoutManager: HoverLinearLayoutManager,isReverse:Boolean=false,offset: (String?) -> Unit = {}) {
+    rcvChat.apply {
+        layoutManager = mLayoutManager
+    }.setup {
+        addType<NoticeBean> {
+            R.layout.item_detail_chat_notice // 公告
+        }
+        addType<MsgBean> {
+            R.layout.item_detail_chat // 我发的消息
+        }
+        onBind {
+            when (val item = _data) {
+                is NoticeBean -> {
+
+                }
+                is MsgBean -> {
+                    val binding = getBinding<ItemDetailChatBinding>()
+                    if (item.identityType == 0) {
+                        binding.ivImage.visibleOrGone(false)
+                        binding.ivLevel.visibleOrGone(true)
+                        binding.lltLevel.backgroundTintList = ColorStateList.valueOf(
+                            ContextCompat.getColor(context, R.color.c_1AFFFFFF)
+                        )
+                        binding.ivLevel.setImageResource(setLeverDrawable(item.level))
+                        binding.tvLevel.text = getLeverNum(item.level)
+                    } else {
+                        binding.tvLevel.text = app.getString(R.string.anchor)
+                        binding.lltLevel.backgroundTintList = ColorStateList.valueOf(
+                            ContextCompat.getColor(context, R.color.c_3334A853)
+                        )
+                        binding.ivLevel.visibleOrGone(false)
+                        binding.ivImage.visibleOrGone(item.msgType == 1)
+                        if (item.msgType == 1) {//图片
+                            Glide.with(context)
+                                .load(item.content)
+                                .placeholder(R.drawable.load_square)
+                                .into(binding.ivImage)
+                            binding.ivImage.setOnClickListener {
+                                val list = arrayListOf<LocalMedia>()
+                                val localMedia = LocalMedia()
+                                localMedia.path = item.content
+                                localMedia.cutPath = item.content
+                                list.add(localMedia)
+                                PictureSelector.create(context)
+                                    .openPreview()
+                                    .setImageEngine(GlideEngine.createGlideEngine())
+                                    .startActivityPreview(0, false, list)
+                            }
+                        }
+                    }
+                    if (isReverse){
+                        if (modelPosition + 1 == models?.size) {
+                            offset.invoke(item.id ?: "")
+                            //item.id?.loge("====+++++++++")
+                        }
+                    }else{
+                        if (modelPosition == 0) {
+                            offset.invoke(item.id ?: "")
+                        }
+                    }
+                    val section = SpanUtil.create()
+                        .addForeColorSection(
+                            item.nick + " : ",
+                            ContextCompat.getColor(context, R.color.c_94999f)
+                        )
+                        .addForeColorSection(
+                            if (item.msgType == 1) "" else item.content,
+                            ContextCompat.getColor(context, R.color.c_ffffff)
+                        )
+                    if (item.identityType == 0) {
+                        binding.tvContent.text = section.spanStrBuilder
+                        //  binding.tvContent.text = "<font color=\"#94999F\">${item.nick} : </font>${item.content}".toHtml()
+                    } else {
+                        if (item.msgType == 0) {
+                            //主播加入超链接
+                            /* "<font color=\"#34A853\" font-weight=\"500\">${item.nick} : </font>${item.content}".toHtml {
+                                 Handler(Looper.getMainLooper()).post {
+                                     binding.tvContent.text = it
+                                 }
+                             }*/
+                           // val bb=item.content.replace("<p>","<span>").replace("</p>","</span>")
+                            if (item.isFirst){
+                                binding.tvContent.text = item.content.toHtml()
+                            }else{
+                                binding.tvContent.text =
+                                    "<font color=\"#34A853\" font-weight=\"500\">${item.nick} : </font>${item.content}".toHtml()
+                            }
+                            binding.tvContent.movementMethod = LinkMovementMethod.getInstance()
+                        } else {
+                            binding.tvContent.text =
+                                "<font color=\"#34A853\" font-weight=\"500\">${item.nick} : ".toHtml()
+                        }
+                    }
+                    //.showIn(binding.tvContent) //显示到控件TextView中
+                }
+            }
+        }
+    }
+}
+

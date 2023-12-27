@@ -30,14 +30,14 @@
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <!--FCM-->
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
-    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <!-- 通知震动 -->
     <uses-permission android:name="android.permission.VIBRATE" />
 
-    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
 
 
     <!-- 适配Android 13，应用弹出通知必须权限-->
@@ -71,78 +71,78 @@
             android:noHistory="true"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Starting">
-
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".ui.MainActivity"
             android:exported="true"
             android:launchMode="singleTask"
-            android:theme="@style/Theme.Starting"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Starting">
 
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
+
         </activity>
         <activity
             android:name=".ui.home.my.operate.PushSetActivity"
-            android:screenOrientation="portrait"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.home.my.operate.VibrateSetActivity"
-            android:screenOrientation="portrait"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.home.my.operate.SetUpActivity"
-            android:screenOrientation="portrait"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.home.my.operate.LevelMissionActivity"
-            android:screenOrientation="portrait"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.home.my.operate.ContactUsActivity"
-            android:screenOrientation="portrait"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.feed.FeedNoticeActivity"
-            android:screenOrientation="portrait"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.home.my.personal.EditProfileActivity"
-            android:screenOrientation="portrait"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.home.my.personal.PersonalDataActivity"
-            android:screenOrientation="portrait"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.home.my.operate.ViewingHistoryListActivity"
-            android:screenOrientation="portrait"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.search.SeacherFriendActivity"
-            android:screenOrientation="portrait"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.home.my.operate.MyFollowListActivity"
-            android:screenOrientation="portrait"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.Index.IndexLetterActivity"
-            android:screenOrientation="portrait"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".web.WebRichTextActivity"
-            android:screenOrientation="portrait"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.home.my.operate.EventsCentreActivity"
-            android:screenOrientation="portrait"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".web.WebActivity"
             android:exported="false"
@@ -196,9 +196,9 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
             android:screenOrientation="portrait" />
 
-       <!-- <meta-data
-            android:name="firebase_crashlytics_collection_enabled"
-            android:value="${is_release}" />-->
+        <!-- <meta-data
+             android:name="firebase_crashlytics_collection_enabled"
+             android:value="${is_release}" />-->
 
         <service
             android:name=".websocket.MyWsClientService"
@@ -213,22 +213,22 @@
             </intent-filter>
         </service>
         <!-- 用于演示通知点击跳转 -->
-      <!--  <activity
-            android:name="com.xcjh.app.component.UserActivity400"
-            android:exported="false"
-            android:launchMode="singleTask" />-->
+        <!--  <activity
+              android:name="com.xcjh.app.component.UserActivity400"
+              android:exported="false"
+              android:launchMode="singleTask" />-->
 
         <!-- 用于演示deepLink的通知点击跳转 -->
         <activity
             android:name="com.xcjh.app.component.UserActivity400"
             android:exported="true">
-          <!--  <intent-filter>
-                <data android:scheme="你的scheme" />
-                <data android:host="你的host" />
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-            </intent-filter>-->
+            <!--  <intent-filter>
+                  <data android:scheme="你的scheme" />
+                  <data android:host="你的host" />
+                  <action android:name="android.intent.action.VIEW" />
+                  <category android:name="android.intent.category.DEFAULT" />
+                  <category android:name="android.intent.category.BROWSABLE" />
+              </intent-filter>-->
         </activity>
         <!-- 用于演示自定义消息展示 -->
         <activity

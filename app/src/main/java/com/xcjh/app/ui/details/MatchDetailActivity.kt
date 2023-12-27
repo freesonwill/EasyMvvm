@@ -55,7 +55,6 @@ class MatchDetailActivity :
     private var mTitles = arrayListOf<String>()
     private var mFragList = arrayListOf<Fragment>()
     private lateinit var pager2Adapter: ViewPager2Adapter
-
     private lateinit var matchDetail: MatchDetailBean //当前比赛详情
     private var isNeedInit: Boolean = true //是否需要初始化
 
@@ -69,7 +68,6 @@ class MatchDetailActivity :
 
     // private var playUrl: String? = "rtmp://liteavapp.qcloud.com/live/liteavdemoplayerstreamid"
     // private var playUrl: String? = "https://sf1-hscdn-tos.pstatp.com/obj/media-fe/xgplayer_doc_video/flv/xgplayer-demo-720p.flv"
-    private var playUrl: String? = ""
 
     companion object {
         fun open(
@@ -150,7 +148,6 @@ class MatchDetailActivity :
         mDatabind.apply {
             topLiveTitle.visibleOrGone(isHasAnchor)
         }
-
     }
 
     private fun showHideLive(isClose: Boolean = false) {
@@ -177,7 +174,6 @@ class MatchDetailActivity :
                 lltLiveError.visibleOrGone(false)
             }
         }
-
     }
 
     private fun initVp() {
@@ -246,9 +242,9 @@ class MatchDetailActivity :
                                 hotValue = bean.hotValue.toString()
                             )
                             anchor?.apply {
-                                userId = bean.id?:""
-                                nickName = bean.nickName?:""
-                                playUrl = bean.playUrl?:""
+                                userId = bean.id ?: ""
+                                nickName = bean.nickName ?: ""
+                                playUrl = bean.playUrl ?: ""
                             }
                             matchDetail.anchorList?.forEach {
                                 if (it.userId == bean.anchorId) {
@@ -270,7 +266,7 @@ class MatchDetailActivity :
                                 }
                             }
                             //在列表中没找到就添加
-                            if (add){
+                            if (add) {
                                 matchDetail.anchorList?.add(
                                     AnchorListBean(
                                         liveId = bean.id,
@@ -345,7 +341,13 @@ class MatchDetailActivity :
                                     Gson().toJson(it).loge("===66666===")
                                     matchDetail.apply {
                                         status = BigDecimal(it.status).toInt()
-                                        //runTime = 123
+                                        if (matchType == "1") {
+                                            if (it.status.toInt() == 2) {
+                                                runTime = it.runTime.toInt()//上半场
+                                            } else if (it.status.toInt() == 4) {
+                                                runTime = it.runTime.toInt()//下半场
+                                            }
+                                        }
                                         awayHalfScore = BigDecimal(it.awayHalfScore).toInt()
                                         awayScore = BigDecimal(it.awayScore).toInt()
                                         homeHalfScore = BigDecimal(it.homeHalfScore).toInt()
@@ -361,11 +363,9 @@ class MatchDetailActivity :
                     }
                 }
             })
-
     }
 
     private fun setBaseListener() {
-
         //分享按钮
         mDatabind.tvToShare.setOnClickListener {
             //分享 固定地址
@@ -431,7 +431,7 @@ class MatchDetailActivity :
 
             }
         } else {
-            myToast("no data",isDeep=true)
+            myToast("no data", isDeep = true)
         }
     }
 
@@ -461,8 +461,6 @@ class MatchDetailActivity :
         }
         //赛事名字和比赛时间
         mDatabind.tvCompetitionName.text = matchDetail.competitionName
-        mDatabind.tvMatchTime.text =
-            TimeUtil.timeStamp2Date(matchDetail.matchTime.toLong(), "MM-dd HH:mm")
         needWsToUpdateUI()
     }
 
@@ -615,9 +613,9 @@ class MatchDetailActivity :
         mViewModel.anchor.observe(this) {
             if (it != null) {
                 anchor?.apply {
-                    userId = it.id?:""
-                    nickName = it.nickName?:""
-                    userLogo = it.head?:""
+                    userId = it.id ?: ""
+                    nickName = it.nickName ?: ""
+                    userLogo = it.head ?: ""
                 }
                 this.anchorId = it.id
                 setFocusUI(it.focus)
@@ -649,9 +647,7 @@ class MatchDetailActivity :
                  if (::matchDetail.isInitialized && matchDetail.status in 0..if (matchType == "1") 7 else 9) {
                      // mViewModel.getMatchDetail(matchId, matchType)
                  }
-             } catch (_: Exception) {
-             }
-
+             } catch (_: Exception) {}
          }*/
     }
 
@@ -678,13 +674,20 @@ class MatchDetailActivity :
      */
     private fun updateRunTime() {
         if (matchDetail.status in 2..if (matchType == "1") 7 else 9) {
-            setMatchStatusTime(
-                mDatabind.tvMatchTime,
-                mDatabind.tvMatchTimeS,
-                matchDetail.matchType,
-                matchDetail.status,
-                matchDetail.runTime
-            )
+            if (matchType == "1" && matchDetail.status == 3){
+                //中场特殊处理
+                mDatabind.tvMatchTime.text =
+                    TimeUtil.timeStamp2Date(matchDetail.matchTime.toLong(), "MM-dd HH:mm")
+                mDatabind.tvMatchTimeS.visibleOrGone(false)
+            }else{
+                setMatchStatusTime(
+                    mDatabind.tvMatchTime,
+                    mDatabind.tvMatchTimeS,
+                    matchDetail.matchType,
+                    matchDetail.status,
+                    matchDetail.runTime
+                )
+            }
         }
     }
 

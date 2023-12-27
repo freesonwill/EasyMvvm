@@ -189,6 +189,7 @@ data class MsgBean(
     val toId: String? = "",
     val updateTime: String? = "",
     var lastShowTimeStamp: Long = 0,
+    var isFirst: Boolean = false,
     val updater: String? = ""
 ) : ItemAttached {
     var visibility: Boolean = false // 显示隐藏
@@ -508,7 +509,7 @@ data class IncidentsBean(
     val outPlayerId: Int = 0,//
     val outPlayerName: String = "",//换下球员名称
     val playerId: Int = 0,//事件相关球员id，可能不存在
-    val playerName: String = "",//事件相关球员名称，可能不存在
+    val playerName: String? = null,//事件相关球员名称，可能不存在
     val position: Int = 0,//事件发生方，0-中立、1-主队、2-客队
     val reasonType: Int = 0,
     val second: Int = 0,//时间(秒)

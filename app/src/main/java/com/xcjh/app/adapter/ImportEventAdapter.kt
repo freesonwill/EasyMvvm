@@ -7,6 +7,9 @@ import com.xcjh.app.databinding.ItemImportEventBinding
 import com.xcjh.base_lib.utils.dip2px
 import com.xcjh.base_lib.utils.view.visibleOrGone
 
+/**
+ * 重要事件
+ */
 class ImportEventAdapter : BaseViewBindingQuickAdapter<IncidentsBean, ItemImportEventBinding>() {
 
 
@@ -48,13 +51,20 @@ class ImportEventAdapter : BaseViewBindingQuickAdapter<IncidentsBean, ItemImport
                     setUI(binding, 2, item.position)
                     binding.tvHomeShotScore.text = "${item.homeScore}:${item.awayScore}"
                     binding.tvHomeShotMsg.text =
-                        if (item.playerName.isNullOrEmpty()) "" else item.playerName + "进球"
+                        if (item.playerName.isNullOrEmpty()) {
+                            "进球"
+                        } else {
+                            item.playerName + "进球"
+                        }
                     binding.tvAwayShotScore.text = "${item.homeScore}:${item.awayScore}"
-                    binding.tvAwayShotMsg.text =
-                        if (item.playerName.isNullOrEmpty()) "" else item.playerName + "进球"
+                    binding.tvAwayShotMsg.text = if (item.playerName.isNullOrEmpty()) {
+                        "进球"
+                    } else {
+                        item.playerName + "进球"
+                    }
                 }
 
-                3, 4, 15 -> {
+                3, 4 -> {
                     //红黄牌
                     setTime(binding, 1)
                     setUI(binding, 1, item.position)
@@ -62,6 +72,16 @@ class ImportEventAdapter : BaseViewBindingQuickAdapter<IncidentsBean, ItemImport
                     binding.ivHomeIcon.setImageResource(if (item.type == 3) R.drawable.yellow_card else R.drawable.red_card)
                     binding.tvAwayMsg.text = item.playerName
                     binding.ivAwayIcon.setImageResource(if (item.type == 3) R.drawable.yellow_card else R.drawable.red_card)
+                }
+
+                15 -> {
+                    //两黄变一红牌
+                    setTime(binding, 1)
+                    setUI(binding, 1, item.position)
+                    binding.tvHomeMsg.text = item.playerName
+                    binding.ivHomeIcon.setImageResource(R.drawable.sk_lianghuangyihong_icon)
+                    binding.tvAwayMsg.text = item.playerName
+                    binding.ivAwayIcon.setImageResource(R.drawable.sk_lianghuangyihong_icon)
                 }
 
                 9 -> {

@@ -2,10 +2,11 @@ package com.xcjh.app.ui.details.fragment
 
 import android.annotation.SuppressLint
 import android.content.res.ColorStateList
+import android.graphics.LinearGradient
+import android.graphics.Shader
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.method.LinkMovementMethod
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.ImageView
@@ -14,9 +15,8 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
-import com.blankj.utilcode.util.SizeUtils.dp2px
+import com.blankj.utilcode.util.SizeUtils
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -26,6 +26,7 @@ import com.drake.brv.utils.addModels
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.drake.softinput.hideSoftInput
+import com.drake.softinput.setWindowSoftInput
 import com.google.gson.Gson
 import com.luck.picture.lib.basic.PictureSelector
 import com.luck.picture.lib.entity.LocalMedia
@@ -39,31 +40,30 @@ import com.xcjh.app.ui.details.DetailVm
 import com.xcjh.app.ui.details.common.RoomChatVm
 import com.xcjh.app.utils.*
 import com.xcjh.app.websocket.MyWsManager
+import com.xcjh.app.websocket.bean.LiveStatus
 import com.xcjh.app.websocket.bean.ReceiveChatMsg
 import com.xcjh.app.websocket.bean.ReceiveWsBean
 import com.xcjh.app.websocket.bean.SendChatMsgBean
 import com.xcjh.app.websocket.listener.LiveRoomListener
 import com.xcjh.base_lib.App
+import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.utils.SpanUtil
 import com.xcjh.base_lib.utils.dp2px
 import com.xcjh.base_lib.utils.loge
+import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.toHtml
 import com.xcjh.base_lib.utils.view.visibleOrGone
 import kotlinx.android.synthetic.main.fragment_detail_tab_chat.view.*
 
 
 /**
- * 聊天 正向布局
+ * 聊天 反向布局
  */
 
-class DetailChatFragment(
-    private var liveId: String,
-    var userId: String?,
-    override val typeId: Long = 1,
-) :
-    BaseVpFragment<RoomChatVm, FragmentDetailTabChatBinding>(),
+class DetailChat2Fragment(var liveId: String, var userId: String?, override val typeId: Long = 1) :
+    BaseVpFragment<RoomChatVm, FragmentDetailTabChat2Binding>(),
     LiveRoomListener, View.OnClickListener {
-
+    private val req: HistoryMsgReq = HistoryMsgReq("", "", "")//只为获取分页size
     private val vm by lazy {
         ViewModelProvider(requireActivity())[DetailVm::class.java]
     }
@@ -78,9 +78,8 @@ class DetailChatFragment(
     }
 
     private val mLayoutManager by lazy {
-
-        HoverLinearLayoutManager(context, RecyclerView.VERTICAL, false).apply {
-            // stackFromEnd = true
+        HoverLinearLayoutManager(context, RecyclerView.VERTICAL, true).apply {
+            stackFromEnd = true
         }
     }
 
@@ -124,10 +123,11 @@ class DetailChatFragment(
 
     @SuppressLint("ClickableViewAccessibility")
     private fun initRcv() {
-        mDatabind.smartChat.setEnableLoadMore(false)
-        mDatabind.smartChat.setEnableOverScrollBounce(false)
-        mDatabind.smartChat.emptyLayout = R.layout.layout_empty
-        mDatabind.smartChat.stateLayout?.onEmpty {
+        //  mDatabind.page.setEnableLoadMore(false)
+        mDatabind.page.setEnableOverScrollBounce(false)
+        mDatabind.page.preloadIndex = 3
+        mDatabind.page.emptyLayout = R.layout.layout_empty
+        mDatabind.page.stateLayout?.onEmpty {
             val emptyImg = findViewById<ImageView>(R.id.ivEmptyIcon)
             val emptyHint = findViewById<TextView>(R.id.txtEmptyName)
             val lltContent = findViewById<LinearLayout>(R.id.lltContent)
@@ -138,21 +138,12 @@ class DetailChatFragment(
             emptyHint.text = "暂无聊天内容"
             emptyHint.setTextColor(context.getColor(R.color.c_5b5b5b))
         }
-        mDatabind.smartChat.setOnRefreshListener {
-            if (!mDatabind.rcvChat.models.isNullOrEmpty() && offset.isEmpty()){
-                mDatabind.smartChat.finishRefresh(1000)
-            }else{
-                mViewModel.getHisMsgList(liveId, offset)
-            }
+        mDatabind.page.onRefresh {
+            mViewModel.getHisMsgList(liveId, offset)
         }
-        setChatRoomRcv(mDatabind.rcvChat,mLayoutManager){
+        setChatRoomRcv(mDatabind.rcvChat,mLayoutManager,true){
             offset = it?: ""
         }
-        val defaultItemAnimator = DefaultItemAnimator()
-        //  val defaultItemAnimator = MyItemAnimator()
-        // val defaultItemAnimator = SlideInLeftAnimator()
-        defaultItemAnimator.addDuration = 500
-        mDatabind.rcvChat.itemAnimator = defaultItemAnimator
         //点击列表隐藏软键盘
         mDatabind.rcvChat.setOnTouchListener { v, _ ->
             v.clearFocus() // 清除文字选中状态
@@ -160,7 +151,9 @@ class DetailChatFragment(
             mDatabind.edtChatMsg.clearFocus()
             false
         }
+        //点击列表隐藏软键盘
         mDatabind.edtChatMsg.setOnFocusChangeListener { v, hasFocus ->
+            // setWindowSoftInput(float = mDatabind.llInput, setPadding = true)
             if (hasFocus) {
                 judgeLogin()
             }
@@ -179,87 +172,63 @@ class DetailChatFragment(
 
     override fun createObserver() {
         //公告
-        vm.anchor.observe(this) { it ->
+        vm.anchor.observe(this) {
             if (it != null) {
                 noticeBean.notice = it.notice ?: ""
-
-               /*  val richText = ("<font color=\"red\">红色样式</font><br />"
-                         + "<big>大号字样式</big><br />"
-                         + "<small>小号字样式</small><br />"
-                         + "<i>斜体样式</i><br />"
-                         + "<b>粗体样式</b><br />"
-                         + "<tt>等t宽t样式</tt><br />"
-                         + "<p>段落样式</p><br />"
-                         +"<img src=\"https://5b0988e595225.cdn.sohucs.com/images/20180615/0338b5602889474d9935ec4214de9695.jpeg\" title=\"abcjpg\">"
-                         + "<font color='#F7DA73'><a href =\"http://www.baidu.com\">百度一下</a></font>")*/
-               /*  richText.toHtml {
-                     Handler(Looper.getMainLooper()).post {
-
-                         mDatabind.notice.expandableText.text = it
-                     }
-                 }*/
-
-                mDatabind.notice.expandableText.text =  it.notice?.toHtml() //主播公告
+                mDatabind.notice.expandableText.text = it.notice?.toHtml() //主播公告
                 val lineCount: Int = mDatabind.notice.expandableText.layout.lineCount
                 mDatabind.notice.lltExpandCollapse.visibleOrGone(lineCount > 2)
                 if (lineCount > 2) {
                     // 内容超过了两行
-                    mDatabind.notice.expandableText.maxLines =  2
-                } else {
-                    // 内容没有超过两行
+                    mDatabind.notice.expandableText.maxLines = 2
                 }
-
                 mDatabind.rcvChat.postDelayed({
                     try {
                         val params = mDatabind.rcvChat.layoutParams
-                        params.height = mDatabind.smartChat.height
+                        params.height = mDatabind.page.height
                         mDatabind.rcvChat.layoutParams = params
                         mDatabind.rcvChat.addModels(
                             listOf(
                                 MsgBean(
-                                    it.id,
-                                    it.head,
-                                    it.nickName,
-                                    "0",
+                                    it.id, it.head, it.nickName, "0",
                                     //richText,
-                                    it.firstMessage ?: "",
-                                    identityType = 1,
-                                    isFirst = true
+                                    it.firstMessage ?: "", identityType = 1,isFirst = true
                                 )
                             ),
-                            // index = 0
+                            index = 0
                         ) // 添加一条消息
-                        mDatabind.rcvChat.models?.size?.let {
-                            mDatabind.rcvChat.smoothScrollToPosition(it)
-                        }
+                        mDatabind.rcvChat.scrollToPosition(0)
                     } catch (_: Exception) {
                     }
+
                 }, 500)
             }
         }
         //历史消息
         mViewModel.hisMsgList.observe(this) {
-            mDatabind.smartChat.finishRefresh()
+            // mDatabind.page.finishRefresh()
             if (it.isSuccess) {
                 if (it.listData.isEmpty()) {
                     //mDatabind.smartChat.setEnableRefresh(false)
-                    mDatabind.smartChat.finishRefreshWithNoMoreData()
                     if (it.isRefresh && userId.isNullOrEmpty()) {
-                        mDatabind.smartChat.showEmpty()
+                        mDatabind.page.showEmpty()
+                    } else {
+                        mDatabind.page.showContent(false)
                     }
                 } else {
-                    mDatabind.smartChat.showContent()
-                    mDatabind.rcvChat.addModels(it.listData, index = 0) // 添加一条消息
+                    mDatabind.page.showContent(it.listData.size == req.size)
+                    mDatabind.page.finish(true, it.listData.size == req.size)
+                    mDatabind.rcvChat.addModels(it.listData.reversed()) // 添加一条消息
                     if (it.isRefresh) {
-                        mDatabind.rcvChat.smoothScrollToPosition(
-                            mDatabind.rcvChat.models?.size ?: 0
-                        )
+                        mDatabind.rcvChat.scrollToPosition(0)
                     }
                 }
             } else {
                 if (it.isRefresh && userId.isNullOrEmpty()) {
                     mDatabind.rcvChat.addModels(null)
-                    mDatabind.smartChat.showEmpty()
+                    mDatabind.page.showEmpty()
+                }else{
+                    mDatabind.page.showContent()
                 }
             }
         }
@@ -281,19 +250,13 @@ class DetailChatFragment(
             MyWsManager.getInstance(App.app)?.setLiveRoomListener(activity.toString(), this)
             onWsUserEnterRoom(liveId)
         }
-        activity.toString().loge()
     }
 
     override fun onResume() {
-        //setWindowSoftInput(float = mDatabind.llInput, setPadding = true)
-        mDatabind.smartChat.postDelayed({
+        mDatabind.page.postDelayed({
             try {
-                /*  mDatabind.root.height.toString().loge("========onResume===")
-                  mDatabind.notice.root.height.toString().loge("=onResume===")
-                  mDatabind.smartChat.height.toString().loge("=onResume===")
-                  mDatabind.rcvChat.height.toString().loge("=onResume===")*/
                 val params = mDatabind.rcvChat.layoutParams
-                params.height = mDatabind.smartChat.height
+                params.height = mDatabind.page.height
                 mDatabind.rcvChat.layoutParams = params
             } catch (_: Exception) {
             }
@@ -304,8 +267,6 @@ class DetailChatFragment(
     override fun onPause() {
         hideSoftInput()
         mDatabind.edtChatMsg.clearFocus()
-        /* mDatabind.smartChat.height.toString().loge("=onPause===")
-         mDatabind.rcvChat.height.toString().loge("=onPause===")*/
         super.onPause()
     }
 
@@ -314,6 +275,7 @@ class DetailChatFragment(
         if (!isTopActivity(activity)) {
             // exitRoom()
         }
+        //hideSoftInput()
     }
 
     override fun onDestroy() {
@@ -328,7 +290,6 @@ class DetailChatFragment(
     }
 
     override fun onEnterRoomInfo(isOk: Boolean, msg: ReceiveWsBean<*>) {
-        //  myToast("enter room ==$isOk")
         isEnterRoom = true
     }
 
@@ -343,40 +304,24 @@ class DetailChatFragment(
     override fun onRoomReceive(chat: ReceiveChatMsg) {
         var isShowBottom = false
         val firstVisible: Int = mLayoutManager.findFirstVisibleItemPosition()
-        val lastVisible: Int = mLayoutManager.findLastVisibleItemPosition()
-        if (chat.groupId != liveId) {
-            return
-        }
-        mDatabind.smartChat.showContent()
+        var lastVisible: Int = mLayoutManager.findLastVisibleItemPosition()
+        mDatabind.page.showContent()
         mDatabind.rcvChat.models?.apply {
-            if (this.size > 3 && lastVisible < 1) {
+            if (this.size > 3 && firstVisible < 1) {
                 isShowBottom = true
             }
         }
-
         mDatabind.rcvChat.addModels(
             listOf(
                 MsgBean(
-                    chat.from,
-                    chat.fromAvatar,
-                    chat.fromNickName ?: "",
-                    chat.level,
-                    chat.content,
-                    msgType = chat.msgType,
-                    identityType = chat.identityType,
+                    chat.from, chat.fromAvatar, chat.fromNickName ?: "", chat.level, chat.content, msgType = chat.msgType, identityType = chat.identityType,
                 )
-            )
+            ), index = 0
         ) // 添加一条消息
 
-        mDatabind.rcvChat.models?.size?.let {
-            // mDatabind.rcvChat.adapter?.notifyItemInserted(it-1)
-            // mDatabind.rcvChat.adapter?.notifyItemRangeChanged(it, 1);
-            // mLayoutManager.scrollToPositionWithOffset(it, Integer.MIN_VALUE)
-            if (chat.from == CacheUtil.getUser()?.id || lastVisible == it - 2) {
-                mDatabind.rcvChat.smoothScrollToPosition(it)
-            }
+        if (chat.from == CacheUtil.getUser()?.id || isShowBottom) {
+            mDatabind.rcvChat.scrollToPosition(0)
         }
-
     }
 
     override fun onClick(v: View?) {
@@ -388,7 +333,7 @@ class DetailChatFragment(
     }
 
     private fun sendMsg() {
-        if (mViewModel.input.get().isEmpty()){
+        if (mViewModel.input.get().isEmpty()) {
             return
         }
         hideSoftInput()
@@ -410,7 +355,6 @@ class DetailChatFragment(
                         ).apply {
                         })
                     )
-
                 }
                 mViewModel.input.set("")
             }
@@ -426,16 +370,17 @@ class DetailChatFragment(
         this.userId = userId
         offset = ""
         setNotice()
+        mDatabind.page.resetNoMoreData()
         mDatabind.rcvChat.postDelayed({
             //布局重新计算
             try {
                 val params = mDatabind.rcvChat.layoutParams
-                params.height = mDatabind.smartChat.height
+                params.height = mDatabind.page.height
                 mDatabind.rcvChat.layoutParams = params
             } catch (_: Exception) {
             }
             mDatabind.rcvChat.models = arrayListOf()
-            mDatabind.smartChat.showContent()
+            mDatabind.page.showContent()
             onWsUserEnterRoom(liveId)
             getHistoryData()
         }, 200)
