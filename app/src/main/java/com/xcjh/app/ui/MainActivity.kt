@@ -42,6 +42,7 @@ import com.xcjh.app.vm.MainVm
 import com.xcjh.app.websocket.MyWsManager
 import com.xcjh.app.websocket.listener.NoReadMsgPushListener
 import com.xcjh.app.websocket.listener.OtherPushListener
+import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.initActivity
 import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.setOnclickNoRepeat
@@ -81,6 +82,7 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
              //延迟2.5秒
              !mViewModel.mockDataLoading()
          }*/
+        Constants.isLoading = false
         onIntent(intent)
         CacheUtil.setFirst(false)
         initUI()

@@ -1212,6 +1212,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
     override fun lazyLoadData() {
         super.lazyLoadData()
+        LogUtils.d("懒加载是否显示点点"+Constants.isLoading)
         getData(Constants.isLoading,false)
 
     }
