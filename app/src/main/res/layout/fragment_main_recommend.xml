@@ -38,11 +38,15 @@
             android:layout_width="match_parent"
             app:srlEnableLoadMore="true"
             android:layout_height="match_parent">
+            <com.drake.statelayout.StateLayout
+                android:id="@+id/state"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rcvRecommend"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
-
+            </com.drake.statelayout.StateLayout>
         </com.drake.brv.PageRefreshLayout>
 <!--        <Button-->
 <!--            android:id="@+id/btn"-->

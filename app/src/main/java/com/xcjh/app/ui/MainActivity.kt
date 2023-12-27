@@ -21,6 +21,8 @@ import com.gyf.immersionbar.ktx.showStatusBar
 import com.king.app.dialog.AppDialog
 import com.king.app.updater.AppUpdater
 import com.king.app.updater.http.OkHttpManager
+import com.kongzue.dialogx.dialogs.CustomDialog
+import com.kongzue.dialogx.interfaces.OnBindView
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
 import com.lxj.xpopup.enums.PopupAnimation
@@ -78,6 +80,7 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         super.initView(savedInstanceState)
         //MTPushPrivatesApi.clearNotification(this)
         showStatusBar()
+
         /* splashScreen.setKeepOnScreenCondition {
              //延迟2.5秒
              !mViewModel.mockDataLoading()

@@ -9,8 +9,12 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.airbnb.lottie.LottieAnimationView
 import com.bumptech.glide.Glide
 import com.drake.brv.BindingAdapter
 import com.drake.brv.utils.addModels
@@ -21,6 +25,9 @@ import com.drake.brv.utils.models
 import com.drake.brv.utils.mutable
 import com.drake.brv.utils.setDifferModels
 import com.drake.brv.utils.setup
+import com.drake.statelayout.StateConfig
+import com.drake.statelayout.StateConfig.onEmpty
+import com.facebook.bolts.Task.Companion.delay
 import com.kongzue.dialogx.dialogs.CustomDialog
 import com.kongzue.dialogx.dialogs.MessageDialog
 import com.kongzue.dialogx.interfaces.OnBindView
@@ -54,6 +61,7 @@ import com.xcjh.app.websocket.listener.C2CListener
 import com.xcjh.app.websocket.listener.LiveStatusListener
 import com.xcjh.base_lib.App
 import com.xcjh.base_lib.Constants
+import com.xcjh.base_lib.utils.LogUtils
 import com.xcjh.base_lib.utils.dp2px
 import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.view.clickNoRepeat
@@ -66,12 +74,19 @@ import java.util.Locale
  * 首页推荐页面碎片
  */
 class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommendBinding>() {
-        //是第一次加载数据
-        var  initialLoading:Boolean=true
-        var customDialog: CustomDialog?=null
+
 
     override fun initView(savedInstanceState: Bundle?) {
-        loadingDialog()
+        mDatabind.state.apply {
+            StateConfig.setRetryIds(R.id.lltContent, R.id.stateLoadingImg)
+            onEmpty {
+                this.findViewById<LinearLayout>(R.id.lltContent).visibility=View.GONE
+                this.findViewById<LottieAnimationView>(R.id.stateLoadingImg).visibility=View.VISIBLE
+
+            }
+
+        }
+        mDatabind.state.showEmpty()
 
 
         //首页轮询
@@ -223,7 +238,7 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
         mDatabind.smartCommon.setOnRefreshLoadMoreListener(object : OnRefreshLoadMoreListener {
             override fun onRefresh(refreshLayout: RefreshLayout) {
 
-                initialLoading=false
+
                 mViewModel.getBannerList()
                 mViewModel.getOngoingMatchList(HotReq())
                 mViewModel.getNowLive(true)
@@ -302,6 +317,8 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                     mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
                 }
             }
+
+
 
 
         }
@@ -399,13 +416,9 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
         }
         //正在直播的比赛
         mViewModel.liveList.observe(this){
-            if(initialLoading){
-                if(customDialog!=null){
-                    if(customDialog!!.isShow){
-                        customDialog!!.dismiss()
-                    }
-                }
-            }
+
+            mDatabind.state.showContent()
+
             if (it.isSuccess) {
                 //成功
                 when {
@@ -869,13 +882,8 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                             binding.rvExplore.addModels(mainTxtBean.list)
                         }else{
 
-                            if(initialLoading){
-                                binding.rvExplore.visibility= View.GONE
-                                binding.llShowTxt.visibility= View.GONE
-                            }else{
-                                binding.rvExplore.visibility= View.GONE
-                                binding.llShowTxt.visibility= View.VISIBLE
-                            }
+                            binding.rvExplore.visibility= View.GONE
+                            binding.llShowTxt.visibility= View.VISIBLE
 
                         }
                     }
@@ -885,18 +893,7 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
         }
     }
 
-    /**
-     * 第一次加载数据的时候
-     */
-    fun loadingDialog(){
-        customDialog=  CustomDialog.show(object :OnBindView<CustomDialog>(com.xcjh.base_lib.R.layout.loadingbar){
-            override fun onBind(dialog: CustomDialog?, v: View?) {
 
-            }
-
-
-        })
-    }
 }
 
 fun BindingAdapter.BindingViewHolder.setLiveMatchItem(type:Int=0) {
