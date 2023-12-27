@@ -120,6 +120,7 @@ class ContactUsActivity : BaseActivity<ContactUsVm, ActivityContactUsBinding>() 
                     .setExternalPreviewEventListener(  MyExternalPreviewEventListener())
                     .startActivityPreview(position, true, mAdapter!!.getData())
 
+
             }
 
             override fun openPicture() {
