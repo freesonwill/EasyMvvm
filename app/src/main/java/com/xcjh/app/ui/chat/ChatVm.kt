@@ -45,15 +45,16 @@ class ChatVm : BaseViewModel() {
             {
                 smartCommon.finishRefresh()
                 smartCommon.resetNoMoreData()
-                if (it.size > 0) {
-                    hisMsgList.value = it
-                }
+                //if (it.size > 0) {
+                   hisMsgList.value = it
+               // }
             }, {
                 try {
                     smartCommon.finishRefresh()
                     smartCommon.resetNoMoreData()
                     //请求失败
 
+                    hisMsgList.value= arrayListOf()
                     myToast(it.errorMsg)
                 } catch (e: Exception) {
                     e.printStackTrace()

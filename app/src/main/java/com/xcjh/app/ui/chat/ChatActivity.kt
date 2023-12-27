@@ -16,6 +16,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.TextView.OnEditorActionListener
+import androidx.recyclerview.widget.SimpleItemAnimator
 import com.airbnb.lottie.LottieAnimationView
 import com.alibaba.fastjson.JSONObject
 import com.blankj.utilcode.util.ToastUtils
@@ -33,12 +34,11 @@ import com.gyf.immersionbar.ImmersionBar
 import com.kongzue.dialogx.dialogs.CustomDialog
 import com.kongzue.dialogx.interfaces.OnBindView
 import com.luck.picture.lib.basic.PictureSelector
+import com.luck.picture.lib.config.InjectResourceSource
 import com.luck.picture.lib.config.SelectMimeType
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.interfaces.OnResultCallbackListener
 import com.luck.picture.lib.manager.PictureCacheManager
-import com.lxj.xpopup.XPopup
-import com.lxj.xpopup.util.SmartGlideImageLoader
 import com.xcjh.app.MyApplication
 import com.xcjh.app.R
 import com.xcjh.app.appViewModel
@@ -59,6 +59,7 @@ import com.xcjh.app.utils.picture.ImageFileCompressEngine
 import com.xcjh.app.utils.reSendMsgDialog
 import com.xcjh.app.websocket.MyWsManager
 import com.xcjh.app.websocket.bean.FeedSystemNoticeBean
+import com.xcjh.app.websocket.bean.ReadWsBean
 import com.xcjh.app.websocket.bean.ReceiveChangeMsg
 import com.xcjh.app.websocket.bean.ReceiveChatMsg
 import com.xcjh.app.websocket.bean.ReceiveWsBean
@@ -77,6 +78,8 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import okhttp3.MultipartBody
 import java.io.File
 
@@ -104,7 +107,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
     var isUpdata = false
     private val delayTime: Long = 10000
     private val listPic = java.util.ArrayList<LocalMedia>()
-
+    private val mutex = Mutex()
     override fun initView(savedInstanceState: Bundle?) {
 
         options = RequestOptions()
@@ -155,8 +158,8 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
         mDatabind.titleTop.tvTitle.text = nickname
 //        Glide.with(this).load(userhead).placeholder(R.drawable.default_anchor_icon)
 //            .into(mDatabind.titleTop.ivhead)
-//        (mDatabind.rv.itemAnimator as SimpleItemAnimator).supportsChangeAnimations =
-//            false//防止item刷新的时候闪烁
+        (mDatabind.rv.itemAnimator as SimpleItemAnimator).supportsChangeAnimations =
+            false//防止item刷新的时候闪烁
         mDatabind.rv.setup {
             addType<MsgBeanData> {
                 when (fromId) {
@@ -238,7 +241,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                         when (matchBeanNew.sent) {
                             0 -> {//正在发送
 
-                                addDataToList(matchBeanNew)
+                                addDataToList("1", matchBeanNew)
 
                                 binding.googleProgress.visibility = View.VISIBLE
                                 binding.ivfaile.visibility = View.GONE
@@ -251,7 +254,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                     )
                                     if (matchBeanNew.sent == 0) {//发送失败
                                         matchBeanNew.sent = 2
-                                        addDataToList(matchBeanNew)
+                                        addDataToList("2", matchBeanNew)
                                         if (bindingAdapterPosition == 0) {
 
                                             appViewModel.updateMsgListEvent.postValue(matchBeanNew)
@@ -272,7 +275,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                             1, 3 -> {//发送成功
 
                                 matchBeanNew.sent = 1
-                                addDataToList(matchBeanNew)
+                                addDataToList("3", matchBeanNew)
                                 binding.googleProgress.visibility = View.GONE
                                 binding.ivfaile.visibility = View.GONE
                             }
@@ -288,8 +291,6 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
 
                             reSendMsg(
                                 matchBeanNew,
-                                binding.googleProgress,
-                                binding.ivfaile,
                                 bindingAdapterPosition
                             )
 
@@ -337,7 +338,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                     bindingAdapterPosition.toString() + "准备发送" +
                                             JSONObject.toJSONString(_data as MsgBeanData)
                                 )
-                                addDataToList((_data as MsgBeanData))
+                                addDataToList("4", (_data as MsgBeanData))
                                 binding.googleProgress.visibility = View.VISIBLE
                                 binding.ivfaile.visibility = View.GONE
                                 GlobalScope.launch {
@@ -358,7 +359,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                             bindingAdapterPosition.toString() + "99发送失败" +
                                                     JSONObject.toJSONString(_data as MsgBeanData)
                                         )
-                                        addDataToList((_data as MsgBeanData))
+                                        addDataToList("5", (_data as MsgBeanData))
                                         if (bindingAdapterPosition == 0) {
                                             appViewModel.updateMsgListEvent.postValue((_data as MsgBeanData))
                                         }
@@ -377,7 +378,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
 
                             1, 3 -> {//发送成功
                                 (_data as MsgBeanData).sent = 1
-                                addDataToList((_data as MsgBeanData))
+                                addDataToList("6", (_data as MsgBeanData))
                                 binding.googleProgress.visibility = View.GONE
                                 binding.ivfaile.visibility = View.GONE
                                 LogUtils.d(
@@ -400,8 +401,6 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                         binding.ivfaile.setOnClickListener {
                             reSendMsg(
                                 matchBeanNew,
-                                binding.googleProgress,
-                                binding.ivfaile,
                                 bindingAdapterPosition
                             )
 
@@ -434,6 +433,10 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                 .openPreview()
                                 .setImageEngine(GlideEngine.createGlideEngine())
                                 .isPreviewFullScreenMode(false)
+                                .setInjectLayoutResourceListener { context, resourceSource ->
+                                    return@setInjectLayoutResourceListener if (resourceSource == InjectResourceSource.PREVIEW_LAYOUT_RESOURCE)
+                                        R.layout.ps_custom_fragment_preview else InjectResourceSource.DEFAULT_LAYOUT_RESOURCE
+                                }
                                 .startActivityPreview(0, false, listPic)
                         }
                         if (matchBeanNew.lastShowTimeStamp!! == baseLong) {
@@ -479,6 +482,10 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                 .openPreview()
                                 .isPreviewFullScreenMode(false)
                                 .setImageEngine(GlideEngine.createGlideEngine())
+                                .setInjectLayoutResourceListener { context, resourceSource ->//预览无标题栏
+                                    return@setInjectLayoutResourceListener if (resourceSource == InjectResourceSource.PREVIEW_LAYOUT_RESOURCE)
+                                        R.layout.ps_custom_fragment_preview else InjectResourceSource.DEFAULT_LAYOUT_RESOURCE
+                                }
                                 .startActivityPreview(0, false, listPic)
                         }
                         binding.linroot.setOnClickListener {
@@ -627,15 +634,6 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
 
             override fun onSendMsgIsOk(isOk: Boolean, bean: ReceiveWsBean<*>) {
 
-                if (isOk) {
-                    for (i in 0 until mDatabind.rv.models!!.size) {
-                        var beanmy: MsgBeanData = mDatabind.rv.models!![i] as MsgBeanData
-                        if (beanmy.content == bean.msg) {
-                            beanmy.sent = 1
-                        }
-                    }
-
-                }
             }
 
             override fun onSystemMsgReceive(chat: FeedSystemNoticeBean) {
@@ -658,6 +656,14 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                     listdata1.add(beanmy)
                     mDatabind.rv.addModels(listdata1, index = 0)
                     mDatabind.rv.scrollToPosition(0)
+                    MyWsManager.getInstance(this@ChatActivity)?.sendMessage(
+                        Gson().toJson(
+                            ReadWsBean(
+                                23, chat.id, 1, CacheUtil.getUser()?.id!!,
+                                3, chat.from
+                            )
+                        )
+                    )
                     //addDataToList(beanmy)
 
                 } else {//发送消息
@@ -672,7 +678,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                     beanmy
                                 )
                             )
-                            addDataToList(beanmy)
+                            addDataToList("7", beanmy)
                             mDatabind.rv.bindingAdapter.notifyItemChanged(i)
                             break
                         }
@@ -689,10 +695,10 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
         })
         // mViewModel.clearMsg(userId)
         initData()
+
+
         getAllData()
         mViewModel.getHisMsgList(mDatabind.smartCommon, offset, userId)
-        // getAllData()
-
     }
 // 将Drawable转换为Bitmap
 
@@ -705,12 +711,19 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                         data[i].sent = 1
                     }
                 }
-                LogUtils.d("私聊有数据缓存")
+                LogUtils.d("私聊有数据缓存" + JSONObject.toJSONString(data))
                 listdata.addAll(data)
-                mDatabind.state.showContent()
+                runOnUiThread {
+                    mDatabind.rv.models = listdata
+                    mDatabind.state.showContent()
+                }
+
             } else {
-                LogUtils.d("私聊无数据缓存")
-                mDatabind.state.showEmpty()
+                runOnUiThread {
+                    LogUtils.d("私聊无数据缓存")
+                    mDatabind.state.showEmpty()
+                }
+
             }
 
         }
@@ -751,7 +764,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                     runOnUiThread {
                         view.text = progress.toInt().toString() + "%"
                         LogUtils.d("Upload progress: ${progress.toInt()}" + "%")
-                        if (progress.toInt() == 100) {
+                        if (progress.toInt() >99) {
                             view.visibility = View.GONE
                         }
                     }
@@ -770,7 +783,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                     view.visibility = View.GONE
                     image.visibility = View.VISIBLE
                     bean.sent = 2
-                    addDataToList(bean)
+                    addDataToList("8", bean)
                 }
             }
         } catch (e: Exception) {
@@ -831,21 +844,30 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                         if (it[i].sendId == "0") {
                             it[i].sendId = userId + it[i].createTime
                         }
-                        addDataToList(it[i])
+                        addDataToList("9", it[i])
                     }
                 } else {
-                    for (data in it) {
+                    for ((index, data) in it.withIndex()) {
                         val foundData = listdata.find { it.id == data.id }
                         if (foundData == null) {
+                            LogUtils.d("有新的消息需要加入缓存===" + JSONObject.toJSONString(data))
                             data?.let { it1 ->
-                                if (it1.sendId == "0") {
-                                    it1.sendId = userId + it1.createTime
+                                if (TimeUtil.isEarlier(
+                                        data.createTime!!,
+                                        listdata[0].createTime!!
+                                    )
+                                ) {
+                                    if (it1.sendId == "0") {
+                                        it1.sendId = userId + it1.createTime
+                                    }
+                                    data.sent = 1
+                                    addDataToList("10", data)
+                                    var listdata1: MutableList<MsgBeanData> =
+                                        ArrayList<MsgBeanData>()
+                                    listdata1.add(data)
+                                    mDatabind.rv.addModels(listdata1, index = 0)
+                                    mDatabind.rv.scrollToPosition(0) // 保证最新一条消息显示
                                 }
-                                addDataToList(data)
-                                var listdata1: MutableList<MsgBeanData> = ArrayList<MsgBeanData>()
-                                listdata1.add(data)
-                                mDatabind.rv.addModels(listdata1, index = 0)
-                                mDatabind.rv.scrollToPosition(0) // 保证最新一条消息显示
                             }
                         }
                     }
@@ -858,7 +880,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
             }
 
             // mDatabind.rv.addModels(it)
-            offset = it[it.size - 1].id!!
+            //offset = it[it.size - 1].id!!
 
 
             if (it.size < 50) {
@@ -953,14 +975,15 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
     /***
      * 添加或者更新新的数据
      */
-    fun addDataToList(data: MsgBeanData) {
-        LogUtils.d("嘿嘿开始添加数据")
-        if (CacheUtil.getUser() != null) {
-            data.withId = CacheUtil.getUser()?.id!!
-            GlobalScope.launch {
-                MyApplication.dataBase!!.chatDao?.insertOrUpdate(data)
+    fun addDataToList(index: String, data: MsgBeanData) {
+        LogUtils.d(index + "嘿嘿开始添加数据" + JSONObject.toJSONString(data))
 
-
+        GlobalScope.launch {
+            mutex.withLock {
+                if (CacheUtil.getUser() != null) {
+                    data.withId = CacheUtil.getUser()?.id!!
+                    MyApplication.dataBase!!.chatDao?.insertOrUpdate(data)
+                }
             }
         }
     }
@@ -982,8 +1005,6 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
 
     fun reSendMsg(
         matchBeanNew: MsgBeanData,
-        view1: LottieAnimationView,
-        view2: ImageView,
         index: Int
     ) {
         if (Constants.ISSTOP_TALK != "0") {
@@ -993,15 +1014,11 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
         reSendMsgDialog(this) { isSure ->
             matchBeanNew.sent = 0
             if (matchBeanNew.msgType == 0) {
-                view1.visibility = View.VISIBLE
-                view2.visibility = View.GONE
                 msgType = matchBeanNew.msgType!!
                 msgContent = matchBeanNew.content
                 sendMsg(matchBeanNew.id!!, true)
-            } else {
-                mDatabind.rv.bindingAdapter.notifyItemChanged(index)
             }
-
+            mDatabind.rv.bindingAdapter.notifyItemChanged(index)
 
         }
     }

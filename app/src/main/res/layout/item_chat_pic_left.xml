@@ -28,8 +28,9 @@
             android:id="@+id/ivhead"
             android:layout_width="@dimen/dp_50"
             android:layout_height="@dimen/dp_50"
+            android:scaleType="centerCrop"
             android:src="@drawable/basketball" />
-        <ImageView
+        <com.xcjh.base_lib.utils.view.RoundImageView
             android:id="@+id/ivpic"
             android:layout_width="wrap_content"
             android:adjustViewBounds="true"
@@ -40,6 +41,7 @@
             android:scaleType="centerCrop"
             android:maxWidth="200dp"
             android:maxHeight="102dp"
+            app:radius="@dimen/dp_8"
             app:layout_constraintTop_toTopOf="@id/ivhead"
             android:layout_height="wrap_content"
            />

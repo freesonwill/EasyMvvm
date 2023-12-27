@@ -76,6 +76,12 @@ object TimeUtil {
     }
 
     /***
+     * kotlin实现传入两个时间戳  后者比前者早 返回true 否者false
+     */
+    fun isEarlier(timestamp1: Long, timestamp2: Long): Boolean {
+        return timestamp2 < timestamp1
+    }
+    /***
      * 比较两个日期的大小，如果返回值为负数，则 date1 小于 date2；如果返回值为正数，则 date1
      * 大于 date2；如果返回值为零，则 date1 等于 date2
      */
