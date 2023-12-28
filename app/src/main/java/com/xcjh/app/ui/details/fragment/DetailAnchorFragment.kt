@@ -13,6 +13,7 @@ import com.xcjh.app.ui.details.DetailVm
 import com.xcjh.app.utils.judgeLogin
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.base.BaseViewModel
+import com.xcjh.base_lib.utils.loadImage
 import com.xcjh.base_lib.utils.toHtml
 import com.xcjh.base_lib.utils.view.textString
 
@@ -50,11 +51,11 @@ class DetailAnchorFragment(
                     }
                 }*/
                 mDatabind.tvTabAnchorNotice.text = it.notice?.toHtml() //主播公告
-
-                Glide.with(this).load(it.head)
-                    .placeholder(mDatabind.ivTabAnchorAvatar.drawable)
-                    .into(mDatabind.ivTabAnchorAvatar) //主播头像
-
+                loadImage(requireContext(),
+                    it.head,
+                    mDatabind.ivTabAnchorAvatar,
+                    R.drawable.default_anchor_icon
+                )
             }
         }
         vm.isfocus.observe(this) {

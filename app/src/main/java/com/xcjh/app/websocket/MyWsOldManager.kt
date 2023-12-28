@@ -2,81 +2,39 @@ package com.xcjh.app.websocket
 
 import android.annotation.SuppressLint
 import android.content.*
-import android.os.Build
-import android.os.Handler
-import android.os.Looper
-import com.drake.engine.base.app
-import com.google.gson.Gson
+import android.os.IBinder
 import com.xcjh.app.R
-import com.xcjh.app.appViewModel
 import com.xcjh.app.bean.BeingLiveBean
-import com.xcjh.app.utils.CacheUtil
-import com.xcjh.app.utils.onWsUserLogin
 import com.xcjh.app.websocket.bean.FeedSystemNoticeBean
 import com.xcjh.app.websocket.bean.LiveStatus
 import com.xcjh.app.websocket.bean.NoReadMsg
 import com.xcjh.app.websocket.bean.ReceiveChangeMsg
 import com.xcjh.app.websocket.bean.ReceiveChatMsg
 import com.xcjh.app.websocket.bean.ReceiveWsBean
-import com.xcjh.app.websocket.bean.SendCommonWsBean
 import com.xcjh.app.websocket.listener.*
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.utils.*
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.java_websocket.client.WebSocketClient
-import org.java_websocket.handshake.ServerHandshake
-import java.net.URI
-import java.util.concurrent.ScheduledExecutorService
-import java.util.concurrent.ScheduledThreadPoolExecutor
-import java.util.concurrent.ThreadFactory
-import java.util.concurrent.ThreadPoolExecutor
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.atomic.AtomicInteger
 
 
 /**
  * @author zobo101
  * 管理 webSocket
  */
-class MyWsManager private constructor(private val mContext: Context) {
+class MyWsOldManager private constructor(private val mContext: Context) {
 
     val tag = "MyWsManager"
-    var client: WebSocketClient? = null
+
     companion object {
-        private var scheduledExecutorService: ScheduledExecutorService? = null
-        private var errorNum = 0
-        private val CPU_COUNT = Runtime.getRuntime().availableProcessors()
-        private val CORE_POOL_SIZE = 2.coerceAtLeast((CPU_COUNT - 1).coerceAtMost(4))
-        //    -------------------------------------websocket心跳检测------------------------------------------------
-        /**
-         * 每隔10秒进行一次对长连接的心跳检测
-         */
-        private const val HEART_BEAT_RATE = (10 * 1000).toLong()
 
         @SuppressLint("StaticFieldLeak")
-        private var INSTANCE: MyWsManager? = null
-        fun getInstance(context: Context): MyWsManager? {
+        private var INSTANCE: MyWsOldManager? = null
+        fun getInstance(context: Context): MyWsOldManager? {
             if (INSTANCE == null) {
-                synchronized(MyWsManager::class.java) {
+                synchronized(MyWsOldManager::class.java) {
                     if (INSTANCE == null) {
-                        INSTANCE = MyWsManager(context)
-                        if (scheduledExecutorService == null) {
-                            val namedThreadFactory: ThreadFactory = object : ThreadFactory {
-                                private val mCount = AtomicInteger(1)
-                                override fun newThread(r: Runnable): Thread {
-                                    return Thread(r, "JWebSocketClientService" + mCount.getAndIncrement())
-                                }
-                            }
-                            scheduledExecutorService = ScheduledThreadPoolExecutor(
-                                CORE_POOL_SIZE,
-                                namedThreadFactory,
-                                ThreadPoolExecutor.DiscardOldestPolicy()
-                            )
-                        }
+                        INSTANCE = MyWsOldManager(context)
                     }
                 }
             }
@@ -84,7 +42,11 @@ class MyWsManager private constructor(private val mContext: Context) {
         }
     }
 
-    // private var client: WebSocketClient? = null
+    private var serviceIntent: Intent? = null
+    private var client: WebSocketClient? = null
+    private var binder: MyWsClientService.WsClientBinder? = null
+    private var service: MyWsClientService? = null
+    private var receiver: ChatMessageReceiver? = null
 
 
     /**
@@ -92,7 +54,10 @@ class MyWsManager private constructor(private val mContext: Context) {
      */
     fun initService() {
         try {
-            initSocketClient()
+            if (service == null) {
+                startJWebSClientService()
+                doRegisterReceiver()
+            }
         } catch (e: Exception) {
             "=======--initService------- ${e.message}".loge()
         }
@@ -107,11 +72,69 @@ class MyWsManager private constructor(private val mContext: Context) {
 
     fun stopService() {
         try {
+            mContext.unbindService(serviceConnection)
+            mContext.stopService(serviceIntent)
             mContext.unregisterReceiver(receiver)
+            service = null
             client = null
+            receiver = null
             INSTANCE = null
         } catch (e: Exception) {
             ("stopService: ===" + e.message).loge()
+        }
+    }
+
+    /**
+     * 启动服务（webSocket客户端服务）
+     */
+    private fun startJWebSClientService() {
+        if (serviceIntent == null) {
+            serviceIntent = Intent(mContext, MyWsClientService::class.java)
+        }
+        mContext.startService(serviceIntent)
+        // 绑定服务
+        mContext.bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
+    }
+
+    /**
+     * 动态注册广播
+     */
+    private fun doRegisterReceiver() {
+        if (receiver == null) {
+            receiver = ChatMessageReceiver()
+        }
+        val filter = IntentFilter(WebSocketAction.WEB_ACTION)
+        mContext.registerReceiver(receiver, filter)
+    }
+
+    /**
+     * 绑定服务与活动
+     */
+    private val serviceConnection: ServiceConnection = object : ServiceConnection {
+        override fun onServiceConnected(componentName: ComponentName, iBinder: IBinder) {
+            "=====服务与活动成功绑定".loge()
+            if (iBinder is MyWsClientService.WsClientBinder) {
+                binder = iBinder
+                service = binder?.service
+                client = service?.client
+            }
+        }
+
+        override fun onServiceDisconnected(componentName: ComponentName) {
+            "====服务与活动成功断开".loge()
+        }
+    }
+
+    private inner class ChatMessageReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val msg = intent?.getStringExtra("message") ?: return
+            "onReceive====------------  $msg".loge()
+            try {
+                //appViewModel
+                parsingServiceLogin(msg)
+            } catch (e: Exception) {
+                "======onReceive===webSocket解析异常------------  ${e.message}".loge()
+            }
         }
     }
 
@@ -283,7 +306,7 @@ class MyWsManager private constructor(private val mContext: Context) {
     fun sendMessage(msg: String) {
         if (client?.isOpen == true) {
             msg.loge("===sendMessage==")
-            sendMsg(msg)
+            service?.sendMsg(msg)
         }
     }
 
@@ -386,224 +409,6 @@ class MyWsManager private constructor(private val mContext: Context) {
     fun removeOtherPushListener(tag: String) {
         if (mOtherPushListener[tag] != null) {
             mOtherPushListener.remove(tag)
-        }
-    }
-    private var receiver: ChatMessageReceiver? = null
-    /**
-     * 动态注册广播
-     */
-    private fun doRegisterReceiver() {
-        if (receiver == null) {
-            receiver = ChatMessageReceiver()
-        }
-        val filter = IntentFilter(WebSocketAction.WEB_ACTION)
-        mContext.registerReceiver(receiver, filter)
-    }
-    private inner class ChatMessageReceiver : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            val msg = intent?.getStringExtra("message") ?: return
-            "onReceive====------------  $msg".loge()
-            try {
-                //appViewModel
-                parsingServiceLogin(msg)
-            } catch (e: Exception) {
-                "======onReceive===webSocket解析异常------------  ${e.message}".loge()
-            }
-        }
-    }
-    /**
-     * 初始化websocket连接
-     */
-    @OptIn(DelicateCoroutinesApi::class)
-    private fun initSocketClient() {
-        client = object : WebSocketClient(URI.create(WebSocketAction.WEB_SOCKET_URL)) {
-            init {
-                if (URI.create(WebSocketAction.WEB_SOCKET_URL).toString().contains("wss://")) {
-                    trustAllHots(this)
-                }
-            }
-
-            private fun trustAllHots(client: WebSocketClient) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    MyWsClientCert().trustAllHots(client)
-                }
-                // val trustAllCerts = TrustManager
-            }
-
-            override fun onMessage(message: String) {
-                val intent = Intent()
-                intent.action = WebSocketAction.WEB_ACTION
-                intent.putExtra("message", message)
-                app.sendBroadcast(intent)
-               // "onReceive====------------  $message".loge()
-               /* try {
-                    //appViewModel
-                    parsingServiceLogin(message)
-                } catch (e: Exception) {
-                    "======onReceive===webSocket解析异常------------  ${e.message}".loge()
-                }*/
-            }
-
-            override fun onOpen(handshakedata: ServerHandshake) {
-                "websocket连接成功wsStatus===${appViewModel.wsStatus.value}".loge("MyWsClient===")
-                if (CacheUtil.isLogin()) {
-                    GlobalScope.launch {
-                        delay(2000)
-                        onWsUserLogin() {}
-                    }
-                }
-                appViewModel.wsStatus.postValue(1)
-                "websocket连接成功appViewModel_wsStatus=== ${appViewModel.wsStatus.value}".loge("MyWsClient===")
-                if (errorNum > 0) {
-                    //Log.e("MyWsClient===", "-----------onOpen--------$errorNum")
-                }
-            }
-
-            override fun onClose(code: Int, reason: String, remote: Boolean) {
-                appViewModel.wsStatus.postValue(2)
-                "websocket 关闭 $reason  $remote".loge("MyWsClient===")
-                "websocket 关闭appViewModel_wsStatus=== ${appViewModel.wsStatus.value}".loge("MyWsClient===")
-                errorNum++
-            }
-
-            override fun onError(ex: java.lang.Exception?) {
-
-            }
-        }
-        doRegisterReceiver()
-        connect()
-    }
-
-    /**
-     * 连接websocket
-     */
-    private fun connect() {
-        if (scheduledExecutorService != null) {
-            scheduledExecutorService!!.schedule({
-                try {
-                    client?.connectionLostTimeout = 0
-                    //connectBlocking多出一个等待操作，会先连接再发送，否则未连接发送会报错
-                    client!!.connectBlocking()
-                    //client!!.connect()
-                    mHandler.postDelayed({
-                        sendHeartCmd()
-                    }, 500)
-
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    "------connect-------- ${e.message}".loge()
-                }
-            }, 0, TimeUnit.SECONDS)
-        }
-    }
-
-    private fun cancelAll() {
-        if (scheduledExecutorService != null) {
-            try {
-                shutdownAndAwaitTermination(scheduledExecutorService!!)
-            } catch (e: Exception) {
-            }
-            scheduledExecutorService = null
-        }
-    }
-
-    private fun shutdownAndAwaitTermination(pool: ScheduledExecutorService) {
-        pool.shutdown()
-        try {
-            if (!pool.awaitTermination(6, TimeUnit.MILLISECONDS)) {
-                pool.shutdownNow()
-            }
-        } catch (ie: InterruptedException) {
-            pool.shutdownNow()
-            Thread.currentThread().interrupt()
-        }
-    }
-
-    /**
-     * 发送消息
-     */
-    fun sendMsg(msg: String?) {
-        try {
-            if (null != client && client?.isOpen == true) {
-                client?.send(msg)
-            }
-        }catch (e :Exception){
-
-        }
-
-    }
-
-    /**
-     * 关闭心跳
-     */
-    private fun closeHeartBeat() {
-        mHandler.removeCallbacks(heartBeatRunnable)
-    }
-
-    /**
-     * 断开连接
-     */
-    private fun closeConnect() {
-        try {
-            if (null != client) {
-                client!!.close()
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        } finally {
-            client = null
-        }
-    }
-
-    private val mHandler: Handler = Handler(Looper.myLooper()!!)
-    private val heartBeatRunnable: Runnable = object : Runnable {
-        override fun run() {
-            //"-----------心跳包检测连接状态client-----${client==null}".loge("wsService===")
-            if (client != null) {
-                ("-----------socket是否断开-----" + client!!.isClosed).loge("wsService===")
-                if (client!!.isClosed) {
-                    reconnectWs()
-                    //MyWsManager.getInstance(appContext)?.stopService()
-                    // MyWsManager.getInstance(appContext)?.initService()
-                } else {
-                    sendHeartCmd()
-                }
-            } else {
-                //如果client已为空，重新初始化连接
-                initSocketClient()
-            }
-            //每隔一定的时间，对长连接进行一次心跳检测
-            mHandler.postDelayed(this, HEART_BEAT_RATE)
-        }
-    }
-
-    fun sendHeartCmd() {
-        try {
-            //client.sendPing();
-            if (client != null) {
-                client?.send(Gson().toJson(SendCommonWsBean(cmd = 13, loginType = null)))
-                //client?.sendPing()
-            }
-        } catch (e: Exception) {
-            "-----------sendPing-----${e.message}".loge("wsService===")
-        }
-    }
-
-    /**
-     * 开启重连
-     */
-    private fun reconnectWs() {
-        mHandler.removeCallbacks(heartBeatRunnable)
-        if (scheduledExecutorService != null) {
-            scheduledExecutorService!!.schedule({
-                try {
-                    "-----------开启重连-----".loge("wsService===")
-                    client!!.reconnect()
-                    client!!.reconnectBlocking()
-                } catch (e: InterruptedException) {
-                    "-----------开启重连-----${ e.message}".loge("wsService===")
-                }
-            }, 0, TimeUnit.SECONDS)
         }
     }
 

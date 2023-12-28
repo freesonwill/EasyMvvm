@@ -458,6 +458,7 @@ fun <T> smartPageListData(
         }
         emptyImg.setImageResource(imgEmptyId)
         emptyHint.text = notice
+        emptyHint.setTextColor(context.getColor(R.color.c_5b5b5b))
     }
     if (data.isSuccess) {
         //成功
@@ -573,6 +574,7 @@ fun setEmpty(
     context: Context,
     imgId: Int = R.drawable.ic_live_def_empty,//图片
     notice: String = appContext.getString(R.string.no_data_hint),//提示
+    noticeColor: Int =R.color.c_5b5b5b ,//提示
     isCenter: Boolean = true,//布局居中，后面得设置将无效
     marginT: Int = 75,//提示
     marginB: Int = 75,//提示
@@ -580,6 +582,7 @@ fun setEmpty(
     val binding = LayoutEmptyBinding.inflate(LayoutInflater.from(context), null, false)//.root
     binding.ivEmptyIcon.setImageResource(imgId)
     binding.txtEmptyName.text = notice
+    binding.txtEmptyName.setTextColor(context.getColor(noticeColor))
     val lp = binding.lltContent.layoutParams as RelativeLayout.LayoutParams
     if (isCenter) {
         lp.topMargin = context.dp2px(0)

@@ -25,6 +25,7 @@
                     android:id="@+id/iv_tab_anchor_avatar"
                     android:layout_width="@dimen/dp_48"
                     android:layout_height="@dimen/dp_48"
+                    android:scaleType="centerCrop"
                     android:src="@drawable/default_anchor_icon"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

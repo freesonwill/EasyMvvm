@@ -44,6 +44,7 @@ import com.xcjh.app.vm.MainVm
 import com.xcjh.app.websocket.MyWsManager
 import com.xcjh.app.websocket.listener.NoReadMsgPushListener
 import com.xcjh.app.websocket.listener.OtherPushListener
+import com.xcjh.base_lib.manager.KtxActivityManger
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.initActivity
 import com.xcjh.base_lib.utils.myToast
@@ -65,6 +66,7 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
     private var currentPage: Int = 0
     private var popup: BasePopupView? = null
     private var exitTime: Long = 0
+
     //是否显示卡片
     private var isShowPush: Boolean = true
 
@@ -177,6 +179,7 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
             }
         })
     }
+
     private fun initTime() {
         //如果登录了就查询一下用户信息
         if (CacheUtil.isLogin()) {
@@ -197,6 +200,7 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         // 安排 TimerTask 在一定时间后开始执行，然后每隔一定时间重复执行
         timer?.schedule(task, delay, period)
     }
+
     private fun initWs() {
         MyWsManager.getInstance(this)?.initService()
         MyWsManager.getInstance(this)?.setNoReadMsgListener(javaClass.name, object :
@@ -372,7 +376,7 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         )
         mDatabind.viewPager.setCurrentItem(pos, false)
 
-        }
+    }
 
 
     fun showDialog(beingLiveBean: BeingLiveBean) {
@@ -442,7 +446,8 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
             vibrator.vibrate(100)
         }
     }
-     override fun onStart() {
+
+    override fun onStart() {
         super.onStart()
     }
 
@@ -461,13 +466,14 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         }
     }
 
-      override fun onDestroy() {
+    override fun onDestroy() {
         //MyWsManager.getInstance(this)?.stopService()
         // 销毁 Timer 对象
         if (timer != null) {
             timer?.cancel()
             timer?.purge()
         }
+        MyWsManager.getInstance(this)?.stopService()
         MTPushPrivatesApi.setNotificationBadge(this, 0)
         super.onDestroy()
     }

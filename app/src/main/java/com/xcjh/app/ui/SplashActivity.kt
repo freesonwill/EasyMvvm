@@ -46,15 +46,15 @@ class SplashActivity : BaseActivity<BaseViewModel, ActivitySplashBinding>() {
             Log.i("push===Splash_Receiver", "onIntent:${Gson().toJson(intent?.data)}")
             Log.i("push===Splash_Receiver", "onIntentgson:${intent?.extras.toJson()}")
             Log.i("push===Splash_Receiver", "onIntentgson:${Gson().toJson(intent?.extras)}")
-            mDatabind.root.postDelayed({
-                startNewActivity<MainActivity>{
-                    intent?.extras?.let {
-                        putExtras(it)
-                    }
-                }
-                finish()
-            },1000)
+           /* mDatabind.root.postDelayed({
 
+            },100)*/
+            startNewActivity<MainActivity>{
+                intent?.extras?.let {
+                    putExtras(it)
+                }
+            }
+            finish()
         } catch (throwable: Throwable) {
             throwable.printStackTrace()
         }

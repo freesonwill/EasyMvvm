@@ -101,14 +101,14 @@ fun loadImage(
     context: Context,
     url: String?,
     image: ImageView,
-    placeholder: Int = R.drawable.default_background,
+    placeholder: Int = R.drawable.ic_default_bg,
 ) {
     GlideApp.with(context).load(url)
         .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
         .centerCrop()
         .placeholder(placeholder)
         .skipMemoryCache(false)//开启会闪烁
-        .dontAnimate()
+        //.dontAnimate()
         .into(image)
 }
 /**
