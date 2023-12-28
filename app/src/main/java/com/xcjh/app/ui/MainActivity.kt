@@ -1,6 +1,5 @@
 package com.xcjh.app.ui
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -16,13 +15,13 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.engagelab.privates.core.api.MTCorePrivatesApi
 import com.engagelab.privates.push.api.MTPushPrivatesApi
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
 import com.gyf.immersionbar.ktx.showStatusBar
 import com.king.app.dialog.AppDialog
 import com.king.app.updater.AppUpdater
 import com.king.app.updater.http.OkHttpManager
-import com.kongzue.dialogx.dialogs.CustomDialog
-import com.kongzue.dialogx.interfaces.OnBindView
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
 import com.lxj.xpopup.enums.PopupAnimation
@@ -44,13 +43,11 @@ import com.xcjh.app.vm.MainVm
 import com.xcjh.app.websocket.MyWsManager
 import com.xcjh.app.websocket.listener.NoReadMsgPushListener
 import com.xcjh.app.websocket.listener.OtherPushListener
-import com.xcjh.base_lib.manager.KtxActivityManger
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.initActivity
 import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.setOnclickNoRepeat
 import com.xcjh.base_lib.utils.view.clickNoRepeat
-import kotlinx.android.synthetic.main.activity_home.*
 import java.util.*
 
 /**
@@ -93,7 +90,6 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         initUI()
         initTime()
         initWs()
-
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -383,9 +379,11 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         var pushCardPopup = PushCardPopup(this, beingLiveBean)
         if (popup != null) {
             if (popup!!.isShow) {
-                popup!!.dismiss()
+                return
             }
         }
+
+
         if (CacheUtil.isAnchorVibrate()) {
             vibrate(this)
         }

@@ -61,7 +61,7 @@ class MyWsClientService : Service() {
         }
     }
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         //初始化websocket
         initSocketClient()
         //开启心跳检测

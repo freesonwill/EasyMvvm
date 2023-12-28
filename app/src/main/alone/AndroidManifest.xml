@@ -79,14 +79,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.MainActivity"
-            android:exported="true"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Starting">
+        android:name=".ui.MainActivity"
+        android:exported="true"
+        android:launchMode="singleTask"
+        android:screenOrientation="portrait"
+        android:theme="@style/Theme.Starting">
 
 
-        </activity>
+    </activity>
         <activity
             android:name=".ui.home.my.operate.PushSetActivity"
             android:exported="false"
