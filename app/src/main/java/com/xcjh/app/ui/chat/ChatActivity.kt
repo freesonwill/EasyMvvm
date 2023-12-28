@@ -275,7 +275,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                             1, 3 -> {//发送成功
 
                                 matchBeanNew.sent = 1
-                                addDataToList("3", matchBeanNew)
+                              //  addDataToList("3", matchBeanNew)
                                 binding.googleProgress.visibility = View.GONE
                                 binding.ivfaile.visibility = View.GONE
                             }
@@ -378,7 +378,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
 
                             1, 3 -> {//发送成功
                                 (_data as MsgBeanData).sent = 1
-                                addDataToList("6", (_data as MsgBeanData))
+                              //  addDataToList("6", (_data as MsgBeanData))
                                 binding.googleProgress.visibility = View.GONE
                                 binding.ivfaile.visibility = View.GONE
                                 LogUtils.d(
