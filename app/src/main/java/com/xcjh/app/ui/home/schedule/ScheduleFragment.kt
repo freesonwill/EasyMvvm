@@ -21,6 +21,7 @@ import com.xcjh.app.websocket.bean.ReceiveChatMsg
 import com.xcjh.app.websocket.bean.ReceiveWsBean
 import com.xcjh.app.websocket.listener.C2CListener
 import com.xcjh.app.websocket.listener.LiveStatusListener
+import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.LogUtils
 import com.xcjh.base_lib.utils.bindViewPager2
 import com.xcjh.base_lib.utils.initActivity
@@ -32,6 +33,7 @@ class ScheduleFragment : BaseFragment<MainVm, FrCourseBinding>() {
     private val mtypes = arrayOf("0", "1", "2", "3")
     private val status = arrayOf("", "", "", "99")
     var tags="ScheduleFragment"
+    var index=0
     override fun initView(savedInstanceState: Bundle?) {
         ImmersionBar.with(this)
             .statusBarDarkFont(true)//黑色
@@ -65,7 +67,15 @@ class ScheduleFragment : BaseFragment<MainVm, FrCourseBinding>() {
 
     override fun onResume() {
         super.onResume()
-//        Log.i("FFFFFFFFF","2222222222222")
+        //这里需要告诉子fragment 可见了//注意第一次启动不能调用
+        if (Constants.isLoading) {
+            LogUtils.d("子frahment可见了  判断是否需要刷新")
+            var bean = CurrentIndex()
+            bean.currtOne = index
+            bean.currtTwo =
+                (mFragments[index] as ScheduleChildOneFragment).getCurrentIndex()
+            appViewModel.updateSchedulePosition.postValue(bean)
+        }
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
@@ -118,6 +128,7 @@ class ScheduleFragment : BaseFragment<MainVm, FrCourseBinding>() {
 
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
+                index=position
                 var bean = CurrentIndex()
                 bean.currtOne = position
                 bean.currtTwo =
