@@ -117,11 +117,11 @@ class LevelMissionActivity  : BaseActivity<LevelMissionVm, ActivityLevelMissionB
                         mDatabind.progressLevel.highlightView.color=ContextCompat.getColor(this, R.color.c_737ed6)
                         mDatabind.txtLevelGrow.setTextColor(ContextCompat.getColor(this, R.color.c_5a64b7))
                     }else  {
-                        mDatabind.ivLevelTxt.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.wd_dj_huangtong_wenzi))
-                        mDatabind.ivLevelIcon.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.icon_badge_yi))
-                        mDatabind.rlLevelBe.setBackgroundResource(R.drawable.gradual_level_yi)
-                        mDatabind.progressLevel.highlightView.color=ContextCompat.getColor(this, R.color.c_cb6741)
-                        mDatabind.txtLevelGrow.setTextColor(ContextCompat.getColor(this, R.color.c_a5502f))
+                        mDatabind.ivLevelTxt.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.wd_dj_xingyao_wenzi))
+                        mDatabind.ivLevelIcon.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.icon_badge_liu))
+                        mDatabind.rlLevelBe.setBackgroundResource(R.drawable.gradual_level_liu)
+                        mDatabind.progressLevel.highlightView.color=ContextCompat.getColor(this, R.color.c_737ed6)
+                        mDatabind.txtLevelGrow.setTextColor(ContextCompat.getColor(this, R.color.c_5a64b7))
                     }
 
                 }else{

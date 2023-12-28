@@ -75,7 +75,7 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         MyUserFragment(),
     )
 
-    @SuppressLint("SuspiciousIndentation")
+
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         //MTPushPrivatesApi.clearNotification(this)
@@ -91,6 +91,7 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         initUI()
         initTime()
         initWs()
+
     }
 
     override fun onNewIntent(intent: Intent) {

@@ -33,7 +33,6 @@ class PushSetActivity : BaseActivity<PushSetVm, ActivityPushSetBinding>() {
 
         //设置
         setDate()
-
         mDatabind.rrPushClick.clickNoRepeat {
 
             if(!XXPermissions.isGranted(this, Permission.POST_NOTIFICATIONS)){
