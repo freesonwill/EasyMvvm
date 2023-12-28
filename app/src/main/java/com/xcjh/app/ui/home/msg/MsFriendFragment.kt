@@ -230,8 +230,13 @@ class MsFriendFragment : BaseFragment<MsgVm, FrMsgfriendBinding>() {
 
             pinyinList.add(item)
         }
+        pinyinList.sortedWith(compareBy<FriendListBean> {
+            when (it.pinyin) {//字母排序
+                "#" -> 1
+                else -> 0
+            }
+        }.thenBy { it.pinyin })
 
-        pinyinList.sortBy { it.pinyin }
 
         mDatabind.indexBar.setNewLetter(mLetters)
         return pinyinList
