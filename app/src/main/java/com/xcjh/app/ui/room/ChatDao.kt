@@ -11,6 +11,7 @@ import androidx.room.Transaction
 import androidx.room.Update
 import com.alibaba.fastjson.JSONObject
 import com.xcjh.app.MyApplication
+import com.xcjh.app.utils.CacheUtil
 import com.xcjh.base_lib.utils.LogUtils
 import kotlinx.coroutines.sync.Mutex
 
@@ -28,7 +29,7 @@ interface ChatDao {
     suspend fun insertOrUpdate(message: MsgBeanData) {
 
             var oldMessage: MsgBeanData?
-            oldMessage = findMessagesById(message.sendId!!)
+            oldMessage = findMessagesById(message.id!!)
             Log.d("MessageDao", "oldMessage: $oldMessage")
 
             if (oldMessage != null) {
@@ -42,6 +43,8 @@ interface ChatDao {
                 insert(message)
 
         }
+        var list= getMessagesByName(message.anchorId!!, CacheUtil.getUser()?.id!!)!!
+        LogUtils.d("所有一条数据" + JSONObject.toJSONString(list))
     }
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
