@@ -2,20 +2,40 @@ package com.xcjh.app.websocket
 
 import android.annotation.SuppressLint
 import android.content.*
-import android.os.IBinder
+import android.os.Build
+import android.os.Handler
+import android.os.Looper
+import com.drake.engine.base.app
+import com.google.gson.Gson
 import com.xcjh.app.R
+import com.xcjh.app.appViewModel
 import com.xcjh.app.bean.BeingLiveBean
+import com.xcjh.app.utils.CacheUtil
+import com.xcjh.app.utils.onWsUserLogin
 import com.xcjh.app.websocket.bean.FeedSystemNoticeBean
 import com.xcjh.app.websocket.bean.LiveStatus
 import com.xcjh.app.websocket.bean.NoReadMsg
 import com.xcjh.app.websocket.bean.ReceiveChangeMsg
 import com.xcjh.app.websocket.bean.ReceiveChatMsg
 import com.xcjh.app.websocket.bean.ReceiveWsBean
+import com.xcjh.app.websocket.bean.SendCommonWsBean
 import com.xcjh.app.websocket.listener.*
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.utils.*
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.java_websocket.client.WebSocketClient
+import org.java_websocket.handshake.ServerHandshake
+import java.net.URI
+import java.util.concurrent.ScheduledExecutorService
+import java.util.concurrent.ScheduledThreadPoolExecutor
+import java.util.concurrent.ThreadFactory
+import java.util.concurrent.ThreadPoolExecutor
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicInteger
 
 
 /**
@@ -25,8 +45,17 @@ import org.java_websocket.client.WebSocketClient
 class MyWsManager private constructor(private val mContext: Context) {
 
     val tag = "MyWsManager"
-
+    var client: WebSocketClient? = null
     companion object {
+        private var scheduledExecutorService: ScheduledExecutorService? = null
+        private var errorNum = 0
+        private val CPU_COUNT = Runtime.getRuntime().availableProcessors()
+        private val CORE_POOL_SIZE = 2.coerceAtLeast((CPU_COUNT - 1).coerceAtMost(4))
+        //    -------------------------------------websocket心跳检测------------------------------------------------
+        /**
+         * 每隔10秒进行一次对长连接的心跳检测
+         */
+        private const val HEART_BEAT_RATE = (10 * 1000).toLong()
 
         @SuppressLint("StaticFieldLeak")
         private var INSTANCE: MyWsManager? = null
@@ -35,6 +64,19 @@ class MyWsManager private constructor(private val mContext: Context) {
                 synchronized(MyWsManager::class.java) {
                     if (INSTANCE == null) {
                         INSTANCE = MyWsManager(context)
+                        if (scheduledExecutorService == null) {
+                            val namedThreadFactory: ThreadFactory = object : ThreadFactory {
+                                private val mCount = AtomicInteger(1)
+                                override fun newThread(r: Runnable): Thread {
+                                    return Thread(r, "JWebSocketClientService" + mCount.getAndIncrement())
+                                }
+                            }
+                            scheduledExecutorService = ScheduledThreadPoolExecutor(
+                                CORE_POOL_SIZE,
+                                namedThreadFactory,
+                                ThreadPoolExecutor.DiscardOldestPolicy()
+                            )
+                        }
                     }
                 }
             }
@@ -42,11 +84,7 @@ class MyWsManager private constructor(private val mContext: Context) {
         }
     }
 
-    private var serviceIntent: Intent? = null
-    private var client: WebSocketClient? = null
-    private var binder: MyWsClientService.WsClientBinder? = null
-    private var service: MyWsClientService? = null
-    private var receiver: ChatMessageReceiver? = null
+    // private var client: WebSocketClient? = null
 
 
     /**
@@ -408,13 +446,13 @@ class MyWsManager private constructor(private val mContext: Context) {
                 intent.action = WebSocketAction.WEB_ACTION
                 intent.putExtra("message", message)
                 app.sendBroadcast(intent)
-               // "onReceive====------------  $message".loge()
-               /* try {
-                    //appViewModel
-                    parsingServiceLogin(message)
-                } catch (e: Exception) {
-                    "======onReceive===webSocket解析异常------------  ${e.message}".loge()
-                }*/
+                // "onReceive====------------  $message".loge()
+                /* try {
+                     //appViewModel
+                     parsingServiceLogin(message)
+                 } catch (e: Exception) {
+                     "======onReceive===webSocket解析异常------------  ${e.message}".loge()
+                 }*/
             }
 
             override fun onOpen(handshakedata: ServerHandshake) {
