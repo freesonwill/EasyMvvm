@@ -30,7 +30,16 @@ data class MyListPages<T>(
     val size: Int = 0,
     val total: Int = 0
 )
-
+data class AutherInfoBean(
+    val fansCount: Int,
+    val firstMessage: String,
+    val focus: Boolean,
+    val head: String,
+    val id: Int,
+    val nickName: String,
+    val notice: String,
+    val titlePage: String
+)
 
 /**
  * 登录信息

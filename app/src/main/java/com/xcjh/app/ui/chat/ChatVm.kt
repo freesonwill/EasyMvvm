@@ -5,6 +5,7 @@ import com.kunminx.architecture.ui.callback.UnPeekLiveData
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
 import com.xcjh.app.R
 import com.xcjh.app.appViewModel
+import com.xcjh.app.bean.AutherInfoBean
 import com.xcjh.app.bean.MsgBean
 import com.xcjh.app.bean.PostClreaMsgBean
 import com.xcjh.app.bean.HistoryMsgReq
@@ -31,6 +32,7 @@ class ChatVm : BaseViewModel() {
 
     var feedbackOk = BooleanLiveData()
     var upPic = UnPeekLiveData<String>()
+    var autherInfo = UnPeekLiveData<AutherInfoBean>()
     var clearMsg = UnPeekLiveData<Boolean>()
     var hisMsgList = UnPeekLiveData<MutableList<MsgBeanData>>()
     fun getHisMsgList(smartCommon: SmartRefreshLayout, offset: String, serchId: String?) {
@@ -46,15 +48,15 @@ class ChatVm : BaseViewModel() {
                 smartCommon.finishRefresh()
                 smartCommon.resetNoMoreData()
                 //if (it.size > 0) {
-                   hisMsgList.value = it
-               // }
+                hisMsgList.value = it
+                // }
             }, {
                 try {
                     smartCommon.finishRefresh()
                     smartCommon.resetNoMoreData()
                     //请求失败
 
-                    hisMsgList.value= arrayListOf()
+                    hisMsgList.value = arrayListOf()
                     myToast(it.errorMsg)
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -136,15 +138,14 @@ class ChatVm : BaseViewModel() {
     }
 
     /**
-     * 获取用户信息
+     * 获取主播信息
      */
-    fun getUserInfo() {
+    fun getUserInfo(id: String) {
         request(
-            { apiService.getUserBaseInfo() },
+            { apiService.getAutherInfo(id) },
             {
 
-                CacheUtil.setUser(it)
-                appViewModel.userInfo.value = it
+                autherInfo.value = it
             }, {
 
             }

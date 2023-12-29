@@ -239,7 +239,12 @@ interface ApiComService {
      */
     @GET("app/user/getUserInfo")
     suspend fun getUserBaseInfo(): ApiResponse<UserInfo>
-
+    /**
+     * 获取铸币基本信息
+     * /app/live/detail/live/user/info/{anchorId}
+     */
+    @GET("app/live/detail/live/user/info/{anchorId}")
+    suspend fun getAutherInfo(@Path("anchorId") anchorId: String): ApiResponse<AutherInfoBean>
     /**
      * 修改个人信息
      * /apis/app/user/updateInfo

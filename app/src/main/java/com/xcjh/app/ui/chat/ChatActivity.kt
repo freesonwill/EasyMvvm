@@ -698,9 +698,11 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
         // mViewModel.clearMsg(userId)
         initData()
 
+        mViewModel.getUserInfo(userId)
 
         getAllData()
         mViewModel.getHisMsgList(mDatabind.smartCommon, offset, userId)
+
     }
 // 将Drawable转换为Bitmap
 
@@ -827,6 +829,12 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
 
             }
         }
+        mViewModel.autherInfo.observe(this){
+            if (it!=null){
+                nickname=it.nickName
+                mDatabind.titleTop.tvTitle.text = nickname
+            }
+        }
         mViewModel.hisMsgList.observeForever {
             if (it.size > 0) {
 
@@ -847,8 +855,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                             it[i].sendId = userId + it[i].createTime
                         }
                         it[i].sent=1
-                        nickname=it[i].nick
-                        mDatabind.titleTop.tvTitle.text = nickname
+
                         LogUtils.d("昵称是===" +it[i].nick)
                         addDataToList("9", it[i])
                     }
@@ -856,8 +863,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                     LogUtils.d("有新的消息===" + JSONObject.toJSONString(it))
                     var bean=listdata[0]
                     for ((index, data) in it.withIndex()) {
-                        nickname=data.nick
-                        mDatabind.titleTop.tvTitle.text = nickname
+
                         LogUtils.d("昵称是===" +data.nick)
                         val foundData = listdata.find { it.id == data.id }
                         if (foundData == null) {
