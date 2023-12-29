@@ -847,14 +847,17 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                         addDataToList("9", it[i])
                     }
                 } else {
+                    LogUtils.d("有新的消息===" + JSONObject.toJSONString(it))
+                    var bean=listdata[0]
                     for ((index, data) in it.withIndex()) {
                         val foundData = listdata.find { it.id == data.id }
                         if (foundData == null) {
-                            LogUtils.d("有新的消息需要加入缓存===" + JSONObject.toJSONString(data))
+
                             data?.let { it1 ->
+                                LogUtils.d("第一个数据===" + JSONObject.toJSONString(bean))
                                 if (TimeUtil.isEarlier(
                                         data.createTime!!,
-                                        listdata[0].createTime!!
+                                        bean.createTime!!
                                     )
                                 ) {
                                     if (it1.sendId == "0") {
@@ -867,6 +870,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                     listdata1.add(data)
                                     mDatabind.rv.addModels(listdata1, index = 0)
                                     mDatabind.rv.scrollToPosition(0) // 保证最新一条消息显示
+                                    LogUtils.d("有新的消息需要加入缓存===" + data.content)
                                 }
                             }
                         }
