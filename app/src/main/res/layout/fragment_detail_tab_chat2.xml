@@ -34,52 +34,54 @@
 
         <include
             android:id="@+id/notice"
-            android:visibility="visible"
-            layout="@layout/item_detail_chat_notice" />
+            layout="@layout/item_detail_chat_notice"
+            android:visibility="visible" />
+
         <com.drake.brv.PageRefreshLayout
             android:id="@+id/page"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:page_upFetchEnabled="true"
             android:layout_above="@id/llInput"
-            android:layout_below="@id/notice">
+            android:layout_below="@id/notice"
+            app:page_upFetchEnabled="true">
 
-          <!--  <com.scwang.smart.refresh.header.MaterialHeader
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />-->
+            <!--  <com.scwang.smart.refresh.header.MaterialHeader
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content" />-->
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rcvChat"
                 click="@{v}"
-                app:reverseLayout="true"
-                app:stackFromEnd="true"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:itemCount="3"
-                tools:listitem="@layout/item_detail_chat" />
-            <com.scwang.smart.refresh.header.ClassicsHeader
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:srlTextPulling="@string/head_pulling"
-                app:srlTextLoading="@string/head_loading"
-                app:srlTextRelease="@string/head_release"
-                app:srlTextFinish="@string/head_finish"
+                app:reverseLayout="true"
+                app:stackFromEnd="true"
+                tools:itemCount="3"
+                tools:listitem="@layout/item_detail_chat" />
+
+            <com.scwang.smart.refresh.footer.ClassicsFooter
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 app:srlTextFailed="@string/head_failed"
-                app:srlTextUpdate="@string/head_update"
+                app:srlTextFinish="@string/head_finish"
+                app:srlTextLoading="@string/head_loading"
+                app:srlTextPulling="@string/head_pulling"
                 app:srlTextRefreshing="@string/head_refreshing"
-                />
+                app:srlTextRelease="@string/head_release"
+                app:srlTextUpdate="@string/head_update" />
         </com.drake.brv.PageRefreshLayout>
 
         <RelativeLayout
             android:id="@+id/llInput"
-            android:layout_alignParentBottom="true"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true">
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_36"
-                android:layout_marginVertical="@dimen/dp_10"
                 android:layout_marginHorizontal="@dimen/dp_12"
+                android:layout_marginVertical="@dimen/dp_10"
                 android:background="@drawable/shape_chat_input">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -91,30 +93,32 @@
                     android:layout_marginEnd="65dp"
                     android:background="@null"
                     android:hint="@string/say_something"
-                    android:text="@={m.input}"
                     android:imeOptions="flagNoExtractUi|actionSend"
                     android:inputType="text|textCapSentences"
                     android:maxLength="500"
+                    android:text="@={m.input}"
                     android:textColor="@color/white"
                     android:textColorHint="@color/c_94999f"
+                    android:textCursorDrawable="@null"
                     android:textSize="@dimen/sp_14" />
 
                 <View
-                    android:background="#3E3E40"
+                    android:layout_width="@dimen/dp_1"
+                    android:layout_height="20dp"
                     android:layout_centerVertical="true"
                     android:layout_toStartOf="@id/sendChat"
-                    android:layout_width="@dimen/dp_1"
-                    android:layout_height="20dp"/>
+                    android:background="#3E3E40" />
+
                 <ImageView
                     android:id="@+id/sendChat"
                     android:layout_width="@dimen/dp_50"
                     android:layout_height="@dimen/dp_30"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:paddingVertical="5dp"
-                    android:paddingHorizontal="@dimen/dp_15"
-                    android:src="@drawable/icon_send"
                     android:enabled="@{m.sendEnable}"
+                    android:paddingHorizontal="@dimen/dp_15"
+                    android:paddingVertical="5dp"
+                    android:src="@drawable/icon_send"
                     app:click="@{v}" />
             </RelativeLayout>
         </RelativeLayout>

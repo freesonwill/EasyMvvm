@@ -7,9 +7,9 @@ import android.graphics.Color
 import android.graphics.Rect
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.JavascriptInterface
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
-import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -32,12 +32,12 @@ import com.luck.picture.lib.basic.PictureSelector
 import com.luck.picture.lib.entity.LocalMedia
 import com.xcjh.app.R
 import com.xcjh.app.adapter.ViewPager2Adapter
+import com.xcjh.app.bean.BottomMsgBean
 import com.xcjh.app.bean.FirstMsgBean
 import com.xcjh.app.bean.MatchDetailBean
 import com.xcjh.app.bean.MsgBean
 import com.xcjh.app.bean.NoticeBean
 import com.xcjh.app.bean.TabBean
-import com.xcjh.app.databinding.HeadViewBinding
 import com.xcjh.app.databinding.ItemDetailChatBinding
 import com.xcjh.app.databinding.ItemDetailChatFirstBinding
 import com.xcjh.app.ui.details.fragment.DetailAnchorFragment
@@ -49,7 +49,6 @@ import com.xcjh.app.ui.details.fragment.DetailLiveFragment
 import com.xcjh.app.ui.details.fragment.DetailResultFragment
 import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.utils.SpanUtil
-import com.xcjh.base_lib.utils.loge
 import com.xcjh.base_lib.utils.setTextBold
 import com.xcjh.base_lib.utils.toHtml
 import com.xcjh.base_lib.utils.view.visibleOrGone
@@ -264,8 +263,8 @@ fun setNewViewPager(
     newTabs.forEach { t ->
         mTitles.add(t.name)
         when (t.type) {
-            1 -> mFragList.add(DetailChatFragment(liveId, anchorId))
-            //1 -> mFragList.add(DetailChat2Fragment(liveId, anchorId))
+            //1 -> mFragList.add(DetailChatFragment(liveId, anchorId))
+            1 -> mFragList.add(DetailChat2Fragment(liveId, anchorId))
             2 -> mFragList.add(DetailAnchorFragment(anchorId ?: ""))
             3 -> mFragList.add(DetailResultFragment(detailBean))//赛况
             4 -> mFragList.add(DetailLineUpFragment(detailBean))//阵容
@@ -342,6 +341,7 @@ fun setChatRoomRcv(
     action: (AgentWeb) -> Unit = {},
     offset: (String?) -> Unit = {},
 ) {
+    rcvChat.setHasFixedSize(true)
     rcvChat.apply {
         layoutManager = mLayoutManager
     }.setup {
@@ -350,14 +350,18 @@ fun setChatRoomRcv(
             R.layout.item_detail_chat_notice // 公告
         }
         addType<FirstMsgBean> {
-            R.layout.item_detail_chat_first // 公告
+            R.layout.item_detail_chat_first // 首条消息
+        }
+        addType<BottomMsgBean> {
+            R.layout.item_detail_chat_bottom // 为了滑动到底部 的占位
         }
         addType<MsgBean> {
             R.layout.item_detail_chat // 我发的消息
         }
         onCreate {
             when (itemViewType) {
-                R.layout.item_detail_chat_first -> {
+                R.layout.item_detail_chat_first ->
+                {
                     val binding = getBinding<ItemDetailChatFirstBinding>()
                     mAgentWeb = AgentWeb.with(rcvChat.context as Activity)
                         .setAgentWebParent(
@@ -398,13 +402,26 @@ fun setChatRoomRcv(
                     mAgentWeb.webCreator.webView.setBackgroundColor(Color.argb(0, 0, 0, 0))
                     val p = mAgentWeb.webCreator.webView.parent as WebParentLayout
                     p.setBackgroundColor(Color.TRANSPARENT)
+
+                    mAgentWeb.webCreator.webView.addJavascriptInterface(object : Any() {
+                        @JavascriptInterface
+                        fun onContentHeightChanged(height: Int) {
+                            val layoutParams: ViewGroup.LayoutParams =  mAgentWeb.webCreator.webView.layoutParams
+                            layoutParams.height = height
+                            mAgentWeb.webCreator.webView.layoutParams = layoutParams
+                        }
+                    }, "android")
                     action.invoke(mAgentWeb)
+
                 }
             }
         }
         onBind {
             when (val item = _data) {
                 is NoticeBean -> {
+
+                }
+                is BottomMsgBean -> {
 
                 }
 
@@ -417,6 +434,7 @@ fun setChatRoomRcv(
                      }*/
                     /* val bb = item.content.replaceFirst("<p>", "<span>")
                          .replace("</p>", "</span>")*/
+                    val aa ="<p><span style='color: #34A853;font-weight:500;margin-right:5px;flex-shrink:0;'>jr680036:</span>测试测试出色测试测试出色测</p><p><span style='color: #34A853;font-weight:500;margin-right:5px;flex-shrink:0;'>jr680036:</span> <a href=\\\"https://www.baidu.com/\\\" target=\\\"_blank\\\">https://www.baidu.com/</a> </p><p><span style='color: #34A853;font-weight:500;margin-right:5px;flex-shrink:0;'>jr680036:</span><span style=\\\"color: rgb(225, 60, 57);\\\">测试测试出色</span></p>"
                     val bb =
                         "<html><head><style>body { font-size:14px; color: #ffffff; margin: 0; }</style></head><body>${item.content}</body></html>"
                     // binding.webView.loadData(aa+javascript,"text/html", "UTF-8") //aa.toHtml()

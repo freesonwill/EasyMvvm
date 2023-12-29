@@ -248,6 +248,23 @@ data class FirstMsgBean(
         visibility = false
     }
 }
+/**
+ * 群聊最后占位消息
+ */
+data class BottomMsgBean(
+    var isBottom: Boolean = true,//
+) : ItemAttached {
+    var visibility: Boolean = false // 显示隐藏
+    override fun onViewAttachedToWindow(holder: BindingAdapter.BindingViewHolder) {
+        //由隐变显
+        visibility = true
+    }
+
+    override fun onViewDetachedFromWindow(holder: BindingAdapter.BindingViewHolder) {
+        //由显变隐
+        visibility = false
+    }
+}
 data class FeedBackBean(
     val type: Int,//通知类型(0系统通知 1反馈结果 2禁言通知 3解禁通知)
     val title: String,

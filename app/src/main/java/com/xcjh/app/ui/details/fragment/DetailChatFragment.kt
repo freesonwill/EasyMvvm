@@ -150,6 +150,10 @@ class DetailChatFragment(
             mDatabind.edtChatMsg.clearFocus()
             false
         }
+        mDatabind.edtChatMsg.isEnabled=false
+        mDatabind.edtChatMsg.postDelayed({
+            mDatabind.edtChatMsg.isEnabled=true
+        }, 1000)
         mDatabind.edtChatMsg.setOnFocusChangeListener { v, hasFocus ->
             if (hasFocus) {
                 judgeLogin()
@@ -214,7 +218,8 @@ class DetailChatFragment(
                                     //richText,
                                     it.firstMessage ?: "",
                                     identityType = 1
-                                )
+                                ),
+                                BottomMsgBean()
                             ),
                             // index = 0
                         ) // 添加一条消息
@@ -266,10 +271,12 @@ class DetailChatFragment(
 
     override fun onStart() {
         super.onStart()
-        if (!isEnterRoom) {
+       /* if (!isEnterRoom) {
             MyWsManager.getInstance(App.app)?.setLiveRoomListener(activity.toString(), this)
             onWsUserEnterRoom(liveId)
-        }
+        }*/
+        MyWsManager.getInstance(App.app)?.setLiveRoomListener(activity.toString(), this)
+        onWsUserEnterRoom(liveId)
         activity.toString().loge()
     }
 

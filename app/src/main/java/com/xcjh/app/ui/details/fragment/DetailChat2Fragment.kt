@@ -16,6 +16,7 @@ import com.drake.brv.utils.addModels
 import com.drake.brv.utils.models
 import com.drake.softinput.hideSoftInput
 import com.google.gson.Gson
+import com.just.agentweb.AgentWeb
 import com.xcjh.app.R
 import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseVpFragment
@@ -101,7 +102,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
             mDatabind.notice.root.visibility = View.GONE
         }
     }
-
+    private var mAgentWeb: AgentWeb?=null
     @SuppressLint("ClickableViewAccessibility")
     private fun initRcv() {
         //  mDatabind.page.setEnableLoadMore(false)
@@ -122,7 +123,9 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
         mDatabind.page.onRefresh {
             mViewModel.getHisMsgList(liveId, offset)
         }
-        setChatRoomRcv(mDatabind.rcvChat,mLayoutManager,true){
+        setChatRoomRcv(mDatabind.rcvChat,mLayoutManager,true,{
+            mAgentWeb=it
+        }){
             offset = it?: ""
         }
         //点击列表隐藏软键盘
@@ -172,9 +175,11 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
                         val params = mDatabind.rcvChat.layoutParams
                         params.height = mDatabind.page.height
                         mDatabind.rcvChat.layoutParams = params
+
                         mDatabind.rcvChat.addModels(
                             listOf(
-                                MsgBean(
+                                //BottomMsgBean(),
+                                FirstMsgBean(
                                     it.id, it.head, it.nickName, "0",
                                     //richText,
                                     it.firstMessage ?: "", identityType = 1
@@ -183,8 +188,11 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
                             index = 0
                         ) // 添加一条消息
                         mDatabind.rcvChat.scrollToPosition(0)
-                    } catch (_: Exception) {
-                    }
+                        mDatabind.rcvChat.postDelayed({
+                            mDatabind.rcvChat.scrollToPosition(0)
+                        },500)
+
+                    } catch (_: Exception) { }
 
                 }, 500)
             }
@@ -231,10 +239,8 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
 
     override fun onStart() {
         super.onStart()
-        if (!isEnterRoom) {
-            MyWsManager.getInstance(App.app)?.setLiveRoomListener(activity.toString(), this)
-            onWsUserEnterRoom(liveId)
-        }
+        MyWsManager.getInstance(App.app)?.setLiveRoomListener(activity.toString(), this)
+        onWsUserEnterRoom(liveId)
     }
 
     override fun onResume() {
@@ -246,12 +252,14 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
             } catch (_: Exception) {
             }
         }, 200)
+        mAgentWeb?.webLifeCycle?.onResume()
         super.onResume()
     }
 
     override fun onPause() {
         hideSoftInput()
         mDatabind.edtChatMsg.clearFocus()
+        mAgentWeb?.webCreator?.webView?.onPause()
         super.onPause()
     }
 
@@ -271,6 +279,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
     private fun exitRoom() {
         onWsUserExitRoom(liveId)
         MyWsManager.getInstance(App.app)?.removeLiveRoomListener(activity.toString())
+        mAgentWeb?.webLifeCycle?.onDestroy()
         isEnterRoom = false
     }
 
