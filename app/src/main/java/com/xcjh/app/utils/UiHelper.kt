@@ -1,11 +1,15 @@
 package com.xcjh.app.utils
 
 import android.app.Activity
+import android.content.Intent
 import android.content.res.ColorStateList
+import android.graphics.Color
 import android.graphics.Rect
-import android.text.method.LinkMovementMethod
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.WebResourceRequest
+import android.webkit.WebView
+import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -20,15 +24,22 @@ import com.drake.brv.layoutmanager.HoverLinearLayoutManager
 import com.drake.brv.utils.setup
 import com.drake.engine.base.app
 import com.google.android.material.appbar.AppBarLayout
+import com.just.agentweb.AgentWeb
+import com.just.agentweb.WebChromeClient
+import com.just.agentweb.WebParentLayout
+import com.just.agentweb.WebViewClient
 import com.luck.picture.lib.basic.PictureSelector
 import com.luck.picture.lib.entity.LocalMedia
 import com.xcjh.app.R
 import com.xcjh.app.adapter.ViewPager2Adapter
+import com.xcjh.app.bean.FirstMsgBean
 import com.xcjh.app.bean.MatchDetailBean
 import com.xcjh.app.bean.MsgBean
 import com.xcjh.app.bean.NoticeBean
 import com.xcjh.app.bean.TabBean
+import com.xcjh.app.databinding.HeadViewBinding
 import com.xcjh.app.databinding.ItemDetailChatBinding
+import com.xcjh.app.databinding.ItemDetailChatFirstBinding
 import com.xcjh.app.ui.details.fragment.DetailAnchorFragment
 import com.xcjh.app.ui.details.fragment.DetailChat2Fragment
 import com.xcjh.app.ui.details.fragment.DetailChatFragment
@@ -39,7 +50,7 @@ import com.xcjh.app.ui.details.fragment.DetailResultFragment
 import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.utils.SpanUtil
 import com.xcjh.base_lib.utils.loge
-import com.xcjh.base_lib.utils.notNull
+import com.xcjh.base_lib.utils.setTextBold
 import com.xcjh.base_lib.utils.toHtml
 import com.xcjh.base_lib.utils.view.visibleOrGone
 import net.lucode.hackware.magicindicator.MagicIndicator
@@ -55,6 +66,7 @@ fun setUnScroll(lltFold: ViewGroup) {
     lltFold.requestFocus()
     lltFold.layoutParams = params
 }
+
 //SCROLL_FLAG_SNAP 会就近惯性折叠伸展
 fun setScroll(lltFold: ViewGroup) {
     //重新设置布局可以滑动
@@ -95,14 +107,14 @@ fun getMatchStatusStr(matchType: String, status: Int): String {
             0 -> "比赛异常"//此处可以隐藏处理，看UI设计
             1 -> "未开赛"
             in 2..9 -> "比赛中"
-           /* 2 -> "第一节"
-            3 -> "第一节完"
-            4 -> "第二节"
-            5 -> "第二节完"
-            6 -> "第三节"
-            7 -> "第三节完"
-            8 -> "第四节"
-            9 -> "加时"*/
+            /* 2 -> "第一节"
+             3 -> "第一节完"
+             4 -> "第二节"
+             5 -> "第二节完"
+             6 -> "第三节"
+             7 -> "第三节完"
+             8 -> "第四节"
+             9 -> "加时"*/
             10 -> "已完场"
             11 -> "中断"
             12 -> "取消"
@@ -161,25 +173,26 @@ fun setMatchStatusTime(
     } else {
         if (status in 2..9) {
             tvTime.text = when (status) {
-                 2 -> "第一节"
-                 3 -> "第一节完"
-                 4 -> "第二节"
-                 5 -> "第二节完"
-                 6 -> "第三节"
-                 7 -> "第三节完"
-                 8 -> "第四节"
-                 9 -> "加时"
+                2 -> "第一节"
+                3 -> "第一节完"
+                4 -> "第二节"
+                5 -> "第二节完"
+                6 -> "第三节"
+                7 -> "第三节完"
+                8 -> "第四节"
+                9 -> "加时"
                 else -> "比赛异常"
             }
             tvTimeS.text = " '"
             tvTime.visibleOrGone(true)
             tvTimeS.visibleOrGone(true)
         } else {
-           // tvTime.visibleOrGone(false)
+            // tvTime.visibleOrGone(false)
             tvTimeS.visibleOrGone(false)
         }
     }
 }
+
 private val tabs by lazy {
     arrayListOf(
         TabBean(1, name = appContext.resources.getStringArray(R.array.str_football_detail_tab)[0]),
@@ -190,6 +203,7 @@ private val tabs by lazy {
         TabBean(6, name = appContext.resources.getStringArray(R.array.str_football_detail_tab)[5]),
     )
 }
+
 /**
  * 设置新的Tab+Vp
  */
@@ -242,15 +256,16 @@ fun setNewViewPager(
     }
     var liveId = ""
     detailBean.anchorList?.forEach {
-        if (it.isSelect){
-            liveId = if (it.liveId.isNullOrEmpty()) "${detailBean.matchType}${detailBean.matchId}" else it.liveId
+        if (it.isSelect) {
+            liveId =
+                if (it.liveId.isNullOrEmpty()) "${detailBean.matchType}${detailBean.matchId}" else it.liveId
         }
     }
     newTabs.forEach { t ->
         mTitles.add(t.name)
         when (t.type) {
-            1 -> mFragList.add(DetailChatFragment(liveId, anchorId))
-          //  1 ->mFragList.add(DetailChat2Fragment(liveId, anchorId))
+            //1 -> mFragList.add(DetailChatFragment(liveId, anchorId))
+            1 -> mFragList.add(DetailChat2Fragment(liveId, anchorId))
             2 -> mFragList.add(DetailAnchorFragment(anchorId ?: ""))
             3 -> mFragList.add(DetailResultFragment(detailBean))//赛况
             4 -> mFragList.add(DetailLineUpFragment(detailBean))//阵容
@@ -264,7 +279,8 @@ fun setNewViewPager(
     viewPager.adapter?.notifyDataSetChanged()
     magicIndicator.navigator.notifyDataSetChanged()
 }
-fun handleSoftInput(context: Activity,layout: RelativeLayout) {
+
+fun handleSoftInput(context: Activity, layout: RelativeLayout) {
     var currentHeight = 0
     val layoutParams = layout.layoutParams as RelativeLayout.LayoutParams
     val decorView = context.window.decorView
@@ -294,6 +310,7 @@ fun handleSoftInput(context: Activity,layout: RelativeLayout) {
 
     }
 }
+
 fun hasNavigationBar(view: View): Boolean {
     val compact = ViewCompat.getRootWindowInsets(view.findViewById(android.R.id.content))
     compact?.apply {
@@ -303,8 +320,8 @@ fun hasNavigationBar(view: View): Boolean {
     }
     return false
 }
-fun setProgressValue(progress: Int): Int {
 
+fun setProgressValue(progress: Int): Int {
     var p = progress
     if (progress < 20) {
         p = 20
@@ -318,23 +335,97 @@ fun setProgressValue(progress: Int): Int {
  * 聊天列表
  * @isReverse 是否翻转 默认不
  */
-fun setChatRoomRcv(rcvChat : RecyclerView, mLayoutManager: HoverLinearLayoutManager,isReverse:Boolean=false,offset: (String?) -> Unit = {}) {
+fun setChatRoomRcv(
+    rcvChat: RecyclerView,
+    mLayoutManager: HoverLinearLayoutManager,
+    isReverse: Boolean = false,
+    action: (AgentWeb) -> Unit = {},
+    offset: (String?) -> Unit = {},
+) {
     rcvChat.apply {
         layoutManager = mLayoutManager
     }.setup {
+        lateinit var mAgentWeb: AgentWeb
         addType<NoticeBean> {
             R.layout.item_detail_chat_notice // 公告
         }
+        addType<FirstMsgBean> {
+            R.layout.item_detail_chat_first // 公告
+        }
         addType<MsgBean> {
             R.layout.item_detail_chat // 我发的消息
+        }
+        onCreate {
+            when (itemViewType) {
+                R.layout.item_detail_chat_first -> {
+                    val binding = getBinding<ItemDetailChatFirstBinding>()
+                    mAgentWeb = AgentWeb.with(rcvChat.context as Activity)
+                        .setAgentWebParent(
+                            binding.agentWeb,
+                            ViewGroup.LayoutParams(
+                                ViewGroup.LayoutParams.MATCH_PARENT,
+                                ViewGroup.LayoutParams.WRAP_CONTENT
+                            )
+                        )
+                        .closeIndicator()
+                        // .setWebView(webView)
+                        //.setWebView(NestedScrollAgentWebView(context))
+                        .setWebChromeClient(object : WebChromeClient() {
+                            override fun onProgressChanged(view: WebView?, newProgress: Int) {
+                                super.onProgressChanged(view, newProgress)
+                            }
+                        })
+                        .setWebViewClient(object : WebViewClient() {
+                            override fun shouldOverrideUrlLoading(
+                                view: WebView?,
+                                request: WebResourceRequest?,
+                            ): Boolean {
+                                rcvChat.context.startActivity(Intent(Intent.ACTION_VIEW, request?.url))
+                                return true
+                            }
+                        })
+                        // .setWebView(binding.agentWeb)
+                        .createAgentWeb()
+                        .ready()
+                        .get()
+                    // 去掉滚动条
+                    mAgentWeb.webCreator.webView.scrollBarSize = 0
+                    //  取消WebView中滚动或拖动到顶部、底部时的阴影
+                    mAgentWeb.webCreator.webView.overScrollMode = View.OVER_SCROLL_NEVER
+                    mAgentWeb.agentWebSettings.webSettings.javaScriptEnabled = true
+                    mAgentWeb.agentWebSettings.webSettings.allowFileAccess = true
+                    mAgentWeb.agentWebSettings.webSettings.allowFileAccessFromFileURLs = true //c_181819
+                    mAgentWeb.webCreator.webView.setBackgroundColor(Color.argb(0, 0, 0, 0))
+                    val p = mAgentWeb.webCreator.webView.parent as WebParentLayout
+                    p.setBackgroundColor(Color.TRANSPARENT)
+                    action.invoke(mAgentWeb)
+                }
+            }
         }
         onBind {
             when (val item = _data) {
                 is NoticeBean -> {
 
                 }
+
+                is FirstMsgBean -> {
+                    //主播加入超链接
+                    /* "<font color=\"#34A853\" font-weight=\"500\">${item.nick} : </font>${item.content}".toHtml {
+                         Handler(Looper.getMainLooper()).post {
+                             binding.tvContent.text = it
+                         }
+                     }*/
+                    /* val bb = item.content.replaceFirst("<p>", "<span>")
+                         .replace("</p>", "</span>")*/
+                    val bb =
+                        "<html><head><style>body { font-size:14px; color: #ffffff; margin: 0; }</style></head><body>${item.content}</body></html>"
+                    // binding.webView.loadData(aa+javascript,"text/html", "UTF-8") //aa.toHtml()
+                    mAgentWeb.urlLoader.loadDataWithBaseURL(null, bb, "text/html", "UTF-8", null)
+                }
+
                 is MsgBean -> {
                     val binding = getBinding<ItemDetailChatBinding>()
+                    setTextBold(binding.tvLevel, item.identityType != 0)
                     if (item.identityType == 0) {
                         binding.ivImage.visibleOrGone(false)
                         binding.ivLevel.visibleOrGone(true)
@@ -368,12 +459,12 @@ fun setChatRoomRcv(rcvChat : RecyclerView, mLayoutManager: HoverLinearLayoutMana
                             }
                         }
                     }
-                    if (isReverse){
+                    if (isReverse) {
                         if (modelPosition + 1 == models?.size) {
                             offset.invoke(item.id ?: "")
                             //item.id?.loge("====+++++++++")
                         }
-                    }else{
+                    } else {
                         if (modelPosition == 0) {
                             offset.invoke(item.id ?: "")
                         }
@@ -389,32 +480,24 @@ fun setChatRoomRcv(rcvChat : RecyclerView, mLayoutManager: HoverLinearLayoutMana
                         )
                     if (item.identityType == 0) {
                         binding.tvContent.text = section.spanStrBuilder
-                        //  binding.tvContent.text = "<font color=\"#94999F\">${item.nick} : </font>${item.content}".toHtml()
                     } else {
                         if (item.msgType == 0) {
-                            //主播加入超链接
-                            /* "<font color=\"#34A853\" font-weight=\"500\">${item.nick} : </font>${item.content}".toHtml {
-                                 Handler(Looper.getMainLooper()).post {
-                                     binding.tvContent.text = it
-                                 }
-                             }*/
-                           // val bb=item.content.replace("<p>","<span>").replace("</p>","</span>")
-                            if (item.isFirst){
-                                binding.tvContent.text = item.content.toHtml()
-                            }else{
-                                binding.tvContent.text =
-                                    "<font color=\"#34A853\" font-weight=\"500\">${item.nick} : </font>${item.content}".toHtml()
-                            }
-                            binding.tvContent.movementMethod = LinkMovementMethod.getInstance()
-                        } else {
                             binding.tvContent.text =
-                                "<font color=\"#34A853\" font-weight=\"500\">${item.nick} : ".toHtml()
+                                "<font color=\"#34A853\"><strong>${item.nick} : </strong></font>${item.content}".toHtml()
+                            //binding.tvContent.movementMethod = LinkMovementMethod.getInstance()
+                        } else {
+                            //图片
+                            binding.tvContent.text =
+                                "<font color=\"#34A853\"><strong>${item.nick} : </strong></font>".toHtml()
                         }
                     }
                     //.showIn(binding.tvContent) //显示到控件TextView中
                 }
             }
         }
+    }
+    fun setWebView() {
+
     }
 }
 

@@ -619,10 +619,12 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
             ) {
                 // 在这里执行相应的操作
                 val searchText = v.text.toString()
-                if (searchText.isNotEmpty()) {
+                if (searchText.isNotEmpty()&&searchText.length>0) {
                     msgType = 0
                     msgContent = searchText
                     sendMsg("", true)
+                }else{
+                    myToast(resources.getString(R.string.str_inputcontent))
                 }
                 true // 返回 true 表示已处理事件
             } else false
@@ -696,9 +698,11 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
         // mViewModel.clearMsg(userId)
         initData()
 
+        mViewModel.getUserInfo(userId)
 
         getAllData()
         mViewModel.getHisMsgList(mDatabind.smartCommon, offset, userId)
+
     }
 // 将Drawable转换为Bitmap
 
@@ -825,6 +829,12 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
 
             }
         }
+        mViewModel.autherInfo.observe(this){
+            if (it!=null){
+                nickname=it.nickName
+                mDatabind.titleTop.tvTitle.text = nickname
+            }
+        }
         mViewModel.hisMsgList.observeForever {
             if (it.size > 0) {
 
@@ -844,21 +854,29 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                         if (it[i].sendId == "0") {
                             it[i].sendId = userId + it[i].createTime
                         }
+                        it[i].sent=1
+
+                        LogUtils.d("昵称是===" +it[i].nick)
                         addDataToList("9", it[i])
                     }
                 } else {
+                    LogUtils.d("有新的消息===" + JSONObject.toJSONString(it))
+                    var bean=listdata[0]
                     for ((index, data) in it.withIndex()) {
+
+                        LogUtils.d("昵称是===" +data.nick)
                         val foundData = listdata.find { it.id == data.id }
                         if (foundData == null) {
-                            LogUtils.d("有新的消息需要加入缓存===" + JSONObject.toJSONString(data))
+
                             data?.let { it1 ->
+                                LogUtils.d("第一个数据===" + JSONObject.toJSONString(bean))
                                 if (TimeUtil.isEarlier(
                                         data.createTime!!,
-                                        listdata[0].createTime!!
+                                        bean.createTime!!
                                     )
                                 ) {
                                     if (it1.sendId == "0") {
-                                        it1.sendId = userId + it1.createTime
+                                        it1.sendId =it1.id
                                     }
                                     data.sent = 1
                                     addDataToList("10", data)
@@ -867,6 +885,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                     listdata1.add(data)
                                     mDatabind.rv.addModels(listdata1, index = 0)
                                     mDatabind.rv.scrollToPosition(0) // 保证最新一条消息显示
+                                    LogUtils.d("有新的消息需要加入缓存===" + data.content)
                                 }
                             }
                         }

@@ -90,6 +90,10 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         initUI()
         initTime()
         initWs()
+        mDatabind.viewPager.postDelayed({
+            Log.i("push===UserReceiver", "onIntent-extras:${intent?.extras?.toString()}")
+            Log.i("push===UserReceiver", "onIntent-data:${intent?.data?.toString()}")
+        },10000)
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -99,10 +103,9 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
 
     private fun onIntent(intent: Intent?) {
         try {
-            Log.i("push===UserReceiver", "onIntent:${intent?.extras?.toString()}")
-            Log.i("push===UserReceiver", "onIntentgson:${Gson().toJson(intent?.extras)}")
-            val notificationMessage = intent?.getStringExtra("message_json")
-            Log.i("push===UserReceiver", "message_json:${notificationMessage}")
+            Log.i("push===UserReceiver", "onIntent-extras:${intent?.extras?.toString()}")
+            Log.i("push===UserReceiver", "onIntent-data:${intent?.data?.toString()}")
+
             if (intent == null) {
                 return
             }
@@ -111,6 +114,7 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
             }
             intent.extras?.apply {
                 val matchId = getString("matchId", "")
+                Log.i("push===UserReceiver", "matchId:${matchId}")
                 val isPureFlow = getString("isPureFlow")
                 val matchType = getString("matchType", "1")
                 val liveId = getString("liveId")
@@ -305,7 +309,7 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
             }
 
             in 10..99 -> {
-                mDatabind.tvnums.text = nums
+                mDatabind.tvnums2.text = nums
                 mDatabind.tvnums.visibility = View.GONE
                 mDatabind.tvnums2.visibility = View.VISIBLE
             }

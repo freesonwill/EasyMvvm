@@ -231,7 +231,6 @@ class MatchDetailActivity :
                     if (matchId == bean.matchId) {
                         if (anchor?.userId == bean.anchorId) {
                             isShowVideo = true
-                            anchor?.playUrl = bean.playUrl
                             showHideLive()
                             //更新聊天
                             mViewModel.anchorInfo.value = AnchorListBean(
@@ -589,20 +588,22 @@ class MatchDetailActivity :
         mViewModel.scrollTextList.observe(this) { stl ->
             mDatabind.marqueeView.visibleOrInvisible(stl.isSuccess && stl.data!!.size > 0)
             stl.data.notNull({ list ->
-                //滚动条广告
-                mDatabind.marqueeView.isSelected = true
-                val random = (0..list.size).random() % list.size
-                mDatabind.marqueeView.text =
-                    list[random].name    /*+"                                                                                             "*/
-                mDatabind.marqueeView.setOnClickListener {
-                    jumpOutUrl(list[random].targetUrl)
+                if (list.size>0){
+                    //滚动条广告
+                    mDatabind.marqueeView.isSelected = true
+                    val random = (0..list.size).random() % list.size
+                    mDatabind.marqueeView.text =
+                        list[random].name    /*+"                                                                                             "*/
+                    mDatabind.marqueeView.setOnClickListener {
+                        jumpOutUrl(list[random].targetUrl)
+                    }
                 }
             }, {})
         }
         //固定广告
         mViewModel.showAd.observe(this) { ad ->
             ad.data.notNull({ bean ->
-                mDatabind.marqueeView.visibleOrGone(true)
+                mDatabind.ivShowAd.visibleOrGone(true)
                 loadImage(this, ad.data?.imgUrl, mDatabind.ivShowAd, R.drawable.ic_ad_def)
                 mDatabind.ivShowAd.setOnClickListener {
                     jumpOutUrl(bean.targetUrl)
@@ -688,6 +689,10 @@ class MatchDetailActivity :
                     matchDetail.runTime
                 )
             }
+        }else{
+            mDatabind.tvMatchTime.text =
+                TimeUtil.timeStamp2Date(matchDetail.matchTime.toLong(), "MM-dd HH:mm")
+            mDatabind.tvMatchTimeS.visibleOrGone(false)
         }
     }
 

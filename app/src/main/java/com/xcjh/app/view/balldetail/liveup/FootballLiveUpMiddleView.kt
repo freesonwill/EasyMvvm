@@ -84,7 +84,7 @@ class FootballLiveUpMiddleView @JvmOverloads constructor(
             lp.leftMargin = mWidth * (100-player.x) / 100 - dp2px(30)
             for ((i, item) in awaySet.withIndex()) {
                 if (player.y == item && awaySet.size > 1) {
-                    lp.topMargin = mHight - mHight * (12 + 76 * i / (awaySet.size - 1)) / 200 - dp2px(25)
+                    lp.topMargin = mHight - mHight * (12 + 76 * i / (awaySet.size - 1)) / 200 - dp2px(10)
                     if (player.position == "G") {
                         //守门员
                         lp.bottomMargin = mHight * player.y / 200 - dp2px(25)

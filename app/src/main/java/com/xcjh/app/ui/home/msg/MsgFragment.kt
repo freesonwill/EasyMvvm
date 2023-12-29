@@ -34,7 +34,14 @@ class MsgFragment : BaseFragment<MsgVm, FrMsgBinding>() {
             .init()
         initEvent()
     }
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        //  isVisble = isVisibleToUser
+    }
 
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+    }
     override fun onResume() {
         super.onResume()
 //        Log.i("FFFFFFFFF","3333333333333333")

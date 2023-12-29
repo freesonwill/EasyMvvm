@@ -37,6 +37,8 @@ class AppViewModel : BaseViewModel() {
     var appPushMsg=EventLiveData< ArrayList<ReceiveChangeMsg>>()
     //主播开播推送
     var appPushLive=EventLiveData<LiveStatus>()
+    //点击消息TAB
+    var appMsgResum=EventLiveData<Boolean>()
     //更新消息列表
     var updateMsgEvent = EventLiveData<String>()
     //更新消息列表数据

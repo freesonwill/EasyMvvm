@@ -1120,14 +1120,16 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                         }
                     }
                 } else {
-                    for (i in 0 until mDatabind.recBottom.models?.size!!) {
-                        var bean: MatchBean = mDatabind.recBottom.models!![i] as MatchBean
-                        // if (bean.homeHalfScore == "1") {
-                        if (bean.matchId == it.matchId) {
-                            isResh = true
-                            break
-                        }
+                    if (mDatabind.recBottom.models!=null) {
+                        for (i in 0 until mDatabind.recBottom.models?.size!!) {
+                            var bean: MatchBean = mDatabind.recBottom.models!![i] as MatchBean
+                            // if (bean.homeHalfScore == "1") {
+                            if (bean.matchId == it.matchId) {
+                                isResh = true
+                                break
+                            }
 
+                        }
                     }
 
                 }

@@ -86,6 +86,7 @@
         android:theme="@style/Theme.Starting">
 
 
+
     </activity>
         <activity
             android:name=".ui.home.my.operate.PushSetActivity"

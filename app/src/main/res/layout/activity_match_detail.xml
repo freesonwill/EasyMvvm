@@ -425,7 +425,7 @@
                             android:layout_marginEnd="@dimen/dp_12"
                             android:background="@drawable/shape_line_r20"
                             android:gravity="center"
-                            android:text="@string/follow"
+                            android:text="关注"
                             android:textColor="@color/c_pb_bar"
                             android:textSize="@dimen/sp_12"
                             app:layout_constraintBottom_toBottomOf="@id/iv_tab_anchor_avatar"
