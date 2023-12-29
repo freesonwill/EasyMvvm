@@ -769,8 +769,8 @@ class MatchDetailActivity :
             }
             // 是否找到流
             var findAnchor = false
-            for ((i, item) in list.withIndex()) {
-                if (isHasAnchor) {
+            if (isHasAnchor) {
+                for ((i, item) in list.withIndex()) {
                     if (anchorId == item.userId) {
                         isShowVideo = true
                         item.isSelect = true
@@ -779,51 +779,25 @@ class MatchDetailActivity :
                         findAnchor = true
                         break
                     }
-                } else {
-                    //默认展示第一条主播
-                    if (i == 0) {
-                        findAnchor = true
-                        item.isSelect = true
-                        anchor = item
-                        if (item.pureFlow) {//纯净流 无主播 (目前无视频，以后可能有)
-                            isHasAnchor = false
-                            if (item.playUrl.isNullOrEmpty()) {
-                                isShowVideo = false
-                            } else {
-                                isShowVideo = true
-                                action.invoke(item.playUrl)
-                            }
-                        } else {
-                            isShowVideo = true
-                            isHasAnchor = true
-
-                            action.invoke(item.playUrl)
-                        }
-                        break
-                    }
                 }
             }
-            //没找到主播流
+            //没找到主播流 播第一个主播
             if (!findAnchor) {
-                for ((i, item) in list.withIndex()) {
-                    if (i == 0) {
-                        item.isSelect = true
-                        anchor = item
-                        if (item.pureFlow) {//纯净流 无主播
-                            isHasAnchor = false
-                            if (item.playUrl.isNullOrEmpty()) {
-                                isShowVideo = false
-                            } else {
-                                isShowVideo = true
-                                action.invoke(item.playUrl)
-                            }
-                        } else {
-                            isShowVideo = true
-                            isHasAnchor = true
-                            action.invoke(item.playUrl)
-                        }
-                        break
+               val item= list[0]
+                item.isSelect = true
+                anchor = item
+                if (item.pureFlow) {//纯净流 无主播
+                    isHasAnchor = false
+                    if (item.playUrl.isNullOrEmpty()) {
+                        isShowVideo = false
+                    } else {
+                        isShowVideo = true
+                        action.invoke(item.playUrl)
                     }
+                } else {
+                    isShowVideo = true
+                    isHasAnchor = true
+                    action.invoke(item.playUrl)
                 }
             }
         })

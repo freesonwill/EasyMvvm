@@ -64,10 +64,11 @@ class FootballFragment(var type: Int = 0, private var match: MatchDetailBean) :
         vm.incidents.observe(this) {
             if (type == 0) return@observe
             if (it != null && it.size > 0) {
-                val event = ArrayList<IncidentsBean>()
+                var event = ArrayList<IncidentsBean>()
                 var homeS = 0//主场得分
                 var awayS = 0//客队得分
-                for (item: IncidentsBean in it) {
+                val reversed = it.reversed()
+                for (item: IncidentsBean in reversed) {
                     //重要事件  红黄牌 进球 换人
                     when (item.type) {
                         1, 3, 4, 9, 11, 12, 15 -> {
@@ -80,12 +81,17 @@ class FootballFragment(var type: Int = 0, private var match: MatchDetailBean) :
                                 item.homeScore = homeS
                                 item.awayScore = awayS
                             }
+                            if (item.type == 12) {
+                                item.homeScore = homeS
+                                item.awayScore = awayS
+                            }
                             event.add(item)
                         }
                     }
                 }
-                event.add(IncidentsBean(type = 0, time = 0))
-                eventAdapter.submitList(event)
+                val reversed1 = event.reversed() as ArrayList
+                reversed1.add(IncidentsBean(type = 0, time = 0))
+                eventAdapter.submitList(reversed1)
             } else {
                 eventAdapter.submitList(null)
                 eventAdapter.isEmptyViewEnable = true

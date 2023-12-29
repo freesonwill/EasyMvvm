@@ -135,6 +135,11 @@ class DetailChatFragment(
         }
         setChatRoomRcv(mDatabind.rcvChat,mLayoutManager,false,{
             mAgentWeb=it
+        },{
+            mDatabind.rcvChat.postDelayed({
+                mDatabind.rcvChat.smoothScrollToPosition(0)
+            }, 100)
+
         }){
             offset = it?: ""
         }
