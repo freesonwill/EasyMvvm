@@ -209,12 +209,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
             mViewModel.getMsgList(false, "")
         }
 
-        if (CacheUtil.isLogin()) {
-            getRoomAllData()
-            mViewModel.getMsgList(true, "")
 
-
-        }
         initEvent()
         //登录或者登出
         appViewModel.updateLoginEvent.observe(this) {
@@ -232,7 +227,14 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
             }
         }
 
-
+        appViewModel.appMsgResum.observe(this) {
+            if (it) {
+                if (CacheUtil.isLogin()) {
+                    getRoomAllData()
+                    mViewModel.getMsgList(true, "")
+                }
+            }
+        }
     }
 
 
@@ -281,9 +283,13 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
         }
     }
 
+
     override fun onResume() {
         super.onResume()
-
+        if (CacheUtil.isLogin()) {
+            getRoomAllData()
+            mViewModel.getMsgList(true, "")
+        }
     }
 
     private fun initEvent() {
@@ -445,7 +451,8 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                                 }
                             }
                         } else {
-                            if (data.noReadSum > listdata[index].noReadSum) {
+                            if (data.noReadSum > listdata[index].noReadSum||
+                                data.avatar!=listdata[index].avatar||data.nick!=listdata[index].nick) {
                                 updataMsg(data)
                             }
                         }

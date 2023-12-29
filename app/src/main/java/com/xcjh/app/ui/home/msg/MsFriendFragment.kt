@@ -118,9 +118,7 @@ class MsFriendFragment : BaseFragment<MsgVm, FrMsgfriendBinding>() {
             }
         }.models = listdata
 
-        if (CacheUtil.isLogin()) {
-            mViewModel.getFriendList(true, "")
-        }
+
         mDatabind.smartCommon.setOnRefreshListener { mViewModel.getFriendList(true, "") }
             .setOnLoadMoreListener { mViewModel.getFriendList(false, "") }
 
@@ -145,12 +143,20 @@ class MsFriendFragment : BaseFragment<MsgVm, FrMsgfriendBinding>() {
                 }
             }
         })
-
+        appViewModel.appMsgResum.observe(this) {
+            if (it) {
+                if (CacheUtil.isLogin()) {
+                    mViewModel.getFriendList(true, "")
+                }
+            }
+        }
     }
 
     override fun onResume() {
         super.onResume()
-
+        if (CacheUtil.isLogin()) {
+            mViewModel.getFriendList(true, "")
+        }
     }
 
     private fun initEvent() {

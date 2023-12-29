@@ -619,10 +619,12 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
             ) {
                 // 在这里执行相应的操作
                 val searchText = v.text.toString()
-                if (searchText.isNotEmpty()) {
+                if (searchText.isNotEmpty()&&searchText.length>0) {
                     msgType = 0
                     msgContent = searchText
                     sendMsg("", true)
+                }else{
+                    myToast(resources.getString(R.string.str_inputcontent))
                 }
                 true // 返回 true 表示已处理事件
             } else false
@@ -844,12 +846,19 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                         if (it[i].sendId == "0") {
                             it[i].sendId = userId + it[i].createTime
                         }
+                        it[i].sent=1
+                        nickname=it[i].nick
+                        mDatabind.titleTop.tvTitle.text = nickname
+                        LogUtils.d("昵称是===" +it[i].nick)
                         addDataToList("9", it[i])
                     }
                 } else {
                     LogUtils.d("有新的消息===" + JSONObject.toJSONString(it))
                     var bean=listdata[0]
                     for ((index, data) in it.withIndex()) {
+                        nickname=data.nick
+                        mDatabind.titleTop.tvTitle.text = nickname
+                        LogUtils.d("昵称是===" +data.nick)
                         val foundData = listdata.find { it.id == data.id }
                         if (foundData == null) {
 
