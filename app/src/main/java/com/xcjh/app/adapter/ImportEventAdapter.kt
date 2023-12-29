@@ -103,8 +103,8 @@ class ImportEventAdapter : BaseViewBindingQuickAdapter<IncidentsBean, ItemImport
 
                 12 -> {
                     //结束
-                    setTime(binding, 0)
-                    binding.tvTime.text = "结束"
+                    setTime(binding, 2)
+                    binding.tvHalf.text = "结束 " + "${item.homeScore}-${item.awayScore}"
                     setUI(binding)
                 }
 

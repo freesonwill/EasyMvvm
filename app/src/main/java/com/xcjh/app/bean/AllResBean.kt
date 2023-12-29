@@ -189,7 +189,6 @@ data class MsgBean(
     val toId: String? = "",
     val updateTime: String? = "",
     var lastShowTimeStamp: Long = 0,
-    var isFirst: Boolean = false,
     val updater: String? = ""
 ) : ItemAttached {
     var visibility: Boolean = false // 显示隐藏
@@ -203,7 +202,43 @@ data class MsgBean(
         visibility = false
     }
 }
+/**
+ * 群聊首条消息
+ */
+data class FirstMsgBean(
+    var fromId: String? = "",//发送用户ID
+    var avatar: String? = "",//发送者头像
+    var nick: String = "",//发送者昵称
+    val level: String? = "0",//级别
+    var content: String = "",//消息内容
+    var chatType: Int? = 0,//聊天类型;(如1:公聊、2私聊)
+    var cmd: Int? = 0,
+    var anchorId: String? = "",//主播ID
+    var createTime: Long? = 0,
+    val creator: String? = "",
+    val delFlag: Int? = 0,//APP用户是否删除 1删除 0正常
+    val groupId: String? = "",//群组ID
+    var id: String? = "",
+    val identityType: Int? = 0,//发送者身份身份(0：普通用户，1主播 2助手 3运营)
+    var msgType: Int? = 0, //消息类型，文字：0， 图片：1
+    val readable: Int? = 0,//是否已读：0 未读 1 已读
+    var sent: Int? = 0,//是否已发送: 0 正在发送 1 已发送 2 发送失败
+    val toId: String? = "",
+    val updateTime: String? = "",
+    var lastShowTimeStamp: Long = 0,
+    val updater: String? = ""
+) : ItemAttached {
+    var visibility: Boolean = false // 显示隐藏
+    override fun onViewAttachedToWindow(holder: BindingAdapter.BindingViewHolder) {
+        //由隐变显
+        visibility = true
+    }
 
+    override fun onViewDetachedFromWindow(holder: BindingAdapter.BindingViewHolder) {
+        //由显变隐
+        visibility = false
+    }
+}
 data class FeedBackBean(
     val type: Int,//通知类型(0系统通知 1反馈结果 2禁言通知 3解禁通知)
     val title: String,

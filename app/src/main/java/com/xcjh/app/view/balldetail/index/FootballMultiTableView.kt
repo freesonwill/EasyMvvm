@@ -69,7 +69,12 @@ class FootballMultiTableView : LinearLayout {
             binding.tvChuHome.text = it.firstHomeWin//主胜
             binding.tvChuPin.text = it.firstDraw//平
             binding.tvChuKe.text = it.firstAwayWin
-            binding.tvChuPf.text = it.firstLossRatio//赔付率
+            try {
+                binding.tvChuPf.text = "${(it.firstLossRatio.toFloat()*100).toInt()}%"//赔付率
+            }catch (e:Exception){
+                binding.tvChuPf.text = "-"//赔付率
+            }
+
             if (it.close == 1) {
                 //即盘数据 封
                 binding.tvJiHome.text = context.getString(R.string.close_win_p) //主胜
@@ -85,8 +90,11 @@ class FootballMultiTableView : LinearLayout {
                 setColor(binding.tvJiHome, it.firstHomeWin.toFloat(), it.currentHomeWin.toFloat())
                 setColor(binding.tvJiPin, it.firstDraw.toFloat(), it.currentDraw.toFloat())
                 setColor(binding.tvJiAway, it.firstAwayWin.toFloat(), it.currentAwayWin.toFloat())
-
-                binding.tvJiPf.text = it.currentLossRatio //赔付率
+                try {
+                    binding.tvJiPf.text = "${(it.currentLossRatio.toFloat()*100).toInt()}%"//赔付率
+                }catch (e:Exception){
+                    binding.tvJiPf.text = "-"//赔付率
+                }
             }
 
             layout?.addView(binding.root)

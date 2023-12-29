@@ -42,10 +42,9 @@ class SplashActivity : BaseActivity<BaseViewModel, ActivitySplashBinding>() {
 
     private fun onIntent(intent: Intent?) {
         try {
-            Log.i("push===Splash_Receiver", "onIntent:${intent?.data}")
-            Log.i("push===Splash_Receiver", "onIntent:${Gson().toJson(intent?.data)}")
-            Log.i("push===Splash_Receiver", "onIntentgson:${intent?.extras.toJson()}")
-            Log.i("push===Splash_Receiver", "onIntentgson:${Gson().toJson(intent?.extras)}")
+
+            Log.i("push===Splash_Receiver", "onIntent-extras:${intent?.extras.toString()}")
+            Log.i("push===Splash_Receiver", "onIntent-data:${intent?.data}")
            /* mDatabind.root.postDelayed({
 
             },100)*/
@@ -55,8 +54,8 @@ class SplashActivity : BaseActivity<BaseViewModel, ActivitySplashBinding>() {
                 }
             }
             finish()
-        } catch (throwable: Throwable) {
-            throwable.printStackTrace()
+        } catch (e: Exception) {
+           // e.printStackTrace()
         }
     }
 

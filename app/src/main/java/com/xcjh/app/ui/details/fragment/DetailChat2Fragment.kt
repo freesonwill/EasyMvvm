@@ -1,35 +1,21 @@
 package com.xcjh.app.ui.details.fragment
 
 import android.annotation.SuppressLint
-import android.content.res.ColorStateList
-import android.graphics.LinearGradient
-import android.graphics.Shader
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
-import com.blankj.utilcode.util.SizeUtils
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.CenterCrop
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.request.RequestOptions
 import com.drake.brv.layoutmanager.HoverLinearLayoutManager
 import com.drake.brv.utils.addModels
 import com.drake.brv.utils.models
-import com.drake.brv.utils.setup
 import com.drake.softinput.hideSoftInput
-import com.drake.softinput.setWindowSoftInput
 import com.google.gson.Gson
-import com.luck.picture.lib.basic.PictureSelector
-import com.luck.picture.lib.entity.LocalMedia
 import com.xcjh.app.R
 import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseVpFragment
@@ -40,17 +26,12 @@ import com.xcjh.app.ui.details.DetailVm
 import com.xcjh.app.ui.details.common.RoomChatVm
 import com.xcjh.app.utils.*
 import com.xcjh.app.websocket.MyWsManager
-import com.xcjh.app.websocket.bean.LiveStatus
 import com.xcjh.app.websocket.bean.ReceiveChatMsg
 import com.xcjh.app.websocket.bean.ReceiveWsBean
 import com.xcjh.app.websocket.bean.SendChatMsgBean
 import com.xcjh.app.websocket.listener.LiveRoomListener
 import com.xcjh.base_lib.App
-import com.xcjh.base_lib.appContext
-import com.xcjh.base_lib.utils.SpanUtil
 import com.xcjh.base_lib.utils.dp2px
-import com.xcjh.base_lib.utils.loge
-import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.toHtml
 import com.xcjh.base_lib.utils.view.visibleOrGone
 import kotlinx.android.synthetic.main.fragment_detail_tab_chat.view.*
@@ -151,6 +132,10 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
             mDatabind.edtChatMsg.clearFocus()
             false
         }
+        mDatabind.edtChatMsg.isEnabled=false
+        mDatabind.edtChatMsg.postDelayed({
+            mDatabind.edtChatMsg.isEnabled=true
+        }, 1000)
         //点击列表隐藏软键盘
         mDatabind.edtChatMsg.setOnFocusChangeListener { v, hasFocus ->
             // setWindowSoftInput(float = mDatabind.llInput, setPadding = true)
@@ -192,7 +177,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
                                 MsgBean(
                                     it.id, it.head, it.nickName, "0",
                                     //richText,
-                                    it.firstMessage ?: "", identityType = 1,isFirst = true
+                                    it.firstMessage ?: "", identityType = 1
                                 )
                             ),
                             index = 0

@@ -65,7 +65,6 @@ class FootballFragment(var type: Int = 0, private var match: MatchDetailBean) :
             if (type == 0) return@observe
             if (it != null && it.size > 0) {
                 val event = ArrayList<IncidentsBean>()
-                event.add(IncidentsBean(type = 0, time = 0))
                 var homeS = 0//主场得分
                 var awayS = 0//客队得分
                 for (item: IncidentsBean in it) {
@@ -85,6 +84,7 @@ class FootballFragment(var type: Int = 0, private var match: MatchDetailBean) :
                         }
                     }
                 }
+                event.add(IncidentsBean(type = 0, time = 0))
                 eventAdapter.submitList(event)
             } else {
                 eventAdapter.submitList(null)

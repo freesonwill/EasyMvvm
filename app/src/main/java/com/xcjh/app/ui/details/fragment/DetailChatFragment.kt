@@ -1,10 +1,7 @@
 package com.xcjh.app.ui.details.fragment
 
 import android.annotation.SuppressLint
-import android.content.res.ColorStateList
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.method.LinkMovementMethod
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -12,23 +9,15 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
-import com.blankj.utilcode.util.SizeUtils.dp2px
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.CenterCrop
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.request.RequestOptions
 import com.drake.brv.layoutmanager.HoverLinearLayoutManager
 import com.drake.brv.utils.addModels
 import com.drake.brv.utils.models
-import com.drake.brv.utils.setup
 import com.drake.softinput.hideSoftInput
 import com.google.gson.Gson
-import com.luck.picture.lib.basic.PictureSelector
-import com.luck.picture.lib.entity.LocalMedia
+import com.just.agentweb.AgentWeb
 import com.xcjh.app.R
 import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseVpFragment
@@ -44,7 +33,6 @@ import com.xcjh.app.websocket.bean.ReceiveWsBean
 import com.xcjh.app.websocket.bean.SendChatMsgBean
 import com.xcjh.app.websocket.listener.LiveRoomListener
 import com.xcjh.base_lib.App
-import com.xcjh.base_lib.utils.SpanUtil
 import com.xcjh.base_lib.utils.dp2px
 import com.xcjh.base_lib.utils.loge
 import com.xcjh.base_lib.utils.toHtml
@@ -121,7 +109,7 @@ class DetailChatFragment(
             mDatabind.notice.root.visibility = View.GONE
         }
     }
-
+    private var mAgentWeb: AgentWeb?=null
     @SuppressLint("ClickableViewAccessibility")
     private fun initRcv() {
         mDatabind.smartChat.setEnableLoadMore(false)
@@ -145,7 +133,9 @@ class DetailChatFragment(
                 mViewModel.getHisMsgList(liveId, offset)
             }
         }
-        setChatRoomRcv(mDatabind.rcvChat,mLayoutManager){
+        setChatRoomRcv(mDatabind.rcvChat,mLayoutManager,false,{
+            mAgentWeb=it
+        }){
             offset = it?: ""
         }
         val defaultItemAnimator = DefaultItemAnimator()
@@ -216,15 +206,14 @@ class DetailChatFragment(
                         mDatabind.rcvChat.layoutParams = params
                         mDatabind.rcvChat.addModels(
                             listOf(
-                                MsgBean(
+                                FirstMsgBean(
                                     it.id,
                                     it.head,
                                     it.nickName,
                                     "0",
                                     //richText,
                                     it.firstMessage ?: "",
-                                    identityType = 1,
-                                    isFirst = true
+                                    identityType = 1
                                 )
                             ),
                             // index = 0
@@ -298,11 +287,13 @@ class DetailChatFragment(
             } catch (_: Exception) {
             }
         }, 200)
+        mAgentWeb?.webLifeCycle?.onResume()
         super.onResume()
     }
 
     override fun onPause() {
         hideSoftInput()
+        mAgentWeb?.webCreator?.webView?.onPause()
         mDatabind.edtChatMsg.clearFocus()
         /* mDatabind.smartChat.height.toString().loge("=onPause===")
          mDatabind.rcvChat.height.toString().loge("=onPause===")*/
@@ -325,6 +316,7 @@ class DetailChatFragment(
         onWsUserExitRoom(liveId)
         MyWsManager.getInstance(App.app)?.removeLiveRoomListener(activity.toString())
         isEnterRoom = false
+        mAgentWeb?.webLifeCycle?.onDestroy()
     }
 
     override fun onEnterRoomInfo(isOk: Boolean, msg: ReceiveWsBean<*>) {

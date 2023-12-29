@@ -93,6 +93,8 @@ class MyWsManager private constructor(private val mContext: Context) {
     fun initService() {
         try {
             initSocketClient()
+            //开启心跳检测
+            mHandler.postDelayed(heartBeatRunnable, HEART_BEAT_RATE)
         } catch (e: Exception) {
             "=======--initService------- ${e.message}".loge()
         }
@@ -108,6 +110,9 @@ class MyWsManager private constructor(private val mContext: Context) {
     fun stopService() {
         try {
             mContext.unregisterReceiver(receiver)
+            cancelAll()
+            closeHeartBeat()
+            closeConnect()
             client = null
             INSTANCE = null
         } catch (e: Exception) {
@@ -279,11 +284,17 @@ class MyWsManager private constructor(private val mContext: Context) {
             }
         }
     }
-
+    /**
+     * 发送消息
+     */
     fun sendMessage(msg: String) {
-        if (client?.isOpen == true) {
-            msg.loge("===sendMessage==")
-            sendMsg(msg)
+        try {
+            if (null != client && client?.isOpen == true) {
+                msg.loge("===sendMessage==")
+                client?.send(msg)
+            }
+        }catch (_:Exception){
+
         }
     }
 
@@ -517,20 +528,6 @@ class MyWsManager private constructor(private val mContext: Context) {
             pool.shutdownNow()
             Thread.currentThread().interrupt()
         }
-    }
-
-    /**
-     * 发送消息
-     */
-    fun sendMsg(msg: String?) {
-        try {
-            if (null != client && client?.isOpen == true) {
-                client?.send(msg)
-            }
-        }catch (e :Exception){
-
-        }
-
     }
 
     /**

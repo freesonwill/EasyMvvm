@@ -67,12 +67,14 @@ class FootballLineupView : LinearLayout {
             lltShow?.visibleOrInvisible(true)
             firstTable?.visibleOrInvisible(false)
             tv_home_lineup?.text = "阵型 ${it.homeFormation}" //阵型
-            tv_home_value?.text =
+            tv_home_value?.text =if (it.homeMarketValue==0){"-${if (it.homeMarketValueCurrency.isNullOrEmpty()) "欧" else {
+                it.homeMarketValueCurrency}}" } else
                 "${myDivide(it.homeMarketValue,10000).toInt() }万" + if (it.homeMarketValueCurrency.isNullOrEmpty()) "欧" else {
                     it.homeMarketValueCurrency
                 } //身价
             tv_away_lineup?.text = "阵型 ${it.awayFormation}" //阵型
-            tv_away_value?.text =
+            tv_away_value?.text =if (it.awayMarketValue==0){"-${if (it.awayMarketValueCurrency.isNullOrEmpty()) "欧" else {
+                it.awayMarketValueCurrency}}" } else
                 "${myDivide(it.awayMarketValue,10000).toInt() }万"+ if (it.awayMarketValueCurrency.isNullOrEmpty()) "欧" else {
                     it.awayMarketValueCurrency
                 }//身价
