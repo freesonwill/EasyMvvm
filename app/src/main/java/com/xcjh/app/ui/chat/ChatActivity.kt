@@ -17,7 +17,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.TextView.OnEditorActionListener
 import androidx.recyclerview.widget.SimpleItemAnimator
-import com.airbnb.lottie.LottieAnimationView
 import com.alibaba.fastjson.JSONObject
 import com.blankj.utilcode.util.ToastUtils
 import com.bumptech.glide.Glide
@@ -82,6 +81,8 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import okhttp3.MultipartBody
 import java.io.File
+import java.text.SimpleDateFormat
+import java.util.Date
 
 
 /***
@@ -108,6 +109,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
     private val delayTime: Long = 10000
     private val listPic = java.util.ArrayList<LocalMedia>()
     private val mutex = Mutex()
+    var incount=0
     override fun initView(savedInstanceState: Bundle?) {
 
         options = RequestOptions()
@@ -158,8 +160,8 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
         mDatabind.titleTop.tvTitle.text = nickname
 //        Glide.with(this).load(userhead).placeholder(R.drawable.default_anchor_icon)
 //            .into(mDatabind.titleTop.ivhead)
-        (mDatabind.rv.itemAnimator as SimpleItemAnimator).supportsChangeAnimations =
-            false//防止item刷新的时候闪烁
+//        (mDatabind.rv.itemAnimator as SimpleItemAnimator).supportsChangeAnimations =
+//            false//防止item刷新的时候闪烁
         mDatabind.rv.setup {
             addType<MsgBeanData> {
                 when (fromId) {
@@ -876,8 +878,9 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                     )
                                 ) {
                                     if (it1.sendId == "0") {
-                                        it1.sendId =it1.id
+                                        it1.sendId =it1.id+incount.toString()
                                     }
+                                    incount++
                                     data.sent = 1
                                     addDataToList("10", data)
                                     var listdata1: MutableList<MsgBeanData> =
@@ -916,7 +919,10 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
             myToast(resources.getString(R.string.str_stoptalk))
             return
         }
-        var creatime = System.currentTimeMillis()
+        val fmt = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
+        var timestamp = fmt.format( Date(System.currentTimeMillis()))
+        val date: Date = fmt.parse(timestamp)
+        val creatime = date.time
         var sendID = ""
         if (sendid.isEmpty()) {
             sendID = userId + creatime
