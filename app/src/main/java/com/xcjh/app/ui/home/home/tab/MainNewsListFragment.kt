@@ -105,7 +105,7 @@ class MainNewsListFragment  : BaseFragment<MainNewsListVm, FragmentMainNewsListB
                             bindingItem.txtNewsName.text=bean.title
                             val date = Date(bean.publishTime.toLong())
                             var formatter = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
-                            bindingItem.txtNewsDate.text=formatter.format(date)
+                            bindingItem.txtNewsDate.text="${formatter.format(date)} ${resources.getString(R.string.release_txt_name)}"
 
                         }
 
