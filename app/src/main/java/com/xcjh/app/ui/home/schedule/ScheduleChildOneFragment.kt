@@ -132,28 +132,34 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
         setOnclickNoRepeat(mDatabind.ivMeau) {
             when (it.id) {
                 R.id.iv_meau -> {
-                    calendarTime=  (mFragments[currentCount] as ScheduleChildTwoFragment).getCanleTime()
-                    bottomDilog = XPBottomPopu(requireActivity())
-                    var popwindow = XPopup.Builder(context)
-                        .hasShadowBg(true)
-                        .moveUpToKeyboard(false) //如果不加这个，评论弹窗会移动到软键盘上面
-                        .isViewMode(true)
-                        .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                        //                        .isThreeDrag(true) //是否开启三阶拖拽，如果设置enableDrag(false)则无效
-                        .asCustom(bottomDilog).show()
-                    bottomDilog.setOnLister(calendarTime, matchtypeOld!!, object : OnChooseDateListener {
-                        override fun onDismiss() {
-                            popwindow.dismiss()
+                    if (mFragments.size>0) {
+                        calendarTime =
+                            (mFragments[currentCount] as ScheduleChildTwoFragment).getCanleTime()
+                        bottomDilog = XPBottomPopu(requireActivity())
+                        var popwindow = XPopup.Builder(context)
+                            .hasShadowBg(true)
+                            .moveUpToKeyboard(false) //如果不加这个，评论弹窗会移动到软键盘上面
+                            .isViewMode(true)
+                            .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                            //                        .isThreeDrag(true) //是否开启三阶拖拽，如果设置enableDrag(false)则无效
+                            .asCustom(bottomDilog).show()
+                        bottomDilog.setOnLister(
+                            calendarTime,
+                            matchtypeOld!!,
+                            object : OnChooseDateListener {
+                                override fun onDismiss() {
+                                    popwindow.dismiss()
 
-                        }
+                                }
 
-                        override fun onSure(time: String?) {
-                            popwindow.dismiss()
-                            calendarTime = time!!
+                                override fun onSure(time: String?) {
+                                    popwindow.dismiss()
+                                    calendarTime = time!!
 
-                            appViewModel.updateganlerTime.postValue(calendarTime)
-                        }
-                    })
+                                    appViewModel.updateganlerTime.postValue(calendarTime)
+                                }
+                            })
+                    }
 
 //                    selectDate(requireActivity(), calendarTime) { time ->
 //

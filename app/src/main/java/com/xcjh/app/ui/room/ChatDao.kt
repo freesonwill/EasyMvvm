@@ -29,7 +29,7 @@ interface ChatDao {
     suspend fun insertOrUpdate(message: MsgBeanData) {
 
             var oldMessage: MsgBeanData?
-            oldMessage = findMessagesById(message.id!!)
+            oldMessage = findMessagesById(message.sendId!!)
             Log.d("MessageDao", "oldMessage: $oldMessage")
 
             if (oldMessage != null) {

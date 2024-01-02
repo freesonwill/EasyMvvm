@@ -122,7 +122,7 @@
 
         <TextView
             android:id="@+id/tvname_left"
-            android:layout_width="80dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:ellipsize="end"
@@ -148,12 +148,12 @@
 
         <TextView
             android:id="@+id/tvname_right"
-            android:layout_width="80dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:ellipsize="end"
             android:gravity="center_horizontal"
-            android:maxEms="10"
+            android:maxEms="15"
             android:maxLines="2"
             android:textColor="@color/c_37373d"
             android:textSize="@dimen/sp_12"
