@@ -91,7 +91,7 @@ class BasketballLineupView : LinearLayout {
                 text = it.number.toString()
             }
             binding.tvPlayerName.text = it.name
-            binding.tvTime.text = it.data.time
+            binding.tvTime.text = it.data.time+"'"
             binding.tvScore.text = it.data.score
             binding.tvFloor.text = it.data.rebound
             binding.tvAssist.text = it.data.assists

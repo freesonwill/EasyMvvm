@@ -57,7 +57,7 @@ class FootballLiveUpMiddleView @JvmOverloads constructor(
         }.toSet()
         removeAllViews()
         "${mWidth}===setData: ===${homeSet}".loge()
-        homeList.forEach { player ->
+        for ((pos, player) in homeList.withIndex()) {
             val child =
                 ViewFootballPlayerBinding.inflate(LayoutInflater.from(context), null, false)
             child.ivPlayer.setImageResource(R.drawable.icon_team_red)
@@ -71,10 +71,11 @@ class FootballLiveUpMiddleView @JvmOverloads constructor(
                 }
             }
 
-            child.root.layoutParams = lp
-            addView(child.root)
+          //  child.root.layoutParams = lp
+           // addView(child.root)
+            addViewInLayout(child.root,pos,lp)
         }
-        awayList.forEach { player ->
+        for ((pos, player) in awayList.withIndex()) {
             val child =
                 ViewFootballPlayerBinding.inflate(LayoutInflater.from(context), null, false)
             child.ivPlayer.setImageResource(R.drawable.icon_team_blue)
@@ -91,8 +92,9 @@ class FootballLiveUpMiddleView @JvmOverloads constructor(
                     }
                 }
             }
-            child.root.layoutParams = lp
-            addView(child.root)
+           /* child.root.layoutParams = lp
+            addView(child.root)*/
+            addViewInLayout(child.root,pos,lp)
         }
         val middle = ViewMatchRefereeBinding.inflate(LayoutInflater.from(context), null, false)
         val lp = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
@@ -104,7 +106,9 @@ class FootballLiveUpMiddleView @JvmOverloads constructor(
         } else {
             middle.tvRefereeName.text = context.getString(R.string.no_referee_name)//"暂无裁判信息"
         }
-        addView(middle.root)
+       // addView(middle.root)
+        addViewInLayout(middle.root,-1,lp)
+        requestLayout()
     }
 
 }

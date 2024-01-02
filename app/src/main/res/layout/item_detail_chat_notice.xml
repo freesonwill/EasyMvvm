@@ -67,10 +67,11 @@
 
             <LinearLayout
                 android:orientation="vertical"
+                android:id="@+id/agentWeb"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_10">
-                <com.xcjh.app.view.balldetail.EllipsizeTextView
+                <TextView
                     android:id="@+id/expandableText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

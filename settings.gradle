@@ -21,7 +21,7 @@ pluginManagement {
         //阿里云jcenter仓库
         maven { url 'https://maven.aliyun.com/repository/jcenter' }
         maven { url "https://s01.oss.sonatype.org/content/groups/public" }
-
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
         // maven { url 'https://maven.aliyun.com/repository/google' }
     }
 }
@@ -36,6 +36,7 @@ dependencyResolutionManagement {
         maven { url 'https://maven.aliyun.com/repository/public/' }
         //阿里云jcenter仓库
         maven { url 'https://maven.aliyun.com/repository/jcenter' }
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
        /* maven { url 'https://maven.aliyun.com/repository/public/' }
         //阿里云jcenter仓库
         maven { url 'https://maven.aliyun.com/repository/jcenter' }

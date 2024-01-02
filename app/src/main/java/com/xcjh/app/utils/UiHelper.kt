@@ -2,6 +2,7 @@ package com.xcjh.app.utils
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
@@ -365,61 +366,7 @@ fun setChatRoomRcv(
             when (itemViewType) {
                 R.layout.item_detail_chat_first -> {
                     val binding = getBinding<ItemDetailChatFirstBinding>()
-                    mAgentWeb = AgentWeb.with(rcvChat.context as Activity)
-                        .setAgentWebParent(
-                            binding.agentWeb,
-                            ViewGroup.LayoutParams(
-                                ViewGroup.LayoutParams.MATCH_PARENT,
-                                ViewGroup.LayoutParams.WRAP_CONTENT
-                            )
-                        )
-                        .closeIndicator()
-                        // .setWebView(webView)
-                        //.setWebView(NestedScrollAgentWebView(context))
-                        .setWebChromeClient(object : WebChromeClient() {
-                            override fun onProgressChanged(view: WebView?, newProgress: Int) {
-                                super.onProgressChanged(view, newProgress)
-                            }
-                        })
-                        .setWebViewClient(object : WebViewClient() {
-                            override fun shouldOverrideUrlLoading(
-                                view: WebView?, request: WebResourceRequest?,
-                            ): Boolean {
-                                rcvChat.context.startActivity(
-                                    Intent(Intent.ACTION_VIEW, request?.url)
-                                )
-                                return true
-                            }
-                            override fun onPageFinished(view: WebView?, url: String?) {
-                                super.onPageFinished(view, url)
-                                Log.e("=====", "onPageFinished: ====")
-                                finishLoad.invoke(true)
-                            }
-                        })
-                        // .setWebView(binding.agentWeb)
-                        .createAgentWeb()
-                        .ready()
-                        .get()
-                    mAgentWeb.agentWebSettings.webSettings.apply {
-                        javaScriptEnabled = true
-                        allowFileAccess = true
-                        allowFileAccessFromFileURLs = true
-                    }
-                    mAgentWeb.webCreator.webView.apply {
-                        scrollBarSize = 0// 去掉滚动条
-                        mAgentWeb.webCreator.webView.overScrollMode =
-                            View.OVER_SCROLL_NEVER //  取消WebView中滚动或拖动到顶部、底部时的阴影
-                        setBackgroundColor(Color.argb(0, 0, 0, 0))
-                        val p = parent as WebParentLayout
-                        p.setBackgroundColor(Color.TRANSPARENT)
-                        setOnTouchListener { _, event ->
-                            if (event.pointerCount > 1) {
-                                // 多指触摸时，禁止缩放手势
-                                return@setOnTouchListener true
-                            }
-                            false
-                        }
-                    }
+                    mAgentWeb = agentWeb(rcvChat.context, binding.agentWeb, finishLoad)
                     action.invoke(mAgentWeb)
                 }
             }
@@ -528,5 +475,81 @@ fun setChatRoomRcv(
     fun setWebView() {
 
     }
+}
+fun agentWeb(
+    context: Context,
+    vg: ViewGroup,
+    finishLoad: (Boolean) -> Unit,
+): AgentWeb {
+   val mAgentWeb = AgentWeb.with(context as Activity)
+        .setAgentWebParent(
+            vg,
+            ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+        )
+        .closeIndicator()
+        // .setWebView(webView)
+        //.setWebView(NestedScrollAgentWebView(context))
+        .setWebChromeClient(object : WebChromeClient() {
+            override fun onProgressChanged(view: WebView?, newProgress: Int) {
+                super.onProgressChanged(view, newProgress)
+            }
+        })
+        .setWebViewClient(object : WebViewClient() {
+            override fun shouldOverrideUrlLoading(
+                view: WebView?, request: WebResourceRequest?,
+            ): Boolean {
+                context.startActivity(
+                    Intent(Intent.ACTION_VIEW, request?.url)
+                )
+                return true
+            }
+
+            override fun onPageFinished(view: WebView?, url: String?) {
+                super.onPageFinished(view, url)
+                Log.e("=====", "onPageFinished: ====")
+                finishLoad.invoke(true)
+            }
+        })
+        // .setWebView(binding.agentWeb)
+        .createAgentWeb()
+        .ready()
+        .get()
+    mAgentWeb.agentWebSettings.webSettings.apply {
+        javaScriptEnabled = true
+        allowFileAccess = true
+        allowFileAccessFromFileURLs = true
+    }
+    mAgentWeb.webCreator.webView.apply {
+        scrollBarSize = 0// 去掉滚动条
+        overScrollMode = View.OVER_SCROLL_NEVER //  取消WebView中滚动或拖动到顶部、底部时的阴影
+        setBackgroundColor(Color.argb(0, 0, 0, 0))
+        val p = parent as WebParentLayout
+        p.setBackgroundColor(Color.TRANSPARENT)
+        setOnTouchListener { _, event ->
+            if (event.pointerCount > 1) {
+                // 多指触摸时，禁止缩放手势
+                return@setOnTouchListener true
+            }
+            false
+        }
+    }
+    return mAgentWeb
+}
+fun convertToList(rgbValue: String): List<Int> {
+    val values = rgbValue.substringAfter("(").substringBeforeLast(")")
+        .split(",")
+        .map { it.trim().toInt() }
+
+    return values
+}
+fun convertToHexColor(red: Int, green: Int, blue: Int): String {
+    val hexRed = red.toString(16).padStart(2, '0') // 补全红色分量到两位数字并转为十六进制
+    val hexGreen = green.toString(16).padStart(2, '0') // 补全绿色分量到两位数字并转为十六进制
+    val hexBlue = blue.toString(16).padStart(2, '0') // 补全蓝色分量到两位数字并转为十六进制
+
+    return "#$hexRed$hexGreen$hexBlue" // 返回完整的十六进制颜色值
 }
 

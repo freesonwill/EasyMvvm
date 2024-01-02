@@ -45,6 +45,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.drake.brv.PageRefreshLayout
 import com.drake.brv.utils.addModels
 import com.drake.brv.utils.models
+import com.drake.statelayout.StateLayout
 import com.google.android.material.snackbar.Snackbar
 import com.just.agentweb.WebViewClient
 import com.kingja.loadsir.core.LoadService
@@ -595,6 +596,42 @@ fun setEmpty(
     }
 
     return binding.root
+}
+/**
+ * 加载列表空布局
+ */
+fun setStateEmpty(
+    context: Context,
+    state: StateLayout,
+    imgId: Int = R.drawable.ic_live_def_empty,//图片
+    notice: String = appContext.getString(R.string.no_data_hint),//提示
+    noticeColor: Int =R.color.c_5b5b5b,//提示
+    isCenter: Boolean = true,//布局居中，后面得设置将无效
+    marginT: Int = 75,//提示
+    marginB: Int = 75,//提示
+) {
+    state.emptyLayout = R.layout.layout_empty
+    state.onEmpty {
+        val lltContent = findViewById<LinearLayout>(R.id.lltContent)
+        val emptyImg = findViewById<ImageView>(R.id.ivEmptyIcon)
+        val emptyHint = findViewById<TextView>(R.id.txtEmptyName)
+        emptyImg.setOnClickListener {
+
+        }
+        emptyImg.setImageResource(imgId)
+        emptyHint.text = notice
+        emptyHint.setTextColor(context.getColor(noticeColor))
+        val lp = lltContent.layoutParams as RelativeLayout.LayoutParams
+        if (isCenter) {
+            lp.topMargin = context.dp2px(0)
+            lp.bottomMargin = context.dp2px(0)
+            lp.addRule(RelativeLayout.CENTER_IN_PARENT)
+        } else {
+            lp.topMargin = context.dp2px(marginT)
+            lp.bottomMargin = context.dp2px(marginB)
+            lp.addRule(RelativeLayout.CENTER_HORIZONTAL)
+        }
+    }
 }
 
 /**

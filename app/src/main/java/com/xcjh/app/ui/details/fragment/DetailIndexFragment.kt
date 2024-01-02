@@ -12,8 +12,6 @@ import com.xcjh.app.ui.details.DetailVm
 import com.xcjh.app.ui.details.MatchDetailActivity
 import com.xcjh.app.ui.details.fragment.index.Index1Fragment
 import com.xcjh.app.ui.details.fragment.index.Index2Fragment
-import com.xcjh.app.ui.details.fragment.index.Index3Fragment
-import com.xcjh.app.ui.details.fragment.liveup.BasketballFragment
 import com.xcjh.base_lib.utils.bindBgViewPager2
 import com.xcjh.base_lib.utils.initFragment
 
@@ -35,7 +33,7 @@ class DetailIndexFragment(var matchId: String = "", var matchType: String = "1")
     override fun initView(savedInstanceState: Bundle?) {
 
         if ("1" == matchType) {//1：足球；2：篮球，这个版本篮球暂时不做，因为没有数据
-            mDatabind.viewPager.initFragment(this, arrayListOf(Index1Fragment(), Index2Fragment(), Index3Fragment()),isUserInputEnabled=false)
+            mDatabind.viewPager.initFragment(this, arrayListOf(Index1Fragment(), Index2Fragment(1), Index2Fragment(2)),isUserInputEnabled=false)
             mDatabind.magicIndicator.setBackgroundResource(R.drawable.round_indicator_bg)
             mDatabind.magicIndicator.bindBgViewPager2(
                 mDatabind.viewPager,

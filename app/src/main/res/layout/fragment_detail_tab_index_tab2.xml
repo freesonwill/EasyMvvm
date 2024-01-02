@@ -1,15 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <com.xcjh.app.view.balldetail.index.FootballTableView
-            android:id="@+id/viewRQTable"
-            android:layout_marginHorizontal="@dimen/dp_12"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_10" />
+            android:background="@drawable/shape_r10_ring"
+            android:layout_marginHorizontal="@dimen/dp_12"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="37dp"
+                android:background="@drawable/shape_top_r10"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="97"
+                    android:gravity="center_vertical"
+                    android:paddingStart="@dimen/dp_12"
+                    android:paddingEnd="@dimen/dp_10"
+                    android:text="@string/company"
+                    android:textColor="@color/c_94999f"
+                    android:textSize="@dimen/sp_12" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="127"
+                    android:gravity="center"
+                    android:text="@string/chu"
+                    android:textColor="@color/c_94999f"
+                    android:textSize="@dimen/sp_12" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="127"
+                    android:gravity="center"
+                    android:text="@string/ji"
+                    android:textColor="@color/c_94999f"
+                    android:textSize="@dimen/sp_12" />
+            </LinearLayout>
+            <com.drake.statelayout.StateLayout
+                android:id="@+id/state"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rcvCommon"
+                    android:layout_marginHorizontal="@dimen/dp_1"
+                    android:layout_marginBottom="@dimen/dp_1"
+                    tools:listitem="@layout/item_detail_table"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+            </com.drake.statelayout.StateLayout>
+        </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </layout>

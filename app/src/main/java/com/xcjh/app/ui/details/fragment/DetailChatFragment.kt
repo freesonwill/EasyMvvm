@@ -87,7 +87,7 @@ class DetailChatFragment(
         if (!userId.isNullOrEmpty()) {
             mDatabind.notice.root.visibility = View.VISIBLE
             mDatabind.notice.apply {
-                expandableText.movementMethod = LinkMovementMethod.getInstance()
+               /* expandableText.movementMethod = LinkMovementMethod.getInstance()
                 expandableText.text = noticeBean.notice
                 lltExpandCollapse.setOnClickListener {
                     val aa = expandableText.height
@@ -103,7 +103,7 @@ class DetailChatFragment(
                         mDatabind.rcvChat.layoutParams = params
                     }, 200)
 
-                }
+                }*/
             }
         } else {
             mDatabind.notice.root.visibility = View.GONE
@@ -198,7 +198,7 @@ class DetailChatFragment(
                      }
                  }*/
 
-                mDatabind.notice.expandableText.text =  it.notice?.toHtml() //主播公告
+                /*mDatabind.notice.expandableText.text =  it.notice?.toHtml() //主播公告
                 val lineCount: Int = mDatabind.notice.expandableText.layout.lineCount
                 mDatabind.notice.lltExpandCollapse.visibleOrGone(lineCount > 2)
                 if (lineCount > 2) {
@@ -206,7 +206,7 @@ class DetailChatFragment(
                     mDatabind.notice.expandableText.maxLines =  2
                 } else {
                     // 内容没有超过两行
-                }
+                }*/
 
                 mDatabind.rcvChat.postDelayed({
                     try {

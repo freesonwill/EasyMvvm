@@ -519,9 +519,9 @@ data class NoticeBean(
  * 比赛详情界面阵容tab下主播阵容数据
  */
 data class OddsBean(
-    var euInfo: ArrayList<OddsDetailBean> = arrayListOf(),
-    var asiaInfo: ArrayList<OddsDetailBean> = arrayListOf(),
-    var bsInfo: ArrayList<OddsDetailBean> = arrayListOf(),
+    var euInfo: ArrayList<OddsDetailBean>? = arrayListOf(),
+    var asiaInfo: ArrayList<OddsDetailBean>? = arrayListOf(),
+    var bsInfo: ArrayList<OddsDetailBean>? = arrayListOf(),
     var crInfo: ArrayList<OddsDetailBean> = arrayListOf(),
 ) : Serializable
 

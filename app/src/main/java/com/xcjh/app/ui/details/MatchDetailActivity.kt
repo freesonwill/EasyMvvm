@@ -499,7 +499,7 @@ class MatchDetailActivity :
             if (matchDetail.status in 2..8) {
                 mDatabind.tvMatchVs.textSize = 20f
                 mDatabind.tvMatchVs.text =
-                    matchDetail.homeScore.toString() + " : " + matchDetail.awayScore.toString()
+                    matchDetail.homeScore.toString() + "-" + matchDetail.awayScore.toString()
             } else {
                 mDatabind.tvMatchVs.textSize = 22f
                 mDatabind.tvMatchVs.text = getString(R.string.vs)
@@ -516,7 +516,7 @@ class MatchDetailActivity :
             if (matchDetail.status in 2..10) {
                 mDatabind.tvMatchVs.textSize = 20f
                 mDatabind.tvMatchVs.text =
-                    matchDetail.awayScore.toString() + " : " + matchDetail.homeScore.toString()
+                    matchDetail.awayScore.toString() + "-" + matchDetail.homeScore.toString()
             } else {
                 mDatabind.tvMatchVs.textSize = 22f
                 mDatabind.tvMatchVs.text = getString(R.string.vs)
@@ -528,6 +528,7 @@ class MatchDetailActivity :
         //先停
         // stopVideo()
         //再开
+        mDatabind.videoPlayer.visibleOrGone(true)
         mDatabind.videoPlayer.setUp(url, false, "")
         mDatabind.videoPlayer.startPlayLogic()
         mDatabind.videoPlayer.setGSYStateUiListener {
@@ -574,7 +575,11 @@ class MatchDetailActivity :
                     }
                     ///判断当前是否展示直播
                     getAnchor {
-                        startVideo(it)
+                        mDatabind.root.postDelayed(
+                            {
+                                startVideo(it)
+                            },10
+                        )
                     }
                     changeUI()
                 }
