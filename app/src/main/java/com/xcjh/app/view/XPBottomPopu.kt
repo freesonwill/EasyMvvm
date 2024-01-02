@@ -6,7 +6,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.FragmentActivity
-import androidx.viewpager.widget.ViewPager
 import com.github.gzuliyujiang.wheelpicker.entity.DateEntity
 import com.github.gzuliyujiang.wheelview.annotation.CurtainCorner
 import com.lxj.xpopup.core.BottomPopupView
@@ -61,6 +60,8 @@ class XPBottomPopu(context: Context) : BottomPopupView(context) {
     override fun onCreate() {
         super.onCreate()
 
+        try {
+
         dateTimePickerView = findViewById<MyDateWheelLayout>(R.id.datewheel)
         ivclose = findViewById<ImageView>(R.id.ivNext)
         tvcz = findViewById<TextView>(R.id.tvcz)
@@ -71,8 +72,9 @@ class XPBottomPopu(context: Context) : BottomPopupView(context) {
         val endValue = DateEntity.target(currentYear + 5, 12, 31)
         var defaultValue = DateEntity.target(currentYear, currentMonth, currentDay)
         if (calendarTime!=null&&calendarTime.isNotEmpty()){
-            defaultValue=DateEntity.target(calendarTime.substring(0,4).toInt(),
-                calendarTime.substring(5,7).toInt(), calendarTime.substring(8,calendarTime.length).toInt())
+            val array: List<String> = calendarTime.split("-")
+            defaultValue=DateEntity.target(array[0].toInt(),
+                array[1].toInt(), array[2].toInt())
         }
         dateTimePickerView?.yearWheelView?.curtainCorner = CurtainCorner.LEFT
         dateTimePickerView?.monthWheelView?.curtainCorner = CurtainCorner.NONE
@@ -87,24 +89,28 @@ class XPBottomPopu(context: Context) : BottomPopupView(context) {
             var chooseTime="$year-$month-$day"
             if (type!="3") {//赛程
                 if (TimeUtil.compareDates(chooseTime, maxTime) > 0) {//超过了最大日期,需要选择最大值
-                    val default = DateEntity.target(maxTime.substring(0,4).toInt(),
-                        maxTime.substring(5,7).toInt(), maxTime.substring(8).toInt())
+                    val array: List<String> = maxTime.split("-")
+                    val default = DateEntity.target(array[0].toInt(),
+                        array[1].toInt(), array[2].toInt())
                     dateTimePickerView?.setDefaultValue(default)
                 }
                 if (TimeUtil.compareDates(chooseTime, minTime) < 0) {//小于了最小日期,需要选择当日
-                    val default = DateEntity.target(minTime.substring(0,4).toInt(),
-                        minTime.substring(5,7).toInt(), minTime.substring(8).toInt())
+                    val array: List<String> = minTime.split("-")
+                    val default = DateEntity.target(array[0].toInt(),
+                        array[1].toInt(), array[2].toInt())
                     dateTimePickerView?.setDefaultValue(default)
                 }
             }else{//赛果
                 if (TimeUtil.compareDates(chooseTime, maxTime) > 0) {//超过了最大日期,需要选择最大值
-                    val default = DateEntity.target(maxTime.substring(0,4).toInt(),
-                        maxTime.substring(5,7).toInt(), maxTime.substring(8).toInt())
+                    val array: List<String> = maxTime.split("-")
+                    val default = DateEntity.target(array[0].toInt(),
+                        array[1].toInt(), array[2].toInt())
                     dateTimePickerView?.setDefaultValue(default)
                 }
                 if (TimeUtil.compareDates(chooseTime, minTime) < 0) {//小于了最小日期,需要选择当日
-                    val default = DateEntity.target(minTime.substring(0,4).toInt(),
-                        minTime.substring(5,7).toInt(), minTime.substring(8).toInt())
+                    val array: List<String> = minTime.split("-")
+                    val default = DateEntity.target(array[0].toInt(),
+                        array[1].toInt(), array[2].toInt())
                     dateTimePickerView?.setDefaultValue(default)
                 }
             }
@@ -128,6 +134,9 @@ class XPBottomPopu(context: Context) : BottomPopupView(context) {
 
         }
 
+        }catch (e:Exception){
+            LogUtils.d("日期出错了"+minTime)
+        }
     }
 
 
