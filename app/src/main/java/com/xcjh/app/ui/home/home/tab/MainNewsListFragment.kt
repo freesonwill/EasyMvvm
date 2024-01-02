@@ -1,35 +1,24 @@
 package com.xcjh.app.ui.home.home.tab
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatImageView
-import androidx.appcompat.widget.AppCompatTextView
-import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.drake.brv.utils.*
 import com.drake.engine.utils.dp
 import com.drake.spannable.replaceSpan
 import com.drake.spannable.span.GlideImageSpan
-import com.drake.statelayout.StateConfig
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
 import com.xcjh.app.R
 import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseFragment
-import com.xcjh.app.bean.BeingLiveBean
 import com.xcjh.app.bean.NewsBean
 import com.xcjh.app.databinding.FragmentMainNewsListBinding
-import com.xcjh.app.databinding.ItemMainLiveListBinding
 import com.xcjh.app.databinding.ItemNewsListBinding
 import com.xcjh.app.view.CustomHeader
 import com.xcjh.app.web.WebActivity
 import com.xcjh.base_lib.Constants
-import com.xcjh.base_lib.utils.dp2px
-import com.xcjh.base_lib.utils.view.clickNoRepeat
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -41,12 +30,8 @@ class MainNewsListFragment  : BaseFragment<MainNewsListVm, FragmentMainNewsListB
 
 
     override fun initView(savedInstanceState: Bundle?) {
-
         adapter()
         mViewModel.getNewsList(true)
-
-
-
         mDatabind.smartCommon.setRefreshHeader( CustomHeader(requireContext()))
         mDatabind.smartCommon.setOnRefreshLoadMoreListener(object : OnRefreshLoadMoreListener {
             override fun onRefresh(refreshLayout: RefreshLayout) {

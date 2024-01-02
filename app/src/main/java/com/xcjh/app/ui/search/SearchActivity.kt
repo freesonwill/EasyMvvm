@@ -60,7 +60,6 @@ class SearchActivity  : BaseActivity<SearchVm, ActivitySearchBinding>() {
 
         mDatabind.etSearchInput.afterTextChanged{
 
-
             if (it.isNotEmpty()) {
                 mDatabind.ivClear.visibility=View.VISIBLE
                 searchType=0
@@ -89,6 +88,7 @@ class SearchActivity  : BaseActivity<SearchVm, ActivitySearchBinding>() {
                 myToast(getString(R.string.contact_hint_input))
 
             }else{
+                hideKeyboard(this,v)
                 mViewModel.getNowLive(mDatabind.etSearchInput.text.toString())
                 searchType=1
 //                mDatabind.txtSearchClick.text=resources.getString(R.string.cancel)
@@ -277,10 +277,18 @@ class SearchActivity  : BaseActivity<SearchVm, ActivitySearchBinding>() {
 
     }
 
+    /**
+     * 打开软键盘
+     */
     private fun showSoftKeyboard() {
         mDatabind.etSearchInput.requestFocus() // 获取焦点
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.showSoftInput( mDatabind.etSearchInput, InputMethodManager.SHOW_IMPLICIT) // 打开软键盘
+    }
+    // 隐藏软键盘的函数
+    fun hideKeyboard(context: Context, view: View) {
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
 }

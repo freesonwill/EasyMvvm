@@ -265,4 +265,7 @@
 -keep class com.huawei.hms.**{*;}
 -keep class com.hihonor.push.**{*; }
  #==========推送
-
+#XPopup
+-dontwarn com.lxj.xpopup.widget.**
+-keep class com.lxj.xpopup.widget.**{*;}
+#==========
