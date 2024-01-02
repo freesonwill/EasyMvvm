@@ -14,6 +14,7 @@ import com.xcjh.app.databinding.FragmentHomeBinding
 import com.xcjh.app.ui.home.home.tab.CompetitionTypeListFragment
 import com.xcjh.app.ui.home.home.tab.MainNewsListFragment
 import com.xcjh.app.ui.home.home.tab.MainRecommendFragment
+import com.xcjh.app.ui.home.home.tab.MainRecommendNewFragment
 import com.xcjh.app.ui.search.SearchActivity
 import com.xcjh.app.vm.MainVm
 import com.xcjh.base_lib.utils.bindViewPager2
@@ -27,7 +28,8 @@ class HomeFragment : BaseFragment<MainVm, FragmentHomeBinding>() {
 
     override fun initView(savedInstanceState: Bundle?) {
 
-        mFragList.add(MainRecommendFragment())
+//        mFragList.add(MainRecommendFragment())
+        mFragList.add(MainRecommendNewFragment())
         var soccerFragment = CompetitionTypeListFragment()
         val soccer = Bundle().apply {
             putInt("type", 1)

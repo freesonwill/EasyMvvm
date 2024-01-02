@@ -5,6 +5,7 @@ import androidx.annotation.Keep
 import com.drake.brv.BindingAdapter
 import com.drake.brv.item.ItemAttached
 import com.drake.brv.item.ItemHover
+import com.xcjh.base_lib.bean.ListDataUiState
 import java.io.Serializable
 
 /**
@@ -135,6 +136,16 @@ data class InitialLocation(
     val initial: String,
     val list: List<Location>
 )
+
+//首页数据组装
+data class  MainDataBean(
+    //广告
+    var advertisement: ArrayList<AdvertisementBanner> =ArrayList<AdvertisementBanner>(),
+    //热门比赛集合
+    var match:ArrayList<MatchBean> =ArrayList<MatchBean>()
+
+
+): Serializable
 
 data class Location(
     val code: String,
@@ -371,7 +382,7 @@ data class ConditionsBean(
  */
 @Keep
 data class MainTxtBean(
-    var txt: String = "",
+    var txt: String = "111",
     var list: ArrayList<BeingLiveBean> = arrayListOf(),
 
     ) : Serializable
