@@ -878,7 +878,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                     )
                                 ) {
                                     if (it1.sendId == "0") {
-                                        it1.sendId =it1.id+incount.toString()
+                                        it1.sendId =it1.id
                                     }
                                     incount++
                                     data.sent = 1

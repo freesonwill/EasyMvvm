@@ -254,7 +254,7 @@ fun MagicIndicator.bindViewPager2(
                 indicator.startInterpolator = AccelerateInterpolator()
                 indicator.endInterpolator = DecelerateInterpolator(2.0f)
                 indicator.setColors(ContextCompat.getColor(context,lineIndicatorColor))
-                indicator.yOffset = dp2px(6).toFloat()
+                indicator.yOffset = dp2px(2).toFloat()
                 return indicator
             }else{
                 return CommonPagerIndicator(context).apply {

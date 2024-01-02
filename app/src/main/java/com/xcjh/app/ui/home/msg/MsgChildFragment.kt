@@ -451,8 +451,8 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                                 }
                             }
                         } else {
-                            if (data.noReadSum > listdata[index].noReadSum||
-                                data.avatar!=listdata[index].avatar||data.nick!=listdata[index].nick) {
+                            if (data.noReadSum > listdata[index].noReadSum||(data.dataType==1&&
+                                        (data.avatar!=listdata[index].avatar||data.nick!=listdata[index].nick))) {
                                 updataMsg(data)
                             }
                         }
