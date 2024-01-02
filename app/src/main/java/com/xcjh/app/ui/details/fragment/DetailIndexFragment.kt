@@ -31,15 +31,6 @@ class DetailIndexFragment(var matchId: String = "", var matchType: String = "1")
         ViewModelProvider(requireActivity())[DetailVm::class.java]
     }
 
-    override fun lazyLoadData() {
-        //ViewModelProvider.get()
-        //loadData()
-    }
-
-    private fun loadData() {
-        //ViewModelProvider.get()
-        vm.getOddsInfo(matchId)
-    }
 
     override fun initView(savedInstanceState: Bundle?) {
 
@@ -61,8 +52,16 @@ class DetailIndexFragment(var matchId: String = "", var matchType: String = "1")
         } else {
             //mDatabind.layTabIndexFootball.visibility = View.GONE
         }
-
         loadData()
+    }
+    override fun lazyLoadData() {
+        //ViewModelProvider.get()
+        //loadData()
+    }
+
+    private fun loadData() {
+        //ViewModelProvider.get()
+        vm.getOddsInfo(matchId)
     }
 
 

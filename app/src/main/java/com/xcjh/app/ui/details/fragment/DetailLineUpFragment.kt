@@ -47,10 +47,14 @@ class DetailLineUpFragment(var match: MatchDetailBean) :
             )
             mDatabind.viewPager.offscreenPageLimit = 2
         }
+    /*    mDatabind.root.postDelayed({
+
+        },600)*/
         loadData()
     }
+
     override fun lazyLoadData() {
-        //loadData()
+        loadData()
     }
     private fun loadData() {
         if ("1" == match.matchType) {//1：足球；2：篮球

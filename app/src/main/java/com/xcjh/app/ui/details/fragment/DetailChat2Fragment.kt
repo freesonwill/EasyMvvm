@@ -1,23 +1,39 @@
 package com.xcjh.app.ui.details.fragment
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.webkit.WebResourceRequest
+import android.webkit.WebView
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.drake.brv.layoutmanager.HoverLinearLayoutManager
 import com.drake.brv.utils.addModels
 import com.drake.brv.utils.models
+import com.drake.brv.utils.setup
+import com.drake.engine.base.app
 import com.drake.softinput.hideSoftInput
 import com.google.gson.Gson
 import com.just.agentweb.AgentWeb
+import com.just.agentweb.WebChromeClient
+import com.just.agentweb.WebParentLayout
+import com.just.agentweb.WebViewClient
+import com.luck.picture.lib.basic.PictureSelector
+import com.luck.picture.lib.entity.LocalMedia
 import com.xcjh.app.R
 import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseVpFragment
@@ -33,7 +49,9 @@ import com.xcjh.app.websocket.bean.ReceiveWsBean
 import com.xcjh.app.websocket.bean.SendChatMsgBean
 import com.xcjh.app.websocket.listener.LiveRoomListener
 import com.xcjh.base_lib.App
+import com.xcjh.base_lib.utils.SpanUtil
 import com.xcjh.base_lib.utils.dp2px
+import com.xcjh.base_lib.utils.setTextBold
 import com.xcjh.base_lib.utils.toHtml
 import com.xcjh.base_lib.utils.view.visibleOrGone
 import kotlinx.android.synthetic.main.fragment_detail_tab_chat.view.*
@@ -103,7 +121,9 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
             mDatabind.notice.root.visibility = View.GONE
         }
     }
-    private var mAgentWeb: AgentWeb?=null
+
+    private var mAgentWeb: AgentWeb? = null
+
     @SuppressLint("ClickableViewAccessibility")
     private fun initRcv() {
         //  mDatabind.page.setEnableLoadMore(false)
@@ -124,10 +144,15 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
         mDatabind.page.onRefresh {
             mViewModel.getHisMsgList(liveId, offset)
         }
-        setChatRoomRcv(mDatabind.rcvChat,mLayoutManager,true,{
-            mAgentWeb=it
-        }){
-            offset = it?: ""
+        setChatRoomRcv(mDatabind.rcvChat, mLayoutManager, true, {
+            mAgentWeb = it
+        },{
+            mDatabind.rcvChat.postDelayed({
+                mDatabind.rcvChat.smoothScrollToPosition(0)
+            }, 100)
+
+        }) {
+            offset = it ?: ""
         }
         //点击列表隐藏软键盘
         mDatabind.rcvChat.setOnTouchListener { v, _ ->
@@ -136,9 +161,9 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
             mDatabind.edtChatMsg.clearFocus()
             false
         }
-        mDatabind.edtChatMsg.isEnabled=false
+        mDatabind.edtChatMsg.isEnabled = false
         mDatabind.edtChatMsg.postDelayed({
-            mDatabind.edtChatMsg.isEnabled=true
+            mDatabind.edtChatMsg.isEnabled = true
         }, 1000)
         //点击列表隐藏软键盘
         mDatabind.edtChatMsg.setOnFocusChangeListener { v, hasFocus ->
@@ -189,11 +214,12 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
                             index = 0
                         ) // 添加一条消息 
                         mDatabind.rcvChat.scrollToPosition(0)
-                        mDatabind.rcvChat.postDelayed({
-                            mDatabind.rcvChat.scrollToPosition(0)
-                        },500)
+                     /*   mDatabind.rcvChat.postDelayed({
 
-                    } catch (_: Exception) { }
+                        }, 500)*/
+
+                    } catch (_: Exception) {
+                    }
 
                 }, 500)
             }
@@ -221,7 +247,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
                 if (it.isRefresh && userId.isNullOrEmpty()) {
                     mDatabind.rcvChat.addModels(null)
                     mDatabind.page.showEmpty()
-                }else{
+                } else {
                     mDatabind.page.showContent()
                 }
             }
@@ -260,7 +286,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
     override fun onPause() {
         hideSoftInput()
         mDatabind.edtChatMsg.clearFocus()
-        mAgentWeb?.webCreator?.webView?.onPause()
+        mAgentWeb?.webLifeCycle?.onPause()
         super.onPause()
     }
 
@@ -273,6 +299,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
     }
 
     override fun onDestroy() {
+        mAgentWeb?.webLifeCycle?.onDestroy()
         super.onDestroy()
         exitRoom()
     }
@@ -280,7 +307,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
     private fun exitRoom() {
         onWsUserExitRoom(liveId)
         MyWsManager.getInstance(App.app)?.removeLiveRoomListener(activity.toString())
-        mAgentWeb?.webLifeCycle?.onDestroy()
+
         isEnterRoom = false
     }
 
@@ -309,7 +336,13 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
         mDatabind.rcvChat.addModels(
             listOf(
                 MsgBean(
-                    chat.from, chat.fromAvatar, chat.fromNickName ?: "", chat.level, chat.content, msgType = chat.msgType, identityType = chat.identityType,
+                    chat.from,
+                    chat.fromAvatar,
+                    chat.fromNickName ?: "",
+                    chat.level,
+                    chat.content,
+                    msgType = chat.msgType,
+                    identityType = chat.identityType,
                 )
             ), index = 0
         ) // 添加一条消息
@@ -381,6 +414,5 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
         }, 200)
 
     }
-
 }
 

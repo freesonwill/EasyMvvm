@@ -83,13 +83,13 @@ class DetailResultFragment(private var match: MatchDetailBean) :
                 match.awayName
             )
         }
-        loadData()
+
         MyWsManager.getInstance(App.app)?.setOtherPushListener(this@DetailResultFragment.toString(),
             object : OtherPushListener {
                 override fun onChangeMatchData(matchList: ArrayList<ReceiveChangeMsg>) {
                     try {
                         //防止数据未初始化的情况
-                        if (match.status in 0..if (match.matchType == "1") 7 else 9) {
+                        if (isAdded && match.status in 0..if (match.matchType == "1") 7 else 9) {
                             matchList.forEach {
                                 if (match.matchId == it.matchId.toString() && match.matchType == it.matchType.toString()) {
                                     if (match.matchType == "2") {
@@ -119,8 +119,12 @@ class DetailResultFragment(private var match: MatchDetailBean) :
                     }
                 }
             })
+        loadData()
     }
 
+    override fun lazyLoadData() {
+        loadData()
+    }
     private fun loadData() {
         if ("1" == match.matchType) {//1：足球；2：篮球
             //获取足球赛况技术统计表格的数据

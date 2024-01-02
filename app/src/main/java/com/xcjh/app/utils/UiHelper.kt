@@ -1,14 +1,16 @@
 package com.xcjh.app.utils
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.Rect
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.JavascriptInterface
 import android.webkit.WebResourceRequest
+import android.webkit.WebSettings
 import android.webkit.WebView
 import android.widget.RelativeLayout
 import android.widget.TextView
@@ -42,7 +44,6 @@ import com.xcjh.app.databinding.ItemDetailChatBinding
 import com.xcjh.app.databinding.ItemDetailChatFirstBinding
 import com.xcjh.app.ui.details.fragment.DetailAnchorFragment
 import com.xcjh.app.ui.details.fragment.DetailChat2Fragment
-import com.xcjh.app.ui.details.fragment.DetailChatFragment
 import com.xcjh.app.ui.details.fragment.DetailIndexFragment
 import com.xcjh.app.ui.details.fragment.DetailLineUpFragment
 import com.xcjh.app.ui.details.fragment.DetailLiveFragment
@@ -334,11 +335,13 @@ fun setProgressValue(progress: Int): Int {
  * 聊天列表
  * @isReverse 是否翻转 默认不
  */
+@SuppressLint("ClickableViewAccessibility")
 fun setChatRoomRcv(
     rcvChat: RecyclerView,
     mLayoutManager: HoverLinearLayoutManager,
     isReverse: Boolean = false,
     action: (AgentWeb) -> Unit = {},
+    finishLoad: (Boolean) -> Unit = {},
     offset: (String?) -> Unit = {},
 ) {
     rcvChat.setHasFixedSize(true)
@@ -360,8 +363,7 @@ fun setChatRoomRcv(
         }
         onCreate {
             when (itemViewType) {
-                R.layout.item_detail_chat_first ->
-                {
+                R.layout.item_detail_chat_first -> {
                     val binding = getBinding<ItemDetailChatFirstBinding>()
                     mAgentWeb = AgentWeb.with(rcvChat.context as Activity)
                         .setAgentWebParent(
@@ -381,38 +383,44 @@ fun setChatRoomRcv(
                         })
                         .setWebViewClient(object : WebViewClient() {
                             override fun shouldOverrideUrlLoading(
-                                view: WebView?,
-                                request: WebResourceRequest?,
+                                view: WebView?, request: WebResourceRequest?,
                             ): Boolean {
-                                rcvChat.context.startActivity(Intent(Intent.ACTION_VIEW, request?.url))
+                                rcvChat.context.startActivity(
+                                    Intent(Intent.ACTION_VIEW, request?.url)
+                                )
                                 return true
+                            }
+                            override fun onPageFinished(view: WebView?, url: String?) {
+                                super.onPageFinished(view, url)
+                                Log.e("=====", "onPageFinished: ====")
+                                finishLoad.invoke(true)
                             }
                         })
                         // .setWebView(binding.agentWeb)
                         .createAgentWeb()
                         .ready()
                         .get()
-                    // 去掉滚动条
-                    mAgentWeb.webCreator.webView.scrollBarSize = 0
-                    //  取消WebView中滚动或拖动到顶部、底部时的阴影
-                    mAgentWeb.webCreator.webView.overScrollMode = View.OVER_SCROLL_NEVER
-                    mAgentWeb.agentWebSettings.webSettings.javaScriptEnabled = true
-                    mAgentWeb.agentWebSettings.webSettings.allowFileAccess = true
-                    mAgentWeb.agentWebSettings.webSettings.allowFileAccessFromFileURLs = true //c_181819
-                    mAgentWeb.webCreator.webView.setBackgroundColor(Color.argb(0, 0, 0, 0))
-                    val p = mAgentWeb.webCreator.webView.parent as WebParentLayout
-                    p.setBackgroundColor(Color.TRANSPARENT)
-
-                    mAgentWeb.webCreator.webView.addJavascriptInterface(object : Any() {
-                        @JavascriptInterface
-                        fun onContentHeightChanged(height: Int) {
-                            val layoutParams: ViewGroup.LayoutParams =  mAgentWeb.webCreator.webView.layoutParams
-                            layoutParams.height = height
-                            mAgentWeb.webCreator.webView.layoutParams = layoutParams
+                    mAgentWeb.agentWebSettings.webSettings.apply {
+                        javaScriptEnabled = true
+                        allowFileAccess = true
+                        allowFileAccessFromFileURLs = true
+                    }
+                    mAgentWeb.webCreator.webView.apply {
+                        scrollBarSize = 0// 去掉滚动条
+                        mAgentWeb.webCreator.webView.overScrollMode =
+                            View.OVER_SCROLL_NEVER //  取消WebView中滚动或拖动到顶部、底部时的阴影
+                        setBackgroundColor(Color.argb(0, 0, 0, 0))
+                        val p = parent as WebParentLayout
+                        p.setBackgroundColor(Color.TRANSPARENT)
+                        setOnTouchListener { _, event ->
+                            if (event.pointerCount > 1) {
+                                // 多指触摸时，禁止缩放手势
+                                return@setOnTouchListener true
+                            }
+                            false
                         }
-                    }, "android")
+                    }
                     action.invoke(mAgentWeb)
-
                 }
             }
         }
@@ -421,6 +429,7 @@ fun setChatRoomRcv(
                 is NoticeBean -> {
 
                 }
+
                 is BottomMsgBean -> {
 
                 }
@@ -434,9 +443,10 @@ fun setChatRoomRcv(
                      }*/
                     /* val bb = item.content.replaceFirst("<p>", "<span>")
                          .replace("</p>", "</span>")*/
-                    val aa ="<p><span style='color: #34A853;font-weight:500;margin-right:5px;flex-shrink:0;'>jr680036:</span>测试测试出色测试测试出色测</p><p><span style='color: #34A853;font-weight:500;margin-right:5px;flex-shrink:0;'>jr680036:</span> <a href=\\\"https://www.baidu.com/\\\" target=\\\"_blank\\\">https://www.baidu.com/</a> </p><p><span style='color: #34A853;font-weight:500;margin-right:5px;flex-shrink:0;'>jr680036:</span><span style=\\\"color: rgb(225, 60, 57);\\\">测试测试出色</span></p>"
+                    val aa =
+                        "<p><span style='color: #34A853;font-weight:500;margin-right:5px;flex-shrink:0;'>jr680036:</span>测试测试出色测试测试出色测</p><p><span style='color: #34A853;font-weight:500;margin-right:5px;flex-shrink:0;'>jr680036:</span> <a href=\\\"https://www.baidu.com/\\\" target=\\\"_blank\\\">https://www.baidu.com/</a> </p><p><span style='color: #34A853;font-weight:500;margin-right:5px;flex-shrink:0;'>jr680036:</span><span style=\\\"color: rgb(225, 60, 57);\\\">测试测试出色</span></p>"
                     val bb =
-                        "<html><head><style>body { font-size:14px; color: #ffffff; margin: 0; }</style></head><body>${item.content}</body></html>"
+                        "<html><head><style>body { font-size:14px; color: #ffffff; margin: 0; }</style></head><body>${(item.content)}</body></html>"
                     // binding.webView.loadData(aa+javascript,"text/html", "UTF-8") //aa.toHtml()
                     mAgentWeb.urlLoader.loadDataWithBaseURL(null, bb, "text/html", "UTF-8", null)
 
