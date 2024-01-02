@@ -9,6 +9,7 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieDrawable
+import com.drake.engine.utils.GB
 import com.scwang.smart.refresh.layout.api.RefreshHeader
 import com.scwang.smart.refresh.layout.api.RefreshKernel
 import com.scwang.smart.refresh.layout.api.RefreshLayout
@@ -72,7 +73,7 @@ class CustomHeader (context: Context ) : RelativeLayout(context),RefreshHeader  
     }
 
     override fun getSpinnerStyle(): SpinnerStyle {
-        return SpinnerStyle.FixedBehind //指定为平移，不能null
+        return SpinnerStyle.Translate //指定为平移，不能null
 
     }
 

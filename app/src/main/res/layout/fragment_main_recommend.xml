@@ -13,7 +13,7 @@
         android:orientation="vertical" >
 
 
-        <com.drake.brv.PageRefreshLayout
+        <com.scwang.smart.refresh.layout.SmartRefreshLayout
             android:id="@+id/smartCommon"
             android:layout_width="match_parent"
             app:srlEnableLoadMore="true"
@@ -27,7 +27,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
             </com.drake.statelayout.StateLayout>
-        </com.drake.brv.PageRefreshLayout>
+        </com.scwang.smart.refresh.layout.SmartRefreshLayout>
 <!--        <Button-->
 <!--            android:id="@+id/btn"-->
 <!--            android:layout_width="wrap_content"-->

@@ -3,6 +3,7 @@ package com.xcjh.app.ui.details.fragment
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.ImageView
@@ -186,7 +187,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
                                 )
                             ),
                             index = 0
-                        ) // 添加一条消息
+                        ) // 添加一条消息 
                         mDatabind.rcvChat.scrollToPosition(0)
                         mDatabind.rcvChat.postDelayed({
                             mDatabind.rcvChat.scrollToPosition(0)

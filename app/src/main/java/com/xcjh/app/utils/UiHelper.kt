@@ -439,6 +439,7 @@ fun setChatRoomRcv(
                         "<html><head><style>body { font-size:14px; color: #ffffff; margin: 0; }</style></head><body>${item.content}</body></html>"
                     // binding.webView.loadData(aa+javascript,"text/html", "UTF-8") //aa.toHtml()
                     mAgentWeb.urlLoader.loadDataWithBaseURL(null, bb, "text/html", "UTF-8", null)
+
                 }
 
                 is MsgBean -> {

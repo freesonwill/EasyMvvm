@@ -6,12 +6,11 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.res.ColorStateList
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
+import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.Interpolator
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.airbnb.lottie.LottieAnimationView
@@ -26,11 +25,6 @@ import com.drake.brv.utils.mutable
 import com.drake.brv.utils.setDifferModels
 import com.drake.brv.utils.setup
 import com.drake.statelayout.StateConfig
-import com.drake.statelayout.StateConfig.onEmpty
-import com.facebook.bolts.Task.Companion.delay
-import com.kongzue.dialogx.dialogs.CustomDialog
-import com.kongzue.dialogx.dialogs.MessageDialog
-import com.kongzue.dialogx.interfaces.OnBindView
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
 import com.xcjh.app.R
@@ -61,10 +55,7 @@ import com.xcjh.app.websocket.listener.C2CListener
 import com.xcjh.app.websocket.listener.LiveStatusListener
 import com.xcjh.base_lib.App
 import com.xcjh.base_lib.Constants
-import com.xcjh.base_lib.utils.LogUtils
 import com.xcjh.base_lib.utils.dp2px
-import com.xcjh.base_lib.utils.myToast
-import com.xcjh.base_lib.utils.view.clickNoRepeat
 import com.youth.banner.util.BannerUtils
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -99,6 +90,9 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
         mDatabind.smartCommon.setDisableContentWhenRefresh(true)//是否在刷新的时候禁止列表的操作
         mDatabind.smartCommon.setDisableContentWhenLoading(true)//是否在加载的时候禁止列表的操作
         mDatabind.smartCommon.setEnableOverScrollBounce(false)
+        mDatabind.smartCommon.setEnableOverScrollDrag(true)
+        mDatabind.smartCommon.setReboundInterpolator(AccelerateDecelerateInterpolator())
+
         mDatabind.smartCommon.setRefreshHeader( CustomHeader(requireContext()))
         MyWsManager.getInstance(App.app)
             ?.setLiveStatusListener(this.toString(), object : LiveStatusListener {
@@ -283,7 +277,7 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
         //获取广告
         mViewModel.bannerList.observe(this){
 
-            mDatabind.smartCommon.finishRefresh()
+            mDatabind.smartCommon.finishRefresh(true)
             mDatabind.smartCommon.resetNoMoreData()
             if(it.size>0){
             try {
@@ -299,7 +293,7 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                         var list=ArrayList<AdvertisementBanner> ()
                         list.add(advertisementBanner)
                         mDatabind.rcvRecommend.addModels(list, index = 0)
-                        mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
+//                        mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
                     }
                 }
             }catch (e:NullPointerException){
@@ -308,13 +302,13 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                 var list=ArrayList<AdvertisementBanner> ()
                 list.add(advertisementBanner)
                 mDatabind.rcvRecommend.addModels(list)
-                mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
+//                mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
                  }
             }else{
                 if (mDatabind.rcvRecommend.mutable[0] is AdvertisementBanner) {
                      mDatabind.rcvRecommend.mutable.removeAt(0)
                      mDatabind.rcvRecommend.bindingAdapter.notifyItemRemoved(0) // 通知更新
-                    mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
+//                    mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
                 }
             }
 
@@ -324,8 +318,8 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
         }
         //获取首页的热门比赛
         mViewModel.hotList.observe(this){
-            mDatabind.smartCommon.finishRefresh()
-            mDatabind.smartCommon.resetNoMoreData()
+//            mDatabind.smartCommon.finishRefresh()
+//            mDatabind.smartCommon.resetNoMoreData()
             if(it.size>=1){
                 try {
                     if(mDatabind.rcvRecommend.mutable.size==1){
@@ -892,7 +886,12 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
 
         }
     }
+    inner class ElasticOutInterpolator : Interpolator {
+        override fun getInterpolation(p0: Float): Float {
+           return 0f
+        }
 
+    }
 
 }
 
@@ -943,5 +942,40 @@ fun BindingAdapter.BindingViewHolder.setLiveMatchItem(type:Int=0) {
         bindingItem.llLiveSpacing.layoutParams = layoutParams
     }
 
+    /*public static class SampleItemAnimator extends BaseItemAnimator {
+
+        @Override
+        protected void preAnimateAddImpl(RecyclerView.ViewHolder holder) {
+            View icon = holder.itemView.findViewById(R.id.icon);
+            icon.setRotationX(30);
+            View right = holder.itemView.findViewById(R.id.right);
+            right.setPivotX(0);
+            right.setPivotY(0);
+            right.setRotationY(90);
+        }
+
+        @Override
+        protected void animateRemoveImpl(RecyclerView.ViewHolder viewHolder) {
+        }
+
+        @Override
+        protected void animateAddImpl(final RecyclerView.ViewHolder holder) {
+            View target = holder.itemView;
+            View icon = target.findViewById(R.id.icon);
+            Animator swing = ObjectAnimator.ofFloat(icon, "rotationX", 45, 0);
+            swing.setInterpolator(new OvershootInterpolator(5));
+
+            View right = holder.itemView.findViewById(R.id.right);
+            Animator rotateIn = ObjectAnimator.ofFloat(right, "rotationY", 90, 0);
+            rotateIn.setInterpolator(new DecelerateInterpolator());
+
+            AnimatorSet animator = new AnimatorSet();
+            animator.setDuration(getAddDuration());
+            animator.playTogether(swing, rotateIn);
+
+            animator.start();
+        }
+
+    }*/
 
 }

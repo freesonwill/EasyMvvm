@@ -59,6 +59,8 @@ dependencies {
     api rootProject.ext.dependencies["refresh-header-classics"]
     //api rootProject.ext.dependencies["refresh-footer-classics"]
     //api rootProject.ext.dependencies["refresh-header-material"]
+
+
     //指示器库
     api 'com.github.hackware1993:MagicIndicator:1.7.0'
     //微信开源项目，替代SP

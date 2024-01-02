@@ -253,7 +253,6 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
 
     override fun onResume() {
         super.onResume()
-//        Log.i("FFFFFFFFF","44444444444")
     }
 
     override fun createObserver() {
