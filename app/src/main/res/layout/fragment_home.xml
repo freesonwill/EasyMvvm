@@ -27,7 +27,7 @@
             <RelativeLayout
                 android:id="@+id/ivHomeSearch"
                 android:layout_width="50dp"
-                android:layout_marginBottom="@dimen/dp_8"
+
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true"  >
 

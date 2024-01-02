@@ -88,6 +88,7 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
             }
         }
         mDatabind.smartCommon.setHeaderHeight(40f)
+
         mDatabind.smartCommon.setDisableContentWhenRefresh(true)//是否在刷新的时候禁止列表的操作
         mDatabind.smartCommon.setDisableContentWhenLoading(true)//是否在加载的时候禁止列表的操作
         mDatabind.smartCommon.setEnableOverScrollBounce(false)
