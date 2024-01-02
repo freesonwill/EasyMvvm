@@ -21,13 +21,11 @@
             <net.lucode.hackware.magicindicator.MagicIndicator
                 android:id="@+id/magicIndicator"
                 android:layout_width="222dp"
-
                 android:layout_height="match_parent" />
 
             <RelativeLayout
                 android:id="@+id/ivHomeSearch"
                 android:layout_width="50dp"
-
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true"  >
 
