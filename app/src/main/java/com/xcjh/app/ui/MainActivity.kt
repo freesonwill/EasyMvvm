@@ -153,8 +153,9 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
                 }
 
                 R.id.llHomeSelectMsg -> {
-                    appViewModel.appMsgResum.postValue(true)
+
                     judgeLogin {
+                        appViewModel.appMsgResum.postValue(true)
                         changeTab(2)
                     }
                 }
