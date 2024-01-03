@@ -265,6 +265,7 @@
     <string name="txt_time_gg">刚刚</string>
     <string name="txttime_sencend">%d秒前</string>
     <string name="txttime_minits">分钟前</string>
+    <string name="txttime_yesterday">昨天  </string>
     <string name="txttime_hours">%d小时前</string>
     <string name="txttime_days">%d天前</string>
     <string name="txttime_mouth">%d月前</string>
