@@ -66,7 +66,7 @@ class ContactUsActivity : BaseActivity<ContactUsVm, ActivityContactUsBinding>() 
             .init()
 
 
-        mDatabind.titleTop.tvTitle.text=resources.getString(R.string.contact_us)
+        mDatabind.titleTop.tvTitle.text=resources.getString(R.string.feedback)
         var contactBean=ContactBean(1,resources.getString(R.string.txt_feedtype1))
         questionList.add(contactBean)
         contactBean=ContactBean(2,resources.getString(R.string.txt_feedtype2))

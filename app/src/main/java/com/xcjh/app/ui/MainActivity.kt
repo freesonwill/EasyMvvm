@@ -373,7 +373,7 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         )
         mDatabind.ivHomeMy.setImageDrawable(
             ContextCompat.getDrawable(
-                this, if (pos == 3) R.drawable.tab_wode_select else R.drawable.tab_main_no
+                this, if (pos == 3) R.drawable.tab_wode_select else R.drawable.tab_wode_no
             )
         )
         mDatabind.viewPager.setCurrentItem(pos, false)

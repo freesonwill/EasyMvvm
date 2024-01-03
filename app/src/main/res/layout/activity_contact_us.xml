@@ -65,13 +65,13 @@
                         android:text="@string/contact_txt_content"/>
                     <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="220dp"
+                        android:layout_height="178dp"
                         android:background="@drawable/shape_r10_f2f3f7"
                         android:padding="@dimen/dp_15">
                         <androidx.appcompat.widget.AppCompatEditText
                             android:id="@+id/editContactInput"
                             android:layout_width="match_parent"
-                            android:layout_height="154dp"
+                            android:layout_height="match_parent"
                             android:textSize="@dimen/sp_16"
                             android:textColor="@color/c_37373d"
                             android:maxLength="200"

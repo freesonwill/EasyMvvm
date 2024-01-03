@@ -45,7 +45,7 @@ class SetUpActivity  : BaseActivity<SetUpVm, ActivitySetUpBinding>() {
             var popupExitLogin= PopupExitLogin(this)
 
             var popwindow = XPopup.Builder(this)
-                .hasShadowBg(true)
+                .hasShadowBg(false)
                 .moveUpToKeyboard(false) //如果不加这个，评论弹窗会移动到软键盘上面
                 .isViewMode(true)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
