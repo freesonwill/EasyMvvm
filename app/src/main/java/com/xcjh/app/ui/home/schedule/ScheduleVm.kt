@@ -34,7 +34,7 @@ class ScheduleVm : BaseViewModel() {
                 noticeData.value=true
             }, {
                 //请求失败
-                myToast(it.errorMsg)
+               // myToast(it.errorMsg)
             }, true
         )
     }
@@ -49,7 +49,7 @@ class ScheduleVm : BaseViewModel() {
                 unnoticeData.value=true
             }, {
                 //请求失败
-                myToast(it.errorMsg)
+              //  myToast(it.errorMsg)
             }, true
         )
     }

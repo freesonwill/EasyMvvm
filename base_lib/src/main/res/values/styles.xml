@@ -102,7 +102,7 @@
     <style name="Transparent">
         <item name="android:windowBackground">@color/trans</item>
         <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowAnimationStyle">@android:style/Animation.Translucent</item>
+<!--        <item name="android:windowAnimationStyle">@android:style/Animation.Translucent</item>-->
         <item name="android:windowIsFloating">true</item>
         <!--显示区域以外是否使用黑色半透明背景-->
         <item name="android:backgroundDimEnabled">false</item>

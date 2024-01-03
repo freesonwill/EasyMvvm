@@ -70,16 +70,16 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
         isVisble = false
     }
 
-    override fun onResume() {
-        super.onResume()
-        // isVisble = mTabPosition == mPushPosition
-
+    fun checkData(){
         if (!isFirst && !hasData) {
 
             mViewModel.getHotMatchData(matchtypeOld!!, status)
 
         }
-
+    }
+    override fun onResume() {
+        super.onResume()
+        checkData()
     }
 
     fun setPanrent(mparentFragment: ScheduleFragment) {

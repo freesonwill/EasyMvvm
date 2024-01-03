@@ -68,6 +68,7 @@ class ScheduleFragment : BaseFragment<MainVm, FrCourseBinding>() {
     override fun onResume() {
         super.onResume()
         //这里需要告诉子fragment 可见了//注意第一次启动不能调用
+        (mFragments[index] as ScheduleChildOneFragment).checkData()
         if (Constants.isLoading) {
             LogUtils.d("子frahment可见了  判断是否需要刷新")
             var bean = CurrentIndex()
@@ -75,6 +76,7 @@ class ScheduleFragment : BaseFragment<MainVm, FrCourseBinding>() {
             bean.currtTwo =
                 (mFragments[index] as ScheduleChildOneFragment).getCurrentIndex()
             appViewModel.updateSchedulePosition.postValue(bean)
+
         }
     }
 

@@ -70,7 +70,7 @@
             <LinearLayout
                 android:id="@+id/lltDelete"
                 android:layout_width="60dp"
-                android:layout_height="@dimen/dp_50"
+                android:layout_height="@dimen/dp_48"
                 android:layout_gravity="center_vertical"
                 android:background="@drawable/shape_e85440_left10"
                 android:gravity="center"
