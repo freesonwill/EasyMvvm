@@ -331,7 +331,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                 }
 
                 override fun onC2CReceive(chat: ReceiveChatMsg) {
-                    refshMsg(chat)
+                    refshMsg(chat,true)
                     if (chat.from != CacheUtil.getUser()?.id) {//收到消息
                         var beanmy: MsgBeanData = MsgBeanData()
                         beanmy.anchorId = chat.anchorId
@@ -490,7 +490,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
         super.onDestroy()
     }
 
-    fun refshMsg(msg: ReceiveChatMsg) {
+    fun refshMsg(msg: ReceiveChatMsg,isAdd:Boolean=false) {
 
         try {
 
@@ -507,8 +507,11 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                             var count = listdata[i].noReadSum + 1
                             if (msg.noReadSum > count) {
                                 bean.noReadSum = msg.noReadSum
-                            } else {
+                            }else if(isAdd){
                                 bean.noReadSum = listdata[i].noReadSum + 1
+                            } else {
+                                bean.noReadSum = msg.noReadSum
+
                             }
 
                         }

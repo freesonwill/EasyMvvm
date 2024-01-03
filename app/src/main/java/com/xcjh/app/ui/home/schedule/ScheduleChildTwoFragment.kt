@@ -1337,6 +1337,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                     else -> {
                         if (it.listData.isEmpty()) {
                             // mDatabind.smartCommon.setEnableLoadMore(false)
+                            mDatabind.state.showEmpty()
                             mDatabind.smartCommon.finishLoadMoreWithNoMoreData()
                         } else {
                             // mDatabind.smartCommon.setEnableLoadMore(true)
