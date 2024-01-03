@@ -36,12 +36,14 @@ data class PayBeanReq(
     var productId: String? = null,
     var purchaseToken: String? = null,
 )
+
 //赛程
 @Keep
 data class CurrentIndex(
     var currtOne: Int = 0,
     var currtTwo: Int = 0
 )
+
 //充值订单
 @Keep
 data class PayReq(
@@ -90,11 +92,13 @@ data class HotMatchReq(
     var status: String = ""
 
 )
+
 @Keep
 data class PostClreaMsgBean(
     var anchorId: String
 
 )
+
 data class PostSchMatchListBean(
     val competitionId: String,//赛事ID
     val current: Int,
@@ -124,11 +128,12 @@ data class PostGetMsgBean(
 
 data class PostLoaginBean(
     val account: String,
-    val code: String?=null,
+    val code: String? = null,
     val passwd: String? = null,
     val registerAddr: String? = null,
     val type: Int,
-    val source:Int=2
+    val source: Int = 2,
+    val areaCode: String
 )
 
 /**
@@ -163,19 +168,22 @@ data class ListReq(
     var size: Int = 20,//每页显示多少条
     var status: String? = null,//活动状态:0：下架； 1：上架
 )
+
 data class HistoryMsgReq(
     val chatType: String,//群聊还是私聊 1-群聊，2-私聊
-    val groupId: String?=null,	//群聊Id
+    val groupId: String? = null,    //群聊Id
     val offset: String,//offset最后一条数据的id
-    val userId: String?=null,//from用户的ID（APP为当前用户，live端为查看的用户ID）
-    val searchId: String?=null,//to用户的ID（APP为当前用户，live端为查看的用户ID）
-    val searchType: String="3",//查询类型（判断是用户还是直播端，普通用户查看不了被删除的消息）， live-2, APP-3
-    val size: Int=50,
-    val type: String="0"//消息类型，0-历史消息，1-离线消息
+    val userId: String? = null,//from用户的ID（APP为当前用户，live端为查看的用户ID）
+    val searchId: String? = null,//to用户的ID（APP为当前用户，live端为查看的用户ID）
+    val searchType: String = "3",//查询类型（判断是用户还是直播端，普通用户查看不了被删除的消息）， live-2, APP-3
+    val size: Int = 50,
+    val type: String = "0"//消息类型，0-历史消息，1-离线消息
 )
+
 data class DelMsgBean(
     val anchorId: String
 )
+
 /**
  * 修改头像或者名称
  */
@@ -184,6 +192,7 @@ data class InfoReq(
     var name: String? = null,//昵称
     var head: String? = null,//头像
 )
+
 /**
  * 提交反馈
  */
@@ -200,8 +209,8 @@ data class FeedbackReq(
  */
 @Keep
 data class LiveInfoReq(
-    var id: Long=1
-): Serializable
+    var id: Long = 1
+) : Serializable
 
 
 

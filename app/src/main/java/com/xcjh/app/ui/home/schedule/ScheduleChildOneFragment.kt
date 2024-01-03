@@ -72,7 +72,6 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
 
     fun checkData(){
         if (!isFirst && !hasData) {
-
             mViewModel.getHotMatchData(matchtypeOld!!, status)
 
         }
