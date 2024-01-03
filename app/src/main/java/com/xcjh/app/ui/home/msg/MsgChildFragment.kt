@@ -451,14 +451,18 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                                 }
                             }
                         } else {
-                            if (data.noReadSum > listdata[index].noReadSum||data.dataType==1) {
-                                if (data.avatar!=null&&data.avatar!!.isNotEmpty()&&data.nick!=null&&data.nick!!.isNotEmpty()){
-                                    updataMsg(data)
+                            if (data.noReadSum > listdata[index].noReadSum) {
+                                updataMsg(data)
+                            } else {
+                                if (data.dataType == 1&&data.avatar != null && data.avatar!!.isNotEmpty() && data.nick != null && data.nick!!.isNotEmpty()) {
+                                    if (data.avatar != listdata[index].avatar || data.nick != listdata[index].nick) {
+                                        updataMsg(data)
+                                    }
                                 }
-
                             }
                         }
                     }
+
                 }
 
 
@@ -495,7 +499,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                 if (msg.anchorId == listdata[i].anchorId) {
                     hasMsg = true
                     var bean = MsgListNewData()
-                    if (CacheUtil.getUser()?.id!= msg.from) {//主播发送的消息
+                    if (CacheUtil.getUser()?.id != msg.from) {//主播发送的消息
                         bean.avatar = msg.fromAvatar ?: ""
                         if (chatId == msg.anchorId) {
                             bean.noReadSum = 0
@@ -521,7 +525,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                     bean.sent = msg.sent
                     bean.id = listdata[i].id
 
-                    if (CacheUtil.getUser()?.id!= msg.from) {//主播发送的消息
+                    if (CacheUtil.getUser()?.id != msg.from) {//主播发送的消息
                         bean.nick = if (msg.fromNickName == null) "" else msg.fromNickName!!
                     } else {
                         bean.nick = if (msg.toNickName == null) "" else msg.toNickName!!
@@ -535,7 +539,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
             }
             if (!hasMsg) {
                 var bean = MsgListNewData()
-                if (CacheUtil.getUser()?.id!= msg.from) {//主播发送的消息
+                if (CacheUtil.getUser()?.id != msg.from) {//主播发送的消息
                     bean.avatar = msg.fromAvatar ?: ""
                     if (chatId == msg.anchorId) {
                         bean.noReadSum = 0
@@ -559,7 +563,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                 bean.anchorId = msg.anchorId ?: ""
                 bean.id = msg.id
                 bean.sent = msg.sent
-                if (CacheUtil.getUser()?.id!= msg.from) {//主播发送的消息
+                if (CacheUtil.getUser()?.id != msg.from) {//主播发送的消息
                     bean.nick = msg.fromNickName ?: ""
                 } else {
                     bean.nick = msg.toNickName ?: ""
