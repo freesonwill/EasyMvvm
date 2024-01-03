@@ -99,12 +99,12 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.4.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-//    //选择图片，查看图片
-//    implementation 'io.github.lucksiege:pictureselector:v3.11.1'
-//    // 图片裁剪 (按需引入)
-//    implementation 'io.github.lucksiege:ucrop:v3.11.1'
-//    // 图片压缩 (按需引入)
-//    implementation 'io.github.lucksiege:compress:v3.11.1'
+    //选择图片，查看图片
+    implementation 'io.github.lucksiege:pictureselector:v3.11.1'
+    // 图片裁剪 (按需引入)
+    implementation 'io.github.lucksiege:ucrop:v3.11.1'
+    // 图片压缩 (按需引入)
+    implementation 'io.github.lucksiege:compress:v3.11.1'
     // 跑马灯控件
     implementation 'com.sunfusheng:MarqueeView:1.4.0'
     implementation 'com.github.liangjingkanji:Engine:0.0.74' // 快速开发基础库
@@ -120,9 +120,6 @@ dependencies {
     implementation 'androidx.paging:paging-common-ktx:3.1.1'
 
     implementation 'androidx.room:room-ktx:2.5.1'
-    implementation project(path: ':selector')
-    implementation project(path: ':compress')
-    implementation project(path: ':ucrop')
     kapt "androidx.room:room-compiler:2.5.1"
     //图文混排
     implementation 'com.github.liangjingkanji:spannable:1.2.7'
