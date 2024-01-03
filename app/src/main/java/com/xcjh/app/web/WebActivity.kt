@@ -191,7 +191,7 @@ class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
                         "<img src=\"file:///android_asset/football.png\"  alt=\"Example\" width=\"20px\" height=\"20px\"  >" +
                         " <h4 style=\"font-size: 12px; color: #575762; font-weight: normal; margin-left: 4px;\">体育直播</h4>" +
                         "</div>"+
-                        "<h4 style=\" color: #94999F; font-size: 11px; margin-left: auto; font-weight: normal;\">${dateTimeString}发布</h5></div>"
+                        "<h4 style=\" color: #94999F; font-size: 11px; margin-left: auto; font-weight: normal;\">${dateTimeString} 发布</h5></div>"
             }
             title += it.content
             title="<body style=\"background-color: white; margin: 0; padding: 24px;\">${title}</body>"
@@ -217,7 +217,7 @@ class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
                         "<img src=\"file:///android_asset/football.png\"  alt=\"Example\" width=\"20px\" height=\"2px\"  >" +
                         " <h4 style=\"font-size: 12px; color: #575762; font-weight: normal; margin-left: 4px;\">体育直播</h4>" +
                         "</div>"+
-                        "<h4 style=\" color: #94999F; font-size: 11px; margin-left: auto; font-weight: normal;\">${dateTimeString}发布</h5></div>"
+                        "<h4 style=\" color: #94999F; font-size: 11px; margin-left: auto; font-weight: normal;\">${dateTimeString} 发布</h5></div>"
             }
             title += it.content
             title="<body style=\"background-color: white; margin: 0; padding: 24px;\">${title}</body>"
