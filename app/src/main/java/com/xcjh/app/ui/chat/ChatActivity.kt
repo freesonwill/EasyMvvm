@@ -51,6 +51,7 @@ import com.xcjh.app.net.CountingRequestBody
 import com.xcjh.app.net.ProgressListener
 import com.xcjh.app.ui.room.MsgBeanData
 import com.xcjh.app.utils.CacheUtil
+import com.xcjh.app.utils.ChatTimeUtile
 import com.xcjh.app.utils.GlideEngine
 import com.xcjh.app.utils.loadImageWithGlide
 import com.xcjh.app.utils.nice.Utils
@@ -207,8 +208,10 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                         var ad = _data as MsgBeanData
 
                         binding.tvcontent.text = ad.content
-                        binding.tvtime.text =
-                            TimeUtil.timeStamp2Date(ad.createTime!!, null)!!.substring(0, 16)
+                        binding.tvtime.text = ChatTimeUtile.formatTimestamp(
+                            context,
+                            ad.createTime!!.toLong()
+                        )!!
                         binding.tvtime.visibility = View.GONE
                         Glide.with(this@ChatActivity).load(userhead)
                             .placeholder(R.drawable.default_anchor_icon).into(binding.ivhead)
@@ -297,9 +300,10 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                             )
 
                         }
-                        binding.tvtime.text =
-                            TimeUtil.timeStamp2Date(matchBeanNew.createTime!!, null)!!
-                                .substring(0, 16)
+                        binding.tvtime.text = ChatTimeUtile.formatTimestamp(
+                            context,
+                            matchBeanNew.createTime!!.toLong()
+                        )!!
                         binding.tvtime.visibility = View.GONE
                         binding.tvcontent.text =
                             matchBeanNew.content
@@ -407,9 +411,10 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                             )
 
                         }
-                        binding.tvtime.text =
-                            TimeUtil.timeStamp2Date(matchBeanNew.createTime!!, null)!!
-                                .substring(0, 16)
+                        binding.tvtime.text = ChatTimeUtile.formatTimestamp(
+                            context,
+                            matchBeanNew.createTime!!.toLong()
+                        )!!
                         binding.tvtime.visibility = View.GONE
 
 
@@ -465,9 +470,10 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                     R.layout.item_chat_pic_left -> {//右边图片
                         var binding = getBinding<ItemChatPicLeftBinding>()
                         var matchBeanNew = _data as MsgBeanData
-                        binding.tvtime.text =
-                            TimeUtil.timeStamp2Date(matchBeanNew.createTime!!, null)!!
-                                .substring(0, 16)
+                        binding.tvtime.text = ChatTimeUtile.formatTimestamp(
+                            context,
+                            matchBeanNew.createTime!!.toLong()
+                        )!!
                         binding.tvtime.visibility = View.GONE
                         binding.ivpic.loadImageWithGlide(context, matchBeanNew.content)
 
