@@ -1135,6 +1135,8 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
                     if (mview != null) {
                         mviewPrent!!.performClick()
+                        mview=null
+                        mviewPrent=null
                     }
 
                 } else {
