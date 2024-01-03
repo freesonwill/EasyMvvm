@@ -80,7 +80,8 @@
                 android:textSize="@dimen/sp_12"
                 android:textStyle="bold"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="@id/ivhead" />
+                app:layout_constraintBottom_toBottomOf="@id/tvname"
+                app:layout_constraintTop_toTopOf="@id/tvname" />
             <TextView
                 android:id="@+id/tvnums1"
                 android:layout_width="@dimen/dp_20"

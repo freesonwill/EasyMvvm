@@ -49,7 +49,7 @@ import java.util.Locale
 
 class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
 
-    private val mAdapter by lazy { SchtitleAdapter() }
+
     var listdata: MutableList<MatchBean> = ArrayList<MatchBean>()
     var page = 1
     var pageSize = 10
@@ -871,7 +871,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                 }
             }
         }.models = listdata
-        mAdapter.isEmptyViewEnable = true
+        //mAdapter.isEmptyViewEnable = true
         mViewModel.getMyNoticeList(true)
         mDatabind.smartCommon.setOnRefreshListener { mViewModel.getMyNoticeList(true) }
             .setOnLoadMoreListener { mViewModel.getMyNoticeList(false) }
@@ -1051,7 +1051,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                 if (it.isRefresh) {
                     mDatabind.smartCommon.finishRefresh()
                     //如果是第一页，则显示错误界面，并提示错误信息
-                    mAdapter.submitList(null)
+                   // mAdapter.submitList(null)
                     //  addItemBinder.setEmptyView(empty)
                 } else {
                     mDatabind.smartCommon.finishLoadMore(false)
@@ -1060,14 +1060,17 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
         }
         mViewModel.unnoticeData.observe(this) {
             mview!!.setBackgroundResource(R.drawable.ic_focus_n)
-            //mAdapter.getItem(index)!!.focus = false
+            (mDatabind.rec.models!![index] as MatchBean).focus=false
+
             appViewModel.updateCollection.postValue(true)
-            mDatabind.rec.mutable.removeAt(index)
-            mDatabind.rec.bindingAdapter.notifyItemRemoved(index) // 通知更新
+          //  mDatabind.rec.mutable.removeAt(index)
+           // mDatabind.rec.bindingAdapter.notifyItemRemoved(index) // 通知更新
 
         }
         mViewModel.noticeData.observe(this) {
-
+            mview!!.setBackgroundResource(R.drawable.ic_focus_s)
+            (mDatabind.rec.models!![index] as MatchBean).focus= true
+            appViewModel.updateCollection.postValue(false)
         }
     }
 
