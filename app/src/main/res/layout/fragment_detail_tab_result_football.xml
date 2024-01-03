@@ -15,13 +15,12 @@
                 android:orientation="vertical">
                 <com.xcjh.app.view.balldetail.result.FootballDataView
                     android:id="@+id/viewFootballStatus"
-                    android:visibility="visible"
                     android:layout_margin="@dimen/dp_12"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
                 <LinearLayout
-                    app:isSticky="false"
+                    app:isSticky="true"
                     android:id="@+id/lltTab"
                     android:gravity="center"
                     android:paddingTop="@dimen/dp_5"
@@ -31,47 +30,21 @@
                     <net.lucode.hackware.magicindicator.MagicIndicator
                         android:id="@+id/magic_indicator"
                         android:layout_width="200dp"
-                        android:layout_height="42dp"
-                      />
+                        android:layout_height="42dp" />
                 </LinearLayout>
 
             </com.xcjh.app.view.hover.StickyLinearLayout>
+
             <com.xcjh.app.view.ViewPager2Container
                 android:id="@+id/vpContainer"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-                <androidx.core.widget.NestedScrollView
-                    android:id="@+id/lltBasketball"
-                    android:visibility="gone"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_margin="@dimen/dp_12"
-                        android:orientation="vertical">
-
-                        <com.xcjh.app.view.balldetail.result.BasketballTableView
-                            android:id="@+id/view_basketball_table"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
-
-                        <com.xcjh.app.view.balldetail.result.BasketballDataView
-                            android:id="@+id/view_basketball_data"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/dp_20" />
-                    </LinearLayout>
-                </androidx.core.widget.NestedScrollView>
                 <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/viewPager"
-                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:fadeScrollbars="false" />
-
             </com.xcjh.app.view.ViewPager2Container>
-
         </LinearLayout>
     </com.xcjh.app.view.hover.ZbScrollView>
 </layout>

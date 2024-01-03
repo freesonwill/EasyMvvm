@@ -2,6 +2,7 @@ package com.xcjh.app.ui.details.fragment
 
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
+import android.webkit.WebView
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.xcjh.app.R
@@ -10,7 +11,9 @@ import com.xcjh.app.base.BaseVpFragment
 import com.xcjh.app.databinding.FragmentDetailTabAnchorBinding
 import com.xcjh.app.ui.chat.ChatActivity
 import com.xcjh.app.ui.details.DetailVm
+import com.xcjh.app.utils.clearWebView
 import com.xcjh.app.utils.judgeLogin
+import com.xcjh.app.utils.setWeb
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.base.BaseViewModel
 import com.xcjh.base_lib.utils.loadImage
@@ -29,9 +32,10 @@ class DetailAnchorFragment(
     private val vm by lazy {
         ViewModelProvider(requireActivity())[DetailVm::class.java]
     }
-
+    private var mNoticeWeb: WebView? = null
     override fun initView(savedInstanceState: Bundle?) {
-
+        mNoticeWeb = mDatabind.agentWeb
+        setWeb(mNoticeWeb!!)
     }
 
     override fun lazyLoadData() {
@@ -44,13 +48,15 @@ class DetailAnchorFragment(
                 this.anchorId = it.id
                 mDatabind.tvTabAnchorNick.text = it.nickName  //主播昵称
                 mDatabind.tvDetailTabAnchorFans.text = it.fansCount //主播粉丝数量
-                mDatabind.tvTabAnchorNotice.movementMethod = LinkMovementMethod.getInstance()
-              /*  it.notice?.toHtml {
+             /*   mDatabind.tvTabAnchorNotice.movementMethod = LinkMovementMethod.getInstance()
+              *//*  it.notice?.toHtml {
                     Handler(Looper.getMainLooper()).post {
                         mDatabind.tvTabAnchorNotice.text = it
                     }
-                }*/
-                mDatabind.tvTabAnchorNotice.text = it.notice?.toHtml() //主播公告
+                }*//*
+                mDatabind.tvTabAnchorNotice.text = it.notice?.toHtml() //主播公告*/
+                val bb = "<html><head><style>body { font-size:14px; color: #94999f; margin: 0; }</style></head><body>${(it.notice)}</body></html>"
+                mNoticeWeb?.loadDataWithBaseURL(null, bb, "text/html", "UTF-8", null)
                 loadImage(requireContext(),
                     it.head,
                     mDatabind.ivTabAnchorAvatar,
@@ -81,6 +87,11 @@ class DetailAnchorFragment(
             this.anchorId = anchorId
         }
         //  lazyLoadData()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        clearWebView(mNoticeWeb)
     }
 
 }

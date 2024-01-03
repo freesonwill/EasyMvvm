@@ -10,6 +10,7 @@ import com.google.gson.Gson
 import com.xcjh.app.R
 import com.xcjh.app.appViewModel
 import com.xcjh.app.bean.BeingLiveBean
+import com.xcjh.app.net.ApiComService.Companion.WEB_SOCKET_URL
 import com.xcjh.app.utils.CacheUtil
 import com.xcjh.app.utils.onWsUserLogin
 import com.xcjh.app.websocket.bean.FeedSystemNoticeBean
@@ -427,9 +428,9 @@ class MyWsManager private constructor(private val mContext: Context) {
      */
     @OptIn(DelicateCoroutinesApi::class)
     private fun initSocketClient() {
-        client = object : WebSocketClient(URI.create(WebSocketAction.WEB_SOCKET_URL)) {
+        client = object : WebSocketClient(URI.create(WEB_SOCKET_URL)) {
             init {
-                if (URI.create(WebSocketAction.WEB_SOCKET_URL).toString().contains("wss://")) {
+                if (URI.create(WEB_SOCKET_URL).toString().contains("wss://")) {
                     trustAllHots(this)
                 }
             }

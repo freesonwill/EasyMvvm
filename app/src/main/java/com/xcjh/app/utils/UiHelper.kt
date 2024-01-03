@@ -11,7 +11,6 @@ import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebResourceRequest
-import android.webkit.WebSettings
 import android.webkit.WebView
 import android.widget.RelativeLayout
 import android.widget.TextView
@@ -48,7 +47,8 @@ import com.xcjh.app.ui.details.fragment.DetailChat2Fragment
 import com.xcjh.app.ui.details.fragment.DetailIndexFragment
 import com.xcjh.app.ui.details.fragment.DetailLineUpFragment
 import com.xcjh.app.ui.details.fragment.DetailLiveFragment
-import com.xcjh.app.ui.details.fragment.DetailResultFragment
+import com.xcjh.app.ui.details.fragment.DetailResultBasketFragment
+import com.xcjh.app.ui.details.fragment.DetailResultFootballFragment
 import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.utils.SpanUtil
 import com.xcjh.base_lib.utils.setTextBold
@@ -268,7 +268,11 @@ fun setNewViewPager(
             //1 -> mFragList.add(DetailChatFragment(liveId, anchorId))
             1 -> mFragList.add(DetailChat2Fragment(liveId, anchorId))
             2 -> mFragList.add(DetailAnchorFragment(anchorId ?: ""))
-            3 -> mFragList.add(DetailResultFragment(detailBean))//赛况
+            3 -> if ( detailBean.matchType=="1"){
+                mFragList.add(DetailResultFootballFragment(detailBean))
+            } else{
+                mFragList.add(DetailResultBasketFragment(detailBean))
+            }
             4 -> mFragList.add(DetailLineUpFragment(detailBean))//阵容
             5 -> mFragList.add(DetailIndexFragment(detailBean.matchId, detailBean.matchType))//指数
             6 -> mFragList.add(DetailLiveFragment(liveId, detailBean.matchType))
@@ -507,9 +511,10 @@ fun agentWeb(
                 return true
             }
 
-            override fun onPageFinished(view: WebView?, url: String?) {
-                super.onPageFinished(view, url)
+            override fun onPageFinished(webView: WebView, url: String?) {
+                super.onPageFinished(webView, url)
                 Log.e("=====", "onPageFinished: ====")
+                // 获取WebView内容的高度
                 finishLoad.invoke(true)
             }
         })

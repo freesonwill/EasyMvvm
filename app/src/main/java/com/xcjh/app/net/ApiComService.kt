@@ -14,14 +14,18 @@ interface ApiComService {
 
     companion object {
         //dev
-        const val SERVER_URL = "http://192.168.101.15:6003/apis/"//app通用 开发
+       /* const val SERVER_URL = "http://192.168.101.15:6003/apis/"//app通用 开发
         const val SHARE_IP = "http://192.168.101.180:1820/"//比赛分享链接
+        const val WEB_SOCKET_URL = "ws://192.168.101.15:6006/ws-sports-chat" ///new dev*/
         //test 预发布
-        /*        const val SERVER_URL = "https://app.cbd246.com/apis/"//app通用 测试
-                const val SHARE_IP = "https://app.cbd246.com/"//比赛分享链接*/
+        const val SERVER_URL = "https://app.cbd246.com/apis/"//app通用 测试
+        const val SHARE_IP = "https://app.cbd246.com/"//比赛分享链接
+        const val WEB_SOCKET_URL = "wss://app.cbd246.com/ws-sports-chat" ///test
+
         //正式
-//         const val SERVER_URL = "https://holdem.news/apis/"//app通用 正式
-//         const val SHARE_IP = "https://www.2web3.net/user-user/"//比赛分享链接
+      /*  const val SERVER_URL = "https://holdem.news/apis/"//app通用 正式
+        const val SHARE_IP = "https://www.2web3.net/user-user/"//比赛分享链接
+        const val WEB_SOCKET_URL = "ws://192.168.101.15:8888" ///正式*/
 
         const val SERVER_URL_EMAIL = "https://www.2web3.net/user-user/"//邮箱验证
     }
@@ -118,11 +122,13 @@ interface ApiComService {
      */
     @POST("app/common/login")
     suspend fun getLogin(@Body req: PostLoaginBean): ApiResponse<String>
+
     /**
      * 获取国家和地区
      */
     @POST("app/country/list")
     suspend fun getCountrys(): ApiResponse<ArrayList<CountryListBean>>
+
     /**
      * 极光推送绑定用户
      */
@@ -141,7 +147,7 @@ interface ApiComService {
     @POST("app/follow/match/follow/{matchId}/{matchType}")
     suspend fun getNoticeRaise(
         @Path("matchId") matchId: String,
-        @Path("matchType") matchType: String
+        @Path("matchType") matchType: String,
     ): ApiResponse<*>
 
     /**
@@ -149,7 +155,7 @@ interface ApiComService {
      */
     @POST("app/follow/anchor/follow/{anchorId}")
     suspend fun getNoticeUser(
-        @Path("anchorId") anchorId: String
+        @Path("anchorId") anchorId: String,
     ): ApiResponse<*>
 
     /**
@@ -158,7 +164,7 @@ interface ApiComService {
     @POST("app/follow/match/unfollow/{matchId}/{matchType}")
     suspend fun getUnNoticeRaise(
         @Path("matchId") matchId: String,
-        @Path("matchType") matchType: String
+        @Path("matchType") matchType: String,
     ): ApiResponse<*>
 
     /**
@@ -239,12 +245,14 @@ interface ApiComService {
      */
     @GET("app/user/getUserInfo")
     suspend fun getUserBaseInfo(): ApiResponse<UserInfo>
+
     /**
      * 获取铸币基本信息
      * /app/live/detail/live/user/info/{anchorId}
      */
     @GET("app/live/detail/live/user/info/{anchorId}")
     suspend fun getAutherInfo(@Path("anchorId") anchorId: String): ApiResponse<AutherInfoBean>
+
     /**
      * 修改个人信息
      * /apis/app/user/updateInfo
@@ -323,7 +331,7 @@ interface ApiComService {
     @POST("app/schedule/match/{matchId}/{matchType}")
     suspend fun getMatchDetail(
         @Path("matchId") matchId: String,
-        @Path("matchType") matchType: String?
+        @Path("matchType") matchType: String?,
     ): ApiResponse<MatchDetailBean>
 
     /**

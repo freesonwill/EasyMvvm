@@ -6,6 +6,7 @@ import android.os.*
 import android.util.Log
 import com.google.gson.Gson
 import com.xcjh.app.appViewModel
+import com.xcjh.app.net.ApiComService.Companion.WEB_SOCKET_URL
 import com.xcjh.app.utils.CacheUtil
 import com.xcjh.app.utils.CacheUtil.isLogin
 import com.xcjh.app.utils.onWsUserLogin
@@ -81,9 +82,9 @@ class MyWsClientService : Service() {
      */
     @OptIn(DelicateCoroutinesApi::class)
     private fun initSocketClient() {
-        client = object : WebSocketClient(URI.create(WebSocketAction.WEB_SOCKET_URL)) {
+        client = object : WebSocketClient(URI.create(WEB_SOCKET_URL)) {
             init {
-                if (URI.create(WebSocketAction.WEB_SOCKET_URL).toString().contains("wss://")) {
+                if (URI.create(WEB_SOCKET_URL).toString().contains("wss://")) {
                     trustAllHots(this)
                 }
             }

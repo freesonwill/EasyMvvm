@@ -3,10 +3,12 @@ package com.xcjh.app.utils
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapShader
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
 import android.graphics.Shader
@@ -726,11 +728,40 @@ fun setWeb(mWebView: WebView) {
             //Log.e("TAG", "--------onPageFinished------ ")
         }
     }
+    mWebView.webViewClient  = object : WebViewClient() {
+        override fun shouldOverrideUrlLoading(
+            view: WebView?, request: WebResourceRequest?,
+        ): Boolean {
+            mWebView.context?.startActivity(
+                Intent(Intent.ACTION_VIEW, request?.url)
+            )
+            return true
+        }
+        override fun onPageFinished(webView: WebView, url: String?) {
+            super.onPageFinished(webView, url)
+            Log.e("=====", "onPageFinished: ====")
+        }
+    }
+    mWebView.settings.apply {
+        javaScriptEnabled = true
+        allowFileAccess = true
+        allowFileAccessFromFileURLs = true
+        defaultTextEncodingName = "UTF-8"
+    }
+    mWebView.apply {
+        scrollBarSize = 0// 去掉滚动条
+        overScrollMode = View.OVER_SCROLL_NEVER //  取消WebView中滚动或拖动到顶部、底部时的阴影
+        setBackgroundColor(Color.argb(0, 0, 0, 0))
+        setOnTouchListener { _, event ->
+            if (event.pointerCount > 1) {
+                // 多指触摸时，禁止缩放手势
+                return@setOnTouchListener true
+            }
+            false
+        }
+    }
     mWebView.isVerticalScrollBarEnabled = false
     mWebView.isHorizontalScrollBarEnabled = false
-    val settings = mWebView.settings
-    settings.javaScriptEnabled = true
-    settings.defaultTextEncodingName = "UTF-8"
 }
 
 fun clearWebView(webView: WebView?) {

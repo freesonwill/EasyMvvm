@@ -70,7 +70,7 @@
     <string name="clear_cache_waiting">正在清理…</string>
     <string name="clear_cache_success">清理完成</string>
     <string name="price_s">$%s</string>
-    <string name="say_something">说点什么吧…</string>
+    <string name="say_something">说点什么吧</string>
     <string name="txt_ser_his">搜索聊天记录</string>
     <string name="txt_feedtitle">系统通知</string>
     <string name="txt_feedtype">系统通知</string>
@@ -199,7 +199,7 @@
     <string name="follow_txt_fans_num">粉丝数：%s</string>
     <string name="live_txt_0ff_air">暂未开播</string>
     <string name="viewing_txt_title">观看历史</string>
-    <string name="substitute">首发身价</string>
+    <string name="substitute">球队身价</string>
     <string name="ti">替补阵容</string>
     <string name="first_z">首发阵容</string>
     <string name="txt_feedtype1">更新问题</string>

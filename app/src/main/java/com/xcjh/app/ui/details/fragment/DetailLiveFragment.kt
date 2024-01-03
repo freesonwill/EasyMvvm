@@ -74,7 +74,10 @@ class DetailLiveFragment(var matchId: String, var matchType: String) :
                 }
             }
         // 下拉刷新
-        mDatabind.page.setEnableOverScrollBounce(false)
+        //mDatabind.page.setEnableOverScrollBounce(false)
+        mDatabind.page.setEnableOverScrollDrag(true)
+        mDatabind.page.setEnableRefresh(false)
+        mDatabind.page.setEnableLoadMore(false)
         mDatabind.page.onRefresh {
             mViewModel.getNowLive(true, matchType, matchId)
         }

@@ -1,17 +1,18 @@
 package com.xcjh.app.ui.details.fragment
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
-import android.text.Layout
-import android.text.method.LinkMovementMethod
-import android.text.style.AlignmentSpan
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import android.webkit.WebResourceRequest
+import android.webkit.WebView
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
-import androidx.annotation.NonNull
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.drake.brv.layoutmanager.HoverLinearLayoutManager
@@ -20,6 +21,7 @@ import com.drake.brv.utils.models
 import com.drake.softinput.hideSoftInput
 import com.google.gson.Gson
 import com.just.agentweb.AgentWeb
+import com.just.agentweb.WebViewClient
 import com.xcjh.app.R
 import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseVpFragment
@@ -36,26 +38,9 @@ import com.xcjh.app.websocket.bean.SendChatMsgBean
 import com.xcjh.app.websocket.listener.LiveRoomListener
 import com.xcjh.base_lib.App
 import com.xcjh.base_lib.utils.dp2px
+import com.xcjh.base_lib.utils.toHtml
 import com.xcjh.base_lib.utils.view.visibleOrGone
-import io.noties.markwon.AbstractMarkwonPlugin
-import io.noties.markwon.LinkResolverDef
-import io.noties.markwon.Markwon
-import io.noties.markwon.MarkwonConfiguration
-import io.noties.markwon.MarkwonPlugin
-import io.noties.markwon.MarkwonVisitor
-import io.noties.markwon.RenderProps
-import io.noties.markwon.core.CorePlugin
-import io.noties.markwon.html.HtmlPlugin
-import io.noties.markwon.html.HtmlTag
-import io.noties.markwon.html.MarkwonHtmlParser
-import io.noties.markwon.html.MarkwonHtmlParserImpl
-import io.noties.markwon.html.MarkwonHtmlRenderer
-import io.noties.markwon.html.TagHandler
-import io.noties.markwon.html.tag.SimpleTagHandler
 import kotlinx.android.synthetic.main.fragment_detail_tab_chat.view.*
-import org.commonmark.parser.Parser
-import java.util.Collections
-import java.util.regex.Pattern
 
 
 /**
@@ -69,7 +54,8 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
     private val vm by lazy {
         ViewModelProvider(requireActivity())[DetailVm::class.java]
     }
-
+    private var mAgentWeb: AgentWeb? = null
+    private var mNoticeWeb: WebView? = null
     private var isEnterRoom = false//是否已经进入房间
     private val noticeBean by lazy {
         NoticeBean(
@@ -100,19 +86,24 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
         if (!userId.isNullOrEmpty()) {
             mDatabind.notice.root.visibility = View.VISIBLE
             mDatabind.notice.apply {
-             //   mAgentNoticeWeb = agentWeb(requireContext(), mDatabind.notice.agentWeb){}
-                expandableText.movementMethod = LinkMovementMethod.getInstance()
-                expandableText.text = noticeBean.notice
+                mNoticeWeb = agentWeb
+                setWeb(mNoticeWeb!!)
                 lltExpandCollapse.setOnClickListener {
-                    val aa = expandableText.height
+                    val aa = mDatabind.notice.agentWeb.height
                     noticeBean.isOpen = !noticeBean.isOpen
                     tvArrow.text =
                         if (noticeBean.isOpen) getString(R.string.pack_up) else getString(R.string.expand)
                     startImageRotate(expandCollapse, noticeBean.isOpen)
 
-                    expandableText.maxLines = if (noticeBean.isOpen) 20 else 2
+                    var htmlText = if (noticeBean.isOpen){
+                        "<div style='display: -webkit-box; -webkit-line-clamp: 10; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;'>${noticeBean.notice}</div>"
+                    }else{
+                        "<div style='display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;'>${noticeBean.notice}</div>"
+                    }
+                    val bb = "<html><head><style>body { font-size:14px; color: #94999f; margin: 0; }</style></head><body>${(htmlText)}</body></html>"
+                    agentWeb.loadDataWithBaseURL(null, bb, "text/html", "UTF-8", null)
                     mDatabind.rcvChat.postDelayed({
-                        val bb = expandableText.height
+                        val bb = mDatabind.notice.agentWeb.height
                         val params = mDatabind.rcvChat.layoutParams
                         params.height = mDatabind.rcvChat.height - bb + aa
                         mDatabind.rcvChat.layoutParams = params
@@ -124,9 +115,6 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
             mDatabind.notice.root.visibility = View.GONE
         }
     }
-
-    private var mAgentWeb: AgentWeb? = null
-    private var mAgentNoticeWeb: AgentWeb? = null
 
     @SuppressLint("ClickableViewAccessibility")
     private fun initRcv() {
@@ -153,7 +141,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
         },{
             mDatabind.rcvChat.postDelayed({
                 mDatabind.rcvChat.smoothScrollToPosition(0)
-            }, 100)
+            }, 200)
 
         }) {
             offset = it ?: ""
@@ -172,7 +160,6 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
            }catch (e:Exception){
              // e.message?.loge()
            }
-
         }, 1000)
         //点击列表隐藏软键盘
         mDatabind.edtChatMsg.setOnFocusChangeListener { v, hasFocus ->
@@ -192,63 +179,23 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
     private fun getHistoryData() {
         mViewModel.getHisMsgList(liveId, offset, true)
     }
-/*    private fun createCustomHtmlRenderer(configuration: HtmlConfigure): HtmlConfigure {
-        return object : HtmlConfigure(configuration) {
-            fun renderStyle(builder: StringBuilder, styles: MutableCollection<String>) {
-                super.renderStyle(builder, styles)
-                builder.append(" style=\"")
-                builder.append(styles.joinToString(";"))
-                builder.append("\"")
-            }
 
-            override fun configureHtml(plugin: HtmlPlugin) {
-                plugin
-            }
-        }
-    }*/
     override fun createObserver() {
         //公告
         vm.anchor.observe(this) {
             if (it != null) {
                 noticeBean.notice = it.notice ?: ""
-
-                val bb =
-                    "<html><head><style>body { font-size:14px; color: #ffffff; margin: 0; }</style></head><body>${(noticeBean.notice)}</body></html>"
-            /*    val markwon =  Markwon.builder(requireContext())
-                    .usePlugin(CorePlugin.create())
-                    .usePlugin(HtmlPlugin.create { plugin ->
-                        plugin.excludeDefaults(true)
-                        plugin.configureParser(MarkwonHtmlParserImpl.create())
-                    })
-                    .build()*/
-                val markwon =  Markwon.builder(requireContext())
-                    .usePlugin(HtmlPlugin.create())
-                    .build()
-                // 定义要匹配的正则表达式模式
-                val pattern = Pattern.compile("rgb\\([^)]+\\)")
-
-                // 创建 Matcher 对象并进行匹配操作
-                val matcher = pattern.matcher(noticeBean.notice)
-                var replace=noticeBean.notice
-              /*  while (matcher.find()) {
-                    val list = convertToList(matcher.group())
-                    val hexColor = convertToHexColor(list[0], list[1], list[2])
-                    matcher.group().loge("99999===")
-                    hexColor.loge("99999===")
-                    replace = replace.replace(matcher.group(), hexColor)
-                    noticeBean.notice.loge("99999===")
-                    replace.loge("99999===")
-                }*/
-                val toMarkdown = markwon.toMarkdown(replace)
-                markwon.setParsedMarkdown(mDatabind.notice.expandableText, toMarkdown)
-               // mDatabind.notice.expandableText.text=toMarkdown
-               // mDatabind.notice.expandableText.text = it.notice?.toHtml() //主播公告
-                val lineCount: Int = mDatabind.notice.expandableText.layout.lineCount
-                mDatabind.notice.lltExpandCollapse.visibleOrGone(lineCount > 2)
-                if (lineCount > 2) {
-                    // 内容超过了两行
-                    mDatabind.notice.expandableText.maxLines = 2
+                mDatabind.notice.expandableText.text = noticeBean.notice.toHtml()
+                val layout = mDatabind.notice.expandableText.layout
+                if (layout != null) {
+                    val lineCount: Int = layout.lineCount
+                    mDatabind.notice.lltExpandCollapse.visibleOrGone(lineCount > 2)
                 }
+
+                val htmlText =
+                    "<div style='display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;'>${noticeBean.notice}</div>"
+                val bb = "<html><head><style>body { font-size:14px; color: #94999f; margin: 0; }</style></head><body>${(htmlText)}</body></html>"
+                mDatabind.notice.agentWeb.loadDataWithBaseURL(null, bb, "text/html", "UTF-8", null)
                 mDatabind.rcvChat.postDelayed({
                     try {
                         val params = mDatabind.rcvChat.layoutParams
@@ -267,13 +214,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
                             index = 0
                         ) // 添加一条消息 
                         mDatabind.rcvChat.scrollToPosition(0)
-                     /*   mDatabind.rcvChat.postDelayed({
-
-                        }, 500)*/
-
-                    } catch (_: Exception) {
-                    }
-
+                    } catch (_: Exception) { }
                 }, 500)
             }
         }
@@ -324,6 +265,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
     }
 
     override fun onResume() {
+        super.onResume()
         mDatabind.page.postDelayed({
             try {
                 val params = mDatabind.rcvChat.layoutParams
@@ -332,17 +274,16 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
             } catch (_: Exception) {
             }
         }, 200)
-        mAgentNoticeWeb?.webLifeCycle?.onResume()
+        mNoticeWeb?.onResume()
         mAgentWeb?.webLifeCycle?.onResume()
-        super.onResume()
     }
 
     override fun onPause() {
+        super.onPause()
         hideSoftInput()
         mDatabind.edtChatMsg.clearFocus()
-        mAgentNoticeWeb?.webLifeCycle?.onPause()
+        mNoticeWeb?.onPause()
         mAgentWeb?.webLifeCycle?.onPause()
-        super.onPause()
     }
 
     override fun onStop() {
@@ -354,10 +295,10 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
     }
 
     override fun onDestroy() {
-        mAgentNoticeWeb?.webLifeCycle?.onDestroy()
         mAgentWeb?.webLifeCycle?.onDestroy()
-        super.onDestroy()
+        clearWebView(mNoticeWeb)
         exitRoom()
+        super.onDestroy()
     }
 
     private fun exitRoom() {
