@@ -38,7 +38,7 @@ class LoginActivity : BaseActivity<LoginVm, ActivityLoaginBinding>() {
     var type = 1//1是手机号登录，2是邮箱登录
     private var models = mutableListOf<LetterBeann>()
     private var listStr = mutableListOf<String>()
-    var code="+86"
+    var mcode="+86"
     override fun initView(savedInstanceState: Bundle?) {
         ImmersionBar.with(this)
             .statusBarDarkFont(true)
@@ -103,7 +103,7 @@ class LoginActivity : BaseActivity<LoginVm, ActivityLoaginBinding>() {
                                     null,
                                     mDatabind.edtcodePhone.text.toString(),
                                     null,
-                                    type
+                                    type,areaCode=mcode
                                 )
                             )
                         }
@@ -124,7 +124,7 @@ class LoginActivity : BaseActivity<LoginVm, ActivityLoaginBinding>() {
                                     null,
                                     mDatabind.edtcodePhone.text.toString(),
                                     null,
-                                    type
+                                    type,areaCode=""
                                 )
                             )
                         }
@@ -446,7 +446,7 @@ class LoginActivity : BaseActivity<LoginVm, ActivityLoaginBinding>() {
     override fun onResume() {
         super.onResume()
         if (Constants.PHONE_CODE.isNotEmpty()) {
-            code=Constants.PHONE_CODE
+            mcode=Constants.PHONE_CODE
             mDatabind.tvgo.text = Constants.PHONE_CODE
             Constants.PHONE_CODE=""
         }
