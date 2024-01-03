@@ -12,6 +12,7 @@ class SearchVm : BaseViewModel() {
     var matchList = UnPeekLiveData<ArrayList<BeingLiveBean>>()
     //进行中的比赛
     var liveList = UnPeekLiveData<ArrayList<BeingLiveBean>>()
+    var errTag= UnPeekLiveData<Boolean>()
 
     /**
      * 获取标签

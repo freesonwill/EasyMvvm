@@ -115,7 +115,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="12dp"
                 android:layout_marginRight="12dp"
-                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_12"
                 tools:listitem="@layout/item_main_live_list"
                 android:overScrollMode="never" />
         </com.drake.statelayout.StateLayout>

@@ -154,6 +154,7 @@
         <activity
             android:name=".ui.search.SearchActivity"
             android:exported="false"
+            android:windowSoftInputMode="stateVisible"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.login.LoginActivity"

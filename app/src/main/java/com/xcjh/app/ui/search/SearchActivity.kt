@@ -3,11 +3,13 @@ package com.xcjh.app.ui.search
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
+import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
@@ -43,10 +45,9 @@ class SearchActivity  : BaseActivity<SearchVm, ActivitySearchBinding>() {
         // 将搜索 EditText 的 imeOptions 设置为 actionSearch
 
 
-        showSoftKeyboard()
+
         mViewModel.getHotOngoingMatch()
         adapter()
-
         mDatabind.state.apply {
             onEmpty {
                 var icon=this.findViewById<AppCompatImageView>(R.id.ivEmptyIcon)
@@ -88,7 +89,7 @@ class SearchActivity  : BaseActivity<SearchVm, ActivitySearchBinding>() {
                 myToast(getString(R.string.contact_hint_input))
 
             }else{
-                hideKeyboard(this,v)
+                hideKeyboard(this, mDatabind.etSearchInput)
                 mViewModel.getNowLive(mDatabind.etSearchInput.text.toString())
                 searchType=1
 //                mDatabind.txtSearchClick.text=resources.getString(R.string.cancel)
@@ -125,6 +126,10 @@ class SearchActivity  : BaseActivity<SearchVm, ActivitySearchBinding>() {
 //
 //            }
         }
+        mDatabind.etSearchInput.postDelayed({
+            showSoftKeyboard()
+        }, 200)
+
     }
 
     fun adapter(){
@@ -220,11 +225,11 @@ class SearchActivity  : BaseActivity<SearchVm, ActivitySearchBinding>() {
 
                         if(layoutPosition%2==0){
                             val layoutParams = bindingItem.llLiveSpacing.layoutParams as ViewGroup.MarginLayoutParams
-                            layoutParams.setMargins(0, 0, context.dp2px(13), context.dp2px(20))
+                            layoutParams.setMargins(0, 0, context.dp2px(4), context.dp2px(8))
                             bindingItem.llLiveSpacing.layoutParams =layoutParams
                         }else{
                             val layoutParams = bindingItem.llLiveSpacing.layoutParams as ViewGroup.MarginLayoutParams
-                            layoutParams.setMargins(0, 0, 0, context.dp2px(20))
+                            layoutParams.setMargins(0, 0, context.dp2px(4), context.dp2px(8))
                             bindingItem.llLiveSpacing.layoutParams =layoutParams
                         }
                     }
@@ -246,6 +251,11 @@ class SearchActivity  : BaseActivity<SearchVm, ActivitySearchBinding>() {
     override fun createObserver() {
         super.createObserver()
         mViewModel.matchList.observe(this){
+
+
+//            mDatabind.etSearchInput.postDelayed({
+//                showSoftKeyboard()
+//            }, 200)
             if(it.size<=0){
                 mDatabind.llSearchShow.visibility= View.GONE
                 mDatabind.state.visibility=View.VISIBLE
@@ -286,9 +296,10 @@ class SearchActivity  : BaseActivity<SearchVm, ActivitySearchBinding>() {
         imm.showSoftInput( mDatabind.etSearchInput, InputMethodManager.SHOW_IMPLICIT) // 打开软键盘
     }
     // 隐藏软键盘的函数
-    fun hideKeyboard(context: Context, view: View) {
+    fun hideKeyboard(context: Context, view: AppCompatEditText) {
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view.windowToken, 0)
+        view.clearFocus()
     }
 
 }
