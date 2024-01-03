@@ -72,7 +72,9 @@ class LetterCountryActivity : BaseActivity<LoginVm, ActivityLettercountryBinding
                     var binding = getBinding<ItemCityBinding>()
                     var matchBeanNew = _data as CityModel.City
                     binding.name1.text = matchBeanNew.cnname
-                    Glide.with(context).load(matchBeanNew.label).into(binding.ivgq)
+                    Glide.with(context).load(matchBeanNew.label).override(100).
+                    thumbnail(0.1f)
+                        .into(binding.ivgq)
                     binding.code.text = matchBeanNew.code
                     binding.name1.setOnClickListener {
                         PHONE_CODE = matchBeanNew.code

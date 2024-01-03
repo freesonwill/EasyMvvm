@@ -1,19 +1,15 @@
 package com.xcjh.app.ui.home.schedule
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.ScaleAnimation
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.SimpleItemAnimator
 import com.airbnb.lottie.LottieAnimationView
 import com.bumptech.glide.Glide
 import com.drake.brv.listener.ItemDifferCallback
@@ -24,13 +20,10 @@ import com.drake.brv.utils.mutable
 import com.drake.brv.utils.setDifferModels
 import com.drake.brv.utils.setup
 import com.drake.statelayout.StateConfig
-import com.scwang.smart.refresh.header.ClassicsHeader
-import com.xcjh.app.MyApplication
 import com.xcjh.app.R
 import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseFragment
 import com.xcjh.app.bean.AnchorBean
-import com.xcjh.app.bean.BeingLiveBean
 import com.xcjh.app.bean.MatchBean
 import com.xcjh.app.bean.PostSchMatchListBean
 import com.xcjh.app.databinding.FrScheduletwoBinding
@@ -44,14 +37,10 @@ import com.xcjh.base_lib.utils.LogUtils
 import com.xcjh.base_lib.utils.TimeUtil
 import com.xcjh.base_lib.utils.distance
 import com.xcjh.base_lib.utils.grid
-import com.xcjh.base_lib.utils.horizontal
-import com.xcjh.base_lib.utils.setOnclickNoRepeat
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
-import java.time.LocalDate
 import java.util.Date
 import java.util.Locale
+
 
 class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>() {
     var strTimeZu: MutableList<String> = ArrayList<String>()
@@ -83,6 +72,8 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
     var strNo = "2"
     var iscollect = true
 
+    // 在你的Activity中声明一个成员变量来保存RecyclerView的状态
+    private var recyclerViewState: Parcelable? = null
     companion object {
         var mTitles: Array<out String>? = null
         private val MATCHTYPE = "matchtype"
@@ -1157,6 +1148,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                     }
                 }
             }
+
         } catch (e: Exception) {
 
         }
@@ -1209,16 +1201,15 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
     override fun onPause() {
         super.onPause()
         // isVisble = false
+      //  recyclerViewState = mDatabind.recBottom.layoutManager!!.onSaveInstanceState();
     }
 
     override fun onResume() {
         super.onResume()
-        LogUtils.d("第1及页面索引==" + mCurrentOneTabIndex + "第2及页面索引==" + mCurrentTwoTabIndex)
-//        if (isResh) {
-//            isResh = false
-//            mDatabind.smartCommon.autoRefresh()
-//            //getData(false)
-//        }
+        // 恢复RecyclerView的状态
+        if (recyclerViewState != null) {
+          //  mDatabind.recBottom.layoutManager?.onRestoreInstanceState(recyclerViewState);
+        }
     }
 
     override fun lazyLoadData() {

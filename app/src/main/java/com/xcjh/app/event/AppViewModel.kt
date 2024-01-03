@@ -33,6 +33,7 @@ class AppViewModel : BaseViewModel() {
     var appColor = EventLiveData<Int>()
     //需要轮询的时候通知
     var appPolling=EventLiveData<Boolean>()
+
     //比分推送通知
     var appPushMsg=EventLiveData< ArrayList<ReceiveChangeMsg>>()
     //主播开播推送

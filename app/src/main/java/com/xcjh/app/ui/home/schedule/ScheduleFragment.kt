@@ -65,8 +65,14 @@ class ScheduleFragment : BaseFragment<MainVm, FrCourseBinding>() {
         super.onDestroy()
     }
 
+    override fun onPause() {
+        super.onPause()
+
+
+    }
     override fun onResume() {
         super.onResume()
+
         //这里需要告诉子fragment 可见了//注意第一次启动不能调用
         (mFragments[index] as ScheduleChildOneFragment).checkData()
         if (Constants.isLoading) {
