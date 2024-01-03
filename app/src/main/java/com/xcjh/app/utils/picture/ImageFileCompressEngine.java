@@ -16,6 +16,11 @@ import top.zibin.luban.Luban;
 import top.zibin.luban.OnNewCompressListener;
 import top.zibin.luban.OnRenameListener;
 
+//import top.zibin.luban.CompressionPredicate;
+//import top.zibin.luban.Luban;
+//import top.zibin.luban.OnNewCompressListener;
+//import top.zibin.luban.OnRenameListener;
+
 public class ImageFileCompressEngine implements CompressFileEngine {
 
     @Override

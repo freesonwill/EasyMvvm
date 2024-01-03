@@ -54,6 +54,11 @@ dependencyResolutionManagement {
 rootProject.name = "Sl_live"
 include ':app'
 include ':base_lib'
+include ':camerax'
+include ':compress'
+include ':selector'
+include ':ucrop'
+
 
 /*include ':module_ad'
 include ':module_recharge'
