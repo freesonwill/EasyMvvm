@@ -269,7 +269,7 @@
         <meta-data
             android:name="com.huawei.messaging.default_notification_icon"
             android:resource="@drawable/app_logo" />
-        <!--push end-->
+        <!--push end*******************-->
 
 
     </application>
