@@ -26,6 +26,7 @@ import com.xcjh.app.utils.GlideEngine
 import com.xcjh.app.utils.picture.ImageFileCompressEngine
 import com.xcjh.app.utils.picture.ImageFileCropEngine
 import com.xcjh.app.vm.MainVm
+import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.utils.bindadapter.CustomBindAdapter.afterTextChanged
 import com.xcjh.base_lib.utils.dp2px
 import com.xcjh.base_lib.utils.myToast
@@ -187,8 +188,12 @@ class PersonalDataActivity : BaseActivity<PersonalDataVm, ActivityPersonalDataBi
 //            mainVm.getUserInfo()
         }
         mViewModel.updateData.observe(this){
+            myToast(getString(R.string.personal_txt_saved))
             mainVm.getUserInfo()
-            finish()
+            mDatabind.tvOption.postDelayed ({
+                finish()
+            }, 500)
+
         }
 
 

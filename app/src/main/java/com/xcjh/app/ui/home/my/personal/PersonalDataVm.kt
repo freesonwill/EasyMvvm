@@ -53,7 +53,7 @@ class PersonalDataVm : BaseViewModel() {
         request(
             { apiService.updateInfo(InfoReq(name = name, head = head)) },
             {
-                myToast(appContext.getString(R.string.personal_txt_saved))
+
                 updateData.value = head!!
             }, {
                 myToast(it.errorMsg)
