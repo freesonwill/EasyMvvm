@@ -1,9 +1,11 @@
 package com.xcjh.base_lib.utils
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Build
 import android.text.TextUtils
 import androidx.annotation.RequiresApi
+import com.xcjh.base_lib.R
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.time.LocalDate
@@ -182,7 +184,18 @@ object TimeUtil {
         val sdf = SimpleDateFormat(format)
         return sdf.format(Date(seconds))
     }
+    fun getDayOfWeek(seconds: Long,content:Context): String {
+        var dateString= timeStamp2Date(seconds,null)
+        val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val date = format.parse(dateString)
+        val calendar = Calendar.getInstance()
+        calendar.time = date
+        val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
 
+        val days =  content.resources.getStringArray(R.array.str_xqj)
+        val time=dateString!!.substring(0,10)
+        return time+"  "+days[dayOfWeek - 1]
+    }
     fun gettimenowYear(): String? {
         val date = Date()
         val time = date.toLocaleString()
