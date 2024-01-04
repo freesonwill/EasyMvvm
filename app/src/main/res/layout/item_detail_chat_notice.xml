@@ -72,7 +72,6 @@
                 android:layout_alignBottom="@id/agentWeb"
                 android:layout_alignTop="@id/agentWeb"
                 android:visibility="invisible"
-                android:maxLines="5"
                 tools:text="ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss"
                 android:ellipsize="end"
                 android:textColor="@color/c_94999f"

@@ -115,7 +115,7 @@ class MyApplication : App() , LifecycleObserver{
         // 必须在application.onCreate中配置，不要判断进程，sdk内部有判断
         MTCorePrivatesApi.configDebugMode(this, true)
         // 后台没升级tag: V3.5.4-newportal-20210823-gamma.57版本，前端必须调用此方法，否则通知点击跳转有问题
-        MTPushPrivatesApi.configOldPushVersion(this)
+        //MTPushPrivatesApi.configOldPushVersion(this)
         // 初始化推送
         MTPushPrivatesApi.init(this)
     }

@@ -392,7 +392,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/dp_4"
                             android:drawableStart="@drawable/ic_gray_fire_hot"
-                            android:drawablePadding="2.5dp"
+                            android:drawablePadding="4dp"
                             android:gravity="center_vertical"
                             android:textColor="@color/c_94999f"
                             android:textSize="@dimen/sp_10"
@@ -400,7 +400,7 @@
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="@id/tv_tab_anchor_nick"
                             app:layout_constraintTop_toBottomOf="@id/tv_tab_anchor_nick"
-                            tools:text="0" />
+                            tools:text="222" />
 
                         <TextView
                             android:id="@+id/tv_tab_anchor_chat"

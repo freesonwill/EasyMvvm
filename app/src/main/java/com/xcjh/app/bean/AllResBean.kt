@@ -570,25 +570,25 @@ data class LiveTextBean(
  */
 @Keep
 data class IncidentsBean(
-    val assist1Id: Int = 0,
+  /*  val assist1Id: Int? = 0,
     val assist1Name: String = "",//助攻球员名称
-    val assist2Id: Int = 0,
-    val assist2Name: String = "",
+    val assist2Id: Int? = 0,
+    val assist2Name: String = "",*/
     var awayScore: Int = 0,//
     var homeScore: Int = 0,//
-    val inPlayerId: Int = 0,//换上球员ID
-    val inPlayerName: String = "",//
-    val outPlayerId: Int = 0,//
-    val outPlayerName: String = "",//换下球员名称
-    val playerId: Int = 0,//事件相关球员id，可能不存在
+    val inPlayerId: String? = "",//换上球员ID
+    val inPlayerName: String? = "",//
+    val outPlayerId: String? = "",//
+    val outPlayerName: String? = "",//换下球员名称
+    val playerId: String? = "",//事件相关球员id，可能不存在
     val playerName: String? = null,//事件相关球员名称，可能不存在
     val position: Int = 0,//事件发生方，0-中立、1-主队、2-客队
-    val reasonType: Int = 0,
+    val reasonType: String? = "",
     val second: Int = 0,//时间(秒)
     val time: Int = 0,//时间(分钟)
     val type: Int = 0,
-    val varReason: Int = 0,//VAR原因（VAR事件存在）
-    val varResult: Int = 0//VAR结果（VAR事件存在）
+    val varReason: Int? = 0,//VAR原因（VAR事件存在）
+    val varResult: Int? = 0//VAR结果（VAR事件存在）
 ) : Serializable
 
 /**
