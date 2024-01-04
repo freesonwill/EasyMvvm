@@ -232,6 +232,9 @@
                   <category android:name="android.intent.category.BROWSABLE" />
               </intent-filter>-->
         </activity>
+        <meta-data
+            android:name="ENGAGELAB_PRIVATES_TRANSFER"
+            android:value="com.xcjh.app.ui.SplashActivity" />
         <!-- 用于演示自定义消息展示 -->
         <activity
             android:name="com.xcjh.app.component.CustomMessageActivity"

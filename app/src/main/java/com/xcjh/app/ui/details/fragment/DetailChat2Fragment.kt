@@ -22,6 +22,8 @@ import com.drake.softinput.hideSoftInput
 import com.google.gson.Gson
 import com.just.agentweb.AgentWeb
 import com.just.agentweb.WebViewClient
+import com.scwang.smart.refresh.footer.ClassicsFooter
+import com.scwang.smart.refresh.header.ClassicsHeader
 import com.xcjh.app.R
 import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseVpFragment
@@ -38,6 +40,7 @@ import com.xcjh.app.websocket.bean.SendChatMsgBean
 import com.xcjh.app.websocket.listener.LiveRoomListener
 import com.xcjh.base_lib.App
 import com.xcjh.base_lib.utils.dp2px
+import com.xcjh.base_lib.utils.loge
 import com.xcjh.base_lib.utils.toHtml
 import com.xcjh.base_lib.utils.view.visibleOrGone
 import kotlinx.android.synthetic.main.fragment_detail_tab_chat.view.*
@@ -89,7 +92,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
                 mNoticeWeb = agentWeb
                 setWeb(mNoticeWeb!!)
                 lltExpandCollapse.setOnClickListener {
-                    val aa = mDatabind.notice.agentWeb.height
+                    val aa = mNoticeWeb?.height?:0//原来的高度
                     noticeBean.isOpen = !noticeBean.isOpen
                     tvArrow.text =
                         if (noticeBean.isOpen) getString(R.string.pack_up) else getString(R.string.expand)
@@ -103,7 +106,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
                     val bb = "<html><head><style>body { font-size:14px; color: #94999f; margin: 0; }</style></head><body>${(htmlText)}</body></html>"
                     agentWeb.loadDataWithBaseURL(null, bb, "text/html", "UTF-8", null)
                     mDatabind.rcvChat.postDelayed({
-                        val bb = mDatabind.notice.agentWeb.height
+                        val bb = mNoticeWeb?.height?:0//现在的高度
                         val params = mDatabind.rcvChat.layoutParams
                         params.height = mDatabind.rcvChat.height - bb + aa
                         mDatabind.rcvChat.layoutParams = params
@@ -121,6 +124,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
         //  mDatabind.page.setEnableLoadMore(false)
         mDatabind.page.setEnableOverScrollBounce(false)
         mDatabind.page.preloadIndex = 3
+        ClassicsFooter.REFRESH_FOOTER_NOTHING=""
         mDatabind.page.emptyLayout = R.layout.layout_empty
         mDatabind.page.stateLayout?.onEmpty {
             val emptyImg = findViewById<ImageView>(R.id.ivEmptyIcon)
@@ -185,23 +189,24 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
         vm.anchor.observe(this) {
             if (it != null) {
                 noticeBean.notice = it.notice ?: ""
-                mDatabind.notice.expandableText.text = noticeBean.notice.toHtml()
+                mDatabind.notice.expandableText.text = noticeBean.notice.replace("<p>","<span>").replace("</p>","</span>").toHtml()
                 val layout = mDatabind.notice.expandableText.layout
                 if (layout != null) {
                     val lineCount: Int = layout.lineCount
+                    lineCount.toString().loge("888===")
                     mDatabind.notice.lltExpandCollapse.visibleOrGone(lineCount > 2)
+                    mDatabind.notice.expandableText.maxLines =  2
                 }
-
                 val htmlText =
                     "<div style='display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;'>${noticeBean.notice}</div>"
                 val bb = "<html><head><style>body { font-size:14px; color: #94999f; margin: 0; }</style></head><body>${(htmlText)}</body></html>"
-                mDatabind.notice.agentWeb.loadDataWithBaseURL(null, bb, "text/html", "UTF-8", null)
+                mNoticeWeb?.loadDataWithBaseURL(null, bb, "text/html", "UTF-8", null)
+
                 mDatabind.rcvChat.postDelayed({
                     try {
                         val params = mDatabind.rcvChat.layoutParams
                         params.height = mDatabind.page.height
                         mDatabind.rcvChat.layoutParams = params
-
                         mDatabind.rcvChat.addModels(
                             listOf(
                                 //BottomMsgBean(),

@@ -43,7 +43,7 @@ class FootballFragment(var type: Int = 0, private var match: MatchDetailBean) :
             adapter = if (type == 0) textAdapter else eventAdapter
             distance(0, 0, 0, 0)
         }
-       mDatabind.footballBottom.visibleOrGone(type==0)
+        mDatabind.footballBottom.visibleOrGone(type == 0)
     }
 
     override fun createObserver() {
@@ -61,17 +61,18 @@ class FootballFragment(var type: Int = 0, private var match: MatchDetailBean) :
         }
 
         //重要事件
-        vm.incidents.observe(this) {
+        vm.incidents.observe(requireActivity()) {
             if (type == 0) return@observe
             if (it != null && it.size > 0) {
                 var event = ArrayList<IncidentsBean>()
                 var homeS = 0//主场得分
                 var awayS = 0//客队得分
+                it.add(IncidentsBean(type = 0, time = 0))
                 val reversed = it.reversed()
                 for (item: IncidentsBean in reversed) {
                     //重要事件  红黄牌 进球 换人
                     when (item.type) {
-                        1, 3, 4, 9, 11, 12, 15 -> {
+                        0, 1, 3, 4, 9, 11, 12, 15 -> {
                             //中场数据获取
                             if (item.type == 1) {
                                 homeS = item.homeScore
@@ -89,13 +90,12 @@ class FootballFragment(var type: Int = 0, private var match: MatchDetailBean) :
                         }
                     }
                 }
-                val reversed1 = event.reversed() as ArrayList
-                reversed1.add(IncidentsBean(type = 0, time = 0))
-                eventAdapter.submitList(reversed1)
+                eventAdapter.submitList(event.reversed())
             } else {
                 eventAdapter.submitList(null)
                 eventAdapter.isEmptyViewEnable = true
-                eventAdapter.emptyView = setEmpty(requireContext(), isCenter = false, marginT = 32, marginB = 52)
+                eventAdapter.emptyView =
+                    setEmpty(requireContext(), isCenter = false, marginT = 32, marginB = 52)
             }
         }
     }
