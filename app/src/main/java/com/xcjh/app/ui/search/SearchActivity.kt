@@ -126,9 +126,9 @@ class SearchActivity  : BaseActivity<SearchVm, ActivitySearchBinding>() {
 //
 //            }
         }
-        mDatabind.etSearchInput.postDelayed({
-            showSoftKeyboard()
-        }, 200)
+//        mDatabind.etSearchInput.postDelayed({
+//            showSoftKeyboard()
+//        }, 200)
 
     }
 
@@ -253,9 +253,9 @@ class SearchActivity  : BaseActivity<SearchVm, ActivitySearchBinding>() {
         mViewModel.matchList.observe(this){
 
 
-//            mDatabind.etSearchInput.postDelayed({
-//                showSoftKeyboard()
-//            }, 200)
+            mDatabind.etSearchInput.postDelayed({
+                showSoftKeyboard()
+            }, 200)
             if(it.size<=0){
                 mDatabind.llSearchShow.visibility= View.GONE
                 mDatabind.state.visibility=View.VISIBLE

@@ -85,9 +85,11 @@ class ContactUsActivity : BaseActivity<ContactUsVm, ActivityContactUsBinding>() 
         //监听输入的文字
         mDatabind.editContactInput.afterTextChanged{
             if(it.isNotEmpty()){
-                mDatabind.txtContactNum.text="${it.length}/200"
+                mDatabind.txtContactNum.text="${it.length}"
+                mDatabind.txtContactNum.setTextColor(ContextCompat.getColor(this,R.color.c_37373d))
             }else{
-                mDatabind.txtContactNum.text="0/200"
+                mDatabind.txtContactNum.text="0"
+                mDatabind.txtContactNum.setTextColor(ContextCompat.getColor(this,R.color.c_8a91a0))
             }
             isSelect()
 

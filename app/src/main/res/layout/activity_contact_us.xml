@@ -80,15 +80,27 @@
                             android:textColorHint="@color/c_8a91a0"
                             android:background="@null"/>
 
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/txtContactNum"
+                        <androidx.appcompat.widget.LinearLayoutCompat
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="@dimen/sp_16"
-                            android:text="0/200"
+                            android:orientation="horizontal"
                             android:layout_alignParentRight="true"
-                            android:layout_alignParentBottom="true"
-                            android:textColor="@color/c_8a91a0"/>
+                            android:layout_alignParentBottom="true">
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/txtContactNum"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="@dimen/sp_16"
+                                android:text="0"
+                                android:textColor="@color/c_8a91a0"/>
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="@dimen/sp_16"
+                                android:text="/200"
+                                android:textColor="@color/c_8a91a0"/>
+                        </androidx.appcompat.widget.LinearLayoutCompat>
                     </RelativeLayout>
                     <androidx.appcompat.widget.LinearLayoutCompat
                         android:layout_width="wrap_content"
