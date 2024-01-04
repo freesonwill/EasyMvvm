@@ -39,7 +39,8 @@
             <LinearLayout
                 android:id="@+id/lltExpandCollapse"
                 android:gravity="center_vertical"
-                android:visibility="gone"
+                android:paddingStart="@dimen/dp_4"
+                android:paddingVertical="@dimen/dp_4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
                 <TextView

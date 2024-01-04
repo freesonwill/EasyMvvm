@@ -1,20 +1,16 @@
 package com.xcjh.app.ui.details.fragment
 
 import android.os.Bundle
-import android.view.View
 import androidx.lifecycle.ViewModelProvider
-import androidx.viewpager2.widget.ViewPager2
 import com.xcjh.app.R
 import com.xcjh.app.base.BaseVpFragment
 import com.xcjh.app.bean.MatchDetailBean
 import com.xcjh.app.databinding.FragmentDetailTabLiveupBinding
 import com.xcjh.app.ui.details.DetailVm
 import com.xcjh.app.ui.details.fragment.liveup.BasketballFragment
-import com.xcjh.app.ui.details.fragment.result.FootballFragment
 import com.xcjh.base_lib.utils.bindBgViewPager2
 import com.xcjh.base_lib.utils.initFragment
 import com.xcjh.base_lib.utils.view.visibleOrGone
-import com.xcjh.base_lib.utils.view.visibleOrInvisible
 
 /**
  * 阵容

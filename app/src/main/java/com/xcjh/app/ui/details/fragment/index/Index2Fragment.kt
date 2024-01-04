@@ -75,6 +75,9 @@ class Index2Fragment(val type:Int=1) : BaseFragment<DetailVm, FragmentDetailTabI
                             binding.tvJiZ.text = context.getString(R.string.close_win_p)
                             binding.tvJiP.text = context.getString(R.string.close_win_p)
                             binding.tvJiK.text = context.getString(R.string.close_win_p)
+                            binding.tvJiZ.setTextColor(requireContext().getColor(R.color.c_d7d7e7))
+                            binding.tvJiP.setTextColor(requireContext().getColor(R.color.c_d7d7e7))
+                            binding.tvJiK.setTextColor(requireContext().getColor(R.color.c_d7d7e7))
                         } else {
                             binding.tvJiZ.text = item.currentHomeWin
                             binding.tvJiP.text = item.currentDraw

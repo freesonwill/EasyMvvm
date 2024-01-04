@@ -1,10 +1,7 @@
 package com.xcjh.app.ui.details.fragment.result
 
 import android.os.Bundle
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
 import androidx.lifecycle.ViewModelProvider
-import com.xcjh.app.R
 import com.xcjh.app.adapter.ImportEventAdapter
 import com.xcjh.app.adapter.TextLiveAdapter
 import com.xcjh.app.base.BaseFragment
@@ -12,8 +9,7 @@ import com.xcjh.app.bean.IncidentsBean
 import com.xcjh.app.bean.MatchDetailBean
 import com.xcjh.app.databinding.FragmentDetailTabResultTab1Binding
 import com.xcjh.app.ui.details.DetailVm
-import com.xcjh.app.utils.nice.Utils.dp2px
-import com.xcjh.app.utils.setEmpty
+import com.xcjh.app.utils.setNoScrollEmpty
 import com.xcjh.base_lib.utils.distance
 import com.xcjh.base_lib.utils.vertical
 import com.xcjh.base_lib.utils.view.visibleOrGone
@@ -40,7 +36,17 @@ class FootballFragment(var type: Int = 0, private var match: MatchDetailBean) :
         //文字直播和重要事件列表适配器
         mDatabind.rcvFootball.run {
             vertical()
-            adapter = if (type == 0) textAdapter else eventAdapter
+            if (type == 0) {
+                adapter = textAdapter
+                textAdapter.isEmptyViewEnable = true
+                textAdapter.emptyView =
+                    setNoScrollEmpty(requireContext(), isCenter = false, marginT = 32, marginB = 52)
+            } else {
+                adapter = eventAdapter
+                eventAdapter.emptyView =
+                    setNoScrollEmpty(requireContext(), isCenter = false, marginT = 32, marginB = 52)
+                eventAdapter.isEmptyViewEnable = true
+            }
             distance(0, 0, 0, 0)
         }
         mDatabind.footballBottom.visibleOrGone(type == 0)
@@ -54,12 +60,8 @@ class FootballFragment(var type: Int = 0, private var match: MatchDetailBean) :
                 textAdapter.submitList(it)
             } else {
                 textAdapter.submitList(null)
-                textAdapter.isEmptyViewEnable = true
-                textAdapter.emptyView = layoutInflater.inflate(R.layout.layout_empty, null)
-                // LayoutEmptyBinding.inflate(LayoutInflater.from(context), null, false).root
             }
         }
-
         //重要事件
         vm.incidents.observe(requireActivity()) {
             if (type == 0) return@observe
@@ -93,9 +95,6 @@ class FootballFragment(var type: Int = 0, private var match: MatchDetailBean) :
                 eventAdapter.submitList(event.reversed())
             } else {
                 eventAdapter.submitList(null)
-                eventAdapter.isEmptyViewEnable = true
-                eventAdapter.emptyView =
-                    setEmpty(requireContext(), isCenter = false, marginT = 32, marginB = 52)
             }
         }
     }

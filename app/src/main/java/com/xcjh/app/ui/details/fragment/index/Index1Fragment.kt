@@ -73,6 +73,10 @@ class Index1Fragment() : BaseFragment<DetailVm, FragmentDetailTabIndexTab1Bindin
                             binding.tvJiPin.text = context.getString(R.string.close_win_p)
                             binding.tvJiAway.text = context.getString(R.string.close_win_p)
                             binding.tvJiPf.text = context.getString(R.string.close_win_p)
+                            binding.tvJiHome.setTextColor(requireContext().getColor(R.color.c_d7d7e7))
+                            binding.tvJiPin.setTextColor(requireContext().getColor(R.color.c_d7d7e7))
+                            binding.tvJiAway.setTextColor(requireContext().getColor(R.color.c_d7d7e7))
+                            binding.tvJiPf.setTextColor(requireContext().getColor(R.color.c_d7d7e7))
                         } else {
                             //即盘数据
                             binding.tvJiHome.text = item.currentHomeWin //主胜

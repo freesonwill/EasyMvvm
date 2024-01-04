@@ -739,6 +739,7 @@ fun MagicIndicator.bindBgViewPager2(
             }
 
             commonPagerTitleView.setOnClickListener {
+                //onPageSelected(index)
                 action.invoke(index)
                 viewPager.currentItem = index
             }
