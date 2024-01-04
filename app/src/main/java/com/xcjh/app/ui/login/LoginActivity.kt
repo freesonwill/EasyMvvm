@@ -65,13 +65,13 @@ class LoginActivity : BaseActivity<LoginVm, ActivityLoaginBinding>() {
                 super.onPageSelected(position)
 
                 if (position == 0) {
-                    mDatabind.edtphone.requestFocus()
+                   // mDatabind.edtphone.requestFocus()
                     mDatabind.edtcodePhone.setText("")
                     type = 1
                     mDatabind.linphone.visibility = View.VISIBLE
                     mDatabind.linemaile.visibility = View.GONE
                 } else {
-                    mDatabind.edtemail.requestFocus()
+                    //mDatabind.edtemail.requestFocus()
                     mDatabind.edtcodePhone.setText("")
                     type = 2
                     mDatabind.linphone.visibility = View.GONE
