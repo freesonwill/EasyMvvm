@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.app.Activity
 import android.os.Bundle
+import android.text.InputType
 import android.text.TextUtils
 import android.util.Log
 import android.view.Gravity
@@ -626,6 +627,9 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                 }
             }
         }
+        mDatabind.edtcontent.imeOptions = EditorInfo.IME_ACTION_SEND
+        mDatabind.edtcontent.setRawInputType(InputType.TYPE_CLASS_TEXT)
+        mDatabind.edtcontent.maxLines = 3
         mDatabind.edtcontent.setOnEditorActionListener(OnEditorActionListener { v, actionId, event ->
             if ((event != null && (event.keyCode == KeyEvent.KEYCODE_ENTER))
                 || (actionId == EditorInfo.IME_ACTION_SEND)
