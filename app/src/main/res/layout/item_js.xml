@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_5"
         android:maxLines="1"
-        android:maxLength="7"
+        android:maxLength="5"
         android:ellipsize="end"
         android:textColor="@color/c_575762"
         android:textSize="10sp"

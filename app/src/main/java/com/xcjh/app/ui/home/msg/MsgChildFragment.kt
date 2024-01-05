@@ -443,7 +443,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                         val foundData = listdata.find { it.anchorId == data.anchorId }
                         if (foundData == null) {
                             data?.let { it1 ->
-                                if (it1.noReadSum > 0) {
+                                if (it1.noReadSum > 0) {//这里看看需不需要判断  因为色剂到 多设备登录的问题
                                     if (it1.sendId == "0") {
                                         it1.sendId = data.anchorId + it1.createTime
                                     }
@@ -462,6 +462,8 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                             }
                         }
                     }
+
+                }else{
 
                 }
 
