@@ -3,6 +3,7 @@ package com.xcjh.app.ui.login
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.google.gson.Gson
@@ -61,6 +62,7 @@ class LetterCountryActivity : BaseActivity<LoginVm, ActivityLettercountryBinding
 
         mDatabind.rec.setup {
 
+
             addType<CityModel.CityLetter>(R.layout.item_city_letter)
             addType<CityModel.City>(R.layout.item_city)
             onBind {
@@ -72,8 +74,8 @@ class LetterCountryActivity : BaseActivity<LoginVm, ActivityLettercountryBinding
                     var binding = getBinding<ItemCityBinding>()
                     var matchBeanNew = _data as CityModel.City
                     binding.name1.text = matchBeanNew.cnname
-                    Glide.with(context).load(matchBeanNew.label).override(100).
-                    thumbnail(0.1f)
+                    Glide.with(context).load(matchBeanNew.label).override(100).thumbnail(0.1f)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL).skipMemoryCache(true)
                         .into(binding.ivgq)
                     binding.code.text = matchBeanNew.code
                     binding.name1.setOnClickListener {
@@ -89,7 +91,7 @@ class LetterCountryActivity : BaseActivity<LoginVm, ActivityLettercountryBinding
 
 
         }
-     //    initMaps()
+        //    initMaps()
         mDatabind.indexBar.setSideBarLayout(SideBarLayout.OnSideBarLayoutListener { word -> //根据自己业务实现
             var ss = CityModel.CityLetter(word)
             val indexOf = mDatabind.rec.models?.indexOf(ss) ?: -1
