@@ -33,9 +33,11 @@ class FootballLineupView : LinearLayout {
         initView(context)
     }
 
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context,
+    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
         attrs,
-        defStyleAttr) {
+        defStyleAttr
+    ) {
         initView(context)
     }
 
@@ -67,17 +69,10 @@ class FootballLineupView : LinearLayout {
             lltShow?.visibleOrInvisible(true)
             firstTable?.visibleOrInvisible(false)
             tv_home_lineup?.text = "阵型 ${it.homeFormation}" //阵型
-            tv_home_value?.text =if (it.homeMarketValue==0){"-${if (it.homeMarketValueCurrency.isNullOrEmpty()) "" else {
-                it.homeMarketValueCurrency}}" } else
-                "${myDivide(it.homeMarketValue,10000).toInt() }万" + if (it.homeMarketValueCurrency.isNullOrEmpty()) "欧" else {
-                    it.homeMarketValueCurrency
-                } //身价
+            tv_home_value?.text = getMarketValue(it.homeMarketValue)
+
             tv_away_lineup?.text = "阵型 ${it.awayFormation}" //阵型
-            tv_away_value?.text =if (it.awayMarketValue==0){"-${if (it.awayMarketValueCurrency.isNullOrEmpty()) "" else {
-                it.awayMarketValueCurrency}}" } else
-                "${myDivide(it.awayMarketValue,10000).toInt() }万"+ if (it.awayMarketValueCurrency.isNullOrEmpty()) "欧" else {
-                    it.awayMarketValueCurrency
-                }//身价
+            tv_away_value?.text = getMarketValue(it.awayMarketValue)
             lineUpMiddleView?.setData(it)
         } else {
             //首发无阵型 直接展示列表
@@ -86,5 +81,25 @@ class FootballLineupView : LinearLayout {
             firstTable?.setData(it, 1)
         }
     }
+
+    /**
+     * 获取球员身价
+     */
+    private fun getMarketValue(v: Int): String {
+        val p: String = if (v == 0) {
+            "-"
+        } else if (v > 99999999) {
+            // "${myDivide(v, 100000000, "0.000")}亿欧"
+            "${myDivide(v, 100000000, "0.000")}".dropLastWhile { it =='0' }.dropLastWhile { it =='.' }+"亿欧"
+        } else if (v > 9999) {
+            // "${myDivide(v, 10000, "0.0")}万欧"
+            "${myDivide(v, 10000, "0.0")}".dropLastWhile { it =='0' }.dropLastWhile { it =='.' }+"万欧"
+        } else {
+            "${v}欧"
+        }
+        return p
+    }
+
+
 
 }

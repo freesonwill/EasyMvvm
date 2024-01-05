@@ -79,7 +79,7 @@ ext {
                     buildConfigField "boolean", "IS_RELEASE", "true"
                     signingConfig signingConfigs.release
                     proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-                    debuggable false  //开启会导致aab签名无效
+                    debuggable false  //true开启会导致aab签名无效
 
                     minifyEnabled true//混淆
                     zipAlignEnabled true//是否对APK包执行ZIP对齐优化，减小zip体积，增加运行效率

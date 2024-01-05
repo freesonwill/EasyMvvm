@@ -115,12 +115,19 @@ class ImportEventAdapter : BaseViewBindingQuickAdapter<IncidentsBean, ItemImport
         }
     }
 
+    /**
+     *  @param type 0开始 1time 2半场
+     */
     private fun setTime(binding: ItemImportEventBinding, type: Int = 1) {
         binding.ivStart.visibleOrGone(type == 0)
         binding.tvTime.visibleOrGone(type == 1)
         binding.tvHalf.visibleOrGone(type == 2)
     }
 
+    /**
+     * @type 0啥也不是  1红黄牌  2进球  3换人
+     * @pos 1home 2away
+     */
     private fun setUI(binding: ItemImportEventBinding, type: Int = 0, pos: Int = 0) {
 
         binding.vHomeCard.visibleOrGone(

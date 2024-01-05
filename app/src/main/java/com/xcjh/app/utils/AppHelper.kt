@@ -152,12 +152,12 @@ fun cropBitmap(bitmap: Bitmap, startX: Int, width: Int, height: Int): Bitmap {
 }
 
 //除法
-fun myDivide(a: Int, b: Int): Float {
+fun myDivide(a: Int, b: Int,p:String="0.00000000"): Float {
     //“0.00000000”确定精度
     if (a == 0) {
         return 0f
     }
-    val dF = DecimalFormat("0.00000000")
+    val dF = DecimalFormat(p)
     return try {
         dF.format((a.toFloat() / b).toDouble()).toFloat()
     } catch (e: Exception) {

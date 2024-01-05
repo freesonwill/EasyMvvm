@@ -99,7 +99,7 @@
                     android:text="@={m.input}"
                     android:textColor="@color/white"
                     android:textColorHint="@color/c_94999f"
-                    android:textCursorDrawable="@null"
+                    android:textCursorDrawable="@drawable/edit_cursor_white"
                     android:textSize="@dimen/sp_14" />
 
                 <View
