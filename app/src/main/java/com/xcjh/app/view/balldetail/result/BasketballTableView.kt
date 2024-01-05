@@ -4,7 +4,9 @@ import android.content.Context
 import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
+import android.widget.LinearLayout
 import android.widget.RelativeLayout
+import androidx.appcompat.widget.LinearLayoutCompat
 import com.bumptech.glide.Glide
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
@@ -14,33 +16,19 @@ import com.xcjh.app.bean.BasketballScore
 import com.xcjh.app.bean.BasketballScoreBean
 import com.xcjh.app.databinding.ViewBasketballTableBinding
 import com.xcjh.app.databinding.ViewBasketballTableChildBinding
+import com.xcjh.app.databinding.ViewDetailFootballStatusBinding
 import com.xcjh.base_lib.utils.dip2px
 import com.xcjh.base_lib.utils.horizontal
 import com.xcjh.base_lib.utils.loge
 import com.xcjh.base_lib.utils.notNull
 
-class BasketballTableView : RelativeLayout {
+class BasketballTableView(context: Context, attributeSet: AttributeSet) : RelativeLayout(context, attributeSet) {
 
-    private lateinit var binding: ViewBasketballTableBinding
+    private var binding: ViewBasketballTableBinding
     private val scoreList = arrayListOf<BasketballScore>()
 
-    constructor(context: Context) : super(context) {
-        initView()
-    }
-
-    constructor(context: Context, attributeSet: AttributeSet) : super(context, attributeSet) {
-        initView()
-    }
-
-    constructor(context: Context, attributeSet: AttributeSet, defStyleAttr: Int) : super(
-        context, attributeSet, defStyleAttr
-    ) {
-        initView()
-    }
-
-    private fun initView() {
-        // LayoutInflater.from(context).inflate(R.layout.view_basketball_table, this)
-        binding = ViewBasketballTableBinding.inflate(LayoutInflater.from(context), null, false)
+    init {
+        binding= ViewBasketballTableBinding.inflate(LayoutInflater.from(context),this,true)
         binding.rcvCommon.isNestedScrollingEnabled = false
         binding.rcvCommon.horizontal().setup {
             addType<BasketballScore> {
@@ -66,7 +54,6 @@ class BasketballTableView : RelativeLayout {
                 }
             }
         }
-        addView(binding.root)
     }
 
     fun setTeamInfo(homeIcon: String?, homeName: String?, awayIcon: String?, awayName: String?) {

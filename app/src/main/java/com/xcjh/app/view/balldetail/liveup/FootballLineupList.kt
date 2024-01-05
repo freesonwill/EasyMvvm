@@ -20,47 +20,20 @@ import com.xcjh.app.bean.MatchDetailBean
 import com.xcjh.app.bean.MatchTeam
 import com.xcjh.app.databinding.ItemDetailGameSubstituteBinding
 import com.xcjh.app.databinding.ItemDetailGameSubstituteTopBinding
+import com.xcjh.app.databinding.ViewDetailGameLiveupBinding
+import com.xcjh.app.databinding.ViewDetailGameSubstituteBinding
 import com.xcjh.base_lib.utils.view.visibleOrInvisible
 
 /**
  * 首发、替补阵容
  */
-class FootballLineupList : LinearLayout {
-    private lateinit var ivHomeIcon: ImageView
-    private lateinit var tvTitle: TextView
-    private lateinit var ivAwayIcon: ImageView
-    private lateinit var rcvPlayer: RecyclerView
+class FootballLineupList (context: Context, attrs: AttributeSet?) : LinearLayout(context,attrs) {
 
-    constructor(context: Context) : super(context) {
-        initView(context)
-    }
+    private var binding: ViewDetailGameSubstituteBinding
 
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
-        initView(context)
-    }
-
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context,
-        attrs,
-        defStyleAttr) {
-        initView(context)
-    }
-
-    constructor(
-        context: Context,
-        attrs: AttributeSet?,
-        defStyleAttr: Int,
-        defStyleRes: Int,
-    ) : super(context, attrs, defStyleAttr, defStyleRes) {
-        initView(context)
-    }
-
-    fun initView(context: Context) {
-        val v = LayoutInflater.from(context).inflate(R.layout.view_detail_game_substitute, this)
-        ivHomeIcon = v.findViewById(R.id.ivHomeIcon)
-        tvTitle = v.findViewById(R.id.tvTitle)
-        ivAwayIcon = v.findViewById(R.id.ivAwayIcon)
-        rcvPlayer = v.findViewById(R.id.rcvPlayer)
-        rcvPlayer.grid(2).divider {
+    init {
+        binding= ViewDetailGameSubstituteBinding.inflate(LayoutInflater.from(context),this,true)
+        binding.rcvPlayer.grid(2).divider {
            // setDrawable(R.drawable.divider_horizontal)
             setDivider(1, true)
             setColor("#27272A")
@@ -121,12 +94,12 @@ class FootballLineupList : LinearLayout {
     val list = arrayListOf<Any>()
     fun setData(data: FootballLineupBean, first:Int=0) {
         list.clear()
-        Glide.with(context).load(data.homeLogo).placeholder(R.drawable.def_football).into(ivHomeIcon)
-        Glide.with(context).load(data.awayLogo).placeholder(R.drawable.def_football).into(ivAwayIcon)
+        Glide.with(context).load(data.homeLogo).placeholder(R.drawable.def_football).into( binding.ivHomeIcon)
+        Glide.with(context).load(data.awayLogo).placeholder(R.drawable.def_football).into( binding.ivAwayIcon)
         if ( first==1){
-            tvTitle.text= context.getString(R.string.first_z)
+            binding.tvTitle.text= context.getString(R.string.first_z)
         }else{
-            tvTitle.text= context.getString(R.string.ti)
+            binding.tvTitle.text= context.getString(R.string.ti)
         }
         val home = data.home.filter {
             it.first == first
@@ -162,6 +135,6 @@ class FootballLineupList : LinearLayout {
                 }
             }
         }
-        rcvPlayer.models = list
+        binding.rcvPlayer.models = list
     }
 }

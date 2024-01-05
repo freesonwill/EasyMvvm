@@ -1,44 +1,22 @@
 package com.xcjh.app.view.balldetail.result
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.widget.RelativeLayout
+import android.widget.LinearLayout
 import com.bumptech.glide.Glide
 import com.xcjh.app.R
 import com.xcjh.app.bean.StatusBean
 import com.xcjh.app.databinding.ViewDetailFootballStatusBinding
 import com.xcjh.app.utils.setProgressValue
-import kotlinx.android.synthetic.main.activity_chat.view.*
 
 /**
  * Describe : 足球直播详情页面赛况布局控件
  */
-class FootballDataView : RelativeLayout {
-    private lateinit var binding: ViewDetailFootballStatusBinding
-
-    constructor(context: Context?) : super(context) {
-        initView(context, null)
-    }
-
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
-        initView(context, attrs)
-    }
-
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
-        context,
-        attrs,
-        defStyleAttr
-    ) {
-        initView(context, attrs)
-    }
-
-    @SuppressLint("MissingInflatedId")
-    fun initView(context: Context?, attrs: AttributeSet?) {
-        // val inflate = LayoutInflater.from(context).inflate(R.layout.view_detail_game_status, this)
-        binding = ViewDetailFootballStatusBinding.inflate(LayoutInflater.from(context), null, false)
-        addView(binding.root)
+class FootballDataView(context: Context?, attrs: AttributeSet?) : LinearLayout(context, attrs) {
+    private var binding: ViewDetailFootballStatusBinding
+    init {
+        binding=ViewDetailFootballStatusBinding.inflate(LayoutInflater.from(context),this,true)
     }
 
     fun setTeamInfo(homeIcon: String?, homeName: String?, awayIcon: String?, awayName: String?) {

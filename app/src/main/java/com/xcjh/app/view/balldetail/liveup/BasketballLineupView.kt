@@ -12,36 +12,9 @@ import com.xcjh.app.bean.BasketballTeamMemberBean
 import com.xcjh.app.bean.FootballPlayer
 import com.xcjh.app.databinding.ItemDetailLineupBasketballBinding
 
-class BasketballLineupView : LinearLayout {
-    private lateinit var layout: LinearLayout
-
-    constructor(context: Context?) : super(context) {
-        initView(context)
-    }
-
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
-        initView(context)
-    }
-
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
-        context,
-        attrs,
-        defStyleAttr
-    ) {
-        initView(context)
-    }
-
-    constructor(
-        context: Context?,
-        attrs: AttributeSet?,
-        defStyleAttr: Int,
-        defStyleRes: Int,
-    ) : super(context, attrs, defStyleAttr, defStyleRes) {
-        initView(context)
-    }
-
-    @SuppressLint("MissingInflatedId")
-    fun initView(context: Context?) {
+class BasketballLineupView(context: Context?, attrs: AttributeSet?) : LinearLayout(context,attrs) {
+    private var layout: LinearLayout
+    init {
         val v = LayoutInflater.from(getContext()).inflate(R.layout.view_tab_basketball_table, this)
         layout = v.findViewById(R.id.layout_table)
     }
@@ -98,5 +71,6 @@ class BasketballLineupView : LinearLayout {
             binding.tvShot.text = it.data.hitAndShot
             layout.addView(binding.root)
         }
+        requestLayout()
     }
 }

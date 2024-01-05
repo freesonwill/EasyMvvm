@@ -5,7 +5,7 @@
 
     </data>
 
-    <LinearLayout
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/shape_r10_ring"
@@ -140,5 +140,5 @@
 
         </LinearLayout>
 
-    </LinearLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 </layout>
