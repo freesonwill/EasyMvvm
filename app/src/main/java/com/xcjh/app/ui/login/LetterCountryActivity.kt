@@ -62,6 +62,7 @@ class LetterCountryActivity : BaseActivity<LoginVm, ActivityLettercountryBinding
 
         mDatabind.rec.setup {
 
+
             addType<CityModel.CityLetter>(R.layout.item_city_letter)
             addType<CityModel.City>(R.layout.item_city)
             onBind {
