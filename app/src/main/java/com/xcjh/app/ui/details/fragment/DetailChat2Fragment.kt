@@ -189,13 +189,14 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
         vm.anchor.observe(this) {
             if (it != null) {
                 noticeBean.notice = it.notice ?: ""
+                noticeBean.isOpen = false
                 mDatabind.notice.expandableText.text = noticeBean.notice.replace("<p>","<span>").replace("</p>","</span>").toHtml()
                 val layout = mDatabind.notice.expandableText.layout
                 if (layout != null) {
                     val lineCount: Int = layout.lineCount
                     lineCount.toString().loge("888===")
                     mDatabind.notice.lltExpandCollapse.visibleOrGone(lineCount > 2)
-                    mDatabind.notice.expandableText.maxLines =  2
+                    //mDatabind.notice.expandableText.maxLines =  2
                 }
                 val htmlText =
                     "<div style='display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;'>${noticeBean.notice}</div>"

@@ -5,17 +5,22 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.app.Activity
 import android.os.Bundle
+import android.text.InputType
 import android.text.TextUtils
 import android.util.Log
 import android.view.Gravity
 import android.view.KeyEvent
+import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnLongClickListener
+import android.view.ViewConfiguration
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.TextView.OnEditorActionListener
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.alibaba.fastjson.JSONObject
 import com.blankj.utilcode.util.ToastUtils
@@ -110,7 +115,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
     private val delayTime: Long = 10000
     private val listPic = java.util.ArrayList<LocalMedia>()
     private val mutex = Mutex()
-    var incount=0
+    var incount = 0
     override fun initView(savedInstanceState: Bundle?) {
 
         options = RequestOptions()
@@ -230,7 +235,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                             binding.tvtime.visibility = View.VISIBLE
                         }
                         binding.tvcontent.setOnLongClickListener(OnLongClickListener {
-                            initLongClick(binding.tvcontent, ad.content)
+                            initLongClick(binding.tvcontent, ad.content,bindingAdapterPosition)
                             true
                         })
                         binding.linroot.setOnClickListener {
@@ -280,7 +285,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                             1, 3 -> {//发送成功
 
                                 matchBeanNew.sent = 1
-                              //  addDataToList("3", matchBeanNew)
+                                //  addDataToList("3", matchBeanNew)
                                 binding.googleProgress.visibility = View.GONE
                                 binding.ivfaile.visibility = View.GONE
                             }
@@ -325,7 +330,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                             binding.tvtime.visibility = View.VISIBLE
                         }
                         binding.tvcontent.setOnLongClickListener(OnLongClickListener {
-                            initLongClick(binding.tvcontent, matchBeanNew.content)
+                            initLongClick(binding.tvcontent, matchBeanNew.content,bindingAdapterPosition)
                             true
                         })
                         binding.linroot.setOnClickListener {
@@ -384,7 +389,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
 
                             1, 3 -> {//发送成功
                                 (_data as MsgBeanData).sent = 1
-                              //  addDataToList("6", (_data as MsgBeanData))
+                                //  addDataToList("6", (_data as MsgBeanData))
                                 binding.googleProgress.visibility = View.GONE
                                 binding.ivfaile.visibility = View.GONE
                                 LogUtils.d(
@@ -521,6 +526,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
             }
 
         }.models = listdata
+
         setOnclickNoRepeat(
             mDatabind.ivexpent,
             mDatabind.linphote,
@@ -621,17 +627,20 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                 }
             }
         }
+        mDatabind.edtcontent.imeOptions = EditorInfo.IME_ACTION_SEND
+        mDatabind.edtcontent.setRawInputType(InputType.TYPE_CLASS_TEXT)
+        mDatabind.edtcontent.maxLines = 3
         mDatabind.edtcontent.setOnEditorActionListener(OnEditorActionListener { v, actionId, event ->
             if ((event != null && (event.keyCode == KeyEvent.KEYCODE_ENTER))
                 || (actionId == EditorInfo.IME_ACTION_SEND)
             ) {
                 // 在这里执行相应的操作
                 val searchText = v.text.toString()
-                if (searchText.isNotEmpty()&&searchText.length>0) {
+                if (searchText.isNotEmpty() && searchText.trim().isNotEmpty()) {
                     msgType = 0
                     msgContent = searchText
                     sendMsg("", true)
-                }else{
+                } else {
                     myToast(resources.getString(R.string.str_inputcontent))
                 }
                 true // 返回 true 表示已处理事件
@@ -776,7 +785,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                     runOnUiThread {
                         view.text = progress.toInt().toString() + "%"
                         LogUtils.d("Upload progress: ${progress.toInt()}" + "%")
-                        if (progress.toInt() >99) {
+                        if (progress.toInt() > 99) {
                             view.visibility = View.GONE
                         }
                     }
@@ -802,25 +811,50 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
         }
     }
 
-    fun initLongClick(view: View, content: String) {
-        CustomDialog.show(object : OnBindView<CustomDialog>(R.layout.layout_custom_dialog_align) {
-            private var btnSelectPositive: TextView? = null
-            override fun onBind(dialog: CustomDialog, v: View) {
-                btnSelectPositive = v.findViewById<TextView>(R.id.btn_selectPositive)
-                btnSelectPositive!!.setOnClickListener(View.OnClickListener {
-                    copyToClipboard(content)
-                    ToastUtils.showShort(resources.getString(R.string.copy_success))
-                    dialog.dismiss()
-                })
+    fun initLongClick(view: View, content: String,firstVisiblePosition:Int) {
+        val layoutManager = mDatabind.rv.layoutManager
+        if (layoutManager != null && layoutManager is LinearLayoutManager) {
+            val firstVisibleView = layoutManager.findViewByPosition(firstVisiblePosition)
+            val topDistance = firstVisibleView?.top
+            // 使用 topDistance 进行你需要的操作
+            LogUtils.d(firstVisiblePosition.toString() + "顶部距离===$topDistance")
+            var gragt=Gravity.TOP or Gravity.CENTER_HORIZONTAL
+            if (topDistance!! >0){
+                gragt=Gravity.TOP or Gravity.CENTER_HORIZONTAL
+            }else{
+                gragt=Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
+
             }
-        })
-            .setCancelable(true)
-            .setMaskColor(resources.getColor(R.color.translet))
+            CustomDialog.show(object : OnBindView<CustomDialog>(R.layout.layout_custom_dialog_align) {
+                private var btnSelectPositive: TextView? = null
+                private var tvup: ImageView? = null
+                private var tvdown: ImageView? = null
+                override fun onBind(dialog: CustomDialog, v: View) {
+                    tvup = v.findViewById<ImageView>(R.id.img_bkg_up)
+                    tvdown = v.findViewById<ImageView>(R.id.img_bkg)
+                    if (topDistance!! >0){
+                        tvup!!.visibility=View.GONE
+                    }else{
+                        tvdown!!.visibility=View.GONE
+
+                    }
+                    btnSelectPositive = v.findViewById<TextView>(R.id.btn_selectPositive)
+                    btnSelectPositive!!.setOnClickListener(View.OnClickListener {
+                        copyToClipboard(content)
+                        ToastUtils.showShort(resources.getString(R.string.copy_success))
+                        dialog.dismiss()
+                    })
+                }
+            })
+                .setCancelable(true)
+                .setMaskColor(resources.getColor(R.color.translet))
 //            .setEnterAnimResId(R.anim.anim_custom_pop_enter)
 //            .setExitAnimResId(R.anim.anim_custom_pop_exit)
-            .setAlignBaseViewGravity(view, Gravity.TOP or Gravity.CENTER_HORIZONTAL)
-            // .setBaseViewMarginBottom(-dip2px(45f))
-            .show()
+                .setAlignBaseViewGravity(view, gragt)
+                // .setBaseViewMarginBottom(-dip2px(45f))
+                .show()
+        }
+
     }
 
     fun initData() {
@@ -837,9 +871,9 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
 
             }
         }
-        mViewModel.autherInfo.observe(this){
-            if (it!=null){
-                nickname=it.nickName
+        mViewModel.autherInfo.observe(this) {
+            if (it != null) {
+                nickname = it.nickName
                 mDatabind.titleTop.tvTitle.text = nickname
             }
         }
@@ -862,17 +896,17 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                         if (it[i].sendId == "0") {
                             it[i].sendId = userId + it[i].createTime
                         }
-                        it[i].sent=1
+                        it[i].sent = 1
 
-                        LogUtils.d("昵称是===" +it[i].nick)
+                        LogUtils.d("昵称是===" + it[i].nick)
                         addDataToList("9", it[i])
                     }
                 } else {
                     LogUtils.d("有新的消息===" + JSONObject.toJSONString(it))
-                    var bean=listdata[0]
+                    var bean = listdata[0]
                     for ((index, data) in it.withIndex()) {
 
-                        LogUtils.d("昵称是===" +data.nick)
+                        LogUtils.d("昵称是===" + data.nick)
                         val foundData = listdata.find { it.id == data.id }
                         if (foundData == null) {
 
@@ -884,7 +918,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                     )
                                 ) {
                                     if (it1.sendId == "0") {
-                                        it1.sendId =it1.id
+                                        it1.sendId = it1.id
                                     }
                                     incount++
                                     data.sent = 1
@@ -926,7 +960,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
             return
         }
         val fmt = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
-        var timestamp = fmt.format( Date(System.currentTimeMillis()))
+        var timestamp = fmt.format(Date(System.currentTimeMillis()))
         val date: Date = fmt.parse(timestamp)
         val creatime = date.time
         var sendID = ""

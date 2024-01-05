@@ -180,42 +180,43 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                     var item = _data as MatchBean
                     // 设置item数据
 
-                    var time = TimeUtil.timeStamp2Date(item!!.matchTime.toLong(), null)
+                    var time = TimeUtil.getDayOfWeek(item!!.matchTime.toLong(), context)
+                    var time1 = TimeUtil.timeStamp2Date(item!!.matchTime.toLong(), null)
                     if (item.focus) {
                         binding.tvcollect.setBackgroundResource(R.drawable.ic_focus_s)
                     } else {
                         binding.tvcollect.setBackgroundResource(R.drawable.ic_focus_n)
                     }
-                    binding.tvmiddletime.text = time!!.substring(0, 10)
+                    binding.tvmiddletime.text = time
                     when (item.visbleTime) {
                         0 -> {
-                            if (time!!.substring(0, 10) == TimeUtil.gettimenowYear()) {
+                            if (time == TimeUtil.gettimenowYear()) {
                                 if (strTimeZu.size == 0) {
                                     item.visbleTime = 2
                                     binding.tvmiddletime.visibility = View.GONE
                                 } else {
-                                    if (strTimeZu[strTimeZu.size - 1] == time!!.substring(0, 10)) {
+                                    if (strTimeZu[strTimeZu.size - 1] == time) {
                                         binding.tvmiddletime.visibility = View.GONE
                                         item.visbleTime = 2
                                     } else {
                                         binding.tvmiddletime.visibility = View.VISIBLE
                                         item.visbleTime = 1
-                                        strTimeZu.add(time!!.substring(0, 10))
+                                        strTimeZu.add(time)
                                     }
                                 }
                             } else {
                                 if (strTimeZu.size == 0) {
                                     binding.tvmiddletime.visibility = View.VISIBLE
                                     item.visbleTime = 1
-                                    strTimeZu.add(time!!.substring(0, 10))
+                                    strTimeZu.add(time)
                                 } else {
-                                    if (strTimeZu[strTimeZu.size - 1] == time!!.substring(0, 10)) {
+                                    if (strTimeZu[strTimeZu.size - 1] == time) {
                                         binding.tvmiddletime.visibility = View.GONE
                                         item.visbleTime = 2
                                     } else {
                                         binding.tvmiddletime.visibility = View.VISIBLE
                                         item.visbleTime = 1
-                                        strTimeZu.add(time!!.substring(0, 10))
+                                        strTimeZu.add(time)
                                     }
 
 
@@ -239,7 +240,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                     if (item.matchType == "1") {//比赛类型：1：足球；2：篮球,可用值:1,2
                         binding.tvhafl.text =
                             context.resources.getString(R.string.hafl_rices) + "" + item.homeHalfScore + "-" + item.awayHalfScore
-                        binding.tvtime.text = time!!.substring(11, 16)
+                        binding.tvtime.text = time1!!.substring(11, 16)
                         binding.tvname.text = item.competitionName
                         binding.tvnameLeft.text = item.homeName
                         binding.tvnameRight.text = item.awayName
@@ -555,7 +556,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                     } else {
                         binding.tvhafl.text =
                             context.resources.getString(R.string.hafl_rices) + "" + item.awayHalfScore + "-" + item.homeHalfScore
-                        binding.tvtime.text = time!!.substring(11, 16)
+                        binding.tvtime.text = time1!!.substring(11, 16)
                         binding.tvname.text = item.competitionName
                         binding.tvnameLeft.text = item.awayName
                         binding.tvnameRight.text = item.homeName
@@ -1360,12 +1361,13 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
             mview!!.setBackgroundResource(R.drawable.ic_focus_n)
             //mAdapter.getItem(index)!!.focus = false
             mDatabind.recBottom.bindingAdapter.getModel<MatchBean>(index).focus = false
-            mDatabind.recBottom.bindingAdapter.notifyItemChanged(index)
+           // mDatabind.recBottom.bindingAdapter.notifyItemChanged(index)
+
         }
         mViewModel.noticeData.observe(this) {
             mview!!.setBackgroundResource(R.drawable.ic_focus_s)
             mDatabind.recBottom.bindingAdapter.getModel<MatchBean>(index).focus = true
-            mDatabind.recBottom.bindingAdapter.notifyItemChanged(index)
+           // mDatabind.recBottom.bindingAdapter.notifyItemChanged(index)
         }
     }
 }

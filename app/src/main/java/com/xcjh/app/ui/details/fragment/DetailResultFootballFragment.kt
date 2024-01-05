@@ -9,6 +9,7 @@ import com.xcjh.app.bean.MatchDetailBean
 import com.xcjh.app.databinding.FragmentDetailTabResultFootballBinding
 import com.xcjh.app.ui.details.DetailVm
 import com.xcjh.app.ui.details.MatchDetailActivity
+import com.xcjh.app.ui.details.fragment.result.EmptyFragment
 import com.xcjh.app.ui.details.fragment.result.FootballFragment
 import com.xcjh.app.websocket.MyWsManager
 import com.xcjh.base_lib.App
@@ -28,9 +29,6 @@ class DetailResultFootballFragment(private var match: MatchDetailBean) :
         get() = 3
 
     override fun initView(savedInstanceState: Bundle?) {
-        mDatabind.viewFootballStatus.visibleOrGone("1" == match.matchType)
-        mDatabind.lltTab.visibleOrGone("1" == match.matchType)
-        mDatabind.viewPager.visibleOrGone("1" == match.matchType)
         if ("1" == match.matchType) {//1：足球；2：篮球
             mDatabind.viewFootballStatus.setTeamInfo(
                 match.homeLogo,
@@ -38,7 +36,11 @@ class DetailResultFootballFragment(private var match: MatchDetailBean) :
                 match.awayLogo,
                 match.awayName
             )
-            mDatabind.viewPager.initFragment(this, arrayListOf(FootballFragment(0,match), FootballFragment(1,match)),isUserInputEnabled=false)
+            val frag0 = FootballFragment(0, match)
+            val frag1 = FootballFragment(1, match)
+            mDatabind.viewPager.initFragment(this, arrayListOf(EmptyFragment(),
+                EmptyFragment()
+            ),isUserInputEnabled=false)
             mDatabind.magicIndicator.setBackgroundResource(R.drawable.round_indicator_bg)
             mDatabind.magicIndicator.bindBgViewPager2(
                 mDatabind.viewPager,
@@ -51,15 +53,22 @@ class DetailResultFootballFragment(private var match: MatchDetailBean) :
                 scrollEnable = false,
                 paddingH = 19.0,
                 lineIndicatorColor = R.color.c_323235,
-            )
+            ) {
+                mDatabind.flContent.visibleOrGone(it == 0)
+                mDatabind.flContent2.visibleOrGone(it == 1)
+            }
+            parentFragmentManager.beginTransaction().add(R.id.fl_content, frag0).commit()
+            parentFragmentManager.beginTransaction().add(R.id.fl_content2, frag1).commit()
             mDatabind.viewPager.offscreenPageLimit = 2
         }
         loadData()
     }
 
+
     override fun lazyLoadData() {
         //loadData()
     }
+
     private fun loadData() {
         if ("1" == match.matchType) {//1：足球；2：篮球
             //获取足球赛况技术统计表格的数据
@@ -97,4 +106,5 @@ class DetailResultFootballFragment(private var match: MatchDetailBean) :
         }
 
     }
+
 }

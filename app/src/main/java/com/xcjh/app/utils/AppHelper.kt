@@ -57,6 +57,7 @@ import com.xcjh.app.R
 import com.xcjh.app.adapter.ViewPager2Adapter
 import com.xcjh.app.bean.BeingLiveBean
 import com.xcjh.app.databinding.LayoutEmptyBinding
+import com.xcjh.app.databinding.LayoutEmptyNoscrollBinding
 import com.xcjh.app.ui.login.LoginActivity
 import com.xcjh.app.utils.nice.Utils
 import com.xcjh.app.view.callback.EmptyCallback
@@ -583,6 +584,35 @@ fun setEmpty(
     marginB: Int = 75,//提示
 ): View {
     val binding = LayoutEmptyBinding.inflate(LayoutInflater.from(context), null, false)//.root
+    binding.ivEmptyIcon.setImageResource(imgId)
+    binding.txtEmptyName.text = notice
+    binding.txtEmptyName.setTextColor(context.getColor(noticeColor))
+    val lp = binding.lltContent.layoutParams as RelativeLayout.LayoutParams
+    if (isCenter) {
+        lp.topMargin = context.dp2px(0)
+        lp.bottomMargin = context.dp2px(0)
+        lp.addRule(RelativeLayout.CENTER_IN_PARENT)
+    } else {
+        lp.topMargin = context.dp2px(marginT)
+        lp.bottomMargin = context.dp2px(marginB)
+        lp.addRule(RelativeLayout.CENTER_HORIZONTAL)
+    }
+
+    return binding.root
+}
+/**
+ * 加载不滑动的列表空布局
+ */
+fun setNoScrollEmpty(
+    context: Context,
+    imgId: Int = R.drawable.ic_live_def_empty,//图片
+    notice: String = appContext.getString(R.string.no_data_hint),//提示
+    noticeColor: Int =R.color.c_5b5b5b ,//提示
+    isCenter: Boolean = true,//布局居中，后面得设置将无效
+    marginT: Int = 75,//提示
+    marginB: Int = 75,//提示
+): View {
+    val binding = LayoutEmptyNoscrollBinding.inflate(LayoutInflater.from(context), null, false)//.root
     binding.ivEmptyIcon.setImageResource(imgId)
     binding.txtEmptyName.text = notice
     binding.txtEmptyName.setTextColor(context.getColor(noticeColor))

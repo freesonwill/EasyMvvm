@@ -27,7 +27,10 @@ import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
@@ -106,7 +109,7 @@ fun loadImage(
     GlideApp.with(context).load(url)
         .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
         .centerCrop()
-        .placeholder(placeholder)
+        .error(placeholder)
         .skipMemoryCache(false)//开启会闪烁
         //.dontAnimate()
         .into(image)
