@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.ScaleAnimation
 import android.widget.ImageView
@@ -36,6 +37,7 @@ import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.LogUtils
 import com.xcjh.base_lib.utils.TimeUtil
 import com.xcjh.base_lib.utils.distance
+import com.xcjh.base_lib.utils.dp2px
 import com.xcjh.base_lib.utils.grid
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -166,7 +168,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
             }
             mDatabind.smartCommon.setRefreshHeader(CustomHeader(requireContext()))
             mDatabind.recBottom.run {
-                distance(0, 0, 0, 15)
+                distance(0, 0, 0, 0)
             }
 //            (mDatabind.recBottom.itemAnimator as SimpleItemAnimator).supportsChangeAnimations =
 //                false//防止item刷新的时候闪烁
@@ -190,7 +192,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                     binding.tvmiddletime.text = time
                     when (item.visbleTime) {
                         0 -> {
-                            if (time == TimeUtil.gettimenowYear()) {
+                            if (time1!!.substring(0,10) == TimeUtil.gettimenowYear()) {
                                 if (strTimeZu.size == 0) {
                                     item.visbleTime = 2
                                     binding.tvmiddletime.visibility = View.GONE
@@ -200,6 +202,27 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                         item.visbleTime = 2
                                     } else {
                                         binding.tvmiddletime.visibility = View.VISIBLE
+//                                        if (bindingAdapterPosition==0) {
+//                                            val layoutParams =
+//                                                binding.conroot.layoutParams as ViewGroup.MarginLayoutParams
+//                                            layoutParams.setMargins(
+//                                                0,
+//                                                0,
+//                                                0,
+//                                                0
+//                                            )
+//                                            binding.conroot.layoutParams = layoutParams
+//                                        }else{
+//                                            val layoutParams =
+//                                                binding.conroot.layoutParams as ViewGroup.MarginLayoutParams
+//                                            layoutParams.setMargins(
+//                                                0,
+//                                                0,
+//                                                0,
+//                                                0
+//                                            )
+//                                            binding.conroot.layoutParams = layoutParams
+//                                        }
                                         item.visbleTime = 1
                                         strTimeZu.add(time)
                                     }
@@ -207,6 +230,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                             } else {
                                 if (strTimeZu.size == 0) {
                                     binding.tvmiddletime.visibility = View.VISIBLE
+
                                     item.visbleTime = 1
                                     strTimeZu.add(time)
                                 } else {
@@ -215,6 +239,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                         item.visbleTime = 2
                                     } else {
                                         binding.tvmiddletime.visibility = View.VISIBLE
+
                                         item.visbleTime = 1
                                         strTimeZu.add(time)
                                     }
@@ -227,6 +252,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
                         1 -> {//显示
                             binding.tvmiddletime.visibility = View.VISIBLE
+
                         }
 
                         2 -> {//不显示
