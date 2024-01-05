@@ -186,15 +186,15 @@ class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
             title="<p style=\" color: #37373D; font-size: 18px; font-weight: bold; margin: 0;\">${it.title}</p>"
             if(it.publishTime.isNotEmpty()){
                 dateTimeString= sdf.format(Date(it.publishTime.toLong()))
-                title += "<div style=\" display: flex; align-items: center;\"> " +
+                title += "<div style=\" display: flex; align-items: center; margin: 0; padding: 0; \"> " +
                         "<div style=\"display: flex; align-items: center;\">" +
                         "<img src=\"file:///android_asset/football.png\"  alt=\"Example\" width=\"20px\" height=\"20px\"  >" +
                         " <h4 style=\"font-size: 12px; color: #575762; font-weight: normal; margin-left: 4px;\">体育直播</h4>" +
                         "</div>"+
-                        "<h4 style=\" color: #94999F; font-size: 11px; margin-left: auto; font-weight: normal;\">${dateTimeString} 发布</h5></div>"
+                        "<h4 style=\" color: #94999F; font-size: 11px; margin-left: auto; font-weight: normal; padding: 0; \">${dateTimeString} 发布</h4></div>"
             }
             title += it.content
-            title="<body style=\"background-color: white; margin: 0; padding: 24px;\">${title}</body>"
+            title="<body style=\"background-color: white;  padding: 0px; margin-left: 12px; margin-right: 12px;\">${title}</body>"
             agentWeb.urlLoader.loadDataWithBaseURL(
                 null,
                 title,
@@ -212,15 +212,15 @@ class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
             title="<p style=\" color: #37373D; font-size: 18px; font-weight: bold;\">${it.title}</p>"
             if(it.updateTime .isNotEmpty()){
                 dateTimeString= sdf.format(Date(it.updateTime.toLong()))
-                title +=   "<div style=\" display: flex; align-items: center;\"> " +
+                title +=   "<div style=\" display: flex; align-items: center;  margin: 0; padding: 0; \"> " +
                         "<div style=\"display: flex; align-items: center;\">" +
                         "<img src=\"file:///android_asset/football.png\"  alt=\"Example\" width=\"20px\" height=\"2px\"  >" +
                         " <h4 style=\"font-size: 12px; color: #575762; font-weight: normal; margin-left: 4px;\">体育直播</h4>" +
                         "</div>"+
-                        "<h4 style=\" color: #94999F; font-size: 11px; margin-left: auto; font-weight: normal;\">${dateTimeString} 发布</h5></div>"
+                        "<h5 style=\" color: #94999F; font-size: 11px; margin-left: auto; font-weight: normal;\">${dateTimeString} 发布</h4></div>"
             }
             title += it.content
-            title="<body style=\"background-color: white; margin: 0; padding: 24px;\">${title}</body>"
+            title="<body style=\"background-color: white; padding: 0px; margin-left: 12px; margin-right: 12px;\">${title}</body>"
             agentWeb.urlLoader.loadDataWithBaseURL(
                 null,
                 title,

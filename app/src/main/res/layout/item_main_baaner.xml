@@ -11,6 +11,7 @@
         android:id="@+id/banner"
         android:layout_width="match_parent"
         android:layout_height="165dp"
+        app:banner_loop_time="3000"
         banner:banner_radius="10dp"/>
     <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="match_parent"

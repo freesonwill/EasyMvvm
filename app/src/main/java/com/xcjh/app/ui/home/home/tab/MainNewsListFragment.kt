@@ -1,7 +1,11 @@
 package com.xcjh.app.ui.home.home.tab
 
 import android.os.Bundle
+import android.util.Log
+import android.view.MotionEvent
 import android.view.View
+import android.view.ViewConfiguration
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.drake.brv.utils.*
@@ -43,6 +47,8 @@ class MainNewsListFragment  : BaseFragment<MainNewsListVm, FragmentMainNewsListB
                 mViewModel.getNewsList(false)
             }
         })
+
+
 
 
     }
