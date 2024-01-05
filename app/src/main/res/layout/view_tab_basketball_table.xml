@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:background="@drawable/shape_r10_ring"
     xmlns:android="http://schemas.android.com/apk/res/android">
@@ -68,13 +70,15 @@
             android:textColor="@color/c_94999f"
             android:textSize="@dimen/sp_12" />
     </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/layout_table"
-        android:layout_marginHorizontal="@dimen/dp_1"
-        android:layout_marginBottom="@dimen/dp_1"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rcvPlayer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="25dp"
-        android:orientation="vertical" />
+        android:paddingHorizontal="1dp"
+        android:minHeight="@dimen/dp_25"
+        android:paddingBottom="1dp"
+        app:layoutManager="com.drake.brv.layoutmanager.HoverLinearLayoutManager"
+        app:spanCount="2"
+        tools:itemCount="8"
+        tools:listitem="@layout/item_detail_lineup_basketball" />
 </LinearLayout>

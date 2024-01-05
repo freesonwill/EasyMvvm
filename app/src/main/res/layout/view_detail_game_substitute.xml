@@ -48,6 +48,7 @@
         android:layout_height="wrap_content"
         android:paddingHorizontal="1dp"
         android:paddingBottom="1dp"
+        android:minHeight="@dimen/dp_25"
         app:layoutManager="com.drake.brv.layoutmanager.HoverGridLayoutManager"
         app:spanCount="2"
         tools:itemCount="8"

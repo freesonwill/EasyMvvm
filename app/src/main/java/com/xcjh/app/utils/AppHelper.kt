@@ -739,7 +739,7 @@ fun getH5Content3(htmlStr: String): String {
     return htmlStr.replace(regFormat.toRegex(), "<br>")
 }
 
-fun setWeb(mWebView: WebView) {
+fun setWeb(mWebView: WebView, finishLoad: (Boolean) -> Unit = {}) {
     mWebView.webViewClient = object : WebViewClient() {
         override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
             super.onPageStarted(view, url, favicon)
@@ -755,6 +755,7 @@ fun setWeb(mWebView: WebView) {
 
         override fun onPageFinished(view: WebView?, url: String?) {
             super.onPageFinished(view, url)
+            finishLoad.invoke(true)
             //Log.e("TAG", "--------onPageFinished------ ")
         }
     }

@@ -54,7 +54,7 @@ class DetailIndexFragment(var matchId: String = "", var matchType: String = "1")
     }
     override fun lazyLoadData() {
         //ViewModelProvider.get()
-        //loadData()
+       // loadData()
     }
 
     private fun loadData() {

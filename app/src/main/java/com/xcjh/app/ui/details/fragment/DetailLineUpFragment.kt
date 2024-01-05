@@ -50,7 +50,7 @@ class DetailLineUpFragment(var match: MatchDetailBean) :
     }
 
     override fun lazyLoadData() {
-        loadData()
+       // loadData()
     }
     private fun loadData() {
         if ("1" == match.matchType) {//1：足球；2：篮球

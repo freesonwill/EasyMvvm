@@ -90,14 +90,12 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
             mDatabind.notice.root.visibility = View.VISIBLE
             mDatabind.notice.apply {
                 mNoticeWeb = agentWeb
-                setWeb(mNoticeWeb!!)
+                setWeb(mNoticeWeb!!){}
                 lltExpandCollapse.setOnClickListener {
-                    val aa = mNoticeWeb?.height?:0//原来的高度
                     noticeBean.isOpen = !noticeBean.isOpen
                     tvArrow.text =
                         if (noticeBean.isOpen) getString(R.string.pack_up) else getString(R.string.expand)
                     startImageRotate(expandCollapse, noticeBean.isOpen)
-
                     var htmlText = if (noticeBean.isOpen){
                         "<div style='display: -webkit-box; -webkit-line-clamp: 10; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;'>${noticeBean.notice}</div>"
                     }else{
@@ -106,11 +104,13 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
                     val bb = "<html><head><style>body { font-size:14px; color: #94999f; margin: 0; }</style></head><body>${(htmlText)}</body></html>"
                     agentWeb.loadDataWithBaseURL(null, bb, "text/html", "UTF-8", null)
                     mDatabind.rcvChat.postDelayed({
-                        val bb = mNoticeWeb?.height?:0//现在的高度
-                        val params = mDatabind.rcvChat.layoutParams
-                        params.height = mDatabind.rcvChat.height - bb + aa
-                        mDatabind.rcvChat.layoutParams = params
-                    }, 200)
+                        try {
+                            val params = mDatabind.rcvChat.layoutParams
+                            params.height = mDatabind.page.height
+                            mDatabind.rcvChat.layoutParams = params
+                        } catch (_: Exception) {
+                        }
+                    }, 100)
 
                 }
             }
@@ -123,7 +123,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
     private fun initRcv() {
         //  mDatabind.page.setEnableLoadMore(false)
         mDatabind.page.setEnableOverScrollBounce(false)
-        mDatabind.page.preloadIndex = 3
+        mDatabind.page.preloadIndex = 6
         ClassicsFooter.REFRESH_FOOTER_NOTHING=""
         mDatabind.page.emptyLayout = R.layout.layout_empty
         mDatabind.page.stateLayout?.onEmpty {
