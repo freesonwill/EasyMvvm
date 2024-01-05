@@ -42,6 +42,7 @@ import com.xcjh.app.bean.NoticeBean
 import com.xcjh.app.bean.TabBean
 import com.xcjh.app.databinding.ItemDetailChatBinding
 import com.xcjh.app.databinding.ItemDetailChatFirstBinding
+import com.xcjh.app.ui.details.DetailVm
 import com.xcjh.app.ui.details.fragment.DetailAnchorFragment
 import com.xcjh.app.ui.details.fragment.DetailChat2Fragment
 import com.xcjh.app.ui.details.fragment.DetailIndexFragment
@@ -342,6 +343,7 @@ fun setProgressValue(progress: Int): Int {
  */
 @SuppressLint("ClickableViewAccessibility")
 fun setChatRoomRcv(
+    vm: DetailVm,
     rcvChat: RecyclerView,
     mLayoutManager: HoverLinearLayoutManager,
     isReverse: Boolean = false,
@@ -462,13 +464,14 @@ fun setChatRoomRcv(
                         binding.tvContent.text = section.spanStrBuilder
                     } else {
                         if (item.msgType == 0) {
+
                             binding.tvContent.text =
-                                "<font color=\"#34A853\"><strong>${item.nick} : </strong></font>${item.content}".toHtml()
+                                "<font color=\"#34A853\"><strong>${vm.anchorName} : </strong></font>${item.content}".toHtml()
                             //binding.tvContent.movementMethod = LinkMovementMethod.getInstance()
                         } else {
                             //图片
                             binding.tvContent.text =
-                                "<font color=\"#34A853\"><strong>${item.nick} : </strong></font>".toHtml()
+                                "<font color=\"#34A853\"><strong>${vm.anchorName} : </strong></font>".toHtml()
                         }
                     }
                     //.showIn(binding.tvContent) //显示到控件TextView中
@@ -476,10 +479,10 @@ fun setChatRoomRcv(
             }
         }
     }
-    fun setWebView() {
 
-    }
 }
+
+
 fun agentWeb(
     context: Context,
     vg: ViewGroup,

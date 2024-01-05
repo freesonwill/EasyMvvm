@@ -736,6 +736,7 @@ class MatchDetailActivity :
         mDatabind.cslAnchor.visibleOrGone(isHasAnchor)
         mDatabind.tvDetailTabAnchorFans.text = anchor?.hotValue + "热度值" //热度
         mDatabind.tvTabAnchorNick.text = anchor?.nickName  //主播昵称
+        mViewModel.anchorName = anchor?.nickName?:""
         loadImage(
             this,
             anchor?.userLogo,

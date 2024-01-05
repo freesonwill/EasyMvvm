@@ -140,7 +140,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
         mDatabind.page.onRefresh {
             mViewModel.getHisMsgList(liveId, offset)
         }
-        setChatRoomRcv(mDatabind.rcvChat, mLayoutManager, true, {
+        setChatRoomRcv(vm,mDatabind.rcvChat, mLayoutManager, true, {
             mAgentWeb = it
         },{
             mDatabind.rcvChat.postDelayed({
@@ -330,6 +330,9 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
         var isShowBottom = false
         val firstVisible: Int = mLayoutManager.findFirstVisibleItemPosition()
         var lastVisible: Int = mLayoutManager.findLastVisibleItemPosition()
+        if (chat.groupId != liveId) {
+            return
+        }
         mDatabind.page.showContent()
         mDatabind.rcvChat.models?.apply {
             if (this.size > 3 && firstVisible < 1) {

@@ -77,11 +77,12 @@ class DetailResultBasketFragment(private var match: MatchDetailBean) :
                     }
                 }
             })
-        loadData()
+        mDatabind.state.showLoading()
+        //loadData()
     }
 
     override fun lazyLoadData() {
-        //loadData()
+        loadData()
     }
     private fun loadData() {
         //获取篮球赛况 得分数据
@@ -98,6 +99,7 @@ class DetailResultBasketFragment(private var match: MatchDetailBean) :
     override fun createObserver() {
         //篮球比赛赛况技术统计上表格数据接口返回处理
         vm.basketScore.observe(this) {
+            mDatabind.state.showContent()
             if (it != null) {
                 mDatabind.viewBasketballTable.setTeamData(it)
             }

@@ -62,6 +62,8 @@ class DetailResultFootballFragment(private var match: MatchDetailBean) :
             mDatabind.viewPager.offscreenPageLimit = 2
         }
         loadData()
+        //mDatabind.state.loadingLayout = R.layout.layout_state_loading
+        mDatabind.state.showLoading()
     }
 
 
@@ -87,6 +89,7 @@ class DetailResultFootballFragment(private var match: MatchDetailBean) :
     override fun createObserver() {
         ///==========足球比赛赛况技术统计图表数据接口返回处理
         vm.footStatus.observe(this) {
+            mDatabind.state.showContent()
             if (it != null) {
                 //足球比赛赛况技术统计，需要依据接口进行调整
                 mDatabind.viewFootballStatus.setData(it)

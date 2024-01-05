@@ -133,7 +133,7 @@ class DetailChatFragment(
                 mViewModel.getHisMsgList(liveId, offset)
             }
         }
-        setChatRoomRcv(mDatabind.rcvChat,mLayoutManager,false,{
+        setChatRoomRcv(vm,mDatabind.rcvChat,mLayoutManager,false,{
             mAgentWeb=it
         },{
             mDatabind.rcvChat.postDelayed({

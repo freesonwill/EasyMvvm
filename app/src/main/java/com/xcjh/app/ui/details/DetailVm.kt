@@ -33,6 +33,7 @@ class DetailVm : BaseViewModel() {
     var runTime = UnPeekLiveData(0)
     private var pageNo = 1
     var tt = 1
+    var anchorName=""
     //主播信息
     var anchorInfo = UnPeekLiveData<AnchorListBean>()
 
@@ -41,13 +42,13 @@ class DetailVm : BaseViewModel() {
     var showAd = UnPeekLiveData<UpdateUiState<ScrollTextBean>>()
     var anchor = UnPeekLiveData<DetailAnchorBean>()
 
-    var odds = UnPeekLiveData<OddsBean>()
-    var foot = UnPeekLiveData<FootballLineupBean>()
-    var basket = UnPeekLiveData<BasketballLineupBean>()
+    var odds = UnPeekLiveData<OddsBean?>()
+    var foot = UnPeekLiveData<FootballLineupBean?>()
+    var basket = UnPeekLiveData<BasketballLineupBean?>()
 
-    var basketScore = UnPeekLiveData<BasketballScoreBean>()
+    var basketScore = UnPeekLiveData<BasketballScoreBean?>()
     var basketStatus = UnPeekLiveData<BasketballSBean>()   //篮球赛况下表格数据
-    var footStatus = UnPeekLiveData<ArrayList<StatusBean>>()     //足球赛况表格数据
+    var footStatus = UnPeekLiveData<ArrayList<StatusBean>?>()     //足球赛况表格数据
 
     fun startTimeRepeat(time:Int) {
         runTime.value = time
@@ -141,7 +142,7 @@ class DetailVm : BaseViewModel() {
         }, {
             odds.value = it
         }, {
-
+            odds.value = null
         })
     }
     var liveList = UnPeekLiveData<ListDataUiState<BeingLiveBean>>()
@@ -182,6 +183,7 @@ class DetailVm : BaseViewModel() {
         }, {
             foot.value = it
         }, {
+            foot.value = null
             //myToast(it.errorMsg)
         })
     }
@@ -195,6 +197,7 @@ class DetailVm : BaseViewModel() {
         }, {
             basket.value = it
         }, {
+            basket.value = null
             //myToast(it.errorMsg)
         })
     }
@@ -208,6 +211,7 @@ class DetailVm : BaseViewModel() {
         }, {
             basketScore.value = it
         }, {
+            basketScore.value = null
             //myToast(it.errorMsg)
            /* val it= BasketballScoreBean()
             it.homeScoreList= arrayListOf(10,12,15,18,10)
@@ -241,6 +245,7 @@ class DetailVm : BaseViewModel() {
         }, {
             footStatus.value = it
         }, {
+            footStatus.value = null
             //myToast(it.errorMsg)
         })
     }

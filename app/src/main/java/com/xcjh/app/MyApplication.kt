@@ -84,6 +84,7 @@ class MyApplication : App() , LifecycleObserver{
         StateConfig.apply {
             emptyLayout = R.layout.layout_empty
             errorLayout = R.layout.layout_empty
+            loadingLayout = R.layout.layout_state_loading
     //            setRetryIds(R.id.ivEmptyIcon, R.id.txtEmptyName)
 
             onLoading {

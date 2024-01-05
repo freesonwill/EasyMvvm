@@ -1,27 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/lltBasketball"
-        android:visibility="visible"
+
+    <com.drake.statelayout.StateLayout
+        android:id="@+id/state"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <LinearLayout
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/lltBasketball"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="@dimen/dp_12"
-            android:orientation="vertical">
+            android:visibility="visible">
 
-            <com.xcjh.app.view.balldetail.result.BasketballTableView
-                android:id="@+id/view_basketball_table"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/dp_12"
+                android:orientation="vertical">
 
-            <com.xcjh.app.view.balldetail.result.BasketballDataView
-                android:id="@+id/view_basketball_data"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_20" />
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+                <com.xcjh.app.view.balldetail.result.BasketballTableView
+                    android:id="@+id/view_basketball_table"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <com.xcjh.app.view.balldetail.result.BasketballDataView
+                    android:id="@+id/view_basketball_data"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_20" />
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
+    </com.drake.statelayout.StateLayout>
 </layout>
