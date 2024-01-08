@@ -103,6 +103,7 @@
                     android:maxLength="200"
                     android:paddingLeft="15dp"
                     android:paddingRight="10dp"
+                    android:textCursorDrawable="@drawable/shape_et_cursor_blue"
                     android:textColor="@color/c_37373d"
                     android:textColorHint="@color/c_94999f"
                     android:textSize="@dimen/sp_14"
