@@ -440,7 +440,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
 
                 if (it.listData.size > 0) {
                     for ((index, data) in it.listData.withIndex()) {
-                        val foundData = listdata.find { it.anchorId == data.anchorId }
+                        val foundData = listdata.find { it.id == data.id }
                         if (foundData == null) {
                             data?.let { it1 ->
                                 //if (it1.noReadSum > 0) {//这里看看需不需要判断  因为色剂到 多设备登录的问题
