@@ -2,9 +2,8 @@ package com.xcjh.app.event
 
 import com.kunminx.architecture.ui.callback.UnPeekLiveData
 import com.xcjh.app.bean.CurrentIndex
-import com.xcjh.app.bean.MsgBean
 import com.xcjh.app.bean.UserInfo
-import com.xcjh.app.ui.room.MsgBeanData
+import com.xcjh.app.bean.MsgBeanData
 import com.xcjh.app.utils.CacheUtil
 import com.xcjh.app.websocket.bean.LiveStatus
 import com.xcjh.app.websocket.bean.ReceiveChangeMsg

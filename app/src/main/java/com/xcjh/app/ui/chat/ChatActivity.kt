@@ -10,18 +10,14 @@ import android.text.TextUtils
 import android.util.Log
 import android.view.Gravity
 import android.view.KeyEvent
-import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnLongClickListener
-import android.view.ViewConfiguration
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.TextView.OnEditorActionListener
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.SimpleItemAnimator
 import com.alibaba.fastjson.JSONObject
 import com.blankj.utilcode.util.ToastUtils
 import com.bumptech.glide.Glide
@@ -54,7 +50,7 @@ import com.xcjh.app.databinding.ItemChatTxtLeftBinding
 import com.xcjh.app.databinding.ItemChatTxtRightBinding
 import com.xcjh.app.net.CountingRequestBody
 import com.xcjh.app.net.ProgressListener
-import com.xcjh.app.ui.room.MsgBeanData
+import com.xcjh.app.bean.MsgBeanData
 import com.xcjh.app.utils.CacheUtil
 import com.xcjh.app.utils.ChatTimeUtile
 import com.xcjh.app.utils.GlideEngine

@@ -1,7 +1,6 @@
 package com.xcjh.app.ui.room
 
 import android.util.Log
-import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -9,6 +8,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
+import com.xcjh.app.bean.MsgListNewData
 
 @Dao
 interface ChatListDao {

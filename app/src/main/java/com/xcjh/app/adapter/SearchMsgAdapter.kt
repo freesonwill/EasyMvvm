@@ -1,17 +1,14 @@
 package com.xcjh.app.adapter
 
 import android.content.Context
-import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.QuickViewHolder
 import com.xcjh.app.R
-import com.xcjh.app.bean.MsgListBean
 import com.xcjh.app.ui.chat.ChatActivity
-import com.xcjh.app.ui.feed.FeedNoticeActivity
-import com.xcjh.app.ui.room.MsgListNewData
+import com.xcjh.app.bean.MsgListNewData
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.startNewActivity
 import com.xcjh.base_lib.utils.view.CircleImageView

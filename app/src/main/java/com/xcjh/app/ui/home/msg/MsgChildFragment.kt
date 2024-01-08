@@ -4,16 +4,12 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.recyclerview.widget.SimpleItemAnimator
-import androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread
 import com.bumptech.glide.Glide
-import com.drake.brv.utils.addModels
 import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.models
 import com.drake.brv.utils.mutable
 import com.drake.brv.utils.setup
 import com.drake.statelayout.StateConfig
-import com.google.gson.Gson
 import com.xcjh.app.MyApplication
 import com.xcjh.app.R
 import com.xcjh.app.appViewModel
@@ -22,11 +18,10 @@ import com.xcjh.app.databinding.FrMsgchildBinding
 import com.xcjh.app.databinding.ItemMsglistBinding
 import com.xcjh.app.ui.chat.ChatActivity
 import com.xcjh.app.ui.feed.FeedNoticeActivity
-import com.xcjh.app.ui.room.MsgBeanData
-import com.xcjh.app.ui.room.MsgListNewData
+import com.xcjh.app.bean.MsgBeanData
+import com.xcjh.app.bean.MsgListNewData
 import com.xcjh.app.utils.CacheUtil
 import com.xcjh.app.utils.ChatTimeUtile
-import com.xcjh.app.utils.clearMsg
 import com.xcjh.app.utils.delMsgDilog
 import com.xcjh.app.view.CustomHeader
 import com.xcjh.app.websocket.MyWsManager
@@ -34,7 +29,6 @@ import com.xcjh.app.websocket.bean.FeedSystemNoticeBean
 import com.xcjh.app.websocket.bean.ReceiveChangeMsg
 import com.xcjh.app.websocket.bean.ReceiveChatMsg
 import com.xcjh.app.websocket.bean.ReceiveWsBean
-import com.xcjh.app.websocket.bean.SendCommonWsBean
 import com.xcjh.app.websocket.listener.C2CListener
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.LogUtils
@@ -43,7 +37,6 @@ import com.xcjh.base_lib.utils.vertical
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 

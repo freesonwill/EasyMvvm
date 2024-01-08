@@ -17,10 +17,8 @@ import com.xcjh.app.bean.FriendListBean
 import com.xcjh.app.databinding.FrMsgfriendBinding
 import com.xcjh.app.databinding.ItemMsgfrienddelBinding
 import com.xcjh.app.ui.chat.ChatActivity
-import com.xcjh.app.ui.room.MsgListNewData
 import com.xcjh.app.utils.CacheUtil
 import com.xcjh.app.utils.delFriDilog
-import com.xcjh.app.utils.delMsgDilog
 import com.xcjh.app.view.CustomHeader
 import com.xcjh.app.view.SideBarLayout.OnSideBarLayoutListener
 import com.xcjh.base_lib.Constants

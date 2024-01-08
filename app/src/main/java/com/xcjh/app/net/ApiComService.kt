@@ -1,8 +1,8 @@
 package com.xcjh.app.net
 
 import com.xcjh.app.bean.*
-import com.xcjh.app.ui.room.MsgBeanData
-import com.xcjh.app.ui.room.MsgListNewData
+import com.xcjh.app.bean.MsgBeanData
+import com.xcjh.app.bean.MsgListNewData
 import com.xcjh.base_lib.bean.ApiResponse
 import okhttp3.MultipartBody
 import retrofit2.http.*

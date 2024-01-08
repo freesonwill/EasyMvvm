@@ -31,6 +31,7 @@ import com.xcjh.app.databinding.ActivityMynoticeBinding
 import com.xcjh.app.databinding.ItemJsBinding
 import com.xcjh.app.databinding.ItemSchAllBinding
 import com.xcjh.app.ui.details.MatchDetailActivity
+import com.xcjh.app.utils.judgeLogin
 import com.xcjh.app.view.CustomHeader
 import com.xcjh.base_lib.Constants.Companion.BASE_PAGE_SIZE
 import com.xcjh.base_lib.utils.LogUtils
@@ -39,6 +40,7 @@ import com.xcjh.base_lib.utils.distance
 import com.xcjh.base_lib.utils.grid
 import com.xcjh.base_lib.utils.horizontal
 import com.xcjh.base_lib.utils.vertical
+import com.xcjh.base_lib.utils.view.clickNoRepeat
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -49,11 +51,11 @@ import java.util.Locale
 
 class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
 
-
+    var mview: LottieAnimationView? = null
+    var mview1: ImageView? = null
     var listdata: MutableList<MatchBean> = ArrayList<MatchBean>()
     var page = 1
     var pageSize = 10
-    var mview: View? = null
     var index: Int = 0
     val animatorSet = AnimatorSet()
     var strTimeZu: MutableList<String> = ArrayList<String>()
@@ -89,42 +91,46 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                 var item = _data as MatchBean
                 // 设置item数据
 
-                var time = TimeUtil.timeStamp2Date(item!!.matchTime.toLong(), null)
+                var time = TimeUtil.getDayOfWeek(item!!.matchTime.toLong(), context)
+                var time1 = TimeUtil.timeStamp2Date(item!!.matchTime.toLong(), null)
                 if (item.focus) {
-                    binding.tvcollect.setBackgroundResource(R.drawable.ic_focus_s)
+                    binding.ivsc.setBackgroundResource(R.drawable.sc_shoucang_icon2)
                 } else {
-                    binding.tvcollect.setBackgroundResource(R.drawable.ic_focus_n)
+                    binding.ivsc.setBackgroundResource(R.drawable.sc_shoucang_icon1)
                 }
-                binding.tvmiddletime.text = time!!.substring(0, 10)
+                binding.tvmiddletime.text = time
                 when (item.visbleTime) {
                     0 -> {
-                        if (time!!.substring(0, 10) == TimeUtil.gettimenowYear()) {
+                        if (time1!!.substring(0,10) == TimeUtil.gettimenowYear()) {
                             if (strTimeZu.size == 0) {
                                 item.visbleTime = 2
                                 binding.tvmiddletime.visibility = View.GONE
                             } else {
-                                if (strTimeZu[strTimeZu.size - 1] == time!!.substring(0, 10)) {
+                                if (strTimeZu[strTimeZu.size - 1] == time) {
                                     binding.tvmiddletime.visibility = View.GONE
                                     item.visbleTime = 2
                                 } else {
-                                    binding.tvmiddletime.visibility = View.GONE
+                                    binding.tvmiddletime.visibility = View.VISIBLE
+
                                     item.visbleTime = 1
-                                    strTimeZu.add(time!!.substring(0, 10))
+                                    strTimeZu.add(time)
                                 }
                             }
                         } else {
                             if (strTimeZu.size == 0) {
-                                binding.tvmiddletime.visibility = View.GONE
+                                binding.tvmiddletime.visibility = View.VISIBLE
+
                                 item.visbleTime = 1
-                                strTimeZu.add(time!!.substring(0, 10))
+                                strTimeZu.add(time)
                             } else {
-                                if (strTimeZu[strTimeZu.size - 1] == time!!.substring(0, 10)) {
+                                if (strTimeZu[strTimeZu.size - 1] == time) {
                                     binding.tvmiddletime.visibility = View.GONE
                                     item.visbleTime = 2
                                 } else {
-                                    binding.tvmiddletime.visibility = View.GONE
+                                    binding.tvmiddletime.visibility = View.VISIBLE
+
                                     item.visbleTime = 1
-                                    strTimeZu.add(time!!.substring(0, 10))
+                                    strTimeZu.add(time)
                                 }
 
 
@@ -134,7 +140,8 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                     }
 
                     1 -> {//显示
-                        binding.tvmiddletime.visibility = View.GONE
+                        binding.tvmiddletime.visibility = View.VISIBLE
+
                     }
 
                     2 -> {//不显示
@@ -144,11 +151,11 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                 }
 
                 LogUtils.d("直播数据" + item.anchorList)
-                binding.txtMatchAnimation.visibility=View.VISIBLE
+                binding.txtMatchAnimation.visibility = View.VISIBLE
                 if (item.matchType == "1") {//比赛类型：1：足球；2：篮球,可用值:1,2
                     binding.tvhafl.text =
                         context.resources.getString(R.string.hafl_rices) + "" + item.homeHalfScore + "-" + item.awayHalfScore
-                    binding.tvtime.text = time!!.substring(11, 16)
+                    binding.tvtime.text = time1!!.substring(11, 16)
                     binding.tvname.text = item.competitionName
                     binding.tvnameLeft.text = item.homeName
                     binding.tvnameRight.text = item.awayName
@@ -160,14 +167,14 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
 
                     when (item.status) {
                         "0" -> {
-                            binding.txtMatchAnimation.visibility=View.GONE
+                            binding.txtMatchAnimation.visibility = View.GONE
                             binding.tvstatus.visibility = View.GONE
                             //  clearAnimation(binding.txtMatchAnimation)
                         }
 
                         "1" -> {
                             binding.tvvs.text = "VS"
-                            binding.txtMatchAnimation.visibility=View.GONE
+                            binding.txtMatchAnimation.visibility = View.GONE
                             binding.tvstatus.visibility = View.VISIBLE
                             binding.tvstatus.setTextColor(
                                 ContextCompat.getColor(
@@ -188,7 +195,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
 
                         "2" -> {
                             binding.tvstatus.visibility = View.VISIBLE
-                            binding.txtMatchAnimation.visibility=View.VISIBLE
+                            binding.txtMatchAnimation.visibility = View.VISIBLE
                             binding.tvvs.text = item.homeScore + "-" + item.awayScore
                             binding.tvstatus.setTextColor(
                                 ContextCompat.getColor(
@@ -214,7 +221,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
 
                         "3" -> {
                             binding.tvstatus.visibility = View.VISIBLE
-                            binding.txtMatchAnimation.visibility=View.VISIBLE
+                            binding.txtMatchAnimation.visibility = View.VISIBLE
                             binding.tvvs.text = item.homeScore + "-" + item.awayScore
                             binding.tvstatus.setTextColor(
                                 ContextCompat.getColor(
@@ -236,7 +243,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
 
                         "4" -> {
                             binding.tvstatus.visibility = View.VISIBLE
-                            binding.txtMatchAnimation.visibility=View.VISIBLE
+                            binding.txtMatchAnimation.visibility = View.VISIBLE
                             binding.tvvs.text = item.homeScore + "-" + item.awayScore
                             binding.tvstatus.setTextColor(
                                 ContextCompat.getColor(
@@ -261,7 +268,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
 
                         "5", "6" -> {
                             binding.tvstatus.visibility = View.VISIBLE
-                            binding.txtMatchAnimation.visibility=View.VISIBLE
+                            binding.txtMatchAnimation.visibility = View.VISIBLE
                             binding.tvvs.text = item.homeScore + "-" + item.awayScore
                             binding.tvstatus.setTextColor(
                                 ContextCompat.getColor(
@@ -284,7 +291,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
 
                         "7" -> {
                             binding.tvstatus.visibility = View.VISIBLE
-                            binding.txtMatchAnimation.visibility=View.VISIBLE
+                            binding.txtMatchAnimation.visibility = View.VISIBLE
                             binding.tvvs.text = item.homeScore + "-" + item.awayScore
                             binding.tvstatus.setTextColor(
                                 ContextCompat.getColor(
@@ -306,7 +313,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                         }
 
                         "8" -> {
-                            binding.txtMatchAnimation.visibility=View.GONE
+                            binding.txtMatchAnimation.visibility = View.GONE
                             binding.tvvs.text = item.homeScore + "-" + item.awayScore
                             binding.tvstatus.visibility = View.VISIBLE
                             binding.tvstatus.setTextColor(
@@ -329,7 +336,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
 
                         "9" -> {
 
-                            binding.txtMatchAnimation.visibility=View.GONE
+                            binding.txtMatchAnimation.visibility = View.GONE
                             binding.tvvs.text = "VS"
                             binding.tvstatus.visibility = View.VISIBLE
                             binding.tvstatus.setTextColor(
@@ -351,7 +358,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                         }
 
                         "10" -> {
-                            binding.txtMatchAnimation.visibility=View.GONE
+                            binding.txtMatchAnimation.visibility = View.GONE
                             binding.tvvs.text = "VS"
                             binding.tvstatus.visibility = View.VISIBLE
                             binding.tvstatus.setTextColor(
@@ -373,7 +380,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                         }
 
                         "11" -> {
-                            binding.txtMatchAnimation.visibility=View.GONE
+                            binding.txtMatchAnimation.visibility = View.GONE
                             binding.tvvs.text = "VS"
                             binding.tvstatus.visibility = View.VISIBLE
                             binding.tvstatus.setTextColor(
@@ -395,7 +402,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                         }
 
                         "12" -> {
-                            binding.txtMatchAnimation.visibility=View.GONE
+                            binding.txtMatchAnimation.visibility = View.GONE
                             binding.tvvs.text = "VS"
                             binding.tvstatus.visibility = View.VISIBLE
                             binding.tvstatus.setTextColor(
@@ -416,7 +423,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                         }
 
                         "13" -> {
-                            binding.txtMatchAnimation.visibility=View.GONE
+                            binding.txtMatchAnimation.visibility = View.GONE
                             binding.tvvs.text = "VS"
                             binding.tvstatus.visibility = View.VISIBLE
                             binding.tvstatus.setTextColor(
@@ -438,7 +445,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
 
                         else -> {
                             LogUtils.d("走这里了 哈哈哈")
-                            binding.txtMatchAnimation.visibility=View.GONE
+                            binding.txtMatchAnimation.visibility = View.GONE
                             binding.tvstatus.visibility = View.VISIBLE
                             binding.tvvs.text = "VS"
                             binding.tvstatus.setTextColor(
@@ -464,7 +471,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                 } else {
                     binding.tvhafl.text =
                         context.resources.getString(R.string.hafl_rices) + "" + item.awayHalfScore + "-" + item.homeHalfScore
-                    binding.tvtime.text = time!!.substring(11, 16)
+                    binding.tvtime.text = time1!!.substring(11, 16)
                     binding.tvname.text = item.competitionName
                     binding.tvnameLeft.text = item.awayName
                     binding.tvnameRight.text = item.homeName
@@ -475,14 +482,14 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                     binding.ivtype.setBackgroundResource(R.drawable.basketball)
                     when (item.status) {
                         "0" -> {
-                            binding.txtMatchAnimation.visibility=View.GONE
+                            binding.txtMatchAnimation.visibility = View.GONE
                             binding.tvstatus.visibility = View.GONE
                             clearAnimation(binding.txtMatchAnimation)
                         }
 
                         "1" -> {
                             binding.tvvs.text = "VS"
-                            binding.txtMatchAnimation.visibility=View.GONE
+                            binding.txtMatchAnimation.visibility = View.GONE
                             binding.tvstatus.visibility = View.VISIBLE
                             binding.tvstatus.setTextColor(
                                 ContextCompat.getColor(
@@ -503,7 +510,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                         }
 
                         "2" -> {
-                            binding.txtMatchAnimation.visibility=View.VISIBLE
+                            binding.txtMatchAnimation.visibility = View.VISIBLE
                             binding.tvvs.text = item.awayScore + "-" + item.homeScore
                             binding.tvstatus.visibility = View.VISIBLE
                             binding.tvstatus.setTextColor(
@@ -528,7 +535,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                         }
 
                         "3" -> {
-                            binding.txtMatchAnimation.visibility=View.VISIBLE
+                            binding.txtMatchAnimation.visibility = View.VISIBLE
                             binding.tvvs.text = item.awayScore + "-" + item.homeScore
                             binding.tvstatus.visibility = View.VISIBLE
                             binding.tvstatus.setTextColor(
@@ -555,7 +562,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                         }
 
                         "4" -> {
-                            binding.txtMatchAnimation.visibility=View.VISIBLE
+                            binding.txtMatchAnimation.visibility = View.VISIBLE
                             binding.tvvs.text = item.awayScore + "-" + item.homeScore
                             binding.tvstatus.visibility = View.VISIBLE
                             binding.tvstatus.setTextColor(
@@ -580,7 +587,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                         }
 
                         "5" -> {
-                            binding.txtMatchAnimation.visibility=View.VISIBLE
+                            binding.txtMatchAnimation.visibility = View.VISIBLE
                             binding.tvvs.text = item.awayScore + "-" + item.homeScore
                             binding.tvstatus.visibility = View.VISIBLE
                             binding.tvstatus.setTextColor(
@@ -607,7 +614,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                         }
 
                         "6" -> {
-                            binding.txtMatchAnimation.visibility=View.VISIBLE
+                            binding.txtMatchAnimation.visibility = View.VISIBLE
                             binding.tvvs.text = item.awayScore + "-" + item.homeScore
                             binding.tvstatus.visibility = View.VISIBLE
                             binding.tvstatus.setTextColor(
@@ -632,7 +639,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                         }
 
                         "7" -> {
-                            binding.txtMatchAnimation.visibility=View.VISIBLE
+                            binding.txtMatchAnimation.visibility = View.VISIBLE
                             binding.tvvs.text = item.awayScore + "-" + item.homeScore
                             binding.tvstatus.visibility = View.VISIBLE
                             binding.tvstatus.setTextColor(
@@ -659,7 +666,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                         }
 
                         "8" -> {
-                            binding.txtMatchAnimation.visibility=View.VISIBLE
+                            binding.txtMatchAnimation.visibility = View.VISIBLE
                             binding.tvvs.text = item.awayScore + "-" + item.homeScore
                             binding.tvstatus.visibility = View.VISIBLE
                             binding.tvstatus.setTextColor(
@@ -683,7 +690,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                         }
 
                         "9" -> {
-                            binding.txtMatchAnimation.visibility=View.VISIBLE
+                            binding.txtMatchAnimation.visibility = View.VISIBLE
                             binding.tvvs.text = item.awayScore + "-" + item.homeScore
                             binding.tvstatus.visibility = View.VISIBLE
                             binding.tvstatus.setTextColor(
@@ -704,7 +711,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                         }
 
                         "10" -> {
-                            binding.txtMatchAnimation.visibility=View.GONE
+                            binding.txtMatchAnimation.visibility = View.GONE
                             binding.tvvs.text = item.awayScore + "-" + item.homeScore
                             binding.tvstatus.visibility = View.VISIBLE
                             binding.tvstatus.setTextColor(
@@ -726,7 +733,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                         }
 
                         "11", "12", "13", "14", "15" -> {
-                            binding.txtMatchAnimation.visibility=View.GONE
+                            binding.txtMatchAnimation.visibility = View.GONE
                             clearAnimation(binding.txtMatchAnimation)
                             binding.tvvs.text = "VS"
                             binding.tvstatus.visibility = View.VISIBLE
@@ -798,9 +805,16 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                         onBind {
                             var binding1 = getBinding<ItemJsBinding>()
                             var item1 = _data as AnchorBean
-                            binding1.tvname.text = item1.nickName
+                            if (item1.nickName.length>5){
+                                binding1.tvname.text = item1.nickName.substring(0,4)+"..."
+                            }else{
+                                binding1.tvname.text = item1.nickName
+                            }
+
                             Glide.with(context).load(item1.userLogo)
                                 .placeholder(R.drawable.default_anchor_icon)
+                                .thumbnail(0.1f) // 设置缩略图大小比例（例如0.1表示原图的十分之一）
+                                .override(64, 64) // 指定目标宽度和高度
                                 .into(binding1.ivhead)
                             binding1.linroot.setOnClickListener {
                                 MatchDetailActivity.open(
@@ -821,27 +835,32 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                 }
 
 
-                binding.relcoolect.setOnClickListener {
+                binding.ivsc.clickNoRepeat(1000) {
+                    judgeLogin {
+//                            startAn(binding.tvcollect)
+//                            stopAn(binding.tvcollect)
+                        mview = binding.tvcollect
+                        mview1 = binding.ivsc
 
-                    mview = binding.tvcollect
-                    index = modelPosition
-                    if (item!!.focus) {
-                        mViewModel.getUnnotice(
-                            item!!.matchId,
-                            item!!.matchType
-                        )
-
-
-                    } else {
-
-                        mViewModel.getNotice(
-                            item!!.matchId,
-                            item!!.matchType
-                        )
+                        index = modelPosition
+                        if (item!!.focus) {
+                            mViewModel.getUnnotice(
+                                item!!.matchId,
+                                item!!.matchType
+                            )
 
 
+                        } else {
+                            // startAn(binding.tvcollect)
+
+                            mViewModel.getNotice(
+                                item!!.matchId,
+                                item!!.matchType
+                            )
+
+
+                        }
                     }
-
 
                 }
                 binding.conroot.setOnClickListener {
@@ -1059,18 +1078,24 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
             }
         }
         mViewModel.unnoticeData.observe(this) {
-            mview!!.setBackgroundResource(R.drawable.ic_focus_n)
+            mview!!.setAnimation("shoucang2.json")
+            mview!!.loop(false)
+            mview!!.playAnimation()
             (mDatabind.rec.models!![index] as MatchBean).focus=false
 
             appViewModel.updateCollection.postValue(true)
           //  mDatabind.rec.mutable.removeAt(index)
            // mDatabind.rec.bindingAdapter.notifyItemRemoved(index) // 通知更新
-
+            mview1!!.setBackgroundResource(R.drawable.sc_shoucang_icon1)
         }
         mViewModel.noticeData.observe(this) {
-            mview!!.setBackgroundResource(R.drawable.ic_focus_s)
+
+            mview!!.setAnimation("shoucang1.json")
+            mview!!.loop(false)
+            mview!!.playAnimation()
             (mDatabind.rec.models!![index] as MatchBean).focus= true
             appViewModel.updateCollection.postValue(false)
+            mview1!!.setBackgroundResource(R.drawable.sc_shoucang_icon2)
         }
     }
 

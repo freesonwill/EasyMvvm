@@ -4,7 +4,7 @@ import com.kunminx.architecture.ui.callback.UnPeekLiveData
 import com.xcjh.app.appViewModel
 import com.xcjh.app.bean.*
 import com.xcjh.app.net.apiService
-import com.xcjh.app.ui.room.MsgListNewData
+import com.xcjh.app.bean.MsgListNewData
 import com.xcjh.app.utils.CacheUtil
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.Constants.Companion.BASE_PAGE_SIZE

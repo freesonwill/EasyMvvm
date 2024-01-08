@@ -16,6 +16,7 @@ import com.xcjh.app.listener.OnChooseDateListener
 import com.xcjh.app.utils.selectDate
 import com.xcjh.app.view.XPBottomPopu
 import com.xcjh.base_lib.utils.bindViewPager2
+import com.xcjh.base_lib.utils.bindViewPager3
 import com.xcjh.base_lib.utils.initActivity
 import com.xcjh.base_lib.utils.setOnclickNoRepeat
 
@@ -236,7 +237,7 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
         }
         mDatabind.vp.initActivity(requireActivity(), mFragments, true)
         //初始化 magic_indicator
-        mDatabind.magicIndicator.bindViewPager2(
+        mDatabind.magicIndicator.bindViewPager3(
             mDatabind.vp, titles,
             R.color.c_34a853,
             R.color.c_94999f,
