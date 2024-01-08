@@ -916,7 +916,12 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                             onBind {
                                 var binding1 = getBinding<ItemJsBinding>()
                                 var item1 = _data as AnchorBean
-                                binding1.tvname.text = item1.nickName
+                                if (item1.nickName.length>5){
+                                    binding1.tvname.text = item1.nickName.substring(0,4)+"..."
+                                }else{
+                                    binding1.tvname.text = item1.nickName
+                                }
+
                                 Glide.with(context).load(item1.userLogo)
                                     .placeholder(R.drawable.default_anchor_icon)
                                     .thumbnail(0.1f) // 设置缩略图大小比例（例如0.1表示原图的十分之一）
