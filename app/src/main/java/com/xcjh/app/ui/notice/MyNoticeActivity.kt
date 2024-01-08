@@ -835,7 +835,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                 }
 
 
-                binding.tvcollect.clickNoRepeat(1000) {
+                binding.ivsc.clickNoRepeat(1000) {
                     judgeLogin {
 //                            startAn(binding.tvcollect)
 //                            stopAn(binding.tvcollect)
