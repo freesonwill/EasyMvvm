@@ -73,11 +73,11 @@
                     android:text="+86"
                     android:textColor="@color/c_a6a6b2"
                     android:textSize="@dimen/sp_15"
-                    android:textStyle="bold" />
+                  />
 
                 <ImageView
                     android:id="@+id/ivgo"
-                    android:layout_width="@dimen/dp_16"
+                    android:layout_width="@dimen/dp_10"
                     android:layout_height="@dimen/dp_10"
                     android:layout_marginLeft="4dp"
                     android:src="@drawable/ic_arrow_down_white" />

@@ -45,7 +45,7 @@
                 android:text="@string/all_read"
                 android:textColor="@color/c_94999f"
                 android:textSize="11sp"
-                android:textStyle="bold" />
+              />
         </RelativeLayout>
 
 
