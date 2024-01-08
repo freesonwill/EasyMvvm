@@ -26,7 +26,7 @@ import com.xcjh.base_lib.utils.setOnclickNoRepeat
 class MsgFragment : BaseFragment<MsgVm, FrMsgBinding>() {
     private val mFragments: ArrayList<Fragment> = ArrayList<Fragment>()
     private var mTitles: Array<out String>? = null
-    var index=0
+    var index = 0
     override fun initView(savedInstanceState: Bundle?) {
         ImmersionBar.with(this)
             .statusBarDarkFont(true)//黑色
@@ -34,6 +34,7 @@ class MsgFragment : BaseFragment<MsgVm, FrMsgBinding>() {
             .init()
         initEvent()
     }
+
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
         //  isVisble = isVisibleToUser
@@ -42,60 +43,65 @@ class MsgFragment : BaseFragment<MsgVm, FrMsgBinding>() {
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
     }
+
     override fun onResume() {
         super.onResume()
 //        Log.i("FFFFFFFFF","3333333333333333")
     }
 
     private fun initEvent() {
-        mTitles = resources.getStringArray(R.array.str_msg_top)
+        try {
 
-        mFragments.add(MsgChildFragment.newInstance())
-        mFragments.add(MsFriendFragment.newInstance())
 
-        mDatabind.vp.initActivity(requireActivity(), mFragments, false)
+            mTitles = resources.getStringArray(R.array.str_msg_top)
 
-        //初始化 magic_indicator
-        mDatabind.magicIndicator.bindViewPager2(
-            mDatabind.vp, arrayListOf(
-                mTitles!![0],
-                mTitles!![1]
-            ),
-            R.color.c_37373d,
-            R.color.c_94999f,
-            18f, 16f, true, false,
-            R.color.c_34a853, margin = 30
-        )
+            mFragments.add(MsgChildFragment.newInstance())
+            mFragments.add(MsFriendFragment.newInstance())
 
-        mDatabind.vp.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            mDatabind.vp.initActivity(requireActivity(), mFragments, false)
 
-            override fun onPageSelected(position: Int) {
-                super.onPageSelected(position)
-                index=position
-                if (position==0){
-                    mDatabind.ivclear.visibility=View.VISIBLE
-                }else{
-                    mDatabind.ivclear.visibility=View.GONE
-                }
-            }
+            //初始化 magic_indicator
+            mDatabind.magicIndicator.bindViewPager2(
+                mDatabind.vp, arrayListOf(
+                    mTitles!![0],
+                    mTitles!![1]
+                ),
+                R.color.c_37373d,
+                R.color.c_94999f,
+                18f, 16f, true, false,
+                R.color.c_34a853, margin = 30
+            )
 
-        })
+            mDatabind.vp.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
 
-        setOnclickNoRepeat(mDatabind.ivclear) {
-            when (it.id) {
-                R.id.ivclear -> {
-                    clearMsg(requireActivity()) { it ->
-                        if (it){//点击了确定
-
-                            appViewModel.updateMsgEvent.postValue("-1")
-                        }
-
+                override fun onPageSelected(position: Int) {
+                    super.onPageSelected(position)
+                    index = position
+                    if (position == 0) {
+                        mDatabind.ivclear.visibility = View.VISIBLE
+                    } else {
+                        mDatabind.ivclear.visibility = View.GONE
                     }
                 }
 
-            }
-        }
+            })
 
+            setOnclickNoRepeat(mDatabind.ivclear) {
+                when (it.id) {
+                    R.id.ivclear -> {
+                        clearMsg(requireActivity()) { it ->
+                            if (it) {//点击了确定
+
+                                appViewModel.updateMsgEvent.postValue("-1")
+                            }
+
+                        }
+                    }
+
+                }
+            }
+        } catch (e: Exception) {
+        }
     }
 
     override fun createObserver() {

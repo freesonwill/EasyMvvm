@@ -32,8 +32,8 @@ class ScheduleFragment : BaseFragment<MainVm, FrCourseBinding>() {
     private var mTitles: Array<out String>? = null
     private val mtypes = arrayOf("0", "1", "2", "3")
     private val status = arrayOf("", "", "", "99")
-    var tags="ScheduleFragment"
-    var index=0
+    var tags = "ScheduleFragment"
+    var index = 0
     override fun initView(savedInstanceState: Bundle?) {
         ImmersionBar.with(this)
             .statusBarDarkFont(true)//黑色
@@ -61,7 +61,7 @@ class ScheduleFragment : BaseFragment<MainVm, FrCourseBinding>() {
     }
 
     override fun onDestroy() {
-          MyWsManager.getInstance(requireActivity())!!.removeLiveStatusListener(tags)
+        MyWsManager.getInstance(requireActivity())!!.removeLiveStatusListener(tags)
         super.onDestroy()
     }
 
@@ -70,19 +70,25 @@ class ScheduleFragment : BaseFragment<MainVm, FrCourseBinding>() {
 
 
     }
+
     override fun onResume() {
         super.onResume()
 
-        //这里需要告诉子fragment 可见了//注意第一次启动不能调用
-        (mFragments[index] as ScheduleChildOneFragment).checkData()
-        if (Constants.isLoading) {
-            LogUtils.d("子frahment可见了  判断是否需要刷新")
-            var bean = CurrentIndex()
-            bean.currtOne = index
-            bean.currtTwo =
-                (mFragments[index] as ScheduleChildOneFragment).getCurrentIndex()
-            appViewModel.updateSchedulePosition.postValue(bean)
+        try {
 
+            //这里需要告诉子fragment 可见了//注意第一次启动不能调用
+            (mFragments[index] as ScheduleChildOneFragment).checkData()
+            if (Constants.isLoading) {
+                LogUtils.d("子frahment可见了  判断是否需要刷新")
+                var bean = CurrentIndex()
+                bean.currtOne = index
+                bean.currtTwo =
+                    (mFragments[index] as ScheduleChildOneFragment).getCurrentIndex()
+                appViewModel.updateSchedulePosition.postValue(bean)
+
+            }
+
+        } catch (e: Exception) {
         }
     }
 
@@ -101,51 +107,55 @@ class ScheduleFragment : BaseFragment<MainVm, FrCourseBinding>() {
     }
 
     private fun initEvent() {
-        mTitles = resources.getStringArray(R.array.str_schedule_tab_top)
-        for (i in 0 until mTitles!!.size) {
-            mFragments.add(ScheduleChildOneFragment.newInstance(mtypes[i], status[i], i))
-            (mFragments[i] as ScheduleChildOneFragment).setPanrent(this@ScheduleFragment)
-        }
-        mDatabind.vp.initActivity(requireActivity(), mFragments, true)
-        //初始化 magic_indicator
-        mDatabind.magicIndicator.bindViewPager2(
-            mDatabind.vp, arrayListOf(
-                mTitles!![0],
-                mTitles!![1],
-                mTitles!![2],
-                mTitles!![3]
-            ),
-            R.color.c_37373d,
-            R.color.c_94999f,
-            18f, 16f, true, false,
-            R.color.c_34a853, margin = 30
-        )
-        mDatabind.vp.offscreenPageLimit = 4
-        // mDatabind.vp.isUserInputEnabled = false
+        try {
+
+
+            mTitles = resources.getStringArray(R.array.str_schedule_tab_top)
+            for (i in 0 until mTitles!!.size) {
+                mFragments.add(ScheduleChildOneFragment.newInstance(mtypes[i], status[i], i))
+                (mFragments[i] as ScheduleChildOneFragment).setPanrent(this@ScheduleFragment)
+            }
+            mDatabind.vp.initActivity(requireActivity(), mFragments, true)
+            //初始化 magic_indicator
+            mDatabind.magicIndicator.bindViewPager2(
+                mDatabind.vp, arrayListOf(
+                    mTitles!![0],
+                    mTitles!![1],
+                    mTitles!![2],
+                    mTitles!![3]
+                ),
+                R.color.c_37373d,
+                R.color.c_94999f,
+                18f, 16f, true, false,
+                R.color.c_34a853, margin = 30
+            )
+            mDatabind.vp.offscreenPageLimit = 4
+            // mDatabind.vp.isUserInputEnabled = false
 
 //        mDatabind.vp.adapter= MyPagerAdapter(childFragmentManager);
 //        mDatabind.slide.setViewPager(mDatabind.vp)
 //        mDatabind.vp.currentItem = 0
 //        mDatabind.vp.offscreenPageLimit=4
-        appViewModel.updateViewpager.observeForever {
+            appViewModel.updateViewpager.observeForever {
 
-            // mDatabind.vp.isUserInputEnabled = it
-        }
-
-        mDatabind.vp.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-
-            override fun onPageSelected(position: Int) {
-                super.onPageSelected(position)
-                index=position
-                var bean = CurrentIndex()
-                bean.currtOne = position
-                bean.currtTwo =
-                    (mFragments[position] as ScheduleChildOneFragment).getCurrentIndex()
-                appViewModel.updateSchedulePosition.postValue(bean)
+                // mDatabind.vp.isUserInputEnabled = it
             }
 
-        })
+            mDatabind.vp.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
 
+                override fun onPageSelected(position: Int) {
+                    super.onPageSelected(position)
+                    index = position
+                    var bean = CurrentIndex()
+                    bean.currtOne = position
+                    bean.currtTwo =
+                        (mFragments[position] as ScheduleChildOneFragment).getCurrentIndex()
+                    appViewModel.updateSchedulePosition.postValue(bean)
+                }
+
+            })
+        } catch (e: Exception) {
+        }
     }
 
     override fun createObserver() {
