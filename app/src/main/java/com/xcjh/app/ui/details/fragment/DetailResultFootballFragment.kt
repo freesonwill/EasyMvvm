@@ -63,7 +63,7 @@ class DetailResultFootballFragment(private var match: MatchDetailBean) :
         }
         loadData()
         //mDatabind.state.loadingLayout = R.layout.layout_state_loading
-        mDatabind.state.showLoading()
+       // mDatabind.state.showLoading()
     }
 
 

@@ -14,6 +14,7 @@ import com.xcjh.app.websocket.bean.ReceiveChangeMsg
 import com.xcjh.app.websocket.listener.OtherPushListener
 import com.xcjh.base_lib.App
 import com.xcjh.base_lib.utils.loge
+import com.xcjh.base_lib.utils.view.visibleOrGone
 import java.math.BigDecimal
 
 /**
@@ -101,6 +102,7 @@ class DetailResultBasketFragment(private var match: MatchDetailBean) :
         vm.basketScore.observe(this) {
             mDatabind.state.showContent()
             if (it != null) {
+                mDatabind.viewBasketballTable.visibleOrGone(true)
                 mDatabind.viewBasketballTable.setTeamData(it)
             }
         }

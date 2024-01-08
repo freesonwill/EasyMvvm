@@ -21,6 +21,7 @@
 
                 <com.xcjh.app.view.balldetail.result.BasketballTableView
                     android:id="@+id/view_basketball_table"
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 

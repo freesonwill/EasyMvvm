@@ -2,33 +2,30 @@ package com.xcjh.app.view.balldetail.result
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.widget.LinearLayout
-import android.widget.RelativeLayout
-import androidx.appcompat.widget.LinearLayoutCompat
 import com.bumptech.glide.Glide
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
-import com.google.gson.Gson
 import com.xcjh.app.R
 import com.xcjh.app.bean.BasketballScore
 import com.xcjh.app.bean.BasketballScoreBean
 import com.xcjh.app.databinding.ViewBasketballTableBinding
 import com.xcjh.app.databinding.ViewBasketballTableChildBinding
-import com.xcjh.app.databinding.ViewDetailFootballStatusBinding
-import com.xcjh.base_lib.utils.dip2px
 import com.xcjh.base_lib.utils.horizontal
 import com.xcjh.base_lib.utils.loge
 import com.xcjh.base_lib.utils.notNull
 
-class BasketballTableView(context: Context, attributeSet: AttributeSet) : RelativeLayout(context, attributeSet) {
+class BasketballTableView(context: Context, attributeSet: AttributeSet) :
+    LinearLayout(context, attributeSet) {
 
     private var binding: ViewBasketballTableBinding
     private val scoreList = arrayListOf<BasketballScore>()
+    private var rcvWidth = 0
 
     init {
-        binding= ViewBasketballTableBinding.inflate(LayoutInflater.from(context),this,true)
+        binding = ViewBasketballTableBinding.inflate(LayoutInflater.from(context), this, true)
+        rcvWidth = binding.rcvCommon.layoutParams.width
         binding.rcvCommon.isNestedScrollingEnabled = false
         binding.rcvCommon.horizontal().setup {
             addType<BasketballScore> {
@@ -40,16 +37,17 @@ class BasketballTableView(context: Context, attributeSet: AttributeSet) : Relati
             onBind {
                 when (val item = _data) {
                     is BasketballScore -> {
+                        val itemBinding = getBinding<ViewBasketballTableChildBinding>()
                         models?.size.notNull({
-                            if (it>0){
-                                getBinding<ViewBasketballTableChildBinding>().root.layoutParams.width = binding.rcvCommon.width/ if (it>6) 6 else it
+                            if (it > 0) {
+                                itemBinding.root.layoutParams.width =
+                                    rcvWidth / if (it > 6) 6 else it
                             }
                         })
 
-                        val binding = getBinding<ViewBasketballTableChildBinding>()
-                        binding.tvTitle.text = item.name
-                        binding.tvHome.text = item.homeScore
-                        binding.tvAway.text = item.awayScore
+                        itemBinding.tvTitle.text = item.name
+                        itemBinding.tvHome.text = item.homeScore
+                        itemBinding.tvAway.text = item.awayScore
                     }
                 }
             }
@@ -57,15 +55,16 @@ class BasketballTableView(context: Context, attributeSet: AttributeSet) : Relati
     }
 
     fun setTeamInfo(homeIcon: String?, homeName: String?, awayIcon: String?, awayName: String?) {
-        binding.tvNameHome.text = homeName?:""
+        binding.tvNameHome.text = homeName ?: ""
         Glide.with(context).load(homeIcon).placeholder(R.drawable.def_basketball)
             .into(binding.ivAvatarHome)
-        binding.tvNameAway.text = awayName?:""
+        binding.tvNameAway.text = awayName ?: ""
         Glide.with(context).load(awayIcon).placeholder(R.drawable.def_basketball)
             .into(binding.ivAvatarAway)
     }
 
     fun setTeamData(bean: BasketballScoreBean) {
+
         bean.apply {
             var homeAll = 0
             scoreList.clear()
@@ -75,7 +74,8 @@ class BasketballTableView(context: Context, attributeSet: AttributeSet) : Relati
                     if (i < 4) {
                         //排除最后的加时赛比赛
                         scoreList.add(
-                            BasketballScore(getTitle(i),
+                            BasketballScore(
+                                getTitle(i),
                                 getScore(status, homeScoreList[i], i),
                                 getScore(status, awayScoreList[i], i)
                             )
@@ -86,20 +86,23 @@ class BasketballTableView(context: Context, attributeSet: AttributeSet) : Relati
 
             //加时赛比分
             homeOverTimeScoresList.notNull({
-                if (it.isNotEmpty()){
+                if (it.isNotEmpty()) {
                     for (i in it.indices) {
                         scoreList.add(
-                            BasketballScore(getAddTitle(i),
+                            BasketballScore(
+                                getAddTitle(i),
                                 it[i].toString(),
-                                awayOverTimeScoresList!![i].toString()))
+                                awayOverTimeScoresList!![i].toString()
+                            )
+                        )
                     }
-                }else{
+                } else {
                     /*scoreList.add(
                         BasketballScore("", "", ""))*/
                 }
             }, {
-               /* scoreList.add(
-                    BasketballScore("", "", ""))*/
+                /* scoreList.add(
+                     BasketballScore("", "", ""))*/
             })
 
 
@@ -112,7 +115,7 @@ class BasketballTableView(context: Context, attributeSet: AttributeSet) : Relati
 
             binding.tvHomeTotal.text = homeAll.toString()
             binding.tvAwayTotal.text = awayAll.toString()
-          //  Gson().toJson(scoreList).loge()
+            //  Gson().toJson(scoreList).loge()
             binding.rcvCommon.models = scoreList
         }
     }
@@ -122,16 +125,19 @@ class BasketballTableView(context: Context, attributeSet: AttributeSet) : Relati
         var title = ""
         when (pos) {
             0 -> {
-                title=context.getString(R.string.one)
+                title = context.getString(R.string.one)
             }
+
             1 -> {
-                title=context.getString(R.string.two)
+                title = context.getString(R.string.two)
             }
+
             2 -> {
-                title=context.getString(R.string.three)
+                title = context.getString(R.string.three)
             }
+
             3 -> {
-                title=context.getString(R.string.four)
+                title = context.getString(R.string.four)
             }
         }
         return title
@@ -139,7 +145,7 @@ class BasketballTableView(context: Context, attributeSet: AttributeSet) : Relati
 
     //加时
     private fun getAddTitle(pos: Int): String {
-        var title = context.getString(R.string.add)+(pos+1)
+        var title = context.getString(R.string.add) + (pos + 1)
         /*when (pos) {
             0 -> {
                 title=context.getString(R.string.over_time) + context.getString(R.string.one)
@@ -172,27 +178,32 @@ class BasketballTableView(context: Context, attributeSet: AttributeSet) : Relati
                     score = "-"
                 }
             }
+
             4, 5 -> {
                 //"第二节"//"第二节完"
                 if (pos > 1) {
                     score = "-"
                 }
             }
+
             6, 7 -> {
                 //"第三节"//"第三节完"
                 if (pos > 2) {
                     score = "-"
                 }
             }
+
             8 -> {
                 //"第四节"
                 if (pos > 3) {
                     score = "-"
                 }
             }
+
             9, 10 -> {
                 //"加时""完赛"
             }
+
             else -> score = "-"
         }
         return score

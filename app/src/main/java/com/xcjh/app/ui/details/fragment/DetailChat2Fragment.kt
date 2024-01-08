@@ -41,6 +41,7 @@ import com.xcjh.app.websocket.listener.LiveRoomListener
 import com.xcjh.base_lib.App
 import com.xcjh.base_lib.utils.dp2px
 import com.xcjh.base_lib.utils.loge
+import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.toHtml
 import com.xcjh.base_lib.utils.view.visibleOrGone
 import kotlinx.android.synthetic.main.fragment_detail_tab_chat.view.*
@@ -367,7 +368,8 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
     }
 
     private fun sendMsg() {
-        if (mViewModel.input.get().isEmpty()) {
+        if (mViewModel.input.get().isBlank()||mViewModel.input.get().isEmpty()) {
+            myToast("请输入内容", isDeep = true)
             return
         }
         hideSoftInput()
