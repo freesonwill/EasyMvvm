@@ -67,16 +67,12 @@
             android:paddingLeft="@dimen/dp_12"
             android:paddingTop="8dp"
             android:paddingRight="@dimen/dp_12"
-            android:paddingBottom="20dp"
+            android:paddingBottom="8dp"
             app:layout_constraintBottom_toBottomOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
-
-                android:paddingTop="@dimen/dp_6"
-
                 >
 
                 <ImageView

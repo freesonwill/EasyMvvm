@@ -56,7 +56,7 @@ class LoginActivity : BaseActivity<LoginVm, ActivityLoaginBinding>() {
             ),
             R.color.black,
             R.color.black,
-            16f, 16f, true, scrollEnable=false,
+            16f, 16f, false, scrollEnable=false,
             R.color.c_34a853, 38, margin = 30
         )
         mDatabind.vp.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
