@@ -59,220 +59,237 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        mDatabind.rec.run {
-            vertical()
+        try {
 
-            distance(0, 0, 0, 30)
-        }
-        mDatabind.rec.setup {
-            addType<MsgListNewData> {
 
-                R.layout.item_msglist
+            mDatabind.rec.run {
+                vertical()
+
+                distance(0, 0, 0, 30)
             }
-            onBind {
-                var binding = getBinding<ItemMsglistBinding>()
-                var item = _data as MsgListNewData
-                //   noReadMsgs += item?.noReadSum!!
-                when (item?.noReadSum) {
+            mDatabind.rec.setup {
+                addType<MsgListNewData> {
 
-                    0 -> {
-                        binding.tvnums1.visibility = View.GONE
-                        binding.tvnums2.visibility = View.GONE
-                    }
-
-                    in 1..9 -> {
-                        binding.tvnums1.visibility = View.VISIBLE
-                        binding.tvnums2.visibility = View.GONE
-                        binding.tvnums1.text = item!!.noReadSum.toString()
-                    }
-
-                    else -> {
-                        binding.tvnums1.visibility = View.GONE
-                        binding.tvnums2.visibility = View.VISIBLE
-                        binding.tvnums2.text = item!!.noReadSum.toString()
-                    }
-
+                    R.layout.item_msglist
                 }
-                if (item.sent == 2) {//发送失败
-                    binding.ivfaile.visibility = View.VISIBLE
-                } else {
-                    binding.ivfaile.visibility = View.GONE
-                }
-                if (item.dataType == 2) {//反馈通知
-                    binding.tvname.text = context.resources.getString(R.string.txt_feedtitle)
-                    binding.tvcontent.text = item!!.content
-                    Glide.with(context)
-                        .load(R.drawable.ic_notify)
-                        .into(binding.ivhead)
+                onBind {
+                    var binding = getBinding<ItemMsglistBinding>()
+                    var item = _data as MsgListNewData
+                    //   noReadMsgs += item?.noReadSum!!
+                    when (item?.noReadSum) {
 
-                } else {
-                    when (item?.msgType) {//	消息类型(0:text、1:image、2:voice、3:video、4:music、5:news)
                         0 -> {
-                            binding.tvcontent.text = item!!.content
+                            binding.tvnums1.visibility = View.GONE
+                            binding.tvnums2.visibility = View.GONE
                         }
 
-                        1 -> {
-                            binding.tvcontent.text =
-                                context.resources.getString(R.string.txt_msg_pic)
+                        in 1..9 -> {
+                            binding.tvnums1.visibility = View.VISIBLE
+                            binding.tvnums2.visibility = View.GONE
+                            binding.tvnums1.text = item!!.noReadSum.toString()
                         }
 
                         else -> {
-                            binding.tvcontent.text = item!!.content
+                            binding.tvnums1.visibility = View.GONE
+                            binding.tvnums2.visibility = View.VISIBLE
+                            binding.tvnums2.text = item!!.noReadSum.toString()
                         }
 
                     }
-                    binding.tvname.text = item!!.nick
-                    Glide.with(context).load(item.avatar)
-                        .placeholder(R.drawable.default_anchor_icon).into(binding.ivhead)
-                }
-                val time: String = ChatTimeUtile.formatTimestamp(
-                    context,
-                    item.createTime
-                )!!
-                binding.tvtime.text = time
-                binding.lltDelete.setOnClickListener {
-                    delMsgDilog(requireActivity()) { it ->
-                        if (it) {//点击了确定
-                            mViewModel.getDelMsg(item?.anchorId.toString())
-                            deltDataToList(item!!)
-                            mDatabind.rec.mutable.removeAt(bindingAdapterPosition)
-                            mDatabind.rec.bindingAdapter.notifyItemRemoved(bindingAdapterPosition)
-                            initNoreadMsg(mDatabind.rec.mutable as MutableList<MsgListNewData>)
-
-                            if (mDatabind.rec.models!!.isEmpty()) {
-                                mDatabind.state.showEmpty()
-                            }
-                        }
-
-                    }
-
-                }
-                binding.lltItem.setOnClickListener {
-                    if (item.noReadSum > 0) {//去除红点
-                        item.noReadSum = 0
-                        addDataToList(item)
-                        notifyItemChanged(bindingAdapterPosition)
-                    }
-
-                    if (item?.anchorId == "0") {
-                        com.xcjh.base_lib.utils.startNewActivity<FeedNoticeActivity>()
+                    if (item.sent == 2) {//发送失败
+                        binding.ivfaile.visibility = View.VISIBLE
                     } else {
-                        com.xcjh.base_lib.utils.startNewActivity<ChatActivity>() {
-                            if (item?.anchorId?.isNotEmpty() == true) {
-                                this.putExtra(Constants.USER_ID, item?.anchorId)
-                            } else {
-                                this.putExtra(Constants.USER_ID, "")
+                        binding.ivfaile.visibility = View.GONE
+                    }
+                    if (item.dataType == 2) {//反馈通知
+                        binding.tvname.text = context.resources.getString(R.string.txt_feedtitle)
+                        binding.tvcontent.text = item!!.content
+                        Glide.with(context)
+                            .load(R.drawable.ic_notify)
+                            .into(binding.ivhead)
+
+                    } else {
+                        when (item?.msgType) {//	消息类型(0:text、1:image、2:voice、3:video、4:music、5:news)
+                            0 -> {
+                                binding.tvcontent.text = item!!.content
                             }
-                            if (item?.nick?.isNotEmpty() == true) {
-                                this.putExtra(Constants.USER_NICK, item?.nick)
-                            } else {
-                                this.putExtra(Constants.USER_NICK, "")
+
+                            1 -> {
+                                binding.tvcontent.text =
+                                    context.resources.getString(R.string.txt_msg_pic)
                             }
-                            if (item?.avatar?.isNotEmpty() == true) {
-                                this.putExtra(Constants.USER_HEAD, item?.avatar)
-                            } else {
-                                this.putExtra(Constants.USER_HEAD, "")
+
+                            else -> {
+                                binding.tvcontent.text = item!!.content
                             }
 
                         }
+                        binding.tvname.text = item!!.nick
+                        Glide.with(context).load(item.avatar)
+                            .placeholder(R.drawable.default_anchor_icon).into(binding.ivhead)
+                    }
+                    val time: String = ChatTimeUtile.formatTimestamp(
+                        context,
+                        item.createTime
+                    )!!
+                    binding.tvtime.text = time
+                    binding.lltDelete.setOnClickListener {
+                        delMsgDilog(requireActivity()) { it ->
+                            if (it) {//点击了确定
+                                mViewModel.getDelMsg(item?.anchorId.toString())
+                                deltDataToList(item!!)
+                                mDatabind.rec.mutable.removeAt(bindingAdapterPosition)
+                                mDatabind.rec.bindingAdapter.notifyItemRemoved(
+                                    bindingAdapterPosition
+                                )
+                                initNoreadMsg(mDatabind.rec.mutable as MutableList<MsgListNewData>)
+
+                                if (mDatabind.rec.models!!.isEmpty()) {
+                                    mDatabind.state.showEmpty()
+                                }
+                            }
+
+                        }
+
+                    }
+                    binding.lltItem.setOnClickListener {
+                        if (item.noReadSum > 0) {//去除红点
+                            item.noReadSum = 0
+                            addDataToList(item)
+                            notifyItemChanged(bindingAdapterPosition)
+                        }
+
+                        if (item?.anchorId == "0") {
+                            com.xcjh.base_lib.utils.startNewActivity<FeedNoticeActivity>()
+                        } else {
+                            com.xcjh.base_lib.utils.startNewActivity<ChatActivity>() {
+                                if (item?.anchorId?.isNotEmpty() == true) {
+                                    this.putExtra(Constants.USER_ID, item?.anchorId)
+                                } else {
+                                    this.putExtra(Constants.USER_ID, "")
+                                }
+                                if (item?.nick?.isNotEmpty() == true) {
+                                    this.putExtra(Constants.USER_NICK, item?.nick)
+                                } else {
+                                    this.putExtra(Constants.USER_NICK, "")
+                                }
+                                if (item?.avatar?.isNotEmpty() == true) {
+                                    this.putExtra(Constants.USER_HEAD, item?.avatar)
+                                } else {
+                                    this.putExtra(Constants.USER_HEAD, "")
+                                }
+
+                            }
+                        }
+
                     }
 
+
                 }
-
-
-            }
-        }.models = listdata
+            }.models = listdata
 //        (mDatabind.rec.itemAnimator as SimpleItemAnimator).supportsChangeAnimations =
 //            false//防止item刷新的时候闪烁
-        mDatabind.smartCommon.setRefreshHeader(CustomHeader(requireContext()))
-        mDatabind.state.apply {
-            StateConfig.setRetryIds(R.id.ivEmptyIcon, R.id.txtEmptyName)
-            onEmpty {
-                this.findViewById<TextView>(R.id.txtEmptyName).text =
-                    resources.getString(R.string.nomsg)
-                this.findViewById<ImageView>(R.id.ivEmptyIcon)
-                    .setImageDrawable(resources.getDrawable(R.drawable.ic_empety_msg))
-                this.findViewById<ImageView>(R.id.ivEmptyIcon).setOnClickListener { }
-            }
-        }
-        mDatabind.smartCommon.setOnRefreshListener {
-            getRoomAllData()
-            mViewModel.getMsgList(true, "")
-        }.setOnLoadMoreListener {
-            mViewModel.getMsgList(false, "")
-        }
-
-
-        initEvent()
-        //登录或者登出
-        appViewModel.updateLoginEvent.observe(this) {
-            if (it) {
-                mViewModel.getUserInfo()
-
-                // initEvent()
-            } else {
-                // MyWsManager.getInstance(requireActivity())!!.removeC2CListener(tags)
-                listdata.clear()
-                mDatabind.rec.models = mutableListOf()
-
-                initNoreadMsg(listdata)
-
-            }
-        }
-
-        appViewModel.appMsgResum.observe(this) {
-            if (it) {
-                if (CacheUtil.isLogin()) {
-                    getRoomAllData()
-                    mViewModel.getMsgList(true, "")
+            mDatabind.smartCommon.setRefreshHeader(CustomHeader(requireContext()))
+            mDatabind.state.apply {
+                StateConfig.setRetryIds(R.id.ivEmptyIcon, R.id.txtEmptyName)
+                onEmpty {
+                    this.findViewById<TextView>(R.id.txtEmptyName).text =
+                        resources.getString(R.string.nomsg)
+                    this.findViewById<ImageView>(R.id.ivEmptyIcon)
+                        .setImageDrawable(resources.getDrawable(R.drawable.ic_empety_msg))
+                    this.findViewById<ImageView>(R.id.ivEmptyIcon).setOnClickListener { }
                 }
             }
+            mDatabind.smartCommon.setOnRefreshListener {
+                getRoomAllData()
+                mViewModel.getMsgList(true, "")
+            }.setOnLoadMoreListener {
+                mViewModel.getMsgList(false, "")
+            }
+
+
+            initEvent()
+            //登录或者登出
+            appViewModel.updateLoginEvent.observe(this) {
+                if (it) {
+                    mViewModel.getUserInfo()
+
+                    // initEvent()
+                } else {
+                    // MyWsManager.getInstance(requireActivity())!!.removeC2CListener(tags)
+                    listdata.clear()
+                    mDatabind.rec.models = mutableListOf()
+
+                    initNoreadMsg(listdata)
+
+                }
+            }
+
+            appViewModel.appMsgResum.observe(this) {
+                if (it) {
+                    if (CacheUtil.isLogin()) {
+                        getRoomAllData()
+                        mViewModel.getMsgList(true, "")
+                    }
+                }
+            }
+        } catch (e: Exception) {
         }
     }
 
 
     fun initNoreadMsg(data: MutableList<MsgListNewData>) {
-        if (data.isNotEmpty()) {
-            noReadMsgs = 0
-            for (i in 0 until data.size) {
-                if (data[i].noReadSum > 0) {
+        try {
 
-                    noReadMsgs += data[i].noReadSum
-                    LogUtils.d(noReadMsgs.toString() + "==未读消息==" + data[i].noReadSum)
+
+            if (data.isNotEmpty()) {
+                noReadMsgs = 0
+                for (i in 0 until data.size) {
+                    if (data[i].noReadSum > 0) {
+
+                        noReadMsgs += data[i].noReadSum
+                        LogUtils.d(noReadMsgs.toString() + "==未读消息==" + data[i].noReadSum)
+                    }
                 }
-            }
-            appViewModel.updateMainMsgNum.postValue(noReadMsgs.toString())
+                appViewModel.updateMainMsgNum.postValue(noReadMsgs.toString())
 
-        } else {
-            appViewModel.updateMainMsgNum.postValue("0")
+            } else {
+                appViewModel.updateMainMsgNum.postValue("0")
+            }
+        } catch (e: Exception) {
         }
     }
 
     fun getRoomAllData() {
-        if (CacheUtil.getUser() == null) {
-            mViewModel.getUserInfo()
-            return
-        }
-        GlobalScope.launch {
-            val data = getAll().await()
+        try {
 
 
-            requireActivity().runOnUiThread {
-                if (data.isNotEmpty()) {
-                    noReadMsgs = 0
-                    listdata.clear()
-                    listdata.addAll(data)
-
-                    initNoreadMsg(data as MutableList<MsgListNewData>)
-                    mDatabind.rec.models = listdata
-                    mDatabind.state.showContent()
-
-                } else {
-                    mDatabind.state.showEmpty()
-                }
-                mDatabind.smartCommon.finishRefresh()
+            if (CacheUtil.getUser() == null) {
+                mViewModel.getUserInfo()
+                return
             }
+            GlobalScope.launch {
+                val data = getAll().await()
 
+
+                requireActivity().runOnUiThread {
+                    if (data.isNotEmpty()) {
+                        noReadMsgs = 0
+                        listdata.clear()
+                        listdata.addAll(data)
+
+                        initNoreadMsg(data as MutableList<MsgListNewData>)
+                        mDatabind.rec.models = listdata
+                        mDatabind.state.showContent()
+
+                    } else {
+                        mDatabind.state.showEmpty()
+                    }
+                    mDatabind.smartCommon.finishRefresh()
+                }
+
+            }
+        } catch (e: Exception) {
         }
     }
 
@@ -286,22 +303,24 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
     }
 
     private fun initEvent() {
+        try {
 
-        LogUtils.d("消息列表监听")
-        MyWsManager.getInstance(requireActivity())!!
-            .setC2CListener(tags, object : C2CListener {
-                override fun onSendMsgIsOk(isOk: Boolean, bean: ReceiveWsBean<*>) {
-                    if (isOk) {
 
+            LogUtils.d("消息列表监听")
+            MyWsManager.getInstance(requireActivity())!!
+                .setC2CListener(tags, object : C2CListener {
+                    override fun onSendMsgIsOk(isOk: Boolean, bean: ReceiveWsBean<*>) {
+                        if (isOk) {
+
+                        }
                     }
-                }
 
-                override fun onSystemMsgReceive(it: FeedSystemNoticeBean) {
-                    //系统反馈通知推送消息
-                    var chat = ReceiveChatMsg()
-                    chat.id = it.noticeId.toString()
-                    chat.msgType = 1
-                    chat.content = it.title
+                    override fun onSystemMsgReceive(it: FeedSystemNoticeBean) {
+                        //系统反馈通知推送消息
+                        var chat = ReceiveChatMsg()
+                        chat.id = it.noticeId.toString()
+                        chat.msgType = 1
+                        chat.content = it.title
 //                    if (it.reason==null)//取消禁言
 //                    {
 //                        chat.content = it.title
@@ -309,75 +328,77 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
 //                        chat.content = it.reason!!
 //                    }
 
-                    chat.createTime = it.createTime
-                    chat.sent = 1
-                    chat.dataType = 2
-                    chat.toAvatar = ""
-                    chat.from = "0"
-                    chat.anchorId = "0"
-                    chat.noReadSum = 1
-                    chat.toNickName = ""
-                    chat.fromAvatar = ""
-                    chat.fromNickName = ""
-                    refshMsg(chat)
+                        chat.createTime = it.createTime
+                        chat.sent = 1
+                        chat.dataType = 2
+                        chat.toAvatar = ""
+                        chat.from = "0"
+                        chat.anchorId = "0"
+                        chat.noReadSum = 1
+                        chat.toNickName = ""
+                        chat.fromAvatar = ""
+                        chat.fromNickName = ""
+                        refshMsg(chat)
 
-                }
+                    }
 
-                override fun onC2CReceive(chat: ReceiveChatMsg) {
-                    refshMsg(chat,true)
-                    if (chat.from != CacheUtil.getUser()?.id) {//收到消息
-                        var beanmy: MsgBeanData = MsgBeanData()
-                        beanmy.anchorId = chat.anchorId
-                        beanmy.fromId = chat.from
-                        beanmy.content = chat.content
-                        beanmy.id = chat.id
-                        beanmy.chatType = chat.chatType
-                        beanmy.sendId = chat.sendId
-                        beanmy.cmd = 11
-                        beanmy.msgType = chat.msgType
-                        beanmy.createTime = chat.createTime
+                    override fun onC2CReceive(chat: ReceiveChatMsg) {
+                        refshMsg(chat, true)
+                        if (chat.from != CacheUtil.getUser()?.id) {//收到消息
+                            var beanmy: MsgBeanData = MsgBeanData()
+                            beanmy.anchorId = chat.anchorId
+                            beanmy.fromId = chat.from
+                            beanmy.content = chat.content
+                            beanmy.id = chat.id
+                            beanmy.chatType = chat.chatType
+                            beanmy.sendId = chat.sendId
+                            beanmy.cmd = 11
+                            beanmy.msgType = chat.msgType
+                            beanmy.createTime = chat.createTime
 
-                        addDataToChatList(beanmy)
+                            addDataToChatList(beanmy)
+
+                        }
+                    }
+
+                    override fun onChangeReceive(chat: ArrayList<ReceiveChangeMsg>) {
+
+                    }
+                })
+            appViewModel.updateMsgEvent.observeForever {
+                if (isAdded) {
+                    chatId = it
+                    if (it == "-1") {//清除消息红点
+                        mViewModel.getClreaAllMsg()
+
+                    } else {
 
                     }
                 }
+            }
+            appViewModel.updateMsgListEvent.observeForever {
+                if (isAdded) {
 
-                override fun onChangeReceive(chat: ArrayList<ReceiveChangeMsg>) {
-
-                }
-            })
-        appViewModel.updateMsgEvent.observeForever {
-            if (isAdded) {
-                chatId = it
-                if (it == "-1") {//清除消息红点
-                    mViewModel.getClreaAllMsg()
-
-                } else {
-
+                    var chat = ReceiveChatMsg()
+                    chat.id = it.id
+                    chat.chatType = it.chatType
+                    chat.msgType = it.msgType
+                    chat.cmd = it.cmd
+                    chat.anchorId = it.anchorId
+                    chat.content = it.content
+                    chat.createTime = it.createTime
+                    chat.from = it.fromId
+                    chat.sent = it.sent
+                    chat.groupId = it.groupId
+                    chat.toAvatar = it.avatar
+                    chat.toNickName = it.nick
+                    chat.fromAvatar = it.avatar
+                    chat.fromNickName = it.nick
+                    chat.level = it.level
+                    refshMsg(chat)
                 }
             }
-        }
-        appViewModel.updateMsgListEvent.observeForever {
-            if (isAdded) {
-
-                var chat = ReceiveChatMsg()
-                chat.id = it.id
-                chat.chatType = it.chatType
-                chat.msgType = it.msgType
-                chat.cmd = it.cmd
-                chat.anchorId = it.anchorId
-                chat.content = it.content
-                chat.createTime = it.createTime
-                chat.from = it.fromId
-                chat.sent = it.sent
-                chat.groupId = it.groupId
-                chat.toAvatar = it.avatar
-                chat.toNickName = it.nick
-                chat.fromAvatar = it.avatar
-                chat.fromNickName = it.nick
-                chat.level = it.level
-                refshMsg(chat)
-            }
+        } catch (e: Exception) {
         }
     }
 
@@ -390,37 +411,43 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
     }
 
     fun updataMsg(it: MsgListNewData) {
-        var chat = ReceiveChatMsg()
-        chat.id = it.id
-        chat.msgType = it.msgType
+        try {
 
-        chat.content = it.content!!
-        chat.createTime = it.createTime
 
-        chat.sent = it.sent
-        chat.dataType = it.dataType
-        if (it.avatar == null) {
-            chat.toAvatar = ""
-        } else {
-            chat.toAvatar = it.avatar
+            var chat = ReceiveChatMsg()
+            chat.id = it.id
+            chat.msgType = it.msgType
+
+            chat.content = it.content!!
+            chat.createTime = it.createTime
+
+            chat.sent = it.sent
+            chat.dataType = it.dataType
+            if (it.avatar == null) {
+                chat.toAvatar = ""
+            } else {
+                chat.toAvatar = it.avatar
+            }
+            if (it.dataType == 2) {
+                chat.from = "0"
+                chat.anchorId = "0"
+            } else {
+
+                chat.from = it.anchorId
+                chat.anchorId = it.anchorId
+            }
+            chat.noReadSum = it.noReadSum
+            chat.toNickName = it.nick
+            chat.fromAvatar = it.avatar
+            chat.fromNickName = it.nick
+            refshMsg(chat)
+        } catch (e: Exception) {
         }
-        if (it.dataType == 2) {
-            chat.from = "0"
-            chat.anchorId = "0"
-        } else {
-
-            chat.from = it.anchorId
-            chat.anchorId = it.anchorId
-        }
-        chat.noReadSum = it.noReadSum
-        chat.toNickName = it.nick
-        chat.fromAvatar = it.avatar
-        chat.fromNickName = it.nick
-        refshMsg(chat)
-
     }
 
     override fun createObserver() {
+        try {
+
 
         mViewModel.upUserInfo.observe(this) {
             getRoomAllData()
@@ -437,17 +464,17 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                         if (foundData == null) {
                             data?.let { it1 ->
                                 //if (it1.noReadSum > 0) {//这里看看需不需要判断  因为色剂到 多设备登录的问题
-                                    if (it1.sendId == "0") {
-                                        it1.sendId = data.anchorId + it1.createTime
-                                    }
-                                    updataMsg(data)
+                                if (it1.sendId == "0") {
+                                    it1.sendId = data.anchorId + it1.createTime
+                                }
+                                updataMsg(data)
                                 //}
                             }
                         } else {
                             if (data.noReadSum > listdata[index].noReadSum) {
                                 updataMsg(data)
                             } else {
-                                if (data.dataType == 1&&data.avatar != null && data.avatar!!.isNotEmpty() && data.nick != null && data.nick!!.isNotEmpty()) {
+                                if (data.dataType == 1 && data.avatar != null && data.avatar!!.isNotEmpty() && data.nick != null && data.nick!!.isNotEmpty()) {
                                     if (data.avatar != listdata[index].avatar || data.nick != listdata[index].nick) {
                                         updataMsg(data)
                                     }
@@ -456,7 +483,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                         }
                     }
 
-                }else{
+                } else {
 
                 }
 
@@ -478,6 +505,8 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
 
             // mViewModel.getMsgList(true, "")
         }
+        } catch (e: Exception) {
+        }
     }
 
     override fun onDestroy() {
@@ -485,7 +514,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
         super.onDestroy()
     }
 
-    fun refshMsg(msg: ReceiveChatMsg,isAdd:Boolean=false) {
+    fun refshMsg(msg: ReceiveChatMsg, isAdd: Boolean = false) {
 
         try {
 
@@ -502,7 +531,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                             var count = listdata[i].noReadSum + 1
                             if (msg.noReadSum > count) {
                                 bean.noReadSum = msg.noReadSum
-                            }else if(isAdd){
+                            } else if (isAdd) {
                                 bean.noReadSum = listdata[i].noReadSum + 1
                             } else {
                                 bean.noReadSum = msg.noReadSum

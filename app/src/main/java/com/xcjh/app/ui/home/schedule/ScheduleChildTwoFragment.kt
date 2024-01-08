@@ -78,6 +78,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
     // 在你的Activity中声明一个成员变量来保存RecyclerView的状态
     private var recyclerViewState: Parcelable? = null
+
     companion object {
         var mTitles: Array<out String>? = null
         private val MATCHTYPE = "matchtype"
@@ -110,39 +111,44 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
     }
 
     fun initTime() {
-        LogUtils.d("本页面tabname=$tabName")
-        strTime = TimeUtil.gettimenowYear().toString()
-        if ((mCurrentOneTabIndex != 3 && mCurrentTwoTabIndex == 0) ||
-            (mCurrentOneTabIndex == 3 && (mCurrentTwoTabIndex == 0 || mCurrentTwoTabIndex == 1))
-        ) {//只取一天
-            if (calendarTime.isNotEmpty()) {
-                strTime = calendarTime
-                endTime = calendarTime
-            } else {
-                endTime = strTime
-            }
-            return
-        }
-        endTime = TimeUtil.addDayEgls("0", 2).toString()
-        strTimeRuslt = TimeUtil.gettimenowYear().toString()
-        endTimeResult = TimeUtil.getDateStr(strTime, 2).toString()
+        try {
 
-        if (mCurrentOneTabIndex == 3) {
-            if (calendarTime.isNotEmpty()) {
-                endTimeResult = TimeUtil.getDateStr(calendarTime, 2).toString()
-                if (mCurrentOneTabIndex == 3) {
+
+            LogUtils.d("本页面tabname=$tabName")
+            strTime = TimeUtil.gettimenowYear().toString()
+            if ((mCurrentOneTabIndex != 3 && mCurrentTwoTabIndex == 0) ||
+                (mCurrentOneTabIndex == 3 && (mCurrentTwoTabIndex == 0 || mCurrentTwoTabIndex == 1))
+            ) {//只取一天
+                if (calendarTime.isNotEmpty()) {
+                    strTime = calendarTime
                     endTime = calendarTime
+                } else {
+                    endTime = strTime
+                }
+                return
+            }
+            endTime = TimeUtil.addDayEgls("0", 2).toString()
+            strTimeRuslt = TimeUtil.gettimenowYear().toString()
+            endTimeResult = TimeUtil.getDateStr(strTime, 2).toString()
+
+            if (mCurrentOneTabIndex == 3) {
+                if (calendarTime.isNotEmpty()) {
+                    endTimeResult = TimeUtil.getDateStr(calendarTime, 2).toString()
+                    if (mCurrentOneTabIndex == 3) {
+                        endTime = calendarTime
+                        strTime = endTimeResult
+                    }
+                } else {
                     strTime = endTimeResult
+                    endTime = strTimeRuslt
                 }
             } else {
-                strTime = endTimeResult
-                endTime = strTimeRuslt
+                if (calendarTime.isNotEmpty()) {
+                    strTime = calendarTime
+                    endTime = TimeUtil.addDayEgls(calendarTime, 2).toString()
+                }
             }
-        } else {
-            if (calendarTime.isNotEmpty()) {
-                strTime = calendarTime
-                endTime = TimeUtil.addDayEgls(calendarTime, 2).toString()
-            }
+        } catch (e: Exception) {
         }
     }
 
@@ -194,7 +200,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                     binding.tvmiddletime.text = time
                     when (item.visbleTime) {
                         0 -> {
-                            if (time1!!.substring(0,10) == TimeUtil.gettimenowYear()) {
+                            if (time1!!.substring(0, 10) == TimeUtil.gettimenowYear()) {
                                 if (strTimeZu.size == 0) {
                                     item.visbleTime = 2
                                     binding.tvmiddletime.visibility = View.GONE
@@ -898,9 +904,9 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                             onBind {
                                 var binding1 = getBinding<ItemJsBinding>()
                                 var item1 = _data as AnchorBean
-                                if (item1.nickName.length>5){
-                                    binding1.tvname.text = item1.nickName.substring(0,4)+"..."
-                                }else{
+                                if (item1.nickName.length > 5) {
+                                    binding1.tvname.text = item1.nickName.substring(0, 4) + "..."
+                                } else {
                                     binding1.tvname.text = item1.nickName
                                 }
 
@@ -944,7 +950,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
 
                             } else {
-                               // startAn(binding.tvcollect)
+                                // startAn(binding.tvcollect)
 
                                 mViewModel.getNotice(
                                     item!!.matchId,
@@ -1153,8 +1159,8 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
                     if (mview != null) {
                         mview!!.performClick()
-                        mview=null
-                        mview1=null
+                        mview = null
+                        mview1 = null
                     }
 
                 } else {
@@ -1175,62 +1181,6 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
     }
 
-    @SuppressLint("UseRequireInsteadOfGet")
-    fun stopAn(view: LottieAnimationView) {
-        // 定义缩放动画
-        val scaleFactor = 1f // 缩放比例，0.5 表示缩小为原来的一半
-        val scaleAnimation = ScaleAnimation(
-            1f, scaleFactor, 1f, scaleFactor,
-            Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f
-        )
-
-// 设置动画属性
-        scaleAnimation.duration = 250 // 动画持续时间，单位为毫秒
-        scaleAnimation.repeatCount = 0 // 设置动画不重复播放
-
-// 启动动画
-        view.startAnimation(scaleAnimation)
-    }
-
-    @SuppressLint("UseRequireInsteadOfGet")
-    fun startAn(view: LottieAnimationView) {
-        // 定义缩放动画
-        val scaleFactor = 1.28f // 缩放比例，0.5 表示缩小为原来的一半
-        val scaleAnimation = ScaleAnimation(
-            1f, scaleFactor, 1f, scaleFactor,
-            Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f
-        )
-
-// 设置动画属性
-        scaleAnimation.duration = 250 // 动画持续时间，单位为毫秒
-        scaleAnimation.repeatCount = 0 // 设置动画不重复播放
-
-// 启动动画
-        view!!.startAnimation(scaleAnimation)
-    }
-
-    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
-        super.setUserVisibleHint(isVisibleToUser)
-        //  isVisble = isVisibleToUser
-    }
-
-    override fun onHiddenChanged(hidden: Boolean) {
-        super.onHiddenChanged(hidden)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        // isVisble = false
-      //  recyclerViewState = mDatabind.recBottom.layoutManager!!.onSaveInstanceState();
-    }
-
-    override fun onResume() {
-        super.onResume()
-        // 恢复RecyclerView的状态
-        if (recyclerViewState != null) {
-          //  mDatabind.recBottom.layoutManager?.onRestoreInstanceState(recyclerViewState);
-        }
-    }
 
     override fun lazyLoadData() {
         super.lazyLoadData()
@@ -1244,17 +1194,22 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
     }
 
     fun getData(iLoading: Boolean, isresh: Boolean) {
-        Constants.isLoading = true
-        initTime()
-        mViewModel.getHotMatchDataList(
-            isresh,
-            iLoading, PostSchMatchListBean(
-                competitionId, page,
-                endTime,
-                matchtype!!, pageSize, strTime,
-                status
+        try {
+
+
+            Constants.isLoading = true
+            initTime()
+            mViewModel.getHotMatchDataList(
+                isresh,
+                iLoading, PostSchMatchListBean(
+                    competitionId, page,
+                    endTime,
+                    matchtype!!, pageSize, strTime,
+                    status
+                )
             )
-        )
+        } catch (e: Exception) {
+        }
     }
 
     fun clearAnimation(view: LottieAnimationView) {
@@ -1301,35 +1256,38 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
     }
 
     override fun createObserver() {
-        val empty = requireActivity().layoutInflater!!.inflate(R.layout.layout_empty, null)
+        try {
 
 
-        mViewModel.hotMatchList.observe(this) {
-            mDatabind.recBottom.mutable.clear()
-            mDatabind.recBottom.scrollToPosition(0)
-            mDatabind.recBottom.bindingAdapter.notifyDataSetChanged()
-            if (it.isSuccess) {
-                strTimeZu.clear()
-                //成功
-                when {
-                    //第一页并没有数据 显示空布局界面
-                    it.isFirstEmpty -> {
-                        if (mDatabind.recBottom.models?.size != null) {
-                            mDatabind.recBottom.mutable.clear()
-                            mDatabind.recBottom.bindingAdapter.notifyDataSetChanged()
+            val empty = requireActivity().layoutInflater!!.inflate(R.layout.layout_empty, null)
+
+
+            mViewModel.hotMatchList.observe(this) {
+                mDatabind.recBottom.mutable.clear()
+                mDatabind.recBottom.scrollToPosition(0)
+                mDatabind.recBottom.bindingAdapter.notifyDataSetChanged()
+                if (it.isSuccess) {
+                    strTimeZu.clear()
+                    //成功
+                    when {
+                        //第一页并没有数据 显示空布局界面
+                        it.isFirstEmpty -> {
+                            if (mDatabind.recBottom.models?.size != null) {
+                                mDatabind.recBottom.mutable.clear()
+                                mDatabind.recBottom.bindingAdapter.notifyDataSetChanged()
+                            }
+                            mDatabind.smartCommon.finishRefresh()
+                            mDatabind.state.showEmpty()
+
                         }
-                        mDatabind.smartCommon.finishRefresh()
-                        mDatabind.state.showEmpty()
-
-                    }
-                    //是第一页
-                    it.isRefresh -> {
+                        //是第一页
+                        it.isRefresh -> {
 
 
-                        mDatabind.smartCommon.finishRefresh()
-                        mDatabind.smartCommon.resetNoMoreData()
-                        // mAdapter.submitList(null)
-                        mDatabind.recBottom.models = it.listData
+                            mDatabind.smartCommon.finishRefresh()
+                            mDatabind.smartCommon.resetNoMoreData()
+                            // mAdapter.submitList(null)
+                            mDatabind.recBottom.models = it.listData
 //                        if (mDatabind.recBottom.models != null && isClick) {
 //                            mDatabind.recBottom.mutable.clear()
 //                            // listdata.clear()
@@ -1337,61 +1295,63 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 //                        } else {
 //                            mDatabind.recBottom.setDifferModels(it.listData, false)
 //                        }
-                        mDatabind.state.showContent()
-
-                        //listdata.addAll(it.listData)
-                        //it.listData[0].homeName=it.listData[0].homeName+index1
-
-
-                    }
-                    //不是第一页
-                    else -> {
-                        if (it.listData.isEmpty()) {
-                            // mDatabind.smartCommon.setEnableLoadMore(false)
-                            mDatabind.state.showEmpty()
-                            mDatabind.smartCommon.finishLoadMoreWithNoMoreData()
-                        } else {
-                            // mDatabind.smartCommon.setEnableLoadMore(true)
-                            mDatabind.smartCommon.finishLoadMore()
-                            mDatabind.recBottom.setDifferModels(it.listData, true)
                             mDatabind.state.showContent()
+
+                            //listdata.addAll(it.listData)
+                            //it.listData[0].homeName=it.listData[0].homeName+index1
+
+
                         }
+                        //不是第一页
+                        else -> {
+                            if (it.listData.isEmpty()) {
+                                // mDatabind.smartCommon.setEnableLoadMore(false)
+                                mDatabind.state.showEmpty()
+                                mDatabind.smartCommon.finishLoadMoreWithNoMoreData()
+                            } else {
+                                // mDatabind.smartCommon.setEnableLoadMore(true)
+                                mDatabind.smartCommon.finishLoadMore()
+                                mDatabind.recBottom.setDifferModels(it.listData, true)
+                                mDatabind.state.showContent()
+                            }
 
+                        }
                     }
-                }
-            } else {
-
-                //失败
-                if (it.isRefresh) {
-                    mDatabind.smartCommon.finishRefresh()
-                    //如果是第一页，则显示错误界面，并提示错误信息
-                    if (mDatabind.recBottom.models != null) {
-                        //  mDatabind.recBottom.mutable.clear()
-                    }
-                    mDatabind.state.showEmpty()
                 } else {
-                    mDatabind.smartCommon.finishLoadMore(false)
+
+                    //失败
+                    if (it.isRefresh) {
+                        mDatabind.smartCommon.finishRefresh()
+                        //如果是第一页，则显示错误界面，并提示错误信息
+                        if (mDatabind.recBottom.models != null) {
+                            //  mDatabind.recBottom.mutable.clear()
+                        }
+                        mDatabind.state.showEmpty()
+                    } else {
+                        mDatabind.smartCommon.finishLoadMore(false)
+                    }
                 }
             }
-        }
-        mViewModel.unnoticeData.observe(this) {
+            mViewModel.unnoticeData.observe(this) {
 
-           // mAdapter.getItem(index)!!.focus = false
-            mview!!.setAnimation("shoucang2.json")
-            mview!!.loop(false)
-            mview!!.playAnimation()
-            mDatabind.recBottom.bindingAdapter.getModel<MatchBean>(index).focus = false
-           // mDatabind.recBottom.bindingAdapter.notifyItemChanged(index)
-            mview1!!.setBackgroundResource(R.drawable.sc_shoucang_icon1)
-        }
-        mViewModel.noticeData.observe(this) {
+                // mAdapter.getItem(index)!!.focus = false
+                mview!!.setAnimation("shoucang2.json")
+                mview!!.loop(false)
+                mview!!.playAnimation()
+                mDatabind.recBottom.bindingAdapter.getModel<MatchBean>(index).focus = false
+                // mDatabind.recBottom.bindingAdapter.notifyItemChanged(index)
+                mview1!!.setBackgroundResource(R.drawable.sc_shoucang_icon1)
+            }
+            mViewModel.noticeData.observe(this) {
 
-            mview!!.setAnimation("shoucang1.json")
-            mview!!.loop(false)
-            mview!!.playAnimation()
-            mDatabind.recBottom.bindingAdapter.getModel<MatchBean>(index).focus = true
-           // mDatabind.recBottom.bindingAdapter.notifyItemChanged(index)
-            mview1!!.setBackgroundResource(R.drawable.sc_shoucang_icon2)
+                mview!!.setAnimation("shoucang1.json")
+                mview!!.loop(false)
+                mview!!.playAnimation()
+                mDatabind.recBottom.bindingAdapter.getModel<MatchBean>(index).focus = true
+                // mDatabind.recBottom.bindingAdapter.notifyItemChanged(index)
+                mview1!!.setBackgroundResource(R.drawable.sc_shoucang_icon2)
+            }
+        } catch (e: Exception) {
         }
     }
 }
