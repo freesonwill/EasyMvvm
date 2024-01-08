@@ -19,7 +19,7 @@
             app:layout_constraintLeft_toRightOf="@id/frrl"
             app:layout_constraintRight_toRightOf="parent"
             android:layout_marginRight="34dp"
-            android:paddingRight="20dp"
+            android:paddingRight="10dp"
             android:layout_height="@dimen/dp_40"
             android:layout_centerHorizontal="true" />
         <LinearLayout

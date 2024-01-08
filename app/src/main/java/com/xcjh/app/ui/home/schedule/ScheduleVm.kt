@@ -35,7 +35,7 @@ class ScheduleVm : BaseViewModel() {
             }, {
                 //请求失败
                // myToast(it.errorMsg)
-            }, true
+            }, false
         )
     }
     /**
@@ -50,7 +50,7 @@ class ScheduleVm : BaseViewModel() {
             }, {
                 //请求失败
               //  myToast(it.errorMsg)
-            }, true
+            }, false
         )
     }
     /**

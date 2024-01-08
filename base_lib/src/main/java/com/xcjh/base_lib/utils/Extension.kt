@@ -76,8 +76,6 @@ fun ViewPager.init(
 }
 
 
-
-
 /**
  * viewPager2扩展方法
  */
@@ -102,7 +100,7 @@ fun ViewPager2.initActivity(
     acivity: FragmentActivity,
     fragments: ArrayList<Fragment>,
     isUserInputEnabled: Boolean = true,//是否可滑动
-    sensitive:Int=2//设置灵敏度
+    sensitive: Int = 2//设置灵敏度
 ): ViewPager2 {
 
 
@@ -115,14 +113,15 @@ fun ViewPager2.initActivity(
             return super.getItemId(position)
         }
     }
-    setLm(this,sensitive)
+    setLm(this, sensitive)
     isSaveEnabled = false
     return this
 }
+
 /**
  * 设置灵敏度
  */
-fun setLm(viewPager2:ViewPager2,sensitive:Int=2){
+fun setLm(viewPager2: ViewPager2, sensitive: Int = 2) {
     val recyclerViewField = ViewPager2::class.java.getDeclaredField("mRecyclerView")
     recyclerViewField.isAccessible = true
     val recyclerView = recyclerViewField.get(viewPager2) as RecyclerView
@@ -130,7 +129,7 @@ fun setLm(viewPager2:ViewPager2,sensitive:Int=2){
     val touchSlopField = RecyclerView::class.java.getDeclaredField("mTouchSlop")
     touchSlopField.isAccessible = true
     val touchSlop = touchSlopField.get(recyclerView) as Int
-    touchSlopField.set(recyclerView, touchSlop*sensitive)
+    touchSlopField.set(recyclerView, touchSlop * sensitive)
 }
 
 
@@ -138,9 +137,6 @@ fun dip2px(dipValue: Float): Int {
     val scale = Resources.getSystem().displayMetrics.density
     return (dipValue * scale + .5f).toInt()
 }
-
-
-
 
 
 fun MagicIndicator.bindViewPager2(
@@ -152,9 +148,9 @@ fun MagicIndicator.bindViewPager2(
     unSelectSize: Float = 14f,
     typefaceBold: Boolean = false,//是否粗体
     scrollEnable: Boolean = false,//滚动
-    lineIndicatorColor:Int = 0,//横线指示器
-    lineIndicatorWidth:Int = 23,//横线指示器宽度
-    smoothScroll:Boolean = true,//切换页面是否有滚动动画
+    lineIndicatorColor: Int = 0,//横线指示器
+    lineIndicatorWidth: Int = 23,//横线指示器宽度
+    smoothScroll: Boolean = true,//切换页面是否有滚动动画
     margin: Int = 15,   // 左右间距
     action: (index: Int) -> Unit = {}
 ) {
@@ -180,366 +176,6 @@ fun MagicIndicator.bindViewPager2(
             if (scrollEnable) {
                 customLayout =
                     LayoutInflater.from(context).inflate(R.layout.live_tab_title_layout2, null)
-                titleText = customLayout.findViewById(R.id.title_text)
-                val layoutParams = titleText.layoutParams as LinearLayout.LayoutParams
-                layoutParams.marginStart=appContext.dp2px(margin)
-                layoutParams.marginEnd = appContext.dp2px(margin)
-                titleText.layoutParams = layoutParams
-            } else {
-                customLayout =
-                    LayoutInflater.from(context).inflate(R.layout.live_tab_title_layout, null)
-                titleText = customLayout.findViewById(R.id.title_text)
-            }
-
-            // titleText.gravity=View.TEXT_ALIGNMENT_VIEW_START
-            titleText.text = mStringList[index].toHtml()
-            titleText.textSize = unSelectSize
-            titleText.gravity = Gravity.CENTER_VERTICAL
-
-            commonPagerTitleView.setContentView(customLayout)
-            commonPagerTitleView.onPagerTitleChangeListener = object : OnPagerTitleChangeListener {
-                override fun onSelected(index: Int, totalCount: Int) {
-                    // titleText.setTextColor(Color.WHITE)
-                    titleText.textSize = selectSize
-                    titleText.setTextColor(ContextCompat.getColor(context, selectColor))
-                    if (typefaceBold) {
-                        //                       titleText.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
-                        setTextBold(titleText, true)
-                    }
-                }
-
-                override fun onDeselected(index: Int, totalCount: Int) {
-                    titleText.textSize = unSelectSize
-                    titleText.setTextColor(ContextCompat.getColor(context, normalColor))
-//                    titleText.typeface = Typeface.defaultFromStyle(Typeface.NORMAL)
-                    if (typefaceBold) {
-                        setTextBold(titleText, false)
-                    }
-                }
-
-                override fun onLeave(
-                    index: Int,
-                    totalCount: Int,
-                    leavePercent: Float,
-                    leftToRight: Boolean
-                ) {
-                }
-
-                override fun onEnter(
-                    index: Int,
-                    totalCount: Int,
-                    enterPercent: Float,
-                    leftToRight: Boolean
-                ) {
-                }
-            }
-
-            commonPagerTitleView.setOnClickListener {
-                action.invoke(index)
-                viewPager.setCurrentItem(index, smoothScroll)
-                // viewPager.currentItem = index
-            }
-
-            return commonPagerTitleView
-
-        }
-
-        override fun getIndicator(context: Context): IPagerIndicator {
-            if (lineIndicatorColor!=0){
-                val indicator = LinePagerIndicator(context)
-                indicator.mode = LinePagerIndicator.MODE_EXACTLY
-                indicator.lineHeight = dp2px(3).toFloat()
-                indicator.lineWidth = dp2px(lineIndicatorWidth).toFloat()
-                indicator.roundRadius = dp2px(40).toFloat()
-                indicator.startInterpolator = AccelerateInterpolator()
-                indicator.endInterpolator = DecelerateInterpolator(2.0f)
-                indicator.setColors(ContextCompat.getColor(context,lineIndicatorColor))
-                indicator.yOffset = dp2px(2).toFloat()
-                return indicator
-            }else{
-                return CommonPagerIndicator(context).apply {
-                    mode = 0
-                    // indicatorDrawable = ContextCompat.getDrawable(context, R.drawable.ic_select)
-                }
-            }
-        }
-
-    }
-    this.navigator = commonNavigator
-
-    //viewPager 绑定 navigator
-    setVpPageChangeCallBack(this,viewPager, action)
-}
-
-/**
- * 文字+图标 指示器
- */
-fun MagicIndicator.bindHomeViewPager2(
-    viewPager: ViewPager2,
-    mStringList: List<String> = arrayListOf(),//文字
-    icons: List<Int> = arrayListOf(),//图标
-    selectColor: Int = R.color.selectColor,
-    normalColor: Int = R.color.normalColor,
-    selectSize: Float = 14f,
-    unSelectSize: Float = 14f,
-    typefaceBold: Boolean = false,//是否粗体
-    scrollEnable: Boolean = false,//滚动
-    smoothScroll:Boolean = true,//切换页面是否有滚动动画
-    margin: Int = 15,   // 左右间距
-    action: (index: Int) -> Unit = {}
-) {
-    //viewPager.offscreenPageLimit = mStringList.size
-    val commonNavigator = CommonNavigator(context)
-    if (scrollEnable) {
-        commonNavigator.isSkimOver = true
-    } else {
-        commonNavigator.isAdjustMode = true
-    }
-    commonNavigator.adapter = object : CommonNavigatorAdapter() {
-
-        override fun getCount(): Int {
-            return mStringList.size
-        }
-
-        override fun getTitleView(context: Context, index: Int): IPagerTitleView {
-
-            val commonPagerTitleView = CommonPagerTitleView(context)
-            val titleText: TextView
-            val titleImg: ImageView
-            val customLayout: View =
-                LayoutInflater.from(context).inflate(R.layout.home_tab_layout, null)
-            titleImg = customLayout.findViewById(R.id.title_img)
-            titleText = customLayout.findViewById(R.id.title_text)
-            val layoutParams = titleText.layoutParams as LinearLayout.LayoutParams
-            layoutParams.marginStart=appContext.dp2px(margin)
-            layoutParams.marginEnd = appContext.dp2px(margin)
-           // titleText.layoutParams = layoutParams
-
-            // titleText.gravity=View.TEXT_ALIGNMENT_VIEW_START
-            titleText.text = mStringList[index].toHtml()
-            titleText.textSize = unSelectSize
-            titleText.gravity = Gravity.CENTER_VERTICAL
-            titleImg.setImageResource(icons[index])
-
-            commonPagerTitleView.setContentView(customLayout)
-            commonPagerTitleView.onPagerTitleChangeListener = object : OnPagerTitleChangeListener {
-                override fun onSelected(index: Int, totalCount: Int) {
-                    // titleText.setTextColor(Color.WHITE)
-                    titleText.textSize = selectSize
-                    titleText.setTextColor(ContextCompat.getColor(context, selectColor))
-                    if (typefaceBold) {
- //                       titleText.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
-                        setTextBold(titleText, true)
-                    }
-                    titleImg.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(context,selectColor))
-
-                }
-
-                override fun onDeselected(index: Int, totalCount: Int) {
-                    titleText.textSize = unSelectSize
-                    titleText.setTextColor(ContextCompat.getColor(context, normalColor))
-//                    titleText.typeface = Typeface.defaultFromStyle(Typeface.NORMAL)
-                    if (typefaceBold) {
-                        setTextBold(titleText, false)
-                    }
-                    titleImg.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(context, normalColor))
-                }
-
-                override fun onLeave(
-                    index: Int,
-                    totalCount: Int,
-                    leavePercent: Float,
-                    leftToRight: Boolean
-                ) {
-                }
-
-                override fun onEnter(
-                    index: Int,
-                    totalCount: Int,
-                    enterPercent: Float,
-                    leftToRight: Boolean
-                ) {
-                }
-            }
-
-            commonPagerTitleView.setOnClickListener {
-                action.invoke(index)
-                viewPager.setCurrentItem(index, smoothScroll)
-               // viewPager.currentItem = index
-            }
-
-            return commonPagerTitleView
-
-        }
-
-        override fun getIndicator(context: Context): IPagerIndicator? {
-            return null
-        }
-
-    }
-    this.navigator = commonNavigator
-
-    //viewPager 绑定 navigator
-    setVpPageChangeCallBack(this,viewPager, action)
-}
-
-
-
-/**
- * 文字+图标 指示器 选择图片和未选择图片两种
- */
-fun MagicIndicator.bindHomeSelectImageViewPager(
-    viewPager: ViewPager2,
-    mStringList: List<String> = arrayListOf(),//文字
-    icons: List<Int> = arrayListOf(),//图标
-    selectIcon: List<Int> = arrayListOf(),//选中图片
-    selectColor: Int = R.color.selectColor,
-    normalColor: Int = R.color.normalColor,
-    selectSize: Float = 14f,
-    unSelectSize: Float = 14f,
-    typefaceBold: Boolean = false,//是否粗体
-    scrollEnable: Boolean = false,//滚动
-    smoothScroll:Boolean = true,//切换页面是否有滚动动画
-    margin: Int = 15,   // 左右间距
-    action: (index: Int) -> Unit = {}
-) {
-    //viewPager.offscreenPageLimit = mStringList.size
-    val commonNavigator = CommonNavigator(context)
-    if (scrollEnable) {
-        commonNavigator.isSkimOver = true
-    } else {
-        commonNavigator.isAdjustMode = true
-    }
-    commonNavigator.adapter = object : CommonNavigatorAdapter() {
-
-        override fun getCount(): Int {
-            return mStringList.size
-        }
-
-        override fun getTitleView(context: Context, index: Int): IPagerTitleView {
-
-            val commonPagerTitleView = CommonPagerTitleView(context)
-            val titleText: TextView
-            val titleImg: ImageView
-            val customLayout: View =
-                LayoutInflater.from(context).inflate(R.layout.home_tab_layout, null)
-            titleImg = customLayout.findViewById(R.id.title_img)
-            titleText = customLayout.findViewById(R.id.title_text)
-            val layoutParams = titleText.layoutParams as LinearLayout.LayoutParams
-            layoutParams.marginStart=appContext.dp2px(margin)
-            layoutParams.marginEnd = appContext.dp2px(margin)
-            // titleText.layoutParams = layoutParams
-
-            // titleText.gravity=View.TEXT_ALIGNMENT_VIEW_START
-            titleText.text = mStringList[index].toHtml()
-            titleText.textSize = unSelectSize
-            titleText.gravity = Gravity.CENTER_VERTICAL
-            titleImg.setImageResource(icons[index])
-
-            commonPagerTitleView.setContentView(customLayout)
-            commonPagerTitleView.onPagerTitleChangeListener = object : OnPagerTitleChangeListener {
-                override fun onSelected(index: Int, totalCount: Int) {
-                    // titleText.setTextColor(Color.WHITE)
-                    titleText.textSize = selectSize
-                    titleText.setTextColor(ContextCompat.getColor(context, selectColor))
-                    if (typefaceBold) {
-                        //                       titleText.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
-                        setTextBold(titleText, true)
-                    }
-                    titleImg.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(context,selectColor))
-
-                    titleImg.setImageResource(selectIcon[index])
-
-                }
-
-                override fun onDeselected(index: Int, totalCount: Int) {
-                    titleText.textSize = unSelectSize
-                    titleText.setTextColor(ContextCompat.getColor(context, normalColor))
-//                    titleText.typeface = Typeface.defaultFromStyle(Typeface.NORMAL)
-                    if (typefaceBold) {
-                        setTextBold(titleText, false)
-                    }
-                    titleImg.setImageResource(icons[index])
-//                    titleImg.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(context, normalColor))
-                }
-
-                override fun onLeave(
-                    index: Int,
-                    totalCount: Int,
-                    leavePercent: Float,
-                    leftToRight: Boolean
-                ) {
-                }
-
-                override fun onEnter(
-                    index: Int,
-                    totalCount: Int,
-                    enterPercent: Float,
-                    leftToRight: Boolean
-                ) {
-                }
-            }
-
-            commonPagerTitleView.setOnClickListener {
-                action.invoke(index)
-                viewPager.setCurrentItem(index, smoothScroll)
-                // viewPager.currentItem = index
-            }
-
-            return commonPagerTitleView
-
-        }
-
-        override fun getIndicator(context: Context): IPagerIndicator? {
-            return null
-        }
-
-    }
-    this.navigator = commonNavigator
-
-    //viewPager 绑定 navigator
-    setVpPageChangeCallBack(this,viewPager, action)
-}
-
-/**
- * 比赛详情tab
- *
- */
-fun MagicIndicator.bindMatchViewPager2(
-    viewPager: ViewPager2,
-    mStringList: List<String> = arrayListOf(),
-    selectColor: Int = R.color.selectColor,
-    normalColor: Int = R.color.normalColor,
-    selectSize: Float = 14f,
-    unSelectSize: Float = 14f,
-    typefaceBold: Boolean = false,//是否粗体
-    scrollEnable: Boolean = false,//滚动
-    lineIndicatorColor:Int = 0,//横线指示器
-    smoothScroll:Boolean = true,//切换页面是否有滚动动画
-    margin: Int = 15,   // 左右间距
-    action: (index: Int) -> Unit = {}
-) {
-    //viewPager.offscreenPageLimit = mStringList.size
-    val commonNavigator = CommonNavigator(context)
-    if (scrollEnable) {
-        commonNavigator.isSkimOver = true
-    } else {
-        commonNavigator.isAdjustMode = true
-    }
-    commonNavigator.adapter = object : CommonNavigatorAdapter() {
-
-        override fun getCount(): Int {
-            return mStringList.size
-        }
-
-        override fun getTitleView(context: Context, index: Int): IPagerTitleView {
-
-            val commonPagerTitleView = CommonPagerTitleView(context)
-            val customLayout: View
-            val titleText: TextView
-
-            if (scrollEnable) {
-                customLayout = LayoutInflater.from(context).inflate(R.layout.live_tab_title_layout2, null)
                 titleText = customLayout.findViewById(R.id.title_text)
                 val layoutParams = titleText.layoutParams as LinearLayout.LayoutParams
                 layoutParams.marginStart = appContext.dp2px(margin)
@@ -605,18 +241,18 @@ fun MagicIndicator.bindMatchViewPager2(
         }
 
         override fun getIndicator(context: Context): IPagerIndicator {
-            if (lineIndicatorColor!=0){
+            if (lineIndicatorColor != 0) {
                 val indicator = LinePagerIndicator(context)
                 indicator.mode = LinePagerIndicator.MODE_EXACTLY
-                indicator.lineHeight = dp2px(2).toFloat()
-                indicator.lineWidth = dp2px(17).toFloat()
+                indicator.lineHeight = dp2px(3).toFloat()
+                indicator.lineWidth = dp2px(lineIndicatorWidth).toFloat()
                 indicator.roundRadius = dp2px(40).toFloat()
                 indicator.startInterpolator = AccelerateInterpolator()
                 indicator.endInterpolator = DecelerateInterpolator(2.0f)
-                indicator.setColors(ContextCompat.getColor(context,lineIndicatorColor))
-                indicator.yOffset = dp2px(0).toFloat()
+                indicator.setColors(ContextCompat.getColor(context, lineIndicatorColor))
+                indicator.yOffset = dp2px(2).toFloat()
                 return indicator
-            }else{
+            } else {
                 return CommonPagerIndicator(context).apply {
                     mode = 0
                     // indicatorDrawable = ContextCompat.getDrawable(context, R.drawable.ic_select)
@@ -628,14 +264,10 @@ fun MagicIndicator.bindMatchViewPager2(
     this.navigator = commonNavigator
 
     //viewPager 绑定 navigator
-    setVpPageChangeCallBack(this,viewPager, action)
+    setVpPageChangeCallBack(this, viewPager, action)
 }
 
-/**
- *
- * 带内外框背景的指示器
- */
-fun MagicIndicator.bindBgViewPager2(
+fun MagicIndicator.bindViewPager3(
     viewPager: ViewPager2,
     mStringList: List<String> = arrayListOf(),
     selectColor: Int = R.color.selectColor,
@@ -644,14 +276,10 @@ fun MagicIndicator.bindBgViewPager2(
     unSelectSize: Float = 14f,
     typefaceBold: Boolean = false,//是否粗体
     scrollEnable: Boolean = false,//滚动
-
-    marginStart:Int = 10,//tab左边距
-    marginEnd:Int = 10,//tab右边距
-    paddingH:Double = 9.0,//tab左右内边距
-    paddingV:Double = 6.0,//tab上下内边距
-    lineIndicatorColor:Int = 0,//横线指示器
-    isLineIndicator:Boolean = true,//是否为普通滑动背景
-    paddingWidth:Double = 0.0,//内边距
+    lineIndicatorColor: Int = 0,//横线指示器
+    lineIndicatorWidth: Int = 23,//横线指示器宽度
+    smoothScroll: Boolean = true,//切换页面是否有滚动动画
+    margin: Int = 15,   // 左右间距
     action: (index: Int) -> Unit = {}
 ) {
     //viewPager.offscreenPageLimit = mStringList.size
@@ -674,12 +302,520 @@ fun MagicIndicator.bindBgViewPager2(
             val titleText: TextView
 
             if (scrollEnable) {
-                customLayout = LayoutInflater.from(context).inflate(R.layout.live_tab_title_layout2, null)
+                customLayout =
+                    LayoutInflater.from(context).inflate(R.layout.live_tab_title_layout2, null)
+                titleText = customLayout.findViewById(R.id.title_text)
+                if (index == (mStringList.size - 1)) {
+                    val layoutParams = titleText.layoutParams as LinearLayout.LayoutParams
+                    layoutParams.marginStart = appContext.dp2px(margin)
+                    layoutParams.marginEnd = appContext.dp2px(margin + 10)
+                    titleText.layoutParams = layoutParams
+                } else {
+                    val layoutParams = titleText.layoutParams as LinearLayout.LayoutParams
+                    layoutParams.marginStart = appContext.dp2px(margin)
+                    layoutParams.marginEnd = appContext.dp2px(margin)
+                    titleText.layoutParams = layoutParams
+                }
+
+            } else {
+                customLayout =
+                    LayoutInflater.from(context).inflate(R.layout.live_tab_title_layout, null)
+                titleText = customLayout.findViewById(R.id.title_text)
+            }
+
+            // titleText.gravity=View.TEXT_ALIGNMENT_VIEW_START
+            titleText.text = mStringList[index].toHtml()
+            titleText.textSize = unSelectSize
+            titleText.gravity = Gravity.CENTER_VERTICAL
+
+            commonPagerTitleView.setContentView(customLayout)
+            commonPagerTitleView.onPagerTitleChangeListener = object : OnPagerTitleChangeListener {
+                override fun onSelected(index: Int, totalCount: Int) {
+                    // titleText.setTextColor(Color.WHITE)
+                    titleText.textSize = selectSize
+                    titleText.setTextColor(ContextCompat.getColor(context, selectColor))
+                    if (typefaceBold) {
+                        //                       titleText.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
+                        setTextBold(titleText, true)
+                    }
+                }
+
+                override fun onDeselected(index: Int, totalCount: Int) {
+                    titleText.textSize = unSelectSize
+                    titleText.setTextColor(ContextCompat.getColor(context, normalColor))
+//                    titleText.typeface = Typeface.defaultFromStyle(Typeface.NORMAL)
+                    if (typefaceBold) {
+                        setTextBold(titleText, false)
+                    }
+                }
+
+                override fun onLeave(
+                    index: Int,
+                    totalCount: Int,
+                    leavePercent: Float,
+                    leftToRight: Boolean
+                ) {
+                }
+
+                override fun onEnter(
+                    index: Int,
+                    totalCount: Int,
+                    enterPercent: Float,
+                    leftToRight: Boolean
+                ) {
+                }
+            }
+
+            commonPagerTitleView.setOnClickListener {
+                action.invoke(index)
+                viewPager.setCurrentItem(index, smoothScroll)
+                // viewPager.currentItem = index
+            }
+
+            return commonPagerTitleView
+
+        }
+
+        override fun getIndicator(context: Context): IPagerIndicator {
+            if (lineIndicatorColor != 0) {
+                val indicator = LinePagerIndicator(context)
+                indicator.mode = LinePagerIndicator.MODE_EXACTLY
+                indicator.lineHeight = dp2px(3).toFloat()
+                indicator.lineWidth = dp2px(lineIndicatorWidth).toFloat()
+                indicator.roundRadius = dp2px(40).toFloat()
+                indicator.startInterpolator = AccelerateInterpolator()
+                indicator.endInterpolator = DecelerateInterpolator(2.0f)
+                indicator.setColors(ContextCompat.getColor(context, lineIndicatorColor))
+                indicator.yOffset = dp2px(2).toFloat()
+                return indicator
+            } else {
+                return CommonPagerIndicator(context).apply {
+                    mode = 0
+                    // indicatorDrawable = ContextCompat.getDrawable(context, R.drawable.ic_select)
+                }
+            }
+        }
+
+    }
+    this.navigator = commonNavigator
+
+    //viewPager 绑定 navigator
+    setVpPageChangeCallBack(this, viewPager, action)
+}
+
+/**
+ * 文字+图标 指示器
+ */
+fun MagicIndicator.bindHomeViewPager2(
+    viewPager: ViewPager2,
+    mStringList: List<String> = arrayListOf(),//文字
+    icons: List<Int> = arrayListOf(),//图标
+    selectColor: Int = R.color.selectColor,
+    normalColor: Int = R.color.normalColor,
+    selectSize: Float = 14f,
+    unSelectSize: Float = 14f,
+    typefaceBold: Boolean = false,//是否粗体
+    scrollEnable: Boolean = false,//滚动
+    smoothScroll: Boolean = true,//切换页面是否有滚动动画
+    margin: Int = 15,   // 左右间距
+    action: (index: Int) -> Unit = {}
+) {
+    //viewPager.offscreenPageLimit = mStringList.size
+    val commonNavigator = CommonNavigator(context)
+    if (scrollEnable) {
+        commonNavigator.isSkimOver = true
+    } else {
+        commonNavigator.isAdjustMode = true
+    }
+    commonNavigator.adapter = object : CommonNavigatorAdapter() {
+
+        override fun getCount(): Int {
+            return mStringList.size
+        }
+
+        override fun getTitleView(context: Context, index: Int): IPagerTitleView {
+
+            val commonPagerTitleView = CommonPagerTitleView(context)
+            val titleText: TextView
+            val titleImg: ImageView
+            val customLayout: View =
+                LayoutInflater.from(context).inflate(R.layout.home_tab_layout, null)
+            titleImg = customLayout.findViewById(R.id.title_img)
+            titleText = customLayout.findViewById(R.id.title_text)
+            val layoutParams = titleText.layoutParams as LinearLayout.LayoutParams
+            layoutParams.marginStart = appContext.dp2px(margin)
+            layoutParams.marginEnd = appContext.dp2px(margin)
+            // titleText.layoutParams = layoutParams
+
+            // titleText.gravity=View.TEXT_ALIGNMENT_VIEW_START
+            titleText.text = mStringList[index].toHtml()
+            titleText.textSize = unSelectSize
+            titleText.gravity = Gravity.CENTER_VERTICAL
+            titleImg.setImageResource(icons[index])
+
+            commonPagerTitleView.setContentView(customLayout)
+            commonPagerTitleView.onPagerTitleChangeListener = object : OnPagerTitleChangeListener {
+                override fun onSelected(index: Int, totalCount: Int) {
+                    // titleText.setTextColor(Color.WHITE)
+                    titleText.textSize = selectSize
+                    titleText.setTextColor(ContextCompat.getColor(context, selectColor))
+                    if (typefaceBold) {
+                        //                       titleText.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
+                        setTextBold(titleText, true)
+                    }
+                    titleImg.imageTintList =
+                        ColorStateList.valueOf(ContextCompat.getColor(context, selectColor))
+
+                }
+
+                override fun onDeselected(index: Int, totalCount: Int) {
+                    titleText.textSize = unSelectSize
+                    titleText.setTextColor(ContextCompat.getColor(context, normalColor))
+//                    titleText.typeface = Typeface.defaultFromStyle(Typeface.NORMAL)
+                    if (typefaceBold) {
+                        setTextBold(titleText, false)
+                    }
+                    titleImg.imageTintList =
+                        ColorStateList.valueOf(ContextCompat.getColor(context, normalColor))
+                }
+
+                override fun onLeave(
+                    index: Int,
+                    totalCount: Int,
+                    leavePercent: Float,
+                    leftToRight: Boolean
+                ) {
+                }
+
+                override fun onEnter(
+                    index: Int,
+                    totalCount: Int,
+                    enterPercent: Float,
+                    leftToRight: Boolean
+                ) {
+                }
+            }
+
+            commonPagerTitleView.setOnClickListener {
+                action.invoke(index)
+                viewPager.setCurrentItem(index, smoothScroll)
+                // viewPager.currentItem = index
+            }
+
+            return commonPagerTitleView
+
+        }
+
+        override fun getIndicator(context: Context): IPagerIndicator? {
+            return null
+        }
+
+    }
+    this.navigator = commonNavigator
+
+    //viewPager 绑定 navigator
+    setVpPageChangeCallBack(this, viewPager, action)
+}
+
+
+/**
+ * 文字+图标 指示器 选择图片和未选择图片两种
+ */
+fun MagicIndicator.bindHomeSelectImageViewPager(
+    viewPager: ViewPager2,
+    mStringList: List<String> = arrayListOf(),//文字
+    icons: List<Int> = arrayListOf(),//图标
+    selectIcon: List<Int> = arrayListOf(),//选中图片
+    selectColor: Int = R.color.selectColor,
+    normalColor: Int = R.color.normalColor,
+    selectSize: Float = 14f,
+    unSelectSize: Float = 14f,
+    typefaceBold: Boolean = false,//是否粗体
+    scrollEnable: Boolean = false,//滚动
+    smoothScroll: Boolean = true,//切换页面是否有滚动动画
+    margin: Int = 15,   // 左右间距
+    action: (index: Int) -> Unit = {}
+) {
+    //viewPager.offscreenPageLimit = mStringList.size
+    val commonNavigator = CommonNavigator(context)
+    if (scrollEnable) {
+        commonNavigator.isSkimOver = true
+    } else {
+        commonNavigator.isAdjustMode = true
+    }
+    commonNavigator.adapter = object : CommonNavigatorAdapter() {
+
+        override fun getCount(): Int {
+            return mStringList.size
+        }
+
+        override fun getTitleView(context: Context, index: Int): IPagerTitleView {
+
+            val commonPagerTitleView = CommonPagerTitleView(context)
+            val titleText: TextView
+            val titleImg: ImageView
+            val customLayout: View =
+                LayoutInflater.from(context).inflate(R.layout.home_tab_layout, null)
+            titleImg = customLayout.findViewById(R.id.title_img)
+            titleText = customLayout.findViewById(R.id.title_text)
+            val layoutParams = titleText.layoutParams as LinearLayout.LayoutParams
+            layoutParams.marginStart = appContext.dp2px(margin)
+            layoutParams.marginEnd = appContext.dp2px(margin)
+            // titleText.layoutParams = layoutParams
+
+            // titleText.gravity=View.TEXT_ALIGNMENT_VIEW_START
+            titleText.text = mStringList[index].toHtml()
+            titleText.textSize = unSelectSize
+            titleText.gravity = Gravity.CENTER_VERTICAL
+            titleImg.setImageResource(icons[index])
+
+            commonPagerTitleView.setContentView(customLayout)
+            commonPagerTitleView.onPagerTitleChangeListener = object : OnPagerTitleChangeListener {
+                override fun onSelected(index: Int, totalCount: Int) {
+                    // titleText.setTextColor(Color.WHITE)
+                    titleText.textSize = selectSize
+                    titleText.setTextColor(ContextCompat.getColor(context, selectColor))
+                    if (typefaceBold) {
+                        //                       titleText.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
+                        setTextBold(titleText, true)
+                    }
+                    titleImg.imageTintList =
+                        ColorStateList.valueOf(ContextCompat.getColor(context, selectColor))
+
+                    titleImg.setImageResource(selectIcon[index])
+
+                }
+
+                override fun onDeselected(index: Int, totalCount: Int) {
+                    titleText.textSize = unSelectSize
+                    titleText.setTextColor(ContextCompat.getColor(context, normalColor))
+//                    titleText.typeface = Typeface.defaultFromStyle(Typeface.NORMAL)
+                    if (typefaceBold) {
+                        setTextBold(titleText, false)
+                    }
+                    titleImg.setImageResource(icons[index])
+//                    titleImg.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(context, normalColor))
+                }
+
+                override fun onLeave(
+                    index: Int,
+                    totalCount: Int,
+                    leavePercent: Float,
+                    leftToRight: Boolean
+                ) {
+                }
+
+                override fun onEnter(
+                    index: Int,
+                    totalCount: Int,
+                    enterPercent: Float,
+                    leftToRight: Boolean
+                ) {
+                }
+            }
+
+            commonPagerTitleView.setOnClickListener {
+                action.invoke(index)
+                viewPager.setCurrentItem(index, smoothScroll)
+                // viewPager.currentItem = index
+            }
+
+            return commonPagerTitleView
+
+        }
+
+        override fun getIndicator(context: Context): IPagerIndicator? {
+            return null
+        }
+
+    }
+    this.navigator = commonNavigator
+
+    //viewPager 绑定 navigator
+    setVpPageChangeCallBack(this, viewPager, action)
+}
+
+/**
+ * 比赛详情tab
+ *
+ */
+fun MagicIndicator.bindMatchViewPager2(
+    viewPager: ViewPager2,
+    mStringList: List<String> = arrayListOf(),
+    selectColor: Int = R.color.selectColor,
+    normalColor: Int = R.color.normalColor,
+    selectSize: Float = 14f,
+    unSelectSize: Float = 14f,
+    typefaceBold: Boolean = false,//是否粗体
+    scrollEnable: Boolean = false,//滚动
+    lineIndicatorColor: Int = 0,//横线指示器
+    smoothScroll: Boolean = true,//切换页面是否有滚动动画
+    margin: Int = 15,   // 左右间距
+    action: (index: Int) -> Unit = {}
+) {
+    //viewPager.offscreenPageLimit = mStringList.size
+    val commonNavigator = CommonNavigator(context)
+    if (scrollEnable) {
+        commonNavigator.isSkimOver = true
+    } else {
+        commonNavigator.isAdjustMode = true
+    }
+    commonNavigator.adapter = object : CommonNavigatorAdapter() {
+
+        override fun getCount(): Int {
+            return mStringList.size
+        }
+
+        override fun getTitleView(context: Context, index: Int): IPagerTitleView {
+
+            val commonPagerTitleView = CommonPagerTitleView(context)
+            val customLayout: View
+            val titleText: TextView
+
+            if (scrollEnable) {
+                customLayout =
+                    LayoutInflater.from(context).inflate(R.layout.live_tab_title_layout2, null)
                 titleText = customLayout.findViewById(R.id.title_text)
                 val layoutParams = titleText.layoutParams as LinearLayout.LayoutParams
-                layoutParams.marginStart= appContext.dp2px(marginStart)
+                layoutParams.marginStart = appContext.dp2px(margin)
+                layoutParams.marginEnd = appContext.dp2px(margin)
+                titleText.layoutParams = layoutParams
+            } else {
+                customLayout =
+                    LayoutInflater.from(context).inflate(R.layout.live_tab_title_layout, null)
+                titleText = customLayout.findViewById(R.id.title_text)
+            }
+
+            // titleText.gravity=View.TEXT_ALIGNMENT_VIEW_START
+            titleText.text = mStringList[index].toHtml()
+            titleText.textSize = unSelectSize
+            titleText.gravity = Gravity.CENTER_VERTICAL
+
+            commonPagerTitleView.setContentView(customLayout)
+            commonPagerTitleView.onPagerTitleChangeListener = object : OnPagerTitleChangeListener {
+                override fun onSelected(index: Int, totalCount: Int) {
+                    // titleText.setTextColor(Color.WHITE)
+                    titleText.textSize = selectSize
+                    titleText.setTextColor(ContextCompat.getColor(context, selectColor))
+                    if (typefaceBold) {
+                        //                       titleText.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
+                        setTextBold(titleText, true)
+                    }
+                }
+
+                override fun onDeselected(index: Int, totalCount: Int) {
+                    titleText.textSize = unSelectSize
+                    titleText.setTextColor(ContextCompat.getColor(context, normalColor))
+//                    titleText.typeface = Typeface.defaultFromStyle(Typeface.NORMAL)
+                    if (typefaceBold) {
+                        setTextBold(titleText, false)
+                    }
+                }
+
+                override fun onLeave(
+                    index: Int,
+                    totalCount: Int,
+                    leavePercent: Float,
+                    leftToRight: Boolean
+                ) {
+                }
+
+                override fun onEnter(
+                    index: Int,
+                    totalCount: Int,
+                    enterPercent: Float,
+                    leftToRight: Boolean
+                ) {
+                }
+            }
+
+            commonPagerTitleView.setOnClickListener {
+                action.invoke(index)
+                viewPager.setCurrentItem(index, smoothScroll)
+                // viewPager.currentItem = index
+            }
+
+            return commonPagerTitleView
+
+        }
+
+        override fun getIndicator(context: Context): IPagerIndicator {
+            if (lineIndicatorColor != 0) {
+                val indicator = LinePagerIndicator(context)
+                indicator.mode = LinePagerIndicator.MODE_EXACTLY
+                indicator.lineHeight = dp2px(2).toFloat()
+                indicator.lineWidth = dp2px(17).toFloat()
+                indicator.roundRadius = dp2px(40).toFloat()
+                indicator.startInterpolator = AccelerateInterpolator()
+                indicator.endInterpolator = DecelerateInterpolator(2.0f)
+                indicator.setColors(ContextCompat.getColor(context, lineIndicatorColor))
+                indicator.yOffset = dp2px(0).toFloat()
+                return indicator
+            } else {
+                return CommonPagerIndicator(context).apply {
+                    mode = 0
+                    // indicatorDrawable = ContextCompat.getDrawable(context, R.drawable.ic_select)
+                }
+            }
+        }
+
+    }
+    this.navigator = commonNavigator
+
+    //viewPager 绑定 navigator
+    setVpPageChangeCallBack(this, viewPager, action)
+}
+
+/**
+ *
+ * 带内外框背景的指示器
+ */
+fun MagicIndicator.bindBgViewPager2(
+    viewPager: ViewPager2,
+    mStringList: List<String> = arrayListOf(),
+    selectColor: Int = R.color.selectColor,
+    normalColor: Int = R.color.normalColor,
+    selectSize: Float = 14f,
+    unSelectSize: Float = 14f,
+    typefaceBold: Boolean = false,//是否粗体
+    scrollEnable: Boolean = false,//滚动
+
+    marginStart: Int = 10,//tab左边距
+    marginEnd: Int = 10,//tab右边距
+    paddingH: Double = 9.0,//tab左右内边距
+    paddingV: Double = 6.0,//tab上下内边距
+    lineIndicatorColor: Int = 0,//横线指示器
+    isLineIndicator: Boolean = true,//是否为普通滑动背景
+    paddingWidth: Double = 0.0,//内边距
+    action: (index: Int) -> Unit = {}
+) {
+    //viewPager.offscreenPageLimit = mStringList.size
+    val commonNavigator = CommonNavigator(context)
+    if (scrollEnable) {
+        commonNavigator.isSkimOver = true
+    } else {
+        commonNavigator.isAdjustMode = true
+    }
+    commonNavigator.adapter = object : CommonNavigatorAdapter() {
+
+        override fun getCount(): Int {
+            return mStringList.size
+        }
+
+        override fun getTitleView(context: Context, index: Int): IPagerTitleView {
+
+            val commonPagerTitleView = CommonPagerTitleView(context)
+            val customLayout: View
+            val titleText: TextView
+
+            if (scrollEnable) {
+                customLayout =
+                    LayoutInflater.from(context).inflate(R.layout.live_tab_title_layout2, null)
+                titleText = customLayout.findViewById(R.id.title_text)
+                val layoutParams = titleText.layoutParams as LinearLayout.LayoutParams
+                layoutParams.marginStart = appContext.dp2px(marginStart)
                 layoutParams.marginEnd = appContext.dp2px(marginEnd)
-                if (!isLineIndicator){
+                if (!isLineIndicator) {
                     titleText.setPadding(
                         UIUtil.dip2px(context, paddingH),
                         UIUtil.dip2px(context, 6.0),
@@ -728,14 +864,16 @@ fun MagicIndicator.bindBgViewPager2(
                     totalCount: Int,
                     leavePercent: Float,
                     leftToRight: Boolean
-                ) {}
+                ) {
+                }
 
                 override fun onEnter(
                     index: Int,
                     totalCount: Int,
                     enterPercent: Float,
                     leftToRight: Boolean
-                ) {}
+                ) {
+                }
             }
 
             commonPagerTitleView.setOnClickListener {
@@ -753,12 +891,12 @@ fun MagicIndicator.bindBgViewPager2(
             val lineHeight = context.resources.getDimension(R.dimen.dp_30)
             val borderWidth = UIUtil.dip2px(context, paddingWidth).toFloat()
             indicator.lineHeight = lineHeight
-            indicator.roundRadius =UIUtil.dip2px(context, 24.0).toFloat()
+            indicator.roundRadius = UIUtil.dip2px(context, 24.0).toFloat()
             indicator.yOffset = borderWidth
-            indicator.setColors(ContextCompat.getColor(context,lineIndicatorColor))
-            return if (isLineIndicator){
+            indicator.setColors(ContextCompat.getColor(context, lineIndicatorColor))
+            return if (isLineIndicator) {
                 indicator
-            }else{
+            } else {
                 null
             }
         }
@@ -767,7 +905,7 @@ fun MagicIndicator.bindBgViewPager2(
     this.navigator = commonNavigator
 
     //viewPager 绑定 navigator
-    setVpPageChangeCallBack(this,viewPager, action)
+    setVpPageChangeCallBack(this, viewPager, action)
 }
 
 /**
@@ -880,7 +1018,7 @@ fun MagicIndicator.bindMatchDetailVP2(
             indicator.roundRadius = UIUtil.dip2px(context, 3.0).toFloat()
             indicator.startInterpolator = AccelerateInterpolator()
             indicator.endInterpolator = DecelerateInterpolator(2.0f)
-            indicator.setColors(ContextCompat.getColor(context!!,selectColor))
+            indicator.setColors(ContextCompat.getColor(context!!, selectColor))
             indicator.yOffset = UIUtil.dip2px(context, 3.0).toFloat()
             return indicator
         }
@@ -888,7 +1026,7 @@ fun MagicIndicator.bindMatchDetailVP2(
     }
     this.navigator = commonNavigator
     //viewPager 绑定 navigator
-    setVpPageChangeCallBack(this,viewPager, action)
+    setVpPageChangeCallBack(this, viewPager, action)
 }
 
 /**
@@ -901,10 +1039,10 @@ fun MagicIndicator.bindViewBadgePager2(
     unSelectColor: Int = R.color.normalColor,
     selectSize: Float = 14f,
     scrollEnable: Boolean = false,
-    hasLineIndicator:Int = R.color.selectColor,
+    hasLineIndicator: Int = R.color.selectColor,
     action: (index: Int) -> Unit = {}
 ) {
-  //  viewPager.offscreenPageLimit = msgBean.size
+    //  viewPager.offscreenPageLimit = msgBean.size
     val commonNavigator = CommonNavigator(context)
     if (scrollEnable) {
         commonNavigator.isSkimOver = true
@@ -962,18 +1100,21 @@ fun MagicIndicator.bindViewBadgePager2(
                         //viewPager.currentItem = index
                         viewPager.setCurrentItem(index, true)
                         //badgeView = null
-                       // action.invoke(index)
+                        // action.invoke(index)
                     }
                 }
                 val badgeImageView = LayoutInflater.from(context)
-                    .inflate(com.xcjh.base_lib.R.layout.simple_red_dot_badge_layout, null) as ImageView
+                    .inflate(
+                        com.xcjh.base_lib.R.layout.simple_red_dot_badge_layout,
+                        null
+                    ) as ImageView
                 if (msgBean[index].msgNum > 0) {
                     badgeView = badgeImageView
                 }
                 //badgeView = badgeImageView
-                xBadgeRule = BadgeRule(BadgeAnchor.CONTENT_RIGHT,-dip2px(15f))
+                xBadgeRule = BadgeRule(BadgeAnchor.CONTENT_RIGHT, -dip2px(15f))
                 yBadgeRule = BadgeRule(BadgeAnchor.CONTENT_TOP, dip2px(5f))
-                 // setup badge
+                // setup badge
                 /* if (index != 2) {
                      val badgeTextView = LayoutInflater.from(context).inflate(R.layout.simple_count_badge_layout, null) as TextView
                      badgeTextView.text = "" + (index + 1)
@@ -986,6 +1127,7 @@ fun MagicIndicator.bindViewBadgePager2(
                 isAutoCancelBadge = false
             }
         }
+
         override fun getIndicator(context: Context): IPagerIndicator {
             val indicator = LinePagerIndicator(context)
             indicator.mode = LinePagerIndicator.MODE_EXACTLY
@@ -993,11 +1135,12 @@ fun MagicIndicator.bindViewBadgePager2(
             indicator.lineWidth = UIUtil.dip2px(context, 20.0).toFloat()
             indicator.roundRadius = UIUtil.dip2px(context, 2.0).toFloat()
             //indicator.startInterpolator = AccelerateInterpolator() //动画
-           // indicator.endInterpolator = DecelerateInterpolator(2.0f)
-            indicator.setColors(ContextCompat.getColor(context,hasLineIndicator))
+            // indicator.endInterpolator = DecelerateInterpolator(2.0f)
+            indicator.setColors(ContextCompat.getColor(context, hasLineIndicator))
             indicator.yOffset = UIUtil.dip2px(context, 1.0).toFloat()
             return indicator
         }
+
         override fun getTitleWeight(context: Context?, index: Int): Float {
             return if (index == 0) {
                 1.6f
@@ -1012,7 +1155,7 @@ fun MagicIndicator.bindViewBadgePager2(
     }
     this.navigator = commonNavigator
     //viewPager 绑定 navigator
-    setVpPageChangeCallBack(this@bindViewBadgePager2,viewPager, action)
+    setVpPageChangeCallBack(this@bindViewBadgePager2, viewPager, action)
 }
 
 /*
@@ -1024,7 +1167,7 @@ fun MagicIndicator.bindViewPager(
     action: (index: Int) -> Unit = {},
     scrollEnable: Boolean = false,
 ) {
-   // viewPager.offscreenPageLimit = mStringList.size
+    // viewPager.offscreenPageLimit = mStringList.size
     val commonNavigator = CommonNavigator(context)
     if (scrollEnable) {
         commonNavigator.isSkimOver = true
@@ -1060,7 +1203,7 @@ fun MagicIndicator.bindViewPager(
         override fun getIndicator(context: Context): IPagerIndicator {
             return CommonPagerIndicator(context).apply {
                 mode = 0
-               // indicatorDrawable = ContextCompat.getDrawable(context, R.drawable.ic_select)
+                // indicatorDrawable = ContextCompat.getDrawable(context, R.drawable.ic_select)
             }
         }
 
@@ -1151,6 +1294,7 @@ fun getNoMoreThanTwoDigits(num: Double): String {
     format.roundingMode = RoundingMode.FLOOR
     return format.format(num)
 }
+
 /**
  * 解决Gson转换导致int转换成double的问题
  */
@@ -1159,6 +1303,7 @@ fun getGsonStr(num: Double): String {
     //format.roundingMode = RoundingMode.FLOOR
     return format.format(num)
 }
+
 /**
  * 获取 h5 标签中的内容
  */
@@ -1167,6 +1312,7 @@ fun getH5Content(htmlStr: String): String {
     val regTag = "<[^>]*>"
     return htmlStr.replace(regFormat.toRegex(), "").replace(regTag.toRegex(), "")
 }
+
 /**
  * 获取 h5 标签中的内容
  * 保留原始 空格\t、回车\r、换行符\n、制表符\t
@@ -1183,6 +1329,7 @@ fun getH5Content3(htmlStr: String): String {
     val regFormat = "\n"
     return htmlStr.replace(regFormat.toRegex(), "<br>")
 }
+
 /**
  * webView 设置缩放后，文本适配屏幕自动换行
  *       settings.setSupportZoom(true)  settings.builtInZoomControls = true

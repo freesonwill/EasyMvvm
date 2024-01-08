@@ -39,6 +39,8 @@ import com.xcjh.base_lib.utils.TimeUtil
 import com.xcjh.base_lib.utils.distance
 import com.xcjh.base_lib.utils.dp2px
 import com.xcjh.base_lib.utils.grid
+import com.xcjh.base_lib.utils.view.clickNoRepeat
+import kotlinx.android.synthetic.main.item_sch_all.ivsc
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -47,8 +49,8 @@ import java.util.Locale
 class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>() {
     var strTimeZu: MutableList<String> = ArrayList<String>()
     val animatorSet = AnimatorSet()
-    var mview: View? = null
-    var mviewPrent: View? = null
+    var mview: LottieAnimationView? = null
+    var mview1: ImageView? = null
     var index: Int = 0
     var page = 1
     var status = ""
@@ -185,9 +187,9 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                     var time = TimeUtil.getDayOfWeek(item!!.matchTime.toLong(), context)
                     var time1 = TimeUtil.timeStamp2Date(item!!.matchTime.toLong(), null)
                     if (item.focus) {
-                        binding.tvcollect.setBackgroundResource(R.drawable.ic_focus_s)
+                        binding.ivsc.setBackgroundResource(R.drawable.sc_shoucang_icon2)
                     } else {
-                        binding.tvcollect.setBackgroundResource(R.drawable.ic_focus_n)
+                        binding.ivsc.setBackgroundResource(R.drawable.sc_shoucang_icon1)
                     }
                     binding.tvmiddletime.text = time
                     when (item.visbleTime) {
@@ -202,27 +204,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                         item.visbleTime = 2
                                     } else {
                                         binding.tvmiddletime.visibility = View.VISIBLE
-//                                        if (bindingAdapterPosition==0) {
-//                                            val layoutParams =
-//                                                binding.conroot.layoutParams as ViewGroup.MarginLayoutParams
-//                                            layoutParams.setMargins(
-//                                                0,
-//                                                0,
-//                                                0,
-//                                                0
-//                                            )
-//                                            binding.conroot.layoutParams = layoutParams
-//                                        }else{
-//                                            val layoutParams =
-//                                                binding.conroot.layoutParams as ViewGroup.MarginLayoutParams
-//                                            layoutParams.setMargins(
-//                                                0,
-//                                                0,
-//                                                0,
-//                                                0
-//                                            )
-//                                            binding.conroot.layoutParams = layoutParams
-//                                        }
+
                                         item.visbleTime = 1
                                         strTimeZu.add(time)
                                     }
@@ -946,12 +928,13 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                     }
 
 
-                    binding.relcoolect.setOnClickListener {
+                    binding.tvcollect.clickNoRepeat(1000) {
                         judgeLogin {
-                            startAn(binding.tvcollect)
-                            stopAn(binding.tvcollect)
+//                            startAn(binding.tvcollect)
+//                            stopAn(binding.tvcollect)
                             mview = binding.tvcollect
-                            mviewPrent = binding.relcoolect
+                            mview1 = binding.ivsc
+
                             index = modelPosition
                             if (item!!.focus) {
                                 mViewModel.getUnnotice(
@@ -961,7 +944,8 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
 
                             } else {
-                                startAn(binding.tvcollect)
+                               // startAn(binding.tvcollect)
+
                                 mViewModel.getNotice(
                                     item!!.matchId,
                                     item!!.matchType
@@ -1168,9 +1152,9 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                 if (it) {
 
                     if (mview != null) {
-                        mviewPrent!!.performClick()
+                        mview!!.performClick()
                         mview=null
-                        mviewPrent=null
+                        mview1=null
                     }
 
                 } else {
@@ -1391,16 +1375,23 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
             }
         }
         mViewModel.unnoticeData.observe(this) {
-            mview!!.setBackgroundResource(R.drawable.ic_focus_n)
-            //mAdapter.getItem(index)!!.focus = false
+
+           // mAdapter.getItem(index)!!.focus = false
+            mview!!.setAnimation("shoucang2.json")
+            mview!!.loop(false)
+            mview!!.playAnimation()
             mDatabind.recBottom.bindingAdapter.getModel<MatchBean>(index).focus = false
            // mDatabind.recBottom.bindingAdapter.notifyItemChanged(index)
-
+            mview1!!.setBackgroundResource(R.drawable.sc_shoucang_icon1)
         }
         mViewModel.noticeData.observe(this) {
-            mview!!.setBackgroundResource(R.drawable.ic_focus_s)
+
+            mview!!.setAnimation("shoucang1.json")
+            mview!!.loop(false)
+            mview!!.playAnimation()
             mDatabind.recBottom.bindingAdapter.getModel<MatchBean>(index).focus = true
            // mDatabind.recBottom.bindingAdapter.notifyItemChanged(index)
+            mview1!!.setBackgroundResource(R.drawable.sc_shoucang_icon2)
         }
     }
 }
