@@ -11,6 +11,7 @@
     <RelativeLayout
         android:id="@+id/rlNewsShowHot"
         android:layout_width="match_parent"
+        android:visibility="gone"
         android:layout_height="190dp">
         <com.xcjh.app.utils.nice.NiceImageView
             android:id="@+id/ivNewsBe"
@@ -39,7 +40,6 @@
     <RelativeLayout
         android:id="@+id/rlNewsShowList"
         android:layout_width="match_parent"
-        android:visibility="gone"
         android:layout_height="82dp" >
 
         <com.xcjh.app.utils.nice.NiceImageView
@@ -49,7 +49,6 @@
             android:scaleType="centerCrop"
             app:corner_radius="@dimen/dp_4"
             android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
             android:layout_gravity="center"
             app:srcCompat="@drawable/main_banner_load" />
         <RelativeLayout
