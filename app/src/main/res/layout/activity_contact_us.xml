@@ -76,6 +76,7 @@
                             android:textColor="@color/c_37373d"
                             android:maxLength="200"
                             android:gravity="top|left"
+                            android:textCursorDrawable="@drawable/shape_et_cursor_blue"
                             android:hint="@string/contact_hint_input_new"
                             android:textColorHint="@color/c_8a91a0"
                             android:background="@null"/>
