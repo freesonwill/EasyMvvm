@@ -97,10 +97,10 @@
                         <!--比赛信息和状态-->
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/cslMatchInfo"
-                            android:visibility="gone"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_above="@id/marqueeView">
+                            android:layout_above="@id/marqueeView"
+                            android:visibility="gone">
 
                             <TextView
                                 android:id="@+id/tvSignal2"
@@ -289,12 +289,13 @@
                                 android:textStyle="bold" />
 
                             <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
                                 android:layout_marginTop="@dimen/dp_15"
                                 android:layout_marginBottom="@dimen/dp_30"
-                                android:orientation="horizontal"
                                 android:gravity="center_horizontal"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content">
+                                android:orientation="horizontal">
+
                                 <TextView
                                     android:id="@+id/tvReload"
                                     android:layout_width="wrap_content"
@@ -306,6 +307,7 @@
                                     android:textColor="@color/c_ffffff"
                                     android:textSize="@dimen/sp_12"
                                     android:textStyle="bold" />
+
                                 <TextView
                                     android:id="@+id/tvSignal4"
                                     android:layout_width="wrap_content"
@@ -327,7 +329,6 @@
                         <!--视频下边的广告-->
                         <TextView
                             android:id="@+id/marqueeView"
-                            android:visibility="invisible"
                             android:layout_width="match_parent"
                             android:layout_height="27dp"
                             android:layout_alignParentBottom="true"
@@ -342,17 +343,18 @@
                             android:scrollHorizontally="true"
                             android:singleLine="true"
                             android:textColor="@color/c_ffffff"
-                            android:textSize="@dimen/sp_12" />
+                            android:textSize="@dimen/sp_12"
+                            android:visibility="invisible" />
 
                     </RelativeLayout>
 
                     <!--ad -->
                     <ImageView
                         android:id="@+id/ivShowAd"
-                        android:visibility="gone"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
                         android:scaleType="fitXY"
+                        android:visibility="gone"
                         tools:src="@drawable/ic_ad_def" />
                     <!--主播信息-->
                     <androidx.constraintlayout.widget.ConstraintLayout
@@ -363,14 +365,14 @@
 
                         <com.xcjh.base_lib.utils.view.CircleImageView
                             android:id="@+id/iv_tab_anchor_avatar"
-                            android:layout_marginStart="@dimen/dp_12"
                             android:layout_width="@dimen/dp_30"
                             android:layout_height="@dimen/dp_30"
-                            tools:src="@drawable/default_anchor_icon"
+                            android:layout_marginStart="@dimen/dp_12"
                             android:scaleType="centerCrop"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:src="@drawable/default_anchor_icon" />
 
                         <TextView
                             android:id="@+id/tv_tab_anchor_nick"
@@ -431,13 +433,14 @@
                             app:layout_constraintBottom_toBottomOf="@id/iv_tab_anchor_avatar"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="@id/iv_tab_anchor_avatar" />
+
                         <View
-                            app:layout_constraintTop_toBottomOf="@id/iv_tab_anchor_avatar"
-                            android:layout_marginTop="@dimen/dp_12"
-                            app:layout_constraintBottom_toBottomOf="parent"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/dp_1"
-                            android:background="@color/c_27272a" />
+                            android:layout_marginTop="@dimen/dp_12"
+                            android:background="@color/c_27272a"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/iv_tab_anchor_avatar" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </LinearLayout>
@@ -452,9 +455,9 @@
                     <RelativeLayout
                         android:id="@+id/rltTop"
                         android:layout_width="match_parent"
-                        android:gravity="center_vertical"
+                        android:layout_height="44dp"
                         android:background="@drawable/shape_gradient_detail_top"
-                        android:layout_height="44dp">
+                        android:gravity="center_vertical">
                         <!--返回键 一直显示-->
                         <ImageView
                             android:id="@+id/ivBack"
@@ -474,7 +477,7 @@
                             android:layout_centerHorizontal="true"
                             android:layout_marginStart="50dp"
                             android:layout_marginEnd="50dp"
-                            android:alpha="0"
+                            android:alpha="1"
                             tools:ignore="RelativeOverlap">
 
                             <!--比赛状态-->
@@ -505,26 +508,25 @@
                                 android:id="@+id/tvTopHomeScore"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:layout_marginEnd="@dimen/dp_24"
-                                android:ellipsize="end"
-                                android:maxLength="4"
-                                android:maxLines="1"
+                                android:singleLine="true"
                                 android:textColor="@color/white"
                                 android:textSize="15sp"
                                 android:textStyle="bold"
+                                android:gravity="center"
                                 app:layout_constraintBottom_toBottomOf="@id/lltTopMatchStatus"
                                 app:layout_constraintEnd_toStartOf="@id/lltTopMatchStatus"
+                                app:layout_constraintStart_toEndOf="@id/ivTopHomeIcon"
                                 app:layout_constraintTop_toTopOf="@id/lltTopMatchStatus"
-                                tools:text="3" />
+                                tools:text="300" />
 
                             <androidx.constraintlayout.utils.widget.ImageFilterView
                                 android:id="@+id/ivTopHomeIcon"
                                 android:layout_width="@dimen/dp_30"
                                 android:layout_height="@dimen/dp_30"
-                                android:layout_marginEnd="24dp"
+                                android:layout_marginStart="15dp"
                                 android:src="@drawable/ic_default_bg"
                                 app:layout_constraintBottom_toBottomOf="@id/lltTopMatchStatus"
-                                app:layout_constraintEnd_toStartOf="@id/tvTopHomeScore"
+                                app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="@id/lltTopMatchStatus"
                                 tools:ignore="ContentDescription" />
 
@@ -533,26 +535,25 @@
                                 android:id="@+id/tvTopAwayScore"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/dp_24"
-                                android:ellipsize="end"
-                                android:maxLength="4"
-                                android:maxLines="1"
+                                android:singleLine="true"
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/sp_15"
                                 android:textStyle="bold"
+                                android:gravity="center"
                                 app:layout_constraintBottom_toBottomOf="@id/lltTopMatchStatus"
+                                app:layout_constraintEnd_toStartOf="@id/ivTopAwayIcon"
                                 app:layout_constraintStart_toEndOf="@id/lltTopMatchStatus"
                                 app:layout_constraintTop_toTopOf="@id/lltTopMatchStatus"
-                                tools:text="2" />
+                                tools:text="200" />
 
                             <androidx.constraintlayout.utils.widget.ImageFilterView
                                 android:id="@+id/ivTopAwayIcon"
                                 android:layout_width="@dimen/dp_30"
                                 android:layout_height="@dimen/dp_30"
-                                android:layout_marginStart="24dp"
+                                android:layout_marginEnd="15dp"
                                 android:src="@drawable/ic_default_bg"
                                 app:layout_constraintBottom_toBottomOf="@id/lltTopMatchStatus"
-                                app:layout_constraintStart_toEndOf="@id/tvTopAwayScore"
+                                app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintTop_toTopOf="@id/lltTopMatchStatus"
                                 tools:ignore="ContentDescription" />
                         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -586,9 +587,9 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_centerInParent="true"
-                                android:visibility="gone"
                                 android:gravity="center"
-                                android:orientation="vertical">
+                                android:orientation="vertical"
+                                android:visibility="gone">
                                 <!--赛事信息-->
                                 <TextView
                                     android:id="@+id/tvCompetitionName"
@@ -609,8 +610,8 @@
                                     android:textColor="@color/white"
                                     android:textSize="@dimen/sp_12"
                                     android:textStyle="bold"
-                                    app:layout_constraintHorizontal_chainStyle="packed"
                                     app:layout_constraintEnd_toStartOf="@id/tvMatchTimeS"
+                                    app:layout_constraintHorizontal_chainStyle="packed"
                                     app:layout_constraintStart_toStartOf="@id/tvCompetitionName"
                                     app:layout_constraintTop_toBottomOf="@id/tvCompetitionName"
                                     tools:text="2008/8/8" />

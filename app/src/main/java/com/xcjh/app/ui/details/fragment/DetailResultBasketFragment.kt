@@ -79,11 +79,11 @@ class DetailResultBasketFragment(private var match: MatchDetailBean) :
                 }
             })
         mDatabind.state.showLoading()
-        //loadData()
+        loadData()
     }
 
     override fun lazyLoadData() {
-        loadData()
+        //loadData()
     }
     private fun loadData() {
         //获取篮球赛况 得分数据

@@ -6,7 +6,7 @@
         <item name="colorPrimary">@color/blue_ed</item>
         <item name="colorPrimaryDark">@color/blue_ed</item>
         <item name="colorOnPrimary">@color/white</item>
-        <item name="colorAccent">@color/mColorAccent</item>
+        <item name="colorAccent">@color/c_37373d</item>
         <item name="android:windowBackground">@color/base_bg</item>
         <!--  <item name="android:windowAnimationStyle">@android:style/Animation.Activity</item>-->
         <item name="android:windowAnimationStyle">@style/activityAnim</item>

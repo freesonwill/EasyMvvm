@@ -6,7 +6,7 @@
 <!--    <color name="colorAccent">#EF5350</color>-->
     <color name="mColorPrimary">#EF5350</color>
     <color name="mColorPrimaryDark">#303030</color>
-    <color name="mColorAccent">#EF5350</color>
+    <color name="mColorAccent">#000000</color>
     <color name="color_default_bg">#fff3f3f3</color>
     <color name="color_default_dark">#424242</color>
     <color name="color_default_bg_deep">#FAFAFA</color>

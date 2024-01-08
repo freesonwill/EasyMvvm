@@ -288,6 +288,9 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
     override fun onPause() {
         super.onPause()
         hideSoftInput()
+        if (mViewModel.input.get().isBlank()) {
+            mViewModel.input.set("")
+        }
         mDatabind.edtChatMsg.clearFocus()
         mNoticeWeb?.onPause()
         mAgentWeb?.webLifeCycle?.onPause()
