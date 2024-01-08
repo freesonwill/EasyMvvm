@@ -919,6 +919,8 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                 binding1.tvname.text = item1.nickName
                                 Glide.with(context).load(item1.userLogo)
                                     .placeholder(R.drawable.default_anchor_icon)
+                                    .thumbnail(0.1f) // 设置缩略图大小比例（例如0.1表示原图的十分之一）
+                                    .override(64, 64) // 指定目标宽度和高度
                                     .into(binding1.ivhead)
                                 binding1.linroot.setOnClickListener {
                                     MatchDetailActivity.open(
