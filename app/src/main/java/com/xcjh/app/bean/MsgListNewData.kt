@@ -1,4 +1,4 @@
-package com.xcjh.app.ui.room
+package com.xcjh.app.bean
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

@@ -1,20 +1,16 @@
 package com.xcjh.app.ui.chat
 
-import com.haibin.calendarview.Calendar
 import com.kunminx.architecture.ui.callback.UnPeekLiveData
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
 import com.xcjh.app.R
-import com.xcjh.app.appViewModel
 import com.xcjh.app.bean.AutherInfoBean
-import com.xcjh.app.bean.MsgBean
 import com.xcjh.app.bean.PostClreaMsgBean
 import com.xcjh.app.bean.HistoryMsgReq
 import com.xcjh.app.net.apiService
-import com.xcjh.app.ui.room.MsgBeanData
+import com.xcjh.app.bean.MsgBeanData
 import com.xcjh.app.utils.CacheUtil
 import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.base.BaseViewModel
-import com.xcjh.base_lib.bean.ApiResponse
 import com.xcjh.base_lib.callback.livedata.BooleanLiveData
 import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.request

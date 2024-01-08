@@ -1,7 +1,6 @@
 package com.xcjh.app.ui.room
 
 import android.util.Log
-import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -10,10 +9,9 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import com.alibaba.fastjson.JSONObject
-import com.xcjh.app.MyApplication
+import com.xcjh.app.bean.MsgBeanData
 import com.xcjh.app.utils.CacheUtil
 import com.xcjh.base_lib.utils.LogUtils
-import kotlinx.coroutines.sync.Mutex
 
 @Dao
 interface ChatDao {
