@@ -342,7 +342,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                         chat.toNickName = ""
                         chat.fromAvatar = ""
                         chat.fromNickName = ""
-                        refshMsg(chat)
+                        refshMsg(chat, true)
 
                     }
 
