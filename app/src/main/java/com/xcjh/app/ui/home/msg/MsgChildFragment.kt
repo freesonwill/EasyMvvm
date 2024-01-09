@@ -202,9 +202,9 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
             }
             mDatabind.smartCommon.setOnRefreshListener {
                 getRoomAllData()
-                mViewModel.getMsgList(true, "")
+
             }.setOnLoadMoreListener {
-                mViewModel.getMsgList(false, "")
+              //  mViewModel.getMsgList(false, "")
             }
 
 
@@ -229,7 +229,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                 if (it) {
                     if (CacheUtil.isLogin()) {
                         getRoomAllData()
-                        mViewModel.getMsgList(true, "")
+
                     }
                 }
             }
@@ -260,7 +260,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
         }
     }
 
-    fun getRoomAllData() {
+    fun getRoomAllData(isGet:Boolean=true) {
         try {
 
 
@@ -271,7 +271,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
             GlobalScope.launch {
                 val data = getAll().await()
 
-
+                LogUtils.d(data.size.toString()+"获取到数据"+listdata.size)
                 requireActivity().runOnUiThread {
                     if (data.isNotEmpty()) {
                         noReadMsgs = 0
@@ -282,10 +282,14 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                         mDatabind.rec.models = listdata
                         mDatabind.state.showContent()
 
+                        LogUtils.d(data.size.toString()+"获取到数据1"+listdata.size)
                     } else {
                         mDatabind.state.showEmpty()
                     }
-                    mDatabind.smartCommon.finishRefresh()
+                    if (isGet) {
+                        LogUtils.d("kaishi获取到数据")
+                        mViewModel.getMsgList(true, "")
+                    }
                 }
 
             }
@@ -298,7 +302,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
         super.onResume()
         if (CacheUtil.isLogin()) {
             getRoomAllData()
-            mViewModel.getMsgList(true, "")
+
         }
     }
 
@@ -343,7 +347,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                     }
 
                     override fun onC2CReceive(chat: ReceiveChatMsg) {
-                        refshMsg(chat, true)
+
                         if (chat.from != CacheUtil.getUser()?.id) {//收到消息
                             var beanmy: MsgBeanData = MsgBeanData()
                             beanmy.anchorId = chat.anchorId
@@ -359,6 +363,10 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                             addDataToChatList(beanmy)
 
                         }
+                        if (chatId != chat.anchorId) {
+                            chat.noReadSum = 1
+                        }
+                        refshMsg(chat, true)
                     }
 
                     override fun onChangeReceive(chat: ArrayList<ReceiveChangeMsg>) {
@@ -451,16 +459,18 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
 
         mViewModel.upUserInfo.observe(this) {
             getRoomAllData()
-            mViewModel.getMsgList(true, "")
+
 
         }
         mViewModel.msgList.observe(this) {
             LogUtils.d("拿到消息")
+            mDatabind.smartCommon.finishRefresh()
             if (it.isSuccess) {
 
                 if (it.listData.size > 0) {
                     for ((index, data) in it.listData.withIndex()) {
-                        val foundData = listdata.find { it.id == data.id }
+
+                        val foundData = listdata.find { it.anchorId == data.anchorId }
                         if (foundData == null) {
                             data?.let { it1 ->
                                 //if (it1.noReadSum > 0) {//这里看看需不需要判断  因为色剂到 多设备登录的问题
@@ -527,13 +537,17 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                         bean.avatar = msg.fromAvatar ?: ""
                         if (chatId == msg.anchorId) {
                             bean.noReadSum = 0
+                            LogUtils.d("维度1")
                         } else {
                             var count = listdata[i].noReadSum + 1
                             if (msg.noReadSum > count) {
+                                LogUtils.d("维度2")
                                 bean.noReadSum = msg.noReadSum
                             } else if (isAdd) {
+                                LogUtils.d("维度3")
                                 bean.noReadSum = listdata[i].noReadSum + 1
                             } else {
+                                LogUtils.d("维度4")
                                 bean.noReadSum = msg.noReadSum
 
                             }
@@ -572,8 +586,10 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                         bean.noReadSum = 0
                     } else {
                         if (msg.noReadSum == 0) {
-                            bean.noReadSum = 1
+                            bean.noReadSum = 0
+                            LogUtils.d("维度5")
                         } else {
+                            LogUtils.d("维度6")
                             bean.noReadSum = msg.noReadSum
                         }
 
@@ -640,7 +656,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
         GlobalScope.launch {
             MyApplication.dataChatList!!.chatDao?.insertOrUpdate(data)
 
-            getRoomAllData()
+            getRoomAllData(false)
 
         }
     }
