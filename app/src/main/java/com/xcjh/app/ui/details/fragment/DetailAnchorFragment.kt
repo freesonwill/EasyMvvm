@@ -13,6 +13,7 @@ import com.xcjh.app.ui.chat.ChatActivity
 import com.xcjh.app.ui.details.DetailVm
 import com.xcjh.app.utils.clearWebView
 import com.xcjh.app.utils.judgeLogin
+import com.xcjh.app.utils.setH5Data
 import com.xcjh.app.utils.setWeb
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.base.BaseViewModel
@@ -56,7 +57,8 @@ class DetailAnchorFragment(
                 }*//*
                 mDatabind.tvTabAnchorNotice.text = it.notice?.toHtml() //主播公告*/
                 val bb = "<html><head><style>body { font-size:14px; color: #94999f; margin: 0; }</style></head><body>${(it.notice)}</body></html>"
-                mNoticeWeb?.loadDataWithBaseURL(null, bb, "text/html", "UTF-8", null)
+                //mNoticeWeb?.loadDataWithBaseURL(null, bb, "text/html", "UTF-8", null)
+                setH5Data(mNoticeWeb,it.notice?:"", tvColor ="#94999f", maxLine = 200 )
                 loadImage(requireContext(),
                     it.head,
                     mDatabind.ivTabAnchorAvatar,

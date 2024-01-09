@@ -265,8 +265,8 @@ class DetailChatFragment(
         vm.anchorInfo.observe(this) {
             updateChatRoom(it.liveId, it.userId)
         }
-        appViewModel.wsStatus.observe(this) {
-            if (isAdded && it == 1) {
+        appViewModel.wsStatusOpen.observe(this) {
+            if (isAdded && it) {
                 //断开后重连成功，重新进入房间
                 MyWsManager.getInstance(App.app)?.setLiveRoomListener(activity.toString(), this)
                 onWsUserEnterRoom(liveId)

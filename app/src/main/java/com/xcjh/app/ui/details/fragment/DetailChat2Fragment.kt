@@ -97,13 +97,11 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
                     tvArrow.text =
                         if (noticeBean.isOpen) getString(R.string.pack_up) else getString(R.string.expand)
                     startImageRotate(expandCollapse, noticeBean.isOpen)
-                    var htmlText = if (noticeBean.isOpen){
-                        "<div style='display: -webkit-box; -webkit-line-clamp: 10; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;'>${noticeBean.notice}</div>"
+                    if (noticeBean.isOpen){
+                        setH5Data(mNoticeWeb,noticeBean.notice, tvColor ="#94999f", maxLine = 10 )
                     }else{
-                        "<div style='display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;'>${noticeBean.notice}</div>"
+                        setH5Data(mNoticeWeb,noticeBean.notice, tvColor ="#94999f", maxLine = 2 )
                     }
-                    val bb = "<html><head><style>body { font-size:14px; color: #94999f; margin: 0; }</style></head><body>${(htmlText)}</body></html>"
-                    agentWeb.loadDataWithBaseURL(null, bb, "text/html", "UTF-8", null)
                     mDatabind.rcvChat.postDelayed({
                         try {
                             val params = mDatabind.rcvChat.layoutParams
@@ -124,7 +122,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
     private fun initRcv() {
         //  mDatabind.page.setEnableLoadMore(false)
         mDatabind.page.setEnableOverScrollBounce(false)
-        mDatabind.page.preloadIndex = 6
+        mDatabind.page.preloadIndex = 9
         ClassicsFooter.REFRESH_FOOTER_NOTHING=""
         mDatabind.page.emptyLayout = R.layout.layout_empty
         mDatabind.page.stateLayout?.onEmpty {
@@ -139,17 +137,21 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
             emptyHint.setTextColor(context.getColor(R.color.c_5b5b5b))
         }
         mDatabind.page.onRefresh {
-            mViewModel.getHisMsgList(liveId, offset)
+           // mViewModel.getHisMsgList(liveId, offset)
+            vm.getMsgHistory("",liveId, offset, false)
         }
         setChatRoomRcv(vm,mDatabind.rcvChat, mLayoutManager, true, {
             mAgentWeb = it
         },{
             mDatabind.rcvChat.postDelayed({
-                mDatabind.rcvChat.smoothScrollToPosition(0)
+                val params = mDatabind.rcvChat.layoutParams
+                params.height = mDatabind.page.height
+                mDatabind.rcvChat.layoutParams = params
+                mDatabind.rcvChat.scrollToPosition(0)
             }, 200)
 
         }) {
-            offset = it ?: ""
+           // offset = it ?: ""
         }
         //点击列表隐藏软键盘
         mDatabind.rcvChat.setOnTouchListener { v, _ ->
@@ -182,7 +184,8 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
     }
 
     private fun getHistoryData() {
-        mViewModel.getHisMsgList(liveId, offset, true)
+        vm.getMsgHistory(userId,liveId, offset, true)
+       // mViewModel.getHisMsgList(liveId, offset, true)
     }
 
     override fun createObserver() {
@@ -199,35 +202,12 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
                     mDatabind.notice.lltExpandCollapse.visibleOrGone(lineCount > 2)
                     //mDatabind.notice.expandableText.maxLines =  2
                 }
-                val htmlText =
-                    "<div style='display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;'>${noticeBean.notice}</div>"
-                val bb = "<html><head><style>body { font-size:14px; color: #94999f; margin: 0; }</style></head><body>${(htmlText)}</body></html>"
-                mNoticeWeb?.loadDataWithBaseURL(null, bb, "text/html", "UTF-8", null)
-
-                mDatabind.rcvChat.postDelayed({
-                    try {
-                        val params = mDatabind.rcvChat.layoutParams
-                        params.height = mDatabind.page.height
-                        mDatabind.rcvChat.layoutParams = params
-                        mDatabind.rcvChat.addModels(
-                            listOf(
-                                //BottomMsgBean(),
-                                FirstMsgBean(
-                                    it.id, it.head, it.nickName, "0",
-                                    //richText,
-                                    it.firstMessage ?: "", identityType = 1
-                                )
-                            ),
-                            index = 0
-                        ) // 添加一条消息 
-                        mDatabind.rcvChat.scrollToPosition(0)
-                    } catch (_: Exception) { }
-                }, 500)
+                setH5Data(mNoticeWeb,noticeBean.notice, tvColor ="#94999f", maxLine = 2 )
             }
         }
         //历史消息
-        mViewModel.hisMsgList.observe(this) {
-            // mDatabind.page.finishRefresh()
+        vm.hisMsgList.observe(this) {
+             mDatabind.page.finishRefresh()
             if (it.isSuccess) {
                 if (it.listData.isEmpty()) {
                     //mDatabind.smartChat.setEnableRefresh(false)
@@ -237,10 +217,23 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
                         mDatabind.page.showContent(false)
                     }
                 } else {
-                    mDatabind.page.showContent(it.listData.size == req.size)
-                    mDatabind.page.finish(true, it.listData.size == req.size)
-                    mDatabind.rcvChat.addModels(it.listData.reversed()) // 添加一条消息
+                    mDatabind.page.showContent(true)
+                    mDatabind.page.finish(true, it.listData.size == req.size+if (it.isRefresh)1 else 0)
+                    mDatabind.rcvChat.addModels(it.listData) // 添加一条消息
+                    val last = it.listData.last()
+                    if (last is MsgBean){
+                        offset= last.id?:""
+                    }
                     if (it.isRefresh) {
+                        /*mDatabind.rcvChat.postDelayed({
+                            try {
+                                val params = mDatabind.rcvChat.layoutParams
+                                params.height = mDatabind.page.height
+                                mDatabind.rcvChat.layoutParams = params
+                                mDatabind.rcvChat.scrollToPosition(0)
+                            } catch (_: Exception) {
+                            }
+                        }, 100)*/
                         mDatabind.rcvChat.scrollToPosition(0)
                     }
                 }
@@ -256,8 +249,9 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
         vm.anchorInfo.observe(this) {
             updateChatRoom(it.liveId, it.userId)
         }
-        appViewModel.wsStatus.observe(this) {
-            if (isAdded && it == 1) {
+
+        appViewModel.wsStatusOpen.observe(this) {
+            if (isAdded && it) {
                 //断开后重连成功，重新进入房间
                 MyWsManager.getInstance(App.app)?.setLiveRoomListener(activity.toString(), this)
                 onWsUserEnterRoom(liveId)
@@ -371,8 +365,10 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
     }
 
     private fun sendMsg() {
+        mViewModel.input.get().loge("888====")
         if (mViewModel.input.get().isBlank()||mViewModel.input.get().isEmpty()) {
             myToast("请输入内容", isDeep = true)
+            mViewModel.input.get().loge("7888====")
             return
         }
         hideSoftInput()

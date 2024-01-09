@@ -32,17 +32,24 @@
              </LinearLayout>
          </androidx.core.widget.NestedScrollView>-->
 
-        <include
-            android:id="@+id/notice"
-            layout="@layout/item_detail_chat_notice"
-            android:visibility="visible" />
+        <LinearLayout
+            android:id="@+id/lltNotice"
+            android:background="@color/c_181819"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <include
+                android:id="@+id/notice"
+                layout="@layout/item_detail_chat_notice"
+                android:visibility="visible" />
+        </LinearLayout>
+
 
         <com.drake.brv.PageRefreshLayout
             android:id="@+id/page"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@id/llInput"
-            android:layout_below="@id/notice"
+            android:layout_below="@id/lltNotice"
             app:page_upFetchEnabled="true">
 
             <!--  <com.scwang.smart.refresh.header.MaterialHeader
@@ -59,22 +66,13 @@
                 tools:itemCount="3"
                 tools:listitem="@layout/item_detail_chat" />
 
-            <com.scwang.smart.refresh.footer.ClassicsFooter
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:srlTextFailed="@string/head_failed"
-                app:srlTextFinish="@string/head_finish"
-                app:srlTextLoading="@string/head_loading"
-                app:srlTextPulling="@string/head_pulling"
-                app:srlTextRefreshing="@string/head_refreshing"
-                app:srlTextRelease="@string/head_release"
-                app:srlTextUpdate="@string/head_update" />
         </com.drake.brv.PageRefreshLayout>
 
         <RelativeLayout
             android:id="@+id/llInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/c_181819"
             android:layout_alignParentBottom="true">
 
             <RelativeLayout

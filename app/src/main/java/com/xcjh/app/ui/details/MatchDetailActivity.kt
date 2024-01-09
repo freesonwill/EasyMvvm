@@ -644,9 +644,7 @@ class MatchDetailActivity :
                  mDatabind.tvDetailTabAnchorFans.text = anchor?.hotValue+"热度值" //主播粉丝数量-1*/
             }
         }
-        mViewModel.anchorInfo.observe(this) {
-            mViewModel.getDetailAnchorInfo(anchor?.userId)
-        }
+
         /* appViewModel.appPolling.observe(this) {
              try {
                  //防止数据未初始化的情况
