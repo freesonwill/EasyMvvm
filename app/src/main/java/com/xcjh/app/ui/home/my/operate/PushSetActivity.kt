@@ -1,8 +1,12 @@
 package com.xcjh.app.ui.home.my.operate
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import com.gyf.immersionbar.ImmersionBar
 import com.hjq.permissions.Permission
@@ -32,7 +36,7 @@ class PushSetActivity : BaseActivity<PushSetVm, ActivityPushSetBinding>() {
         }
 
         //设置
-        setDate()
+//        setDate()
         mDatabind.rrPushClick.clickNoRepeat {
 
             if(!XXPermissions.isGranted(this, Permission.POST_NOTIFICATIONS)){
@@ -41,6 +45,10 @@ class PushSetActivity : BaseActivity<PushSetVm, ActivityPushSetBinding>() {
                     mViewModel.getInfoPush()
                 }
 
+            }else{
+                val intent = Intent(Settings.ACTION_APPLICATION_SETTINGS)
+                startActivity(intent)
+//                systemAppsLauncher.launch(intent)
             }
         }
 
@@ -56,10 +64,16 @@ class PushSetActivity : BaseActivity<PushSetVm, ActivityPushSetBinding>() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        setDate()
+    }
+//    private val systemAppsLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+//        Log.i("SSSSSS","================")
+//    }
 
     fun setDate(){
         if(XXPermissions.isGranted(this, Permission.POST_NOTIFICATIONS)){
-
             mDatabind.txtPushIsOpen.text=resources.getString(R.string.push_txt_already)
             mDatabind.txtPushIsOpen.setTextColor(ContextCompat.getColor(this,R.color.c_34a853))
             mDatabind.rrPushIsShowConcern.visibility= View.VISIBLE
