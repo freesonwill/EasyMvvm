@@ -105,7 +105,7 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/dp_5"
             android:clipChildren="false"
-            android:visibility="invisible"
+            android:visibility="gone"
             android:clipToPadding="false"
             app:layout_constraintBottom_toBottomOf="@id/ivtype"
             app:layout_constraintRight_toRightOf="parent"
@@ -154,7 +154,7 @@
             android:layout_height="@dimen/dp_30"
             android:layout_marginTop="16dp"
             android:layout_marginRight="47dp"
-            app:layout_constraintRight_toRightOf="@id/tvcollect"
+            app:layout_constraintRight_toRightOf="@id/ivsc"
             app:layout_constraintTop_toBottomOf="@id/tvtime" />
 
         <TextView
