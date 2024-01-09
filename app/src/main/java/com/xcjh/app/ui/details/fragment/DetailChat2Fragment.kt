@@ -1,13 +1,9 @@
 package com.xcjh.app.ui.details.fragment
 
 import android.annotation.SuppressLint
-import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -21,9 +17,7 @@ import com.drake.brv.utils.models
 import com.drake.softinput.hideSoftInput
 import com.google.gson.Gson
 import com.just.agentweb.AgentWeb
-import com.just.agentweb.WebViewClient
 import com.scwang.smart.refresh.footer.ClassicsFooter
-import com.scwang.smart.refresh.header.ClassicsHeader
 import com.xcjh.app.R
 import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseVpFragment
@@ -120,9 +114,10 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
 
     @SuppressLint("ClickableViewAccessibility")
     private fun initRcv() {
-        //  mDatabind.page.setEnableLoadMore(false)
+        /*  mDatabind.page.setEnableRefresh(false)
+          mDatabind.page.setEnableLoadMore(true)*/
         mDatabind.page.setEnableOverScrollBounce(false)
-        mDatabind.page.preloadIndex = 9
+        mDatabind.page.preloadIndex = 20
         ClassicsFooter.REFRESH_FOOTER_NOTHING=""
         mDatabind.page.emptyLayout = R.layout.layout_empty
         mDatabind.page.stateLayout?.onEmpty {
@@ -139,6 +134,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
         mDatabind.page.onRefresh {
            // mViewModel.getHisMsgList(liveId, offset)
             vm.getMsgHistory("",liveId, offset, false)
+            "onRefresh".loge("888====")
         }
         setChatRoomRcv(vm,mDatabind.rcvChat, mLayoutManager, true, {
             mAgentWeb = it
@@ -150,9 +146,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
                 mDatabind.rcvChat.scrollToPosition(0)
             }, 200)
 
-        }) {
-           // offset = it ?: ""
-        }
+        })
         //点击列表隐藏软键盘
         mDatabind.rcvChat.setOnTouchListener { v, _ ->
             v.clearFocus() // 清除文字选中状态
@@ -207,7 +201,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
         }
         //历史消息
         vm.hisMsgList.observe(this) {
-             mDatabind.page.finishRefresh()
+            mDatabind.page.finishRefresh()
             if (it.isSuccess) {
                 if (it.listData.isEmpty()) {
                     //mDatabind.smartChat.setEnableRefresh(false)
@@ -225,15 +219,6 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
                         offset= last.id?:""
                     }
                     if (it.isRefresh) {
-                        /*mDatabind.rcvChat.postDelayed({
-                            try {
-                                val params = mDatabind.rcvChat.layoutParams
-                                params.height = mDatabind.page.height
-                                mDatabind.rcvChat.layoutParams = params
-                                mDatabind.rcvChat.scrollToPosition(0)
-                            } catch (_: Exception) {
-                            }
-                        }, 100)*/
                         mDatabind.rcvChat.scrollToPosition(0)
                     }
                 }
@@ -363,37 +348,41 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
             }
         }
     }
-
+    private var lastClickTime = 0L
     private fun sendMsg() {
-        mViewModel.input.get().loge("888====")
+        val currentTime = System.currentTimeMillis()
+        if (lastClickTime != 0L && (currentTime - lastClickTime < 1000)) {
+            return
+        }
+        lastClickTime = currentTime
         if (mViewModel.input.get().isBlank()||mViewModel.input.get().isEmpty()) {
             myToast("请输入内容", isDeep = true)
-            mViewModel.input.get().loge("7888====")
             return
         }
         hideSoftInput()
         mDatabind.edtChatMsg.clearFocus()
-        mDatabind.sendChat.postDelayed({
-            judgeLogin {
-                CacheUtil.getUser()?.apply {
-                    MyWsManager.getInstance(App.app)?.sendMessage(
-                        Gson().toJson(SendChatMsgBean(
-                            1, 0, 11,
-                            from = id,
-                            fromAvatar = head,
-                            fromNickName = name,
-                            content = mViewModel.input.get(),
-                            identityType = "0",
-                            createTime = System.currentTimeMillis(),
-                            level = lvNum,
-                            groupId = liveId,
-                        ).apply {
-                        })
-                    )
-                }
-                mViewModel.input.set("")
+        judgeLogin {
+            CacheUtil.getUser()?.apply {
+                MyWsManager.getInstance(App.app)?.sendMessage(
+                    Gson().toJson(SendChatMsgBean(
+                        1, 0, 11,
+                        from = id,
+                        fromAvatar = head,
+                        fromNickName = name,
+                        content = mViewModel.input.get(),
+                        identityType = "0",
+                        createTime = System.currentTimeMillis(),
+                        level = lvNum,
+                        groupId = liveId,
+                    ).apply {
+                    })
+                )
             }
-        }, 400)
+            mViewModel.input.set("")
+        }
+       /* mDatabind.sendChat.postDelayed({
+
+        }, 400)*/
     }
 
     /**

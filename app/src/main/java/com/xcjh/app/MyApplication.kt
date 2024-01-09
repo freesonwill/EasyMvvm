@@ -26,6 +26,7 @@ import com.xcjh.app.ui.room.MyRoomDataBase
 import com.xcjh.app.view.callback.EmptyCallback
 import com.xcjh.app.view.callback.LoadingCallback
 import com.xcjh.base_lib.App
+import com.xcjh.base_lib.BuildConfig
 import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.manager.KtxActivityManger
 
@@ -114,7 +115,7 @@ class MyApplication : App() , LifecycleObserver{
 
     private fun initPush() {
         // 必须在application.onCreate中配置，不要判断进程，sdk内部有判断
-        MTCorePrivatesApi.configDebugMode(this, true)
+        MTCorePrivatesApi.configDebugMode(this, BuildConfig.DEBUG)
         // 后台没升级tag: V3.5.4-newportal-20210823-gamma.57版本，前端必须调用此方法，否则通知点击跳转有问题
         //MTPushPrivatesApi.configOldPushVersion(this)
         // 初始化推送
