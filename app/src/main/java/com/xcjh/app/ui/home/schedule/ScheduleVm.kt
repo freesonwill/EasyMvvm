@@ -49,7 +49,7 @@ class ScheduleVm : BaseViewModel() {
                     }
 
                     override fun onAnimationEnd(animation: Animator) {
-                        lott!!.visibility= View.INVISIBLE
+                        lott!!.visibility= View.GONE
                         recyview.bindingAdapter.getModel<MatchBean>(index).focus = true
                         recyview.bindingAdapter.notifyItemChanged(index)
                     }
@@ -89,7 +89,7 @@ class ScheduleVm : BaseViewModel() {
                     }
 
                     override fun onAnimationEnd(animation: Animator) {
-                        lott!!.visibility= View.INVISIBLE
+                        lott!!.visibility= View.GONE
                         recyview.bindingAdapter.getModel<MatchBean>(index).focus = false
                         recyview.bindingAdapter.notifyItemChanged(index)
                     }
