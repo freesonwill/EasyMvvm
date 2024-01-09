@@ -110,7 +110,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                                     binding.tvmiddletime.visibility = View.GONE
                                     item.visbleTime = 2
                                 } else {
-                                    binding.tvmiddletime.visibility = View.VISIBLE
+                                    binding.tvmiddletime.visibility = View.GONE
 
                                     item.visbleTime = 1
                                     strTimeZu.add(time)
@@ -118,7 +118,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                             }
                         } else {
                             if (strTimeZu.size == 0) {
-                                binding.tvmiddletime.visibility = View.VISIBLE
+                                binding.tvmiddletime.visibility = View.GONE
 
                                 item.visbleTime = 1
                                 strTimeZu.add(time)
@@ -127,7 +127,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                                     binding.tvmiddletime.visibility = View.GONE
                                     item.visbleTime = 2
                                 } else {
-                                    binding.tvmiddletime.visibility = View.VISIBLE
+                                    binding.tvmiddletime.visibility = View.GONE
 
                                     item.visbleTime = 1
                                     strTimeZu.add(time)
@@ -140,7 +140,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                     }
 
                     1 -> {//显示
-                        binding.tvmiddletime.visibility = View.VISIBLE
+                        binding.tvmiddletime.visibility = View.GONE
 
                     }
 
