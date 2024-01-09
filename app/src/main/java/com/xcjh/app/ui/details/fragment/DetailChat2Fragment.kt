@@ -85,23 +85,22 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
             mDatabind.notice.root.visibility = View.VISIBLE
             mDatabind.notice.apply {
                 mNoticeWeb = agentWeb
-                setWeb(mNoticeWeb!!){}
+                setWeb(mNoticeWeb!!) {}
                 lltExpandCollapse.setOnClickListener {
                     noticeBean.isOpen = !noticeBean.isOpen
                     tvArrow.text =
                         if (noticeBean.isOpen) getString(R.string.pack_up) else getString(R.string.expand)
                     startImageRotate(expandCollapse, noticeBean.isOpen)
-                    if (noticeBean.isOpen){
-                        setH5Data(mNoticeWeb,noticeBean.notice, tvColor ="#94999f", maxLine = 10 )
-                    }else{
-                        setH5Data(mNoticeWeb,noticeBean.notice, tvColor ="#94999f", maxLine = 2 )
+                    if (noticeBean.isOpen) {
+                        setH5Data(mNoticeWeb, noticeBean.notice, tvColor = "#94999f", maxLine = 10)
+                    } else {
+                        setH5Data(mNoticeWeb, noticeBean.notice, tvColor = "#94999f", maxLine = 2)
                     }
                     mDatabind.rcvChat.postDelayed({
-                        try {
+                        if (isAdded){
                             val params = mDatabind.rcvChat.layoutParams
                             params.height = mDatabind.page.height
                             mDatabind.rcvChat.layoutParams = params
-                        } catch (_: Exception) {
                         }
                     }, 100)
 
@@ -118,7 +117,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
           mDatabind.page.setEnableLoadMore(true)*/
         mDatabind.page.setEnableOverScrollBounce(false)
         mDatabind.page.preloadIndex = 20
-        ClassicsFooter.REFRESH_FOOTER_NOTHING=""
+        ClassicsFooter.REFRESH_FOOTER_NOTHING = ""
         mDatabind.page.emptyLayout = R.layout.layout_empty
         mDatabind.page.stateLayout?.onEmpty {
             val emptyImg = findViewById<ImageView>(R.id.ivEmptyIcon)
@@ -132,18 +131,20 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
             emptyHint.setTextColor(context.getColor(R.color.c_5b5b5b))
         }
         mDatabind.page.onRefresh {
-           // mViewModel.getHisMsgList(liveId, offset)
-            vm.getMsgHistory("",liveId, offset, false)
+            // mViewModel.getHisMsgList(liveId, offset)
+            vm.getMsgHistory("", liveId, offset, false)
             "onRefresh".loge("888====")
         }
-        setChatRoomRcv(vm,mDatabind.rcvChat, mLayoutManager, true, {
+        setChatRoomRcv(vm, mDatabind.rcvChat, mLayoutManager, true, {
             mAgentWeb = it
-        },{
+        }, {
             mDatabind.rcvChat.postDelayed({
-                val params = mDatabind.rcvChat.layoutParams
-                params.height = mDatabind.page.height
-                mDatabind.rcvChat.layoutParams = params
-                mDatabind.rcvChat.scrollToPosition(0)
+                if (isAdded) {
+                    val params = mDatabind.rcvChat.layoutParams
+                    params.height = mDatabind.page.height
+                    mDatabind.rcvChat.layoutParams = params
+                    mDatabind.rcvChat.scrollToPosition(0)
+                }
             }, 200)
 
         })
@@ -156,12 +157,14 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
         }
         mDatabind.edtChatMsg.isEnabled = false
         mDatabind.edtChatMsg.postDelayed({
-           try {
-               mDatabind.edtChatMsg.isEnabled = true
-           }catch (e:Exception){
-             // e.message?.loge()
-           }
-        }, 1000)
+            try {
+                if (isAdded) {
+                    mDatabind.edtChatMsg.isEnabled = true
+                }
+            } catch (e: Exception) {
+               // e.message?.loge("7888===")
+            }
+        }, 800)
         //点击列表隐藏软键盘
         mDatabind.edtChatMsg.setOnFocusChangeListener { v, hasFocus ->
             // setWindowSoftInput(float = mDatabind.llInput, setPadding = true)
@@ -178,8 +181,8 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
     }
 
     private fun getHistoryData() {
-        vm.getMsgHistory(userId,liveId, offset, true)
-       // mViewModel.getHisMsgList(liveId, offset, true)
+        vm.getMsgHistory(userId, liveId, offset, true)
+        // mViewModel.getHisMsgList(liveId, offset, true)
     }
 
     override fun createObserver() {
@@ -188,7 +191,8 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
             if (it != null) {
                 noticeBean.notice = it.notice ?: ""
                 noticeBean.isOpen = false
-                mDatabind.notice.expandableText.text = noticeBean.notice.replace("<p>","<span>").replace("</p>","</span>").toHtml()
+                mDatabind.notice.expandableText.text =
+                    noticeBean.notice.replace("<p>", "<span>").replace("</p>", "</span>").toHtml()
                 val layout = mDatabind.notice.expandableText.layout
                 if (layout != null) {
                     val lineCount: Int = layout.lineCount
@@ -196,7 +200,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
                     mDatabind.notice.lltExpandCollapse.visibleOrGone(lineCount > 2)
                     //mDatabind.notice.expandableText.maxLines =  2
                 }
-                setH5Data(mNoticeWeb,noticeBean.notice, tvColor ="#94999f", maxLine = 2 )
+                setH5Data(mNoticeWeb, noticeBean.notice, tvColor = "#94999f", maxLine = 2)
             }
         }
         //历史消息
@@ -212,11 +216,14 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
                     }
                 } else {
                     mDatabind.page.showContent(true)
-                    mDatabind.page.finish(true, it.listData.size == req.size+if (it.isRefresh)1 else 0)
+                    mDatabind.page.finish(
+                        true,
+                        it.listData.size == req.size + if (it.isRefresh) 1 else 0
+                    )
                     mDatabind.rcvChat.addModels(it.listData) // 添加一条消息
                     val last = it.listData.last()
-                    if (last is MsgBean){
-                        offset= last.id?:""
+                    if (last is MsgBean) {
+                        offset = last.id ?: ""
                     }
                     if (it.isRefresh) {
                         mDatabind.rcvChat.scrollToPosition(0)
@@ -253,11 +260,10 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
     override fun onResume() {
         super.onResume()
         mDatabind.page.postDelayed({
-            try {
+            if (isAdded) {
                 val params = mDatabind.rcvChat.layoutParams
                 params.height = mDatabind.page.height
                 mDatabind.rcvChat.layoutParams = params
-            } catch (_: Exception) {
             }
         }, 200)
         mNoticeWeb?.onResume()
@@ -348,6 +354,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
             }
         }
     }
+
     private var lastClickTime = 0L
     private fun sendMsg() {
         val currentTime = System.currentTimeMillis()
@@ -355,7 +362,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
             return
         }
         lastClickTime = currentTime
-        if (mViewModel.input.get().isBlank()||mViewModel.input.get().isEmpty()) {
+        if (mViewModel.input.get().isBlank() || mViewModel.input.get().isEmpty()) {
             myToast("请输入内容", isDeep = true)
             return
         }
@@ -380,9 +387,9 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
             }
             mViewModel.input.set("")
         }
-       /* mDatabind.sendChat.postDelayed({
+        /* mDatabind.sendChat.postDelayed({
 
-        }, 400)*/
+         }, 400)*/
     }
 
     /**
@@ -397,16 +404,15 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
         mDatabind.page.resetNoMoreData()
         mDatabind.rcvChat.postDelayed({
             //布局重新计算
-            try {
+            if (isAdded) {
                 val params = mDatabind.rcvChat.layoutParams
                 params.height = mDatabind.page.height
                 mDatabind.rcvChat.layoutParams = params
-            } catch (_: Exception) {
+                mDatabind.rcvChat.models = arrayListOf()
+                mDatabind.page.showContent()
+                onWsUserEnterRoom(liveId)
+                getHistoryData()
             }
-            mDatabind.rcvChat.models = arrayListOf()
-            mDatabind.page.showContent()
-            onWsUserEnterRoom(liveId)
-            getHistoryData()
         }, 200)
 
     }

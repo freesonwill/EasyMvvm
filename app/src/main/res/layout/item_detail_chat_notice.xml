@@ -21,7 +21,7 @@
         <LinearLayout
             android:gravity="center_vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="22dp">
             <ImageView
                 android:layout_width="@dimen/dp_18"
                 android:layout_height="@dimen/dp_14"
@@ -39,10 +39,10 @@
             <LinearLayout
                 android:id="@+id/lltExpandCollapse"
                 android:gravity="center_vertical"
+                android:visibility="gone"
                 android:paddingStart="@dimen/dp_4"
-                android:paddingVertical="@dimen/dp_4"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent">
                 <TextView
                     android:id="@+id/tvArrow"
                     android:layout_marginStart="@dimen/dp_10"
