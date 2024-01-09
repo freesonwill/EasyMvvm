@@ -1,6 +1,12 @@
 package com.xcjh.app.ui.home.schedule
 
+import android.animation.Animator
 import android.util.Log
+import android.view.View
+import android.widget.ImageView
+import androidx.recyclerview.widget.RecyclerView
+import com.airbnb.lottie.LottieAnimationView
+import com.drake.brv.utils.bindingAdapter
 import com.kunminx.architecture.ui.callback.UnPeekLiveData
 import com.xcjh.app.bean.HotMatchBean
 import com.xcjh.app.bean.HotMatchReq
@@ -26,12 +32,37 @@ class ScheduleVm : BaseViewModel() {
     /**
      * 关注
      */
-    fun getNotice(matchId: String,matchType:String) {
+    fun getNotice(matchId: String,matchType:String,iv:ImageView,lott:LottieAnimationView,index:Int,recyview:RecyclerView) {
         request(
             { apiService.getNoticeRaise(matchId,matchType) },
 
             {
-                noticeData.value=true
+                lott!!.setAnimation("shoucang1.json")
+                lott!!.loop(false)
+                lott!!.playAnimation()
+
+                // mview1!!.setBackgroundResource(R.drawable.sc_shoucang_icon2)
+                lott!!.addAnimatorListener(object :
+                    Animator.AnimatorListener {
+                    override fun onAnimationStart(animation: Animator) {
+
+                    }
+
+                    override fun onAnimationEnd(animation: Animator) {
+                        lott!!.visibility= View.INVISIBLE
+                        recyview.bindingAdapter.getModel<MatchBean>(index).focus = true
+                        recyview.bindingAdapter.notifyItemChanged(index)
+                    }
+
+                    override fun onAnimationCancel(animation: Animator) {
+
+                    }
+
+                    override fun onAnimationRepeat(animation: Animator) {
+
+                    }
+                })
+                //noticeData.value=true
             }, {
                 //请求失败
                // myToast(it.errorMsg)
@@ -41,12 +72,37 @@ class ScheduleVm : BaseViewModel() {
     /**
      * 取消关注
      */
-    fun getUnnotice(matchId: String,matchType:String) {
+    fun getUnnotice(matchId: String,matchType:String,iv:ImageView,lott:LottieAnimationView,index:Int,recyview:RecyclerView) {
         request(
             { apiService.getUnNoticeRaise(matchId,matchType) },
 
             {
-                unnoticeData.value=true
+                lott!!.setAnimation("shoucang2.json")
+                lott!!.loop(false)
+                lott!!.playAnimation()
+
+                // mview1!!.setBackgroundResource(R.drawable.sc_shoucang_icon2)
+                lott!!.addAnimatorListener(object :
+                    Animator.AnimatorListener {
+                    override fun onAnimationStart(animation: Animator) {
+
+                    }
+
+                    override fun onAnimationEnd(animation: Animator) {
+                        lott!!.visibility= View.INVISIBLE
+                        recyview.bindingAdapter.getModel<MatchBean>(index).focus = false
+                        recyview.bindingAdapter.notifyItemChanged(index)
+                    }
+
+                    override fun onAnimationCancel(animation: Animator) {
+
+                    }
+
+                    override fun onAnimationRepeat(animation: Animator) {
+
+                    }
+                })
+                //unnoticeData.value=true
             }, {
                 //请求失败
               //  myToast(it.errorMsg)

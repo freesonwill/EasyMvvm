@@ -948,7 +948,8 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                             if (item!!.focus) {
                                 mViewModel.getUnnotice(
                                     item!!.matchId,
-                                    item!!.matchType
+                                    item!!.matchType,binding.ivsc,binding.tvcollect,bindingAdapterPosition,
+                                    mDatabind.recBottom
                                 )
 
 
@@ -957,7 +958,8 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
                                 mViewModel.getNotice(
                                     item!!.matchId,
-                                    item!!.matchType
+                                    item!!.matchType,binding.ivsc,binding.tvcollect,bindingAdapterPosition,
+                                    mDatabind.recBottom
                                 )
 
 
@@ -1349,6 +1351,8 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
                     override fun onAnimationEnd(animation: Animator) {
                         mview!!.visibility=View.INVISIBLE
+                        mDatabind.recBottom.bindingAdapter.getModel<MatchBean>(index).focus = false
+                        mDatabind.recBottom.bindingAdapter.notifyItemChanged(index)
                     }
 
                     override fun onAnimationCancel(animation: Animator) {
@@ -1359,9 +1363,8 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
                     }
                 })
-                mDatabind.recBottom.bindingAdapter.getModel<MatchBean>(index).focus = false
-                // mDatabind.recBottom.bindingAdapter.notifyItemChanged(index)
-                mview1!!.setBackgroundResource(R.drawable.sc_shoucang_icon1)
+
+                //mview1!!.setBackgroundResource(R.drawable.sc_shoucang_icon1)
 
             }
             mViewModel.noticeData.observe(this) {
@@ -1369,9 +1372,8 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                 mview!!.setAnimation("shoucang1.json")
                 mview!!.loop(false)
                 mview!!.playAnimation()
-                mDatabind.recBottom.bindingAdapter.getModel<MatchBean>(index).focus = true
-                // mDatabind.recBottom.bindingAdapter.notifyItemChanged(index)
-                mview1!!.setBackgroundResource(R.drawable.sc_shoucang_icon2)
+
+               // mview1!!.setBackgroundResource(R.drawable.sc_shoucang_icon2)
                 mview!!.addAnimatorListener(object :
                     Animator.AnimatorListener {
                     override fun onAnimationStart(animation: Animator) {
@@ -1380,6 +1382,8 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
                     override fun onAnimationEnd(animation: Animator) {
                         mview!!.visibility=View.INVISIBLE
+                        mDatabind.recBottom.bindingAdapter.getModel<MatchBean>(index).focus = true
+                        mDatabind.recBottom.bindingAdapter.notifyItemChanged(index)
                     }
 
                     override fun onAnimationCancel(animation: Animator) {

@@ -839,6 +839,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                     judgeLogin {
 //                            startAn(binding.tvcollect)
 //                            stopAn(binding.tvcollect)
+                        binding.tvcollect.visibility=View.VISIBLE
                         mview = binding.tvcollect
                         mview1 = binding.ivsc
 
