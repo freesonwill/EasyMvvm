@@ -839,6 +839,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                     judgeLogin {
 //                            startAn(binding.tvcollect)
 //                            stopAn(binding.tvcollect)
+                        binding.tvcollect.visibility=View.VISIBLE
                         mview = binding.tvcollect
                         mview1 = binding.ivsc
 
@@ -1081,18 +1082,55 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
             mview!!.setAnimation("shoucang2.json")
             mview!!.loop(false)
             mview!!.playAnimation()
+            mview!!.addAnimatorListener(object :
+                Animator.AnimatorListener {
+                override fun onAnimationStart(animation: Animator) {
+
+                }
+
+                override fun onAnimationEnd(animation: Animator) {
+                    mview!!.visibility=View.INVISIBLE
+                }
+
+                override fun onAnimationCancel(animation: Animator) {
+
+                }
+
+                override fun onAnimationRepeat(animation: Animator) {
+
+                }
+            })
             (mDatabind.rec.models!![index] as MatchBean).focus=false
 
             appViewModel.updateCollection.postValue(true)
           //  mDatabind.rec.mutable.removeAt(index)
            // mDatabind.rec.bindingAdapter.notifyItemRemoved(index) // 通知更新
             mview1!!.setBackgroundResource(R.drawable.sc_shoucang_icon1)
+
         }
         mViewModel.noticeData.observe(this) {
 
             mview!!.setAnimation("shoucang1.json")
             mview!!.loop(false)
             mview!!.playAnimation()
+            mview!!.addAnimatorListener(object :
+                Animator.AnimatorListener {
+                override fun onAnimationStart(animation: Animator) {
+
+                }
+
+                override fun onAnimationEnd(animation: Animator) {
+                    mview!!.visibility=View.INVISIBLE
+                }
+
+                override fun onAnimationCancel(animation: Animator) {
+
+                }
+
+                override fun onAnimationRepeat(animation: Animator) {
+
+                }
+            })
             (mDatabind.rec.models!![index] as MatchBean).focus= true
             appViewModel.updateCollection.postValue(false)
             mview1!!.setBackgroundResource(R.drawable.sc_shoucang_icon2)

@@ -589,6 +589,10 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                     }
 
                     R.id.lincanmer -> {
+                        if (Constants.ISSTOP_TALK != "0") {
+                            myToast(resources.getString(R.string.str_stoptalk))
+                            return@setOnclickNoRepeat
+                        }
                         PictureSelector.create(this)
 
                             .openCamera(SelectMimeType.ofImage())

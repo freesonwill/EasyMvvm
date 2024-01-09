@@ -1,5 +1,6 @@
 package com.xcjh.app.ui.home.schedule
 
+import android.animation.Animator
 import android.animation.AnimatorSet
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -193,6 +194,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                     var time = TimeUtil.getDayOfWeek(item!!.matchTime.toLong(), context)
                     var time1 = TimeUtil.timeStamp2Date(item!!.matchTime.toLong(), null)
                     if (item.focus) {
+                        LogUtils.d("收藏了"+bindingAdapterPosition)
                         binding.ivsc.setBackgroundResource(R.drawable.sc_shoucang_icon2)
                     } else {
                         binding.ivsc.setBackgroundResource(R.drawable.sc_shoucang_icon1)
@@ -936,6 +938,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
                     binding.ivsc.clickNoRepeat(1000) {
                         judgeLogin {
+                            binding.tvcollect.visibility=View.VISIBLE
 //                            startAn(binding.tvcollect)
 //                            stopAn(binding.tvcollect)
                             mview = binding.tvcollect
@@ -945,7 +948,8 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                             if (item!!.focus) {
                                 mViewModel.getUnnotice(
                                     item!!.matchId,
-                                    item!!.matchType
+                                    item!!.matchType,binding.ivsc,binding.tvcollect,bindingAdapterPosition,
+                                    mDatabind.recBottom
                                 )
 
 
@@ -954,7 +958,8 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
                                 mViewModel.getNotice(
                                     item!!.matchId,
-                                    item!!.matchType
+                                    item!!.matchType,binding.ivsc,binding.tvcollect,bindingAdapterPosition,
+                                    mDatabind.recBottom
                                 )
 
 
@@ -1338,18 +1343,57 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                 mview!!.setAnimation("shoucang2.json")
                 mview!!.loop(false)
                 mview!!.playAnimation()
-                mDatabind.recBottom.bindingAdapter.getModel<MatchBean>(index).focus = false
-                // mDatabind.recBottom.bindingAdapter.notifyItemChanged(index)
-                mview1!!.setBackgroundResource(R.drawable.sc_shoucang_icon1)
+                mview!!.addAnimatorListener(object :
+                    Animator.AnimatorListener {
+                    override fun onAnimationStart(animation: Animator) {
+
+                    }
+
+                    override fun onAnimationEnd(animation: Animator) {
+                        mview!!.visibility=View.INVISIBLE
+                        mDatabind.recBottom.bindingAdapter.getModel<MatchBean>(index).focus = false
+                        mDatabind.recBottom.bindingAdapter.notifyItemChanged(index)
+                    }
+
+                    override fun onAnimationCancel(animation: Animator) {
+
+                    }
+
+                    override fun onAnimationRepeat(animation: Animator) {
+
+                    }
+                })
+
+                //mview1!!.setBackgroundResource(R.drawable.sc_shoucang_icon1)
+
             }
             mViewModel.noticeData.observe(this) {
 
                 mview!!.setAnimation("shoucang1.json")
                 mview!!.loop(false)
                 mview!!.playAnimation()
-                mDatabind.recBottom.bindingAdapter.getModel<MatchBean>(index).focus = true
-                // mDatabind.recBottom.bindingAdapter.notifyItemChanged(index)
-                mview1!!.setBackgroundResource(R.drawable.sc_shoucang_icon2)
+
+               // mview1!!.setBackgroundResource(R.drawable.sc_shoucang_icon2)
+                mview!!.addAnimatorListener(object :
+                    Animator.AnimatorListener {
+                    override fun onAnimationStart(animation: Animator) {
+
+                    }
+
+                    override fun onAnimationEnd(animation: Animator) {
+                        mview!!.visibility=View.INVISIBLE
+                        mDatabind.recBottom.bindingAdapter.getModel<MatchBean>(index).focus = true
+                        mDatabind.recBottom.bindingAdapter.notifyItemChanged(index)
+                    }
+
+                    override fun onAnimationCancel(animation: Animator) {
+
+                    }
+
+                    override fun onAnimationRepeat(animation: Animator) {
+
+                    }
+                })
             }
         } catch (e: Exception) {
         }
