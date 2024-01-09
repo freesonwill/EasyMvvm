@@ -104,7 +104,6 @@ class MainNewsListFragment  : BaseFragment<MainNewsListVm, FragmentMainNewsListB
 
                     }
 
-
                 }
 
             }
