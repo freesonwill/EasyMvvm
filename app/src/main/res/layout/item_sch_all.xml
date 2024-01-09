@@ -105,6 +105,7 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/dp_5"
             android:clipChildren="false"
+            android:visibility="invisible"
             android:clipToPadding="false"
             app:layout_constraintBottom_toBottomOf="@id/ivtype"
             app:layout_constraintRight_toRightOf="parent"
