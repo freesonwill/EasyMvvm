@@ -103,27 +103,24 @@ class MyWsClientService : Service() {
                 intent.putExtra("message", message)
                 sendBroadcast(intent)
             }
-
             override fun onOpen(handshakedata: ServerHandshake) {
-                "websocket连接成功wsStatus===${appViewModel.wsStatus.value}".loge("MyWsClient===")
-                if (isLogin()) {
+                "websocket连接成功wsStatus===${appViewModel.wsStatusOpen.value}".loge("MyWsClient===")
+                if (CacheUtil.isLogin()) {
                     GlobalScope.launch {
                         delay(2000)
                         onWsUserLogin() {}
                     }
-
                 }
-                appViewModel.wsStatus.postValue(1)
-                "websocket连接成功appViewModel_wsStatus=== ${appViewModel.wsStatus.value}".loge("MyWsClient===")
+                appViewModel.wsStatusOpen.postValue(true)
+                "websocket连接成功appViewModel_wsStatus=== ${appViewModel.wsStatusOpen.value}".loge("MyWsClient===")
                 if (errorNum > 0) {
                     //Log.e("MyWsClient===", "-----------onOpen--------$errorNum")
                 }
             }
 
             override fun onClose(code: Int, reason: String, remote: Boolean) {
-                appViewModel.wsStatus.postValue(2)
-                "websocket 关闭 $reason  $remote".loge("MyWsClient===")
-                "websocket 关闭appViewModel_wsStatus=== ${appViewModel.wsStatus.value}".loge("MyWsClient===")
+                appViewModel.wsStatusClose.postValue(true)
+                "websocket 关闭appViewModel_wsStatus=== ${appViewModel.wsStatusClose.value}".loge("MyWsClient===")
                 errorNum++
             }
 

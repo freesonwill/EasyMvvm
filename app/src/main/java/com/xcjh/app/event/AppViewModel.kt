@@ -51,7 +51,8 @@ class AppViewModel : BaseViewModel() {
     //切换home的ViewPager的切换  0就是推荐依次类推
     var homeViewPagerEvent= EventLiveData<Int>()
     //socket状态消息
-    var wsStatus = EventLiveData<Int>()//1 开启   2 关闭
+    var wsStatusClose = EventLiveData<Boolean>()//关闭
+    var wsStatusOpen = EventLiveData<Boolean>()//开启
     //更新某些页面
     var updateSomeData = EventLiveData<String>()//"friends"//好友列表
     init {

@@ -52,6 +52,7 @@ import com.xcjh.app.ui.details.fragment.DetailResultBasketFragment
 import com.xcjh.app.ui.details.fragment.DetailResultFootballFragment
 import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.utils.SpanUtil
+import com.xcjh.base_lib.utils.loge
 import com.xcjh.base_lib.utils.setTextBold
 import com.xcjh.base_lib.utils.toHtml
 import com.xcjh.base_lib.utils.view.visibleOrGone
@@ -362,9 +363,6 @@ fun setChatRoomRcv(
         addType<FirstMsgBean> {
             R.layout.item_detail_chat_first // 首条消息
         }
-        addType<BottomMsgBean> {
-            R.layout.item_detail_chat_bottom // 为了滑动到底部 的占位
-        }
         addType<MsgBean> {
             R.layout.item_detail_chat // 我发的消息
         }
@@ -383,10 +381,6 @@ fun setChatRoomRcv(
 
                 }
 
-                is BottomMsgBean -> {
-
-                }
-
                 is FirstMsgBean -> {
                     //主播加入超链接
                     /* "<font color=\"#34A853\" font-weight=\"500\">${item.nick} : </font>${item.content}".toHtml {
@@ -399,10 +393,10 @@ fun setChatRoomRcv(
                     val aa =
                         "<p><span style='color: #34A853;font-weight:500;margin-right:5px;flex-shrink:0;'>jr680036:</span>测试测试出色测试测试出色测</p><p><span style='color: #34A853;font-weight:500;margin-right:5px;flex-shrink:0;'>jr680036:</span> <a href=\\\"https://www.baidu.com/\\\" target=\\\"_blank\\\">https://www.baidu.com/</a> </p><p><span style='color: #34A853;font-weight:500;margin-right:5px;flex-shrink:0;'>jr680036:</span><span style=\\\"color: rgb(225, 60, 57);\\\">测试测试出色</span></p>"
                     val bb =
-                        "<html><head><style>body { font-size:14px; color: #ffffff; margin: 0; }</style></head><body>${(item.content)}</body></html>"
+                        "<html><head><style>* {font-size: 14px;color: #ffffff;font-family: 'PingFang SC';margin: 0;padding: 0;word-wrap: break-word;}body {padding-left: 0px;padding-right: 0px;}img {max-width: 100%;height: auto;}</style></head><body>${(item.content)}</body></html>"
                     // binding.webView.loadData(aa+javascript,"text/html", "UTF-8") //aa.toHtml()
-                    mAgentWeb.urlLoader.loadDataWithBaseURL(null, bb, "text/html", "UTF-8", null)
-
+                  //  mAgentWeb.urlLoader.loadDataWithBaseURL(null, bb, "text/html", "UTF-8", null)
+                    setH5Data(mAgentWeb.webCreator.webView,item.content, tvColor ="#ffffff", maxLine = 2 )
                 }
 
                 is MsgBean -> {
@@ -444,7 +438,7 @@ fun setChatRoomRcv(
                     if (isReverse) {
                         if (modelPosition + 1 == models?.size) {
                             offset.invoke(item.id ?: "")
-                            //item.id?.loge("====+++++++++")
+                            item.id?.loge("====+++++++++")
                         }
                     } else {
                         if (modelPosition == 0) {
@@ -559,5 +553,11 @@ fun convertToHexColor(red: Int, green: Int, blue: Int): String {
     val hexBlue = blue.toString(16).padStart(2, '0') // 补全蓝色分量到两位数字并转为十六进制
 
     return "#$hexRed$hexGreen$hexBlue" // 返回完整的十六进制颜色值
+}
+fun setH5Data(webView: WebView?,content:String="",tvColor:String="#ffffff",fontSize:Int=14,maxLine:Int=2){
+    val htmlText =
+        "<div style='display: -webkit-box; -webkit-line-clamp: ${maxLine}; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;'>${content}</div>"
+    val bb = "<html><head><style>* {font-size: ${fontSize};color:${tvColor};font-family: 'PingFang SC';margin: 0;padding: 0;word-wrap: break-word;}body {padding-left: 0px;padding-right: 0px;}img {max-width: 100%;height: auto;}</style></head><body>${(htmlText)}</body></html>"
+    webView?.loadDataWithBaseURL(null, bb, "text/html", "UTF-8", null)
 }
 
