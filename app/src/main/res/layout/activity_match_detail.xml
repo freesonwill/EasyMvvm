@@ -649,7 +649,7 @@
             <net.lucode.hackware.magicindicator.MagicIndicator
                 android:id="@+id/magic_indicator"
                 android:layout_width="387dp"
-                android:layout_height="@dimen/dp_44"
+                android:layout_height="@dimen/dp_40"
                 android:layout_gravity="center_horizontal"
                 android:background="@color/c_181819" />
 
