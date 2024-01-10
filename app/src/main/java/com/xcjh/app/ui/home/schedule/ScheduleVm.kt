@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
 import com.drake.brv.utils.bindingAdapter
 import com.kunminx.architecture.ui.callback.UnPeekLiveData
+import com.xcjh.app.R
 import com.xcjh.app.bean.HotMatchBean
 import com.xcjh.app.bean.HotMatchReq
 import com.xcjh.app.bean.MatchBean
@@ -49,9 +50,10 @@ class ScheduleVm : BaseViewModel() {
                     }
 
                     override fun onAnimationEnd(animation: Animator) {
-                        lott!!.visibility= View.GONE
+                        iv!!.setBackgroundResource(R.drawable.sc_shoucang_icon2)
                         recyview.bindingAdapter.getModel<MatchBean>(index).focus = true
                         recyview.bindingAdapter.notifyItemChanged(index)
+                        lott!!.visibility= View.GONE
                     }
 
                     override fun onAnimationCancel(animation: Animator) {
@@ -89,9 +91,10 @@ class ScheduleVm : BaseViewModel() {
                     }
 
                     override fun onAnimationEnd(animation: Animator) {
-                        lott!!.visibility= View.GONE
+                        iv!!.setBackgroundResource(R.drawable.sc_shoucang_icon1)
                         recyview.bindingAdapter.getModel<MatchBean>(index).focus = false
                         recyview.bindingAdapter.notifyItemChanged(index)
+                        lott!!.visibility= View.GONE
                     }
 
                     override fun onAnimationCancel(animation: Animator) {

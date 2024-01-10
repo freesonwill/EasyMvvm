@@ -12,6 +12,7 @@ import android.view.animation.ScaleAnimation
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.SimpleItemAnimator
 import com.airbnb.lottie.LottieAnimationView
 import com.bumptech.glide.Glide
 import com.drake.brv.listener.ItemDifferCallback
@@ -179,8 +180,8 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
             mDatabind.recBottom.run {
                 distance(0, 0, 0, 0)
             }
-//            (mDatabind.recBottom.itemAnimator as SimpleItemAnimator).supportsChangeAnimations =
-//                false//防止item刷新的时候闪烁
+            (mDatabind.recBottom.itemAnimator as SimpleItemAnimator).supportsChangeAnimations =
+                false//防止item刷新的时候闪烁
             mDatabind.recBottom.linear().setup {
                 addType<MatchBean>(R.layout.item_sch_all)
 
