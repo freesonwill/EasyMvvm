@@ -45,11 +45,11 @@ class TextLiveAdapter : BaseQuickAdapter<LiveTextBean, QuickViewHolder>() {
             //事件发生方，0-中立、1-主队、2-客队
             ivLogo.visibleOrInvisible(item.position != 0)
             when (item.position) {
-                1 -> {
-                    Glide.with(context).load(homeLogo).placeholder(R.drawable.default_team_logo).into(ivLogo)
+                1 -> {//def_football    default_team_logo
+                    Glide.with(context).load(homeLogo).placeholder(R.drawable.def_football).into(ivLogo)
                 }
                 2 -> {
-                    Glide.with(context).load(awayLogo).placeholder(R.drawable.default_team_logo).into(ivLogo)
+                    Glide.with(context).load(awayLogo).placeholder(R.drawable.def_football).into(ivLogo)
                 }
             }
             when (item.type) {

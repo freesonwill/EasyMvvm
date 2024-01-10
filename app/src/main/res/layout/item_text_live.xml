@@ -10,8 +10,8 @@
         android:id="@+id/iv_type"
         style="@style/matchResultImg"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tv_content"
-        app:layout_constraintBottom_toBottomOf="@id/tv_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         tools:src="@drawable/icon_yellow" />
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -24,14 +24,15 @@
         android:textSize="@dimen/sp_12"
         app:layout_constraintEnd_toStartOf="@id/iv_logo"
         app:layout_constraintStart_toEndOf="@id/iv_type"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@id/iv_type"
+        app:layout_constraintBottom_toBottomOf="@id/iv_type"
         tools:text="重要时间重要时间重要时间重要时间重要时间重要时间重要时间重要时间重要时间重要时间重要时间重要时间重要时间重要时间重要时间重要时间重要时间重要时间重要时间" />
 
     <com.xcjh.app.utils.nice.NiceImageView
         android:id="@+id/iv_logo"
         android:layout_height="@dimen/dp_20"
         android:layout_width="@dimen/dp_20"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@id/iv_type"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/iv_type"
@@ -46,3 +47,4 @@
         app:layout_constraintStart_toStartOf="@id/iv_type"
         app:layout_constraintTop_toBottomOf="@id/iv_type" />
 </androidx.constraintlayout.widget.ConstraintLayout>
+
