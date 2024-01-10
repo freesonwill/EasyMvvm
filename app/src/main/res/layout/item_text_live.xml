@@ -10,32 +10,32 @@
         android:id="@+id/iv_type"
         style="@style/matchResultImg"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_content"
+        app:layout_constraintBottom_toBottomOf="@id/tv_content"
         tools:src="@drawable/icon_yellow" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_content"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:minHeight="@dimen/dp_20"
         android:layout_marginStart="@dimen/dp_10"
         android:layout_marginEnd="@dimen/dp_0"
         android:textColor="@color/c_d7d7e7"
         android:textSize="@dimen/sp_12"
         app:layout_constraintEnd_toStartOf="@id/iv_logo"
         app:layout_constraintStart_toEndOf="@id/iv_type"
-        app:layout_constraintTop_toTopOf="@id/iv_type"
-        app:layout_constraintBottom_toBottomOf="@id/iv_type"
+        app:layout_constraintTop_toTopOf="parent"
         tools:text="重要时间重要时间重要时间重要时间重要时间重要时间重要时间重要时间重要时间重要时间重要时间重要时间重要时间重要时间重要时间重要时间重要时间重要时间重要时间" />
 
-    <com.xcjh.app.utils.nice.NiceImageView
+    <ImageView
         android:id="@+id/iv_logo"
-        android:layout_height="@dimen/dp_20"
+        android:layout_height="20dp"
         android:layout_width="@dimen/dp_20"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="@id/iv_type"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/tv_content"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/iv_type"
+        app:layout_constraintTop_toTopOf="@id/tv_content"
         tools:src="@drawable/icon_team" />
 
     <View
@@ -45,6 +45,5 @@
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@id/iv_type"
-        app:layout_constraintTop_toBottomOf="@id/iv_type" />
+        app:layout_constraintTop_toBottomOf="@id/tv_content" />
 </androidx.constraintlayout.widget.ConstraintLayout>
-
