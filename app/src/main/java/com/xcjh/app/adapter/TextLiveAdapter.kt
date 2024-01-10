@@ -38,12 +38,13 @@ class TextLiveAdapter : BaseQuickAdapter<LiveTextBean, QuickViewHolder>() {
 
     override fun onBindViewHolder(holder: QuickViewHolder, position: Int, item: LiveTextBean?) {
         if (item != null) {
-            holder.getView<TextView>(R.id.tv_content).text = /*item.time + "” " + */item.data
+            val tvContent = holder.getView<TextView>(R.id.tv_content)
+            tvContent.text = item.data
             val ivType = holder.getView<ImageView>(R.id.iv_type)
             val ivLogo = holder.getView<ImageView>(R.id.iv_logo)
             val lineView = holder.getView<View>(R.id.lineView)
             //事件发生方，0-中立、1-主队、2-客队
-            ivLogo.visibleOrInvisible(item.position != 0)
+            ivLogo.visibleOrGone(item.position != 0)
             when (item.position) {
                 1 -> {//def_football    default_team_logo
                     Glide.with(context).load(homeLogo).placeholder(R.drawable.def_football).into(ivLogo)
