@@ -41,7 +41,7 @@ class BasketballLineupView(context: Context?, attrs: AttributeSet?) : LinearLayo
                                 this.setBackgroundResource(R.drawable.ic_basket_team_tb)
                             }
 
-                            text=if (item.number.isNotEmpty())  item.number.toString() else ""
+                            text= item.number?:""
                         }
                         binding.tvPlayerName.text = item.name
                         binding.tvTime.text = item.data.time+"'"
