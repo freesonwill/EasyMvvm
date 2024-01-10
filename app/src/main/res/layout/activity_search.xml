@@ -37,8 +37,7 @@
             android:textColorHint="@color/c_94999f"
             android:textCursorDrawable="@drawable/shape_et_cursor_blue"
             android:textSize="@dimen/sp_16"
-            app:drawableStartCompat="@drawable/ic_search_small"
-            app:drawableTint="@color/c_8a8a8e" />
+            app:drawableStartCompat="@drawable/ic_search_new"/>
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ivClear"
