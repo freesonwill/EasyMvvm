@@ -720,7 +720,7 @@ data class FootballPlayer(
 
 @Keep
 data class BasketballTeamMemberBean(
-    var number: Int = 0,//球衣号
+    var number: String = "",//球衣号
     var name: String = "",//名称
     var logo: String = "",//球员logo
     var data: PlayerBean = PlayerBean()
