@@ -206,13 +206,6 @@
             android:enabled="true"
             android:exported="false"/>
         <!--push start*******************-->
-        <service
-            android:name=".component.MyFirebaseMessagingService"
-            android:exported="false">
-            <intent-filter android:priority="1000"><!--设置最高优先级-->
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
         <!--白名单-->
         <meta-data
             android:name="ENGAGELAB_PRIVATES_TRANSFER"
