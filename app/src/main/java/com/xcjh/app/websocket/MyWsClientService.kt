@@ -3,15 +3,12 @@ package com.xcjh.app.websocket
 import android.app.Service
 import android.content.Intent
 import android.os.*
-import android.util.Log
 import com.google.gson.Gson
 import com.xcjh.app.appViewModel
 import com.xcjh.app.net.ApiComService.Companion.WEB_SOCKET_URL
-import com.xcjh.app.utils.CacheUtil
 import com.xcjh.app.utils.CacheUtil.isLogin
 import com.xcjh.app.utils.onWsUserLogin
 import com.xcjh.app.websocket.bean.SendCommonWsBean
-import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.utils.loge
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -21,58 +18,56 @@ import org.java_websocket.client.WebSocketClient
 import org.java_websocket.handshake.ServerHandshake
 import java.net.URI
 import java.util.concurrent.*
-import java.util.concurrent.atomic.AtomicInteger
 
 /**
+ * onStartService和onBind同时调用
+ * onCreate方法只会调用一次  onBind onStartCommand方法调用多次
+ * 1、先调用startService再调用onBind,
+ * onCreate() --onStartCommand()--onBind--onUnBind--onDestroy
+ * 2、先调用onBind再调用startService
+ * onCreate() --onBind()--onStartCommand--onUnBind--onDestroy
  *
  * @author zobo101
  */
 class MyWsClientService : Service() {
-    var client: WebSocketClient? = null
-    private val mBinder = WsClientBinder()
-    private var scheduledExecutorService: ScheduledExecutorService? = null
+    lateinit var client: WebSocketClient
+    private lateinit var mBinder : WsClientBinder
     private var errorNum = 0
 
+    companion object {
+        //    -------------------------------------websocket心跳检测------------------------------------------------
+        /**
+         * 每隔10秒进行一次对长连接的心跳检测
+         */
+        private const val HEART_BEAT_RATE = (10 * 1000).toLong()
+    }
     /**
      * 用于Activity和service通讯
      */
     inner class WsClientBinder : Binder() {
-        val service: MyWsClientService
-            get() = this@MyWsClientService
-    }
-
-    override fun onBind(intent: Intent): IBinder? {
-        return mBinder
+        fun getService(): MyWsClientService {
+            return this@MyWsClientService
+        }
     }
 
     override fun onCreate() {
         super.onCreate()
-        if (scheduledExecutorService == null) {
-            val namedThreadFactory: ThreadFactory = object : ThreadFactory {
-                private val mCount = AtomicInteger(1)
-                override fun newThread(r: Runnable): Thread {
-                    return Thread(r, "JWebSocketClientService" + mCount.getAndIncrement())
-                }
-            }
-            scheduledExecutorService = ScheduledThreadPoolExecutor(
-                CORE_POOL_SIZE,
-                namedThreadFactory,
-                ThreadPoolExecutor.DiscardOldestPolicy()
-            )
-        }
+        mBinder = WsClientBinder()
+        initSocketClient()
     }
 
+    override fun onBind(intent: Intent): IBinder {
+        return mBinder
+    }
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        //初始化websocket
-        initSocketClient()
-        //开启心跳检测
-        mHandler.postDelayed(heartBeatRunnable, HEART_BEAT_RATE)
-        return START_STICKY
+        return START_STICKY//系统强制杀掉之后，Service依然设置为started状态，再次重新创建该Service，Intent参数为null
+    // START_NOT_STICKY(不会重新创建该Service)
+    // START_REDELIVER_INTENT (系统强制杀掉之后会再次重新创建该Service,intent一定不是null)
     }
 
     override fun onDestroy() {
+        "=====服务onDestroy".loge()
         closeConnect()
-        cancelAll()
         closeHeartBeat()
         super.onDestroy()
     }
@@ -105,7 +100,9 @@ class MyWsClientService : Service() {
             }
             override fun onOpen(handshakedata: ServerHandshake) {
                 "websocket连接成功wsStatus===${appViewModel.wsStatusOpen.value}".loge("MyWsClient===")
-                if (CacheUtil.isLogin()) {
+                //开启心跳检测
+                mHandler.postDelayed(heartBeatRunnable, HEART_BEAT_RATE)
+                if (isLogin()) {
                     GlobalScope.launch {
                         delay(2000)
                         onWsUserLogin() {}
@@ -135,54 +132,25 @@ class MyWsClientService : Service() {
      * 连接websocket
      */
     private fun connect() {
-        if (scheduledExecutorService != null) {
-            scheduledExecutorService!!.schedule({
-                try {
-                    client?.connectionLostTimeout = 0
-                    //connectBlocking多出一个等待操作，会先连接再发送，否则未连接发送会报错
-                    client!!.connectBlocking()
-                    //client!!.connect()
-                    mHandler.postDelayed({
-                        sendHeartCmd()
-                    }, 500)
-
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    "------connect-------- ${e.message}".loge()
-                }
-            }, 0, TimeUnit.SECONDS)
-        }
-    }
-
-    private fun cancelAll() {
-        if (scheduledExecutorService != null) {
-            try {
-                shutdownAndAwaitTermination(scheduledExecutorService!!)
-            } catch (e: Exception) {
-            }
-            scheduledExecutorService = null
-        }
-    }
-
-    private fun shutdownAndAwaitTermination(pool: ScheduledExecutorService) {
-        pool.shutdown()
         try {
-            if (!pool.awaitTermination(6, TimeUnit.MILLISECONDS)) {
-                pool.shutdownNow()
-            }
-        } catch (ie: InterruptedException) {
-            pool.shutdownNow()
-            Thread.currentThread().interrupt()
+            client.connectionLostTimeout = 0
+            //connectBlocking多出一个等待操作，会先连接再发送，否则未连接发送会报错
+            client.connectBlocking()
+            //client!!.connect()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            "------connect-------- ${e.message}".loge()
         }
     }
+
 
     /**
      * 发送消息
      */
     fun sendMsg(msg: String?) {
         try {
-            if (null != client && client?.isOpen == true) {
-                client?.send(msg)
+            if (client.isOpen) {
+                client.send(msg)
             }
         }catch (e :Exception){
 
@@ -202,13 +170,10 @@ class MyWsClientService : Service() {
      */
     private fun closeConnect() {
         try {
-            if (null != client) {
-                client!!.close()
-            }
+            client.close()
         } catch (e: Exception) {
             e.printStackTrace()
         } finally {
-            client = null
         }
     }
 
@@ -216,18 +181,11 @@ class MyWsClientService : Service() {
     private val heartBeatRunnable: Runnable = object : Runnable {
         override fun run() {
             //"-----------心跳包检测连接状态client-----${client==null}".loge("wsService===")
-            if (client != null) {
-                ("-----------socket是否断开-----" + client!!.isClosed).loge("wsService===")
-                if (client!!.isClosed) {
-                    reconnectWs()
-                    //MyWsManager.getInstance(appContext)?.stopService()
-                    // MyWsManager.getInstance(appContext)?.initService()
-                } else {
-                    sendHeartCmd()
-                }
+            ("-----------socket是否断开-----" + client.isClosed).loge("wsService===")
+            if (client.isClosed) {
+                reconnectWs()
             } else {
-                //如果client已为空，重新初始化连接
-                initSocketClient()
+                sendHeartCmd()
             }
             //每隔一定的时间，对长连接进行一次心跳检测
             mHandler.postDelayed(this, HEART_BEAT_RATE)
@@ -237,10 +195,7 @@ class MyWsClientService : Service() {
     fun sendHeartCmd() {
         try {
             //client.sendPing();
-            if (client != null) {
-                client?.send(Gson().toJson(SendCommonWsBean(cmd = 13, loginType = null)))
-                //client?.sendPing()
-            }
+            client.send(Gson().toJson(SendCommonWsBean(cmd = 13, loginType = null)))
         } catch (e: Exception) {
             "-----------sendPing-----${e.message}".loge("wsService===")
         }
@@ -250,27 +205,15 @@ class MyWsClientService : Service() {
      * 开启重连
      */
     private fun reconnectWs() {
-        mHandler.removeCallbacks(heartBeatRunnable)
-        if (scheduledExecutorService != null) {
-            scheduledExecutorService!!.schedule({
-                try {
-                    "-----------开启重连-----".loge("wsService===")
-                    client!!.reconnect()
-                    client!!.reconnectBlocking()
-                } catch (e: InterruptedException) {
-                    "-----------开启重连-----${ e.message}".loge("wsService===")
-                }
-            }, 0, TimeUnit.SECONDS)
+        //closeHeartBeat()
+        try {
+            "-----------开启重连-----".loge("wsService===")
+            client.reconnect()
+            client.reconnectBlocking()
+        } catch (e: InterruptedException) {
+            "-----------开启重连-----${ e.message}".loge("wsService===")
         }
     }
 
-    companion object {
-        private val CPU_COUNT = Runtime.getRuntime().availableProcessors()
-        private val CORE_POOL_SIZE = 2.coerceAtLeast((CPU_COUNT - 1).coerceAtMost(4))
-        //    -------------------------------------websocket心跳检测------------------------------------------------
-        /**
-         * 每隔10秒进行一次对长连接的心跳检测
-         */
-        private const val HEART_BEAT_RATE = (10 * 1000).toLong()
-    }
+
 }

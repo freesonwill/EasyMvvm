@@ -15,9 +15,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.engagelab.privates.core.api.MTCorePrivatesApi
 import com.engagelab.privates.push.api.MTPushPrivatesApi
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.firebase.messaging.FirebaseMessaging
-import com.google.gson.Gson
 import com.gyf.immersionbar.ktx.showStatusBar
 import com.king.app.dialog.AppDialog
 import com.king.app.updater.AppUpdater
@@ -48,7 +45,8 @@ import com.xcjh.base_lib.utils.initActivity
 import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.setOnclickNoRepeat
 import com.xcjh.base_lib.utils.view.clickNoRepeat
-import java.util.*
+import java.util.Timer
+import java.util.TimerTask
 
 /**
  * 版本2 主页
@@ -90,10 +88,6 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         initUI()
         initTime()
         initWs()
-        mDatabind.viewPager.postDelayed({
-            Log.i("push===UserReceiver", "onIntent-extras:${intent?.extras?.toString()}")
-            Log.i("push===UserReceiver", "onIntent-data:${intent?.data?.toString()}")
-        },10000)
     }
 
     override fun onNewIntent(intent: Intent) {
