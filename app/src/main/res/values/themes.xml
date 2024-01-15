@@ -18,24 +18,6 @@
         <item name="android:windowLightStatusBar">true</item>
     </style>
 
-    <!--启动页以前的-->
-  <!--  <style name="ChatLauncher" parent="ChatAppTheme">
-        <item name="android:windowBackground">@drawable/chat_splash_background</item>
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:navigationBarColor">@color/trans</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        &lt;!&ndash; Android 5.0+，设置状态栏全透明透明 &ndash;&gt;
-        <item name="android:windowFullscreen">true</item>
-      &lt;!&ndash;  <item name="android:windowAnimationStyle">@style/Animation_Splash</item>&ndash;&gt;
-        <item name="android:windowAnimationStyle">@style/Animation_Splash</item>
-        <item name="android:windowTranslucentStatus">true</item> &lt;!&ndash; 设置状态栏半透明——解除注释 &ndash;&gt;
-        <item name="android:windowLayoutInDisplayCutoutMode" tools:targetApi="o_mr1">shortEdges
-        </item>
-    </style>
--->
-
     <!--启动页-->
     <!--SplashScreen兼容库，静态背景，android5.0 ~ android11-->
     <style name="Theme.Starting" parent="App.Theme">
@@ -52,7 +34,6 @@
         <item name="android:windowTranslucentStatus">true</item> <!-- 设置状态栏半透明——解除注释 -->
         <item name="android:windowLayoutInDisplayCutoutMode" tools:targetApi="o_mr1">shortEdges
         </item>
-
     </style>
 
     <style name="Theme.MyApplication.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

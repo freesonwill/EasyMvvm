@@ -105,7 +105,7 @@ class MatchDetailActivity :
             //  playUrl = getString("videoUrl", null)
             isHasAnchor = !anchorId.isNullOrEmpty()
             setData()
-            FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+           /* FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
                 if (!task.isSuccessful) {
                     "Fetching FCM registration token failed===${task.exception}".loge("push====token===")
                     return@OnCompleteListener
@@ -117,7 +117,7 @@ class MatchDetailActivity :
                 // Log and toast
                 val msg = token
                 msg.loge("push====token===")
-            })
+            })*/
         }
         initStaticUI()
         initVp()
