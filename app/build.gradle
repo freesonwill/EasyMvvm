@@ -157,7 +157,6 @@ dependencies {
      // Optional: Vivo vendor
      implementation 'com.engagelab.plugin:vivo:4.3.5' //*/
     //        ********极光推送***********
-
 }
 //获取编译时间
 static def releaseTime() {

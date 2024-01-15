@@ -100,7 +100,6 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
         MyWsManager.getInstance(App.app)
             ?.setLiveStatusListener(this.toString(), object : LiveStatusListener {
                 override fun onOpenLive(bean: LiveStatus) {
-
                     if(mDatabind.rcvRecommend.models!=null){
                         for (i in 0 until  mDatabind.rcvRecommend.mutable.size){
                             if(mDatabind.rcvRecommend.mutable[i] is MainTxtBean){
@@ -153,9 +152,6 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
                                         mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
                                     }
                                 }
-
-
-
                             }
 
                         }
@@ -165,11 +161,8 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
 
 
         MyWsManager.getInstance(App.app)?.setC2CListener(javaClass.name, object : C2CListener {
-
             override fun onSendMsgIsOk(isOk: Boolean, bean: ReceiveWsBean<*>) {
-
             }
-
             override fun onSystemMsgReceive(chat: FeedSystemNoticeBean) {
 
             }
@@ -177,13 +170,14 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
             override fun onC2CReceive(chat: ReceiveChatMsg) {
 
             }
-
+            //收到热门比赛的推送
             override fun onChangeReceive(chat: ArrayList<ReceiveChangeMsg>) {
-
+                var isShowMatch:Boolean=false
                 var refresh=ArrayList<Int>()
                 if(mDatabind.rcvRecommend.models!=null){
                     for (i in 0 until  mDatabind.rcvRecommend.mutable.size){
                         if(mDatabind.rcvRecommend.mutable[i] is MatchBean){
+                            isShowMatch=true
                             for (j in 0 until   (mDatabind.rcvRecommend.mutable[i] as MatchBean).list.size){
                                 for (k in 0 until  chat.size){
                                     if((mDatabind.rcvRecommend.mutable[i] as MatchBean).list[j].matchId.equals(chat[k].matchId.toString())&&
@@ -200,7 +194,6 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
                             }
 
                         }
-
                     }
                     if(refresh.size>0){
                         for (i in 0 until  mDatabind.rcvRecommend.mutable.size){

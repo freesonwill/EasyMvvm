@@ -169,4 +169,6 @@ object CacheUtil {
         val kv = MMKV.mmkvWithID("app")
         return kv.encode("navigationVibrate", navigation)
     }
+
+
 }

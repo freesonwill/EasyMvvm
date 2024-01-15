@@ -16,7 +16,6 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
         <!-- true: status栏的图标和文字为黑色；false: status栏的图标和文字为白色 -->
         <item name="android:windowLightStatusBar">true</item>
-
     </style>
 
     <!--启动页以前的-->

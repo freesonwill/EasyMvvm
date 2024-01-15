@@ -1,5 +1,6 @@
 package com.xcjh.app.ui
 
+
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -35,6 +36,7 @@ import com.xcjh.app.ui.home.msg.MsgFragment
 import com.xcjh.app.ui.home.my.MyUserFragment
 import com.xcjh.app.ui.home.schedule.ScheduleFragment
 import com.xcjh.app.utils.CacheUtil
+import com.xcjh.app.utils.getVerCode
 import com.xcjh.app.utils.judgeLogin
 import com.xcjh.app.vm.MainVm
 import com.xcjh.app.websocket.MyWsManager
@@ -88,6 +90,7 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         initUI()
         initTime()
         initWs()
+
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -128,7 +131,8 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
 
     private fun initUI() {
         MTPushPrivatesApi.setNotificationBadge(this, 0)
-        mViewModel.appUpdate()
+        //检查app是否更新
+//        mViewModel.appUpdate()
         //runOnUiThread {  }
         //初始化viewpager2
         mDatabind.viewPager.initActivity(this, mFragList, false)
@@ -174,6 +178,8 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
                 }
             }
         })
+
+
     }
 
     private fun initTime() {
@@ -230,10 +236,10 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
          * 暂时隐藏获取到线上最新版本然后升级
          */
         mViewModel.update.observe(this) {
-//            var code= getVerCode(this).toInt()
-//            if(it.version.toInt()>code){
-//                appUpdate(it.remarks,true,"")
-//            }
+            var code= getVerCode(this).toInt()
+            if(it.version.toInt()>code){
+                appUpdate(it.remarks,true,"")
+            }
         }
 
         appViewModel.mainViewPagerEvent.observe(this) {
@@ -452,7 +458,8 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
     override fun onResume() {
         super.onResume()
         isShowPush = true
-    }
+
+     }
 
     override fun onStop() {
         super.onStop()
@@ -475,5 +482,9 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         MTPushPrivatesApi.setNotificationBadge(this, 0)
         super.onDestroy()
     }
+
+
+
+
 
 }
