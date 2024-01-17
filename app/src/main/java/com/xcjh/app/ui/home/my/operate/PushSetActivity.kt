@@ -8,6 +8,7 @@ import android.provider.Settings
 import android.util.Log
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import com.gyf.immersionbar.ImmersionBar
 import com.hjq.permissions.Permission
@@ -20,7 +21,7 @@ import com.xcjh.app.ui.SplashActivity
 import com.xcjh.base_lib.utils.getXXPermissionsPush
 import com.xcjh.base_lib.utils.view.clickNoRepeat
 
-
+import androidx.appcompat.app.AppCompatDelegate.*
 /**
  * 推送设置
  */
@@ -102,9 +103,6 @@ class PushSetActivity : BaseActivity<PushSetVm, ActivityPushSetBinding>() {
         intent?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
         finishAffinity()
-//        val nextIntent = Intent(this, SplashActivity::class.java)
-//        ProcessPhoenix.triggerRebirth(context,nextIntent)
-
     }
 
     fun setDate(){

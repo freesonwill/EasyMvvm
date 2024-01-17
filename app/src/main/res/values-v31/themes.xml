@@ -17,8 +17,6 @@
         <!--指定成你的App原来的主题。这样，当SplashScreen结束时，你的主题就能够被复原，从而不会影响到你的App的主题外观。-->
         <item name="postSplashScreenTheme">@style/App.Theme</item>
         <!-- 向下兼容。 ==============end-->
-
-
         <!--android 12新增-->
         <!-- 设置图标的背景颜色。 -->
         <item name="windowSplashScreenIconBackgroundColor">@color/trans</item>
