@@ -4,6 +4,7 @@
     android:id="@+id/lltItem"
     android:layout_width="match_parent"
     android:layout_height="@dimen/dp_50"
+    android:foreground="?selectableItemBackground"
     android:gravity="center_horizontal"
     android:orientation="vertical">
 
