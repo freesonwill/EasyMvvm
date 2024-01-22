@@ -40,12 +40,12 @@
                     <androidx.appcompat.widget.AppCompatImageView
                         android:layout_width="33dp"
                         android:layout_height="33dp"
-                        app:srcCompat="@drawable/wd_sz_bjzl_icon"/>
+                        app:srcCompat="@drawable/edit_icon_selector"/>
                     <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="@dimen/sp_14"
-                        android:textColor="@color/c_37373d"
+                        android:textColor="@drawable/txt_colour_black_selector"
                         android:layout_marginLeft="@dimen/dp_8"
                         android:text="@string/my_txt_edit_data"/>
                 </LinearLayout>
@@ -73,12 +73,12 @@
                     <androidx.appcompat.widget.AppCompatImageView
                         android:layout_width="33dp"
                         android:layout_height="33dp"
-                        app:srcCompat="@drawable/wd_sz_tsszl_icon"/>
+                        app:srcCompat="@drawable/push_icon_selector"/>
                     <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="@dimen/sp_14"
-                        android:textColor="@color/c_37373d"
+                        android:textColor="@drawable/txt_colour_black_selector"
                         android:layout_marginLeft="@dimen/dp_8"
                         android:text="@string/set_txt_push"/>
                 </LinearLayout>
@@ -106,12 +106,12 @@
                     <androidx.appcompat.widget.AppCompatImageView
                         android:layout_width="33dp"
                         android:layout_height="33dp"
-                        app:srcCompat="@drawable/wd_sz_zdss_icon"/>
+                        app:srcCompat="@drawable/vibrate_icon_selector"/>
                     <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="@dimen/sp_14"
-                        android:textColor="@color/c_37373d"
+                        android:textColor="@drawable/txt_colour_black_selector"
                         android:layout_marginLeft="@dimen/dp_8"
                         android:text="@string/set_txt_vibrate"/>
                 </LinearLayout>

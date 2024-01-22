@@ -13,6 +13,7 @@
         android:orientation="vertical" >
 
 
+
         <com.scwang.smart.refresh.layout.SmartRefreshLayout
             android:id="@+id/smartCommon"
             android:layout_width="match_parent"

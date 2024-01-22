@@ -1,6 +1,8 @@
 package com.xcjh.app.ui
 
 
+import android.animation.ObjectAnimator
+import android.animation.PropertyValuesHolder
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -66,6 +68,10 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
 
     //是否显示卡片
     private var isShowPush: Boolean = true
+
+    // 定义属性动画常量
+    private val SCALE_X = PropertyValuesHolder.ofFloat(View.SCALE_X, 1.0f, 1.2f, 1.0f)
+    private val SCALE_Y = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.0f, 1.2f, 1.0f)
 
     private var mFragList: ArrayList<Fragment> = arrayListOf(
         HomeFragment(),
@@ -330,7 +336,7 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
                 vibrate(this)
             }
         }
-        currentPage = pos
+
         mDatabind.txtHome.setTextColor(
             ContextCompat.getColor(
                 this,
@@ -376,6 +382,20 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
                 this, if (pos == 3) R.drawable.tab_wode_select else R.drawable.tab_wode_no
             )
         )
+
+
+        if(pos==0){
+            if (currentPage != pos ) {
+                val animator = ObjectAnimator.ofPropertyValuesHolder(mDatabind.ivHomeMain, SCALE_X, SCALE_Y)
+                animator.duration = 300
+                animator.start()
+            }
+
+
+        }
+
+
+        currentPage = pos
         mDatabind.viewPager.setCurrentItem(pos, false)
 
     }

@@ -98,7 +98,7 @@
                     android:layout_width="@dimen/dp_20"
                     android:layout_height="@dimen/dp_18"
                     android:layout_alignParentEnd="true"
-                    app:srcCompat="@drawable/my_icon_set" />
+                    app:srcCompat="@drawable/my_set_image_selector" />
             </RelativeLayout>
 
         </RelativeLayout>
@@ -264,14 +264,14 @@
                     <androidx.appcompat.widget.AppCompatImageView
                         android:layout_width="33dp"
                         android:layout_height="33dp"
-                        app:srcCompat="@drawable/wd_wddj_icon" />
+                        app:srcCompat="@drawable/leve_icon_selector" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dp_8"
                         android:text="@string/my_txt_leve"
-                        android:textColor="@color/c_37373d"
+                        android:textColor="@drawable/txt_colour_black_selector"
                         android:textSize="@dimen/sp_14" />
                 </LinearLayout>
 
@@ -302,14 +302,14 @@
                     <androidx.appcompat.widget.AppCompatImageView
                         android:layout_width="33dp"
                         android:layout_height="33dp"
-                        app:srcCompat="@drawable/wd_fxhy_icon" />
+                        app:srcCompat="@drawable/share_icon_selector" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dp_8"
                         android:text="@string/my_txt_invite"
-                        android:textColor="@color/c_37373d"
+                        android:textColor="@drawable/txt_colour_black_selector"
                         android:textSize="@dimen/sp_14" />
                 </LinearLayout>
 
@@ -340,14 +340,14 @@
                     <androidx.appcompat.widget.AppCompatImageView
                         android:layout_width="33dp"
                         android:layout_height="33dp"
-                        app:srcCompat="@drawable/wd_yjfk_icon" />
+                        app:srcCompat="@drawable/opinion_icon_selector" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dp_8"
                         android:text="@string/feedback"
-                        android:textColor="@color/c_37373d"
+                        android:textColor="@drawable/txt_colour_black_selector"
                         android:textSize="@dimen/sp_14" />
                 </LinearLayout>
 
