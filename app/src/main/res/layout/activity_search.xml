@@ -55,7 +55,7 @@
             android:id="@+id/txtSearchClick"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/c_34a853"
+            android:textColor="@drawable/search_txt_selector"
             android:textSize="@dimen/sp_16"
             android:gravity="center"
             android:paddingRight="12dp"

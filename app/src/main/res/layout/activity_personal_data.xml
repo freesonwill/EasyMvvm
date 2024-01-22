@@ -28,7 +28,7 @@
                 android:gravity="center"
                 android:onClick="finishTopClick"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_back_new"
+                android:src="@drawable/back_image_selector"
                 android:layout_alignParentBottom="true"
                 tools:ignore="UsingOnClickInXml" />
             <TextView

@@ -35,7 +35,7 @@
                     android:layout_marginRight="@dimen/dp_12"
                     android:layout_centerVertical="true"
                     android:layout_alignParentRight="true"
-                    app:srcCompat="@drawable/ic_search" />
+                    app:srcCompat="@drawable/search_image_selector" />
             </RelativeLayout>
 
         </RelativeLayout>
