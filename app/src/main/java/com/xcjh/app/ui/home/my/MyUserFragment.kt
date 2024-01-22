@@ -1,16 +1,15 @@
 package com.xcjh.app.ui.home.my
 
+import android.animation.Animator
+import android.animation.ObjectAnimator
+import android.animation.PropertyValuesHolder
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.View
-import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.gyf.immersionbar.ImmersionBar
 import com.kongzue.dialogx.dialogs.CustomDialog
 import com.kongzue.dialogx.interfaces.OnBindView
@@ -27,8 +26,6 @@ import com.xcjh.app.utils.CacheUtil
 import com.xcjh.app.utils.judgeLogin
 import com.xcjh.app.web.WebActivity
 import com.xcjh.base_lib.Constants
-import com.xcjh.base_lib.utils.copyToClipboard
-import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.shareText
 import com.xcjh.base_lib.utils.view.clickNoRepeat
 
@@ -38,7 +35,9 @@ import com.xcjh.base_lib.utils.view.clickNoRepeat
  */
 class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
 
-
+    // 定义属性动画常量
+    private val SCALE_X = PropertyValuesHolder.ofFloat(View.SCALE_X, 1.0f, 1.4f, 1.0f)
+    private val SCALE_Y = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.0f, 1.4f, 1.0f)
     override fun initView(savedInstanceState: Bundle?) {
         ImmersionBar.with(this)
             .statusBarDarkFont(true)//黑色
@@ -77,33 +76,133 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
         }
         //我的订阅
         mDatabind.llMyClickSubscribe.clickNoRepeat {
-            if (CacheUtil.isLogin()) {
-                startNewActivity<MyNoticeActivity>()
-            } else {
-                startNewActivity<LoginActivity>()
-            }
+
+            val animator = ObjectAnimator.ofPropertyValuesHolder(mDatabind.myAnimation, SCALE_X, SCALE_Y)
+            animator.duration = 200
+            animator.start()
+
+            animator.addListener(object : Animator.AnimatorListener {
+                override fun onAnimationStart(animation: Animator) {
+                    // 动画开始时的操作
+                }
+
+                override fun onAnimationEnd(animation: Animator) {
+                    // 动画结束时的操作
+                    // 在这里可以做一些清理工作或执行其他的逻辑操作
+                if (CacheUtil.isLogin()) {
+                    startNewActivity<MyNoticeActivity>()
+                  } else {
+                  startNewActivity<LoginActivity>()
+                 }
+                }
+
+                override fun onAnimationCancel(animation: Animator) {
+                    // 动画被取消时的操作
+                }
+
+                override fun onAnimationRepeat(animation: Animator) {
+                    // 动画重复播放时的操作
+                }
+            })
+
+//            mDatabind.myAnimationSubscribe.imageAssetsFolder="subscribe/images"
+//            mDatabind.myAnimationSubscribe.setAnimation("subscribe/subscribe_animation.json")
+//            mDatabind.myAnimationSubscribe.playAnimation()
+
         }
         //活动中心
         mDatabind.llMyClickEvents.clickNoRepeat {
-            startNewActivity<EventsCentreActivity>()
+
+
+            val animator = ObjectAnimator.ofPropertyValuesHolder(mDatabind.myAnimationActivity, SCALE_X, SCALE_Y)
+            animator.duration = 200
+            animator.start()
+
+            animator.addListener(object : Animator.AnimatorListener {
+                override fun onAnimationStart(animation: Animator) {
+                    // 动画开始时的操作
+                }
+
+                override fun onAnimationEnd(animation: Animator) {
+                    // 动画结束时的操作
+                    // 在这里可以做一些清理工作或执行其他的逻辑操作
+                    startNewActivity<EventsCentreActivity>()
+                }
+
+                override fun onAnimationCancel(animation: Animator) {
+                    // 动画被取消时的操作
+                }
+
+                override fun onAnimationRepeat(animation: Animator) {
+                    // 动画重复播放时的操作
+                }
+            })
         }
 
         //我的关注
         mDatabind.llMyClickFollow.clickNoRepeat {
-            if (CacheUtil.isLogin()) {
-                startNewActivity<MyFollowListActivity>()
-            } else {
-                startNewActivity<LoginActivity>()
-            }
+
+            val animator = ObjectAnimator.ofPropertyValuesHolder(mDatabind.myAnimationMy, SCALE_X, SCALE_Y)
+            animator.duration = 200
+            animator.start()
+
+            animator.addListener(object : Animator.AnimatorListener {
+                override fun onAnimationStart(animation: Animator) {
+                    // 动画开始时的操作
+                }
+
+                override fun onAnimationEnd(animation: Animator) {
+                    // 动画结束时的操作
+                    // 在这里可以做一些清理工作或执行其他的逻辑操作
+                    if (CacheUtil.isLogin()) {
+                        startNewActivity<MyFollowListActivity>()
+                    } else {
+                        startNewActivity<LoginActivity>()
+                    }
+                }
+
+                override fun onAnimationCancel(animation: Animator) {
+                    // 动画被取消时的操作
+                }
+
+                override fun onAnimationRepeat(animation: Animator) {
+                    // 动画重复播放时的操作
+                }
+            })
+
         }
 
         //观看历史
         mDatabind.llMyClickHistory.clickNoRepeat {
-            if (CacheUtil.isLogin()) {
-                startNewActivity<ViewingHistoryListActivity>()
-            } else {
-                startNewActivity<LoginActivity>()
-            }
+
+            val animator = ObjectAnimator.ofPropertyValuesHolder(mDatabind.myAnimationHistory, SCALE_X, SCALE_Y)
+            animator.duration = 200
+            animator.start()
+
+            animator.addListener(object : Animator.AnimatorListener {
+                override fun onAnimationStart(animation: Animator) {
+                    // 动画开始时的操作
+                }
+
+                override fun onAnimationEnd(animation: Animator) {
+                    // 动画结束时的操作
+                    // 在这里可以做一些清理工作或执行其他的逻辑操作
+                    if (CacheUtil.isLogin()) {
+                        startNewActivity<ViewingHistoryListActivity>()
+                    } else {
+                        startNewActivity<LoginActivity>()
+                    }
+
+                }
+
+                override fun onAnimationCancel(animation: Animator) {
+                    // 动画被取消时的操作
+                }
+
+                override fun onAnimationRepeat(animation: Animator) {
+                    // 动画重复播放时的操作
+                }
+            })
 
         }
 
@@ -163,6 +262,20 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
      * 设置参数
      */
     fun setData() {
+//        mDatabind.myAnimationSubscribe.imageAssetsFolder="subscribe/images"
+//        mDatabind.myAnimationSubscribe.setAnimation("subscribe/subscribe_animation")
+//        mDatabind.myAnimationSubscribe.progress=0f
+//        try {
+//            // 从 assets 文件夹中加载图片资源
+//            val inputStream: InputStream =requireContext().assets.open("subscribe/images/img_0.png")
+//
+//            val drawable: Drawable = Drawable.createFromStream(inputStream, null)!!
+//            mDatabind.myAnimationSubscribe.setImageDrawable(drawable)
+//        } catch (e: IOException) {
+//            mDatabind.myAnimationSubscribe.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.my_wd_dy_icon))
+//        }
+
+
         if (CacheUtil.isLogin()) {
             if (CacheUtil.getUser() != null) {
                 var user = CacheUtil.getUser()

@@ -151,11 +151,19 @@
                         android:orientation="vertical">
 
                         <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/myAnimation"
                             android:layout_width="@dimen/dp_35"
                             android:layout_height="@dimen/dp_35"
                             android:scaleType="fitXY"
                             app:srcCompat="@drawable/my_wd_dy_icon" />
-
+<!--                        <com.airbnb.lottie.LottieAnimationView-->
+<!--                            android:id="@+id/myAnimationSubscribe"-->
+<!--                            android:layout_width="@dimen/dp_50"-->
+<!--                            android:layout_height="@dimen/dp_50"-->
+<!--                            app:lottie_autoPlay="false"-->
+<!--                            app:lottie_loop="false"-->
+<!--                            android:visibility="gone"-->
+<!--                            android:scaleType="centerCrop"  />-->
                         <androidx.appcompat.widget.AppCompatTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -177,6 +185,7 @@
                         android:orientation="vertical">
 
                         <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/myAnimationActivity"
                             android:layout_width="@dimen/dp_35"
                             android:layout_height="@dimen/dp_35"
                             android:scaleType="fitXY"
@@ -202,6 +211,7 @@
                         android:orientation="vertical">
 
                         <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/myAnimationMy"
                             android:layout_width="@dimen/dp_35"
                             android:layout_height="@dimen/dp_35"
                             android:scaleType="fitXY"
@@ -227,6 +237,7 @@
                         android:orientation="vertical">
 
                         <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/myAnimationHistory"
                             android:layout_width="@dimen/dp_35"
                             android:layout_height="@dimen/dp_35"
                             android:scaleType="fitXY"
