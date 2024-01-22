@@ -117,7 +117,8 @@
                     android:paddingHorizontal="@dimen/dp_15"
                     android:paddingVertical="5dp"
                     android:src="@drawable/icon_send"
-                    app:click="@{v}" />
+                    app:click="@{v}"
+                    app:tint="@color/c94999f_to_dark_selector" />
             </RelativeLayout>
         </RelativeLayout>
     </RelativeLayout>
