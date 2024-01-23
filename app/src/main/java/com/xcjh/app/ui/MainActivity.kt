@@ -65,13 +65,9 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
     private var currentPage: Int = 0
     private var popup: BasePopupView? = null
     private var exitTime: Long = 0
-
     //是否显示卡片
     private var isShowPush: Boolean = true
 
-    // 定义属性动画常量
-    private val SCALE_X = PropertyValuesHolder.ofFloat(View.SCALE_X, 1.0f, 1.2f, 1.0f)
-    private val SCALE_Y = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.0f, 1.2f, 1.0f)
 
     private var mFragList: ArrayList<Fragment> = arrayListOf(
         HomeFragment(),
@@ -184,7 +180,9 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
                 }
             }
         })
-
+        mDatabind.ivHomeCourse.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_saicheng_no))
+        mDatabind.ivHomeMsg.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_xiaoxi_no))
+        mDatabind.ivHomeMy.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_wode_no))
 
     }
 
@@ -336,6 +334,46 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
                 vibrate(this)
             }
         }
+        if (pos == 0&&currentPage != pos){
+            mDatabind.ivHomeMain.setAnimation("tab_shouye_icon.json")
+            mDatabind.ivHomeMain.playAnimation()
+            mDatabind.ivHomeCourse.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_saicheng_no))
+            mDatabind.ivHomeMsg.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_xiaoxi_no))
+            mDatabind.ivHomeMy.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_wode_no))
+            mDatabind.ivHomeCourse.cancelAnimation()
+            mDatabind.ivHomeMsg.cancelAnimation()
+            mDatabind.ivHomeMy.cancelAnimation()
+        }else if (pos == 1&&currentPage != pos){
+            mDatabind.ivHomeCourse.setAnimation("tab_saicheng_icon.json")
+            mDatabind.ivHomeCourse.playAnimation()
+             mDatabind.ivHomeMain.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_main_no))
+            mDatabind.ivHomeMsg.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_xiaoxi_no))
+            mDatabind.ivHomeMy.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_wode_no))
+
+            mDatabind.ivHomeMain.cancelAnimation()
+            mDatabind.ivHomeMsg.cancelAnimation()
+            mDatabind.ivHomeMy.cancelAnimation()
+        }else if (pos == 2&&currentPage != pos){
+            mDatabind.ivHomeMsg.setAnimation("tab_xiaoxi_icon.json")
+            mDatabind.ivHomeMsg.playAnimation()
+            mDatabind.ivHomeMain.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_main_no))
+           mDatabind.ivHomeCourse.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_saicheng_no))
+            mDatabind.ivHomeMy.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_wode_no))
+            mDatabind.ivHomeMain.cancelAnimation()
+            mDatabind.ivHomeCourse.cancelAnimation()
+            mDatabind.ivHomeMy.cancelAnimation()
+        }else if (pos == 3&&currentPage != pos){
+            mDatabind.ivHomeMy.setAnimation("tab_wode_icon.json")
+            mDatabind.ivHomeMy.playAnimation()
+            mDatabind.ivHomeMain.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_main_no))
+            mDatabind.ivHomeCourse.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_saicheng_no))
+            mDatabind.ivHomeMsg.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_xiaoxi_no))
+
+            mDatabind.ivHomeMain.cancelAnimation()
+            mDatabind.ivHomeCourse.cancelAnimation()
+            mDatabind.ivHomeMsg.cancelAnimation()
+        }
+
 
         mDatabind.txtHome.setTextColor(
             ContextCompat.getColor(
@@ -362,37 +400,29 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
             )
         )
 
-        mDatabind.ivHomeMain.setImageDrawable(
-            ContextCompat.getDrawable(
-                this, if (pos == 0) R.drawable.tab_main_select else R.drawable.tab_main_no
-            )
-        )
-        mDatabind.ivHomeCourse.setImageDrawable(
-            ContextCompat.getDrawable(
-                this, if (pos == 1) R.drawable.tab_saicheng_select else R.drawable.tab_saicheng_no
-            )
-        )
-        mDatabind.ivHomeMsg.setImageDrawable(
-            ContextCompat.getDrawable(
-                this, if (pos == 2) R.drawable.tab_xiaoxi_select else R.drawable.tab_xiaoxi_no
-            )
-        )
-        mDatabind.ivHomeMy.setImageDrawable(
-            ContextCompat.getDrawable(
-                this, if (pos == 3) R.drawable.tab_wode_select else R.drawable.tab_wode_no
-            )
-        )
+//        mDatabind.ivHomeMain.setImageDrawable(
+//            ContextCompat.getDrawable(
+//                this, if (pos == 0) R.drawable.tab_main_select else R.drawable.tab_main_no
+//            )
+//        )
+//        mDatabind.ivHomeCourse.setImageDrawable(
+//            ContextCompat.getDrawable(
+//                this, if (pos == 1) R.drawable.tab_saicheng_select else R.drawable.tab_saicheng_no
+//            )
+//        )
+//        mDatabind.ivHomeMsg.setImageDrawable(
+//            ContextCompat.getDrawable(
+//                this, if (pos == 2) R.drawable.tab_xiaoxi_select else R.drawable.tab_xiaoxi_no
+//            )
+//        )
+//        mDatabind.ivHomeMy.setImageDrawable(
+//            ContextCompat.getDrawable(
+//                this, if (pos == 3) R.drawable.tab_wode_select else R.drawable.tab_wode_no
+//            )
+//        )
 
 
-        if(pos==0){
-            if (currentPage != pos ) {
-                val animator = ObjectAnimator.ofPropertyValuesHolder(mDatabind.ivHomeMain, SCALE_X, SCALE_Y)
-                animator.duration = 300
-                animator.start()
-            }
 
-
-        }
 
 
         currentPage = pos
