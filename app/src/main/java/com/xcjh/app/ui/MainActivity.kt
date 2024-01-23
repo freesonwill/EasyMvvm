@@ -81,7 +81,7 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         super.initView(savedInstanceState)
         //MTPushPrivatesApi.clearNotification(this)
         showStatusBar()
-
+        Log.i("ssss","111111111")
         /* splashScreen.setKeepOnScreenCondition {
              //延迟2.5秒
              !mViewModel.mockDataLoading()
