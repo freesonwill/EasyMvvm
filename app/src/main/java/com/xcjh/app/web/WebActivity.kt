@@ -194,12 +194,14 @@ class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
                 "        if (dataSrc) {\n" +
                 "            imgs[i].setAttribute('src', dataSrc)\n" +
                 "        }\n" +
-                "        if(i>=0){\n" +
+                "        if(i>0){\n" +
                 "            imgs[i].style.width = '100%';\n" +
                 "            imgs[i].style.height = 'auto';\n" +
                 "        }\n" +
                 "    }\n" +
                 "</script>"
+
+
         //获取到网页详情 新闻列表
         mViewModel.newsBeanValue.observe(this){
             var sdf = SimpleDateFormat("yyyy-MM-dd HH:mm")
