@@ -16,7 +16,7 @@
 
         <include
             android:id="@+id/titleTop"
-            layout="@layout/com_title_transparent" />
+            layout="@layout/com_title"  />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv"
