@@ -5,9 +5,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:id="@+id/llLiveSpacing"
-    android:background="@drawable/shape_r8_ffffff"
+    android:background="@drawable/selector_8_whith_f6f7fa"
     android:layout_height="142dp">
-
+<!--shape_r8_ffffff-->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="95dp">

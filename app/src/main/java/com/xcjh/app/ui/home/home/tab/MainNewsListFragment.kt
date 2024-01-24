@@ -107,7 +107,7 @@ class MainNewsListFragment  : BaseFragment<MainNewsListVm, FragmentMainNewsListB
                 }
 
             }
-            R.id.rlNewsClick.onClick {
+            R.id.rlNewsShowList.onClick {
                 var  bean=_data as NewsBean
                 startNewActivity<WebActivity>() {
                     this.putExtra(Constants.WEB_URL, bean.sourceUrl)
@@ -117,7 +117,16 @@ class MainNewsListFragment  : BaseFragment<MainNewsListVm, FragmentMainNewsListB
                 }
                 mViewModel.getNewsInfo(bean.id)
             }
-
+            R.id.rlNewsShowHot.onClick {
+                var  bean=_data as NewsBean
+                startNewActivity<WebActivity>() {
+                    this.putExtra(Constants.WEB_URL, bean.sourceUrl)
+                    this.putExtra(Constants.WEB_VIEW_TYPE, 1)
+                    this.putExtra(Constants.WEB_VIEW_ID, bean.id)
+                    this.putExtra(Constants.CHAT_TITLE, getString(R.string.news_txt_details))
+                }
+                mViewModel.getNewsInfo(bean.id)
+            }
 
         }.addModels(arrayListOf())
     }

@@ -40,6 +40,7 @@
     <RelativeLayout
         android:id="@+id/rlNewsShowList"
         android:layout_width="match_parent"
+        android:background="@drawable/selector_txt_transparent_f6f7fa"
         android:layout_height="82dp" >
 
         <com.xcjh.app.utils.nice.NiceImageView

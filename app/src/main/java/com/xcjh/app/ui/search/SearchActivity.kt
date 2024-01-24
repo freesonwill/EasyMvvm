@@ -180,7 +180,7 @@ class SearchActivity  : BaseActivity<SearchVm, ActivitySearchBinding>() {
                 }
 
             }
-            R.id.txtHotNAme.onClick {
+            R.id.llClickHot.onClick {
                 val bean=_data as BeingLiveBean
                 MatchDetailActivity.open(matchType =bean.matchType, matchId = bean.matchId,matchName = "${bean.homeTeamName}VS${bean.awayTeamName}", anchorId = bean.userId,videoUrl = bean.playUrl )
 

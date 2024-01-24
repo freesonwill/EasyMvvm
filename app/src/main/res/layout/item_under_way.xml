@@ -7,8 +7,10 @@
     android:paddingBottom="@dimen/dp_12"
     android:layout_marginRight="12dp"
     android:id="@+id/llcClickRecommended"
-    android:background="@drawable/shape_r8_5e49a4">
-
+    android:background="@drawable/selector_10_whith_f6f7fa"
+   >
+<!--selector_10_whith_f6f7fa-->
+<!--    selctor_color_whith_f6f7fa-->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="19dp"
