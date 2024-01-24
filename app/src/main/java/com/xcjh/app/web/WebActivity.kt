@@ -97,7 +97,7 @@ class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
                 override fun onPageFinished(view: WebView?, url: String?) {
                     super.onPageFinished(view, url)
                     Log.e("TAG", "===-----onPageFinished------ ")
-                    if(type!=0){
+                /*    if(type!=0){
                         view!!.evaluateJavascript("javascript:(function() { " +
                                 "var elements = document.querySelectorAll(':not(h4)');" +
                                 "for(var i = 0; i < elements.length; i++) {" +
@@ -114,6 +114,10 @@ class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
 //                                "}" +
 //                                "})()"
                         val javascript = "javascript:(function() { " +
+                                "var elements = document.querySelectorAll(':not(h4)');" +
+                                "for(var i = 0; i < elements.length; i++) {" +
+                                "   elements[i].style.color = '#37373D';" +
+                                "}" +
                                 "var imgs = document.querySelectorAll('*');" +
                                 "for(var i = 0; i < imgs.length; i++){" +
                                 "   imgs[i].style.maxWidth = '100%';" +
@@ -125,7 +129,7 @@ class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
                         } else {
                             view!!.loadUrl(javascript)
                         }
-                    }
+                    }*/
 
 
                 }
@@ -178,6 +182,24 @@ class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
 
     override fun createObserver() {
         super.createObserver()
+        val js = "<script type=\"text/javascript\">\n" +
+                "var elements = document.querySelectorAll(':not(h4)');\n" +
+                "for(var i = 0; i < elements.length; i++) {\n" +
+                "   elements[i].style.color = '#37373D';" +
+                "}\n" +
+                "    var imgs = document.querySelectorAll('img');\n" +
+                "    for (var i = 0; i < imgs.length; i++) {\n" +
+                "        const dataSrc = imgs[i].getAttribute('data-src');\n" +
+                "\n" +
+                "        if (dataSrc) {\n" +
+                "            imgs[i].setAttribute('src', dataSrc)\n" +
+                "        }\n" +
+                "        if(i>=0){\n" +
+                "            imgs[i].style.width = '100%';\n" +
+                "            imgs[i].style.height = 'auto';\n" +
+                "        }\n" +
+                "    }\n" +
+                "</script>"
         //获取到网页详情 新闻列表
         mViewModel.newsBeanValue.observe(this){
             var sdf = SimpleDateFormat("yyyy-MM-dd HH:mm")
@@ -194,7 +216,7 @@ class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
                         "<h4 style=\" color: #94999F; font-size: 11px; margin-left: auto; font-weight: normal; padding: 0; \">${dateTimeString} 发布</h4></div>"
             }
             title += it.content
-            title="<body style=\"background-color: white;  padding: 0px; margin-left: 12px; margin-right: 12px;\">${title}</body>"
+            title="<body style=\"background-color: white;  padding: 0px; margin-left: 12px; margin-right: 12px;\">${title}</body>"+js
             agentWeb.urlLoader.loadDataWithBaseURL(
                 null,
                 title,
@@ -220,7 +242,7 @@ class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
                         "<h5 style=\" color: #94999F; font-size: 11px; margin-left: auto; font-weight: normal;\">${dateTimeString} 发布</h4></div>"
             }
             title += it.content
-            title="<body style=\"background-color: white; padding: 0px; margin-left: 12px; margin-right: 12px;\">${title}</body>"
+            title="<body style=\"background-color: white; padding: 0px; margin-left: 12px; margin-right: 12px;\">${title}</body>"+js
             agentWeb.urlLoader.loadDataWithBaseURL(
                 null,
                 title,
