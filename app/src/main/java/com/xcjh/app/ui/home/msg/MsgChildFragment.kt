@@ -65,7 +65,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
             mDatabind.rec.run {
                 vertical()
 
-                distance(0, 0, 0, 30)
+                distance(0, 0, 0, 10)
             }
             mDatabind.rec.setup {
                 addType<MsgListNewData> {
