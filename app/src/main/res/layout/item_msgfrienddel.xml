@@ -24,7 +24,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/lltItem"
             android:layout_width="match_parent"
-            android:layout_marginLeft="12dp"
+            android:paddingLeft="12dp"
+            android:background="@drawable/select_msg_bac"
             android:layout_height="wrap_content">
 
             <com.xcjh.base_lib.utils.view.CircleImageView

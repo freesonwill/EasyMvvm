@@ -26,7 +26,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_12"
-        android:background="@drawable/shape6_schitem"
+        android:background="@drawable/select_sch_bac"
         android:clipChildren="false"
         android:clipToPadding="false"
         android:paddingLeft="15dp"
