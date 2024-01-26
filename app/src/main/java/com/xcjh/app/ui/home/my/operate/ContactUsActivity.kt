@@ -175,6 +175,12 @@ class ContactUsActivity : BaseActivity<ContactUsVm, ActivityContactUsBinding>() 
 
             }
         }
+
+
+        mDatabind.editContactInput.setOnTouchListener { v, event ->
+            v.parent.requestDisallowInterceptTouchEvent(true)
+            return@setOnTouchListener false
+        }
     }
 
     override fun createObserver() {
