@@ -101,7 +101,7 @@ fun ImageView.loadImageWithGlide(context: Context, imageUrl: String) {
                 val imageWidth = resource.width
                 val imageHeight = resource.height
                 val aspectRatio = imageWidth.toFloat() / imageHeight.toFloat()
-
+               var sss= imageUrl
                 val scaledWidth: Int
                 val scaledHeight: Int
                 val roundedCornerRadius: Float
