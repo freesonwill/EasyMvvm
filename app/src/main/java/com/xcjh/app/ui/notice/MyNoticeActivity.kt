@@ -79,7 +79,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
         mDatabind.rec.run {
             vertical()
             // adapter=mAdapter
-            distance(0, 0, 0, 16)
+            distance(0, 0, 0, 0)
         }
         mDatabind.rec.linear().setup {
             addType<MatchBean>(R.layout.item_sch_all)
