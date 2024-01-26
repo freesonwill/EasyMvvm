@@ -35,7 +35,7 @@ class MyFollowListActivity : BaseActivity<MyFollowListVm, ActivityMyFollowListBi
 
     override fun initView(savedInstanceState: Bundle?) {
         ImmersionBar.with(this)
-            .statusBarDarkFont(false)
+            .statusBarDarkFont(true)
             .titleBar(mDatabind.titleTop.root)
             .init()
         val displayMetrics = DisplayMetrics()
@@ -45,6 +45,8 @@ class MyFollowListActivity : BaseActivity<MyFollowListVm, ActivityMyFollowListBi
         mDatabind.titleTop.tvTitle.text=resources.getString(R.string.follow_txt_title)
         adapter()
         mViewModel.getAnchorPageList(true)
+        //默认取消上拉加载更多
+        mDatabind.smartCommon.finishLoadMoreWithNoMoreData()
         mDatabind.smartCommon.setRefreshHeader( CustomHeader(this))
         mDatabind.smartCommon.setOnRefreshLoadMoreListener(object : OnRefreshLoadMoreListener {
             override fun onRefresh(refreshLayout: RefreshLayout) {
@@ -171,9 +173,12 @@ class MyFollowListActivity : BaseActivity<MyFollowListVm, ActivityMyFollowListBi
                 when {
                     //第一页并没有数据 显示空布局界面
                     it.isFirstEmpty -> {
+                        //取消上拉加载更多
+                        mDatabind.smartCommon.finishLoadMoreWithNoMoreData()
                         if( mDatabind.rcvRecommend.models?.size!=null){
                             mDatabind.rcvRecommend.mutable.clear()
                         }
+
 
                         mDatabind.smartCommon.finishRefresh()
                         mDatabind.state.showEmpty()

@@ -41,6 +41,8 @@ class EventsCentreActivity : BaseActivity<EventsCentreVm, ActivityEventsCentreBi
         adapter()
         mViewModel.getEventsList(true)
         mDatabind.smartCommon.setRefreshHeader( CustomHeader(this))
+        //默认取消上拉加载更多
+        mDatabind.smartCommon.finishLoadMoreWithNoMoreData()
         mDatabind.smartCommon.setOnRefreshLoadMoreListener(object : OnRefreshLoadMoreListener {
             override fun onRefresh(refreshLayout: RefreshLayout) {
                 mViewModel.getEventsList(true)
@@ -127,8 +129,10 @@ class EventsCentreActivity : BaseActivity<EventsCentreVm, ActivityEventsCentreBi
                     //不是第一页
                     else -> {
                         if(it.listData.isEmpty()) {
+                            //完成加载并标记没有更多数据
                             mDatabind.smartCommon.finishLoadMoreWithNoMoreData()
                         }else{
+                            //完成加载，结束加载动画
                             mDatabind.smartCommon.finishLoadMore()
 
                         }
@@ -141,6 +145,7 @@ class EventsCentreActivity : BaseActivity<EventsCentreVm, ActivityEventsCentreBi
 
             }else{
                 if(it.isRefresh){
+                    //完成刷新，结束刷新动画
                     mDatabind.smartCommon.finishRefresh()
                     mDatabind.smartCommon.resetNoMoreData()
                     if(mDatabind.rcvRecommend.models!=null){
