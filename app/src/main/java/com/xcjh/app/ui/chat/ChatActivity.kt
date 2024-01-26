@@ -103,6 +103,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
     var userhead = ""
     var isShowBottom = false
     var lastShowTimeStamp: Long = 0
+    var timecurrent: String = ""
     val baseLong: Long = 0
     var listdata: MutableList<MsgBeanData> = ArrayList<MsgBeanData>()
     var msgType = 0//消息类型，文字：0， 图片：1
@@ -212,27 +213,46 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                             var ad = _data as MsgBeanData
 
                             binding.tvcontent.text = ad.content
-                            binding.tvtime.text = ChatTimeUtile.formatTimestamp(
+                            timecurrent = ChatTimeUtile.formatTimestamp(
                                 context,
                                 ad.createTime!!.toLong()
                             )!!
-                            binding.tvtime.visibility = View.GONE
-                            Glide.with(this@ChatActivity).load(userhead)
-                                .placeholder(R.drawable.default_anchor_icon).into(binding.ivhead)
+                            binding.tvtime.text = timecurrent
+                            if (bindingAdapterPosition < (adapter.models!!.size - 1)) {
+                                var adnext =
+                                    adapter.models!![bindingAdapterPosition + 1] as MsgBeanData
+                                var nexttime = ChatTimeUtile.formatTimestamp(
+                                    context,
+                                    adnext.createTime!!.toLong()
+                                )
+                                if (timecurrent==nexttime){
+                                    binding.tvtime.visibility = View.GONE
+                                }else{
+                                    if (TimeUtil.getTimeCha(
+                                            ad.createTime, ad.lastShowTimeStamp
+
+                                        ) == true
+                                    ) {
+                                        if (ad.lastShowTimeStamp!! == baseLong) {
+                                            ad.lastShowTimeStamp = -1
+                                        }
+                                        lastShowTimeStamp = ad.createTime!!
+                                        binding.tvtime.visibility = View.VISIBLE
+                                    }else{
+                                        binding.tvtime.visibility = View.GONE
+                                    }
+                                }
+                            }else{
+                                binding.tvtime.visibility = View.VISIBLE
+                            }
                             if (ad.lastShowTimeStamp!! == baseLong) {
                                 ad.lastShowTimeStamp = lastShowTimeStamp
                             }
-                            if (TimeUtil.getTimeCha(
-                                    ad.createTime, ad.lastShowTimeStamp
+                           // binding.tvtime.visibility = View.GONE
+                            Glide.with(this@ChatActivity).load(userhead)
+                                .placeholder(R.drawable.default_anchor_icon).into(binding.ivhead)
 
-                                ) == true
-                            ) {
-                                if (ad.lastShowTimeStamp!! == baseLong) {
-                                    ad.lastShowTimeStamp = -1
-                                }
-                                lastShowTimeStamp = ad.createTime!!
-                                binding.tvtime.visibility = View.VISIBLE
-                            }
+
                             binding.tvcontent.setOnLongClickListener(OnLongClickListener {
                                 initLongClick(binding.tvcontent, ad.content, bindingAdapterPosition)
                                 true
@@ -306,11 +326,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                 )
 
                             }
-                            binding.tvtime.text = ChatTimeUtile.formatTimestamp(
-                                context,
-                                matchBeanNew.createTime!!.toLong()
-                            )!!
-                            binding.tvtime.visibility = View.GONE
+
                             binding.tvcontent.text =
                                 matchBeanNew.content
                             Glide.with(this@ChatActivity).load(CacheUtil.getUser()?.head)
@@ -319,15 +335,36 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                             if (matchBeanNew.lastShowTimeStamp!! == baseLong) {
                                 matchBeanNew.lastShowTimeStamp = lastShowTimeStamp
                             }
-                            if (TimeUtil.getTimeCha(
-                                    matchBeanNew.createTime, matchBeanNew.lastShowTimeStamp
+                            timecurrent = ChatTimeUtile.formatTimestamp(
+                                context,
+                                matchBeanNew.createTime!!.toLong()
+                            )!!
+                            binding.tvtime.text = timecurrent
+                            if (bindingAdapterPosition < (adapter.models!!.size - 1)) {
+                                var adnext =
+                                    adapter.models!![bindingAdapterPosition + 1] as MsgBeanData
+                                var nexttime = ChatTimeUtile.formatTimestamp(
+                                    context,
+                                    adnext.createTime!!.toLong()
+                                )
+                                if (timecurrent==nexttime){
+                                    binding.tvtime.visibility = View.GONE
+                                }else{
+                                    if (TimeUtil.getTimeCha(
+                                            matchBeanNew.createTime, matchBeanNew.lastShowTimeStamp
 
-                                ) == true
-                            ) {
-                                if (matchBeanNew.lastShowTimeStamp!! == baseLong) {
-                                    matchBeanNew.lastShowTimeStamp = -1
+                                        ) == true
+                                    ) {
+                                        if (matchBeanNew.lastShowTimeStamp!! == baseLong) {
+                                            matchBeanNew.lastShowTimeStamp = -1
+                                        }
+                                        lastShowTimeStamp = matchBeanNew.createTime!!
+                                        binding.tvtime.visibility = View.VISIBLE
+                                    }else{
+                                        binding.tvtime.visibility = View.GONE
+                                    }
                                 }
-                                lastShowTimeStamp = matchBeanNew.createTime!!
+                            }else{
                                 binding.tvtime.visibility = View.VISIBLE
                             }
                             binding.tvcontent.setOnLongClickListener(OnLongClickListener {
@@ -421,11 +458,42 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                 )
 
                             }
-                            binding.tvtime.text = ChatTimeUtile.formatTimestamp(
+                            timecurrent = ChatTimeUtile.formatTimestamp(
                                 context,
                                 matchBeanNew.createTime!!.toLong()
                             )!!
-                            binding.tvtime.visibility = View.GONE
+                            binding.tvtime.text = timecurrent
+                            if (bindingAdapterPosition < (adapter.models!!.size - 1)) {
+                                var adnext =
+                                    adapter.models!![bindingAdapterPosition + 1] as MsgBeanData
+                                var nexttime = ChatTimeUtile.formatTimestamp(
+                                    context,
+                                    adnext.createTime!!.toLong()
+                                )
+                                if (timecurrent==nexttime){
+                                    binding.tvtime.visibility = View.GONE
+                                }else{
+                                    if (TimeUtil.getTimeCha(
+                                            matchBeanNew.createTime, matchBeanNew.lastShowTimeStamp
+
+                                        ) == true
+                                    ) {
+                                        if (matchBeanNew.lastShowTimeStamp!! == baseLong) {
+                                            matchBeanNew.lastShowTimeStamp = -1
+                                        }
+                                        lastShowTimeStamp = matchBeanNew.createTime!!
+                                        binding.tvtime.visibility = View.VISIBLE
+                                    }else{
+                                        binding.tvtime.visibility = View.GONE
+                                    }
+                                }
+                            }else{
+                                binding.tvtime.visibility = View.VISIBLE
+                            }
+                            if (matchBeanNew.lastShowTimeStamp!! == baseLong) {
+                                matchBeanNew.lastShowTimeStamp = lastShowTimeStamp
+                            }
+
 
 
                             if (binding.ivhead.tag == null) {
@@ -456,21 +524,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                     }
                                     .startActivityPreview(0, false, listPic)
                             }
-                            if (matchBeanNew.lastShowTimeStamp!! == baseLong) {
-                                matchBeanNew.lastShowTimeStamp = lastShowTimeStamp
-                            }
-                            if (TimeUtil.getTimeCha(
-                                    matchBeanNew.createTime, matchBeanNew.lastShowTimeStamp
 
-                                ) == true
-                            ) {
-                                if (matchBeanNew.lastShowTimeStamp!! == baseLong) {
-                                    matchBeanNew.lastShowTimeStamp = -1
-                                }
-                                lastShowTimeStamp = matchBeanNew.createTime!!
-                                binding.tvtime.visibility = View.VISIBLE
-
-                            }
                             binding.linroot.setOnClickListener {
                                 hideSoftKeyBoard(this@ChatActivity)
                             }
@@ -480,11 +534,41 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                         R.layout.item_chat_pic_left -> {//右边图片
                             var binding = getBinding<ItemChatPicLeftBinding>()
                             var matchBeanNew = _data as MsgBeanData
-                            binding.tvtime.text = ChatTimeUtile.formatTimestamp(
+                            timecurrent = ChatTimeUtile.formatTimestamp(
                                 context,
                                 matchBeanNew.createTime!!.toLong()
                             )!!
-                            binding.tvtime.visibility = View.GONE
+                            binding.tvtime.text = timecurrent
+                            if (bindingAdapterPosition < (adapter.models!!.size - 1)) {
+                                var adnext =
+                                    adapter.models!![bindingAdapterPosition + 1] as MsgBeanData
+                                var nexttime = ChatTimeUtile.formatTimestamp(
+                                    context,
+                                    adnext.createTime!!.toLong()
+                                )
+                                if (timecurrent==nexttime){
+                                    binding.tvtime.visibility = View.GONE
+                                }else{
+                                    if (TimeUtil.getTimeCha(
+                                            matchBeanNew.createTime, matchBeanNew.lastShowTimeStamp
+
+                                        ) == true
+                                    ) {
+                                        if (matchBeanNew.lastShowTimeStamp!! == baseLong) {
+                                            matchBeanNew.lastShowTimeStamp = -1
+                                        }
+                                        lastShowTimeStamp = matchBeanNew.createTime!!
+                                        binding.tvtime.visibility = View.VISIBLE
+                                    }else{
+                                        binding.tvtime.visibility = View.GONE
+                                    }
+                                }
+                            }else{
+                                binding.tvtime.visibility = View.VISIBLE
+                            }
+                            if (matchBeanNew.lastShowTimeStamp!! == baseLong) {
+                                matchBeanNew.lastShowTimeStamp = lastShowTimeStamp
+                            }
                             binding.ivpic.loadImageWithGlide(context, matchBeanNew.content)
 
                             Glide.with(this@ChatActivity).load(userhead)
@@ -509,21 +593,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                             binding.linroot.setOnClickListener {
                                 hideSoftKeyBoard(this@ChatActivity)
                             }
-                            if (matchBeanNew.lastShowTimeStamp!! == baseLong) {
-                                matchBeanNew.lastShowTimeStamp = lastShowTimeStamp
-                            }
-                            if (TimeUtil.getTimeCha(
-                                    matchBeanNew.createTime, matchBeanNew.lastShowTimeStamp
 
-                                ) == true
-                            ) {
-                                if (matchBeanNew.lastShowTimeStamp!! == baseLong) {
-                                    matchBeanNew.lastShowTimeStamp = -1
-                                }
-                                lastShowTimeStamp = matchBeanNew.createTime!!
-                                binding.tvtime.visibility = View.VISIBLE
-
-                            }
                         }
                     }
 
