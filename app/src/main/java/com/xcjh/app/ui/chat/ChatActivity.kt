@@ -524,21 +524,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                     }
                                     .startActivityPreview(0, false, listPic)
                             }
-                            if (matchBeanNew.lastShowTimeStamp!! == baseLong) {
-                                matchBeanNew.lastShowTimeStamp = lastShowTimeStamp
-                            }
-                            if (TimeUtil.getTimeCha(
-                                    matchBeanNew.createTime, matchBeanNew.lastShowTimeStamp
 
-                                ) == true
-                            ) {
-                                if (matchBeanNew.lastShowTimeStamp!! == baseLong) {
-                                    matchBeanNew.lastShowTimeStamp = -1
-                                }
-                                lastShowTimeStamp = matchBeanNew.createTime!!
-                                binding.tvtime.visibility = View.VISIBLE
-
-                            }
                             binding.linroot.setOnClickListener {
                                 hideSoftKeyBoard(this@ChatActivity)
                             }
