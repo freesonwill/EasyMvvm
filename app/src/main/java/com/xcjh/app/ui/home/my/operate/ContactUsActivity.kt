@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.BaseAdapter
 import android.widget.RelativeLayout
 import androidx.appcompat.widget.AppCompatImageView
@@ -181,6 +182,10 @@ class ContactUsActivity : BaseActivity<ContactUsVm, ActivityContactUsBinding>() 
             v.parent.requestDisallowInterceptTouchEvent(true)
             return@setOnTouchListener false
         }
+
+        mDatabind.usScroll.clickNoRepeat {
+            showSoftKeyboard()
+        }
     }
 
     override fun createObserver() {
@@ -196,7 +201,14 @@ class ContactUsActivity : BaseActivity<ContactUsVm, ActivityContactUsBinding>() 
             finish()
         }
     }
-
+    /**
+     * 打开软键盘
+     */
+    private fun showSoftKeyboard() {
+        mDatabind.editContactInput.requestFocus() // 获取焦点
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput( mDatabind.editContactInput, InputMethodManager.SHOW_IMPLICIT) // 打开软键盘
+    }
 
     inner  class GridViewAdapter(context: Context?, girdItem: ArrayList<ContactBean>) : BaseAdapter() {
         var context: Context? = null
