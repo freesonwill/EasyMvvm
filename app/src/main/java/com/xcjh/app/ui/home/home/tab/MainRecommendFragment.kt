@@ -896,6 +896,7 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
 }
 
 fun BindingAdapter.BindingViewHolder.setLiveMatchItem(type:Int=0) {
+
     val bindingItem= getBinding<ItemMainLiveListBinding>()
     if (type != 0){
         bindingItem.llLiveSpacing.backgroundTintList = ColorStateList.valueOf(

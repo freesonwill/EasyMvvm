@@ -195,13 +195,14 @@ class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
                 "            imgs[i].setAttribute('src', dataSrc)\n" +
                 "        }\n" +
                 "        if(i>0){\n" +
-                "            imgs[i].style.width = '100%';\n" +
+                "            imgs[i].style.maxWidth = '100%';\n" +
                 "            imgs[i].style.height = 'auto';\n" +
+                "            imgs[i].style.borderRadius  = '4px';\n" +
                 "        }\n" +
                 "    }\n" +
                 "</script>"
-
-
+            //imgs[i].style.width = '100%'
+//        imgs[i].style.maxWidth = '100%'
         //获取到网页详情 新闻列表
         mViewModel.newsBeanValue.observe(this){
             var sdf = SimpleDateFormat("yyyy-MM-dd HH:mm")

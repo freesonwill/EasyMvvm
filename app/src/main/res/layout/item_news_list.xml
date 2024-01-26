@@ -5,8 +5,7 @@
     android:layout_height="wrap_content"
     android:id="@+id/rlNewsClick"
     android:layout_marginRight="@dimen/dp_12"
-    android:layout_marginLeft="@dimen/dp_12"
-    android:layout_marginTop="@dimen/dp_12" >
+    android:layout_marginLeft="@dimen/dp_12" >
 
     <RelativeLayout
         android:id="@+id/rlNewsShowHot"
@@ -41,7 +40,8 @@
         android:id="@+id/rlNewsShowList"
         android:layout_width="match_parent"
         android:background="@drawable/selector_txt_transparent_f6f7fa"
-        android:layout_height="82dp" >
+        android:paddingTop="@dimen/dp_12"
+        android:layout_height="93dp" >
 
         <com.xcjh.app.utils.nice.NiceImageView
             android:id="@+id/ivNewsIcon"
