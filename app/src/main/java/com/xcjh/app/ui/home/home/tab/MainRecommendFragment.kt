@@ -899,9 +899,7 @@ fun BindingAdapter.BindingViewHolder.setLiveMatchItem(type:Int=0) {
 
     val bindingItem= getBinding<ItemMainLiveListBinding>()
     if (type != 0){
-        bindingItem.llLiveSpacing.backgroundTintList = ColorStateList.valueOf(
-            ContextCompat.getColor(context, R.color.c_1f1f20)
-        )
+        bindingItem.llLiveSpacing.background = (ContextCompat.getDrawable(context, R.drawable.selector_8_black_to_dark))
         bindingItem.txtLiveTeam.setTextColor( ContextCompat.getColor(context, R.color.c_ffffff))
         bindingItem.txtLiveName.setTextColor( ContextCompat.getColor(context, R.color.c_94999f))
     }

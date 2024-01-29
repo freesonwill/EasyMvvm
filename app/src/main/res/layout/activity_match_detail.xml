@@ -430,7 +430,6 @@
                             android:layout_width="@dimen/dp_60"
                             android:layout_height="@dimen/dp_24"
                             android:layout_marginEnd="@dimen/dp_12"
-                            android:background="@drawable/shape_line_r20"
                             android:gravity="center"
                             android:textColor="@color/c_pb_bar"
                             android:textSize="@dimen/sp_12"

@@ -661,15 +661,11 @@ class MatchDetailActivity :
         if (this.focus) {
             mDatabind.tvTabAnchorFollow.text = getString(R.string.dis_focus)
             mDatabind.tvTabAnchorFollow.setTextColor(getColor(R.color.c_94999f))
-            mDatabind.tvTabAnchorFollow.setBackgroundResource(R.drawable.shape_red_pressed_r20)
-            mDatabind.tvTabAnchorFollow.backgroundTintList = ColorStateList.valueOf(
-                ContextCompat.getColor(this, R.color.c_1f1f20)
-            )
+            mDatabind.tvTabAnchorFollow.setBackgroundResource(R.drawable.selector_focused_r20)
         } else {
             mDatabind.tvTabAnchorFollow.text = getString(R.string.add_focus)
             mDatabind.tvTabAnchorFollow.setTextColor(getColor(R.color.c_34a853))
-            mDatabind.tvTabAnchorFollow.setBackgroundResource(R.drawable.shape_line_r20)
-            mDatabind.tvTabAnchorFollow.backgroundTintList = null
+            mDatabind.tvTabAnchorFollow.setBackgroundResource(R.drawable.selector_focus_r20)
         }
     }
 

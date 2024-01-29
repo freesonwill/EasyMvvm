@@ -48,7 +48,7 @@
                     android:layout_marginStart="@dimen/dp_10"
                     android:layout_width="wrap_content"
                     android:text="@string/expand"
-                    android:textColor="@color/c_d7d7e7"
+                    android:textColor="@color/d7d7e7_to_69696e_selector"
                     android:textSize="@dimen/sp_13"
                     android:layout_height="18dp">
                 </TextView>
@@ -58,7 +58,7 @@
                     android:layout_marginStart="@dimen/dp_4"
                     android:layout_height="@dimen/dp_5"
                     android:src="@drawable/ic_arrow_down"
-                    expandableTextView:tint="@color/c_d7d7e7" />
+                    expandableTextView:tint="@color/d7d7e7_to_69696e_selector" />
             </LinearLayout>
 
         </LinearLayout>

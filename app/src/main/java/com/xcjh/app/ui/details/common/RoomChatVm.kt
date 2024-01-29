@@ -38,7 +38,7 @@ class RoomChatVm : BaseViewModel() {
     /** 是否可以发送消息 */
      var isSendEnable = object : ObservableBoolean(input){
          override fun get(): Boolean {
-             return input.get().isNotEmpty()
+             return true
          }
      }
 
