@@ -29,8 +29,7 @@
                     android:id="@+id/rcvRecommend"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:paddingLeft="12dp"
-                    android:paddingRight="12dp"
+
                     android:background="@color/c_ffffff"
                     tools:listitem="@layout/item_events_centre"
                     android:overScrollMode="never" />
