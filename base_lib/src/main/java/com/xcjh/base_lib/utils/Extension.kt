@@ -8,6 +8,7 @@ import android.graphics.Typeface
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
@@ -191,7 +192,22 @@ fun MagicIndicator.bindViewPager2(
             titleText.text = mStringList[index].toHtml()
             titleText.textSize = unSelectSize
             titleText.gravity = Gravity.CENTER_VERTICAL
-
+            //点击增加透明度
+//            titleText.setOnTouchListener { view, event ->
+//                when (event.action) {
+//                    MotionEvent.ACTION_DOWN -> {
+//                        titleText.alpha=0.3f
+//                    }
+//                      MotionEvent.ACTION_UP->{
+//                          // 处理抬起事件
+//                          titleText.alpha=1f
+//                      }
+//
+//
+//                }
+//
+//                true
+//            }
             commonPagerTitleView.setContentView(customLayout)
             commonPagerTitleView.onPagerTitleChangeListener = object : OnPagerTitleChangeListener {
                 override fun onSelected(index: Int, totalCount: Int) {
