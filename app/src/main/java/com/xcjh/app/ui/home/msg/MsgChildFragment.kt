@@ -481,11 +481,11 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                                 //}
                             }
                         } else {
-                            if (data.noReadSum > listdata[index].noReadSum) {
+                            if (data.noReadSum > foundData.noReadSum) {
                                 updataMsg(data)
                             } else {
                                 if (data.dataType == 1 && data.avatar != null && data.avatar!!.isNotEmpty() && data.nick != null && data.nick!!.isNotEmpty()) {
-                                    if (data.avatar != listdata[index].avatar || data.nick != listdata[index].nick) {
+                                    if (data.avatar != foundData.avatar || data.nick != foundData.nick) {
                                         updataMsg(data)
                                     }
                                 }
