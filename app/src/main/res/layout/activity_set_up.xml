@@ -137,6 +137,6 @@
             android:padding="@dimen/dp_10"
             android:layout_marginRight="@dimen/dp_12"
             android:layout_marginLeft="@dimen/dp_12"
-            android:background="@drawable/shape_r24"/>
+            android:background="@drawable/selector_24_whith_f6f7fa"/>
     </RelativeLayout>
 </layout>
