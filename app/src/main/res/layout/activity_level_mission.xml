@@ -328,8 +328,7 @@
            android:layout_height="match_parent"
            android:layout_below="@+id/llLevelMiddle"
            android:layout_marginTop="@dimen/dp_20"
-           android:paddingLeft="@dimen/dp_12"
-           android:paddingRight="@dimen/dp_12"
+
            android:paddingTop="@dimen/dp_15"
            android:background="@drawable/shape_r15_top_ffffff"
            android:orientation="vertical">
@@ -339,15 +338,20 @@
                android:textColor="@color/c_37373d"
                android:textSize="16sp"
                android:textStyle="bold"
+               android:layout_marginLeft="12dp"
                android:text="@string/level_txt_task"/>
            <RelativeLayout
                android:id="@+id/txtLevelClickInteraction"
                android:layout_width="match_parent"
-               android:layout_height="58dp"
-               android:layout_marginTop="@dimen/dp_15">
+               android:layout_height="73dp"
+               android:paddingRight="12dp"
+               android:paddingLeft="12dp"
+
+               android:background="@drawable/selector_txt_whith_f6f7fa" >
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true">
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -410,11 +414,14 @@
            <RelativeLayout
                android:id="@+id/txtLevelClickWatch"
                android:layout_width="match_parent"
-               android:layout_height="58dp"
-               android:layout_marginTop="@dimen/dp_15">
+               android:layout_height="73dp"
+               android:paddingRight="12dp"
+               android:paddingLeft="12dp"
+               android:background="@drawable/selector_txt_whith_f6f7fa" >
                <RelativeLayout
                    android:layout_width="match_parent"
-                   android:layout_height="wrap_content">
+                   android:layout_height="wrap_content"
+                   android:layout_centerVertical="true">
                    <androidx.appcompat.widget.LinearLayoutCompat
                        android:layout_width="wrap_content"
                        android:layout_height="wrap_content"
