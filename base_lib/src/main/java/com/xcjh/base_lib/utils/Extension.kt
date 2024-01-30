@@ -812,6 +812,7 @@ fun MagicIndicator.bindBgViewPager2(
     } else {
         commonNavigator.isAdjustMode = true
     }
+    val indicator = LinePagerIndicator(context)
     commonNavigator.adapter = object : CommonNavigatorAdapter() {
 
         override fun getCount(): Int {
@@ -897,13 +898,34 @@ fun MagicIndicator.bindBgViewPager2(
                 action.invoke(index)
                 viewPager.currentItem = index
             }
-
+            //点击增加透明度
+            /*commonPagerTitleView.setOnTouchListener { view, event ->
+                when (event.action) {
+                    MotionEvent.ACTION_DOWN -> {
+                        view.alpha=0.3f
+                        indicator.alpha=if (viewPager.currentItem == index) 0.3f else 1f
+                    }
+                    MotionEvent.ACTION_UP->{
+                        // 处理抬起事件
+                        view.alpha=1f
+                        indicator.alpha=1f
+                        action.invoke(index)
+                        viewPager.currentItem = index
+                    }
+                    MotionEvent.ACTION_CANCEL->{
+                        // 处理抬起事件
+                        view.alpha=1f
+                        indicator.alpha=1f
+                    }
+                }
+                true
+            }*/
             return commonPagerTitleView
 
         }
 
         override fun getIndicator(context: Context): IPagerIndicator? {
-            val indicator = LinePagerIndicator(context)
+
             val lineHeight = context.resources.getDimension(R.dimen.dp_30)
             val borderWidth = UIUtil.dip2px(context, paddingWidth).toFloat()
             indicator.lineHeight = lineHeight
