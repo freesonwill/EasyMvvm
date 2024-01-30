@@ -240,7 +240,7 @@ class LoginActivity : BaseActivity<LoginVm, ActivityLoaginBinding>() {
                                 )
                             )
                         } else {
-                            mDatabind.tvlogin.setBackgroundResource(R.drawable.shape_r43_34a853)
+                            mDatabind.tvlogin.setBackgroundResource(R.drawable.search_bac_logain)
                             mDatabind.tvlogin.setTextColor(
                                 ContextCompat.getColor(
                                     this@LoginActivity,
@@ -292,7 +292,7 @@ class LoginActivity : BaseActivity<LoginVm, ActivityLoaginBinding>() {
                                 )
                             )
                         } else {
-                            mDatabind.tvlogin.setBackgroundResource(R.drawable.shape_r43_34a853)
+                            mDatabind.tvlogin.setBackgroundResource(R.drawable.search_bac_logain)
                             mDatabind.tvlogin.setTextColor(
                                 ContextCompat.getColor(
                                     this@LoginActivity,
@@ -357,7 +357,7 @@ class LoginActivity : BaseActivity<LoginVm, ActivityLoaginBinding>() {
                                 )
                             )
                         } else {
-                            mDatabind.tvlogin.setBackgroundResource(R.drawable.shape_r43_34a853)
+                            mDatabind.tvlogin.setBackgroundResource(R.drawable.search_bac_logain)
                             mDatabind.tvlogin.setTextColor(
                                 ContextCompat.getColor(
                                     this@LoginActivity,
@@ -407,7 +407,7 @@ class LoginActivity : BaseActivity<LoginVm, ActivityLoaginBinding>() {
                                 )
                             )
                         } else {
-                            mDatabind.tvlogin.setBackgroundResource(R.drawable.shape_r43_34a853)
+                            mDatabind.tvlogin.setBackgroundResource(R.drawable.search_bac_logain)
                             mDatabind.tvlogin.setTextColor(
                                 ContextCompat.getColor(
                                     this@LoginActivity,

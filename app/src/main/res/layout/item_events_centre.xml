@@ -8,6 +8,8 @@
         android:layout_width="match_parent"
         android:layout_height="94dp"
         android:paddingTop="12dp"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
         android:id="@+id/llEventsClick"
         android:background="@drawable/selector_txt_transparent_f6f7fa"
         android:orientation="horizontal">

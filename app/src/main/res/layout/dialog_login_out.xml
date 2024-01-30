@@ -41,6 +41,6 @@
              android:padding="@dimen/dp_10"
              android:layout_marginTop="@dimen/dp_30"
              android:textColor="@color/c_94999f"
-             android:background="@drawable/shape_24_f2f3f7"/>
+             android:background="@drawable/selector_24_f2f3f7_whith"/>
      </LinearLayout>
 </RelativeLayout>
