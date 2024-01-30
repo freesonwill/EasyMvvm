@@ -193,7 +193,7 @@ fun MagicIndicator.bindViewPager2(
             titleText.textSize = unSelectSize
             titleText.gravity = Gravity.CENTER_VERTICAL
             //点击增加透明度
-//            titleText.setOnTouchListener { view, event ->
+//            commonPagerTitleView.setOnTouchListener { view, event ->
 //                when (event.action) {
 //                    MotionEvent.ACTION_DOWN -> {
 //                        titleText.alpha=0.3f
@@ -206,7 +206,7 @@ fun MagicIndicator.bindViewPager2(
 //
 //                }
 //
-//                true
+//                false
 //            }
             commonPagerTitleView.setContentView(customLayout)
             commonPagerTitleView.onPagerTitleChangeListener = object : OnPagerTitleChangeListener {
