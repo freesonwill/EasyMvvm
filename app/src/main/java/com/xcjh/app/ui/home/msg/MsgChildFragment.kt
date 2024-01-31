@@ -204,7 +204,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                 getRoomAllData()
 
             }.setOnLoadMoreListener {
-              //  mViewModel.getMsgList(false, "")
+                //  mViewModel.getMsgList(false, "")
             }
 
 
@@ -260,7 +260,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
         }
     }
 
-    fun getRoomAllData(isGet:Boolean=true) {
+    fun getRoomAllData(isGet: Boolean = true) {
         try {
 
 
@@ -271,7 +271,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
             GlobalScope.launch {
                 val data = getAll().await()
 
-                LogUtils.d(data.size.toString()+"获取到数据"+listdata.size)
+                LogUtils.d(data.size.toString() + "获取到数据" + listdata.size)
                 requireActivity().runOnUiThread {
                     if (data.isNotEmpty()) {
                         noReadMsgs = 0
@@ -282,7 +282,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                         mDatabind.rec.models = listdata
                         mDatabind.state.showContent()
 
-                        LogUtils.d(data.size.toString()+"获取到数据1"+listdata.size)
+                        LogUtils.d(data.size.toString() + "获取到数据1" + listdata.size)
                     } else {
                         mDatabind.state.showEmpty()
                     }
@@ -457,64 +457,64 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
         try {
 
 
-        mViewModel.upUserInfo.observe(this) {
-            getRoomAllData()
+            mViewModel.upUserInfo.observe(this) {
+                getRoomAllData()
 
 
-        }
-        mViewModel.msgList.observe(this) {
-            LogUtils.d("拿到消息")
-            mDatabind.smartCommon.finishRefresh()
-            if (it.isSuccess) {
+            }
+            mViewModel.msgList.observe(this) {
+                LogUtils.d("拿到消息")
+                mDatabind.smartCommon.finishRefresh()
+                if (it.isSuccess) {
 
-                if (it.listData.size > 0) {
-                    for ((index, data) in it.listData.withIndex()) {
+                    if (it.listData.size > 0) {
+                        for ((index, data) in it.listData.withIndex()) {
 
-                        val foundData = listdata.find { it.anchorId == data.anchorId }
-                        if (foundData == null) {
-                            data?.let { it1 ->
-                                //if (it1.noReadSum > 0) {//这里看看需不需要判断  因为色剂到 多设备登录的问题
-                                if (it1.sendId == "0") {
-                                    it1.sendId = data.anchorId + it1.createTime
+                            val foundData = listdata.find { it.anchorId == data.anchorId }
+                            if (foundData == null) {
+                                data?.let { it1 ->
+                                    //if (it1.noReadSum > 0) {//这里看看需不需要判断  因为色剂到 多设备登录的问题
+                                    if (it1.sendId == "0") {
+                                        it1.sendId = data.anchorId + it1.createTime
+                                    }
+                                    updataMsg(data)
+                                    //}
                                 }
-                                updataMsg(data)
-                                //}
-                            }
-                        } else {
-                            if (data.noReadSum > foundData.noReadSum) {
-                                updataMsg(data)
                             } else {
-                                if (data.dataType == 1 && data.avatar != null && data.avatar!!.isNotEmpty() && data.nick != null && data.nick!!.isNotEmpty()) {
-                                    if (data.avatar != foundData.avatar || data.nick != foundData.nick) {
-                                        updataMsg(data)
+                                if (data.noReadSum > foundData.noReadSum) {
+                                    updataMsg(data)
+                                } else {
+                                    if (data.dataType == 1 && data.avatar != null && data.avatar!!.isNotEmpty() && data.nick != null && data.nick!!.isNotEmpty()) {
+                                        if (data.avatar != foundData.avatar || data.nick != foundData.nick) {
+                                            updataMsg(data)
+                                        }
                                     }
                                 }
                             }
                         }
+
+                    } else {
+
                     }
 
-                } else {
 
                 }
-
-
             }
-        }
-        mViewModel.clreaAllMsg.observe(this) {
-            noReadMsgs = 0
-            appViewModel.updateMainMsgNum.postValue("0")
+            mViewModel.clreaAllMsg.observe(this) {
+                noReadMsgs = 0
+                appViewModel.updateMainMsgNum.postValue("0")
 
-            for (i in 0 until listdata.size) {
-                if (listdata[i].noReadSum > 0) {
-                    listdata[i].noReadSum = 0
-                    addDataToList(listdata[i])
+                for (i in 0 until listdata.size) {
+                    if (listdata[i].noReadSum > 0) {
+                        listdata[i].noReadSum = 0
+                        addDataToList(listdata[i])
+                    }
                 }
+                getRoomAllData()
+
+
+                // mViewModel.getMsgList(true, "")
             }
-            getRoomAllData()
-
-
-            // mViewModel.getMsgList(true, "")
-        }
         } catch (e: Exception) {
         }
     }

@@ -158,25 +158,4 @@ class ScheduleFragment : BaseFragment<MainVm, FrCourseBinding>() {
         }
     }
 
-    override fun createObserver() {
-        /* appViewModel.updateLoginEvent.observe(this) {
-             mViewModel.getUserBaseInfo()
-         }*/
-    }
-
-    private inner class MyPagerAdapter(fm: FragmentManager?) :
-        FragmentPagerAdapter(fm!!) {
-        override fun getCount(): Int {
-            return mFragments.size
-        }
-
-        override fun getPageTitle(position: Int): CharSequence? {
-            return mTitles?.get(position)
-        }
-
-        override fun getItem(position: Int): Fragment {
-            return mFragments[position]
-        }
-    }
-
 }

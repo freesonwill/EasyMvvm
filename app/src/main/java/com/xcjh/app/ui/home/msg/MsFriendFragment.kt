@@ -228,32 +228,32 @@ class MsFriendFragment : BaseFragment<MsgVm, FrMsgfriendBinding>() {
 
 
     fun getPinyinList(list: List<FriendListBean>): List<FriendListBean> {
-        mLetters.clear()
         val pinyinList = mutableListOf<FriendListBean>()
+        try {
+            mLetters.clear()
 
-        for (item in list) {
-            val firstLetter = item.shortName
-            if (!mLetters.contains(firstLetter)) {
-                mLetters.add(firstLetter)
+            for (item in list) {
+                val firstLetter = item.shortName
+                if (!mLetters.contains(firstLetter)) {
+                    mLetters.add(firstLetter)
+                }
+                item.pinyin = firstLetter
+
+                pinyinList.add(item)
             }
-            item.pinyin = firstLetter
+            pinyinList.sortedWith(compareBy<FriendListBean> {
+                when (it.pinyin) {//字母排序
+                    "#" -> 1
+                    else -> 0
+                }
+            }.thenBy { it.pinyin })
 
-            pinyinList.add(item)
+
+            mDatabind.indexBar.setNewLetter(mLetters)
+        } catch (e: Exception) {
+
         }
-        pinyinList.sortedWith(compareBy<FriendListBean> {
-            when (it.pinyin) {//字母排序
-                "#" -> 1
-                else -> 0
-            }
-        }.thenBy { it.pinyin })
-
-
-        mDatabind.indexBar.setNewLetter(mLetters)
         return pinyinList
     }
 
-    fun findFriendByPinyin(friendList: List<FriendListBean>, pinyin: String): FriendListBean? {
-        LogUtils.d("")
-        return friendList.find { it.pinyin.startsWith(pinyin, ignoreCase = true) }
-    }
 }

@@ -42,6 +42,12 @@ object TimeUtil {
         }
         return data
     }
+    fun isTimeDifferenceGreaterThan15Minutes(timestamp1: Long, timestamp2: Long): Boolean {
+        val timeDifference = (timestamp1 - timestamp2) / 1000 // 将时间差转换为秒
+        val minutesDifference = timeDifference / 60 // 将时间差转换为分钟
+
+        return minutesDifference > 5
+    }
 
     /***
      * 判断时间差是否大于15分钟  主要用于私聊页面是否显示时间

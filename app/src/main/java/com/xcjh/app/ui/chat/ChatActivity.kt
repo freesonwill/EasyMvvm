@@ -225,30 +225,30 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                     context,
                                     adnext.createTime!!.toLong()
                                 )
-                                if (timecurrent==nexttime){
+                                if (timecurrent == nexttime) {
                                     binding.tvtime.visibility = View.GONE
-                                }else{
-                                    if (TimeUtil.getTimeCha(
-                                            ad.createTime, ad.lastShowTimeStamp
+                                } else {
+                                    if (TimeUtil.isTimeDifferenceGreaterThan15Minutes(
+                                            ad.createTime!!, adnext.createTime!!
 
-                                        ) == true
+                                        )
                                     ) {
                                         if (ad.lastShowTimeStamp!! == baseLong) {
                                             ad.lastShowTimeStamp = -1
                                         }
                                         lastShowTimeStamp = ad.createTime!!
                                         binding.tvtime.visibility = View.VISIBLE
-                                    }else{
+                                    } else {
                                         binding.tvtime.visibility = View.GONE
                                     }
                                 }
-                            }else{
+                            } else {
                                 binding.tvtime.visibility = View.VISIBLE
                             }
                             if (ad.lastShowTimeStamp!! == baseLong) {
                                 ad.lastShowTimeStamp = lastShowTimeStamp
                             }
-                           // binding.tvtime.visibility = View.GONE
+                            // binding.tvtime.visibility = View.GONE
                             Glide.with(this@ChatActivity).load(userhead)
                                 .placeholder(R.drawable.default_anchor_icon).into(binding.ivhead)
 
@@ -347,24 +347,24 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                     context,
                                     adnext.createTime!!.toLong()
                                 )
-                                if (timecurrent==nexttime){
+                                if (timecurrent == nexttime) {
                                     binding.tvtime.visibility = View.GONE
-                                }else{
-                                    if (TimeUtil.getTimeCha(
-                                            matchBeanNew.createTime, matchBeanNew.lastShowTimeStamp
+                                } else {
+                                    if (TimeUtil.isTimeDifferenceGreaterThan15Minutes(
+                                            matchBeanNew.createTime!!, adnext.createTime!!
 
-                                        ) == true
+                                        )
                                     ) {
                                         if (matchBeanNew.lastShowTimeStamp!! == baseLong) {
                                             matchBeanNew.lastShowTimeStamp = -1
                                         }
                                         lastShowTimeStamp = matchBeanNew.createTime!!
                                         binding.tvtime.visibility = View.VISIBLE
-                                    }else{
+                                    } else {
                                         binding.tvtime.visibility = View.GONE
                                     }
                                 }
-                            }else{
+                            } else {
                                 binding.tvtime.visibility = View.VISIBLE
                             }
                             binding.tvcontent.setOnLongClickListener(OnLongClickListener {
@@ -470,24 +470,24 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                     context,
                                     adnext.createTime!!.toLong()
                                 )
-                                if (timecurrent==nexttime){
+                                if (timecurrent == nexttime) {
                                     binding.tvtime.visibility = View.GONE
-                                }else{
-                                    if (TimeUtil.getTimeCha(
-                                            matchBeanNew.createTime, matchBeanNew.lastShowTimeStamp
+                                } else {
+                                    if (TimeUtil.isTimeDifferenceGreaterThan15Minutes(
+                                            matchBeanNew.createTime!!, adnext.createTime!!
 
-                                        ) == true
+                                        )
                                     ) {
                                         if (matchBeanNew.lastShowTimeStamp!! == baseLong) {
                                             matchBeanNew.lastShowTimeStamp = -1
                                         }
                                         lastShowTimeStamp = matchBeanNew.createTime!!
                                         binding.tvtime.visibility = View.VISIBLE
-                                    }else{
+                                    } else {
                                         binding.tvtime.visibility = View.GONE
                                     }
                                 }
-                            }else{
+                            } else {
                                 binding.tvtime.visibility = View.VISIBLE
                             }
                             if (matchBeanNew.lastShowTimeStamp!! == baseLong) {
@@ -546,24 +546,24 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                     context,
                                     adnext.createTime!!.toLong()
                                 )
-                                if (timecurrent==nexttime){
+                                if (timecurrent == nexttime) {
                                     binding.tvtime.visibility = View.GONE
-                                }else{
-                                    if (TimeUtil.getTimeCha(
-                                            matchBeanNew.createTime, matchBeanNew.lastShowTimeStamp
+                                } else {
+                                    if (TimeUtil.isTimeDifferenceGreaterThan15Minutes(
+                                            matchBeanNew.createTime!!, adnext.createTime!!
 
-                                        ) == true
+                                        )
                                     ) {
                                         if (matchBeanNew.lastShowTimeStamp!! == baseLong) {
                                             matchBeanNew.lastShowTimeStamp = -1
                                         }
                                         lastShowTimeStamp = matchBeanNew.createTime!!
                                         binding.tvtime.visibility = View.VISIBLE
-                                    }else{
+                                    } else {
                                         binding.tvtime.visibility = View.GONE
                                     }
                                 }
-                            }else{
+                            } else {
                                 binding.tvtime.visibility = View.VISIBLE
                             }
                             if (matchBeanNew.lastShowTimeStamp!! == baseLong) {
@@ -1171,19 +1171,23 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
         matchBeanNew: MsgBeanData,
         index: Int
     ) {
-        if (Constants.ISSTOP_TALK != "0") {
-            myToast(resources.getString(R.string.str_stoptalk))
-            return
-        }
-        reSendMsgDialog(this) { isSure ->
-            matchBeanNew.sent = 0
-            if (matchBeanNew.msgType == 0) {
-                msgType = matchBeanNew.msgType!!
-                msgContent = matchBeanNew.content
-                sendMsg(matchBeanNew.id!!, true)
-            }
-            mDatabind.rv.bindingAdapter.notifyItemChanged(index)
+        try {
 
+            if (Constants.ISSTOP_TALK != "0") {
+                myToast(resources.getString(R.string.str_stoptalk))
+                return
+            }
+            reSendMsgDialog(this) { isSure ->
+                matchBeanNew.sent = 0
+                if (matchBeanNew.msgType == 0) {
+                    msgType = matchBeanNew.msgType!!
+                    msgContent = matchBeanNew.content
+                    sendMsg(matchBeanNew.id!!, true)
+                }
+                mDatabind.rv.bindingAdapter.notifyItemChanged(index)
+            }
+
+        } catch (e: Exception) {
         }
     }
 
