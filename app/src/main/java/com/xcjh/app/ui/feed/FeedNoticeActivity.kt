@@ -1,31 +1,13 @@
 package com.xcjh.app.ui.feed
 
-import android.graphics.Bitmap
 import android.os.Bundle
-import android.util.Log
-import android.view.ViewGroup
-import android.webkit.WebResourceError
-import android.webkit.WebResourceRequest
-import android.webkit.WebView
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
-import androidx.activity.viewModels
-import com.drake.statelayout.StateConfig
 import com.gyf.immersionbar.ImmersionBar
-import com.just.agentweb.AgentWeb
-import com.just.agentweb.WebChromeClient
 import com.xcjh.app.R
 import com.xcjh.app.adapter.FeedNoticeAdapter
-import com.xcjh.app.adapter.MsgFriendAdapter
-import com.xcjh.base_lib.Constants
-import com.xcjh.base_lib.utils.loge
 import com.xcjh.app.base.BaseActivity
 import com.xcjh.app.bean.MatchBean
 import com.xcjh.app.databinding.ActivityFeednoticeBinding
-import com.xcjh.app.databinding.ActivityWebBinding
 import com.xcjh.app.view.CustomHeader
-import com.xcjh.app.vm.MainVm
 import com.xcjh.base_lib.utils.distance
 import com.xcjh.base_lib.utils.vertical
 
@@ -43,13 +25,13 @@ class FeedNoticeActivity : BaseActivity<FeedVm, ActivityFeednoticeBinding>() {
             .titleBar(mDatabind.titleTop.root)
             .init()
         mDatabind.titleTop.tvTitle.text = resources.getString(R.string.txt_feedtitle)
-        mDatabind.smartCommon.setRefreshHeader( CustomHeader(this))
+        mDatabind.smartCommon.setRefreshHeader(CustomHeader(this))
         mDatabind.rec.run {
             vertical()
             adapter = mAdapter
             distance(0, 0, 0, 0)
         }
-        mAdapter.isEmptyViewEnable=true
+        mAdapter.isEmptyViewEnable = true
         mViewModel.getFeedNoticeList(true)
         mDatabind.smartCommon.setOnRefreshListener {
             mViewModel.getFeedNoticeList(true)

@@ -42,6 +42,9 @@ object TimeUtil {
         }
         return data
     }
+    /***
+     * 判断时间差是否大于15分钟  主要用于私聊页面是否显示时间
+     */
     fun isTimeDifferenceGreaterThan15Minutes(timestamp1: Long, timestamp2: Long): Boolean {
         val timeDifference = (timestamp1 - timestamp2) / 1000 // 将时间差转换为秒
         val minutesDifference = timeDifference / 60 // 将时间差转换为分钟
@@ -49,39 +52,7 @@ object TimeUtil {
         return minutesDifference > 5
     }
 
-    /***
-     * 判断时间差是否大于15分钟  主要用于私聊页面是否显示时间
-     */
-    fun getTimeCha(start: Long?, endTime: Long?): Boolean? {
 
-        try {
-
-            var xx: Long = 0
-            if (endTime!! <= 0) {
-                LogUtils.d("true时间差===")
-                return true
-            }
-            val diff = endTime!! - start!! //
-            val days = diff / (1000 * 60 * 60 * 24)
-            val hours = (diff - days * (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-            val minutes =
-                diff - days * (1000 * 60 * 60 * 24) - hours * (1000 * 60 * 60) / (1000 * 60)
-            val second = diff / 1000 - days * 24 * 60 * 60 - hours * 60 * 60 - minutes * 60
-
-            LogUtils.d("时间差===$days--$hours--$minutes")
-            if (days > 0 || hours > 0 || minutes > 300000) {
-                LogUtils.d("true时间差===")
-                return true
-            }
-
-        } catch (e: java.lang.Exception) {
-            e.printStackTrace()
-            LogUtils.d("false时间差===")
-            return false
-        }
-        LogUtils.d("false时间差===")
-        return false
-    }
 
     /***
      * kotlin实现传入两个时间戳  后者比前者早 返回true 否者false
