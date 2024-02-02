@@ -382,4 +382,15 @@ class DetailVm : BaseViewModel() {
         })
     }
 
+    /**
+     * 直播分享
+     */
+    fun addLiveShare(liveId: String?) {
+        request({
+            apiService.addLiveShare(liveId)
+        }, {
+
+        })
+    }
+
 }
