@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:oneshot="true"
+    >
+    <item
+        android:width="@dimen/dp_20"
+        android:height="@dimen/dp_20"
+        android:drawable="@drawable/start1"
+        android:duration="40" />
+    <item
+        android:width="@dimen/dp_20"
+        android:height="@dimen/dp_20"
+        android:drawable="@drawable/start2"
+        android:duration="40" />
+    <item
+        android:width="@dimen/dp_20"
+        android:height="@dimen/dp_20"
+        android:drawable="@drawable/start3"
+        android:duration="40" />
+    <item
+        android:width="@dimen/dp_20"
+        android:height="@dimen/dp_20"
+        android:drawable="@drawable/start4"
+        android:duration="40" />
+    <item
+        android:width="@dimen/dp_20"
+        android:height="@dimen/dp_20"
+        android:drawable="@drawable/start5"
+        android:duration="40" />
+    <item
+        android:width="@dimen/dp_20"
+        android:height="@dimen/dp_20"
+        android:drawable="@drawable/start6"
+        android:duration="40" />
+    <item
+        android:width="@dimen/dp_20"
+        android:height="@dimen/dp_20"
+        android:drawable="@drawable/start7"
+        android:duration="40" />
+    <item
+        android:width="@dimen/dp_20"
+        android:height="@dimen/dp_20"
+        android:drawable="@drawable/start8"
+        android:duration="40" />
+    <item
+        android:width="@dimen/dp_20"
+        android:height="@dimen/dp_20"
+        android:drawable="@drawable/start9"
+        android:duration="40" />
+    <item
+        android:width="@dimen/dp_20"
+        android:height="@dimen/dp_20"
+        android:drawable="@drawable/start10"
+        android:duration="40" />
+    <item
+        android:width="@dimen/dp_20"
+        android:height="@dimen/dp_20"
+        android:drawable="@drawable/start11"
+        android:duration="40" />
+    <item
+        android:width="@dimen/dp_20"
+        android:height="@dimen/dp_20"
+        android:drawable="@drawable/start12"
+        android:duration="40" />
+    <item
+        android:width="@dimen/dp_20"
+        android:height="@dimen/dp_20"
+        android:drawable="@drawable/start13"
+        android:duration="40" />
+    <item
+        android:width="@dimen/dp_20"
+        android:height="@dimen/dp_20"
+        android:drawable="@drawable/start14"
+        android:duration="40" />
+    <item
+        android:width="@dimen/dp_20"
+        android:height="@dimen/dp_20"
+        android:drawable="@drawable/start15"
+        android:duration="40" />
+    <item
+        android:width="@dimen/dp_20"
+        android:height="@dimen/dp_20"
+        android:drawable="@drawable/start16"
+        android:duration="40" />
+    <item
+        android:width="@dimen/dp_20"
+        android:height="@dimen/dp_20"
+        android:drawable="@drawable/start17"
+        android:duration="40" />
+    <item
+        android:width="@dimen/dp_20"
+        android:height="@dimen/dp_20"
+        android:drawable="@drawable/start18"
+        android:duration="40" />
+    <item
+        android:width="@dimen/dp_20"
+        android:height="@dimen/dp_20"
+        android:drawable="@drawable/start19"
+        android:duration="40" />
+    <item
+        android:width="@dimen/dp_20"
+        android:height="@dimen/dp_20"
+        android:drawable="@drawable/start20"
+        android:duration="40" />
+    <item
+        android:width="@dimen/dp_20"
+        android:height="@dimen/dp_20"
+        android:drawable="@drawable/start21"
+        android:duration="40" />
+    <item
+        android:width="@dimen/dp_20"
+        android:height="@dimen/dp_20"
+        android:drawable="@drawable/start22"
+        android:duration="40" />
+    <item
+        android:width="@dimen/dp_20"
+        android:height="@dimen/dp_20"
+        android:drawable="@drawable/start23"
+        android:duration="40" />
+    <item
+        android:width="@dimen/dp_20"
+        android:height="@dimen/dp_20"
+        android:drawable="@drawable/start24"
+        android:duration="40" />
+    <item
+        android:width="@dimen/dp_20"
+        android:height="@dimen/dp_20"
+        android:drawable="@drawable/start25"
+        android:duration="40" />
+    <item
+        android:width="@dimen/dp_20"
+        android:height="@dimen/dp_20"
+        android:drawable="@drawable/start26"
+        android:duration="40" />
+    <item
+        android:width="@dimen/dp_20"
+        android:height="@dimen/dp_20"
+        android:drawable="@drawable/start27"
+        android:duration="40" />
+    <item
+        android:width="@dimen/dp_20"
+        android:height="@dimen/dp_20"
+        android:drawable="@drawable/start28"
+        android:duration="40" />
+    <item
+        android:width="@dimen/dp_20"
+        android:height="@dimen/dp_20"
+        android:drawable="@drawable/start29"
+        android:duration="40" />
+    <item
+        android:width="@dimen/dp_20"
+        android:height="@dimen/dp_20"
+        android:drawable="@drawable/start30"
+        android:duration="40" />
+    <item
+        android:drawable="@drawable/start31"
+        android:duration="40" />
+    <item
+        android:drawable="@drawable/start32"
+        android:duration="40" />
+    <item
+        android:width="@dimen/dp_20"
+        android:height="@dimen/dp_20"
+        android:drawable="@drawable/start33"
+        android:duration="40" />
+    <item
+        android:width="@dimen/dp_20"
+        android:height="@dimen/dp_20"
+        android:drawable="@drawable/start34"
+        android:duration="40" />
+    <item
+        android:width="@dimen/dp_20"
+        android:height="@dimen/dp_20"
+        android:drawable="@drawable/start35"
+        android:duration="40" />
+    <item
+        android:width="@dimen/dp_20"
+        android:height="@dimen/dp_20"
+        android:drawable="@drawable/start36"
+        android:duration="40" />
+    <item
+        android:width="@dimen/dp_20"
+        android:height="@dimen/dp_20"
+        android:drawable="@drawable/start37"
+        android:duration="40" />
+    <item
+        android:width="@dimen/dp_20"
+        android:height="@dimen/dp_20"
+        android:drawable="@drawable/start38"
+        android:duration="40" />
+    <item
+        android:width="@dimen/dp_20"
+        android:height="@dimen/dp_20"
+        android:drawable="@drawable/start39"
+        android:duration="40" />
+    <item
+        android:width="@dimen/dp_20"
+        android:height="@dimen/dp_20"
+        android:drawable="@drawable/start40"
+        android:duration="40" />
+
+</animation-list>

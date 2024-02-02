@@ -2,9 +2,14 @@ package com.xcjh.app.ui
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
+import android.view.View
+import android.view.ViewGroup
+import android.widget.RelativeLayout
 import com.engagelab.privates.push.api.MTPushPrivatesApi
 import com.google.gson.Gson
 import com.gyf.immersionbar.ImmersionBar
@@ -25,14 +30,15 @@ import java.util.*
 class SplashActivity : BaseActivity<BaseViewModel, ActivitySplashBinding>() {
     private var secondsRemaining: Long = 0L
     override fun initView(savedInstanceState: Bundle?) {
-
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+            mDatabind.vLogoAnim.visibility = View.VISIBLE
+        }
         super.initView(savedInstanceState)
-          ImmersionBar.with(this)
+        ImmersionBar.with(this)
             .statusBarDarkFont(true)
             .init()
         onIntent(intent)
         //createTimer(2)
-
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -45,17 +51,25 @@ class SplashActivity : BaseActivity<BaseViewModel, ActivitySplashBinding>() {
 
             Log.i("push===Splash_Receiver", "onIntent-extras:${intent?.extras.toString()}")
             Log.i("push===Splash_Receiver", "onIntent-data:${intent?.data}")
-           /* mDatabind.root.postDelayed({
-
-            },100)*/
-            startNewActivity<MainActivity>{
-                intent?.extras?.let {
-                    putExtras(it)
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+                mDatabind.root.postDelayed({
+                    startNewActivity<MainActivity> {
+                        intent?.extras?.let {
+                            putExtras(it)
+                        }
+                    }
+                    finish()
+                }, 1000)
+            } else {
+                startNewActivity<MainActivity> {
+                    intent?.extras?.let {
+                        putExtras(it)
+                    }
                 }
+                finish()
             }
-            finish()
         } catch (e: Exception) {
-           // e.printStackTrace()
+            // e.printStackTrace()
         }
     }
 

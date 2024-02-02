@@ -45,6 +45,17 @@
             android:layout_centerInParent="true"
             app:srcCompat="@drawable/app_logo"/>
 
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/v_logo_anim"
+            android:layout_width="@dimen/dp_100"
+            android:layout_height="@dimen/dp_100"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="false"
+            android:scaleType="fitCenter"
+            app:lottie_fileName="qidongye.json"
+            android:layout_centerInParent="true"
+            android:visibility="gone"
+            />
 
     </RelativeLayout>
 
