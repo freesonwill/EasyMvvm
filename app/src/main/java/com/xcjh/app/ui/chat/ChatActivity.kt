@@ -276,11 +276,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                     binding.ivfaile.visibility = View.GONE
                                     GlobalScope.launch {
                                         delay(delayTime)
-                                        LogUtils.d(
-                                            "发送成功或者失败" + JSONObject.toJSONString(
-                                                matchBeanNew
-                                            )
-                                        )
+
                                         if (matchBeanNew.sent == 0) {//发送失败
                                             matchBeanNew.sent = 2
                                             addDataToList("2", matchBeanNew)
@@ -771,11 +767,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                             if (beanmy.sendId == chat.sendId) {
                                 beanmy.sent = 1
                                 beanmy.id = chat.id
-                                LogUtils.d(
-                                    i.toString() + "1发送成功一条数据" + JSONObject.toJSONString(
-                                        beanmy
-                                    )
-                                )
+
                                 addDataToList("7", beanmy)
                                 mDatabind.rv.bindingAdapter.notifyItemChanged(i)
                                 break
@@ -815,7 +807,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                             data[i].sent = 1
                         }
                     }
-                    LogUtils.d("私聊有数据缓存" + JSONObject.toJSONString(data))
+
                     listdata.addAll(data)
                     runOnUiThread {
                         mDatabind.rv.models = listdata
@@ -991,20 +983,19 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                             }
                             it[i].sent = 1
 
-                            LogUtils.d("昵称是===" + it[i].nick)
                             addDataToList("9", it[i])
                         }
                     } else {
-                        LogUtils.d("有新的消息===" + JSONObject.toJSONString(it))
+
                         var bean = listdata[0]
                         for ((index, data) in it.withIndex()) {
 
-                            LogUtils.d("昵称是===" + data.nick)
+
                             val foundData = listdata.find { it.id == data.id }
                             if (foundData == null) {
 
                                 data?.let { it1 ->
-                                    LogUtils.d("第一个数据===" + JSONObject.toJSONString(bean))
+
                                     if (TimeUtil.isEarlier(
                                             data.createTime!!,
                                             bean.createTime!!
@@ -1021,7 +1012,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                         listdata1.add(data)
                                         mDatabind.rv.addModels(listdata1, index = 0)
                                         mDatabind.rv.scrollToPosition(0) // 保证最新一条消息显示
-                                        LogUtils.d("有新的消息需要加入缓存===" + data.content)
+
                                     }
                                 }
                             }

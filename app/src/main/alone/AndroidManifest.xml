@@ -125,10 +125,7 @@
             android:name=".ui.home.my.operate.MyFollowListActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.Index.IndexLetterActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
+
         <activity
             android:name=".web.WebRichTextActivity"
             android:exported="false"
