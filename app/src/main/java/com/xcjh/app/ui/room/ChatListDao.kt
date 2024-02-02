@@ -28,9 +28,9 @@ interface ChatListDao {
             message.idd=oldMessage.idd
             update(message)
 
-            Log.d("MessageDao", "Updating message...")
+
         } else {
-            Log.d("MessageDao", "Inserting new message...")
+
             insertAll(message)
         }
     }

@@ -106,6 +106,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                         binding.tvcontent.text = item!!.content
                         Glide.with(context)
                             .load(R.drawable.ic_notify)
+                            .placeholder(R.drawable.ic_notify)
                             .into(binding.ivhead)
 
                     } else {

@@ -9,7 +9,6 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
-import com.alibaba.fastjson.JSONObject
 import com.engagelab.privates.core.api.MTCorePrivatesApi
 import com.gyf.immersionbar.ImmersionBar
 import com.xcjh.app.R
@@ -17,17 +16,11 @@ import com.xcjh.app.base.BaseActivity
 import com.xcjh.app.bean.LetterBeann
 import com.xcjh.app.bean.PostLoaginBean
 import com.xcjh.app.databinding.ActivityLoaginBinding
-import com.xcjh.app.ui.Index.IndexLetterActivity
-import com.xcjh.app.utils.selectCountry
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.bindViewPager2
 import com.xcjh.base_lib.utils.initActivity
 import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.setOnclickNoRepeat
-import java.io.BufferedReader
-import java.io.IOException
-import java.io.InputStream
-import java.io.InputStreamReader
 
 /***
  * 登录

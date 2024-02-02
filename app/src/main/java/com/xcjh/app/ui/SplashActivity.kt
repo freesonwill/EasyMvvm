@@ -18,6 +18,7 @@ import com.xcjh.base_lib.base.BaseViewModel
 import com.xcjh.app.base.BaseActivity
 import com.xcjh.app.databinding.ActivitySplashBinding
 import com.xcjh.app.ui.details.MatchDetailActivity
+import com.xcjh.base_lib.utils.LogUtils
 import com.xcjh.base_lib.utils.toJson
 import org.json.JSONObject
 import java.util.*
@@ -48,6 +49,7 @@ class SplashActivity : BaseActivity<BaseViewModel, ActivitySplashBinding>() {
 
     private fun onIntent(intent: Intent?) {
         try {
+
 
             Log.i("push===Splash_Receiver", "onIntent-extras:${intent?.extras.toString()}")
             Log.i("push===Splash_Receiver", "onIntent-data:${intent?.data}")

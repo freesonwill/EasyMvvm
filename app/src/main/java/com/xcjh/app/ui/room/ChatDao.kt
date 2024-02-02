@@ -34,15 +34,11 @@ interface ChatDao {
 
                 message.idd = oldMessage!!.idd
                 updateData(message)
-                LogUtils.d("私聊修改一条数据" + JSONObject.toJSONString(message))
 
             } else {
-                LogUtils.d("私聊增加一条数据" + JSONObject.toJSONString(message))
                 insert(message)
 
         }
-        var list= getMessagesByName(message.anchorId!!, CacheUtil.getUser()?.id!!)!!
-        LogUtils.d("所有一条数据" + JSONObject.toJSONString(list))
     }
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
