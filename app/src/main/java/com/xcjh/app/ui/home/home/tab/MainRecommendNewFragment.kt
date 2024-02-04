@@ -232,7 +232,7 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
 //        mViewModel.getBannerList()
 
            lifecycleScope.launch {
-                            delay(10000) // 延迟 1秒
+                            delay(1000) // 延迟 1秒
                mDatabind.smartCommon.autoRefresh()
            }
 //        mViewModel.getBannerList()

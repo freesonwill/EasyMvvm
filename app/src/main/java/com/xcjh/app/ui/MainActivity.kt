@@ -235,6 +235,7 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
     override fun createObserver() {
         super.createObserver()
         appViewModel.mainDateShowEvent.observeForever {
+            mDatabind.vLogoAnim.cancelAnimation()
             mDatabind.reDateShow.visibility=View.GONE
         }
 
