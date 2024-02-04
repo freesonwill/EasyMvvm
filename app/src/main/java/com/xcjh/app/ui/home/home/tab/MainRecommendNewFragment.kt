@@ -7,6 +7,7 @@ import android.animation.ObjectAnimator
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
@@ -463,7 +464,7 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
                 if(!isShow){
                     if( mViewModel.dateSetOf.advertisement.size<=0&&
                                 mViewModel.dateSetOf.match.size<=0&&it.isFirstEmpty ){
-                          myToast(resources.getString(R.string.main_err_title))
+                          myToast(resources.getString(R.string.main_err_title), gravity = Gravity.TOP)
                         lifecycleScope.launch {
                             delay(10000) // 延迟 10 秒
 //                            delay(2000) // 延迟 10 秒、
