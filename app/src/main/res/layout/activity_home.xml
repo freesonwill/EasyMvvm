@@ -234,6 +234,35 @@
 
 
         </com.lihang.ShadowLayout>
+        <RelativeLayout
+            android:id="@+id/reDateShow"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/c_ffffff">
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/v_logo_anim"
+                android:layout_width="@dimen/dp_120"
+                android:layout_height="@dimen/dp_120"
+                android:layout_centerInParent="true"
+                android:scaleType="fitCenter"
+                app:lottie_autoPlay="true"
+                app:lottie_fileName="qidongye.json"
+                app:lottie_loop="true" />
+<!--            <androidx.appcompat.widget.AppCompatImageView-->
+<!--                android:id="@+id/ivAnimation"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_centerInParent="true"/>-->
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="253dp"
+                android:layout_height="@dimen/dp_60"
+                android:layout_marginBottom="70dp"
+                android:layout_centerInParent="true"
+                app:srcCompat="@drawable/main_show_icon"
+                android:layout_alignParentBottom="true"/>
+
+        </RelativeLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

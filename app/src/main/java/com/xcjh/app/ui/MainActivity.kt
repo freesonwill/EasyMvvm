@@ -5,6 +5,7 @@ import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.AnimationDrawable
 import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
@@ -18,6 +19,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.engagelab.privates.core.api.MTCorePrivatesApi
 import com.engagelab.privates.push.api.MTPushPrivatesApi
+import com.gyf.immersionbar.ImmersionBar
 import com.gyf.immersionbar.ktx.showStatusBar
 import com.king.app.dialog.AppDialog
 import com.king.app.updater.AppUpdater
@@ -81,6 +83,7 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         super.initView(savedInstanceState)
         //MTPushPrivatesApi.clearNotification(this)
         showStatusBar()
+
         /* splashScreen.setKeepOnScreenCondition {
              //延迟2.5秒
              !mViewModel.mockDataLoading()
@@ -98,6 +101,8 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         super.onNewIntent(intent)
         onIntent(intent)
     }
+
+
 
     private fun onIntent(intent: Intent?) {
         try {
@@ -229,6 +234,10 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
 
     override fun createObserver() {
         super.createObserver()
+        appViewModel.mainDateShowEvent.observeForever {
+            mDatabind.reDateShow.visibility=View.GONE
+        }
+
         //登录或者登出
         appViewModel.updateLoginEvent.observeForever() {
             if (it) {

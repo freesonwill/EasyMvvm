@@ -8,8 +8,8 @@
         <!-- 向下兼容。================start-->
         <!-- 启动画面背景颜色 -->
         <item name="windowSplashScreenBackground">@color/white</item>
-        <!-- 启动画面中心的图标 -->
-        <item name="windowSplashScreenAnimatedIcon">@drawable/animationt_start_logo_a</item><!--android 12新增-->
+        <!-- 启动画面中心的图标 animationt_start_logo_a-->
+        <item name="windowSplashScreenAnimatedIcon">@drawable/white_radius</item><!--android 12新增-->
         <item name="splashScreenIconSize">@dimen/dp_20</item>
       <!--
        <item name="windowSplashScreenBackground">@color/orange</item>

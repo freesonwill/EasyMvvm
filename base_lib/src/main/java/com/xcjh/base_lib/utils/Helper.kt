@@ -54,7 +54,7 @@ import java.util.*
  * isDeep是否是深色模式，默认是浅色，当isDeep=true的时候是深色界面使用
  */
 @SuppressLint("WrongConstant", "MissingInflatedId")
-fun myToast(whiteStr: String?, yellowStr: String? = null,isDeep:Boolean=false) {
+fun myToast(whiteStr: String?, yellowStr: String? = null,isDeep:Boolean=false,gravity:Int=Gravity.CENTER) {
     Handler(Looper.getMainLooper()).post {
         val view: View = LayoutInflater.from(appContext).inflate(R.layout.view_toast_my_task, null)
         val tvMsg = view.findViewById<View>(R.id.tvToast) as TextView
@@ -73,7 +73,7 @@ fun myToast(whiteStr: String?, yellowStr: String? = null,isDeep:Boolean=false) {
             .showIn(tvMsg) //显示到控件TextView中
         val toast = Toast(appContext)
         // toast.setGravity(Gravity.BOTTOM or Gravity.CENTER, 0, DisplayUtils.dp2px(50f))
-        toast.setGravity( Gravity.CENTER, 0,200)
+        toast.setGravity( gravity, 0,200)
         toast.duration = 5000
         toast.view = view
         toast.show()
