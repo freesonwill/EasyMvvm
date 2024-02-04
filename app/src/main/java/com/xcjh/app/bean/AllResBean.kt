@@ -142,8 +142,9 @@ data class  MainDataBean(
     //广告
     var advertisement: ArrayList<AdvertisementBanner> =ArrayList<AdvertisementBanner>(),
     //热门比赛集合
-    var match:ArrayList<MatchBean> =ArrayList<MatchBean>()
-
+    var match:ArrayList<MatchBean> =ArrayList<MatchBean>(),
+    //正在直播的主播
+    var list:ArrayList<BeingLiveBean> =ArrayList<BeingLiveBean>()
 
 ): Serializable
 

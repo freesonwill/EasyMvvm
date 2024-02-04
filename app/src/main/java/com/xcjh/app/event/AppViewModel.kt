@@ -55,6 +55,7 @@ class AppViewModel : BaseViewModel() {
     var wsStatusOpen = EventLiveData<Boolean>()//开启
     //更新某些页面
     var updateSomeData = EventLiveData<String>()//"friends"//好友列表
+    var mainDateShowEvent=EventLiveData<Boolean>()
     init {
         //默认值保存的账户信息，没有登陆过则为null started 或 resumed
         this.updateLoginEvent.value = CacheUtil.isLogin()

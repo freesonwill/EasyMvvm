@@ -13,6 +13,7 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.Interpolator
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.airbnb.lottie.LottieAnimationView
 import com.bumptech.glide.Glide
@@ -26,6 +27,7 @@ import com.drake.brv.utils.mutable
 import com.drake.brv.utils.setDifferModels
 import com.drake.brv.utils.setup
 import com.drake.statelayout.StateConfig
+import com.gyf.immersionbar.ImmersionBar
 import com.luck.picture.lib.dialog.RemindDialog
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
@@ -45,6 +47,7 @@ import com.xcjh.app.databinding.ItemMainProceedBinding
 import com.xcjh.app.databinding.ItemMainTxtBinding
 import com.xcjh.app.databinding.ItemUnderWayBinding
 import com.xcjh.app.ui.details.MatchDetailActivity
+import com.xcjh.app.utils.CacheUtil
 import com.xcjh.app.view.CustomHeader
 import com.xcjh.app.web.WebActivity
 import com.xcjh.app.websocket.MyWsManager
@@ -58,7 +61,10 @@ import com.xcjh.app.websocket.listener.LiveStatusListener
 import com.xcjh.base_lib.App
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.dp2px
+import com.xcjh.base_lib.utils.myToast
 import com.youth.banner.util.BannerUtils
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -67,7 +73,8 @@ import java.util.Locale
  * 首页推荐页面碎片
  */
 class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRecommendBinding>() {
-
+    //默认是要加载后才刷新
+    var  isShow:Boolean=false
 
     override fun initView(savedInstanceState: Bundle?) {
         mDatabind.state.apply {
@@ -79,7 +86,7 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
             }
 
         }
-        mDatabind.state.showEmpty()
+//        mDatabind.state.showEmpty()
 
 
         //首页轮询
@@ -219,12 +226,21 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
         list.add(MainTxtBean())
         mDatabind.rcvRecommend.addModels(list)
 
-        //获取数据
-        mViewModel.getBannerList()
+
+//
+//        mViewModel.getBannerList()
+
+           lifecycleScope.launch {
+                            delay(10000) // 延迟 1秒
+               mDatabind.smartCommon.autoRefresh()
+           }
+//        mViewModel.getBannerList()
+//        mDatabind.smartCommon.autoRefresh()
         //设置下拉刷新的高度-----
         mDatabind.smartCommon.setFooterHeight(20F)
         mDatabind.smartCommon.setOnRefreshLoadMoreListener(object : OnRefreshLoadMoreListener {
             override fun onRefresh(refreshLayout: RefreshLayout) {
+
                 mViewModel.getBannerList()
 
             }
@@ -339,7 +355,6 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
             }
 
         }
-
         //正在直播的比赛
         mViewModel.liveList.observe(this){
             //是否是下拉刷新
@@ -363,8 +378,6 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
                     mainHaveList.add(matchBean)
                     mDatabind.rcvRecommend.addModels(mainHaveList)
                 }
-
-
                 mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
                 //设置正在直播的适配器第三个适配器
                 var beanList=ArrayList<MainTxtBean>()
@@ -444,6 +457,28 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
             mDatabind.smartCommon.finishRefresh()
             mDatabind.smartCommon.resetNoMoreData()
             mDatabind.state.showContent()
+            //如果是第一次数据
+            //是否是下拉刷新
+            if( it.isRefresh){
+                if(!isShow){
+                    if( mViewModel.dateSetOf.advertisement.size<=0&&
+                                mViewModel.dateSetOf.match.size<=0&&it.isFirstEmpty ){
+                          myToast(resources.getString(R.string.main_err_title))
+                        lifecycleScope.launch {
+                            delay(10000) // 延迟 10 秒
+//                            delay(2000) // 延迟 10 秒、
+                            mDatabind.smartCommon.autoRefresh()
+                        }
+
+                    }else{
+                        //有数据
+                        appViewModel.mainDateShowEvent.value=true
+                        isShow=true
+                    }
+
+                }
+
+            }
 
 
 

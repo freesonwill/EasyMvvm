@@ -50,12 +50,12 @@
             android:layout_width="@dimen/dp_100"
             android:layout_height="@dimen/dp_100"
             app:lottie_autoPlay="true"
-            app:lottie_loop="false"
+            app:lottie_loop="true"
+            android:visibility="gone"
             android:scaleType="fitCenter"
             app:lottie_fileName="qidongye.json"
-            android:layout_centerInParent="true"
-            android:visibility="gone"
-            />
+            android:layout_centerInParent="true" />
+
 
     </RelativeLayout>
 

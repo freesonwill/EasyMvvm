@@ -6,6 +6,7 @@ import com.google.gson.reflect.TypeToken
 import com.tencent.mmkv.MMKV
 import com.xcjh.app.appViewModel
 import com.xcjh.app.bean.LoginInfo
+import com.xcjh.app.bean.MainDataBean
 import com.xcjh.app.bean.UserInfo
 import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.network.cookie.CookieManger
@@ -119,6 +120,8 @@ object CacheUtil {
         kv.encode("history", searchResponseStr)
     }
 
+
+
     /**
      * 是否不在提示
      */
@@ -169,6 +172,9 @@ object CacheUtil {
         val kv = MMKV.mmkvWithID("app")
         return kv.encode("navigationVibrate", navigation)
     }
+
+
+
 
 
 }

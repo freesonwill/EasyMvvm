@@ -390,5 +390,6 @@
     <string name="release_txt_name">发布</string>
     <string name="personal_update_title">编辑资料</string>
     <string name="personal_txt_saved">保存成功</string>
+    <string name="main_err_title">网络不给力，请检查网络设置。</string>
 
 </resources>
