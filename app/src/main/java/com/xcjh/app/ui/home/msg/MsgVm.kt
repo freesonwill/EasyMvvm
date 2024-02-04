@@ -122,7 +122,7 @@ class MsgVm : BaseViewModel() {
                     errMessage = it.errorMsg,
                     listData = arrayListOf()
                 )
-                myToast(it.errorMsg)
+             //   myToast(it.errorMsg)
             }, false
         )
     }

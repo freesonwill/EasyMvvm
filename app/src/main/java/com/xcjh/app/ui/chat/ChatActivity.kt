@@ -168,6 +168,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
 //            .into(mDatabind.titleTop.ivhead)
 //        (mDatabind.rv.itemAnimator as SimpleItemAnimator).supportsChangeAnimations =
 //            false//防止item刷新的时候闪烁
+            mDatabind.rv.setHasFixedSize(true)
             mDatabind.rv.setup {
                 addType<MsgBeanData> {
                     when (fromId) {
@@ -393,28 +394,29 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                     GlobalScope.launch {
 
                                         upLoadPic(
+                                            bindingAdapterPosition,
                                             matchBeanNew,
                                             binding.tvpross,
                                             binding.ivfaile
                                         )
-                                        delay(delayTime)
-                                        LogUtils.d(
-                                            bindingAdapterPosition.toString() + "99检查发送" +
-                                                    JSONObject.toJSONString(_data as MsgBeanData)
-                                        )
-                                        if ((_data as MsgBeanData).sent == 0) {//发送失败
-                                            (_data as MsgBeanData).sent = 2
-                                            LogUtils.d(
-                                                bindingAdapterPosition.toString() + "99发送失败" +
-                                                        JSONObject.toJSONString(_data as MsgBeanData)
-                                            )
-                                            addDataToList("5", (_data as MsgBeanData))
+                                         delay(delayTime)
+
+                                        if (matchBeanNew.sent == 0) {//发送失败
+                                            matchBeanNew.sent = 2
+
+                                            addDataToList("5", matchBeanNew)
                                             if (bindingAdapterPosition == 0) {
-                                                appViewModel.updateMsgListEvent.postValue((_data as MsgBeanData))
+                                                appViewModel.updateMsgListEvent.postValue(
+                                                    matchBeanNew
+                                                )
                                             }
+
                                             runOnUiThread {
                                                 binding.googleProgress.visibility = View.GONE
                                                 binding.ivfaile.visibility = View.VISIBLE
+
+
+
                                             }
 
                                         } else {//发送成功
@@ -783,6 +785,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                 }
 
             })
+
             // mViewModel.clearMsg(userId)
             initData()
 
@@ -848,7 +851,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
         rotationYAnimator.start()
     }
 
-    suspend fun upLoadPic(bean: MsgBeanData, view: TextView, image: ImageView) {
+    suspend fun upLoadPic(index: Int,bean: MsgBeanData, view: TextView, image: ImageView) {
         try {
 
             val file = File(bean.content)
@@ -878,8 +881,19 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                     msgContent = it
                     sendMsg(bean.sendId!!, true)
                 } else {
-                    view.visibility = View.GONE
-                    image.visibility = View.VISIBLE
+                    runOnUiThread {
+                        view.visibility = View.GONE
+                        image.visibility = View.VISIBLE
+
+                    }
+                    if (bean.sent == 0) {//发送失败
+                        bean.sent = 2
+
+                        addDataToList("5", bean)
+                        if (index == 0) {
+                            appViewModel.updateMsgListEvent.postValue(bean)
+                        }
+                    }
                     bean.sent = 2
                     addDataToList("8", bean)
                 }

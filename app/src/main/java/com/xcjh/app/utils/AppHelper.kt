@@ -88,6 +88,7 @@ fun ImageView.loadImageWithGlide(context: Context, imageUrl: String) {
         .asBitmap()
         .load(imageUrl)
         .thumbnail(0.1f)
+        .skipMemoryCache(false)
         .apply(
             RequestOptions()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
