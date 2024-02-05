@@ -17,6 +17,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.engagelab.privates.core.api.MTCorePrivatesApi
 import com.engagelab.privates.push.api.MTPushPrivatesApi
 import com.gyf.immersionbar.ImmersionBar
@@ -51,6 +52,8 @@ import com.xcjh.base_lib.utils.initActivity
 import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.setOnclickNoRepeat
 import com.xcjh.base_lib.utils.view.clickNoRepeat
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.Timer
 import java.util.TimerTask
 
@@ -88,9 +91,12 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
              //延迟2.5秒
              !mViewModel.mockDataLoading()
          }*/
-
         mDatabind.vLogoAnim.setAnimation("qidongye.json")
-        mDatabind.vLogoAnim.playAnimation()
+        lifecycleScope.launch {
+            delay(500) // 延迟 10 秒
+            mDatabind.vLogoAnim.playAnimation()
+        }
+
         Constants.isLoading = false
         onIntent(intent)
         CacheUtil.setFirst(false)
