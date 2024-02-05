@@ -88,6 +88,9 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
              //延迟2.5秒
              !mViewModel.mockDataLoading()
          }*/
+
+        mDatabind.vLogoAnim.setAnimation("qidongye.json")
+        mDatabind.vLogoAnim.playAnimation()
         Constants.isLoading = false
         onIntent(intent)
         CacheUtil.setFirst(false)

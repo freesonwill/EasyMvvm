@@ -246,7 +246,7 @@
                 android:layout_height="@dimen/dp_120"
                 android:layout_centerInParent="true"
                 android:scaleType="fitCenter"
-                app:lottie_autoPlay="true"
+                app:lottie_autoPlay="false"
                 app:lottie_fileName="qidongye.json"
                 app:lottie_loop="true" />
 <!--            <androidx.appcompat.widget.AppCompatImageView-->
