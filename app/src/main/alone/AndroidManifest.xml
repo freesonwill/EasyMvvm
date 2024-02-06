@@ -51,6 +51,7 @@
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="${app_name}"
+        android:largeHeap="true"
         android:networkSecurityConfig="${networkConfig}"
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
