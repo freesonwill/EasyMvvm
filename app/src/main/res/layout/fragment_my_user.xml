@@ -28,16 +28,23 @@
             android:layout_marginBottom="@dimen/dp_20">
 
             <LinearLayout
+                android:id="@+id/llClickMy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <com.xcjh.app.utils.nice.NiceImageView
+<!--                <com.xcjh.app.utils.nice.NiceImageView-->
+<!--                    android:id="@+id/ivMyHead"-->
+<!--                    android:layout_width="50dp"-->
+<!--                    android:layout_height="50dp"-->
+<!--                    android:scaleType="fitXY"-->
+<!--                    app:is_circle="true"-->
+<!--                    app:srcCompat="@drawable/icon_my_head" />-->
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/ivMyHead"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:scaleType="fitXY"
-                    app:is_circle="true"
                     app:srcCompat="@drawable/icon_my_head" />
 
                 <LinearLayout
@@ -118,7 +125,7 @@
                 android:layout_marginBottom="20dp"
                 android:scaleType="centerCrop"
                 app:corner_radius="@dimen/dp_8"
-                app:srcCompat="@drawable/zwt_banner" />
+                app:srcCompat="@drawable/banner_my_icon" />
 
             <LinearLayout
                 android:layout_width="match_parent"

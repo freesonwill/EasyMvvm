@@ -7,6 +7,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.MotionEvent
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
@@ -20,12 +21,14 @@ import com.xcjh.app.bean.LoginInfo
 import com.xcjh.app.databinding.FragmentMyUserBinding
 import com.xcjh.app.net.ApiComService
 import com.xcjh.app.ui.home.my.operate.*
+import com.xcjh.app.ui.home.my.personal.PersonalDataActivity
 import com.xcjh.app.ui.login.LoginActivity
 import com.xcjh.app.ui.notice.MyNoticeActivity
 import com.xcjh.app.utils.CacheUtil
 import com.xcjh.app.utils.judgeLogin
 import com.xcjh.app.web.WebActivity
 import com.xcjh.base_lib.Constants
+import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.shareText
 import com.xcjh.base_lib.utils.view.clickNoRepeat
 
@@ -38,6 +41,7 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
     // 定义属性动画常量
     private val SCALE_X = PropertyValuesHolder.ofFloat(View.SCALE_X, 1.0f, 1.4f, 1.0f)
     private val SCALE_Y = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.0f, 1.4f, 1.0f)
+
     override fun initView(savedInstanceState: Bundle?) {
         ImmersionBar.with(this)
             .statusBarDarkFont(true)//黑色
@@ -53,6 +57,80 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
                 startNewActivity<LevelMissionActivity>()
             }
         }
+
+        //点击增加透明度
+        mDatabind.ivMyHead.setOnTouchListener { view, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    judgeLogin {
+                        mDatabind.ivMyHead.alpha=0.7f
+                        mDatabind.txtMyName.alpha=0.7f
+                        mDatabind.iiIsShowLeve.alpha=0.7f
+                        mDatabind.ivIvLevel.alpha=0.7f
+                        mDatabind.txtMyNum.alpha=0.7f
+                    }
+
+
+                }
+                MotionEvent.ACTION_UP->{
+                    // 处理抬起事件
+                    judgeLogin {
+
+                        mDatabind.ivMyHead.alpha=1f
+                        mDatabind.txtMyName.alpha=1f
+                        mDatabind.iiIsShowLeve.alpha=1f
+                        mDatabind.ivIvLevel.alpha=1f
+                        mDatabind.txtMyNum.alpha=1f
+                        judgeLogin {
+                            startNewActivity<PersonalDataActivity>()
+                        }
+                    }
+
+                }
+
+
+            }
+
+            true
+        }
+
+
+        //点击增加透明度
+        mDatabind.llClickMy.setOnTouchListener { view, event ->
+                when (event.action) {
+                    MotionEvent.ACTION_DOWN -> {
+                        judgeLogin {
+                            mDatabind.ivMyHead.alpha=0.3f
+                            mDatabind.txtMyName.alpha=0.3f
+                            mDatabind.iiIsShowLeve.alpha=0.3f
+                            mDatabind.ivIvLevel.alpha=0.3f
+                            mDatabind.txtMyNum.alpha=0.3f
+                        }
+
+
+                    }
+                      MotionEvent.ACTION_UP->{
+                          // 处理抬起事件
+                          judgeLogin {
+
+                              mDatabind.ivMyHead.alpha=1f
+                              mDatabind.txtMyName.alpha=1f
+                              mDatabind.iiIsShowLeve.alpha=1f
+                              mDatabind.ivIvLevel.alpha=1f
+                              mDatabind.txtMyNum.alpha=1f
+                              judgeLogin {
+                                  startNewActivity<PersonalDataActivity>()
+                              }
+                          }
+
+                      }
+
+
+                }
+
+            true
+            }
+
         //设置
         mDatabind.ivMySet.clickNoRepeat {
             if (CacheUtil.isLogin()) {
@@ -227,10 +305,13 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
         }
         //广告
         mDatabind.ivMyAdvertising.clickNoRepeat {
-            startNewActivity<WebActivity>() {
-                this.putExtra(Constants.WEB_URL, mViewModel.advertisement.value!!.targetUrl)
-                this.putExtra(Constants.CHAT_TITLE, getString(R.string.my_app_name))
+            if(mViewModel.advertisement.value!=null){
+                startNewActivity<WebActivity>() {
+                    this.putExtra(Constants.WEB_URL, mViewModel.advertisement.value!!.targetUrl)
+                    this.putExtra(Constants.CHAT_TITLE, getString(R.string.my_app_name))
+                }
             }
+
         }
 
 
@@ -286,6 +367,7 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
                     .load(user!!.head) // 替换为您要加载的图片 URL
                     .error(R.drawable.icon_login_my_head)
                     .placeholder(R.drawable.icon_login_my_head)
+                    .circleCrop()
                     .into(mDatabind.ivMyHead)
                 mDatabind.txtMyName.text = user!!.name
                 mDatabind.txtMyNum.text = "${user!!.lvName}"
@@ -397,6 +479,7 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
             .load(R.drawable.icon_my_head) // 替换为您要加载的图片 URL
             .error(R.drawable.icon_my_head)
             .placeholder(R.drawable.icon_my_head)
+            .circleCrop()
             .into(mDatabind.ivMyHead)
         mDatabind.txtMyName.text = resources.getString(R.string.my_txt_click_login)
         mDatabind.iiIsShowLeve.visibility = View.GONE
@@ -411,16 +494,17 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
         super.createObserver()
         //获取个人中心广告
         mViewModel.advertisement.observe(this) {
-            mDatabind.ivMyAdvertising.visibility = View.VISIBLE
+//            mDatabind.ivMyAdvertising.visibility = View.VISIBLE
             Glide.with(requireContext())
                 .load(it.imgUrl) // 替换为您要加载的图片 URL
-                .error(R.drawable.zwt_banner)
-                .placeholder(R.drawable.zwt_banner)
+                .error(R.drawable.banner_my_icon)
+                .placeholder(R.drawable.banner_my_icon)
                 .into(mDatabind.ivMyAdvertising)
+
         }
         //获取广告失败
         mViewModel.advertisementErr.observe(this) {
-            mDatabind.ivMyAdvertising.visibility = View.GONE
+//            mDatabind.ivMyAdvertising.visibility = View.GONE
         }
         //退出登录
         mViewModel.exitLive.observe(this) {
@@ -429,6 +513,8 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
             }
 
         }
+
+
     }
 
     /**
