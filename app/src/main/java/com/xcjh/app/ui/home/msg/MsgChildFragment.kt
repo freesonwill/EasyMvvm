@@ -249,7 +249,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                     if (data[i].noReadSum > 0) {
 
                         noReadMsgs += data[i].noReadSum
-                        LogUtils.d(noReadMsgs.toString() + "==未读消息==" + data[i].noReadSum)
+
                     }
                 }
                 appViewModel.updateMainMsgNum.postValue(noReadMsgs.toString())
@@ -272,7 +272,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
             GlobalScope.launch {
                 val data = getAll().await()
 
-                LogUtils.d(data.size.toString() + "获取到数据" + listdata.size)
+
                 requireActivity().runOnUiThread {
                     if (data.isNotEmpty()) {
                         noReadMsgs = 0
@@ -283,12 +283,11 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                         mDatabind.rec.models = listdata
                         mDatabind.state.showContent()
 
-                        LogUtils.d(data.size.toString() + "获取到数据1" + listdata.size)
                     } else {
                         mDatabind.state.showEmpty()
                     }
                     if (isGet) {
-                        LogUtils.d("kaishi获取到数据")
+
                         mViewModel.getMsgList(true, "")
                     }
                 }
@@ -311,7 +310,6 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
         try {
 
 
-            LogUtils.d("消息列表监听")
             MyWsManager.getInstance(requireActivity())!!
                 .setC2CListener(tags, object : C2CListener {
                     override fun onSendMsgIsOk(isOk: Boolean, bean: ReceiveWsBean<*>) {
@@ -464,7 +462,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
 
             }
             mViewModel.msgList.observe(this) {
-                LogUtils.d("拿到消息")
+
                 mDatabind.smartCommon.finishRefresh()
                 if (it.isSuccess) {
 
@@ -538,17 +536,17 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                         bean.avatar = msg.fromAvatar ?: ""
                         if (chatId == msg.anchorId) {
                             bean.noReadSum = 0
-                            LogUtils.d("维度1")
+
                         } else {
                             var count = listdata[i].noReadSum + 1
                             if (msg.noReadSum > count) {
-                                LogUtils.d("维度2")
+
                                 bean.noReadSum = msg.noReadSum
                             } else if (isAdd) {
-                                LogUtils.d("维度3")
+
                                 bean.noReadSum = listdata[i].noReadSum + 1
                             } else {
-                                LogUtils.d("维度4")
+
                                 bean.noReadSum = msg.noReadSum
 
                             }
@@ -573,8 +571,6 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                         bean.nick = if (msg.toNickName == null) "" else msg.toNickName!!
                     }
 
-                    LogUtils.d("更新了哈哈$i")
-
                     addDataToList(bean)
                     break
                 }
@@ -588,9 +584,9 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                     } else {
                         if (msg.noReadSum == 0) {
                             bean.noReadSum = 0
-                            LogUtils.d("维度5")
+
                         } else {
-                            LogUtils.d("维度6")
+
                             bean.noReadSum = msg.noReadSum
                         }
 
@@ -612,7 +608,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                 } else {
                     bean.nick = msg.toNickName ?: ""
                 }
-                LogUtils.d("鞥加了哈哈")
+
 
                 addDataToList(bean)
 
@@ -640,7 +636,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
      * 添加或者更新私聊新的数据
      */
     fun addDataToChatList(data: MsgBeanData) {
-        LogUtils.d("嘿嘿开始添加数据")
+
         if (CacheUtil.getUser() != null) {
             data.withId = CacheUtil.getUser()?.id!!
             GlobalScope.launch {

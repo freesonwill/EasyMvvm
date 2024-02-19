@@ -1053,7 +1053,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
     }
 
 
-    fun sendMsg(sendid: String, isSend: Boolean) {
+    fun sendMsg(sendid: String, isSend: Boolean,timeold:Long=0) {
         try {
 
 
@@ -1064,7 +1064,13 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
             val fmt = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
             var timestamp = fmt.format(Date(System.currentTimeMillis()))
             val date: Date = fmt.parse(timestamp)
-            val creatime = date.time
+            var creatime :Long= 0
+            if (timeold>0){
+                creatime = timeold
+            }else{
+                creatime = date.time
+            }
+
             var sendID = ""
             if (sendid.isEmpty()) {
                 sendID = userId + creatime
