@@ -30,6 +30,7 @@ class MsgFragment : BaseFragment<MsgVm, FrMsgBinding>() {
     override fun initView(savedInstanceState: Bundle?) {
         ImmersionBar.with(this)
             .statusBarDarkFont(true)//黑色
+            .navigationBarColor(R.color.c_ffffff)
             .titleBar(mDatabind.rlTitle)
             .init()
         initEvent()
