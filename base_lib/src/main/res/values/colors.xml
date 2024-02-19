@@ -91,7 +91,7 @@
     <color name="white_df">#DFDFDF</color>
     <color name="white_f7">#F7F7F7</color>
     <color name="white_99">#ccffffff</color>
-
+    <color name="water_color">#3a3a3a</color>
     <color name="tip_color">#FF5252</color>
     <color name="without_net_bg_color">#F7E8E8</color>
     <color name="tip_dark_color">#FF2525</color>

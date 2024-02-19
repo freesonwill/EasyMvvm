@@ -21,7 +21,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/lltItem"
             android:layout_width="match_parent"
-            android:background="@drawable/select_msg_bac"
+            android:background="@drawable/shape_water"
 
             android:layout_height="70dp">
 
