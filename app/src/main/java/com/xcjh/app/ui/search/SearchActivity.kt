@@ -37,6 +37,8 @@ class SearchActivity  : BaseActivity<SearchVm, ActivitySearchBinding>() {
         super.initView(savedInstanceState)
         ImmersionBar.with(this)
             .statusBarDarkFont(true)
+            .navigationBarDarkIcon(true)
+            .navigationBarColor(R.color.c_ffffff)
             .titleBar(mDatabind.rlSearchTitle)
             .init()
 

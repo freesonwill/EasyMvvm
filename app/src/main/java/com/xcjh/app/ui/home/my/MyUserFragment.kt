@@ -42,6 +42,7 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
         ImmersionBar.with(this)
             .statusBarDarkFont(true)//黑色
             .titleBar(mDatabind.rlMyTopyi)
+            .navigationBarDarkIcon(true)
             .navigationBarColor(R.color.c_ffffff)
             .init()
 

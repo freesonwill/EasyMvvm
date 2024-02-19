@@ -65,6 +65,7 @@ class ContactUsActivity : BaseActivity<ContactUsVm, ActivityContactUsBinding>() 
             .statusBarDarkFont(true)
             .titleBar(mDatabind.titleTop.root)
             .navigationBarColor(R.color.c_ffffff)
+            .navigationBarDarkIcon(true)
             .init()
 
 

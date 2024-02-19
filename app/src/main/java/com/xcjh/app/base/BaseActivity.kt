@@ -24,6 +24,7 @@ abstract class BaseActivity<VM : BaseViewModel, DB : ViewDataBinding> : BaseVmDb
         ImmersionBar.with(this)
             .statusBarDarkFont(true)//黑色
             .navigationBarColor(R.color.c_ffffff)
+            .navigationBarDarkIcon(true)
             .init()
 
     }
