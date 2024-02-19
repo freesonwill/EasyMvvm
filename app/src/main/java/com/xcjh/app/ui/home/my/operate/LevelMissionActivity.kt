@@ -24,6 +24,7 @@ class LevelMissionActivity  : BaseActivity<LevelMissionVm, ActivityLevelMissionB
         ImmersionBar.with(this)
             .statusBarDarkFont(false)//黑色
             .titleBar(mDatabind.titleTop)
+            .navigationBarColor(R.color.c_ffffff)
             .init()
 
         //更新用户信息

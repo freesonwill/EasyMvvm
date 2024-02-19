@@ -28,6 +28,7 @@ class SetUpActivity  : BaseActivity<SetUpVm, ActivitySetUpBinding>() {
         ImmersionBar.with(this)
             .statusBarDarkFont(true)
             .titleBar(mDatabind.titleTop.root)
+            .navigationBarColor(R.color.c_ffffff)
             .init()
         mDatabind.titleTop.tvTitle.text = resources.getString(R.string.setting)
 
