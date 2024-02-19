@@ -70,6 +70,8 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
     private var currentPage: Int = 0
     private var popup: BasePopupView? = null
     private var exitTime: Long = 0
+    //当首页获取到数据就是true
+    private var isHomeDate:Boolean=false
     //是否显示卡片
     private var isShowPush: Boolean = true
 
@@ -234,7 +236,7 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
             OtherPushListener {
             override fun onAnchorStartLevel(beingLiveBean: BeingLiveBean) {
                 super.onAnchorStartLevel(beingLiveBean)
-                if (currentPage != 3 && CacheUtil.isLogin()) {
+                if (currentPage != 3 && CacheUtil.isLogin()&&isHomeDate) {
                     showDialog(beingLiveBean)
                 }
             }
@@ -246,6 +248,7 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         appViewModel.mainDateShowEvent.observeForever {
             mDatabind.vLogoAnim.cancelAnimation()
             mDatabind.reDateShow.visibility=View.GONE
+            isHomeDate=true
         }
 
         //登录或者登出

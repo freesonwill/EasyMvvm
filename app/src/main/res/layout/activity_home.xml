@@ -257,10 +257,10 @@
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="253dp"
                 android:layout_height="@dimen/dp_60"
-                android:layout_marginBottom="70dp"
+                android:layout_alignParentBottom="true"
                 android:layout_centerInParent="true"
-                app:srcCompat="@drawable/main_show_icon"
-                android:layout_alignParentBottom="true"/>
+                android:layout_marginBottom="70dp"
+                app:srcCompat="@drawable/main_show_icon" />
 
         </RelativeLayout>
 
