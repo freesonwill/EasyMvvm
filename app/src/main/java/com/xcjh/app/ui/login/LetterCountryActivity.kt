@@ -56,6 +56,7 @@ class LetterCountryActivity : BaseActivity<LoginVm, ActivityLettercountryBinding
     override fun initView(savedInstanceState: Bundle?) {
         ImmersionBar.with(this)
             .statusBarDarkFont(true)
+            .navigationBarColor(R.color.c_ffffff)
             .titleBar(mDatabind.titleTop.root)
             .init()
         mDatabind.titleTop.tvTitle.text = resources.getString(R.string.str_choosecountry)
