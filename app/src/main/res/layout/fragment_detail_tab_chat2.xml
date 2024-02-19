@@ -32,16 +32,7 @@
              </LinearLayout>
          </androidx.core.widget.NestedScrollView>-->
 
-        <LinearLayout
-            android:id="@+id/lltNotice"
-            android:background="@color/c_181819"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <include
-                android:id="@+id/notice"
-                layout="@layout/item_detail_chat_notice"
-                android:visibility="visible" />
-        </LinearLayout>
+
 
 
         <com.drake.brv.PageRefreshLayout
@@ -49,7 +40,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@id/llInput"
-            android:layout_below="@id/lltNotice"
             app:page_upFetchEnabled="true">
 
             <!--  <com.scwang.smart.refresh.header.MaterialHeader
@@ -63,11 +53,21 @@
                 android:layout_height="wrap_content"
                 app:reverseLayout="true"
                 app:stackFromEnd="true"
+                android:overScrollMode="never"
                 tools:itemCount="3"
                 tools:listitem="@layout/item_detail_chat" />
 
         </com.drake.brv.PageRefreshLayout>
-
+        <LinearLayout
+            android:id="@+id/lltNotice"
+            android:background="@color/c_181819"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <include
+                android:id="@+id/notice"
+                layout="@layout/item_detail_chat_notice"
+                android:visibility="visible" />
+        </LinearLayout>
         <RelativeLayout
             android:id="@+id/llInput"
             android:layout_width="match_parent"
