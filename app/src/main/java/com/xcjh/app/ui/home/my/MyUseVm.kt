@@ -19,18 +19,18 @@ class MyUseVm : BaseViewModel() {
      * 获取个人中心广告
      */
     fun getIndividualCenter(){
-//        request(
-//            { apiService.getIndividualCenter() },
-//            {
-//                advertisement.value=it
-//            }, {
-//
-//                advertisementErr.value=false
-//                //请求失败
-////                myToast(appContext.getString(R.string.http_txt_err_meg))
-//
-//            }
-//        )
+        request(
+            { apiService.getIndividualCenter() },
+            {
+                advertisement.value=it
+            }, {
+
+                advertisementErr.value=false
+                //请求失败
+//                myToast(appContext.getString(R.string.http_txt_err_meg))
+
+            }
+        )
     }
 
 
