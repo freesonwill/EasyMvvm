@@ -127,6 +127,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                 .statusBarDarkFont(true)
                 .keyboardEnable(true)
                 .navigationBarColor(R.color.c_ffffff)
+                .navigationBarDarkIcon(true)
                 .titleBar(mDatabind.titleTop.root)
                 .init()
             MyWsManager.getInstance(this)?.sendMessage(

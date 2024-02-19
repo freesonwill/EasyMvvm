@@ -37,6 +37,8 @@ class SearchActivity  : BaseActivity<SearchVm, ActivitySearchBinding>() {
         super.initView(savedInstanceState)
         ImmersionBar.with(this)
             .statusBarDarkFont(true)
+            .navigationBarDarkIcon(true)
+            .navigationBarColor(R.color.c_ffffff)
             .titleBar(mDatabind.rlSearchTitle)
             .init()
 
@@ -65,15 +67,30 @@ class SearchActivity  : BaseActivity<SearchVm, ActivitySearchBinding>() {
                 mDatabind.ivClear.visibility=View.VISIBLE
                 searchType=0
 //                mDatabind.txtSearchClick.text=resources.getString(R.string.search)
+
+                mViewModel.getNowLive(mDatabind.etSearchInput.text.toString())
+                searchType=1
+//                mDatabind.txtSearchClick.text=resources.getString(R.string.cancel)
+                mDatabind.llSearchShow.visibility=View.GONE
+                mDatabind.state.visibility=View.VISIBLE
             }else{
                 mDatabind.ivClear.visibility=View.GONE
+
+
+                if(mDatabind.rcHotRace.models!=null&& mDatabind.rcHotRace.models!!.isNotEmpty()){
+                    mDatabind.llSearchShow.visibility=View.VISIBLE
+                }else{
+                    mDatabind.llSearchShow.visibility=View.GONE
+                }
+
+                mDatabind.state.visibility=View.GONE
+
             }
         }
         //删除输入的内容
         mDatabind.ivClear.clickNoRepeat{
             mDatabind.etSearchInput.setText("")
             if(mDatabind.rcHotRace.models!=null&& mDatabind.rcHotRace.models!!.isNotEmpty()){
-
                 mDatabind.llSearchShow.visibility=View.VISIBLE
             }else{
                 mDatabind.llSearchShow.visibility=View.GONE

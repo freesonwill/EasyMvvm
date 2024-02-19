@@ -57,6 +57,7 @@ class LetterCountryActivity : BaseActivity<LoginVm, ActivityLettercountryBinding
         ImmersionBar.with(this)
             .statusBarDarkFont(true)
             .navigationBarColor(R.color.c_ffffff)
+            .navigationBarDarkIcon(true)
             .titleBar(mDatabind.titleTop.root)
             .init()
         mDatabind.titleTop.tvTitle.text = resources.getString(R.string.str_choosecountry)

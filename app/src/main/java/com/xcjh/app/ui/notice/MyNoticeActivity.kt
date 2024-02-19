@@ -65,6 +65,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
             ImmersionBar.with(this)
                 .statusBarDarkFont(true)
                 .navigationBarColor(R.color.c_ffffff)
+                .navigationBarDarkIcon(true)
                 .titleBar(mDatabind.titleTop.root)
                 .init()
             mDatabind.state.apply {

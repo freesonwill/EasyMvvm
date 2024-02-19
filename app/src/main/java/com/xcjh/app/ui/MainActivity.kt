@@ -90,11 +90,6 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         showStatusBar()
         mDatabind.reDateShow.clickNoRepeat {}
 
-
-//        ImmersionBar.with(this)
-//            .statusBarDarkFont(true)//黑色
-//            .navigationBarColor(R.color.c_ffffff)
-//            .init()
         /* splashScreen.setKeepOnScreenCondition {
              //延迟2.5秒
              !mViewModel.mockDataLoading()

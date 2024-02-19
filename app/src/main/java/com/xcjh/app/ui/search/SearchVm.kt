@@ -47,7 +47,7 @@ class SearchVm : BaseViewModel() {
                 //请求失败
                 //请求失败
                 liveList.value=arrayListOf()
-            },isShowDialog=true
+            },isShowDialog=false
         )
     }
 }
