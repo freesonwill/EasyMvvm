@@ -88,6 +88,9 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         super.initView(savedInstanceState)
         //MTPushPrivatesApi.clearNotification(this)
         showStatusBar()
+        mDatabind.reDateShow.clickNoRepeat {}
+
+
 //        ImmersionBar.with(this)
 //            .statusBarDarkFont(true)//黑色
 //            .navigationBarColor(R.color.c_ffffff)
