@@ -55,6 +55,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
     private var mAgentWeb: AgentWeb? = null
     private var mNoticeWeb: WebView? = null
     private var isEnterRoom = false//是否已经进入房间
+    private var isInitNoticeH = true//是否需要初始化公告高度
     private val noticeBean by lazy {
         NoticeBean(
             //notice = getString(R.string.anchor_notice),
@@ -81,11 +82,24 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
     }
 
     private fun setNotice() {
+        isInitNoticeH = true
         if (!userId.isNullOrEmpty()) {
             mDatabind.notice.root.visibility = View.VISIBLE
             mDatabind.notice.apply {
                 mNoticeWeb = agentWeb
-                setWeb(mNoticeWeb!!) {}
+                setWeb(mNoticeWeb!!) {
+                    mDatabind.lltNotice.postDelayed({
+                        if (isAdded && !noticeBean.isOpen && isInitNoticeH) {
+                            val params = mDatabind.page.layoutParams as RelativeLayout.LayoutParams
+                            params.topMargin = mDatabind.lltNotice.height
+                            mDatabind.page.layoutParams = params
+                        }
+                        isInitNoticeH = false
+                    }, 200)
+                }
+                noticeBean.isOpen=false
+                tvArrow.text = if (noticeBean.isOpen) getString(R.string.pack_up) else getString(R.string.expand)
+                startImageRotate(expandCollapse, noticeBean.isOpen)
                 lltExpandCollapse.setOnClickListener {
                     noticeBean.isOpen = !noticeBean.isOpen
                     tvArrow.text =
@@ -96,18 +110,13 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
                     } else {
                         setH5Data(mNoticeWeb, noticeBean.notice, tvColor = "#94999f", maxLine = 2)
                     }
-                    mDatabind.rcvChat.postDelayed({
-                        if (isAdded){
-                            val params = mDatabind.rcvChat.layoutParams
-                            params.height = mDatabind.page.height
-                            mDatabind.rcvChat.layoutParams = params
-                        }
-                    }, 100)
-
                 }
             }
         } else {
             mDatabind.notice.root.visibility = View.GONE
+            val params = mDatabind.page.layoutParams as RelativeLayout.LayoutParams
+            params.topMargin = 0
+            mDatabind.page.layoutParams = params
         }
     }
 
@@ -162,7 +171,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
                     mDatabind.edtChatMsg.isEnabled = true
                 }
             } catch (e: Exception) {
-               // e.message?.loge("7888===")
+                // e.message?.loge("7888===")
             }
         }, 800)
         //点击列表隐藏软键盘
@@ -193,6 +202,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
                 noticeBean.isOpen = false
                 mDatabind.notice.expandableText.text =
                     noticeBean.notice.replace("<p>", "<span>").replace("</p>", "</span>").toHtml()
+                "${mDatabind.lltNotice.height}".loge("====999==")
                 val layout = mDatabind.notice.expandableText.layout
                 if (layout != null) {
                     val lineCount: Int = layout.lineCount
