@@ -107,16 +107,17 @@ class MsgFragment : BaseFragment<MsgVm, FrMsgBinding>() {
                 }
             }
             appViewModel.updateMainMsgNum.observeForever {
-                if (it == "0") {
-                    isClick = false
-                    mDatabind.ivclear.setBackgroundResource(R.drawable.shape_r43_f2f3f7)
-                    mDatabind.ivclear.setTextColor(resources.getColor(R.color.c_cfd2d4))
-                } else {
-                    isClick = true
-                    mDatabind.ivclear.setBackgroundResource(R.drawable.select_msg_allread)
-                    mDatabind.ivclear.setTextColor(resources.getColor(com.xcjh.base_lib.R.color.white))
+                if (isAdded) {
+                    if (it == "0") {
+                        isClick = false
+                        mDatabind.ivclear.setBackgroundResource(R.drawable.shape_r43_f2f3f7)
+                        mDatabind.ivclear.setTextColor(resources.getColor(R.color.c_cfd2d4))
+                    } else {
+                        isClick = true
+                        mDatabind.ivclear.setBackgroundResource(R.drawable.select_msg_allread)
+                        mDatabind.ivclear.setTextColor(resources.getColor(com.xcjh.base_lib.R.color.white))
+                    }
                 }
-
             }
         } catch (e: Exception) {
         }
