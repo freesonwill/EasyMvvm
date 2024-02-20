@@ -33,6 +33,7 @@ import com.xcjh.app.websocket.bean.ReceiveWsBean
 import com.xcjh.app.websocket.bean.SendChatMsgBean
 import com.xcjh.app.websocket.listener.LiveRoomListener
 import com.xcjh.base_lib.App
+import com.xcjh.base_lib.utils.dip2px
 import com.xcjh.base_lib.utils.dp2px
 import com.xcjh.base_lib.utils.loge
 import com.xcjh.base_lib.utils.myToast
@@ -90,9 +91,12 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
                 setWeb(mNoticeWeb!!) {
                     mDatabind.lltNotice.postDelayed({
                         if (isAdded && !noticeBean.isOpen && isInitNoticeH) {
-                            val params = mDatabind.page.layoutParams as RelativeLayout.LayoutParams
+                          /*  val params = mDatabind.page.layoutParams as RelativeLayout.LayoutParams
                             params.topMargin = mDatabind.lltNotice.height
                             mDatabind.page.layoutParams = params
+                            val params2 = mDatabind.rcvChat.layoutParams
+                            params2.height = mDatabind.page.height
+                            mDatabind.rcvChat.layoutParams = params2*/
                         }
                         isInitNoticeH = false
                     }, 200)
@@ -208,6 +212,15 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
                     val lineCount: Int = layout.lineCount
                     lineCount.toString().loge("888===")
                     mDatabind.notice.lltExpandCollapse.visibleOrGone(lineCount > 2)
+                    //动态设置TextView距离顶部的间距
+                    val params = mDatabind.page.layoutParams as RelativeLayout.LayoutParams
+                    params.setMargins(0,if (lineCount==1){
+                        dip2px(88f)
+                    }else{
+                        dip2px(110f)
+                    },0,0)
+                    mDatabind.page.layoutParams = params
+
                     //mDatabind.notice.expandableText.maxLines =  2
                 }
                 setH5Data(mNoticeWeb, noticeBean.notice, tvColor = "#94999f", maxLine = 2)
