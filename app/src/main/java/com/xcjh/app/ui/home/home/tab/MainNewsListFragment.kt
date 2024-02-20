@@ -28,6 +28,7 @@ import com.xcjh.app.websocket.MyWsManager
 import com.xcjh.app.websocket.listener.OtherPushListener
 import com.xcjh.base_lib.App
 import com.xcjh.base_lib.Constants
+import com.xcjh.base_lib.utils.myToast
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -58,8 +59,10 @@ class MainNewsListFragment  : BaseFragment<MainNewsListVm, FragmentMainNewsListB
         MyWsManager.getInstance(App.app)?.setOtherPushListener(this.toString(), object :
             OtherPushListener {
             override fun onNewsUpdateDate() {
+                super.onNewsUpdateDate()
                 mViewModel.getNewsList(true)
             }
+
         })
 
     }
@@ -173,6 +176,7 @@ class MainNewsListFragment  : BaseFragment<MainNewsListVm, FragmentMainNewsListB
                             mDatabind.rcvRecommend.mutable.clear()
                         }
                         mDatabind.rcvRecommend.addModels(it.listData)
+                        mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
                         mDatabind.state.showContent()
                     }
                     //不是第一页

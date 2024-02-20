@@ -93,7 +93,7 @@ class MainRecommendNewVm : BaseViewModel() {
 
 
     /**
-     * 刷新首页热门比赛
+     * 刷新轮休首页热门比赛
      */
     fun getRefreshMatchList(req: HotReq){
         request(

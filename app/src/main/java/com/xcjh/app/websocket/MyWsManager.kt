@@ -267,6 +267,8 @@ class MyWsManager private constructor(private val mContext: Context) {
                 mOtherPushListener.forEach {
                     it.toPair().second.onChangeMatchData(wsBean2)
                 }
+
+
             }
 
             34 -> {
