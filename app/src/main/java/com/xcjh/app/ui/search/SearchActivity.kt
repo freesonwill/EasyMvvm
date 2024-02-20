@@ -13,6 +13,7 @@ import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.drake.brv.utils.*
 import com.gyf.immersionbar.ImmersionBar
@@ -29,6 +30,10 @@ import com.xcjh.base_lib.utils.bindadapter.CustomBindAdapter.afterTextChanged
 import com.xcjh.base_lib.utils.dp2px
 import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.view.clickNoRepeat
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 class SearchActivity  : BaseActivity<SearchVm, ActivitySearchBinding>() {
     private var searchType:Int=0  //0是搜索  1是取消
@@ -47,7 +52,6 @@ class SearchActivity  : BaseActivity<SearchVm, ActivitySearchBinding>() {
         // 将搜索 EditText 的 imeOptions 设置为 actionSearch
 
 
-
         mViewModel.getHotOngoingMatch()
         adapter()
         mDatabind.state.apply {
@@ -64,6 +68,7 @@ class SearchActivity  : BaseActivity<SearchVm, ActivitySearchBinding>() {
         mDatabind.etSearchInput.afterTextChanged{
 
             if (it.isNotEmpty()) {
+//                searchFlow.tryEmit(it)
                 mDatabind.ivClear.visibility=View.VISIBLE
                 searchType=0
 //                mDatabind.txtSearchClick.text=resources.getString(R.string.search)
