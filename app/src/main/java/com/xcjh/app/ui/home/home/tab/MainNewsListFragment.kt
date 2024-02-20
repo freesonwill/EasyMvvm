@@ -17,11 +17,16 @@ import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
 import com.xcjh.app.R
 import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseFragment
+import com.xcjh.app.bean.BeingLiveBean
 import com.xcjh.app.bean.NewsBean
 import com.xcjh.app.databinding.FragmentMainNewsListBinding
 import com.xcjh.app.databinding.ItemNewsListBinding
+import com.xcjh.app.utils.CacheUtil
 import com.xcjh.app.view.CustomHeader
 import com.xcjh.app.web.WebActivity
+import com.xcjh.app.websocket.MyWsManager
+import com.xcjh.app.websocket.listener.OtherPushListener
+import com.xcjh.base_lib.App
 import com.xcjh.base_lib.Constants
 import java.text.SimpleDateFormat
 import java.util.*
@@ -49,7 +54,13 @@ class MainNewsListFragment  : BaseFragment<MainNewsListVm, FragmentMainNewsListB
         })
 
 
-
+        //更新新闻列表
+        MyWsManager.getInstance(App.app)?.setOtherPushListener(this.toString(), object :
+            OtherPushListener {
+            override fun onNewsUpdateDate() {
+                mViewModel.getNewsList(true)
+            }
+        })
 
     }
 

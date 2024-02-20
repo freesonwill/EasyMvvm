@@ -85,6 +85,11 @@ interface OtherPushListener {
      */
     fun onAnchorStartLevel(beingLiveBean: BeingLiveBean){}
 
+    /**
+     * 新闻更新数据通知，新闻列表更新
+     */
+    fun onNewsUpdateDate(){}
+
 }
 /**
  * 未读消息总数

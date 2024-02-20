@@ -276,6 +276,11 @@ class MyWsManager private constructor(private val mContext: Context) {
                     it.toPair().second.onAnchorStartLevel(chatMsgBean)
                 }
             }
+            35 -> {
+                mOtherPushListener.forEach {
+                    it.toPair().second.onNewsUpdateDate()
+                }
+            }
 
             else -> {
                 // 登录过期

@@ -98,15 +98,18 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
         }
         mDatabind.smartCommon.setHeaderHeight(40f)
 
-        mDatabind.smartCommon.setDisableContentWhenRefresh(true)//是否在刷新的时候禁止列表的操作
-        mDatabind.smartCommon.setDisableContentWhenLoading(true)//是否在加载的时候禁止列表的操作
-        mDatabind.smartCommon.setEnableOverScrollBounce(true)
+//        mDatabind.smartCommon.setDisableContentWhenRefresh(true)//是否在刷新的时候禁止列表的操作
+//        mDatabind.smartCommon.setDisableContentWhenLoading(true)//是否在加载的时候禁止列表的操作
+//        mDatabind.smartCommon.setEnableOverScrollBounce(true)
+//        mDatabind.smartCommon.setEnableOverScrollDrag(true)
+//        mDatabind.smartCommon.setReboundInterpolator(AccelerateDecelerateInterpolator())
+        //取消下拉刷新
+        mDatabind.smartCommon.setEnableRefresh(false)
         mDatabind.smartCommon.setEnableOverScrollDrag(true)
-        mDatabind.smartCommon.setReboundInterpolator(AccelerateDecelerateInterpolator())
-
-        mDatabind.smartCommon.setRefreshHeader( CustomHeader(requireContext()))
+//        mDatabind.smartCommon.setRefreshHeader( CustomHeader(requireContext()))
         MyWsManager.getInstance(App.app)
             ?.setLiveStatusListener(this.toString(), object : LiveStatusListener {
+                //z直播间开播
                 override fun onOpenLive(bean: LiveStatus) {
                     if(mDatabind.rcvRecommend.models!=null){
                         for (i in 0 until  mDatabind.rcvRecommend.mutable.size){
@@ -123,7 +126,6 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
                     }
 
 //                        mViewModel.getOngoingMatchList(bean.id)
-
                     var being=BeingLiveBean()
                     being.matchType=bean.matchType
                     being.matchId=bean.matchId
@@ -148,7 +150,7 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
 
 
                 }
-
+                //直播间关闭
                 override fun onCloseLive(bean: LiveStatus) {
                     super.onCloseLive(bean)
                     if(mDatabind.rcvRecommend.models!=null){
@@ -178,7 +180,7 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
             override fun onC2CReceive(chat: ReceiveChatMsg) {
 
             }
-            //收到热门比赛的推送
+            //收到热门比赛的推送比分
             override fun onChangeReceive(chat: ArrayList<ReceiveChangeMsg>) {
                 var isShowMatch:Boolean=false
                 var refresh=ArrayList<Int>()
@@ -233,7 +235,8 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
 
            lifecycleScope.launch {
                             delay(1000) // 延迟 1秒
-               mDatabind.smartCommon.autoRefresh()
+//               mDatabind.smartCommon.autoRefresh()
+               mViewModel.getBannerList()
            }
 //        mViewModel.getBannerList()
 //        mDatabind.smartCommon.autoRefresh()
@@ -359,7 +362,7 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
         //正在直播的比赛
         mViewModel.liveList.observe(this){
             //是否是下拉刷新
-            if( it.isRefresh){
+            if(it.isRefresh){
                 if( mDatabind.rcvRecommend.models?.size!=null){
                     mDatabind.rcvRecommend.mutable.clear()
                 }
@@ -468,7 +471,8 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
                         lifecycleScope.launch {
                             delay(10000) // 延迟 10 秒
 //                            delay(2000) // 延迟 10 秒、
-                            mDatabind.smartCommon.autoRefresh()
+//                            mDatabind.smartCommon.autoRefresh()
+                            mViewModel.getBannerList()
                         }
 
                     }else{
