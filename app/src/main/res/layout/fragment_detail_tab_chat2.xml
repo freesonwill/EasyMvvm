@@ -39,6 +39,7 @@
             android:id="@+id/page"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="110dp"
             android:layout_above="@id/llInput"
             app:page_upFetchEnabled="true">
 
@@ -66,7 +67,7 @@
             <include
                 android:id="@+id/notice"
                 layout="@layout/item_detail_chat_notice"
-                android:visibility="visible" />
+                android:visibility="gone" />
         </LinearLayout>
         <RelativeLayout
             android:id="@+id/llInput"

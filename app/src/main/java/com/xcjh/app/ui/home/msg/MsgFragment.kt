@@ -27,6 +27,7 @@ class MsgFragment : BaseFragment<MsgVm, FrMsgBinding>() {
     private val mFragments: ArrayList<Fragment> = ArrayList<Fragment>()
     private var mTitles: Array<out String>? = null
     var index = 0
+    var isClick = false
     override fun initView(savedInstanceState: Bundle?) {
         ImmersionBar.with(this)
             .statusBarDarkFont(true)//黑色
@@ -34,6 +35,7 @@ class MsgFragment : BaseFragment<MsgVm, FrMsgBinding>() {
             .navigationBarDarkIcon(true)
             .titleBar(mDatabind.rlTitle)
             .init()
+
         initEvent()
     }
 
@@ -91,21 +93,34 @@ class MsgFragment : BaseFragment<MsgVm, FrMsgBinding>() {
             setOnclickNoRepeat(mDatabind.ivclear) {
                 when (it.id) {
                     R.id.ivclear -> {
-                        clearMsg(requireActivity()) { it ->
-                            if (it) {//点击了确定
+                        if (isClick) {
+                            clearMsg(requireActivity()) { it ->
+                                if (it) {//点击了确定
 
-                                appViewModel.updateMsgEvent.postValue("-1")
+                                    appViewModel.updateMsgEvent.postValue("-1")
+                                }
+
                             }
-
                         }
                     }
 
                 }
             }
+            appViewModel.updateMainMsgNum.observeForever {
+                if (it == "0") {
+                    isClick = false
+                    mDatabind.ivclear.setBackgroundResource(R.drawable.shape_r43_f2f3f7)
+                    mDatabind.ivclear.setTextColor(resources.getColor(R.color.c_cfd2d4))
+                } else {
+                    isClick = true
+                    mDatabind.ivclear.setBackgroundResource(R.drawable.select_msg_allread)
+                    mDatabind.ivclear.setTextColor(resources.getColor(com.xcjh.base_lib.R.color.white))
+                }
+
+            }
         } catch (e: Exception) {
         }
     }
-
 
 
 }

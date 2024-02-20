@@ -75,7 +75,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                 onBind {
                     var binding = getBinding<ItemMsglistBinding>()
                     var item = _data as MsgListNewData
-                    //   noReadMsgs += item?.noReadSum!!
+
                     when (item?.noReadSum) {
 
                         0 -> {

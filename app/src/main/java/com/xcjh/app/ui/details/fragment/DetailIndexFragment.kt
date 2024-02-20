@@ -33,7 +33,7 @@ class DetailIndexFragment(var matchId: String = "", var matchType: String = "1")
     override fun initView(savedInstanceState: Bundle?) {
 
         if ("1" == matchType) {//1：足球；2：篮球，这个版本篮球暂时不做，因为没有数据
-            mDatabind.viewPager.initFragment(this, arrayListOf(Index1Fragment(), Index2Fragment(1), Index2Fragment(2)),isUserInputEnabled=false)
+            mDatabind.viewPager.initFragment(this, arrayListOf(Index1Fragment(), Index2Fragment(1), Index2Fragment(2)),isUserInputEnabled=true)
             mDatabind.magicIndicator.setBackgroundResource(R.drawable.round_indicator_bg)
             mDatabind.magicIndicator.bindBgViewPager2(
                 mDatabind.viewPager,

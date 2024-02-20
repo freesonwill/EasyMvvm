@@ -28,7 +28,7 @@ class DetailLineUpFragment(var match: MatchDetailBean) :
         mDatabind.layoutBasketball.visibleOrGone(match.matchType == "2")
         mDatabind.viewPager.visibleOrGone(match.matchType == "2")
         if ("2" == match.matchType) {//1：足球；2：篮球
-            mDatabind.viewPager.initFragment(this, arrayListOf(BasketballFragment(0), BasketballFragment(1)),isUserInputEnabled=false)
+            mDatabind.viewPager.initFragment(this, arrayListOf(BasketballFragment(0), BasketballFragment(1)),isUserInputEnabled=true)
             mDatabind.magicIndicator.setBackgroundResource(R.drawable.round_indicator_bg)
             mDatabind.magicIndicator.bindBgViewPager2(
                 mDatabind.viewPager,
