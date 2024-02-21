@@ -558,5 +558,4 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
 
 
 
-
 }

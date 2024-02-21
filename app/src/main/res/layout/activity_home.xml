@@ -263,7 +263,6 @@
                 app:srcCompat="@drawable/main_show_icon" />
 
         </RelativeLayout>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

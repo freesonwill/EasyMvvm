@@ -43,6 +43,9 @@ class MainNewsListFragment  : BaseFragment<MainNewsListVm, FragmentMainNewsListB
         adapter()
         mViewModel.getNewsList(true)
         mDatabind.smartCommon.setRefreshHeader( CustomHeader(requireContext()))
+        //取消下拉刷新
+        mDatabind.smartCommon.setEnableRefresh(false)
+        mDatabind.smartCommon.setEnableOverScrollDrag(true)
         mDatabind.smartCommon.setOnRefreshLoadMoreListener(object : OnRefreshLoadMoreListener {
             override fun onRefresh(refreshLayout: RefreshLayout) {
                 mViewModel.getNewsList(true)
@@ -77,7 +80,6 @@ class MainNewsListFragment  : BaseFragment<MainNewsListVm, FragmentMainNewsListB
                     R.layout.item_news_list -> {
                         var bindingItem=getBinding<ItemNewsListBinding>()
                         var  bean=_data as NewsBean
-
                         if(modelPosition==0){
                             bindingItem.rlNewsShowHot.visibility= View.VISIBLE
                             bindingItem.rlNewsShowList.visibility= View.GONE
@@ -156,6 +158,7 @@ class MainNewsListFragment  : BaseFragment<MainNewsListVm, FragmentMainNewsListB
 
 
         mViewModel.liveList.observe(this){
+
             if (it.isSuccess) {
                 //成功
                 when {
@@ -176,7 +179,6 @@ class MainNewsListFragment  : BaseFragment<MainNewsListVm, FragmentMainNewsListB
                             mDatabind.rcvRecommend.mutable.clear()
                         }
                         mDatabind.rcvRecommend.addModels(it.listData)
-                        mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
                         mDatabind.state.showContent()
                     }
                     //不是第一页
