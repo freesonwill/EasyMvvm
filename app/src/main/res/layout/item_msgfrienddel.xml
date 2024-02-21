@@ -19,13 +19,14 @@
         app:contentView="@+id/lltItem"
         app:leftMenuView="@id/left"
         app:rightMenuView="@id/right">
-
+<!--select_msg_bac-->
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/lltItem"
             android:layout_width="match_parent"
             android:paddingLeft="12dp"
-            android:background="@drawable/select_msg_bac"
+
+            android:background="@drawable/shape_water"
             android:layout_height="wrap_content">
 
             <com.xcjh.base_lib.utils.view.CircleImageView
