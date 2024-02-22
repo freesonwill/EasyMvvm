@@ -368,7 +368,7 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         }else if (pos == 1&&currentPage != pos){
             mDatabind.ivHomeCourse.setAnimation("tab_saicheng_icon.json")
             mDatabind.ivHomeCourse.playAnimation()
-             mDatabind.ivHomeMain.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_main_no))
+            mDatabind.ivHomeMain.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_main_no))
             mDatabind.ivHomeMsg.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_xiaoxi_no))
             mDatabind.ivHomeMy.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_wode_no))
 
@@ -379,7 +379,7 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
             mDatabind.ivHomeMsg.setAnimation("tab_xiaoxi_icon.json")
             mDatabind.ivHomeMsg.playAnimation()
             mDatabind.ivHomeMain.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_main_no))
-           mDatabind.ivHomeCourse.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_saicheng_no))
+            mDatabind.ivHomeCourse.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_saicheng_no))
             mDatabind.ivHomeMy.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_wode_no))
             mDatabind.ivHomeMain.cancelAnimation()
             mDatabind.ivHomeCourse.cancelAnimation()
@@ -390,7 +390,6 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
             mDatabind.ivHomeMain.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_main_no))
             mDatabind.ivHomeCourse.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_saicheng_no))
             mDatabind.ivHomeMsg.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_xiaoxi_no))
-
             mDatabind.ivHomeMain.cancelAnimation()
             mDatabind.ivHomeCourse.cancelAnimation()
             mDatabind.ivHomeMsg.cancelAnimation()

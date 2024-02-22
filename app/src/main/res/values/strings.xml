@@ -283,7 +283,7 @@
     <string name="contact_txt_add_image">添加图片 </string>
     <string name="contact_txt_add_most">(最多三张) </string>
     <string name="contact_txt_submit_succeed">提交反馈成功！</string>
-    <string name="txt_msg_pic">[ 图片 ]</string>
+    <string name="txt_msg_pic">[图片]</string>
     <string name="update_title">更新提示</string>
     <string name="update_not_updated">暂不更新</string>
     <string name="update_update_now">立即更新</string>

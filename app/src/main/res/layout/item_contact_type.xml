@@ -8,21 +8,22 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_40"
         android:background="@drawable/fillet_frame4_d7d7e7">
+
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/txtContactName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:ellipsize="end"
             android:gravity="center"
-            android:paddingRight="27dp"
             android:paddingLeft="27dp"
             android:paddingTop="@dimen/dp_10"
+            android:paddingRight="27dp"
             android:paddingBottom="10dp"
-            android:textColor="@color/c_94999f"
-            android:textSize="@dimen/sp_14"
             android:singleLine="true"
-            android:ellipsize="end"
-            android:layout_centerInParent="true"
-            android:text="四大就是的"/>
+            android:text="四大就是的"
+            android:textColor="@color/c_94999f"
+            android:textSize="@dimen/sp_14" />
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ivIsShowSelect"
             android:layout_width="21dp"
