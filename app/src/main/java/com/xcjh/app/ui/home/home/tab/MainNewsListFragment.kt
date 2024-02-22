@@ -39,7 +39,7 @@ import java.util.*
  * 首页新闻列表
  */
 class MainNewsListFragment  : BaseFragment<MainNewsListVm, FragmentMainNewsListBinding>() {
- 
+
 
     override fun initView(savedInstanceState: Bundle?) {
         adapter()
