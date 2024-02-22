@@ -209,7 +209,7 @@ class MainNewsListFragment  : BaseFragment<MainNewsListVm, FragmentMainNewsListB
                     mDatabind.state.showEmpty()
 
                     lifecycleScope.launch {
-                        delay(5000) // 延迟 10 秒
+                        delay(5000) // 延迟 5 秒
 //                            delay(2000) // 延迟 10 秒、
 //                            mDatabind.smartCommon.autoRefresh()
                         mViewModel.getNewsList(true)
