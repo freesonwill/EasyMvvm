@@ -1,5 +1,6 @@
 package com.xcjh.app.ui.home.home.tab
 
+import androidx.lifecycle.lifecycleScope
 import com.kunminx.architecture.ui.callback.UnPeekLiveData
 import com.xcjh.app.bean.BeingLiveBean
 import com.xcjh.app.bean.LiveReq
@@ -10,6 +11,8 @@ import com.xcjh.base_lib.base.BaseViewModel
 import com.xcjh.base_lib.bean.ListDataUiState
 import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.request
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class MainNewsListVm : BaseViewModel() {
     //进行中的比赛
@@ -50,6 +53,7 @@ class MainNewsListVm : BaseViewModel() {
                     errMessage = it.errorMsg,
                     listData = arrayListOf()
                 )
+
             }
         )
     }

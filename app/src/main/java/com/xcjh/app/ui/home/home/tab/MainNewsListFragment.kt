@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -29,6 +30,8 @@ import com.xcjh.app.websocket.listener.OtherPushListener
 import com.xcjh.base_lib.App
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.myToast
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -204,6 +207,13 @@ class MainNewsListFragment  : BaseFragment<MainNewsListVm, FragmentMainNewsListB
                         mDatabind.rcvRecommend.mutable.clear()
                     }
                     mDatabind.state.showEmpty()
+
+                    lifecycleScope.launch {
+                        delay(5000) // 延迟 10 秒
+//                            delay(2000) // 延迟 10 秒、
+//                            mDatabind.smartCommon.autoRefresh()
+                        mViewModel.getNewsList(true)
+                    }
                 }
             }
 
