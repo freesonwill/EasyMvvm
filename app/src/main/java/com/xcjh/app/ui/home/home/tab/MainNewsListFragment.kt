@@ -39,8 +39,7 @@ import java.util.*
  * 首页新闻列表
  */
 class MainNewsListFragment  : BaseFragment<MainNewsListVm, FragmentMainNewsListBinding>() {
-
-
+ 
 
     override fun initView(savedInstanceState: Bundle?) {
         adapter()
@@ -209,6 +208,7 @@ class MainNewsListFragment  : BaseFragment<MainNewsListVm, FragmentMainNewsListB
                     mDatabind.state.showEmpty()
 
                     lifecycleScope.launch {
+
                         delay(5000) // 延迟 5 秒
 //                            delay(2000) // 延迟 10 秒、
 //                            mDatabind.smartCommon.autoRefresh()
