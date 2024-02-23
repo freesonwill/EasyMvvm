@@ -4,13 +4,9 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
-import android.content.res.ColorStateList
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.view.View
-import android.view.ViewGroup
-import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.Interpolator
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
@@ -18,7 +14,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.airbnb.lottie.LottieAnimationView
 import com.bumptech.glide.Glide
-import com.drake.brv.BindingAdapter
 import com.drake.brv.utils.addModels
 import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.grid
@@ -28,8 +23,6 @@ import com.drake.brv.utils.mutable
 import com.drake.brv.utils.setDifferModels
 import com.drake.brv.utils.setup
 import com.drake.statelayout.StateConfig
-import com.gyf.immersionbar.ImmersionBar
-import com.luck.picture.lib.dialog.RemindDialog
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
 import com.xcjh.app.R
@@ -43,13 +36,10 @@ import com.xcjh.app.bean.MainTxtBean
 import com.xcjh.app.bean.MatchBean
 import com.xcjh.app.databinding.FragmentMainRecommendBinding
 import com.xcjh.app.databinding.ItemMainBaanerBinding
-import com.xcjh.app.databinding.ItemMainLiveListBinding
 import com.xcjh.app.databinding.ItemMainProceedBinding
 import com.xcjh.app.databinding.ItemMainTxtBinding
 import com.xcjh.app.databinding.ItemUnderWayBinding
 import com.xcjh.app.ui.details.MatchDetailActivity
-import com.xcjh.app.utils.CacheUtil
-import com.xcjh.app.view.CustomHeader
 import com.xcjh.app.web.WebActivity
 import com.xcjh.app.websocket.MyWsManager
 import com.xcjh.app.websocket.bean.FeedSystemNoticeBean
@@ -61,7 +51,6 @@ import com.xcjh.app.websocket.listener.C2CListener
 import com.xcjh.app.websocket.listener.LiveStatusListener
 import com.xcjh.base_lib.App
 import com.xcjh.base_lib.Constants
-import com.xcjh.base_lib.utils.dp2px
 import com.xcjh.base_lib.utils.myToast
 import com.youth.banner.util.BannerUtils
 import kotlinx.coroutines.delay
@@ -530,6 +519,8 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
                                 this.putExtra(Constants.CHAT_TITLE, getString(R.string.my_app_name))
                             }
                         }
+                        //嵌套在列表里面代码设置圆角
+                        binding.banner.setBannerRound((BannerUtils.dp2px(10f).toFloat()))
                         //在布局文件中使用指示器，这样更灵活
                         binding.banner.setIndicator(binding.indicator, false)
                         //选中的宽度

@@ -3,14 +3,13 @@ package com.xcjh.app.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
 import com.xcjh.app.R
 import com.xcjh.app.bean.AdvertisementBanner
-import com.xcjh.app.utils.nice.NiceImageView
-import com.xcjh.base_lib.appContext
-import com.xcjh.base_lib.utils.dp2px
 import com.youth.banner.adapter.BannerAdapter
 
 /**
@@ -30,7 +29,7 @@ class ImageTitleAdapter(data: MutableList<AdvertisementBanner>?)  : BannerAdapte
         if(data!=null){
             Glide.with(holder!!.itemView)
                 .load(data!!.imgUrl) // 替换为您要加载的图片 URL
-                .transform(RoundedCorners(appContext.dp2px(10))) // 设置圆角半径，单位为像素
+                 .apply(RequestOptions.bitmapTransform(RoundedCorners(10))) // 设置圆角
                 .error(R.drawable.zwt_banner)
                 .placeholder(R.drawable.zwt_banner)
                 .into(holder.imageView!!)
@@ -43,10 +42,10 @@ class ImageTitleAdapter(data: MutableList<AdvertisementBanner>?)  : BannerAdapte
 
 
 class ImageTitleHolder(view: View) : RecyclerView.ViewHolder(view) {
-    var imageView: NiceImageView
+    var imageView: AppCompatImageView
 
     init {
-        imageView = view.findViewById<NiceImageView>(R.id.imageBanner)
+        imageView = view.findViewById<AppCompatImageView>(R.id.imageBanner)
 
     }
 }

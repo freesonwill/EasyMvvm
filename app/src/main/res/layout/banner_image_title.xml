@@ -3,13 +3,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+<!-- app:corner_radius="@dimen/dp_10"-->
 
-
-    <com.xcjh.app.utils.nice.NiceImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imageBanner"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:corner_radius="@dimen/dp_8"
         app:srcCompat="@drawable/bg_basketball_status"
         android:scaleType="centerCrop"/>
 </RelativeLayout>
