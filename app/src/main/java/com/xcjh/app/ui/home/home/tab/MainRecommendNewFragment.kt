@@ -4,6 +4,8 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
@@ -514,10 +516,11 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
                         var  imageAdapter= ImageTitleAdapter(ad.list)
                         binding.banner.setAdapter(imageAdapter)
                         imageAdapter.setOnBannerListener { data, position ->
-                            startNewActivity<WebActivity>() {
-                                this.putExtra(Constants.WEB_URL, data.targetUrl)
-                                this.putExtra(Constants.CHAT_TITLE, getString(R.string.my_app_name))
-                            }
+//                            startNewActivity<WebActivity>() {
+//                                this.putExtra(Constants.WEB_URL, data.targetUrl)
+//                                this.putExtra(Constants.CHAT_TITLE, getString(R.string.my_app_name))
+//                            }
+                            jumpOutUrl(data.targetUrl)
                         }
                         //嵌套在列表里面代码设置圆角
                         binding.banner.setBannerRound((BannerUtils.dp2px(10f).toFloat()))
@@ -883,6 +886,16 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
             return 0f
         }
 
+    }
+
+    private fun jumpOutUrl(url: String) {
+        if (url.contains("http")) {
+            val intent = Intent()
+            intent.action = "android.intent.action.VIEW"
+            val contentUrl: Uri = Uri.parse(url)
+            intent.data = contentUrl
+            startActivity(intent)
+        }
     }
 
 }

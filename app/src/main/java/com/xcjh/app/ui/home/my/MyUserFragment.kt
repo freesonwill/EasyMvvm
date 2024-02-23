@@ -4,6 +4,8 @@ import android.animation.Animator
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -306,10 +308,12 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
         //广告
         mDatabind.ivMyAdvertising.clickNoRepeat {
             if(mViewModel.advertisement.value!=null){
-                startNewActivity<WebActivity>() {
-                    this.putExtra(Constants.WEB_URL, mViewModel.advertisement.value!!.targetUrl)
-                    this.putExtra(Constants.CHAT_TITLE, getString(R.string.my_app_name))
-                }
+//                startNewActivity<WebActivity>() {
+//                    this.putExtra(Constants.WEB_URL, mViewModel.advertisement.value!!.targetUrl)
+//                    this.putExtra(Constants.CHAT_TITLE, getString(R.string.my_app_name))
+//                }
+
+                jumpOutUrl(mViewModel.advertisement.value!!.targetUrl)
             }
 
         }
@@ -556,6 +560,14 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
 //
 //        })
     }
-
+    private fun jumpOutUrl(url: String) {
+        if (url.contains("http")) {
+            val intent = Intent()
+            intent.action = "android.intent.action.VIEW"
+            val contentUrl: Uri = Uri.parse(url)
+            intent.data = contentUrl
+            startActivity(intent)
+        }
+    }
 
 }

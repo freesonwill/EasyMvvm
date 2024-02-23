@@ -165,7 +165,8 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                 mOneTabIndex = bundle.getInt(ScheduleChildTwoFragment.OneIndex)
                 mTwoTabIndex = bundle.getInt(ScheduleChildTwoFragment.TwoIndex)
             }
-
+            mDatabind.smartCommon.setEnableRefresh(false)
+            mDatabind.smartCommon.setEnableOverScrollDrag(true)
             mDatabind.state.apply {
                 StateConfig.setRetryIds(R.id.ivEmptyIcon, R.id.txtEmptyName)
                 onEmpty {
