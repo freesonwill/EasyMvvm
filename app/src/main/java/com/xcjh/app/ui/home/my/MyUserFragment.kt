@@ -52,7 +52,7 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
 
         setData()
         //查看等级任务
-        mDatabind.rlClickLevel.clickNoRepeat {
+        mDatabind.rlClickLevel.clickNoRepeat(200) {
             judgeLogin {
                 startNewActivity<LevelMissionActivity>()
             }
