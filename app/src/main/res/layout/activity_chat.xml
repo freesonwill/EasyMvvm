@@ -42,7 +42,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-
+<!--  android:paddingBottom="@dimen/dp_20"-->
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv"
                     android:layout_width="match_parent"
@@ -50,7 +50,6 @@
                     android:background="@color/c_f2f3f7"
                     android:paddingLeft="@dimen/dp_13"
                     android:paddingRight="13dp"
-                    android:paddingBottom="@dimen/dp_20"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:reverseLayout="true" />
 

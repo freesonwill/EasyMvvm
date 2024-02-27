@@ -89,6 +89,8 @@ fun ImageView.loadImageWithGlide(context: Context, imageUrl: String) {
         .load(imageUrl)
         .thumbnail(0.1f)
         .skipMemoryCache(false)
+        .placeholder(R.drawable.chat_icon_placeholder)
+        .error(R.drawable.chat_icon_placeholder)
         .apply(
             RequestOptions()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -119,7 +121,7 @@ fun ImageView.loadImageWithGlide(context: Context, imageUrl: String) {
 //                            setCornerRadius(roundedCornerRadius)
 //                        }
 
-                    Glide.with(context).load(resource).override(maxImageWidth, maxImageHeight).placeholder(R.drawable.xx)
+                    Glide.with(context).load(resource).override(maxImageWidth, maxImageHeight).placeholder(R.drawable.chat_icon_placeholder)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .skipMemoryCache(false)
                         .into(this@loadImageWithGlide)
@@ -128,7 +130,8 @@ fun ImageView.loadImageWithGlide(context: Context, imageUrl: String) {
                     // 图片尺寸小于等于最大尺寸，不进行缩放，直接使用原图尺寸
                     scaledWidth = imageWidth
                     scaledHeight = imageHeight
-                    roundedCornerRadius = 0f
+                    roundedCornerRadius = cornerRadius.toFloat()
+//                    roundedCornerRadius = 0f
                     val scaledBitmap =
                         Bitmap.createScaledBitmap(resource, scaledWidth, scaledHeight, true)
                     val drawable =
@@ -144,6 +147,15 @@ fun ImageView.loadImageWithGlide(context: Context, imageUrl: String) {
             }
 
             override fun onLoadCleared(placeholder: Drawable?) {}
+
+            override fun onLoadFailed(errorDrawable: Drawable?) {
+                super.onLoadFailed(errorDrawable)
+                Glide.with(context).load(R.drawable.chat_icon_placeholder)
+                    .override(maxImageWidth, maxImageHeight).placeholder(R.drawable.chat_icon_placeholder)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .skipMemoryCache(false)
+                    .into(this@loadImageWithGlide)
+            }
         })
 }
 

@@ -63,6 +63,7 @@
                 android:maxWidth="200dp"
                 android:maxHeight="102dp"
                 app:radius="@dimen/dp_8"
+
                 app:layout_constraintTop_toTopOf="parent"
                 android:layout_height="wrap_content"
                 />

@@ -12,6 +12,7 @@ import android.view.Gravity
 import android.view.KeyEvent
 import android.view.View
 import android.view.View.OnLongClickListener
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
@@ -72,6 +73,7 @@ import com.xcjh.base_lib.utils.LogUtils
 import com.xcjh.base_lib.utils.TAG
 import com.xcjh.base_lib.utils.TimeUtil
 import com.xcjh.base_lib.utils.copyToClipboard
+import com.xcjh.base_lib.utils.dp2px
 import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.setOnclickNoRepeat
 import kotlinx.coroutines.Deferred
@@ -214,7 +216,17 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                         R.layout.item_chat_txt_left -> {
                             var binding = getBinding<ItemChatTxtLeftBinding>()
                             var ad = _data as MsgBeanData
-
+                            if(0==layoutPosition){
+                                val layoutParams =
+                                    binding.linroot.layoutParams as ViewGroup.MarginLayoutParams
+                                layoutParams.setMargins(0,0,0,context.dp2px(20))
+                                binding.linroot.layoutParams = layoutParams
+                            }else{
+                                val layoutParams =
+                                    binding.linroot.layoutParams as ViewGroup.MarginLayoutParams
+                                layoutParams.setMargins(0,0,0,0)
+                                binding.linroot.layoutParams = layoutParams
+                            }
                             binding.tvcontent.text = ad.content
                             timecurrent = ChatTimeUtile.formatTimestamp(
                                 context,
@@ -269,7 +281,17 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                         R.layout.item_chat_txt_right -> {//正在进行中的比赛
                             var binding = getBinding<ItemChatTxtRightBinding>()
                             var matchBeanNew = _data as MsgBeanData
-
+                            if(0==layoutPosition){
+                                val layoutParams =
+                                    binding.linroot.layoutParams as ViewGroup.MarginLayoutParams
+                                layoutParams.setMargins(0,0,0,context.dp2px(20))
+                                binding.linroot.layoutParams = layoutParams
+                            }else{
+                                val layoutParams =
+                                    binding.linroot.layoutParams as ViewGroup.MarginLayoutParams
+                                layoutParams.setMargins(0,0,0,0)
+                                binding.linroot.layoutParams = layoutParams
+                            }
                             when (matchBeanNew.sent) {
                                 0 -> {//正在发送
 
@@ -383,7 +405,17 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                         R.layout.item_chat_pic_right -> {//右边图片
                             var binding = getBinding<ItemChatPicRightBinding>()
                             var matchBeanNew = _data as MsgBeanData
-
+                            if(0==layoutPosition){
+                                val layoutParams =
+                                    binding.linroot.layoutParams as ViewGroup.MarginLayoutParams
+                                layoutParams.setMargins(0,0,0,context.dp2px(20))
+                                binding.linroot.layoutParams = layoutParams
+                            }else{
+                                val layoutParams =
+                                    binding.linroot.layoutParams as ViewGroup.MarginLayoutParams
+                                layoutParams.setMargins(0,0,0,0)
+                                binding.linroot.layoutParams = layoutParams
+                            }
                             when (matchBeanNew.sent) {
                                 0 -> {//正在发送
                                     LogUtils.d(
@@ -505,7 +537,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                             if (binding.ivpic.tag == null || binding.ivpic.tag != matchBeanNew.content) {
                                 binding.ivpic.tag = matchBeanNew.content
                                 binding.ivpic.loadImageWithGlide(context, matchBeanNew.content)
-                            }
+                             }
 
 
                             binding.ivpic.setOnClickListener {
@@ -534,6 +566,17 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                         R.layout.item_chat_pic_left -> {//右边图片
                             var binding = getBinding<ItemChatPicLeftBinding>()
                             var matchBeanNew = _data as MsgBeanData
+                            if(0==layoutPosition){
+                                val layoutParams =
+                                    binding.linroot.layoutParams as ViewGroup.MarginLayoutParams
+                                layoutParams.setMargins(0,0,0,context.dp2px(20))
+                                binding.linroot.layoutParams = layoutParams
+                            }else{
+                                val layoutParams =
+                                    binding.linroot.layoutParams as ViewGroup.MarginLayoutParams
+                                layoutParams.setMargins(0,0,0,0)
+                                binding.linroot.layoutParams = layoutParams
+                            }
                             timecurrent = ChatTimeUtile.formatTimestamp(
                                 context,
                                 matchBeanNew.createTime!!.toLong()

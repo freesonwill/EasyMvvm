@@ -458,7 +458,7 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
                 if(!isShow){
                     if( mViewModel.dateSetOf.advertisement.size<=0&&
                                 mViewModel.dateSetOf.match.size<=0&&it.isFirstEmpty ){
-                          myToast(resources.getString(R.string.main_err_title), gravity = Gravity.TOP)
+                          myToast(resources.getString(R.string.main_err_title), gravity = Gravity.CENTER)
                         lifecycleScope.launch {
                             delay(10000) // 延迟 10 秒
 //                            delay(2000) // 延迟 10 秒、
