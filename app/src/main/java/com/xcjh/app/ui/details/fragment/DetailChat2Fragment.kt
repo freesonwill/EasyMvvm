@@ -1,7 +1,10 @@
 package com.xcjh.app.ui.details.fragment
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
+import android.text.InputType
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.webkit.WebView
@@ -9,6 +12,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.drake.brv.layoutmanager.HoverLinearLayoutManager
@@ -17,6 +21,8 @@ import com.drake.brv.utils.models
 import com.drake.softinput.hideSoftInput
 import com.google.gson.Gson
 import com.just.agentweb.AgentWeb
+import com.kongzue.dialogx.dialogs.CustomDialog
+import com.kongzue.dialogx.interfaces.OnBindView
 import com.scwang.smart.refresh.footer.ClassicsFooter
 import com.xcjh.app.R
 import com.xcjh.app.appViewModel
@@ -28,6 +34,7 @@ import com.xcjh.app.ui.details.DetailVm
 import com.xcjh.app.ui.details.common.RoomChatVm
 import com.xcjh.app.utils.*
 import com.xcjh.app.websocket.MyWsManager
+import com.xcjh.app.websocket.bean.FeedSystemNoticeBean
 import com.xcjh.app.websocket.bean.ReceiveChatMsg
 import com.xcjh.app.websocket.bean.ReceiveWsBean
 import com.xcjh.app.websocket.bean.SendChatMsgBean
@@ -73,6 +80,8 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
 
     private var offset = ""
 
+
+
     override fun initView(savedInstanceState: Bundle?) {
         mDatabind.v = this
         mDatabind.m = mViewModel
@@ -80,6 +89,33 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
         initRcv()
         getHistoryData()
         handleSoftInput(requireActivity(), mDatabind.llInput)
+        if (CacheUtil.isLogin()&&(userId!=null&&!userId.equals("")) ) {
+            mViewModel.getAnchorControlUserInfo(userId!!)
+        }
+
+//        setProhibition(true)
+//        blacklistDilog(requireContext(),1)
+    }
+
+    /**
+     * 是否禁言true是禁言
+     */
+    fun setProhibition(isflage:Boolean){
+        if(isflage){
+            mDatabind.edtChatMsg.isFocusable=false
+            mDatabind.edtChatMsg.setText("")
+            mDatabind.edtChatMsg.hint=resources.getString(R.string.str_stoptalk)
+            mDatabind.sendChat.isEnabled=false
+        }else{
+
+            mDatabind.edtChatMsg.setText("")
+            mDatabind.edtChatMsg.hint=resources.getString(R.string.say_something)
+            mDatabind.edtChatMsg.isFocusable = true
+            mDatabind.edtChatMsg.isFocusableInTouchMode = true
+            mDatabind.edtChatMsg.inputType = InputType.TYPE_CLASS_TEXT // 或者其他你需要的输入类型
+            mDatabind.sendChat.isEnabled=true
+        }
+
     }
 
     private fun setNotice() {
@@ -199,6 +235,18 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
     }
 
     override fun createObserver() {
+        //获取当前主播是否禁言或者踢出了这个用户
+        mViewModel.anchorControl.observe(this){
+            //被踢出
+            if(it.tickOut){
+                //进入直播间查询被踢出
+                blacklistDilog(requireContext(),1)
+            }else if(it.mute){//被禁言
+                setProhibition(true)
+            }
+        }
+
+
         //公告
         vm.anchor.observe(this) {
             if (it != null) {
@@ -338,6 +386,31 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
         //myToast("send_msg ==$isOk")
     }
 
+    //被踢出直播间
+    override fun onIsBlacklist(feed: FeedSystemNoticeBean) {
+        blacklistDilog(requireContext(),2)
+
+    }
+    //禁言
+    override fun onProhibition(feed: FeedSystemNoticeBean) {
+
+        if(userId.isNullOrEmpty()){
+            if(feed.bizId.equals(userId)){
+                setProhibition(true)
+            }
+        }
+
+    }
+    //解禁
+    override fun onOpeningUp(feed: FeedSystemNoticeBean) {
+        if(userId.isNullOrEmpty()){
+            if(feed.bizId.equals(userId)){
+                setProhibition(false)
+            }
+        }
+    }
+
+
     override fun onRoomReceive(chat: ReceiveChatMsg) {
         var isShowBottom = false
         val firstVisible: Int = mLayoutManager.findFirstVisibleItemPosition()
@@ -416,12 +489,14 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
     }
 
     /**
-     * 切换直播间
+     * 切换直播间  userId=null就是纯净流
      */
     private fun updateChatRoom(liveId: String, userId: String?) {
         onWsUserExitRoom(this.liveId)
         this.liveId = liveId
         this.userId = userId
+
+
         offset = ""
         setNotice()
         mDatabind.page.resetNoMoreData()
@@ -438,6 +513,41 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
             }
         }, 200)
 
+    }
+
+
+
+    /***
+     * 是黑名单 1是进入直播间  2是在直播间的时候被退出
+     */
+    fun blacklistDilog(context: Context, type:Int) {
+        CustomDialog.build()
+            .setCustomView(object : OnBindView<CustomDialog?>(R.layout.layout_dialogx_delmsg) {
+                override fun onBind(dialog: CustomDialog?, v: View) {
+                    val tvcancle = v.findViewById<TextView>(R.id.tvcancle)
+                    val textName = v.findViewById<TextView>(R.id.textName)
+                    val tvsure = v.findViewById<TextView>(R.id.tvsure)
+                    val viewGen = v.findViewById<View>(R.id.viewGen)
+                    if(type==2){
+                        textName.text=resources.getString(R.string.live_txt_remove)
+                    }else{
+                        textName.text=resources.getString(R.string.live_txt_retry)
+
+                    }
+
+                    tvcancle.visibility=View.GONE
+                    viewGen.visibility=View.GONE
+                    tvsure.setOnClickListener {
+                        activity!!.finish()
+                        dialog?.dismiss()
+
+                    }
+                }
+            }).setAlign(CustomDialog.ALIGN.CENTER).setCancelable(true).
+            setMaskColor(//背景遮罩
+                ContextCompat.getColor(context, com.xcjh.base_lib.R.color.blacks_tr)
+
+            ).show()
     }
 }
 

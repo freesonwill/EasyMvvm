@@ -64,7 +64,7 @@ class RoundImageView : AppCompatImageView {
         typeArray.recycle()
     }
 
-    override fun onDraw(canvas: Canvas?) {
+    override fun onDraw(canvas: Canvas) {
         // 保证图片宽高大于圆角宽高， 获取圆角的宽高
         // 取横着大的长度
         val maxLeft = Math.max(leftTopRadius, leftBottomRadius)

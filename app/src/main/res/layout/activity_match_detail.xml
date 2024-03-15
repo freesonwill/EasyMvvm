@@ -49,6 +49,8 @@
                         tools:ignore="UselessParent">
 
                         <!--背景图片-->
+
+                        <!--视频直播-->
                         <ImageView
                             android:id="@+id/ivMatchBg"
                             android:layout_width="match_parent"
@@ -57,12 +59,11 @@
                             tools:background="@drawable/bg_status_football"
                             tools:ignore="ContentDescription" />
 
-                        <!--视频直播-->
                         <RelativeLayout
                             android:id="@+id/rltVideo"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:visibility="gone">
+                                android:visibility="gone">
 
                             <View
                                 android:id="@+id/viewTopBg"
@@ -311,7 +312,7 @@
                                     android:textColor="@color/c_ffffff"
                                     android:textSize="@dimen/sp_12"
                                     android:textStyle="bold" />
-
+<!--                                点击信号源-->
                                 <TextView
                                     android:id="@+id/tvSignal4"
                                     android:layout_width="wrap_content"
@@ -635,7 +636,15 @@
                                     tools:text="'" />
                             </androidx.constraintlayout.widget.ConstraintLayout>
                         </RelativeLayout>
-
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/ivMatchVideo"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:visibility="gone"
+                            android:layout_centerVertical="true"
+                            android:layout_toLeftOf="@+id/tvToShare"
+                            android:layout_marginRight="8dp"
+                            app:srcCompat="@drawable/detaic_tv_icon"/>
                         <!--分享 直播中会隐藏，点击在显示处理-->
                         <ImageView
                             android:id="@+id/tvToShare"
@@ -644,9 +653,9 @@
                             android:layout_alignParentEnd="true"
                             android:layout_centerVertical="true"
                             android:layout_marginEnd="@dimen/dp_10"
-                            android:padding="2dp"
                             android:src="@drawable/icon_share"
                             app:tint="@color/white_to_dark_selector" />
+
                     </RelativeLayout>
                 </androidx.appcompat.widget.Toolbar>
 

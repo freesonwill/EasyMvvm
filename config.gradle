@@ -1,6 +1,6 @@
 ext {
     android = [
-            compileSdkVersion: 33,
+            compileSdkVersion: 34,
             minSdkVersion    : 23,
             targetSdkVersion : 33,
             versionCode      : 1,        // 聚合app

@@ -36,6 +36,7 @@ dependencies {
     //glide图片加载库
     //  api rootProject.ext.dependencies["glide"]
     api 'com.github.bumptech.glide:glide:4.15.1'
+    //引入Glide的注解处理器（Annotation Processor）的。Glide的注解处理器用于在编译时生成GlideApp类
     kapt 'com.github.bumptech.glide:compiler:4.15.1'
 //    api 'com.caverock:androidsvg-aar:1.4'
     api 'com.caverock:androidsvg:1.4'

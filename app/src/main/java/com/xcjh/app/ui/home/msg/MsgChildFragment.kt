@@ -39,7 +39,9 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
-
+/**
+ * 首页消息fragment
+ */
 class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
 
     var listdata: MutableList<MsgListNewData> = ArrayList<MsgListNewData>()
@@ -64,7 +66,6 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
 
             mDatabind.rec.run {
                 vertical()
-
                 distance(0, 0, 0, 10)
             }
             mDatabind.rec.setup {
@@ -118,6 +119,10 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                             1 -> {
                                 binding.tvcontent.text =
                                     context.resources.getString(R.string.txt_msg_pic)
+                            }
+                            3 -> {
+                                binding.tvcontent.text =
+                                    context.resources.getString(R.string.txt_msg_video)
                             }
 
                             else -> {
@@ -220,7 +225,6 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                     // MyWsManager.getInstance(requireActivity())!!.removeC2CListener(tags)
                     listdata.clear()
                     mDatabind.rec.models = mutableListOf()
-
                     initNoreadMsg(listdata)
 
                 }
@@ -247,7 +251,6 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                 noReadMsgs = 0
                 for (i in 0 until data.size) {
                     if (data[i].noReadSum > 0) {
-
                         noReadMsgs += data[i].noReadSum
 
                     }
@@ -263,22 +266,17 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
 
     fun getRoomAllData(isGet: Boolean = true) {
         try {
-
-
             if (CacheUtil.getUser() == null) {
                 mViewModel.getUserInfo()
                 return
             }
             GlobalScope.launch {
                 val data = getAll().await()
-
-
                 requireActivity().runOnUiThread {
                     if (data.isNotEmpty()) {
                         noReadMsgs = 0
                         listdata.clear()
                         listdata.addAll(data)
-
                         initNoreadMsg(data as MutableList<MsgListNewData>)
                         mDatabind.rec.models = listdata
                         mDatabind.state.showContent()
@@ -359,7 +357,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                             beanmy.msgType = chat.msgType
                             beanmy.createTime = chat.createTime
 
-                            addDataToChatList(beanmy)
+//                            addDataToChatList(beanmy)
 
                         }
                         if (chatId != chat.anchorId) {
@@ -395,7 +393,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                     chat.content = it.content
                     chat.createTime = it.createTime
                     chat.from = it.fromId
-                    chat.sent = it.sent
+                    chat.sent = it.sentNew
                     chat.groupId = it.groupId
                     chat.toAvatar = it.avatar
                     chat.toNickName = it.nick
@@ -627,7 +625,6 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
      */
     fun getAll(): Deferred<List<MsgListNewData>> {
         return GlobalScope.async {
-
             MyApplication.dataChatList!!.chatDao!!.getAll(CacheUtil.getUser()?.id!!)
         }
     }
@@ -637,12 +634,12 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
      */
     fun addDataToChatList(data: MsgBeanData) {
 
-        if (CacheUtil.getUser() != null) {
-            data.withId = CacheUtil.getUser()?.id!!
-            GlobalScope.launch {
-                MyApplication.dataBase!!.chatDao?.insertOrUpdate(data)
-            }
-        }
+//        if (CacheUtil.getUser() != null) {
+//            data.withId = CacheUtil.getUser()?.id!!
+//            GlobalScope.launch {
+//                MyApplication.dataBase!!.chatDao?.insertOrUpdate(data)
+//            }
+//        }
     }
 
     /***
@@ -671,19 +668,19 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
             MyApplication.dataChatList!!.chatDao?.delete(data)
 
             //删除跟这个主播相关的连天记录
-            MyApplication.dataBase!!.chatDao?.deleteAllZeroId(data.anchorId!!)
+//            MyApplication.dataBase!!.chatDao?.deleteAllZeroId(data.anchorId!!)
 
 
         }
     }
 
-    /***
-     * 添加或者更新新的数据
-     */
-    fun delAllRoom() {
-        GlobalScope.launch {
-            MyApplication.dataChatList!!.clearAllTables()
-            MyApplication.dataBase!!.clearAllTables()
-        }
-    }
+//    /***
+//     * 添加或者更新新的数据
+//     */
+//    fun delAllRoom() {
+//        GlobalScope.launch {
+//            MyApplication.dataChatList!!.clearAllTables()
+//            MyApplication.dataBase!!.clearAllTables()
+//        }
+//    }
 }

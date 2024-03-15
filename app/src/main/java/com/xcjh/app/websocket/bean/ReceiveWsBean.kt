@@ -28,7 +28,7 @@ data class ReceiveChangeMsg(
     var scoresDetail: List<List<Int>>? = listOf(),
 )
 data class FeedSystemNoticeBean(
-    val bizId: Long,//业务ID，反馈信息ID
+    val bizId: String,//业务ID，反馈信息ID   bizId=""如果是空就是全局    不为空就是主播id
     val createTime: Long,//通知时间
     val noticeId: Long,//通知ID
     val reason: String,//禁言原因或者备注信息

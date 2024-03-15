@@ -23,6 +23,11 @@ pluginManagement {
         maven { url "https://s01.oss.sonatype.org/content/groups/public" }
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
         // maven { url 'https://maven.aliyun.com/repository/google' }
+        //为了拉取投屏搜索
+        maven {
+            url 'http://4thline.org/m2'
+            allowInsecureProtocol = true
+        }
     }
 }
 dependencyResolutionManagement {
@@ -49,12 +54,17 @@ dependencyResolutionManagement {
         mavenCentral()*/
 
        // maven { url 'https://maven.aliyun.com/repository/google' }
+        //为了拉取投屏搜索
+        maven {
+            url 'http://4thline.org/m2'
+            allowInsecureProtocol = true
+        }
+        
     }
 }
 rootProject.name = "Sl_live"
 include ':app'
 include ':base_lib'
-
 
 
 /*include ':module_ad'

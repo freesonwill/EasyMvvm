@@ -26,7 +26,9 @@ import com.xcjh.base_lib.utils.LogUtils
 import com.xcjh.base_lib.utils.distance
 import com.xcjh.base_lib.utils.vertical
 
-
+/**
+ * 首页好友Fragment
+ */
 class MsFriendFragment : BaseFragment<MsgVm, FrMsgfriendBinding>() {
 
     var listdata: MutableList<FriendListBean> = ArrayList<FriendListBean>()

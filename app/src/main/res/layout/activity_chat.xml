@@ -42,7 +42,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-<!--  android:paddingBottom="@dimen/dp_20"-->
+<!-- android:paddingBottom="@dimen/dp_20"-->
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv"
                     android:layout_width="match_parent"
@@ -76,19 +76,20 @@
 
                 <ImageView
                     android:id="@+id/ivface"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:background="@drawable/send_face"
-                    android:visibility="gone"
+                    app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_marginRight="@dimen/dp_44"/>
 
                 <EditText
                     android:id="@+id/edtcontent"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
-                    android:layout_marginRight="15dp"
+                    android:layout_marginRight="55dp"
                     android:paddingTop="8dp"
                     android:paddingBottom="8dp"
                     android:background="@drawable/shape8_18152a"
@@ -111,7 +112,6 @@
                     android:id="@+id/ivexpent"
                     android:layout_width="@dimen/dp_30"
                     android:layout_height="@dimen/dp_30"
-
                     android:background="@drawable/send_add"
                     app:layout_constraintBottom_toBottomOf="@id/edtcontent"
                     app:layout_constraintRight_toRightOf="parent"
@@ -128,70 +128,81 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <LinearLayout
+            <RelativeLayout
                 android:id="@+id/linbottom"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-
+                android:layout_height="220dp"
+                android:visibility="gone"
                 android:layout_marginTop="@dimen/dp_15"
-                android:orientation="horizontal"
-                android:visibility="gone">
-
+              >
                 <LinearLayout
-                    android:id="@+id/linphote"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/llShowImage"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical"
-                    android:paddingTop="@dimen/dp_6"
-                    android:paddingBottom="@dimen/dp_6">
+                    android:orientation="horizontal">
 
-                    <ImageView
-
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        android:background="@drawable/ic_photo_album" />
-
-                    <TextView
+                    <LinearLayout
+                        android:id="@+id/linphote"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="@string/phote_book"
-                        android:textColor="@color/c_575762"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical"
+                        android:paddingTop="@dimen/dp_6"
+                        android:paddingBottom="@dimen/dp_6">
 
-                </LinearLayout>
+                        <ImageView
 
-                <LinearLayout
-                    android:id="@+id/lincanmer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_30"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical"
-                    android:paddingTop="@dimen/dp_6"
-                    android:paddingBottom="@dimen/dp_6"
-                    android:visibility="visible">
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:background="@drawable/ic_photo_album" />
 
-                    <ImageView
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="@string/phote_book"
+                            android:textColor="@color/c_575762"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
 
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        android:background="@drawable/ic_photograph" />
-
-                    <TextView
+                    </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/lincanmer"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginLeft="@dimen/dp_30"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical"
+                        android:paddingTop="@dimen/dp_6"
+                        android:paddingBottom="@dimen/dp_6"
+                        android:visibility="visible">
 
-                        android:text="@string/canmei"
-                        android:textColor="@color/c_575762"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
+                        <ImageView
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:background="@drawable/ic_photograph" />
 
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+
+                            android:text="@string/canmei"
+                            android:textColor="@color/c_575762"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
                 </LinearLayout>
-            </LinearLayout>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvEmoje"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    tools:listitem="@layout/item_emoje_txt"/>
+
+
+            </RelativeLayout>
 
         </LinearLayout>
 

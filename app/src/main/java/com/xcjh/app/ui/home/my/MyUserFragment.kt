@@ -9,6 +9,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -64,6 +65,7 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
         mDatabind.ivMyHead.setOnTouchListener { view, event ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
+                    Log.i("SSSSSSSSSs","11111111111111")
                     judgeLogin {
                         mDatabind.ivMyHead.alpha=0.7f
                         mDatabind.txtMyName.alpha=0.7f
@@ -75,6 +77,7 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
 
                 }
                 MotionEvent.ACTION_UP->{
+                    Log.i("SSSSSSSSSs","22222222222222")
                     // 处理抬起事件
                     judgeLogin {
 

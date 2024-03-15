@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.drake.brv.utils.*
 import com.gyf.immersionbar.ImmersionBar
 import com.scwang.smart.refresh.layout.api.RefreshLayout
@@ -72,10 +73,12 @@ class ViewingHistoryListActivity : BaseActivity<ViewingHistoryListVm, ActivityVi
                             .load(bean.titlePage) // 替换为您要加载的图片 URL
                             .error(R.drawable.main_top_load)
                             .placeholder(R.drawable.main_top_load)
+                            .transition(DrawableTransitionOptions.withCrossFade())
                             .into(bindingItem.ivLiveBe)
                         Glide.with(context)
                             .load(bean.userLogo) // 替换为您要加载的图片 URL
                             .error(R.drawable.default_anchor_icon)
+                            .transition(DrawableTransitionOptions.withCrossFade())
                             .placeholder(R.drawable.default_anchor_icon)
                             .into(bindingItem.ivLiveHead)
                         bindingItem.txtLiveName.text=bean.nickName

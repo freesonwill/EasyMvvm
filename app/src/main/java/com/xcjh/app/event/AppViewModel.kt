@@ -41,7 +41,7 @@ class AppViewModel : BaseViewModel() {
     var appMsgResum=EventLiveData<Boolean>()
     //更新消息列表
     var updateMsgEvent = EventLiveData<String>()
-    //更新消息列表数据
+    //私聊的时候更新消息列表数据
     var updateMsgListEvent = EventLiveData<MsgBeanData>()
     var updateSchedulePosition = EventLiveData<CurrentIndex>()
 
@@ -57,6 +57,10 @@ class AppViewModel : BaseViewModel() {
     //更新某些页面
     var updateSomeData = EventLiveData<String>()//"friends"//好友列表
     var mainDateShowEvent=EventLiveData<Boolean>()
+    //横屏分享或者投屏播放详情  1 是分享  2是投屏
+    var landscapeShareEvent=EventLiveData<Int>()
+
+
     init {
         //默认值保存的账户信息，没有登陆过则为null started 或 resumed
         this.updateLoginEvent.value = CacheUtil.isLogin()

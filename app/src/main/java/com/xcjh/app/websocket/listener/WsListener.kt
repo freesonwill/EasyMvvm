@@ -47,6 +47,24 @@ interface LiveRoomListener {
     /// 发送消息是否成功
     fun onSendMsgIsOk(isOk: Boolean,bean:ReceiveWsBean<*>)
 
+    /**
+     * 禁言 * 32 -》禁言  bizId=""如果是空就是全局    不为空就是主播id
+     *
+     */
+    fun onProhibition(feed: FeedSystemNoticeBean){}
+
+
+    /**
+     * 解禁
+     * 33-》解除
+     */
+    fun onOpeningUp(feed: FeedSystemNoticeBean){}
+
+    /**
+     * 是否黑名单
+     */
+    fun onIsBlacklist(feed: FeedSystemNoticeBean){}
+
 }
 /**
  * 直播间流状态
@@ -89,6 +107,8 @@ interface OtherPushListener {
      * 新闻更新数据通知，新闻列表更新
      */
     fun onNewsUpdateDate(){}
+
+
 
 }
 /**

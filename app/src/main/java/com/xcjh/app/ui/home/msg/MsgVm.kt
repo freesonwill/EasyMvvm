@@ -17,7 +17,7 @@ class MsgVm : BaseViewModel() {
     private var pageNo = 1
     private var pageNoFriend = 1
 
-    //进行中的比赛
+    //获取到消息列表
     var msgList = UnPeekLiveData<ListDataUiState<MsgListNewData>>()
     var frendList = UnPeekLiveData<ListDataUiState<FriendListBean>>()
     var clreaMsg = UnPeekLiveData<Boolean>()
@@ -89,7 +89,7 @@ class MsgVm : BaseViewModel() {
     }
 
     /**
-     * 获取标签
+     * 获取消息列表
      */
     fun getMsgList(isRefresh: Boolean,userName:String?) {
         if (isRefresh) {

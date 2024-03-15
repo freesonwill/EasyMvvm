@@ -126,7 +126,9 @@ class MyWsManager private constructor(private val mContext: Context) {
      *  5->6 登录成功         22->22 注销成功
      *  7->9 加入群聊成功       21->10 退出群聊成功
      *  13->13 心跳包成功
-     *
+     * 32 -》禁言  bizId=""如果是空就是全局    不为空就是主播id
+     * 33-》解除
+     * 36->是被主播踢出直播间
      *
      *  11->12->11 发送消息->发送消息成功->接收到消息
      *  19->20 获取指定群聊或好友历史或离线消息成功
@@ -134,10 +136,13 @@ class MyWsManager private constructor(private val mContext: Context) {
      */
     private fun parsingServiceLogin(msg: String) {
         val wsBean = jsonToObject2<ReceiveWsBean<Any>>(msg)
-        if (wsBean?.command == 32) {
+        //判读禁言是不是全局的
+        val wsBeanDate = jsonToObject2<ReceiveWsBean<FeedSystemNoticeBean>>(msg)
+        val feedMsgBeanDate = wsBeanDate?.data as FeedSystemNoticeBean
+        if (wsBean?.command == 32&&feedMsgBeanDate.bizId.isEmpty() ) {
             Constants.ISSTOP_TALK = "1"
         }
-        if (wsBean?.command == 33) {
+        if (wsBean?.command == 33&&feedMsgBeanDate.bizId.isEmpty()) {
             Constants.ISSTOP_TALK = "0"
         }
         if (wsBean?.code == "10114") {
@@ -237,12 +242,42 @@ class MyWsManager private constructor(private val mContext: Context) {
                     it.toPair().second.onChangeLive(chatMsgBean)
                 }
             }
-
-            28, 32, 33 -> {//服务器主动推送用户反馈通知消息
+            28-> {//服务器主动推送用户反馈通知消息
                 val wsBean2 = jsonToObject2<ReceiveWsBean<FeedSystemNoticeBean>>(msg)
                 val feedMsgBean = wsBean2?.data as FeedSystemNoticeBean
                 mC2CListener.forEach {
                     it.toPair().second.onSystemMsgReceive(feedMsgBean)
+                }
+
+            }
+            32  -> {//服务器主动推送用户反馈通知消息  禁言
+                val wsBean2 = jsonToObject2<ReceiveWsBean<FeedSystemNoticeBean>>(msg)
+                val feedMsgBean = wsBean2?.data as FeedSystemNoticeBean
+
+                mC2CListener.forEach {
+                    it.toPair().second.onSystemMsgReceive(feedMsgBean)
+                }
+                //就是主播直播间的禁言
+                if(feedMsgBean.bizId.isNullOrEmpty()){
+                    mLiveRoomListener.forEach {
+                        it.toPair().second.onProhibition(feedMsgBean)
+                    }
+                }
+            }
+
+
+              33 -> {//服务器主动推送用户反馈通知消息  解禁
+                val wsBean2 = jsonToObject2<ReceiveWsBean<FeedSystemNoticeBean>>(msg)
+                val feedMsgBean = wsBean2?.data as FeedSystemNoticeBean
+
+                mC2CListener.forEach {
+                    it.toPair().second.onSystemMsgReceive(feedMsgBean)
+                }
+                //就是主播直播间的禁言
+                if(feedMsgBean.bizId.isNullOrEmpty()){
+                    mLiveRoomListener.forEach {
+                        it.toPair().second.onOpeningUp(feedMsgBean)
+                    }
                 }
             }
 
@@ -283,6 +318,13 @@ class MyWsManager private constructor(private val mContext: Context) {
                     it.toPair().second.onNewsUpdateDate()
                 }
             }
+            36 -> {
+                val wsBean2 = jsonToObject2<ReceiveWsBean<FeedSystemNoticeBean>>(msg)
+                val feedMsgBean = wsBean2?.data as FeedSystemNoticeBean
+                mLiveRoomListener.forEach {
+                    it.toPair().second.onIsBlacklist(feedMsgBean)
+                }
+            }
 
             else -> {
                 // 登录过期
@@ -300,6 +342,7 @@ class MyWsManager private constructor(private val mContext: Context) {
             if (null != client && client?.isOpen == true) {
                 msg.loge("===sendMessage==")
                 client?.send(msg)
+
             }
         }catch (_:Exception){
 

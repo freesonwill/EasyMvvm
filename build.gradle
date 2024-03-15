@@ -10,11 +10,21 @@ buildscript {
         //  google 通道 请在gradle.properties中加入android.useAndroidX=true
 //        classpath 'com.google.gms:google-services:4.4.0'
         classpath 'com.google.gms:google-services:4.3.15'
+        //修改
+//        // 请在gradle.properties中加入android.useAndroidX=true
+//        classpath 'com.google.gms:google-services:4.3.8'
+//        // huawei push need，不需要 huawei 通道，则删除
+//        classpath 'com.huawei.agconnect:agcp:1.6.0.300'
+
     }
 }
+
+
 plugins {
     id 'com.android.application' version '7.3.1' apply false
     id 'com.android.library' version '7.3.1' apply false
     id 'org.jetbrains.kotlin.android' version '1.7.20' apply false
 }
+
+
 apply from: "module.build.gradle"

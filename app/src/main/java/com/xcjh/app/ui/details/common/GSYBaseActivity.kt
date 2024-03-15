@@ -1,6 +1,7 @@
 package com.xcjh.app.ui.details.common
 
 import android.content.res.Configuration
+import android.util.Log
 import androidx.databinding.ViewDataBinding
 import com.shuyu.gsyvideoplayer.GSYVideoManager
 import com.shuyu.gsyvideoplayer.builder.GSYVideoOptionBuilder
@@ -22,6 +23,8 @@ abstract class GSYBaseActivity<VM : BaseViewModel, DB : ViewDataBinding,T : GSYB
     protected var isPlay = false
     protected var isPause = false
     protected var orientationUtils: OrientationUtils? = null
+    //是否锁定
+    protected var isLock=false
 
     /**
      * 选择普通模式
@@ -39,6 +42,11 @@ abstract class GSYBaseActivity<VM : BaseViewModel, DB : ViewDataBinding,T : GSYB
         }
         gSYVideoPlayer!!.isNeedShowWifiTip = true
         gSYVideoPlayer!!.dismissControlTime = 3000
+        //点击是否锁定返回
+        gSYVideoPlayer!!.setLockClickListener { view, lock ->
+            isLock=lock
+
+        }
     }
 
     /**
@@ -68,9 +76,15 @@ abstract class GSYBaseActivity<VM : BaseViewModel, DB : ViewDataBinding,T : GSYB
 
         // ------- ！！！如果不需要旋转屏幕，可以不调用！！！-------
         // 不需要屏幕旋转，还需要设置 setNeedOrientationUtils(false)
-        if (orientationUtils != null) {
-            orientationUtils!!.backToProtVideo()
+//        if (orientationUtils != null) {
+//            orientationUtils!!.backToProtVideo()
+//        }
+        //判断是否锁定，如果锁定了就不用执行下面
+        if(isLock){
+            return
         }
+
+        //判读是否全屏
         if (GSYVideoManager.backFromWindowFull(this)) {
             return
         }
@@ -131,6 +145,8 @@ abstract class GSYBaseActivity<VM : BaseViewModel, DB : ViewDataBinding,T : GSYB
         isPlay = true
     }
 
+
+
     override fun onClickStartIcon(url: String, vararg objects: Any) {}
     override fun onClickStartError(url: String, vararg objects: Any) {}
     override fun onClickStop(url: String, vararg objects: Any) {}
@@ -140,7 +156,9 @@ abstract class GSYBaseActivity<VM : BaseViewModel, DB : ViewDataBinding,T : GSYB
     override fun onClickSeekbar(url: String, vararg objects: Any) {}
     override fun onClickSeekbarFullscreen(url: String, vararg objects: Any) {}
     override fun onAutoComplete(url: String, vararg objects: Any) {}
-    override fun onEnterFullscreen(url: String, vararg objects: Any) {}
+    override fun onEnterFullscreen(url: String, vararg objects: Any) {
+
+    }
     override fun onQuitFullscreen(url: String, vararg objects: Any) {
 
         // ------- ！！！如果不需要旋转屏幕，可以不调用！！！-------
@@ -199,4 +217,7 @@ abstract class GSYBaseActivity<VM : BaseViewModel, DB : ViewDataBinding,T : GSYB
      */
     val isAutoFullWithSize: Boolean
         get() = false
+
+
+
 }

@@ -22,7 +22,9 @@ import com.xcjh.base_lib.utils.bindViewPager2
 import com.xcjh.base_lib.utils.initActivity
 import com.xcjh.base_lib.utils.setOnclickNoRepeat
 
-
+/**
+ * 首页聊天
+ */
 class MsgFragment : BaseFragment<MsgVm, FrMsgBinding>() {
     private val mFragments: ArrayList<Fragment> = ArrayList<Fragment>()
     private var mTitles: Array<out String>? = null
@@ -94,6 +96,7 @@ class MsgFragment : BaseFragment<MsgVm, FrMsgBinding>() {
                 when (it.id) {
                     R.id.ivclear -> {
                         if (isClick) {
+                            //点击清除红点
                             clearMsg(requireActivity()) { it ->
                                 if (it) {//点击了确定
 

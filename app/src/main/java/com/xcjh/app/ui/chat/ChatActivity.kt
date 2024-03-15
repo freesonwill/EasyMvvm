@@ -3,21 +3,29 @@ package com.xcjh.app.ui.chat
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
+import android.graphics.Rect
 import android.os.Bundle
 import android.text.InputType
+import android.text.Spannable
+import android.text.SpannableString
 import android.text.TextUtils
+import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.Gravity
 import android.view.KeyEvent
 import android.view.View
 import android.view.View.OnLongClickListener
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.TextView.OnEditorActionListener
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alibaba.fastjson.JSONObject
 import com.blankj.utilcode.util.ToastUtils
@@ -28,6 +36,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.drake.brv.utils.addModels
 import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.models
+import com.drake.brv.utils.mutable
 import com.drake.brv.utils.setup
 import com.drake.statelayout.StateConfig
 import com.google.gson.Gson
@@ -40,6 +49,7 @@ import com.luck.picture.lib.config.SelectMimeType
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.interfaces.OnResultCallbackListener
 import com.luck.picture.lib.manager.PictureCacheManager
+import com.scwang.smart.refresh.header.ClassicsHeader
 import com.xcjh.app.MyApplication
 import com.xcjh.app.R
 import com.xcjh.app.appViewModel
@@ -52,6 +62,13 @@ import com.xcjh.app.databinding.ItemChatTxtRightBinding
 import com.xcjh.app.net.CountingRequestBody
 import com.xcjh.app.net.ProgressListener
 import com.xcjh.app.bean.MsgBeanData
+import com.xcjh.app.bean.NewsBean
+import com.xcjh.app.databinding.ItemChatVideoLeftBinding
+import com.xcjh.app.databinding.ItemChatVideoRightBinding
+import com.xcjh.app.databinding.ItemEmojeTxtBinding
+import com.xcjh.app.databinding.ItemNewsListBinding
+import com.xcjh.app.ui.details.MatchDetailActivity
+import com.xcjh.app.utils.CacheDataList
 import com.xcjh.app.utils.CacheUtil
 import com.xcjh.app.utils.ChatTimeUtile
 import com.xcjh.app.utils.GlideEngine
@@ -69,11 +86,13 @@ import com.xcjh.app.websocket.bean.SendChatMsgBean
 import com.xcjh.app.websocket.bean.SendCommonWsBean
 import com.xcjh.app.websocket.listener.C2CListener
 import com.xcjh.base_lib.Constants
+import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.utils.LogUtils
 import com.xcjh.base_lib.utils.TAG
 import com.xcjh.base_lib.utils.TimeUtil
 import com.xcjh.base_lib.utils.copyToClipboard
 import com.xcjh.base_lib.utils.dp2px
+import com.xcjh.base_lib.utils.grid
 import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.setOnclickNoRepeat
 import kotlinx.coroutines.Deferred
@@ -82,7 +101,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import okhttp3.MultipartBody
 import java.io.File
 import java.text.SimpleDateFormat
@@ -101,9 +119,10 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
     var options: RequestOptions? = null
     var userId = ""
     var nickname = ""
-    var offset = ""
+
     var userhead = ""
-    var isShowBottom = false
+    var isShowBottom = false  //是否打开了更多
+    var isShowEmoje=false//是否打开了emoje
     var lastShowTimeStamp: Long = 0
     var timecurrent: String = ""
     val baseLong: Long = 0
@@ -115,16 +134,15 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
     private val listPic = java.util.ArrayList<LocalMedia>()
     private val mutex = Mutex()
     var incount = 0
-    override fun initView(savedInstanceState: Bundle?) {
 
+
+    override fun initView(savedInstanceState: Bundle?) {
+//        mViewModel.getAllKeysFromJson()
         try {
 
 
             options = RequestOptions()
                 .transform(CenterCrop(), RoundedCorners(Utils.dp2px(this, 8f)))
-
-
-
             ImmersionBar.with(this)
                 .statusBarDarkFont(true)
                 .keyboardEnable(true)
@@ -141,7 +159,41 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                     )
                 )
             )
+            val rootView = findViewById<View>(android.R.id.content)
+            // 监听视图树变化
+            rootView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    val rect = Rect()
+                    rootView.getWindowVisibleDisplayFrame(rect)
+
+                    // 计算可见屏幕高度和整个屏幕高度的差值
+                    val screenHeight = rootView.height
+                    val keypadHeight = screenHeight - rect.bottom
+
+                    // 判断软键盘是否显示
+                    val isKeyboardShowing = keypadHeight > screenHeight * 0.15
+
+                    if (isKeyboardShowing) {
+                        // 软键盘弹出回调
+                        // 在这里执行相应操作
+                        if(isShowBottom){
+                          mDatabind.linbottom.setVisibility(View.GONE)
+                        }
+
+                    } else {
+                        // 软键盘隐藏回调
+                        // 在这里执行相应操作
+                        if(isShowBottom){
+//                            mDatabind.linbottom.setVisibility(View.VISIBLE)
+                        }
+                    }
+                }
+            })
+
+//            ClassicsHeader
+            mDatabind.smartCommon.setRefreshHeader(ClassicsHeader(this))
             mDatabind.state.apply {
+
                 StateConfig.setRetryIds(R.id.ivEmptyIcon, R.id.txtEmptyName)
                 onEmpty {
                     this.findViewById<TextView>(R.id.txtEmptyName).text =
@@ -185,6 +237,9 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                 1 -> {
                                     R.layout.item_chat_pic_right
                                 }
+                                3 -> {
+                                    R.layout.item_chat_video_right
+                                }
 
                                 else -> {
                                     R.layout.item_chat_txt_right
@@ -201,6 +256,9 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
 
                                 1 -> {
                                     R.layout.item_chat_pic_left
+                                }
+                                3-> {
+                                    R.layout.item_chat_video_left
                                 }
 
                                 else -> {
@@ -277,7 +335,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                             }
 
                         }
-
+                        //右边文字
                         R.layout.item_chat_txt_right -> {//正在进行中的比赛
                             var binding = getBinding<ItemChatTxtRightBinding>()
                             var matchBeanNew = _data as MsgBeanData
@@ -292,32 +350,28 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                 layoutParams.setMargins(0,0,0,0)
                                 binding.linroot.layoutParams = layoutParams
                             }
-                            when (matchBeanNew.sent) {
+                            when (matchBeanNew.sentNew) {
                                 0 -> {//正在发送
-
                                     addDataToList("1", matchBeanNew)
-
                                     binding.googleProgress.visibility = View.VISIBLE
                                     binding.ivfaile.visibility = View.GONE
                                     GlobalScope.launch {
                                         delay(delayTime)
-
-                                        if (matchBeanNew.sent == 0) {//发送失败
-                                            matchBeanNew.sent = 2
+                                        if (matchBeanNew.sentNew == 0) {//发送失败
+                                            matchBeanNew.sentNew = 2
                                             addDataToList("2", matchBeanNew)
-                                            if (bindingAdapterPosition == 0) {
-
-                                                appViewModel.updateMsgListEvent.postValue(
-                                                    matchBeanNew
-                                                )
-                                            }
+//                                            if (bindingAdapterPosition == 0) {
+//                                                appViewModel.updateMsgListEvent.postValue(
+//                                                    matchBeanNew
+//                                                )
+//                                            }
                                             runOnUiThread {
                                                 binding.googleProgress.visibility = View.GONE
                                                 binding.ivfaile.visibility = View.VISIBLE
                                             }
 
                                         } else {//发送成功
-                                            matchBeanNew.sent = 1
+                                            matchBeanNew.sentNew = 1
 
                                         }
 
@@ -326,7 +380,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
 
                                 1, 3 -> {//发送成功
 
-                                    matchBeanNew.sent = 1
+                                    matchBeanNew.sentNew = 1
                                     //  addDataToList("3", matchBeanNew)
                                     binding.googleProgress.visibility = View.GONE
                                     binding.ivfaile.visibility = View.GONE
@@ -401,7 +455,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                             }
 
                         }
-
+                        //右边图片
                         R.layout.item_chat_pic_right -> {//右边图片
                             var binding = getBinding<ItemChatPicRightBinding>()
                             var matchBeanNew = _data as MsgBeanData
@@ -416,7 +470,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                 layoutParams.setMargins(0,0,0,0)
                                 binding.linroot.layoutParams = layoutParams
                             }
-                            when (matchBeanNew.sent) {
+                            when (matchBeanNew.sentNew) {
                                 0 -> {//正在发送
                                     LogUtils.d(
                                         bindingAdapterPosition.toString() + "准备发送" +
@@ -435,15 +489,15 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                         )
                                          delay(delayTime)
 
-                                        if (matchBeanNew.sent == 0) {//发送失败
-                                            matchBeanNew.sent = 2
+                                        if (matchBeanNew.sentNew == 0) {//发送失败
+                                            matchBeanNew.sentNew = 2
 
                                             addDataToList("5", matchBeanNew)
-                                            if (bindingAdapterPosition == 0) {
-                                                appViewModel.updateMsgListEvent.postValue(
-                                                    matchBeanNew
-                                                )
-                                            }
+//                                            if (bindingAdapterPosition == 0) {
+//                                                appViewModel.updateMsgListEvent.postValue(
+//                                                    matchBeanNew
+//                                                )
+//                                            }
 
                                             runOnUiThread {
                                                 binding.googleProgress.visibility = View.GONE
@@ -454,7 +508,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                             }
 
                                         } else {//发送成功
-                                            (_data as MsgBeanData).sent = 1
+                                            (_data as MsgBeanData).sentNew = 1
 
                                         }
 
@@ -462,7 +516,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                 }
 
                                 1, 3 -> {//发送成功
-                                    (_data as MsgBeanData).sent = 1
+                                    (_data as MsgBeanData).sentNew = 1
                                     //  addDataToList("6", (_data as MsgBeanData))
                                     binding.googleProgress.visibility = View.GONE
                                     binding.ivfaile.visibility = View.GONE
@@ -536,8 +590,17 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                             }
                             if (binding.ivpic.tag == null || binding.ivpic.tag != matchBeanNew.content) {
                                 binding.ivpic.tag = matchBeanNew.content
-                                binding.ivpic.loadImageWithGlide(context, matchBeanNew.content)
-                             }
+//                                Glide.with(context)
+//                                    .asBitmap()
+//                                    .load(R.drawable.chat_icon_placeholder)
+//                                    .placeholder(R.drawable.chat_icon_placeholder)
+//                                    .error(R.drawable.chat_icon_placeholder)
+//                                    .thumbnail(0.1f)
+//                                    .skipMemoryCache(false)
+                                binding.ivpic.loadImageWithGlide(context, matchBeanNew.content){
+
+                                }
+                            }
 
 
                             binding.ivpic.setOnClickListener {
@@ -549,7 +612,6 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                 PictureSelector.create(this@ChatActivity)
                                     .openPreview()
                                     .setImageEngine(GlideEngine.createGlideEngine())
-                                    .isPreviewFullScreenMode(false)
                                     .setInjectLayoutResourceListener { context, resourceSource ->
                                         return@setInjectLayoutResourceListener if (resourceSource == InjectResourceSource.PREVIEW_LAYOUT_RESOURCE)
                                             R.layout.ps_custom_fragment_preview else InjectResourceSource.DEFAULT_LAYOUT_RESOURCE
@@ -562,7 +624,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                             }
 
                         }
-
+                        //左边图片
                         R.layout.item_chat_pic_left -> {//右边图片
                             var binding = getBinding<ItemChatPicLeftBinding>()
                             var matchBeanNew = _data as MsgBeanData
@@ -577,6 +639,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                 layoutParams.setMargins(0,0,0,0)
                                 binding.linroot.layoutParams = layoutParams
                             }
+
                             timecurrent = ChatTimeUtile.formatTimestamp(
                                 context,
                                 matchBeanNew.createTime!!.toLong()
@@ -614,6 +677,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                             }
                             binding.ivpic.loadImageWithGlide(context, matchBeanNew.content)
 
+
                             Glide.with(this@ChatActivity).load(userhead)
                                 .placeholder(R.drawable.default_anchor_icon).into(binding.ivhead)
                             binding.ivpic.setOnClickListener {
@@ -638,6 +702,276 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                             }
 
                         }
+                        //左边视频
+                        R.layout.item_chat_video_left -> {//右边图片
+                            var binding = getBinding<ItemChatVideoLeftBinding>()
+                            var matchBeanNew = _data as MsgBeanData
+                            if(0==layoutPosition){
+                                val layoutParams =
+                                    binding.linroot.layoutParams as ViewGroup.MarginLayoutParams
+                                layoutParams.setMargins(0,0,0,context.dp2px(20))
+                                binding.linroot.layoutParams = layoutParams
+                            }else{
+                                val layoutParams =
+                                    binding.linroot.layoutParams as ViewGroup.MarginLayoutParams
+                                layoutParams.setMargins(0,0,0,0)
+                                binding.linroot.layoutParams = layoutParams
+                            }
+
+                            timecurrent = ChatTimeUtile.formatTimestamp(
+                                context,
+                                matchBeanNew.createTime!!.toLong()
+                            )!!
+                            binding.tvtime.text = timecurrent
+                            if (bindingAdapterPosition < (adapter.models!!.size - 1)) {
+                                var adnext =
+                                    adapter.models!![bindingAdapterPosition + 1] as MsgBeanData
+                                var nexttime = ChatTimeUtile.formatTimestamp(
+                                    context,
+                                    adnext.createTime!!.toLong()
+                                )
+                                if (timecurrent == nexttime) {
+                                    binding.tvtime.visibility = View.GONE
+                                } else {
+                                    if (TimeUtil.isTimeDifferenceGreaterThan15Minutes(
+                                            matchBeanNew.createTime!!, adnext.createTime!!
+
+                                        )
+                                    ) {
+                                        if (matchBeanNew.lastShowTimeStamp!! == baseLong) {
+                                            matchBeanNew.lastShowTimeStamp = -1
+                                        }
+                                        lastShowTimeStamp = matchBeanNew.createTime!!
+                                        binding.tvtime.visibility = View.VISIBLE
+                                    } else {
+                                        binding.tvtime.visibility = View.GONE
+                                    }
+                                }
+                            } else {
+                                binding.tvtime.visibility = View.VISIBLE
+                            }
+                            if (matchBeanNew.lastShowTimeStamp!! == baseLong) {
+                                matchBeanNew.lastShowTimeStamp = lastShowTimeStamp
+                            }
+
+                            if(matchBeanNew.content.isNotEmpty()){
+                                val parts = matchBeanNew.content.split("***")
+                                if(parts.size>=2){
+                                    binding.ivpic.loadImageWithGlide(context, parts[0]){
+                                        binding.ivVideoLogo.visibility=View.VISIBLE
+                                    }
+                                }else{
+                                    binding.ivpic.loadImageWithGlide(context, matchBeanNew.content){
+                                        binding.ivVideoLogo.visibility=View.VISIBLE
+                                    }
+                                }
+
+
+                            }else {
+                                binding.ivpic.loadImageWithGlide(context, matchBeanNew.content) {
+                                    binding.ivVideoLogo.visibility = View.VISIBLE
+                                }
+                            }
+
+
+
+                            Glide.with(this@ChatActivity).load(userhead)
+                                .placeholder(R.drawable.default_anchor_icon).into(binding.ivhead)
+                            binding.ivpic.setOnClickListener {
+
+                                if(matchBeanNew.content.isNotEmpty()){
+                                    val parts = matchBeanNew.content.split("***")
+                                    if(parts.size>=2){
+                                        VideoPlayActivity.open(videoUrl=parts[1])
+                                    }
+                                }
+
+
+
+                            }
+                            binding.linroot.setOnClickListener {
+                                hideSoftKeyBoard(this@ChatActivity)
+                            }
+
+                        }
+                        //右边视频
+                        R.layout.item_chat_video_right-> {//右边图片
+                            var binding = getBinding<ItemChatVideoRightBinding>()
+                            var matchBeanNew = _data as MsgBeanData
+                            if(0==layoutPosition){
+                                val layoutParams =
+                                    binding.linroot.layoutParams as ViewGroup.MarginLayoutParams
+                                layoutParams.setMargins(0,0,0,context.dp2px(20))
+                                binding.linroot.layoutParams = layoutParams
+                            }else{
+                                val layoutParams =
+                                    binding.linroot.layoutParams as ViewGroup.MarginLayoutParams
+                                layoutParams.setMargins(0,0,0,0)
+                                binding.linroot.layoutParams = layoutParams
+                            }
+                            when (matchBeanNew.sentNew) {
+                                0 -> {//正在发送
+                                    LogUtils.d(
+                                        bindingAdapterPosition.toString() + "准备发送" +
+                                                JSONObject.toJSONString(_data as MsgBeanData)
+                                    )
+                                    addDataToList("4", (_data as MsgBeanData))
+                                    binding.googleProgress.visibility = View.VISIBLE
+                                    binding.ivfaile.visibility = View.GONE
+                                    GlobalScope.launch {
+
+                                        upLoadPic(
+                                            bindingAdapterPosition,
+                                            matchBeanNew,
+                                            binding.tvpross,
+                                            binding.ivfaile
+                                        )
+                                        delay(delayTime)
+
+                                        if (matchBeanNew.sentNew == 0) {//发送失败
+                                            matchBeanNew.sentNew = 2
+
+                                            addDataToList("5", matchBeanNew)
+//                                            if (bindingAdapterPosition == 0) {
+//                                                appViewModel.updateMsgListEvent.postValue(
+//                                                    matchBeanNew
+//                                                )
+//                                            }
+
+                                            runOnUiThread {
+                                                binding.googleProgress.visibility = View.GONE
+                                                binding.ivfaile.visibility = View.VISIBLE
+
+
+
+                                            }
+
+                                        } else {//发送成功
+                                            (_data as MsgBeanData).sentNew = 1
+
+                                        }
+
+                                    }
+                                }
+
+                                1, 3 -> {//发送成功
+                                    (_data as MsgBeanData).sentNew = 1
+                                    //  addDataToList("6", (_data as MsgBeanData))
+                                    binding.googleProgress.visibility = View.GONE
+                                    binding.ivfaile.visibility = View.GONE
+                                    LogUtils.d(
+                                        bindingAdapterPosition.toString() + "99发送chenggong" +
+                                                JSONObject.toJSONString(_data as MsgBeanData)
+                                    )
+                                }
+
+                                2 -> {//发送失败
+                                    binding.googleProgress.visibility = View.GONE
+                                    binding.ivfaile.visibility = View.VISIBLE
+                                }
+
+                                else -> {
+                                    binding.googleProgress.visibility = View.GONE
+                                    binding.ivfaile.visibility = View.GONE
+                                }
+
+                            }
+                            binding.ivfaile.setOnClickListener {
+                                reSendMsg(
+                                    matchBeanNew,
+                                    bindingAdapterPosition
+                                )
+
+                            }
+                            timecurrent = ChatTimeUtile.formatTimestamp(
+                                context,
+                                matchBeanNew.createTime!!.toLong()
+                            )!!
+                            binding.tvtime.text = timecurrent
+                            if (bindingAdapterPosition < (adapter.models!!.size - 1)) {
+                                var adnext =
+                                    adapter.models!![bindingAdapterPosition + 1] as MsgBeanData
+                                var nexttime = ChatTimeUtile.formatTimestamp(
+                                    context,
+                                    adnext.createTime!!.toLong()
+                                )
+                                if (timecurrent == nexttime) {
+                                    binding.tvtime.visibility = View.GONE
+                                } else {
+                                    if (TimeUtil.isTimeDifferenceGreaterThan15Minutes(
+                                            matchBeanNew.createTime!!, adnext.createTime!!
+
+                                        )
+                                    ) {
+                                        if (matchBeanNew.lastShowTimeStamp!! == baseLong) {
+                                            matchBeanNew.lastShowTimeStamp = -1
+                                        }
+                                        lastShowTimeStamp = matchBeanNew.createTime!!
+                                        binding.tvtime.visibility = View.VISIBLE
+                                    } else {
+                                        binding.tvtime.visibility = View.GONE
+                                    }
+                                }
+                            } else {
+                                binding.tvtime.visibility = View.VISIBLE
+                            }
+                            if (matchBeanNew.lastShowTimeStamp!! == baseLong) {
+                                matchBeanNew.lastShowTimeStamp = lastShowTimeStamp
+                            }
+
+
+
+                            if (binding.ivhead.tag == null) {
+                                binding.ivhead.tag = CacheUtil.getUser()?.head
+                                Glide.with(this@ChatActivity).load(CacheUtil.getUser()?.head)
+                                    .placeholder(R.drawable.icon_login_my_head)
+                                    .into(binding.ivhead)
+                            }
+                            if (binding.ivpic.tag == null || binding.ivpic.tag != matchBeanNew.content) {
+                                binding.ivpic.tag = matchBeanNew.content
+//                                Glide.with(context)
+//                                    .asBitmap()
+//                                    .load(R.drawable.chat_icon_placeholder)
+//                                    .placeholder(R.drawable.chat_icon_placeholder)
+//                                    .error(R.drawable.chat_icon_placeholder)
+//                                    .thumbnail(0.1f)
+//                                    .skipMemoryCache(false)
+                                if(matchBeanNew.content.isNotEmpty()){
+                                    val parts = matchBeanNew.content.split("***")
+                                    if(parts.size>=2){
+                                        binding.ivpic.loadImageWithGlide(context, parts[0]){
+                                            binding.ivVideoLogo.visibility=View.VISIBLE
+                                        }
+                                    }else{
+                                        binding.ivpic.loadImageWithGlide(context, matchBeanNew.content){
+                                            binding.ivVideoLogo.visibility=View.VISIBLE
+                                        }
+                                    }
+
+
+                                }else{
+                                    binding.ivpic.loadImageWithGlide(context, matchBeanNew.content){
+                                        binding.ivVideoLogo.visibility=View.VISIBLE
+                                    }
+                                }
+
+                            }
+
+
+                            binding.ivpic.setOnClickListener {
+                                if(matchBeanNew.content.isNotEmpty()){
+                                    val parts = matchBeanNew.content.split("***")
+                                    if(parts.size>=2){
+                                        VideoPlayActivity.open(videoUrl=parts[1])
+                                    }
+                                }
+                            }
+
+                            binding.linroot.setOnClickListener {
+                                hideSoftKeyBoard(this@ChatActivity)
+                            }
+
+                        }
                     }
 
 
@@ -649,7 +983,8 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                 mDatabind.ivexpent,
                 mDatabind.linphote,
                 mDatabind.lincanmer,
-                mDatabind.ivsend
+                mDatabind.ivsend,
+                mDatabind.ivface
             ) {
                 when (it.id) {
                     R.id.ivexpent -> {
@@ -657,7 +992,10 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                         if (isShowBottom) {
                             hd = 0f
                         }
-                        startAnmila(hd)
+                        startAnmila(hd,1)
+                    }
+                    R.id.ivface->{
+                        startAnmila(0f,2)
 
 
                     }
@@ -805,21 +1143,62 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                 )
                             )
                         )
+
+                        if(mDatabind.rv.models!=null){
+
+                            if(CacheUtil.getUser()!=null){
+                                var data = (mDatabind.rv.models as ArrayList<MsgBeanData>).reversed()
+                                var liatNew=  data.takeLast(50) as ArrayList<MsgBeanData>
+                                CacheDataList.globalCache[CacheUtil.getUser()!!.id+liatNew[0].anchorId!!]=liatNew
+
+                            }
+
+                        }
                         //addDataToList(beanmy)
 
-                    } else {//发送消息
+                    } else {//发送消息  最后发送成功
                         // LogUtils.d("发送成功一条数据"+JSONObject.toJSONString(chat))
+                        var sendDate=MsgBeanData()
+                        var isShow:Int=-1
                         for (i in 0 until mDatabind.rv.models!!.size) {
                             var beanmy: MsgBeanData = mDatabind.rv.models!![i] as MsgBeanData
                             if (beanmy.sendId == chat.sendId) {
-                                beanmy.sent = 1
+                                beanmy.sentNew = 1
                                 beanmy.id = chat.id
-
                                 addDataToList("7", beanmy)
+                                sendDate=beanmy
+                                isShow=i
                                 mDatabind.rv.bindingAdapter.notifyItemChanged(i)
                                 break
+//
+
                             }
                         }
+
+                        if(isShow!=-1){
+                            //是重新发送
+                            if(sendDate.againSend==1){
+                                mDatabind.rv.mutable.remove(sendDate)
+                                mDatabind.rv.bindingAdapter.notifyItemRemoved(isShow) // 通知更新
+                                var listdata1: MutableList<MsgBeanData> = ArrayList<MsgBeanData>()
+                                listdata1.add(sendDate)
+                                mDatabind.rv.addModels(listdata1, index = 0)
+                                mDatabind.rv.scrollToPosition(0)
+                            }
+                        }
+
+
+
+                        if(mDatabind.rv.models!=null){
+                          var data = (mDatabind.rv.models as ArrayList<MsgBeanData> ).reversed()
+                          var liatNew=  data.takeLast(50) as  ArrayList<MsgBeanData>
+
+                            if(CacheUtil.getUser()!=null){
+                                CacheDataList.globalCache[CacheUtil.getUser()!!.id+liatNew[0].anchorId!!]=liatNew
+                            }
+
+                        }
+
                     }
 
 
@@ -835,67 +1214,167 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
             initData()
 
             mViewModel.getUserInfo(userId)
-
+            //获取本地数据
             getAllData()
-            mViewModel.getHisMsgList(mDatabind.smartCommon, offset, userId)
+            mViewModel.getHisMsgList(mDatabind.smartCommon, mViewModel.offset, userId)
         } catch (e: Exception) {
         }
+
+
+        setDate()
     }
 // 将Drawable转换为Bitmap
 
+    @SuppressLint("SuspiciousIndentation")
     fun getAllData() {
-        try {
+        if(CacheUtil.getUser()!=null){
+            try {
+                GlobalScope.launch {
 
-
-            GlobalScope.launch {
-                val data = seacherData().await()
-                if (data.size > 0) {
-                    for (i in 0 until data.size) {
-                        if (data[i].sent == 0) {
-                            data[i].sent = 1
+                    var data= CacheDataList.globalCache[CacheUtil.getUser()!!.id+ userId]
+                    if(data!=null){
+                        val reversedList = data.reversed()
+                        runOnUiThread {
+                            listdata.addAll(reversedList)
+                            mDatabind.state.showContent()
+                            mDatabind.rv.bindingAdapter.notifyDataSetChanged()
+                        }
+                    }else{
+                        runOnUiThread {
+                            LogUtils.d("私聊无数据缓存")
+                            mDatabind.state.showEmpty()
                         }
                     }
 
-                    listdata.addAll(data)
-                    runOnUiThread {
-                        mDatabind.rv.models = listdata
-                        mDatabind.state.showContent()
-                    }
-
-                } else {
-                    runOnUiThread {
-                        LogUtils.d("私聊无数据缓存")
-                        mDatabind.state.showEmpty()
-                    }
+//                val data = seacherData().await()
+//                if (data.size > 0) {
+//                    for (i in 0 until data.size) {
+//                        if (data[i].sent == 0) {
+//                            data[i].sent = 1
+//                        }
+//                    }
+//
+//                    listdata.addAll(data)
+//                    runOnUiThread {
+//                        mDatabind.rv.models = listdata
+//                        mDatabind.state.showContent()
+//                    }
+//
+//                } else {
+//                    runOnUiThread {
+//                        LogUtils.d("私聊无数据缓存")
+//                        mDatabind.state.showEmpty()
+//                    }
+//
+//                }
 
                 }
-
+            } catch (e: Exception) {
+                Log.e("Val","获取的本地数据错误")
             }
-        } catch (e: Exception) {
+
+
         }
+
     }
 
-    fun startAnmila(hd: Float) {
-        val rotationYAnimator =
-            ObjectAnimator.ofFloat(mDatabind.ivexpent, "rotation", 0f, hd)
-        rotationYAnimator.duration = 50
+    /**
+     * type 1 是图片  2是emoje
+     */
+    fun startAnmila(hd: Float,type:Int) {
+//        val rotationYAnimator =
+//            ObjectAnimator.ofFloat(mDatabind.ivexpent, "rotation", 0f, hd)
+//        rotationYAnimator.duration = 50
+//
+//        rotationYAnimator.addListener(object : AnimatorListenerAdapter() {
+//            override fun onAnimationEnd(animation: Animator) {
+//                super.onAnimationEnd(animation)
+//                if (isShowBottom) {
+//                    isShowBottom = false
+//                    mDatabind.linbottom.visibility = View.GONE
+//                } else {
+//                    isShowBottom = true
+//                    mDatabind.linbottom.visibility = View.VISIBLE
+//                }
+//
+//            }
+//        })
 
-        rotationYAnimator.addListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator) {
-                super.onAnimationEnd(animation)
-                if (isShowBottom) {
-                    isShowBottom = false
+
+//        rotationYAnimator.start()
+        //type 1 是图片  2是emoje
+//        if (isShowBottom) {
+//            isShowBottom = false
+//            mDatabind.linbottom.visibility = View.GONE
+//        } else {
+//            isShowBottom = true
+//            mDatabind.linbottom.visibility = View.VISIBLE
+//        }
+        if(isShowBottom){//现在打开了下面的布局
+            if(type==1){
+                //如果是已经在显示了那就是整个多选都隐藏
+                if(mDatabind.llShowImage.visibility==View.VISIBLE){
                     mDatabind.linbottom.visibility = View.GONE
-                } else {
-                    isShowBottom = true
-                    mDatabind.linbottom.visibility = View.VISIBLE
+                    isShowBottom = false
+                }else{
+                    mDatabind.llShowImage.visibility=View.VISIBLE
+                    mDatabind.rvEmoje.visibility=View.GONE
                 }
 
+            }else{//
+                //如果是已经在显示了那就是整个多选都隐藏
+                if(mDatabind.rvEmoje.visibility==View.VISIBLE){
+                    mDatabind.linbottom.visibility = View.GONE
+                    isShowBottom = false
+                }else{
+                    mDatabind.llShowImage.visibility=View.GONE
+                    mDatabind.rvEmoje.visibility=View.VISIBLE
+                }
+
+
             }
-        })
-        rotationYAnimator.start()
+
+
+        }else{//是关闭状态
+            mDatabind.linbottom.visibility = View.VISIBLE
+            //2是emoje
+            if(type==1){
+                mDatabind.llShowImage.visibility=View.VISIBLE
+                mDatabind.rvEmoje.visibility=View.GONE
+            }else{
+                mDatabind.llShowImage.visibility=View.GONE
+                mDatabind.rvEmoje.visibility=View.VISIBLE
+            }
+
+            isShowBottom = true
+        }
+
+//        if(isShowBottom){
+//            isShowBottom = false
+//            mDatabind.linbottom.visibility = View.GONE
+//            mDatabind.llShowImage.visibility=View.VISIBLE
+//            mDatabind.rvEmoje.visibility=View.GONE
+//        } else {
+//            isShowBottom = true
+//            mDatabind.linbottom.visibility = View.VISIBLE
+//            if(type==1){
+//                mDatabind.llShowImage.visibility=View.VISIBLE
+//                mDatabind.rvEmoje.visibility=View.GONE
+//            }else{
+//                mDatabind.llShowImage.visibility=View.GONE
+//                mDatabind.rvEmoje.visibility=View.VISIBLE
+//
+//            }
+
+
+
+//        }
+
     }
 
+    /**
+     * 上传图片
+     */
     suspend fun upLoadPic(index: Int,bean: MsgBeanData, view: TextView, image: ImageView) {
         try {
 
@@ -931,15 +1410,15 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                         image.visibility = View.VISIBLE
 
                     }
-                    if (bean.sent == 0) {//发送失败
-                        bean.sent = 2
+                    if (bean.sentNew == 0){//发送失败
+                        bean.sentNew = 2
 
                         addDataToList("5", bean)
-                        if (index == 0) {
-                            appViewModel.updateMsgListEvent.postValue(bean)
-                        }
+//                        if (index == 0) {
+//                            appViewModel.updateMsgListEvent.postValue(bean)
+//                        }
                     }
-                    bean.sent = 2
+                    bean.sentNew = 2
                     addDataToList("8", bean)
                 }
             }
@@ -1000,12 +1479,83 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
 
     fun initData() {
         mDatabind.smartCommon.setOnRefreshListener {
-            mViewModel.getHisMsgList(mDatabind.smartCommon, offset, userId)
+            mViewModel.getHisMsgList(mDatabind.smartCommon, mViewModel.offset, userId)
         }
+    }
+
+
+    fun setDate(){
+        val resourceId =  R.raw.emoji // 替换成你的 JSON 文件名
+        val jsonString = appContext.resources.openRawResource(resourceId).bufferedReader().use { it.readText() }
+        val jsonObject = org.json.JSONObject(jsonString)
+        val keysList = ArrayList<String>()
+        var count = 0
+        jsonObject.keys().forEach { key ->
+            if (count < 80) {
+                keysList.add(key)
+                count++
+            }
+        }
+
+//        jsonObject.keys().forEach { key ->
+//            keysList.add(key)
+//        }
+
+        mDatabind.rvEmoje.grid(8).setup {
+            addType<String>(R.layout.item_emoje_txt)
+            onBind {
+                var bindingItem=getBinding<ItemEmojeTxtBinding>()
+                var  bean=_data as String
+
+                val spannable = SpannableString(bean)
+                spannable.setSpan(ForegroundColorSpan(ContextCompat.getColor(context, R.color.c_37373d)), 0, spannable.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                bindingItem.txtEmoje.text=spannable
+
+                bindingItem.txtEmoje.setOnClickListener {
+
+                    if (CacheUtil.isLogin()&& Constants.ISSTOP_TALK.equals("0")) {
+                        var  bean=_data as String
+                        val spannable = SpannableString(bean)
+                        spannable.setSpan(ForegroundColorSpan(ContextCompat.getColor(context, R.color.c_37373d)), 0, spannable.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        mDatabind.edtcontent.setText(mDatabind.edtcontent.text.toString()+ spannable)
+                        mDatabind.edtcontent.setSelection(mDatabind.edtcontent.text.length)
+                    }
+
+                }
+
+
+            }
+//           R.id.txtEmoje.onClick {
+//
+//               if (CacheUtil.isLogin()&& Constants.ISSTOP_TALK.equals("0")) {
+//                   var  bean=_data as String
+//                   val spannable = SpannableString(bean)
+//                   spannable.setSpan(ForegroundColorSpan(ContextCompat.getColor(context, R.color.c_37373d)), 0, spannable.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+//                    mDatabind.edtcontent.setText(mDatabind.edtcontent.text.toString()+ spannable)
+//                   mDatabind.edtcontent.setSelection(mDatabind.edtcontent.text.length)
+//                }
+//
+//           }
+
+        }.addModels(keysList)
     }
 
     override fun createObserver() {
         super.createObserver()
+
+        mViewModel.emojiList.observe(this){
+
+            mDatabind.rvEmoje.grid(8).setup {
+                addType<String>(R.layout.item_emoje_txt)
+                onBind {
+                    var bindingItem=getBinding<ItemEmojeTxtBinding>()
+                    var  bean=_data as String
+                    bindingItem.txtEmoje.text=bean
+
+                }
+            }.addModels(it)
+        }
+
         try {
 
 
@@ -1022,86 +1572,113 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                 }
             }
             mViewModel.hisMsgList.observeForever {
-                if (it.size > 0) {
-
-                    if (listdata.size == 0) {//没有本地数据
-                        var i = 0
-                        var j: Int = it.size - 1
-                        while (i < j) {
-                            val temp: MsgBeanData = it[i]
-                            it[i] = it[j]
-                            it[j] = temp
-                            i++
-                            j--
-                        }
-                        listdata.addAll(it)
-                        mDatabind.state.showContent()
-                        for (i in 0 until it.size) {
-                            if (it[i].sendId == "0") {
-                                it[i].sendId = userId + it[i].createTime
-                            }
-                            it[i].sent = 1
-
-                            addDataToList("9", it[i])
-                        }
-                    } else {
-
-                        var bean = listdata[0]
-                        for ((index, data) in it.withIndex()) {
-
-
-                            val foundData = listdata.find { it.id == data.id }
-                            if (foundData == null) {
-
-                                data?.let { it1 ->
-
-                                    if (TimeUtil.isEarlier(
-                                            data.createTime!!,
-                                            bean.createTime!!
-                                        )
-                                    ) {
-                                        if (it1.sendId == "0") {
-                                            it1.sendId = it1.id
-                                        }
-                                        incount++
-                                        data.sent = 1
-                                        addDataToList("10", data)
-                                        var listdata1: MutableList<MsgBeanData> =
-                                            ArrayList<MsgBeanData>()
-                                        listdata1.add(data)
-                                        mDatabind.rv.addModels(listdata1, index = 0)
-                                        mDatabind.rv.scrollToPosition(0) // 保证最新一条消息显示
-
-                                    }
+                      //第一页
+                    if(mViewModel.isRefresh){
+                            if(it.size>0){
+                                var data= it.reversed()
+                                listdata.clear()
+                                listdata.addAll(data)
+                                mDatabind.state.showContent()
+                                mDatabind.rv.bindingAdapter.notifyDataSetChanged()
+                            }else{
+                                if(listdata.size>0){
+                                    mViewModel.offset=listdata[listdata.size-1].id!!
                                 }
                             }
-                        }
-//                    runBlocking {
-//                        var ss = waitAddData(it)
-//                        getAllData()
-//                    }
 
+
+                    }else{
+                        if(it.size>0){
+                            var data= it.reversed()
+                            listdata.addAll(listdata.size,data)
+//                            mDatabind.rv.addModels(data, index =  0)
+                            mDatabind.rv.bindingAdapter.notifyDataSetChanged()
+                        }
                     }
-                }
+
+
+//                if (it.size > 0) {
+//
+//                    if (listdata.size == 0) {//没有本地数据
+//                        var i = 0
+//                        var j: Int = it.size - 1
+//                        while (i < j) {
+//                            val temp: MsgBeanData = it[i]
+//                            it[i] = it[j]
+//                            it[j] = temp
+//                            i++
+//                            j--
+//                        }
+//                        listdata.addAll(it)
+//                        mDatabind.state.showContent()
+//                        for (i in 0 until it.size) {
+//                            if (it[i].sendId == "0") {
+//                                it[i].sendId = userId + it[i].createTime
+//                            }
+//                            it[i].sent = 1
+//
+//                            addDataToList("9", it[i])
+//                        }
+//                    } else {
+//
+//                        var bean = listdata[0]
+//                        for ((index, data) in it.withIndex()) {
+//
+//
+//                            val foundData = listdata.find { it.id == data.id }
+//                            if (foundData == null) {
+//
+//                                data?.let { it1 ->
+//
+//                                    if (TimeUtil.isEarlier(
+//                                            data.createTime!!,
+//                                            bean.createTime!!
+//                                        )
+//                                    ) {
+//                                        if (it1.sendId == "0") {
+//                                            it1.sendId = it1.id
+//                                        }
+//                                        incount++
+//                                        data.sent = 1
+//                                        addDataToList("10", data)
+//                                        var listdata1: MutableList<MsgBeanData> =
+//                                            ArrayList<MsgBeanData>()
+//                                        listdata1.add(data)
+//                                        mDatabind.rv.addModels(listdata1, index = 0)
+//                                        mDatabind.rv.scrollToPosition(0) // 保证最新一条消息显示
+//
+//                                    }
+//                                }
+//                            }
+//                        }
+////                    runBlocking {
+////                        var ss = waitAddData(it)
+////                        getAllData()
+////                    }
+//
+//                    }
+//                }
 
                 // mDatabind.rv.addModels(it)
-                //offset = it[it.size - 1].id!!
+                mDatabind.smartCommon.setEnableRefresh(true)
 
-
-                if (it.size < 50) {
-                    mDatabind.smartCommon.setEnableRefresh(false)
-                }
+//                if (it.size < 10) {
+//                    mDatabind.smartCommon.setEnableRefresh(false)
+//                }else{
+//                    mDatabind.smartCommon.setEnableRefresh(true)
+//                }
 
             }
         } catch (e: Exception) {
         }
+
+
+
     }
 
 
     fun sendMsg(sendid: String, isSend: Boolean,timeold:Long=0) {
         try {
-
-
             if (Constants.ISSTOP_TALK != "0") {
                 myToast(resources.getString(R.string.str_stoptalk))
                 return
@@ -1157,7 +1734,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                 beanmy.id = sendID
                 beanmy.sendId = sendID
                 beanmy.cmd = 11
-                beanmy.sent = 0
+                beanmy.sentNew = 0
                 beanmy.msgType = bean.msgType
                 beanmy.createTime = creatime
                 var listdata1: MutableList<MsgBeanData> = ArrayList<MsgBeanData>()
@@ -1198,14 +1775,14 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
     fun addDataToList(index: String, data: MsgBeanData) {
         LogUtils.d(index + "嘿嘿开始添加数据" + JSONObject.toJSONString(data))
 
-        GlobalScope.launch {
-            mutex.withLock {
-                if (CacheUtil.getUser() != null) {
-                    data.withId = CacheUtil.getUser()?.id!!
-                    MyApplication.dataBase!!.chatDao?.insertOrUpdate(data)
-                }
-            }
-        }
+//        GlobalScope.launch {
+//            mutex.withLock {
+//                if (CacheUtil.getUser() != null) {
+//                    data.withId = CacheUtil.getUser()?.id!!
+//                    MyApplication.dataBase!!.chatDao?.insertOrUpdate(data)
+//                }
+//            }
+//        }
     }
 
     fun seacherData(): Deferred<MutableList<MsgBeanData>> {
@@ -1234,7 +1811,9 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                 return
             }
             reSendMsgDialog(this) { isSure ->
-                matchBeanNew.sent = 0
+                matchBeanNew.sentNew = 0
+                //是重新发送
+                matchBeanNew.againSend=1
                 if (matchBeanNew.msgType == 0) {
                     msgType = matchBeanNew.msgType!!
                     msgContent = matchBeanNew.content
@@ -1246,5 +1825,26 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
         } catch (e: Exception) {
         }
     }
+//    private val mLayoutManager by lazy {
+//
+//
+//        HoverLinearLayoutManager(this, RecyclerView.VERTICAL, false).apply {
+//            // stackFromEnd = true
+//        }
+//    }
+    /**
+     * 判断软件是否打开
+     */
+    fun isKeyboardOpen(context: Context): Boolean {
+        val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        return inputMethodManager.isAcceptingText
+    }
 
+    /**
+     * 关闭软键盘
+     */
+    fun closeKeyboard(view: View, context: Context) {
+        val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+    }
 }

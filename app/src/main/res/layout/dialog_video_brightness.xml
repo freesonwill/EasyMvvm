@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/app_video_brightness_box"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center|top"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="146dp"
+        android:layout_height="41dp"
+        android:layout_marginTop="@dimen/dp_35"
+
+
+        android:background="@drawable/video_dialog_progress_bg"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/app_video_brightness_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/detaic_tv_brightness" />
+
+        <TextView
+            android:id="@+id/app_video_brightness"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:paddingTop="4dp"
+            android:visibility="invisible"
+            android:text="50%"
+            android:textColor="@android:color/white"
+            android:textSize="16dp" />
+
+        <ProgressBar
+            android:id="@+id/volumeProgressbarNew"
+            style="@style/video_vertical_progressBar_new"
+            android:layout_width="86dp"
+            android:layout_height="2dp"
+            android:layout_marginLeft="10dp"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/app_video_brightness_icon"
+            android:progressDrawable="@drawable/rounded_horizontal_progressbar"
+            android:orientation="horizontal"
+            android:max="100" />
+    </RelativeLayout>
+</LinearLayout>

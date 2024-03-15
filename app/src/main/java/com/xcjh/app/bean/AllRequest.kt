@@ -214,4 +214,30 @@ data class LiveInfoReq(
 
 
 
+/**
+ * 获取验证码
+ */
+@Keep
+data class CaptchaVOReq(
+    var captchaType: String = "blockPuzzle",//唯一标识符blockPuzzle  captchaType
+    var clientUid: String = ""//设备id
+) : Serializable
+
+
+/**
+ * 登录发送邮箱或者短信
+ */
+@Keep
+data class LoginSend(
+    var account: String="",//手机号
+    var areaCode: String="",//区号
+    var email: String="",//邮箱
+    var lang: Int=1,//语言类型：1：中文；2：英文,示例值(1)
+
+)
+
+
+
+
+
 

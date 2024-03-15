@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/dp_30"
+    android:paddingTop="@dimen/dp_10"
+    android:background="@drawable/shape_r8"
+    android:layout_alignParentBottom="true"
+    android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/llSelectTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/c_37373d"
+                android:textStyle="bold"
+                android:text="@string/projection_txt_title"
+                android:textSize="@dimen/sp_16"/>
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/c_f63b21"
+                android:layout_marginTop="@dimen/dp_5"
+                android:text="@string/projection_txt_attention"
+                android:textSize="@dimen/sp_12"/>
+        </LinearLayout>
+        <View
+            android:id="@+id/vSelectView"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1"
+            android:layout_below="@+id/llSelectTitle"
+            android:layout_marginTop="@dimen/dp_16"
+            android:background="@color/c_E8eaef"/>
+
+
+        <RelativeLayout
+            android:id="@+id/rListYout"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_below="@+id/vSelectView">
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rcvRecommend"
+                android:layout_marginTop="12dp"
+                android:layout_width="match_parent"
+                android:visibility="gone"
+                tools:listitem="@layout/item_select_projection"
+                android:layout_height="match_parent"
+                android:overScrollMode="never" />
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/loading"
+                android:layout_width="@dimen/dp_75"
+                android:layout_height="@dimen/dp_30"
+                android:layout_centerInParent="true"
+                app:lottie_autoPlay="true"
+                app:lottie_fileName="loading.json"
+                app:lottie_loop="true" />
+
+        </RelativeLayout>
+        <LinearLayout
+            android:id="@+id/llSelectIllustrate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape8_f5f5f5xml"
+            android:paddingBottom="@dimen/dp_14"
+            android:paddingTop="@dimen/dp_14"
+            android:layout_marginRight="@dimen/dp_12"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:orientation="vertical"
+            android:layout_below="@+id/rListYout">
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/c_777b80"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:text="@string/projection_txt_err"
+                android:textSize="@dimen/sp_16"/>
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_10"
+                android:textColor="@color/c_94999f"
+                android:paddingLeft="@dimen/dp_40"
+                android:paddingRight="@dimen/dp_40"
+                android:text="@string/projection_txt_condition_yi"
+                android:textSize="@dimen/sp_12"/>
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/c_94999f"
+                android:paddingLeft="@dimen/dp_40"
+                android:paddingRight="@dimen/dp_40"
+                android:text="@string/projection_txt_condition_er"
+                android:textSize="@dimen/sp_12"/>
+        </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/txtDialogCancel"
+        android:layout_marginRight="@dimen/dp_12"
+        android:layout_marginLeft="@dimen/dp_12"
+        android:layout_width="match_parent"
+        android:layout_below="@+id/llSelectIllustrate"
+        android:layout_height="wrap_content"
+        android:textSize="15sp"
+        android:paddingBottom="@dimen/dp_16"
+        android:text="@string/cancel"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:paddingTop="@dimen/dp_16"
+        android:textStyle="bold"
+        android:textColor="@color/c_37373d" />
+    </RelativeLayout>

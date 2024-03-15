@@ -151,7 +151,13 @@ class MainNewsListFragment  : BaseFragment<MainNewsListVm, FragmentMainNewsListB
 
     override fun createObserver() {
         super.createObserver()
+        //首页获取到数据了
+        appViewModel.mainDateShowEvent.observeForever {
+            if(isAdded){
+                mViewModel.getNewsList(true)
+            }
 
+        }
         //登录或者登出
         appViewModel.updateLoginEvent.observe(this){
 

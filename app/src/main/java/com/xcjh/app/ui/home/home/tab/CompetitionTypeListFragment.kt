@@ -9,6 +9,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.drake.brv.utils.*
 import com.drake.statelayout.StateConfig
 import com.scwang.smart.refresh.layout.api.RefreshLayout
@@ -196,6 +197,15 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
 
     override fun createObserver() {
         super.createObserver()
+
+        //首页获取到数据了
+        appViewModel.mainDateShowEvent.observeForever {
+            if(isAdded){
+                mViewModel.getNowLive(true, type = type.toString())
+            }
+
+        }
+
         //打开直播的时候获取到详情
         mViewModel.beingLive.observe(this){
             var list =ArrayList<BeingLiveBean>()

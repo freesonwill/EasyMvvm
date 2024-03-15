@@ -377,7 +377,6 @@
                     app:srcCompat="@drawable/wd_gengduo_icon" />
             </RelativeLayout>
 
-
         </LinearLayout>
 
     </RelativeLayout>

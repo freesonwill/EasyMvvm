@@ -21,6 +21,12 @@ class MainVm : BaseViewModel() {
 
     private var dataLoaded: Boolean = false
 
+    //首页是否获取到个人信息，如果没有获取到就要在获取到首页数据的时候在获取一次
+    public var isGetUserDate:Boolean=false
+
+    //首页是否绑定了极光账号，如果没有获取到就要在获取到首页数据的时候在获绑定一次
+    public var isPushDate:Boolean=false
+
     fun mockDataLoading(): Boolean {
         viewModelScope.launch {
             delay(2500)
@@ -63,6 +69,7 @@ class MainVm : BaseViewModel() {
                 CacheUtil.setUser(it)
                 Constants.ISSTOP_TALK = it.ynForbidden!!
                 appViewModel.userInfo.value = it
+                isGetUserDate=true
             }, {
 
             }
@@ -76,6 +83,7 @@ class MainVm : BaseViewModel() {
         request(
             { apiService.jPushBind(id) },
             {
+             isPushDate=true
             },
         )
     }

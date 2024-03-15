@@ -65,7 +65,7 @@
                 app:radius="@dimen/dp_8"
 
                 app:layout_constraintTop_toTopOf="parent"
-                android:layout_height="wrap_content"
+                android:layout_height="100dp"
                 />
 
 

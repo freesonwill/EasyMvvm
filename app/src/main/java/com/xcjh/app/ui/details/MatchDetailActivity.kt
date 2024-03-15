@@ -1,20 +1,31 @@
 package com.xcjh.app.ui.details
 
+import android.app.ActivityManager
+import android.content.Context
 import android.content.Intent
-import android.content.res.ColorStateList
+import android.content.ServiceConnection
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
+import androidx.activity.OnBackPressedCallback
 import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.android.cling.ClingDLNAManager
+import com.android.cling.control.DeviceControl
+import com.android.cling.control.OnDeviceControlListener
+import com.android.cling.control.ServiceActionCallback
+import com.android.cling.entity.ClingDevice
+import com.android.cling.entity.ClingPlayType
+import com.android.cling.startBindUpnpService
+import com.android.cling.stopUpnpService
+import com.android.cling.util.Utils
 import com.bumptech.glide.Glide
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.appbar.AppBarLayout
-import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
 import com.gyf.immersionbar.ImmersionBar
 import com.gyf.immersionbar.ImmersionBar.getStatusBarHeight
+import com.lxj.xpopup.XPopup
 import com.shuyu.gsyvideoplayer.builder.GSYVideoOptionBuilder
 import com.shuyu.gsyvideoplayer.utils.GSYVideoType
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer
@@ -30,7 +41,9 @@ import com.xcjh.app.ui.chat.ChatActivity
 import com.xcjh.app.ui.details.common.GSYBaseActivity
 import com.xcjh.app.ui.details.fragment.*
 import com.xcjh.app.utils.*
+import com.xcjh.app.view.PopupSelectProjection
 import com.xcjh.app.view.balldetail.ControlShowListener
+import com.xcjh.app.view.balldetail.MatchVideoPlayer
 import com.xcjh.app.websocket.MyWsManager
 import com.xcjh.app.websocket.bean.LiveStatus
 import com.xcjh.app.websocket.bean.ReceiveChangeMsg
@@ -39,11 +52,17 @@ import com.xcjh.app.websocket.listener.OtherPushListener
 import com.xcjh.base_lib.App
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.*
+import com.xcjh.base_lib.utils.view.clickNoRepeat
 import com.xcjh.base_lib.utils.view.visibleOrGone
 import com.xcjh.base_lib.utils.view.visibleOrInvisible
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import java.util.*
 import kotlin.math.abs
+import org.fourthline.cling.model.meta.Device
 
 /**
  * 比赛详情 主页
@@ -65,10 +84,21 @@ class MatchDetailActivity :
     private var anchorId: String? = null //主播ID
     private var isHasAnchor: Boolean = false //当前流是否有主播
     private var isShowVideo: Boolean = false //当前是否播放视频
-
     // private var playUrl: String? = "rtmp://liteavapp.qcloud.com/live/liteavdemoplayerstreamid"
     // private var playUrl: String? = "https://sf1-hscdn-tos.pstatp.com/obj/media-fe/xgplayer_doc_video/flv/xgplayer-demo-720p.flv"
+    //选择的播放设备
+    private var selectDevice: ClingDevice?=null
+    //播放失败
+    private var deviceErr: Device<*, *, *>?=null
+    //弹出搜索框
+    private var popup : PopupSelectProjection?=null
 
+    //投屏需要的对象
+    private var control: DeviceControl?=null
+    private var mUpnpServiceConnection: ServiceConnection? = null
+
+    //当前界面在顶部
+    private  var topActivity:Boolean=true
     companion object {
         fun open(
             matchType: String = "1",
@@ -83,7 +113,96 @@ class MatchDetailActivity :
                 putExtra("matchName", matchName)
                 putExtra("anchorId", anchorId)
                 putExtra("videoUrl", videoUrl)
+                 
             }
+        }
+    }
+
+//    private val callback = object : OnBackPressedCallback(true /* enabled by default */) {
+//        override fun handleOnBackPressed() {
+//            Log.i("VVVVVVVVVVVVVVV","====="+mDatabind.videoPlayer.getLockState())
+//            if ( mDatabind.videoPlayer.getLockState()) {
+//                // If shouldBlockBack is false, we call the default onBackPressed behavior
+//                onBackPressedDispatcher.onBackPressed()
+//            }else{
+//
+//            }
+//            // If shouldBlockBack is true, we do nothing, so the current interface will not be closed
+//        }
+//    }
+
+
+
+    fun dataPopup(){
+        popup=PopupSelectProjection(this)
+        var popwindow = XPopup.Builder(this)
+            .hasShadowBg(false)
+            .moveUpToKeyboard(false) //如果不加这个，评论弹窗会移动到软键盘上面
+            .isViewMode(true)
+            .isDestroyOnDismiss(true)
+            .asCustom(popup).show()
+        popup!!.popupSelectProjectionListener=object :PopupSelectProjection.PopupSelectProjectionListener{
+            override fun clickClose() {
+
+            }
+
+            override fun clickDevice(date: ClingDevice) {
+                popwindow!!.dismiss()
+
+                if(selectDevice!=null&&selectDevice!!.name.equals(date.name)){
+                    control?.setAVTransportURI( mDatabind.videoPlayer.getUrl(),"", ClingPlayType.TYPE_VIDEO, object :
+                        ServiceActionCallback<Unit> {
+                        override fun onSuccess(result: Unit) {
+//                                "投放成功".showToast()
+                            control?.play() //有些还要重新调用一次播放
+                        }
+
+                        override fun onFailure(msg: String) {
+//                                "投放失败:$msg".showToast()
+                            myToast("链接失败")
+                        }
+                    })
+                }else{
+                    selectDevice=date
+                    control= ClingDLNAManager.getInstant().connectDevice(date, object :
+                        OnDeviceControlListener {
+                        override fun onConnected(device: Device<*, *, *>) {
+                            super.onConnected(device)
+//                        myToast("连接成功")
+                            if (control == null){
+                                myToast("设备被清除请从新选择")
+                                return
+                            }
+
+                            control?.setAVTransportURI( mDatabind.videoPlayer.getUrl(),"", ClingPlayType.TYPE_VIDEO, object :
+                                ServiceActionCallback<Unit> {
+                                override fun onSuccess(result: Unit) {
+//                                "投放成功".showToast()
+                                    control?.play() //有些还要重新调用一次播放
+                                }
+
+                                override fun onFailure(msg: String) {
+//                                "投放失败:$msg".showToast()
+                                    myToast("链接失败")
+                                }
+                            })
+
+                        }
+
+                        override fun onDisconnected(device: Device<*, *, *>) {
+                            super.onDisconnected(device)
+                            Log.i("SSSSSSSSSCCCC","="+device)
+//                            myToast("无法连接")
+                            deviceErr=device
+                            ClingDLNAManager.getInstant().disconnectDevice(device)
+                        }
+                    })
+                }
+
+
+                control?.addControlObservers()
+            }
+
         }
     }
 
@@ -94,6 +213,47 @@ class MatchDetailActivity :
             .navigationBarColor(R.color.c_181819)
             .navigationBarDarkIcon(false)
             .titleBarMarginTop(mDatabind.rltTop).init()
+            mDatabind.ivMatchVideo.clickNoRepeat{
+                ClingDLNAManager.getInstant().searchDevices()
+                dataPopup()
+             }
+        //横屏分享
+        appViewModel.landscapeShareEvent.observe(this) {
+            if(topActivity){
+                if(it==1){
+                    GlobalScope.launch(Dispatchers.Main) { // 使用主线程的调度器
+                        setShareDate()
+                    }
+
+
+                }else if(it==2){
+                    GlobalScope.launch(Dispatchers.Main) { // 使用主线程的调度器
+                        delay(1000L) // 延迟1秒（1000毫秒）
+                        ClingDLNAManager.getInstant().searchDevices()
+                        dataPopup()
+                    }
+
+                }
+
+            }
+
+
+
+        }
+//        mDatabind.videoPlayer.matchVideoListener=object : MatchVideoPlayer.MatchVideoListener{
+//            override fun setShare() {
+//                setShareDate()
+//            }
+//
+//            override fun screen() {
+//                ClingDLNAManager.getInstant().searchDevices()
+//                dataPopup()
+//            }
+//
+//        }
+
+ //        mDatabind.mediaRouteButton.SessionManagerListene
+//        mDatabind.mediaRouteButton.sets
         //解决toolbar左边距问题
         mDatabind.toolbar.setContentInsetsAbsolute(0, 0)
         mDatabind.viewTopBg.layoutParams.height = getStatusBarHeight(this)
@@ -126,6 +286,8 @@ class MatchDetailActivity :
         initOther()
         // setTestTab()
     }
+
+
 
     private fun setData() {
         mViewModel.getMatchDetail(matchId, matchType, true)
@@ -199,6 +361,7 @@ class MatchDetailActivity :
                 setUnScroll(mDatabind.lltFold)
             } else {
                 if (isShowVideo) {
+
                     setUnScroll(mDatabind.lltFold)
                 } else {
                     setScroll(mDatabind.lltFold)
@@ -206,6 +369,9 @@ class MatchDetailActivity :
             }
         }
     }
+
+
+
 
     private fun initOther() {
         ///跑马灯设置
@@ -366,22 +532,26 @@ class MatchDetailActivity :
             })
     }
 
+       fun  setShareDate(){
+        //分享 固定地址
+        //复制链接成功
+        val url = if (isHasAnchor) {
+            if (CacheUtil.isLogin()) {
+                mViewModel.addLiveShare(anchor?.liveId)
+            }
+            ApiComService.SHARE_IP + "#/roomDetail?id=${matchId}&liveId=${anchor?.liveId}&type=${matchType}&userId=${anchor?.userId}"
+        } else {
+            ApiComService.SHARE_IP + "#/roomDetail?id=${matchId}&type=${matchType}&pureFlow=true"
+        }
+        /*  copyToClipboard(url)
+          myToast(getString(R.string.copy_success))*/
+        shareText(this, url)
+    }
+
     private fun setBaseListener() {
         //分享按钮
         mDatabind.tvToShare.setOnClickListener {
-            //分享 固定地址
-            //复制链接成功
-            val url = if (isHasAnchor) {
-                if (CacheUtil.isLogin()) {
-                    mViewModel.addLiveShare(anchor?.liveId)
-                }
-                ApiComService.SHARE_IP + "#/roomDetail?id=${matchId}&liveId=${anchor?.liveId}&type=${matchType}&userId=${anchor?.userId}"
-            } else {
-                ApiComService.SHARE_IP + "#/roomDetail?id=${matchId}&type=${matchType}&pureFlow=true"
-            }
-            /*  copyToClipboard(url)
-              myToast(getString(R.string.copy_success))*/
-            shareText(this, url)
+            setShareDate()
         }
         //信号源
         mDatabind.tvSignal.setOnClickListener {
@@ -425,6 +595,8 @@ class MatchDetailActivity :
                     isHasAnchor = true
                     isShowVideo = true
                 }
+
+
                 mDatabind.tvToShare.visibleOrGone(true)
                 if (isShowVideo) {
                     startVideo(anchor.playUrl)
@@ -533,6 +705,8 @@ class MatchDetailActivity :
         //先停
         // stopVideo()
         //再开
+
+
         mDatabind.videoPlayer.visibleOrGone(true)
         mDatabind.videoPlayer.setUp(url, false, "")
         mDatabind.videoPlayer.startPlayLogic()
@@ -545,26 +719,40 @@ class MatchDetailActivity :
         }
         mDatabind.videoPlayer.setControlListener(object : ControlShowListener {
             override fun onShow() {
+
                 if (isShowVideo) {
                     mDatabind.rltTop.background.alpha = 255
                     mDatabind.topLiveTitle.visibleOrGone(true)
                     mDatabind.tvToShare.visibleOrGone(true)
                     mDatabind.tvSignal.visibleOrGone(true)
+                    mDatabind.ivMatchVideo.visibleOrGone(true)
                 }
             }
 
             override fun onHide() {
+
                 if (isShowVideo) {
                     mDatabind.rltTop.background.alpha = 0
                     mDatabind.topLiveTitle.visibleOrGone(false)
                     mDatabind.tvToShare.visibleOrGone(false)
                     mDatabind.tvSignal.visibleOrGone(false)
+                    mDatabind.ivMatchVideo.visibleOrGone(false)
                 }
             }
+
+
         })
+
+
     }
 
+    public fun closeLiveService(){
+        //关闭投屏服务之类的
+        ClingDLNAManager.stopLocalFileService(this)
+        stopUpnpService(mUpnpServiceConnection)
+        ClingDLNAManager.getInstant().destroy()
 
+    }
     //数据处理
     override fun createObserver() {
         //比赛详情接口返回监听处理
@@ -601,6 +789,7 @@ class MatchDetailActivity :
                 if (list.size>0){
                     //滚动条广告
                     mDatabind.marqueeView.isSelected = true
+                    //随机取一个数 val random = (0 until list.size).random()
                     val random = (0..list.size).random() % list.size
                     mDatabind.marqueeView.text =
                         list[random].name    /*+"                                                                                             "*/
@@ -708,6 +897,7 @@ class MatchDetailActivity :
         } else {
             mDatabind.toolbar.setBackgroundResource(if (isHasAnchor) R.color.translet else R.drawable.bg_top_basketball)
         }
+        //设置Tab
         setNewViewPager(
             mTitles,
             mFragList,
@@ -818,14 +1008,49 @@ class MatchDetailActivity :
         }
     }
 
+    override fun onStop() {
+        super.onStop()
+        topActivity=false
+    }
+
     override fun onResume() {
         super.onResume()
+            topActivity=true
+
+        GlobalScope.launch(Dispatchers.Main) { // 使用主线程的调度器
+            delay(1000L) // 延迟1秒（1000毫秒）
+            // 在这里写下你想要在1秒后执行的代码
+            initScreenProjection()
+
+            ClingDLNAManager.getInstant().getSearchDevices().observe(this@MatchDetailActivity) {
+//            mBinding.toolbar.subtitle = Utils.getWiFiIpAddress(this)
+                Log.i("SSSSSSSSsss","======="+it.size)
+                Utils.getWiFiIpAddress(this@MatchDetailActivity)
+                if(popup!=null&& !popup!!.isDismiss){
+//                deviceList.clear()
+//                deviceList.addAll(it)
+                    var  list=ArrayList<ClingDevice>()
+                    list.addAll(it)
+                    popup!!.setDate(list)
+                }
+
+
+            }
+        }
+
         if (isShowVideo && !isTopActivity(this)) {
             startVideo(anchor?.playUrl)
         }
     }
 
+
+
     override fun onDestroy() {
+        //关闭投屏服务之类的
+        ClingDLNAManager.stopLocalFileService(this)
+        stopUpnpService(mUpnpServiceConnection)
+        ClingDLNAManager.getInstant().destroy()
+
         super.onDestroy()
         MyWsManager.getInstance(App.app)?.removeLiveStatusListener(this.toString())
         MyWsManager.getInstance(App.app)?.removeOtherPushListener(this.toString())
@@ -851,6 +1076,11 @@ class MatchDetailActivity :
         //Log.e("TAG", "clickForFullScreen: ===")
     }
 
+
+//    override fun screenState() {
+//      mDatabind.videoPlayer.getScreenState()
+//    }
+
     override fun onPlayError(url: String, vararg objects: Any) {
         "video error=====================".loge("====")
         //showHideLive(true)
@@ -869,5 +1099,66 @@ class MatchDetailActivity :
 
     override val detailOrientationRotateAuto: Boolean
         get() = false
+
+
+    /**
+     * 初始化投屏
+     */
+    private fun initScreenProjection() {
+        bindServices()
+        ClingDLNAManager.startLocalFileService(this)
+    }
+    private fun bindServices() { // Bind UPnP service
+        mUpnpServiceConnection = startBindUpnpService {
+            Log.i("Cling", "startBindUpnpService OK")
+        }
+    }
+
+    /**
+     * Add control observers
+     * 监听control的状态
+     */
+    private fun DeviceControl.addControlObservers() {
+//        PLAYING   播放
+//         NO_MEDIA_PRESENT    没有
+//         PAUSED_PLAYBACK    暂停
+//        STOPPED    关闭
+
+        getCurrentState().observe(this@MatchDetailActivity) {
+//            mBinding.playState.text = "当前状态：$it"
+            Log.i("DDDDD","1111==="+it.toJson())
+//            if(it.value.isNotEmpty()&&it.value.equals("STOPPED")){
+//                control?.stop(object : ServiceActionCallback<Unit> {
+//                    override fun onSuccess(result: Unit) {
+////                        "停止成功".showToast()
+//                        Log.i("VVVVVVVVVVV","停止成功")
+//                    }
+//
+//                    override fun onFailure(msg: String) {
+////                        "停止失败".showToast()
+//                        Log.i("VVVVVVVVVVV","停止失败")
+//                    }
+//                })
+//            }
+
+
+
+        }
+        getCurrentPositionInfo().observe(this@MatchDetailActivity){
+//            mBinding.playPosition.text = "当前进度：${it.toJson()}"
+            Log.i("SSSSSSSSSSSS","2222222222222222==="+it.toJson())
+
+        }
+        getCurrentVolume().observe(this@MatchDetailActivity){
+//            mBinding.playVolume.text = "当前音量：$it"
+            Log.i("SSSSSSSSSSSS","33333333333==="+it)
+        }
+        getCurrentMute().observe(this@MatchDetailActivity) {
+//            mBinding.playVolume.text = "当前静音：$it"
+            Log.i("SSSSSSSSSSSS","4444444444444==="+it)
+        }
+    }
+
+
 
 }

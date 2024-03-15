@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/videoRoon"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:ignore="MissingDefaultResource">
@@ -73,15 +74,54 @@
     <ImageView
         android:visibility="gone"
         android:id="@+id/fullscreen"
-        android:layout_width="@dimen/dp_30"
-        android:layout_height="@dimen/dp_30"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
         android:padding="5dp"
-        android:src="@drawable/video_enlarge"
-        android:layout_marginEnd="@dimen/dp_20"
-        android:layout_marginBottom="@dimen/dp_36"
+        android:src="@drawable/detaic_tv_icon_screen"
+        android:layout_marginEnd="@dimen/dp_60"
+        android:layout_marginBottom="@dimen/dp_30"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         tools:ignore="ContentDescription" />
+<!--android:layout_marginBottom="@dimen/dp_36"-->
+    <ImageView
+        android:id="@+id/lock_screen"
+        android:layout_width="34dp"
+        android:layout_height="34dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/unlock"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="50dp"
+        app:layout_constraintVertical_bias="0.5"/>
 
-
+    <LinearLayout
+        android:id="@+id/llIsShow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        android:layout_marginTop="@dimen/dp_26"
+        android:layout_marginRight="@dimen/dp_26"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints">
+        <ImageView
+            android:id="@+id/ivMatchVideoNew"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginRight="8dp"
+            app:srcCompat="@drawable/detaic_tv_icon"/>
+        <ImageView
+            android:id="@+id/tvToShareNew"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:scaleType="fitXY"
+            android:src="@drawable/detaic_tv_icon_share_new"
+            app:tint="@color/white_to_dark_selector" />
+<!--     detaic_tv_icon_share   -->
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

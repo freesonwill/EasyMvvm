@@ -139,7 +139,9 @@ fun dip2px(dipValue: Float): Int {
     return (dipValue * scale + .5f).toInt()
 }
 
-
+/**
+ *
+ */
 fun MagicIndicator.bindViewPager2(
     viewPager: ViewPager2,
     mStringList: List<String> = arrayListOf(),

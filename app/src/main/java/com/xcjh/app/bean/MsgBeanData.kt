@@ -39,11 +39,11 @@ class MsgBeanData {
     @ColumnInfo(name = "identityType")
     var identityType: Int? = 0//发送者身份身份(0：普通用户，1主播 2助手 3运营)
     @ColumnInfo(name = "msgType")
-    var msgType: Int? = 0 //消息类型，文字：0， 图片：1
+    var msgType: Int? = 0 //消息类型，文字：0， 图片：1  3视频
     @ColumnInfo(name = "readable")
     var readable: Int? = 0//是否已读：0 未读 1 已读
-    @ColumnInfo(name = "sent")
-    var sent: Int? = 0//是否已发送: 0 正在发送 1 已发送 2 发送失败
+    @ColumnInfo(name = "sentNew")
+    var sentNew: Int? = 1//是否已发送: 0 正在发送 1 已发送 2 发送失败
     @ColumnInfo(name = "toId")
     var toId: String? = ""
     @ColumnInfo(name = "updateTime")
@@ -55,5 +55,7 @@ class MsgBeanData {
 
     @PrimaryKey(autoGenerate = true)
     var idd = 0
-
+    var againSend :Int=0//默认是普通发送0   1是重新发送
+    @ColumnInfo(name = "sent")
+    var sent: Int? = 0//是否已发送: 0 正在发送 1 已发送 2 发送失败
 }

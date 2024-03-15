@@ -44,7 +44,7 @@
             app:radius="@dimen/dp_8"
 
             app:layout_constraintTop_toTopOf="@id/ivhead"
-            android:layout_height="wrap_content"
+            android:layout_height="100dp"
            />
 
 

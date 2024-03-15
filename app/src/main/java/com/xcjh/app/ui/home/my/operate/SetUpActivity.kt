@@ -62,6 +62,7 @@ class SetUpActivity  : BaseActivity<SetUpVm, ActivitySetUpBinding>() {
 
             }
 
+
 //            BottomMenu.show(object :OnBindView<BottomDialog>(R.layout.dialog_login_out){
 //                override fun onBind(dialog: BottomDialog?, view: View?) {
 //                    var txtDialogCancel= view!!.findViewById<AppCompatTextView>(R.id.txtDialogCancel)

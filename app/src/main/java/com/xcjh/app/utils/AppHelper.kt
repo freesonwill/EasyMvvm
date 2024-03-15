@@ -6,13 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.BitmapShader
-import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.RectF
-import android.graphics.Shader
-import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Looper
@@ -20,7 +14,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebResourceError
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.widget.ImageView
@@ -35,19 +30,19 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool
-import com.bumptech.glide.load.resource.bitmap.BitmapTransformation
-import com.bumptech.glide.load.resource.bitmap.CenterCrop
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions.withCrossFade
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.bumptech.glide.request.transition.ViewAnimationFactory
 import com.chad.library.adapter.base.BaseDifferAdapter
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.drake.brv.PageRefreshLayout
 import com.drake.brv.utils.addModels
 import com.drake.brv.utils.models
 import com.drake.statelayout.StateLayout
+import com.engagelab.privates.common.global.MTGlobal
 import com.google.android.material.snackbar.Snackbar
 import com.just.agentweb.WebViewClient
 import com.kingja.loadsir.core.LoadService
@@ -55,13 +50,12 @@ import com.kingja.loadsir.core.LoadSir
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
 import com.xcjh.app.R
 import com.xcjh.app.adapter.ViewPager2Adapter
-import com.xcjh.app.bean.BeingLiveBean
 import com.xcjh.app.databinding.LayoutEmptyBinding
 import com.xcjh.app.databinding.LayoutEmptyNoscrollBinding
 import com.xcjh.app.ui.login.LoginActivity
-import com.xcjh.app.utils.nice.Utils
 import com.xcjh.app.view.callback.EmptyCallback
 import com.xcjh.app.view.callback.LoadingCallback
+import com.xcjh.base_lib.App
 import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.bean.ListDataUiState
 import com.xcjh.base_lib.utils.LogUtils
@@ -69,7 +63,6 @@ import com.xcjh.base_lib.utils.dp2px
 import com.xcjh.base_lib.utils.layoutInflater
 import com.xcjh.base_lib.utils.setLm
 import com.xcjh.base_lib.utils.startNewActivity
-import java.security.MessageDigest
 import java.text.DecimalFormat
 
 
@@ -78,8 +71,8 @@ fun doSomething() {
     println("======")
 }
 
-
-fun ImageView.loadImageWithGlide(context: Context, imageUrl: String) {
+//
+fun ImageView.loadImageWithGlide(context: Context, imageUrl: String,action: () -> Unit = {}) {
     val maxImageWidth = dp2px(150)
     val maxImageHeight = dp2px(102)
     val cornerRadius = context.resources.getDimensionPixelSize(R.dimen.dp_8)
@@ -87,24 +80,26 @@ fun ImageView.loadImageWithGlide(context: Context, imageUrl: String) {
     Glide.with(context)
         .asBitmap()
         .load(imageUrl)
+         .placeholder(R.drawable.chat_icon_placeholder)
+        .error(R.drawable.chat_icon_placeholder)
+        .transition(withCrossFade())
         .thumbnail(0.1f)
         .skipMemoryCache(false)
-        .placeholder(R.drawable.chat_icon_placeholder)
-        .error(R.drawable.chat_icon_placeholder)
         .apply(
             RequestOptions()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
         )
         .into(object : CustomTarget<Bitmap>() {
             override fun onLoadStarted(placeholder: Drawable?) {
-                this@loadImageWithGlide.setImageDrawable(ColorDrawable(placeholderColor))
+//                this@loadImageWithGlide.setImageDrawable(ColorDrawable(placeholderColor))
             }
 
             override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                action.invoke()
                 val imageWidth = resource.width
                 val imageHeight = resource.height
                 val aspectRatio = imageWidth.toFloat() / imageHeight.toFloat()
-               var sss= imageUrl
+                var sss= imageUrl
                 val scaledWidth: Int
                 val scaledHeight: Int
                 val roundedCornerRadius: Float
@@ -120,14 +115,27 @@ fun ImageView.loadImageWithGlide(context: Context, imageUrl: String) {
 //                            isCircular = false
 //                            setCornerRadius(roundedCornerRadius)
 //                        }
+//                        .placeholder(R.drawable.chat_icon_placeholder)
+//                        .error(R.drawable.chat_icon_placeholder)
 
-                    Glide.with(context).load(resource).override(maxImageWidth, maxImageHeight).placeholder(R.drawable.chat_icon_placeholder)
+
+                    val layoutParams = this@loadImageWithGlide.layoutParams
+                    layoutParams.height = maxImageHeight
+                    this@loadImageWithGlide.layoutParams = layoutParams
+
+                    Glide.with(context).load(resource)
+                        .transition(DrawableTransitionOptions.withCrossFade())
+                        .override(maxImageWidth, maxImageHeight).placeholder(R.drawable.chat_icon_placeholder)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .skipMemoryCache(false)
+
                         .into(this@loadImageWithGlide)
                     // this@loadImageWithGlide.setImageDrawable(drawable)
                 } else {
                     // 图片尺寸小于等于最大尺寸，不进行缩放，直接使用原图尺寸
+                    val layoutParams = this@loadImageWithGlide.layoutParams
+                    layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                    this@loadImageWithGlide.layoutParams = layoutParams
                     scaledWidth = imageWidth
                     scaledHeight = imageHeight
                     roundedCornerRadius = cornerRadius.toFloat()
@@ -146,12 +154,14 @@ fun ImageView.loadImageWithGlide(context: Context, imageUrl: String) {
 
             }
 
-            override fun onLoadCleared(placeholder: Drawable?) {}
+            override fun onLoadCleared(placeholder: Drawable?) {
+
+            }
 
             override fun onLoadFailed(errorDrawable: Drawable?) {
                 super.onLoadFailed(errorDrawable)
-                Glide.with(context).load(R.drawable.chat_icon_placeholder)
-                    .override(maxImageWidth, maxImageHeight).placeholder(R.drawable.chat_icon_placeholder)
+                action.invoke()
+                Glide.with(context).load(R.drawable.chat_icon_placeholder).override(maxImageWidth, maxImageHeight).placeholder(R.drawable.chat_icon_placeholder)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .skipMemoryCache(false)
                     .into(this@loadImageWithGlide)

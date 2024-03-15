@@ -21,12 +21,21 @@ android {
             outputFileName = "sportLive_${variant.versionCode}_${variant.versionName}_${releaseTime()}.apk"
         }
     }
+
+    //导入搜索投屏的时候会报错
+    packagingOptions {
+        // 选择保留第一个遇到的beans.xml文件，忽略后面的所有同名文件
+//        pickFirst 'META-INF/beans.xml'
+        // 或者，你可以选择忽略所有的beans.xml文件，不将它们打包进APK
+        exclude 'META-INF/beans.xml'
+    }
 }
 
 configurations {
     configureEach {
         exclude group: 'com.google.guava', module: 'listenablefuture'
     }
+
 }
 dependencies {
     //组件依赖基础库
@@ -64,8 +73,10 @@ dependencies {
 
     implementation 'com.github.getActivity:MultiLanguages:8.0'
 
-    implementation 'com.github.CarGuo.GSYVideoPlayer:GSYVideoPlayer:v8.4.0-release-jitpack'
-    implementation 'com.github.CarGuo.GSYVideoPlayer:GSYVideoPlayer-aliplay:v8.4.0-release-jitpack'
+    implementation 'com.github.CarGuo.GSYVideoPlayer:GSYVideoPlayer:v8.6.0-release-jitpack'
+    implementation 'com.github.CarGuo.GSYVideoPlayer:GSYVideoPlayer-aliplay:v8.6.0-release-jitpack'
+//    implementation 'com.github.CarGuo.GSYVideoPlayer:GSYVideoPlayer:vv8.4.0-release-jitpack'
+//    implementation 'com.github.CarGuo.GSYVideoPlayer:GSYVideoPlayer-aliplay:v8.4.0-release-jitpack'
     //视频播放 1
     /*  implementation 'com.github.CarGuo.GSYVideoPlayer:gsyVideoPlayer-java:v8.3.5-release-jitpack'
       implementation 'com.github.CarGuo.GSYVideoPlayer:gsyVideoPlayer-armv7a:v8.3.5-release-jitpack'
@@ -134,9 +145,9 @@ dependencies {
 
     // 必需： 主包********极光推送***********
     implementation 'com.engagelab:engagelab:4.3.5' //
-    // google push need，不需要 google 通道，则删除
+    // google push need，不需要 google 通道，则删除没有
     implementation 'com.google.firebase:firebase-messaging:23.2.0'
-    // huawei push need，不需要 huawei 通道，则删除
+    // huawei push need，不需要 huawei 通道，则删除 没有
     implementation 'com.huawei.hms:push:6.11.0.300'
     // Optional: Google vendor
     implementation 'com.engagelab.plugin:google:4.3.5' //
@@ -145,6 +156,23 @@ dependencies {
     implementation 'com.engagelab.plugin:honor_th_push:4.3.5' //
     // Optional: Huawei vendor
     implementation 'com.engagelab.plugin:huawei:4.3.5' //
+    //修改
+
+//    implementation 'com.engagelab:engagelab:4.3.3' //
+//    // google push need，不需要 google 通道，则删除没有
+//    implementation 'com.google.firebase:firebase-messaging:23.2.0'
+//    // huawei push need，不需要 huawei 通道，则删除 没有
+//    implementation 'com.huawei.hms:push:6.11.0.300'
+//    // Optional: Google vendor
+//    implementation 'com.engagelab.plugin:google:4.3.3' //
+//    // Optional: Honor vendor
+//    implementation 'com.engagelab.plugin:honor:4.3.3' //
+//    implementation 'com.engagelab.plugin:honor_th_push:4.3.3' //
+//    // Optional: Huawei vendor
+//    implementation 'com.engagelab.plugin:huawei:4.3.3' //
+
+
+
     // Optional: Xiaomi vendor, Chinese version
     /* implementation 'com.engagelab.plugin:mi:4.3.5' //
      // Optional: Xiaomi vendor, Global version
@@ -157,6 +185,46 @@ dependencies {
      // Optional: Vivo vendor
      implementation 'com.engagelab.plugin:vivo:4.3.5' //*/
     //        ********极光推送***********
+
+//    implementation 'com.github.devin1014.DLNA-Cast:dlna-dmc:V1.0.0'
+//    implementation 'com.github.devin1014.DLNA-Cast:dlna-dmr:V1.0.0'
+//    implementation 'com.github.devin1014.DLNA-Cast:dlna-dms:V1.0.0'
+//    implementation 'com.github.devin1014.DLNA-Cast:dlna-dmc:v2.0.0-beta1'
+//    implementation 'com.github.devin1014.DLNA-Cast:dlna-dmr:v2.0.0-beta1'
+//    implementation 'com.github.devin1014.DLNA-Cast:dlna-dms:v2.0.0-beta1'
+//    投屏
+    // Cling library 只能使用2.1.1 ，当2.1.2时无法搜索到设备
+    implementation 'org.fourthline.cling:cling-core:2.1.1'
+//    这个有问题 //导入搜索投屏的时候会报错
+    implementation 'org.fourthline.cling:cling-support:2.1.1'
+    // Servlet
+    implementation 'javax.servlet:javax.servlet-api:3.1.0'
+    // Jetty library
+    api 'org.eclipse.jetty:jetty-server:8.1.22.v20160922'
+    api 'org.eclipse.jetty:jetty-servlet:8.1.22.v20160922'
+    api 'org.eclipse.jetty:jetty-client:8.1.22.v20160922'
+    //=========
+    //=====
+//    kapt "com.squareup.moshi:moshi-kotlin-codegen:1.8.0"
+//    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.1"
+//    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.1"
+//    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
+//    implementation "com.squareup.retrofit2:converter-moshi:2.5.0"
+//    implementation 'com.squareup.okhttp3:logging-interceptor:3.12.1'
+//    implementation "com.squareup.moshi:moshi-kotlin:1.8.0"
+//    implementation "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2"
+    kapt "com.squareup.moshi:moshi-kotlin-codegen:1.8.0"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.1"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.1"
+    implementation 'com.google.android.material:material:1.0.0'
+    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
+    implementation "com.squareup.retrofit2:converter-moshi:2.5.0"
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.12.1'
+    implementation "com.squareup.moshi:moshi-kotlin:1.8.0"
+    implementation "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2"
+
+
 }
 //获取编译时间
 static def releaseTime() {

@@ -13,6 +13,9 @@ import com.xcjh.app.bean.MsgBeanData
 import com.xcjh.app.utils.CacheUtil
 import com.xcjh.base_lib.utils.LogUtils
 
+/**
+ * 私聊room
+ */
 @Dao
 interface ChatDao {
 

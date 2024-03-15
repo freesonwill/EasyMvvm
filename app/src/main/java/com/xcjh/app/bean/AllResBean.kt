@@ -836,3 +836,65 @@ data class PushMsgExtras(
     var anchorId: String? = "",// 主播id
     var liveId: String? = "", //聊天室id
 ) : Serializable
+
+@Keep
+data class Point(
+    var x: Double=0.0,
+    var y: Double=0.0
+): Serializable
+
+data class CaptchaGetIt(
+    var originalImageBase64: String,//图表url 目前用base64 data
+    var point: Point,
+    var jigsawImageBase64: String,
+    var token: String,// 获取的token 用于校验
+    var result: Boolean,
+    var opAdmin: Boolean,
+    var secretKey:String //ase密钥
+): Serializable
+
+data class ImageResponse(
+    var repCode: Int,
+     var success:Boolean=false,
+    var error:String=""
+): Serializable
+
+data class Input<T> (
+
+    var repData: T? = null,
+    var repCode: String? = null,
+    var success: Boolean? = null,
+    var error: Boolean? = null
+
+): Serializable
+
+
+data class CaptchaCheckIt(
+    val captchaType: String,
+    val token: String,
+    val result: Boolean,
+    val opAdmin: Boolean
+): Serializable
+
+data class WordCaptchaGetIt(
+    val originalImageBase64: String,//图表url 目前用base64 data
+    val result: Boolean,
+    val token: String,// 获取的token 用于校验
+    val secretKey:String,//ase密钥
+    val wordList: MutableList<String>?
+
+): Serializable
+
+
+
+/**
+ * 主播对当前用户禁言和踢出直播间信息
+ */
+@Keep
+data class ProhibitionBean(
+    var anchorId: String = "",// 主播id
+    var userId: String = "",// 用户id
+    var tickOutLeftTime: String = "",// 踢出房间剩余时间（分钟）
+    var mute: Boolean = false,// 是否禁言
+    var tickOut: Boolean = false,// 是否踢出房间
+) : Serializable

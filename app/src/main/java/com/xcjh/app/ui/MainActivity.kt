@@ -20,6 +20,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.engagelab.privates.core.api.MTCorePrivatesApi
 import com.engagelab.privates.push.api.MTPushPrivatesApi
+import com.google.gson.Gson
 import com.gyf.immersionbar.ImmersionBar
 import com.gyf.immersionbar.ktx.showStatusBar
 import com.king.app.dialog.AppDialog
@@ -51,6 +52,7 @@ import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.initActivity
 import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.setOnclickNoRepeat
+import com.xcjh.base_lib.utils.toJson
 import com.xcjh.base_lib.utils.view.clickNoRepeat
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -76,6 +78,7 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
     private var isShowPush: Boolean = true
 
 
+
     private var mFragList: ArrayList<Fragment> = arrayListOf(
         HomeFragment(),
         ScheduleFragment(),//赛程
@@ -89,6 +92,7 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         //MTPushPrivatesApi.clearNotification(this)
         showStatusBar()
         mDatabind.reDateShow.clickNoRepeat {}
+
 
         /* splashScreen.setKeepOnScreenCondition {
              //延迟2.5秒
@@ -106,6 +110,10 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         initUI()
         initTime()
         initWs()
+        //极光推送绑定用户
+        val registrationId: String = MTCorePrivatesApi.getRegistrationId(this)
+        Log.i("============","======"+registrationId)
+
 
     }
 
@@ -202,13 +210,14 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
 
     }
 
+
+
     private fun initTime() {
         //如果登录了就查询一下用户信息
         if (CacheUtil.isLogin()) {
             mViewModel.getUserInfo()
             mViewModel.jPushBind(MTCorePrivatesApi.getRegistrationId(this))
         }
-
         // 创建 Timer 对象
         timer = Timer()
 
@@ -250,6 +259,18 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
             mDatabind.vLogoAnim.cancelAnimation()
             mDatabind.reDateShow.visibility=View.GONE
             isHomeDate=true
+            //如果登录了就查询一下用户信息
+            if (CacheUtil.isLogin()) {
+                //判断打开app的时候是否获取到了数据
+                if(!mViewModel.isGetUserDate){
+                    mViewModel.getUserInfo()
+                }
+                if(!mViewModel.isPushDate){
+                    Log.i("SSSSSSs","========="+MTCorePrivatesApi.getRegistrationId(this))
+                    mViewModel.jPushBind(MTCorePrivatesApi.getRegistrationId(this))
+                }
+
+            }
         }
 
         //登录或者登出

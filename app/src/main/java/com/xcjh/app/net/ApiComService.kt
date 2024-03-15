@@ -3,8 +3,11 @@ package com.xcjh.app.net
 import com.xcjh.app.bean.*
 import com.xcjh.app.bean.MsgBeanData
 import com.xcjh.app.bean.MsgListNewData
+import com.xcjh.app.view.slider.CaptchaCheckOt
 import com.xcjh.base_lib.bean.ApiResponse
+import kotlinx.coroutines.Deferred
 import okhttp3.MultipartBody
+import retrofit2.Response
 import retrofit2.http.*
 
 /**
@@ -14,13 +17,13 @@ interface ApiComService {
 
     companion object {
         //dev
-//        const val SERVER_URL = "http://192.168.101.15:6003/apis/"//app通用 开发
-//        const val SHARE_IP = "http://192.168.101.180:1820/"//比赛分享链接
-//        const val WEB_SOCKET_URL = "ws://192.168.101.15:6006/ws-sports-chat" ///new dev
+        const val SERVER_URL = "http://192.168.101.15:6003/apis/"//app通用 开发
+        const val SHARE_IP = "http://192.168.101.180:1820/"//比赛分享链接
+        const val WEB_SOCKET_URL = "ws://192.168.101.15:6006/ws-sports-chat" ///new dev
         //test 预发布
-       const val SERVER_URL = "https://app.cbd246.com/apis/"//app通用 测试
-        const val SHARE_IP = "https://app.cbd246.com/"//比赛分享链接
-        const val WEB_SOCKET_URL = "wss://app.cbd246.com/ws-sports-chat" ///test
+//       const val SERVER_URL = "https://app.cbd246.com/apis/"//app通用 测试
+//        const val SHARE_IP = "https://app.cbd246.com/"//比赛分享链接
+//        const val WEB_SOCKET_URL = "wss://app.cbd246.com/ws-sports-chat" ///test
 
         //正式
       /*  const val SERVER_URL = "https://holdem.news/apis/"//app通用 正式
@@ -423,4 +426,48 @@ interface ApiComService {
     @GET("app/jpush/unbind/regId/{regId}")
     suspend fun unbindPush(@Path("regId") regId: String): ApiResponse<*>
 
+
+    /**
+     * 获取验证码图片
+     */
+    @POST("app/captcha/get")
+    suspend fun getImageCode(@Body req: CaptchaVOReq): Input<CaptchaGetIt>
+
+
+    /**
+     * 验证图片的偏移
+     */
+    @POST("app/captcha/check/captcha")
+    suspend fun getCaptcha(@Body req: CaptchaCheckOt): Input<CaptchaCheckIt>
+
+
+    /**
+     * 获取验证码文字
+     */
+    @POST("app/captcha/get")
+    suspend fun getWordCaptchaAsync(@Body req: CaptchaVOReq): Input<WordCaptchaGetIt>
+
+
+
+    /**
+     * 查询主播对当前用户禁言和踢出直播间信息
+     */
+    @GET("app/user/getAnchorControlUserInfo/{anchorId}")
+    suspend fun getAnchorControlUserInfo(@Path("anchorId") anchorId: String): ApiResponse<ProhibitionBean>
+
+
+
+    /**
+     * 登录发送短信
+     */
+    @POST("app/sms/send")
+    suspend fun getMessage(@Body req: LoginSend): ApiResponse<*>
+
+
+    /**
+     * 登录发送邮箱
+     * lang语言类型：1：中文；2：英文,示例值(1)
+     */
+    @POST("app/email/send")
+    suspend fun getMailbox(@Body req: LoginSend): ApiResponse<*>
 }

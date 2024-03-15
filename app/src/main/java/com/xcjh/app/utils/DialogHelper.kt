@@ -351,8 +351,10 @@ fun delMsgDilog(context: Context, block: (isSure: Boolean) -> Unit) {
                     dialog?.dismiss()
                 }
             }
-        }).setAlign(CustomDialog.ALIGN.CENTER).setMaskColor(//背景遮罩
+        }).setAlign(CustomDialog.ALIGN.CENTER).
+        setMaskColor(//背景遮罩
             ContextCompat.getColor(context, com.xcjh.base_lib.R.color.blacks_tr)
+
         ).show()
 }
 /***

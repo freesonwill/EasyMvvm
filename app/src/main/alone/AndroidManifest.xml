@@ -35,7 +35,13 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" /> <!-- 通知震动 -->
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" /> <!-- 适配Android 13，应用弹出通知必须权限 -->
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" /> <!-- 投屏 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <queries package="${applicationId}">
         <intent>
@@ -59,6 +65,9 @@
         android:theme="@style/App.Theme"
         android:usesCleartextTraffic="true"
         tools:replace="android:allowBackup">
+        <activity
+            android:name=".ui.chat.VideoPlayActivity"
+            android:exported="false" />
         <!-- android:noHistory="true" 有广告时使用 -->
         <activity
             android:name=".ui.SplashActivity"
@@ -81,7 +90,7 @@
             android:exported="true"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Starting"></activity>
+            android:theme="@style/Theme.Starting" />
         <activity
             android:name=".ui.home.my.operate.PushSetActivity"
             android:exported="false"
@@ -126,7 +135,6 @@
             android:name=".ui.home.my.operate.MyFollowListActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".web.WebRichTextActivity"
             android:exported="false"
@@ -141,6 +149,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.chat.ChatActivity"
+            android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.search.SearchActivity"
@@ -149,6 +158,7 @@
             android:windowSoftInputMode="stateVisible" />
         <activity
             android:name=".ui.login.LoginActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.notice.MyNoticeActivity"
@@ -226,7 +236,11 @@
             android:resource="@drawable/app_logo" /> <!-- huawei push need -->
         <meta-data
             android:name="com.huawei.messaging.default_notification_icon"
-            android:resource="@drawable/app_logo" />
+            android:resource="@drawable/app_logo" /> <!-- 投屏需要的服务 -->
+        <service
+            android:name="com.android.cling.service.ClingUpnpService"
+            tools:ignore="Instantiatable" />
+        <service android:name="com.android.cling.service.LocalFileService" />
     </application>
 
 </manifest>

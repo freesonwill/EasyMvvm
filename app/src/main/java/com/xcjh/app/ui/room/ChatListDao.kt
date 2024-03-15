@@ -10,6 +10,9 @@ import androidx.room.Transaction
 import androidx.room.Update
 import com.xcjh.app.bean.MsgListNewData
 
+/**
+ * 聊天列表数据
+ */
 @Dao
 interface ChatListDao {
     @Query("SELECT * FROM chat_listdb WHERE withId = :id ORDER BY createTime DESC")

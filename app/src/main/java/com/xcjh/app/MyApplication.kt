@@ -51,6 +51,7 @@ class MyApplication : App() , LifecycleObserver{
         lateinit var dataChatList: MyRoomChatList
         lateinit var appViewModelInstance: AppViewModel
         lateinit var eventViewModelInstance: EventViewModel
+
     }
 
     override fun onCreate() {
@@ -97,6 +98,7 @@ class MyApplication : App() , LifecycleObserver{
         SmartRefreshLayout.setDefaultRefreshHeaderCreator { context, layout -> MaterialHeader(this) }
         SmartRefreshLayout.setDefaultRefreshFooterCreator { context, layout -> ClassicsFooter(this) }
         initDialogX()
+
     }
 
     private fun initDataBase() {
