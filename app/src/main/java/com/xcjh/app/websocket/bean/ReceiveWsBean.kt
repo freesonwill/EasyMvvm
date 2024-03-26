@@ -100,3 +100,12 @@ data class LiveStatus(
     val coverImg:String="",//封面图
 
 )
+
+/**
+ * 修改直播间信息 现在是公告后面可能增加
+ */
+data class UpdateLiveContentBean(
+    val anchorId: String = "", //主播ID
+    val liveId: String = "", //直播间id
+    val openInfoId: String = "", //修改直播间信息
+)

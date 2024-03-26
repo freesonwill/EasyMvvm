@@ -1,7 +1,9 @@
 package com.xcjh.app.ui.details
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.kunminx.architecture.ui.callback.UnPeekLiveData
+import com.xcjh.app.R
 import com.xcjh.app.bean.AnchorListBean
 import com.xcjh.app.bean.BasketballLineupBean
 import com.xcjh.app.bean.BasketballSBean
@@ -21,6 +23,7 @@ import com.xcjh.app.bean.ScrollTextBean
 import com.xcjh.app.bean.StatusBean
 import com.xcjh.app.net.apiService
 import com.xcjh.app.utils.CacheUtil
+import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.base.BaseViewModel
 import com.xcjh.base_lib.bean.ApiResponse
 import com.xcjh.base_lib.bean.ListDataUiState
@@ -49,7 +52,11 @@ class DetailVm : BaseViewModel() {
     var detail = UnPeekLiveData<MatchDetailBean>()
     var scrollTextList = UnPeekLiveData<UpdateUiState<ArrayList<ScrollTextBean>>>()
     var showAd = UnPeekLiveData<UpdateUiState<ScrollTextBean>>()
+    //主播详情接口返回
     var anchor = UnPeekLiveData<DetailAnchorBean?>()
+
+    //主播详情接口返回修改公告的时候使用
+    var anchorUpdate = UnPeekLiveData<DetailAnchorBean?>()
 
     var odds = UnPeekLiveData<OddsBean?>()
     var foot = UnPeekLiveData<FootballLineupBean?>()
@@ -79,7 +86,7 @@ class DetailVm : BaseViewModel() {
                 getScrollTextList()
                 getShowAd()
             }, {
-                myToast(it.errorMsg, isDeep = true)
+//                myToast(it.errorMsg, isDeep = true)
             }, showD
         )
     }
@@ -93,7 +100,7 @@ class DetailVm : BaseViewModel() {
                 scrollTextList.value = UpdateUiState(true, it)
             }, {
                 scrollTextList.value = UpdateUiState(false, null, it.errorMsg)
-                //  myToast(it.errorMsg)
+
             }
         )
     }
@@ -107,7 +114,7 @@ class DetailVm : BaseViewModel() {
                 showAd.value = UpdateUiState(true, it)
             }, {
                 showAd.value = UpdateUiState(false, null, it.errorMsg)
-                //myToast(it.errorMsg)
+
             }
         )
     }
@@ -117,7 +124,7 @@ class DetailVm : BaseViewModel() {
         requestNoDialog({
             apiService.getDetailAnchorInfo(id ?: "")
         }, {
-            anchor.postValue(it)
+            anchorUpdate.postValue(it)
         }, {
             // myToast(it.errorMsg)
         })
@@ -129,6 +136,7 @@ class DetailVm : BaseViewModel() {
                    offset: String,
                    isRefresh: Boolean = false) {
         requestNoDialog({
+
             getMsgData(anchorId,groupId,offset,isRefresh)
         }, {
             hisMsgList.value = ListDataUiState(true, listData = it, isRefresh = isRefresh)
@@ -161,9 +169,11 @@ class DetailVm : BaseViewModel() {
                 val anchorBean = anchorInfo.data
                 anchor.postValue(anchorBean)
                 list.addAll(historyList.data.reversed())
+
                 list.add(0,FirstMsgBean(
                     anchorBean.id, anchorBean.head, anchorBean.nickName, "0", anchorBean.firstMessage ?: "", identityType = 1
                 ))
+
             } else {
                 val historyList = async {
                     apiService.getHistoryMsg(
@@ -188,6 +198,7 @@ class DetailVm : BaseViewModel() {
             apiService.getNoticeUser(id)
         }, {
             isfocus.postValue(true)
+            myToast(appContext.getString(R.string.add_focus_success),isDeep=true)
         }, {
             isfocus.postValue(false)
         }, false)

@@ -1,63 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/lltItem"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
     android:paddingHorizontal="@dimen/dp_12"
     android:paddingTop="@dimen/dp_12">
 
     <LinearLayout
+        android:id="@+id/llDetailShow"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical">
         <LinearLayout
-            android:id="@+id/lltLevel"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/shape_r20_f2f3f7"
-            android:backgroundTint="@color/c_1AFFFFFF"
-            android:gravity="center"
-            android:paddingHorizontal="7.5dp"
-            android:paddingVertical="@dimen/dp_2">
-
-            <ImageView
-                android:id="@+id/ivLevel"
-                android:layout_width="12dp"
-                android:layout_marginEnd="3dp"
-                android:layout_height="wrap_content"
-                tools:src="@drawable/ic_user_level1" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvLevel"
+            android:orientation="horizontal">
+            <LinearLayout
+                android:id="@+id/lltLevel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@drawable/shape_r20_f2f3f7"
+                android:backgroundTint="@color/c_1AFFFFFF"
                 android:gravity="center"
-                android:textColor="@color/white"
-                android:textSize="@dimen/sp_12"
-                tools:text="黄铜" />
+                android:paddingHorizontal="7.5dp"
+                android:paddingVertical="@dimen/dp_2">
+
+                <ImageView
+                    android:id="@+id/ivLevel"
+                    android:layout_width="12dp"
+                    android:layout_marginEnd="3dp"
+                    android:layout_height="wrap_content"
+                    tools:src="@drawable/ic_user_level1" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvLevel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_12"
+                    tools:text="黄铜" />
+            </LinearLayout>
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvContent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_5"
+                android:textColor="@color/c_ffffff"
+                android:textSize="@dimen/sp_14"
+                tools:text="123" />
+
         </LinearLayout>
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvContent"
-            android:layout_width="wrap_content"
+
+        <ImageView
+            android:id="@+id/ivImage"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_5"
-            android:textColor="@color/c_ffffff"
-            android:textSize="@dimen/sp_14"
-            tools:text="123" />
+            android:layout_marginTop="@dimen/dp_4"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            tools:src="@drawable/def_basketball"
+            android:visibility="gone" />
 
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/ivImage"
-        android:layout_width="match_parent"
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/txtSystem"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_4"
-        android:adjustViewBounds="true"
-        android:scaleType="fitCenter"
-        tools:src="@drawable/def_basketball"
-        android:visibility="gone" />
+        android:textSize="@dimen/sp_14"
+        android:text=""
+        android:visibility="gone"
+        android:textColor="@color/c_535659"/>
 
-</LinearLayout>
+</RelativeLayout>

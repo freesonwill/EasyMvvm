@@ -92,7 +92,8 @@ dependencies {
 /*    implementation 'com.github.CarGuo.GSYVideoPlayer:gsyVideoPlayer-x86:v8.3.5-release-jitpack'
     implementation 'com.github.CarGuo.GSYVideoPlayer:gsyVideoPlayer-x64:v8.3.5-release-jitpack'*/
     //三级联动
-    implementation 'com.contrarywind:Android-PickerView:4.1.9'
+//    implementation 'com.contrarywind:Android-PickerView:4.1.9'
+
     implementation 'io.github.youth5201314:banner:2.2.2'
     //日历选择
     implementation 'com.haibin:calendarview:3.7.1'
@@ -131,6 +132,7 @@ dependencies {
     implementation 'androidx.paging:paging-common-ktx:3.1.1'
 
     implementation 'androidx.room:room-ktx:2.5.1'
+
     kapt "androidx.room:room-compiler:2.5.1"
     //图文混排
     implementation 'com.github.liangjingkanji:spannable:1.2.7'
@@ -224,7 +226,11 @@ dependencies {
     implementation "com.squareup.moshi:moshi-kotlin:1.8.0"
     implementation "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2"
 
+//    implementation 'org.mozilla.geckoview:geckoview-nightly:120.0.20231006092133'
 
+    //滚轮
+    implementation 'com.github.javakam:widget.wheelview:1.8.0@aar'
+    implementation 'com.github.javakam:widget.pickerview:1.8.0@aar'
 }
 //获取编译时间
 static def releaseTime() {

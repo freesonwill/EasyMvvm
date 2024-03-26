@@ -34,7 +34,6 @@ import com.luck.picture.lib.basic.PictureSelector
 import com.luck.picture.lib.entity.LocalMedia
 import com.xcjh.app.R
 import com.xcjh.app.adapter.ViewPager2Adapter
-import com.xcjh.app.bean.BottomMsgBean
 import com.xcjh.app.bean.FirstMsgBean
 import com.xcjh.app.bean.MatchDetailBean
 import com.xcjh.app.bean.MsgBean
@@ -52,6 +51,7 @@ import com.xcjh.app.ui.details.fragment.DetailResultBasketFragment
 import com.xcjh.app.ui.details.fragment.DetailResultFootballFragment
 import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.utils.SpanUtil
+import com.xcjh.base_lib.utils.dp2px
 import com.xcjh.base_lib.utils.loge
 import com.xcjh.base_lib.utils.setTextBold
 import com.xcjh.base_lib.utils.toHtml
@@ -369,8 +369,11 @@ fun setChatRoomRcv(
         onCreate {
             when (itemViewType) {
                 R.layout.item_detail_chat_first -> {
+
                     val binding = getBinding<ItemDetailChatFirstBinding>()
                     mAgentWeb = agentWeb(rcvChat.context, binding.agentWeb, finishLoad)
+
+
                     action.invoke(mAgentWeb)
                 }
             }
@@ -382,6 +385,20 @@ fun setChatRoomRcv(
                 }
 
                 is FirstMsgBean -> {
+
+                    val binding = getBinding<ItemDetailChatFirstBinding>()
+
+                    if( models!!.size==1&&layoutPosition==0){
+                        val layoutParams =
+                            binding.lltItem.layoutParams as ViewGroup.MarginLayoutParams
+                        layoutParams.setMargins(0, context.dp2px(10),0 , 0)
+                        binding.lltItem.layoutParams = layoutParams
+                    }else{
+                        val layoutParams =
+                            binding.lltItem.layoutParams as ViewGroup.MarginLayoutParams
+                        layoutParams.setMargins(0, context.dp2px(0),0 , 0)
+                        binding.lltItem.layoutParams = layoutParams
+                    }
                     //主播加入超链接
                     /* "<font color=\"#34A853\" font-weight=\"500\">${item.nick} : </font>${item.content}".toHtml {
                          Handler(Looper.getMainLooper()).post {
@@ -396,13 +413,25 @@ fun setChatRoomRcv(
                         "<html><head><style>* {font-size: 14px;color: #ffffff;font-family: 'PingFang SC';margin: 0;padding: 0;word-wrap: break-word;}body {padding-left: 0px;padding-right: 0px;}img {max-width: 100%;height: auto;}</style></head><body>${(item.content)}</body></html>"
                     // binding.webView.loadData(aa+javascript,"text/html", "UTF-8") //aa.toHtml()
                   //  mAgentWeb.urlLoader.loadDataWithBaseURL(null, bb, "text/html", "UTF-8", null)
+//                    if(!item.content.equals("")){
+//                        binding.lltItem.visibility=View.VISIBLE
+//
+//                    }else{
+//                        binding.lltItem.visibility=View.GONE
+//                    }
                     setH5Data(mAgentWeb.webCreator.webView,item.content, tvColor ="#ffffff", maxLine = 2 )
                 }
 
                 is MsgBean -> {
                     val binding = getBinding<ItemDetailChatBinding>()
                     setTextBold(binding.tvLevel, item.identityType != 0)
-                    if (item.identityType == 0) {
+                      if(item.msgType==6){
+                        binding.llDetailShow.visibility=View.GONE
+                        binding.txtSystem.visibility=View.VISIBLE
+                        binding.txtSystem.text= item.content
+                    }else if (item.identityType == 0||item.identityType == 3) {
+                        binding.llDetailShow.visibility=View.VISIBLE
+                        binding.txtSystem.visibility=View.GONE
                         binding.ivImage.visibleOrGone(false)
                         binding.ivLevel.visibleOrGone(true)
                         binding.lltLevel.backgroundTintList = ColorStateList.valueOf(
@@ -410,7 +439,9 @@ fun setChatRoomRcv(
                         )
                         binding.ivLevel.setImageResource(setLeverDrawable(item.level))
                         binding.tvLevel.text = getLeverNum(item.level)
-                    } else {
+                    }else {
+                        binding.llDetailShow.visibility=View.VISIBLE
+                        binding.txtSystem.visibility=View.GONE
                         binding.tvLevel.text = app.getString(R.string.anchor)
                         binding.lltLevel.backgroundTintList = ColorStateList.valueOf(
                             ContextCompat.getColor(context, R.color.c_3334A853)
@@ -454,7 +485,7 @@ fun setChatRoomRcv(
                             if (item.msgType == 1) "" else item.content,
                             ContextCompat.getColor(context, R.color.c_ffffff)
                         )
-                    if (item.identityType == 0) {
+                    if (item.identityType == 0||item.identityType == 3) {
                         binding.tvContent.text = section.spanStrBuilder
                     } else {
                         if (item.msgType == 0) {
@@ -482,6 +513,7 @@ fun agentWeb(
     vg: ViewGroup,
     finishLoad: (Boolean) -> Unit,
 ): AgentWeb {
+
    val mAgentWeb = AgentWeb.with(context as Activity)
         .setAgentWebParent(
             vg,
@@ -517,6 +549,7 @@ fun agentWeb(
         })
         // .setWebView(binding.agentWeb)
         .createAgentWeb()
+
         .ready()
         .get()
     mAgentWeb.agentWebSettings.webSettings.apply {
@@ -524,6 +557,10 @@ fun agentWeb(
         allowFileAccess = true
         allowFileAccessFromFileURLs = true
     }
+
+
+
+
     mAgentWeb.webCreator.webView.apply {
         scrollBarSize = 0// 去掉滚动条
         overScrollMode = View.OVER_SCROLL_NEVER //  取消WebView中滚动或拖动到顶部、底部时的阴影
@@ -554,10 +591,115 @@ fun convertToHexColor(red: Int, green: Int, blue: Int): String {
 
     return "#$hexRed$hexGreen$hexBlue" // 返回完整的十六进制颜色值
 }
-fun setH5Data(webView: WebView?,content:String="",tvColor:String="#ffffff",fontSize:Int=14,maxLine:Int=2){
-    val htmlText =
-        "<div style='display: -webkit-box; -webkit-line-clamp: ${maxLine}; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;'>${content}</div>"
-    val bb = "<html><head><style>* {font-size: ${fontSize};color:${tvColor};font-family: 'PingFang SC';margin: 0;padding: 0;word-wrap: break-word;}body {padding-left: 0px;padding-right: 0px;}img {max-width: 100%;height: auto;}</style></head><body>${(htmlText)}</body></html>"
-    webView?.loadDataWithBaseURL(null, bb, "text/html", "UTF-8", null)
+//fun setH5Data(webView: WebView?,content:String="",tvColor:String="#ffffff",fontSize:Int=14,maxLine:Int=2){
+//    val htmlText =
+//        "<div style='display: -webkit-box; -webkit-line-clamp: ${maxLine}; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;'>${content}</div>"
+//    val bb = "<html><head><style>* {font-size: ${fontSize};color:${tvColor};font-family: 'PingFang SC';margin: 0;padding: 0;word-wrap: break-word;}body {padding-left: 0px;padding-right: 0px;}img {max-width: 100%;height: auto;}</style></head><body>${(htmlText)}</body></html>"
+//    webView?.loadDataWithBaseURL(null, bb, "text/html", "UTF-8", null)
+//}
+
+
+//fun findElementsWithoutColor( document: Document): List<Element> {
+//    val allElements = document.select("*")
+//    val elementsWithoutColor = mutableListOf<Element>()
+//
+//    for (element in allElements) {
+//        val styleAttr = element.attr("style")
+//        if (!styleAttr.contains("color")) {
+//            elementsWithoutColor.add(element)
+//        }
+//    }
+//
+//    return elementsWithoutColor
+//}
+//
+//// 添加白色样式
+//fun addWhiteColorStyle(elements: List<Element>) {
+//    for (element in elements) {
+//        element.attr("style", "color: white; ${element.attr("style")}")
+//    }
+//}
+//fun checkFontColorInHtml(htmlString: String): Boolean {
+//    val document: Document = Jsoup.parse(htmlString)
+//    val elementsWithColor = document.select("[style*=color]")
+//
+//    return elementsWithColor.isNotEmpty()
+//}
+//
+//fun checkIfAnyElementHasColor(htmlString: String): Boolean {
+//    val document: Document = Jsoup.parse(htmlString)
+//    val allElements = document.select("*")
+//
+//    for (element in allElements) {
+//        val styleAttr = element.attr("style")
+//        if (styleAttr.contains("color")) {
+//            return true
+//        }
+//    }
+//
+//    return false
+//}
+//
+//fun replaceStrongWithTag(htmlString: String): String {
+//    val document: Document = Jsoup.parse(htmlString)
+//    val strongElements = document.select("strong")
+//
+//    for (element in strongElements) {
+//        val newTag = Element("p")
+//        newTag.text(element.text())
+//        element.replaceWith(newTag)
+//    }
+//
+//    return document.html()
+//}
+
+fun replaceStrongWithTagInString(input: String): String {
+    if(input.isNotEmpty()){
+        var  aaaa= input.replace("<strong>", " ").replace("</strong>", " ")
+        var  bbb= aaaa.replace("<u>", " ").replace("</u>", " ")
+        var  cccc= bbb.replace("<em>", " ").replace("</em>", " ")
+        return  cccc
+    }else{
+        return  input
+    }
+
+
+
+
 }
 
+
+
+
+
+fun setH5Data(webView: WebView?,content:String="",tvColor:String="#ffffff",fontSize:Int=14,maxLine:Int=2){
+//      val document: Document
+//    document = Jsoup.parse(content)
+//    val elementsWithoutColor =findElementsWithoutColor( document)
+//    addWhiteColorStyle(elementsWithoutColor)
+//    val modifiedHtml = document.toString()
+//    Log.i("SSSS","========"+checkIfAnyElementHasColor(content))
+//    if(!checkIfAnyElementHasColor(content)){
+//    val htmlText =
+//        "<div style='display: -webkit-box; -webkit-line-clamp: ${maxLine}; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;'>${content}</div>"
+//    val bb = "<html><head><style>* {font-size: ${fontSize};color:${tvColor};font-family: 'PingFang SC';margin: 0;padding: 0;word-wrap: break-word;}body {padding-left: 0px;padding-right: 0px;}img {max-width: 100%;height: auto;}</style></head><body>${(htmlText)}</body></html>"
+//    webView?.loadDataWithBaseURL(null, bb, "text/html", "UTF-8", null)
+//    }else{
+//        val htmlText =
+//            "<div style='display: -webkit-box; -webkit-line-clamp: ${maxLine}; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;'>${content}</div>"
+//        val bb = "<html><head><style>* {font-size: ${fontSize}; font-family: 'PingFang SC';margin: 0;padding: 0;word-wrap: break-word;}body {padding-left: 0px;padding-right: 0px;}img {max-width: 100%;height: auto;}</style></head><body>${(htmlText)}</body></html>"
+//        webView?.loadDataWithBaseURL(null, bb, "text/html", "UTF-8", null)
+//    }
+//    val htmlText =
+//        "<div style='display: -webkit-box; -webkit-line-clamp: ${maxLine}; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;'>${content}</div>"
+//    val bb = "<html><head><style>* {font-size: ${fontSize}; font-family: 'PingFang SC';margin: 0;padding: 0;word-wrap: break-word;}body {padding-left: 0px;padding-right: 0px;}img {max-width: 100%;height: auto;}</style></head><body>${(htmlText)}</body></html>"
+//    webView?.loadDataWithBaseURL(null, bb, "text/html", "UTF-8", null)
+
+    val replacedString = replaceStrongWithTagInString(content)
+    Log.i("SSSSSS","==="+replacedString)
+        val htmlText =
+        "<div style='display: -webkit-box; -webkit-line-clamp: ${maxLine}; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;'>${replacedString}</div>"
+    val bb = "<html><head><style>* {font-size: ${fontSize};color:${tvColor};font-family: 'PingFang SC';margin: 0;padding: 0;word-wrap: break-word;}body {padding-left: 0px;padding-right: 0px;}img {max-width: 100%;height: auto;}</style></head><body>${(htmlText)}</body></html>"
+    webView?.loadDataWithBaseURL(null, bb, "text/html", "UTF-8", null)
+
+}

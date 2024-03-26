@@ -96,6 +96,7 @@ import com.xcjh.base_lib.utils.grid
 import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.setOnclickNoRepeat
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
@@ -176,9 +177,9 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                     if (isKeyboardShowing) {
                         // 软键盘弹出回调
                         // 在这里执行相应操作
-                        if(isShowBottom){
-                          mDatabind.linbottom.setVisibility(View.GONE)
-                        }
+//                        if(isShowBottom){
+//                          mDatabind.linbottom.setVisibility(View.GONE)
+//                        }
 
                     } else {
                         // 软键盘隐藏回调
@@ -612,6 +613,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                 PictureSelector.create(this@ChatActivity)
                                     .openPreview()
                                     .setImageEngine(GlideEngine.createGlideEngine())
+                                    .isPreviewFullScreenMode(false)
                                     .setInjectLayoutResourceListener { context, resourceSource ->
                                         return@setInjectLayoutResourceListener if (resourceSource == InjectResourceSource.PREVIEW_LAYOUT_RESOURCE)
                                             R.layout.ps_custom_fragment_preview else InjectResourceSource.DEFAULT_LAYOUT_RESOURCE
@@ -1310,44 +1312,54 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
 //            isShowBottom = true
 //            mDatabind.linbottom.visibility = View.VISIBLE
 //        }
-        if(isShowBottom){//现在打开了下面的布局
-            if(type==1){
-                //如果是已经在显示了那就是整个多选都隐藏
-                if(mDatabind.llShowImage.visibility==View.VISIBLE){
-                    mDatabind.linbottom.visibility = View.GONE
-                    isShowBottom = false
-                }else{
-                    mDatabind.llShowImage.visibility=View.VISIBLE
-                    mDatabind.rvEmoje.visibility=View.GONE
+
+//        if(isKeyboardOpen(this)) {
+//            closeKeyboardNew(this)
+//        }
+
+
+            if(isShowBottom){//现在打开了下面的布局11     type 1 是图片  2是emoje
+                if(type==1){
+                    //如果是已经在显示了那就是整个多选都隐藏
+                    if(mDatabind.llShowImage.visibility==View.VISIBLE){
+                        mDatabind.linbottom.visibility = View.GONE
+                        isShowBottom = false
+                    }else{
+                        mDatabind.llShowImage.visibility=View.VISIBLE
+                        mDatabind.rvEmoje.visibility=View.GONE
+                    }
+
+                }else{//
+                    //如果是已经在显示了那就是整个多选都隐藏
+                    if(mDatabind.rvEmoje.visibility==View.VISIBLE){
+                        mDatabind.linbottom.visibility = View.GONE
+                        isShowBottom = false
+                    }else{
+                        mDatabind.llShowImage.visibility=View.GONE
+                        mDatabind.rvEmoje.visibility=View.VISIBLE
+                    }
+
+
                 }
 
-            }else{//
-                //如果是已经在显示了那就是整个多选都隐藏
-                if(mDatabind.rvEmoje.visibility==View.VISIBLE){
-                    mDatabind.linbottom.visibility = View.GONE
-                    isShowBottom = false
+
+            }else{//是关闭状态
+                mDatabind.linbottom.visibility = View.VISIBLE
+                //2是emoje
+                if(type==1){
+                    mDatabind.llShowImage.visibility=View.VISIBLE
+                    mDatabind.rvEmoje.visibility=View.GONE
                 }else{
                     mDatabind.llShowImage.visibility=View.GONE
                     mDatabind.rvEmoje.visibility=View.VISIBLE
                 }
 
-
+                isShowBottom = true
             }
 
 
-        }else{//是关闭状态
-            mDatabind.linbottom.visibility = View.VISIBLE
-            //2是emoje
-            if(type==1){
-                mDatabind.llShowImage.visibility=View.VISIBLE
-                mDatabind.rvEmoje.visibility=View.GONE
-            }else{
-                mDatabind.llShowImage.visibility=View.GONE
-                mDatabind.rvEmoje.visibility=View.VISIBLE
-            }
 
-            isShowBottom = true
-        }
+
 
 //        if(isShowBottom){
 //            isShowBottom = false
@@ -1740,8 +1752,12 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                 var listdata1: MutableList<MsgBeanData> = ArrayList<MsgBeanData>()
                 listdata1.add(beanmy)
                 mDatabind.state.showContent()
+//                if (isShowBottom) {
+//                    mDatabind.ivexpent.performClick()
+//                }
                 if (isShowBottom) {
-                    mDatabind.ivexpent.performClick()
+                    isShowBottom=false
+                    mDatabind.linbottom.visibility=View.GONE
                 }
 
                 mDatabind.rv.addModels(listdata1, index = 0)
@@ -1832,13 +1848,13 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
 //            // stackFromEnd = true
 //        }
 //    }
-    /**
-     * 判断软件是否打开
-     */
-    fun isKeyboardOpen(context: Context): Boolean {
-        val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        return inputMethodManager.isAcceptingText
-    }
+//    /**
+//     * 判断软件是否打开
+//     */
+//    fun isKeyboardOpen(context: Context): Boolean {
+//        val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+//        return inputMethodManager.isAcceptingText
+//    }
 
     /**
      * 关闭软键盘
@@ -1846,5 +1862,22 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
     fun closeKeyboard(view: View, context: Context) {
         val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+
+    fun isKeyboardOpen(activity: Activity): Boolean {
+        val rect = Rect()
+        activity.window.decorView.getWindowVisibleDisplayFrame(rect)
+        val screenHeight = activity.window.decorView.height
+        val keypadHeight = screenHeight - rect.bottom
+        return keypadHeight > screenHeight * 0.15 // 根据实际需求设定阈值
+    }
+
+
+    fun closeKeyboardNew(activity: Activity) {
+        val inputMethodManager = activity.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        val currentFocus = activity.currentFocus
+        if (currentFocus != null) {
+            inputMethodManager.hideSoftInputFromWindow(currentFocus.windowToken, 0)
+        }
     }
 }

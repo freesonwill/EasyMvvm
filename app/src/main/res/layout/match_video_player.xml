@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/videoRoon"
@@ -7,34 +7,36 @@
     android:layout_height="match_parent"
     tools:ignore="MissingDefaultResource">
 
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivMaskTop"
+        android:layout_width="match_parent"
+        android:layout_height="96dp"
+        android:scaleType="fitXY"
+        app:srcCompat="@drawable/icon_tv_top" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivMaskBottom"
+        android:layout_width="match_parent"
+        android:layout_height="96dp"
+        android:scaleType="fitXY"
+        android:layout_alignParentBottom="true"
+        app:srcCompat="@drawable/icon_tv_below" />
+
     <FrameLayout
         android:id="@+id/surface_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_alignParentBottom="true"
         android:gravity="bottom">
     </FrameLayout>
 
-    <RelativeLayout
-        android:id="@+id/thumb"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#000000"
-        android:scaleType="fitCenter">
 
-        <ImageView
-            android:id="@+id/thumbImage"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop" />
-
-    </RelativeLayout>
     <!--有这个触摸才会显示隐藏控制器-->
     <LinearLayout
         android:id="@+id/layout_bottom"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_alignParentBottom="true"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:visibility="invisible">
@@ -49,41 +51,51 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:visibility="invisible" />-->
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/loading"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:visibility="invisible"
-        app:lottie_loop="true"
-        app:lottie_autoPlay="true"
-        app:lottie_fileName="video_loading.json"
+
+   <LinearLayout
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_marginBottom="30dp"
+       android:orientation="horizontal"
+       android:layout_marginLeft="6dp"
+       android:layout_alignParentBottom="true">
+       <View
+           android:id="@+id/viewLeft"
+           android:layout_width="1dp"
+           android:layout_height="6dp"
+           android:visibility="invisible" />
+       <ImageView
+           android:id="@+id/start"
+           android:layout_width="30dp"
+           android:layout_height="30dp"
+           android:padding="@dimen/dp_6"/>
+   </LinearLayout>
+   <LinearLayout
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_alignParentRight="true"
+       android:layout_alignParentBottom="true"
+       android:layout_marginBottom="@dimen/dp_30"
+       android:layout_marginRight="@dimen/dp_14">
+       <ImageView
+           android:visibility="gone"
+           android:id="@+id/fullscreen"
+           android:layout_width="@dimen/dp_28"
+           android:layout_height="@dimen/dp_28"
+           android:padding="5dp"
+           android:src="@drawable/detaic_tv_icon_screen"
         />
-    <ImageView
-        android:id="@+id/start"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:padding="@dimen/dp_6"
-        android:layout_marginStart="@dimen/dp_6"
-        android:layout_marginBottom="30dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
-    <ImageView
-        android:visibility="gone"
-        android:id="@+id/fullscreen"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
-        android:padding="5dp"
-        android:src="@drawable/detaic_tv_icon_screen"
-        android:layout_marginEnd="@dimen/dp_60"
-        android:layout_marginBottom="@dimen/dp_30"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:ignore="ContentDescription" />
-<!--android:layout_marginBottom="@dimen/dp_36"-->
+       <View
+           android:id="@+id/viewRght"
+           android:layout_width="@dimen/dp_1"
+           android:layout_height="@dimen/dp_24"
+           android:visibility="invisible"/>
+
+
+   </LinearLayout>
+
+
+    <!--android:layout_marginBottom="@dimen/dp_36"-->
     <ImageView
         android:id="@+id/lock_screen"
         android:layout_width="34dp"
@@ -91,11 +103,21 @@
         android:scaleType="centerInside"
         android:src="@drawable/unlock"
         android:visibility="gone"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="50dp"
-        app:layout_constraintVertical_bias="0.5"/>
+        android:layout_centerVertical="true"
+        android:layout_marginStart="75dp" />
+    <ImageView
+        android:id="@+id/ivIconTui"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dp_10"
+        android:scaleType="centerInside"
+        android:visibility="gone"
+        android:src="@drawable/tv_icon_tui"
+        android:layout_marginStart="65dp"
+        android:layout_marginTop="@dimen/dp_26"
+        tools:ignore="MissingConstraints" />
+
+
 
     <LinearLayout
         android:id="@+id/llIsShow"
@@ -103,16 +125,15 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:visibility="gone"
+        android:layout_alignParentRight="true"
         android:layout_marginTop="@dimen/dp_26"
-        android:layout_marginRight="@dimen/dp_26"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginRight="@dimen/dp_75"
         tools:ignore="MissingConstraints">
         <ImageView
             android:id="@+id/ivMatchVideoNew"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:layout_marginRight="8dp"
+            android:layout_marginRight="16dp"
             app:srcCompat="@drawable/detaic_tv_icon"/>
         <ImageView
             android:id="@+id/tvToShareNew"
@@ -120,8 +141,150 @@
             android:layout_height="24dp"
             android:layout_marginEnd="@dimen/dp_10"
             android:scaleType="fitXY"
-            android:src="@drawable/detaic_tv_icon_share_new"
+            android:src="@drawable/icon_share_new"
             app:tint="@color/white_to_dark_selector" />
-<!--     detaic_tv_icon_share   -->
+        <!--     detaic_tv_icon_share   -->
     </LinearLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <RelativeLayout
+        android:id="@+id/thumb"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#000000"
+        android:scaleType="fitCenter">
+
+        <ImageView
+            android:id="@+id/thumbImage"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/bg_top_football"
+            android:scaleType="centerCrop" />
+
+    </RelativeLayout>
+    <ImageView
+        android:id="@+id/ivMatchBgNew"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:src="@drawable/bg_top_football"
+        android:scaleType="centerCrop" />
+<!--    加载失败-->
+    <LinearLayout
+        android:id="@+id/lltLiveErrorNew"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        android:orientation="vertical" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/dp_5"
+            android:text="@string/video_txt_err"
+            android:textColor="@color/c_ffffff"
+            android:textSize="@dimen/sp_16" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_15"
+            android:layout_marginBottom="@dimen/dp_30"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/tvSignal4New"
+                android:layout_width="wrap_content"
+                android:layout_height="28dp"
+                android:background="@drawable/shape_background_signal"
+                android:backgroundTint="@color/white25_to_dark_selector"
+                android:gravity="center"
+                android:paddingHorizontal="@dimen/dp_28"
+                android:text="@string/signal_source"
+                android:textColor="@color/c_ffffff"
+                android:textSize="@dimen/sp_14"  />
+            <TextView
+                android:id="@+id/tvReloadNew"
+                android:layout_width="wrap_content"
+                android:layout_height="28dp"
+                android:layout_marginStart="@dimen/dp_32"
+                android:background="@drawable/shape_background_signal"
+                android:backgroundTint="@color/white25_to_dark_selector"
+                android:gravity="center"
+                android:paddingHorizontal="@dimen/dp_20"
+                android:text="@string/video_txt_again"
+                android:textColor="@color/c_ffffff"
+                android:textSize="@dimen/sp_14" />
+            <!--                                点击信号源-->
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+<!--主播关闭或者暂未开播-->
+    <LinearLayout
+        android:id="@+id/lltNoLiveNew"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:layout_centerInParent="true"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <View
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="@dimen/dp_1"
+                android:background="#E8EAEF" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/dp_5"
+                android:text="@string/anchor_no_live"
+                android:textColor="@color/c_ffffff"
+                android:textSize="@dimen/sp_16" />
+
+            <View
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="@dimen/dp_1"
+                android:background="#E8EAEF" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvSignal3New"
+            android:layout_width="wrap_content"
+            android:layout_height="21dp"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginBottom="@dimen/dp_35"
+            android:background="@drawable/shape_background_signal"
+            android:backgroundTint="@color/white25_to_dark_selector"
+            android:gravity="center"
+            android:paddingHorizontal="@dimen/dp_28"
+            android:text="@string/signal_source"
+            android:textColor="@color/c_ffffff"
+            android:textSize="@dimen/sp_14"  />
+
+    </LinearLayout>
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/loading"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_centerInParent="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="invisible"
+        app:lottie_loop="true"
+        app:lottie_autoPlay="true"
+        app:lottie_fileName="video_loading.json" />
+
+</RelativeLayout>

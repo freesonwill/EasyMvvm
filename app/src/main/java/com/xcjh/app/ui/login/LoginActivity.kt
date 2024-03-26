@@ -40,15 +40,6 @@ import com.xcjh.base_lib.utils.bindViewPager2
 import com.xcjh.base_lib.utils.initActivity
 import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.setOnclickNoRepeat
-import com.xcjh.base_lib.utils.toJson
-import kotlinx.android.synthetic.main.dialog_word_captcha.bottomTitle
-import kotlinx.android.synthetic.main.dialog_word_captcha.rl_pb_word
-import kotlinx.android.synthetic.main.dialog_word_captcha.wordView
-import kotlinx.android.synthetic.main.item_detail_lineup_basketball.tvFloor
-import kotlinx.android.synthetic.main.item_msglist.view.delete
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 /***
  * 登录
@@ -74,6 +65,7 @@ class LoginActivity : BaseActivity<LoginVm, ActivityLoaginBinding>() {
     var tv_delete:TextView?=null
     var tv_refresh:ImageView?=null
     var bottomTitle:TextView?=null
+    var rl_pb_word:ProgressBar?=null
 
     override fun initView(savedInstanceState: Bundle?) {
         ImmersionBar.with(this)
@@ -140,8 +132,8 @@ class LoginActivity : BaseActivity<LoginVm, ActivityLoaginBinding>() {
                             mViewModel.getLogin(
                                 PostLoaginBean(
                                      mDatabind.edtphone.text.toString(),
-                                    null,
-                                    mDatabind.edtcodePhone.text.toString(),
+                                   code= mDatabind.edtcodePhone.text.toString(),
+                                   "",
                                     null,
                                     type,areaCode=mcode
                                 )
@@ -161,8 +153,8 @@ class LoginActivity : BaseActivity<LoginVm, ActivityLoaginBinding>() {
                             mViewModel.getLogin(
                                 PostLoaginBean(
                                     mDatabind.edtemail.text.toString(),
-                                    null,
-                                    mDatabind.edtcodeEmalie.text.toString(),
+                                    code=mDatabind.edtcodeEmalie.text.toString(),
+                                   "",
                                     null,
                                     type,areaCode=""
                                 )
@@ -497,7 +489,11 @@ class LoginActivity : BaseActivity<LoginVm, ActivityLoaginBinding>() {
             mDatabind.tvgo.text = Constants.PHONE_CODE
             Constants.PHONE_CODE=""
         }
+
+
     }
+
+
 
     override fun createObserver() {
         //准备发送短信或者邮箱
@@ -555,15 +551,15 @@ class LoginActivity : BaseActivity<LoginVm, ActivityLoaginBinding>() {
                                 bottomTitle!!.text = "验证成功"
                                 bottomTitle!!.setTextColor(Color.GREEN)
                                 wordView!!.ok()
-                                runUIDelayed(
-                                    Runnable {
-
-                                        customDialog!!.dismiss()
-
-//                                        loadCaptcha()
-                                    }, 1000
-                                )
-
+//                                runUIDelayed(
+//                                    Runnable {
+//
+//                                        customDialog!!.dismiss()
+//
+////                                        loadCaptcha()
+//                                    }, 1000
+//                                )
+                                customDialog!!.dismiss()
                                 val result = token + "---" + cryptedStrDate
                                 Log.e("wuyan","result:"+result)
                                 mViewModel.sendingMessage.value=result
@@ -598,10 +594,10 @@ class LoginActivity : BaseActivity<LoginVm, ActivityLoaginBinding>() {
 
 
     fun  dialogText(){
-        val windowManager = (this@LoginActivity as Activity).windowManager
-        val display = windowManager.defaultDisplay
-        val lp = window!!.attributes
-        lp.width = display.width * 9 / 10//设置宽度为屏幕的0.9
+//        val windowManager = (this@LoginActivity as Activity).windowManager
+//        val display = windowManager.defaultDisplay
+//        val lp = window!!.attributes
+//        lp.width = display.width * 9 / 10//设置宽度为屏幕的0.9
 
             customDialog= CustomDialog.build()
                 .setCustomView(object : OnBindView<CustomDialog?>(R.layout.dialog_word_captcha) {
@@ -614,6 +610,7 @@ class LoginActivity : BaseActivity<LoginVm, ActivityLoaginBinding>() {
                           tv_delete = v.findViewById<TextView>(R.id.tv_delete)
                           tv_refresh = v.findViewById<ImageView>(R.id.tv_refresh)
                            bottomTitle = v.findViewById<TextView>(R.id.bottomTitle)
+                        rl_pb_word = v.findViewById<ProgressBar>(R.id.rl_pb_word)
 
 
 
@@ -622,7 +619,7 @@ class LoginActivity : BaseActivity<LoginVm, ActivityLoaginBinding>() {
                             bottomTitle!!.text = "数据加载中......"
                             bottomTitle!!.setTextColor(Color.BLACK)
                             wordView!!.visibility = View.INVISIBLE
-//                             rl_pb_word.visibility = View.VISIBLE
+                             rl_pb_word!!.visibility = View.VISIBLE
                             token=""
                             mViewModel.getText("clickWord")
 
@@ -682,7 +679,7 @@ class LoginActivity : BaseActivity<LoginVm, ActivityLoaginBinding>() {
                             }
 
                             wordView!!.visibility = View.VISIBLE
-                            rl_pb_word.visibility = View.GONE
+                            rl_pb_word!!.visibility = View.GONE
 
                         }
 
@@ -738,7 +735,7 @@ class LoginActivity : BaseActivity<LoginVm, ActivityLoaginBinding>() {
 
 
                 }).setAlign(CustomDialog.ALIGN.CENTER).setCancelable(false)
-                .setWidth(display.width * 9 / 10)
+//                .setWidth(display.width * 9 / 10)
                 .setMaskColor(//背景遮罩
                     ContextCompat.getColor(this, com.xcjh.base_lib.R.color.blacks_tr)
 

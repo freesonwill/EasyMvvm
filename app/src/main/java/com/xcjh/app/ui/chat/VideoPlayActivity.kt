@@ -34,6 +34,9 @@ class VideoPlayActivity  : GSYBaseActivity<DetailVm, ActivityVideoPlayBinding, S
             .navigationBarColor(R.color.c_181819)
             .navigationBarDarkIcon(false)
             .titleBarMarginTop(mDatabind.rlTitle).init()
+
+        initVideoBuilderMode()
+        this.setisLandscape(false)
         intent.extras?.apply {
 
             playUrl = getString("videoUrl", null)
@@ -68,6 +71,10 @@ class VideoPlayActivity  : GSYBaseActivity<DetailVm, ActivityVideoPlayBinding, S
             .setSeekRatio(1f)
 
     override fun clickForFullScreen() {
+
+    }
+
+    override fun screenStatus(status: Boolean) {
 
     }
 

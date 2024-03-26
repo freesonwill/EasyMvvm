@@ -61,6 +61,32 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+
+        appViewModel.emptychatUserEvent.observeForever { user ->
+            if (isAdded) {
+                if (mDatabind.rec.mutable != null) {
+
+                    for (i in 0 until mDatabind.rec.mutable.size) {
+                        var data = mDatabind.rec.mutable[i] as MsgListNewData
+                        if (user.equals(data.anchorId)) {
+                            if (data.noReadSum > 0) {//去除红点
+                                data.noReadSum = 0
+                                addDataToList(data)
+                                mDatabind.rec.bindingAdapter.notifyItemChanged(i)
+                            }
+                        }
+
+                    }
+
+
+
+                }
+
+            }
+
+        }
+
+
         try {
 
 
@@ -120,6 +146,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                                 binding.tvcontent.text =
                                     context.resources.getString(R.string.txt_msg_pic)
                             }
+
                             3 -> {
                                 binding.tvcontent.text =
                                     context.resources.getString(R.string.txt_msg_video)
@@ -460,7 +487,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
 
             }
             mViewModel.msgList.observe(this) {
-
+                //获取数据
                 mDatabind.smartCommon.finishRefresh()
                 if (it.isSuccess) {
 

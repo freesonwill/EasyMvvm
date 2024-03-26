@@ -16,11 +16,9 @@ import com.haibin.calendarview.CalendarView
 import com.kongzue.dialogx.dialogs.BottomDialog
 import com.kongzue.dialogx.dialogs.CustomDialog
 import com.kongzue.dialogx.interfaces.OnBindView
-import com.lxj.xpopup.XPopup
 import com.xcjh.app.R
 import com.xcjh.app.bean.AnchorListBean
 import com.xcjh.app.view.MyDateWheelLayout
-import com.xcjh.app.view.XPBottomPopu
 import com.xcjh.base_lib.App
 import com.xcjh.base_lib.utils.TimeUtil
 
@@ -441,4 +439,33 @@ fun showSignalDialog(
         .setMaskColor(ContextCompat.getColor(App.app, com.xcjh.base_lib.R.color.blacks_tr))
         .setCancelable(true)
         .show()
+}
+
+
+
+/***
+ * 取消关注
+ */
+fun cancellationDialog(context: Context, block: (isSure: Boolean) -> Unit) {
+    CustomDialog.build()
+        .setCustomView(object : OnBindView<CustomDialog?>(R.layout.layout_dialogx_delfriend) {
+            override fun onBind(dialog: CustomDialog?, v: View) {
+                val txtContent = v.findViewById<TextView>(R.id.txtContent)
+                val tvcancle = v.findViewById<TextView>(R.id.tvcancle)
+                val tvsure = v.findViewById<TextView>(R.id.tvsure)
+                txtContent.text=context.resources.getString(R.string.cancellation_txt_follow)
+
+
+                tvcancle.setOnClickListener {
+                    block.invoke(false)
+                    dialog?.dismiss()
+                }
+                tvsure.setOnClickListener {
+                    block.invoke(true)
+                    dialog?.dismiss()
+                }
+            }
+        }).setAlign(CustomDialog.ALIGN.CENTER).setMaskColor(//背景遮罩
+            ContextCompat.getColor(context, com.xcjh.base_lib.R.color.blacks_tr)
+        ).show()
 }

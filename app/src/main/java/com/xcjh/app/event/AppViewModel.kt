@@ -57,8 +57,10 @@ class AppViewModel : BaseViewModel() {
     //更新某些页面
     var updateSomeData = EventLiveData<String>()//"friends"//好友列表
     var mainDateShowEvent=EventLiveData<Boolean>()
-    //横屏分享或者投屏播放详情  1 是分享  2是投屏
+    //横屏分享或者投屏播放详情  1 是分享  2是投屏 3选择信号源
     var landscapeShareEvent=EventLiveData<Int>()
+    //清空聊天
+    var emptychatUserEvent=EventLiveData<String>()
 
 
     init {

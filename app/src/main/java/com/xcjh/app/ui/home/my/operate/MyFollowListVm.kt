@@ -65,6 +65,7 @@ class MyFollowListVm : BaseViewModel() {
             { apiService.unfollowAnchor(id) },
             {
                 unfollow.value=delete
+
             }, {
                 //请求失败
                 myToast(appContext.getString(R.string.http_txt_err_meg))
@@ -81,6 +82,7 @@ class MyFollowListVm : BaseViewModel() {
             apiService.getNoticeUser(id)
         }, {
             followValue.value=position
+            myToast(appContext.getString(R.string.add_focus_success))
         }, {
             myToast(it.errorMsg)
         },isShowDialog=true)

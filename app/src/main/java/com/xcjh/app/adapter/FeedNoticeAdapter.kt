@@ -27,7 +27,8 @@ class FeedNoticeAdapter: BaseQuickAdapter<FeedBackBean, QuickViewHolder>() {
         when(item.type){////通知类型(0系统通知 1反馈结果 2禁言通知 3解禁通知)
             0->{
                 holder.getView<TextView>(R.id.tv1).text =item!!.title
-                holder.getView<TextView>(R.id.tv2).visibility= View.GONE
+                holder.getView<TextView>(R.id.tv2).visibility= View.VISIBLE
+                holder.getView<TextView>(R.id.tv2).text =item!!.notice
             }
             1->{
                 holder.getView<TextView>(R.id.tv2).visibility= View.VISIBLE
@@ -43,6 +44,12 @@ class FeedNoticeAdapter: BaseQuickAdapter<FeedBackBean, QuickViewHolder>() {
                 holder.getView<TextView>(R.id.tv2).visibility= View.GONE
                 holder.getView<TextView>(R.id.tv1).text =item!!.title
             }
+            4->{
+                holder.getView<TextView>(R.id.tv1).text =item!!.title
+                holder.getView<TextView>(R.id.tv2).visibility= View.VISIBLE
+                holder.getView<TextView>(R.id.tv2).text =context.resources.getString(R.string.txt_yuanyin)+": "+item!!.notice
+            }
+
         }
     }
 }

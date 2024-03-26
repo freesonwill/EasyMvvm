@@ -203,8 +203,8 @@ data class MsgBean(
     val delFlag: Int? = 0,//APP用户是否删除 1删除 0正常
     val groupId: String? = "",//群组ID
     var id: String? = "",
-    val identityType: Int? = 0,//发送者身份身份(0：普通用户，1主播 2助手 3运营)
-    var msgType: Int? = 0, //消息类型，文字：0， 图片：1
+    val identityType: Int? = 0,//发送者身份身份(0：普通用户，1主播 2助手(占无) 3助理 )
+    var msgType: Int? = 0, //消息类型，文字：0， 图片：1  3视频  6通知
     val readable: Int? = 0,//是否已读：0 未读 1 已读
     var sent: Int? = 0,//是否已发送: 0 正在发送 1 已发送 2 发送失败
     val toId: String? = "",
@@ -898,3 +898,17 @@ data class ProhibitionBean(
     var mute: Boolean = false,// 是否禁言
     var tickOut: Boolean = false,// 是否踢出房间
 ) : Serializable
+
+
+/**
+ * 比赛的日期
+ */
+@Keep
+data class CompetitionBean(
+    var time: String,//日期yyyy-MM-dd
+    var num: Int=0,//数量
+
+) : Serializable
+
+
+

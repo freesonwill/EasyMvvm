@@ -3,8 +3,10 @@ package com.xcjh.app.ui.search
 import com.kunminx.architecture.ui.callback.UnPeekLiveData
 import com.xcjh.app.bean.*
 import com.xcjh.app.net.apiService
+import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.base.BaseViewModel
 import com.xcjh.base_lib.bean.ListDataUiState
+import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.request
 
 class SearchVm : BaseViewModel() {
@@ -13,7 +15,7 @@ class SearchVm : BaseViewModel() {
     //进行中的比赛
     var liveList = UnPeekLiveData<ArrayList<BeingLiveBean>>()
     var errTag= UnPeekLiveData<Boolean>()
-
+    var hotMatchList = UnPeekLiveData<ListDataUiState<MatchBean>>()
     /**
      * 获取标签
      */
@@ -48,6 +50,42 @@ class SearchVm : BaseViewModel() {
                 //请求失败
                 liveList.value=arrayListOf()
             },isShowDialog=false
+        )
+    }
+    private var pageNo = 1
+    /**
+     * 搜索赛事
+     */
+    fun getGameList(name:String,isRefresh: Boolean){
+        if (isRefresh) {
+            pageNo = 1
+        }else{
+            pageNo++
+        }
+       var bean=PostSchMatchListNewBean(current=pageNo,size=20,name=name,status="3")
+        request(
+            { apiService.getHotMatchChildListSearch(bean) },
+
+            {
+
+                hotMatchList.value = ListDataUiState(
+                    isSuccess = true,
+                    isRefresh = true,
+                    isEmpty = it!!.records.isEmpty(),
+                    isFirstEmpty = true && it.records.isEmpty(),
+                    listData = it.records
+                )
+            }, {
+                //请求失败
+                hotMatchList.value = ListDataUiState(
+                    isSuccess = false,
+                    isRefresh = true,
+                    errMessage = it.errorMsg,
+                    listData = arrayListOf()
+                )
+                myToast(it.errorMsg)
+
+            }
         )
     }
 }

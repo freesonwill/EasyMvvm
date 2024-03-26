@@ -5,6 +5,7 @@ import android.animation.AnimatorSet
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Parcelable
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
@@ -36,11 +37,13 @@ import com.xcjh.app.ui.details.MatchDetailActivity
 import com.xcjh.app.utils.judgeLogin
 import com.xcjh.app.view.CustomHeader
 import com.xcjh.base_lib.Constants
+import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.utils.LogUtils
 import com.xcjh.base_lib.utils.TimeUtil
 import com.xcjh.base_lib.utils.distance
 import com.xcjh.base_lib.utils.dp2px
 import com.xcjh.base_lib.utils.grid
+import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.view.clickNoRepeat
 import kotlinx.android.synthetic.main.item_sch_all.ivsc
 import java.text.SimpleDateFormat
@@ -71,7 +74,9 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
     var tabName: String? = ""
     var mOneTabIndex = 0
     var mTwoTabIndex = 0
+    //第一个
     var mCurrentOneTabIndex = 0
+    //第二个
     var mCurrentTwoTabIndex = 0
     var isResh = false
     var strYes = "'"
@@ -118,9 +123,13 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
             LogUtils.d("本页面tabname=$tabName")
             strTime = TimeUtil.gettimenowYear().toString()
+
             if ((mCurrentOneTabIndex != 3 && mCurrentTwoTabIndex == 0) ||
                 (mCurrentOneTabIndex == 3 && (mCurrentTwoTabIndex == 0 || mCurrentTwoTabIndex == 1))
             ) {//只取一天
+                Log.i("GGGGGGGGG","第一个11=="+mCurrentOneTabIndex)
+                Log.i("GGGGGGGGG","第二个1111=="+mCurrentTwoTabIndex)
+
                 if (calendarTime.isNotEmpty()) {
                     strTime = calendarTime
                     endTime = calendarTime
@@ -129,10 +138,30 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                 }
                 return
             }
+
+
+
+
+            //以前是查询两天的
+            //当前日期加2天
             endTime = TimeUtil.addDayEgls("0", 2).toString()
+            //当前日期
             strTimeRuslt = TimeUtil.gettimenowYear().toString()
+            //结束日期
             endTimeResult = TimeUtil.getDateStr(strTime, 2).toString()
 
+            //现在全部是当前日期
+            if (calendarTime.isNotEmpty()) {
+                strTime = calendarTime
+                endTime = calendarTime
+            }else{
+                strTime = strTimeRuslt
+                endTime = strTimeRuslt
+            }
+            return
+            //=======
+
+            //以前的逻辑可以查询当前日期往后或者往前2天
             if (mCurrentOneTabIndex == 3) {
                 if (calendarTime.isNotEmpty()) {
                     endTimeResult = TimeUtil.getDateStr(calendarTime, 2).toString()
@@ -148,6 +177,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                 if (calendarTime.isNotEmpty()) {
                     strTime = calendarTime
                     endTime = TimeUtil.addDayEgls(calendarTime, 2).toString()
+                    Log.i("SSSSss","=====")
                 }
             }
         } catch (e: Exception) {
@@ -542,7 +572,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                     )
                                 )
                                 binding.tvstatus.text =
-                                    context.resources.getString(R.string.main_txt_dd)
+                                    context.resources.getString(R.string.main_txt_yq)
                                 clearAnimation(binding.txtMatchAnimation)
                             }
 
@@ -951,8 +981,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                 mViewModel.getUnnotice(
                                     item!!.matchId,
                                     item!!.matchType,binding.ivsc,binding.tvcollect,bindingAdapterPosition,
-                                    mDatabind.recBottom
-                                )
+                                    mDatabind.recBottom)
 
 
                             } else {
@@ -963,12 +992,13 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                     item!!.matchType,binding.ivsc,binding.tvcollect,bindingAdapterPosition,
                                     mDatabind.recBottom
                                 )
-
+//                                myToast(appContext.getString(R.string.collect_success))
 
                             }
                         }
 
                     }
+
                     binding.conroot.setOnClickListener {
                         MatchDetailActivity.open(
                             matchType = item.matchType,
@@ -979,6 +1009,11 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                         )
 
                     }
+
+
+                }
+
+                R.id.ivsc.onClick {
 
 
                 }
@@ -1206,13 +1241,16 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
             Constants.isLoading = true
             initTime()
+
+//            Log.i("KAIAKI","开始-===="+strTime)
+//            Log.i("KAIAKI","结束-===="+endTime)
             mViewModel.getHotMatchDataList(
                 isresh,
                 iLoading, PostSchMatchListBean(
-                    competitionId, page,
-                    endTime,
-                    matchtype!!, pageSize, strTime,
-                    status
+                    competitionId=competitionId, current=page,
+                    endTime=endTime,
+                    matchType=matchtype!!, size=pageSize, startTime=strTime,
+                    status=status
                 )
             )
         } catch (e: Exception) {

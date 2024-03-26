@@ -61,7 +61,7 @@ fun myToast(whiteStr: String?, yellowStr: String? = null,isDeep:Boolean=false,gr
         val llToastBe = view.findViewById<View>(R.id.llToastBe) as LinearLayout
         var txtColor=ContextCompat.getColor(tvMsg.context, R.color.white)
         if(isDeep){
-            txtColor=ContextCompat.getColor(tvMsg.context, R.color.black)
+            txtColor=ContextCompat.getColor(tvMsg.context, R.color.white)
             llToastBe.background=ContextCompat.getDrawable(llToastBe.context,R.drawable.shape_4_ffffff)
         }
         SpanUtil.create()

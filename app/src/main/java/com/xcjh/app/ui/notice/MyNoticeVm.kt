@@ -1,6 +1,8 @@
 package com.xcjh.app.ui.notice
 
+import android.util.Log
 import com.kunminx.architecture.ui.callback.UnPeekLiveData
+import com.xcjh.app.R
 import com.xcjh.app.bean.BasePage
 import com.xcjh.app.bean.HotMatchBean
 import com.xcjh.app.bean.HotMatchReq
@@ -8,6 +10,7 @@ import com.xcjh.app.bean.MatchBean
 import com.xcjh.app.bean.PostSchMatchListBean
 import com.xcjh.app.net.apiService
 import com.xcjh.base_lib.Constants.Companion.BASE_PAGE_SIZE
+import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.base.BaseViewModel
 import com.xcjh.base_lib.bean.ListDataUiState
 import com.xcjh.base_lib.callback.livedata.BooleanLiveData
@@ -30,6 +33,8 @@ class MyNoticeVm : BaseViewModel() {
 
             {
                 noticeData.value=true
+
+                myToast(appContext.getString(R.string.collect_success))
             }, {
                 //请求失败
                 myToast(it.errorMsg)
@@ -53,7 +58,7 @@ class MyNoticeVm : BaseViewModel() {
     }
 
     /**
-     * 反馈
+     * 晒哼
      */
     fun getMyNoticeList(isRefresh: Boolean) {
         if (isRefresh) {

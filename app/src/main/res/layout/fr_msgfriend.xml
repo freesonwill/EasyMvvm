@@ -40,12 +40,12 @@
                     android:id="@+id/indexBar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-
                     android:layout_gravity="center_vertical"
                     app:sidebarSelectTextColor="@color/c_94999f"
                     app:sidebarSelectTextSize="11sp"
+                    android:visibility="gone"
                     app:sidebarUnSelectTextColor="@color/c_94999f"
-                    app:sidebarUnSelectTextSize="11sp"
+                    app:sidebarUnSelectTextSize="9sp"
                     app:sidebarWordBackground="@drawable/sort_text_bg"
                     app:sidebarWordTextColor="@color/white"
                     app:sidebarWordTextSize="45sp">

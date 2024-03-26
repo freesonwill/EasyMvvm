@@ -58,8 +58,17 @@ class FootballLineupList (context: Context, attrs: AttributeSet?) : LinearLayout
                         binding.ivIcon.visibleOrInvisible(item.name.isNotEmpty())
                         binding.tvPlayerNum.visibleOrInvisible(item.name.isNotEmpty())
                         binding.tvPosition.visibleOrInvisible(item.name.isNotEmpty())
-                        Glide.with(context).load(if(this.modelPosition%2==0) R.drawable.icon_team_red else R.drawable.icon_team_blue).into(binding.ivIcon)
-                       /// binding.ctlItem.setBackgroundColor(context.getColor(if(this.modelPosition%2==0) R.color.c_21152a else R.color.c_18152A ))
+
+//                        if(this.modelPosition%2==0){
+//                            Glide.with(context).load(R.drawable.icon_team_red).into(binding.ivIcon)
+//                        }else{
+//                            Glide.with(context).load(R.drawable.iteam_blue_new).into(binding.ivIcon)
+//                        }
+//                        Glide.with(context).load(R.drawable.iteam_blue_new).into(binding.ivIcon)
+//                         Glide.with(context).load(R.drawable.ic_basket_team_tb).into(binding.ivIcon)
+//                        Glide.with(context).load(if(this.modelPosition%2==0) R.drawable.icon_team_red else R.drawable.icon_team_blue).into(binding.ivIcon)
+                        Glide.with(context).load(if(this.modelPosition%2==0) R.drawable.icon_team_red else R.drawable.iteam_blue_new).into(binding.ivIcon)
+//                         binding.ctlItem.setBackgroundColor(context.getColor(if(this.modelPosition%2==0) R.color.c_21152a else R.color.c_18152A ))
                         binding.tvPlayerNum.text = item.shirtNumber.toString()
                         binding.tvName.text = item.name
                         binding.tvPosition.text = getPlayerPos(item.position)

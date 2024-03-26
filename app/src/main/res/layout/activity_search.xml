@@ -1,126 +1,216 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
     </data>
-    <LinearLayout
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/c_f2f3f7"
         android:orientation="vertical">
-    <RelativeLayout
-        android:id="@+id/rlSearchTitle"
-        android:layout_width="match_parent"
-        android:layout_height="57dp"
-        android:background="@color/c_ffffff" >
-<!--        TYPE_CLASS_TEXT-->
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/etSearchInput"
-            android:layout_width="match_parent"
-            android:layout_height="38dp"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="@dimen/dp_60"
-            android:background="@drawable/shape_r30_f2f3f7"
-            android:drawablePadding="@dimen/dp_12"
-            android:hint="@string/search_hint_interested"
-             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="10dp"
-            android:imeOptions="flagNoExtractUi|actionSearch"
-            android:inputType="text"
-            android:paddingStart="@dimen/dp_12"
-            android:paddingEnd="40dp"
-            android:singleLine="true"
-            android:textColor="@color/c_37373d"
-            android:textColorHint="@color/c_94999f"
-            android:textCursorDrawable="@drawable/shape_et_cursor_blue"
-            android:textSize="@dimen/sp_16"
-            app:drawableStartCompat="@drawable/ic_search_new"/>
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/ivClear"
-            tools:visibility="visible"
-            android:visibility="gone"
-            android:layout_width="@dimen/dp_20"
-            android:layout_height="@dimen/dp_20"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="70dp"
-            android:layout_marginBottom="20dp"
-            android:layout_alignParentBottom="true"
-            app:srcCompat="@drawable/ic_close" />
-<!--        cancel-->
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/txtSearchClick"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@drawable/search_txt_selector"
-            android:textSize="@dimen/sp_16"
-            android:gravity="center"
-            android:paddingRight="12dp"
-            android:layout_marginBottom="18dp"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:text="@string/cancel"/>
-        <View
+        <RelativeLayout
+            android:id="@+id/rlSearchTitle"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_alignParentBottom="true"
-            android:background="@color/c_f2f3f7"/>
-    </RelativeLayout>
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" >
-        <LinearLayout
+            android:layout_height="wrap_content"
+            android:background="@color/c_ffffff">
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/viewPager"
+                android:layout_width="match_parent"
+                android:layout_height="1dp" />
+
+            <RelativeLayout
+                android:id="@+id/rlSearchRl"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_56">
+                <!--        TYPE_CLASS_TEXT-->
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/etSearchInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="38dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="@dimen/dp_60"
+                    android:background="@drawable/shape_r30_f2f3f7"
+                    android:drawablePadding="@dimen/dp_12"
+                    android:hint="@string/search_hint_interested"
+                    android:imeOptions="flagNoExtractUi|actionSearch"
+                    android:inputType="text"
+                    android:paddingStart="@dimen/dp_12"
+                    android:paddingEnd="40dp"
+                    android:singleLine="true"
+                    android:textColor="@color/c_37373d"
+                    android:textColorHint="@color/c_94999f"
+                    android:textCursorDrawable="@drawable/shape_et_cursor_blue"
+                    android:textSize="@dimen/sp_16"
+                    app:drawableStartCompat="@drawable/ic_search_new" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivClear"
+                    android:layout_width="@dimen/dp_20"
+                    android:layout_height="@dimen/dp_20"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginEnd="70dp"
+                    android:layout_marginBottom="10dp"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/ic_close"
+                    tools:visibility="visible" />
+                <!--        cancel-->
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/txtSearchClick"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="8dp"
+                    android:gravity="center"
+                    android:paddingRight="12dp"
+                    android:text="@string/cancel"
+                    android:textColor="@drawable/search_txt_selector"
+                    android:textSize="@dimen/sp_16" />
+
+            </RelativeLayout>
+        </RelativeLayout>
+<!--        Tab、-->
+        <RelativeLayout
+            android:id="@+id/rlTob"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_40"
+            android:layout_below="@+id/rlSearchTitle"
+            android:background="@color/c_f2f3f7"
+            android:orientation="vertical">
+            <View
+                android:id="@+id/ViewHu"
+                android:layout_width="match_parent"
+                android:background="@color/c_ffffff"
+                android:layout_height="@dimen/dp_10"/>
+            <RelativeLayout
+                android:id="@+id/rlChuNew"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                android:background="@color/c_ffffff">
+                <net.lucode.hackware.magicindicator.MagicIndicator
+                    android:id="@+id/magicIndicator"
+                    android:layout_width="222dp"
+                    android:layout_height="@dimen/dp_40"
+                    android:layout_centerHorizontal="true"
+                    android:background="@color/c_ffffff" />
+            </RelativeLayout>
+        </RelativeLayout>
+
+        <!--        热门标签-->
+        <RelativeLayout
             android:id="@+id/llSearchShow"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/c_ffffff"
-            android:paddingLeft="12dp"
-            android:paddingRight="@dimen/dp_12"
-            android:paddingTop="@dimen/dp_15"
-            android:orientation="vertical">
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_below="@+id/rlSearchTitle">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/c_f2f3f7" />
+
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_marginBottom="@dimen/dp_15"
-                android:orientation="horizontal">
-                <androidx.appcompat.widget.AppCompatTextView
+                android:layout_marginTop="@dimen/dp_1"
+                android:background="@color/c_ffffff"
+                android:orientation="vertical"
+                android:paddingLeft="12dp"
+                android:paddingTop="@dimen/dp_15"
+                android:paddingRight="@dimen/dp_12">
+
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="15sp"
-                    android:textColor="@color/c_37373d"
-                    android:text="@string/search_txt_hot_race"/>
+                    android:layout_marginBottom="@dimen/dp_15"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/search_txt_hot_race"
+                        android:textColor="@color/c_37373d"
+                        android:textSize="15sp" />
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rcHotRace"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:overScrollMode="never"
+                    tools:listitem="@layout/item_search_hot_title" />
+
             </LinearLayout>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rcHotRace"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:listitem="@layout/item_search_hot_title"
-                android:overScrollMode="never" />
 
-        </LinearLayout>
-        <com.drake.statelayout.StateLayout
-            android:id="@+id/state"
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rlShowRe"
+            android:visibility="gone"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone">
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rcSearchList"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rlTob"
+         >
+
+            <com.drake.statelayout.StateLayout
+                android:id="@+id/state"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="12dp"
-                android:layout_marginRight="12dp"
-                android:layout_marginTop="@dimen/dp_12"
-                tools:listitem="@layout/item_main_live_list"
-                android:overScrollMode="never" />
-        </com.drake.statelayout.StateLayout>
+                android:layout_height="match_parent">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rcSearchList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginTop="@dimen/dp_12"
+                    android:layout_marginRight="12dp"
+                    android:overScrollMode="never"
+                    tools:listitem="@layout/item_main_live_list" />
+            </com.drake.statelayout.StateLayout>
+
+
+            <com.scwang.smart.refresh.layout.SmartRefreshLayout
+                android:id="@+id/smartCommon"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/c_f2f3f7" >
+
+                <com.drake.statelayout.StateLayout
+                    android:id="@+id/stateNew"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rcSearchListNew"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="12dp"
+                        android:layout_marginTop="@dimen/dp_12"
+                        android:layout_marginRight="12dp"
+                        android:overScrollMode="never"
+                        tools:listitem="@layout/item_sch_all" />
+                </com.drake.statelayout.StateLayout>
+                <com.scwang.smart.refresh.footer.ClassicsFooter
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </com.scwang.smart.refresh.layout.SmartRefreshLayout>
+
+
+
+
+        </RelativeLayout>
 
     </RelativeLayout>
-
-    </LinearLayout>
 
 </layout>

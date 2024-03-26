@@ -21,6 +21,8 @@ import com.xcjh.app.bean.MatchBean
 import com.xcjh.app.databinding.ActivityMyFollowListBinding
 import com.xcjh.app.databinding.ItemMyFollowBinding
 import com.xcjh.app.ui.details.MatchDetailActivity
+import com.xcjh.app.utils.cancellationDialog
+import com.xcjh.app.utils.delFriDilog
 import com.xcjh.app.view.CustomHeader
 import com.xcjh.base_lib.utils.dp2px
 
@@ -114,7 +116,14 @@ class MyFollowListActivity : BaseActivity<MyFollowListVm, ActivityMyFollowListBi
             R.id.txtFollowIsFollow.onClick {
                 var  bean=_data as FollowAnchorBean
                 if(bean.isFollow){
-                    mViewModel.unfollowAnchor(bean.anchorId,layoutPosition)
+                    //取消关注
+                    cancellationDialog(this@MyFollowListActivity){
+                        if (it) {//点击了确定
+                            mViewModel.unfollowAnchor(bean.anchorId,layoutPosition)
+                        }
+                    }
+
+
                 }else{
                     mViewModel.followAnchor(bean.anchorId,layoutPosition)
                 }

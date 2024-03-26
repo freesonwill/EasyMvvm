@@ -20,6 +20,7 @@ import com.xcjh.app.websocket.bean.ReceiveChangeMsg
 import com.xcjh.app.websocket.bean.ReceiveChatMsg
 import com.xcjh.app.websocket.bean.ReceiveWsBean
 import com.xcjh.app.websocket.bean.SendCommonWsBean
+import com.xcjh.app.websocket.bean.UpdateLiveContentBean
 import com.xcjh.app.websocket.listener.*
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.appContext
@@ -129,7 +130,7 @@ class MyWsManager private constructor(private val mContext: Context) {
      * 32 -》禁言  bizId=""如果是空就是全局    不为空就是主播id
      * 33-》解除
      * 36->是被主播踢出直播间
-     *
+     * 37直播间公告修改
      *  11->12->11 发送消息->发送消息成功->接收到消息
      *  19->20 获取指定群聊或好友历史或离线消息成功
      *  23->23 消息已读回复
@@ -258,7 +259,7 @@ class MyWsManager private constructor(private val mContext: Context) {
                     it.toPair().second.onSystemMsgReceive(feedMsgBean)
                 }
                 //就是主播直播间的禁言
-                if(feedMsgBean.bizId.isNullOrEmpty()){
+                if(feedMsgBean.bizId.isNotEmpty()){
                     mLiveRoomListener.forEach {
                         it.toPair().second.onProhibition(feedMsgBean)
                     }
@@ -274,7 +275,7 @@ class MyWsManager private constructor(private val mContext: Context) {
                     it.toPair().second.onSystemMsgReceive(feedMsgBean)
                 }
                 //就是主播直播间的禁言
-                if(feedMsgBean.bizId.isNullOrEmpty()){
+                if(feedMsgBean.bizId.isNotEmpty()){
                     mLiveRoomListener.forEach {
                         it.toPair().second.onOpeningUp(feedMsgBean)
                     }
@@ -325,6 +326,14 @@ class MyWsManager private constructor(private val mContext: Context) {
                     it.toPair().second.onIsBlacklist(feedMsgBean)
                 }
             }
+            37 -> {//直播间公告修改
+                val wsBean2 = jsonToObject2<ReceiveWsBean<UpdateLiveContentBean>>(msg)
+                val feedMsgBean = wsBean2?.data as UpdateLiveContentBean
+                mLiveRoomListener.forEach {
+                    it.toPair().second.onUpdateLiveContent(feedMsgBean)
+                }
+            }
+
 
             else -> {
                 // 登录过期

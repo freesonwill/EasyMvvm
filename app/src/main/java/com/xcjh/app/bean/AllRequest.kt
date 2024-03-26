@@ -106,7 +106,15 @@ data class PostSchMatchListBean(
     val matchType: String,//	比赛类型：1：足球；2：篮球,可用值:1,2
     val size: Int,
     val startTime: String,
-    val status: String//	查询已完成比赛因为篮球和足球状态不一致，这里统一使用99代表查询已完赛
+    val status: String//	查询已完成比赛因为篮球和足球状态不一致，这里统一使用99代表查询已完赛   3
+)
+
+
+data class PostSchMatchListNewBean(
+    val current: Int,
+    val size: Int,
+    val name: String,
+    val status: String//	查询已完成比赛因为篮球和足球状态不一致，这里统一使用99代表查询已完赛   3
 )
 
 /**
@@ -235,6 +243,16 @@ data class LoginSend(
     var lang: Int=1,//语言类型：1：中文；2：英文,示例值(1)
 
 )
+/**
+ * 比赛类型
+ */
+@Keep
+data class CompetitionRed(
+    var matchType: String?=null,//比赛类型 1：足球，2：篮球,可用值:1,2,示例值(1)
+    var forward: Boolean?=true,// true是普通的比赛    false是赛果比赛
+
+    )
+
 
 
 

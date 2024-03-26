@@ -63,7 +63,7 @@
                             android:id="@+id/rltVideo"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                                android:visibility="gone">
+                             android:visibility="gone">
 
                             <View
                                 android:id="@+id/viewTopBg"
@@ -84,8 +84,8 @@
                                 android:layout_height="21dp"
                                 android:layout_alignParentEnd="true"
                                 android:layout_alignParentBottom="true"
-                                android:layout_marginEnd="@dimen/dp_12"
-                                android:layout_marginBottom="@dimen/dp_35"
+                                android:layout_marginEnd="@dimen/dp_40"
+                                android:layout_marginBottom="@dimen/dp_32"
                                 android:background="@drawable/shape_background_signal"
                                 android:backgroundTint="@color/white25_to_dark_selector"
                                 android:gravity="center"
@@ -564,19 +564,20 @@
                                 tools:ignore="ContentDescription" />
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
-                        <!--不折叠时显示 -->
+                        <!--不折叠时显示 android:layout_marginEnd="50dp"-->
                         <RelativeLayout
                             android:id="@+id/layoutNotFold"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_centerHorizontal="true"
-                            android:layout_marginStart="50dp"
-                            android:layout_marginEnd="50dp"
+                            android:paddingLeft="@dimen/dp_40"
+                            android:paddingRight="70dp"
                             android:alpha="1"
                             android:orientation="horizontal"
                             tools:ignore="RelativeOverlap">
                             <!--直播中标题 直播中会隐藏，点击显示-->
                             <TextView
+                                android:text="1111111111111111111"
                                 android:id="@+id/topLiveTitle"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -584,9 +585,9 @@
                                 android:singleLine="true"
                                 android:textColor="@color/c_ffffff"
                                 android:textSize="@dimen/sp_14"
-                                android:textStyle="bold"
                                 android:visibility="gone"
-                                tools:text="中超 上海申花VS梅州客家" />
+                                android:textStyle="bold"
+                                tools:text="中超 上海申花VS梅州客家上海申" />
                             <!--纯净流标题-->
                             <androidx.constraintlayout.widget.ConstraintLayout
                                 android:id="@+id/topNoLiveTitle"
@@ -641,7 +642,7 @@
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:visibility="gone"
-                            android:layout_centerVertical="true"
+                            android:layout_marginTop="10dp"
                             android:layout_toLeftOf="@+id/tvToShare"
                             android:layout_marginRight="8dp"
                             app:srcCompat="@drawable/detaic_tv_icon"/>
@@ -653,7 +654,7 @@
                             android:layout_alignParentEnd="true"
                             android:layout_centerVertical="true"
                             android:layout_marginEnd="@dimen/dp_10"
-                            android:src="@drawable/icon_share"
+                            android:src="@drawable/icon_share_new"
                             app:tint="@color/white_to_dark_selector" />
 
                     </RelativeLayout>

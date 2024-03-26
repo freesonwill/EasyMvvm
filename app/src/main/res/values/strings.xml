@@ -56,7 +56,7 @@
     <string name="language_zh_tw">繁体中文</string>
     <string name="language_en">English</string>
     <string name="copy_success">复制成功</string>
-    <string name="str_stoptalk">您已被禁言</string>
+    <string name="str_stoptalk">当前您已被禁言</string>
     <string name="str_inputcontent">请输入内容</string>
     <string name="copy">复制</string>
     <string name="collect_success">收藏成功</string>
@@ -176,11 +176,12 @@
     <string name="main_txt_yz">腰斩</string>
     <string name="main_txt_qx">取消</string>
     <string name="main_txt_dd">待定</string>
+    <string name="main_txt_yq">延期</string>
     <string name="main_dqdz">点球决战</string>
     <string name="fans">粉丝</string>
     <string name="chat">私信</string>
     <string name="follow">+关注</string>
-    <string name="search_hint_interested">搜索感兴趣的主播</string>
+    <string name="search_hint_interested">搜索感兴趣的直播/赛事</string>
     <string name="search_txt_hot_race">热门比赛</string>
     <string name="attack">进攻</string>
     <string name="wx_attack">危险进攻</string>
@@ -341,6 +342,7 @@
     <string name="fq_s_percent">罚球%</string>
     <string name="dis_focus">已关注</string>
     <string name="add_focus">关注</string>
+    <string name="add_focus_success">关注成功</string>
     <string name="share_match">分享比赛</string>
     <string name="in_chat_oto">私聊</string>
     <string name="over_time">加时</string>
@@ -399,5 +401,11 @@
     <string name="projection_txt_condition_er">2.部分电视/盒子机型老旧，不支持投屏观看。</string>
     <string name="live_txt_remove">你已被主播移出了直播间</string>
     <string name="live_txt_retry">暂时无法观看该直播间内容\n请稍后重试</string>
-
+    <string name="video_txt_err">加载失败、请重试或切换信号</string>
+    <string name="video_txt_again">重新加载</string>
+    <string name="cancellation_txt_follow">是否确定取消关注？</string>
+    <string name="search_txt_live">直播间</string>
+    <string name="search_txt_game">赛事</string>
+    <string name="day_txt">日</string>
+    <string name="month_txt">月</string>
 </resources>

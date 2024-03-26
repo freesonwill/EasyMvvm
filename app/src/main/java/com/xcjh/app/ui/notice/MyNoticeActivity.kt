@@ -34,11 +34,13 @@ import com.xcjh.app.ui.details.MatchDetailActivity
 import com.xcjh.app.utils.judgeLogin
 import com.xcjh.app.view.CustomHeader
 import com.xcjh.base_lib.Constants.Companion.BASE_PAGE_SIZE
+import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.utils.LogUtils
 import com.xcjh.base_lib.utils.TimeUtil
 import com.xcjh.base_lib.utils.distance
 import com.xcjh.base_lib.utils.grid
 import com.xcjh.base_lib.utils.horizontal
+import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.vertical
 import com.xcjh.base_lib.utils.view.clickNoRepeat
 import java.text.SimpleDateFormat
@@ -46,7 +48,7 @@ import java.util.Date
 import java.util.Locale
 
 /***
- * 我的关注比赛
+ * 我的订阅的比赛
  */
 
 class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {

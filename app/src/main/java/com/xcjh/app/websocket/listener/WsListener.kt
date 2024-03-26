@@ -6,6 +6,7 @@ import com.xcjh.app.websocket.bean.LiveStatus
 import com.xcjh.app.websocket.bean.ReceiveChangeMsg
 import com.xcjh.app.websocket.bean.ReceiveChatMsg
 import com.xcjh.app.websocket.bean.ReceiveWsBean
+import com.xcjh.app.websocket.bean.UpdateLiveContentBean
 
 /**
  * @author zobo101
@@ -64,6 +65,11 @@ interface LiveRoomListener {
      * 是否黑名单
      */
     fun onIsBlacklist(feed: FeedSystemNoticeBean){}
+
+    /**
+     * 直播间信息修改
+     */
+    fun onUpdateLiveContent(content : UpdateLiveContentBean){}
 
 }
 /**

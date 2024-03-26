@@ -34,6 +34,7 @@ class DetailAnchorFragment(
         ViewModelProvider(requireActivity())[DetailVm::class.java]
     }
     private var mNoticeWeb: WebView? = null
+
     override fun initView(savedInstanceState: Bundle?) {
         mNoticeWeb = mDatabind.agentWeb
         setWeb(mNoticeWeb!!)
@@ -56,6 +57,8 @@ class DetailAnchorFragment(
                     }
                 }*//*
                 mDatabind.tvTabAnchorNotice.text = it.notice?.toHtml() //主播公告*/
+
+
                 val bb = "<html><head><style>body { font-size:14px; color: #94999f; margin: 0; }</style></head><body>${(it.notice)}</body></html>"
                 //mNoticeWeb?.loadDataWithBaseURL(null, bb, "text/html", "UTF-8", null)
                 setH5Data(mNoticeWeb,it.notice?:"", tvColor ="#94999f", maxLine = 200 )
@@ -64,6 +67,27 @@ class DetailAnchorFragment(
                     mDatabind.ivTabAnchorAvatar,
                     R.drawable.default_anchor_icon
                 )
+
+            }
+        }
+
+
+        //主播详情接口返主要修改公告~~~聊天和主播详情
+        vm.anchorUpdate.observe(this) {
+            if (it != null) {
+                this.anchorId = it.id
+                mDatabind.tvTabAnchorNick.text = it.nickName  //主播昵称
+                mDatabind.tvDetailTabAnchorFans.text = it.fansCount //主播粉丝数量
+
+                val bb = "<html><head><style>body { font-size:14px; color: #94999f; margin: 0; }</style></head><body>${(it.notice)}</body></html>"
+                //mNoticeWeb?.loadDataWithBaseURL(null, bb, "text/html", "UTF-8", null)
+                setH5Data(mNoticeWeb,it.notice?:"", tvColor ="#94999f", maxLine = 200 )
+                loadImage(requireContext(),
+                    it.head,
+                    mDatabind.ivTabAnchorAvatar,
+                    R.drawable.default_anchor_icon
+                )
+
             }
         }
         vm.isfocus.observe(this) {

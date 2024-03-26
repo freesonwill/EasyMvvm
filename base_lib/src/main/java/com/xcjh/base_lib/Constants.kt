@@ -33,6 +33,7 @@ class Constants {
         var PHONE_CODE = "+86"//手机区号
         var isLoading=false
         var ISSTOP_TALK = "0"//全局是否禁言 0shi fou
+
         const val VIDEO_DATA = "VIDEO_DATA"//视频详情
         const val BUNDLE_DATA = "BUNDLE_DATA"//详情数据
         const val TOURNAMENT_DATA = "TOURNAMENT_DATA"//锦标赛详情

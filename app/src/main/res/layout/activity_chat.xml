@@ -131,7 +131,7 @@
             <RelativeLayout
                 android:id="@+id/linbottom"
                 android:layout_width="match_parent"
-                android:layout_height="220dp"
+                android:layout_height="120dp"
                 android:visibility="gone"
                 android:layout_marginTop="@dimen/dp_15"
               >

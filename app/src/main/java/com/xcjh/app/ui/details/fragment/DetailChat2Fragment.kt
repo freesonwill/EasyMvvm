@@ -5,7 +5,9 @@ import android.content.Context
 import android.os.Bundle
 import android.text.InputType
 import android.util.Log
+import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.webkit.WebView
 import android.widget.ImageView
@@ -38,6 +40,7 @@ import com.xcjh.app.websocket.bean.FeedSystemNoticeBean
 import com.xcjh.app.websocket.bean.ReceiveChatMsg
 import com.xcjh.app.websocket.bean.ReceiveWsBean
 import com.xcjh.app.websocket.bean.SendChatMsgBean
+import com.xcjh.app.websocket.bean.UpdateLiveContentBean
 import com.xcjh.app.websocket.listener.LiveRoomListener
 import com.xcjh.base_lib.App
 import com.xcjh.base_lib.utils.dip2px
@@ -93,27 +96,39 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
             mViewModel.getAnchorControlUserInfo(userId!!)
         }
 
+
+
+
+
 //        setProhibition(true)
 //        blacklistDilog(requireContext(),1)
     }
 
     /**
-     * 是否禁言true是禁言
+     * 是否禁言true是禁言center
      */
     fun setProhibition(isflage:Boolean){
         if(isflage){
-            mDatabind.edtChatMsg.isFocusable=false
-            mDatabind.edtChatMsg.setText("")
-            mDatabind.edtChatMsg.hint=resources.getString(R.string.str_stoptalk)
-            mDatabind.sendChat.isEnabled=false
-        }else{
 
+            mDatabind.txtProhibit.visibility=View.VISIBLE
+
+//            mDatabind.edtChatMsg.isFocusable=false
             mDatabind.edtChatMsg.setText("")
-            mDatabind.edtChatMsg.hint=resources.getString(R.string.say_something)
-            mDatabind.edtChatMsg.isFocusable = true
-            mDatabind.edtChatMsg.isFocusableInTouchMode = true
-            mDatabind.edtChatMsg.inputType = InputType.TYPE_CLASS_TEXT // 或者其他你需要的输入类型
-            mDatabind.sendChat.isEnabled=true
+//            mDatabind.edtChatMsg.hint=resources.getString(R.string.str_stoptalk)
+//            mDatabind.edtChatMsg.gravity= Gravity.CENTER
+//            mDatabind.sendChat.isEnabled=false
+//            mDatabind.sendChat.visibility=View.GONE
+        }else{
+            mDatabind.txtProhibit.visibility=View.GONE
+            mDatabind.edtChatMsg.setText("")
+//            mDatabind.edtChatMsg.hint=resources.getString(R.string.say_something)
+//            mDatabind.edtChatMsg.isFocusable = true
+//            mDatabind.edtChatMsg.isFocusableInTouchMode = true
+//            mDatabind.edtChatMsg.inputType = InputType.TYPE_CLASS_TEXT // 或者其他你需要的输入类型
+//            mDatabind.sendChat.isEnabled=true
+//            mDatabind.sendChat.visibility=View.VISIBLE
+//            mDatabind.edtChatMsg.gravity= Gravity.LEFT or Gravity.CENTER
+
         }
 
     }
@@ -242,14 +257,55 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
                 //进入直播间查询被踢出
                 blacklistDilog(requireContext(),1)
             }else if(it.mute){//被禁言
+
                 setProhibition(true)
             }
         }
 
-
+        var  num=0
         //公告
         vm.anchor.observe(this) {
             if (it != null) {
+//                if(num!=0){
+//                    it.notice= "<p><span style=\"color: rgb(225, 60, 57);\">欢迎观众的到来，感谢大家对本直播间的支持和关注</span></p><p><span style=\"color: rgb(114, 192, 64);\">为了营造良好的观赛氛围，本直播间禁止任何形式的恶意言论、人身攻击和不文明行为。</span></p>"
+//                }
+//                num=2
+
+
+                noticeBean.notice = it.notice ?: ""
+                noticeBean.isOpen = false
+                mDatabind.notice.expandableText.text =
+                    noticeBean.notice.replace("<p>", "<span>").replace("</p>", "</span>").toHtml()
+                "${mDatabind.lltNotice.height}".loge("====999==")
+                val layout = mDatabind.notice.expandableText.layout
+                if (layout != null) {
+                    val lineCount: Int = layout.lineCount
+                    lineCount.toString().loge("888===")
+                    mDatabind.notice.lltExpandCollapse.visibleOrGone(lineCount > 2)
+                    //动态设置TextView距离顶部的间距
+                    val params = mDatabind.page.layoutParams as RelativeLayout.LayoutParams
+                    params.setMargins(0,if (lineCount==1){
+                        dip2px(88f)
+                    }else{
+                        dip2px(110f)
+                    },0,0)
+//                    mDatabind.page.layoutParams = params
+
+                    //mDatabind.notice.expandableText.maxLines =  2
+                }
+                setH5Data(mNoticeWeb, noticeBean.notice, tvColor = "#94999f", maxLine = 2)
+            }
+        }
+
+        //修改公告公告
+        vm.anchorUpdate.observe(this) {
+            if (it != null) {
+//                if(num!=0){
+//                    it.notice= "<p><span style=\"color: rgb(225, 60, 57);\">1111111111</span></p><p><span style=\"color: rgb(114, 192, 64);\">为了营造良好的观赛氛围，本直播间禁止任何形式的恶意言论、人身攻击和不文明行为。</span></p>"
+//                }
+//                num=2
+
+
                 noticeBean.notice = it.notice ?: ""
                 noticeBean.isOpen = false
                 mDatabind.notice.expandableText.text =
@@ -274,6 +330,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
                 setH5Data(mNoticeWeb, noticeBean.notice, tvColor = "#94999f", maxLine = 2)
             }
         }
+
         //历史消息
         vm.hisMsgList.observe(this) {
             mDatabind.page.finishRefresh()
@@ -388,14 +445,33 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
 
     //被踢出直播间
     override fun onIsBlacklist(feed: FeedSystemNoticeBean) {
-        blacklistDilog(requireContext(),2)
+        if(userId!!.isNotEmpty()){
+            if(liveId!!.equals(feed.bizId)){
+                blacklistDilog(requireContext(),2)
+            }
+        }
 
     }
+
+    /**
+     * 更新直播间公告
+     */
+    override fun onUpdateLiveContent(content: UpdateLiveContentBean) {
+        if(userId!!.isNotEmpty()){
+            if(liveId!!.equals(content.liveId)){
+                vm.getDetailAnchorInfo(userId)
+            }
+
+        }
+    }
+
+
     //禁言
     override fun onProhibition(feed: FeedSystemNoticeBean) {
 
-        if(userId.isNullOrEmpty()){
+        if(userId!!.isNotEmpty()){
             if(feed.bizId.equals(userId)){
+                myToast(resources.getString(R.string.no_chat_t))
                 setProhibition(true)
             }
         }
@@ -403,7 +479,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
     }
     //解禁
     override fun onOpeningUp(feed: FeedSystemNoticeBean) {
-        if(userId.isNullOrEmpty()){
+        if(userId!!.isNotEmpty()){
             if(feed.bizId.equals(userId)){
                 setProhibition(false)
             }
@@ -442,6 +518,9 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
             mDatabind.rcvChat.scrollToPosition(0)
         }
     }
+
+
+
 
     override fun onClick(v: View?) {
         when (v) {
@@ -543,7 +622,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
 
                     }
                 }
-            }).setAlign(CustomDialog.ALIGN.CENTER).setCancelable(true).
+            }).setAlign(CustomDialog.ALIGN.CENTER).setCancelable(false).
             setMaskColor(//背景遮罩
                 ContextCompat.getColor(context, com.xcjh.base_lib.R.color.blacks_tr)
 

@@ -179,7 +179,7 @@ class DetailChatFragment(
     override fun createObserver() {
         //公告
         vm.anchor.observe(this) { it ->
-            if (it != null) {
+            if (it != null&&it.notice!=null) {
                 noticeBean.notice = it.notice ?: ""
 
                /*  val richText = ("<font color=\"red\">红色样式</font><br />"

@@ -65,7 +65,6 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
         mDatabind.ivMyHead.setOnTouchListener { view, event ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
-                    Log.i("SSSSSSSSSs","11111111111111")
                     judgeLogin {
                         mDatabind.ivMyHead.alpha=0.7f
                         mDatabind.txtMyName.alpha=0.7f

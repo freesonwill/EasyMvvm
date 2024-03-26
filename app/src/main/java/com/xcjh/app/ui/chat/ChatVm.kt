@@ -48,10 +48,11 @@ class ChatVm : BaseViewModel() {
     var isRefresh=true
     fun getHisMsgList(smartCommon: SmartRefreshLayout, offsetId: String, serchId: String?) {
         isRefresh = offsetId.equals("")
+        var   dd=HistoryMsgReq("2", null, offsetId,  CacheUtil.getUser()?.id!!, serchId!!, size = 50)
         request(
             {
                 apiService.getHistoryMsgPr(
-                    HistoryMsgReq("2", null, offsetId, CacheUtil.getUser()?.id!!, serchId!!, size = 50)
+                    HistoryMsgReq("2", null, offsetId, userId=CacheUtil.getUser()?.id!!, searchId=serchId!!, size = 50)
                 )
             },
 

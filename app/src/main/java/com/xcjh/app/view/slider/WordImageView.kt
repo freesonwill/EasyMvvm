@@ -118,9 +118,12 @@ class WordImageView : FrameLayout {
     fun reset() {
         word_v_flash!!.visibility = View.GONE
         mList.clear()
-        word_fl_content!!.removeAllViews()
-        word_fl_content!!.addView(word_iv_cover)
-        word_fl_content!!.addView(word_v_flash)
+        if(word_iv_cover!=null&&word_v_flash!=null){
+            word_fl_content!!.removeAllViews()
+            word_fl_content!!.addView(word_iv_cover)
+            word_fl_content!!.addView(word_v_flash)
+        }
+
     }
 
     //成功高亮动画

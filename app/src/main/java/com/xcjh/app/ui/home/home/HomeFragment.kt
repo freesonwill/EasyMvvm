@@ -10,6 +10,7 @@ import com.gyf.immersionbar.ImmersionBar
 import com.xcjh.app.R
 import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseFragment
+import com.xcjh.app.bean.MatchBean
 import com.xcjh.app.databinding.FragmentHomeBinding
 import com.xcjh.app.ui.home.home.tab.CompetitionTypeListFragment
 import com.xcjh.app.ui.home.home.tab.MainNewsListFragment
@@ -25,7 +26,6 @@ import com.xcjh.base_lib.utils.view.clickNoRepeat
 class HomeFragment : BaseFragment<MainVm, FragmentHomeBinding>() {
 
     private var mFragList = ArrayList<Fragment>()
-
     override fun initView(savedInstanceState: Bundle?) {
 
 //        mFragList.add(MainRecommendFragment())
