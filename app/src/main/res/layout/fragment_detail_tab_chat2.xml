@@ -59,6 +59,7 @@
                 tools:listitem="@layout/item_detail_chat" />
 
         </com.drake.brv.PageRefreshLayout>
+        <!--    主播公告-->
         <LinearLayout
             android:id="@+id/lltNotice"
             android:background="@color/c_181819"

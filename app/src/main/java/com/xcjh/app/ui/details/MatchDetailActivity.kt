@@ -54,18 +54,14 @@ import com.xcjh.base_lib.utils.*
 import com.xcjh.base_lib.utils.view.clickNoRepeat
 import com.xcjh.base_lib.utils.view.visibleOrGone
 import com.xcjh.base_lib.utils.view.visibleOrInvisible
-import kotlinx.android.synthetic.main.item_my_follow.view.txtMyLiveType
-import kotlinx.android.synthetic.main.match_video_player.view.ivMatchBgNew
-import kotlinx.android.synthetic.main.match_video_player.view.lltLiveErrorNew
-import kotlinx.android.synthetic.main.match_video_player.view.lltNoLiveNew
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.fourthline.cling.model.meta.Device
 import java.math.BigDecimal
 import java.util.*
 import kotlin.math.abs
-import org.fourthline.cling.model.meta.Device
 
 /**
  * 比赛详情 主页
@@ -124,20 +120,6 @@ class MatchDetailActivity :
             }
         }
     }
-
-//    private val callback = object : OnBackPressedCallback(true /* enabled by default */) {
-//        override fun handleOnBackPressed() {
-//            Log.i("VVVVVVVVVVVVVVV","====="+mDatabind.videoPlayer.getLockState())
-//            if ( mDatabind.videoPlayer.getLockState()) {
-//                // If shouldBlockBack is false, we call the default onBackPressed behavior
-//                onBackPressedDispatcher.onBackPressed()
-//            }else{
-//
-//            }
-//            // If shouldBlockBack is true, we do nothing, so the current interface will not be closed
-//        }
-//    }
-
 
     fun dataPopup() {
         popup = PopupSelectProjection(this)
@@ -530,6 +512,8 @@ class MatchDetailActivity :
 
                             if (isShowVideo) {
                                 if (isTopActivity(this@MatchDetailActivity) && !isPause) {
+
+
                                     if (mDatabind.videoPlayer.isIfCurrentIsFullscreen) {
                                         exitFullScreen()
                                     }
@@ -538,8 +522,11 @@ class MatchDetailActivity :
                                         startVideo(anchor?.playUrl)
 //
                                     }
-
-
+                                    //这个是横屏时候要处理
+//                                    mDatabind.videoPlayer.currentPlayer.release();
+//                                    GSYVideoManager.instance().releaseMediaPlayer();
+//                                    mDatabind.videoPlayer.currentPlayer.setUp(anchor?.playUrl,false,"");
+//                                    mDatabind.videoPlayer.currentPlayer.startPlayLogic();
                                 }
                             }
                         } else {
@@ -773,11 +760,21 @@ class MatchDetailActivity :
         mDatabind.videoPlayer.visibleOrGone(true)
         mDatabind.videoPlayer.setUp(url, false, "")
         mDatabind.videoPlayer.startPlayLogic()
+        //如果要加上横屏就用这几个
+//        mDatabind.videoPlayer.getCurrentPlayer().release()
+//        GSYVideoManager.instance().releaseMediaPlayer()
+//        mDatabind.videoPlayer.getCurrentPlayer().setUp(url, false, "")
+//        mDatabind.videoPlayer.getCurrentPlayer().startPlayLogic()
+
+
         mDatabind.videoPlayer.setGSYStateUiListener {
             //it.toString().loge("======")
+            Log.i("CCCCCCCCCCCCCCCCCc","======"+it)
             if (it == 2) {
+
 //                this.setIsLandscape(true)
                 if (!mDatabind.videoPlayer.isIfCurrentIsFullscreen) {
+
                     GSYVideoType.setShowType(GSYVideoType.SCREEN_TYPE_FULL)
                 }
 
@@ -1227,8 +1224,9 @@ class MatchDetailActivity :
     override fun clickForFullScreen() {
         //Log.e("TAG", "clickForFullScreen: ===")
     }
-
+    //这个横竖屏回调了以后，在执行播放器里面的横竖屏的方法，所以横屏可以获取到数据
     override fun screenStatus(status: Boolean) {
+
         mDatabind.videoPlayer.setFullScreenCover(matchType)
         mDatabind.videoPlayer.broadcasting(isShowVideo, status)
 

@@ -194,7 +194,7 @@ class MainNewsListFragment  : BaseFragment<MainNewsListVm, FragmentMainNewsListB
                         if(it.listData.isEmpty()) {
                             mDatabind.smartCommon.finishLoadMoreWithNoMoreData()
                         }else{
-                            mDatabind.smartCommon.finishLoadMore()
+
 
                         }
                         mDatabind.rcvRecommend.addModels(it.listData)
@@ -205,21 +205,23 @@ class MainNewsListFragment  : BaseFragment<MainNewsListVm, FragmentMainNewsListB
                 }
 
             }else{
+                mDatabind.smartCommon.finishRefresh()
+                mDatabind.smartCommon.resetNoMoreData()
+                mDatabind.smartCommon.finishLoadMore()
                 if(it.isRefresh){
-                    mDatabind.smartCommon.finishRefresh()
-                    mDatabind.smartCommon.resetNoMoreData()
+
                     if(mDatabind.rcvRecommend.models!=null){
                         mDatabind.rcvRecommend.mutable.clear()
                     }
                     mDatabind.state.showEmpty()
 
-                    lifecycleScope.launch {
-
-                        delay(5000) // 延迟 5 秒
-//                            delay(2000) // 延迟 10 秒、
-//                            mDatabind.smartCommon.autoRefresh()
-                        mViewModel.getNewsList(true)
-                    }
+//                    lifecycleScope.launch {
+//
+//                        delay(5000) // 延迟 5 秒
+////                            delay(2000) // 延迟 10 秒、
+////                            mDatabind.smartCommon.autoRefresh()
+//                        mViewModel.getNewsList(true)
+//                    }
                 }
             }
 

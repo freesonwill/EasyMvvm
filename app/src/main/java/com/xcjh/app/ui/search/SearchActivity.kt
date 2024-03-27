@@ -157,35 +157,63 @@ class SearchActivity : BaseActivity<SearchVm, ActivitySearchBinding>() {
                 searchType = 0
 //                mDatabind.txtSearchClick.text=resources.getString(R.string.search)
 
-//                mViewModel.getNowLive(mDatabind.etSearchInput.text.toString())
-//                mViewModel.getGameList(mDatabind.etSearchInput.text.toString(),true)
+                mViewModel.getNowLive(mDatabind.etSearchInput.text.toString())
+                mViewModel.getGameList(mDatabind.etSearchInput.text.toString(),true)
 
                 searchType = 1
 //                mDatabind.txtSearchClick.text=resources.getString(R.string.cancel)
                 mDatabind.llSearchShow.visibility = View.GONE
+                mDatabind.llSearchShow.visibility = View.GONE
+                mDatabind.rlShowRe.visibility = View.VISIBLE
+                mDatabind.rlChuNew.visibility=   View.VISIBLE
+                mDatabind.ViewHu.visibility=   View.GONE
 
-                if (selectType == 0) {
-                    mDatabind.state.visibility=View.VISIBLE
-                    mDatabind.smartCommon.visibility=View.GONE
-                    mDatabind.rlShowRe.visibility=View.VISIBLE
-
-
-                } else {
-                    mDatabind.state.visibility=View.GONE
-                    mDatabind.smartCommon.visibility=View.VISIBLE
-                }
+//                if (selectType == 0) {
+//                    mDatabind.state.visibility=View.VISIBLE
+//                    mDatabind.smartCommon.visibility=View.GONE
+//                    mDatabind.rlShowRe.visibility=View.VISIBLE
+//
+//
+//                } else {
+//                    mDatabind.state.visibility=View.GONE
+//                    mDatabind.smartCommon.visibility=View.VISIBLE
+//                }
 
 
             } else {
                 mDatabind.ivClear.visibility = View.GONE
+//                if (mDatabind.rcHotRace.models != null && mDatabind.rcHotRace.models!!.isNotEmpty()) {
+//                    mDatabind.llSearchShow.visibility = View.VISIBLE
+//                    mDatabind.rlShowRe.visibility = View.GONE
+//
+//                } else {
+//                    mDatabind.llSearchShow.visibility = View.GONE
+//                }
                 if (mDatabind.rcHotRace.models != null && mDatabind.rcHotRace.models!!.isNotEmpty()) {
                     mDatabind.llSearchShow.visibility = View.VISIBLE
                     mDatabind.rlShowRe.visibility = View.GONE
 
+
                 } else {
                     mDatabind.llSearchShow.visibility = View.GONE
+                    mDatabind.rlShowRe.visibility = View.VISIBLE
                 }
 
+
+                //清空
+                if (mDatabind.rcSearchList.models != null) {
+                    var remove = mDatabind.rcSearchList.mutable
+                    mDatabind.rcSearchList.mutable.removeAll(remove)
+                    mDatabind.rcSearchList.adapter!!.notifyItemRangeRemoved(0, remove.size)
+                }
+                mDatabind.state.showEmpty()
+
+
+                if (mDatabind.rcSearchListNew.models?.size != null) {
+                    mDatabind.rcSearchListNew.mutable.clear()
+                }
+                mDatabind.smartCommon.finishRefresh()
+                mDatabind.stateNew.showEmpty()
 
             }
         }

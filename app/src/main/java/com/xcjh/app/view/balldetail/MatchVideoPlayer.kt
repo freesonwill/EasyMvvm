@@ -115,12 +115,14 @@ class MatchVideoPlayer : StandardGSYVideoPlayer {
         updateStartImage()
     }
 
+
+
     override fun setStateAndUi(state: Int) {
         super.setStateAndUi(state)
         mStatus=state
         if (mStartButton is ImageView) {
             val imageView = mStartButton as ImageView
-            if (state == CURRENT_STATE_PLAYING) {
+            if (state == CURRENT_STATE_PLAYING||state==2) {
                 imageView.setImageResource(R.drawable.ic_v_pause)
             } else if (state == CURRENT_STATE_ERROR) {
                 imageView.setImageResource(R.drawable.ic_v_play)
@@ -386,7 +388,6 @@ class MatchVideoPlayer : StandardGSYVideoPlayer {
 
     return sampleVideo
 
-//        return super.startWindowFullscreen(context, actionBar, statusBar)
     }
 
 
@@ -434,7 +435,7 @@ class MatchVideoPlayer : StandardGSYVideoPlayer {
         }
 
 
-        Log.i("SSSSSSSSSSSSSss","3333333333333==="+matchType)
+
 
     }
 
@@ -527,42 +528,7 @@ class MatchVideoPlayer : StandardGSYVideoPlayer {
         return mLockCurScreen
     }
 
-    /**
-     * 全屏和竖屏回调  true是全屏
-     */
-    fun setScreenStatus(st:Boolean){
-//        ivMatchBgNew!!.visibility= View.VISIBLE
-        //全屏
-        if(st){
-        if(isBroadcasting){
-//            lltNoLiveNew!!.visibility= GONE
-//            lltLiveErrorNew!!.visibility= GONE
-            //准备中
-            if(mStatus==0||mStatus==1){
-//                ivMatchBgNew!!.visibility= View.VISIBLE
-            }else if(mStatus==2){//播放
-//                ivMatchBgNew!!.visibility= View.GONE
-            }else if(mStatus==7){//错误
-                ivMatchBgNew!!.visibility= View.VISIBLE
-//                ivMatchBgNew!!.visibility= View.VISIBLE
-//                lltLiveErrorNew!!.visibility= View.VISIBLE
-            }else{
-//                ivMatchBgNew!!.visibility= View.VISIBLE
-            }
-        }else{
-//            ivMatchBgNew!!.visibility= View.VISIBLE
-//            lltNoLiveNew!!.visibility=View. VISIBLE
-        }
 
-
-
-        }else{
-//            ivMatchBgNew!!.visibility= GONE
-//            lltLiveErrorNew!!.visibility= GONE
-//            lltNoLiveNew!!.visibility= GONE
-
-        }
-    }
 
     /**
      * 设置播放URL
@@ -618,7 +584,7 @@ class MatchVideoPlayer : StandardGSYVideoPlayer {
     private var isBottomContainerShow = false
 
     fun setFullscreenButton() {
-        Log.i("NNNNNNNNNNN","22222222222222222222")
+
         if (mIfCurrentIsFullscreen) {
 
             if (mLockCurScreen) {

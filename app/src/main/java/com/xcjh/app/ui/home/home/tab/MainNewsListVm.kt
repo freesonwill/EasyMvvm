@@ -47,6 +47,7 @@ class MainNewsListVm : BaseViewModel() {
             }, {
                 //请求失败
                 //请求失败
+                pageNo=pageNo-1
                 liveList.value = ListDataUiState(
                     isSuccess = false,
                     isRefresh = isRefresh,

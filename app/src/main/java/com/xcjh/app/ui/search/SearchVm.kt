@@ -70,9 +70,9 @@ class SearchVm : BaseViewModel() {
 
                 hotMatchList.value = ListDataUiState(
                     isSuccess = true,
-                    isRefresh = true,
+                    isRefresh = isRefresh,
                     isEmpty = it!!.records.isEmpty(),
-                    isFirstEmpty = true && it.records.isEmpty(),
+                    isFirstEmpty = isRefresh && it.records.isEmpty(),
                     listData = it.records
                 )
             }, {

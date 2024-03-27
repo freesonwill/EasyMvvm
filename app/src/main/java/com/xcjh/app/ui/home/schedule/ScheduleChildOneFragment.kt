@@ -89,10 +89,11 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
     }
 
     /**
-     * 懒加载初始化 最下层的分类
+     * 懒加载初始化 最下层的分类   只执行一次
      */
     override fun lazyLoadData() {
         super.lazyLoadData()
+
         mViewModel.getHotMatchData(matchtypeOld!!, status)
 
     }
@@ -125,10 +126,11 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
         return mDatabind.vp.currentItem
     }
 
+
     @RequiresApi(Build.VERSION_CODES.N)
     override fun initView(savedInstanceState: Bundle?) {
         try {
-
+            Log.i("HHHHHHHHHHHHHHHH","222222222222222")
 
             val bundle = arguments
             if (bundle != null) {

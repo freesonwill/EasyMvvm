@@ -282,14 +282,14 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
                     val lineCount: Int = layout.lineCount
                     lineCount.toString().loge("888===")
                     mDatabind.notice.lltExpandCollapse.visibleOrGone(lineCount > 2)
-                    //动态设置TextView距离顶部的间距
+                    //动态设置TextView距离顶部的间距 如果要设置主播公告盖住
                     val params = mDatabind.page.layoutParams as RelativeLayout.LayoutParams
                     params.setMargins(0,if (lineCount==1){
                         dip2px(88f)
                     }else{
                         dip2px(110f)
                     },0,0)
-//                    mDatabind.page.layoutParams = params
+                    mDatabind.page.layoutParams = params
 
                     //mDatabind.notice.expandableText.maxLines =  2
                 }

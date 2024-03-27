@@ -7,11 +7,13 @@ import androidx.databinding.ViewDataBinding
 import com.shuyu.gsyvideoplayer.GSYVideoManager
 import com.shuyu.gsyvideoplayer.builder.GSYVideoOptionBuilder
 import com.shuyu.gsyvideoplayer.listener.VideoAllCallBack
+import com.shuyu.gsyvideoplayer.player.IjkPlayerManager
 import com.shuyu.gsyvideoplayer.player.PlayerFactory
 import com.shuyu.gsyvideoplayer.utils.GSYVideoType
 import com.shuyu.gsyvideoplayer.utils.OrientationOption
 import com.shuyu.gsyvideoplayer.utils.OrientationUtils
 import com.shuyu.gsyvideoplayer.video.base.GSYBaseVideoPlayer
+import com.shuyu.gsyvideoplayer.video.base.GSYVideoView
 import com.xcjh.app.R
 import com.xcjh.app.base.BaseActivity
 import com.xcjh.base_lib.base.BaseViewModel
@@ -33,8 +35,15 @@ abstract class GSYBaseActivity<VM : BaseViewModel, DB : ViewDataBinding,T : GSYB
     private  var isFullScreen=false
     //是否横屏
     private  var isLandscape=true
+    //是否正在播放
+    private  var isResume=false
 
-
+    /**
+     * 是否锁屏
+     */
+    fun  getLock():Boolean{
+        return isLock
+    }
 
     /**
      * 选择普通模式
@@ -66,6 +75,8 @@ abstract class GSYBaseActivity<VM : BaseViewModel, DB : ViewDataBinding,T : GSYB
 
 
         }
+
+
 //        gSYVideoPlayer!!.isNeedOrientationUtils=false
 //        gSYVideoPlayer!!.isRotateViewAuto=false
 //        gSYVideoPlayer!!.isRotateWithSystem=false
@@ -97,7 +108,9 @@ abstract class GSYBaseActivity<VM : BaseViewModel, DB : ViewDataBinding,T : GSYB
      */
     fun initVideoBuilderMode() {
         initVideo()
-        PlayerFactory.setPlayManager(Exo2PlayerManager::class.java)
+        //这个横屏的时候切换视频会黑屏
+//        PlayerFactory.setPlayManager(Exo2PlayerManager::class.java)
+        PlayerFactory.setPlayManager(IjkPlayerManager::class.java)
         gSYVideoOptionBuilder.setVideoAllCallBack(this)
             .build(gSYVideoPlayer)
     }
@@ -141,20 +154,41 @@ abstract class GSYBaseActivity<VM : BaseViewModel, DB : ViewDataBinding,T : GSYB
     }
 
     override fun onPause() {
-        super.onPause()
-        gSYVideoPlayer?.onVideoPause()
-        if (orientationUtils != null) {
-            orientationUtils!!.setIsPause(true)
+        //是否全屏
+        if(gSYVideoPlayer?.isIfCurrentIsFullscreen!!){
+            //当前在播放
+            if(gSYVideoPlayer?.getCurrentPlayer()?.currentState== GSYVideoView.CURRENT_STATE_PLAYING &&gSYVideoPlayer?.getCurrentPlayer()!!.isInPlayingState!!&&gSYVideoPlayer?.getCurrentPlayer()!!.currentState!= GSYVideoView.CURRENT_STATE_PAUSE){
+                isResume=true
+            }else{
+                isResume=false
+            }
+        }else{
+            //当前在播放
+            if(gSYVideoPlayer?.currentState== GSYVideoView.CURRENT_STATE_PLAYING &&gSYVideoPlayer?.isInPlayingState!!&&gSYVideoPlayer?.currentState!= GSYVideoView.CURRENT_STATE_PAUSE){
+                isResume=true
+            }else{
+                isResume=false
+            }
         }
+        gSYVideoPlayer?.onVideoPause()
+
+        super.onPause()
+
+//        if (orientationUtils != null) {
+//            orientationUtils!!.setIsPause(true)
+//        }
         isPause = true
     }
 
     override fun onResume() {
-        super.onResume()
-        gSYVideoPlayer?.onVideoResume(false)
-        if (orientationUtils != null) {
-            orientationUtils!!.setIsPause(false)
+        if(isResume){
+            gSYVideoPlayer?.onVideoResume(false)
         }
+        super.onResume()
+//        gSYVideoPlayer?.onVideoResume(false)
+//        if (orientationUtils != null) {
+//            orientationUtils!!.setIsPause(false)
+//        }
         isPause = false
     }
 
