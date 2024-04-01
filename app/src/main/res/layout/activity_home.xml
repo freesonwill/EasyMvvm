@@ -101,6 +101,7 @@
                             android:layout_width="@dimen/dp_24"
                             android:layout_height="@dimen/dp_24"
                             android:scaleType="centerCrop"
+                            android:layout_gravity="center"
                             app:lottie_autoPlay="false"
                             app:lottie_loop="false" />
                         <androidx.appcompat.widget.AppCompatTextView
@@ -120,7 +121,6 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-
                         android:orientation="vertical">
 
                         <LinearLayout
@@ -144,6 +144,7 @@
                                 android:layout_width="@dimen/dp_24"
                                 android:layout_height="@dimen/dp_24"
                                 android:scaleType="centerCrop"
+                                android:layout_gravity="center"
                                 app:lottie_autoPlay="false"
                                 app:lottie_loop="false" />
                             <androidx.appcompat.widget.AppCompatTextView
@@ -214,6 +215,7 @@
                             android:id="@+id/ivHomeMy"
                             android:layout_width="@dimen/dp_24"
                             android:layout_height="@dimen/dp_24"
+                            android:layout_gravity="center"
                             android:scaleType="centerCrop"
                             app:lottie_autoPlay="false"
                             app:lottie_loop="false" />

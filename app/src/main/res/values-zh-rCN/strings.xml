@@ -1,0 +1,401 @@
+<resources translatable="false">
+    <string name="my_app_name">体育直播</string>
+    <string name="my_app_name_test">体育直播_test</string>
+    <!--main-->
+    <string name="Home">首页</string>
+    <string name="Schedule">赛程</string>
+    <string name="Msg">消息</string>
+    <string name="Mine">我的</string>
+    <string name="title">标题</string>
+    <string name="login">登录</string>
+    <string name="loginandre">登录注册</string>
+    <string name="login_waiting">"正在登录…"</string>
+    <string name="find">发现</string>
+    <string name="str_choosecountry">选择国家和地区</string>
+    <string name="other_login">第三方登录</string>
+    <string name="other">其他</string>
+    <string name="login_or_enroll">注册/登录</string>
+    <string name="hint_email_account">邮箱账号</string>
+    <string name="email">邮箱</string>
+    <string name="hint_code">验证码</string>
+    <string name="get_code">获取验证码</string>
+    <string name="register_code_s">%d s</string>
+    <string name="search">搜索</string>
+    <string name="exit_app">再按一次退出程序</string>
+
+
+    <string name="phote_book">相册</string>
+    <string name="canmei">拍摄</string>
+    <string name="txt_clear_msg">确定清除全部的未读信息吗?</string>
+    <string name="txt_del_msg">确定删除该条消息?</string>
+    <string name="txt_del_fri">确定删除该好友?</string>
+    <string name="history_record">历史记录</string>
+
+    <!--setting-->
+    <string name="setting">设置</string>
+    <string name="language">语言切换</string>
+    <string name="contact_us">联系我们</string>
+    <string name="Terms_of_Use">使用条款</string>
+    <string name="agreement">隐私策略</string>
+    <string name="rate_us">评价我们</string>
+    <string name="about_us">关于我们</string>
+    <string name="clear_cache">清理缓存</string>
+    <string name="feedback">意见反馈</string>
+    <string name="feedback_ok">反馈成功</string>
+    <string name="login_out">退出登录</string>
+    <string name="ensure">确定</string>
+    <string name="txt_phone_lagoin">手机号登录</string>
+    <string name="txt_email_login">邮箱登录</string>
+    <string name="txt_inputphone">请输入手机号</string>
+    <string name="txt_inputcode">请输入验证码</string>
+    <string name="language_zh">简体中文</string>
+    <string name="language_zh_tw">繁体中文</string>
+    <string name="language_en">English</string>
+    <string name="copy_success">复制成功</string>
+    <string name="str_stoptalk">当前您已被禁言</string>
+    <string name="str_inputcontent">请输入内容</string>
+    <string name="copy">复制</string>
+    <string name="collect_success">收藏成功</string>
+    <string name="cancel_collect_success">已取消收藏</string>
+    <string name="share_success">分享成功</string>
+    <string name="price_s">$%s</string>
+    <string name="say_something">说点什么吧</string>
+    <string name="txt_feedtype">系统通知</string>
+    <string name="txt_feedresult">反馈结果</string>
+    <string name="txt_feddtime">反馈时间</string>
+    <string name="txt_yuanyin">原因</string>
+    <string name="txt_jiesuo">主播解说</string>
+    <string name="txt_choosecountry">请选择区号</string>
+    <string name="cancel">取消</string>
+    <string name="no_data_hint">暂无数据</string>
+    <string name="no_data">暂无数据</string>
+
+    <!--<string name="check_email_error">邮箱校验失败</string>-->
+    <string name="facebook_app_id" translatable="false">735497501397514</string>
+    <string name="fb_login_protocol_scheme" translatable="false">fb735497501397514</string>
+    <string name="facebook_client_token" translatable="false">5d4178e883269c3d3d646430390197ac</string>
+    <string name="visitor">游客</string>
+    <string name="login_out_hint">确定退出登录吗？</string>
+    <string name="waiting_last_ask">存在未回答的提问，请稍后再试！</string>
+    <string name="change_nothing">没有任何更改</string>
+    <string name="input_sth_first">请输入要问的问题！</string>
+    <string name="hint">提示</string>
+    <string name="delete_a_hint_content">是否确定注销此账号，注销后不可使用！</string>
+    <string name="feedback_hint">请对您遇到的问题进行描述</string>
+    <string name="delete_successful">注销成功</string>
+    <string name="submit">提交</string>
+    <string name="submit_success">提交成功</string>
+    <string name="submit_hint">请输入提交内容</string>
+    <string name="not_interested">不感兴趣</string>
+    <string name="not_interested_hint">确定不感兴趣之后，列表将不会再显示该内容</string>
+
+    <string name="No_more_prompts">不再提示</string>
+    <string name="Unlock_questions">解锁提问</string>
+    <string name="setting_google">Google</string>
+    <string name="setting_facebook">Facebook</string>
+    <string name="setting_binding">去绑定</string>
+    <string name="binding_success">绑定成功</string>
+    <string name="binding_error">绑定失败</string>
+    <string name="already_binding">已绑定</string>
+    <string name="phone">手机号</string>
+
+    <string name="changPsw">修改密码</string>
+    <string name="rechang">重置</string>
+    <string name="please_input_phone_num">请输入手机号</string>
+    <string name="please_input_email">请输入邮箱号</string>
+    <string name="please_inputcureet_email">邮箱格式错误</string>
+    <string name="please_input_email_1">输入邮箱号</string>
+    <string name="please_input_phone_code">请输入验证码</string>
+    <string name="next">下一步</string>
+    <string name="finish">完成</string>
+    <string name="finis">完</string>
+    <string name="and">和</string>
+    <string name="login_expired">登录过期</string>
+    <string name="main_txt_recommended">推荐</string>
+    <string name="main_txt_soccer">足球</string>
+    <string name="main_txt_basketball">篮球</string>
+    <string name="main_txt_news">新闻</string>
+    <string name="main_txt_session">%s场</string>
+    <string name="main_txt_on_the_air">正在直播</string>
+    <string name="main_txt_no_live">暂未有主播开播</string>
+    <string name="main_txt_basketball_phase">第%s节</string>
+    <string name="zb_notice">主播公告</string>
+    <string name="anchor">主播</string>
+    <string name="str_year">年份</string>
+    <string name="str_mouth">月份</string>
+    <string name="str_day">天</string>
+    <string name="str_resend">重新发送该消息</string>
+    <string name="str_choosetime">选择日期</string>
+    <string name="main_txt_under">进行中 %s</string>
+    <string name="main_txt_wks">未开赛</string>
+    <string name="main_txt_over">已完场</string>
+    <string name="main_txt_tc">推迟</string>
+    <string name="main_txt_sbc">上半场 %s</string>
+    <string name="main_txt_xbc">下半场 %s</string>
+    <string name="main_txt_zd">中断</string>
+    <string name="main_txt_yz">腰斩</string>
+    <string name="main_txt_qx">取消</string>
+    <string name="main_txt_dd">待定</string>
+    <string name="main_txt_yq">延期</string>
+    <string name="main_dqdz">点球决战</string>
+    <string name="fans">粉丝</string>
+    <string name="chat">私信</string>
+    <string name="follow">+关注</string>
+    <string name="search_hint_interested">搜索感兴趣的直播/赛事</string>
+    <string name="search_txt_hot_race">热门比赛</string>
+    <string name="attack">进攻</string>
+    <string name="wx_attack">危险进攻</string>
+    <string name="kql">控球率</string>
+    <string name="sp">射偏球门</string>
+    <string name="sz">射正球门</string>
+    <string name="efq">2分球</string>
+    <string name="sfq">3分球</string>
+    <string name="fq">罚球</string>
+    <string name="text_live">文字直播</string>
+    <string name="import_event">重要事件</string>
+    <string name="events_txt_title">活动中心</string>
+    <string name="events_txt_details">活动详情</string>
+    <string name="follow_txt_unfollowed">未关注</string>
+    <string name="follow_txt_followed">已关注</string>
+    <string name="follow_txt_title">我的关注</string>
+    <string name="follow_txt_fans_num">粉丝数：%s</string>
+    <string name="live_txt_0ff_air">暂未开播</string>
+    <string name="viewing_txt_title">观看历史</string>
+    <string name="substitute">球队身价</string>
+    <string name="ti">替补阵容</string>
+    <string name="first_z">首发阵容</string>
+    <string name="txt_feedtype1">更新问题</string>
+    <string name="txt_feedtype2">直播相关</string>
+    <string name="txt_feedtype3">产品体验</string>
+    <string name="txt_feedtype4">聊天相关</string>
+    <string name="txt_feedtype5">比赛相关</string>
+    <string name="txt_feedtype6">其他</string>
+    <string name="signal_source">信号源</string>
+    <string name="hafl_rices">半场</string>
+    <string name="win_loss">胜平负</string>
+    <string name="win_los">胜负</string>
+    <string name="handicap">让球</string>
+    <string name="goal_num">进球数</string>
+    <string name="total_goal">总分</string>
+    <string name="company">公司</string>
+    <string name="chu">初盘</string>
+    <string name="ji">即盘</string>
+    <string name="zs">主胜</string>
+    <string name="ping">平</string>
+    <string name="ks">客胜</string>
+    <string name="pf">赔付率</string>
+    <string name="all">全部</string>
+    <string name="all_read">全部已读</string>
+    <string name="foot_scr">足球比分</string>
+    <string name="bas_scr">篮球比分</string>
+    <string-array name="str_schedule_tab_top">
+        <item>推荐</item>
+        <item>足球</item>
+        <item>篮球</item>
+        <item>赛果</item>
+    </string-array>
+    <string-array name="str_msg_top">
+        <item>消息</item>
+        <item>好友</item>
+    </string-array>
+    <string-array name="str_sch_top2_tab">
+        <item>全部</item>
+        <item>欧洲杯</item>
+        <item>中超</item>
+        <item>日职联</item>
+        <item>NBA</item>
+        <item>世界杯</item>
+    </string-array>
+
+    <string-array name="str_football_detail_tab">
+        <item>聊天</item>
+        <item>主播</item>
+        <item>赛况</item>
+        <item>阵容</item>
+        <item>指数</item>
+        <item>直播</item>
+    </string-array>
+
+    <string-array name="str_football_detail_pure">
+        <item>聊天</item>
+        <item>赛况</item>
+        <item>阵容</item>
+        <item>指数</item>
+        <item>直播</item>
+    </string-array>
+    <string name="ws_error">ws消息异常</string>
+    <string name="txt_time_gg">刚刚</string>
+    <string name="txttime_sencend">%d秒前</string>
+    <string name="txttime_minits">分钟前</string>
+    <string name="txttime_yesterday">昨天  </string>
+    <string name="txttime_hours">%d小时前</string>
+    <string name="txttime_days">%d天前</string>
+    <string name="txttime_mouth">%d月前</string>
+    <string name="txttime_years">%d年前</string>
+    <string name="personal_txt_head">头像</string>
+    <string name="personal_txt_name">名称</string>
+    <string name="personal_txt_title">个人资料</string>
+    <string name="personal_txt_nickname">请输入昵称</string>
+    <string name="http_txt_err_meg">网络连接错误</string>
+    <string name="contact_txt_type">问题类型</string>
+    <string name="contact_txt_content">反馈内容</string>
+    <string name="contact_hint_input">请输入内容</string>
+    <string name="contact_hint_input_new">请输入反馈内容</string>
+    <string name="contact_txt_add_image">添加图片 </string>
+    <string name="contact_txt_add_most">(最多三张) </string>
+    <string name="contact_txt_submit_succeed">提交反馈成功！</string>
+    <string name="txt_msg_pic">[图片]</string>
+    <string name="txt_msg_video">[视频]</string>
+    <string name="update_title">更新提示</string>
+    <string name="update_not_updated">暂不更新</string>
+    <string name="update_update_now">立即更新</string>
+    <string name="my_txt_click_login">登录/注册</string>
+    <string name="my_txt_leve">我的等级</string>
+    <string name="my_txt_view">查看</string>
+    <string name="my_txt_subscribe">我的订阅</string>
+    <string name="my_txt_edit_data">编辑资料</string>
+    <string name="my_txt_invite">分享好友</string>
+    <string name="my_txt_copy_link">复制链接成功</string>
+    <string name="my_txt_out">退出登录</string>
+    <string name="level_txt_grow">距离升级：%s成长值</string>
+    <string name="level_txt_grow_no">距离升级：0成长值</string>
+    <string name="level_txt_title">等级</string>
+    <string name="level_txt_task">我的任务</string>
+    <string name="level_txt_chat">每日直播聊天室互动</string>
+    <string name="level_txt_grow_add">+2成长值</string>
+    <string name="level_txt_grow_add_wu">+5成长值</string>
+    <string name="level_txt_to_complete">去完成</string>
+    <string name="level_txt_watch">每日观看直播10分钟以上</string>
+    <string name="my_txt_notarize">确认</string>
+    <string name="vs">VS</string>
+    <string name="no_referee_name">暂无裁判信息</string>
+    <string name="team">球队</string>
+    <string name="player">球员</string>
+    <string name="one">一</string>
+    <string name="two">二</string>
+    <string name="three">三</string>
+    <string name="four">四</string>
+    <string name="total">总分</string>
+    <string name="first">初</string>
+    <string name="then">即</string>
+    <string name="time">时间</string>
+    <string name="score">得分</string>
+    <string name="floor">篮板</string>
+    <string name="assist">助攻</string>
+    <string name="shoot">投篮</string>
+    <string name="choose_live_resource">选择信号源</string>
+    <!--    <string name="anchor_notice">喜欢记录分享自己的生活！有当网红的心愿～如果以上任何一点击中了你，那就快来加入我们吧！喜欢记录分享自己的生活！有当网红的心愿～如果以上任何一点击中了你，那就快来加入我们吧喜欢记录分享自己的生活！有当网红的心愿～如果以上任何一点击中了你，那就快来加入我们吧喜欢记录分享自己的生活！有当网红的心愿～如果以上任何一点击中了你，那就快来加入我们吧</string>-->
+    <string name="qf">前锋</string>
+    <string name="zc">中场</string>
+    <string name="hw">后卫</string>
+    <string name="smy">守门员</string>
+    <string name="wz">未知</string>
+    <string name="_0">0</string>
+    <string name="nomatch">暂无比赛</string>
+    <string name="nomsg">暂无消息</string>
+    <string name="nofriends">暂无好友</string>
+    <string name="nomsgrecoder">暂无聊天记录</string>
+    <string name="two_s_percent">2分%</string>
+    <string name="three_s_percent">3分%</string>
+    <string name="fq_s_percent">罚球%</string>
+    <string name="dis_focus">已关注</string>
+    <string name="add_focus">关注</string>
+    <string name="add_focus_success">关注成功</string>
+    <string name="share_match">分享比赛</string>
+    <string name="in_chat_oto">私聊</string>
+    <string name="over_time">加时</string>
+    <string name="add">+</string>
+
+    <string name="level1">黄铜</string>
+    <string name="level2">白银</string>
+    <string name="level3">黄金</string>
+    <string name="level4">铂金</string>
+    <string name="level5">钻石</string>
+    <string name="level6">星耀</string>
+
+    <string name="head_pulling">下拉加载更多记录</string>
+    <string name="head_refreshing">正在加载更多…</string>
+    <string name="head_loading">正在加载…</string>
+    <string name="head_release">释放立即加载</string>
+    <string name="head_finish">加载完成</string>
+    <string name="head_failed">加载失败</string>
+    <string name="head_update">上次加载 M-d HH:mm</string>
+    <string name="no_chat_t">你已被禁言</string>
+    <string name="close_win_p">封</string>
+    <string name="home_txt_overtime">加时</string>
+    <string name="my_txt_common">常用功能</string>
+    <string name="set_txt_push">推送设置</string>
+    <string name="set_txt_vibrate">震动设置</string>
+    <string name="data_txt_err_update">长度不能超过8个字符</string>
+    <string name="data_txt_save">保存</string>
+    <string name="add_image_upload">上传图片</string>
+    <string name="vibrate_txt_title">震动设置</string>
+    <string name="vibrate_txt_debut">主播开播震动</string>
+    <string name="vibrate_txt_navbar">导航栏震动</string>
+    <string name="push_txt_title">推送设置</string>
+    <string name="push_txt_set">消息通知设置</string>
+    <string name="push_txt_suggest">建议开启，及时获得最新动态</string>
+    <string name="push_txt_open">去开启</string>
+    <string name="push_txt_already">已开启</string>
+    <string name="push_txt_concern">关注比赛通知</string>
+    <string name="push_txt_debut">主播开播通知</string>
+    <string name="expand">展开</string>
+    <string name="pack_up">收起</string>
+    <string name="anchor_no_live">主播暂未开播</string>
+    <string name="dialog_txt_goto">前往</string>
+    <string name="popup_txt_level_name">正在直播%s</string>
+    <string name="empty_txt_no_anchor">暂无主播</string>
+    <string name="search_txt_empty_name">暂无搜索内容</string>
+    <string name="follow_txt_add">关注</string>
+    <string name="news_txt_details">新闻详情</string>
+    <string name="release_txt_name">发布</string>
+    <string name="personal_update_title">编辑资料</string>
+    <string name="personal_txt_saved">保存成功</string>
+    <string name="main_err_title">网络不给力，请检查网络设置。</string>
+    <string name="projection_txt_title">选择投屏的设备</string>
+    <string name="projection_txt_attention">请确保手机与投屏设备接入同一WIFI下</string>
+    <string name="projection_txt_err">为什么投屏失败</string>
+    <string name="projection_txt_condition_yi">1.检查电视、盒子与手机是否连接同一WIFI。</string>
+    <string name="projection_txt_condition_er">2.部分电视/盒子机型老旧，不支持投屏观看。</string>
+    <string name="live_txt_remove">你已被主播移出了直播间</string>
+    <string name="live_txt_retry">暂时无法观看该直播间内容\n请稍后重试</string>
+    <string name="video_txt_err">加载失败、请重试或切换信号</string>
+    <string name="video_txt_again">重新加载</string>
+    <string name="cancellation_txt_follow">是否确定取消关注？</string>
+    <string name="search_txt_live">直播间</string>
+    <string name="search_txt_game">赛事</string>
+    <string name="day_txt">日</string>
+    <string name="month_txt">月</string>
+    <string name="competition_txt_abnormal">比赛异常</string>
+    <string name="competition_txt_the">比赛中</string>
+    <string name="competition_txt_extra">加时赛</string>
+    <string name="competition_txt_penalty">点球</string>
+    <string name="first_txt_one">第一节</string>
+    <string name="first_txt_one_end">第一节完</string>
+    <string name="first_txt_two">第二节</string>
+    <string name="first_txt_two_end">第二节完</string>
+    <string name="first_txt_three">第三节</string>
+    <string name="first_txt_three_end">第三节完</string>
+    <string name="first_txt_four">第四节</string>
+    <string name="there_txt_live">暂无其他主播</string>
+    <string name="there_txt_chat">暂无聊天内容</string>
+    <string name="competition_txt_formation">阵型</string>
+    <string name="money_txt_myriohm">万欧</string>
+    <string name="money_txt_billion">亿欧</string>
+    <string name="goal_txt">进球</string>
+    <string name="finish_txt">结束</string>
+    <string name="shoot_txt_just">射正</string>
+    <string name="shoot_txt_partial">射偏</string>
+    <string name="shoot_txt_not">点球未进</string>
+    <string name="own_goal">乌龙球</string>
+    <string name="competition_txt_red">红牌</string>
+    <string name="competition_txt_corner">角球</string>
+    <string name="competition_txt_yellow">黄牌</string>
+    <string name="competition_txt_substitution">换人</string>
+    <string name="competition_txt_multiple">两黄一红</string>
+    <string name="live_txt_heat">热度值</string>
+    <string name="my_txt_switch_language">切换语言</string>
+    <string name="language_txt_simplified">中文简体</string>
+    <string name="language_txt_complex">中文繁體</string>
+    <string name="detail_txt_new_main">主</string>
+</resources>

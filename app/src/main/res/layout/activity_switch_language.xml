@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+<!--    android:background="@color/c_f2f3f7"-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/c_ffffff"
+        android:orientation="vertical">
+        <include
+            android:id="@+id/titleTop"
+            layout="@layout/com_title" />
+       <View
+           android:layout_width="match_parent"
+           android:background="@color/c_f2f3f7"
+           android:layout_height="12dp"/>
+        <RelativeLayout
+          android:id="@+id/rlSwitchEn"
+          android:background="@drawable/shape_water_whith"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:paddingLeft="@dimen/dp_12"
+          android:paddingTop="15dp"
+          android:paddingBottom="15dp"
+          android:layout_marginTop="@dimen/dp_5"
+          android:paddingRight="12dp">
+          <androidx.appcompat.widget.AppCompatTextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textSize="@dimen/sp_15"
+              android:layout_centerVertical="true"
+              android:text="@string/language_en"
+              android:textColor="@color/black"/>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivSelectEn"
+            android:layout_width="13dp"
+            android:layout_height="11dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            app:srcCompat="@drawable/switch_icon_select"/>
+      </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/rlSwitchClickSimplified"
+            android:background="@drawable/shape_water_whith"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/dp_12"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
+            android:layout_marginTop="@dimen/dp_5"
+            android:paddingRight="12dp">
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/sp_15"
+                android:layout_centerVertical="true"
+                android:text="@string/language_txt_simplified"
+                android:textColor="@color/black"/>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivSelectSimplified"
+                android:layout_width="13dp"
+                android:layout_height="11dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:visibility="invisible"
+                app:srcCompat="@drawable/switch_icon_select"/>
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/rlSwitchClickComplex"
+            android:background="@drawable/shape_water_whith"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/dp_12"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
+            android:layout_marginTop="@dimen/dp_5"
+            android:paddingRight="12dp">
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/sp_15"
+                android:layout_centerVertical="true"
+                android:text="@string/language_txt_complex"
+                android:textColor="@color/black"/>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivSelectComplex"
+                android:layout_width="13dp"
+                android:layout_height="11dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:visibility="invisible"
+                app:srcCompat="@drawable/switch_icon_select"/>
+        </RelativeLayout>
+    </LinearLayout>
+
+
+
+</layout>

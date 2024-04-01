@@ -46,7 +46,7 @@ class MsgListAdapter: BaseQuickAdapter<MsgListNewData, QuickViewHolder>() {
             holder.getView<ImageView>(R.id.ivfaile).visibility=View.GONE
         }
         if (item.dataType==2){//反馈通知
-            holder.getView<TextView>(R.id.tvname).text =context.resources.getString(R.string.txt_feedtitle)
+            holder.getView<TextView>(R.id.tvname).text =context.resources.getString(R.string.txt_feedtype)
             holder.getView<TextView>(R.id.tvcontent).text =item!!.content
             Glide.with(context)
                 .load(R.drawable.ic_notify)

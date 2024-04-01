@@ -297,3 +297,8 @@
 }
 #==========
 -keep class com.connectsdk.**       { * ; }
+
+#多语言
+-keep class com.hjq.language.** {*;}
+#权限控制
+-keep class com.hjq.permissions.** {*;}

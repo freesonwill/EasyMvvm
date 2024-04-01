@@ -1,5 +1,6 @@
 package com.xcjh.app.utils
 
+import android.content.Context
 import com.blankj.utilcode.util.TimeUtils
 import com.hjq.language.MultiLanguages
 import java.util.Calendar
@@ -24,13 +25,14 @@ object DateFormatUtil {
     fun formatLocalTime(
         date1: String?,
         date2: String? = "",
-        pattern: String? = "yyyy-MM-dd HH:mm:ss"
+        pattern: String? = "yyyy-MM-dd HH:mm:ss",
+        context: Context
     ): String {
         if(date1.isNullOrEmpty() && date2.isNullOrEmpty()){
             return ""
         }
 
-        val language = MultiLanguages.getAppLanguage().language
+        val language = MultiLanguages.getAppLanguage(context).language
         if (language == "zh") {
             val time1 = TimeUtils.string2Date(date1, pattern!!)
             return if (date2.isNullOrEmpty()) {

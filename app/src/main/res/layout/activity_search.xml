@@ -35,7 +35,7 @@
                     android:layout_height="38dp"
                     android:layout_alignParentBottom="true"
                     android:layout_marginStart="12dp"
-                    android:layout_marginEnd="@dimen/dp_60"
+                    android:layout_marginEnd="65dp"
                     android:background="@drawable/shape_r30_f2f3f7"
                     android:drawablePadding="@dimen/dp_12"
                     android:hint="@string/search_hint_interested"
@@ -67,9 +67,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginBottom="8dp"
                     android:gravity="center"
+                    android:layout_marginTop="@dimen/dp_25"
                     android:paddingRight="12dp"
                     android:text="@string/cancel"
                     android:textColor="@drawable/search_txt_selector"
@@ -94,7 +93,7 @@
                 android:id="@+id/rlChuNew"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="gone"
+                android:visibility="invisible"
                 android:background="@color/c_ffffff">
                 <net.lucode.hackware.magicindicator.MagicIndicator
                     android:id="@+id/magicIndicator"
@@ -122,6 +121,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_1"
+
                 android:background="@color/c_ffffff"
                 android:orientation="vertical"
                 android:paddingLeft="12dp"
@@ -160,8 +160,7 @@
             android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/rlTob"
-         >
+            android:layout_below="@+id/rlTob">
 
             <com.drake.statelayout.StateLayout
                 android:id="@+id/state"

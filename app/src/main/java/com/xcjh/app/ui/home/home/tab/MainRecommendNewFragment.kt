@@ -614,7 +614,7 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
                                             }else if(matchBean.status.equals("2")||matchBean.status.equals("3")){
                                                 binding.txtMatchStatus.visibility=View.VISIBLE
                                                 binding.txtMatchStatus.setTextColor(ContextCompat.getColor(requireContext(),R.color.c_f69521))
-                                                binding.txtMatchStatus.text=resources.getString(R.string.main_txt_basketball_phase,"一")
+                                                binding.txtMatchStatus.text=resources.getString(R.string.main_txt_basketball_phase,resources.getString(R.string.one))
                                                 binding.txtMatchIsStart.visibility=View.VISIBLE
                                                 binding.txtMatchAnimation.visibility=View.VISIBLE
 
@@ -639,7 +639,7 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
                                             }else if(matchBean.status.equals("4")||matchBean.status.equals("5")){
                                                 binding.txtMatchStatus.visibility=View.VISIBLE
                                                 binding.txtMatchStatus.setTextColor(ContextCompat.getColor(requireContext(),R.color.c_f69521))
-                                                binding.txtMatchStatus.text=resources.getString(R.string.main_txt_basketball_phase,"二")
+                                                binding.txtMatchStatus.text=resources.getString(R.string.main_txt_basketball_phase,resources.getString(R.string.two))
                                                 binding.txtMatchIsStart.visibility=View.VISIBLE
                                                 binding.txtMatchAnimation.visibility=View.VISIBLE
 
@@ -664,7 +664,7 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
                                             }else if(matchBean.status.equals("6")||matchBean.status.equals("7")){
                                                 binding.txtMatchStatus.visibility=View.VISIBLE
                                                 binding.txtMatchStatus.setTextColor(ContextCompat.getColor(requireContext(),R.color.c_f69521))
-                                                binding.txtMatchStatus.text=resources.getString(R.string.main_txt_basketball_phase,"三")
+                                                binding.txtMatchStatus.text=resources.getString(R.string.main_txt_basketball_phase,resources.getString(R.string.three))
                                                 binding.txtMatchIsStart.visibility=View.VISIBLE
                                                 binding.txtMatchAnimation.visibility=View.VISIBLE
 
@@ -689,7 +689,7 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
                                             }else if(matchBean.status.equals("8")){
                                                 binding.txtMatchStatus.visibility=View.VISIBLE
                                                 binding.txtMatchStatus.setTextColor(ContextCompat.getColor(requireContext(),R.color.c_f69521))
-                                                binding.txtMatchStatus.text=resources.getString(R.string.main_txt_basketball_phase,"四")
+                                                binding.txtMatchStatus.text=resources.getString(R.string.main_txt_basketball_phase,resources.getString(R.string.four))
                                                 binding.txtMatchIsStart.visibility=View.VISIBLE
                                                 binding.txtMatchAnimation.visibility=View.VISIBLE
 

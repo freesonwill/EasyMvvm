@@ -129,7 +129,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                         binding.ivfaile.visibility = View.GONE
                     }
                     if (item.dataType == 2) {//反馈通知
-                        binding.tvname.text = context.resources.getString(R.string.txt_feedtitle)
+                        binding.tvname.text = context.resources.getString(R.string.txt_feedtype)
                         binding.tvcontent.text = item!!.content
                         Glide.with(context)
                             .load(R.drawable.ic_notify)

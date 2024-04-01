@@ -10,6 +10,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
@@ -284,6 +285,10 @@ fun MagicIndicator.bindViewPager2(
     //viewPager 绑定 navigator
     setVpPageChangeCallBack(this, viewPager, action)
 }
+
+
+
+
 
 fun MagicIndicator.bindViewPager3(
     viewPager: ViewPager2,

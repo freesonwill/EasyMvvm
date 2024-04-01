@@ -33,9 +33,9 @@ class FootballLineupView(context: Context?, attrs: AttributeSet?) : LinearLayout
                 //有阵型排版
                 lltShow.visibleOrInvisible(true)
                 firstTable.visibleOrInvisible(false)
-                tvMatchHomeLineup.text = "阵型 ${it.homeFormation}" //阵型
+                tvMatchHomeLineup.text = "${resources.getString(R.string.competition_txt_formation)} ${it.homeFormation}" //阵型
                 tvMatchHomeValue.text = getMarketValue(it.homeMarketValue)
-                tvMatchAwayLineup.text = "阵型 ${it.awayFormation}" //阵型
+                tvMatchAwayLineup.text = "${resources.getString(R.string.competition_txt_formation)} ${it.awayFormation}" //阵型
                 tvMatchAwayValue.text = getMarketValue(it.awayMarketValue)
                 lineUpMiddleView.setData(it)
             } else {
@@ -55,10 +55,10 @@ class FootballLineupView(context: Context?, attrs: AttributeSet?) : LinearLayout
             "-"
         } else if (v > 99999999) {
             // "${myDivide(v, 100000000, "0.000")}亿欧"
-            "${myDivide(v, 100000000, "0.000")}".dropLastWhile { it =='0' }.dropLastWhile { it =='.' }+"亿欧"
+            "${myDivide(v, 100000000, "0.000")}".dropLastWhile { it =='0' }.dropLastWhile { it =='.' }+"${resources.getString(R.string.money_txt_billion)}"
         } else if (v > 9999) {
             // "${myDivide(v, 10000, "0.0")}万欧"
-            "${myDivide(v, 10000, "0.0")}".dropLastWhile { it =='0' }.dropLastWhile { it =='.' }+"万欧"
+            "${myDivide(v, 10000, "0.0")}".dropLastWhile { it =='0' }.dropLastWhile { it =='.' }+"${resources.getString(R.string.money_txt_myriohm)}"
         } else {
             "${v}欧"
         }

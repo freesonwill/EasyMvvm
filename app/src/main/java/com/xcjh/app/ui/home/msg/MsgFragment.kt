@@ -1,23 +1,15 @@
 package com.xcjh.app.ui.home.msg
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager2.widget.ViewPager2
-import com.flyco.tablayout.listener.OnTabSelectListener
 import com.gyf.immersionbar.ImmersionBar
 import com.xcjh.app.R
 import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseFragment
-import com.xcjh.app.bean.MsgBean
 import com.xcjh.app.databinding.FrMsgBinding
-import com.xcjh.app.ui.search.SeacherFriendActivity
-import com.xcjh.app.ui.search.SeacherMsgActivity
 import com.xcjh.app.utils.clearMsg
-import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.bindViewPager2
 import com.xcjh.base_lib.utils.initActivity
 import com.xcjh.base_lib.utils.setOnclickNoRepeat
@@ -74,8 +66,8 @@ class MsgFragment : BaseFragment<MsgVm, FrMsgBinding>() {
                 ),
                 R.color.c_37373d,
                 R.color.c_94999f,
-                18f, 16f, true, false,
-                R.color.c_34a853, margin = 30
+                18f, 16f, true, true,
+                R.color.c_34a853, margin = 15
             )
 
             mDatabind.vp.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {

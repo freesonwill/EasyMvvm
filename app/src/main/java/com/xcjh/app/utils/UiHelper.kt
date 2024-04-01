@@ -87,29 +87,29 @@ fun getMatchStatusStr(matchType: String, status: Int): String {
         //足球状态码：0 比赛异常，说明：暂未判断具体原因的异常比赛，可能但不限于：腰斩、取消等等，建议隐藏处理;
         //1 未开赛;2 上半场;3 中场;4 下半场;5 加时赛;6 加时赛(弃用);7 点球决战;8 完场;9 推迟;10 中断;11 腰斩;12 取消;13 待定
         return when (status) {
-            0 -> "比赛异常"//此处可以隐藏处理，看UI设计
-            1 -> "未开赛"
-            2 -> "比赛中"//"上半场"
-            3 -> "中场"
-            4 -> "比赛中"//"下半场"
-            5 -> "加时赛"
-            6 -> "加时赛"
-            7 -> "点球决战"
-            8 -> "已完场"
-            9 -> "推迟"
-            10 -> "中断"
-            11 -> "腰斩"
-            12 -> "取消"
-            13 -> "待定"
-            else -> "比赛异常"
+            0 -> "${appContext.getString(R.string.competition_txt_abnormal)}"   //此处可以隐藏处理，看UI设计
+            1 -> "${appContext.getString(R.string.main_txt_wks)}"
+            2 -> "${appContext.getString(R.string.competition_txt_the)}"//"上半场"
+            3 -> "${appContext.getString(R.string.zc)}"
+            4 -> "${appContext.getString(R.string.competition_txt_the)}"//"下半场"
+            5 -> "${appContext.getString(R.string.competition_txt_extra)}"
+            6 -> "${appContext.getString(R.string.competition_txt_extra)}"
+            7 -> "${appContext.getString(R.string.main_dqdz)}"
+            8 -> "${appContext.getString(R.string.main_txt_over)}"
+            9 -> "${appContext.getString(R.string.main_txt_tc)}"
+            10 -> "${appContext.getString(R.string.main_txt_zd)}"
+            11 -> "${appContext.getString(R.string.main_txt_yz)}"
+            12 -> "${appContext.getString(R.string.main_txt_qx)}"
+            13 -> "${appContext.getString(R.string.main_txt_dd)}"
+            else -> "${appContext.getString(R.string.competition_txt_abnormal)}"
         }
     } else {
         //篮球状态码：0 比赛异常，说明：暂未判断具体原因的异常比赛，可能但不限于：腰斩、取消等等，建议隐藏处理;1 未开赛;
         // 2 第一节;3 第一节完;4 第二节;5 第二节完;6 第三节;7 第三节完;8 第四节;9 加时;10 完场;11 中断;12 取消;13 延期;14 腰斩;15 待定
         return when (status) {
-            0 -> "比赛异常"//此处可以隐藏处理，看UI设计
-            1 -> "未开赛"
-            in 2..9 -> "比赛中"
+            0 -> "${appContext.getString(R.string.competition_txt_abnormal)}"//此处可以隐藏处理，看UI设计
+            1 -> "${appContext.getString(R.string.main_txt_wks)}"
+            in 2..9 -> "${appContext.getString(R.string.competition_txt_the)}"
             /* 2 -> "第一节"
              3 -> "第一节完"
              4 -> "第二节"
@@ -118,13 +118,13 @@ fun getMatchStatusStr(matchType: String, status: Int): String {
              7 -> "第三节完"
              8 -> "第四节"
              9 -> "加时"*/
-            10 -> "已完场"
-            11 -> "中断"
-            12 -> "取消"
-            13 -> "延期"
-            14 -> "腰斩"
-            15 -> "待定"
-            else -> "比赛异常"
+            10 -> "${appContext.getString(R.string.main_txt_over)}"
+            11 -> "${appContext.getString(R.string.main_txt_zd)}"
+            12 -> "${appContext.getString(R.string.main_txt_qx)}"
+            13 -> "${appContext.getString(R.string.main_txt_yq)}"
+            14 -> "${appContext.getString(R.string.main_txt_yz)}"
+            15 -> "${appContext.getString(R.string.main_txt_dd)}"
+            else -> "${appContext.getString(R.string.competition_txt_abnormal)}"
         }
     }
 }
@@ -163,8 +163,8 @@ fun setMatchStatusTime(
     if (matchType == "1") {
         if (status in 2..7) {
             tvTime.text = when (status) {
-                5 -> "加时"
-                7 -> "点球"
+                5 -> "${appContext.getString(R.string.home_txt_overtime)}"
+                7 -> "${appContext.getString(R.string.competition_txt_penalty)}"
                 else -> runTime.toString()
             }
             tvTimeS.text = " '"
@@ -176,15 +176,15 @@ fun setMatchStatusTime(
     } else {
         if (status in 2..9) {
             tvTime.text = when (status) {
-                2 -> "第一节"
-                3 -> "第一节完"
-                4 -> "第二节"
-                5 -> "第二节完"
-                6 -> "第三节"
-                7 -> "第三节完"
-                8 -> "第四节"
-                9 -> "加时"
-                else -> "比赛异常"
+                2 -> "${appContext.getString(R.string.first_txt_one)}"
+                3 -> "${appContext.getString(R.string.first_txt_one_end)}"
+                4 -> "${appContext.getString(R.string.first_txt_two)}"
+                5 -> "${appContext.getString(R.string.first_txt_two_end)}"
+                6 -> "${appContext.getString(R.string.first_txt_three)}"
+                7 -> "${appContext.getString(R.string.first_txt_three_end)}"
+                8 -> "${appContext.getString(R.string.first_txt_four)}"
+                9 -> "${appContext.getString(R.string.over_time)}"
+                else -> "${appContext.getString(R.string.competition_txt_abnormal)}"
             }
             tvTimeS.text = " '"
             tvTime.visibleOrGone(true)
@@ -205,6 +205,7 @@ private val tabs by lazy {
         TabBean(2, name = appContext.resources.getStringArray(R.array.str_football_detail_tab)[1]),
         TabBean(6, name = appContext.resources.getStringArray(R.array.str_football_detail_tab)[5]),
     )
+
 }
 
 /**
@@ -219,11 +220,21 @@ fun setNewViewPager(
     pager2Adapter: ViewPager2Adapter,
     viewPager: ViewPager2,
     magicIndicator: MagicIndicator,
+    context: Context
 ) {
     mTitles.clear()
     mFragList.clear()
     val newTabs = arrayListOf<TabBean>()
-    newTabs.addAll(tabs)
+
+  var   tabsNew=arrayListOf(
+        TabBean(1, name = context.resources.getStringArray(R.array.str_football_detail_tab)[0]),
+        TabBean(3, name = context.resources.getStringArray(R.array.str_football_detail_tab)[2]),
+        TabBean(4, name = context.resources.getStringArray(R.array.str_football_detail_tab)[3]),
+        TabBean(5, name = context.resources.getStringArray(R.array.str_football_detail_tab)[4]),
+        TabBean(2, name = context.resources.getStringArray(R.array.str_football_detail_tab)[1]),
+        TabBean(6, name = context.resources.getStringArray(R.array.str_football_detail_tab)[5]),
+    )
+    newTabs.addAll(tabsNew)
     val iterator = newTabs.iterator()
     for (tab in iterator) {
         if (!isHasAnchor) { // 主播tab 隐藏

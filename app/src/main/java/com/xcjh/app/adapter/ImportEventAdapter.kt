@@ -52,15 +52,15 @@ class ImportEventAdapter : BaseViewBindingQuickAdapter<IncidentsBean, ItemImport
                     binding.tvHomeShotScore.text = "${item.homeScore}:${item.awayScore}"
                     binding.tvHomeShotMsg.text =
                         if (item.playerName.isNullOrEmpty()) {
-                            "进球"
+                            "${context.resources.getString(R.string.goal_txt)}"
                         } else {
-                            item.playerName + "进球"
+                            item.playerName + "${context.resources.getString(R.string.goal_txt)}"
                         }
                     binding.tvAwayShotScore.text = "${item.homeScore}:${item.awayScore}"
                     binding.tvAwayShotMsg.text = if (item.playerName.isNullOrEmpty()) {
-                        "进球"
+                        "${context.resources.getString(R.string.goal_txt)}"
                     } else {
-                        item.playerName + "进球"
+                        item.playerName + "${context.resources.getString(R.string.goal_txt)}"
                     }
                 }
 
@@ -97,14 +97,14 @@ class ImportEventAdapter : BaseViewBindingQuickAdapter<IncidentsBean, ItemImport
                 11 -> {
                     //中场
                     setTime(binding, 2)
-                    binding.tvHalf.text = "中场 " + "${item.homeScore}-${item.awayScore}"
+                    binding.tvHalf.text = "${context.resources.getString(R.string.zc)} " + "${item.homeScore}-${item.awayScore}"
                     setUI(binding)
                 }
 
                 12 -> {
                     //结束
                     setTime(binding, 2)
-                    binding.tvHalf.text = "结束 " + "${item.homeScore}-${item.awayScore}"
+                    binding.tvHalf.text = "${context.resources.getString(R.string.finish_txt)} " + "${item.homeScore}-${item.awayScore}"
                     setUI(binding)
                 }
 

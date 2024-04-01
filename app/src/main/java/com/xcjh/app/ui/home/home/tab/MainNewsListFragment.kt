@@ -91,11 +91,29 @@ class MainNewsListFragment  : BaseFragment<MainNewsListVm, FragmentMainNewsListB
                                 .placeholder(R.drawable.zwt_banner)
                                 .into(bindingItem.ivNewsBe)
                             var name="%s"+bean.title
-                           bindingItem.txtNewsHot.text=name.replaceSpan("%s") {
-                               GlideImageSpan(bindingItem.txtNewsHot, R.drawable.icon_news_hot)
-                                   .setRequestOption(RequestOptions.centerCropTransform())
-                                   .setDrawableSize(50.dp,15.dp)
-                           }
+
+                            //语言 0是中文  1是繁体  2是英文
+                            if(Constants.languageType==0){
+                                bindingItem.txtNewsHot.text=name.replaceSpan("%s") {
+                                    GlideImageSpan(bindingItem.txtNewsHot, R.drawable.icon_news_hot_zh)
+                                        .setRequestOption(RequestOptions.centerCropTransform())
+                                        .setDrawableSize(50.dp,15.dp)
+                                }
+                            }else    if(Constants.languageType==1){
+                                bindingItem.txtNewsHot.text=name.replaceSpan("%s") {
+                                    GlideImageSpan(bindingItem.txtNewsHot, R.drawable.icon_news_hot_rtw)
+                                        .setRequestOption(RequestOptions.centerCropTransform())
+                                        .setDrawableSize(50.dp,15.dp)
+                                }
+                            }else{
+                                bindingItem.txtNewsHot.text=name.replaceSpan("%s") {
+                                    GlideImageSpan(bindingItem.txtNewsHot, R.drawable.icon_news_hot)
+                                        .setRequestOption(RequestOptions.centerCropTransform())
+                                        .setDrawableSize(50.dp,15.dp)
+                                }
+                            }
+
+
 
                         }else{
                             bindingItem.rlNewsShowHot.visibility= View.GONE
@@ -191,13 +209,13 @@ class MainNewsListFragment  : BaseFragment<MainNewsListVm, FragmentMainNewsListB
                     }
                     //不是第一页
                     else -> {
+                        mDatabind.smartCommon.finishLoadMore()
                         if(it.listData.isEmpty()) {
                             mDatabind.smartCommon.finishLoadMoreWithNoMoreData()
-                        }else{
-
-
+                        } else{
+                            mDatabind.rcvRecommend.addModels(it.listData)
                         }
-                        mDatabind.rcvRecommend.addModels(it.listData)
+
                         mDatabind.state.showContent()
 
                     }

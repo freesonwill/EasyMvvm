@@ -23,6 +23,8 @@ import com.engagelab.privates.push.api.MTPushPrivatesApi
 import com.google.gson.Gson
 import com.gyf.immersionbar.ImmersionBar
 import com.gyf.immersionbar.ktx.showStatusBar
+import com.hjq.language.LocaleContract
+import com.hjq.language.MultiLanguages
 import com.king.app.dialog.AppDialog
 import com.king.app.updater.AppUpdater
 import com.king.app.updater.http.OkHttpManager
@@ -93,6 +95,15 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         showStatusBar()
         mDatabind.reDateShow.clickNoRepeat {}
 
+        //语言 0是中文  1是繁体  2是英文
+        val locale = MultiLanguages.getAppLanguage(this)
+        if(LocaleContract.getSimplifiedChineseLocale().equals(locale)|| LocaleContract.getChineseLocale().equals(locale)||locale.toString().equals("zh_CN_#Hans")){
+            Constants.languageType=0
+        }else if(LocaleContract.getTraditionalChineseLocale().equals(locale)){
+            Constants.languageType=1
+        }else{
+            Constants.languageType=2
+        }
 
         /* splashScreen.setKeepOnScreenCondition {
              //延迟2.5秒
@@ -472,7 +483,9 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
 
     }
 
-
+    /**
+     * 内部推送
+     */
     fun showDialog(beingLiveBean: BeingLiveBean) {
         var pushCardPopup = PushCardPopup(this, beingLiveBean)
         if (popup != null) {

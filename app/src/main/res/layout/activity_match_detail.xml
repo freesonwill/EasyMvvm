@@ -418,6 +418,7 @@
                             android:background="@drawable/shape_red_pressed_r20"
                             android:backgroundTint="@color/green_to_dark_selector"
                             android:gravity="center"
+                            android:visibility="visible"
                             android:text="@string/chat"
                             android:textColor="@color/c_ffffff"
                             android:textSize="@dimen/sp_12"

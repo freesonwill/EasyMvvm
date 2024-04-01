@@ -191,7 +191,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
             lp.topMargin = dp2px(60)
             emptyImg.setOnClickListener {}
             emptyImg.setImageResource(R.drawable.ic_empty_detail_chat)
-            emptyHint.text = "暂无聊天内容"
+            emptyHint.text = resources.getString(R.string.there_txt_chat)
             emptyHint.setTextColor(context.getColor(R.color.c_5b5b5b))
         }
         mDatabind.page.onRefresh {

@@ -41,6 +41,7 @@ import com.xcjh.app.utils.nice.Utils
 import com.xcjh.app.utils.picture.ImageFileCompressEngine
 import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.utils.bindadapter.CustomBindAdapter.afterTextChanged
+import com.xcjh.base_lib.utils.getXXPermissions
 import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.view.clickNoRepeat
 import java.io.File
@@ -129,6 +130,10 @@ class ContactUsActivity : BaseActivity<ContactUsVm, ActivityContactUsBinding>() 
             }
 
             override fun openPicture() {
+//                getXXPermissions(this@ContactUsActivity){
+//
+//                }
+
                 PictureSelector.create(this@ContactUsActivity)
                     .openGallery(SelectMimeType.ofImage())
                     .setImageEngine(GlideEngine.createGlideEngine())
@@ -156,7 +161,6 @@ class ContactUsActivity : BaseActivity<ContactUsVm, ActivityContactUsBinding>() 
 
                     })
             }
-
             override fun onDelete() {
 
                 isSelect()

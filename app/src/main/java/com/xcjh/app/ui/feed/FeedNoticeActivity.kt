@@ -26,7 +26,7 @@ class FeedNoticeActivity : BaseActivity<FeedVm, ActivityFeednoticeBinding>() {
             .navigationBarDarkIcon(true)
             .titleBar(mDatabind.titleTop.root)
             .init()
-        mDatabind.titleTop.tvTitle.text = resources.getString(R.string.txt_feedtitle)
+        mDatabind.titleTop.tvTitle.text = resources.getString(R.string.txt_feedtype)
         mDatabind.smartCommon.setRefreshHeader(CustomHeader(this))
         mDatabind.rec.run {
             vertical()

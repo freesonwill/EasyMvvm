@@ -46,7 +46,7 @@
 
                     <TextView
                         style="@style/matchResultText"
-                        android:text="进球" />
+                        android:text="@string/goal_txt" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -61,7 +61,7 @@
 
                     <TextView
                         style="@style/matchResultText"
-                        android:text="射正" />
+                        android:text="@string/shoot_txt_just" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -76,7 +76,7 @@
 
                     <TextView
                         style="@style/matchResultText"
-                        android:text="射偏" />
+                        android:text="@string/shoot_txt_partial" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -90,7 +90,7 @@
 
                     <TextView
                         style="@style/matchResultText"
-                        android:text="点球" />
+                        android:text="@string/competition_txt_penalty" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -111,7 +111,7 @@
 
                     <TextView
                         style="@style/matchResultText"
-                        android:text="点球未进" />
+                        android:text="@string/shoot_txt_not" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -126,7 +126,7 @@
 
                     <TextView
                         style="@style/matchResultText"
-                        android:text="乌龙球" />
+                        android:text="@string/own_goal" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -141,7 +141,7 @@
 
                     <TextView
                         style="@style/matchResultText"
-                        android:text="助攻" />
+                        android:text="@string/assist" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -155,7 +155,7 @@
 
                     <TextView
                         style="@style/matchResultText"
-                        android:text="红牌" />
+                        android:text="@string/competition_txt_red" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -176,7 +176,7 @@
 
                     <TextView
                         style="@style/matchResultText"
-                        android:text="角球" />
+                        android:text="@string/competition_txt_corner" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -191,7 +191,7 @@
 
                     <TextView
                         style="@style/matchResultText"
-                        android:text="黄牌" />
+                        android:text="@string/competition_txt_yellow" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -206,7 +206,7 @@
 
                     <TextView
                         style="@style/matchResultText"
-                        android:text="换人" />
+                        android:text="@string/competition_txt_substitution" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -240,7 +240,7 @@
 
                     <TextView
                         style="@style/matchResultText"
-                        android:text="两黄一红" />
+                        android:text="@string/competition_txt_multiple" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>

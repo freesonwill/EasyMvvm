@@ -4,11 +4,8 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
-import android.util.Log
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.gson.Gson
 import com.gyf.immersionbar.ImmersionBar
@@ -22,12 +19,8 @@ import com.xcjh.app.databinding.FrCourseBinding
 import com.xcjh.app.utils.GetJsonDataUtil
 import com.xcjh.app.vm.MainVm
 import com.xcjh.app.websocket.MyWsManager
-import com.xcjh.app.websocket.bean.FeedSystemNoticeBean
 import com.xcjh.app.websocket.bean.LiveStatus
 import com.xcjh.app.websocket.bean.ReceiveChangeMsg
-import com.xcjh.app.websocket.bean.ReceiveChatMsg
-import com.xcjh.app.websocket.bean.ReceiveWsBean
-import com.xcjh.app.websocket.listener.C2CListener
 import com.xcjh.app.websocket.listener.LiveStatusListener
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.LogUtils
@@ -137,8 +130,8 @@ class ScheduleFragment : BaseFragment<MainVm, FrCourseBinding>() {
                 ),
                 R.color.c_37373d,
                 R.color.c_94999f,
-                18f, 16f, true, false,
-                R.color.c_34a853, margin = 30
+                18f, 16f, true, true,
+                R.color.c_34a853, margin = 15
             )
             mDatabind.vp.offscreenPageLimit = 4
             // mDatabind.vp.isUserInputEnabled = false

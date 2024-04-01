@@ -303,7 +303,7 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
                 R.color.c_34a853,
                 R.color.c_94999f,
                 15f, 14f, true, true,
-                R.color.translet, margin = 8
+                R.color.translet, margin = 15
             )
             mDatabind.vp.offscreenPageLimit = mFragments.size
 
@@ -473,8 +473,8 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
     fun cleanDate(dateStr: String): String {
         val parts = dateStr.split("-")
         val year = parts[0]
-        val month = parts[1].replace("月", "")
-        val day = parts[2].replace("日", "")
+        val month = parts[1].replace(resources.getString(R.string.month_txt), "")
+        val day = parts[2].replace(resources.getString(R.string.day_txt), "")
 
         return "$year-$month-$day"
     }

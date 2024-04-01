@@ -6,6 +6,8 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import com.airbnb.lottie.LottieAnimationView
 import com.bumptech.glide.Glide
+import com.hjq.language.LocaleContract
+import com.hjq.language.MultiLanguages
 import com.lihang.ShadowLayout
 import com.lxj.xpopup.core.PositionPopupView
 import com.xcjh.app.R
@@ -36,10 +38,29 @@ class PushCardPopup(content: Context,var beingLiveBean: BeingLiveBean) : Positio
             .into(ivCardHead)
         txtCardName.text=beingLiveBean.nickName
             //比赛类型 1足球，2篮球
+        val locale = MultiLanguages.getAppLanguage(context)
+
         if(beingLiveBean.matchType.equals("1")){
-            txtCardMatch.text=resources.getString(R.string.popup_txt_level_name,"${beingLiveBean.homeTeamName}VS${beingLiveBean.awayTeamName}")
+            if (LocaleContract.getSimplifiedChineseLocale().equals(locale)) {
+                txtCardMatch.text=resources.getString(R.string.popup_txt_level_name,"${beingLiveBean.homeTeamName}VS${beingLiveBean.awayTeamName}")
+            }else  if (LocaleContract.getTraditionalChineseLocale().equals(locale)) {
+                txtCardMatch.text=resources.getString(R.string.popup_txt_level_name,"${beingLiveBean.homeTeamNameZht}VS${beingLiveBean.awayTeamNameZht}")
+            }else{
+                txtCardMatch.text=resources.getString(R.string.popup_txt_level_name,"${beingLiveBean.homeTeamNameEn}VS${beingLiveBean.awayTeamNameEn}")
+
+            }
+
+
         }else{
-            txtCardMatch.text=resources.getString(R.string.popup_txt_level_name,"${beingLiveBean.awayTeamName}VS${beingLiveBean.homeTeamName}")
+            if (LocaleContract.getSimplifiedChineseLocale().equals(locale)) {
+                txtCardMatch.text=resources.getString(R.string.popup_txt_level_name,"${beingLiveBean.awayTeamName}VS${beingLiveBean.homeTeamName}")
+            }else  if (LocaleContract.getTraditionalChineseLocale().equals(locale)) {
+                txtCardMatch.text=resources.getString(R.string.popup_txt_level_name,"${beingLiveBean.awayTeamNameZht}VS${beingLiveBean.homeTeamNameZht}")
+            }else{
+                txtCardMatch.text=resources.getString(R.string.popup_txt_level_name,"${beingLiveBean.awayTeamNameEn}VS${beingLiveBean.homeTeamNameEn}")
+            }
+
+
         }
         ivCardClose.clickNoRepeat {
             pushCardPopupListener!!.clicktClose()

@@ -15,6 +15,8 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.gyf.immersionbar.ImmersionBar
+import com.hjq.language.LocaleContract
+import com.hjq.language.MultiLanguages
 import com.kongzue.dialogx.dialogs.CustomDialog
 import com.kongzue.dialogx.interfaces.OnBindView
 import com.xcjh.app.R
@@ -23,15 +25,14 @@ import com.xcjh.app.base.BaseFragment
 import com.xcjh.app.bean.LoginInfo
 import com.xcjh.app.databinding.FragmentMyUserBinding
 import com.xcjh.app.net.ApiComService
+import com.xcjh.app.ui.MainActivity
 import com.xcjh.app.ui.home.my.operate.*
 import com.xcjh.app.ui.home.my.personal.PersonalDataActivity
 import com.xcjh.app.ui.login.LoginActivity
 import com.xcjh.app.ui.notice.MyNoticeActivity
 import com.xcjh.app.utils.CacheUtil
 import com.xcjh.app.utils.judgeLogin
-import com.xcjh.app.web.WebActivity
-import com.xcjh.base_lib.Constants
-import com.xcjh.base_lib.utils.myToast
+import com.xcjh.base_lib.manager.KtxActivityManger
 import com.xcjh.base_lib.utils.shareText
 import com.xcjh.base_lib.utils.view.clickNoRepeat
 
@@ -44,6 +45,7 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
     // 定义属性动画常量
     private val SCALE_X = PropertyValuesHolder.ofFloat(View.SCALE_X, 1.0f, 1.4f, 1.0f)
     private val SCALE_Y = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.0f, 1.4f, 1.0f)
+    var language:Boolean=true //是简体
 
     override fun initView(savedInstanceState: Bundle?) {
         ImmersionBar.with(this)
@@ -59,6 +61,45 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
             judgeLogin {
                 startNewActivity<LevelMissionActivity>()
             }
+        }
+        //获取语种
+        val locale = MultiLanguages.getAppLanguage(requireContext())
+
+
+
+//        //如果是简体中文的话
+//        if (LocaleContract.getSimplifiedChineseLocale().equals(locale)) {
+//                mDatabind.txtYU.text="简体中文"
+//            language=true
+//        }else if (LocaleContract.getEnglishLocale().equals(locale)) {
+//            mDatabind.txtYU.text="英文"
+//            language=false
+//        }
+        mDatabind.rlMyYuYan.setOnClickListener {
+            startNewActivity<SwitchLanguageActivity>()
+            // 是否需要重启
+//            var restart = false
+//
+//            if(language){
+//                // 英语
+//                restart = MultiLanguages.setAppLanguage(requireContext(), LocaleContract.getEnglishLocale())
+//            }else{
+//                // 简体
+//                restart = MultiLanguages.setAppLanguage(requireContext(), LocaleContract.getSimplifiedChineseLocale())
+//            }
+//
+//            if (restart) {
+//
+//                Handler().postDelayed({
+//                    //结束程序
+//                    KtxActivityManger.finishAllActivity()
+//                    startNewActivity<MainActivity>()
+//                    //exitProcess(0)
+//                }, 600)
+//            }
+
+
+
         }
 
         //点击增加透明度

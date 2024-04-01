@@ -172,8 +172,6 @@ class ScheduleVm : BaseViewModel() {
             {
 
 
-
-
 //               var jsonBean= convertToCustomFormat( formatDates(it))
 
                var jsonBean= convertToJsonObjectNew ( formatDates(it))

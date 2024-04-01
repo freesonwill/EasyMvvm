@@ -419,6 +419,11 @@ data class BeingLiveBean(
     var onlineUser: Int = 0,//	在线人数
     var hottest: Boolean = false,//	是否是热门
     var newest: Boolean = false,//	是否是最新
+    var awayTeamNameEn: String = "",//	客队英文名字
+    var awayTeamNameZht: String = "",//	客队繁体名字
+    var homeTeamNameEn: String = "",//	主队英文名
+    var homeTeamNameZht: String = "",//	主队繁体名
+
 
 ) : Serializable
 

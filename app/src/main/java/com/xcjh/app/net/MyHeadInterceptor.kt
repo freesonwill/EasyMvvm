@@ -1,9 +1,12 @@
 package com.xcjh.app.net
 
+import android.util.Log
+import com.hjq.language.LocaleContract
 import com.hjq.language.MultiLanguages
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.getUUID
 import com.xcjh.app.utils.CacheUtil
+import com.xcjh.base_lib.appContext
 import okhttp3.Interceptor
 import okhttp3.Response
 import java.io.IOException
@@ -27,17 +30,29 @@ class MyHeadInterceptor : Interceptor {
             builder.addHeader("tourist", getUUID().toString())
             //builder.addHeader("tourist", "aaaabbbbbccccdddeee")
         }
-        when (MultiLanguages.getAppLanguage().language){
-            "zh"->{
-                builder.addHeader("content-language", "zh_CN ")
-            }
-            "en"->{
-                builder.addHeader("content-language", "en_US")
-            }
-            else ->{
-                builder.addHeader("content-language", "en_US")
-            }
+
+        //语言 0是中文  1是繁体  2是英文
+        if( Constants.languageType==0){
+            builder.addHeader("sports_language", "zh_CN")
+        }else  if( Constants.languageType==1){
+            builder.addHeader("sports_language", "zh_TW")
+        }else{
+            builder.addHeader("sports_language", "en_US")
         }
+
+
+
+//        when (MultiLanguages.getAppLanguage(appContext).language){
+//            "zh"->{
+//                builder.addHeader("sports_language", "zh_CN ")
+//            }
+//            "en"->{
+//                builder.addHeader("sports_language", "en_US")
+//            }
+//            else ->{
+//                builder.addHeader("sports_language", "en_US")
+//            }
+//        }
         return chain.proceed(builder.build())
     }
 

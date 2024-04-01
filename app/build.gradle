@@ -71,7 +71,6 @@ dependencies {
     // 广告
     //implementation 'com.google.android.gms:play-services-ads:21.5.0'
 
-    implementation 'com.github.getActivity:MultiLanguages:8.0'
 
     implementation 'com.github.CarGuo.GSYVideoPlayer:GSYVideoPlayer:v8.6.0-release-jitpack'
     implementation 'com.github.CarGuo.GSYVideoPlayer:GSYVideoPlayer-aliplay:v8.6.0-release-jitpack'
@@ -226,11 +225,11 @@ dependencies {
     implementation "com.squareup.moshi:moshi-kotlin:1.8.0"
     implementation "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2"
 
-//    implementation 'org.mozilla.geckoview:geckoview-nightly:120.0.20231006092133'
-
     //滚轮
     implementation 'com.github.javakam:widget.wheelview:1.8.0@aar'
     implementation 'com.github.javakam:widget.pickerview:1.8.0@aar'
+    //多语言
+    implementation 'com.github.getActivity:MultiLanguages:9.3'
 }
 //获取编译时间
 static def releaseTime() {

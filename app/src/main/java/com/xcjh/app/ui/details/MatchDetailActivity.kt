@@ -129,6 +129,9 @@ class MatchDetailActivity :
             .isViewMode(true)
             .isDestroyOnDismiss(true)
             .asCustom(popup).show()
+        //选择投屏的时候不允许横屏
+        this.setIsLandscape(false)
+
         popup!!.popupSelectProjectionListener =
             object : PopupSelectProjection.PopupSelectProjectionListener {
                 override fun clickClose() {
@@ -198,6 +201,10 @@ class MatchDetailActivity :
 
 
                     control?.addControlObservers()
+                }
+
+                override fun onDisappear() {
+                    setIsLandscape(true)
                 }
 
             }
@@ -679,7 +686,7 @@ class MatchDetailActivity :
                 .into(mDatabind.ivAwayIcon)
         } else {
             //主队名称以及图标
-            mDatabind.tvAwayName.text = "${matchDetail.homeName}\n(主)"
+            mDatabind.tvAwayName.text = "${matchDetail.homeName}\n(${resources.getString(R.string.my_app_name)})"
             Glide.with(this).load(matchDetail.homeLogo).placeholder(R.drawable.def_basketball)
                 .into(mDatabind.ivAwayIcon)
             //客队名称以及图标
@@ -769,9 +776,7 @@ class MatchDetailActivity :
 
         mDatabind.videoPlayer.setGSYStateUiListener {
             //it.toString().loge("======")
-            Log.i("CCCCCCCCCCCCCCCCCc","======"+it)
             if (it == 2) {
-
 //                this.setIsLandscape(true)
                 if (!mDatabind.videoPlayer.isIfCurrentIsFullscreen) {
 
@@ -1047,7 +1052,7 @@ class MatchDetailActivity :
             matchDetail,
             pager2Adapter,
             mDatabind.viewPager,
-            mDatabind.magicIndicator
+            mDatabind.magicIndicator,this
         )
         //有主播
         if (isHasAnchor) {
@@ -1064,7 +1069,12 @@ class MatchDetailActivity :
 
     private fun setAnchorUI() {
         mDatabind.cslAnchor.visibleOrGone(isHasAnchor)
-        mDatabind.tvDetailTabAnchorFans.text = anchor?.hotValue + "热度值" //热度
+//        GlobalScope.launch(Dispatchers.Main) { // 使用主线程的调度器
+//            delay(500L) // 延迟1秒（1000毫秒）
+//            mDatabind.cslAnchor.visibleOrGone(isHasAnchor)
+//
+//        }
+        mDatabind.tvDetailTabAnchorFans.text = anchor?.hotValue + "${resources.getString(R.string.live_txt_heat)}" //热度
         mDatabind.tvTabAnchorNick.text = anchor?.nickName  //主播昵称
         mViewModel.anchorName = anchor?.nickName ?: ""
         loadImage(

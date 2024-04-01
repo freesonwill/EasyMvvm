@@ -1,5 +1,6 @@
 package com.xcjh.app.base
 
+import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.content.res.Resources
@@ -7,6 +8,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.databinding.ViewDataBinding
 import com.gyf.immersionbar.ImmersionBar
+import com.hjq.language.MultiLanguages
 import com.xcjh.app.R
 import com.xcjh.app.utils.dismissLoadingExt
 import com.xcjh.app.utils.showLoadingExt
@@ -29,6 +31,13 @@ abstract class BaseActivity<VM : BaseViewModel, DB : ViewDataBinding> : BaseVmDb
 
     }
 
+
+    override fun attachBaseContext(newBase: Context?) {
+//        super.attachBaseContext(newBase)
+
+        // 绑定语种
+        super.attachBaseContext(MultiLanguages.attach(newBase))
+    }
     /**
      * 创建liveData观察者
      */

@@ -80,13 +80,20 @@ class PopupSelectProjection(context: Context) : BottomPopupView(context)  {
 
     }
 
+    override fun dismiss() {
+        popupSelectProjectionListener?.onDisappear()
+        super.dismiss()
+    }
+
     var popupSelectProjectionListener: PopupSelectProjectionListener?=null
 
     //点击事件
     interface  PopupSelectProjectionListener{
-        //关闭
+        //手动关闭
         fun  clickClose()
         //点击设备
         fun  clickDevice(date :ClingDevice)
+        //整个关闭的回调
+        fun  onDisappear()
     }
 }

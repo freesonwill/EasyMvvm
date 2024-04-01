@@ -362,6 +362,16 @@ class SearchActivity : BaseActivity<SearchVm, ActivitySearchBinding>() {
                         //是热门
                         if (bean.hottest) {
                             bindingItem.ivHotHeat.visibility = View.VISIBLE
+                            //语言 0是中文  1是繁体  2是英文
+                            if(Constants.languageType!=0&&Constants.languageType!=1){
+                                var layoutParams= bindingItem.ivHotHeat.layoutParams
+                                layoutParams.width=dp2px(29)
+                                layoutParams.height=dp2px(18)
+                            }else{
+                                var layoutParams= bindingItem.ivHotHeat.layoutParams
+                                layoutParams.width=dp2px(18)
+                                layoutParams.height=dp2px(18)
+                            }
                             bindingItem.ivHotHeat.setImageDrawable(
                                 ContextCompat.getDrawable(
                                     this@SearchActivity,
@@ -370,6 +380,17 @@ class SearchActivity : BaseActivity<SearchVm, ActivitySearchBinding>() {
                             )
                         } else if (bean.newest) {//最新的
                             bindingItem.ivHotHeat.visibility = View.VISIBLE
+                            if(Constants.languageType!=0&&Constants.languageType!=1){
+                                var layoutParams= bindingItem.ivHotHeat.layoutParams
+                                layoutParams.width=dp2px(34)
+                                layoutParams.height=dp2px(18)
+
+                            }else{
+                                var layoutParams= bindingItem.ivHotHeat.layoutParams
+                                layoutParams.width=dp2px(18)
+                                layoutParams.height=dp2px(18)
+                            }
+
                             bindingItem.ivHotHeat.setImageDrawable(
                                 ContextCompat.getDrawable(
                                     this@SearchActivity,
@@ -377,6 +398,7 @@ class SearchActivity : BaseActivity<SearchVm, ActivitySearchBinding>() {
                                 )
                             )
                         } else {
+
                             bindingItem.ivHotHeat.visibility = View.GONE
                         }
 

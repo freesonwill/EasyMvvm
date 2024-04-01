@@ -1,20 +1,17 @@
 package com.xcjh.app.ui.home.home
 
-import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.gyf.immersionbar.ImmersionBar
+import com.hjq.language.LocaleContract
+import com.hjq.language.MultiLanguages
 import com.xcjh.app.R
 import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseFragment
-import com.xcjh.app.bean.MatchBean
 import com.xcjh.app.databinding.FragmentHomeBinding
 import com.xcjh.app.ui.home.home.tab.CompetitionTypeListFragment
 import com.xcjh.app.ui.home.home.tab.MainNewsListFragment
-import com.xcjh.app.ui.home.home.tab.MainRecommendFragment
 import com.xcjh.app.ui.home.home.tab.MainRecommendNewFragment
 import com.xcjh.app.ui.search.SearchActivity
 import com.xcjh.app.vm.MainVm
@@ -61,9 +58,11 @@ class HomeFragment : BaseFragment<MainVm, FragmentHomeBinding>() {
             ),
             R.color.c_37373d,
             R.color.c_94999f,
-            18f, 16f, true, false,
-            R.color.c_34a853, margin = 30
-        )
+            18f, 16f, true, true,
+            R.color.c_34a853, margin = 15
+        ){
+
+        }
         mDatabind.viewPager.offscreenPageLimit = mFragList.size
 
         mDatabind.ivHomeSearch.clickNoRepeat {

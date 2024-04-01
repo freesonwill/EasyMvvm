@@ -266,6 +266,7 @@ fun getBitmapByView(scrollView: ScrollView): Bitmap {
 fun getXXPermissions(activity: Activity,action: () -> Unit = {}){
     XXPermissions.with(activity)
         .permission(Permission.READ_MEDIA_IMAGES)
+        .permission(Permission.ACCESS_MEDIA_LOCATION)
        // .permission(Permission.READ_EXTERNAL_STORAGE)
       //  .permission(Permission.WRITE_EXTERNAL_STORAGE)
         .request(object : OnPermissionCallback {

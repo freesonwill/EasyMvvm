@@ -67,7 +67,7 @@ dependencies {
     //微信开源项目，替代SP
     api 'com.tencent:mmkv:1.2.13'
     //语言切换
-    api 'com.github.getActivity:MultiLanguages:8.0'
+//    api 'com.github.getActivity:MultiLanguages:8.0'
     //******==================网络=================
     api "com.squareup.retrofit2:converter-gson:2.9.0"
     api "com.github.Justson.AgentWeb:agentweb-core:v5.0.0-alpha.1-androidx"

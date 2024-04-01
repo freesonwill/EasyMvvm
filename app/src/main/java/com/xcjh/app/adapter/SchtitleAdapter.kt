@@ -135,7 +135,7 @@ class SchtitleAdapter : BaseQuickAdapter<MatchBean, QuickViewHolder>() {
                         tvstatus.visibility = View.VISIBLE
                         tvstatus.setTextColor(ContextCompat.getColor(context, R.color.c_pb_bar))
                         tvstatus.text =
-                            context.resources.getString(R.string.main_txt_basketball_phase, "一")
+                            context.resources.getString(R.string.main_txt_basketball_phase, context.resources.getString(R.string.one))
 
                     }
 
@@ -143,7 +143,7 @@ class SchtitleAdapter : BaseQuickAdapter<MatchBean, QuickViewHolder>() {
                         tvstatus.visibility = View.VISIBLE
                         tvstatus.setTextColor(ContextCompat.getColor(context, R.color.c_pb_bar))
                         tvstatus.text =
-                            context.resources.getString(R.string.main_txt_basketball_phase, "二")
+                            context.resources.getString(R.string.main_txt_basketball_phase, context.resources.getString(R.string.two))
 
                     }
 
@@ -151,7 +151,7 @@ class SchtitleAdapter : BaseQuickAdapter<MatchBean, QuickViewHolder>() {
                         tvstatus.visibility = View.VISIBLE
                         tvstatus.setTextColor(ContextCompat.getColor(context, R.color.c_pb_bar))
                         tvstatus.text =
-                            context.resources.getString(R.string.main_txt_basketball_phase, "三")
+                            context.resources.getString(R.string.main_txt_basketball_phase, context.resources.getString(R.string.three))
 
                     }
 
@@ -159,7 +159,7 @@ class SchtitleAdapter : BaseQuickAdapter<MatchBean, QuickViewHolder>() {
                         tvstatus.visibility = View.VISIBLE
                         tvstatus.setTextColor(ContextCompat.getColor(context, R.color.c_pb_bar))
                         tvstatus.text =
-                            context.resources.getString(R.string.main_txt_basketball_phase, "四")
+                            context.resources.getString(R.string.main_txt_basketball_phase, context.resources.getString(R.string.four))
 
                     }
                     "10" -> {

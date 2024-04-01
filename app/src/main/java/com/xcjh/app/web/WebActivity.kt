@@ -216,9 +216,9 @@ class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
                 title += "<div style=\" display: flex; align-items: center; margin: 0; padding: 0; \"> " +
                         "<div style=\"display: flex; align-items: center;\">" +
                         "<img src=\"file:///android_asset/football.png\"  alt=\"Example\" width=\"20px\" height=\"20px\"  >" +
-                        " <h4 style=\"font-size: 12px; color: #575762; font-weight: normal; margin-left: 4px;\">体育直播</h4>" +
+                        " <h4 style=\"font-size: 12px; color: #575762; font-weight: normal; margin-left: 4px;\">${resources.getString(R.string.my_app_name)}</h4>" +
                         "</div>"+
-                        "<h4 style=\" color: #94999F; font-size: 11px; margin-left: auto; font-weight: normal; padding: 0; \">${dateTimeString} 发布</h4></div>"
+                        "<h4 style=\" color: #94999F; font-size: 11px; margin-left: auto; font-weight: normal; padding: 0; \">${dateTimeString} ${resources.getString(R.string.release_txt_name)}</h4></div>"
             }
             title += it.content
             title="<body style=\"background-color: white;  padding: 0px; margin-left: 12px; margin-right: 12px;\">${title}</body>"+js
@@ -242,9 +242,9 @@ class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
                 title +=   "<div style=\" display: flex; align-items: center;  margin: 0; padding: 0; \"> " +
                         "<div style=\"display: flex; align-items: center;\">" +
                         "<img src=\"file:///android_asset/football.png\"  alt=\"Example\" width=\"20px\" height=\"2px\"  >" +
-                        " <h4 style=\"font-size: 12px; color: #575762; font-weight: normal; margin-left: 4px;\">体育直播</h4>" +
+                        " <h4 style=\"font-size: 12px; color: #575762; font-weight: normal; margin-left: 4px;\">${resources.getString(R.string.my_app_name)}</h4>" +
                         "</div>"+
-                        "<h5 style=\" color: #94999F; font-size: 11px; margin-left: auto; font-weight: normal;\">${dateTimeString} 发布</h4></div>"
+                        "<h5 style=\" color: #94999F; font-size: 11px; margin-left: auto; font-weight: normal;\">${dateTimeString} ${resources.getString(R.string.release_txt_name)}</h4></div>"
             }
             title += it.content
             title="<body style=\"background-color: white; padding: 0px; margin-left: 12px; margin-right: 12px;\">${title}</body>"+js

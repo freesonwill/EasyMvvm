@@ -50,8 +50,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/phone"
-
-
                 android:textColor="@color/c_37373d"
                 android:textSize="@dimen/sp_14"
                 android:textStyle="bold" />

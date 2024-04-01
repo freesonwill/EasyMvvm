@@ -5,10 +5,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import com.gyf.immersionbar.ImmersionBar
+import com.hjq.language.LocaleContract
+import com.hjq.language.MultiLanguages
 import com.xcjh.app.R
 import com.xcjh.base_lib.base.BaseViewModel
 import com.xcjh.app.base.BaseActivity
 import com.xcjh.app.databinding.ActivitySplashBinding
+import com.xcjh.base_lib.Constants
 import java.util.*
 
 
@@ -19,14 +22,13 @@ import java.util.*
 class SplashActivity : BaseActivity<BaseViewModel, ActivitySplashBinding>() {
     private var secondsRemaining: Long = 0L
     override fun initView(savedInstanceState: Bundle?) {
-//        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
-//            mDatabind.vLogoAnim.visibility = View.VISIBLE
-//        }
         super.initView(savedInstanceState)
         ImmersionBar.with(this)
             .statusBarDarkFont(true)
             .navigationBarColor(R.color.c_ffffff)
             .init()
+
+
         onIntent(intent)
         //createTimer(2)
 

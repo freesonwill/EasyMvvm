@@ -6,12 +6,15 @@ import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.gyf.immersionbar.ImmersionBar
+import com.hjq.language.LocaleContract
+import com.hjq.language.MultiLanguages
 import com.xcjh.app.R
 import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseActivity
 import com.xcjh.app.databinding.ActivityLevelMissionBinding
 import com.xcjh.app.utils.CacheUtil
 import com.xcjh.app.vm.MainVm
+import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.dp2px
 import com.xcjh.base_lib.utils.view.clickNoRepeat
 
@@ -82,43 +85,92 @@ class LevelMissionActivity  : BaseActivity<LevelMissionVm, ActivityLevelMissionB
                         mDatabind.txtLevelGrow.text=""
                     }
 
+                    //语言 0是中文  1是繁体  2是英文
+                    val locale = MultiLanguages.getAppLanguage(this)
                     if (user!!.lvNum.equals("1")){
+
+                        if(!(LocaleContract.getSimplifiedChineseLocale().equals(locale)|| LocaleContract.getChineseLocale().equals(locale)||locale.toString().equals("zh_CN_#Hans"))
+                            &&!LocaleContract.getTraditionalChineseLocale().equals(locale)){
+                            var layoutParams=mDatabind.ivLevelTxt.layoutParams
+                            layoutParams.width=dp2px(85)
+                            layoutParams.height=dp2px(32)
+                        }
+
                         mDatabind.ivLevelTxt.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.wd_dj_huangtong_wenzi))
                         mDatabind.ivLevelIcon.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.icon_badge_yi))
                         mDatabind.rlLevelBe.setBackgroundResource(R.drawable.gradual_level_yi)
                         mDatabind.progressLevel.highlightView.color=ContextCompat.getColor(this, R.color.c_cb6741)
                         mDatabind.txtLevelGrow.setTextColor(ContextCompat.getColor(this, R.color.c_a5502f))
                     }else if (user!!.lvNum.equals("2")){
+                        if(!(LocaleContract.getSimplifiedChineseLocale().equals(locale)|| LocaleContract.getChineseLocale().equals(locale)||locale.toString().equals("zh_CN_#Hans"))
+                            &&!LocaleContract.getTraditionalChineseLocale().equals(locale)){
+                            var layoutParams=mDatabind.ivLevelTxt.layoutParams
+                            layoutParams.width=dp2px(70)
+                            layoutParams.height=dp2px(32)
+                        }
+
                         mDatabind.ivLevelTxt.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.wd_dj_baiyin_wenzi))
                         mDatabind.ivLevelIcon.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.icon_badge_er))
                         mDatabind.rlLevelBe.setBackgroundResource(R.drawable.gradual_level_er)
                         mDatabind.progressLevel.highlightView.color=ContextCompat.getColor(this, R.color.c_929292)
                         mDatabind.txtLevelGrow.setTextColor(ContextCompat.getColor(this, R.color.c_727272))
                     }else if (user!!.lvNum.equals("3")){
+                        if(!(LocaleContract.getSimplifiedChineseLocale().equals(locale)|| LocaleContract.getChineseLocale().equals(locale)||locale.toString().equals("zh_CN_#Hans"))
+                            &&!LocaleContract.getTraditionalChineseLocale().equals(locale)){
+                            var layoutParams=mDatabind.ivLevelTxt.layoutParams
+                            layoutParams.width=dp2px(56)
+                            layoutParams.height=dp2px(32)
+                        }
+
                         mDatabind.ivLevelTxt.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.wd_dj_huangjing_wenzi))
                         mDatabind.ivLevelIcon.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.icon_badge_san))
                         mDatabind.rlLevelBe.setBackgroundResource(R.drawable.gradual_level_san)
                         mDatabind.progressLevel.highlightView.color=ContextCompat.getColor(this, R.color.c_f0a248)
                         mDatabind.txtLevelGrow.setTextColor(ContextCompat.getColor(this, R.color.c_8f612c))
                     }else if (user!!.lvNum.equals("4")){
+                        if(!(LocaleContract.getSimplifiedChineseLocale().equals(locale)|| LocaleContract.getChineseLocale().equals(locale)||locale.toString().equals("zh_CN_#Hans"))
+                            &&!LocaleContract.getTraditionalChineseLocale().equals(locale)){
+                            var layoutParams=mDatabind.ivLevelTxt.layoutParams
+                            layoutParams.width=dp2px(107)
+                            layoutParams.height=dp2px(32)
+                        }
                         mDatabind.ivLevelTxt.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.wd_dj_bojing_wenzi))
                         mDatabind.ivLevelIcon.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.icon_badge_si))
                         mDatabind.rlLevelBe.setBackgroundResource(R.drawable.gradual_level_si)
                         mDatabind.progressLevel.highlightView.color=ContextCompat.getColor(this, R.color.c_62aeb8)
                         mDatabind.txtLevelGrow.setTextColor(ContextCompat.getColor(this, R.color.c_51858c))
                     }else if (user!!.lvNum.equals("5")){
+                        if(!(LocaleContract.getSimplifiedChineseLocale().equals(locale)|| LocaleContract.getChineseLocale().equals(locale)||locale.toString().equals("zh_CN_#Hans"))
+                            &&!LocaleContract.getTraditionalChineseLocale().equals(locale)){
+                            var layoutParams=mDatabind.ivLevelTxt.layoutParams
+                            layoutParams.width=dp2px(108)
+                            layoutParams.height=dp2px(32)
+                        }
+
                         mDatabind.ivLevelTxt.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.wd_dj_zuanshi_wenzi))
                         mDatabind.ivLevelIcon.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.icon_badge_wu))
                         mDatabind.rlLevelBe.setBackgroundResource(R.drawable.gradual_level_wu)
                         mDatabind.progressLevel.highlightView.color=ContextCompat.getColor(this, R.color.c_a474c8)
                         mDatabind.txtLevelGrow.setTextColor(ContextCompat.getColor(this, R.color.c_865aa8))
                     }else if (user!!.lvNum.equals("6")){
+                        if(!(LocaleContract.getSimplifiedChineseLocale().equals(locale)|| LocaleContract.getChineseLocale().equals(locale)||locale.toString().equals("zh_CN_#Hans"))
+                            &&!LocaleContract.getTraditionalChineseLocale().equals(locale)){
+                            var layoutParams=mDatabind.ivLevelTxt.layoutParams
+                            layoutParams.width=dp2px(51)
+                            layoutParams.height=dp2px(32)
+                        }
                         mDatabind.ivLevelTxt.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.wd_dj_xingyao_wenzi))
                         mDatabind.ivLevelIcon.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.icon_badge_liu))
                         mDatabind.rlLevelBe.setBackgroundResource(R.drawable.gradual_level_liu)
                         mDatabind.progressLevel.highlightView.color=ContextCompat.getColor(this, R.color.c_737ed6)
                         mDatabind.txtLevelGrow.setTextColor(ContextCompat.getColor(this, R.color.c_5a64b7))
                     }else  {
+                        if(!(LocaleContract.getSimplifiedChineseLocale().equals(locale)|| LocaleContract.getChineseLocale().equals(locale)||locale.toString().equals("zh_CN_#Hans"))
+                            &&!LocaleContract.getTraditionalChineseLocale().equals(locale)){
+                            var layoutParams=mDatabind.ivLevelTxt.layoutParams
+                            layoutParams.width=dp2px(51)
+                            layoutParams.height=dp2px(32)
+                        }
                         mDatabind.ivLevelTxt.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.wd_dj_xingyao_wenzi))
                         mDatabind.ivLevelIcon.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.icon_badge_liu))
                         mDatabind.rlLevelBe.setBackgroundResource(R.drawable.gradual_level_liu)
