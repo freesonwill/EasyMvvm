@@ -1,6 +1,7 @@
 package com.xcjh.app.ui.details
 
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.ServiceConnection
 import android.net.Uri
@@ -977,7 +978,7 @@ class MatchDetailActivity :
      */
     fun  horseRaceLamp(){
         if( mViewModel.scrollTextList.value!=null){
-         var stl=   mViewModel.scrollTextList.value
+         var stl= mViewModel.scrollTextList.value
             mDatabind.marqueeView.visibleOrInvisible(stl!!.isSuccess && stl.data!!.size > 0)
             stl!!.data.notNull({ list ->
                 if (list.size > 0) {
@@ -1221,7 +1222,7 @@ class MatchDetailActivity :
         get() = GSYVideoOptionBuilder()
             .setLooping(true)
             .setStartAfterPrepared(true)
-            .setCacheWithPlay(true)
+            .setCacheWithPlay(true)//是否启用缓存，直播就不用
             .setVideoTitle("视频")
             .setIsTouchWiget(true) //.setAutoFullWithSize(true)
             .setRotateViewAuto(false)

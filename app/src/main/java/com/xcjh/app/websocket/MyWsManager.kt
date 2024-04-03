@@ -125,7 +125,7 @@ class MyWsManager private constructor(private val mContext: Context) {
     /**
      * command
      *  5->6 登录成功         22->22 注销成功
-     *  7->9 加入群聊成功       21->10 退出群聊成功
+     *  7->9 加入群聊成功       21->10 退出群聊成功   10通知群内人员用户退出直播间）
      *  13->13 心跳包成功
      * 32 -》禁言  bizId=""如果是空就是全局    不为空就是主播id
      * 33-》解除
@@ -139,13 +139,17 @@ class MyWsManager private constructor(private val mContext: Context) {
         val wsBean = jsonToObject2<ReceiveWsBean<Any>>(msg)
         //判读禁言是不是全局的
         val wsBeanDate = jsonToObject2<ReceiveWsBean<FeedSystemNoticeBean>>(msg)
-        val feedMsgBeanDate = wsBeanDate?.data as FeedSystemNoticeBean
-        if (wsBean?.command == 32&&feedMsgBeanDate.bizId.isEmpty() ) {
-            Constants.ISSTOP_TALK = "1"
+
+        if(wsBean?.command==32||wsBean?.command==33){
+            val feedMsgBeanDate = wsBeanDate?.data as FeedSystemNoticeBean
+            if (wsBean?.command == 32&&feedMsgBeanDate.bizId.isEmpty() ) {
+                Constants.ISSTOP_TALK = "1"
+            }
+            if (wsBean?.command == 33&&feedMsgBeanDate.bizId.isEmpty()) {
+                Constants.ISSTOP_TALK = "0"
+            }
         }
-        if (wsBean?.command == 33&&feedMsgBeanDate.bizId.isEmpty()) {
-            Constants.ISSTOP_TALK = "0"
-        }
+
         if (wsBean?.code == "10114") {
             myToast(appContext.getString(R.string.no_chat_t),"",true)
             return
@@ -303,10 +307,7 @@ class MyWsManager private constructor(private val mContext: Context) {
                 mOtherPushListener.forEach {
                     it.toPair().second.onChangeMatchData(wsBean2)
                 }
-
-
             }
-
             34 -> {
                 val wsBean2 = jsonToObject2<ReceiveWsBean<BeingLiveBean>>(msg)
                 val chatMsgBean = wsBean2?.data as BeingLiveBean

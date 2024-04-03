@@ -417,7 +417,23 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
                     .circleCrop()
                     .into(mDatabind.ivMyHead)
                 mDatabind.txtMyName.text = user!!.name
-                mDatabind.txtMyNum.text = "${user!!.lvName}"
+
+                if (user!!.lvNum.equals("1")) {
+                    mDatabind.txtMyNum.text = "${resources.getString(R.string.level1)}"
+                }else if (user!!.lvNum.equals("2")) {
+                    mDatabind.txtMyNum.text = "${resources.getString(R.string.level2)}"
+                }else if (user!!.lvNum.equals("3")) {
+                    mDatabind.txtMyNum.text = "${resources.getString(R.string.level3)}"
+                }else if (user!!.lvNum.equals("4")) {
+                    mDatabind.txtMyNum.text = "${resources.getString(R.string.level4)}"
+                }else if (user!!.lvNum.equals("5")) {
+                    mDatabind.txtMyNum.text = "${resources.getString(R.string.level5)}"
+                }else if (user!!.lvNum.equals("6")) {
+                    mDatabind.txtMyNum.text = "${resources.getString(R.string.level6)}"
+                }else{
+                    mDatabind.txtMyNum.text = "${resources.getString(R.string.level1)}"
+                }
+
 
 
                 if (user!!.lvNum.equals("1")) {

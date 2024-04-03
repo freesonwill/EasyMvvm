@@ -1,5 +1,7 @@
 package com.xcjh.app.vm
 
+import android.content.Context
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.kunminx.architecture.ui.callback.UnPeekLiveData
 import com.xcjh.app.appViewModel
@@ -132,6 +134,31 @@ class MainVm : BaseViewModel() {
                 events.value = EventsBean()
 
             }, isShowDialog = true
+        )
+    }
+
+
+    /**
+     * 设置语言
+     */
+    fun setLanquage() {
+        var lanquageRed :String="en_US"
+        //语言 0是中文  1是繁体  2是英文
+        if( Constants.languageType==0){
+            lanquageRed="zh_CN"
+        }else  if( Constants.languageType==1){
+            lanquageRed="zh_TW"
+        }else{
+            lanquageRed="en_US"
+        }
+        request(
+            { apiService.setLanguage(lanquageRed) },
+
+            {
+
+            }, {
+
+            }, false
         )
     }
 

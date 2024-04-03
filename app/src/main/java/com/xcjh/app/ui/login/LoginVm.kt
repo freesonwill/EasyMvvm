@@ -81,6 +81,9 @@ class LoginVm : BaseViewModel() {
         )
     }
 
+    /**
+     * 获取国家
+     */
     fun getCountrys() {
 
         request(

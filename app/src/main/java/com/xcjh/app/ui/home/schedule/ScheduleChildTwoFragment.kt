@@ -127,8 +127,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
             if ((mCurrentOneTabIndex != 3 && mCurrentTwoTabIndex == 0) ||
                 (mCurrentOneTabIndex == 3 && (mCurrentTwoTabIndex == 0 || mCurrentTwoTabIndex == 1))
             ) {//只取一天
-                Log.i("GGGGGGGGG","第一个11=="+mCurrentOneTabIndex)
-                Log.i("GGGGGGGGG","第二个1111=="+mCurrentTwoTabIndex)
+
 
                 if (calendarTime.isNotEmpty()) {
                     strTime = calendarTime
@@ -661,7 +660,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                 binding.tvstatus.text =
                                     context.resources.getString(
                                         R.string.main_txt_basketball_phase,
-                                        "一"
+                                        resources.getString(R.string.one)
                                     )
                                 initAnimation(binding.txtMatchAnimation)
 
@@ -683,12 +682,11 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                         R.color.c_34a853
                                     )
                                 )
-                                binding.tvstatus.text =
-                                    context.resources.getString(
+                                binding.tvstatus.text =context.resources.getString(
+                                    R.string.finis
+                                )+" "+ context.resources.getString(
                                         R.string.main_txt_basketball_phase,
-                                        "一"
-                                    ) + context.resources.getString(
-                                        R.string.finis
+                                        resources.getString(R.string.one)
                                     )
                                 initAnimation(binding.txtMatchAnimation)
 
@@ -713,7 +711,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                 binding.tvstatus.text =
                                     context.resources.getString(
                                         R.string.main_txt_basketball_phase,
-                                        "二"
+                                        resources.getString(R.string.two)
                                     )
                                 initAnimation(binding.txtMatchAnimation)
 
@@ -735,12 +733,12 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                         R.color.c_34a853
                                     )
                                 )
-                                binding.tvstatus.text =
+                                binding.tvstatus.text = context.resources.getString(
+                                    R.string.finis
+                                )+" "+
                                     context.resources.getString(
                                         R.string.main_txt_basketball_phase,
-                                        "二"
-                                    ) + context.resources.getString(
-                                        R.string.finis
+                                        resources.getString(R.string.two)
                                     )
                                 initAnimation(binding.txtMatchAnimation)
 
@@ -765,7 +763,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                 binding.tvstatus.text =
                                     context.resources.getString(
                                         R.string.main_txt_basketball_phase,
-                                        "三"
+                                        resources.getString(R.string.three)
                                     )
                                 initAnimation(binding.txtMatchAnimation)
 
@@ -787,12 +785,12 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                         R.color.c_34a853
                                     )
                                 )
-                                binding.tvstatus.text =
+                                binding.tvstatus.text =context.resources.getString(
+                                    R.string.finis
+                                )+" "+
                                     context.resources.getString(
                                         R.string.main_txt_basketball_phase,
-                                        "三"
-                                    ) + context.resources.getString(
-                                        R.string.finis
+                                        resources.getString(R.string.three)
                                     )
                                 initAnimation(binding.txtMatchAnimation)
 
@@ -817,7 +815,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                 binding.tvstatus.text =
                                     context.resources.getString(
                                         R.string.main_txt_basketball_phase,
-                                        "四"
+                                        resources.getString(R.string.four)
                                     )
                                 initAnimation(binding.txtMatchAnimation)
                             }

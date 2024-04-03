@@ -1,5 +1,6 @@
 package com.xcjh.app.ui.home.my.operate
 
+import android.content.Context
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.viewModelScope
@@ -9,6 +10,7 @@ import com.xcjh.app.R
 import com.xcjh.app.bean.FeedbackReq
 import com.xcjh.app.net.apiService
 import com.xcjh.app.utils.nice.Utils
+import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.base.BaseViewModel
 import com.xcjh.base_lib.utils.LogUtils
@@ -86,7 +88,15 @@ class ContactUsVm : BaseViewModel() {
 
 
     fun showLoading(){
-        loadingChange.showDialog.postValue("请求网络中...")
+        var msg:String="请求网络中..."
+        //语言 0是中文  1是繁体  2是英文
+         if( Constants.languageType==1){
+             msg="請求網路中..."
+        }else{
+             msg="Request network..."
+        }
+
+        loadingChange.showDialog.postValue(msg)
     }
 
 

@@ -37,6 +37,8 @@ import com.xcjh.app.adapter.PushCardPopup
 import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseActivity
 import com.xcjh.app.bean.BeingLiveBean
+import com.xcjh.app.bean.JsonBean
+import com.xcjh.app.bean.TimeConstantsDat
 import com.xcjh.app.databinding.ActivityHomeBinding
 import com.xcjh.app.ui.details.MatchDetailActivity
 import com.xcjh.app.ui.home.home.HomeFragment
@@ -94,6 +96,23 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         //MTPushPrivatesApi.clearNotification(this)
         showStatusBar()
         mDatabind.reDateShow.clickNoRepeat {}
+        currentPage=0
+        //全部比赛 0全部 1 是足球   2是篮球    3是赛果
+        TimeConstantsDat.options1ItemsAll = ArrayList<JsonBean>()
+        TimeConstantsDat.options2ItemsAll =  ArrayList<ArrayList<String>>()
+        TimeConstantsDat.options3ItemsAll = ArrayList< ArrayList<ArrayList<String>>>()
+        //足球比赛
+        TimeConstantsDat.options1ItemsFootball = ArrayList<JsonBean>()
+        TimeConstantsDat.options2ItemsFootball =  ArrayList<ArrayList<String>>()
+        TimeConstantsDat.options3ItemsFootball = ArrayList< ArrayList<ArrayList<String>>>()
+        //篮球比赛
+        TimeConstantsDat.options1ItemsBasketball = ArrayList<JsonBean>()
+        TimeConstantsDat.options2ItemsBasketball =  ArrayList<ArrayList<String>>()
+        TimeConstantsDat.options3ItemsBasketball = ArrayList< ArrayList<ArrayList<String>>>()
+        //赛果
+        TimeConstantsDat.options1ItemsSaiguo  = ArrayList<JsonBean>()
+        TimeConstantsDat.options2ItemsSaiguo =  ArrayList<ArrayList<String>>()
+        TimeConstantsDat.options3ItemsSaiguo = ArrayList< ArrayList<ArrayList<String>>>()
 
         //语言 0是中文  1是繁体  2是英文
         val locale = MultiLanguages.getAppLanguage(this)
@@ -104,6 +123,10 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         }else{
             Constants.languageType=2
         }
+        if(CacheUtil.isLogin()){
+            mViewModel.setLanquage()
+        }
+
 
         /* splashScreen.setKeepOnScreenCondition {
              //延迟2.5秒
@@ -115,7 +138,7 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
             mDatabind.vLogoAnim.playAnimation()
         }
 
-            Constants.isLoading = true
+        Constants.isLoading = true
         onIntent(intent)
         CacheUtil.setFirst(false)
         initUI()

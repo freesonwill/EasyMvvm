@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
+import android.util.Log
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
@@ -49,6 +50,7 @@ class ScheduleFragment : BaseFragment<MainVm, FrCourseBinding>() {
 
                 override fun onChangeReceive(chat: ArrayList<ReceiveChangeMsg>) {
                     super.onChangeReceive(chat)
+                    Log.i("RDDDDDDDDDDDDDDDd","===============")
                     appViewModel.appPushMsg.postValue(chat)
                 }
 

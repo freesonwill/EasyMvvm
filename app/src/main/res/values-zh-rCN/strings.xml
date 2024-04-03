@@ -398,4 +398,5 @@
     <string name="language_txt_simplified">中文简体</string>
     <string name="language_txt_complex">中文繁體</string>
     <string name="detail_txt_new_main">主</string>
+    <string name="txt_network_request">请求网络中...</string>
 </resources>

@@ -63,6 +63,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
     private val vm by lazy {
         ViewModelProvider(requireActivity())[DetailVm::class.java]
     }
+    var flage:Boolean=true
     private var mAgentWeb: AgentWeb? = null
     private var mNoticeWeb: WebView? = null
     private var isEnterRoom = false//是否已经进入房间
@@ -202,14 +203,23 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
         setChatRoomRcv(vm, mDatabind.rcvChat, mLayoutManager, true, {
             mAgentWeb = it
         }, {
-            mDatabind.rcvChat.postDelayed({
-                if (isAdded) {
-                    val params = mDatabind.rcvChat.layoutParams
-                    params.height = mDatabind.page.height
-                    mDatabind.rcvChat.layoutParams = params
-                    mDatabind.rcvChat.scrollToPosition(0)
-                }
-            }, 200)
+            if (isAdded) {
+                Log.e("00000000000", "onPageFinished: ===="+mDatabind.page.height)
+
+            }
+
+            if(flage){
+                mDatabind.rcvChat.postDelayed({
+                    if (isAdded) {
+                        val params = mDatabind.rcvChat.layoutParams
+                        params.height = mDatabind.page.height
+                        mDatabind.rcvChat.layoutParams = params
+                        mDatabind.rcvChat.scrollToPosition(0)
+                    }
+                }, 200)
+                flage=false
+            }
+
 
         })
         //点击列表隐藏软键盘

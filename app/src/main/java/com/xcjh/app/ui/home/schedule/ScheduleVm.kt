@@ -1,6 +1,7 @@
 package com.xcjh.app.ui.home.schedule
 
 import android.animation.Animator
+import android.content.Context
 import android.os.Build
 import android.util.Log
 import android.view.View
@@ -67,7 +68,7 @@ class ScheduleVm : BaseViewModel() {
                             recyview.bindingAdapter.notifyItemChanged(index)
                             lott!!.visibility= View.GONE
                             myToast(appContext.getString(R.string.collect_success))
-                            Log.i("VVVVVVVVVV","11111111111111111111111")
+
                         }
                         num=1
 //                        myToast(appContext.getString(R.string.collect_success))
@@ -150,7 +151,8 @@ class ScheduleVm : BaseViewModel() {
      * 获取比赛日期 type 0推荐    1 是足球   2是篮球    3是赛果
      */
     @RequiresApi(Build.VERSION_CODES.N)
-    fun getMatchTimeCount(type: String) {
+    fun getMatchTimeCount(type: String,content: Context) {
+
         var mact=type
         var data= CompetitionRed()
         if(type.equals("0")){
@@ -170,11 +172,8 @@ class ScheduleVm : BaseViewModel() {
             { apiService.getMatchTimeCount(data) },
 
             {
-
-
 //               var jsonBean= convertToCustomFormat( formatDates(it))
-
-               var jsonBean= convertToJsonObjectNew ( formatDates(it))
+               var jsonBean= convertToJsonObjectNew ( formatDates(it),content)
 
 
                 if(mact.equals("0")){
@@ -182,16 +181,18 @@ class ScheduleVm : BaseViewModel() {
 //                    ddd.forEach {
 //                        Log.i("NNNNNNNN","====="+it.time)
 //                    }
+                    TimeConstantsDat.options1ItemsAll=ArrayList()
                     TimeConstantsDat.options1ItemsAll = jsonBean
                 }else  if(mact.equals("1")){
-
+                    TimeConstantsDat.options1ItemsFootball=ArrayList()
                     TimeConstantsDat.options1ItemsFootball = jsonBean
 
                 }else  if(mact.equals("2")){
-
+                    TimeConstantsDat.options1ItemsBasketball=ArrayList()
                     TimeConstantsDat.options1ItemsBasketball = jsonBean
 
                 }else{
+                    TimeConstantsDat.options1ItemsSaiguo = ArrayList()
                     TimeConstantsDat.options1ItemsSaiguo = jsonBean
                     TimeConstantsDat.saiYi=TimeConstantsDat.options1ItemsSaiguo.size-1
                     TimeConstantsDat.saiYiNew=TimeConstantsDat.options1ItemsSaiguo.size-1
@@ -298,9 +299,9 @@ class ScheduleVm : BaseViewModel() {
     }
 
 
-    fun convertToJsonObjectNew(competitionList: List<CompetitionBean>): ArrayList<JsonBean> {
+    fun convertToJsonObjectNew(competitionList: List<CompetitionBean>,content:Context): ArrayList<JsonBean> {
         val jsonList = arrayListOf<JsonBean>()
-
+        Log.i("GGGGGGGGGG","==="+content.getString(R.string.month_txt))
         val groupedByYear = competitionList.groupBy { it.time.substring(0, 4) }
 
         for ((year, competitions) in groupedByYear) {
@@ -308,9 +309,9 @@ class ScheduleVm : BaseViewModel() {
 
             val cityList = mutableListOf<JsonBean.CityBean>()
             for ((month, competitionsInMonth) in groupedByMonth) {
-                val dayList = competitionsInMonth.map { it.time.substring(9, 11) + appContext.getString(R.string.day_txt) }
+                val dayList = competitionsInMonth.map { it.time.substring(9, 11) + content.getString(R.string.day_txt) }
                 val formattedMonth = String.format("%02d", month.toInt())
-                val cityBean = JsonBean.CityBean("${formattedMonth}${appContext.getString(R.string.month_txt)}", dayList)
+                val cityBean = JsonBean.CityBean("${formattedMonth}${content.getString(R.string.month_txt)}", dayList)
                 cityList.add(cityBean)
             }
 

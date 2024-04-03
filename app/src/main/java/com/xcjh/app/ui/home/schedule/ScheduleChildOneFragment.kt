@@ -130,7 +130,7 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
     @RequiresApi(Build.VERSION_CODES.N)
     override fun initView(savedInstanceState: Bundle?) {
         try {
-            Log.i("HHHHHHHHHHHHHHHH","222222222222222")
+
 
             val bundle = arguments
             if (bundle != null) {
@@ -138,7 +138,7 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
                 matchtypeOld = matchtype
                 status = bundle.getString(ScheduleChildOneFragment.STATUS)!!
                 mOneTabIndex = bundle.getInt(ScheduleChildOneFragment.TAB)
-                mViewModel.getMatchTimeCount(matchtypeOld.toString())
+                mViewModel.getMatchTimeCount(matchtypeOld.toString(),requireContext())
             }
 
             mDatabind.vp.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
@@ -456,6 +456,7 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
                 lParams.height = WindowManager.LayoutParams.WRAP_CONTENT
                 lParams.gravity=Gravity.BOTTOM
                 dialogWindow.setGravity(Gravity.BOTTOM) //改成Bottom,底部显示
+                dialogWindow.setWindowAnimations(ando.widget.pickerview.R.style.picker_view_slide_anim);//修改动画样式
                 dialogWindow.setDimAmount(0.3f)
                 dialogWindow.attributes=lParams
             }

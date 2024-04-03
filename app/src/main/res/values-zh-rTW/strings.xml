@@ -397,4 +397,5 @@
     <string name="my_txt_switch_language">切換語言</string>
     <string name="language_txt_simplified">中文简体</string>
     <string name="language_txt_complex">中文繁體</string>
+    <string name="txt_network_request">請求網路中...</string>
 </resources>

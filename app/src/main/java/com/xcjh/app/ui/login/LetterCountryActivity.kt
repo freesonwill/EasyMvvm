@@ -1,6 +1,7 @@
 package com.xcjh.app.ui.login
 
 import android.os.Bundle
+import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -15,6 +16,7 @@ import com.xcjh.app.databinding.ActivityLettercountryBinding
 import com.xcjh.app.databinding.ItemCityBinding
 import com.xcjh.app.databinding.ItemCityLetterBinding
 import com.xcjh.app.view.SideBarLayout
+import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.Constants.Companion.PHONE_CODE
 
 /***
@@ -75,7 +77,14 @@ class LetterCountryActivity : BaseActivity<LoginVm, ActivityLettercountryBinding
                 } else {
                     var binding = getBinding<ItemCityBinding>()
                     var matchBeanNew = _data as CityModel.City
-                    binding.name1.text = matchBeanNew.cnname
+                    //语言 0是中文  1是繁体  2是英文
+                    if(Constants.languageType==0){
+                        binding.name1.text = matchBeanNew.cnname
+                    }else if(Constants.languageType==1){
+                        binding.name1.text = matchBeanNew.zhtname
+                    }else{
+                        binding.name1.text = matchBeanNew.enname
+                    }
                     Glide.with(context).load(matchBeanNew.label).override(100).thumbnail(0.1f)
                         .diskCacheStrategy(DiskCacheStrategy.ALL).skipMemoryCache(true)
                         .into(binding.ivgq)
@@ -112,30 +121,40 @@ class LetterCountryActivity : BaseActivity<LoginVm, ActivityLettercountryBinding
         mViewModel.countrys.observe(this) {
             if (it.isNotEmpty()) {
 
-                val locations = it
-                val gson = Gson()
-                val initialLocations = locations.groupBy { it.shortName }
-                    .map { (initial, list) ->
-                        CityModel(initial, list.map { location ->
-                            CityModel.City(
-                                "+" + location.dialingCode,
-                                location.cn,
-                                location.en,
-                                location.shortName,
-                                location.icon
-                            )
-                        })
+                    var locations = it
+
+                //语言 0是中文  1是繁体  2是英文
+//                if(Constants.languageType!=0&&Constants.languageType!=1){
+//                    locations.forEach {
+//                        it.shortName=getFirstLetter(it.en)
+//                    }
+//                }
+
+                    val gson = Gson()
+                    val initialLocations = locations.groupBy { it.shortName }.map { (initial, list) ->
+                            CityModel(initial, list.map { location ->
+                                CityModel.City(
+                                    "+" + location.dialingCode,
+                                    location.cn,
+                                    location.en,
+                                    location.zht,
+                                    location.shortName,
+                                    location.icon
+                                )
+                            })
+                        }
+//                initialLocations.size
+                    //根据字母排序
+                    val sortedCities = initialLocations.sortedBy { it.initial }
+                    sortedCities.forEach {
+                        models.add(CityModel.CityLetter(it.initial)) // 转换为支持悬停的数据模型
+                        models.addAll(it.list)
                     }
-                initialLocations.size
-                val sortedCities = initialLocations.sortedBy { it.initial }
-                sortedCities.forEach {
-                    models.add(CityModel.CityLetter(it.initial)) // 转换为支持悬停的数据模型
-                    models.addAll(it.list)
-                }
 
-                mDatabind.rec.models = models
-                mDatabind.indexBar.setNewLetter(mLetters.toMutableList())
+                    mDatabind.rec.models = models
+                    mDatabind.indexBar.setNewLetter(mLetters.toMutableList())
 
+//                var  ddd=ArrayList(it.sortedBy { it.en })
 
             } else {
 
@@ -144,6 +163,20 @@ class LetterCountryActivity : BaseActivity<LoginVm, ActivityLettercountryBinding
         }
 
     }
+
+
+    fun getFirstLetter(input: String): String {
+        // 如果输入为空或者不是字母，则返回空字符串
+        if (input.isEmpty() || !input[0].isLetter()) {
+            return ""
+        }
+
+        // 获取首字母并转换为大写
+        val firstLetter = input[0].toUpperCase()
+
+        return firstLetter.toString()
+    }
+
 
     private fun initMaps() {
         // 解析Json数据

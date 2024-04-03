@@ -96,9 +96,10 @@ data class CountryListBean(
     val cn: String,
     val dialingCode: String,
     val en: String,
+    val zht: String,
     val full: String,
     val icon: String,
-    val shortName: String
+    var shortName: String
 )
 
 /**
@@ -165,6 +166,7 @@ data class CityModel(
         var code: String = "",
         var cnname: String = "",
         var enname: String = "",
+        var zhtname: String = "",
         var pinyin: String = "",
         var label: String = ""
     )

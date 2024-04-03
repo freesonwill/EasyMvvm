@@ -383,8 +383,6 @@ fun setChatRoomRcv(
 
                     val binding = getBinding<ItemDetailChatFirstBinding>()
                     mAgentWeb = agentWeb(rcvChat.context, binding.agentWeb, finishLoad)
-
-
                     action.invoke(mAgentWeb)
                 }
             }
@@ -430,7 +428,8 @@ fun setChatRoomRcv(
 //                    }else{
 //                        binding.lltItem.visibility=View.GONE
 //                    }
-                    setH5Data(mAgentWeb.webCreator.webView,item.content, tvColor ="#ffffff", maxLine = 2 )
+//                    setH5Data(mAgentWeb.webCreator.webView,item.content, tvColor ="#ffffff", maxLine =2 )
+                    setH5DataMaxLine(mAgentWeb.webCreator.webView,item.content, tvColor ="#ffffff")
                 }
 
                 is MsgBean -> {
@@ -707,10 +706,27 @@ fun setH5Data(webView: WebView?,content:String="",tvColor:String="#ffffff",fontS
 //    webView?.loadDataWithBaseURL(null, bb, "text/html", "UTF-8", null)
 
     val replacedString = replaceStrongWithTagInString(content)
-    Log.i("SSSSSS","==="+replacedString)
+
         val htmlText =
         "<div style='display: -webkit-box; -webkit-line-clamp: ${maxLine}; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;'>${replacedString}</div>"
-    val bb = "<html><head><style>* {font-size: ${fontSize};color:${tvColor};font-family: 'PingFang SC';margin: 0;padding: 0;word-wrap: break-word;}body {padding-left: 0px;padding-right: 0px;}img {max-width: 100%;height: auto;}</style></head><body>${(htmlText)}</body></html>"
+    val bb = "<html><head><style>*{font-size: ${fontSize};color:${tvColor};font-family: 'PingFang SC';margin: 0;padding: 0;word-wrap: break-word;}body {padding-left: 0px;padding-right: 0px;}img {max-width: 100%;height: auto;}</style></head><body>${(htmlText)}</body></html>"
+    Log.i("SSSSSS","==="+bb)
+    webView?.loadDataWithBaseURL(null, bb, "text/html", "UTF-8", null)
+
+}
+
+/**
+ * 不要最多行数
+ */
+fun setH5DataMaxLine(webView: WebView?,content:String="",tvColor:String="#ffffff",fontSize:Int=14){
+
+
+    val replacedString = replaceStrongWithTagInString(content)
+
+    val htmlText =
+        "<div style='display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;'>${replacedString}</div>"
+    val bb = "<html><head><style>*{font-size: ${fontSize};color:${tvColor};font-family: 'PingFang SC';margin: 0;padding: 0;word-wrap: break-word;}body {padding-left: 0px;padding-right: 0px;}img {max-width: 100%;height: auto;}</style></head><body>${(htmlText)}</body></html>"
+    Log.i("SSSSSS","==="+bb)
     webView?.loadDataWithBaseURL(null, bb, "text/html", "UTF-8", null)
 
 }
