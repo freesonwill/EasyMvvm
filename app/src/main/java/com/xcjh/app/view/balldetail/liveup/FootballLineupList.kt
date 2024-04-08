@@ -88,7 +88,7 @@ class FootballLineupList (context: Context, attrs: AttributeSet?) : LinearLayout
                 pos= context.getString(R.string.qf)
             }
             "M"->{
-                pos=context.getString(R.string.zc)
+                pos=context.getString(R.string.live_zc)
             }
             "D"->{
                 pos=context.getString(R.string.hw)

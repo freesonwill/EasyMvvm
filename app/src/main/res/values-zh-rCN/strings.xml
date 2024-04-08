@@ -67,6 +67,7 @@
     <string name="txt_jiesuo">主播解说</string>
     <string name="txt_choosecountry">请选择区号</string>
     <string name="cancel">取消</string>
+    <string name="detail_cancel">取消</string>
     <string name="no_data_hint">暂无数据</string>
     <string name="no_data">暂无数据</string>
 
@@ -291,7 +292,7 @@
     <string name="smy">守门员</string>
     <string name="wz">未知</string>
     <string name="_0">0</string>
-    <string name="nomatch">暂无比赛</string>
+    <string name="nomatch">暂无比赛数据</string>
     <string name="nomsg">暂无消息</string>
     <string name="nofriends">暂无好友</string>
     <string name="nomsgrecoder">暂无聊天记录</string>
@@ -399,4 +400,15 @@
     <string name="language_txt_complex">中文繁體</string>
     <string name="detail_txt_new_main">主</string>
     <string name="txt_network_request">请求网络中...</string>
+    <string-array name="str_xqj">
+        <item>周日</item>
+        <item>周一</item>
+        <item>周二</item>
+        <item>周三</item>
+        <item>周四</item>
+        <item>周五</item>
+        <item>周六</item>
+    </string-array>
+    <string name="detail_txt_input">请输入内容</string>
+    <string name="live_zc">中场</string>
 </resources>

@@ -98,6 +98,13 @@ data class LiveStatus(
     val userLogo:String="",//主播头像
     val matchType:String="",//比赛类型
     val coverImg:String="",//封面图
+    var awayTeamNameEn: String = "",//	客队英文名字
+    var awayTeamNameZht: String = "",//	客队繁体名字
+    var homeTeamNameEn: String = "",//	主队英文名
+    var homeTeamNameZht: String = "",//	主队繁体名
+    var competitionNameEn: String = "",//	赛事英文
+    var competitionNameZht: String = "",//	赛事英文繁体
+
 
 )
 

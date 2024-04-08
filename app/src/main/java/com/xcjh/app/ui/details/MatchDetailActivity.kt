@@ -42,6 +42,7 @@ import com.xcjh.app.ui.chat.ChatActivity
 import com.xcjh.app.ui.details.common.GSYBaseActivity
 import com.xcjh.app.ui.details.fragment.*
 import com.xcjh.app.utils.*
+import com.xcjh.app.utils.TimeUtil
 import com.xcjh.app.view.PopupSelectProjection
 import com.xcjh.app.view.balldetail.ControlShowListener
 import com.xcjh.app.websocket.MyWsManager
@@ -84,6 +85,8 @@ class MatchDetailActivity :
     private var anchorId: String? = null //主播ID
     private var isHasAnchor: Boolean = false //当前流是否有主播
     private var isShowVideo: Boolean = false //当前是否播放视频
+    //保存异常状态
+    private var errStatic:Int=0
 
     // private var playUrl: String? = "rtmp://liteavapp.qcloud.com/live/liteavdemoplayerstreamid"
     // private var playUrl: String? = "https://sf1-hscdn-tos.pstatp.com/obj/media-fe/xgplayer_doc_video/flv/xgplayer-demo-720p.flv"
@@ -704,7 +707,9 @@ class MatchDetailActivity :
      * 需要实时更新的UI
      */
     private fun needWsToUpdateUI() {
-        matchName = if (matchDetail.status in 2..if (matchType == "1") 8 else 10) {
+        //修改的
+//        matchName = if (matchDetail.status in 2..if (matchType == "1") 8 else 10) {
+        matchName = if (matchDetail.status in 2..if (matchType == "1") 10 else 10) {
             matchDetail.competitionName + "  " +
                     if (matchType == "1") {
                         "${matchDetail.homeName ?: ""} ${matchDetail.homeScore ?: ""}:${matchDetail.awayScore ?: ""} ${matchDetail.awayName ?: ""}"
@@ -765,6 +770,7 @@ class MatchDetailActivity :
         //先停
         // stopVideo()
         //再开
+        Log.i("SSSSSSSSSs","========"+url)
         mDatabind.videoPlayer.visibleOrGone(true)
         mDatabind.videoPlayer.setUp(url, false, "")
         mDatabind.videoPlayer.startPlayLogic()
@@ -777,6 +783,7 @@ class MatchDetailActivity :
 
         mDatabind.videoPlayer.setGSYStateUiListener {
             //it.toString().loge("======")
+            Log.i("bobobobobo","================="+it)
             if (it == 2) {
 //                this.setIsLandscape(true)
                 if (!mDatabind.videoPlayer.isIfCurrentIsFullscreen) {
@@ -810,7 +817,9 @@ class MatchDetailActivity :
 
 //                 GSYVideoType.setScreenScaleRatio(mDatabind.videoPlayer.gsyVideoManager.currentVideoWidth / mDatabind.videoPlayer.gsyVideoManager.currentVideoHeight.toFloat())
 //                GSYVideoType.setShowType(GSYVideoType.SCREEN_TYPE_CUSTOM)
-            } else if (it == 7) {
+            }else if(it==3){
+
+            }  else if (it == 7) {
 
                 //如果是横屏的时候报错就竖屏
                 if (mDatabind.videoPlayer.isIfCurrentIsFullscreen) {
@@ -1220,7 +1229,6 @@ class MatchDetailActivity :
         get() = mDatabind.videoPlayer
     override val gSYVideoOptionBuilder: GSYVideoOptionBuilder
         get() = GSYVideoOptionBuilder()
-            .setLooping(true)
             .setStartAfterPrepared(true)
             .setCacheWithPlay(true)//是否启用缓存，直播就不用
             .setVideoTitle("视频")

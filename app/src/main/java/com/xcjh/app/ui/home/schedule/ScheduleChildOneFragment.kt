@@ -168,19 +168,18 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
             setOnclickNoRepeat(mDatabind.ivMeau) {
                 when (it.id) {
                     R.id.iv_meau -> {
-
                         //0推荐    1 是足球   2是篮球    3是赛果
                         // 0推荐    1 是足球   2是篮球    3是赛果
-                        if(TimeConstantsDat.options1ItemsAll.size>0){
+                        if(TimeConstantsDat.options1ItemsAll.size>0&&matchtypeOld.equals("0")){
 
                             showPickerView()
-                        }else   if(TimeConstantsDat.options1ItemsFootball.size>0){
+                        }else  if(TimeConstantsDat.options1ItemsFootball.size>0&&matchtypeOld.equals("1")){
 
                             showPickerView()
 
-                        } else   if(TimeConstantsDat.options1ItemsBasketball.size>0){
+                        } else   if(TimeConstantsDat.options1ItemsBasketball.size>0&&matchtypeOld.equals("2")){
                             showPickerView()
-                        }else if(TimeConstantsDat.options1ItemsSaiguo.size>0){
+                        }else if(TimeConstantsDat.options1ItemsSaiguo.size>0&&matchtypeOld.equals("3")){
                             showPickerView()
                         }
 

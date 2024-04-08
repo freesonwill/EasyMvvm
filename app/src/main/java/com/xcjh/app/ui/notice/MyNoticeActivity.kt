@@ -31,12 +31,12 @@ import com.xcjh.app.databinding.ActivityMynoticeBinding
 import com.xcjh.app.databinding.ItemJsBinding
 import com.xcjh.app.databinding.ItemSchAllBinding
 import com.xcjh.app.ui.details.MatchDetailActivity
+import com.xcjh.app.utils.TimeUtil
 import com.xcjh.app.utils.judgeLogin
 import com.xcjh.app.view.CustomHeader
 import com.xcjh.base_lib.Constants.Companion.BASE_PAGE_SIZE
 import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.utils.LogUtils
-import com.xcjh.base_lib.utils.TimeUtil
 import com.xcjh.base_lib.utils.distance
 import com.xcjh.base_lib.utils.grid
 import com.xcjh.base_lib.utils.horizontal

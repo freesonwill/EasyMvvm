@@ -916,12 +916,16 @@ fun BindingAdapter.BindingViewHolder.setLiveMatchItem(type:Int=0) {
         .placeholder(R.drawable.default_anchor_icon)
         .into(bindingItem.ivLiveHead)
     bindingItem.txtLiveName.text = bean.nickName
+
+
     if (bean.matchType == "1") {
         bindingItem.txtLiveTeam.text =
             "${bean.homeTeamName} VS ${bean.awayTeamName}"
+
     } else {
         bindingItem.txtLiveTeam.text =
             "${bean.awayTeamName} VS ${bean.homeTeamName}"
+
     }
     bindingItem.txtLiveCompetition.text = bean.competitionName
     if (bean.hotValue <= 9999) {

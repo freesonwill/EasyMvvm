@@ -146,7 +146,6 @@ class LevelMissionActivity  : BaseActivity<LevelMissionVm, ActivityLevelMissionB
                             layoutParams.width=dp2px(108)
                             layoutParams.height=dp2px(32)
                         }
-
                         mDatabind.ivLevelTxt.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.wd_dj_zuanshi_wenzi))
                         mDatabind.ivLevelIcon.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.icon_badge_wu))
                         mDatabind.rlLevelBe.setBackgroundResource(R.drawable.gradual_level_wu)

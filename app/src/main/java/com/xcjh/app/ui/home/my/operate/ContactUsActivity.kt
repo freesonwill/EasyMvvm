@@ -39,8 +39,10 @@ import com.xcjh.app.utils.FullyGridLayoutManager
 import com.xcjh.app.utils.GlideEngine
 import com.xcjh.app.utils.nice.Utils
 import com.xcjh.app.utils.picture.ImageFileCompressEngine
+import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.utils.bindadapter.CustomBindAdapter.afterTextChanged
+import com.xcjh.base_lib.utils.dp2px
 import com.xcjh.base_lib.utils.getXXPermissions
 import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.view.clickNoRepeat
@@ -251,6 +253,15 @@ class ContactUsActivity : BaseActivity<ContactUsVm, ActivityContactUsBinding>() 
                 holder = view!!.tag as Holder
             }
             holder.txtContactName.text= list!![position].name
+            //语言 0是中文  1是繁体  2是英文
+            if(Constants.languageType==0||Constants.languageType==1){
+                holder.txtContactName.setTextSize(14f)
+                holder.txtContactName.setPadding(dp2px(25), dp2px(10), dp2px(25), dp2px(10))
+            }else{
+                holder.txtContactName.setTextSize(12f)
+                holder.txtContactName.setPadding(dp2px(10), dp2px(10), dp2px(10), dp2px(10))
+            }
+
             if(list!![position].select){
                 holder.rlClick.background=ContextCompat.getDrawable(context!!,R.drawable.fillet_frame4_34a853)
                 holder.txtContactName.setTextColor(ContextCompat.getColor(context!!,R.color.c_pb_bar))

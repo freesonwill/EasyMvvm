@@ -52,14 +52,14 @@
     <string name="language_zh_tw">Traditional Chinese</string>
     <string name="language_en">English</string>
     <string name="copy_success">Copy Successful</string>
-    <string name="str_stoptalk">You have been muted</string>
-    <string name="str_inputcontent">Please Enter Content</string>
+    <string name="str_stoptalk">You are currently muted</string>
+    <string name="str_inputcontent">Input</string>
     <string name="copy">Copy</string>
     <string name="collect_success">Favorite Added</string>
     <string name="cancel_collect_success">Unfavorite</string>
     <string name="share_success">Share Successful</string>
     <string name="price_s">$%s</string>
-    <string name="say_something">Say Something...</string>
+    <string name="say_something">Say Something</string>
     <string name="txt_feedtype">Notifications</string>
     <string name="txt_feedresult">Feedback Result</string>
     <string name="txt_feddtime">Feedback Time</string>
@@ -67,6 +67,7 @@
     <string name="txt_jiesuo">Commentary by host</string>
     <string name="txt_choosecountry">Please Select Area Code</string>
     <string name="cancel">Close</string>
+    <string name="detail_cancel">Cancel</string>
     <string name="no_data_hint">No Data Available</string>
     <string name="no_data">No Data Available</string>
 
@@ -120,7 +121,7 @@
     <string name="main_txt_no_live">No Anchor is Broadcasting Yet</string>
     <string name="main_txt_basketball_phase">Q%s</string>
     <string name="zb_notice">Announce</string>
-    <string name="anchor">Anchor</string>
+    <string name="anchor">host</string>
     <string name="str_year">Year</string>
     <string name="str_mouth">Month</string>
     <string name="str_day">Day</string>
@@ -165,7 +166,7 @@
     <string name="ti">Substitute Lineup</string>
     <string name="first_z">Starting Lineup</string>
     <string name="txt_feedtype1">Update Issues</string>
-    <string name="txt_feedtype2">Live-Related</string>
+    <string name="txt_feedtype2">Live Related</string>
     <string name="txt_feedtype3">User Experience</string>
     <string name="txt_feedtype4">Chat Issues</string>
     <string name="txt_feedtype5">Competitions</string>
@@ -244,7 +245,7 @@
     <string name="contact_txt_add_image">Add Photos </string>
     <string name="contact_txt_add_most">(3 Photos Max) </string>
     <string name="contact_txt_submit_succeed">Feedback submitted successfully!</string>
-    <string name="txt_msg_pic">[Image]</string>
+    <string name="txt_msg_pic">[Photo]</string>
     <string name="txt_msg_video">[Video]</string>
     <string name="update_title">update notice</string>
     <string name="update_not_updated">Not update for now</string>
@@ -291,7 +292,7 @@
     <string name="smy">GK</string>
     <string name="wz">Unknown</string>
     <string name="_0">0</string>
-    <string name="nomatch">No game available</string>
+    <string name="nomatch">No Data Available</string>
     <string name="nomsg">No messages</string>
     <string name="nofriends">No Friends</string>
     <string name="nomsgrecoder">No chat history</string>
@@ -344,7 +345,7 @@
     <string name="anchor_no_live">The host has not yet started broadcasting</string>
     <string name="dialog_txt_goto">Visit</string>
     <string name="popup_txt_level_name">Live Now %s</string>
-    <string name="empty_txt_no_anchor">No Chat</string>
+    <string name="empty_txt_no_anchor">No anchors</string>
     <string name="search_txt_empty_name">No search content</string>
     <string name="follow_txt_add">Follow</string>
     <string name="news_txt_details">News details</string>
@@ -357,13 +358,13 @@
     <string name="projection_txt_err">Why did the screen casting fail</string>
     <string name="projection_txt_condition_yi">1. Check if the TV, set-top box, and mobile phone are connected to the same WIFI.</string>
     <string name="projection_txt_condition_er">2. Some TV/set-top box models are outdated and do not support screen casting.</string>
-    <string name="live_txt_remove">You have been removed from the live broadcast room by the host.</string>
+    <string name="live_txt_remove">Removed</string>
     <string name="live_txt_retry">Retry Later</string>
     <string name="video_txt_err">Retry</string>
     <string name="video_txt_again">Reload</string>
     <string name="cancellation_txt_follow">Unfollow?</string>
-    <string name="search_txt_live">Live room</string>
-    <string name="search_txt_game">Event</string>
+    <string name="search_txt_live">Live Room</string>
+    <string name="search_txt_game">Status</string>
     <string name="day_txt">Day</string>
     <string name="month_txt">Month</string>
     <string name="competition_txt_abnormal">Issue</string>
@@ -377,8 +378,8 @@
     <string name="first_txt_three">Q3</string>
     <string name="first_txt_three_end">End Q3</string>
     <string name="first_txt_four">Q4</string>
-    <string name="there_txt_live">No Hosts</string>
-    <string name="there_txt_chat">No Data</string>
+    <string name="there_txt_live">No other anchors</string>
+    <string name="there_txt_chat">No chat content</string>
     <string name="competition_txt_formation">Formation</string>
     <string name="money_txt_myriohm">€10K</string>
     <string name="money_txt_billion">€100M</string>
@@ -398,5 +399,16 @@
     <string name="language_txt_simplified">中文简体</string>
     <string name="language_txt_complex">中文繁體</string>
     <string name="detail_txt_new_main">Home</string>
-    <string name="txt_network_request">Request network...</string>
+
+    <string-array name="str_xqj">
+        <item>Sunday</item>
+        <item>Monday</item>
+        <item>Tuesday</item>
+        <item>Wednesday</item>
+        <item>Thursday</item>
+        <item>Friday</item>
+        <item>Saturday</item>
+    </string-array>
+    <string name="detail_txt_input">Please input content</string>
+    <string name="live_zc">MF</string>
 </resources>

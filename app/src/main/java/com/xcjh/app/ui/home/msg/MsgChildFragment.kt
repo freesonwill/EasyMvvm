@@ -505,9 +505,12 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
                                     //}
                                 }
                             } else {
-                                if (data.noReadSum > foundData.noReadSum) {
+                                if (data.noReadSum > foundData.noReadSum ) {
                                     updataMsg(data)
-                                } else {
+                                }else if(data.dataType==2&&data.content!=foundData.content){
+                                    //因为是系统的语言~有可能是其他语言所以加了一个判断如果不是相等就保存一下
+                                    updataMsg(data)
+                                }else {
                                     if (data.dataType == 1 && data.avatar != null && data.avatar!!.isNotEmpty() && data.nick != null && data.nick!!.isNotEmpty()) {
                                         if (data.avatar != foundData.avatar || data.nick != foundData.nick) {
                                             updataMsg(data)

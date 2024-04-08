@@ -287,7 +287,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginHorizontal="@dimen/dp_5"
-                                android:text="加载失败,请重试或切换信号"
+                                android:text="@string/video_txt_err"
                                 android:textColor="@color/c_ffffff"
                                 android:textSize="@dimen/sp_13"
                                 android:textStyle="bold" />
@@ -308,7 +308,7 @@
                                     android:backgroundTint="@color/white25_to_dark_selector"
                                     android:gravity="center"
                                     android:paddingHorizontal="@dimen/dp_8"
-                                    android:text="重新加载"
+                                    android:text="@string/video_txt_again"
                                     android:textColor="@color/c_ffffff"
                                     android:textSize="@dimen/sp_12"
                                     android:textStyle="bold" />

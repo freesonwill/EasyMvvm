@@ -332,7 +332,7 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
         }
 
 
-        //联系我们
+        //联系我们意见反馈
         mDatabind.rlMyClickContact.clickNoRepeat {
             if (CacheUtil.isLogin()) {
                 startNewActivity<ContactUsActivity>()

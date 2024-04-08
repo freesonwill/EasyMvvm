@@ -13,6 +13,7 @@ import com.lxj.xpopup.core.PositionPopupView
 import com.xcjh.app.R
 import com.xcjh.app.bean.BeingLiveBean
 import com.xcjh.app.utils.nice.NiceImageView
+import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.view.clickNoRepeat
 
 class PushCardPopup(content: Context,var beingLiveBean: BeingLiveBean) : PositionPopupView(content){
@@ -41,9 +42,10 @@ class PushCardPopup(content: Context,var beingLiveBean: BeingLiveBean) : Positio
         val locale = MultiLanguages.getAppLanguage(context)
 
         if(beingLiveBean.matchType.equals("1")){
-            if (LocaleContract.getSimplifiedChineseLocale().equals(locale)) {
+            //语言 0是中文  1是繁体  2是英文
+            if (Constants.languageType==0) {
                 txtCardMatch.text=resources.getString(R.string.popup_txt_level_name,"${beingLiveBean.homeTeamName}VS${beingLiveBean.awayTeamName}")
-            }else  if (LocaleContract.getTraditionalChineseLocale().equals(locale)) {
+            }else  if (Constants.languageType==1) {
                 txtCardMatch.text=resources.getString(R.string.popup_txt_level_name,"${beingLiveBean.homeTeamNameZht}VS${beingLiveBean.awayTeamNameZht}")
             }else{
                 txtCardMatch.text=resources.getString(R.string.popup_txt_level_name,"${beingLiveBean.homeTeamNameEn}VS${beingLiveBean.awayTeamNameEn}")
@@ -52,9 +54,9 @@ class PushCardPopup(content: Context,var beingLiveBean: BeingLiveBean) : Positio
 
 
         }else{
-            if (LocaleContract.getSimplifiedChineseLocale().equals(locale)) {
+            if (Constants.languageType==0) {
                 txtCardMatch.text=resources.getString(R.string.popup_txt_level_name,"${beingLiveBean.awayTeamName}VS${beingLiveBean.homeTeamName}")
-            }else  if (LocaleContract.getTraditionalChineseLocale().equals(locale)) {
+            }else  if (Constants.languageType==1) {
                 txtCardMatch.text=resources.getString(R.string.popup_txt_level_name,"${beingLiveBean.awayTeamNameZht}VS${beingLiveBean.homeTeamNameZht}")
             }else{
                 txtCardMatch.text=resources.getString(R.string.popup_txt_level_name,"${beingLiveBean.awayTeamNameEn}VS${beingLiveBean.homeTeamNameEn}")

@@ -44,7 +44,7 @@
             android:layout_height="wrap_content"
             android:textSize="@dimen/sp_13"
             android:gravity="center"
-            android:text="@string/main_txt_no_live"
+            android:text="@string/empty_txt_no_anchor"
             android:textColor="@color/c_8a91a0"/>
     </LinearLayout>
 </RelativeLayout>

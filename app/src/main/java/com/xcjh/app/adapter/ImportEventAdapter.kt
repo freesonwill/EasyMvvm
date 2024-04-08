@@ -104,7 +104,7 @@ class ImportEventAdapter : BaseViewBindingQuickAdapter<IncidentsBean, ItemImport
                 12 -> {
                     //结束
                     setTime(binding, 2)
-                    binding.tvHalf.text = "${context.resources.getString(R.string.finish_txt)} " + "${item.homeScore}-${item.awayScore}"
+                    binding.tvHalf.text = "${context.resources.getString(R.string.finis)} " + "${item.homeScore}-${item.awayScore}"
                     setUI(binding)
                 }
 

@@ -67,6 +67,7 @@
     <string name="txt_jiesuo">主播解說</string>
     <string name="txt_choosecountry">請選擇區號</string>
     <string name="cancel">取消</string>
+    <string name="detail_cancel">取消</string>
     <string name="no_data_hint">暫無數據</string>
     <string name="no_data">暫無數據</string>
 
@@ -116,7 +117,7 @@
     <string name="main_txt_basketball">籃球</string>
     <string name="main_txt_news">新聞</string>
     <string name="main_txt_session">%s場</string>
-    <string name="main_txt_on_the_air">正在直播</string>
+    <string name="main_txt_on_the_air">正在開播</string>
     <string name="main_txt_no_live">暫未有主播開播</string>
     <string name="main_txt_basketball_phase">第%s節</string>
     <string name="zb_notice">主播公告</string>
@@ -211,7 +212,7 @@
         <item>聊天</item>
         <item>主播</item>
         <item>赛况</item>
-        <item>阵容</item>
+        <item>陣容</item>
         <item>指数</item>
         <item>直播</item>
     </string-array>
@@ -233,7 +234,7 @@
     <string name="txttime_mouth">%d月前</string>
     <string name="txttime_years">%d年前</string>
     <string name="personal_txt_head">頭像</string>
-    <string name="personal_txt_name">名稱</string>
+    <string name="personal_txt_name">昵稱</string>
     <string name="personal_txt_title">個人資料</string>
     <string name="personal_txt_nickname">請輸入昵稱</string>
     <string name="http_txt_err_meg">網路連接錯誤</string>
@@ -291,7 +292,7 @@
     <string name="smy">守門員</string>
     <string name="wz">未知</string>
     <string name="_0">0</string>
-    <string name="nomatch">暫無比賽</string>
+    <string name="nomatch">暫無比賽数据</string>
     <string name="nomsg">暫無消息</string>
     <string name="nofriends">暫無好友</string>
     <string name="nomsgrecoder">暫無聊天記錄</string>
@@ -310,7 +311,7 @@
     <string name="level2">白銀</string>
     <string name="level3">黃金</string>
     <string name="level4">鉑金</string>
-    <string name="level5">磚石</string>
+    <string name="level5">鑽石</string>
     <string name="level6">星耀</string>
 
     <string name="head_pulling">下拉加載更多記錄</string>
@@ -398,4 +399,15 @@
     <string name="language_txt_simplified">中文简体</string>
     <string name="language_txt_complex">中文繁體</string>
     <string name="txt_network_request">請求網路中...</string>
+    <string-array name="str_xqj">
+        <item>週日</item>
+        <item>週一</item>
+        <item>週二</item>
+        <item>週三</item>
+        <item>週四</item>
+        <item>週五</item>
+        <item>週六</item>
+    </string-array>
+    <string name="detail_txt_input">請輸入內容</string>
+    <string name="live_zc">中場</string>
 </resources>

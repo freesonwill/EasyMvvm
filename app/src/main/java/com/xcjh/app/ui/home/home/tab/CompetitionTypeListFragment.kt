@@ -29,6 +29,7 @@ import com.xcjh.app.websocket.MyWsManager
 import com.xcjh.app.websocket.bean.LiveStatus
 import com.xcjh.app.websocket.listener.LiveStatusListener
 import com.xcjh.base_lib.App
+import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.dp2px
 import com.xcjh.base_lib.utils.myToast
 import java.util.Collection
@@ -100,6 +101,21 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
                         being.titlePage=bean.coverImg
                         being.competitionName=bean.competitionName
                         being.userLogo=bean.userLogo
+                        //语言 0是中文  1是繁体  2是英文
+                        if(Constants.languageType==0){
+                            being.homeTeamName=bean.homeTeamName
+                            being.awayTeamName=bean.awayTeamName
+                            being.competitionName=bean.competitionName
+                        }else if(Constants.languageType==1){
+                            being.homeTeamName=bean.homeTeamNameZht
+                            being.awayTeamName=bean.awayTeamNameZht
+                            being.competitionName=bean.competitionNameZht
+                        }else{
+                            being.homeTeamName=bean.homeTeamNameEn
+                            being.awayTeamName=bean.awayTeamNameEn
+                            being.competitionName=bean.competitionNameEn
+                        }
+
                         var list =ArrayList<BeingLiveBean>()
                         list.add(being)
                         mDatabind.rcvRecommend.addModels(list)

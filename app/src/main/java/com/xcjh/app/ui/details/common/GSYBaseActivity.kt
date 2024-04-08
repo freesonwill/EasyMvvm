@@ -45,10 +45,12 @@ abstract class GSYBaseActivity<VM : BaseViewModel, DB : ViewDataBinding,T : GSYB
         return isLock
     }
 
+
     /**
      * 选择普通模式
      */
     fun initVideo() {
+
         //外部辅助的旋转，帮助全屏
         orientationUtils = OrientationUtils(this, gSYVideoPlayer, orientationOption)
         //初始化不打开外部的旋转

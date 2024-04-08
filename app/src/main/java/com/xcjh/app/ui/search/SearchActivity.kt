@@ -37,12 +37,12 @@ import com.xcjh.app.databinding.ItemSearchHotTitleBinding
 import com.xcjh.app.ui.details.DetailVm
 import com.xcjh.app.ui.details.MatchDetailActivity
 import com.xcjh.app.ui.notice.MyNoticeVm
+import com.xcjh.app.utils.TimeUtil
 import com.xcjh.app.utils.judgeLogin
 import com.xcjh.app.view.CustomHeader
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.utils.LogUtils
-import com.xcjh.base_lib.utils.TimeUtil
 import com.xcjh.base_lib.utils.bindViewPager2
 import com.xcjh.base_lib.utils.bindadapter.CustomBindAdapter.afterTextChanged
 import com.xcjh.base_lib.utils.distance
@@ -252,7 +252,7 @@ class SearchActivity : BaseActivity<SearchVm, ActivitySearchBinding>() {
         mDatabind.etSearchInput.setOnEditorActionListener { v, actionId, event ->
 
             if (mDatabind.etSearchInput.text.toString().isEmpty()) {
-                myToast(getString(R.string.contact_hint_input))
+                myToast(getString(R.string.detail_txt_input))
 
             } else {
                 hideKeyboard(this, mDatabind.etSearchInput)
@@ -944,7 +944,7 @@ class SearchActivity : BaseActivity<SearchVm, ActivitySearchBinding>() {
                             binding.tvstatus.text =
                                 context.resources.getString(
                                     R.string.main_txt_basketball_phase,
-                                    "一"
+                                    resources.getString(R.string.one)
                                 )
                             initAnimation(binding.txtMatchAnimation)
 
@@ -969,7 +969,7 @@ class SearchActivity : BaseActivity<SearchVm, ActivitySearchBinding>() {
                             binding.tvstatus.text =
                                 context.resources.getString(
                                     R.string.main_txt_basketball_phase,
-                                    "一"
+                                    resources.getString(R.string.one)
                                 ) + context.resources.getString(
                                     R.string.finis
                                 )
@@ -996,7 +996,7 @@ class SearchActivity : BaseActivity<SearchVm, ActivitySearchBinding>() {
                             binding.tvstatus.text =
                                 context.resources.getString(
                                     R.string.main_txt_basketball_phase,
-                                    "二"
+                                    resources.getString(R.string.two)
                                 )
                             initAnimation(binding.txtMatchAnimation)
 
@@ -1021,7 +1021,7 @@ class SearchActivity : BaseActivity<SearchVm, ActivitySearchBinding>() {
                             binding.tvstatus.text =
                                 context.resources.getString(
                                     R.string.main_txt_basketball_phase,
-                                    "二"
+                                    resources.getString(R.string.two)
                                 ) + context.resources.getString(
                                     R.string.finis
                                 )
@@ -1048,7 +1048,7 @@ class SearchActivity : BaseActivity<SearchVm, ActivitySearchBinding>() {
                             binding.tvstatus.text =
                                 context.resources.getString(
                                     R.string.main_txt_basketball_phase,
-                                    "三"
+                                    resources.getString(R.string.three)
                                 )
                             initAnimation(binding.txtMatchAnimation)
 
@@ -1073,7 +1073,7 @@ class SearchActivity : BaseActivity<SearchVm, ActivitySearchBinding>() {
                             binding.tvstatus.text =
                                 context.resources.getString(
                                     R.string.main_txt_basketball_phase,
-                                    "三"
+                                    resources.getString(R.string.three)
                                 ) + context.resources.getString(
                                     R.string.finis
                                 )
@@ -1100,7 +1100,7 @@ class SearchActivity : BaseActivity<SearchVm, ActivitySearchBinding>() {
                             binding.tvstatus.text =
                                 context.resources.getString(
                                     R.string.main_txt_basketball_phase,
-                                    "四"
+                                    resources.getString(R.string.four)
                                 )
                             initAnimation(binding.txtMatchAnimation)
                         }

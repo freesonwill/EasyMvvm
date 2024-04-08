@@ -524,6 +524,7 @@ class MyWsManager private constructor(private val mContext: Context) {
                         onWsUserLogin() {}
                     }
                 }
+
                 appViewModel.wsStatusOpen.postValue(true)
                 "websocket连接成功appViewModel_wsStatus=== ${appViewModel.wsStatusOpen.value}".loge("MyWsClient===")
                 if (errorNum > 0) {

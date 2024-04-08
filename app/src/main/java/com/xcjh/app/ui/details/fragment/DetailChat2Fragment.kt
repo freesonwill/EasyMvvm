@@ -215,9 +215,10 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
                         params.height = mDatabind.page.height
                         mDatabind.rcvChat.layoutParams = params
                         mDatabind.rcvChat.scrollToPosition(0)
+                        flage=false
                     }
                 }, 200)
-                flage=false
+
             }
 
 
@@ -548,7 +549,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
         }
         lastClickTime = currentTime
         if (mViewModel.input.get().isBlank() || mViewModel.input.get().isEmpty()) {
-            myToast("请输入内容", isDeep = true)
+            myToast(resources.getString(R.string.str_inputcontent), isDeep = true)
             return
         }
         hideSoftInput()

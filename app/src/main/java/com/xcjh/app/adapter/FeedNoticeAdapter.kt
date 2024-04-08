@@ -41,15 +41,30 @@ class FeedNoticeAdapter: BaseQuickAdapter<FeedBackBean, QuickViewHolder>() {
                 holder.getView<TextView>(R.id.tv2).text =context.resources.getString(R.string.txt_yuanyin)+": "+item!!.notice
             }
             3->{
-                holder.getView<TextView>(R.id.tv2).visibility= View.GONE
                 holder.getView<TextView>(R.id.tv1).text =item!!.title
+                holder.getView<TextView>(R.id.tv2).visibility= View.VISIBLE
+                holder.getView<TextView>(R.id.tv2).text =item!!.notice
             }
             4->{
                 holder.getView<TextView>(R.id.tv1).text =item!!.title
                 holder.getView<TextView>(R.id.tv2).visibility= View.VISIBLE
                 holder.getView<TextView>(R.id.tv2).text =context.resources.getString(R.string.txt_yuanyin)+": "+item!!.notice
             }
-
+            5->{
+                holder.getView<TextView>(R.id.tv1).text =item!!.title
+                holder.getView<TextView>(R.id.tv2).visibility= View.VISIBLE
+                holder.getView<TextView>(R.id.tv2).text =context.resources.getString(R.string.txt_yuanyin)+": "+item!!.notice
+            }
+            6->{
+                holder.getView<TextView>(R.id.tv1).text =item!!.title
+                holder.getView<TextView>(R.id.tv2).visibility= View.VISIBLE
+                holder.getView<TextView>(R.id.tv2).text =context.resources.getString(R.string.txt_yuanyin)+": "+item!!.notice
+            }
+            else ->{
+                holder.getView<TextView>(R.id.tv1).text =item!!.title
+                holder.getView<TextView>(R.id.tv2).visibility= View.VISIBLE
+                holder.getView<TextView>(R.id.tv2).text =context.resources.getString(R.string.txt_yuanyin)+": "+item!!.notice
+            }
         }
     }
 }

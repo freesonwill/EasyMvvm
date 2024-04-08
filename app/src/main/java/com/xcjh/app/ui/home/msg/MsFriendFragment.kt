@@ -126,7 +126,7 @@ class MsFriendFragment : BaseFragment<MsgVm, FrMsgfriendBinding>() {
                 .setOnLoadMoreListener { mViewModel.getFriendList(false, "") }
 
 
-//登录或者登出
+            //登录或者登出
             appViewModel.updateLoginEvent.observe(this) {
                 if (it) {
                     mViewModel.getFriendList(true, "")
@@ -136,7 +136,7 @@ class MsFriendFragment : BaseFragment<MsgVm, FrMsgfriendBinding>() {
 
                 }
             }
-// 索引列表
+            // 索引列表
             mDatabind.indexBar.setSideBarLayout(OnSideBarLayoutListener { word -> //根据自己业务实现
                 for (i in mDatabind.rec.models!!.indices) {
                     var ss = mDatabind.rec.models!![i] as FriendListBean

@@ -127,8 +127,30 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
                     being.playUrl=bean.playUrl
                     being.hotValue=bean.hotValue
                     being.titlePage=bean.coverImg
-                    being.competitionName=bean.competitionName
+
                     being.userLogo=bean.userLogo
+                    //语言 0是中文  1是繁体  2是英文
+                    if(Constants.languageType==0){
+                        being.homeTeamName=bean.homeTeamName
+                        being.awayTeamName=bean.awayTeamName
+                        being.competitionName=bean.competitionName
+                    }else if(Constants.languageType==1){
+                        being.homeTeamName=bean.homeTeamNameZht
+                        being.awayTeamName=bean.awayTeamNameZht
+                        being.competitionName=bean.competitionNameZht
+                    }else{
+                        being.homeTeamName=bean.homeTeamNameEn
+                        being.awayTeamName=bean.awayTeamNameEn
+                        being.competitionName=bean.competitionNameEn
+                    }
+//                    being.awayTeamNameEn=bean.awayTeamNameEn
+//                    being.awayTeamNameZht=bean.awayTeamNameZht
+//                    being.competitionNameEn=bean.competitionNameEn
+//                    being.competitionNameZht=bean.competitionNameZht
+//                    being.homeTeamNameEn=bean.homeTeamNameEn
+//                    being.homeTeamNameZht=bean.homeTeamNameZht
+
+
                     if(mDatabind.rcvRecommend.models!=null){
                         for (i in 0 until mDatabind.rcvRecommend.mutable!!.size) {
                             if(mDatabind.rcvRecommend.mutable[i] is MainTxtBean){

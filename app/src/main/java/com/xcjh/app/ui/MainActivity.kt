@@ -281,6 +281,7 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
             override fun onAnchorStartLevel(beingLiveBean: BeingLiveBean) {
                 super.onAnchorStartLevel(beingLiveBean)
                 if (currentPage != 3 && CacheUtil.isLogin()&&isHomeDate) {
+                    Log.i("BBBB","=="+Gson().toJson(beingLiveBean))
                     showDialog(beingLiveBean)
                 }
             }

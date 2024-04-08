@@ -165,61 +165,120 @@ class LoginActivity : BaseActivity<LoginVm, ActivityLoaginBinding>() {
                 }
 
                 R.id.tvgetcode_emalie -> {
-                    if (mDatabind.tvgetcodeEmalie.text.length == 5) {
+                    //语言 0是中文  1是繁体  2是英文
+                    if(Constants.languageType==0||Constants.languageType==1){
+                        if (mDatabind.tvgetcodeEmalie.text.length == 5) {
 
-                        if (mDatabind.edtemail.text.toString().isEmpty()) {
+                            if (mDatabind.edtemail.text.toString().isEmpty()) {
 
-                            myToast(resources.getString(R.string.please_input_email))
-                            return@setOnclickNoRepeat
+                                myToast(resources.getString(R.string.please_input_email))
+                                return@setOnclickNoRepeat
+                            }
+                            if (!isEmailValid(mDatabind.edtemail.text.toString())) {
+
+                                myToast(resources.getString(R.string.please_inputcureet_email))
+                                return@setOnclickNoRepeat
+                            }
+
+                            dialogText()
+
                         }
-                        if (!isEmailValid(mDatabind.edtemail.text.toString())) {
 
-                            myToast(resources.getString(R.string.please_inputcureet_email))
-                            return@setOnclickNoRepeat
+                    }else{
+                        if (mDatabind.tvgetcodeEmalie.text.length == 4) {
+
+                            if (mDatabind.edtemail.text.toString().isEmpty()) {
+
+                                myToast(resources.getString(R.string.please_input_email))
+                                return@setOnclickNoRepeat
+                            }
+                            if (!isEmailValid(mDatabind.edtemail.text.toString())) {
+
+                                myToast(resources.getString(R.string.please_inputcureet_email))
+                                return@setOnclickNoRepeat
+                            }
+
+                            dialogText()
+
                         }
-
-                        dialogText()
-//                        mDatabind.tvgetcodeEmalie.setTextColor(
-//                            ContextCompat.getColor(
-//                                this@LoginActivity,
-//                                R.color.c_a6a6b2
-//                            )
-//                        )
-//                        startCountdown(mDatabind.tvgetcodeEmalie, 60)
-
-//                            mViewModel.getLoagin(PostLoaginBean(mDatabind.edtphone.text.toString(),mDatabind.edtcode.text.toString()
-//                                ,null,null,type))
                     }
+
+
+//                    if (mDatabind.tvgetcodeEmalie.text.length == 5) {
+//
+//                        if (mDatabind.edtemail.text.toString().isEmpty()) {
+//
+//                            myToast(resources.getString(R.string.please_input_email))
+//                            return@setOnclickNoRepeat
+//                        }
+//                        if (!isEmailValid(mDatabind.edtemail.text.toString())) {
+//
+//                            myToast(resources.getString(R.string.please_inputcureet_email))
+//                            return@setOnclickNoRepeat
+//                        }
+//
+//                        dialogText()
+////                        mDatabind.tvgetcodeEmalie.setTextColor(
+////                            ContextCompat.getColor(
+////                                this@LoginActivity,
+////                                R.color.c_a6a6b2
+////                            )
+////                        )
+////                        startCountdown(mDatabind.tvgetcodeEmalie, 60)
+//
+////                            mViewModel.getLoagin(PostLoaginBean(mDatabind.edtphone.text.toString(),mDatabind.edtcode.text.toString()
+////                                ,null,null,type))
+//                    }
 
 
                 }
 
                 R.id.tvgetcode_phone -> {
+                    //语言 0是中文  1是繁体  2是英文
+                    if(Constants.languageType==0||Constants.languageType==1){
+                        if (mDatabind.tvgetcodePhone.text.length == 5) {
+                            if (mDatabind.edtphone.text.toString().isEmpty()) {
 
-                    if (mDatabind.tvgetcodePhone.text.length == 5) {
-                        if (mDatabind.edtphone.text.toString().isEmpty()) {
-
-                            myToast(resources.getString(R.string.please_input_phone_num))
-                            return@setOnclickNoRepeat
+                                myToast(resources.getString(R.string.please_input_phone_num))
+                                return@setOnclickNoRepeat
+                            }
+                            dialogText()
                         }
-                        dialogText()
-//                        return@setOnclickNoRepeat
+                    }else{
+                        if (mDatabind.tvgetcodePhone.text.length ==4) {
+                            if (mDatabind.edtphone.text.toString().isEmpty()) {
 
-
-
-//                        mDatabind.tvgetcodePhone.setTextColor(
-//                            ContextCompat.getColor(
-//                                this@LoginActivity,
-//                                R.color.c_a6a6b2
-//                            )
-//                        )
-//                        startCountdown(mDatabind.tvgetcodePhone, 60)
-
-//                            mViewModel.getLoagin(PostLoaginBean(mDatabind.edtphone.text.toString(),mDatabind.edtcode.text.toString()
-//                                ,null,null,type))
-
-
+                                myToast(resources.getString(R.string.please_input_phone_num))
+                                return@setOnclickNoRepeat
+                            }
+                            dialogText()
+                        }
                     }
+
+//                    if (mDatabind.tvgetcodePhone.text.length == 5) {
+//                        if (mDatabind.edtphone.text.toString().isEmpty()) {
+//
+//                            myToast(resources.getString(R.string.please_input_phone_num))
+//                            return@setOnclickNoRepeat
+//                        }
+//                        dialogText()
+////                        return@setOnclickNoRepeat
+//
+//
+//
+////                        mDatabind.tvgetcodePhone.setTextColor(
+////                            ContextCompat.getColor(
+////                                this@LoginActivity,
+////                                R.color.c_a6a6b2
+////                            )
+////                        )
+////                        startCountdown(mDatabind.tvgetcodePhone, 60)
+//
+////                            mViewModel.getLoagin(PostLoaginBean(mDatabind.edtphone.text.toString(),mDatabind.edtcode.text.toString()
+////                                ,null,null,type))
+//
+//
+//                    }
                 }
                 R.id.tvgo-> {
                     com.xcjh.base_lib.utils.startNewActivity<LetterCountryActivity>()

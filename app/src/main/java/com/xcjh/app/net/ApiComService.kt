@@ -20,10 +20,8 @@ interface ApiComService {
 //        const val SERVER_URL = "http://192.168.101.15:6003/apis/"//app通用 开发
 //        const val SHARE_IP = "http://192.168.101.180:1820/"//比赛分享链接
 //        const val WEB_SOCKET_URL = "ws://192.168.101.15:6006/ws-sports-chat" ///new dev
-//        const val WEB_SOCKET_URL = "ws://192.168.101.182:8888/ws-sports-chat" ///测试
         //test 预发布
        const val SERVER_URL = "https://app.cbd246.com/apis/"//app通用 测试
-//       const val SERVER_URL = "http://192.168.101.182:6003/apis/"//app通用 测试
         const val SHARE_IP = "https://app.cbd246.com/"//比赛分享链接
         const val WEB_SOCKET_URL = "wss://app.cbd246.com/ws-sports-chat" ///test
 
