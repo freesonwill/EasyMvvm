@@ -548,8 +548,6 @@ class LoginActivity : BaseActivity<LoginVm, ActivityLoaginBinding>() {
             mDatabind.tvgo.text = Constants.PHONE_CODE
             Constants.PHONE_CODE=""
         }
-
-
     }
 
 

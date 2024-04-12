@@ -17,13 +17,13 @@ interface ApiComService {
 
     companion object {
         //dev  http://192.168.101.180:1820/#/home
-//        const val SERVER_URL = "http://192.168.101.15:6003/apis/"//app通用 开发
-//        const val SHARE_IP = "http://192.168.101.180:1820/"//比赛分享链接
-//        const val WEB_SOCKET_URL = "ws://192.168.101.15:6006/ws-sports-chat" ///new dev
+        const val SERVER_URL = "http://192.168.101.15:6003/apis/"//app通用 开发
+        const val SHARE_IP = "http://192.168.101.180:1820/"//比赛分享链接
+        const val WEB_SOCKET_URL = "ws://192.168.101.15:6006/ws-sports-chat" ///new dev
         //test 预发布
-       const val SERVER_URL = "https://app.cbd246.com/apis/"//app通用 测试
-        const val SHARE_IP = "https://app.cbd246.com/"//比赛分享链接
-        const val WEB_SOCKET_URL = "wss://app.cbd246.com/ws-sports-chat" ///test
+//        const val SERVER_URL = "https://app.cbd246.com/apis/"//app通用 测试
+//        const val SHARE_IP = "https://app.cbd246.com/"//比赛分享链接
+//        const val WEB_SOCKET_URL = "wss://app.cbd246.com/ws-sports-chat" ///test
 
         //正式
       /*  const val SERVER_URL = "https://holdem.news/apis/"//app通用 正式
@@ -490,4 +490,18 @@ interface ApiComService {
      */
     @POST("app/common/setLanguage")
     suspend fun setLanguage(@Query("sports_language") sports_language: String): ApiResponse<*>
+
+
+
+    /**
+     * 用户绑定手机号
+     */
+    @POST("app/user/bindPhone")
+    suspend fun bindPhone(@Body req: BindSend): ApiResponse<*>
+
+    /**
+     * 用户绑定邮箱
+     */
+    @POST("app/user/bindEmail")
+    suspend fun bindEmail(@Body req: BindSend): ApiResponse<*>
 }

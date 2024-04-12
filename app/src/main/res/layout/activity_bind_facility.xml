@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/c_f2f3f7" >
+
+        <RelativeLayout
+            android:id="@+id/rltTop"
+            android:background="@color/c_ffffff"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/title_h">
+
+            <ImageView
+                android:id="@+id/ivBack"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/dp_4"
+                android:padding="@dimen/dp_13"
+                android:gravity="center"
+                android:onClick="finishTopClick"
+                android:scaleType="centerCrop"
+                android:src="@drawable/back_image_selector"
+                android:layout_alignParentBottom="true"
+                tools:ignore="UsingOnClickInXml" />
+            <TextView
+                android:id="@+id/tvCancel"
+                android:visibility="gone"
+                android:text="@string/cancel"
+                android:layout_alignParentStart="true"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:paddingEnd="@dimen/dp_20"
+                android:paddingStart="@dimen/dp_20"
+                android:textSize="@dimen/sp_16"
+                android:textColor="@color/c_f5f5f5"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"/>
+            <TextView
+                android:id="@+id/tvTitle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="70dp"
+                android:layout_marginEnd="70dp"
+                android:gravity="center"
+                android:singleLine="true"
+                android:textStyle="bold"
+                android:textColor="@color/c_37373d"
+                android:textSize="@dimen/sp_16"
+                tools:text="@string/title" />
+
+            <TextView
+                android:id="@+id/tvOption"
+                tools:text="@string/data_txt_save"
+                android:text="@string/data_txt_save"
+                android:layout_alignParentEnd="true"
+                android:gravity="center"
+                android:background="@drawable/shape_r28_f2f3f7"
+                android:textSize="@dimen/sp_13"
+                android:layout_alignParentBottom="true"
+                android:layout_marginRight="12dp"
+                android:layout_marginBottom="@dimen/dp_6"
+                android:textColor="@color/c_94999f"
+                android:layout_centerVertical="true"
+                android:layout_width="50dp"
+                android:layout_height="25dp"/>
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/c_ffffff"
+            android:layout_marginTop="12dp"
+            android:orientation="vertical">
+        <LinearLayout
+            android:id="@+id/rlBindShowPhone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingRight="15dp"
+            android:paddingLeft="15dp"
+            android:orientation="vertical">
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="53dp"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="53dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:id="@+id/tvgo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="+86"
+                        android:textColor="@color/c_a6a6b2"
+                        android:textSize="@dimen/sp_14"
+                        />
+                    <ImageView
+                        android:id="@+id/ivgo"
+                        android:layout_width="@dimen/dp_10"
+                        android:layout_height="@dimen/dp_10"
+                        android:layout_marginLeft="4dp"
+                        android:src="@drawable/ic_arrow_down_white" />
+                    <View
+                        android:layout_width="@dimen/dp_1"
+                        android:background="@color/c_dddde9"
+                        android:layout_marginLeft="@dimen/dp_12"
+                        android:layout_marginTop="@dimen/dp_12"
+                        android:layout_marginBottom="@dimen/dp_12"
+                        android:layout_height="match_parent"/>
+                    <androidx.appcompat.widget.AppCompatEditText
+                        android:id="@+id/edtPhone"
+                        android:layout_width="match_parent"
+                        android:background="@null"
+                        android:textColor="@color/c_37373d"
+                        android:layout_marginLeft="@dimen/dp_12"
+                        android:hint="@string/txt_inputphone"
+                        android:textSize="@dimen/sp_13"
+                        android:inputType="phone"
+                        android:singleLine="true"
+                        android:layout_marginRight="100dp"
+                        android:maxLength="11"
+                        android:textColorHint="@color/c_a6a6b2"
+                        android:textCursorDrawable="@drawable/shape_et_cursor_blue"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+                <TextView
+                    android:id="@+id/tvgetcodePhone"
+                    android:layout_width="wrap_content"
+                    android:textColor="@color/c_a6a6b2"
+                    android:layout_marginLeft="@dimen/dp_12"
+                    android:text="@string/get_code"
+                    android:textSize="@dimen/sp_13"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_height="wrap_content"/>
+                <View
+                    android:id="@+id/viewYi"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_1"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/c_f2f3f7" />
+
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+         <LinearLayout
+             android:id="@+id/llBindShowEmail"
+             android:layout_width="match_parent"
+             android:layout_height="53dp"
+             android:paddingLeft="15dp"
+             android:visibility="gone"
+
+             android:paddingRight="15dp"
+             android:orientation="vertical">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/edtEmail"
+                    android:layout_width="match_parent"
+                    android:textColor="@color/c_37373d"
+                    android:hint="@string/please_input_email"
+                    android:visibility="visible"
+                    android:background="@null"
+                    android:singleLine="true"
+                    android:layout_marginRight="100dp"
+                    android:inputType="textEmailAddress"
+                    android:textSize="@dimen/sp_13"
+                    android:textColorHint="@color/c_a6a6b2"
+                    android:textCursorDrawable="@drawable/shape_et_cursor_blue"
+                    android:layout_height="match_parent"/>
+
+                <TextView
+                    android:id="@+id/tvgetcodeEmail"
+                    android:layout_width="wrap_content"
+                    android:textColor="@color/c_a6a6b2"
+                    android:layout_marginLeft="@dimen/dp_12"
+                    android:text="@string/get_code"
+                    android:textSize="@dimen/sp_13"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_height="wrap_content"/>
+                <View
+                    android:id="@+id/viewEr"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_1"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/c_f2f3f7" />
+
+            </RelativeLayout>
+
+         </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="53dp"
+            android:paddingRight="15dp"
+            android:paddingLeft="15dp"
+            android:orientation="vertical">
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/edtCode"
+                android:layout_width="match_parent"
+                android:background="@null"
+                android:textColor="@color/c_37373d"
+                android:hint="@string/txt_inputcode"
+                android:inputType="number"
+                android:singleLine="true"
+                android:maxLength="6"
+                android:textSize="@dimen/sp_13"
+                android:textColorHint="@color/c_a6a6b2"
+                android:textCursorDrawable="@drawable/shape_et_cursor_blue"
+                android:layout_height="match_parent"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_1"
+                android:layout_alignParentBottom="true"
+                android:background="@color/c_f2f3f7" />
+        </RelativeLayout>
+
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+</layout>

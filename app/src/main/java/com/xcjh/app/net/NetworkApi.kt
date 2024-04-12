@@ -19,6 +19,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
 import java.util.concurrent.TimeUnit
+import kotlin.properties.Delegates
 
 /**
  *
@@ -30,6 +31,7 @@ val apiService: ApiComService by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) 
     NetworkApi.INSTANCE.getApi(ApiComService::class.java, ApiComService.SERVER_URL)
 }
 
+
 class NetworkApi : BaseNetworkApi() {
 
     companion object {
@@ -37,6 +39,8 @@ class NetworkApi : BaseNetworkApi() {
             NetworkApi()
         }
     }
+
+
 
     /**
      * 实现重写父类的setHttpClientBuilder方法，

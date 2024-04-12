@@ -11,6 +11,7 @@ import com.gyf.immersionbar.ImmersionBar
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
 import com.xcjh.app.R
+import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseActivity
 import com.xcjh.app.bean.BeingLiveBean
 import com.xcjh.app.bean.MatchBean
@@ -36,6 +37,11 @@ class ViewingHistoryListActivity : BaseActivity<ViewingHistoryListVm, ActivityVi
             .init()
         mDatabind.titleTop.tvTitle.text=resources.getString(R.string.viewing_txt_title)
         adapter()
+        //收到通知其他地方登录
+        appViewModel.quitLoginEvent.observe(this){
+            finish()
+        }
+
         //默认取消上拉加载更多
         mDatabind.smartCommon.finishLoadMoreWithNoMoreData()
         mDatabind.smartCommon.setRefreshHeader( CustomHeader(this))

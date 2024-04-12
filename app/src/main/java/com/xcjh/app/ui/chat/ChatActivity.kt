@@ -139,6 +139,11 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
 
     override fun initView(savedInstanceState: Bundle?) {
 //        mViewModel.getAllKeysFromJson()
+
+        //收到通知其他地方登录
+        appViewModel.quitLoginEvent.observe(this){
+            finish()
+        }
         try {
 
 
@@ -1103,7 +1108,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                         msgContent = searchText
                         sendMsg("", true)
                     } else {
-                        myToast(resources.getString(R.string.str_inputcontent))
+                        myToast(resources.getString(R.string.detail_txt_input))
                     }
                     true // 返回 true 表示已处理事件
                 } else false

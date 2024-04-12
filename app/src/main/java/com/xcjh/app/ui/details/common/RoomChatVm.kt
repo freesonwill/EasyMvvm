@@ -68,7 +68,7 @@ class RoomChatVm : BaseViewModel() {
             }, {
                 //请求失败
                 myToast(it.errorMsg)
-            }, true
+            }, false
         )
     }
 

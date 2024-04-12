@@ -116,6 +116,8 @@ interface OtherPushListener {
 
 
 
+
+
 }
 /**
  * 未读消息总数
@@ -126,7 +128,10 @@ interface NoReadMsgPushListener {
      * 收到比赛实时推送数据
      */
     fun onNoReadMsgNums(nums: String){}
-
+    /**
+     * 用户被踢下线
+     */
+    fun onUserIsKicked(){}
 }
 /**
  * 与主播单聊相关

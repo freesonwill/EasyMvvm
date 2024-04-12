@@ -62,44 +62,12 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
                 startNewActivity<LevelMissionActivity>()
             }
         }
-        //获取语种
-        val locale = MultiLanguages.getAppLanguage(requireContext())
 
 
 
-//        //如果是简体中文的话
-//        if (LocaleContract.getSimplifiedChineseLocale().equals(locale)) {
-//                mDatabind.txtYU.text="简体中文"
-//            language=true
-//        }else if (LocaleContract.getEnglishLocale().equals(locale)) {
-//            mDatabind.txtYU.text="英文"
-//            language=false
-//        }
+        //切换语言
         mDatabind.rlMyYuYan.setOnClickListener {
             startNewActivity<SwitchLanguageActivity>()
-            // 是否需要重启
-//            var restart = false
-//
-//            if(language){
-//                // 英语
-//                restart = MultiLanguages.setAppLanguage(requireContext(), LocaleContract.getEnglishLocale())
-//            }else{
-//                // 简体
-//                restart = MultiLanguages.setAppLanguage(requireContext(), LocaleContract.getSimplifiedChineseLocale())
-//            }
-//
-//            if (restart) {
-//
-//                Handler().postDelayed({
-//                    //结束程序
-//                    KtxActivityManger.finishAllActivity()
-//                    startNewActivity<MainActivity>()
-//                    //exitProcess(0)
-//                }, 600)
-//            }
-
-
-
         }
 
         //点击增加透明度
@@ -544,7 +512,7 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
             .placeholder(R.drawable.icon_my_head)
             .circleCrop()
             .into(mDatabind.ivMyHead)
-        mDatabind.txtMyName.text = resources.getString(R.string.my_txt_click_login)
+        mDatabind.txtMyName.text =resources.getString(R.string.my_txt_click_login)
         mDatabind.iiIsShowLeve.visibility = View.GONE
 
     }

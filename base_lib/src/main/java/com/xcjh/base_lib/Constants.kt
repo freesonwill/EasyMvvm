@@ -12,10 +12,17 @@ class Constants {
 
     companion object {
         /**
-         * 登录过期
+         * 未登录
          */
-        const val EXPIRED_CODE = 4005
-        const val NEEDLOAGIN_CODE = 401
+        const val EXPIRED_CODE = 4001
+        /**
+         * 被顶下线
+         */
+        const val NEEDLOAGIN_CODE = 4014
+        /**
+         * 过期
+         */
+        const val EXPIRED_ERR_CODE = 4013
         const val APP_ID = "8888"
         const val BASE_PAGE_SIZE = 20
 

@@ -15,6 +15,7 @@ import com.gyf.immersionbar.ImmersionBar
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
 import com.xcjh.app.R
+import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseActivity
 import com.xcjh.app.bean.FollowAnchorBean
 import com.xcjh.app.bean.MatchBean
@@ -25,6 +26,7 @@ import com.xcjh.app.utils.cancellationDialog
 import com.xcjh.app.utils.delFriDilog
 import com.xcjh.app.view.CustomHeader
 import com.xcjh.base_lib.utils.dp2px
+import me.jessyan.retrofiturlmanager.RetrofitUrlManager
 
 
 /**
@@ -42,6 +44,18 @@ class MyFollowListActivity : BaseActivity<MyFollowListVm, ActivityMyFollowListBi
             .navigationBarDarkIcon(true)
             .navigationBarColor(R.color.c_ffffff)
             .init()
+
+//        mDatabind.titleTop.tvTitle.setOnClickListener {
+////            RetrofitUrlManager.getInstance().putDomain("douban", "https://api.douban.com");
+//            ApiComService.SERVER_URL="https://app.cbd246.com/"
+////            RetrofitUrlManager.getInstance().setGlobalDomain("https://app.cbd246.com/");
+//        }
+
+        //收到通知其他地方登录
+        appViewModel.quitLoginEvent.observe(this){
+            finish()
+        }
+
         val displayMetrics = DisplayMetrics()
         val windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
         windowManager.defaultDisplay.getRealMetrics(displayMetrics)

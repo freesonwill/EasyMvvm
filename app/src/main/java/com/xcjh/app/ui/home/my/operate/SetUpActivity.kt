@@ -10,6 +10,7 @@ import com.kongzue.dialogx.dialogs.BottomMenu
 import com.kongzue.dialogx.interfaces.OnBindView
 import com.lxj.xpopup.XPopup
 import com.xcjh.app.R
+import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseActivity
 import com.xcjh.app.bean.LoginInfo
 import com.xcjh.app.databinding.ActivitySetUpBinding
@@ -33,6 +34,15 @@ class SetUpActivity  : BaseActivity<SetUpVm, ActivitySetUpBinding>() {
             .init()
         mDatabind.titleTop.tvTitle.text = resources.getString(R.string.setting)
 
+        //收到通知其他地方登录
+        appViewModel.quitLoginEvent.observe(this){
+            finish()
+        }
+        //账号管理
+        mDatabind.rlSetAccount.clickNoRepeat {
+            startNewActivity<AccountNumberActivity>()
+
+        }
         mDatabind.rlSetData.clickNoRepeat {
             startNewActivity<PersonalDataActivity>()
         }

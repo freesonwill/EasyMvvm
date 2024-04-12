@@ -4,10 +4,14 @@ import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
 import android.content.res.Resources
+import android.view.View
+import android.widget.TextView
 import androidx.core.app.ActivityCompat.recreate
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.room.Room
+import com.drake.engine.base.app
 import com.drake.statelayout.StateConfig
 import com.engagelab.privates.core.api.MTCorePrivatesApi
 import com.engagelab.privates.push.api.MTPushPrivatesApi
@@ -17,7 +21,11 @@ import com.hjq.toast.Toaster
 import com.kingja.loadsir.callback.SuccessCallback
 import com.kingja.loadsir.core.LoadSir
 import com.kongzue.dialogx.DialogX
+import com.kongzue.dialogx.dialogs.CustomDialog
+import com.kongzue.dialogx.interfaces.OnBindView
 import com.kongzue.dialogx.style.MaterialStyle
+import com.lxj.xpopup.XPopup
+import com.lxj.xpopup.core.BasePopupView
 import com.scwang.smart.refresh.footer.ClassicsFooter
 import com.scwang.smart.refresh.header.MaterialHeader
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
@@ -26,14 +34,22 @@ import com.shuyu.gsyvideoplayer.player.PlayerFactory
 import com.tencent.mmkv.MMKV
 import com.xcjh.app.event.AppViewModel
 import com.xcjh.app.event.EventViewModel
+import com.xcjh.app.ui.login.LoginActivity
 import com.xcjh.app.ui.room.MyRoomChatList
 import com.xcjh.app.ui.room.MyRoomDataBase
+import com.xcjh.app.view.PopupKickOut
 import com.xcjh.app.view.callback.EmptyCallback
 import com.xcjh.app.view.callback.LoadingCallback
 import com.xcjh.base_lib.App
 import com.xcjh.base_lib.BuildConfig
+import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.manager.KtxActivityManger
+import com.xcjh.base_lib.utils.startNewActivity
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.Locale
 
 
@@ -176,6 +192,8 @@ class MyApplication : App() , LifecycleObserver{
     }
 
 
+
+
 }
 
 /**
@@ -184,4 +202,81 @@ class MyApplication : App() , LifecycleObserver{
 fun isTopActivity(activity: Activity?): Boolean {
     return KtxActivityManger.currentActivity.toString() == activity.toString()
 }
+var  showDialog: PopupKickOut?=null
+var popwindow: BasePopupView?=null
+fun placeLoginDialogNewNEW(){
+    if(showDialog==null){
+        showDialog= PopupKickOut(appContext)
+        popwindow= XPopup.Builder(appContext)
+            .hasShadowBg(true)
+            .moveUpToKeyboard(false) //如果不加这个，评论弹窗会移动到软键盘上面
+            .isViewMode(false)
+            .isClickThrough(false)
+            .dismissOnBackPressed(false)
+            .dismissOnTouchOutside(false)
+            .isDestroyOnDismiss(false) //对于只使用一次的弹窗，推荐设置这个
+            //                        .isThreeDrag(true) //是否开启三阶拖拽，如果设置enableDrag(false)则无效
+            .asCustom(showDialog)
+    }
 
+    if(!popwindow!!.isShow){
+        popwindow!!.show()
+    }
+}
+
+
+
+var placeDialog: CustomDialog?=null
+
+/***
+ * 异地登录弹出
+ */
+public fun placeLoginDialog(context: Context) {
+    //判断现在是否在登录状态
+    placeDialog= CustomDialog.build()
+        .setCustomView(object : OnBindView<CustomDialog?>(R.layout.layout_dialogx_delmsg_new) {
+            override fun onBind(dialog: CustomDialog?, v: View) {
+                val tvcancle = v.findViewById<TextView>(R.id.tvcancle)
+                val textName = v.findViewById<TextView>(R.id.textName)
+                val tvsure = v.findViewById<TextView>(R.id.tvsure)
+                val viewGen = v.findViewById<View>(R.id.viewGen)
+//                //语言 0是中文  1是繁体  2是英文
+//                if( Constants.languageType==0){
+//                    Context
+//                }
+                //语言 0是中文  1是繁体  2是英文
+                if( Constants.languageType==0){
+                    textName.text= context.getString(R.string.place_txt_login_zhong)
+                    tvsure.text= context.getString(R.string.ensure_zhong)
+                }else if( Constants.languageType==1){
+                    textName.text= context.getString(R.string.place_txt_login_Fanti)
+                      tvsure.text= context.getString(R.string.ensure_fanti)
+                }else{
+                    textName.text= context.getString(R.string.place_txt_login_ying)
+                    tvsure.text= context.getString(R.string.ensure_yingwen)
+                }
+
+
+                tvcancle.visibility= View.GONE
+                viewGen.visibility= View.GONE
+                tvsure.setOnClickListener {
+//                    appViewModel.quitLoginEvent.postValue(true)
+                    startNewActivity<LoginActivity> {}
+                    GlobalScope.launch(Dispatchers.Main) { // 使用主线程的调度器
+                        delay(500L) // 延迟1秒（1000毫秒）
+                        appViewModel.mainViewPagerEvent.postValue(-1)
+                        appViewModel.quitLoginEvent.postValue(true)
+                    }
+                    placeDialog?.dismiss()
+
+                }
+            }
+        }).setAlign(CustomDialog.ALIGN.CENTER).setCancelable(false).
+        setMaskColor(//背景遮罩
+            ContextCompat.getColor(context, com.xcjh.base_lib.R.color.blacks_tr)
+
+        )
+    if( !placeDialog?.isShow!!){
+        placeDialog?.show()
+    }
+}

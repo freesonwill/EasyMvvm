@@ -49,6 +49,10 @@ class PersonalDataActivity : BaseActivity<PersonalDataVm, ActivityPersonalDataBi
             .navigationBarColor(R.color.c_ffffff)
             .init()
         mDatabind.tvTitle.text=resources.getString(R.string.personal_update_title)
+        //收到通知其他地方登录
+        appViewModel.quitLoginEvent.observe(this){
+            finish()
+        }
         mDatabind.ivBack.clickNoRepeat {
             finish()
         }

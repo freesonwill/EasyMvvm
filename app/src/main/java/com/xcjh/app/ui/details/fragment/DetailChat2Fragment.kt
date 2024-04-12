@@ -35,6 +35,7 @@ import com.xcjh.app.isTopActivity
 import com.xcjh.app.ui.details.DetailVm
 import com.xcjh.app.ui.details.common.RoomChatVm
 import com.xcjh.app.utils.*
+import com.xcjh.app.vm.MainVm
 import com.xcjh.app.websocket.MyWsManager
 import com.xcjh.app.websocket.bean.FeedSystemNoticeBean
 import com.xcjh.app.websocket.bean.ReceiveChatMsg
@@ -93,9 +94,9 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
         initRcv()
         getHistoryData()
         handleSoftInput(requireActivity(), mDatabind.llInput)
-        if (CacheUtil.isLogin()&&(userId!=null&&!userId.equals("")) ) {
-            mViewModel.getAnchorControlUserInfo(userId!!)
-        }
+//        if (CacheUtil.isLogin()&&(userId!=null&&!userId.equals("")) ) {
+//            mViewModel.getAnchorControlUserInfo(userId!!)
+//        }
 
 
 
@@ -104,6 +105,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
 //        setProhibition(true)
 //        blacklistDilog(requireContext(),1)
     }
+
 
     /**
      * 是否禁言true是禁言center
@@ -388,6 +390,9 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
                 onWsUserEnterRoom(liveId)
             }
         }
+
+
+
     }
 
     override fun onStart() {
@@ -407,6 +412,12 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
         }, 200)
         mNoticeWeb?.onResume()
         mAgentWeb?.webLifeCycle?.onResume()
+
+        if(isAdded){
+            if (CacheUtil.isLogin()&&(userId!=null&&!userId.equals("")) ) {
+                mViewModel.getAnchorControlUserInfo(userId!!)
+            }
+        }
     }
 
     override fun onPause() {
@@ -536,6 +547,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
     override fun onClick(v: View?) {
         when (v) {
             mDatabind.sendChat -> {
+
                 sendMsg()
             }
         }
@@ -549,7 +561,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
         }
         lastClickTime = currentTime
         if (mViewModel.input.get().isBlank() || mViewModel.input.get().isEmpty()) {
-            myToast(resources.getString(R.string.str_inputcontent), isDeep = true)
+            myToast(resources.getString(R.string.detail_txt_input), isDeep = true)
             return
         }
         hideSoftInput()

@@ -43,7 +43,7 @@
     <string name="feedback">意見回饋</string>
     <string name="feedback_ok">回饋成功</string>
     <string name="login_out">退出登錄</string>
-    <string name="ensure">確定</string>
+    <string name="ensure">確認</string>
     <string name="txt_phone_lagoin">手機號登錄</string>
     <string name="txt_email_login">郵箱登錄</string>
     <string name="txt_inputphone">請輸入手機號</string>
@@ -211,9 +211,9 @@
     <string-array name="str_football_detail_tab">
         <item>聊天</item>
         <item>主播</item>
-        <item>赛况</item>
+        <item>賽況</item>
         <item>陣容</item>
-        <item>指数</item>
+        <item>指數</item>
         <item>直播</item>
     </string-array>
 
@@ -269,7 +269,7 @@
     <string name="level_txt_watch">每日觀看直播10分鐘以上</string>
     <string name="my_txt_notarize">確認</string>
     <string name="vs">VS</string>
-    <string name="no_referee_name">暫無裁判資訊</string>
+    <string name="no_referee_name">暫無裁判信息</string>
     <string name="team">球隊</string>
     <string name="player">球員</string>
     <string name="one">一</string>
@@ -380,8 +380,8 @@
     <string name="first_txt_four">第四節</string>
     <string name="there_txt_live">暫無其他主播</string>
     <string name="there_txt_chat">暫無聊天內容</string>
-    <string name="competition_txt_formation">阵型</string>
-    <string name="money_txt_myriohm">万欧</string>
+    <string name="competition_txt_formation">陣型</string>
+    <string name="money_txt_myriohm">萬歐</string>
     <string name="money_txt_billion">亿欧</string>
     <string name="goal_txt">進球</string>
     <string name="finish_txt">结束</string>
@@ -410,4 +410,16 @@
     </string-array>
     <string name="detail_txt_input">請輸入內容</string>
     <string name="live_zc">中場</string>
+    <string name="place_txt_login">當前帳號在其他裝置登入</string>
+    <string name="account_txt_set">賬號設置</string>
+    <string name="number_txt_set_not">未設定</string>
+    <string name="number_txt_title">賬號管理</string>
+    <string name="bind_txt_mailbox">綁定郵箱</string>
+    <string name="bind_txt_phone">綁定手機號</string>
+    <string name="place_txt_login_zhong">当前账号在其他设备登录</string>
+    <string name="place_txt_login_Fanti">當前帳號在其他裝置登入</string>
+    <string name="place_txt_login_ying">Log in with the current account on \n other devices</string>
+    <string name="ensure_zhong">确定</string>
+    <string name="ensure_fanti">確認</string>
+    <string name="ensure_yingwen">Confirm</string>
 </resources>

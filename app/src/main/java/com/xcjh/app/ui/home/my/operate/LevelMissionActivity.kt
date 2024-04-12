@@ -40,6 +40,11 @@ class LevelMissionActivity  : BaseActivity<LevelMissionVm, ActivityLevelMissionB
             finish()
         }
 
+        //收到通知其他地方登录
+        appViewModel.quitLoginEvent.observe(this){
+            finish()
+        }
+
 
         mainVm.getUserInfo()
 

@@ -411,4 +411,16 @@
     </string-array>
     <string name="detail_txt_input">请输入内容</string>
     <string name="live_zc">中场</string>
+    <string name="place_txt_login">当前账号在其他设备登录</string>
+    <string name="account_txt_set">账号设置</string>
+    <string name="number_txt_set_not">未设置</string>
+    <string name="number_txt_title">账号管理</string>
+    <string name="bind_txt_mailbox">绑定邮箱</string>
+    <string name="bind_txt_phone">绑定手机号</string>
+    <string name="place_txt_login_zhong">当前账号在其他设备登录</string>
+    <string name="place_txt_login_Fanti">當前帳號在其他裝置登入</string>
+    <string name="place_txt_login_ying">Log in with the current account on \n other devices</string>
+    <string name="ensure_zhong">确定</string>
+    <string name="ensure_fanti">確認</string>
+    <string name="ensure_yingwen">Confirm</string>
 </resources>

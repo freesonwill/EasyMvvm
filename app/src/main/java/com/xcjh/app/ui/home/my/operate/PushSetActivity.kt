@@ -22,6 +22,8 @@ import com.xcjh.base_lib.utils.getXXPermissionsPush
 import com.xcjh.base_lib.utils.view.clickNoRepeat
 
 import androidx.appcompat.app.AppCompatDelegate.*
+import com.xcjh.app.appViewModel
+
 /**
  * 推送设置
  */
@@ -40,6 +42,11 @@ class PushSetActivity : BaseActivity<PushSetVm, ActivityPushSetBinding>() {
         if(XXPermissions.isGranted(this, Permission.POST_NOTIFICATIONS)){
             mViewModel.getInfoPush()
 
+        }
+
+        //收到通知其他地方登录
+        appViewModel.quitLoginEvent.observe(this){
+            finish()
         }
 
         //设置

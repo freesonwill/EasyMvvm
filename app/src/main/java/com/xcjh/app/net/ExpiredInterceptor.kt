@@ -5,6 +5,8 @@ import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.utils.myToast
 import okhttp3.Interceptor
 import com.xcjh.app.R
+import com.xcjh.app.appViewModel
+import com.xcjh.app.bean.LoginInfo
 import com.xcjh.app.ui.login.LoginActivity
 import com.xcjh.app.utils.CacheUtil
 import com.xcjh.base_lib.utils.startNewActivity
@@ -40,9 +42,15 @@ class ExpiredInterceptor : Interceptor {
             return response
         }
         //判断响应是否过期（无效）
-        if (isResponseExpired(response, bodyString)) {
+        var num=isResponseExpired(response, bodyString)
+        if (num==1) {
            // myToast(appContext.getString(R.string.login_expired))
-            CacheUtil.setIsLogin(false)
+            if( CacheUtil.isLogin()){
+//                CacheUtil.setIsLogin(false, LoginInfo("","", ""))
+                appViewModel.quitTipsEvent.postValue(true)
+            }
+//            startNewActivity<LoginActivity> {  }
+        }else if(num==2){//未登录
             startNewActivity<LoginActivity> {  }
         }
         return response
@@ -54,24 +62,30 @@ class ExpiredInterceptor : Interceptor {
      * @param bodyString
      * @return
      */
-    private fun isResponseExpired(response: Response?, bodyString: String?): Boolean {
+    private fun isResponseExpired(response: Response?, bodyString: String?): Int {
         try {
             val jsonObject = bodyString?.let { JSONObject(it) }
-            if (jsonObject?.getInt("code") == Constants.EXPIRED_CODE||jsonObject?.getInt("code") == Constants.NEEDLOAGIN_CODE) {
+            if (jsonObject?.getInt("code") == Constants.EXPIRED_CODE||jsonObject?.getInt("code") == Constants.NEEDLOAGIN_CODE||jsonObject?.getInt("code") == Constants.EXPIRED_ERR_CODE) {
                 val currentTime = System.currentTimeMillis()
                 return if (lastClickTime != 0L && (currentTime - lastClickTime < 1000)) {
-                    false
+                    0
                 }else{
                     if (response?.request()?.url().toString().contains("center/apis")){
-                        false
+                        0
                     }else{
+
                         lastClickTime = currentTime
-                        true
+                        if(jsonObject?.getInt("code") == Constants.NEEDLOAGIN_CODE||jsonObject?.getInt("code") == Constants.EXPIRED_ERR_CODE){
+                          return  1
+                        }else{
+                            return 2
+                        }
+
                     }
                 }
             }
         } catch (_: Exception) { }
-        return false
+        return 0
     }
 
     private fun isText(mediaType: MediaType?): Boolean {

@@ -6,6 +6,7 @@ import com.gyf.immersionbar.ImmersionBar
 import com.shuyu.gsyvideoplayer.builder.GSYVideoOptionBuilder
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer
 import com.xcjh.app.R
+import com.xcjh.app.appViewModel
 import com.xcjh.app.databinding.ActivityMatchDetailBinding
 import com.xcjh.app.databinding.ActivityVideoPlayBinding
 import com.xcjh.app.ui.details.DetailVm
@@ -34,7 +35,10 @@ class VideoPlayActivity  : GSYBaseActivity<DetailVm, ActivityVideoPlayBinding, S
             .navigationBarColor(R.color.c_181819)
             .navigationBarDarkIcon(false)
             .titleBarMarginTop(mDatabind.rlTitle).init()
-
+        //收到通知其他地方登录
+        appViewModel.quitLoginEvent.observe(this){
+            finish()
+        }
         initVideoBuilderMode()
         this.setisLandscape(false)
         intent.extras?.apply {

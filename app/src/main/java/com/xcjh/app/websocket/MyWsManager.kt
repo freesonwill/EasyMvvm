@@ -134,6 +134,7 @@ class MyWsManager private constructor(private val mContext: Context) {
      *  11->12->11 发送消息->发送消息成功->接收到消息
      *  19->20 获取指定群聊或好友历史或离线消息成功
      *  23->23 消息已读回复
+     *  41 服务器推送消息【cmd:41】（当前用户被踢）
      */
     private fun parsingServiceLogin(msg: String) {
         val wsBean = jsonToObject2<ReceiveWsBean<Any>>(msg)
@@ -180,13 +181,21 @@ class MyWsManager private constructor(private val mContext: Context) {
             }
 
             12 -> {
-                //发送成功回调
+                //发送成功回调 10113登录
                 mC2CListener.forEach {
                     it.toPair().second.onSendMsgIsOk(wsBean.success == 0, wsBean)
                 }
                 mLiveRoomListener.forEach {
                     it.toPair().second.onSendMsgIsOk(wsBean.success == 0, wsBean)
                 }
+                //退出登录
+                if(wsBean.code.equals("10113")){
+                    mNoReadMsgListener.forEach {
+                        it.toPair().second.onUserIsKicked()
+
+                    }
+                }
+
             }
 
             13 -> {
@@ -332,6 +341,13 @@ class MyWsManager private constructor(private val mContext: Context) {
                 val feedMsgBean = wsBean2?.data as UpdateLiveContentBean
                 mLiveRoomListener.forEach {
                     it.toPair().second.onUpdateLiveContent(feedMsgBean)
+                }
+            }
+            41 -> {//用户登录被踢
+
+                mNoReadMsgListener.forEach {
+                    it.toPair().second.onUserIsKicked()
+
                 }
             }
 

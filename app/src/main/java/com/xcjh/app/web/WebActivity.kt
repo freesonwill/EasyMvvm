@@ -1,5 +1,9 @@
 package com.xcjh.app.web
 
+import android.app.Activity
+import android.app.ActivityManager
+import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
@@ -22,6 +26,7 @@ import com.just.agentweb.AgentWeb
 import com.just.agentweb.AgentWebConfig
 import com.just.agentweb.WebChromeClient
 import com.xcjh.app.R
+import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseActivity
 import com.xcjh.app.databinding.ActivityWebBinding
 import com.xcjh.app.vm.MainVm
@@ -44,6 +49,14 @@ class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
             .navigationBarDarkIcon(true)
             .navigationBarColor(R.color.c_ffffff)
             .init()
+
+        //收到通知其他地方登录
+        appViewModel.quitLoginEvent.observe(this){
+            finish()
+        }
+
+
+
         intent?.let {
             url = it.getStringExtra(Constants.WEB_URL).toString()
             title = it.getStringExtra(Constants.CHAT_TITLE).toString()
@@ -51,6 +64,7 @@ class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
             urlID= it.getStringExtra(Constants.WEB_VIEW_ID).toString()
         }
         mDatabind.titleTop.tvTitle.text = title
+
         initWeb()
         if(type==1){
             mViewModel.getNewsInfo(urlID)
@@ -59,6 +73,15 @@ class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
         }
 
 
+    }
+
+    fun isActivityExists(context: Context, packageName: String, activityName: String): Boolean {
+        val intent = Intent().apply {
+            setClassName(packageName, activityName)
+        }
+        val packageManager = context.packageManager
+        val componentName = intent.resolveActivity(packageManager)
+        return componentName != null
     }
 
     private lateinit var agentWeb: AgentWeb
@@ -258,5 +281,20 @@ class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
                 null
             )
         }
+    }
+
+    fun isActivityOpened(context: Context, activityClass: Class<*>): Boolean {
+        val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        val runningTasks = activityManager.getRunningTasks(1) // 获取当前运行的任务列表
+
+        if (!runningTasks.isNullOrEmpty()) {
+            val topActivity = runningTasks[0].topActivity
+            if (topActivity != null && topActivity.className == activityClass.name) {
+                // 如果顶部的 Activity 是指定的 Activity，则说明它已经打开了
+                return true
+            }
+        }
+
+        return false
     }
 }

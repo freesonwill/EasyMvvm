@@ -1,8 +1,8 @@
 package com.xcjh.app.ui
 
 
-import android.animation.ObjectAnimator
-import android.animation.PropertyValuesHolder
+import android.app.Activity
+import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.AnimationDrawable
@@ -13,6 +13,7 @@ import android.os.Vibrator
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
@@ -28,6 +29,8 @@ import com.hjq.language.MultiLanguages
 import com.king.app.dialog.AppDialog
 import com.king.app.updater.AppUpdater
 import com.king.app.updater.http.OkHttpManager
+import com.kongzue.dialogx.dialogs.CustomDialog
+import com.kongzue.dialogx.interfaces.OnBindView
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
 import com.lxj.xpopup.enums.PopupAnimation
@@ -38,26 +41,35 @@ import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseActivity
 import com.xcjh.app.bean.BeingLiveBean
 import com.xcjh.app.bean.JsonBean
+import com.xcjh.app.bean.LoginInfo
 import com.xcjh.app.bean.TimeConstantsDat
 import com.xcjh.app.databinding.ActivityHomeBinding
+import com.xcjh.app.placeLoginDialog
 import com.xcjh.app.ui.details.MatchDetailActivity
 import com.xcjh.app.ui.home.home.HomeFragment
 import com.xcjh.app.ui.home.msg.MsgFragment
 import com.xcjh.app.ui.home.my.MyUserFragment
 import com.xcjh.app.ui.home.schedule.ScheduleFragment
+import com.xcjh.app.ui.login.LoginActivity
 import com.xcjh.app.utils.CacheUtil
 import com.xcjh.app.utils.getVerCode
 import com.xcjh.app.utils.judgeLogin
+import com.xcjh.app.utils.onWsUserEnterRoom
 import com.xcjh.app.vm.MainVm
+import com.xcjh.app.web.WebActivity
 import com.xcjh.app.websocket.MyWsManager
 import com.xcjh.app.websocket.listener.NoReadMsgPushListener
 import com.xcjh.app.websocket.listener.OtherPushListener
+import com.xcjh.base_lib.App
 import com.xcjh.base_lib.Constants
+import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.utils.initActivity
 import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.setOnclickNoRepeat
 import com.xcjh.base_lib.utils.toJson
 import com.xcjh.base_lib.utils.view.clickNoRepeat
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Timer
@@ -94,6 +106,7 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         //MTPushPrivatesApi.clearNotification(this)
+//        placeLoginDialog()
         showStatusBar()
         mDatabind.reDateShow.clickNoRepeat {}
         currentPage=0
@@ -113,6 +126,30 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         TimeConstantsDat.options1ItemsSaiguo  = ArrayList<JsonBean>()
         TimeConstantsDat.options2ItemsSaiguo =  ArrayList<ArrayList<String>>()
         TimeConstantsDat.options3ItemsSaiguo = ArrayList< ArrayList<ArrayList<String>>>()
+
+        //收到通知其他地方登录
+        appViewModel.quitTipsEvent.observeForever {
+
+            if(CacheUtil.isLogin()){
+                CacheUtil.setIsLogin(false, LoginInfo("","", ""))
+//                if(isActivityRunning(this, WebActivity::class.java)){
+//                    appViewModel.webEvent.postValue(true)
+//                }else{
+//                    placeLoginDialogNew()
+//                }
+//                com.xcjh.app.placeLoginDialog(this)
+                GlobalScope.launch(Dispatchers.Main) { // 使用主线程的调度器
+                    delay(500L) // 延迟1秒（1000毫秒）
+                    placeLoginDialog(this@MainActivity)
+//
+                }
+
+            }
+
+
+
+
+        }
 
         //语言 0是中文  1是繁体  2是英文
         val locale = MultiLanguages.getAppLanguage(this)
@@ -204,10 +241,13 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
             when (it.id) {
                 R.id.llHomeSelectMain -> {
                     changeTab(0)
+//                    ToastUtli().oppenWeb(this)
+
                 }
 
                 R.id.llHomeSelectSchedule -> {
                     changeTab(1)
+
                 }
 
                 R.id.llHomeSelectMsg -> {
@@ -285,7 +325,20 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
                     showDialog(beingLiveBean)
                 }
             }
+
+
         })
+
+        //被挤下线
+        MyWsManager.getInstance(this)?.setNoReadMsgListener(javaClass.name, object :NoReadMsgPushListener{
+            override fun onUserIsKicked() {
+                super.onUserIsKicked()
+             if(CacheUtil.isLogin()){
+                    appViewModel.quitTipsEvent.postValue(true)
+                }
+            }
+        })
+
     }
 
     override fun createObserver() {
@@ -614,5 +667,61 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
 
 
 
+    fun isActivityRunning(context: Context, activityClass: Class<out Activity>): Boolean {
+        val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        val runningTasks = activityManager.getRunningTasks(Int.MAX_VALUE)
+
+        for (taskInfo in runningTasks) {
+            val topActivity = taskInfo.topActivity
+            if (topActivity?.className == activityClass.name) {
+                return true
+            }
+        }
+        return false
+    }
+//    var placeDialog: CustomDialog?=null
+//
+//    /***
+//     * 异地登录弹出
+//     */
+//    fun placeLoginDialog(context: Context) {
+//        //判断现在是否在登录状态
+//        placeDialog= CustomDialog.build()
+//            .setCustomView(object : OnBindView<CustomDialog?>(R.layout.layout_dialogx_delmsg_new) {
+//                override fun onBind(dialog: CustomDialog?, v: View) {
+//                    val tvcancle = v.findViewById<TextView>(R.id.tvcancle)
+//                    val textName = v.findViewById<TextView>(R.id.textName)
+//                    val tvsure = v.findViewById<TextView>(R.id.tvsure)
+//                    val viewGen = v.findViewById<View>(R.id.viewGen)
+////                //语言 0是中文  1是繁体  2是英文
+////                if( Constants.languageType==0){
+////                    Context
+////                }
+//
+//                    textName.text= context.getString(R.string.place_txt_login)
+//                    tvsure.text= context.getString(R.string.ensure)
+//                    tvcancle.visibility= View.GONE
+//                    viewGen.visibility= View.GONE
+//                    tvsure.setOnClickListener {
+////                    appViewModel.quitLoginEvent.postValue(true)
+//                        com.xcjh.base_lib.utils.startNewActivity<LoginActivity> {}
+//                        GlobalScope.launch(Dispatchers.Main) { // 使用主线程的调度器
+//                            delay(500L) // 延迟1秒（1000毫秒）
+//                            appViewModel.mainViewPagerEvent.postValue(-1)
+//                            appViewModel.quitLoginEvent.postValue(true)
+//                        }
+//                        placeDialog?.dismiss()
+//
+//                    }
+//                }
+//            }).setAlign(CustomDialog.ALIGN.CENTER).setCancelable(false).
+//            setMaskColor(//背景遮罩
+//                ContextCompat.getColor(context, com.xcjh.base_lib.R.color.blacks_tr)
+//
+//            )
+//        if( !placeDialog?.isShow!!){
+//            placeDialog?.show()
+//        }
+//    }
 
 }

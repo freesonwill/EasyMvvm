@@ -11,6 +11,7 @@ import android.util.Log
 import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.android.cling.ClingDLNAManager
 import com.android.cling.control.DeviceControl
 import com.android.cling.control.OnDeviceControlListener
@@ -34,6 +35,7 @@ import com.xcjh.app.R
 import com.xcjh.app.adapter.ViewPager2Adapter
 import com.xcjh.app.appViewModel
 import com.xcjh.app.bean.AnchorListBean
+import com.xcjh.app.bean.LoginInfo
 import com.xcjh.app.bean.MatchDetailBean
 import com.xcjh.app.databinding.ActivityMatchDetailBinding
 import com.xcjh.app.isTopActivity
@@ -45,10 +47,12 @@ import com.xcjh.app.utils.*
 import com.xcjh.app.utils.TimeUtil
 import com.xcjh.app.view.PopupSelectProjection
 import com.xcjh.app.view.balldetail.ControlShowListener
+import com.xcjh.app.vm.MainVm
 import com.xcjh.app.websocket.MyWsManager
 import com.xcjh.app.websocket.bean.LiveStatus
 import com.xcjh.app.websocket.bean.ReceiveChangeMsg
 import com.xcjh.app.websocket.listener.LiveStatusListener
+import com.xcjh.app.websocket.listener.NoReadMsgPushListener
 import com.xcjh.app.websocket.listener.OtherPushListener
 import com.xcjh.base_lib.App
 import com.xcjh.base_lib.Constants
@@ -221,6 +225,9 @@ class MatchDetailActivity :
             .navigationBarColor(R.color.c_181819)
             .navigationBarDarkIcon(false)
             .titleBarMarginTop(mDatabind.rltTop).init()
+
+
+
         // 使用方法
         mDatabind.videoPlayer.setShrinkImageRes(R.drawable.detaic_tv_icon_cioss);
         mDatabind.videoPlayer.setEnlargeImageRes(R.drawable.detaic_tv_icon_screen);
@@ -414,6 +421,18 @@ class MatchDetailActivity :
             }
         })
         initVideoBuilderMode()
+
+        MyWsManager.getInstance(App.app)?.setNoReadMsgListener(javaClass.name, object :NoReadMsgPushListener{
+            override fun onUserIsKicked() {
+                super.onUserIsKicked()
+                if (mDatabind.videoPlayer.isIfCurrentIsFullscreen) {
+                    mDatabind.videoPlayer.exitFullScreen()
+                    mDatabind.videoPlayer.customPlayer!!.exitFullScreen()
+                }
+
+
+            }
+        })
         MyWsManager.getInstance(App.app)
             ?.setLiveStatusListener(this.toString(), object : LiveStatusListener {
                 override fun onOpenLive(bean: LiveStatus) {
@@ -551,6 +570,22 @@ class MatchDetailActivity :
 
                 }
             })
+
+//        MyWsManager.getInstance(this)?.setNoReadMsgListener(javaClass.name, object :
+//            NoReadMsgPushListener {
+//            override fun onUserIsKicked() {
+//                super.onUserIsKicked()
+//                if(CacheUtil.isLogin()){
+//                     finish()
+//                }
+//            }
+//        })
+
+        //收到通知其他地方登录
+        appViewModel.quitLoginEvent.observe(this){
+            finish()
+        }
+
         MyWsManager.getInstance(App.app)
             ?.setOtherPushListener(this.toString(), object : OtherPushListener {
                 override fun onChangeMatchData(matchList: ArrayList<ReceiveChangeMsg>) {
@@ -583,6 +618,10 @@ class MatchDetailActivity :
                         e.message?.loge("e====e")
                     }
                 }
+
+
+
+
             })
     }
 
@@ -1104,6 +1143,8 @@ class MatchDetailActivity :
                 }
             }
         }
+
+
         //点击关注或者取消关注
         mDatabind.tvTabAnchorFollow.setOnClickListener {
             judgeLogin {

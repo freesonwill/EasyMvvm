@@ -70,6 +70,10 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                 .navigationBarDarkIcon(true)
                 .titleBar(mDatabind.titleTop.root)
                 .init()
+            //收到通知其他地方登录
+            appViewModel.quitLoginEvent.observe(this){
+                finish()
+            }
             mDatabind.state.apply {
                 StateConfig.setRetryIds(R.id.ivEmptyIcon, R.id.txtEmptyName)
                 onEmpty {

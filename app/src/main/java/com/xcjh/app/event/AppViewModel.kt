@@ -61,7 +61,10 @@ class AppViewModel : BaseViewModel() {
     var landscapeShareEvent=EventLiveData<Int>()
     //清空聊天
     var emptychatUserEvent=EventLiveData<String>()
-
+    //收到退出消息异地关闭页面
+    var  quitLoginEvent=EventLiveData<Boolean>()
+    //通知要弹出框了异地
+    var  quitTipsEvent=EventLiveData<Boolean>()
 
     init {
         //默认值保存的账户信息，没有登陆过则为null started 或 resumed

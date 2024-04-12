@@ -10,6 +10,7 @@ import com.xcjh.app.event.AppViewModel
 import com.xcjh.app.net.apiService
 import com.xcjh.app.utils.CacheUtil
 import com.xcjh.base_lib.Constants
+import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.base.BaseViewModel
 import com.xcjh.base_lib.bean.ListDataUiState
 import com.xcjh.base_lib.callback.livedata.BooleanLiveData
@@ -109,6 +110,7 @@ class MainVm : BaseViewModel() {
      * 新闻详情
      */
     fun getNewsInfo(id: String) {
+
         request(
             { apiService.getNewsInfo(id) },
             {

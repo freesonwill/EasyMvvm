@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="vertical">
 
     <LinearLayout
@@ -10,6 +10,7 @@
         android:background="@drawable/shape_r25_ffffff"
         android:layout_marginLeft="52dp"
         android:layout_marginRight="52dp"
+        android:layout_centerInParent="true"
         android:orientation="vertical"
         android:paddingTop="@dimen/dp_30">
 
@@ -21,7 +22,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:gravity="center_horizontal"
-            android:text="@string/txt_del_msg"
+            android:text="@string/place_txt_login"
             android:textColor="@color/ps_color_black"
             android:textSize="@dimen/sp_16"
             android:textStyle="bold" />
@@ -68,4 +69,4 @@
                 android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+</RelativeLayout>

@@ -32,6 +32,8 @@ import com.just.agentweb.WebParentLayout
 import com.just.agentweb.WebViewClient
 import com.luck.picture.lib.basic.PictureSelector
 import com.luck.picture.lib.entity.LocalMedia
+import com.lxj.xpopup.XPopup
+import com.lxj.xpopup.core.BasePopupView
 import com.xcjh.app.R
 import com.xcjh.app.adapter.ViewPager2Adapter
 import com.xcjh.app.bean.FirstMsgBean
@@ -49,6 +51,7 @@ import com.xcjh.app.ui.details.fragment.DetailLineUpFragment
 import com.xcjh.app.ui.details.fragment.DetailLiveFragment
 import com.xcjh.app.ui.details.fragment.DetailResultBasketFragment
 import com.xcjh.app.ui.details.fragment.DetailResultFootballFragment
+import com.xcjh.app.view.PopupKickOut
 import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.utils.SpanUtil
 import com.xcjh.base_lib.utils.dp2px
@@ -729,4 +732,34 @@ fun setH5DataMaxLine(webView: WebView?,content:String="",tvColor:String="#ffffff
     Log.i("SSSSSS","==="+bb)
     webView?.loadDataWithBaseURL(null, bb, "text/html", "UTF-8", null)
 
+}
+
+
+
+var  showDialog: PopupKickOut?=null
+var popwindow: BasePopupView?=null
+fun placeLoginDialog(context: Context,finishLoad: (Boolean) -> Unit){
+    if(showDialog==null){
+        showDialog= PopupKickOut(context)
+        popwindow= XPopup.Builder(context)
+            .hasShadowBg(true)
+            .moveUpToKeyboard(false) //如果不加这个，评论弹窗会移动到软键盘上面
+            .isViewMode(false)
+            .isClickThrough(false)
+            .dismissOnBackPressed(false)
+            .dismissOnTouchOutside(false)
+            .isDestroyOnDismiss(false) //对于只使用一次的弹窗，推荐设置这个
+            //                        .isThreeDrag(true) //是否开启三阶拖拽，如果设置enableDrag(false)则无效
+            .asCustom(showDialog)
+    }
+    showDialog!!.popupKickOutListener=object :PopupKickOut.PopupKickOutListener{
+        override fun clickClose() {
+
+        }
+
+    }
+
+    if(!popwindow!!.isShow){
+        popwindow!!.show()
+    }
 }

@@ -10,6 +10,7 @@ import com.gyf.immersionbar.ImmersionBar
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
 import com.xcjh.app.R
+import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseActivity
 import com.xcjh.app.bean.EventsBean
 import com.xcjh.app.bean.NewsBean
@@ -41,6 +42,10 @@ class EventsCentreActivity : BaseActivity<EventsCentreVm, ActivityEventsCentreBi
             .init()
         mDatabind.titleTop.tvTitle.text=resources.getString(R.string.events_txt_title)
         adapter()
+        //收到通知其他地方登录
+        appViewModel.quitLoginEvent.observe(this){
+            finish()
+        }
         mViewModel.getEventsList(true)
         mDatabind.smartCommon.setRefreshHeader( CustomHeader(this))
         //默认取消上拉加载更多

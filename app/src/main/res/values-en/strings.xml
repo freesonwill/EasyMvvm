@@ -54,6 +54,8 @@
     <string name="copy_success">Copy Successful</string>
     <string name="str_stoptalk">You are currently muted</string>
     <string name="str_inputcontent">Input</string>
+
+
     <string name="copy">Copy</string>
     <string name="collect_success">Favorite Added</string>
     <string name="cancel_collect_success">Unfavorite</string>
@@ -411,4 +413,16 @@
     </string-array>
     <string name="detail_txt_input">Please input content</string>
     <string name="live_zc">MF</string>
+    <string name="place_txt_login">Log in with the current account on \n other devices</string>
+    <string name="account_txt_set">Account setting</string>
+    <string name="number_txt_set_not">Set</string>
+    <string name="number_txt_title">Account Management</string>
+    <string name="bind_txt_mailbox">Bind Email</string>
+    <string name="bind_txt_phone">>Bind Phone</string>
+    <string name="place_txt_login_zhong">当前账号在其他设备登录</string>
+    <string name="place_txt_login_Fanti">當前帳號在其他裝置登入</string>
+    <string name="place_txt_login_ying">Log in with the current account on \n other devices</string>
+    <string name="ensure_zhong">确定</string>
+    <string name="ensure_fanti">確認</string>
+    <string name="ensure_yingwen">Confirm</string>
 </resources>

@@ -32,6 +32,7 @@ import com.luck.picture.lib.utils.DensityUtil
 import com.luck.picture.lib.utils.MediaUtils
 import com.xcjh.app.R
 import com.xcjh.app.adapter.GridImageAdapter
+import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseActivity
 import com.xcjh.app.bean.ContactBean
 import com.xcjh.app.databinding.ActivityContactUsBinding
@@ -71,7 +72,10 @@ class ContactUsActivity : BaseActivity<ContactUsVm, ActivityContactUsBinding>() 
             .navigationBarDarkIcon(true)
             .init()
 
-
+        //收到通知其他地方登录
+        appViewModel.quitLoginEvent.observe(this){
+            finish()
+        }
         mDatabind.titleTop.tvTitle.text=resources.getString(R.string.feedback)
         var contactBean=ContactBean(1,resources.getString(R.string.txt_feedtype1))
         questionList.add(contactBean)

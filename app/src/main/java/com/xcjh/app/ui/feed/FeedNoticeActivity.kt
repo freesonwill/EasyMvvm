@@ -4,6 +4,7 @@ import android.os.Bundle
 import com.gyf.immersionbar.ImmersionBar
 import com.xcjh.app.R
 import com.xcjh.app.adapter.FeedNoticeAdapter
+import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseActivity
 import com.xcjh.app.bean.MatchBean
 import com.xcjh.app.databinding.ActivityFeednoticeBinding
@@ -26,6 +27,12 @@ class FeedNoticeActivity : BaseActivity<FeedVm, ActivityFeednoticeBinding>() {
             .navigationBarDarkIcon(true)
             .titleBar(mDatabind.titleTop.root)
             .init()
+        //收到通知其他地方登录
+        appViewModel.quitLoginEvent.observe(this){
+            finish()
+        }
+
+
         mDatabind.titleTop.tvTitle.text = resources.getString(R.string.txt_feedtype)
         mDatabind.smartCommon.setRefreshHeader(CustomHeader(this))
         mDatabind.rec.run {

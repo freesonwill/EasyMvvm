@@ -243,6 +243,23 @@ data class LoginSend(
     var lang: Int=1,//语言类型：1：中文；2：英文,示例值(1)
 
 )
+
+
+/**
+ *绑定邮箱或者短信
+ */
+@Keep
+data class BindSend(
+    var email: String="",//邮箱
+    var code: String="",//code
+    var tel: String="",//手机号
+    var areaCode: String="",//区号
+
+
+
+)
+
+
 /**
  * 比赛类型
  */

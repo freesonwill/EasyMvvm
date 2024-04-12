@@ -1,11 +1,15 @@
 package com.xcjh.app.view
 
+import android.app.Activity
+import android.app.ActivityManager
 import android.content.Context
 import androidx.appcompat.widget.AppCompatTextView
 import com.lxj.xpopup.core.BottomPopupView
 import com.xcjh.app.R
 import com.xcjh.app.adapter.PushCardPopup
+import com.xcjh.app.appViewModel
 import com.xcjh.app.bean.BeingLiveBean
+import com.xcjh.app.web.WebActivity
 import com.xcjh.base_lib.utils.view.clickNoRepeat
 
 /**
@@ -29,7 +33,6 @@ class PopupExitLogin(context: Context) : BottomPopupView(context) {
         txtDialogLogin.clickNoRepeat {
 //            mViewModel.unbindPush()
             popupExitLoginListener!!.clickClose()
-
         }
     }
     var popupExitLoginListener: PopupExitLoginListener?=null
@@ -39,4 +42,6 @@ class PopupExitLogin(context: Context) : BottomPopupView(context) {
         //关闭
         fun  clickClose()
     }
+
+
 }
