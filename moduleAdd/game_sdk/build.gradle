@@ -11,6 +11,8 @@ android {
     defaultConfig {
         minSdk 21
         targetSdk 33
+        versionCode 1
+        versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -21,7 +23,8 @@ android {
         }
         externalNativeBuild{
             cmake {
-                cppFlags "-Isrc/main/cpp"
+                //cppFlags "-Isrc/main/cpp"
+                cppFlags '-std=c++11'
             }
         }
 
@@ -49,8 +52,12 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
-
-
+    externalNativeBuild {
+        cmake {
+            path file('src/main/cpp/CMakeLists.txt')
+            version '3.18.1'
+        }
+    }
 }
 //// 配置发布
 //publishing {
