@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
+    id 'maven-publish'
 }
 
 android {
@@ -30,8 +31,17 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
         }
     }
+    libraryVariants.all { variant ->
+        if (variant.buildType.name == 'release') {
+            variant.outputs.all { output ->
+                outputFileName = "game_sdk-release.aar"
+            }
+        }
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -39,7 +49,67 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+
+
 }
+//// 配置发布
+//publishing {
+//    publications {
+//        myLibrary(MavenPublication) {
+//            groupId = 'com.cn.game'
+//            artifactId = 'game_sdk'
+//            version = '1.0.0'
+//            artifact("$buildDir/outputs/aar/game_sdk-release.aar")
+//        }
+//    }
+//}
+//publishing {
+//    publications {
+//        myLibrary(MavenPublication) {
+//            groupId = 'com.cn.game'
+//            artifactId = 'game_sdk'
+//            version = '1.0.0'
+//
+//            // 将 afterEvaluate 块移动到 publications 块内部
+//            afterEvaluate {
+//                logger.lifecycle("Executing afterEvaluate block for publishing...")
+//
+//                // 获取 release variant
+//                def releaseVariant = android.libraryVariants.find { it.name == 'release' }
+//                if (releaseVariant == null) {
+//                    logger.error("Release variant not found!")
+//                    return
+//                }
+//                logger.lifecycle("Found release variant: ${releaseVariant.name}")
+//
+//                // 获取 variant 的输出
+//                def output = null
+//                releaseVariant.outputs.each { variantOutput ->
+//                    if (variantOutput.outputFile != null) {
+//                        output = variantOutput.outputFile
+//                        return
+//                    }
+//                }
+//                if (output == null) {
+//                    logger.error("Output file not found for release variant!")
+//                    return
+//                }
+//                logger.lifecycle("Found output file: ${output}")
+//
+//                // 配置发布的 artifact 名称和构建任务
+//                artifact(output) {
+//                    builtBy("assembleRelease")
+//                    classifier releaseVariant.name
+//                }
+//            }
+//        }
+//    }
+//}
+//// 将发布任务依赖添加到assemble任务中
+//tasks.named('assemble').configure {
+//    dependsOn 'publish'
+//}
+
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])

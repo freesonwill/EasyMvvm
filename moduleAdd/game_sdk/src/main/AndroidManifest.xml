@@ -3,8 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.cn.game.sdk">
 
-    <application
-        android:name=".MyGameApplication">
+    <application>
         <activity
             android:name=".ui.CeshiSdkActivity"
             android:exported="false" />
