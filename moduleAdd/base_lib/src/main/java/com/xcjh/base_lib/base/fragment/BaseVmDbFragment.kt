@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
+import androidx.lifecycle.ViewModelProvider
 import com.xcjh.base_lib.base.BaseViewModel
 import com.xcjh.base_lib.utils.inflateBindingWithGeneric
 
@@ -29,6 +30,8 @@ abstract class BaseVmDbFragment<VM : BaseViewModel, DB : ViewDataBinding> : Base
     ): View? {
         _binding  = inflateBindingWithGeneric(inflater,container,false)
         return mDatabind.root
+//        val viewModelProvider = ViewModelProvider(this)
+//        viewModelProvider[mViewModel::class.java]
     }
 
     override fun onDestroyView() {

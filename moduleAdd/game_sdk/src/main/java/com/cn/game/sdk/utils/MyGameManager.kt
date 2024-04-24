@@ -1,9 +1,19 @@
 package com.cn.game.sdk.utils
 
 import android.annotation.SuppressLint
+import android.app.ActivityOptions
 import android.content.Context
+import android.content.Intent
 import android.widget.Toast
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.ProcessLifecycleOwner
+import com.cn.game.sdk.MyGameApplication
+import com.cn.game.sdk.R
+import com.cn.game.sdk.ui.fast.GameHomeActivity
 import com.cn.game.sdk.view.FastLogoView
+import com.xcjh.app.event.AppGameViewModel
+
 @SuppressLint("StaticFieldLeak")
 object MyGameManager {
     //快三的浮动View
@@ -12,11 +22,17 @@ object MyGameManager {
     private var mContext:Context?=null
 
     //获取快三的浮动view
-
     fun   getFastThreeView(context:Context):FastLogoView{
         if(fastThreeView==null){
             mContext=context
             fastThreeView= FastLogoView(context)
+
+//            fastThreeView!!.setFastLogoClickListener(object :FastLogoView.OnFastLogoClickListener{
+//                override fun onButtonClick() {
+//
+//                }
+//
+//            })
         }
 
         return fastThreeView as FastLogoView
@@ -24,7 +40,15 @@ object MyGameManager {
 
 
     fun  setToast(context: Context){
-        Toast.makeText(context,"sssssssssssssssss",Toast.LENGTH_LONG).show()
+        val options = ActivityOptions.makeCustomAnimation(context, R.anim.slide_up, 0)
+        var inagte= Intent(context, GameHomeActivity::class.java)
+        ContextCompat.startActivity(context, inagte, options.toBundle())
+    }
+
+    fun setLogoTime(){
+        if(fastThreeView!=null){
+            fastThreeView!!.setText("10:00")
+        }
     }
 
 }

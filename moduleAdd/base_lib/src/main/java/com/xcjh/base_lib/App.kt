@@ -16,7 +16,7 @@ open class App : Application(), Application.ActivityLifecycleCallbacks, ViewMode
     private var mFactory: ViewModelProvider.Factory? = null
 
     companion object {
-        lateinit var app: App
+        lateinit var app: Application
     }
 
     override fun onCreate() {
@@ -30,6 +30,7 @@ open class App : Application(), Application.ActivityLifecycleCallbacks, ViewMode
 //        ARouter.init(this)
         mAppViewModelStore = ViewModelStore()
         registerActivityLifecycleCallbacks(this)
+
     }
 
 

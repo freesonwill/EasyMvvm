@@ -3,7 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.cn.game.sdk">
 
-    <application>
+    <application >
+        <activity
+            android:name=".ui.fast.GameHomeActivity"
+            android:theme="@style/TransparentTheme"
+            android:exported="false" />
         <activity
             android:name=".ui.CeshiSdkActivity"
             android:exported="false" />

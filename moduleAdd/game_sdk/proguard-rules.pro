@@ -242,3 +242,7 @@
 -keep class com.hjq.language.** {*;}
 #权限控制
 -keep class com.hjq.permissions.** {*;}
+
+
+-keep class androidx.databinding.** { *; }
+-keep public class * extends androidx.databinding.DataBindingComponent

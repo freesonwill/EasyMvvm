@@ -10,13 +10,11 @@ import com.xcjh.base_lib.callback.livedata.event.EventLiveData
  */
 class AppGameViewModel : BaseViewModel() {
 
-    //更新用户登录登出 状态
-    var updateLoginEvent = EventLiveData<Boolean>()
-
-
     //socket状态消息
-    var wsStatusClose = EventLiveData<Boolean>()//关闭
-    var wsStatusOpen = EventLiveData<Boolean>()//开启
+    var wsStatusGameClose = EventLiveData<Boolean>()//关闭
+    var wsStatusGameOpen = EventLiveData<Boolean>()//开启
+
+    var ceshEvent=EventLiveData<Boolean>()
 
 
     init {

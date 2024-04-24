@@ -7,7 +7,6 @@ import com.gyf.immersionbar.ImmersionBar
 import com.xcjh.base_lib.R
 import com.xcjh.base_lib.base.activity.BaseActivity
 import com.xcjh.base_lib.utils.dismissLoadingExt
-import com.xcjh.base_lib.route.RouteCenter
 
 /**
  *

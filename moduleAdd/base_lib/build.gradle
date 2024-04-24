@@ -48,8 +48,7 @@ dependencies {
     api "androidx.fragment:fragment-ktx:1.5.5"
     api "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1"
     api "androidx.lifecycle:lifecycle-livedata-ktx:2.5.1"
-    //启动页
-    api 'androidx.core:core-splashscreen:1.0.0'
+
 
 
     /*==============================三方工具库==========================*/
@@ -59,20 +58,12 @@ dependencies {
     api "com.github.lihangleo2:ShadowLayout:3.3.2"
     //适配
     api "me.jessyan:autosize:1.2.1"
-    //路由
-//    api "com.alibaba:arouter-api:1.4.1"
-//    api "com.alibaba:arouter-compiler:1.2.2"
-
-//       api "com.alibaba:arouter-api:1.5.2"
-//    api "com.alibaba:arouter-compiler:1.5.2"
-
     //沉浸式
     api "com.geyifeng.immersionbar:immersionbar:3.2.2"
     api "com.geyifeng.immersionbar:immersionbar-ktx:3.2.2"
     //BaseRecyclerViewAdapterHelper
     api "io.github.cymchad:BaseRecyclerViewAdapterHelper:3.0.14"
-    //语言切换
-    api 'com.github.getActivity:MultiLanguages:8.0'
+
     //******==================网络=================
     api "com.squareup.retrofit2:converter-gson:2.9.0"
 //    api "com.github.Justson.AgentWeb:agentweb-core:v5.0.0-alpha.1-androidx"
@@ -88,4 +79,6 @@ dependencies {
     //ws
     api "org.java-websocket:Java-WebSocket:1.5.3"
     api 'com.github.getActivity:XXPermissions:18.63'
+    //指示器库
+    api 'com.github.hackware1993:MagicIndicator:1.7.0'
 }

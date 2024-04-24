@@ -1,7 +1,10 @@
 package com.xcjh.base_lib.base.activity
 
+import android.annotation.SuppressLint
+import android.os.Bundle
 import android.view.View
 import androidx.databinding.ViewDataBinding
+import androidx.lifecycle.ViewModelProvider
 import com.xcjh.base_lib.base.BaseViewModel
 import com.xcjh.base_lib.utils.inflateBindingWithGeneric
 
@@ -23,5 +26,13 @@ abstract class BaseVmDbActivity<VM : BaseViewModel, DB : ViewDataBinding> : Base
     override fun initDataBind(): View? {
         mDatabind = inflateBindingWithGeneric(layoutInflater)
         return mDatabind.root
+    }
+
+
+
+    override fun initView(savedInstanceState: Bundle?) {
+//     val viewModelProvider = ViewModelProvider(this)
+//         viewModelProvider[mViewModel::class.java]
+
     }
 }
