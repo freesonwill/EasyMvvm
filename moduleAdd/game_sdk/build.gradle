@@ -2,6 +2,7 @@ plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
     id 'maven-publish'
+    id 'com.google.protobuf'
 }
 
 android {
@@ -61,6 +62,29 @@ android {
         cmake {
             path file('src/main/cpp/CMakeLists.txt')
             version '3.18.1'
+        }
+    }
+
+    sourceSets {
+        main {
+            proto {
+                srcDir 'src/main/protos'
+            }
+        }
+    }
+    protobuf {
+        protoc {
+            artifact = 'com.google.protobuf:protoc:3.19.2'
+        }
+        generateProtoTasks {
+            all().each { task ->
+                task.builtins {
+                    remove java
+                }
+                task.builtins {
+                    java {}// 生产java源码
+                }
+            }
         }
     }
 }
@@ -135,5 +159,6 @@ dependencies {
     //组件依赖基础库
     implementation project(':base_lib')
     implementation 'com.github.liangjingkanji:Engine:0.0.74' // 快速开发基础库
+    implementation 'com.google.protobuf:protobuf-java:3.19.1'
 
 }
