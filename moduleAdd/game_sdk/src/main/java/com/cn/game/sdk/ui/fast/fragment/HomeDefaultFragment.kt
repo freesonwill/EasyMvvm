@@ -15,9 +15,10 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
         arguments?.let {
             type = it.getInt("type")
         }
-        mDatabind.btn.clickNoRepeat {
-            mViewModel.getShow()
+        mDatabind.rlClick.setOnClickListener {
+            Log.i("SSSSSSss","======"+it.x)
         }
+
 
         appGameViewModel.ceshEvent.observe(this){
 
