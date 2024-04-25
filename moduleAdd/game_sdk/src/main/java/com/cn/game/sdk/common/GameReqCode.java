@@ -36,4 +36,5 @@ public interface GameReqCode {
      */
     int C2S_TEST_ASSIGN = 1050;
 
+
 }

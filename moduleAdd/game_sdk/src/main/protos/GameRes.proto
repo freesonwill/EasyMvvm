@@ -138,6 +138,11 @@ message BeginSettle {
     RoundInfo roundInfo = 3;
 }
 
+// 離開group
+message LeaveGroup{
+    int32 groupId = 1;
+}
+
 // 離開小遊戲
 message LeaveMiniGames {
     repeated int32 miniGameIds = 1; //
@@ -145,6 +150,6 @@ message LeaveMiniGames {
 
 // 选择性刷新玩家属性
 message RefreshUserProperties {
-    optional string groupId = 1;
+    //optional string groupId = 1;
     optional int64 score = 2;
 }

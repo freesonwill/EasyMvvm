@@ -70,7 +70,7 @@ class MyWsManager private constructor(private val mContext: Context) {
         }
 
         fun gameMessage(): GameMessage {
-            return INSTANCE?.gameMessage() ?: GameMessageKuai(INSTANCE?.client);
+            return INSTANCE?.gameMessage() ?: GameMessageKuaikt(INSTANCE?.client!!);
         }
     }
 

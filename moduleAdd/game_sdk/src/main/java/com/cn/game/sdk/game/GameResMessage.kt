@@ -3,6 +3,8 @@ package com.cn.game.sdk.game
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
+import com.cn.game.sdk.common.GameResCode
+import game.mod.proc.yf.proto.res.GameRes
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
@@ -16,6 +18,73 @@ object GameResMessage  : LifecycleOwner {
     public fun onMessage(mid:Int, sid:Int, byteArray: ByteArray){
         GlobalScope.launch {
             FlowBus.with<GameEmit>("$_prv_key.$sid").post(GameEmit(mid, sid, byteArray))
+        }
+    }
+
+    //获取房间信息
+    public fun EnterInfo(lifecycleOwner: LifecycleOwner ,action: (t: GameRes.EnterInfo) -> Unit){
+        FlowBus.with<GameRes.EnterInfo>("$_prv_key.${GameResCode.S2C_ENTER_INFO}").register(lifecycleOwner){
+            action(it)
+        }
+    }
+    //获取直播间信息
+    public fun GroupInfo(lifecycleOwner: LifecycleOwner ,action: (t: GameRes.GroupInfo) -> Unit){
+        FlowBus.with<GameRes.GroupInfo>("$_prv_key.${GameResCode.S2C_GROUP_INFO}").register(lifecycleOwner){
+            action(it)
+        }
+    }
+    //获取小游戏信息
+    public fun EnterMiniGameInfo(lifecycleOwner: LifecycleOwner ,action: (t: GameRes.EnterMiniGameInfo) -> Unit){
+        FlowBus.with<GameRes.EnterMiniGameInfo>("$_prv_key.${GameResCode.S2C_ENTER_MINI_GAME_INFO}").register(lifecycleOwner){
+            action(it)
+        }
+    }
+
+    //开始新局
+    public fun BeginRound(lifecycleOwner: LifecycleOwner ,action: (t: GameRes.BeginNewRound) -> Unit){
+        FlowBus.with<GameRes.BeginNewRound>("$_prv_key.${GameResCode.S2C_BEGIN_ROUND}").register(lifecycleOwner){
+            action(it)
+        }
+    }
+
+    //开始结算
+    public fun BeginSettle(lifecycleOwner: LifecycleOwner ,action: (t: GameRes.BeginSettle) -> Unit){
+        FlowBus.with<GameRes.BeginSettle>("$_prv_key.${GameResCode.S2C_BEGIN_SETTLE}").register(lifecycleOwner){
+            action(it)
+        }
+    }
+
+    //玩家下注结果
+    public fun MiniGameBetResult(lifecycleOwner: LifecycleOwner ,action: (t: GameRes.MyMiniGameBetResult) -> Unit){
+        FlowBus.with<GameRes.MyMiniGameBetResult>("$_prv_key.${GameResCode.S2C_USER_BET_RESULT}").register(lifecycleOwner){
+            action(it)
+        }
+    }
+
+    //同步注區下注信息
+    public fun SyncAreaBetInfo(lifecycleOwner: LifecycleOwner ,action: (t: GameRes.SyncAreaBetInfo) -> Unit){
+        FlowBus.with<GameRes.SyncAreaBetInfo>("$_prv_key.${GameResCode.S2C_SYNC_AREA_BET_INFO}").register(lifecycleOwner){
+            action(it)
+        }
+    }
+
+    //通知離開group
+    public fun LeaveGroup(lifecycleOwner: LifecycleOwner ,action: (t: GameRes.LeaveGroup) -> Unit){
+        FlowBus.with<GameRes.LeaveGroup>("$_prv_key.${GameResCode.S2C_LEAVE_GROUP}").register(lifecycleOwner){
+            action(it)
+        }
+    }
+    //通知离开小游戏
+    public fun LeaveMiniGames(lifecycleOwner: LifecycleOwner ,action: (t: GameRes.LeaveMiniGames) -> Unit){
+        FlowBus.with<GameRes.LeaveMiniGames>("$_prv_key.${GameResCode.S2C_LEAVE_MINI_GAME}").register(lifecycleOwner){
+            action(it)
+        }
+    }
+
+    //刷新屬性
+    public fun RefreshUserProperties(lifecycleOwner: LifecycleOwner ,action: (t: GameRes.RefreshUserProperties) -> Unit){
+        FlowBus.with<GameRes.RefreshUserProperties>("$_prv_key.${GameResCode.S2C_REFRESH_USER_PROPS}").register(lifecycleOwner){
+            action(it)
         }
     }
 
