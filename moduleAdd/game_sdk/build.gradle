@@ -160,5 +160,4 @@ dependencies {
     implementation project(':base_lib')
     implementation 'com.github.liangjingkanji:Engine:0.0.74' // 快速开发基础库
     implementation 'com.google.protobuf:protobuf-java:3.19.1'
-
 }

@@ -9,9 +9,13 @@ import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat.startActivity
 import com.cn.game.sdk.R
+import com.cn.game.sdk.ui.CeshiSdkActivity
 import com.cn.game.sdk.ui.fast.GameHomeActivity
 import com.xcjh.base_lib.utils.view.clickNoRepeat
 
+/**
+ * 快三开奖logoView
+ */
 public class FastLogoView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, null, defStyleAttr) {
     lateinit var llFastClick: LinearLayout
     lateinit var txtTime: AppCompatTextView
@@ -44,6 +48,8 @@ public class FastLogoView @JvmOverloads constructor(context: Context, attrs: Att
             val options = ActivityOptions.makeCustomAnimation(context, R.anim.slide_up, 0)
             var inagte= Intent(context, GameHomeActivity::class.java)
             startActivity(context,inagte,options.toBundle())
+//            var inagte= Intent(context, CeshiSdkActivity::class.java)
+//            context.startActivity(inagte)
 //            onFastLogoClickListener?.onButtonClick()
 
         }

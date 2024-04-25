@@ -50,6 +50,8 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
      */
     private var isShowResult:Boolean=true
 
+
+
     /**
      * 判断所有的按钮是否可以点击
      */
@@ -72,8 +74,8 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
 //  viewModelProvider[mViewModel::class.java]
         mViewModel.getddd()
         mDatabind.ivHomeLogo.clickNoRepeat {
-            myToast("!1111111111111")
-//            appGameViewModel.ceshEvent.postValue(true)
+            hiddenView()
+            mDatabind.rlShowResult.visibility=View.VISIBLE
         }
         appGameViewModel.ceshEvent.observe(this){
             Log.i("CCCCCCCCCCCc","333333333")
@@ -112,104 +114,15 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
 
 
         mDatabind.rlClickHide.clickNoRepeat {
-            val animHeight = 109.dpToPx() // 上半部分高度
-            val animDuration = 500L // 动画持续时间，单位为毫秒
 
             if(isClick){
-                if(isShowResult){
-                    mDatabind.ivHomeRotation.rotation=180f
-                    isShowResult=!isShowResult
-
-                    for (i in 0 until  mDatabind.rvHomeHistory.models!!.size) {
-                        var viewHolder=  mDatabind.rvHomeHistory.findViewHolderForLayoutPosition(i)
-                        if(viewHolder!=null){
-
-                            (mDatabind.rvHomeHistory.models!![i] as HistoryResultBean).isShow=false
-                            var  llShowDice= viewHolder!!.itemView.findViewById<LinearLayout>(R.id.llShowDice)
-                            val anim = ObjectAnimator.ofFloat(llShowDice, "translationY", 0f, llShowDice.height.toFloat())
-                            anim.duration = 500 // 设置动画持续时间
-                            anim.start()
-                            // 动画结束后隐藏上半部分布局
-                            anim.addListener(object : AnimatorListenerAdapter() {
-                                override fun onAnimationEnd(animation: Animator ) {
-                                    super.onAnimationEnd(animation)
-                                    llShowDice.visibility = View.GONE
-
-                                }
-                            })
-                        }else{
-                            (mDatabind.rvHomeHistory.models!![i] as HistoryResultBean).isShow=false
-                            mDatabind.rvHomeHistory.bindingAdapter.notifyItemChanged(i)
-                        }
-
-
-                    }
-
-
-
-                }else{
-                    mDatabind.ivHomeRotation.rotation=0f
-                    isShowResult=!isShowResult
-                    for (i in 0 until  mDatabind.rvHomeHistory.models!!.size) {
-                        var viewHolder=  mDatabind.rvHomeHistory.findViewHolderForLayoutPosition(i)
-                        if(viewHolder!=null){
-                            (mDatabind.rvHomeHistory.models!![i] as HistoryResultBean).isShow=true
-                            mDatabind.rvHomeHistory.bindingAdapter.notifyItemChanged(i)
-                            var  llShowDice= viewHolder!!.itemView.findViewById<LinearLayout>(R.id.llShowDice)
-                            llShowDice.visibility = View.VISIBLE
-                            llShowDice.translationY =initia.toFloat()
-                            // 创建动画，将视图向上平移显示
-                            val anim = ObjectAnimator.ofFloat(llShowDice, "translationY", initia.toFloat(), 0f)
-                            anim.duration = 500 // 设置动画持续时间
-                            anim.start()
-                            llShowDice.translationY = 0f
-//                         动画结束后显示上半部分布局
-                            anim.addListener(object : AnimatorListenerAdapter() {
-                                override fun onAnimationEnd(animation: Animator) {
-                                    super.onAnimationEnd(animation)
-                                    llShowDice.visibility = View.VISIBLE
-                                }
-                            })
-//                            llShowDice.visibility = View.VISIBLE
-//                            ObjectAnimator.ofFloat(llShowDice, "translationY", llShowDice.height.toFloat(), 0f).apply {
-//                                duration = 500
-//                                interpolator = AccelerateInterpolator()
-//                                start()
-//                            }
-
-
-                        }else{
-                            (mDatabind.rvHomeHistory.models!![i] as HistoryResultBean).isShow=true
-                             mDatabind.rvHomeHistory.bindingAdapter.notifyItemChanged(i)
-                        }
-
-
-                    }
-
-
-                }
-
-
+                resultAnimation()
             }
 
         }
     }
-    // 扩展函数，用于将dp转换为px
-    fun Int.dpToPx(): Int {
-        val scale = resources.displayMetrics.density
-        return (this * scale + 0.5f).toInt()
-    }
 
-    private fun animateViewHeight(view: View, startTop: Int, endTop: Int) {
-        val animator = ValueAnimator.ofInt(startTop, endTop)
-        animator.addUpdateListener { valueAnimator ->
-            val value = valueAnimator.animatedValue as Int
-            view.offsetTopAndBottom(value - view.top)
-        }
-        animator.interpolator = AccelerateDecelerateInterpolator()
-        animator.duration = 300
-        animator.start()
-    }
+
 
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
@@ -230,6 +143,55 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
     }
 
     fun adapter() {
+        var listNew=ArrayList<SelectAnnotationBean>()
+        for (c in 0 until 10) {
+            if(c==0){
+                listNew.add(SelectAnnotationBean(select=true))
+            }else{
+                listNew.add(SelectAnnotationBean())
+            }
+
+        }
+
+        mDatabind.llShowBetList.layoutManager=LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false)
+        mDatabind.llShowBetList.setup {
+            addType<SelectAnnotationBean>(R.layout.item_annotation_list)
+            onBind {
+                when (itemViewType) {
+                    R.layout.item_annotation_list -> {
+                        var binding=getBinding<ItemAnnotationListBinding>()
+                        if(layoutPosition==0){
+                            binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_no_shi))
+                        }else if(layoutPosition==1){
+                            binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_no_wushi))
+                        }else if(layoutPosition==2){
+                            binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_no_yibai))
+                        }else if(layoutPosition==3){
+                            binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_no_liangbai))
+                        }else if(layoutPosition==4){
+                            binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_no_wubai))
+                        }else if(layoutPosition==5){
+                            binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_no_qian))
+                        }else if(layoutPosition==6){
+                            binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_no_wuqian))
+                        }else if(layoutPosition==7){
+                            binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_no_yiwan))
+                        }else if(layoutPosition==8){
+                            binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_no_liangwan))
+                        }else if(layoutPosition==9){
+                            binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_no_wuwan))
+                        }
+                    }
+
+                }
+
+            }
+        }.addModels(listNew)
+
+
+
+
+
         var list=ArrayList<HistoryResultBean>()
         for (c in 0 until 20) {
             list.add(HistoryResultBean())
@@ -240,22 +202,12 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
 
             addType<HistoryResultBean>(R.layout.item_bet_history)
 
-            onCreate {
-
-
-            }
-
             onBind {
                 when (itemViewType) {
                     R.layout.item_bet_history -> {
                         var binding=getBinding<ItemBetHistoryBinding>()
                         var mainTxtBean=_data as HistoryResultBean
 
-                        if(isAdd){
-                            initia= binding.llShowDice.height
-                            isAdd=false
-
-                        }
                         if(mainTxtBean.isShow){
                             binding.llShowDice.visibility=View.VISIBLE
                             // 获取并保存初始的上半部分布局高度
@@ -276,31 +228,7 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
 
 
             }
-            R.id.txtBetOdd.onClick {
-                var binding=getBinding<ItemBetHistoryBinding>()
-                val anim = ObjectAnimator.ofFloat(binding.llShowDice, "translationY", binding.llShowDice.height.toFloat(), 0f)
-                anim.duration = 500 // 设置动画持续时间
-                anim.start()
-////                binding.llShowDice.animate()
-////                    .translationY(if ( binding.llShowDice.visibility == View.VISIBLE)  binding.llShowDice.height.toFloat() else 0f)
-////                    .setDuration(1000) // 设置动画时长
-////                    .withEndAction {
-////                        binding.llShowDice.visibility = if ( binding.llShowDice.visibility == View.VISIBLE) View.GONE else View.VISIBLE
-////                    }
-////                    .start()
-//
-//                val anim = ObjectAnimator.ofFloat(binding.llShowDice, "translationY", 0f, binding.llShowDice.height.toFloat())
-//                anim.duration = 500 // 设置动画持续时间
-//                anim.start()
-//                // 动画结束后隐藏上半部分布局
-//                anim.addListener(object : AnimatorListenerAdapter() {
-//                    override fun onAnimationEnd(animation: Animator ) {
-//                        super.onAnimationEnd(animation)
-//                        binding.llShowDice.visibility = View.GONE
-//                    }
-//                })
 
-            }
 
         }.addModels(list)
 
@@ -311,7 +239,106 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
 
 
 
+
+
+
+
     }
 
+    /**
+     * 开奖结果隐藏不要的控件
+     */
+    fun  hiddenView(){
+        if(isShowResult){
+            resultAnimation()
+        }
+        mDatabind.llShowBetList.visibility=View.GONE
 
+    }
+
+    /**
+     * 开奖结果显示或者隐藏动画
+     */
+    fun  resultAnimation(){
+        if(isShowResult){
+            mDatabind.ivHomeRotation.rotation=180f
+            isShowResult=!isShowResult
+            for (i in 0 until  mDatabind.rvHomeHistory.models!!.size) {
+                var viewHolder=  mDatabind.rvHomeHistory.findViewHolderForLayoutPosition(i)
+                if(viewHolder!=null){
+
+                    (mDatabind.rvHomeHistory.models!![i] as HistoryResultBean).isShow=false
+                    var  llShowDice= viewHolder!!.itemView.findViewById<LinearLayout>(R.id.llShowDice)
+                    //llShowDice.height.toFloat()高度是205
+
+                    if(isAdd){
+                        initia=llShowDice.height
+                        isAdd=false
+
+                    }
+                    val anim = ObjectAnimator.ofFloat(llShowDice, "translationY", 0f, llShowDice.height.toFloat())
+                    anim.duration = 500 // 设置动画持续时间
+                    anim.start()
+                    // 动画结束后隐藏上半部分布局
+                    anim.addListener(object : AnimatorListenerAdapter() {
+                        override fun onAnimationEnd(animation: Animator ) {
+                            super.onAnimationEnd(animation)
+                            llShowDice.visibility = View.GONE
+
+                        }
+                    })
+                }else{
+                    (mDatabind.rvHomeHistory.models!![i] as HistoryResultBean).isShow=false
+                    mDatabind.rvHomeHistory.bindingAdapter.notifyItemChanged(i)
+                }
+
+
+            }
+
+
+
+        }else{
+            mDatabind.ivHomeRotation.rotation=0f
+            isShowResult=!isShowResult
+            for (i in 0 until  mDatabind.rvHomeHistory.models!!.size) {
+                var viewHolder=  mDatabind.rvHomeHistory.findViewHolderForLayoutPosition(i)
+                if(viewHolder!=null){
+                    (mDatabind.rvHomeHistory.models!![i] as HistoryResultBean).isShow=true
+//                            mDatabind.rvHomeHistory.bindingAdapter.notifyItemChanged(i)
+                    var  llShowDice= viewHolder!!.itemView.findViewById<LinearLayout>(R.id.llShowDice)
+                    llShowDice.visibility = View.VISIBLE
+                    llShowDice.translationY =initia.toFloat()
+
+                    // 创建动画，将视图向上平移显示
+                    val anim = ObjectAnimator.ofFloat(llShowDice, "translationY", initia.toFloat(), 0f)
+                    anim.duration = 500 // 设置动画持续时间
+                    anim.start()
+//                         动画结束后显示上半部分布局
+                    anim.addListener(object : AnimatorListenerAdapter() {
+                        override fun onAnimationEnd(animation: Animator) {
+                            super.onAnimationEnd(animation)
+
+                        }
+                    })
+//                            llShowDice.visibility = View.VISIBLE
+//                            ObjectAnimator.ofFloat(llShowDice, "translationY", llShowDice.height.toFloat(), 0f).apply {
+//                                duration = 500
+//                                interpolator = AccelerateInterpolator()
+//                                start()
+//                            }
+
+
+                }else{
+                    (mDatabind.rvHomeHistory.models!![i] as HistoryResultBean).isShow=true
+//                             mDatabind.rvHomeHistory.bindingAdapter.notifyItemChanged(i)
+                }
+
+
+            }
+            mDatabind.rvHomeHistory.postDelayed({
+                mDatabind.rvHomeHistory.bindingAdapter.notifyDataSetChanged()
+            }, 600)
+
+        }
+    }
 }

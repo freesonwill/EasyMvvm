@@ -12,13 +12,20 @@ import com.cn.game.sdk.MyGameApplication
 import com.cn.game.sdk.R
 import com.cn.game.sdk.ui.fast.GameHomeActivity
 import com.cn.game.sdk.view.FastLogoView
+import com.cn.game.sdk.view.OpenResultView
 import com.xcjh.app.event.AppGameViewModel
 
 @SuppressLint("StaticFieldLeak")
 object MyGameManager {
-    //快三的浮动View
-
+    /**
+     * 快三的浮动View
+     */
     private var  fastThreeView:FastLogoView?=null
+
+    /**
+     * 结果的View
+     */
+    private var  openResultView: OpenResultView?=null
     private var mContext:Context?=null
 
     //获取快三的浮动view
@@ -27,15 +34,22 @@ object MyGameManager {
             mContext=context
             fastThreeView= FastLogoView(context)
 
-//            fastThreeView!!.setFastLogoClickListener(object :FastLogoView.OnFastLogoClickListener{
-//                override fun onButtonClick() {
-//
-//                }
-//
-//            })
         }
 
         return fastThreeView as FastLogoView
+    }
+
+    /**
+     * 获取到快三结果的View
+     */
+    fun getOpenResultView(context:Context):OpenResultView{
+        if(openResultView==null){
+            mContext=context
+            openResultView= OpenResultView(context)
+
+        }
+
+        return openResultView as OpenResultView
     }
 
 
