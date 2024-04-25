@@ -2,13 +2,13 @@ package com.cn.game.sdk.game
 
 import com.cn.game.sdk.common.GameReqCode
 import com.cn.game.sdk.websocket.JWebSocketClient
+import com.xcjh.base_lib.utils.loge
 import game.common.proto.ClientReq
 import game.common.proto.ClientReq.PingBackReq
 import game.mod.proc.yf.proto.req.GameReq
 
 class GameMessageKuaikt(client: JWebSocketClient) :GameMessage{
 
-    private val TAG = "app-GameMessage"
     private var _client: JWebSocketClient? = null
 
     init {
@@ -18,56 +18,50 @@ class GameMessageKuaikt(client: JWebSocketClient) :GameMessage{
     override fun login(req: ClientReq.LoginReq ) {
         val mid: Short = 7
         val sid: Short = 7
-        val msg = _client!!.newPack(mid, sid, req.toByteArray(), req.toByteArray().size)
-        _client!!.send(msg)
+        send(mid,sid, req.toByteArray())
     }
 
     //进入直播间
     override fun enterGroup(req : GameReq.EnterGroup) {
-        var sid = GameReqCode.C2S_ENTER_GROUP as Short
-        val msg = _client!!.newPack(500, sid , req.toByteArray(), req.toByteArray().size)
-        _client!!.send(msg)
+        send(500,GameReqCode.C2S_ENTER_GROUP.toShort(), req.toByteArray())
     }
 
     //离开直播间
     override fun leavelGroup() {
-        var sid = GameReqCode.C2S_LEAVE_GROUP as Short
-        var data = ByteArray(0)
-        val msg = _client!!.newPack(500, sid , data, data.size)
-        _client!!.send(msg)
+        send(500,GameReqCode.C2S_LEAVE_GROUP.toShort(), ByteArray(0))
     }
 
     //进入游戏
     override fun enterGame(req: GameReq.EnterMiniGame) {
-        var sid = GameReqCode.C2S_ENTER_MINI_GAME as Short
-        val msg = _client!!.newPack(500, sid , req.toByteArray(), req.toByteArray().size)
-        _client!!.send(msg)
+        send(500,GameReqCode.C2S_ENTER_MINI_GAME.toShort(), req.toByteArray())
     }
 
     //离开游戏
     override fun leavelGame(req: GameReq.LeaveMiniGamesReq) {
-        var sid = GameReqCode.C2S_LEAVE_MINI_GAME as Short
-        val msg = _client!!.newPack(500, sid , req.toByteArray(), req.toByteArray().size)
-        _client!!.send(msg)
+        send(500,GameReqCode.C2S_LEAVE_MINI_GAME.toShort(), req.toByteArray())
     }
 
     //下注
     override fun bet(req : GameReq.BetReq) {
-        var sid = GameReqCode.C2S_BET as Short
-        val msg = _client!!.newPack(500, sid , req.toByteArray(), req.toByteArray().size)
-        _client!!.send(msg)
+        send(500,GameReqCode.C2S_BET.toShort(), req.toByteArray())
     }
 
     //刷新金币
     override fun refreshScore() {
-        var sid = GameReqCode.C2S_REFRESH_SCORE as Short
-        var data = ByteArray(0)
-        val msg = _client!!.newPack(500, sid ,data, data.size)
-        _client!!.send(msg)
+        send(500,GameReqCode.C2S_REFRESH_SCORE.toShort(), ByteArray(0))
     }
     //心跳
     override fun ping(req: PingBackReq){
-        val msg = _client!!.newPack(0, 2 , req.toByteArray(), req.toByteArray().size)
-        _client!!.send(msg)
+        send(0,2, req.toByteArray())
+    }
+
+    fun send(mid:Short, sid:Short, data:ByteArray){
+        try{
+            val msg = _client!!.newPack(mid, sid , data, data.size)
+            _client!!.send(msg)
+        }catch (e: Exception){
+            "======GameMessageKuaikt===调用异常------------  ${e.message}".loge()
+        }
+
     }
 }

@@ -37,7 +37,7 @@ class MainActivity : Activity() {
             })
         }
         btnXiu.setOnClickListener {
-
+            MyWsManager.getInstance(this)?.onTest()
         }
         appGameViewModel.ceshEvent.postValue(true)
         //初始化尾部

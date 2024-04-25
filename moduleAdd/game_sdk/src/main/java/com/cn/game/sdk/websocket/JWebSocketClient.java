@@ -60,7 +60,7 @@ public class JWebSocketClient extends WebSocketClient {
         ClientReq.LoginReq req = ClientReq.LoginReq.newBuilder()
                 .setAgentName("wali-internal")
                 .setServer(8)
-                .setToken("14%3AhRyvRPoB")
+                .setToken("20%3Akq6WCsZ9")
                 .setRequestId(6)
                 .setVersion("6")
                 .setNickname("android")
