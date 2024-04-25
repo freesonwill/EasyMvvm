@@ -8,11 +8,13 @@
     </data>
 
     <RelativeLayout
+        android:id="@+id/rlRoot"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
         <LinearLayout
+            android:id="@+id/llShowSection"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="34dp"

@@ -8,7 +8,7 @@
     <RelativeLayout
         android:id="@+id/rlHomeRoot"
         android:layout_width="match_parent"
-        android:layout_height="174dp"  >
+        android:layout_height="wrap_content"  >
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
