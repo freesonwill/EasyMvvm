@@ -1,12 +1,10 @@
 package com.cn.game.sdk.game
 
-import android.util.Log
 import com.cn.game.sdk.common.GameReqCode
 import com.cn.game.sdk.websocket.JWebSocketClient
-import game.common.proto.ClientReq.LoginReq
+import game.common.proto.ClientReq
+import game.common.proto.ClientReq.PingBackReq
 import game.mod.proc.yf.proto.req.GameReq
-import game.mod.proc.yf.proto.res.GameRes.EnterInfo
-import java.nio.ByteBuffer
 
 class GameMessageKuaikt(client: JWebSocketClient) :GameMessage{
 
@@ -17,27 +15,11 @@ class GameMessageKuaikt(client: JWebSocketClient) :GameMessage{
         this._client = client
     }
     //发送登录消息
-    override fun login(
-        agentName: String?,
-        version: String?,
-        server: Int,
-        nikeName: String?,
-        token: String?
-    ) {
-        val req = LoginReq.newBuilder()
-            .setAgentName(agentName)
-            .setVersion(version)
-            .setPlatform(6)
-            .setRequestId(8)
-            .setServer(server)
-            .setNickname(nikeName)
-            .setToken(token)
-            .build()
+    override fun login(req: ClientReq.LoginReq ) {
         val mid: Short = 7
         val sid: Short = 7
         val msg = _client!!.newPack(mid, sid, req.toByteArray(), req.toByteArray().size)
         _client!!.send(msg)
-
     }
 
     //进入直播间
@@ -81,6 +63,11 @@ class GameMessageKuaikt(client: JWebSocketClient) :GameMessage{
         var sid = GameReqCode.C2S_REFRESH_SCORE as Short
         var data = ByteArray(0)
         val msg = _client!!.newPack(500, sid ,data, data.size)
+        _client!!.send(msg)
+    }
+    //心跳
+    override fun ping(req: PingBackReq){
+        val msg = _client!!.newPack(0, 2 , req.toByteArray(), req.toByteArray().size)
         _client!!.send(msg)
     }
 }

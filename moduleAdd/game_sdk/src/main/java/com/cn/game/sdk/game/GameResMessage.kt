@@ -4,21 +4,23 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import com.cn.game.sdk.common.GameResCode
+import game.common.proto.ClientRes
 import game.mod.proc.yf.proto.res.GameRes
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-object GameResMessage  : LifecycleOwner {
-    var lifecycleRegistry: LifecycleRegistry = LifecycleRegistry(this)
-    var _prv_key = "message_key"
+object GameResMessage {
+    //var lifecycleRegistry: LifecycleRegistry = LifecycleRegistry(this)
+    private var _prv_key = "message_key"
 
     init {
-        lifecycleRegistry.setCurrentState(Lifecycle.State.CREATED)
+        //lifecycleRegistry.setCurrentState(Lifecycle.State.CREATED)
     }
-    public fun onMessage(mid:Int, sid:Int, byteArray: ByteArray){
-        GlobalScope.launch {
-            FlowBus.with<GameEmit>("$_prv_key.$sid").post(GameEmit(mid, sid, byteArray))
-        }
+    public suspend fun onMessage(mid:Int, sid:Int, byteArray: ByteArray){
+//        GlobalScope.launch {
+//            FlowBus.with<GameEmit>("$_prv_key.$sid").post(GameEmit(mid, sid, byteArray))
+//        }
+        FlowBus.with<GameEmit>("$_prv_key.$sid").post(GameEmit(mid, sid, byteArray))
     }
 
     //获取房间信息
@@ -94,9 +96,16 @@ object GameResMessage  : LifecycleOwner {
         }
     }
 
-
-
-    override fun getLifecycle(): Lifecycle {
-        return lifecycleRegistry
+    //服务器返回错误
+    public fun errorMessage(lifecycleOwner: LifecycleOwner, action: (t: ClientRes.ErrorMessage) -> Unit){
+        FlowBus.with<ClientRes.ErrorMessage>("$_prv_key.${GameResCode.SUB_LOGON_RESP__LOGIN_ERROR}").register(lifecycleOwner){
+            action(it)
+        }
     }
+
+
+
+//    override fun getLifecycle(): Lifecycle {
+//        return lifecycleRegistry
+//    }
 }

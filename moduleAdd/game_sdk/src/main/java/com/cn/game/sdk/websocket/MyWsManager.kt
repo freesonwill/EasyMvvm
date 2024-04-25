@@ -13,11 +13,10 @@ import com.cn.game.sdk.game.GameResMessage
 import com.cn.game.sdk.net.ApiComService.Companion.WEB_SOCKET_URL
 import com.xcjh.app.websocket.WebSocketAction
 import com.xcjh.base_lib.utils.*
+import game.common.proto.ClientReq
 import game.common.proto.ClientRes.ErrorMessage
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import java.lang.Runnable
 import java.net.URI
 import java.nio.ByteBuffer
 import java.util.concurrent.*
@@ -156,7 +155,16 @@ class MyWsManager private constructor(private val mContext: Context) {
 
 
     public fun onMessage(mid:Int, sid:Int, byteArray: ByteArray){
-        GameResMessage.onMessage(mid, sid, byteArray)
+        if(mid == 0){
+            return
+        }
+        GlobalScope.launch {
+            try {
+                GameResMessage.onMessage(mid, sid, byteArray)
+            }catch (e: Exception){
+                "======onMessage===调用异常------------  ${e.message}".loge()
+            }
+        }
     }
     /**
      * 初始化websocket连接
@@ -326,7 +334,8 @@ class MyWsManager private constructor(private val mContext: Context) {
             //client.sendPing();
             if (client != null) {
 //                client?.send(Gson().toJson(SendCommonWsBean(cmd = 13, loginType = null)))
-                //client?.sendPing()
+                var req = ClientReq.PingBackReq.newBuilder().build()
+                _gameMsg.ping(req)
             }
         } catch (e: Exception) {
             "-----------sendPing-----${e.message}".loge("wsService===")
