@@ -4,6 +4,10 @@ package com.cn.game.sdk.common;
  * response code
  */
 public interface GameResCode {
+    //登录成功
+    int SUB_LOGON_RESP__SUCCESS = 106;
+    //登录异常
+    int SUB_LOGON_RESP__LOGIN_ERROR = 107;
 
     /**
      * 進入房間, 取得房間資訊 -> Res.EnterInfo
@@ -13,10 +17,6 @@ public interface GameResCode {
      * 進入直播间, 取得直播间資訊 -> Res.GroupInfo
      */
     int S2C_GROUP_INFO = 1001;
-    /**
-     * 進入直播间, 取得直播间資訊 -> Res.MiniGameBasicInfo
-     */
-    int S2C_MINI_GAME_BASIC_INFO = 1002;
     /**
      * 進入小遊戲 -> Res.EnterMiniGameInfo
      */
@@ -40,7 +40,13 @@ public interface GameResCode {
     int S2C_SYNC_AREA_BET_INFO = 1007;
 
     /**
+     * 通知離開小遊戲 -> Res.LeaveMiniGames
+     */
+    int S2C_LEAVE_MINI_GAME = 1008;
+
+    /**
      * 刷新屬性 -> Res.RefreshUserProperties
      */
     int S2C_REFRESH_USER_PROPS = 1050;
+
 }

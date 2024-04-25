@@ -26,14 +26,16 @@ static CCPayloadCipher *getChipper(JNIEnv *env, jobject thiz)
 
 extern "C"
 JNIEXPORT jbyteArray JNICALL
-Java_com_chittybang_game_1sdk_util_JWebSocketClient_pack(JNIEnv *env,
-                                                     jobject thiz,
-                                                     jshort mid,
-                                                     jshort sid,
-                                                     jstring data,
-                                                     jint dataSize
-                                                     )
+
+Java_com_cn_game_sdk_websocket_JWebSocketClient_pack(JNIEnv *env,
+                                                         jobject thiz,
+                                                         jshort mid,
+                                                         jshort sid,
+                                                         jstring data,
+                                                         jint dataSize
+)
 {
+
     LOGD("[jni] dataSize = %d", dataSize);
     // TODO: implement pack()
 
@@ -68,9 +70,51 @@ Java_com_chittybang_game_1sdk_util_JWebSocketClient_pack(JNIEnv *env,
     return jarrRet;
 
 }
+
+extern "C"
+JNIEXPORT jbyteArray JNICALL
+Java_com_cn_game_sdk_websocket_JWebSocketClient_newPack(JNIEnv *env,
+                                                            jobject thiz,
+                                                            jshort mid,
+                                                            jshort sid,
+                                                            jbyteArray data,
+                                                            jint dataSize
+)
+{
+    LOGD("[jni] dataSize = %d", dataSize);
+    // 获取CCPayloadCipher对象
+    CCPayloadCipher *cipher = getChipper(env, thiz);
+    if (cipher == nullptr) {
+        return nullptr;
+    }
+
+    jbyte *dataBytes = env->GetByteArrayElements(data, nullptr);
+    if (dataBytes == nullptr) {
+        return nullptr;
+    }
+
+    unsigned char outData[SOCKET_BUFFER];
+    memset(outData, 0, SOCKET_BUFFER);
+    unsigned short outDataSize = 0;
+
+    cipher->pack(mid, sid, reinterpret_cast<char*>(dataBytes), dataSize,
+                 outData, &outDataSize);
+
+    env->ReleaseByteArrayElements(data, dataBytes, 0);
+
+    jbyteArray jarrRet = env->NewByteArray(outDataSize);
+    if (jarrRet == nullptr) {
+        return nullptr;
+    }
+
+    jbyte *outDataPtr = reinterpret_cast<jbyte*>(outData);
+    env->SetByteArrayRegion(jarrRet, 0, outDataSize, outDataPtr);
+
+    return jarrRet;
+}
 extern "C"
 JNIEXPORT jlong JNICALL
-Java_com_chittybang_game_1sdk_util_JWebSocketClient_nativeCreateChiper(JNIEnv *env, jobject thiz) {
+Java_com_cn_game_sdk_websocket_JWebSocketClient_nativeCreateChiper(JNIEnv *env, jobject thiz) {
     // TODO: implement nativeCreateChiper()
 
     CCPayloadCipher *chiper = new CCPayloadCipher();
@@ -81,10 +125,10 @@ Java_com_chittybang_game_1sdk_util_JWebSocketClient_nativeCreateChiper(JNIEnv *e
 }
 extern "C"
 JNIEXPORT jobjectArray JNICALL
-Java_com_chittybang_game_1sdk_util_JWebSocketClient_unpack(JNIEnv *env,
+Java_com_cn_game_sdk_websocket_JWebSocketClient_unpack(JNIEnv *env,
                                                            jobject thiz,
                                                            jbyteArray data
-                                                           )
+)
 {
     // TODO: implement unpack()
     CCPayloadCipher *chiper = getChipper(env, thiz);
@@ -128,8 +172,50 @@ Java_com_chittybang_game_1sdk_util_JWebSocketClient_unpack(JNIEnv *env,
 }
 
 extern "C"
+JNIEXPORT jobjectArray JNICALL
+Java_com_cn_game_sdk_websocket_JWebSocketClient_newUnpack(JNIEnv *env,jobject thiz,jbyteArray data){
+    CCPayloadCipher *cipher = getChipper(env, thiz);
+
+    // Get the length of the byte array
+    jsize len = env->GetArrayLength(data);
+    // Get the elements of the byte array
+    jbyte* body = env->GetByteArrayElements(data, nullptr);
+    // Convert jbyteArray to unsigned char array
+    unsigned char* someUnsignedChar = new unsigned char[len];
+    env->GetByteArrayRegion(data, 0, len, reinterpret_cast<jbyte*>(someUnsignedChar));
+    unsigned short mid = -1;
+    unsigned short sid = -1;
+    unsigned char cbDataBuffer[SOCKET_BUFFER] = {0}; // Initialize with 0
+    unsigned char *pDataBuffer = nullptr;
+    unsigned int wDataSize = 0;
+
+    // Call unpack function
+    cipher->unpack(someUnsignedChar, len, &mid, &sid, cbDataBuffer, &pDataBuffer, &wDataSize);
+
+    // Create a jbyteArray to store pDataBuffer data
+    jbyteArray dataBufferArray = env->NewByteArray(wDataSize);
+    env->SetByteArrayRegion(dataBufferArray, 0, wDataSize, reinterpret_cast<jbyte*>(pDataBuffer));
+
+    // Create jobjectArray to contain results
+    jobjectArray retobjarr = env->NewObjectArray(3, env->FindClass("java/lang/Object"), nullptr);
+    env->SetObjectArrayElement(retobjarr, 0, NewInteger(env, mid));
+    env->SetObjectArrayElement(retobjarr, 1, NewInteger(env, sid));
+    env->SetObjectArrayElement(retobjarr, 2, dataBufferArray);
+
+    // Log the results
+    std::string str(reinterpret_cast<const char*>(pDataBuffer), wDataSize);
+    LOGD(">.>%s: mid=%u, sid=%u, text=[%s], textSize=[%d]", __FUNCTION__, mid, sid, str.c_str(), wDataSize);
+
+    // Release resources
+    env->DeleteLocalRef(dataBufferArray);
+    env->ReleaseByteArrayElements(data, body, 0);
+    delete[] someUnsignedChar;
+    return retobjarr;
+}
+
+extern "C"
 JNIEXPORT void JNICALL
-Java_com_chittybang_game_1sdk_util_JWebSocketClient_nativeFinalizer(JNIEnv *env, jobject thiz,
+Java_com_cn_game_sdk_websocket_JWebSocketClient_nativeFinalizer(JNIEnv *env, jobject thiz,
                                                                     jlong ptr) {
     // TODO: implement nativeFinalizer()
     CCPayloadCipher *chiper = getChipper(env, thiz);

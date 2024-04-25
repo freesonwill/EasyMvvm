@@ -15,7 +15,8 @@ package game.mod.proc.yf.proto.req;
 // 進入群組(可用於進入直播間)
 message EnterGroup {
     string id = 1; // group id
-    string data = 2; // 透传资料（转抛）
+    repeated int32 miniGameIds = 2; // 小游戏 id
+    string data = 3; // 透传资料（转抛）
 }
 
 // 進入小遊戲
@@ -23,18 +24,23 @@ message EnterMiniGame {
     int32 miniGameId = 1;
 }
 
+// 離開小遊戲
+message LeaveMiniGamesReq{
+    repeated int32 miniGameIds = 1;
+}
+
 // 下注
 message BetReq {
     // 小游戏 id
     int32 miniGameId = 1;
     // 下注资料
-    repeated AreaBet areaBet = 2;
+    repeated AreaBetReq areaBet = 2;
 }
 
 // 每个注区的押注资料
-message AreaBet {
+message AreaBetReq {
     // 注区ID:
-    int32 areaId = 1;
+    int32 areaCode = 1;
     // 玩家注区总下注金额
     int32 betScore = 2;
 }
@@ -47,4 +53,3 @@ message TestAssign {
     // 牌面
     repeated int32 elements = 2;
 }
-

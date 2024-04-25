@@ -11,11 +11,11 @@ message EnterInfo {
     int64 userLoginTime = 3;
 }
 
-    // 登入后给玩家资料
-    message UserData {
-        int64 userId = 1; // 用户id
-        int64 score = 2; // 身上的钱
-    }
+// 登入后给玩家资料
+message UserData {
+    int64 userId = 1; // 用户id
+    int64 score = 2; // 身上的钱
+}
 
 // 直播间资讯 (MDM_GAME-C2S_ENTER_GROUP => MDM_GAME-S2C_GROUP_INFO)
 message GroupInfo {
@@ -23,7 +23,6 @@ message GroupInfo {
     repeated MiniGameBasicInfo miniGameBasicInfoList = 1;
 }
 
-// 小游戏资讯 (MDM_GAME-C2S_ENTER_MINI_GAME => MDM_GAME-S2C_MINI_GAME_BASIC_INFO)
 message MiniGameBasicInfo {
     // 小游戏 id
     int32 miniGameId = 1;
@@ -36,38 +35,6 @@ message MiniGameBasicInfo {
     // 开奖纪录(若进场时为结算阶段, 则包含此局结果)
     Trend trend = 5;
 }
-
-message EnterMiniGameInfo {
-    // 小游戏 id
-    int32 miniGameId = 1;
-
-    repeated AreaType areaTypes = 2; // 注區分類表
-    repeated AreaInfo areaInfoList = 3; // 每個注區的設定
-
-    repeated AreaBet areaBets = 4; // 全部注區的下注信息(含自己)
-    repeated AreaBet myAreaBets = 5; // 我自己的下注信息
-}
-
-    // 注区资讯
-    message AreaInfo {
-        int32 areaCode = 1; // 注区ID
-        string name = 2; // 注区名称
-        repeated int32 types = 3; // 所屬注区类别
-        float odds = 5; // 赔率
-        int32 minLimit = 6; // 投注下限
-        int32 maxLimit = 7; // 投注上限
-    }
-
-    message AreaType{
-        int32 type = 1;
-        string typeName = 2;
-    }
-
-    message AreaBet{
-        int32 areaCode = 1;
-        int32 betScore = 2;
-        int32 userCount = 3; // 下注的人數
-    }
 
 // 开奖历史
 message Trend {
@@ -95,6 +62,39 @@ message ActorPerform {
     repeated int32 performResult = 3; // (通用) 0:undefined, 1:胜, 2:败, 3:和
 }
 
+// 小游戏资讯 (MDM_GAME-C2S_ENTER_MINI_GAME => MDM_GAME-S2C_ENTER_MINI_GAME_INFO)
+message EnterMiniGameInfo {
+    // 小游戏 id
+    int32 miniGameId = 1;
+
+    repeated AreaType areaTypes = 2; // 注區分類表
+    repeated AreaInfo areaInfoList = 3; // 每個注區的設定
+
+    repeated AreaBet areaBets = 4; // 全部注區的下注信息(含自己)
+    repeated AreaBet myAreaBets = 5; // 我自己的下注信息
+}
+
+message AreaType{
+    int32 type = 1;
+    string typeName = 2;
+}
+
+// 注区资讯
+message AreaInfo {
+    int32 areaCode = 1; // 注区ID
+    string name = 2; // 注区名称
+    repeated int32 types = 3; // 所屬注区类别
+    float odds = 5; // 赔率
+    int32 minLimit = 6; // 投注下限
+    int32 maxLimit = 7; // 投注上限
+}
+
+message AreaBet{
+    int32 areaCode = 1;
+    int32 betScore = 2;
+    int32 userCount = 3; // 下注的人數
+}
+
 // 开始新的一轮
 message BeginNewRound {
     // 小游戏 id
@@ -115,10 +115,10 @@ message MyMiniGameBetResult{
     // 押注资讯
     repeated BetResultInfo betResultInfoList = 2;
 }
-    message BetResultInfo {
-        AreaBet areaBet = 1;
-        int32 result = 2;// OrderStatus
-    }
+message BetResultInfo {
+    AreaBet areaBet = 1;
+    int32 result = 2;// OrderStatus
+}
 
 
 // 同步注區下注信息
@@ -138,6 +138,10 @@ message BeginSettle {
     RoundInfo roundInfo = 3;
 }
 
+// 離開小遊戲
+message LeaveMiniGames {
+    repeated int32 miniGameIds = 1; //
+}
 
 // 选择性刷新玩家属性
 message RefreshUserProperties {

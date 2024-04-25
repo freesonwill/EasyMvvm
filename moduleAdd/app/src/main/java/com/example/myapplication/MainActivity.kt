@@ -7,10 +7,11 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import com.cn.game.sdk.MyGameApplication
-import com.cn.game.sdk.ToastUtli
 import com.cn.game.sdk.appGameViewModel
+import com.cn.game.sdk.common.GameReqCode
 import com.cn.game.sdk.view.FastLogoView
+import com.cn.game.sdk.websocket.MyWsManager
+import game.common.proto.ClientReq.LoginReq
 
 class MainActivity : Activity() {
       var  views: FastLogoView?=null
@@ -37,10 +38,11 @@ class MainActivity : Activity() {
         }
         btnXiu.setOnClickListener {
 
+            MyWsManager.gameMessage().login("wali-internal","6", 8, "android","14%3AhRyvRPoB")
         }
         appGameViewModel.ceshEvent.postValue(true)
         //初始化尾部
-//        MyWsManager.getInstance(this)?.initService()
+        MyWsManager.getInstance(this)?.initService()
 
     }
 }
