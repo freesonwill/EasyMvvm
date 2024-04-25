@@ -1,9 +1,10 @@
 package com.cn.game.sdk.common;
-
 /**
  * request code
  */
 public interface GameReqCode {
+    //用户登录
+    int SUB_LOGON_REQ__LOGIN = 7;
     /**
      * 進入直播間, 不可切到DEFAULT_GROUPID("") -> Req.EnterGroup
      */
@@ -18,7 +19,7 @@ public interface GameReqCode {
      */
     int C2S_ENTER_MINI_GAME = 1005;
     /**
-     * 離開小遊戲 -> no payload
+     * 離開小遊戲 -> Req.LeaveMiniGamesReq
      */
     int C2S_LEAVE_MINI_GAME = 1007;
     /**
@@ -34,4 +35,5 @@ public interface GameReqCode {
      * 盘面指定 -> Req.TestAssign
      */
     int C2S_TEST_ASSIGN = 1050;
+
 }

@@ -2,31 +2,25 @@ package com.cn.game.sdk.websocket
 
 import android.annotation.SuppressLint
 import android.content.*
-import android.os.Build
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
-import com.cn.game.sdk.appGameViewModel
+import androidx.lifecycle.*
+import com.cn.game.sdk.common.GameResCode
+import com.cn.game.sdk.game.GameMessage
+import com.cn.game.sdk.game.GameMessageKuai
+import com.cn.game.sdk.game.GameMessageKuaikt
+import com.cn.game.sdk.game.GameResMessage
 import com.cn.game.sdk.net.ApiComService.Companion.WEB_SOCKET_URL
-import com.drake.engine.base.app
-import com.google.gson.Gson
 import com.xcjh.app.websocket.WebSocketAction
-
-import com.xcjh.base_lib.Constants
-import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.utils.*
+import game.common.proto.ClientRes.ErrorMessage
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.java_websocket.client.WebSocketClient
-import org.java_websocket.handshake.ServerHandshake
 import java.net.URI
-import java.util.concurrent.ScheduledExecutorService
-import java.util.concurrent.ScheduledThreadPoolExecutor
-import java.util.concurrent.ThreadFactory
-import java.util.concurrent.ThreadPoolExecutor
-import java.util.concurrent.TimeUnit
+import java.nio.ByteBuffer
+import java.util.concurrent.*
 import java.util.concurrent.atomic.AtomicInteger
 
 
@@ -35,9 +29,9 @@ import java.util.concurrent.atomic.AtomicInteger
  * 管理 webSocket
  */
 class MyWsManager private constructor(private val mContext: Context) {
-
     val tag = "MyWsManager"
-    var client: WebSocketClient? = null
+    var client: JWebSocketClient? = null
+    lateinit var _gameMsg : GameMessage
     companion object {
         private var scheduledExecutorService: ScheduledExecutorService? = null
         private var errorNum = 0
@@ -74,6 +68,10 @@ class MyWsManager private constructor(private val mContext: Context) {
             }
             return INSTANCE
         }
+
+        fun gameMessage(): GameMessage {
+            return INSTANCE?.gameMessage() ?: GameMessageKuai(INSTANCE?.client);
+        }
     }
 
     // private var client: WebSocketClient? = null
@@ -109,16 +107,6 @@ class MyWsManager private constructor(private val mContext: Context) {
     /**
      * command
      *  5->6 登录成功         22->22 注销成功
-     *  7->9 加入群聊成功       21->10 退出群聊成功   10通知群内人员用户退出直播间）
-     *  13->13 心跳包成功
-     * 32 -》禁言  bizId=""如果是空就是全局    不为空就是主播id
-     * 33-》解除
-     * 36->是被主播踢出直播间
-     * 37直播间公告修改
-     *  11->12->11 发送消息->发送消息成功->接收到消息
-     *  19->20 获取指定群聊或好友历史或离线消息成功
-     *  23->23 消息已读回复
-     *  41 服务器推送消息【cmd:41】（当前用户被踢）
      */
     private fun parsingServiceLogin(msg: String) {
 
@@ -126,16 +114,18 @@ class MyWsManager private constructor(private val mContext: Context) {
     /**
      * 发送消息
      */
-    fun sendMessage(msg: String) {
+    fun sendMessage(reqType: Int, msg: com.google.protobuf.GeneratedMessageV3) {
         try {
             if (null != client && client?.isOpen == true) {
-                msg.loge("===sendMessage==")
-                client?.send(msg)
-
+                client?.sendMessage(reqType, msg.toByteArray())
             }
         }catch (_:Exception){
 
         }
+    }
+
+    fun  gameMessage(): GameMessage {
+        return _gameMsg
     }
 
     private var receiver: ChatMessageReceiver? = null
@@ -163,65 +153,78 @@ class MyWsManager private constructor(private val mContext: Context) {
             }
         }
     }
+
+
+    public fun onMessage(mid:Int, sid:Int, byteArray: ByteArray){
+        GameResMessage.onMessage(mid, sid, byteArray)
+    }
     /**
      * 初始化websocket连接
      */
     @OptIn(DelicateCoroutinesApi::class)
     private fun initSocketClient() {
-        client = object : WebSocketClient(URI.create(WEB_SOCKET_URL)) {
-            init {
-                if (URI.create(WEB_SOCKET_URL).toString().contains("wss://")) {
-                    trustAllHots(this)
-                }
-            }
-
-            private fun trustAllHots(client: WebSocketClient) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    MyWsClientCert().trustAllHots(client)
-                }
-                // val trustAllCerts = TrustManager
-            }
-
-            override fun onMessage(message: String) {
-                val intent = Intent()
-                intent.action = WebSocketAction.WEB_ACTION
-                intent.putExtra("message", message)
-                app.sendBroadcast(intent)
-                // "onReceive====------------  $message".loge()
-                /* try {
-                     //appViewModel
-                     parsingServiceLogin(message)
-                 } catch (e: Exception) {
-                     "======onReceive===webSocket解析异常------------  ${e.message}".loge()
-                 }*/
-            }
-
-            override fun onOpen(handshakedata: ServerHandshake) {
-                "websocket连接成功wsStatus===${appGameViewModel.wsStatusGameOpen.value}".loge("MyWsClient===")
-//                if (CacheUtil.isLogin()) {
-//                    GlobalScope.launch {
-//                        delay(2000)
-//                        onWsUserLogin() {}
-//                    }
+        var uri  = URI.create(WEB_SOCKET_URL)
+        client = JWebSocketClient(this, uri)
+        _gameMsg = GameMessageKuaikt(client!!)
+//        client = object : WebSocketClient(URI.create(WEB_SOCKET_URL), Draft_6455()) {
+//            init {
+//                if (URI.create(WEB_SOCKET_URL).toString().contains("wss://")) {
+//                    trustAllHots(this)
 //                }
-
-                appGameViewModel.wsStatusGameOpen.postValue(true)
-                "websocket连接成功appViewModel_wsStatus=== ${appGameViewModel.wsStatusGameOpen.value}".loge("MyWsClient===")
-                if (errorNum > 0) {
-                    //Log.e("MyWsClient===", "-----------onOpen--------$errorNum")
-                }
-            }
-
-            override fun onClose(code: Int, reason: String, remote: Boolean) {
-                appGameViewModel.wsStatusGameClose.postValue(true)
-                "websocket 关闭appViewModel_wsStatus=== ${appGameViewModel.wsStatusGameClose.value}".loge("MyWsClient===")
-                errorNum++
-            }
-
-            override fun onError(ex: java.lang.Exception?) {
-
-            }
-        }
+//            }
+//
+//            private fun trustAllHots(client: WebSocketClient) {
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//                    MyWsClientCert().trustAllHots(client)
+//                }
+//                // val trustAllCerts = TrustManager
+//            }
+//
+//            override fun onMessage(message: String) {
+//                val intent = Intent()
+//                intent.action = WebSocketAction.WEB_ACTION
+//                intent.putExtra("message", message)
+//                app.sendBroadcast(intent)
+//            }
+//
+//            override fun onMessage(bytes: ByteBuffer?) {
+//                super.onMessage(bytes)
+//                if (bytes == null){
+//                    return
+//                }
+//
+//                _gameMsg?.onMessage(bytes)
+//            }
+//
+//            override fun onOpen(handshakedata: ServerHandshake) {
+//                _gameMsg?.onLogin()
+//                "websocket连接成功wsStatus===${appGameViewModel.wsStatusGameOpen.value}".loge("MyWsClient===")
+////                if (CacheUtil.isLogin()) {
+////                    GlobalScope.launch {
+////                        delay(2000)
+////                        onWsUserLogin() {}
+////                    }
+////                }
+//
+//                appGameViewModel.wsStatusGameOpen.postValue(true)
+//                "websocket连接成功appViewModel_wsStatus=== ${appGameViewModel.wsStatusGameOpen.value}".loge("MyWsClient===")
+//                if (errorNum > 0) {
+//                    //Log.e("MyWsClient===", "-----------onOpen--------$errorNum")
+//                }
+//            }
+//
+//            override fun onClose(code: Int, reason: String, remote: Boolean) {
+//                appGameViewModel.wsStatusGameClose.postValue(true)
+//                "websocket 关闭appViewModel_wsStatus=== ${appGameViewModel.wsStatusGameClose.value}".loge("MyWsClient===")
+//                errorNum++
+//            }
+//
+//            override fun onError(ex: java.lang.Exception?) {
+//
+//            }
+//        }
+//        _gameMsg = GameMessage(client)
+//        _gameMsg?.createChiper()
         doRegisterReceiver()
         connect()
     }
@@ -347,5 +350,4 @@ class MyWsManager private constructor(private val mContext: Context) {
             }, 0, TimeUnit.SECONDS)
         }
     }
-
 }
