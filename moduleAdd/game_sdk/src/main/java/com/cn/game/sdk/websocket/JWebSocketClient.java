@@ -56,6 +56,16 @@ public class JWebSocketClient extends WebSocketClient {
     @Override
     public void onOpen(ServerHandshake handShakeData) {//在webSocket连接开启时调用
         //this.testLogin();
+        //login("wali-internal","6", 8, "android","14%3AhRyvRPoB");
+        ClientReq.LoginReq req = ClientReq.LoginReq.newBuilder()
+                .setAgentName("wali-internal")
+                .setServer(8)
+                .setToken("20%3Akq6WCsZ9")
+                .setRequestId(6)
+                .setVersion("6")
+                .setNickname("android")
+                .build();
+        _wsMngr.gameMessage().login(req);
     }
 
     @Override

@@ -37,8 +37,7 @@ class MainActivity : Activity() {
             })
         }
         btnXiu.setOnClickListener {
-
-            MyWsManager.gameMessage().login("wali-internal","6", 8, "android","14%3AhRyvRPoB")
+            MyWsManager.getInstance(this)?.onTest()
         }
         appGameViewModel.ceshEvent.postValue(true)
         //初始化尾部

@@ -5,19 +5,21 @@ import android.content.*
 import android.os.Handler
 import android.os.Looper
 import androidx.lifecycle.*
+import com.cn.game.sdk.ToastUtli
 import com.cn.game.sdk.common.GameResCode
 import com.cn.game.sdk.game.GameMessage
 import com.cn.game.sdk.game.GameMessageKuai
 import com.cn.game.sdk.game.GameMessageKuaikt
 import com.cn.game.sdk.game.GameResMessage
 import com.cn.game.sdk.net.ApiComService.Companion.WEB_SOCKET_URL
+import com.cn.game.sdk.utils.MyGameManager
 import com.xcjh.app.websocket.WebSocketAction
 import com.xcjh.base_lib.utils.*
+import game.common.proto.ClientReq
 import game.common.proto.ClientRes.ErrorMessage
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import game.mod.proc.yf.proto.req.GameReq.EnterGroup
+import kotlinx.coroutines.*
+import java.lang.Runnable
 import java.net.URI
 import java.nio.ByteBuffer
 import java.util.concurrent.*
@@ -70,7 +72,7 @@ class MyWsManager private constructor(private val mContext: Context) {
         }
 
         fun gameMessage(): GameMessage {
-            return INSTANCE?.gameMessage() ?: GameMessageKuai(INSTANCE?.client);
+            return INSTANCE?.gameMessage() ?: GameMessageKuaikt(INSTANCE?.client!!);
         }
     }
 
@@ -154,9 +156,28 @@ class MyWsManager private constructor(private val mContext: Context) {
         }
     }
 
-
-    public fun onMessage(mid:Int, sid:Int, byteArray: ByteArray){
-        GameResMessage.onMessage(mid, sid, byteArray)
+    fun onTest(){
+//        var req = ClientReq.LoginReq.newBuilder()
+//            .build()
+//        _gameMsg.login(req)
+    }
+    fun onMessage(mid:Int, sid:Int, byteArray: ByteArray){
+        if(mid == 0){
+            return
+        }
+        if (sid == GameResCode.SUB_LOGON_RESP__LOGIN_ERROR){
+            var errMsg = ErrorMessage.parseFrom(byteArray)
+            GlobalScope.launch(Dispatchers.Main) {
+                ToastUtli().showToast(errMsg.desc, mContext)
+            }
+        }
+        GlobalScope.launch {
+            try {
+                GameResMessage.onMessage(mid, sid, byteArray)
+            }catch (e: Exception){
+                "======onMessage===调用异常------------  ${e.message}".loge()
+            }
+        }
     }
     /**
      * 初始化websocket连接
@@ -326,7 +347,8 @@ class MyWsManager private constructor(private val mContext: Context) {
             //client.sendPing();
             if (client != null) {
 //                client?.send(Gson().toJson(SendCommonWsBean(cmd = 13, loginType = null)))
-                //client?.sendPing()
+                var req = ClientReq.PingBackReq.newBuilder().build()
+                _gameMsg.ping(req)
             }
         } catch (e: Exception) {
             "-----------sendPing-----${e.message}".loge("wsService===")

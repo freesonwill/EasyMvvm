@@ -9,7 +9,7 @@ import java.nio.ByteBuffer;
 
 import game.common.proto.ClientReq;
 
-public class GameMessageKuai implements  GameMessage{
+public class GameMessageKuai{
 
     private String TAG = "app-GameMessage";
     private JWebSocketClient _client;
@@ -26,7 +26,6 @@ public class GameMessageKuai implements  GameMessage{
     }
 
     //发送登录消息
-    @Override
     public void login(String agentName, String version, int server, String nikeName, String token){
         ClientReq.LoginReq req =  ClientReq.LoginReq.newBuilder()
                 .setAgentName(agentName)
