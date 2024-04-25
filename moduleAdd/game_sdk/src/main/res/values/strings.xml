@@ -3,5 +3,8 @@
     <string name="g_home_txt_video">开奖视频</string>
     <string name="g_home_txt_more">更多</string>
     <string name="g_home_txt_default">默认</string>
-
+    <string name="g_home_txt_small">小</string>
+    <string name="g_home_txt_big">大</string>
+    <string name="g_home_txt_single">单</string>
+    <string name="g_home_txt_double">双</string>
 </resources>

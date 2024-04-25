@@ -23,7 +23,7 @@ import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
-import com.xcjh.base_lib.R 
+import com.xcjh.base_lib.R
 import com.xcjh.base_lib.utils.indicator.CommonPagerIndicator
 import net.lucode.hackware.magicindicator.MagicIndicator
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigator
@@ -116,26 +116,10 @@ fun MagicIndicator.bindViewPager2(
                 titleText = customLayout.findViewById(R.id.title_text)
             }
 
-            // titleText.gravity=View.TEXT_ALIGNMENT_VIEW_START
             titleText.text = mStringList[index].toHtml()
             titleText.textSize = unSelectSize
             titleText.gravity = Gravity.CENTER_VERTICAL
-            //点击增加透明度
-//            commonPagerTitleView.setOnTouchListener { view, event ->
-//                when (event.action) {
-//                    MotionEvent.ACTION_DOWN -> {
-//                        titleText.alpha=0.3f
-//                    }
-//                      MotionEvent.ACTION_UP->{
-//                          // 处理抬起事件
-//                          titleText.alpha=1f
-//                      }
-//
-//
-//                }
-//
-//                false
-//            }
+
             commonPagerTitleView.setContentView(customLayout)
             commonPagerTitleView.onPagerTitleChangeListener = object :
                 CommonPagerTitleView.OnPagerTitleChangeListener {
