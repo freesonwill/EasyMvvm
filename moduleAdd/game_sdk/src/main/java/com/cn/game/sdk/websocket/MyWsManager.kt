@@ -12,6 +12,7 @@ import com.cn.game.sdk.game.GameMessageKuai
 import com.cn.game.sdk.game.GameMessageKuaikt
 import com.cn.game.sdk.game.GameResMessage
 import com.cn.game.sdk.net.ApiComService.Companion.WEB_SOCKET_URL
+import com.cn.game.sdk.utils.MyGameManager
 import com.xcjh.app.websocket.WebSocketAction
 import com.xcjh.base_lib.utils.*
 import game.common.proto.ClientReq
@@ -156,9 +157,9 @@ class MyWsManager private constructor(private val mContext: Context) {
     }
 
     fun onTest(){
-        var req = ClientReq.LoginReq.newBuilder()
-            .build()
-        _gameMsg.login(req)
+//        var req = ClientReq.LoginReq.newBuilder()
+//            .build()
+//        _gameMsg.login(req)
     }
     fun onMessage(mid:Int, sid:Int, byteArray: ByteArray){
         if(mid == 0){

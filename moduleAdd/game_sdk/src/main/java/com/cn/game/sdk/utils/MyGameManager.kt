@@ -17,6 +17,7 @@ import com.xcjh.app.event.AppGameViewModel
 
 @SuppressLint("StaticFieldLeak")
 object MyGameManager {
+    
     /**
      * 快三的浮动View
      */

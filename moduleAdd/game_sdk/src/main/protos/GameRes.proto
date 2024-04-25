@@ -67,10 +67,10 @@ message EnterMiniGameInfo {
     // 小游戏 id
     int32 miniGameId = 1;
 
-    repeated AreaType areaTypes = 2; // 注區分類表
-    repeated AreaInfo areaInfoList = 3; // 每個注區的設定
+    repeated AreaType areaTypes = 2; // 注区分类表
+    repeated AreaInfo areaInfoList = 3; // 每个注区的设定
 
-    repeated AreaBet areaBets = 4; // 全部注區的下注信息(含自己)
+    repeated AreaBet areaBets = 4; // 全部注区的下注信息(含自己)
     repeated AreaBet myAreaBets = 5; // 我自己的下注信息
 }
 
@@ -83,7 +83,7 @@ message AreaType{
 message AreaInfo {
     int32 areaCode = 1; // 注区ID
     string name = 2; // 注区名称
-    repeated int32 types = 3; // 所屬注区类别
+    repeated int32 types = 3; // 所属注区类别
     float odds = 5; // 赔率
     int32 minLimit = 6; // 投注下限
     int32 maxLimit = 7; // 投注上限
@@ -92,7 +92,7 @@ message AreaInfo {
 message AreaBet{
     int32 areaCode = 1;
     int32 betScore = 2;
-    int32 userCount = 3; // 下注的人數
+    int32 userCount = 3; // 下注的人数
 }
 
 // 开始新的一轮
@@ -121,7 +121,7 @@ message BetResultInfo {
 }
 
 
-// 同步注區下注信息
+// 同步注区下注信息
 message SyncAreaBetInfo {
     // 小游戏 id
     int32 miniGameId = 1;
@@ -136,14 +136,22 @@ message BeginSettle {
     int32 countDown = 2;
     // 开奖资讯
     RoundInfo roundInfo = 3;
+    // 玩家自己押注输赢结果
+    repeated SettleResult mySettleResult = 4;
 }
 
-// 離開group
+message SettleResult {
+    int32 areaCode = 1; // 注区ID
+    int32 betScore = 2; // 投注金額
+    int32 winScore = 3; // 輸贏金額(0不傳)
+}
+
+// 离开group
 message LeaveGroup{
-    int32 groupId = 1;
+    string groupId = 1;
 }
 
-// 離開小遊戲
+// 离开小游戏
 message LeaveMiniGames {
     repeated int32 miniGameIds = 1; //
 }

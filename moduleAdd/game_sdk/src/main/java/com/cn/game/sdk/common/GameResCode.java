@@ -53,5 +53,4 @@ public interface GameResCode {
      */
     int S2C_REFRESH_USER_PROPS = 1050;
 
-
 }

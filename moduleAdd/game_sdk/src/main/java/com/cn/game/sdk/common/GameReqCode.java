@@ -35,6 +35,4 @@ public interface GameReqCode {
      * 盘面指定 -> Req.TestAssign
      */
     int C2S_TEST_ASSIGN = 1050;
-
-
 }

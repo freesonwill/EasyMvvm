@@ -4,10 +4,11 @@
     android:layout_width="48dp"
     android:layout_height="48dp"
     android:layout_marginRight="@dimen/dp_10">
+
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/ivShowBg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:srcCompat="@drawable/icon_no_shi"
-        android:layout_centerInParent="true"/>
+        android:layout_centerInParent="true"
+        app:srcCompat="@drawable/icon_no_shi" />
 </RelativeLayout>
