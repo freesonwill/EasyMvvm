@@ -1,18 +1,14 @@
 package com.cn.game.sdk.game
 
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LifecycleRegistry
-import com.cn.game.sdk.ToastUtli
 import com.cn.game.sdk.common.GameResCode
 import game.common.proto.ClientRes
 import game.mod.proc.yf.proto.res.GameRes
 import game.mod.proc.yf.proto.res.GameRes.EnterInfo
 import game.mod.proc.yf.proto.res.GameRes.GroupInfo
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
-object GameResMessage {
+//游戏服务回调
+object GameServiceBack {
     //var lifecycleRegistry: LifecycleRegistry = LifecycleRegistry(this)
     private var _prv_key = "message_key"
 
@@ -101,7 +97,7 @@ object GameResMessage {
 
     //登录成功
     fun loginSuccess(lifecycleOwner: LifecycleOwner ,action: (t: ClientRes.InfoAfterLoginSuccess) -> Unit){
-        FlowBus.with<ClientRes.InfoAfterLoginSuccess>("$_prv_key.${GameResCode.S2C_REFRESH_USER_PROPS}").register(lifecycleOwner){
+        FlowBus.with<ClientRes.InfoAfterLoginSuccess>("$_prv_key.${GameResCode.SUB_LOGON_RESP__SUCCESS}").register(lifecycleOwner){
             action(it)
         }
     }
