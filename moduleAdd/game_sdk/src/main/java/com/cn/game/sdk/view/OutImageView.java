@@ -58,6 +58,13 @@ public class OutImageView extends AppCompatImageView {
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
+                        Log.i("GGGGGG","rectF=="+rectF.centerX()+"==="+rectF.centerY());
+                        Log.i("GGGGGG","getRaw=="+event.getRawX()+"==="+event.getRawY());
+                        Log.i("GGGGGG","getY=="+event.getX()+"==="+event.getY());
+                        Log.i("GGGGGG","rectcccc=="+rectF.contains(event.getRawX(), event.getRawY()));
+
+                        float x = event.getX();
+                        float y = event.getY();
                         if (rectF.contains(event.getRawX(), event.getRawY())&&getVisibility()==VISIBLE) {
 //                            MyToast.addToast("我被点击了");
                             if (onClickListener != null)
@@ -82,8 +89,13 @@ public class OutImageView extends AppCompatImageView {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        canvas.clipRect(0, 0, with, height);
+//        canvas.clipRect(0, 0, with, height);
         super.onDraw(canvas);
+        getLocationOnScreen(location);
+        rectF.left = location[0];
+        rectF.top = location[1];
+        rectF.right = location[0] + getWidth();
+        rectF.bottom = location[1] + getHeight();
     }
 
     @Override
@@ -92,5 +104,6 @@ public class OutImageView extends AppCompatImageView {
         with = MeasureSpec.getSize(widthMeasureSpec);
         height = MeasureSpec.getSize(heightMeasureSpec);
     }
+
 
 }
