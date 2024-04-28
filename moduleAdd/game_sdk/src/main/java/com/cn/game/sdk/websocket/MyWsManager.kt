@@ -7,6 +7,7 @@ import android.os.Looper
 import androidx.lifecycle.*
 import com.cn.game.sdk.ToastUtli
 import com.cn.game.sdk.common.GameResCode
+import com.cn.game.sdk.game.GameData
 import com.cn.game.sdk.game.GameService
 import com.cn.game.sdk.game.GameServiceKuaikt
 import com.cn.game.sdk.game.GameServiceBack
@@ -16,7 +17,9 @@ import com.xcjh.base_lib.utils.*
 import game.common.proto.ClientReq
 import game.common.proto.ClientRes
 import game.common.proto.ClientRes.ErrorMessage
+import game.mod.proc.yf.proto.res.GameRes.EnterInfo
 import kotlinx.coroutines.*
+import org.java_websocket.enums.ReadyState
 import java.lang.Runnable
 import java.net.URI
 import java.util.concurrent.*
@@ -162,7 +165,7 @@ class MyWsManager private constructor(private val mContext: Context) {
 //            .build()
 //        onMessage(7, GameResCode.SUB_LOGON_RESP__SUCCESS,res.toByteArray())
     }
-    fun onMessage(mid:Int, sid:Int, byteArray: ByteArray){
+    fun onMessage(mid:Int, sid:Int, byteArray: ByteArray?){
         if(mid == 0){
             return
         }
@@ -172,18 +175,12 @@ class MyWsManager private constructor(private val mContext: Context) {
                 ToastUtli().showToast(errMsg.desc, mContext)
             }
         }
-        /**
+
         //登录成功之后直接进行后续操作
         if(sid == GameResCode.SUB_LOGON_RESP__SUCCESS){
-            var groupReq = EnterGroup.newBuilder().setId("123").build()
-            _gameMsg.enterGroup(groupReq)
+            _gameMsg.enterInfo();
         }
-        //进入group之后直接调用进入小游戏
-        if(sid == GameResCode.S2C_GROUP_INFO){
-            var gameReq = EnterMiniGame.newBuilder().setMiniGameId(1).build()
-            _gameMsg.enterGame(gameReq)
-        }
-        **/
+
         GlobalScope.launch {
             try {
                 GameServiceBack.onMessage(mid, sid, byteArray)
@@ -358,7 +355,7 @@ class MyWsManager private constructor(private val mContext: Context) {
     fun sendHeartCmd() {
         try {
             //client.sendPing();
-            if (client != null) {
+            if (client != null && client!!.readyState == ReadyState.OPEN) {
 //                client?.send(Gson().toJson(SendCommonWsBean(cmd = 13, loginType = null)))
                 var req = ClientReq.PingBackReq.newBuilder().build()
                 _gameMsg.ping(req)

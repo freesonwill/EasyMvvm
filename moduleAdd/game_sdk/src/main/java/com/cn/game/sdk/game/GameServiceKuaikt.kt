@@ -23,6 +23,12 @@ class GameServiceKuaikt(client: JWebSocketClient) :
     }
 
     //进入直播间
+    override fun enterInfo() {
+        var req = PingBackReq.newBuilder().build()
+        send(8,GameReqCode.SUB_LOGON_REQ__LOGIN.toShort(), req.toByteArray())
+    }
+
+    //进入直播间
     override fun enterGroup(req : GameReq.EnterGroup) {
         send(500,GameReqCode.C2S_ENTER_GROUP.toShort(), req.toByteArray())
     }

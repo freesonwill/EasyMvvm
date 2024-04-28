@@ -60,7 +60,7 @@ public class JWebSocketClient extends WebSocketClient {
         ClientReq.LoginReq req = ClientReq.LoginReq.newBuilder()
                 .setAgentName("wali-internal")
                 .setServer(8)
-                .setToken("20%3Akq6WCsZ9")
+                .setToken("20:exo71eVM")
                 .setRequestId(6)
                 .setVersion("6")
                 .setNickname("android")
@@ -81,7 +81,10 @@ public class JWebSocketClient extends WebSocketClient {
         Object[] resps = newUnpack(bytes.array());
         Integer mid = (Integer) resps[0];
         Integer sid = (Integer) resps[1];
-        byte[] str = (byte[]) resps[2];
+        byte[] str = bytes.array();
+        if(resps.length >2){
+            str = (byte[]) resps[2];
+        }
         _wsMngr.onMessage(mid, sid, str);
 //        if (sid.equals(107)){
 ////            try {

@@ -4,6 +4,7 @@ import game.common.proto.ClientReq;
 import game.mod.proc.yf.proto.req.GameReq;
 
 public interface GameService {
+    void enterInfo();
     //用户登录
     void login(ClientReq.LoginReq req);
     //进入直播间

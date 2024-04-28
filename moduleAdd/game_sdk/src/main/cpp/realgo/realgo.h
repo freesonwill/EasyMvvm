@@ -5,7 +5,7 @@
 #include <stdint.h>
 
 #define REALGO_VERSION 3
-#define SOCKET_BUFFER       8192
+#define SOCKET_BUFFER       8192 * 3
 typedef unsigned char       BYTE;
 typedef unsigned int        UINT32;
 typedef unsigned short      WORD;

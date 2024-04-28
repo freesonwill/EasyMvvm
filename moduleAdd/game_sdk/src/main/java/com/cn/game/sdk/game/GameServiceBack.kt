@@ -15,7 +15,7 @@ object GameServiceBack {
     init {
         //lifecycleRegistry.setCurrentState(Lifecycle.State.CREATED)
     }
-    suspend fun onMessage(mid:Int, sid:Int, byteArray: ByteArray){
+    suspend fun onMessage(mid:Int, sid:Int, byteArray: ByteArray?){
         if(sid == GameResCode.S2C_ENTER_INFO){
             GameData.getInstance().setEnterInfo(EnterInfo.parseFrom(byteArray))
         }
