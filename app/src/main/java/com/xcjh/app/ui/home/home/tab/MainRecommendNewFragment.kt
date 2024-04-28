@@ -42,7 +42,8 @@ import com.xcjh.app.databinding.ItemMainProceedBinding
 import com.xcjh.app.databinding.ItemMainTxtBinding
 import com.xcjh.app.databinding.ItemUnderWayBinding
 import com.xcjh.app.ui.details.MatchDetailActivity
-import com.xcjh.app.web.WebActivity
+import com.xcjh.app.utils.SoundManager
+import com.xcjh.app.view.CustomHeader
 import com.xcjh.app.websocket.MyWsManager
 import com.xcjh.app.websocket.bean.FeedSystemNoticeBean
 import com.xcjh.app.websocket.bean.LiveStatus
@@ -51,6 +52,7 @@ import com.xcjh.app.websocket.bean.ReceiveChatMsg
 import com.xcjh.app.websocket.bean.ReceiveWsBean
 import com.xcjh.app.websocket.listener.C2CListener
 import com.xcjh.app.websocket.listener.LiveStatusListener
+import com.xcjh.app.websocket.listener.MOffListener
 import com.xcjh.base_lib.App
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.myToast
@@ -95,9 +97,9 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
 //        mDatabind.smartCommon.setEnableOverScrollDrag(true)
 //        mDatabind.smartCommon.setReboundInterpolator(AccelerateDecelerateInterpolator())
         //取消下拉刷新
-        mDatabind.smartCommon.setEnableRefresh(false)
+//        mDatabind.smartCommon.setEnableRefresh(false)
         mDatabind.smartCommon.setEnableOverScrollDrag(true)
-//        mDatabind.smartCommon.setRefreshHeader( CustomHeader(requireContext()))
+        mDatabind.smartCommon.setRefreshHeader( CustomHeader(requireContext()))
         MyWsManager.getInstance(App.app)
             ?.setLiveStatusListener(this.toString(), object : LiveStatusListener {
                 //z直播间开播
@@ -106,17 +108,29 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
                         for (i in 0 until  mDatabind.rcvRecommend.mutable.size){
                             if(mDatabind.rcvRecommend.mutable[i] is MainTxtBean){
                                 for (j in 0 until  (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.size){
-                                    if((mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].userId.equals(bean.anchorId)){
-                                        (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.removeAt(j)
+                                    if( (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].matchId.equals(bean.matchId)&&
+                                        (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].matchType.equals(bean.matchType)){
+                                        if((mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].userId!=null){
+                                            if((mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].userId.equals(bean.anchorId)){
+                                                (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.removeAt(j)
+                                            }
 
+                                        }else{
+                                            (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.removeAt(j)
+                                        }
+
+
+
+                                        break
                                     }
                                 }
+                                mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
                             }
 
                         }
+
                     }
 
-//                        mViewModel.getOngoingMatchList(bean.id)
                     var being=BeingLiveBean()
                     being.matchType=bean.matchType
                     being.matchId=bean.matchId
@@ -127,8 +141,8 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
                     being.playUrl=bean.playUrl
                     being.hotValue=bean.hotValue
                     being.titlePage=bean.coverImg
-
                     being.userLogo=bean.userLogo
+                    being.pureFlow=false
                     //语言 0是中文  1是繁体  2是英文
                     if(Constants.languageType==0){
                         being.homeTeamName=bean.homeTeamName
@@ -143,37 +157,70 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
                         being.awayTeamName=bean.awayTeamNameEn
                         being.competitionName=bean.competitionNameEn
                     }
-//                    being.awayTeamNameEn=bean.awayTeamNameEn
-//                    being.awayTeamNameZht=bean.awayTeamNameZht
-//                    being.competitionNameEn=bean.competitionNameEn
-//                    being.competitionNameZht=bean.competitionNameZht
-//                    being.homeTeamNameEn=bean.homeTeamNameEn
-//                    being.homeTeamNameZht=bean.homeTeamNameZht
 
 
+
+
+                    var num=0   //保存这个应该插入哪个
+                    var type=0//大类型
+                    var fuzhi=false
                     if(mDatabind.rcvRecommend.models!=null){
                         for (i in 0 until mDatabind.rcvRecommend.mutable!!.size) {
                             if(mDatabind.rcvRecommend.mutable[i] is MainTxtBean){
-                                (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.add(being)
-                                mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
+                                  type=i
+                                  num=(mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.size-1
+                                for (a in 0 until (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.size) {
+                                    if((mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[a].pureFlow){
+                                        if(fuzhi==false){
+                                            num=a
+                                            fuzhi=true
+                                            break
+                                        }
+
+                                    }
+                                }
 
                             }
                         }
-                    }
+                        var list:ArrayList<BeingLiveBean> = arrayListOf()
+                        if((mDatabind.rcvRecommend.mutable[type] as MainTxtBean).list.size==0){
+                            list.add(being)
+                            for (i in 0 until (mDatabind.rcvRecommend.mutable[type] as MainTxtBean).list.size) {
+                                list.add((mDatabind.rcvRecommend.mutable[type] as MainTxtBean).list[i])
+                            }
 
+                        }else {
+                            for (i in 0 until (mDatabind.rcvRecommend.mutable[type] as MainTxtBean).list.size) {
+                                    if(num==i){
+                                        list.add(being)
+                                        list.add((mDatabind.rcvRecommend.mutable[type] as MainTxtBean).list[i])
+                                    }else{
+                                        list.add((mDatabind.rcvRecommend.mutable[type] as MainTxtBean).list[i])
+                                    }
+
+                            }
+                        }
+                        (mDatabind.rcvRecommend.mutable[type] as MainTxtBean).list=list
+
+                    }
+                    mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
 
                 }
-                //直播间关闭
+                //直播间关闭废弃
                 override fun onCloseLive(bean: LiveStatus) {
                     super.onCloseLive(bean)
                     if(mDatabind.rcvRecommend.models!=null){
                         for (i in 0 until  mDatabind.rcvRecommend.mutable.size){
                             if(mDatabind.rcvRecommend.mutable[i] is MainTxtBean){
                                 for (j in 0 until  (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.size){
-                                    if((mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].userId.equals(bean.anchorId)){
-                                        (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.removeAt(j)
-                                        mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
+                                    if((mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].userId!=null){
+                                        if((mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].userId.equals(bean.anchorId)){
+                                            (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.removeAt(j)
+                                            mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
+                                        }
                                     }
+
+
                                 }
                             }
 
@@ -181,6 +228,36 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
                     }
                 }
             })
+
+
+        //主播关闭
+        MyWsManager.getInstance(App.app)?.setOtherPushListener(this.toString(),object :
+            MOffListener {
+            override fun onCloseLive(bean: LiveStatus) {
+                if(mDatabind.rcvRecommend.models!=null){
+                    //第一层是i
+                    for (i in 0 until  mDatabind.rcvRecommend.mutable.size){
+                        if(mDatabind.rcvRecommend.mutable[i] is MainTxtBean){
+                            for (j in 0 until  (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.size){
+
+                                if((mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].userId!=null){
+                                    if((mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].userId.equals(bean.anchorId)){
+                                        (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.removeAt(j)
+                                        mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
+                                        break
+                                    }
+                                }
+
+
+                            }
+                        }
+
+                    }
+                }
+               }
+
+
+        })
 
 
         MyWsManager.getInstance(App.app)?.setC2CListener(javaClass.name, object : C2CListener {
@@ -199,6 +276,7 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
                 var refresh=ArrayList<Int>()
                 if(mDatabind.rcvRecommend.models!=null){
                     for (i in 0 until  mDatabind.rcvRecommend.mutable.size){
+                        //热门比赛刷新
                         if(mDatabind.rcvRecommend.mutable[i] is MatchBean){
                             isShowMatch=true
                             for (j in 0 until   (mDatabind.rcvRecommend.mutable[i] as MatchBean).list.size){
@@ -216,18 +294,65 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
                                 }
                             }
 
-                        }
-                    }
-                    if(refresh.size>0){
-                        for (i in 0 until  mDatabind.rcvRecommend.mutable.size){
-                            if(mDatabind.rcvRecommend.mutable[i] is MatchBean){
 
-//                                mDatabind.rcvRecommend.bindingAdapter.notifyItemChanged(i)
+
+
+                         //正在直播刷新
+                        }else  if(mDatabind.rcvRecommend.mutable[i] is MainTxtBean){
+                            //赋值新的参数
+                            for (j in 0 until (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.size) {
+                                for (k in 0 until  chat.size){
+                                    if(chat[k].matchId.equals((mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].matchId)&&
+                                        chat[k].matchType.equals((mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].matchType) ){
+                                        (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].awayScore =chat[k].awayHalfScore.toString()
+                                        (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].awayScore=chat[k].awayScore.toString()
+                                        (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].homeScore=chat[k].homeHalfScore.toString()
+                                        (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].homeScore=chat[k].homeScore.toString()
+                                        (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].status=chat[k].status.toString()
+                                        break
+                                    }
+
+
+                                }
+
+
                             }
+                            //进行删除直播完的
+                            for (j in 0 until (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.size) {
 
+                                    if((mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].status!=null){
+                                        //足球>9  移除   篮球10
+                                        if((mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].matchType.equals("1")){
+                                            //删除完赛的
+                                            if((mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].status.equals("8")||
+                                                (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].status.equals("9")||
+                                                (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].status.equals("10")||
+                                                (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].status.equals("11")||
+                                                (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].status.equals("12")||
+                                                (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].status.equals("13")){
+                                                (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.removeAt(j)
+                                            }
+
+                                        }else if((mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].matchType.equals("2")){
+
+                                            if((mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].status.equals("10")||
+                                                (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].status.equals("11")||
+                                                (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].status.equals("12")||
+                                                (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].status.equals("13")||
+                                                (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].status.equals("14")||
+                                                (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].status.equals("15")){
+                                                (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.removeAt(j)
+                                            }
+                                        }
+                                    }
+
+
+                            }
+//                            mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
                         }
                     }
 
+                    mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
                 }
 
 
@@ -258,7 +383,8 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
         mDatabind.smartCommon.setOnRefreshLoadMoreListener(object : OnRefreshLoadMoreListener {
             override fun onRefresh(refreshLayout: RefreshLayout) {
 
-                mViewModel.getBannerList()
+//                mViewModel.getBannerList()
+                mViewModel.getNowLive(true)
 
             }
 
@@ -538,6 +664,7 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
                         var  imageAdapter= ImageTitleAdapter(ad.list)
                         binding.banner.setAdapter(imageAdapter)
                         imageAdapter.setOnBannerListener { data, position ->
+                            SoundManager.playMedia()
 //                            startNewActivity<WebActivity>() {
 //                                this.putExtra(Constants.WEB_URL, data.targetUrl)
 //                                this.putExtra(Constants.CHAT_TITLE, getString(R.string.my_app_name))
@@ -600,6 +727,10 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
                                         //比赛类型：1：足球；2：篮球,可用值:1,2
                                         binding.txtMatchTime.visibility=View.GONE
                                         binding.txtMatchIsStart.visibility=View.GONE
+                                        binding.txtHomeScore.text=""
+                                        binding.txtGuestScore.text=""
+                                        binding.txtWks.visibility=View.GONE
+
                                         if(matchBean.matchType.equals("2")){
                                             binding.txtMatchStatus.visibility=View.GONE
                                             Glide.with(requireContext())
@@ -618,6 +749,7 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
                                             if(matchBean.status.equals("1")){
                                                 binding.txtHomeScore.text=""
                                                 binding.txtGuestScore.text=""
+                                                binding.txtWks.visibility=View.VISIBLE
                                             }else{
                                                 binding.txtHomeScore.text=matchBean.awayScore
                                                 binding.txtGuestScore.text=matchBean. homeScore
@@ -631,7 +763,6 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
                                                 var formatter = SimpleDateFormat("MM-dd HH:mm", Locale.getDefault())
                                                 binding.txtMatchTime.text=formatter.format(date)
                                                 binding.txtMatchTime.visibility=View.VISIBLE
-
 
                                             }else if(matchBean.status.equals("2")||matchBean.status.equals("3")){
                                                 binding.txtMatchStatus.visibility=View.VISIBLE
@@ -761,6 +892,9 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
                                             }
                                         }else{
 
+
+
+
                                             Glide.with(requireContext())
                                                 .load(matchBean.homeLogo) // 替换为您要加载的图片 URL
                                                 .error(R.drawable.zwt_footboll)
@@ -782,6 +916,7 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
                                             if(matchBean.status.equals("1")){
                                                 binding.txtHomeScore.text=""
                                                 binding.txtGuestScore.text=""
+                                                binding.txtWks.visibility=View.VISIBLE
                                             }else{
                                                 binding.txtHomeScore.text=matchBean.homeScore
                                                 binding.txtGuestScore.text=matchBean.awayScore
@@ -856,6 +991,7 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
                             }
 
                             R.id.llcClickRecommended.onClick {
+                                SoundManager.playMedia()
                                 val bean=_data as MatchBean
                                 if(bean.anchorList!=null&&bean.anchorList.size>=1){
                                     MatchDetailActivity.open(matchType =bean.matchType, matchId = bean.matchId,matchName = "${bean.homeName}VS${bean.awayName}", anchorId = bean.anchorList[0].userId )
@@ -873,6 +1009,7 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
                     R.layout.item_main_txt -> {//正在直播的文字,和正在直播的列表
                         var binding=getBinding<ItemMainTxtBinding>()
                         var mainTxtBean=_data as MainTxtBean
+
                         if(mainTxtBean.list.size>0){
                             binding.rvExplore.visibility= View.VISIBLE
                             binding.llShowTxt.visibility= View.GONE
@@ -886,8 +1023,14 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
                                     }
                                 }
                                 R.id.llLiveSpacing.onClick {
+                                    SoundManager.playMedia()
                                     val bean=_data as BeingLiveBean
-                                    MatchDetailActivity.open(matchType =bean.matchType, matchId = bean.matchId,matchName = "${bean.homeTeamName}VS${bean.awayTeamName}", anchorId = bean.userId,videoUrl = bean.playUrl )
+                                    if(bean.pureFlow){
+                                        MatchDetailActivity.open(matchType =bean.matchType, matchId = bean.matchId,matchName = "${bean.homeTeamName}VS${bean.awayTeamName}",pureFlow = true  )
+                                    }else{
+                                        MatchDetailActivity.open(matchType =bean.matchType, matchId = bean.matchId,matchName = "${bean.homeTeamName}VS${bean.awayTeamName}", anchorId = bean.userId,videoUrl = bean.playUrl )
+                                    }
+
                                 }
                             }
                             binding.rvExplore.addModels(mainTxtBean.list)

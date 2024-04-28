@@ -63,7 +63,7 @@
                             android:id="@+id/rltVideo"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                             android:visibility="gone">
+                            android:visibility="gone">
 
                             <View
                                 android:id="@+id/viewTopBg"
@@ -96,12 +96,12 @@
                                 android:textStyle="bold" />
                         </RelativeLayout>
 
-                        <!--比赛信息和状态-->
+                        <!--比赛信息和状态  -->
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/cslMatchInfo"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_above="@id/marqueeView"
+                            android:layout_above="@id/rlMView"
                             android:visibility="gone">
 
                             <TextView
@@ -226,7 +226,7 @@
                             android:id="@+id/lltNoLive"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_above="@id/marqueeView"
+                            android:layout_above="@id/rlMView"
                             android:gravity="center_horizontal"
                             android:orientation="vertical"
                             android:visibility="gone">
@@ -278,7 +278,7 @@
                             android:id="@+id/lltLiveError"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_above="@id/marqueeView"
+                            android:layout_above="@id/rlMView"
                             android:gravity="center_horizontal"
                             android:orientation="vertical"
                             android:visibility="gone">
@@ -312,7 +312,7 @@
                                     android:textColor="@color/c_ffffff"
                                     android:textSize="@dimen/sp_12"
                                     android:textStyle="bold" />
-<!--                                点击信号源-->
+                                <!--                                点击信号源-->
                                 <TextView
                                     android:id="@+id/tvSignal4"
                                     android:layout_width="wrap_content"
@@ -332,26 +332,83 @@
 
                         </LinearLayout>
 
-                        <!--视频下边的广告-->
-                        <TextView
-                            android:id="@+id/marqueeView"
+                        <!--视频下边的广告@drawable/bg_shape_marquee-->
+                        <!--                        <TextView-->
+                        <!--                            android:id="@+id/marqueeView"-->
+                        <!--                            android:layout_width="match_parent"-->
+                        <!--                            android:layout_height="27dp"-->
+                        <!--                            android:layout_alignParentBottom="true"-->
+                        <!--                            android:background="#1A28292B"-->
+                        <!--                            android:ellipsize="marquee"-->
+                        <!--                            android:focusable="true"-->
+                        <!--                            android:maxLines="1"-->
+                        <!--                            android:focusableInTouchMode="true"-->
+                        <!--                            android:gravity="start|center_vertical"-->
+                        <!--                            android:marqueeRepeatLimit="marquee_forever"-->
+                        <!--                            android:paddingStart="@dimen/dp_12"-->
+                        <!--                            android:paddingEnd="@dimen/dp_12"-->
+                        <!--                            android:scrollHorizontally="true"-->
+                        <!--                            android:singleLine="true"-->
+                        <!--                            android:textColor="@color/c_ffffff"-->
+                        <!--                            android:textSize="@dimen/sp_12"-->
+                        <!--                            android:visibility="invisible" />-->
+                        <RelativeLayout
+                            android:id="@+id/rlMView"
                             android:layout_width="match_parent"
                             android:layout_height="27dp"
                             android:layout_alignParentBottom="true"
-                            android:background="@drawable/bg_shape_marquee"
-                            android:ellipsize="marquee"
-                            android:focusable="true"
-                            android:focusableInTouchMode="true"
-                            android:gravity="start|center_vertical"
-                            android:marqueeRepeatLimit="marquee_forever"
-                            android:paddingStart="@dimen/dp_12"
-                            android:paddingEnd="@dimen/dp_12"
-                            android:scrollHorizontally="true"
-                            android:singleLine="true"
+                            android:background="#1A28292B"
+                            android:visibility="invisible">
+                        <com.marquee.dingrui.marqueeviewlib.MarqueeView
+                            android:id="@+id/marqueeView"
+                            android:layout_width="match_parent"
+                            android:layout_height="27dp"
+                            android:background="#1A28292B"
+                            android:padding="@dimen/dp_5"
                             android:textColor="@color/c_ffffff"
-                            android:textSize="@dimen/sp_12"
-                            android:visibility="invisible" />
+                            app:marqueeview_text_size="12"
+                            app:marqueeview_text_speed="2" />
 
+                        </RelativeLayout>
+                        <!--                       <RelativeLayout-->
+                        <!--                           android:id="@+id/rlMView"-->
+                        <!--                           android:layout_width="match_parent"-->
+                        <!--                           android:layout_height="wrap_content"-->
+                        <!--                           android:padding="@dimen/dp_5"-->
+                        <!--                           android:visibility="invisible"-->
+                        <!--                           android:background="#1A28292B"-->
+                        <!--                           android:layout_alignParentBottom="true" >-->
+                        <!--&lt;!&ndash;                           <com.xcjh.app.view.MarqueeView&ndash;&gt;-->
+                        <!--&lt;!&ndash;                               android:id="@+id/marqueeView"&ndash;&gt;-->
+                        <!--&lt;!&ndash;                               android:layout_width="match_parent"&ndash;&gt;-->
+                        <!--&lt;!&ndash;                               android:layout_height="27dp"&ndash;&gt;-->
+                        <!--&lt;!&ndash;                               android:visibility="invisible"&ndash;&gt;-->
+                        <!--&lt;!&ndash;                               android:textSize="@dimen/sp_12" />&ndash;&gt;-->
+                        <!--&lt;!&ndash;                            <com.xcjh.app.view.MarqueeTextView&ndash;&gt;-->
+                        <!--&lt;!&ndash;                                android:id="@+id/marqueeView"&ndash;&gt;-->
+                        <!--&lt;!&ndash;                                android:layout_width="match_parent"&ndash;&gt;-->
+                        <!--&lt;!&ndash;                                android:layout_height="wrap_content"&ndash;&gt;-->
+                        <!--&lt;!&ndash;                                android:textColor="@color/c_ffffff"&ndash;&gt;-->
+                        <!--&lt;!&ndash;                                android:textSize="@dimen/sp_12"/>&ndash;&gt;-->
+                        <!--                           <TextView-->
+                        <!--                               android:id="@+id/marqueeView"-->
+                        <!--                               android:layout_width="match_parent"-->
+                        <!--                               android:layout_height="27dp"-->
+                        <!--                               android:layout_alignParentBottom="true"-->
+                        <!--                               android:ellipsize="marquee"-->
+                        <!--                               android:focusable="true"-->
+                        <!--                               android:maxLines="1"-->
+                        <!--                               android:focusableInTouchMode="true"-->
+                        <!--                               android:gravity="start|center_vertical"-->
+                        <!--                               android:marqueeRepeatLimit="marquee_forever"-->
+                        <!--                               android:paddingStart="@dimen/dp_12"-->
+                        <!--                               android:paddingEnd="@dimen/dp_12"-->
+                        <!--                               android:scrollHorizontally="true"-->
+                        <!--                               android:singleLine="true"-->
+                        <!--                               android:textColor="@color/c_ffffff"-->
+                        <!--                               android:textSize="@dimen/sp_12" />-->
+
+                        <!--                       </RelativeLayout>-->
                     </RelativeLayout>
 
                     <!--ad -->
@@ -418,11 +475,11 @@
                             android:background="@drawable/shape_red_pressed_r20"
                             android:backgroundTint="@color/green_to_dark_selector"
                             android:gravity="center"
-                            android:visibility="visible"
                             android:text="@string/chat"
                             android:textColor="@color/c_ffffff"
                             android:textSize="@dimen/sp_12"
                             android:textStyle="bold"
+                            android:visibility="visible"
                             app:layout_constraintBottom_toBottomOf="@id/iv_tab_anchor_avatar"
                             app:layout_constraintEnd_toStartOf="@id/tv_tab_anchor_follow"
                             app:layout_constraintTop_toTopOf="@id/iv_tab_anchor_avatar" />
@@ -457,12 +514,11 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_top_football"
                     app:layout_collapseMode="pin">
-
+<!--           android:background="@drawable/shape_gradient_detail_top"     -->
                     <RelativeLayout
                         android:id="@+id/rltTop"
                         android:layout_width="match_parent"
                         android:layout_height="44dp"
-                        android:background="@drawable/shape_gradient_detail_top"
                         android:gravity="center_vertical">
                         <!--返回键 一直显示-->
                         <ImageView
@@ -571,23 +627,23 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_centerHorizontal="true"
-                            android:paddingLeft="@dimen/dp_40"
-                            android:paddingRight="70dp"
                             android:alpha="1"
                             android:orientation="horizontal"
+                            android:paddingLeft="@dimen/dp_40"
+                            android:paddingRight="70dp"
                             tools:ignore="RelativeOverlap">
                             <!--直播中标题 直播中会隐藏，点击显示-->
                             <TextView
-                                android:text="1111111111111111111"
                                 android:id="@+id/topLiveTitle"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_centerVertical="true"
                                 android:singleLine="true"
+                                android:text="1111111111111111111"
                                 android:textColor="@color/c_ffffff"
                                 android:textSize="@dimen/sp_14"
-                                android:visibility="gone"
                                 android:textStyle="bold"
+                                android:visibility="gone"
                                 tools:text="中超 上海申花VS梅州客家上海申" />
                             <!--纯净流标题-->
                             <androidx.constraintlayout.widget.ConstraintLayout
@@ -638,15 +694,16 @@
                                     tools:text="'" />
                             </androidx.constraintlayout.widget.ConstraintLayout>
                         </RelativeLayout>
+
                         <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/ivMatchVideo"
                             android:layout_width="24dp"
                             android:layout_height="24dp"
-                            android:visibility="gone"
                             android:layout_marginTop="10dp"
-                            android:layout_toLeftOf="@+id/tvToShare"
                             android:layout_marginRight="8dp"
-                            app:srcCompat="@drawable/detaic_tv_icon"/>
+                            android:layout_toLeftOf="@+id/tvToShare"
+                            android:visibility="gone"
+                            app:srcCompat="@drawable/detaic_tv_icon" />
                         <!--分享 直播中会隐藏，点击在显示处理-->
                         <ImageView
                             android:id="@+id/tvToShare"
@@ -682,5 +739,7 @@
             android:layout_height="match_parent"
             android:fadeScrollbars="false"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

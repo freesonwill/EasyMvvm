@@ -36,7 +36,9 @@ import com.xcjh.app.databinding.ItemSchAllBinding
 import com.xcjh.app.databinding.ItemSearchHotTitleBinding
 import com.xcjh.app.ui.details.DetailVm
 import com.xcjh.app.ui.details.MatchDetailActivity
+import com.xcjh.app.ui.home.home.tab.setLiveMatchItem
 import com.xcjh.app.ui.notice.MyNoticeVm
+import com.xcjh.app.utils.SoundManager
 import com.xcjh.app.utils.TimeUtil
 import com.xcjh.app.utils.judgeLogin
 import com.xcjh.app.view.CustomHeader
@@ -219,6 +221,7 @@ class SearchActivity : BaseActivity<SearchVm, ActivitySearchBinding>() {
         }
         //删除输入的内容
         mDatabind.ivClear.clickNoRepeat {
+            SoundManager.playMedia()
             mDatabind.etSearchInput.setText("")
             if (mDatabind.rcHotRace.models != null && mDatabind.rcHotRace.models!!.isNotEmpty()) {
                 mDatabind.llSearchShow.visibility = View.VISIBLE
@@ -272,6 +275,7 @@ class SearchActivity : BaseActivity<SearchVm, ActivitySearchBinding>() {
 
         //根据是否搜索来判断
         mDatabind.txtSearchClick.clickNoRepeat {
+            SoundManager.playMedia()
             finish()
 //            if(mDatabind.etSearchInput.text.toString().trim().isEmpty()){
 //                myToast(getString(R.string.contact_hint_input))
@@ -410,6 +414,7 @@ class SearchActivity : BaseActivity<SearchVm, ActivitySearchBinding>() {
 
             }
             R.id.llClickHot.onClick {
+                SoundManager.playMedia()
                 val bean = _data as BeingLiveBean
                 MatchDetailActivity.open(
                     matchType = bean.matchType,
@@ -430,62 +435,67 @@ class SearchActivity : BaseActivity<SearchVm, ActivitySearchBinding>() {
             onBind {
                 when (itemViewType) {
                     R.layout.item_main_live_list -> {
-
-                        var bindingItem = getBinding<ItemMainLiveListBinding>()
-                        var bean = _data as BeingLiveBean
-                        Glide.with(context)
-                            .load(bean.titlePage) // 替换为您要加载的图片 URL
-                            .error(R.drawable.main_top_load)
-                            .placeholder(R.drawable.main_top_load)
-                            .into(bindingItem.ivLiveBe)
-                        Glide.with(context)
-                            .load(bean.userLogo) // 替换为您要加载的图片 URL
-                            .error(R.drawable.default_anchor_icon)
-                            .placeholder(R.drawable.default_anchor_icon)
-                            .into(bindingItem.ivLiveHead)
-                        bindingItem.txtLiveName.text = bean.nickName
-                        //比赛类型 1足球，2篮球,可用值:1,2
-                        if (bean.matchType.equals("1")) {
-                            bindingItem.txtLiveTeam.text =
-                                "${bean.homeTeamName} VS ${bean.awayTeamName}"
-                        } else {
-                            bindingItem.txtLiveTeam.text =
-                                "${bean.awayTeamName} VS ${bean.homeTeamName}"
-                        }
-
-                        bindingItem.txtLiveCompetition.text = bean.competitionName
-                        if (bean.hotValue <= 9999) {
-                            bindingItem.txtLiveHeat.text = "${bean.hotValue}"
-                        } else {
-                            bindingItem.txtLiveHeat.text = "9999+"
-                        }
-
-                        if (layoutPosition % 2 == 0) {
-                            val layoutParams =
-                                bindingItem.llLiveSpacing.layoutParams as ViewGroup.MarginLayoutParams
-                            layoutParams.setMargins(0, 0, context.dp2px(4), context.dp2px(8))
-                            bindingItem.llLiveSpacing.layoutParams = layoutParams
-                        } else {
-                            val layoutParams =
-                                bindingItem.llLiveSpacing.layoutParams as ViewGroup.MarginLayoutParams
-                            layoutParams.setMargins(0, 0, context.dp2px(4), context.dp2px(8))
-                            bindingItem.llLiveSpacing.layoutParams = layoutParams
-                        }
+                        setLiveMatchItem()
+//                        var bindingItem = getBinding<ItemMainLiveListBinding>()
+//                        var bean = _data as BeingLiveBean
+//                        Glide.with(context)
+//                            .load(bean.titlePage) // 替换为您要加载的图片 URL
+//                            .error(R.drawable.main_top_load)
+//                            .placeholder(R.drawable.main_top_load)
+//                            .into(bindingItem.ivLiveBe)
+//                        Glide.with(context)
+//                            .load(bean.userLogo) // 替换为您要加载的图片 URL
+//                            .error(R.drawable.default_anchor_icon)
+//                            .placeholder(R.drawable.default_anchor_icon)
+//                            .into(bindingItem.ivLiveHead)
+//                        bindingItem.txtLiveName.text = bean.nickName
+//                        //比赛类型 1足球，2篮球,可用值:1,2
+//                        if (bean.matchType.equals("1")) {
+//                            bindingItem.txtLiveTeam.text =
+//                                "${bean.homeTeamName} VS ${bean.awayTeamName}"
+//                        } else {
+//                            bindingItem.txtLiveTeam.text =
+//                                "${bean.awayTeamName} VS ${bean.homeTeamName}"
+//                        }
+//
+//                        bindingItem.txtLiveCompetition.text = bean.competitionName
+//                        if (bean.hotValue <= 9999) {
+//                            bindingItem.txtLiveHeat.text = "${bean.hotValue}"
+//                        } else {
+//                            bindingItem.txtLiveHeat.text = "9999+"
+//                        }
+//
+//                        if (layoutPosition % 2 == 0) {
+//                            val layoutParams =
+//                                bindingItem.llLiveSpacing.layoutParams as ViewGroup.MarginLayoutParams
+//                            layoutParams.setMargins(0, 0, context.dp2px(4), context.dp2px(8))
+//                            bindingItem.llLiveSpacing.layoutParams = layoutParams
+//                        } else {
+//                            val layoutParams =
+//                                bindingItem.llLiveSpacing.layoutParams as ViewGroup.MarginLayoutParams
+//                            layoutParams.setMargins(0, 0, context.dp2px(4), context.dp2px(8))
+//                            bindingItem.llLiveSpacing.layoutParams = layoutParams
+//                        }
                     }
 
                 }
 
             }
             R.id.llLiveSpacing.onClick {
+                SoundManager.playMedia()
                 val bean = _data as BeingLiveBean
-                MatchDetailActivity.open(
-                    matchType = bean.matchType,
-                    matchId = bean.matchId,
-                    matchName = "${bean.homeTeamName}VS${bean.awayTeamName}",
-                    anchorId = bean.userId,
-                    videoUrl = bean.playUrl
-                )
-
+//                MatchDetailActivity.open(
+//                    matchType = bean.matchType,
+//                    matchId = bean.matchId,
+//                    matchName = "${bean.homeTeamName}VS${bean.awayTeamName}",
+//                    anchorId = bean.userId,
+//                    videoUrl = bean.playUrl
+//                )
+                if(bean.pureFlow){
+                    MatchDetailActivity.open(matchType =bean.matchType, matchId = bean.matchId,matchName = "${bean.homeTeamName}VS${bean.awayTeamName}",pureFlow = true  )
+                }else{
+                    MatchDetailActivity.open(matchType =bean.matchType, matchId = bean.matchId,matchName = "${bean.homeTeamName}VS${bean.awayTeamName}", anchorId = bean.userId,videoUrl = bean.playUrl )
+                }
             }
 
         }
@@ -1233,6 +1243,7 @@ class SearchActivity : BaseActivity<SearchVm, ActivitySearchBinding>() {
                                 .override(64, 64) // 指定目标宽度和高度
                                 .into(binding1.ivhead)
                             binding1.linroot.setOnClickListener {
+                                SoundManager.playMedia()
                                 MatchDetailActivity.open(
                                     matchType = item.matchType,
                                     matchId = item.matchId,
@@ -1281,6 +1292,7 @@ class SearchActivity : BaseActivity<SearchVm, ActivitySearchBinding>() {
 
                 }
                 binding.conroot.setOnClickListener {
+                    SoundManager.playMedia()
                     MatchDetailActivity.open(
                         matchType = item.matchType,
                         matchId = item.matchId,

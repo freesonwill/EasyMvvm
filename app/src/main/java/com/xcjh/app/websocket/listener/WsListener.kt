@@ -92,6 +92,9 @@ interface LiveStatusListener {
     fun onChangeLive (bean:LiveStatus){}
     /// 收到推送比分消息
     fun onChangeReceive(chat: ArrayList<ReceiveChangeMsg>){}
+
+
+
 }
 
 /**
@@ -158,4 +161,16 @@ interface ReadListener {
     /// 收到已读消息
     fun onReadReceive(bean:ReceiveWsBean<*>)
 
+
+
+}
+
+/**
+ * 新建关播
+ */
+interface   MOffListener{
+    /**
+     * 服务器主动推送直播间关播
+     */
+    fun onCloseLive (bean:LiveStatus)
 }

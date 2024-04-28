@@ -1,6 +1,6 @@
 <resources translatable="false">
-    <string name="my_app_name">體育直播</string>
-    <string name="my_app_name_test">體育直播_test</string>
+    <string name="my_app_name">火山體育直播</string>
+    <string name="my_app_name_test">火山體育直播_test</string>
     <!--main-->
     <string name="Home">首頁</string>
     <string name="Schedule">賽程</string>
@@ -422,4 +422,14 @@
     <string name="ensure_zhong">确定</string>
     <string name="ensure_fanti">確認</string>
     <string name="ensure_yingwen">Confirm</string>
+    <string name="live_txt_end">當前直播間已結束</string>
+    <string name="recommend_txt_sbc">上半場</string>
+    <string name="recommend_txt_xbc">下半場</string>
+    <string name="matche_txt_live_end">該主播已下播</string>
+    <string name="matche_txt_main">返回首頁</string>
+    <string name="matche_txt_switching">切換純淨流</string>
+    <string name="dialog_txt_woed_code">請完成安全驗證</string>
+    <string name="detail_txt_home">主隊</string>
+    <string name="app_update_title">發現新版本</string>
+    <string name="app_update_content">更新內容</string>
 </resources>

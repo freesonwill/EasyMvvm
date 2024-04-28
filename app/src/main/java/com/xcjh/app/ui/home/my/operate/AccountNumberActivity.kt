@@ -10,6 +10,7 @@ import com.xcjh.app.base.BaseActivity
 import com.xcjh.app.databinding.ActivityAccountNumberBinding
 import com.xcjh.app.databinding.ActivitySetUpBinding
 import com.xcjh.app.utils.CacheUtil
+import com.xcjh.app.utils.SoundManager
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.view.clickNoRepeat
 
@@ -36,6 +37,7 @@ class AccountNumberActivity  : BaseActivity<AccountNumberVm, ActivityAccountNumb
                 if (CacheUtil.getUser() != null) {
 
                     if(CacheUtil.getUser()!!.tel!!.isEmpty()){
+                        SoundManager.playMedia()
                         startNewActivity<BindFacilityActivity>(){
                             putExtra("type", 0)
                         }
@@ -49,6 +51,7 @@ class AccountNumberActivity  : BaseActivity<AccountNumberVm, ActivityAccountNumb
             if (CacheUtil.isLogin()) {
                 if (CacheUtil.getUser() != null) {
                     if(CacheUtil.getUser()!!.email!!.isEmpty()){
+                        SoundManager.playMedia()
                         startNewActivity<BindFacilityActivity>(){
                             putExtra("type", 1)
                         }

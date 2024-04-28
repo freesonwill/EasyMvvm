@@ -65,6 +65,9 @@ class AppViewModel : BaseViewModel() {
     var  quitLoginEvent=EventLiveData<Boolean>()
     //通知要弹出框了异地
     var  quitTipsEvent=EventLiveData<Boolean>()
+    //关闭群聊的软键盘，当横屏的时候
+    var closeKeyboardEvent=EventLiveData<Boolean>()
+
 
     init {
         //默认值保存的账户信息，没有登陆过则为null started 或 resumed

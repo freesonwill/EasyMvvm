@@ -169,6 +169,75 @@ fun ImageView.loadImageWithGlide(context: Context, imageUrl: String,action: () -
         })
 }
 
+
+fun ImageView.loadImageWithGlideMax(context: Context, imageUrl: String,action: () -> Unit = {}) {
+    val cornerRadius = context.resources.getDimensionPixelSize(R.dimen.dp_4)
+    val placeholderColor = context.resources.getColor(R.color.c_fe4848)
+    Glide.with(context)
+        .asBitmap()
+        .load(imageUrl)
+        .placeholder(R.drawable.chat_icon_placeholder)
+        .error(R.drawable.chat_icon_placeholder)
+        .transition(withCrossFade())
+        .thumbnail(0.1f)
+        .skipMemoryCache(true)
+        .apply(
+            RequestOptions()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+        )
+        .into(object : CustomTarget<Bitmap>() {
+            override fun onLoadStarted(placeholder: Drawable?) {
+//                this@loadImageWithGlide.setImageDrawable(ColorDrawable(placeholderColor))
+            }
+
+            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                action.invoke()
+                val imageWidth = resource.width
+                val imageHeight = resource.height
+                val aspectRatio = imageWidth.toFloat() / imageHeight.toFloat()
+                val scaledWidth: Int
+                val scaledHeight: Int
+                val roundedCornerRadius: Float
+                LogUtils.d("$imageWidth=加载图片的宽高=$imageHeight")
+
+
+                    // 图片尺寸小于等于最大尺寸，不进行缩放，直接使用原图尺寸
+                    val layoutParams = this@loadImageWithGlideMax.layoutParams
+                    layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                    this@loadImageWithGlideMax.layoutParams = layoutParams
+                    scaledWidth = imageWidth
+                    scaledHeight = imageHeight
+                    roundedCornerRadius = cornerRadius.toFloat()
+                    val scaledBitmap =
+                        Bitmap.createScaledBitmap(resource, scaledWidth, scaledHeight, true)
+                    val drawable =
+                        RoundedBitmapDrawableFactory.create(resources, scaledBitmap).apply {
+                            isCircular = false
+                            setCornerRadius(roundedCornerRadius)
+                        }
+
+                    this@loadImageWithGlideMax.setImageDrawable(drawable)
+
+
+
+            }
+
+            override fun onLoadCleared(placeholder: Drawable?) {
+
+            }
+
+            override fun onLoadFailed(errorDrawable: Drawable?) {
+                super.onLoadFailed(errorDrawable)
+                action.invoke()
+                Glide.with(context).load(R.drawable.chat_icon_placeholder).placeholder(R.drawable.chat_icon_placeholder)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .skipMemoryCache(false)
+                    .into(this@loadImageWithGlideMax)
+            }
+        })
+}
+
+
 fun cropBitmap(bitmap: Bitmap, startX: Int, width: Int, height: Int): Bitmap {
     val startY = bitmap.height / 2 // 获取图片高度的一半
     return Bitmap.createBitmap(bitmap, startX, startY, width, height)

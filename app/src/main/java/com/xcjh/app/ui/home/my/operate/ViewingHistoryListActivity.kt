@@ -19,6 +19,8 @@ import com.xcjh.app.databinding.ActivityMyFollowListBinding
 import com.xcjh.app.databinding.ActivityViewingHistoryListBinding
 import com.xcjh.app.databinding.ItemMainLiveListBinding
 import com.xcjh.app.ui.details.MatchDetailActivity
+import com.xcjh.app.ui.home.home.tab.setLiveMatchItem
+import com.xcjh.app.utils.SoundManager
 import com.xcjh.app.view.CustomHeader
 import com.xcjh.base_lib.utils.dp2px
 
@@ -66,50 +68,51 @@ class ViewingHistoryListActivity : BaseActivity<ViewingHistoryListVm, ActivityVi
             onBind {
                 when (itemViewType) {
                     R.layout.item_main_live_list -> {
-                        var bindingItem=getBinding<ItemMainLiveListBinding>()
-                        var  bean=_data as BeingLiveBean
+                        setLiveMatchItem(2)
+//                        var bindingItem=getBinding<ItemMainLiveListBinding>()
+//                        var  bean=_data as BeingLiveBean
+////
+//                        if(bean.liveStatus.equals("2")){
+//                            bindingItem.txtLiveIsBroadcast.visibility=ViewGroup.VISIBLE
+//                        }else{
+//                            bindingItem.txtLiveIsBroadcast.visibility=ViewGroup.GONE
+//                        }
 //
-                        if(bean.liveStatus.equals("2")){
-                            bindingItem.txtLiveIsBroadcast.visibility=ViewGroup.VISIBLE
-                        }else{
-                            bindingItem.txtLiveIsBroadcast.visibility=ViewGroup.GONE
-                        }
-
-                        Glide.with(context)
-                            .load(bean.titlePage) // 替换为您要加载的图片 URL
-                            .error(R.drawable.main_top_load)
-                            .placeholder(R.drawable.main_top_load)
-                            .transition(DrawableTransitionOptions.withCrossFade())
-                            .into(bindingItem.ivLiveBe)
-                        Glide.with(context)
-                            .load(bean.userLogo) // 替换为您要加载的图片 URL
-                            .error(R.drawable.default_anchor_icon)
-                            .transition(DrawableTransitionOptions.withCrossFade())
-                            .placeholder(R.drawable.default_anchor_icon)
-                            .into(bindingItem.ivLiveHead)
-                        bindingItem.txtLiveName.text=bean.nickName
-                        //比赛类型 1足球，2篮球,可用值:1,2
-                        if(bean.matchType.equals("1")){
-                            bindingItem.txtLiveTeam.text="${bean.homeTeamName}VS${bean.awayTeamName}"
-                        }else{
-                            bindingItem.txtLiveTeam.text="${bean.awayTeamName }VS${bean.homeTeamName}"
-                        }
-                        bindingItem.txtLiveCompetition.text=bean.competitionName
-                        if(bean.hotValue<=9999){
-                            bindingItem.txtLiveHeat.text="${bean.hotValue}"
-                        }else{
-                            bindingItem.txtLiveHeat.text="9999+"
-                        }
-
-                        if(layoutPosition%2==0){
-                            val layoutParams = bindingItem.llLiveSpacing.layoutParams as ViewGroup.MarginLayoutParams
-                            layoutParams.setMargins(0, 0, context.dp2px(7), context.dp2px(8))
-                            bindingItem.llLiveSpacing.layoutParams =layoutParams
-                        }else{
-                            val layoutParams = bindingItem.llLiveSpacing.layoutParams as ViewGroup.MarginLayoutParams
-                            layoutParams.setMargins(0, 0, context.dp2px(0), context.dp2px(8))
-                            bindingItem.llLiveSpacing.layoutParams =layoutParams
-                        }
+//                        Glide.with(context)
+//                            .load(bean.titlePage) // 替换为您要加载的图片 URL
+//                            .error(R.drawable.main_top_load)
+//                            .placeholder(R.drawable.main_top_load)
+//                            .transition(DrawableTransitionOptions.withCrossFade())
+//                            .into(bindingItem.ivLiveBe)
+//                        Glide.with(context)
+//                            .load(bean.userLogo) // 替换为您要加载的图片 URL
+//                            .error(R.drawable.default_anchor_icon)
+//                            .transition(DrawableTransitionOptions.withCrossFade())
+//                            .placeholder(R.drawable.default_anchor_icon)
+//                            .into(bindingItem.ivLiveHead)
+//                        bindingItem.txtLiveName.text=bean.nickName
+//                        //比赛类型 1足球，2篮球,可用值:1,2
+//                        if(bean.matchType.equals("1")){
+//                            bindingItem.txtLiveTeam.text="${bean.homeTeamName}VS${bean.awayTeamName}"
+//                        }else{
+//                            bindingItem.txtLiveTeam.text="${bean.awayTeamName }VS${bean.homeTeamName}"
+//                        }
+//                        bindingItem.txtLiveCompetition.text=bean.competitionName
+//                        if(bean.hotValue<=9999){
+//                            bindingItem.txtLiveHeat.text="${bean.hotValue}"
+//                        }else{
+//                            bindingItem.txtLiveHeat.text="9999+"
+//                        }
+//
+//                        if(layoutPosition%2==0){
+//                            val layoutParams = bindingItem.llLiveSpacing.layoutParams as ViewGroup.MarginLayoutParams
+//                            layoutParams.setMargins(0, 0, context.dp2px(7), context.dp2px(8))
+//                            bindingItem.llLiveSpacing.layoutParams =layoutParams
+//                        }else{
+//                            val layoutParams = bindingItem.llLiveSpacing.layoutParams as ViewGroup.MarginLayoutParams
+//                            layoutParams.setMargins(0, 0, context.dp2px(0), context.dp2px(8))
+//                            bindingItem.llLiveSpacing.layoutParams =layoutParams
+//                        }
                     }
 
 
@@ -117,13 +120,16 @@ class ViewingHistoryListActivity : BaseActivity<ViewingHistoryListVm, ActivityVi
 
             }
             R.id.llLiveSpacing.onClick {
+                SoundManager.playMedia()
                 var  bean=_data as BeingLiveBean
                 if(bean.liveStatus.equals("2")){
                     MatchDetailActivity.open(matchType =bean.matchType, matchId = bean.matchId,matchName = "${bean.homeTeamName}VS${bean.awayTeamName}", anchorId = bean.userId )
                 }else{
-//                    MatchDetailActivity.open(matchType =bean.matchType, matchId = bean.matchId,matchName = "${bean.homeTeamName}VS${bean.awayTeamName}" )
+                    MatchDetailActivity.open(matchType =bean.matchType, matchId = bean.matchId,matchName = "${bean.homeTeamName}VS${bean.awayTeamName}" )
 
                 }
+
+
 
             }
 

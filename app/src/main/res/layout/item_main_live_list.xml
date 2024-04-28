@@ -47,6 +47,7 @@
                 tools:text="中超"
                 android:textColor="@color/c_ffffff"/>
             <LinearLayout
+                android:id="@+id/llMainShowRe"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -88,7 +89,138 @@
         android:layout_marginTop="@dimen/dp_8"
 
         android:text="@string/main_txt_on_the_air"/>
+         <!-- 纯净流显示-->
+        <!--比赛信息和状态   -->
+        <LinearLayout
+            android:id="@+id/cslMatchInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:visibility="gone"
+            android:layout_centerVertical="true"
+            android:paddingLeft="@dimen/dp_10"
+            android:paddingRight="@dimen/dp_10"
+            android:orientation="horizontal" >
 
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="9dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="vertical">
+                <androidx.constraintlayout.utils.widget.ImageFilterView
+                    android:id="@+id/ivHomeIcon"
+                    android:layout_width="@dimen/dp_20"
+                    android:layout_height="@dimen/dp_20"
+                    app:round="@dimen/dp_2"
+                    tools:src="@drawable/default_team_logo" />
+                <TextView
+                    android:id="@+id/tvHomeName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:textColor="@color/white"
+                    android:textSize="10sp"
+                    app:layout_constraintEnd_toEndOf="@id/ivHomeIcon"
+                    app:layout_constraintStart_toStartOf="@id/ivHomeIcon"
+                    app:layout_constraintTop_toBottomOf="@id/ivHomeIcon"
+                    tools:text="home" />
+            </LinearLayout>
+
+            <!--比赛状态 -->
+            <LinearLayout
+                android:id="@+id/lltMatchStatus"
+                android:layout_width="0dp"
+                android:layout_weight="0.7"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/tvMatchStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#DEFFFFFF"
+                    android:textSize="8sp"
+                    android:singleLine="true"
+                    android:layout_marginBottom="@dimen/dp_6"
+                    android:visibility="visible"
+                    tools:text="未" />
+                <TextView
+                    android:id="@+id/tvMatchVs"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dp_14"
+                    android:background="@drawable/shape4_line_e8eaef"
+                    android:gravity="center"
+                    android:minWidth="@dimen/dp_28"
+                    android:maxWidth="55dp"
+                    android:minHeight="@dimen/dp_14"
+                    android:paddingHorizontal="@dimen/dp_5"
+                    android:text="0:0"
+                    android:singleLine="true"
+                    android:textColor="@color/white"
+                    android:textSize="8sp"
+                    android:textStyle="bold"
+                    android:visibility="visible"  />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_marginLeft="9dp"
+                android:orientation="vertical">
+                <androidx.constraintlayout.utils.widget.ImageFilterView
+                    android:id="@+id/ivAwayIcon"
+                    android:layout_width="@dimen/dp_20"
+                    android:layout_height="@dimen/dp_20"
+                    tools:src="@drawable/default_team_logo" />
+                <TextView
+                    android:id="@+id/tvAwayName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textColor="@color/white"
+                    android:textSize="10sp"
+                    tools:text="away" />
+            </LinearLayout>
+
+
+
+        </LinearLayout>
+<!--        是否有主播标识-->
+        <LinearLayout
+            android:id="@+id/llShowLive"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:visibility="gone"
+            android:paddingTop="@dimen/dp_8"
+            android:paddingRight="@dimen/dp_8"
+            android:layout_alignParentRight="true"
+            android:orientation="horizontal">
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                app:srcCompat="@drawable/live_icon_yuan"/>
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/c_ffffff"
+                android:textSize="10sp"
+                android:layout_marginLeft="4dp"
+                android:text="LIVE"/>
+        </LinearLayout>
 
     </RelativeLayout>
     <LinearLayout

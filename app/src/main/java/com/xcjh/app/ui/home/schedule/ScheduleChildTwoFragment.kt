@@ -31,6 +31,7 @@ import com.xcjh.app.databinding.FrScheduletwoBinding
 import com.xcjh.app.databinding.ItemJsBinding
 import com.xcjh.app.databinding.ItemSchAllBinding
 import com.xcjh.app.ui.details.MatchDetailActivity
+import com.xcjh.app.utils.SoundManager
 import com.xcjh.app.utils.TimeUtil
 import com.xcjh.app.utils.judgeLogin
 import com.xcjh.app.view.CustomHeader
@@ -945,6 +946,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                     .override(64, 64) // 指定目标宽度和高度
                                     .into(binding1.ivhead)
                                 binding1.linroot.setOnClickListener {
+                                    SoundManager.playMedia()
                                     MatchDetailActivity.open(
                                         matchType = item.matchType,
                                         matchId = item.matchId,
@@ -993,8 +995,9 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                         }
 
                     }
-
+                    //点击全部
                     binding.conroot.setOnClickListener {
+                        SoundManager.playMedia()
                         MatchDetailActivity.open(
                             matchType = item.matchType,
                             matchId = item.matchId,

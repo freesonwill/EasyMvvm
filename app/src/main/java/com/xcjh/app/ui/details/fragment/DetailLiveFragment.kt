@@ -39,12 +39,14 @@ class DetailLiveFragment(var matchId: String, var matchType: String) :
         get() = 6
 
     override fun initView(savedInstanceState: Bundle?) {
-        matchId = if (matchId.contains("_")) {
-            ""
-        } else {
-            matchId
-        }
-        //初始化直播列表
+//        matchId = if (matchId.contains("_")) {
+//            ""
+//        } else {
+//            matchId
+//        }
+
+
+                //初始化直播列表
         mDatabind.rcvRecommend.grid(2)
            /* .divider {
                 // setDrawable(R.drawable.divider_horizontal)
@@ -62,15 +64,30 @@ class DetailLiveFragment(var matchId: String, var matchType: String) :
                     }
                 }
                 R.id.llLiveSpacing.onClick {
-                    val bean = _data as BeingLiveBean
-                    // 先退出当前房间，移除监听器， 然后才能进入新的房间
-                    MatchDetailActivity.open(
-                        matchType,
-                        bean.matchId,
-                        bean.competitionName,
-                        bean.userId,
-                        bean.playUrl
-                    )
+//                    val bean = _data as BeingLiveBean
+//                    // 先退出当前房间，移除监听器， 然后才能进入新的房间
+//                    MatchDetailActivity.open(
+//                        matchType,
+//                        bean.matchId,
+//                        bean.competitionName,
+//                        bean.userId,
+//                        bean.playUrl
+//                    )
+
+                    val bean=_data as BeingLiveBean
+                    if(bean.pureFlow){
+                        activity?.finish()
+                        MatchDetailActivity.open(matchType =bean.matchType, matchId = bean.matchId,matchName = "${bean.homeTeamName}VS${bean.awayTeamName}", pureFlow = true )
+
+
+                    }else{
+                        activity?.finish()
+                        MatchDetailActivity.open(matchType =bean.matchType, matchId = bean.matchId,matchName = "${bean.homeTeamName}VS${bean.awayTeamName}", anchorId = bean.userId,videoUrl = bean.playUrl )
+
+                    }
+
+
+
                 }
             }
         // 下拉刷新

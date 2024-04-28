@@ -38,6 +38,7 @@ import com.xcjh.app.bean.ContactBean
 import com.xcjh.app.databinding.ActivityContactUsBinding
 import com.xcjh.app.utils.FullyGridLayoutManager
 import com.xcjh.app.utils.GlideEngine
+import com.xcjh.app.utils.SoundManager
 import com.xcjh.app.utils.nice.Utils
 import com.xcjh.app.utils.picture.ImageFileCompressEngine
 import com.xcjh.base_lib.Constants
@@ -176,6 +177,7 @@ class ContactUsActivity : BaseActivity<ContactUsVm, ActivityContactUsBinding>() 
 
         //点击提交
         mDatabind.txtContactSub.clickNoRepeat {
+            SoundManager.playMedia()
             if(selectType!=null&& mDatabind.editContactInput.text.toString().trim().isNotEmpty()){
                 mViewModel.showLoading()
                 mViewModel.imageList.clear()
@@ -209,7 +211,7 @@ class ContactUsActivity : BaseActivity<ContactUsVm, ActivityContactUsBinding>() 
         }
 
         mViewModel.submit.observe(this){
-            myToast(resources.getString(R.string.contact_txt_submit_succeed))
+           
             finish()
         }
     }
@@ -277,7 +279,7 @@ class ContactUsActivity : BaseActivity<ContactUsVm, ActivityContactUsBinding>() 
             }
 
             holder.rlClick.clickNoRepeat(100){
-
+                SoundManager.playMedia()
                 list!!.forEach {
                     it.select=false
                 }

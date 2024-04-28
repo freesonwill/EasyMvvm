@@ -1,7 +1,7 @@
 package com.xcjh.app.ui.details
 
 
-import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.net.Uri
@@ -9,9 +9,10 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import com.android.cling.ClingDLNAManager
 import com.android.cling.control.DeviceControl
 import com.android.cling.control.OnDeviceControlListener
@@ -26,16 +27,18 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.gson.Gson
 import com.gyf.immersionbar.ImmersionBar
 import com.gyf.immersionbar.ImmersionBar.getStatusBarHeight
+import com.kongzue.dialogx.dialogs.CustomDialog
+import com.kongzue.dialogx.interfaces.OnBindView
 import com.lxj.xpopup.XPopup
 import com.shuyu.gsyvideoplayer.GSYVideoManager
 import com.shuyu.gsyvideoplayer.builder.GSYVideoOptionBuilder
+import com.shuyu.gsyvideoplayer.model.VideoOptionModel
 import com.shuyu.gsyvideoplayer.utils.GSYVideoType
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer
 import com.xcjh.app.R
 import com.xcjh.app.adapter.ViewPager2Adapter
 import com.xcjh.app.appViewModel
 import com.xcjh.app.bean.AnchorListBean
-import com.xcjh.app.bean.LoginInfo
 import com.xcjh.app.bean.MatchDetailBean
 import com.xcjh.app.databinding.ActivityMatchDetailBinding
 import com.xcjh.app.isTopActivity
@@ -47,11 +50,11 @@ import com.xcjh.app.utils.*
 import com.xcjh.app.utils.TimeUtil
 import com.xcjh.app.view.PopupSelectProjection
 import com.xcjh.app.view.balldetail.ControlShowListener
-import com.xcjh.app.vm.MainVm
 import com.xcjh.app.websocket.MyWsManager
 import com.xcjh.app.websocket.bean.LiveStatus
 import com.xcjh.app.websocket.bean.ReceiveChangeMsg
 import com.xcjh.app.websocket.listener.LiveStatusListener
+import com.xcjh.app.websocket.listener.MOffListener
 import com.xcjh.app.websocket.listener.NoReadMsgPushListener
 import com.xcjh.app.websocket.listener.OtherPushListener
 import com.xcjh.base_lib.App
@@ -65,9 +68,11 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.fourthline.cling.model.meta.Device
+import tv.danmaku.ijk.media.player.IjkMediaPlayer
 import java.math.BigDecimal
 import java.util.*
 import kotlin.math.abs
+
 
 /**
  * 比赛详情 主页
@@ -87,8 +92,15 @@ class MatchDetailActivity :
     private var matchName: String? = "" //
     private var anchor: AnchorListBean? = null //当前主播详情
     private var anchorId: String? = null //主播ID
-    private var isHasAnchor: Boolean = false //当前流是否有主播
-    private var isShowVideo: Boolean = false //当前是否播放视频
+    /**
+     * 当前流是否有主播
+     */
+    private var isHasAnchor: Boolean = false
+
+    /**
+     * 当前是否播放视频
+     */
+    private var isShowVideo: Boolean = false
     //保存异常状态
     private var errStatic:Int=0
 
@@ -109,6 +121,13 @@ class MatchDetailActivity :
 
     //当前界面在顶部
     private var topActivity: Boolean = true
+    //收到关播信息后
+    private var offBean: LiveStatus?=null
+
+    //是否是纯净流第一次进入设置的时候
+    private var pureFlow:Boolean=false
+    //是否是滴一个
+    private var  isDi:Boolean=true
 
     companion object {
         fun open(
@@ -117,6 +136,7 @@ class MatchDetailActivity :
             matchName: String? = "",
             anchorId: String? = null,
             videoUrl: String? = null,
+            pureFlow: Boolean? = false,
         ) {
             startNewActivity<MatchDetailActivity> {
                 putExtra("matchType", matchType)
@@ -124,7 +144,7 @@ class MatchDetailActivity :
                 putExtra("matchName", matchName)
                 putExtra("anchorId", anchorId)
                 putExtra("videoUrl", videoUrl)
-
+                putExtra("pureFlow", pureFlow)
             }
         }
     }
@@ -132,7 +152,7 @@ class MatchDetailActivity :
     fun dataPopup() {
         popup = PopupSelectProjection(this)
         var popwindow = XPopup.Builder(this)
-            .hasShadowBg(false)
+            .hasShadowBg(true)
             .moveUpToKeyboard(false) //如果不加这个，评论弹窗会移动到软键盘上面
             .isViewMode(true)
             .isDestroyOnDismiss(true)
@@ -227,13 +247,13 @@ class MatchDetailActivity :
             .titleBarMarginTop(mDatabind.rltTop).init()
 
 
-
         // 使用方法
         mDatabind.videoPlayer.setShrinkImageRes(R.drawable.detaic_tv_icon_cioss);
         mDatabind.videoPlayer.setEnlargeImageRes(R.drawable.detaic_tv_icon_screen);
 
 //        mDatabind.videoPlayer!!.setFullScreenCover("11111")
         mDatabind.ivMatchVideo.clickNoRepeat {
+            SoundManager.playMedia()
             ClingDLNAManager.getInstant().searchDevices()
             dataPopup()
         }
@@ -257,7 +277,6 @@ class MatchDetailActivity :
                     }
 
                 } else if (it == 3) {
-
                     showSignal()
                 }
 
@@ -289,7 +308,9 @@ class MatchDetailActivity :
             matchId = getString("matchId", "0")
             matchName = getString("matchName", "")
             anchorId = getString("anchorId", null)
+            pureFlow=getBoolean("pureFlow")
             //  playUrl = getString("videoUrl", null)
+            //以前纯净流的时候就不能要
             isHasAnchor = !anchorId.isNullOrEmpty()
             setData()
             /* FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
@@ -350,7 +371,7 @@ class MatchDetailActivity :
                 cslMatchInfo.visibleOrGone(false)
                 lltNoLive.visibleOrGone(true)
                 topLiveTitle.visibleOrGone(true)
-                mDatabind.rltTop.background.alpha = 0
+//                mDatabind.rltTop.background.alpha = 0
                 topNoLiveTitle.visibleOrGone(false)
                 lltLiveError.visibleOrGone(false)
             } else {
@@ -358,10 +379,13 @@ class MatchDetailActivity :
                 //有视频布局
                 rltVideo.visibleOrGone(isShowVideo)
                 topLiveTitle.visibleOrGone(isShowVideo)
-                mDatabind.rltTop.background.alpha = if (isShowVideo) 255 else 0
+//                mDatabind.rltTop.background.alpha = if (isShowVideo) 255 else 0
                 viewTopBg.visibleOrGone(isHasAnchor)
                 //无视频纯净流布局
+
                 cslMatchInfo.visibleOrGone(!isShowVideo)
+
+
                 topNoLiveTitle.visibleOrGone(!isShowVideo)
                 lltLiveError.visibleOrGone(false)
             }
@@ -405,7 +429,7 @@ class MatchDetailActivity :
         ///跑马灯设置
         mDatabind.marqueeView.isSelected = true
         mDatabind.toolbar.background.alpha = 0
-        mDatabind.rltTop.background.alpha = 255
+//        mDatabind.rltTop.background.alpha = 255
         ///滑动监听
         mDatabind.appBayLayout.addOnOffsetChangedListener(object :
             AppBarLayout.OnOffsetChangedListener {
@@ -460,9 +484,20 @@ class MatchDetailActivity :
                                 }
                             }
                             if (isTopActivity(this@MatchDetailActivity) && !isPause) {
+                                 if(finisShow!=null&&finisShow!!.isShow){
+                                     finisShow!!.dismiss()
+                                 }
                                 startVideo(bean.playUrl)
                             }
                         } else {
+                            //是否只有一个纯净流
+                            var isPure=false
+                            if(matchDetail.anchorList!=null){
+                                if(matchDetail.anchorList!!.size==1){
+                                    isPure=true
+                                }
+                            }
+
                             //增加主播
                             var add = true
                             matchDetail.anchorList?.forEach {
@@ -484,6 +519,16 @@ class MatchDetailActivity :
                                     )
                                 )
                             }
+                            if(isPure){
+                                if (mDatabind.videoPlayer.isIfCurrentIsFullscreen) {
+                                    mDatabind.videoPlayer.exitFullScreen()
+                                }
+                                GlobalScope.launch(Dispatchers.Main) { // 使用主线程的调度器
+                                    delay(500L) // 延迟1秒（1000毫秒）
+                                    showSignal()
+                                }
+                            }
+
                             matchDetail.anchorList?.sortByDescending {
                                 it.hotValue
                             }
@@ -491,11 +536,13 @@ class MatchDetailActivity :
 
                     }
                 }
-
+                //关播报错的回调
                 override fun onCloseLive(bean: LiveStatus) {
                     //"onReceive========${bean.id}===${anchor?.liveId}".loge()
+
                     if (matchId == bean.matchId) {
                         if (anchor?.userId == bean.anchorId) {
+
                             mDatabind.videoPlayer.release()
                             GSYVideoManager.releaseAllVideos()
                             isShowVideo = false
@@ -519,6 +566,12 @@ class MatchDetailActivity :
 //                                showHideLive(true)
                                 setIsLandscape(false)
                             }
+//                            GlobalScope.launch(Dispatchers.Main) { // 使用主线程的调度器
+//                                delay(500L) // 延迟1秒（1000毫秒）
+//                                blacklistDilog(this@MatchDetailActivity)
+//                            }
+
+
 
                         } else {
                             val iterator = matchDetail.anchorList?.iterator()
@@ -569,7 +622,77 @@ class MatchDetailActivity :
                     }
 
                 }
+
             })
+        //主播关闭
+        MyWsManager.getInstance(App.app)?.setOtherPushListener(this.toString(),object :MOffListener{
+            override fun onCloseLive(bean: LiveStatus) {
+                     offBean=bean
+                if (matchId == bean.matchId) {
+
+                    if (anchor?.userId == bean.anchorId) {
+                        if (mDatabind.videoPlayer.isIfCurrentIsFullscreen) {
+                            exitFullScreen()
+                        }
+                        mDatabind.videoPlayer.release()
+                        GSYVideoManager.releaseAllVideos()
+                        isShowVideo = false
+                        showHideLive(true)
+                        anchor?.isOpen = false
+
+                        //查询直播间详情
+                        mViewModel.getMatchDetailAnchorList(matchId, matchType, false)
+                    }else{
+                        val iterator = matchDetail.anchorList?.iterator()
+                        if (iterator != null) {
+                            for (tab in iterator) {
+                                if (tab.userId == bean.anchorId) {
+                                    iterator.remove()
+                                }
+                            }
+                        }
+                    }
+
+
+//                    if (anchor?.userId == bean.anchorId) {
+//                        mDatabind.videoPlayer.release()
+//                        GSYVideoManager.releaseAllVideos()
+//                        isShowVideo = false
+//                        showHideLive(true)
+//                        anchor?.isOpen = false
+//                        matchDetail.anchorList?.forEach {
+//                            it.isOpen = it.userId != bean.anchorId
+//                        }
+////                            if( mDatabind.videoPlayer.isIfCurrentIsFullscreen){
+////                                if(mDatabind.videoPlayer.currentPlayer.lltLiveErrorNew!=null){
+////                                    mDatabind.videoPlayer.currentPlayer.lltLiveErrorNew.visibility=View.GONE
+////                                    mDatabind.videoPlayer.currentPlayer.ivMatchBgNew.visibility=View.VISIBLE
+////                                    mDatabind.videoPlayer.currentPlayer.lltNoLiveNew.visibility=View.VISIBLE
+////                                }
+////
+////                            }
+//                        //关闭直播间的时候如果是横屏也是
+//                        if (mDatabind.videoPlayer.isIfCurrentIsFullscreen) {
+//                            exitFullScreen()
+////                                isShowVideo = false
+////                                showHideLive(true)
+//                            setIsLandscape(false)
+//                        }
+//
+//                    } else {
+//                        val iterator = matchDetail.anchorList?.iterator()
+//                        if (iterator != null) {
+//                            for (tab in iterator) {
+//                                if (tab.userId == bean.anchorId) {
+//                                    iterator.remove()
+//                                }
+//                            }
+//                        }
+//                    }
+                }
+            }
+
+        })
 
 //        MyWsManager.getInstance(this)?.setNoReadMsgListener(javaClass.name, object :
 //            NoReadMsgPushListener {
@@ -588,11 +711,14 @@ class MatchDetailActivity :
 
         MyWsManager.getInstance(App.app)
             ?.setOtherPushListener(this.toString(), object : OtherPushListener {
+                //收到比赛实时数据
                 override fun onChangeMatchData(matchList: ArrayList<ReceiveChangeMsg>) {
                     try {
+
                         //防止数据未初始化的情况
                         if (::matchDetail.isInitialized && matchDetail.status in 0..if (matchType == "1") 7 else 9) {
                             matchList.forEach {
+                                //正在比赛
                                 if (matchId == it.matchId.toString() && matchType == it.matchType.toString()) {
                                     Gson().toJson(it).loge("===66666===")
                                     matchDetail.apply {
@@ -613,6 +739,70 @@ class MatchDetailActivity :
                                     }
                                 }
                             }
+                        } else{
+
+                            matchList.forEach {
+                                //正在比赛
+                                if (matchId == it.matchId.toString() && matchType == it.matchType.toString()) {
+                                    finishDilog(this@MatchDetailActivity)
+                                    //直播间结束
+//                                    isHasAnchor=false
+//                                    isShowVideo=false
+//                                    mDatabind.videoPlayer.release()
+//                                    GSYVideoManager.releaseAllVideos()
+//                                    needWsToUpdateUI()
+//                                    //修改状态
+//                                    showHideLive(false)
+//                                    //弹框
+//                                    finishDilog(this@MatchDetailActivity)
+
+                                    //比赛结束了。判断是否是纯净流
+                                    //判断是否有信号源
+                                    if (matchDetail.anchorList?.isNotEmpty() == true) {
+                                        //判断当前是否是纯净流
+                                        var  pure=false
+                                        //当前直播源只有一条的时候就肯定是纯净流
+                                        if(matchDetail.anchorList!!.size==1){
+                                            pure=true
+                                        }
+                                        //当前直播间结束
+                                        if(pure){
+                                            isHasAnchor=false
+                                            isShowVideo=false
+                                            //关闭视频播放
+                                            mDatabind.videoPlayer.release()
+                                            GSYVideoManager.releaseAllVideos()
+                                            matchDetail.apply {
+                                                status = BigDecimal(it.status).toInt()
+                                                if (matchType == "1") {
+                                                    if (it.status.toInt() == 2) {
+                                                        runTime = it.runTime.toInt()//上半场
+                                                    } else if (it.status.toInt() == 4) {
+                                                        runTime = it.runTime.toInt()//下半场
+                                                    }
+                                                }
+                                                awayHalfScore = BigDecimal(it.awayHalfScore).toInt()
+                                                awayScore = BigDecimal(it.awayScore).toInt()
+                                                homeHalfScore = BigDecimal(it.homeHalfScore).toInt()
+                                                homeScore = BigDecimal(it.homeScore).toInt()
+                                            }.apply {
+                                                needWsToUpdateUI()
+                                                //修改状态
+                                                showHideLive(false)
+                                            }
+
+                                        }
+
+
+                                    }
+
+
+
+                                }
+                            }
+
+
+
                         }
                     } catch (e: Exception) {
                         e.message?.loge("e====e")
@@ -644,23 +834,31 @@ class MatchDetailActivity :
     private fun setBaseListener() {
         //分享按钮
         mDatabind.tvToShare.setOnClickListener {
+            SoundManager.playMedia()
             setShareDate()
         }
         //信号源
         mDatabind.tvSignal.setOnClickListener {
+            SoundManager.playMedia()
             showSignal()
         }
         mDatabind.tvSignal2.setOnClickListener {
+            SoundManager.playMedia()
             showSignal()
         }
         mDatabind.tvSignal3.setOnClickListener {
+            SoundManager.playMedia()
             showSignal()
         }
         mDatabind.tvSignal4.setOnClickListener {
+            SoundManager.playMedia()
             showSignal()
         }
     }
 
+    /**
+     * 信号源弹出框
+     */
     private fun showSignal() {
         if (matchDetail.anchorList?.isNotEmpty() == true) {
             showSignalDialog(matchDetail.anchorList) { anchor, pos ->
@@ -672,6 +870,7 @@ class MatchDetailActivity :
                     return@showSignalDialog
                 }
                 val iterator = matchDetail.anchorList?.iterator()
+                //如果已经关闭了后就删除
                 if (iterator != null) {
                     for (tab in iterator) {
                         if (!tab.isOpen) {
@@ -685,9 +884,15 @@ class MatchDetailActivity :
                 if (anchor.pureFlow) {
                     mDatabind.ivMatchVideo.visibility = View.GONE
                     this.setIsLandscape(false)
+
                     isHasAnchor = false
-                    isShowVideo = !anchor.playUrl.isNullOrEmpty()
-                    // mDatabind.videoPlayer.currentState
+
+                    if (anchor.playUrl.isNullOrEmpty()) {
+                        isShowVideo = false
+                    } else {
+                        isShowVideo = true
+
+                    }
                     if (mDatabind.videoPlayer.isIfCurrentIsFullscreen) {
                         exitFullScreen()
                     }
@@ -729,7 +934,7 @@ class MatchDetailActivity :
                 .into(mDatabind.ivAwayIcon)
         } else {
             //主队名称以及图标
-            mDatabind.tvAwayName.text = "${matchDetail.homeName}\n(${resources.getString(R.string.my_app_name)})"
+            mDatabind.tvAwayName.text = "${matchDetail.homeName}\n(${resources.getString(R.string.detail_txt_home)})"
             Glide.with(this).load(matchDetail.homeLogo).placeholder(R.drawable.def_basketball)
                 .into(mDatabind.ivAwayIcon)
             //客队名称以及图标
@@ -822,7 +1027,7 @@ class MatchDetailActivity :
 
         mDatabind.videoPlayer.setGSYStateUiListener {
             //it.toString().loge("======")
-            Log.i("bobobobobo","================="+it)
+            Log.i("bobobobobo","================="+ GSYVideoType.isMediaCodec())
             if (it == 2) {
 //                this.setIsLandscape(true)
                 if (!mDatabind.videoPlayer.isIfCurrentIsFullscreen) {
@@ -843,6 +1048,7 @@ class MatchDetailActivity :
 ////                        //有视频布局
 ////                        rltVideo.visibleOrGone(isShowVideo)
 ////                        topLiveTitle.visibleOrGone(isShowVideo)
+                //不懂
 ////                        mDatabind.rltTop.background.alpha = if (isShowVideo) 255 else 0
 ////                        viewTopBg.visibleOrGone(isHasAnchor)
 ////                        //无视频纯净流布局
@@ -903,7 +1109,7 @@ class MatchDetailActivity :
             override fun onShow() {
 
                 if (isShowVideo) {
-                    mDatabind.rltTop.background.alpha = 255
+//                    mDatabind.rltTop.background.alpha = 255
                     mDatabind.topLiveTitle.visibleOrGone(true)
                     mDatabind.tvToShare.visibleOrGone(true)
                     mDatabind.tvSignal.visibleOrGone(true)
@@ -915,7 +1121,7 @@ class MatchDetailActivity :
             override fun onHide() {
 
                 if (isShowVideo) {
-                    mDatabind.rltTop.background.alpha = 0
+ //                    mDatabind.rltTop.background.alpha = 0
                     mDatabind.topLiveTitle.visibleOrGone(false)
                     mDatabind.tvToShare.visibleOrGone(false)
                     mDatabind.tvSignal.visibleOrGone(false)
@@ -939,8 +1145,73 @@ class MatchDetailActivity :
 
     //数据处理
     override fun createObserver() {
+        //收到关播信息后
+        mViewModel.refreshDetail.observe(this){match ->
+
+            if(match!=null){
+               if(match.anchorList!!.size==1){//就是纯净流
+                    if( matchDetail.status in 0..if (matchType == "1") 7 else 9){
+                        blacklistDilog(this)
+
+                    }else{
+                        finishDilog(this)
+                    }
+
+               } else{
+                   myToast(resources.getString(R.string.matche_txt_live_end))
+                   matchDetail.anchorList!!.clear()
+                   matchDetail.anchorList!!.addAll(match.anchorList!!)
+                   showSignal()
+
+               }
+            }else{
+                //没有查到最新的
+                if (anchor?.userId == offBean!!.anchorId) {
+                    mDatabind.videoPlayer.release()
+                    GSYVideoManager.releaseAllVideos()
+                    isShowVideo = false
+                    showHideLive(true)
+                    anchor?.isOpen = false
+                    matchDetail.anchorList?.forEach {
+                        it.isOpen = it.userId != offBean!!.anchorId
+                    }
+//                            if( mDatabind.videoPlayer.isIfCurrentIsFullscreen){
+//                                if(mDatabind.videoPlayer.currentPlayer.lltLiveErrorNew!=null){
+//                                    mDatabind.videoPlayer.currentPlayer.lltLiveErrorNew.visibility=View.GONE
+//                                    mDatabind.videoPlayer.currentPlayer.ivMatchBgNew.visibility=View.VISIBLE
+//                                    mDatabind.videoPlayer.currentPlayer.lltNoLiveNew.visibility=View.VISIBLE
+//                                }
+//
+//                            }
+                    //关闭直播间的时候如果是横屏也是
+                    if (mDatabind.videoPlayer.isIfCurrentIsFullscreen) {
+                        exitFullScreen()
+//                                isShowVideo = false
+//                                showHideLive(true)
+                        setIsLandscape(false)
+                    }
+//                    GlobalScope.launch(Dispatchers.Main) { // 使用主线程的调度器
+//                        delay(500L) // 延迟1秒（1000毫秒）
+//                        blacklistDilog(this@MatchDetailActivity)
+//                    }
+                } else {
+                    val iterator = matchDetail.anchorList?.iterator()
+                    if (iterator != null) {
+                        for (tab in iterator) {
+                            if (tab.userId == offBean!!.anchorId) {
+                                iterator.remove()
+                            }
+                        }
+                    }
+                }
+
+            }
+
+        }
+
         //比赛详情接口返回监听处理
         mViewModel.detail.observe(this) { match ->
+
             if (match != null) {
                 matchDetail = match
                 setBaseListener()
@@ -1027,16 +1298,30 @@ class MatchDetailActivity :
     fun  horseRaceLamp(){
         if( mViewModel.scrollTextList.value!=null){
          var stl= mViewModel.scrollTextList.value
-            mDatabind.marqueeView.visibleOrInvisible(stl!!.isSuccess && stl.data!!.size > 0)
+            mDatabind.rlMView.visibleOrInvisible(stl!!.isSuccess && stl.data!!.size > 0)
+            mDatabind.marqueeView.setTextColor(R.color.c_ffffff)
             stl!!.data.notNull({ list ->
                 if (list.size > 0) {
                     //滚动条广告
-                    mDatabind.marqueeView.isSelected = true
+//                    mDatabind.marqueeView.isSelected = true
                     //随机取一个数 val random = (0 until list.size).random()
                     val random = (0..list.size).random() % list.size
-                    mDatabind.marqueeView.text = list[random].name    /*+"                                                                                             "*/
+//                    mDatabind.marqueeView.text = list[random].name
+                    mDatabind.marqueeView.setContent(list[random].name)
+//                    mDatabind.marqueeView.text = "sdsaads私发赛时间if集上u覅是季师傅寄宿费急速衣服is发送发送是否sdsaads私发赛时间if集上u覅是季师傅寄宿费急速衣服is发送发送是否"
+
+
+//                    mDatabind.marqueeView.setMarqueeText("福建省开福寺寄顺丰私发极速发思服饰易师傅寄宿费私发㕕付师傅随时覅111111")
+
+//                    GlobalScope.launch(Dispatchers.Main) { // 使用主线程的调度器
+//                        delay(2000L) // 延迟1秒（1000毫秒）
+//                        mDatabind.marqueeView.visibility=View.VISIBLE
+//
+//                    }
+                    /*+"                                                                                             "*/
                     mDatabind.marqueeView.setOnClickListener {
-                        jumpOutUrl(list[random].targetUrl)
+                        //点击视频广告
+//                        jumpOutUrl(list[random].targetUrl)
                     }
                 }
             }, {})
@@ -1136,6 +1421,7 @@ class MatchDetailActivity :
         mDatabind.tvTabAnchorChat.setOnClickListener { v ->
             appViewModel.emptychatUserEvent.postValue(anchor?.userId)
             judgeLogin {
+                SoundManager.playMedia()
                 startNewActivity<ChatActivity>() {
                     putExtra(Constants.USER_ID, anchor?.userId)
                     putExtra(Constants.USER_NICK, anchor?.nickName)
@@ -1148,8 +1434,9 @@ class MatchDetailActivity :
         //点击关注或者取消关注
         mDatabind.tvTabAnchorFollow.setOnClickListener {
             judgeLogin {
+                SoundManager.playMedia()
                 if (!focus) {
-                    mViewModel.followAnchor(anchorId ?: "")
+                    mViewModel.followAnchor(this,anchorId ?: "")
                 } else {
 
                     //取消关注
@@ -1175,6 +1462,8 @@ class MatchDetailActivity :
             }
             // 是否找到流
             var findAnchor = false
+
+
             if (isHasAnchor) {
                 for ((i, item) in list.withIndex()) {
                     if (anchorId == item.userId) {
@@ -1189,9 +1478,18 @@ class MatchDetailActivity :
             }
             //没找到主播流 播第一个主播
             if (!findAnchor) {
-                val item = list[0]
-                item.isSelect = true
-                anchor = item
+                //如果是纯净流进来的
+                var item = list[0]
+                if(pureFlow){
+                      item = list[list.size-1]
+                    item.isSelect = true
+                    anchor = item
+                }else{
+                      item = list[0]
+                    item.isSelect = true
+                    anchor = item
+                }
+
                 if (item.pureFlow) {//纯净流 无主播
                     isHasAnchor = false
                     if (item.playUrl.isNullOrEmpty()) {
@@ -1206,6 +1504,7 @@ class MatchDetailActivity :
                     action.invoke(item.playUrl)
                 }
             }
+
         })
     }
 
@@ -1223,6 +1522,26 @@ class MatchDetailActivity :
         super.onStop()
         topActivity = false
     }
+
+    override fun onStart() {
+        super.onStart()
+        //        //设置加载时间
+        val videoOptionModeler = VideoOptionModel(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "timeout", 6*1000*1000)
+        //硬解码：1、打开，0、关闭
+        val videoOptionModel = VideoOptionModel(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "max_cached_duration", 5000)
+        val videoOptionModelsan = VideoOptionModel(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "infbuf", 1)
+        val videoOptionModelsi= VideoOptionModel(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "packet-buffering", 0)
+        val list: MutableList<VideoOptionModel> = ArrayList()
+        list.add(videoOptionModel)
+        list.add(videoOptionModeler)
+        list.add(videoOptionModelsan)
+        list.add(videoOptionModelsi)
+        GSYVideoManager.instance().optionModelList = list
+        // 打开硬解码
+//        GSYVideoType.enableMediaCodec()
+
+    }
+
 
     override fun onResume() {
         super.onResume()
@@ -1264,6 +1583,9 @@ class MatchDetailActivity :
         super.onDestroy()
         MyWsManager.getInstance(App.app)?.removeLiveStatusListener(this.toString())
         MyWsManager.getInstance(App.app)?.removeOtherPushListener(this.toString())
+        MyWsManager.getInstance(App.app)?.removeMOtherOffListenerListener(this.toString())
+
+
     }
 
     override val gSYVideoPlayer: StandardGSYVideoPlayer
@@ -1333,6 +1655,17 @@ class MatchDetailActivity :
 
     }
 
+
+
+    /**
+     * 进入全屏
+     */
+    override fun onEnterFullscreen(url: String, vararg objects: Any) {
+        super.onEnterFullscreen(url, *objects)
+        appViewModel.closeKeyboardEvent.postValue(true)
+    }
+
+
     override val detailOrientationRotateAuto: Boolean
         get() = false
 
@@ -1395,5 +1728,113 @@ class MatchDetailActivity :
         }
     }
 
+
+    var   blacklist:CustomDialog?=null
+    /***
+     * 弹出提示是否选择纯净流
+     */
+    fun blacklistDilog(context: Context ) {
+        if(blacklist==null){
+            blacklist= CustomDialog.build()
+                .setCustomView(object : OnBindView<CustomDialog?>(R.layout.layout_dialogx_delmsg) {
+                    override fun onBind(dialog: CustomDialog?, v: View) {
+                        val tvcancle = v.findViewById<TextView>(R.id.tvcancle)
+                        val textName = v.findViewById<TextView>(R.id.textName)
+                        val tvsure = v.findViewById<TextView>(R.id.tvsure)
+                        val viewGen = v.findViewById<View>(R.id.viewGen)
+                        textName.text=resources.getString(R.string.matche_txt_live_end)
+                        tvcancle.text=resources.getString(R.string.matche_txt_main)
+                        tvsure.text=resources.getString(R.string.matche_txt_switching)
+
+                        viewGen.visibility=View.GONE
+                        //切换纯净流
+                        tvsure.setOnClickListener {
+                            mViewModel.refreshDetail!!.value!!.anchorList?.get(0)!!.isSelect=true
+                            matchDetail.anchorList?.clear()
+                            matchDetail.anchorList?.addAll(mViewModel.refreshDetail!!.value!!.anchorList!!)
+                            //切换主播
+                            anchor = mViewModel.refreshDetail!!.value!!.anchorList?.get(0)
+
+
+                            mDatabind.ivMatchVideo.visibility = View.GONE
+                            setIsLandscape(false)
+
+                            isHasAnchor = false
+
+                            if (anchor!!.playUrl.isNullOrEmpty()) {
+                                isShowVideo = false
+                            } else {
+                                isShowVideo = true
+
+                            }
+
+                            mDatabind.tvToShare.visibleOrGone(true)
+                            if (isShowVideo) {
+                                startVideo(anchor!!.playUrl)
+                            } else {
+                                mDatabind.videoPlayer.release()
+                            }
+                            changeUI()
+
+                            dialog?.dismiss()
+
+                        }
+                        //返回首页
+                        tvcancle.setOnClickListener {
+                            finish()
+                            dialog?.dismiss()
+                        }
+
+                    }
+                }).setAlign(CustomDialog.ALIGN.CENTER).setCancelable(false).
+                setMaskColor(//背景遮罩
+                    ContextCompat.getColor(context, com.xcjh.base_lib.R.color.blacks_tr)
+
+                )
+        }
+
+        if(!blacklist!!.isShow){
+            blacklist!!.show()
+        }
+
+    }
+
+
+    var   finisShow:CustomDialog?=null
+
+    /***
+     * 直播结束
+     */
+    fun finishDilog(context: Context ) {
+
+        if(finisShow==null){
+            finisShow=  CustomDialog.build()
+                .setCustomView(object : OnBindView<CustomDialog?>(R.layout.layout_dialogx_delmsg) {
+                    override fun onBind(dialog: CustomDialog?, v: View) {
+                        val tvcancle = v.findViewById<TextView>(R.id.tvcancle)
+                        val textName = v.findViewById<TextView>(R.id.textName)
+                        val tvsure = v.findViewById<TextView>(R.id.tvsure)
+                        val viewGen = v.findViewById<View>(R.id.viewGen)
+                        textName.text=resources.getString(R.string.live_txt_end)
+                        tvcancle.visibility=View.GONE
+                        viewGen.visibility=View.GONE
+
+                        //返回首页
+                        tvsure.setOnClickListener {
+                            dialog?.dismiss()
+                        }
+
+                    }
+                }).setAlign(CustomDialog.ALIGN.CENTER).setCancelable(false).
+                setMaskColor(//背景遮罩
+                    ContextCompat.getColor(context, com.xcjh.base_lib.R.color.blacks_tr)
+
+                )
+        }
+        if(!finisShow!!.isShow){
+            finisShow!!.show()
+        }
+
+    }
 
 }

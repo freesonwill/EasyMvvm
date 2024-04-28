@@ -1,6 +1,6 @@
 <resources translatable="false">
-    <string name="my_app_name">SportsLive</string>
-    <string name="my_app_name_test">SportsLive_test</string>
+    <string name="my_app_name">Volcano Live</string>
+    <string name="my_app_name_test">Volcano Live_test</string>
     <!--main-->
     <string name="Home">Home</string>
     <string name="Schedule">Schedule</string>
@@ -425,4 +425,14 @@
     <string name="ensure_zhong">确定</string>
     <string name="ensure_fanti">確認</string>
     <string name="ensure_yingwen">Confirm</string>
+    <string name="live_txt_end">The live stream has ended</string>
+    <string name="recommend_txt_sbc">H1</string>
+    <string name="recommend_txt_xbc">H2</string>
+    <string name="matche_txt_live_end">The stream has ended</string>
+    <string name="matche_txt_main">Back to home</string>
+    <string name="matche_txt_switching">Pure Stream</string>
+    <string name="dialog_txt_woed_code">Please verify</string>
+    <string name="detail_txt_home">Home team</string>
+    <string name="app_update_title">New Version Found</string>
+    <string name="app_update_content">Update Content</string>
 </resources>

@@ -14,6 +14,7 @@ import com.xcjh.app.ui.home.home.tab.CompetitionTypeListFragment
 import com.xcjh.app.ui.home.home.tab.MainNewsListFragment
 import com.xcjh.app.ui.home.home.tab.MainRecommendNewFragment
 import com.xcjh.app.ui.search.SearchActivity
+import com.xcjh.app.utils.SoundManager
 import com.xcjh.app.vm.MainVm
 import com.xcjh.base_lib.utils.bindViewPager2
 import com.xcjh.base_lib.utils.initActivity
@@ -66,6 +67,7 @@ class HomeFragment : BaseFragment<MainVm, FragmentHomeBinding>() {
         mDatabind.viewPager.offscreenPageLimit = mFragList.size
 
         mDatabind.ivHomeSearch.clickNoRepeat {
+            SoundManager.playMedia()
             startNewActivity<SearchActivity>()
         }
 

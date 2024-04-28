@@ -103,6 +103,7 @@ class LetterCountryActivity : BaseActivity<LoginVm, ActivityLettercountryBinding
 
         }
         //    initMaps()
+        mDatabind.indexBar.hiddenText()
         mDatabind.indexBar.setSideBarLayout(SideBarLayout.OnSideBarLayoutListener { word -> //根据自己业务实现
             var ss = CityModel.CityLetter(word)
             val indexOf = mDatabind.rec.models?.indexOf(ss) ?: -1

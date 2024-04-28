@@ -23,6 +23,7 @@ import com.xcjh.base_lib.utils.view.clickNoRepeat
 
 import androidx.appcompat.app.AppCompatDelegate.*
 import com.xcjh.app.appViewModel
+import com.xcjh.app.utils.SoundManager
 
 /**
  * 推送设置
@@ -55,6 +56,7 @@ class PushSetActivity : BaseActivity<PushSetVm, ActivityPushSetBinding>() {
 
             if(!XXPermissions.isGranted(this, Permission.POST_NOTIFICATIONS)){
                 getXXPermissionsPush(this){
+                    SoundManager.playMedia()
                     setDate()
                     mViewModel.getInfoPush()
                 }
@@ -79,11 +81,13 @@ class PushSetActivity : BaseActivity<PushSetVm, ActivityPushSetBinding>() {
         //关注比赛
         mDatabind.sbPushConcern.clickNoRepeat {
             //[name参数 liveOpen:切换主播开播通知 followMatch:切换关注比赛通知
+            SoundManager.playMedia()
             mViewModel.setPush("followMatch",mDatabind.sbPushConcern.isChecked)
         }
         //主播开播
         mDatabind.sbPushAnchor.clickNoRepeat {
             //[name参数 liveOpen:切换主播开播通知 followMatch:切换关注比赛通知
+            SoundManager.playMedia()
             mViewModel.setPush("liveOpen",mDatabind.sbPushAnchor.isChecked)
         }
     }

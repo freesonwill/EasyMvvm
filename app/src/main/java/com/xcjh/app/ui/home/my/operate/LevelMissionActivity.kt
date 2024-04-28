@@ -13,6 +13,7 @@ import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseActivity
 import com.xcjh.app.databinding.ActivityLevelMissionBinding
 import com.xcjh.app.utils.CacheUtil
+import com.xcjh.app.utils.SoundManager
 import com.xcjh.app.vm.MainVm
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.dp2px
@@ -51,12 +52,14 @@ class LevelMissionActivity  : BaseActivity<LevelMissionVm, ActivityLevelMissionB
 //        mDatabind.titleTop.tvTitle.text=resources.getString(R.string.level_txt_title)
         //进入首页
         mDatabind.txtLevelClickInteraction.clickNoRepeat {
+            SoundManager.playMedia()
             appViewModel.mainViewPagerEvent.value=-1
             finish()
         }
 
         //进入首页
         mDatabind.txtLevelClickWatch.clickNoRepeat {
+            SoundManager.playMedia()
             appViewModel.mainViewPagerEvent.value=-1
             finish()
         }

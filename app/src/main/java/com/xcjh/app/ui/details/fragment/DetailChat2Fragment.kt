@@ -8,7 +8,9 @@ import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.webkit.WebView
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -19,6 +21,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.drake.brv.layoutmanager.HoverLinearLayoutManager
 import com.drake.brv.utils.addModels
+import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.models
 import com.drake.softinput.hideSoftInput
 import com.google.gson.Gson
@@ -31,6 +34,7 @@ import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseVpFragment
 import com.xcjh.app.bean.*
 import com.xcjh.app.databinding.*
+import com.xcjh.app.event.AppViewModel
 import com.xcjh.app.isTopActivity
 import com.xcjh.app.ui.details.DetailVm
 import com.xcjh.app.ui.details.common.RoomChatVm
@@ -49,6 +53,7 @@ import com.xcjh.base_lib.utils.dp2px
 import com.xcjh.base_lib.utils.loge
 import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.toHtml
+import com.xcjh.base_lib.utils.view.clickNoRepeat
 import com.xcjh.base_lib.utils.view.visibleOrGone
 import kotlinx.android.synthetic.main.fragment_detail_tab_chat.view.*
 
@@ -64,7 +69,10 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
     private val vm by lazy {
         ViewModelProvider(requireActivity())[DetailVm::class.java]
     }
+    //是否刷新第一条问候语
     var flage:Boolean=true
+    //是否是修改的
+    var update:Boolean=false
     private var mAgentWeb: AgentWeb? = null
     private var mNoticeWeb: WebView? = null
     private var isEnterRoom = false//是否已经进入房间
@@ -98,7 +106,9 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
 //            mViewModel.getAnchorControlUserInfo(userId!!)
 //        }
 
-
+        appViewModel.closeKeyboardEvent.observe(this){
+            closeKeyboard(mDatabind.edtChatMsg,requireContext())
+        }
 
 
 
@@ -221,6 +231,14 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
                     }
                 }, 200)
 
+            }else if(update){
+                mDatabind.rcvChat.postDelayed({
+                    if (isAdded) {
+//                        mDatabind.rcvChat.bindingAdapter.notifyDataSetChanged()
+//                        mDatabind.rcvChat.scrollToPosition(0)
+                        update=false
+                    }
+                }, 200)
             }
 
 
@@ -283,7 +301,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
 //                    it.notice= "<p><span style=\"color: rgb(225, 60, 57);\">欢迎观众的到来，感谢大家对本直播间的支持和关注</span></p><p><span style=\"color: rgb(114, 192, 64);\">为了营造良好的观赛氛围，本直播间禁止任何形式的恶意言论、人身攻击和不文明行为。</span></p>"
 //                }
 //                num=2
-
+                flage=true
 
                 noticeBean.notice = it.notice ?: ""
                 noticeBean.isOpen = false
@@ -317,8 +335,6 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
 //                    it.notice= "<p><span style=\"color: rgb(225, 60, 57);\">1111111111</span></p><p><span style=\"color: rgb(114, 192, 64);\">为了营造良好的观赛氛围，本直播间禁止任何形式的恶意言论、人身攻击和不文明行为。</span></p>"
 //                }
 //                num=2
-
-
                 noticeBean.notice = it.notice ?: ""
                 noticeBean.isOpen = false
                 mDatabind.notice.expandableText.text =
@@ -341,6 +357,23 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
                     //mDatabind.notice.expandableText.maxLines =  2
                 }
                 setH5Data(mNoticeWeb, noticeBean.notice, tvColor = "#94999f", maxLine = 2)
+
+                //修改问候语
+                if(!vm.anchor.value!!.firstMessage!!.equals(it.firstMessage)){
+                     update = true
+                    var first=FirstMsgBean(
+                        it.id, it.head, it.nickName, "0", it.firstMessage ?: "", identityType = 1
+                    )
+                    var list=ArrayList<Any>()
+                    list.add(first)
+
+                     mDatabind.rcvChat.addModels(list, index = 0)
+//                    mDatabind.rcvChat.bindingAdapter.notifyItemChanged(0)
+                    mDatabind.rcvChat.bindingAdapter.notifyDataSetChanged()
+//                    mDatabind.rcvChat.scrollToPosition(0)
+                }
+
+
             }
         }
 
@@ -559,6 +592,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
         if (lastClickTime != 0L && (currentTime - lastClickTime < 1000)) {
             return
         }
+        SoundManager.playMedia()
         lastClickTime = currentTime
         if (mViewModel.input.get().isBlank() || mViewModel.input.get().isEmpty()) {
             myToast(resources.getString(R.string.detail_txt_input), isDeep = true)
@@ -567,6 +601,8 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
         hideSoftInput()
         mDatabind.edtChatMsg.clearFocus()
         judgeLogin {
+
+
             CacheUtil.getUser()?.apply {
                 MyWsManager.getInstance(App.app)?.sendMessage(
                     Gson().toJson(SendChatMsgBean(
@@ -650,6 +686,18 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
                 ContextCompat.getColor(context, com.xcjh.base_lib.R.color.blacks_tr)
 
             ).show()
+    }
+
+
+
+    /**
+     * 关闭软键盘
+     */
+    fun closeKeyboard(view: View, context: Context) {
+
+
+        val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
 }
 

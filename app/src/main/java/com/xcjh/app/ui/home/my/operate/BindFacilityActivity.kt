@@ -23,6 +23,7 @@ import com.xcjh.app.base.BaseActivity
 import com.xcjh.app.databinding.ActivityAccountNumberBinding
 import com.xcjh.app.databinding.ActivityBindFacilityBinding
 import com.xcjh.app.ui.login.LetterCountryActivity
+import com.xcjh.app.utils.SoundManager
 import com.xcjh.app.view.slider.AESUtil
 import com.xcjh.app.view.slider.CaptchaCheckOt
 import com.xcjh.app.view.slider.ImageUtil
@@ -113,7 +114,7 @@ class BindFacilityActivity  : BaseActivity<AccountNumberVm, ActivityBindFacility
                     ||mDatabind.edtCode.text.toString().trim().isEmpty()){
                     return@clickNoRepeat
                 }
-
+                SoundManager.playMedia()
                 mViewModel.bindPhone(mDatabind.edtPhone.text!!.trim().toString(),mDatabind.edtCode.text.toString().trim(),
                     mDatabind.tvgo.text!!.trim().toString(),this)
 
@@ -123,6 +124,7 @@ class BindFacilityActivity  : BaseActivity<AccountNumberVm, ActivityBindFacility
                     ||mDatabind.edtCode.text!!.trim().toString().isEmpty()){
                     return@clickNoRepeat
                 }
+                SoundManager.playMedia()
                 mViewModel.bindEmail(mDatabind.edtEmail.text!!.trim().toString(),mDatabind.edtCode.text!!.trim().toString(),this)
 
 
@@ -136,18 +138,20 @@ class BindFacilityActivity  : BaseActivity<AccountNumberVm, ActivityBindFacility
                     if (mDatabind.tvgetcodePhone.text.length == 5) {
                         if (mDatabind.edtPhone.text.toString().isEmpty()) {
 
-                            myToast(resources.getString(R.string.please_input_phone_num))
+//                            myToast(resources.getString(R.string.please_input_phone_num))
                             return@clickNoRepeat
                         }
+                        SoundManager.playMedia()
                         dialogText()
                     }
                 }else{
                     if (mDatabind.tvgetcodePhone.text.length ==4) {
                         if (mDatabind.edtPhone.text.toString().isEmpty()) {
 
-                            myToast(resources.getString(R.string.please_input_phone_num))
+//                            myToast(resources.getString(R.string.please_input_phone_num))
                             return@clickNoRepeat
                         }
+                        SoundManager.playMedia()
                         dialogText()
                     }
                 }
@@ -164,18 +168,20 @@ class BindFacilityActivity  : BaseActivity<AccountNumberVm, ActivityBindFacility
                     if (mDatabind.tvgetcodeEmail.text.length == 5) {
                         if (mDatabind.edtEmail.text.toString().isEmpty()) {
 
-                            myToast(resources.getString(R.string.please_input_email))
+//                            myToast(resources.getString(R.string.please_input_email))
                             return@clickNoRepeat
                         }
+                        SoundManager.playMedia()
                         dialogText()
                     }
                 }else{
                     if (mDatabind.tvgetcodeEmail.text.length ==4) {
                         if (mDatabind.edtEmail.text.toString().isEmpty()) {
 
-                            myToast(resources.getString(R.string.please_input_email))
+//                            myToast(resources.getString(R.string.please_input_email))
                             return@clickNoRepeat
                         }
+                        SoundManager.playMedia()
                         dialogText()
                     }
                 }
@@ -184,6 +190,7 @@ class BindFacilityActivity  : BaseActivity<AccountNumberVm, ActivityBindFacility
 
         //选择区号
         mDatabind.tvgo.clickNoRepeat {
+            SoundManager.playMedia()
             startNewActivity<LetterCountryActivity>()
         }
 

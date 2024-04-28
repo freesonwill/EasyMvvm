@@ -22,6 +22,7 @@ import com.xcjh.app.bean.MsgBeanData
 import com.xcjh.app.bean.MsgListNewData
 import com.xcjh.app.utils.CacheUtil
 import com.xcjh.app.utils.ChatTimeUtile
+import com.xcjh.app.utils.SoundManager
 import com.xcjh.app.utils.delMsgDilog
 import com.xcjh.app.view.CustomHeader
 import com.xcjh.app.websocket.MyWsManager
@@ -186,6 +187,7 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
 
                     }
                     binding.lltItem.setOnClickListener {
+                        SoundManager.playMedia()
                         if (item.noReadSum > 0) {//去除红点
                             item.noReadSum = 0
                             addDataToList(item)

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+
+       <androidx.core.widget.NestedScrollView
+           android:id="@+id/scConten"
+           android:layout_width="match_parent"
+           android:layout_height="match_parent"
+           android:descendantFocusability="blocksDescendants"
+           android:fillViewport="true"
+           android:background="#53575e">
+       <LinearLayout
+           android:id="@+id/llLayout"
+           android:layout_width="match_parent"
+           android:layout_height="match_parent"
+           android:gravity="center"
+           android:layout_gravity="center">
+           <androidx.appcompat.widget.AppCompatImageView
+               android:id="@+id/ivViewShow"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_gravity="center"
+               android:adjustViewBounds="true"
+               android:scaleType="fitCenter"/>
+       </LinearLayout>
+       </androidx.core.widget.NestedScrollView>
+
+
+</layout>

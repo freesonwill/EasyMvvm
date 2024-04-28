@@ -230,6 +230,10 @@
 #=================
 -dontwarn com.king.app.dialog.**
 -keep class com.king.app.dialog.**{ *;}
+-keepclassmembers enum * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
 -dontwarn com.king.app.updater.**
 -keep class com.king.app.updater.**{ *;}
 -keep class * extends com.king.app.updater.**{ *;}

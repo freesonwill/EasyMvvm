@@ -105,7 +105,7 @@ data class LiveStatus(
     var competitionNameEn: String = "",//	赛事英文
     var competitionNameZht: String = "",//	赛事英文繁体
 
-
+    var pureFlow: Boolean = false,//	是否是纯净流
 )
 
 /**

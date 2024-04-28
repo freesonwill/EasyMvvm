@@ -18,6 +18,7 @@ import com.xcjh.app.databinding.FrMsgfriendBinding
 import com.xcjh.app.databinding.ItemMsgfrienddelBinding
 import com.xcjh.app.ui.chat.ChatActivity
 import com.xcjh.app.utils.CacheUtil
+import com.xcjh.app.utils.SoundManager
 import com.xcjh.app.utils.delFriDilog
 import com.xcjh.app.view.CustomHeader
 import com.xcjh.app.view.SideBarLayout.OnSideBarLayoutListener
@@ -77,7 +78,7 @@ class MsFriendFragment : BaseFragment<MsgVm, FrMsgfriendBinding>() {
                     binding.tvname.text = item.nickName
                     // 设置item数据
                     binding.lltItem.setOnClickListener {
-
+                        SoundManager.playMedia()
                         com.xcjh.base_lib.utils.startNewActivity<ChatActivity>() {
                             if (item?.anchorId?.isNotEmpty() == true) {
                                 this.putExtra(Constants.USER_ID, item?.anchorId)

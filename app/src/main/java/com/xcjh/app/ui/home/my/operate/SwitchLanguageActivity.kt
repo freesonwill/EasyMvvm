@@ -13,6 +13,7 @@ import com.xcjh.app.base.BaseActivity
 import com.xcjh.app.databinding.ActivitySetUpBinding
 import com.xcjh.app.databinding.ActivitySwitchLanguageBinding
 import com.xcjh.app.ui.MainActivity
+import com.xcjh.app.utils.SoundManager
 import com.xcjh.base_lib.manager.KtxActivityManger
 
 /**
@@ -57,18 +58,21 @@ class SwitchLanguageActivity  : BaseActivity<SetUpVm, ActivitySwitchLanguageBind
 
         //选择英文
         mDatabind.rlSwitchEn.setOnClickListener {
+            SoundManager.playMedia()
             type=2
             selectLanguage()
 
         }
         //选择繁体
         mDatabind.rlSwitchClickComplex.setOnClickListener {
+            SoundManager.playMedia()
             type=1
             selectLanguage()
 
         }
         //选择中文
         mDatabind.rlSwitchClickSimplified.setOnClickListener {
+            SoundManager.playMedia()
             type=0
             selectLanguage()
 

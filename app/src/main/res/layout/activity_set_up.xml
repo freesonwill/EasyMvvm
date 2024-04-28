@@ -82,7 +82,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dp_8"
-                        android:text="@string/account_txt_set"
+                        android:text="@string/number_txt_title"
                         android:textColor="@drawable/txt_colour_black_selector"
                         android:textSize="@dimen/sp_14" />
                 </LinearLayout>

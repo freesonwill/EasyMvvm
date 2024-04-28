@@ -23,11 +23,13 @@ import com.xcjh.app.bean.MainTxtBean
 import com.xcjh.app.databinding.FragmentCompetitionTypeListBinding
 import com.xcjh.app.databinding.ItemMainLiveListBinding
 import com.xcjh.app.ui.details.MatchDetailActivity
+import com.xcjh.app.utils.SoundManager
 import com.xcjh.app.view.CustomHeader
 import com.xcjh.app.view.NestedScrollView
 import com.xcjh.app.websocket.MyWsManager
 import com.xcjh.app.websocket.bean.LiveStatus
 import com.xcjh.app.websocket.listener.LiveStatusListener
+import com.xcjh.app.websocket.listener.MOffListener
 import com.xcjh.base_lib.App
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.dp2px
@@ -71,85 +73,138 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
         }
         MyWsManager.getInstance(App.app)
             ?.setLiveStatusListener(this.toString(), object : LiveStatusListener {
+                //z直播间开播
                 override fun onOpenLive(bean: LiveStatus) {
 
-                    //比赛类型 1足球，2篮球
-                    if(type.toString().equals(bean.matchType)){
-                        if(mDatabind.rcvRecommend.models!=null){
-                            for (i in 0 until  mDatabind.rcvRecommend.mutable.size){
-                                if((mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).userId.equals(bean.anchorId)){
-                                    mDatabind.rcvRecommend.mutable.removeAt(i)
-                                    mDatabind.rcvRecommend.bindingAdapter.notifyItemRemoved(i) // 通知更新
-//                                mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
-
-                                }
-
-                            }
-                        }
-
-//                        mViewModel.getOngoingMatchList(bean.id)
-
-                        var being=BeingLiveBean()
-                        being.matchType=bean.matchType
-                        being.matchId=bean.matchId
-                        being.homeTeamName=bean.homeTeamName
-                        being.awayTeamName=bean.awayTeamName
-                        being.userId=bean.anchorId
-                        being.playUrl=bean.playUrl
-                        being.hotValue=bean.hotValue
-                        being.nickName=bean.nickName
-                        being.titlePage=bean.coverImg
-                        being.competitionName=bean.competitionName
-                        being.userLogo=bean.userLogo
-                        //语言 0是中文  1是繁体  2是英文
-                        if(Constants.languageType==0){
-                            being.homeTeamName=bean.homeTeamName
-                            being.awayTeamName=bean.awayTeamName
-                            being.competitionName=bean.competitionName
-                        }else if(Constants.languageType==1){
-                            being.homeTeamName=bean.homeTeamNameZht
-                            being.awayTeamName=bean.awayTeamNameZht
-                            being.competitionName=bean.competitionNameZht
-                        }else{
-                            being.homeTeamName=bean.homeTeamNameEn
-                            being.awayTeamName=bean.awayTeamNameEn
-                            being.competitionName=bean.competitionNameEn
-                        }
-
-                        var list =ArrayList<BeingLiveBean>()
-                        list.add(being)
-                        mDatabind.rcvRecommend.addModels(list)
-                        mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
-                        mDatabind.state.showContent()
+                    if(!bean.matchType.equals(type.toString())){
+                        return
                     }
-
-
-
-                }
-
-                override fun onCloseLive(bean: LiveStatus) {
-                    super.onCloseLive(bean)
 
                     if(mDatabind.rcvRecommend.models!=null){
                         for (i in 0 until  mDatabind.rcvRecommend.mutable.size){
-                            if((mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).userId.equals(bean.anchorId)){
-                                mDatabind.rcvRecommend.mutable.removeAt(i)
-                                mDatabind.rcvRecommend.bindingAdapter.notifyItemRemoved(i) // 通知更新
-                                mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
-                                if(mDatabind.rcvRecommend.models!=null&& mDatabind.rcvRecommend.models!!.isNotEmpty()){
-                                    mDatabind.state.showContent()
-                                }else{
-                                    mDatabind.state.showEmpty()
+                            if((mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).matchId.equals(bean.matchId)&&
+                                (mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).matchType.equals(bean.matchType)){
+                                if( (mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).userId!=null){
+                                    if((mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).userId.equals(bean.anchorId)){
+                                        (mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).userId.equals(bean.anchorId)
+                                    }
+
+                                } else{
+                                    mDatabind.rcvRecommend.mutable.removeAt(i)
                                 }
 
 
+                                break
                             }
 
+
                         }
+                        mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
                     }
+
+                    var being=BeingLiveBean()
+                    being.matchType=bean.matchType
+                    being.matchId=bean.matchId
+                    being.homeTeamName=bean.homeTeamName
+                    being.awayTeamName=bean.awayTeamName
+                    being.nickName=bean.nickName
+                    being.userId=bean.anchorId
+                    being.playUrl=bean.playUrl
+                    being.hotValue=bean.hotValue
+                    being.titlePage=bean.coverImg
+                    being.userLogo=bean.userLogo
+                    being.pureFlow=false
+                    //语言 0是中文  1是繁体  2是英文
+                    if(Constants.languageType==0){
+                        being.homeTeamName=bean.homeTeamName
+                        being.awayTeamName=bean.awayTeamName
+                        being.competitionName=bean.competitionName
+                    }else if(Constants.languageType==1){
+                        being.homeTeamName=bean.homeTeamNameZht
+                        being.awayTeamName=bean.awayTeamNameZht
+                        being.competitionName=bean.competitionNameZht
+                    }else{
+                        being.homeTeamName=bean.homeTeamNameEn
+                        being.awayTeamName=bean.awayTeamNameEn
+                        being.competitionName=bean.competitionNameEn
+                    }
+
+
+
+
+                    var num=0   //保存这个应该插入哪个
+                    var fuzhi=false
+
+                    if(mDatabind.rcvRecommend.models!=null){
+                        num=mDatabind.rcvRecommend.mutable.size-1
+                        for (i in 0 until mDatabind.rcvRecommend.mutable!!.size) {
+                                 if((mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).pureFlow){
+                                        if(fuzhi==false){
+                                            num=i
+                                            break
+                                        }
+
+                                    }
+
+
+
+                        }
+
+                        var list:ArrayList<BeingLiveBean> = arrayListOf()
+                        if(mDatabind.rcvRecommend.mutable.size==0){
+                            list.add(being)
+                            for (i in 0 until mDatabind.rcvRecommend.mutable.size) {
+                                list.add((mDatabind.rcvRecommend.mutable[i] as BeingLiveBean))
+                            }
+
+                        }else {
+                            for (i in 0 until mDatabind.rcvRecommend.mutable.size) {
+                                if(num==i){
+                                    list.add(being)
+                                    list.add((mDatabind.rcvRecommend.mutable[i] as BeingLiveBean))
+                                }else{
+                                    list.add((mDatabind.rcvRecommend.mutable[i] as BeingLiveBean))
+                                }
+
+                            }
+                        }
+                         mDatabind.rcvRecommend.mutable.clear()
+                        mDatabind.rcvRecommend.addModels(list)
+
+
+                    }
+                    mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
+
+                }
+                //直播间关闭废弃
+                override fun onCloseLive(bean: LiveStatus) {
+                    super.onCloseLive(bean)
+
                 }
             })
+        //主播关闭
+        MyWsManager.getInstance(App.app)?.setOtherPushListener(this.toString(),object :
+            MOffListener {
+            override fun onCloseLive(bean: LiveStatus) {
+                if(mDatabind.rcvRecommend.models!=null){
+                    for (i in 0 until  mDatabind.rcvRecommend.mutable.size){
+                                if((mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).userId!=null){
+                                    if((mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).userId.equals(bean.anchorId)){
+                                        mDatabind.rcvRecommend.mutable.removeAt(i)
+                                        mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
+                                        break
+                                    }
+                                }
 
+
+
+
+                    }
+                }
+            }
+
+
+        })
 
     }
 
@@ -160,43 +215,44 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
             onBind {
                 when (itemViewType) {
                     R.layout.item_main_live_list -> {
-                        var bindingItem=getBinding<ItemMainLiveListBinding>()
-                        var  bean=_data as BeingLiveBean
-                        Glide.with(context)
-                            .load(bean.titlePage) // 替换为您要加载的图片 URL
-                            .error(R.drawable.main_top_load)
-                            .placeholder(R.drawable.main_top_load)
-                            .into(bindingItem.ivLiveBe)
-                        Glide.with(context)
-                            .load(bean.userLogo) // 替换为您要加载的图片 URL
-                            .error(R.drawable.default_anchor_icon)
-                            .placeholder(R.drawable.default_anchor_icon)
-                            .into(bindingItem.ivLiveHead)
-                        bindingItem.txtLiveName.text=bean.nickName
-                        //比赛类型 1足球，2篮球,可用值:1,2
-                        if(type==1){
-                            bindingItem.txtLiveTeam.text="${bean.homeTeamName}VS${bean.awayTeamName}"
-                        }else{
-                            bindingItem.txtLiveTeam.text="${bean.awayTeamName }VS${bean.homeTeamName}"
-                        }
-
-
-                        bindingItem.txtLiveCompetition.text=bean.competitionName
-                        if(bean.hotValue<=9999){
-                            bindingItem.txtLiveHeat.text="${bean.hotValue}"
-                        }else{
-                            bindingItem.txtLiveHeat.text="9999+"
-                        }
-
-                        if(layoutPosition%2==0){
-                            val layoutParams = bindingItem.llLiveSpacing.layoutParams as ViewGroup.MarginLayoutParams
-                            layoutParams.setMargins(0, 0, context.dp2px(4), context.dp2px(8))
-                            bindingItem.llLiveSpacing.layoutParams =layoutParams
-                        }else{
-                            val layoutParams = bindingItem.llLiveSpacing.layoutParams as ViewGroup.MarginLayoutParams
-                            layoutParams.setMargins(context.dp2px(4), 0, 0, context.dp2px(8))
-                            bindingItem.llLiveSpacing.layoutParams =layoutParams
-                        }
+                        setLiveMatchItem()
+//                        var bindingItem=getBinding<ItemMainLiveListBinding>()
+//                        var  bean=_data as BeingLiveBean
+//                        Glide.with(context)
+//                            .load(bean.titlePage) // 替换为您要加载的图片 URL
+//                            .error(R.drawable.main_top_load)
+//                            .placeholder(R.drawable.main_top_load)
+//                            .into(bindingItem.ivLiveBe)
+//                        Glide.with(context)
+//                            .load(bean.userLogo) // 替换为您要加载的图片 URL
+//                            .error(R.drawable.default_anchor_icon)
+//                            .placeholder(R.drawable.default_anchor_icon)
+//                            .into(bindingItem.ivLiveHead)
+//                        bindingItem.txtLiveName.text=bean.nickName
+//                        //比赛类型 1足球，2篮球,可用值:1,2
+//                        if(type==1){
+//                            bindingItem.txtLiveTeam.text="${bean.homeTeamName}VS${bean.awayTeamName}"
+//                        }else{
+//                            bindingItem.txtLiveTeam.text="${bean.awayTeamName }VS${bean.homeTeamName}"
+//                        }
+//
+//
+//                        bindingItem.txtLiveCompetition.text=bean.competitionName
+//                        if(bean.hotValue<=9999){
+//                            bindingItem.txtLiveHeat.text="${bean.hotValue}"
+//                        }else{
+//                            bindingItem.txtLiveHeat.text="9999+"
+//                        }
+//
+//                        if(layoutPosition%2==0){
+//                            val layoutParams = bindingItem.llLiveSpacing.layoutParams as ViewGroup.MarginLayoutParams
+//                            layoutParams.setMargins(0, 0, context.dp2px(4), context.dp2px(8))
+//                            bindingItem.llLiveSpacing.layoutParams =layoutParams
+//                        }else{
+//                            val layoutParams = bindingItem.llLiveSpacing.layoutParams as ViewGroup.MarginLayoutParams
+//                            layoutParams.setMargins(context.dp2px(4), 0, 0, context.dp2px(8))
+//                            bindingItem.llLiveSpacing.layoutParams =layoutParams
+//                        }
                     }
 
 
@@ -204,8 +260,13 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
 
             }
             R.id.llLiveSpacing.onClick {
+                SoundManager.playMedia()
                 val bean=_data as BeingLiveBean
-                MatchDetailActivity.open(matchType =bean.matchType, matchId = bean.matchId,matchName = "${bean.homeTeamName}VS${bean.awayTeamName}", anchorId = bean.userId,videoUrl = bean.playUrl )
+                if(bean.pureFlow){
+                    MatchDetailActivity.open(matchType =bean.matchType, matchId = bean.matchId,matchName = "${bean.homeTeamName}VS${bean.awayTeamName}", pureFlow = true  )
+                }else{
+                    MatchDetailActivity.open(matchType =bean.matchType, matchId = bean.matchId,matchName = "${bean.homeTeamName}VS${bean.awayTeamName}", anchorId = bean.userId,videoUrl = bean.playUrl )
+                }
             }
 
         }

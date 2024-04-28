@@ -23,6 +23,7 @@ import com.xcjh.app.databinding.ActivityPersonalDataBinding
 import com.xcjh.app.databinding.FragmentMyUserBinding
 import com.xcjh.app.utils.CacheUtil
 import com.xcjh.app.utils.GlideEngine
+import com.xcjh.app.utils.SoundManager
 import com.xcjh.app.utils.picture.ImageFileCompressEngine
 import com.xcjh.app.utils.picture.ImageFileCropEngine
 import com.xcjh.app.vm.MainVm
@@ -76,6 +77,7 @@ class PersonalDataActivity : BaseActivity<PersonalDataVm, ActivityPersonalDataBi
         mDatabind.tvOption.clickNoRepeat {
 
             if(isSave){
+                SoundManager.playMedia()
                 user!!.name=mDatabind.txtPersonalNickname.text.toString().trim()
                 mViewModel.setUserInfo( mDatabind.txtPersonalNickname.text.toString().trim(),user!!.head)
             }
@@ -85,7 +87,7 @@ class PersonalDataActivity : BaseActivity<PersonalDataVm, ActivityPersonalDataBi
 
         //选择头像
         mDatabind.ivPersonalHead.clickNoRepeat{
-
+            SoundManager.playMedia()
             PictureSelector.create(this)
                 .openGallery(SelectMimeType.ofImage())
                 .setImageEngine(GlideEngine.createGlideEngine())

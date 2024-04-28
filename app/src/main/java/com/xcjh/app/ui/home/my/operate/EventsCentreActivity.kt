@@ -19,6 +19,7 @@ import com.xcjh.app.databinding.ActivitySearchBinding
 import com.xcjh.app.databinding.ItemEventsCentreBinding
 import com.xcjh.app.databinding.ItemNewsListBinding
 import com.xcjh.app.ui.search.SearchVm
+import com.xcjh.app.utils.SoundManager
 import com.xcjh.app.view.CustomHeader
 import com.xcjh.app.web.WebActivity
 import com.xcjh.base_lib.Constants
@@ -93,6 +94,7 @@ class EventsCentreActivity : BaseActivity<EventsCentreVm, ActivityEventsCentreBi
 
             }
             R.id.llEventsClick.onClick {
+                SoundManager.playMedia()
                 var  bean=_data as EventsBean
                 startNewActivity<WebActivity>() {
                     this.putExtra(Constants.WEB_URL, bean.id)

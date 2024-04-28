@@ -9,6 +9,7 @@ import com.xcjh.app.R
 import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseFragment
 import com.xcjh.app.databinding.FrMsgBinding
+import com.xcjh.app.utils.SoundManager
 import com.xcjh.app.utils.clearMsg
 import com.xcjh.base_lib.utils.bindViewPager2
 import com.xcjh.base_lib.utils.initActivity
@@ -87,6 +88,7 @@ class MsgFragment : BaseFragment<MsgVm, FrMsgBinding>() {
             setOnclickNoRepeat(mDatabind.ivclear) {
                 when (it.id) {
                     R.id.ivclear -> {
+                        SoundManager.playMedia()
                         if (isClick) {
                             //点击清除红点
                             clearMsg(requireActivity()) { it ->

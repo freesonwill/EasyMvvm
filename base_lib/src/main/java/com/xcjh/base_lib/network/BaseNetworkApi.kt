@@ -19,7 +19,6 @@ abstract class BaseNetworkApi {
     }
 
 
-
     /**
      * 实现重写父类的setHttpClientBuilder方法，
      * 在这里可以添加拦截器，可以对 OkHttpClient.Builder 做任意操作

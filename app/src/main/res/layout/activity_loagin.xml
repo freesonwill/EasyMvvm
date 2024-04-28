@@ -7,6 +7,7 @@
     </data>
 
     <LinearLayout
+        android:id="@+id/llshow"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white"
@@ -15,15 +16,15 @@
         <include
             android:id="@+id/titleTop"
             layout="@layout/com_title"  />
-
+<!--
+            android:scaleType="centerCrop"-->
         <ImageView
             android:id="@+id/ivloge"
-            android:layout_width="wrap_content"
+            android:layout_width="190dp"
             android:layout_height="@dimen/dp_24"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/dp_30"
             android:onClick="finishTopClick"
-            android:scaleType="centerCrop"
             android:src="@drawable/ic_logain_loge"
             tools:ignore="UsingOnClickInXml" />
         <net.lucode.hackware.magicindicator.MagicIndicator
@@ -165,7 +166,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/email"
-
                 android:textColor="@color/c_37373d"
                 android:textSize="@dimen/sp_14"
                 android:textStyle="bold" />
@@ -252,5 +252,13 @@
 
             android:textStyle="bold"
             android:layout_height="@dimen/dp_52"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="cehis "/>
+
     </LinearLayout>
 </layout>

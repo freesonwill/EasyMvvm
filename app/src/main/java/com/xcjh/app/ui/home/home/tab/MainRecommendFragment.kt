@@ -6,6 +6,7 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
@@ -43,6 +44,7 @@ import com.xcjh.app.databinding.ItemMainProceedBinding
 import com.xcjh.app.databinding.ItemMainTxtBinding
 import com.xcjh.app.databinding.ItemUnderWayBinding
 import com.xcjh.app.ui.details.MatchDetailActivity
+import com.xcjh.app.utils.getMatchStatusStrMain
 import com.xcjh.app.view.CustomHeader
 import com.xcjh.app.web.WebActivity
 import com.xcjh.app.websocket.MyWsManager
@@ -870,6 +872,7 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                                 }
                                 R.id.llLiveSpacing.onClick {
                                     val bean=_data as BeingLiveBean
+
                                     MatchDetailActivity.open(matchType =bean.matchType, matchId = bean.matchId,matchName = "${bean.homeTeamName}VS${bean.awayTeamName}", anchorId = bean.userId,videoUrl = bean.playUrl )
                                 }
                             }
@@ -895,27 +898,99 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
 
 }
 
+/**
+ * 0是首页  1是直播间里面的   2 是历史
+ */
 fun BindingAdapter.BindingViewHolder.setLiveMatchItem(type:Int=0) {
 
     val bindingItem= getBinding<ItemMainLiveListBinding>()
-    if (type != 0){
+    val bean = _data as BeingLiveBean
+    if (type == 1){
         bindingItem.llLiveSpacing.background = (ContextCompat.getDrawable(context, R.drawable.selector_8_black_to_dark))
         bindingItem.txtLiveTeam.setTextColor( ContextCompat.getColor(context, R.color.c_ffffff))
         bindingItem.txtLiveName.setTextColor( ContextCompat.getColor(context, R.color.c_94999f))
+    }else if(type == 2){
+        if(bean.liveStatus.equals("2")){
+            bindingItem.txtLiveIsBroadcast.visibility=ViewGroup.VISIBLE
+        }else{
+            bindingItem.txtLiveIsBroadcast.visibility=ViewGroup.GONE
+        }
+    }
+    bindingItem.cslMatchInfo.visibility=View.GONE
+    if(bean.pureFlow){
+        bindingItem.llMainShowRe.visibility=View.GONE
+        bindingItem.llShowLive.visibility=View.GONE
+        bindingItem.cslMatchInfo.visibility=View.VISIBLE
+
+        bindingItem.tvMatchStatus.text= getMatchStatusStrMain(bean.matchType, bean.status.toInt(),context)
+
+        bindingItem.txtLiveName.text = bean.competitionName
+
+        bindingItem.txtLiveCompetition.visibility=View.GONE
+        ////比赛类型 1足球，2篮球,可用值:1,2
+        if(bean.matchType.equals("1")){
+
+            bindingItem.tvMatchVs.text="${bean.homeScore}:${bean.awayScore}"
+//            bindingItem.ivLiveBe.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.bg_status_football))
+            Glide.with(context)
+                .load(R.drawable.bg_status_football) // 替换为您要加载的图片 URL
+                .into(bindingItem.ivLiveBe)
+            Glide.with(context).load(bean.homeTeamLogo).placeholder(R.drawable.default_anchor_icon)
+                .into(  bindingItem.ivHomeIcon)
+
+            Glide.with(context).load(bean.awayTeamLogo).placeholder(R.drawable.default_anchor_icon)
+                .into(  bindingItem.ivAwayIcon)
+            bindingItem.tvHomeName.text =bean.homeTeamName
+
+            bindingItem.tvAwayName.text =bean.awayTeamName
+
+            bindingItem.ivLiveHead.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.live_icon_zu))
+        }else{
+
+
+
+            bindingItem.tvMatchVs.text="${bean.awayScore}:${bean.homeScore}"
+
+            Glide.with(context)
+                .load(R.drawable.basketball_new_br) // 替换为您要加载的图片 URL
+                .into(bindingItem.ivLiveBe)
+//            bindingItem.ivLiveBe.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.bg_top_basketball))
+
+            Glide.with(context).load(bean.awayTeamLogo).placeholder(R.drawable.default_anchor_icon)
+                .into(  bindingItem.ivHomeIcon)
+            Glide.with(context).load(bean.homeTeamLogo).placeholder(R.drawable.default_anchor_icon)
+                .into(  bindingItem.ivAwayIcon)
+            bindingItem.tvHomeName.text =bean.awayTeamName
+            bindingItem.tvAwayName.text =bean.homeTeamName
+            bindingItem.ivLiveHead.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.live_icon_lan))
+
+        }
+
+
+    }else{
+        bindingItem.llMainShowRe.visibility=View.VISIBLE
+        if(type !=2){
+            bindingItem.llShowLive.visibility=View.VISIBLE
+        }
+
+        bindingItem.cslMatchInfo.visibility=View.GONE
+        bindingItem.txtLiveName.text = bean.nickName
+        bindingItem.txtLiveCompetition.text = bean.competitionName
+        bindingItem.txtLiveCompetition.visibility=View.VISIBLE
+
+        Glide.with(context)
+            .load(bean.userLogo) // 替换为您要加载的图片 URL
+            .error(R.drawable.default_anchor_icon)
+            .placeholder(R.drawable.default_anchor_icon)
+            .into(bindingItem.ivLiveHead)
+
+        Glide.with(context)
+            .load(bean.titlePage)
+            .error(if(type==0) R.drawable.main_top_load else  R.drawable.zwt_zbj_zb)
+            .placeholder(if(type==0) R.drawable.main_top_load else  R.drawable.zwt_zbj_zb)
+            .into(bindingItem.ivLiveBe)
     }
 
-    val bean = _data as BeingLiveBean
-    Glide.with(context)
-        .load(bean.titlePage)
-        .error(if(type==0) R.drawable.main_top_load else  R.drawable.zwt_zbj_zb)
-        .placeholder(if(type==0) R.drawable.main_top_load else  R.drawable.zwt_zbj_zb)
-        .into(bindingItem.ivLiveBe)
-    Glide.with(context)
-        .load(bean.userLogo) // 替换为您要加载的图片 URL
-        .error(R.drawable.default_anchor_icon)
-        .placeholder(R.drawable.default_anchor_icon)
-        .into(bindingItem.ivLiveHead)
-    bindingItem.txtLiveName.text = bean.nickName
 
 
     if (bean.matchType == "1") {
@@ -927,7 +1002,7 @@ fun BindingAdapter.BindingViewHolder.setLiveMatchItem(type:Int=0) {
             "${bean.awayTeamName} VS ${bean.homeTeamName}"
 
     }
-    bindingItem.txtLiveCompetition.text = bean.competitionName
+
     if (bean.hotValue <= 9999) {
         bindingItem.txtLiveHeat.text = "${bean.hotValue}"
     } else {

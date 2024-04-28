@@ -17,6 +17,7 @@ import com.xcjh.app.utils.showLoadingExt
 import com.xcjh.app.view.PopupKickOut
 import com.xcjh.base_lib.base.BaseViewModel
 import com.xcjh.base_lib.base.activity.BaseVmDbActivity
+import me.jessyan.autosize.AutoSizeConfig
 
 /**
  * @author zobo
@@ -40,7 +41,26 @@ abstract class BaseActivity<VM : BaseViewModel, DB : ViewDataBinding> : BaseVmDb
 
         // 绑定语种
         super.attachBaseContext(MultiLanguages.attach(newBase))
+     }
+
+
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        if (newConfig.fontScale != 1f) //非默认值
+            resources
+        super.onConfigurationChanged(newConfig)
     }
+    override fun getResources(): Resources  {
+        val res = super.getResources()
+        if (res.configuration.fontScale != 1f) { //非默认值
+            val newConfig = Configuration()
+            newConfig.setToDefaults() //设置默认
+            res.updateConfiguration(newConfig, res.displayMetrics)
+        }
+        return res
+    }
+
+//====================
     /**
      * 创建liveData观察者
      */
@@ -75,35 +95,8 @@ abstract class BaseActivity<VM : BaseViewModel, DB : ViewDataBinding> : BaseVmDb
         startActivity(intent)
     }
 
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        if (newConfig.fontScale != 1f) { //设置字体大小不跟随系统
-            resources
-        }
-        super.onConfigurationChanged(newConfig)
-    }
 
 
-
-
-
-//    override fun getResources(): Resources {
-//        val resources = super.getResources()
-//        val configContext = createConfigurationContext(resources.configuration)
-//
-//        return configContext.resources.apply {
-//            configuration.fontScale = 1.0f
-//            displayMetrics.scaledDensity = displayMetrics.density * configuration.fontScale
-//        }
-//    }
-
-    // 字体大小不跟随系统
-    override fun getResources(): Resources  {
-        val res = super.getResources()
-        val config = Configuration()
-        config.setToDefaults() // 设置为默认值
-        res.updateConfiguration(config, res.displayMetrics)
-        return res
-    }
 
       var  showDialog: PopupKickOut?=null
       var popwindow: BasePopupView?=null

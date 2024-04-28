@@ -32,6 +32,7 @@ import com.xcjh.app.bean.JsonBean
 import com.xcjh.app.bean.TimeConstantsDat
 import com.xcjh.app.databinding.FrScheduleoneBinding
 import com.xcjh.app.listener.OnChooseDateListener
+import com.xcjh.app.utils.SoundManager
 import com.xcjh.app.utils.XPBottomPopu
 import com.xcjh.base_lib.utils.bindViewPager3
 import com.xcjh.base_lib.utils.initActivity
@@ -55,10 +56,6 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
     var  selectYi=0
     var  selectEr=0
     var  selectSan=0
-
-
-
-
 
     lateinit var bottomDilog: XPBottomPopu
     private lateinit var parentFragment: ScheduleFragment
@@ -168,6 +165,7 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
             setOnclickNoRepeat(mDatabind.ivMeau) {
                 when (it.id) {
                     R.id.iv_meau -> {
+                        SoundManager.playMedia()
                         //0推荐    1 是足球   2是篮球    3是赛果
                         // 0推荐    1 是足球   2是篮球    3是赛果
                         if(TimeConstantsDat.options1ItemsAll.size>0&&matchtypeOld.equals("0")){
@@ -358,6 +356,9 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
                     if(matchtypeOld.equals("0")||matchtypeOld.equals("1")||matchtypeOld.equals("2")){
                         pvOptions?.setSelectOptions(0,0,0)
                     }else{
+                        selectYiNew=TimeConstantsDat.saiYiNew
+                        selectErNew=TimeConstantsDat.saiErNew
+                        selectSanNew=TimeConstantsDat.saiSanNew
                         pvOptions?.setSelectOptions(TimeConstantsDat.saiYiNew,TimeConstantsDat.saiErNew,TimeConstantsDat.saiSanNew)
                     }
 
@@ -401,9 +402,9 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
                         var opt2=TimeConstantsDat.options3ItemsBasketball.get(selectYi).get(selectEr).get(selectSan)
                         calendarTime=cleanDate(opt0+"-"+opt1+"-"+opt2)
                     }else{
-                        var opt0=TimeConstantsDat.options1ItemsSaiguo.get(selectYi).getPickerViewText()
-                        var opt1=TimeConstantsDat.options2ItemsSaiguo.get(selectYi).get(selectEr)
-                        var opt2=TimeConstantsDat.options3ItemsSaiguo.get(selectYi).get(selectEr).get(selectSan)
+                        var opt0=TimeConstantsDat.options1ItemsSaiguo.get(selectYiNew).getPickerViewText()
+                        var opt1=TimeConstantsDat.options2ItemsSaiguo.get(TimeConstantsDat.saiYi).get(TimeConstantsDat.saiEr)
+                        var opt2=TimeConstantsDat.options3ItemsSaiguo.get(TimeConstantsDat.saiYi).get(TimeConstantsDat.saiEr).get(TimeConstantsDat.saiSan)
                         calendarTime=cleanDate(opt0+"-"+opt1+"-"+opt2)
                     }
 
@@ -462,7 +463,9 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
         }
 
         if(matchtypeOld.equals("3")){
-
+            selectYiNew =TimeConstantsDat.saiYi
+            selectErNew= TimeConstantsDat.saiEr
+            selectSanNew =TimeConstantsDat.saiSan
             pvOptions!!.setSelectOptions(TimeConstantsDat.saiYi,TimeConstantsDat.saiEr,TimeConstantsDat.saiSan)
         }
 

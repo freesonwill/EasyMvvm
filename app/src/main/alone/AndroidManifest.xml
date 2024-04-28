@@ -44,6 +44,8 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
 
+
+
     <queries package="${applicationId}">
         <intent>
             <action android:name="android.media.action.IMAGE_CAPTURE" />
@@ -52,10 +54,11 @@
             <action android:name="android.media.action.ACTION_VIDEO_CAPTURE" />
         </intent>
     </queries>
-
+<!--      android:icon="@mipmap/ic_launcher"-->
+<!--        android:roundIcon="@mipmap/ic_launcher_round"-->
     <application
-        android:name=".MyApplication"
-        android:allowBackup="false"
+        android:name="com.xcjh.app.MyApplication"
+        android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="${app_name}"
         android:largeHeap="true"
@@ -65,7 +68,12 @@
         android:supportsRtl="true"
         android:theme="@style/App.Theme"
         android:usesCleartextTraffic="true"
-        tools:replace="android:allowBackup">
+        tools:replace="android:allowBackup" >
+
+<!--   tools:replace="android:allowBackup"     -->
+        <activity
+            android:name=".ui.chat.ImageViewActivity"
+            android:exported="false" />
         <activity
             android:name=".ui.home.my.operate.BindFacilityActivity"
             android:exported="false" />

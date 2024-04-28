@@ -10,7 +10,11 @@ import androidx.core.app.ActivityCompat.recreate
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ProcessLifecycleOwner
+import androidx.lifecycle.ViewModelStore
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.room.Room
+import com.cn.game.sdk.MyGameApplication
+import com.cn.game.sdk.utils.GamePartyLibraryInitializer
 import com.drake.engine.base.app
 import com.drake.statelayout.StateConfig
 import com.engagelab.privates.core.api.MTCorePrivatesApi
@@ -50,6 +54,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import me.jessyan.autosize.AutoSizeConfig
 import java.util.Locale
 
 
@@ -66,8 +71,8 @@ val eventViewModel: EventViewModel by lazy {
     MyApplication.eventViewModelInstance
 }
 /** 在 Activity 更改状态时初始化、加载和显示广告的应用程序类 */
-class MyApplication : App() , LifecycleObserver{
-
+class MyApplication : App() , LifecycleObserver {
+    private lateinit var mAppViewModelStore: ViewModelStore
     companion object {
         lateinit var dataBase: MyRoomDataBase
         lateinit var dataChatList: MyRoomChatList
@@ -85,7 +90,10 @@ class MyApplication : App() , LifecycleObserver{
     override fun onCreate() {
         super.onCreate()
         MMKV.initialize(appContext)
-
+        var ddd= GamePartyLibraryInitializer
+        ddd.initialize(this)
+        //设置字体不走系统
+        AutoSizeConfig.getInstance().isExcludeFontScale = true
         appViewModelInstance = getAppViewModelProvider()[AppViewModel::class.java]
         eventViewModelInstance = getAppViewModelProvider()[EventViewModel::class.java]
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
@@ -144,7 +152,7 @@ class MyApplication : App() , LifecycleObserver{
             emptyLayout = R.layout.layout_empty
             errorLayout = R.layout.layout_empty
             loadingLayout = R.layout.layout_state_loading
-    //            setRetryIds(R.id.ivEmptyIcon, R.id.txtEmptyName)
+            //            setRetryIds(R.id.ivEmptyIcon, R.id.txtEmptyName)
 
             onLoading {
                 // 此生命周期可以拿到LoadingLayout创建的视图对象, 可以进行动画设置或点击事件.
@@ -250,7 +258,7 @@ public fun placeLoginDialog(context: Context) {
                     tvsure.text= context.getString(R.string.ensure_zhong)
                 }else if( Constants.languageType==1){
                     textName.text= context.getString(R.string.place_txt_login_Fanti)
-                      tvsure.text= context.getString(R.string.ensure_fanti)
+                    tvsure.text= context.getString(R.string.ensure_fanti)
                 }else{
                     textName.text= context.getString(R.string.place_txt_login_ying)
                     tvsure.text= context.getString(R.string.ensure_yingwen)

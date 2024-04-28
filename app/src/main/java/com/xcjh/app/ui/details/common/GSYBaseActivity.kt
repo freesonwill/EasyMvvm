@@ -4,11 +4,15 @@ import android.content.res.Configuration
 import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.databinding.ViewDataBinding
+import com.aliyun.player.AliPlayer
+import com.shuyu.aliplay.AliPlayerManager
+import com.shuyu.gsyvideoplayer.GSYVideoBaseManager
 import com.shuyu.gsyvideoplayer.GSYVideoManager
 import com.shuyu.gsyvideoplayer.builder.GSYVideoOptionBuilder
 import com.shuyu.gsyvideoplayer.listener.VideoAllCallBack
 import com.shuyu.gsyvideoplayer.player.IjkPlayerManager
 import com.shuyu.gsyvideoplayer.player.PlayerFactory
+import com.shuyu.gsyvideoplayer.player.SystemPlayerManager
 import com.shuyu.gsyvideoplayer.utils.GSYVideoType
 import com.shuyu.gsyvideoplayer.utils.OrientationOption
 import com.shuyu.gsyvideoplayer.utils.OrientationUtils
@@ -113,6 +117,7 @@ abstract class GSYBaseActivity<VM : BaseViewModel, DB : ViewDataBinding,T : GSYB
         //这个横屏的时候切换视频会黑屏
 //        PlayerFactory.setPlayManager(Exo2PlayerManager::class.java)
         PlayerFactory.setPlayManager(IjkPlayerManager::class.java)
+//        PlayerFactory.setPlayManager(AliPlayerManager::class.java)
         gSYVideoOptionBuilder.setVideoAllCallBack(this)
             .build(gSYVideoPlayer)
     }

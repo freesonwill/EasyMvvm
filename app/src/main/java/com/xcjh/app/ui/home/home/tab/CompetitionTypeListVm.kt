@@ -23,7 +23,7 @@ class CompetitionTypeListVm  : BaseViewModel() {
             pageNo = 1
         }
         request(
-            { apiService.getNowLive(LiveReq(current=pageNo, matchType = type)) },
+            { apiService.getNowLive(LiveReq(current=pageNo, matchType = type,size=500)) },
             {
                 pageNo++
                 liveList.value = ListDataUiState(

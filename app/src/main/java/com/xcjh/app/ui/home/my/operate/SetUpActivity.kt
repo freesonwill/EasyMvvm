@@ -16,6 +16,7 @@ import com.xcjh.app.bean.LoginInfo
 import com.xcjh.app.databinding.ActivitySetUpBinding
 import com.xcjh.app.ui.home.my.personal.PersonalDataActivity
 import com.xcjh.app.utils.CacheUtil
+import com.xcjh.app.utils.SoundManager
 import com.xcjh.app.view.PopupExitLogin
 import com.xcjh.base_lib.utils.view.clickNoRepeat
 
@@ -40,21 +41,26 @@ class SetUpActivity  : BaseActivity<SetUpVm, ActivitySetUpBinding>() {
         }
         //账号管理
         mDatabind.rlSetAccount.clickNoRepeat {
+            SoundManager.playMedia()
             startNewActivity<AccountNumberActivity>()
 
         }
         mDatabind.rlSetData.clickNoRepeat {
+            SoundManager.playMedia()
             startNewActivity<PersonalDataActivity>()
         }
 
         mDatabind.rlSetPush.clickNoRepeat {
+            SoundManager.playMedia()
             startNewActivity<PushSetActivity>()
         }
 
         mDatabind.rlSetVibrate.clickNoRepeat {
+            SoundManager.playMedia()
             startNewActivity<VibrateSetActivity>()
         }
         mDatabind.txtSetExit.clickNoRepeat {
+            SoundManager.playMedia()
             var popupExitLogin= PopupExitLogin(this)
 
             var popwindow = XPopup.Builder(this)

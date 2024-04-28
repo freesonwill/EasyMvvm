@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
-            android:text="请完成安全验证"
+            android:text="@string/dialog_txt_woed_code"
             android:textColor="@android:color/black"
             android:textSize="18sp" />
 

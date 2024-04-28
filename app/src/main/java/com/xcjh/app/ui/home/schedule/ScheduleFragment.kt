@@ -50,7 +50,7 @@ class ScheduleFragment : BaseFragment<MainVm, FrCourseBinding>() {
 
                 override fun onChangeReceive(chat: ArrayList<ReceiveChangeMsg>) {
                     super.onChangeReceive(chat)
-                    Log.i("RDDDDDDDDDDDDDDDd","===============")
+
                     appViewModel.appPushMsg.postValue(chat)
                 }
 

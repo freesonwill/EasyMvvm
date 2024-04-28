@@ -102,83 +102,103 @@
         android:background="@drawable/horizontal_line"/>
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_12"
-        android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginRight="12dp">
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_marginRight="@dimen/dp_15"
-            android:orientation="horizontal">
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/txtWayHome"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:scaleType="fitCenter"
-               app:srcCompat="@drawable/main_icon"/>
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/txtHomeName"
-                android:singleLine="true"
-                android:layout_width="wrap_content"
+            android:orientation="vertical">
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="12sp"
-                android:textColor="@color/c_37373d"
-                android:layout_marginLeft="@dimen/dp_8"
-                android:text="上海申花"
-               />
+                android:layout_marginLeft="@dimen/dp_12"
+                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginRight="12dp">
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_marginRight="@dimen/dp_15"
+                    android:orientation="horizontal">
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/txtWayHome"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/main_icon"/>
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/txtHomeName"
+                        android:singleLine="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        android:textColor="@color/c_37373d"
+                        android:layout_marginLeft="@dimen/dp_8"
+                        android:text="上海申花"
+                        />
 
-        </androidx.appcompat.widget.LinearLayoutCompat>
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/txtHomeScore"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/c_37373d"
-            android:textSize="11sp"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
-            android:text="0"/>
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_12"
-        android:layout_marginTop="@dimen/dp_10"
-        android:layout_marginRight="12dp">
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/dp_15"
-            android:gravity="center"
-            android:orientation="horizontal">
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/ivGuestIcon"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:scaleType="fitCenter"/>
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/txtGuestName"
-                android:layout_width="wrap_content"
+                </androidx.appcompat.widget.LinearLayoutCompat>
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/txtHomeScore"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/c_37373d"
+                    android:textSize="11sp"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    android:text="0"/>
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="12sp"
-                android:singleLine="true"
-                android:textColor="@color/c_37373d"
-                android:layout_marginLeft="@dimen/dp_8"
-                android:text="上海申花上海申花上海申花上海申花上海申花" />
+                android:layout_marginLeft="@dimen/dp_12"
+                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginRight="12dp">
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/dp_15"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ivGuestIcon"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:scaleType="fitCenter"/>
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/txtGuestName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        android:singleLine="true"
+                        android:textColor="@color/c_37373d"
+                        android:layout_marginLeft="@dimen/dp_8"
+                        android:text="上海申花上海申花上海申花上海申花上海申花" />
 
-        </androidx.appcompat.widget.LinearLayoutCompat>
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/txtGuestScore"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/c_37373d"
+                    android:textSize="11sp"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    android:text="0"/>
+            </RelativeLayout>
+
+        </LinearLayout>
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/txtGuestScore"
+            android:id="@+id/txtWks"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/c_37373d"
-            android:textSize="11sp"
-            android:layout_centerVertical="true"
+            android:textSize="@dimen/sp_11"
+            android:text="@string/main_txt_wks"
+            android:layout_marginRight="12dp"
             android:layout_alignParentRight="true"
-            android:text="0"/>
+            android:layout_centerVertical="true"
+            android:textColor="@color/c_94999f"/>
     </RelativeLayout>
 
 

@@ -5,6 +5,7 @@ import android.content.*
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import com.drake.engine.base.app
 import com.google.gson.Gson
 import com.xcjh.app.R
@@ -244,9 +245,20 @@ class MyWsManager private constructor(private val mContext: Context) {
             26 -> {//服务器主动推送直播间关播
                 val wsBean2 = jsonToObject2<ReceiveWsBean<LiveStatus>>(msg)
                 val chatMsgBean = wsBean2?.data as LiveStatus
-                mLiveStatusListener.forEach {
+
+                mOtherOffListenerListener.forEach{
                     it.toPair().second.onCloseLive(chatMsgBean)
                 }
+
+
+
+//                mLiveStatusListener.forEach {
+//                    it.toPair().second.onCloseLive(chatMsgBean)
+//                }
+
+
+
+
             }
 
             27 -> {//服务器主动推送直播间直播地址修改
@@ -476,7 +488,28 @@ class MyWsManager private constructor(private val mContext: Context) {
             mOtherPushListener.remove(tag)
         }
     }
+
+    /**
+     * 新建
+     */
+    private val mOtherOffListenerListener = linkedMapOf<String, MOffListener>()
+    fun setOtherPushListener(tag: String, listener: MOffListener) {
+        mOtherOffListenerListener[tag] = listener
+    }
+
+    fun removeMOtherOffListenerListener(tag: String) {
+        if (mOtherOffListenerListener[tag] != null) {
+            mOtherOffListenerListener.remove(tag)
+        }
+    }
+
+
+
+
     private var receiver: ChatMessageReceiver? = null
+
+
+
     /**
      * 动态注册广播
      */
@@ -491,6 +524,7 @@ class MyWsManager private constructor(private val mContext: Context) {
         override fun onReceive(context: Context?, intent: Intent?) {
             val msg = intent?.getStringExtra("message") ?: return
             "onReceive====------------  $msg".loge()
+//            parsingServiceLogin(msg)
             try {
                 //appViewModel
                 parsingServiceLogin(msg)

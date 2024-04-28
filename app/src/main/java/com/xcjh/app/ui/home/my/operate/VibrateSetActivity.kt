@@ -10,6 +10,7 @@ import com.xcjh.app.base.BaseActivity
 import com.xcjh.app.databinding.ActivitySplashBinding
 import com.xcjh.app.databinding.ActivityVibrateSetBinding
 import com.xcjh.app.utils.CacheUtil
+import com.xcjh.app.utils.SoundManager
 import com.xcjh.base_lib.base.BaseViewModel
 
 /**
@@ -36,11 +37,13 @@ class VibrateSetActivity: BaseActivity<BaseViewModel, ActivityVibrateSetBinding>
         mDatabind.sbVibrateNavbar.isChecked=CacheUtil.isNavigationVibrate()
         
         mDatabind.sbVibrateAnchor.setOnClickListener {
+            SoundManager.playMedia()
             CacheUtil.setAnchorVibrate(mDatabind.sbVibrateAnchor.isChecked)
 
         }
 
         mDatabind.sbVibrateNavbar.setOnClickListener {
+            SoundManager.playMedia()
             CacheUtil.setNavigationVibrate(mDatabind.sbVibrateNavbar.isChecked)
 
         }

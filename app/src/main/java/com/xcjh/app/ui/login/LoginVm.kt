@@ -59,7 +59,10 @@ class LoginVm : BaseViewModel() {
                 logain.value = it
             }, {
                 //请求失败
-                myToast(it.errorMsg)
+                if(!"token已被顶下线".equals(it.errorMsg)){
+                    myToast(it.errorMsg)
+                }
+
             }, true
         )
     }

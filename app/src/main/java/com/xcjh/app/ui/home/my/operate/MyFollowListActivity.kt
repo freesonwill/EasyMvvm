@@ -22,6 +22,7 @@ import com.xcjh.app.bean.MatchBean
 import com.xcjh.app.databinding.ActivityMyFollowListBinding
 import com.xcjh.app.databinding.ItemMyFollowBinding
 import com.xcjh.app.ui.details.MatchDetailActivity
+import com.xcjh.app.utils.SoundManager
 import com.xcjh.app.utils.cancellationDialog
 import com.xcjh.app.utils.delFriDilog
 import com.xcjh.app.view.CustomHeader
@@ -129,6 +130,7 @@ class MyFollowListActivity : BaseActivity<MyFollowListVm, ActivityMyFollowListBi
             }
             R.id.txtFollowIsFollow.onClick {
                 var  bean=_data as FollowAnchorBean
+                SoundManager.playMedia()
                 if(bean.isFollow){
                     //取消关注
                     cancellationDialog(this@MyFollowListActivity){
@@ -151,6 +153,7 @@ class MyFollowListActivity : BaseActivity<MyFollowListVm, ActivityMyFollowListBi
 //
 //            }
             R.id.rlRoot.onClick {
+                SoundManager.playMedia()
                 var  bean=_data as FollowAnchorBean
                 if(bean.liveId!=null&&bean.liveId.isNotEmpty()){
                     MatchDetailActivity.open(matchType =bean.matchType, matchId = bean.matchId, anchorId = bean.anchorId  )

@@ -31,6 +31,7 @@ import com.xcjh.app.ui.home.my.personal.PersonalDataActivity
 import com.xcjh.app.ui.login.LoginActivity
 import com.xcjh.app.ui.notice.MyNoticeActivity
 import com.xcjh.app.utils.CacheUtil
+import com.xcjh.app.utils.SoundManager
 import com.xcjh.app.utils.judgeLogin
 import com.xcjh.base_lib.manager.KtxActivityManger
 import com.xcjh.base_lib.utils.shareText
@@ -58,6 +59,7 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
         setData()
         //查看等级任务
         mDatabind.rlClickLevel.clickNoRepeat(200) {
+            SoundManager.playMedia()
             judgeLogin {
                 startNewActivity<LevelMissionActivity>()
             }
@@ -67,6 +69,7 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
 
         //切换语言
         mDatabind.rlMyYuYan.setOnClickListener {
+            SoundManager.playMedia()
             startNewActivity<SwitchLanguageActivity>()
         }
 
@@ -146,6 +149,7 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
 
         //设置
         mDatabind.ivMySet.clickNoRepeat {
+            SoundManager.playMedia()
             if (CacheUtil.isLogin()) {
                 startNewActivity<SetUpActivity>()
             } else {
@@ -169,7 +173,7 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
         }
         //我的订阅
         mDatabind.llMyClickSubscribe.clickNoRepeat {
-
+            SoundManager.playMedia()
             val animator = ObjectAnimator.ofPropertyValuesHolder(mDatabind.myAnimation, SCALE_X, SCALE_Y)
             animator.duration = 200
             animator.start()
@@ -206,7 +210,7 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
         //活动中心
         mDatabind.llMyClickEvents.clickNoRepeat {
 
-
+            SoundManager.playMedia()
             val animator = ObjectAnimator.ofPropertyValuesHolder(mDatabind.myAnimationActivity, SCALE_X, SCALE_Y)
             animator.duration = 200
             animator.start()
@@ -234,7 +238,7 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
 
         //我的关注
         mDatabind.llMyClickFollow.clickNoRepeat {
-
+            SoundManager.playMedia()
             val animator = ObjectAnimator.ofPropertyValuesHolder(mDatabind.myAnimationMy, SCALE_X, SCALE_Y)
             animator.duration = 200
             animator.start()
@@ -267,7 +271,7 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
 
         //观看历史
         mDatabind.llMyClickHistory.clickNoRepeat {
-
+            SoundManager.playMedia()
             val animator = ObjectAnimator.ofPropertyValuesHolder(mDatabind.myAnimationHistory, SCALE_X, SCALE_Y)
             animator.duration = 200
             animator.start()
@@ -302,6 +306,7 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
 
         //联系我们意见反馈
         mDatabind.rlMyClickContact.clickNoRepeat {
+            SoundManager.playMedia()
             if (CacheUtil.isLogin()) {
                 startNewActivity<ContactUsActivity>()
             } else {
@@ -310,6 +315,7 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
         }
         //邀请好友
         mDatabind.rlMyClickInvite.clickNoRepeat {
+            SoundManager.playMedia()
             shareText(requireContext(), ApiComService.SHARE_IP + "#/home")
 
 //          requireContext().copyToClipboard(ApiComService.SHARE_IP)
@@ -323,7 +329,7 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
 //                    this.putExtra(Constants.WEB_URL, mViewModel.advertisement.value!!.targetUrl)
 //                    this.putExtra(Constants.CHAT_TITLE, getString(R.string.my_app_name))
 //                }
-
+                SoundManager.playMedia()
                 jumpOutUrl(mViewModel.advertisement.value!!.targetUrl)
             }
 

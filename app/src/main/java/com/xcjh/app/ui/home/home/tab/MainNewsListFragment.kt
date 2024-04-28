@@ -23,6 +23,7 @@ import com.xcjh.app.bean.NewsBean
 import com.xcjh.app.databinding.FragmentMainNewsListBinding
 import com.xcjh.app.databinding.ItemNewsListBinding
 import com.xcjh.app.utils.CacheUtil
+import com.xcjh.app.utils.SoundManager
 import com.xcjh.app.view.CustomHeader
 import com.xcjh.app.web.WebActivity
 import com.xcjh.app.websocket.MyWsManager
@@ -46,7 +47,7 @@ class MainNewsListFragment  : BaseFragment<MainNewsListVm, FragmentMainNewsListB
         mViewModel.getNewsList(true)
         mDatabind.smartCommon.setRefreshHeader( CustomHeader(requireContext()))
         //取消下拉刷新
-        mDatabind.smartCommon.setEnableRefresh(false)
+//        mDatabind.smartCommon.setEnableRefresh(false)
         mDatabind.smartCommon.setEnableOverScrollDrag(true)
         mDatabind.smartCommon.setOnRefreshLoadMoreListener(object : OnRefreshLoadMoreListener {
             override fun onRefresh(refreshLayout: RefreshLayout) {
@@ -144,6 +145,7 @@ class MainNewsListFragment  : BaseFragment<MainNewsListVm, FragmentMainNewsListB
 
             }
             R.id.rlNewsShowList.onClick {
+                SoundManager.playMedia()
                 var  bean=_data as NewsBean
                 startNewActivity<WebActivity>() {
                     this.putExtra(Constants.WEB_URL, bean.sourceUrl)
@@ -154,6 +156,7 @@ class MainNewsListFragment  : BaseFragment<MainNewsListVm, FragmentMainNewsListB
                 mViewModel.getNewsInfo(bean.id)
             }
             R.id.rlNewsShowHot.onClick {
+                SoundManager.playMedia()
                 var  bean=_data as NewsBean
                 startNewActivity<WebActivity>() {
                     this.putExtra(Constants.WEB_URL, bean.sourceUrl)

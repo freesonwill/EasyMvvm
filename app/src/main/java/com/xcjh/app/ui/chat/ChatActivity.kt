@@ -5,7 +5,9 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.ActivityOptions
 import android.content.Context
+import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
 import android.text.InputType
@@ -72,6 +74,7 @@ import com.xcjh.app.utils.CacheDataList
 import com.xcjh.app.utils.CacheUtil
 import com.xcjh.app.utils.ChatTimeUtile
 import com.xcjh.app.utils.GlideEngine
+import com.xcjh.app.utils.SoundManager
 import com.xcjh.app.utils.loadImageWithGlide
 import com.xcjh.app.utils.nice.Utils
 import com.xcjh.app.utils.picture.ImageFileCompressEngine
@@ -611,19 +614,27 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
 
                             binding.ivpic.setOnClickListener {
                                 listPic.clear()
-                                var localMedia: LocalMedia = LocalMedia()
-                                localMedia?.path = matchBeanNew.content
-                                localMedia?.cutPath = matchBeanNew.content
-                                listPic.add(localMedia)
-                                PictureSelector.create(this@ChatActivity)
-                                    .openPreview()
-                                    .setImageEngine(GlideEngine.createGlideEngine())
-                                    .isPreviewFullScreenMode(false)
-                                    .setInjectLayoutResourceListener { context, resourceSource ->
-                                        return@setInjectLayoutResourceListener if (resourceSource == InjectResourceSource.PREVIEW_LAYOUT_RESOURCE)
-                                            R.layout.ps_custom_fragment_preview else InjectResourceSource.DEFAULT_LAYOUT_RESOURCE
-                                    }
-                                    .startActivityPreview(0, false, listPic)
+                                val options = ActivityOptions.makeCustomAnimation(context, R.anim.anim_fade_in, 0)
+                                var inagte=Intent(this@ChatActivity,ImageViewActivity::class.java)
+                                inagte.putExtra("imageUrl",matchBeanNew.content)
+                                startActivity(inagte,options.toBundle())
+//                             var d=  startNewActivity<ImageViewActivity> {
+//                                 putExtra("imageUrl", imageUrl)
+//
+//                             }
+ //                                var localMedia: LocalMedia = LocalMedia()
+//                                localMedia?.path = matchBeanNew.content
+//                                localMedia?.cutPath = matchBeanNew.content
+//                                listPic.add(localMedia)
+//                                PictureSelector.create(this@ChatActivity)
+//                                    .openPreview()
+//                                    .setImageEngine(GlideEngine.createGlideEngine())
+//                                    .isPreviewFullScreenMode(false)
+//                                    .setInjectLayoutResourceListener { context, resourceSource ->
+//                                        return@setInjectLayoutResourceListener if (resourceSource == InjectResourceSource.PREVIEW_LAYOUT_RESOURCE)
+//                                            R.layout.ps_custom_fragment_preview else InjectResourceSource.DEFAULT_LAYOUT_RESOURCE
+//                                    }
+//                                    .startActivityPreview(0, false, listPic)
                             }
 
                             binding.linroot.setOnClickListener {
@@ -688,21 +699,26 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                             Glide.with(this@ChatActivity).load(userhead)
                                 .placeholder(R.drawable.default_anchor_icon).into(binding.ivhead)
                             binding.ivpic.setOnClickListener {
-                                listPic.clear()
-                                var localMedia: LocalMedia = LocalMedia()
-                                localMedia?.path = matchBeanNew.content
-                                localMedia?.cutPath = matchBeanNew.content
-                                listPic.add(localMedia)
 
-                                PictureSelector.create(this@ChatActivity)
-                                    .openPreview()
-                                    .isPreviewFullScreenMode(false)
-                                    .setImageEngine(GlideEngine.createGlideEngine())
-                                    .setInjectLayoutResourceListener { context, resourceSource ->//预览无标题栏
-                                        return@setInjectLayoutResourceListener if (resourceSource == InjectResourceSource.PREVIEW_LAYOUT_RESOURCE)
-                                            R.layout.ps_custom_fragment_preview else InjectResourceSource.DEFAULT_LAYOUT_RESOURCE
-                                    }
-                                    .startActivityPreview(0, false, listPic)
+                                val options = ActivityOptions.makeCustomAnimation(context, R.anim.anim_fade_in, 0)
+                                var inagte=Intent(this@ChatActivity,ImageViewActivity::class.java)
+                                inagte.putExtra("imageUrl",matchBeanNew.content)
+                                startActivity(inagte,options.toBundle())
+//                                listPic.clear()
+//                                var localMedia: LocalMedia = LocalMedia()
+//                                localMedia?.path = matchBeanNew.content
+//                                localMedia?.cutPath = matchBeanNew.content
+//                                listPic.add(localMedia)
+//
+//                                PictureSelector.create(this@ChatActivity)
+//                                    .openPreview()
+//                                    .isPreviewFullScreenMode(false)
+//                                    .setImageEngine(GlideEngine.createGlideEngine())
+//                                    .setInjectLayoutResourceListener { context, resourceSource ->//预览无标题栏
+//                                        return@setInjectLayoutResourceListener if (resourceSource == InjectResourceSource.PREVIEW_LAYOUT_RESOURCE)
+//                                            R.layout.ps_custom_fragment_preview else InjectResourceSource.DEFAULT_LAYOUT_RESOURCE
+//                                    }
+//                                    .startActivityPreview(0, false, listPic)
                             }
                             binding.linroot.setOnClickListener {
                                 hideSoftKeyBoard(this@ChatActivity)
@@ -999,9 +1015,11 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                         if (isShowBottom) {
                             hd = 0f
                         }
+                        SoundManager.playMedia()
                         startAnmila(hd,1)
                     }
                     R.id.ivface->{
+                        SoundManager.playMedia()
                         startAnmila(0f,2)
 
 
@@ -1012,8 +1030,9 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                             myToast(resources.getString(R.string.str_stoptalk))
                             return@setOnclickNoRepeat
                         }
-                        PictureCacheManager.deleteAllCacheDirRefreshFile(this);//清除图库缓存产生的临时文件
 
+                        SoundManager.playMedia()
+                        PictureCacheManager.deleteAllCacheDirRefreshFile(this);//清除图库缓存产生的临时文件
                         PictureSelector.create(this)
                             .openGallery(SelectMimeType.ofImage())
                             //  .setCropEngine(ImageFileCropEngine())
@@ -1051,8 +1070,8 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                             myToast(resources.getString(R.string.str_stoptalk))
                             return@setOnclickNoRepeat
                         }
+                        SoundManager.playMedia()
                         PictureSelector.create(this)
-
                             .openCamera(SelectMimeType.ofImage())
                             .setCompressEngine(ImageFileCompressEngine())
                             .forResult(object : OnResultCallbackListener<LocalMedia?> {

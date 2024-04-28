@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelStoreOwner
 import com.alibaba.android.arouter.launcher.ARouter
 import com.xcjh.base_lib.manager.KtxActivityManger
 import com.xcjh.base_lib.utils.loge
+import me.jessyan.autosize.AutoSizeConfig
 import me.jessyan.autosize.utils.AutoSizeLog
 import me.jessyan.autosize.utils.AutoSizeLog.isDebug
 val appContext: App by lazy { App.app }
@@ -23,6 +24,7 @@ open class App : Application(), Application.ActivityLifecycleCallbacks, ViewMode
     override fun onCreate() {
         super.onCreate()
         app = this
+
         if (isDebug()) {
             // 这两行必须写在init之前，否则这些配置在init过程中将无效
             ARouter.openLog() // 打印日志

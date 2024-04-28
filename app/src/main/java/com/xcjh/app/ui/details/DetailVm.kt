@@ -1,5 +1,6 @@
 package com.xcjh.app.ui.details
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.kunminx.architecture.ui.callback.UnPeekLiveData
@@ -48,12 +49,17 @@ class DetailVm : BaseViewModel() {
 
     //主播信息
     var anchorInfo = UnPeekLiveData<AnchorListBean>()
-
+    //比赛详情里面就有主播列表
     var detail = UnPeekLiveData<MatchDetailBean>()
+
+    //刷新主播详情
+    var refreshDetail= UnPeekLiveData<MatchDetailBean?>()
+
     var scrollTextList = UnPeekLiveData<UpdateUiState<ArrayList<ScrollTextBean>>>()
     var showAd = UnPeekLiveData<UpdateUiState<ScrollTextBean>>()
     //主播详情接口返回
     var anchor = UnPeekLiveData<DetailAnchorBean?>()
+
 
     //主播详情接口返回修改公告的时候使用
     var anchorUpdate = UnPeekLiveData<DetailAnchorBean?>()
@@ -169,7 +175,6 @@ class DetailVm : BaseViewModel() {
                 val anchorBean = anchorInfo.data
                 anchor.postValue(anchorBean)
                 list.addAll(historyList.data.reversed())
-
                 list.add(0,FirstMsgBean(
                     anchorBean.id, anchorBean.head, anchorBean.nickName, "0", anchorBean.firstMessage ?: "", identityType = 1
                 ))
@@ -193,12 +198,12 @@ class DetailVm : BaseViewModel() {
 
     var isfocus = UnPeekLiveData<Boolean>()
     //关注主播接口，DetailAnchorFragment界面调用
-    fun followAnchor(id: String) {
+    fun followAnchor(content:Context,id: String) {
         request({
             apiService.getNoticeUser(id)
         }, {
             isfocus.postValue(true)
-            myToast(appContext.getString(R.string.add_focus_success),isDeep=true)
+            myToast(content.getString(R.string.add_focus_success),isDeep=true)
         }, {
             isfocus.postValue(false)
         }, false)
@@ -237,6 +242,7 @@ class DetailVm : BaseViewModel() {
         if (isRefresh) {
             pageNo = 1
         }
+        Log.i("VVVVVVVVRRRR","=="+exceptId)
         request({
             apiService.getNowLive(
                 LiveReq(
@@ -402,6 +408,24 @@ class DetailVm : BaseViewModel() {
         }, {
 
         })
+    }
+
+
+    /**
+     * 获取比赛详情相当获取一个主播列表
+     */
+    fun getMatchDetailAnchorList(matchId: String, matchType: String?, showD: Boolean = false) {
+        request(
+            {
+                apiService.getMatchDetail(matchId, matchType)
+            }, {
+                refreshDetail.value = it
+
+            }, {
+                refreshDetail.value = null
+//                myToast(it.errorMsg, isDeep = true)
+            }, showD
+        )
     }
 
 }

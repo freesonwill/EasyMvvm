@@ -1,11 +1,11 @@
 package com.xcjh.app.ui
 
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
-import android.graphics.drawable.AnimationDrawable
 import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
@@ -13,24 +13,25 @@ import android.os.Vibrator
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.TextView
+import android.widget.LinearLayout
+import android.widget.ProgressBar
 import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.engagelab.privates.core.api.MTCorePrivatesApi
 import com.engagelab.privates.push.api.MTPushPrivatesApi
 import com.google.gson.Gson
-import com.gyf.immersionbar.ImmersionBar
 import com.gyf.immersionbar.ktx.showStatusBar
 import com.hjq.language.LocaleContract
 import com.hjq.language.MultiLanguages
 import com.king.app.dialog.AppDialog
 import com.king.app.updater.AppUpdater
+import com.king.app.updater.callback.UpdateCallback
 import com.king.app.updater.http.OkHttpManager
-import com.kongzue.dialogx.dialogs.CustomDialog
-import com.kongzue.dialogx.interfaces.OnBindView
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
 import com.lxj.xpopup.enums.PopupAnimation
@@ -50,30 +51,28 @@ import com.xcjh.app.ui.home.home.HomeFragment
 import com.xcjh.app.ui.home.msg.MsgFragment
 import com.xcjh.app.ui.home.my.MyUserFragment
 import com.xcjh.app.ui.home.schedule.ScheduleFragment
-import com.xcjh.app.ui.login.LoginActivity
 import com.xcjh.app.utils.CacheUtil
+import com.xcjh.app.utils.SoundManager
 import com.xcjh.app.utils.getVerCode
 import com.xcjh.app.utils.judgeLogin
-import com.xcjh.app.utils.onWsUserEnterRoom
 import com.xcjh.app.vm.MainVm
-import com.xcjh.app.web.WebActivity
 import com.xcjh.app.websocket.MyWsManager
 import com.xcjh.app.websocket.listener.NoReadMsgPushListener
 import com.xcjh.app.websocket.listener.OtherPushListener
-import com.xcjh.base_lib.App
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.utils.initActivity
 import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.setOnclickNoRepeat
-import com.xcjh.base_lib.utils.toJson
 import com.xcjh.base_lib.utils.view.clickNoRepeat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.io.File
 import java.util.Timer
 import java.util.TimerTask
+
 
 /**
  * 版本2 主页
@@ -108,8 +107,19 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         //MTPushPrivatesApi.clearNotification(this)
 //        placeLoginDialog()
         showStatusBar()
+
+        //初始化提示音类
+        SoundManager.initialize(appContext)
+
         mDatabind.reDateShow.clickNoRepeat {}
         currentPage=0
+//        getApiService(ApiComService.SERVER_URL)
+
+//     var   performanceMonitor = PerformanceMonitor(this)
+//
+//        performanceMonitor.startMonitoring()
+
+
         //全部比赛 0全部 1 是足球   2是篮球    3是赛果
         TimeConstantsDat.options1ItemsAll = ArrayList<JsonBean>()
         TimeConstantsDat.options2ItemsAll =  ArrayList<ArrayList<String>>()
@@ -227,9 +237,11 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
     }
 
     private fun initUI() {
+
+
         MTPushPrivatesApi.setNotificationBadge(this, 0)
         //检查app是否更新
-//        mViewModel.appUpdate()
+        mViewModel.appUpdate()
         //runOnUiThread {  }
         //初始化viewpager2
         mDatabind.viewPager.initActivity(this, mFragList, false)
@@ -371,9 +383,18 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
          * 暂时隐藏获取到线上最新版本然后升级
          */
         mViewModel.update.observe(this) {
+            Log.i("CCCCCCCCCCC","===========")
             var code= getVerCode(this).toInt()
+//            appUpdate(it.remarks,false,"")
             if(it.version.toInt()>code){
-                appUpdate(it.remarks,true,"")
+                // 是否强制更新：0 ：不强制 1：强制
+                if(it.forcedUpdate.equals("0")){
+                    appUpdate(it.remarks,true,it.sourceUrl)
+                }else{
+                    appUpdate(it.remarks,false,it.sourceUrl)
+                }
+
+
             }
         }
 
@@ -401,34 +422,92 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
      * isForce  如果是false就是强制  true就是不强制,
      * url   下载地址
      */
+    @SuppressLint("MissingInflatedId")
     private fun appUpdate(content: String, isForce: Boolean, url: String) {
         var view = LayoutInflater.from(this).inflate(R.layout.dialog_app_update_tips, null)
         var txtAppContent = view.findViewById<AppCompatTextView>(R.id.txtAppContent)
-        var txtUpdateCancel = view.findViewById<AppCompatTextView>(R.id.txtUpdateCancel)
+        var ivDelete = view.findViewById<AppCompatImageView>(R.id.ivDelete)
         var txtUpdateCommit = view.findViewById<AppCompatTextView>(R.id.txtUpdateCommit)
+        //显示进度条
+        var llShow = view.findViewById<ConstraintLayout>(R.id.llShow)
+        var pbUpdate = view.findViewById<ProgressBar>(R.id.pbUpdate)
+        var txtUpdateNum = view.findViewById<AppCompatTextView>(R.id.txtUpdateNum)
+
 
         txtAppContent.text = content
         if (!isForce) {
-            txtUpdateCancel.visibility = View.GONE
+            ivDelete.visibility = View.GONE
         } else {
-            txtUpdateCancel.visibility = View.VISIBLE
+            ivDelete.visibility = View.VISIBLE
         }
-        txtUpdateCancel.clickNoRepeat {
+        ivDelete.clickNoRepeat {
             AppDialog.INSTANCE.dismissDialog()
         }
         txtUpdateCommit.clickNoRepeat {
 //            mAppUpdater!!=AppUpdater.
+            txtUpdateCommit.visibility=View.GONE
+            llShow.visibility=View.VISIBLE
+     //   .setUrl("https://gitlab.com/jenly1314/AppUpdater/-/raw/master/app/release/app-release.apk") .setUrl(url)
             mAppUpdater = AppUpdater.Builder(this)
-                .setUrl("https://gitlab.com/jenly1314/AppUpdater/-/raw/master/app/release/app-release.apk")
+                .setUrl(url)
+                .setNotificationIcon(R.drawable.app_logo)
                 .setVersionCode(BuildConfig.VERSION_CODE.toLong())
                 .setFilename("AppUpdater.apk")
                 .setVibrate(true)
                 .build()
             //                        .setApkMD5("3df5b1c1d2bbd01b4a7ddb3f2722ccca")// 支持MD5校验，如果缓存APK的MD5与此MD5相同，则直接取本地缓存安装，推荐使用MD5校验的方式
-            mAppUpdater!!.setHttpManager(OkHttpManager.getInstance()).start()
-            AppDialog.INSTANCE.dismissDialog()
+            mAppUpdater!!.setHttpManager(OkHttpManager.getInstance())
+                .setUpdateCallback(object :UpdateCallback{
+                    override fun onDownloading(isDownloading: Boolean) {
+
+                    }
+
+                    override fun onStart(url: String?) {
+                        pbUpdate.progress = 0
+                        txtUpdateNum.text= "0%"
+                    }
+
+                    override fun onProgress(progress: Long, total: Long, isChanged: Boolean) {
+                        if (isChanged) {
+                            if (pbUpdate == null || pbUpdate == null) {
+                                return
+                            }
+                            if (progress > 0) {
+                                val currProgress = (progress * 1.0f / total * 100.0f).toInt()
+                                txtUpdateNum.text=(currProgress.toString() + "%")
+                                pbUpdate.progress = currProgress
+                            } else {
+                                txtUpdateNum.text= "0%"
+                            }
+
+                        }
+                    }
+
+                    override fun onFinish(file: File?) {
+                            //下载完成
+                        txtUpdateCommit.visibility=View.VISIBLE
+                        llShow.visibility=View.GONE
+                    }
+
+                    override fun onError(e: Exception?) {
+                        //下载失败
+                        txtUpdateCommit.visibility=View.VISIBLE
+                        llShow.visibility=View.GONE
+
+                    }
+
+                    override fun onCancel() {
+
+                    }
+
+                }).start()
+            if(!isForce){
+                AppDialog.INSTANCE.dismissDialog()
+            }
+//
         }
-        AppDialog.INSTANCE.showDialog(this, view, isForce)
+        //false就是强制
+        AppDialog.INSTANCE.showDialog(this, view, false)
 
     }
 
@@ -463,8 +542,11 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         if (currentPage != pos && vibrate) {
             if (CacheUtil.isNavigationVibrate()) {
                 vibrate(this)
+                SoundManager.playMedia()
+
             }
         }
+
         if (pos == 0&&currentPage != pos){
             mDatabind.ivHomeMain.setAnimation("tab_shouye_icon.json")
             mDatabind.ivHomeMain.playAnimation()

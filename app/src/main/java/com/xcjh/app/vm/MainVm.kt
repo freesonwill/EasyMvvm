@@ -101,7 +101,7 @@ class MainVm : BaseViewModel() {
                 update.value = it
 
             }, {
-
+                Log.i("SSSSSSSSSSSS","======="+it.errorMsg)
             }
         )
     }

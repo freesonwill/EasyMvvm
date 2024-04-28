@@ -9,6 +9,8 @@ ext {
             }
             compileSdkVersion rootProject.ext.android.compileSdkVersion
             defaultConfig {
+
+
                 minSdkVersion rootProject.ext.android.minSdkVersion
                 targetSdkVersion rootProject.ext.android.targetSdkVersion
                 if (isApp) {

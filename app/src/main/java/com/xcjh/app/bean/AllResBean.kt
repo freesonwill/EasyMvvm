@@ -130,7 +130,9 @@ data class MatchBean(
     var list: ArrayList<MatchBean> = arrayListOf(),//首页热门比赛
     var matchData: ArrayList<ConditionsBean> = arrayListOf(),//比赛是否有赛况、阵容、指数
     var runTime: String? = "0",//比赛进行时间（分钟）进行中足球比赛有此信息
-    var ishsow: Boolean = true
+    var ishsow: Boolean = true,
+    var pureFlow:Boolean=false,//是否是纯净流
+
 ) : Serializable
 
 data class InitialLocation(
@@ -427,6 +429,16 @@ data class BeingLiveBean(
     var homeTeamNameZht: String = "",//	主队繁体名
     var competitionNameEn: String = "",//	赛事英文
     var competitionNameZht: String = "",//	赛事英文繁体
+    var pureFlow:Boolean=false,//是否是纯净流
+    var homeScore:String="0",//主队比分
+    var awayScore:String="0",//客队比分
+    //篮球状态:0 比赛异常，说明：暂未判断具体原因的异常比赛，可能但不限于：腰斩、取消等等，建议隐藏处理;
+    // 1 未开赛;2 第一节;3 第一节完;4 第二节;5 第二节完;6 第三节;7 第三节完;8 第四节;9 加时;10 完场;11 中断;12 取消;13 延期;14 腰斩;15 待定;
+    // 足球状态码:0 比赛异常，说明：暂未判断具体原因的异常比赛，可能但不限于：腰斩、取消等等，建议隐藏处理;1 未开赛;2 上半场;3 中场;4 下半场;5 加时赛;6 加时赛(弃用);7 点球决战;8 完场;9 推迟;10 中断;11 腰斩;12 取消;13 待定
+    var status: String = "",//比赛状态
+
+
+
 
 ) : Serializable
 
@@ -606,8 +618,8 @@ data class IncidentsBean(
  */
 @Keep
 data class MatchDetailBean(
-    var anchorList: ArrayList<AnchorListBean>? = arrayListOf(),//主播列表
-
+    //主播列表
+    var anchorList: ArrayList<AnchorListBean>? = arrayListOf(),
     var awayHalfScore: Int = 0,//客队半场比分
     val awayLogo: String? = "",//客队Logo
     val awayName: String? = "",//客队名称

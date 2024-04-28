@@ -89,9 +89,11 @@ class MainRecommendNewVm : BaseViewModel() {
         }
 
         request(
-            { apiService.getNowLive(LiveReq(current=pageNo)) },
+            { apiService.getNowLive(LiveReq(current=pageNo,size=500)) },
             {
                 pageNo++
+
+                Log.i("CCeerereCc","it.records==="+it.records[0].status)
                 liveList.value = ListDataUiState(
                     isSuccess = true,
                     isRefresh = isRefresh,

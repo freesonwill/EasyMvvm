@@ -1,7 +1,8 @@
 package com.xcjh.app.ui.login
 
-import android.app.Activity
-import android.content.Context
+
+import android.app.ActivityOptions
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Bundle
@@ -18,21 +19,21 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
+import com.cn.game.sdk.appGameViewModel
+import com.cn.game.sdk.ui.fast.GameHomeActivity
+import com.cn.game.sdk.utils.MyGameManager
 import com.engagelab.privates.core.api.MTCorePrivatesApi
-import com.google.gson.Gson
 import com.gyf.immersionbar.ImmersionBar
 import com.kongzue.dialogx.dialogs.CustomDialog
 import com.kongzue.dialogx.interfaces.OnBindView
 import com.xcjh.app.R
 import com.xcjh.app.base.BaseActivity
-import com.xcjh.app.bean.CaptchaVOReq
 import com.xcjh.app.bean.LetterBeann
-import com.xcjh.app.bean.Point
 import com.xcjh.app.bean.PostLoaginBean
 import com.xcjh.app.databinding.ActivityLoaginBinding
+import com.xcjh.app.utils.SoundManager
 import com.xcjh.app.view.slider.AESUtil
 import com.xcjh.app.view.slider.CaptchaCheckOt
-import com.xcjh.app.view.slider.DragImageView
 import com.xcjh.app.view.slider.ImageUtil
 import com.xcjh.app.view.slider.WordImageView
 import com.xcjh.base_lib.Constants
@@ -40,6 +41,7 @@ import com.xcjh.base_lib.utils.bindViewPager2
 import com.xcjh.base_lib.utils.initActivity
 import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.setOnclickNoRepeat
+import com.xcjh.base_lib.utils.view.clickNoRepeat
 
 /***
  * 登录
@@ -74,7 +76,12 @@ class LoginActivity : BaseActivity<LoginVm, ActivityLoaginBinding>() {
             .navigationBarDarkIcon(true)
             .navigationBarColor(R.color.c_ffffff)
             .init()
+
+
         mDatabind.titleTop.tvTitle.text = resources.getString(R.string.loginandre)
+        mDatabind.btn.clickNoRepeat {
+            MyGameManager.setToast(this)
+        }
 
         mFragments.add(Fragment())
         mFragments.add(Fragment())
@@ -129,6 +136,7 @@ class LoginActivity : BaseActivity<LoginVm, ActivityLoaginBinding>() {
                               //  myToast(resources.getString(R.string.please_input_phone_code))
                                 return@setOnclickNoRepeat
                             }
+                            SoundManager.playMedia()
                             mViewModel.getLogin(
                                 PostLoaginBean(
                                      mDatabind.edtphone.text.toString(),
@@ -150,6 +158,7 @@ class LoginActivity : BaseActivity<LoginVm, ActivityLoaginBinding>() {
                                // myToast(resources.getString(R.string.please_input_phone_code))
                                 return@setOnclickNoRepeat
                             }
+                            SoundManager.playMedia()
                             mViewModel.getLogin(
                                 PostLoaginBean(
                                     mDatabind.edtemail.text.toString(),
@@ -171,12 +180,12 @@ class LoginActivity : BaseActivity<LoginVm, ActivityLoaginBinding>() {
 
                             if (mDatabind.edtemail.text.toString().isEmpty()) {
 
-                                myToast(resources.getString(R.string.please_input_email))
+//                                myToast(resources.getString(R.string.please_input_email))
                                 return@setOnclickNoRepeat
                             }
                             if (!isEmailValid(mDatabind.edtemail.text.toString())) {
 
-                                myToast(resources.getString(R.string.please_inputcureet_email))
+//                                myToast(resources.getString(R.string.please_inputcureet_email))
                                 return@setOnclickNoRepeat
                             }
 
@@ -189,12 +198,12 @@ class LoginActivity : BaseActivity<LoginVm, ActivityLoaginBinding>() {
 
                             if (mDatabind.edtemail.text.toString().isEmpty()) {
 
-                                myToast(resources.getString(R.string.please_input_email))
+//                                myToast(resources.getString(R.string.please_input_email))
                                 return@setOnclickNoRepeat
                             }
                             if (!isEmailValid(mDatabind.edtemail.text.toString())) {
 
-                                myToast(resources.getString(R.string.please_inputcureet_email))
+//                                myToast(resources.getString(R.string.please_inputcureet_email))
                                 return@setOnclickNoRepeat
                             }
 
@@ -239,18 +248,20 @@ class LoginActivity : BaseActivity<LoginVm, ActivityLoaginBinding>() {
                         if (mDatabind.tvgetcodePhone.text.length == 5) {
                             if (mDatabind.edtphone.text.toString().isEmpty()) {
 
-                                myToast(resources.getString(R.string.please_input_phone_num))
+//                                myToast(resources.getString(R.string.please_input_phone_num))
                                 return@setOnclickNoRepeat
                             }
+                            SoundManager.playMedia()
                             dialogText()
                         }
                     }else{
                         if (mDatabind.tvgetcodePhone.text.length ==4) {
                             if (mDatabind.edtphone.text.toString().isEmpty()) {
 
-                                myToast(resources.getString(R.string.please_input_phone_num))
+//                                myToast(resources.getString(R.string.please_input_phone_num))
                                 return@setOnclickNoRepeat
                             }
+                            SoundManager.playMedia()
                             dialogText()
                         }
                     }
@@ -281,6 +292,7 @@ class LoginActivity : BaseActivity<LoginVm, ActivityLoaginBinding>() {
 //                    }
                 }
                 R.id.tvgo-> {
+                    SoundManager.playMedia()
                     com.xcjh.base_lib.utils.startNewActivity<LetterCountryActivity>()
                 }
                 R.id.ivgo -> {

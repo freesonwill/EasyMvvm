@@ -33,6 +33,8 @@ public class SideBarLayout extends RelativeLayout implements SideBarSortView.OnI
     private float selectTextSize;
     private float unselectTextSize;
 
+    private boolean isShowText=true;
+
     private int wordTextColor;
     private float wordTextSize;
     private Drawable wordBackground;
@@ -105,6 +107,14 @@ public class SideBarLayout extends RelativeLayout implements SideBarSortView.OnI
     }
 
     /**
+     * 隐藏显示的中间那个子
+     */
+    public void hiddenText(){
+        isShowText=false;
+        mTvTips.setVisibility(View.GONE);
+    }
+
+    /**
      * 监听回调：由侧边栏滑动更新Item
      */
 
@@ -125,7 +135,10 @@ public class SideBarLayout extends RelativeLayout implements SideBarSortView.OnI
      */
     @Override
     public void onSideBarScrollUpdateItem(String word) {
-        mTvTips.setVisibility(View.VISIBLE);
+        if(isShowText){
+            mTvTips.setVisibility(View.VISIBLE);
+        }
+
         mTvTips.setText(word);
         if (mListener != null) {
             mListener.onSideBarScrollUpdateItem(word);
