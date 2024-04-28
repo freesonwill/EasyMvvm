@@ -7,7 +7,8 @@ import game.common.proto.ClientReq
 import game.common.proto.ClientReq.PingBackReq
 import game.mod.proc.yf.proto.req.GameReq
 
-class GameMessageKuaikt(client: JWebSocketClient) :GameMessage{
+class GameServiceKuaikt(client: JWebSocketClient) :
+    GameService {
 
     private var _client: JWebSocketClient? = null
 

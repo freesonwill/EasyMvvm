@@ -7,21 +7,18 @@ import android.os.Looper
 import androidx.lifecycle.*
 import com.cn.game.sdk.ToastUtli
 import com.cn.game.sdk.common.GameResCode
-import com.cn.game.sdk.game.GameMessage
-import com.cn.game.sdk.game.GameMessageKuai
-import com.cn.game.sdk.game.GameMessageKuaikt
-import com.cn.game.sdk.game.GameResMessage
+import com.cn.game.sdk.game.GameService
+import com.cn.game.sdk.game.GameServiceKuaikt
+import com.cn.game.sdk.game.GameServiceBack
 import com.cn.game.sdk.net.ApiComService.Companion.WEB_SOCKET_URL
-import com.cn.game.sdk.utils.MyGameManager
 import com.xcjh.app.websocket.WebSocketAction
 import com.xcjh.base_lib.utils.*
 import game.common.proto.ClientReq
+import game.common.proto.ClientRes
 import game.common.proto.ClientRes.ErrorMessage
-import game.mod.proc.yf.proto.req.GameReq.EnterGroup
 import kotlinx.coroutines.*
 import java.lang.Runnable
 import java.net.URI
-import java.nio.ByteBuffer
 import java.util.concurrent.*
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -33,7 +30,7 @@ import java.util.concurrent.atomic.AtomicInteger
 class MyWsManager private constructor(private val mContext: Context) {
     val tag = "MyWsManager"
     var client: JWebSocketClient? = null
-    lateinit var _gameMsg : GameMessage
+    lateinit var _gameMsg : GameService
     companion object {
         private var scheduledExecutorService: ScheduledExecutorService? = null
         private var errorNum = 0
@@ -71,8 +68,8 @@ class MyWsManager private constructor(private val mContext: Context) {
             return INSTANCE
         }
 
-        fun gameMessage(): GameMessage {
-            return INSTANCE?.gameMessage() ?: GameMessageKuaikt(INSTANCE?.client!!);
+        fun gameMessage(): GameService {
+            return INSTANCE?.gameMessage() ?: GameServiceKuaikt(INSTANCE?.client!!);
         }
     }
 
@@ -126,7 +123,7 @@ class MyWsManager private constructor(private val mContext: Context) {
         }
     }
 
-    fun  gameMessage(): GameMessage {
+    fun  gameMessage(): GameService {
         return _gameMsg
     }
 
@@ -160,6 +157,10 @@ class MyWsManager private constructor(private val mContext: Context) {
 //        var req = ClientReq.LoginReq.newBuilder()
 //            .build()
 //        _gameMsg.login(req)
+//        var res = ClientRes.InfoAfterLoginSuccess.newBuilder()
+//            .setResourceBaseUrl("123")
+//            .build()
+//        onMessage(7, GameResCode.SUB_LOGON_RESP__SUCCESS,res.toByteArray())
     }
     fun onMessage(mid:Int, sid:Int, byteArray: ByteArray){
         if(mid == 0){
@@ -171,9 +172,21 @@ class MyWsManager private constructor(private val mContext: Context) {
                 ToastUtli().showToast(errMsg.desc, mContext)
             }
         }
+        /**
+        //登录成功之后直接进行后续操作
+        if(sid == GameResCode.SUB_LOGON_RESP__SUCCESS){
+            var groupReq = EnterGroup.newBuilder().setId("123").build()
+            _gameMsg.enterGroup(groupReq)
+        }
+        //进入group之后直接调用进入小游戏
+        if(sid == GameResCode.S2C_GROUP_INFO){
+            var gameReq = EnterMiniGame.newBuilder().setMiniGameId(1).build()
+            _gameMsg.enterGame(gameReq)
+        }
+        **/
         GlobalScope.launch {
             try {
-                GameResMessage.onMessage(mid, sid, byteArray)
+                GameServiceBack.onMessage(mid, sid, byteArray)
             }catch (e: Exception){
                 "======onMessage===调用异常------------  ${e.message}".loge()
             }
@@ -186,7 +199,7 @@ class MyWsManager private constructor(private val mContext: Context) {
     private fun initSocketClient() {
         var uri  = URI.create(WEB_SOCKET_URL)
         client = JWebSocketClient(this, uri)
-        _gameMsg = GameMessageKuaikt(client!!)
+        _gameMsg = GameServiceKuaikt(client!!)
 //        client = object : WebSocketClient(URI.create(WEB_SOCKET_URL), Draft_6455()) {
 //            init {
 //                if (URI.create(WEB_SOCKET_URL).toString().contains("wss://")) {
