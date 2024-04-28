@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:clipChildren="false"
+    android:clipToPadding="false"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
@@ -18,6 +20,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="34dp"
+            android:clipChildren="false"
+            android:clipToPadding="false"
             android:background="@color/g_141624"
             android:orientation="vertical"
             android:layout_alignParentBottom="true">
@@ -110,6 +114,7 @@
                 </LinearLayout>
             </RelativeLayout>
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/vvvvvv"
                 android:layout_width="match_parent"
                 android:layout_height="21dp"
                 android:layout_marginTop="5dp"
@@ -148,10 +153,15 @@
                 </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
             <RelativeLayout
+                android:id="@+id/rlccccc"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <androidx.viewpager2.widget.ViewPager2
+                android:layout_height="wrap_content"
+                android:clipChildren="false"
+                android:clipToPadding="false">
+                <androidx.viewpager.widget.ViewPager
                     android:id="@+id/viewPager"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
                     android:layout_marginTop="8dp"
                     android:layout_width="match_parent"
                     android:layout_height="180dp"/>
@@ -235,7 +245,7 @@
                     tools:itemCount="1"
                     tools:listitem="@layout/item_bet_history"/>
 
-
+<!--                隐藏或者显示撒子数-->
                 <RelativeLayout
                     android:id="@+id/rlClickHide"
                     android:layout_width="23dp"

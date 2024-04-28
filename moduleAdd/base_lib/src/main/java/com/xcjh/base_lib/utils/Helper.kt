@@ -30,7 +30,8 @@ fun myToast(whiteStr: String?, yellowStr: String? = null) {
     val toast = Toast(appContext)
     // toast.setGravity(Gravity.BOTTOM or Gravity.CENTER, 0, DisplayUtils.dp2px(50f))
     toast.setGravity( Gravity.CENTER, 0,0)
-    toast.duration = Toast.LENGTH_LONG
+//    toast.duration = Toast.LENGTH_LONG
+    toast.duration = Toast.LENGTH_SHORT
     toast.view = view
     toast.show()
 }

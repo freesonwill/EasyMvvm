@@ -7,6 +7,7 @@ import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.graphics.Path
 import android.graphics.PathMeasure
+import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -21,6 +22,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.cn.game.sdk.R
 import com.cn.game.sdk.appGameViewModel
 import com.cn.game.sdk.base.BaseGameActivity
@@ -29,12 +31,17 @@ import com.cn.game.sdk.bean.SelectAnnotationBean
 import com.cn.game.sdk.databinding.ActivityGameHomeBinding
 import com.cn.game.sdk.databinding.ItemAnnotationListBinding
 import com.cn.game.sdk.databinding.ItemBetHistoryBinding
+import com.cn.game.sdk.ui.fast.fragment.CeFragment
 import com.cn.game.sdk.ui.fast.fragment.HomeDefaultFragment
+import com.cn.game.sdk.utils.ComputeDefault
+import com.cn.game.sdk.utils.MyGameManager
 import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
+import com.xcjh.base_lib.utils.bindViewPager
 import com.xcjh.base_lib.utils.bindViewPager2
 import com.xcjh.base_lib.utils.dp2px
+import com.xcjh.base_lib.utils.init
 import com.xcjh.base_lib.utils.initActivity
 import com.xcjh.base_lib.utils.view.clickNoRepeat
 
@@ -43,29 +50,19 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
     private var mFragList = ArrayList<Fragment>()
 
     var homeDefaultFragment = HomeDefaultFragment()
-
     /**
      * 是否显示骰子的结果组合
      */
     private var isShowResult:Boolean=true
 
-
-
     /**
      * 判断所有的按钮是否可以点击
      */
     private  var isClick:Boolean=true
-
-    /**
-     * 选择的注码
-     */
-    private  var selectAnnotation:Int=0
-
     /**
      * 选择的注码的View
      */
     private var  selectImageView: AppCompatImageView?=null
-
 
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -80,37 +77,46 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
             putInt("type",0)
         }
 
+
+
         mViewModel.getddd()
         mDatabind.ivHomeLogo.clickNoRepeat {
             hiddenView()
             mDatabind.rlShowResult.visibility=View.VISIBLE
         }
         appGameViewModel.ceshEvent.observe(this){
-
         }
-
-
         homeDefaultFragment.arguments = basketball
 
 
         mFragList.add(homeDefaultFragment)
-
-        mDatabind.viewPager.initActivity(this, mFragList, true,1)
-        //初始化 magic_indicator
-        mDatabind.magicIndicator.bindViewPager2(
-            mDatabind.viewPager, arrayListOf(
-                getString(R.string.g_home_txt_default)
-
-            ),
-            R.color.g_f7cf41,
-            R.color.g_9696b8,
-            14f, 14f, true, true,
-            0, lineIndicatorWidth=0,margin = 10
-        ){
+        mFragList.add(CeFragment())
+        mDatabind.viewPager.init(supportFragmentManager,mFragList,arrayListOf(
+            getString(R.string.g_home_txt_default),
+            getString(R.string.g_home_txt_more)))
+        mDatabind.viewPager.offscreenPageLimit =mFragList.size
+        mDatabind.magicIndicator.bindViewPager(mDatabind.viewPager,arrayListOf(
+            getString(R.string.g_home_txt_default),
+            getString(R.string.g_home_txt_more)),scrollEnable=true){
 
         }
-
         mDatabind.viewPager.offscreenPageLimit = mFragList.size
+//        mDatabind.viewPager.initActivity(this, mFragList, true,1)
+        //初始化 magic_indicator
+//        mDatabind.magicIndicator.bindViewPager2(
+//            mDatabind.viewPager, arrayListOf(
+//                getString(R.string.g_home_txt_default)
+//
+//            ),
+//            R.color.g_f7cf41,
+//            R.color.g_9696b8,
+//            14f, 14f, true, true,
+//            0, lineIndicatorWidth=0,margin = 10
+//        ){
+
+//        }
+
+//        mDatabind.viewPager.offscreenPageLimit = mFragList.size
 
         adapter()
         setClick()
@@ -155,16 +161,6 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
     }
 
     fun adapter() {
-        var listNew=ArrayList<SelectAnnotationBean>()
-        for (c in 0 until 10) {
-            if(c==0){
-                listNew.add(SelectAnnotationBean(select=true))
-            }else{
-                listNew.add(SelectAnnotationBean())
-            }
-
-        }
-
         mDatabind.llShowBetList.layoutManager=LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false)
         mDatabind.llShowBetList.setup {
             addType<SelectAnnotationBean>(R.layout.item_annotation_list)
@@ -176,7 +172,6 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
                         if(bean.select){
                             selectImageView=binding.ivShowBg
                         }
-
                         if(layoutPosition==0){
                             binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_no_shi))
                         }else if(layoutPosition==1){
@@ -190,13 +185,17 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
                         }else if(layoutPosition==5){
                             binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_no_qian))
                         }else if(layoutPosition==6){
-                            binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_no_wuqian))
+                            binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_no_liangqian))
                         }else if(layoutPosition==7){
-                            binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_no_yiwan))
+                            binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_no_wuqian))
                         }else if(layoutPosition==8){
-                            binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_no_liangwan))
+                            binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_no_yiwan))
                         }else if(layoutPosition==9){
+                            binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_no_liangwan))
+                        }else if(layoutPosition==10){
                             binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_no_wuwan))
+                        }else{
+                            binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_no_shiwan))
                         }
                     }
 
@@ -204,25 +203,25 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
 
             }
             R.id.ivShowBg.onClick {
+                //选择新的筹码
+                var binding=getBinding<ItemAnnotationListBinding>()
                 for (i in 0 until  mDatabind.llShowBetList.models!!.size) {
                     (mDatabind.llShowBetList.models!![i] as SelectAnnotationBean).select=false
+                    MyGameManager.noteList[i].select=false
                 }
                 (mDatabind.llShowBetList.models!![modelPosition] as SelectAnnotationBean).select=true
+                MyGameManager.noteList[modelPosition].select=true
 
 
-
-                var binding=getBinding<ItemAnnotationListBinding>()
+                selectImageView=binding.ivShowBg
                 val location = IntArray(2)
                 binding.ivShowBg.getLocationInWindow(location)
-
-              var  viewX = location[0]
+                var  viewX = location[0]
                 var viewY= location[1]
-                Log.i("CCCCCCCCcc","=====x==="+viewX)
-                Log.i("CCCCCCCCcc","=====y==="+viewY)
 
             }
 
-        }.addModels(listNew)
+        }.addModels(MyGameManager.noteList)
 
 
         var list=ArrayList<HistoryResultBean>()
@@ -294,15 +293,12 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
             for (i in 0 until  mDatabind.rvHomeHistory.models!!.size) {
                 var viewHolder=  mDatabind.rvHomeHistory.findViewHolderForLayoutPosition(i)
                 if(viewHolder!=null){
-
                     (mDatabind.rvHomeHistory.models!![i] as HistoryResultBean).isShow=false
                     var  llShowDice= viewHolder!!.itemView.findViewById<LinearLayout>(R.id.llShowDice)
                     //llShowDice.height.toFloat()高度是205
-
                     if(isAdd){
                         initia=llShowDice.height
                         isAdd=false
-
                     }
                     val anim = ObjectAnimator.ofFloat(llShowDice, "translationY", 0f, llShowDice.height.toFloat())
                     anim.duration = 500 // 设置动画持续时间
@@ -312,7 +308,6 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
                         override fun onAnimationEnd(animation: Animator ) {
                             super.onAnimationEnd(animation)
                             llShowDice.visibility = View.GONE
-
                         }
                     })
                 }else{
@@ -322,9 +317,6 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
 
 
             }
-
-
-
         }else{
             mDatabind.ivHomeRotation.rotation=0f
             isShowResult=!isShowResult
@@ -332,7 +324,6 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
                 var viewHolder=  mDatabind.rvHomeHistory.findViewHolderForLayoutPosition(i)
                 if(viewHolder!=null){
                     (mDatabind.rvHomeHistory.models!![i] as HistoryResultBean).isShow=true
-//                            mDatabind.rvHomeHistory.bindingAdapter.notifyItemChanged(i)
                     var  llShowDice= viewHolder!!.itemView.findViewById<LinearLayout>(R.id.llShowDice)
                     llShowDice.visibility = View.VISIBLE
                     llShowDice.translationY =initia.toFloat()
@@ -353,7 +344,6 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
 
                 }else{
                     (mDatabind.rvHomeHistory.models!![i] as HistoryResultBean).isShow=true
-//                             mDatabind.rvHomeHistory.bindingAdapter.notifyItemChanged(i)
                 }
 
 
@@ -375,6 +365,7 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
      * 执行右上角的动画
      */
     fun startRightTopAnimation(x:Float,y:Float){
+
         var num:Int=0
         var viewX:Int=0
         var viewY:Int=0
@@ -385,27 +376,56 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
                     break
                 }
         }
-        val itemCount = mDatabind.llShowBetList.adapter!!.itemCount
-        val layoutManager = mDatabind.llShowBetList.layoutManager
-        for (i in 0 until itemCount) {
-            if(num==i){
-                val view = layoutManager!!.findViewByPosition(i)
-                val location = IntArray(2)
-                view?.getLocationInWindow(location)
-//                viewX = location[0]
-//                viewY= location[1]
 
-                viewX = location[0] + view!!.width / 2-dp2px(25)
-                viewY = location[1]
+        val itemCount = mDatabind.llShowBetList.adapter!!.itemCount
+        val layoutManager = mDatabind.llShowBetList.layoutManager as LinearLayoutManager
+        var finallyView:View?=null
+
+        for (i in 0 until itemCount) {
+            val view = layoutManager!!.findViewByPosition(i)
+            if(num==i){
+                finallyView=view
                 break
             }
 
         }
+        //判断选择的筹码是不是在屏幕外面
+        if(finallyView!=null){
+            val location = IntArray(2)
+            finallyView?.getLocationInWindow(location)
+            viewX = location[0] + finallyView!!.width / 2-dp2px(25)
+            viewY = location[1]
+
+        }else{
+            //第一个
+           var diyi= layoutManager.findFirstVisibleItemPosition()
+            var zui=layoutManager.findLastVisibleItemPosition()
+            var di=diyi-num
+            var hou=zui-num
+            //正数就是左边
+             if(di>0){
+                   finallyView = layoutManager!!.findViewByPosition(diyi)
+             val location = IntArray(2)
+            finallyView?.getLocationInWindow(location)
+             viewX = location[0] + finallyView!!.width / 2-dp2px(25)
+             viewY = location[1]
+             }else{
+                 //右边就是负数
+                   finallyView = layoutManager!!.findViewByPosition(zui)
+                 val location = IntArray(2)
+                 finallyView?.getLocationInWindow(location)
+                 viewX = location[0] + finallyView!!.width / 2-dp2px(25)
+                 viewY = location[1]
+             }
+
+        }
+
+
 //      一、创造出执行动画的主题---imageview
         //代码new一个imageview，图片资源是上面的imageview的图片
         // (这个图片就是执行动画的图片，从开始位置出发，经过一个抛物线（贝塞尔曲线），移动到购物车里)
         val goods = ImageView(this)
-        goods.setImageDrawable(selectImageView!!.drawable)
+        goods.setImageDrawable( ComputeDefault.getListImage(num,this))
         val params = RelativeLayout.LayoutParams(dp2px(32), dp2px(32))
         mDatabind.rlRoot.addView(goods, params)
 
@@ -431,8 +451,8 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
         //开始掉落的商品的起始点：商品起始点-父布局起始点+该商品图片的一半
 //        val startX: Float = (startLoc[0] - parentLocation[0] + selectImageView!!.width / 2).toFloat()
 //        val startY: Float = (startLoc[1] - parentLocation[1] + selectImageView!!.height / 2).toFloat()
-        val startX: Float =viewX.toFloat()
-        val startY: Float =viewY.toFloat()
+        val startX: Float =viewX.toFloat()+dp2px(12)
+        val startY: Float =viewY.toFloat()-dp2px(24)
 
         //商品掉落后的终点坐标：购物车起始点-父布局起始点+购物车图片的1/5
 //        val toX: Float = (endLoc[0] - parentLocation[0] +32).toFloat()

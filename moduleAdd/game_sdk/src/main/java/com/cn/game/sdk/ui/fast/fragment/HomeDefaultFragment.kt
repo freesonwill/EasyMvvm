@@ -12,18 +12,16 @@ import com.cn.game.sdk.appGameViewModel
 import com.cn.game.sdk.base.BaseGameFragment
 import com.cn.game.sdk.databinding.FragmentHomeDefaultBinding
 import com.cn.game.sdk.ui.fast.GameHomeActivity
+import com.cn.game.sdk.utils.ComputeDefault
+import com.cn.game.sdk.utils.MyGameManager
 import com.cn.game.sdk.view.MoneyOKView
+import com.drake.brv.utils.models
 import com.xcjh.base_lib.utils.dp2px
 import com.xcjh.base_lib.utils.view.clickNoRepeat
 
 class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultBinding>() {
     //显示类型的
     var type:Int=0
-    //右上角注区的位置
-    var rightTop = IntArray(2)
-    //右上角注区动画位置
-    var rightTopAnimation= IntArray(2)
-
     /**
      * 右上角注区的控件确定
      */
@@ -36,10 +34,33 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
         }
         //初始化右上角
         showRightTopMoney=MoneyOKView(requireContext())
+        showRightTopMoney.setMoneyOKClickListener(object :MoneyOKView.OnMoneyOKClickListener{
+            override fun onDelete() {
+
+                ComputeDefault.offRightTopTemporarily()
+                if(ComputeDefault.rightTopOk<=0){
+                    //判断控件是否加入了
+                    if (mDatabind.rlHomeRoot.indexOfChild(showRightTopMoney) != -1) {
+                        mDatabind.rlHomeRoot.removeView(showRightTopMoney)
+                    }
+                }else{
+                    showRightTopMoney.hiddenTop()
+                }
+
+
+            }
+
+            override fun onConfirm() {
+
+            }
+
+        })
 
         mDatabind.rlClick.setOnClickListener {
             Log.i("SSSSSSss","======"+it.x)
         }
+
+
 
 
         appGameViewModel.ceshEvent.observe(this){
@@ -65,8 +86,8 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
                     // 获取点击位置的坐标
                     val x = event.x
                     val y = event.y
-                    val rax=     event.rawX
-                    val ray=     event.rawY
+                    val rax= event.rawX
+                    val ray= event.rawY
                     // 获取 View 的边界
                     val left = v.left.toFloat()
                     val top = v.top.toFloat()
@@ -124,30 +145,54 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
     }
 
     private fun handleNonEdgeClick(x:Float,y:Float,rax:Float,ray:Float) {
-        if(rightTop[0]==0&&rightTop[1]==0){
-            rightTop[0]=x.toInt()
-            rightTop[1]=y.toInt()
+        //显示点击在Fragment的位置用于动画结束后显示
+        if(ComputeDefault.rightTop[0]==0&&ComputeDefault.rightTop[1]==0){
+            ComputeDefault.rightTop[0]=x.toInt()
+            ComputeDefault.rightTop[1]=y.toInt()
+            ComputeDefault.rightTopLast[0]=x.toInt()
+            ComputeDefault.rightTopLast[1]=y.toInt()
         }
-        if(rightTopAnimation[0]==0&&rightTopAnimation[1]==0){
-            rightTopAnimation[0]=rax.toInt()
-            rightTopAnimation[1]=ray.toInt()
+        //显示在屏幕的绝对位置,动画的位置
+        if(ComputeDefault.rightTopAnimation[0]==0&&ComputeDefault.rightTopAnimation[1]==0){
+            ComputeDefault.rightTopAnimation[0]=rax.toInt()
+            ComputeDefault. rightTopAnimation[1]=ray.toInt()
+            ComputeDefault.rightTopAnimationLast[0]=rax.toInt()
+            ComputeDefault. rightTopAnimationLast[1]=ray.toInt()
         }
+        var selectNum=0
+        for (i in 0 until   MyGameManager.noteList.size) {
+            if(MyGameManager.noteList[i].select){
+                selectNum=i
+                break
+            }
+        }
+        ComputeDefault.clickRightTopMoney(MyGameManager.noteList[selectNum].money)
+        showRightTopMoney.setShowMoney(ComputeDefault.getRightTopOwn())
 
 
+
+        //判断控件是否加入了
         if (mDatabind.rlHomeRoot.indexOfChild(showRightTopMoney) != -1) {
 
         } else {
-            // 动态添加的视图未成功添加到布局中
-            val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            mDatabind.rlHomeRoot.addView(showRightTopMoney, params)
-            showRightTopMoney.translationX = x
-            showRightTopMoney.translationY =y-requireContext().dp2px(52)
+            if(ComputeDefault.rightTop[0]!=0&&ComputeDefault.rightTop[1]!=0){
+                // 动态添加的视图未成功添加到布局中
+                val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                mDatabind.rlHomeRoot.addView(showRightTopMoney, params)
+                showRightTopMoney.translationX =  ComputeDefault.rightTop[0].toFloat()
+                showRightTopMoney.translationY =  ComputeDefault.rightTop[1].toFloat()-requireContext().dp2px(52)
+            }else{
+                // 动态添加的视图未成功添加到布局中
+                val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                mDatabind.rlHomeRoot.addView(showRightTopMoney, params)
+                showRightTopMoney.translationX = x
+                showRightTopMoney.translationY =y-requireContext().dp2px(52)
+            }
+
         }
 
+        (context as GameHomeActivity).startRightTopAnimation(ComputeDefault.rightTopAnimation[0].toFloat(),ComputeDefault.rightTopAnimation[1].toFloat())
 
-
-        (context as GameHomeActivity).startRightTopAnimation(rightTopAnimation[0].toFloat(),rightTopAnimation[1].toFloat())
-
-    }
+             }
 
     }

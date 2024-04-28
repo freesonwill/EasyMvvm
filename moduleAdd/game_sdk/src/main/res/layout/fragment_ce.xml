@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:clipChildren="false"
-    android:clipToPadding="false">
+   >
     <data>
     </data>
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/rlRoot"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="-10dp"
-        android:layout_marginTop="-10dp"> <!-- 设置足够高度 -->
-        <androidx.appcompat.widget.AppCompatButton
+        android:clipChildren="false"
+        android:clipToPadding="false"
+     > <!-- 设置足够高度 -->
+        <Button
             android:id="@+id/btnCeshi"
             android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_height="100dp"
             android:gravity="center"
-            android:background="@color/g_006ce4"
-            android:text="测试"/>
+            android:background="@color/g_006ce4" />
         <!-- 其他布局内容 -->
 
 
 
-    </RelativeLayout>
+    </LinearLayout>
 </layout>

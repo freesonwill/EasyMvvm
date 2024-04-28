@@ -10,6 +10,7 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.cn.game.sdk.MyGameApplication
 import com.cn.game.sdk.R
+import com.cn.game.sdk.bean.SelectAnnotationBean
 import com.cn.game.sdk.ui.fast.GameHomeActivity
 import com.cn.game.sdk.view.FastLogoView
 import com.cn.game.sdk.view.OpenResultView
@@ -17,7 +18,10 @@ import com.xcjh.app.event.AppGameViewModel
 
 @SuppressLint("StaticFieldLeak")
 object MyGameManager {
-    
+    /**
+     * 投注的钱
+     */
+    var noteList=ArrayList<SelectAnnotationBean>()
     /**
      * 快三的浮动View
      */
@@ -38,6 +42,21 @@ object MyGameManager {
         }
 
         return fastThreeView as FastLogoView
+    }
+
+    init {
+        noteList.add(SelectAnnotationBean( money = 10,select=true))
+        noteList.add(SelectAnnotationBean( money = 50))
+        noteList.add(SelectAnnotationBean( money = 100))
+        noteList.add(SelectAnnotationBean( money = 200))
+        noteList.add(SelectAnnotationBean( money = 500))
+        noteList.add(SelectAnnotationBean( money = 1000))
+        noteList.add(SelectAnnotationBean( money = 2000))
+        noteList.add(SelectAnnotationBean( money = 5000))
+        noteList.add(SelectAnnotationBean( money = 10000))
+        noteList.add(SelectAnnotationBean( money = 20000))
+        noteList.add(SelectAnnotationBean( money = 50000))
+        noteList.add(SelectAnnotationBean( money = 100000))
     }
 
     /**

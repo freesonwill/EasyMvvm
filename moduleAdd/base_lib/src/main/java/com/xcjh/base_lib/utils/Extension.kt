@@ -21,16 +21,19 @@ import androidx.fragment.app.*
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.adapter.FragmentViewHolder
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.xcjh.base_lib.R
 import com.xcjh.base_lib.utils.indicator.CommonPagerIndicator
 import net.lucode.hackware.magicindicator.MagicIndicator
+import net.lucode.hackware.magicindicator.ViewPagerHelper
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigator
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapter
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerIndicator
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerTitleView
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.ColorTransitionPagerTitleView
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.CommonPagerTitleView
 
 import java.math.RoundingMode
@@ -67,6 +70,9 @@ fun ViewPager.init(
 
     return this
 }
+
+
+
 
 fun MagicIndicator.bindViewPager2(
     viewPager: ViewPager2,
@@ -196,6 +202,9 @@ fun MagicIndicator.bindViewPager2(
     setVpPageChangeCallBack(this, viewPager, action)
 }
 
+
+
+
 private fun setVpPageChangeCallBack(
     magicIndicator: MagicIndicator,
     viewPager: ViewPager2,
@@ -249,8 +258,6 @@ fun ViewPager2.initActivity(
     isUserInputEnabled: Boolean = true,//是否可滑动
     sensitive: Int = 2//设置灵敏度
 ): ViewPager2 {
-
-
     this.isUserInputEnabled = isUserInputEnabled
     //设置适配器
     adapter = object : FragmentStateAdapter(acivity) {
@@ -259,11 +266,14 @@ fun ViewPager2.initActivity(
         override fun getItemId(position: Int): Long {
             return super.getItemId(position)
         }
+
+
     }
     setLm(this, sensitive)
     isSaveEnabled = false
     return this
 }
+
 
 /**
  * 设置灵敏度
@@ -277,6 +287,63 @@ fun setLm(viewPager2: ViewPager2, sensitive: Int = 2) {
     touchSlopField.isAccessible = true
     val touchSlop = touchSlopField.get(recyclerView) as Int
     touchSlopField.set(recyclerView, touchSlop * sensitive)
+}
+
+
+/*
+ * ViewPager + MagicIndicator 指示器
+ */
+fun MagicIndicator.bindViewPager(
+    viewPager: ViewPager,
+    mStringList: List<String> = arrayListOf(),
+    scrollEnable: Boolean = false,
+    action: (index: Int) -> Unit = {}
+) {
+    // viewPager.offscreenPageLimit = mStringList.size
+    val commonNavigator = CommonNavigator(context)
+    if (scrollEnable) {
+        commonNavigator.isSkimOver = true
+    } else {
+        commonNavigator.isAdjustMode = true
+    }
+    commonNavigator.adapter = object : CommonNavigatorAdapter() {
+
+        override fun getCount(): Int {
+            return mStringList.size
+        }
+
+        override fun getTitleView(context: Context, index: Int): IPagerTitleView {
+            return ColorTransitionPagerTitleView(context).apply {
+                //设置文本
+                text = mStringList[index].toHtml()
+                //字体大小
+                textSize = 14f
+                setTextBold(this, true)
+                // setBackgroundColor(ContextCompat.getColor(appContext, R.color.red_F7736D))
+                //未选中颜色
+                normalColor = ContextCompat.getColor(context, R.color.g_9696b8)
+                //选中颜色
+                selectedColor = ContextCompat.getColor(context, R.color.g_f7cf41)
+                //点击事件
+                setOnClickListener {
+                    viewPager.currentItem = index
+                    action.invoke(index)
+                }
+            }
+        }
+
+        override fun getIndicator(context: Context): IPagerIndicator {
+            return CommonPagerIndicator(context).apply {
+                mode = 0
+                // indicatorDrawable = ContextCompat.getDrawable(context, R.drawable.ic_select)
+            }
+        }
+
+    }
+    this.navigator = commonNavigator
+
+    //viewPager 绑定 navigator
+    ViewPagerHelper.bind(this, viewPager)
 }
 
 

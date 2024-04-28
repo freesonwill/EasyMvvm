@@ -82,4 +82,5 @@ dependencies {
     //指示器库
     api 'com.github.hackware1993:MagicIndicator:1.7.0'
     api 'com.github.liangjingkanji:BRV:1.5.8'
+
 }

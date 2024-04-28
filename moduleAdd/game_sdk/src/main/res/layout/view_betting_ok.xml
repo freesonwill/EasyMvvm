@@ -19,16 +19,19 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <com.cn.game.sdk.view.OutImageView
                 android:id="@+id/ivOff"
-                android:layout_width="31dp"
-                android:layout_height="25dp"
+                android:scaleType="centerCrop"
+                android:layout_width="29dp"
+                android:layout_height="23dp"
                 app:srcCompat="@drawable/icon_hong_off" />
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <com.cn.game.sdk.view.OutImageView
                 android:id="@+id/ivOk"
-                android:layout_width="31dp"
-                android:layout_height="25dp"
+                android:scaleType="centerCrop"
+                android:layout_width="29dp"
+                android:layout_height="23dp"
+                android:layout_marginLeft="@dimen/dp_5"
                 app:srcCompat="@drawable/icon_lv_ok" />
 
 
