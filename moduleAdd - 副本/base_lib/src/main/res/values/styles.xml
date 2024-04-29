@@ -1,0 +1,111 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.GoogleMix" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <!-- Primary brand color. -->
+           <item name="colorPrimary">@color/mColorPrimary</item>
+           <item name="colorPrimaryVariant">@color/mColorPrimaryDark</item>
+           <item name="colorOnPrimary">@color/white</item>
+           <!-- Secondary brand color. -->
+           <item name="colorSecondary">@color/mColorPrimary</item>
+           <item name="colorSecondaryVariant">@color/mColorPrimaryDark</item>
+           <item name="colorOnSecondary">@color/black</item>
+           <!-- Status bar color. -->
+           <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <!-- Customize your theme here. -->
+    </style>
+
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="android:textAllCaps">false</item>
+        <item name="colorPrimary">@color/blue_ed</item>
+        <item name="colorPrimaryDark">@color/blue_ed</item>
+        <item name="colorAccent">@color/mColorAccent</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Activity</item>
+    </style>
+
+    <!--Toolbar-->
+    <style name="actionBarStyle" parent="Widget.AppCompat.Toolbar">
+        <item name="contentInsetStart">0dp</item>
+        <item name="contentInsetEnd">0dp</item>
+    </style>
+    <!--启动页-->
+    <style name="Launcher" parent="Theme.AppCompat.Light.NoActionBar">
+       <!-- <item name="android:colorBackground">#D4EBF2</item>-->
+        <item name="android:windowBackground">@drawable/bg_about_us</item>
+        <item name="android:windowAnimationStyle">@style/Animation_Splash</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowLayoutInDisplayCutoutMode" tools:targetApi="o_mr1">shortEdges
+        </item>
+    </style>
+    <style name="AppTheme2" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+    </style>
+
+    <!-- SplashActivity theme. -->
+    <style name="SplashTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:colorBackground">#D4EBF2</item>
+    </style>
+    <style name="Animation_Splash" parent="@android:style/Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@anim/anim_scale_in</item>
+    </style>
+
+    <style name="TextInputWhiteStyle" parent="AppTheme">
+        <!--输入框提示字体色-->
+        <item name="android:textColorHint">#ffffff</item>
+        <!--输入框下划线默认颜色-->
+        <!--        <item name="colorControlNormal">@color/white</item>-->
+        <!--输入框下划线选中状态色-->
+        <item name="colorControlActivated">#ffffff</item>
+        <!--输入框光标颜色-->
+        <item name="colorControlHighlight">#ffffff</item>
+    </style>
+
+    <style name="TextInputThemeStyle" parent="AppTheme">
+        <!--输入框提示字体色-->
+        <!--        <item name="android:textColorHint">@color/white</item>-->
+        <!--输入框下划线默认颜色-->
+        <item name="colorControlNormal">@color/md_theme_red</item>
+        <!--输入框下划线选中状态色-->
+        <item name="colorControlActivated">@color/md_theme_red</item>
+        <!--输入框光标颜色-->
+        <item name="colorControlHighlight">@color/md_theme_red</item>
+    </style>
+
+    <!-- 筛选选择框自定义主题 -->
+    <style name="select_style">
+        <item name="android:layout_width">60dip</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">4dip</item>
+        <item name="android:layout_marginRight">4dip</item>
+        <item name="android:paddingTop">4dip</item>
+        <item name="android:paddingBottom">4dip</item>
+        <item name="android:background">@drawable/tag_tv_selector</item>
+        <item name="android:button">@null</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">@color/tag_text_color_selector</item>
+    </style>
+
+
+    <style name="TabLayoutTextStyle" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">@dimen/sp_12</item>
+        <item name="textAllCaps">false</item>
+    </style>
+
+    <style name="SwitchStyleClickable">
+        <item name="colorControlActivated">@color/md_theme_red</item>
+    </style>
+
+    <style name="loadDialogStyle">
+        <item name="android:windowBackground">@drawable/layout_corners_round_bg</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
+
+
+</resources>

@@ -1,0 +1,35 @@
+pluginManagement {
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+        google()
+        maven { url 'https://jitpack.io' }
+        maven { url 'https://repo1.maven.org/maven2/' }
+        maven { url 'https://developer.huawei.com/repo/' }
+        maven { url 'https://maven.aliyun.com/repository/central' }
+        maven { url 'https://maven.aliyun.com/repository/public/' }
+        //阿里云jcenter仓库
+        maven { url 'https://maven.aliyun.com/repository/jcenter' }
+        maven { url "https://s01.oss.sonatype.org/content/groups/public" }
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        mavenCentral()
+        google()
+        maven { url 'https://jitpack.io' }
+        maven { url 'https://repo1.maven.org/maven2/' }
+        maven { url 'https://developer.huawei.com/repo/' }
+        maven { url 'https://maven.aliyun.com/repository/public/' }
+        //阿里云jcenter仓库
+        maven { url 'https://maven.aliyun.com/repository/jcenter' }
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+    }
+}
+rootProject.name = "My Application"
+include ':app'
+include ':game_sdk'
+include ':base_lib'
+

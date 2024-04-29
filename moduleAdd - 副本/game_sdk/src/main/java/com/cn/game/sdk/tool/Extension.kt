@@ -1,4 +1,4 @@
-package com.xcjh.base_lib.utils
+package com.cn.game.sdk.tool
 
 import android.content.Context
 import android.content.res.ColorStateList
@@ -23,9 +23,9 @@ import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.adapter.FragmentViewHolder
 import androidx.viewpager2.widget.ViewPager2
+import com.cn.game.sdk.R
+import com.cn.game.sdk.tool.indicator.CommonPagerIndicator
 import com.google.android.material.tabs.TabLayout
-import com.xcjh.base_lib.R
-import com.xcjh.base_lib.utils.indicator.CommonPagerIndicator
 import net.lucode.hackware.magicindicator.MagicIndicator
 import net.lucode.hackware.magicindicator.ViewPagerHelper
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigator

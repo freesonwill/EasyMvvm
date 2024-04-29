@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="c_ffffff">#FFFFFF</color>
+    <color name="g_141624">#141624</color>
+    <color name="g_e8e8e9">#E8E8E9</color>
+    <color name="g_700000">#E70000</color>
+    <color name="g_f3f3f3">#F3F3F3</color>
+    <color name="g_f7cf41">#F7CF41</color>
+    <color name="g_9696b8">#9696B8</color>
+    <color name="g_f8e0c4">#F8E0C4</color>
+    <color name="g_000000">#000000</color>
+    <color name="g_e0e0e0">#E0E0E0</color>
+    <color name="g_006ce4">#006CE4</color>
+    <color name="g_b83030">#B83030</color>
+    <color name="g_380000">#38000000</color>
+    <color name="g_8fe7fb">#8FE7FB</color>
+    <color name="g_b2ffff">#B2FFFFFF</color>
+    <color name="selectColor">#112233</color>
+    <color name="normalColor">#353A3E</color>
+</resources>

@@ -1,8 +1,6 @@
 package com.cn.game.sdk.view
 
 import android.content.Context
-import android.graphics.Rect
-import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,8 +10,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import com.cn.game.sdk.R
-import com.xcjh.base_lib.utils.myToast
-import com.xcjh.base_lib.utils.view.clickNoRepeat
+import com.cn.game.sdk.tool.myToast
 
 /**
  * 选择钱以后点击确定
@@ -32,7 +29,7 @@ class MoneyOKView @JvmOverloads constructor(context: Context, attrs: AttributeSe
     /**
      * 确定
      */
-    lateinit var ivOk: OutImageView
+//    lateinit var ivOk: OutImageView
     /**
      * 显示的钱
      */
@@ -70,12 +67,9 @@ class MoneyOKView @JvmOverloads constructor(context: Context, attrs: AttributeSe
         LayoutInflater.from(context).inflate(R.layout.view_betting_ok, this, true)
         llShowTop = findViewById(R.id.llShowTop)
         ivOff = findViewById(R.id.ivOff)
-        ivOk = findViewById(R.id.ivOk)
+//        ivOk = findViewById(R.id.ivOk)
         ivShowMoney = findViewById(R.id.ivShowMoney)
         ivShowBg = findViewById(R.id.ivShowBg)
-
-
-
         ivOff.setOnClickListener(object : OutImageView.OnClickListener  {
             override fun click() {
                 Log.i("SSSSSSSSSSSSSSSs","1111111111111")
@@ -83,19 +77,19 @@ class MoneyOKView @JvmOverloads constructor(context: Context, attrs: AttributeSe
 
             }
         })
-        ivOk.setOnClickListener(object : OutImageView.OnClickListener  {
-            override fun click() {
-                Log.i("SSSSSSSSSSSSSSSs","22222222222")
-                myToast("确定")
-
-            }
-        })
+//        ivOk.setOnClickListener(object : OutImageView.OnClickListener  {
+//            override fun click() {
+//                Log.i("SSSSSSSSSSSSSSSs","22222222222")
+//                myToast("确定")
+//
+//            }
+//        })
 //        //取消
 //        ivOff.setOnClickListener {
 //
 //
 //            myToast("Ssssssssssssssss")
-//            onMoneyOKClickListener?.onDelete()
+////            onMoneyOKClickListener?.onDelete()
 //          true
 //        }
 //        ivOff.setOnTouchListener { _, _ ->

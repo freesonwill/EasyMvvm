@@ -6,8 +6,7 @@ import android.widget.RelativeLayout
 import com.cn.game.sdk.base.BaseGameFragment
 import com.cn.game.sdk.databinding.FragmentCeBinding
 import com.cn.game.sdk.view.MoneyOKView
-import com.cn.game.sdk.view.OutImageView
-import com.xcjh.base_lib.utils.myToast
+import com.cn.game.sdk.tool.myToast
 
 
 class CeFragment  : BaseGameFragment<HomeDefaultVm, FragmentCeBinding>() {

@@ -14,7 +14,6 @@ import android.widget.Button
 import androidx.appcompat.widget.AppCompatImageView
 import com.bumptech.glide.Glide
 import com.example.myapplication.R
-import com.xcjh.base_lib.utils.getXXPermissions
 
 class CeShiActivity : AppCompatActivity() {
     var imnageShow: AppCompatImageView?=null
@@ -31,11 +30,11 @@ class CeShiActivity : AppCompatActivity() {
 
         btnInage.setOnClickListener {
 
-            getXXPermissions(this){
-                // 启动相册
-                val pickIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-                startActivityForResult(pickIntent, 10002)
-            }
+//            getXXPermissions(this){
+//                // 启动相册
+//                val pickIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+//                startActivityForResult(pickIntent, 10002)
+//            }
         }
 
     }

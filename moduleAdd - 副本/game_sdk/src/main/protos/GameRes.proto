@@ -1,0 +1,163 @@
+syntax = "proto3";
+package game.mod.proc.yf.proto.res;
+
+// 基本信息 (MDM_USER-SUB_USER_REQ__SIT => MDM_GAME-S2C_ENTER_INFO)
+message EnterInfo {
+    // 协议版号
+    string protoVersion = 1;
+    // 玩家资料
+    UserData self = 2; // 暂时放置 EnterRoom，以后会再移走。
+    // 玩家登入时间
+    int64 userLoginTime = 3;
+}
+
+// 登入后给玩家资料
+message UserData {
+    int64 userId = 1; // 用户id
+    int64 score = 2; // 身上的钱
+}
+
+// 直播间资讯 (MDM_GAME-C2S_ENTER_GROUP => MDM_GAME-S2C_GROUP_INFO)
+message GroupInfo {
+    // 小游戏资讯
+    repeated MiniGameBasicInfo miniGameBasicInfoList = 1;
+}
+
+message MiniGameBasicInfo {
+    // 小游戏 id
+    int32 miniGameId = 1;
+    // 当前所处阶段：1.下注 2.结算
+    int32 stage = 2;
+    // 当前阶段剩余时间倒计时(ms)
+    int32 countDown = 3;
+    // 小游戏名称
+    string name = 4;
+    // 开奖纪录(若进场时为结算阶段, 则包含此局结果)
+    Trend trend = 5;
+}
+
+// 开奖历史
+message Trend {
+    repeated RoundInfo roundInfoList = 1;
+}
+
+// 开奖资讯（通用格式定义，能符合未来新游戏的扩充）
+message RoundInfo {
+    // 期号
+    string roundId = 1;
+    // 牌面种类
+    int32 elementType = 2; // 1:扑克牌, 2:麻将牌, 3:天九牌, 4:骰子...
+    // 表演资讯
+    repeated ActorPerform performs = 3;
+    // 获胜注区列表：(内容数值定义：注区ID)
+    repeated int32 winAreaCodes = 4;
+}
+
+message ActorPerform {
+    // 牌面
+    repeated int32 elements = 1; // (根据elementType决定)
+    // 牌型
+    repeated int32 patterns = 2; // (根据miniGameId决定) 牛牛, 铁支
+    // 结果
+    repeated int32 performResult = 3; // (通用) 0:undefined, 1:胜, 2:败, 3:和
+}
+
+// 小游戏资讯 (MDM_GAME-C2S_ENTER_MINI_GAME => MDM_GAME-S2C_ENTER_MINI_GAME_INFO)
+message EnterMiniGameInfo {
+    // 小游戏 id
+    int32 miniGameId = 1;
+
+    repeated AreaType areaTypes = 2; // 注区分类表
+    repeated AreaInfo areaInfoList = 3; // 每个注区的设定
+
+    repeated AreaBet areaBets = 4; // 全部注区的下注信息(含自己)
+    repeated AreaBet myAreaBets = 5; // 我自己的下注信息
+}
+
+message AreaType{
+    int32 type = 1;
+    string typeName = 2;
+}
+
+// 注区资讯
+message AreaInfo {
+    int32 areaCode = 1; // 注区ID
+    string name = 2; // 注区名称
+    repeated int32 types = 3; // 所属注区类别
+    float odds = 5; // 赔率
+    int32 minLimit = 6; // 投注下限
+    int32 maxLimit = 7; // 投注上限
+}
+
+message AreaBet{
+    int32 areaCode = 1;
+    int32 betScore = 2;
+    int32 userCount = 3; // 下注的人数
+}
+
+// 开始新的一轮
+message BeginNewRound {
+    // 小游戏 id
+    int32 miniGameId = 1;
+    // 当前阶段剩余时间倒计时(ms)
+    int32 countDown = 2;
+    // 期号
+    string roundId = 3;
+}
+
+//----------------------------------------
+
+
+// 下注结果
+message MyMiniGameBetResult{
+    // 小游戏 id
+    int32 miniGameId = 1;
+    // 押注资讯
+    repeated BetResultInfo betResultInfoList = 2;
+}
+message BetResultInfo {
+    AreaBet areaBet = 1;
+    int32 result = 2;// OrderStatus
+}
+
+
+// 同步注区下注信息
+message SyncAreaBetInfo {
+    // 小游戏 id
+    int32 miniGameId = 1;
+    repeated AreaBet areaBets = 2;
+}
+
+// 各小游结算
+message BeginSettle {
+    // 小游戏 id
+    int32 miniGameId = 1;
+    // 当前阶段剩余时间倒计时(ms)
+    int32 countDown = 2;
+    // 开奖资讯
+    RoundInfo roundInfo = 3;
+    // 玩家自己押注输赢结果
+    repeated SettleResult mySettleResult = 4;
+}
+
+message SettleResult {
+    int32 areaCode = 1; // 注区ID
+    int32 betScore = 2; // 投注金額
+    int32 winScore = 3; // 輸贏金額(0不傳)
+}
+
+// 离开group
+message LeaveGroup{
+    string groupId = 1;
+}
+
+// 离开小游戏
+message LeaveMiniGames {
+    repeated int32 miniGameIds = 1; //
+}
+
+// 选择性刷新玩家属性
+message RefreshUserProperties {
+    //optional string groupId = 1;
+    optional int64 score = 2;
+}

@@ -10,18 +10,19 @@ import com.xcjh.base_lib.manager.KtxActivityManger
 import com.xcjh.base_lib.utils.loge
 import me.jessyan.autosize.utils.AutoSizeLog
 import me.jessyan.autosize.utils.AutoSizeLog.isDebug
-val appContext: Application by lazy { App.app }
+val appContext: Application by lazy { App.appGame }
 open class App : Application(), Application.ActivityLifecycleCallbacks, ViewModelStoreOwner {
     private lateinit var mAppViewModelStore: ViewModelStore
     private var mFactory: ViewModelProvider.Factory? = null
 
     companion object {
-        lateinit var app: Application
+        lateinit var appGame : Application
     }
+
 
     override fun onCreate() {
         super.onCreate()
-        app = this
+        appGame = this
 //        if (isDebug()) {
 //            // 这两行必须写在init之前，否则这些配置在init过程中将无效
 //            ARouter.openLog() // 打印日志

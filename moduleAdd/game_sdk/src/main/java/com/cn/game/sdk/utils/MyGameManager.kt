@@ -14,7 +14,7 @@ import com.cn.game.sdk.bean.SelectAnnotationBean
 import com.cn.game.sdk.ui.fast.GameHomeActivity
 import com.cn.game.sdk.view.FastLogoView
 import com.cn.game.sdk.view.OpenResultView
-import com.xcjh.app.event.AppGameViewModel
+import com.xcjh.base_lib.App.Companion.appGame
 
 @SuppressLint("StaticFieldLeak")
 object MyGameManager {
@@ -38,7 +38,6 @@ object MyGameManager {
         if(fastThreeView==null){
             mContext=context
             fastThreeView= FastLogoView(context)
-
         }
 
         return fastThreeView as FastLogoView
