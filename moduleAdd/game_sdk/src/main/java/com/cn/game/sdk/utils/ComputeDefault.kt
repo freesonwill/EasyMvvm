@@ -13,23 +13,23 @@ object ComputeDefault {
 
 
     /**
-     * 左上角注区的位置  动画结束后显示的位置
+     *  临时左上角注区的位置  动画结束后显示的位置  相对于控件的
      */
     var rightTop = IntArray(2)
 
     /**
-     * 左上角注区动画位置  动画的位置
+     *  临时左上角注区动画位置  动画的位置  屏幕的 位置
      */
     var rightTopAnimation= IntArray(2)
 
 
     /**
-     * 左上角注区上一次位置  动画结束后显示的位置
+     * 左上角注区上一次位置  动画结束后显示的位置  相对于控件的   要点击确定的时候保存
      */
     var rightTopLast= IntArray(2)
 
     /**
-     * 左上角注区动画上一次位置  动画的位置
+     * 左上角注区动画上一次位置  动画的位置     屏幕的 位置  要点击确定的时候保存
      */
     var rightTopAnimationLast= IntArray(2)
 
@@ -52,7 +52,7 @@ object ComputeDefault {
 
 
     /**
-     * 点击右上角注区的钱
+     * 点击左上角注区的钱
      */
     fun  clickRightTopMoney(money:Int){
         //加上钱
@@ -61,14 +61,14 @@ object ComputeDefault {
     }
 
     /**
-     * 获取右上角临时和上一次确定的总数
+     * 获取左上角临时和上一次确定的总数
      */
     fun getRightTopOwn():Int{
         return  rightTopTemporarily+rightTopOk
     }
 
     /**
-     * 关闭右上角临时的钱
+     * 关闭左上角临时的钱
      */
     fun offRightTopTemporarily(){
         rightTopTemporarily=0

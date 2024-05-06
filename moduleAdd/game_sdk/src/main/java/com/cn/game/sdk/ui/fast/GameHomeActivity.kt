@@ -7,7 +7,6 @@ import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.graphics.Path
 import android.graphics.PathMeasure
-import android.os.Build
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
@@ -15,7 +14,6 @@ import android.view.animation.LinearInterpolator
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
-import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -43,7 +41,6 @@ import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
-import com.lxj.xpopup.core.BubbleAttachPopupView
 import com.xcjh.base_lib.utils.dp2px
 import com.xcjh.base_lib.utils.view.clickNoRepeat
 
@@ -404,7 +401,7 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
     /**
      * 执行右上角的动画
      */
-    fun startRightTopAnimation(x:Float,y:Float){
+    fun startRightTopAnimation(x:Float,y:Float,screenWidth:Int=0,screenHeight :Int=0){
 
         var num:Int=0
         var viewX:Int=0
@@ -476,16 +473,16 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
         mDatabind.rlRoot.getLocationInWindow(parentLocation)
 
         //得到商品图片的坐标（用于计算动画开始的坐标）
-
-        //得到商品图片的坐标（用于计算动画开始的坐标）
         val startLoc = IntArray(2)
         startLoc[0]=viewX
         startLoc[0]=viewY
 
-        //得到购物车图片的坐标(用于计算动画结束后的坐标)
+        //得到购物车图片的坐标(用于计算动画结束后的坐标)  动画结束的位置
         val endLoc = IntArray(2)
         endLoc[0]=x.toInt()
         endLoc[1]=y.toInt()
+
+
 
 //        三、正式开始计算动画开始/结束的坐标
         //开始掉落的商品的起始点：商品起始点-父布局起始点+该商品图片的一半
