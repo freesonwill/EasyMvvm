@@ -83,14 +83,12 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
 
 
 
-    @RequiresApi(Build.VERSION_CODES.M)
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         overridePendingTransition(R.anim.slide_up, R.anim.slide_down)
-
         supportActionBar?.hide()
-        // 设置状态栏颜色为透明
-        window.statusBarColor = getColor(android.R.color.transparent)
+        // 设置状态栏颜色为透明getColor(android.R.color.transparent)
+        window.statusBarColor = ContextCompat.getColor(this,android.R.color.transparent)
           homeDefaultFragment = HomeDefaultFragment()
         val basketball = Bundle().apply {
             putInt("type",0)

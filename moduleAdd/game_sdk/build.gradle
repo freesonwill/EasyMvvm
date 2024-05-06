@@ -30,6 +30,7 @@ android {
         }
 
     }
+    apply plugin: 'com.android.library'
 
     buildTypes {
         release {
