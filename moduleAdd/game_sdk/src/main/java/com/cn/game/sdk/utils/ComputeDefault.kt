@@ -13,33 +13,33 @@ object ComputeDefault {
 
 
     /**
-     * 右上角注区的位置  动画结束后显示的位置
+     * 左上角注区的位置  动画结束后显示的位置
      */
     var rightTop = IntArray(2)
 
     /**
-     * 右上角注区动画位置  动画的位置
+     * 左上角注区动画位置  动画的位置
      */
     var rightTopAnimation= IntArray(2)
 
 
     /**
-     * 右上角注区上一次位置  动画结束后显示的位置
+     * 左上角注区上一次位置  动画结束后显示的位置
      */
     var rightTopLast= IntArray(2)
 
     /**
-     * 右上角注区动画上一次位置  动画的位置
+     * 左上角注区动画上一次位置  动画的位置
      */
     var rightTopAnimationLast= IntArray(2)
 
     /**
-     * 用于保存默认右上角的临时钱   如果当前结束了要清空
+     * 用于保存默认左上角的临时钱   如果当前结束了要清空
      */
     var rightTopTemporarily:Int=0
 
     /**
-     * 用于保存右上角的确定的钱  如果当前结束了要清空
+     * 用于保存左上角的确定的钱  如果当前结束了要清空
      */
     var rightTopOk:Int=0
 

@@ -7,17 +7,14 @@ import android.os.Looper
 import androidx.lifecycle.*
 import com.cn.game.sdk.ToastUtli
 import com.cn.game.sdk.common.GameResCode
-import com.cn.game.sdk.game.GameData
 import com.cn.game.sdk.game.GameService
 import com.cn.game.sdk.game.GameServiceKuaikt
 import com.cn.game.sdk.game.GameServiceBack
 import com.cn.game.sdk.net.ApiComService.Companion.WEB_SOCKET_URL
-import com.xcjh.app.websocket.WebSocketAction
+import com.xcjh.app.websocket.WebGameSocketAction
 import com.xcjh.base_lib.utils.*
 import game.common.proto.ClientReq
-import game.common.proto.ClientRes
 import game.common.proto.ClientRes.ErrorMessage
-import game.mod.proc.yf.proto.res.GameRes.EnterInfo
 import kotlinx.coroutines.*
 import org.java_websocket.enums.ReadyState
 import java.lang.Runnable
@@ -139,7 +136,7 @@ class MyWsManager private constructor(private val mContext: Context) {
         if (receiver == null) {
             receiver = ChatMessageReceiver()
         }
-        val filter = IntentFilter(WebSocketAction.WEB_ACTION)
+        val filter = IntentFilter(WebGameSocketAction.WEB_ACTION)
         mContext.registerReceiver(receiver, filter)
     }
     private inner class ChatMessageReceiver : BroadcastReceiver() {
