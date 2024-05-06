@@ -24,19 +24,19 @@
             <com.cn.game.sdk.view.OutImageView
                 android:id="@+id/ivOff"
                 android:scaleType="centerCrop"
-                android:layout_width="30dp"
-                android:layout_height="43dp"
-                android:background="@color/g_b83030"
+                android:layout_width="29dp"
+                android:layout_height="23dp"
+                app:srcCompat="@drawable/icon_hong_off"
              />
 <!--   app:srcCompat="@drawable/icon_hong_off" -->
-<!--            <com.cn.game.sdk.view.OutImageView-->
-<!--                android:id="@+id/ivOk"-->
-<!--                android:scaleType="centerCrop"-->
-<!--                android:layout_width="59dp"-->
-<!--                android:layout_height="43dp"-->
-<!--                android:layout_marginLeft="@dimen/dp_5"-->
-<!--                android:background="@color/g_006ce4"-->
-<!--                 />-->
+            <com.cn.game.sdk.view.OutImageView
+                android:id="@+id/ivOk"
+                android:scaleType="centerCrop"
+                android:layout_width="29dp"
+                android:layout_height="23dp"
+                app:srcCompat="@drawable/icon_lv_ok"
+                android:layout_marginLeft="@dimen/dp_5"
+                 />
 <!--app:srcCompat="@drawable/icon_lv_ok"-->
 
         </LinearLayout>

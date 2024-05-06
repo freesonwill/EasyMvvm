@@ -45,9 +45,13 @@ public class FastLogoView @JvmOverloads constructor(context: Context, attrs: Att
         }
         //点击事件
         llFastClick.clickNoRepeat {
-            val options = ActivityOptions.makeCustomAnimation(context, R.anim.slide_up, 0)
+            val options = ActivityOptions.makeCustomAnimation(context, R.anim.slide_up, R.anim.slide_down)
             var inagte= Intent(context, GameHomeActivity::class.java)
             startActivity(context,inagte,options.toBundle())
+
+//            var inagte= Intent(context, GameHomeActivity::class.java)
+//            context.startActivity(inagte)
+
 //            var inagte= Intent(context, CeshiSdkActivity::class.java)
 //            context.startActivity(inagte)
 //            onFastLogoClickListener?.onButtonClick()

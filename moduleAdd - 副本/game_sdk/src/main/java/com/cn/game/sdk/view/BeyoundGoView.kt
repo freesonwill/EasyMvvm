@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
 import com.cn.game.sdk.R
-import com.xcjh.base_lib.utils.myToast
+import com.cn.game.sdk.tool.myToast
 
 class BeyoundGoView  @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, null, defStyleAttr) {
     /**

@@ -1,20 +1,16 @@
 package com.cn.game.sdk.view
 
 import android.content.Context
-import android.graphics.Rect
-import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import com.cn.game.sdk.R
-import com.xcjh.base_lib.utils.myToast
-import com.xcjh.base_lib.utils.view.clickNoRepeat
+import com.cn.game.sdk.tool.myToast
 
 /**
  * 选择钱以后点击确定

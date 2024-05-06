@@ -36,5 +36,13 @@
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowActionBar">false</item>
+        <item name="android:windowAnimationStyle">@style/CustomWindowAnimation</item>
+    </style>
+<!--Animation.Activity-->
+
+
+    <style name="CustomWindowAnimation">
+        <item name="android:windowEnterAnimation">@anim/slide_up</item>
+        <item name="android:windowExitAnimation">@anim/slide_down</item>
     </style>
 </resources>

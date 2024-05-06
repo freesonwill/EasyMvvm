@@ -86,6 +86,7 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
     @RequiresApi(Build.VERSION_CODES.M)
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
+        overridePendingTransition(R.anim.slide_up, R.anim.slide_down)
 
         supportActionBar?.hide()
         // 设置状态栏颜色为透明
@@ -189,7 +190,7 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             // 在这里执行你想要的操作，比如关闭当前活动
             finish();
-            overridePendingTransition(0,  R.anim.slide_down)
+            overridePendingTransition(R.anim.slide_up,  R.anim.slide_down)
             return true; // 返回 true 表示事件已经处理，不会继续传递
         }
 

@@ -1,15 +1,5 @@
 package com.xcjh.app.websocket
 
-import android.annotation.SuppressLint
-import android.app.Activity
-import android.content.*
-import android.content.Context.BIND_AUTO_CREATE
-import android.os.IBinder
-
-import com.xcjh.base_lib.Constants
-import com.xcjh.base_lib.appContext
-import com.xcjh.base_lib.utils.*
-
 
 /**
  * @author zobo101

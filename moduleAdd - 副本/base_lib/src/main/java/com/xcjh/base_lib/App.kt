@@ -19,6 +19,7 @@ open class App : Application(), Application.ActivityLifecycleCallbacks, ViewMode
         lateinit var appGame : Application
     }
 
+
     override fun onCreate() {
         super.onCreate()
         appGame = this

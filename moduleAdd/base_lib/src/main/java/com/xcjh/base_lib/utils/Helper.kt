@@ -9,6 +9,8 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Picture
 import android.net.Uri
+import android.os.Handler
+import android.os.Looper
 import android.provider.MediaStore
 import android.provider.Settings
 import android.renderscript.Allocation
@@ -21,6 +23,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
@@ -44,24 +47,48 @@ import java.util.*
  * 任务完成提示
  * isDeep是否是深色模式，默认是浅色，当isDeep=true的时候是深色界面使用
  */
-fun myToast(whiteStr: String?, yellowStr: String? = null) {
-    val view: View = LayoutInflater.from(appContext).inflate(R.layout.view_toast_my_task, null)
-    val tvMsg = view.findViewById<View>(R.id.tvToast) as TextView
-    SpanUtil.create()
-        .addForeColorSection(whiteStr, ContextCompat.getColor(tvMsg.context, R.color.white))
-        .addForeColorSection(
-            yellowStr ?: "",
-            ContextCompat.getColor(tvMsg.context, R.color.successColor)
-        )
-        .showIn(tvMsg) //显示到控件TextView中
-    val toast = Toast(appContext)
-    // toast.setGravity(Gravity.BOTTOM or Gravity.CENTER, 0, DisplayUtils.dp2px(50f))
-    toast.setGravity( Gravity.CENTER, 0,0)
-//    toast.duration = Toast.LENGTH_LONG
-    toast.duration = Toast.LENGTH_SHORT
-    toast.view = view
-    toast.show()
+@SuppressLint("WrongConstant", "MissingInflatedId")
+fun myToast(whiteStr: String?, yellowStr: String? = null,isDeep:Boolean=false,gravity:Int=Gravity.CENTER) {
+    Handler(Looper.getMainLooper()).post {
+        val view: View = LayoutInflater.from(appContext).inflate(R.layout.view_toast_my_task, null)
+        val tvMsg = view.findViewById<View>(R.id.tvToast) as TextView
+        val llToastBe = view.findViewById<View>(R.id.llToastBe) as LinearLayout
+        var txtColor=ContextCompat.getColor(tvMsg.context, R.color.white)
+        if(isDeep){
+            txtColor=ContextCompat.getColor(tvMsg.context, R.color.white)
+            llToastBe.background=ContextCompat.getDrawable(llToastBe.context,R.drawable.shape_4_ffffff)
+        }
+        SpanUtil.create()
+            .addForeColorSection(whiteStr, txtColor)
+            .addForeColorSection(
+                yellowStr ?: "",
+                ContextCompat.getColor(tvMsg.context, R.color.successColor)
+            )
+            .showIn(tvMsg) //显示到控件TextView中
+        val toast = Toast(appContext)
+        // toast.setGravity(Gravity.BOTTOM or Gravity.CENTER, 0, DisplayUtils.dp2px(50f))
+        toast.setGravity( gravity, 0,200)
+        toast.duration = 5000
+        toast.view = view
+        toast.show()
+    }
+    /* val view: View = LayoutInflater.from(appContext).inflate(R.layout.view_toast_my_task, null)
+     val tvMsg = view.findViewById<View>(R.id.tvToast) as TextView
+     SpanUtil.create()
+         .addForeColorSection(whiteStr, ContextCompat.getColor(tvMsg.context, R.color.white))
+         .addForeColorSection(
+             yellowStr ?: "",
+             ContextCompat.getColor(tvMsg.context, R.color.successColor)
+         )
+         .showIn(tvMsg) //显示到控件TextView中
+     val toast = Toast(appContext)
+     // toast.setGravity(Gravity.BOTTOM or Gravity.CENTER, 0, DisplayUtils.dp2px(50f))
+     toast.setGravity( Gravity.CENTER, 0,0)
+     toast.duration = Toast.LENGTH_LONG
+     toast.view = view
+     toast.show()*/
 }
+
 
    /* val view: View = LayoutInflater.from(appContext).inflate(R.layout.view_toast_my_task, null)
     val tvMsg = view.findViewById<View>(R.id.tvToast) as TextView

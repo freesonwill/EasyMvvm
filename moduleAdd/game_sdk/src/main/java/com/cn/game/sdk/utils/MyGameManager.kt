@@ -73,7 +73,7 @@ object MyGameManager {
 
 
     fun  setToast(context: Context){
-        val options = ActivityOptions.makeCustomAnimation(context, R.anim.slide_up, 0)
+        val options = ActivityOptions.makeCustomAnimation(context, R.anim.slide_up, R.anim.slide_down)
         var inagte= Intent(context, GameHomeActivity::class.java)
         ContextCompat.startActivity(context, inagte, options.toBundle())
     }
