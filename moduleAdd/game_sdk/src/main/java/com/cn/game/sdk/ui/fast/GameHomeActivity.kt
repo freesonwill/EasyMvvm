@@ -10,10 +10,7 @@ import android.graphics.PathMeasure
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
-import android.view.animation.AccelerateInterpolator
-import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
-import android.view.animation.TranslateAnimation
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
@@ -85,6 +82,8 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
+
+
         // 获取屏幕的高度
         val screenHeight = resources.displayMetrics.heightPixels
 
@@ -444,9 +443,9 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
     private val mCurrentPosition = FloatArray(2)
 
     /**
-     * 执行右上角的动画
+     * 执行左上角的动画
      */
-    fun startRightTopAnimation(x:Float,y:Float,screenWidth:Int=0,screenHeight :Int=0){
+    fun startAnimation(x:Float, y:Float){
 
         var num:Int=0
         var viewX:Int=0
@@ -501,8 +500,6 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
              }
 
         }
-
-
 //      一、创造出执行动画的主题---imageview
         //代码new一个imageview，图片资源是上面的imageview的图片
         // (这个图片就是执行动画的图片，从开始位置出发，经过一个抛物线（贝塞尔曲线），移动到购物车里)

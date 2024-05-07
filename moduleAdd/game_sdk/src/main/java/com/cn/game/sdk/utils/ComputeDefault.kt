@@ -4,77 +4,32 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import androidx.core.content.ContextCompat
 import com.cn.game.sdk.R
+import com.cn.game.sdk.bean.BettingRecordBean
 
 /**
  * 计算默认的
  */
 object ComputeDefault {
-
-
     /**
-     *  临时左上角注区的位置  动画结束后显示的位置  相对于控件的
+     * 左上角
      */
-    var leftTop = IntArray(2)
-
+    var  leftTop= BettingRecordBean(viewXYTemporary= intArrayOf(0, 0),screenXYTemporary= intArrayOf(0, 0),
+                                       viewXYLast= intArrayOf(0, 0),screenXYLast= intArrayOf(0, 0))
     /**
-     *  临时左上角注区动画位置  动画的位置  屏幕的 位置
+     * 右上角
      */
-    var leftTopAnimation= IntArray(2)
-
-
-    /**
-     * 左上角注区上一次位置  动画结束后显示的位置  相对于控件的   要点击确定的时候保存
-     */
-    var leftTopLast= IntArray(2)
-    /**
-     * 左上角注区动画上一次位置  动画的位置     屏幕的 位置  要点击确定的时候保存
-     */
-    var leftTopAnimationLast= IntArray(2)
-
-    /**
-     * 用于保存默认左上角的临时钱   如果当前结束了要清空
-     */
-    var leftTopTemporarily:Int=0
-
-    /**
-     * 用于保存左上角的确定的钱  如果当前结束了要清空
-     */
-    var leftTopOk:Int=0
-
-    /**
-     * 用于保存上一轮确定的钱 ，这个是和leftTopOk一样的，但是这个在游戏结束后不清空
-     */
-    var leftTopLastOk:Int=0
-
-    //======
+    var  rightTop= BettingRecordBean(viewXYTemporary= intArrayOf(0, 0),screenXYTemporary= intArrayOf(0, 0),
+        viewXYLast= intArrayOf(0, 0),screenXYLast= intArrayOf(0, 0))
 
 
 
 
-
-
-
-    /**
-     * 点击左上角注区的钱
-     */
-    fun  clickRightTopMoney(money:Int){
-        //加上钱
-        leftTopTemporarily += money
-
-    }
-
-    /**
-     * 获取左上角临时和上一次确定的总数
-     */
-    fun getRightTopOwn():Int{
-        return  leftTopTemporarily+leftTopOk
-    }
 
     /**
      * 关闭左上角临时的钱
      */
     fun offRightTopTemporarily(){
-        leftTopTemporarily=0
+        leftTop.moneyTemporary=0
 
 
     }

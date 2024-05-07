@@ -105,7 +105,9 @@
                         </LinearLayout>
                     </LinearLayout>
                 </RelativeLayout>
+<!--  右上角-->
                 <RelativeLayout
+                    android:id="@+id/rlClickRightTop"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="match_parent">

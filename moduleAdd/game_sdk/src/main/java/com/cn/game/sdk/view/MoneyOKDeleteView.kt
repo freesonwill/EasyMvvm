@@ -13,9 +13,9 @@ import com.cn.game.sdk.R
 import com.cn.game.sdk.tool.myToast
 
 /**
- * 选择钱以后点击确定
+ * 选择钱以后点击确定不超出父类的
  */
-class MoneyOKView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, null, defStyleAttr) {
+class MoneyOKDeleteView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, null, defStyleAttr) {
     /**
      * 是否显示取消或者确定
      */
@@ -24,12 +24,12 @@ class MoneyOKView @JvmOverloads constructor(context: Context, attrs: AttributeSe
     /**
      * 取消
      */
-    lateinit var ivOff: OutImageView
+    lateinit var ivOff: AppCompatImageView
 
     /**
      * 确定
      */
-    lateinit var ivOk: OutImageView
+    lateinit var ivOk: AppCompatImageView
     /**
      * 显示的钱
      */
@@ -42,16 +42,16 @@ class MoneyOKView @JvmOverloads constructor(context: Context, attrs: AttributeSe
 
 
     // 声明一个变量来保存回调接口
-    private var onMoneyOKClickListener: OnMoneyOKClickListener? = null
+    private var onMoneyOKDeleteClickListener: MoneyOKDeleteClickListener? = null
 
-    fun setMoneyOKClickListener(listener: OnMoneyOKClickListener) {
-        onMoneyOKClickListener = listener
+    fun setMoneyOKClickListener(listener: MoneyOKDeleteClickListener) {
+        onMoneyOKDeleteClickListener = listener
     }
 
     /**
      * 点击事件
      */
-    interface OnMoneyOKClickListener {
+    interface MoneyOKDeleteClickListener {
         /**
          * 关闭
          */
@@ -64,42 +64,28 @@ class MoneyOKView @JvmOverloads constructor(context: Context, attrs: AttributeSe
     }
 
     init{
-        LayoutInflater.from(context).inflate(R.layout.view_betting_ok, this, true)
+        LayoutInflater.from(context).inflate(R.layout.view_betting_ok_delete, this, true)
         llShowTop = findViewById(R.id.llShowTop)
         ivOff = findViewById(R.id.ivOff)
-//        ivOk = findViewById(R.id.ivOk)
+        ivOk = findViewById(R.id.ivOk)
         ivShowMoney = findViewById(R.id.ivShowMoney)
         ivShowBg = findViewById(R.id.ivShowBg)
-        ivOff.setOnClickListener(object : OutImageView.OnClickListener  {
-            override fun click() {
-                Log.i("SSSSSSSSSSSSSSSs","1111111111111")
-                myToast("关闭")
 
-            }
-        })
-//        ivOk.setOnClickListener(object : OutImageView.OnClickListener  {
-//            override fun click() {
-//                Log.i("SSSSSSSSSSSSSSSs","22222222222")
-//                myToast("确定")
-//
-//            }
-//        })
-//        //取消
-//        ivOff.setOnClickListener {
-//
-//
-//            myToast("Ssssssssssssssss")
-////            onMoneyOKClickListener?.onDelete()
-//          true
-//        }
-//        ivOff.setOnTouchListener { _, _ ->
-//            // 在这里处理按钮的点击事件
-//            // 可以添加你想要执行的点击事件处理逻辑
-//            myToast("ddddddd")
-//            // 返回 true 表示点击事件已经被处理，不再传递到父布局
-//            // 这样就取消了 RelativeLayout 对点击事件的拦截
-//            true
-//        }
+
+        //取消
+        ivOff.setOnClickListener {
+
+
+            myToast("Ssssssssssssssss")
+            onMoneyOKDeleteClickListener?.onDelete()
+
+        }
+        //确定
+        ivOk.setOnClickListener {
+            myToast("AAA")
+            onMoneyOKDeleteClickListener?.onConfirm()
+
+        }
 
 //        ivOk.clickNoRepeat {
 //            onMoneyOKClickListener?.onConfirm()
