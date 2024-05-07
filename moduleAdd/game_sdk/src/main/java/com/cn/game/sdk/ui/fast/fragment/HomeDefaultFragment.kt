@@ -17,10 +17,6 @@ import com.cn.game.sdk.utils.MyGameManager
 import com.cn.game.sdk.view.MoneyOKView
 import com.xcjh.base_lib.utils.dp2px
 import com.xcjh.base_lib.utils.view.clickNoRepeat
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import me.jessyan.autosize.utils.AutoSizeUtils.dp2px
 
 
@@ -46,7 +42,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
             override fun onDelete() {
 
                 ComputeDefault.offRightTopTemporarily()
-                if(ComputeDefault.rightTopOk<=0){
+                if(ComputeDefault.leftTopOk<=0){
                     //判断控件是否加入了
                     if (mDatabind.rlHomeRoot.indexOfChild(showLeftTopMoney) != -1) {
                         mDatabind.rlHomeRoot.removeView(showLeftTopMoney)
@@ -193,8 +189,8 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
         //已经添加了
         if (mDatabind.rlClick.indexOfChild(showLeftTopMoney) != -1) {
             //显示在屏幕的绝对位置,动画的位置
-            if(ComputeDefault.rightTopAnimation[0]!=0&&ComputeDefault.rightTopAnimation[1]!=0){
-                (context as GameHomeActivity).startRightTopAnimation(ComputeDefault.rightTopAnimation[0].toFloat(),ComputeDefault.rightTopAnimation[1].toFloat())
+            if(ComputeDefault.leftTopAnimation[0]!=0&&ComputeDefault.leftTopAnimation[1]!=0){
+                (context as GameHomeActivity).startRightTopAnimation(ComputeDefault.leftTopAnimation[0].toFloat(),ComputeDefault.leftTopAnimation[1].toFloat())
             }
 //            mDatabind.rlClick.removeView(showLeftTopMoney)
 //            GlobalScope.launch(Dispatchers.Main) { // 使用主线程的调度器
@@ -225,27 +221,27 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
                     showLeftTopMoney.getLocationOnScreen(location)
                     val xOnScreen = location[0]
                     val yOnScreen = location[1]
-                    ComputeDefault.rightTopAnimation[0]=xOnScreen
-                    ComputeDefault. rightTopAnimation[1]=yOnScreen+dp2px(context,47f)
+                    ComputeDefault.leftTopAnimation[0]=xOnScreen
+                    ComputeDefault. leftTopAnimation[1]=yOnScreen+dp2px(context,47f)
                     // 打印位置信息
                     Log.d("Position", "xOnScreen: $xOnScreen, yOnScreen: $yOnScreen")
-                    (context as GameHomeActivity).startRightTopAnimation(ComputeDefault.rightTopAnimation[0].toFloat(),ComputeDefault.rightTopAnimation[1].toFloat())
+                    (context as GameHomeActivity).startRightTopAnimation(ComputeDefault.leftTopAnimation[0].toFloat(),ComputeDefault.leftTopAnimation[1].toFloat())
                     //显示点击在Fragment的位置用于动画结束后显示
-                    if(ComputeDefault.rightTop[0]==0&&ComputeDefault.rightTop[1]==0){
+                    if(ComputeDefault.leftTop[0]==0&&ComputeDefault.leftTop[1]==0){
                         val location = IntArray(2)
                         showLeftTopMoney.getLocationInWindow(location)
                         val layoutParams = showLeftTopMoney.layoutParams  as  (RelativeLayout.LayoutParams)
 //                        ComputeDefault.rightTop[0]=  layoutParams.leftMargin
 //                        ComputeDefault.rightTop[1]=layoutParams.topMargin
-                        ComputeDefault.rightTop[0]= showLeftTopMoney.left
-                        ComputeDefault.rightTop[1]=showLeftTopMoney.top
+                        ComputeDefault.leftTop[0]= showLeftTopMoney.left
+                        ComputeDefault.leftTop[1]=showLeftTopMoney.top
                     }
                 }
             })
 
 
 
-            if(ComputeDefault.rightTop[0]!=0&&ComputeDefault.rightTop[1]!=0){
+            if(ComputeDefault.leftTop[0]!=0&&ComputeDefault.leftTop[1]!=0){
                 // 动态添加的视图未成功添加到布局中
 //                val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 //                mDatabind.rlHomeRoot.addView(showLeftTopMoney, params)

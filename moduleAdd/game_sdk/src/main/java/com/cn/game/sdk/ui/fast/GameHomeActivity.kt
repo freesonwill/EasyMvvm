@@ -10,7 +10,10 @@ import android.graphics.PathMeasure
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
+import android.view.animation.AccelerateInterpolator
+import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
+import android.view.animation.TranslateAnimation
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
@@ -82,7 +85,24 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-        overridePendingTransition(R.anim.slide_up, R.anim.slide_down)
+        // 获取屏幕的高度
+        val screenHeight = resources.displayMetrics.heightPixels
+
+        // 设置动画的起始值和结束值（百分比）
+        val startPercentage = 1f // 从屏幕底部开始（百分之一处）
+        val endPercentage = 0f // 移动到屏幕顶部（百分之百处）
+
+        // 将百分比转换为实际像素值
+        val startY = screenHeight * startPercentage
+        val endY = screenHeight * endPercentage
+        // 设置进入动画
+        val enterAnimator = ObjectAnimator.ofFloat(findViewById(R.id.rlRoot), "translationY", startY, endY)
+        enterAnimator.duration =1700
+
+        // 启动进入动画
+        enterAnimator.start()
+
+//        overridePendingTransition(R.anim.slide_up, R.anim.slide_down)
         supportActionBar?.hide()
         // 设置状态栏颜色为透明getColor(android.R.color.transparent)
         window.statusBarColor = ContextCompat.getColor(this,android.R.color.transparent)
@@ -184,8 +204,33 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
         // 判断是否按下了返回按钮
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             // 在这里执行你想要的操作，比如关闭当前活动
-            finish();
-            overridePendingTransition(R.anim.slide_up,  R.anim.slide_down)
+            // 获取屏幕的高度
+            val screenHeight = resources.displayMetrics.heightPixels
+
+// 设置动画的起始值和结束值（百分比）
+            val startPercentage = 1f // 从屏幕底部开始（百分之百处）
+            val endPercentage = 0f // 移动到屏幕顶部（百分之零处）
+
+            // 将百分比转换为实际像素值
+            val startY = screenHeight * startPercentage
+            val endY = screenHeight * endPercentage
+//            val exitAnimator = ObjectAnimator.ofFloat(findViewById(R.id.rlRoot), "translationY", 0f, 1000f)
+            val exitAnimator = ObjectAnimator.ofFloat(findViewById(R.id.rlRoot), "translationY", endY,startY )
+//            exitAnimator.interpolator = AccelerateInterpolator()
+            exitAnimator.duration = 1000
+            // 添加动画监听器
+            exitAnimator.addListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    super.onAnimationEnd(animation)
+                    // 在动画结束时调用 finish() 方法关闭 Activity
+                    finish()
+                }
+            })
+            // 启动退出动画
+            exitAnimator.start()
+
+//            finish()
+//            overridePendingTransition(R.anim.slide_up,  R.anim.slide_down)
             return true  // 返回 true 表示事件已经处理，不会继续传递
         }
 
