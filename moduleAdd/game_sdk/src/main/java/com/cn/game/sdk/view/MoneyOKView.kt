@@ -13,6 +13,7 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import com.cn.game.sdk.R
 import com.cn.game.sdk.game.GameData
+import com.cn.game.sdk.ui.fast.fragment.HomeDefaultFragment
 import com.cn.game.sdk.view.CombinationOkView
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -21,7 +22,7 @@ import java.math.RoundingMode
  * 选择钱以后点击确定
  */
 @SuppressLint("ClickableViewAccessibility")
-class MoneyOKView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, null, defStyleAttr) {
+class MoneyOKView @JvmOverloads constructor(context: Context, parent: HomeDefaultFragment, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, null, defStyleAttr) {
     /**
      * 是否显示取消或者确定
      */
@@ -99,7 +100,7 @@ class MoneyOKView @JvmOverloads constructor(context: Context, attrs: AttributeSe
                 MotionEvent.ACTION_DOWN -> {
                     // 判断隐藏显示
                     Log.i("SSSSSSSSSSSSSssssss","[==========="+isShow)
-                    if (!isShow){
+                    if (!parent.isShowGou){
                         return@OnTouchListener false
                     }
                     val locationOff = IntArray(2)
@@ -210,7 +211,6 @@ class MoneyOKView @JvmOverloads constructor(context: Context, attrs: AttributeSe
     fun showTop(){
         llShowTop.visibility= View.VISIBLE
         isShow=true
-//        coOkView.setShowView(true)
     }
 
     fun showMoneyFormat(money:Int):String{

@@ -51,14 +51,14 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
      */
     lateinit var showCentreDateMoney: MoneyOKDeleteView
 
-
+    var isShowGou = false
 
     override fun initView(savedInstanceState: Bundle?) {
         arguments?.let {
             type = it.getInt("type")
         }
         //初始化左上角
-        showLeftTopMoney=MoneyOKView(requireContext())
+        showLeftTopMoney=MoneyOKView(requireContext(), this)
         showLeftTopMoney.setMoneyOKClickListener(object :MoneyOKView.OnMoneyOKClickListener{
             override fun onDelete() {
                 if(ComputeDefault.leftTop.moneyOkEmpty<=0){
@@ -68,6 +68,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
                     }
                 }
                 (context as GameHomeActivity).clickDelete()
+                setShowGouVal(false)
             }
 
             override fun onConfirm() {
@@ -77,12 +78,13 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
                  * 点击确定，把所有的临时钱赋值给确定钱然后要把没有确定的删除掉,在Activity处理所有的
                  */
                 (context as GameHomeActivity).clickOKBet()
+                setShowGouVal(false)
             }
 
         })
 
         //初始化右上角
-        showRightTopMoney=MoneyOKView(requireContext())
+        showRightTopMoney=MoneyOKView(requireContext(),this)
         showRightTopMoney.setMoneyOKClickListener(object :MoneyOKView.OnMoneyOKClickListener{
             override fun onDelete() {
 //                ComputeDefault.rightTop.moneyOkEmpty=20
@@ -93,6 +95,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
                     }
                 }
                 (context as GameHomeActivity).clickDelete()
+                setShowGouVal(false)
             }
 
             override fun onConfirm() {
@@ -101,6 +104,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
                  * 点击确定，把所有的临时钱赋值给确定钱然后要把没有确定的删除掉,在Activity处理所有的
                  */
                 (context as GameHomeActivity).clickOKBet()
+                setShowGouVal(false)
 
             }
 
@@ -462,25 +466,25 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
      * 0是左上  1是右上   2是左下  3是右下  4是中间
      */
     private fun clickAnimationIsHidden(num:Int ){
-        if(num!=0){
-            showLeftTopMoney.hiddenTop()
-
-        }
-        if(num!=1){
-            showRightTopMoney.hiddenTop()
-        }
-
-        if(num!=2){
-            showLeftBelowMoney.hiddenTop()
-        }
-        if(num!=3){
-            showRightBelowMoney.hiddenTop()
-        }
-        if(num!=4){
-            showCentreDateMoney.hiddenTop()
-        }
-
-
+        isShowGou = true
+//        if(num!=0){
+//            showLeftTopMoney.hiddenTop()
+//        }
+//        if(num!=1){
+//            showRightTopMoney.hiddenTop()
+//        }
+//
+//        if(num!=2){
+//            showLeftBelowMoney.hiddenTop()
+//        }
+//        if(num!=3){
+//            showRightBelowMoney.hiddenTop()
+//        }
+//        if(num!=4){
+//            showCentreDateMoney.hiddenTop()
+//        }
+//
+//
 
     }
 
@@ -563,13 +567,9 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
         showCentreDateMoney.setShowMoney(ComputeDefault.centreDate.moneyOkEmpty)
     }
 
-
-
-
-
-
-
-
+    fun setShowGouVal(show:Boolean){
+        isShowGou = show
+    }
 
 
 
