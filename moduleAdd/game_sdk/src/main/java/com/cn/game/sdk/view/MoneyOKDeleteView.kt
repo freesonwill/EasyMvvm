@@ -1,8 +1,8 @@
 package com.cn.game.sdk.view
 
+import android.R.attr.value
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
@@ -10,7 +10,9 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import com.cn.game.sdk.R
-import com.cn.game.sdk.tool.myToast
+import java.math.BigDecimal
+import java.math.RoundingMode
+
 
 /**
  * 选择钱以后点击确定不超出父类的
@@ -76,13 +78,11 @@ class MoneyOKDeleteView @JvmOverloads constructor(context: Context, attrs: Attri
         ivOff.setOnClickListener {
 
 
-            myToast("Ssssssssssssssss")
             onMoneyOKDeleteClickListener?.onDelete()
 
         }
         //确定
         ivOk.setOnClickListener {
-            myToast("AAA")
             onMoneyOKDeleteClickListener?.onConfirm()
 
         }
@@ -98,8 +98,8 @@ class MoneyOKDeleteView @JvmOverloads constructor(context: Context, attrs: Attri
      * 修改显示的钱
      */
     fun setShowMoney(money:Int){
-        llShowTop.visibility= View.VISIBLE
-        ivShowMoney.text = money.toString()
+        ivShowMoney.text =showMoneyFormat(money)
+
         if(money<=10){
             ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_ok_shi))
         }else if(money<=50){
@@ -129,13 +129,94 @@ class MoneyOKDeleteView @JvmOverloads constructor(context: Context, attrs: Attri
     }
 
     /**
+     * 保留几位小数并且是截取
+     */
+    fun Float.round(decimalPlaces: Int): Float {
+        if (decimalPlaces < 0) throw IllegalArgumentException()
+
+        val bigDecimal = BigDecimal(this.toString())
+        return bigDecimal.setScale(decimalPlaces, RoundingMode.DOWN).toFloat()
+    }
+
+    /**
      * 当已经确定钱不等于0的话就隐藏头部的
      */
     fun hiddenTop(){
-        llShowTop.visibility= View.GONE
+        llShowTop.visibility= View.INVISIBLE
     }
 
+    /**
+     * 显示头部的确定和删除
+     */
+    fun showTop(){
+        llShowTop.visibility= View.VISIBLE
+    }
+
+    /**
+     * 每次修改钱要格式化
+     */
+   fun showMoneyFormat(money:Int):String{
+       if(money<1000){
+           ivShowMoney.text = money.toString()
+       }else  if (money < 10000) {
+           if ((money % 1000) == 0) {
+               val resultNoDecimal = (money / 1000).toFloat().round(0)
+               return resultNoDecimal.toString()+"k"
+
+           } else if ((money % 100) == 0) {
+               val resultNoDecimal = (money / 1000).toFloat().round(1)
+               return   resultNoDecimal.toString()+"k"
+           }else{
+               val resultNoDecimal = (money / 1000).toFloat().round(2)
+               return   resultNoDecimal.toString()+"k"
+           }
+
+       }else{
+           val tenThousand = money / 10000 % 10
+           val thousand = money / 1000 % 10
+           val hundred = money / 100 % 10
+           val ten = money / 10 % 10
+           if (thousand > 0) { // 千位有值
+               if (hundred > 0) { // 百位有值
+                   if (ten > 0) { // 十位有值
+                       return  ("${tenThousand}.${thousand}${hundred}W+")
+                   } else { // 十位没有值
+                       return  ("${tenThousand}.${thousand}${hundred}W")
+                   }
+
+               } else { // 百位没有值
+                   if (ten > 0) { // 十位有值
+                       return  ("${tenThousand}.${thousand}W+")
+                   } else { // 十位没有值
+                       return  ("${tenThousand}.${thousand}W")
+                   }
+               }
+
+           }else{ // 千位没有值
+
+               if (hundred > 0) { // 百位有值
+                   if (ten > 0) { // 十位有值
+                       return  ("${tenThousand}.0${hundred}W+")
+                   } else { // 十位没有值
+                       return  ("${tenThousand}.0${hundred}W")
+
+                   }
+
+               }else { // 百位没有值
+                   if (ten > 0) { // 十位有值
+
+                       return  ("${tenThousand}W+")
+
+                   } else { // 十位没有值
+                       return  ("${tenThousand}W")
+                   }
+               }
+
+           }
 
 
+       }
+       return "${money}"
+   }
 
 }

@@ -22,7 +22,7 @@ import com.xcjh.base_lib.utils.SpanUtil
 @SuppressLint("WrongConstant", "MissingInflatedId")
 fun myToast(whiteStr: String?, yellowStr: String? = null,isDeep:Boolean=false,gravity:Int=Gravity.CENTER) {
     Handler(Looper.getMainLooper()).post {
-        val view: View = LayoutInflater.from(appContext)
+        val view: View = LayoutInflater.from(GamePartyLibraryInitializer.mAppContext)
             .inflate(com.xcjh.base_lib.R.layout.view_toast_my_task, null)
         val tvMsg = view.findViewById<View>(com.xcjh.base_lib.R.id.tvToast) as TextView
         val llToastBe = view.findViewById<View>(com.xcjh.base_lib.R.id.llToastBe) as LinearLayout
@@ -41,7 +41,7 @@ fun myToast(whiteStr: String?, yellowStr: String? = null,isDeep:Boolean=false,gr
                 ContextCompat.getColor(tvMsg.context, com.xcjh.base_lib.R.color.successColor)
             )
             .showIn(tvMsg) //显示到控件TextView中
-        val toast = Toast(appContext)
+        val toast = Toast(GamePartyLibraryInitializer.mAppContext)
         // toast.setGravity(Gravity.BOTTOM or Gravity.CENTER, 0, DisplayUtils.dp2px(50f))
         toast.setGravity(gravity, 0, 200)
         toast.duration = 5000

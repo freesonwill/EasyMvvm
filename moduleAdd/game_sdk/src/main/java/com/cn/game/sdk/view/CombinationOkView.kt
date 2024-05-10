@@ -1,0 +1,120 @@
+package com.cn.game.sdk.view
+
+import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Context
+import android.util.AttributeSet
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.view.View.OnTouchListener
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.appcompat.widget.AppCompatTextView
+import com.cn.game.sdk.R
+
+
+@SuppressLint("ClickableViewAccessibility")
+class CombinationOkView@JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : LinearLayout(context, attrs, defStyleAttr) {
+    private var activity: Activity? = null
+    /**
+     * 取消
+     */
+    lateinit var ivOff: AppCompatImageView
+
+    /**
+     * 确定
+     */
+    lateinit var ivOk: AppCompatImageView
+    lateinit var rlClickOff: RelativeLayout
+    lateinit var rlClickOk: RelativeLayout
+
+
+    init{
+        val inflater = LayoutInflater.from(context)
+      var rootView=  inflater.inflate(R.layout.combination_ok_view, this)
+
+        ivOff =rootView.findViewById(R.id.ivOff)
+        ivOk = rootView.findViewById(R.id.ivOk)
+        rlClickOff = rootView.findViewById(R.id.rlClickOff)
+        rlClickOk = rootView.findViewById(R.id.rlClickOk)
+        activity = context as Activity
+
+        activity!!.window.decorView.setOnTouchListener(OnTouchListener { v, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    val locationOff = IntArray(2)
+                    val locationOk = IntArray(2)
+                    rlClickOff.getLocationOnScreen(locationOff)
+                    rlClickOk.getLocationOnScreen(locationOk)
+                    val x = event.rawX
+                    val y = event.rawY
+                    // 判断触摸位置是否在 ivOff 区域内
+                    val isTouchOnOff = x >= locationOff[0] && x <= (locationOff[0] + ivOff.width)
+                            && y >= locationOff[1] && y <= (locationOff[1] + ivOff.height)
+
+                    // 判断触摸位置是否在 ivOk 区域内
+                    val isTouchOnOk = x >= locationOk[0] && x <= (locationOk[0] + ivOk.width)
+                            && y >= locationOk[1] && y <= (locationOk[1] + ivOk.height)
+
+                    if (isTouchOnOff) {
+                        Log.i("DDDDDDDDDDDDdd", "触摸在 ivOff 区域内")
+                        onCombinationOkClickListener?.onDelete()
+                        // 处理 ivOff 的点击逻辑
+                        return@OnTouchListener true
+                    } else if (isTouchOnOk) {
+                        Log.i("DDDDDDDDDDDDdd", "触摸在 ivOk 区域内")
+                        onCombinationOkClickListener?.onConfirm()
+                        // 处理 ivOk 的点击逻辑
+                        return@OnTouchListener true
+                    }
+
+
+                }
+            }
+            false
+        })
+        ivOff.setOnClickListener {
+            Log.i("AAAAAAA","============")
+        }
+
+
+
+
+    }
+
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        Log.i("CCCCCCCCCCCCCCc","=============")
+        return super.dispatchTouchEvent(ev)
+    }
+    // 声明一个变量来保存回调接口
+    private var onCombinationOkClickListener: CombinationOkClickListener? = null
+
+    fun setMoneyOKClickListener(listener: CombinationOkClickListener) {
+        onCombinationOkClickListener = listener
+    }
+
+    /**
+     * 点击事件
+     */
+    interface CombinationOkClickListener {
+        /**
+         * 关闭
+         */
+        fun onDelete()
+
+        /**
+         * 确定
+         */
+        fun onConfirm()
+    }
+
+
+
+
+}

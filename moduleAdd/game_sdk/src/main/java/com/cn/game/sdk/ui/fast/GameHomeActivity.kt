@@ -8,6 +8,7 @@ import android.animation.ValueAnimator
 import android.graphics.Path
 import android.graphics.PathMeasure
 import android.os.Bundle
+import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.animation.LinearInterpolator
@@ -19,6 +20,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cn.game.sdk.R
+import com.cn.game.sdk.adapter.CommonFragmentAdapter
 import com.cn.game.sdk.appGameViewModel
 import com.cn.game.sdk.base.BaseGameActivity
 import com.cn.game.sdk.bean.HistoryResultBean
@@ -36,8 +38,10 @@ import com.cn.game.sdk.ui.fast.fragment.SingleDiceFragment
 import com.cn.game.sdk.ui.fast.fragment.SumTotalFragment
 import com.cn.game.sdk.utils.ComputeDefault
 import com.cn.game.sdk.utils.MyGameManager
+import com.cn.game.sdk.view.CombinationOkView
 import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.models
+import com.drake.brv.utils.mutable
 import com.drake.brv.utils.setup
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
@@ -57,6 +61,9 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
     var pairsDiceFragment = PairsDiceFragment()
     //豹子
     var leopardFragment = LeopardFragment()
+    //是否执行关闭动画
+    var isExecuteClose:Boolean=true
+
 
 
 
@@ -69,21 +76,14 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
      * 判断所有的按钮是否可以点击
      */
     private  var isClick:Boolean=true
-    /**
-     * 选择的注码的View
-     */
-    private var  selectImageView: AppCompatImageView?=null
 
     var popup: BasePopupView?=null
     var bubbleAttach : CustomBubbleAttachPopup?=null
 
 
 
-
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-
-
         // 获取屏幕的高度
         val screenHeight = resources.displayMetrics.heightPixels
 
@@ -101,7 +101,6 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
         // 启动进入动画
         enterAnimator.start()
 
-//        overridePendingTransition(R.anim.slide_up, R.anim.slide_down)
         supportActionBar?.hide()
         // 设置状态栏颜色为透明getColor(android.R.color.transparent)
         window.statusBarColor = ContextCompat.getColor(this,android.R.color.transparent)
@@ -109,8 +108,16 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
         val basketball = Bundle().apply {
             putInt("type",0)
         }
+        mDatabind.rlRoot.bringToFront()
+        mDatabind.rlRoot.setOnTouchListener(View.OnTouchListener { v, event ->
+            if (v is CombinationOkView) {
+                Log.i("BBBBBBB","1111111111111")
 
-
+            }else{
+                Log.i("BBBBBBB","22222222222222")
+            }
+            return@OnTouchListener false
+        })
 
 //        mViewModel.getddd()
         mDatabind.ivHomeLogo.clickNoRepeat {
@@ -133,7 +140,8 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
             getString(R.string.g_home_tab_sum),
             getString(R.string.g_home_tab_double),
             getString(R.string.g_home_tab_leopard)))
-        mDatabind.viewPager.offscreenPageLimit =mFragList.size
+//        mDatabind.viewPager.offscreenPageLimit =mFragList.size
+
         mDatabind.magicIndicator.bindViewPager(mDatabind.viewPager,arrayListOf(
             getString(R.string.g_home_txt_default),
             getString(R.string.g_home_tab_single),
@@ -142,9 +150,30 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
             getString(R.string.g_home_tab_leopard)),scrollEnable=true){
 
         }
-
-
         mDatabind.viewPager.offscreenPageLimit = mFragList.size
+
+
+        mDatabind.txtHomeDefault.setOnClickListener {
+            select(0)
+            false
+        }
+        mDatabind.txtHomeSingle.setOnClickListener {
+            select(1)
+            false
+        }
+        mDatabind.txtHomeSum.setOnClickListener {
+            select(2)
+            false
+        }
+
+        mDatabind.txtHomeDouble.setOnClickListener {
+            select(3)
+            false
+        }
+        mDatabind.txtHomeLeopard.setOnClickListener {
+            select(4)
+            false
+        }
 
 
         adapter()
@@ -178,6 +207,8 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
 
 
          }
+        //获取当前余额
+        mDatabind.txtCurrentMoney.text=MyGameManager.currentMoney.toString()
 
 
     }
@@ -197,36 +228,53 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
     }
 
 
-
-
+    /**
+     * 关闭页面
+     */
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         // 判断是否按下了返回按钮
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            // 在这里执行你想要的操作，比如关闭当前活动
-            // 获取屏幕的高度
-            val screenHeight = resources.displayMetrics.heightPixels
+            //执行了一次就不能执行了
+            if(isExecuteClose){
+                //关闭的时候要把这个赋值为0选择
+                MyGameManager.noteList.forEach {
+                    it.select=false
 
-// 设置动画的起始值和结束值（百分比）
-            val startPercentage = 1f // 从屏幕底部开始（百分之百处）
-            val endPercentage = 0f // 移动到屏幕顶部（百分之零处）
-
-            // 将百分比转换为实际像素值
-            val startY = screenHeight * startPercentage
-            val endY = screenHeight * endPercentage
-//            val exitAnimator = ObjectAnimator.ofFloat(findViewById(R.id.rlRoot), "translationY", 0f, 1000f)
-            val exitAnimator = ObjectAnimator.ofFloat(findViewById(R.id.rlRoot), "translationY", endY,startY )
-//            exitAnimator.interpolator = AccelerateInterpolator()
-            exitAnimator.duration = 1000
-            // 添加动画监听器
-            exitAnimator.addListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator) {
-                    super.onAnimationEnd(animation)
-                    // 在动画结束时调用 finish() 方法关闭 Activity
-                    finish()
                 }
-            })
-            // 启动退出动画
-            exitAnimator.start()
+                MyGameManager.noteList[0].select=true
+                //清空临时的
+                clickDelete()
+                //======
+
+                // 在这里执行你想要的操作，比如关闭当前活动
+                // 获取屏幕的高度
+                val screenHeight = resources.displayMetrics.heightPixels
+
+                    // 设置动画的起始值和结束值（百分比）
+                val startPercentage = 1f // 从屏幕底部开始（百分之百处）
+                val endPercentage = 0f // 移动到屏幕顶部（百分之零处）
+
+                // 将百分比转换为实际像素值
+                val startY = screenHeight * startPercentage
+                val endY = screenHeight * endPercentage
+                  //            val exitAnimator = ObjectAnimator.ofFloat(findViewById(R.id.rlRoot), "translationY", 0f, 1000f)
+                val exitAnimator = ObjectAnimator.ofFloat(findViewById(R.id.rlRoot), "translationY", endY,startY )
+                    //            exitAnimator.interpolator = AccelerateInterpolator()
+                exitAnimator.duration = 1000
+                // 添加动画监听器
+                exitAnimator.addListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator) {
+                        super.onAnimationEnd(animation)
+                        // 在动画结束时调用 finish() 方法关闭 Activity
+                        finish()
+                    }
+                })
+                // 启动退出动画
+                exitAnimator.start()
+                isExecuteClose=false
+            }
+
+
 
 //            finish()
 //            overridePendingTransition(R.anim.slide_up,  R.anim.slide_down)
@@ -241,6 +289,9 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
 
     }
 
+    /**
+     * 投注的适配器
+     */
     fun adapter() {
         mDatabind.llShowBetList.layoutManager=LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false)
         mDatabind.llShowBetList.setup {
@@ -250,33 +301,142 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
                     R.layout.item_annotation_list -> {
                         var binding=getBinding<ItemAnnotationListBinding>()
                         val bean = _data as SelectAnnotationBean
-                        if(bean.select){
-                            selectImageView=binding.ivShowBg
-                        }
+
                         if(layoutPosition==0){
-                            binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_no_shi))
+                            if(MyGameManager.temporaryCurrentMoney<10){
+                                binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_shortage_shi))
+                            }else{
+                                if(bean.select){
+                                    binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_select_shi))
+                                }else{
+                                    binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_no_shi))
+                                }
+                            }
                         }else if(layoutPosition==1){
-                            binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_no_wushi))
+                            if(MyGameManager.temporaryCurrentMoney<50){
+                                binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_shortage_wushi))
+                            }else{
+                                if(bean.select){
+                                    binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_select_wushi))
+                                }else{
+                                    binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_no_wushi))
+                                }
+                            }
                         }else if(layoutPosition==2){
-                            binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_no_yibai))
+                            if(MyGameManager.temporaryCurrentMoney<100){
+                                binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_shortage_yibai))
+                            }else{
+                                if(bean.select){
+                                    binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_select_yibai))
+                                }else{
+                                    binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_no_yibai))
+                                }
+                            }
+
                         }else if(layoutPosition==3){
-                            binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_no_liangbai))
+
+                            if(MyGameManager.temporaryCurrentMoney<200){
+                                binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_shortage_liangbai))
+                            }else{
+
+                                if(bean.select){
+                                    binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_select_liangbai))
+                                }else{
+                                    binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_no_liangbai))
+                                }
+                            }
                         }else if(layoutPosition==4){
-                            binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_no_wubai))
+                            if(MyGameManager.temporaryCurrentMoney<500){
+                                binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_shortage_wubai))
+                            }else{
+
+                                if(bean.select){
+                                    binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_select_wubai))
+                                }else{
+                                    binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_no_wubai))
+                                }
+                            }
                         }else if(layoutPosition==5){
-                            binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_no_qian))
+                            if(MyGameManager.temporaryCurrentMoney<1000){
+                                binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_shortage_qian))
+                            }else{
+                                if(bean.select){
+                                    binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_select_qian))
+                                }else{
+                                    binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_no_qian))
+                                }
+                            }
+
                         }else if(layoutPosition==6){
-                            binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_no_liangqian))
+
+                            if(MyGameManager.temporaryCurrentMoney<2000){
+                                binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_shortage_liangqian))
+                            }else{
+
+                                if(bean.select){
+                                    binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_select_liangqian))
+                                }else{
+                                    binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_no_liangqian))
+                                }
+
+                            }
                         }else if(layoutPosition==7){
-                            binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_no_wuqian))
+
+                            if(MyGameManager.temporaryCurrentMoney<5000){
+                                binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_shortage_wuqian))
+                            }else{
+
+                                if(bean.select){
+                                    binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_select_wuqian))
+                                }else{
+                                    binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_no_wuqian))
+                                }
+                            }
                         }else if(layoutPosition==8){
-                            binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_no_yiwan))
+                            if(MyGameManager.temporaryCurrentMoney<10000){
+                                binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_shortage_yiwan))
+                            }else{
+                                if(bean.select){
+                                    binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_select_yiwan))
+                                }else{
+                                    binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_no_yiwan))
+                                }
+                            }
+
                         }else if(layoutPosition==9){
-                            binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_no_liangwan))
+                            if(MyGameManager.temporaryCurrentMoney<20000){
+                                binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_shortage_liangwan))
+                            }else{
+                                if(bean.select){
+                                    binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_select_liangwan))
+                                }else{
+                                    binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_no_liangwan))
+                                }
+                            }
                         }else if(layoutPosition==10){
-                            binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_no_wuwan))
+
+                            if(MyGameManager.temporaryCurrentMoney<50000){
+                                binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_shortage_wuwan))
+                            }else{
+                                if(bean.select){
+                                    binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_select_wuwan))
+                                }else{
+                                    binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_no_wuwan))
+                                }
+
+                            }
                         }else{
-                            binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_no_shiwan))
+                            if(MyGameManager.temporaryCurrentMoney<100000){
+                                binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_shortage_shiwan))
+                            }else{
+
+                                if(bean.select){
+                                    binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_select_shiwan))
+                                }else{
+                                    binding.ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_no_shiwan))
+                                }
+                            }
+
                         }
                     }
 
@@ -289,27 +449,20 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
                 for (i in 0 until  mDatabind.llShowBetList.models!!.size) {
                     (mDatabind.llShowBetList.models!![i] as SelectAnnotationBean).select=false
                     MyGameManager.noteList[i].select=false
+
                 }
                 (mDatabind.llShowBetList.models!![modelPosition] as SelectAnnotationBean).select=true
+                notifyDataSetChanged()
                 MyGameManager.noteList[modelPosition].select=true
-
-
-                selectImageView=binding.ivShowBg
-                val location = IntArray(2)
-                binding.ivShowBg.getLocationInWindow(location)
-                var  viewX = location[0]
-                var viewY= location[1]
 
             }
 
         }.addModels(MyGameManager.noteList)
-
-
         var list=ArrayList<HistoryResultBean>()
         for (c in 0 until 20) {
             list.add(HistoryResultBean())
         }
-
+        //历史结果
         mDatabind.rvHomeHistory.layoutManager=LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false)
         mDatabind.rvHomeHistory.setup {
 
@@ -435,6 +588,53 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
 
         }
     }
+
+    /**
+     *重点 点击了某个页面的叉叉会调用此方法，要把所有的页面的临时钱清空并且只显示确定了的钱的图片
+     * 通知所有子页面都要进行
+     */
+    fun clickDelete(){
+            //默认
+            //恢复实际的钱
+            MyGameManager.temporaryCurrentMoney=MyGameManager.currentMoney
+            homeDefaultFragment.deleteBet()
+            //删除后要设置钱
+            homeDefaultFragment.setAllShowViewMoney()
+
+            //刷新投注区适配器
+            mDatabind.llShowBetList.adapter!!.notifyDataSetChanged()
+    }
+
+    /**
+     * 重点 点击勾勾投注确定会调用此方法，要把所有的子页面的临时钱都要投注然后清空
+     */
+    fun clickOKBet(){
+        //点击确定后，购买成功后要把临时的总金额传递给实际的
+        MyGameManager.currentMoney= MyGameManager.temporaryCurrentMoney
+        //获取当前余额
+        mDatabind.txtCurrentMoney.text=MyGameManager.currentMoney.toString()
+        //默认的  点击确定后加入然后清空临时的钱
+        ComputeDefault.leftTop.moneyOkEmpty += ComputeDefault.leftTop.moneyTemporary
+        ComputeDefault.leftTop.moneyTemporary=0
+        ComputeDefault.rightTop.moneyOkEmpty+= ComputeDefault.rightTop.moneyTemporary
+        ComputeDefault.rightTop.moneyTemporary=0
+        ComputeDefault.leftBelow.moneyOkEmpty+= ComputeDefault.leftBelow.moneyTemporary
+        ComputeDefault.leftBelow.moneyTemporary=0
+        ComputeDefault.rightBelow.moneyOkEmpty+= ComputeDefault.rightBelow.moneyTemporary
+        ComputeDefault.rightBelow.moneyTemporary=0
+        ComputeDefault.centreDate.moneyOkEmpty+= ComputeDefault.centreDate.moneyTemporary
+        ComputeDefault.centreDate.moneyTemporary=0
+        //设置一下最新的钱
+        homeDefaultFragment.setAllShowViewMoney()
+        //判断现在哪些要展示在注区
+        homeDefaultFragment.deleteBet(false)
+
+        //刷新投注区适配器
+        mDatabind.llShowBetList.adapter!!.notifyDataSetChanged()
+
+    }
+
+
     private var mPathMeasure: PathMeasure? = null
 
     /**
@@ -443,9 +643,9 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
     private val mCurrentPosition = FloatArray(2)
 
     /**
-     * 执行左上角的动画
+     * 执行动画  isCentered如果是true就是可以超出父类的
      */
-    fun startAnimation(x:Float, y:Float){
+    fun startAnimation(x:Float, y:Float,isCentered:Boolean=false){
 
         var num:Int=0
         var viewX:Int=0
@@ -521,7 +721,13 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
 
         //得到购物车图片的坐标(用于计算动画结束后的坐标)  动画结束的位置
         val endLoc = IntArray(2)
-        endLoc[0]=x.toInt()
+        if(isCentered){
+            endLoc[0]=x.toInt()-dp2px(10)
+
+        }else{
+            endLoc[0]=x.toInt()+dp2px(10)
+        }
+
         endLoc[1]=y.toInt()
 
 
@@ -610,6 +816,68 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
 
     }
 
+    /**
+     * 判断当前余额是否支持投注,并且扣了临时的总金额的钱
+     */
+    fun isCanBetting() :Boolean{
+        for (i in 0 until  mDatabind.llShowBetList.models!!.size) {
+            if((mDatabind.llShowBetList.models!![i] as SelectAnnotationBean).select){
+                if(MyGameManager.temporaryCurrentMoney>=(mDatabind.llShowBetList.models!![i] as SelectAnnotationBean).money){
+                    MyGameManager.temporaryCurrentMoney=(MyGameManager.temporaryCurrentMoney-(mDatabind.llShowBetList.models!![i] as SelectAnnotationBean).money)
+                    mDatabind.llShowBetList.adapter!!.notifyDataSetChanged()
+                    return true
+
+                }else{
+
+                    return false
+                }
+
+                break
+            }
+        }
 
 
+        return false
+    }
+
+    fun select(num:Int){
+        if(num==0){
+            mDatabind.txtHomeDefault.setTextColor(ContextCompat.getColor(this,R.color.g_f7cf41))
+            mDatabind.txtHomeSingle.setTextColor(ContextCompat.getColor(this,R.color.g_9696b8))
+            mDatabind.txtHomeSum.setTextColor(ContextCompat.getColor(this,R.color.g_9696b8))
+            mDatabind.txtHomeDouble.setTextColor(ContextCompat.getColor(this,R.color.g_9696b8))
+            mDatabind.txtHomeLeopard.setTextColor(ContextCompat.getColor(this,R.color.g_9696b8))
+            mDatabind.viewPager.currentItem = num
+        }else if(num==1){
+            mDatabind.txtHomeDefault.setTextColor(ContextCompat.getColor(this,R.color.g_9696b8))
+            mDatabind.txtHomeSingle.setTextColor(ContextCompat.getColor(this,R.color.g_f7cf41))
+            mDatabind.txtHomeSum.setTextColor(ContextCompat.getColor(this,R.color.g_9696b8))
+            mDatabind.txtHomeDouble.setTextColor(ContextCompat.getColor(this,R.color.g_9696b8))
+            mDatabind.txtHomeLeopard.setTextColor(ContextCompat.getColor(this,R.color.g_9696b8))
+            mDatabind.viewPager.currentItem = num
+        }else if(num==2){
+            mDatabind.txtHomeDefault.setTextColor(ContextCompat.getColor(this,R.color.g_9696b8))
+            mDatabind.txtHomeSingle.setTextColor(ContextCompat.getColor(this,R.color.g_9696b8))
+            mDatabind.txtHomeSum.setTextColor(ContextCompat.getColor(this,R.color.g_f7cf41))
+            mDatabind.txtHomeDouble.setTextColor(ContextCompat.getColor(this,R.color.g_9696b8))
+            mDatabind.txtHomeLeopard.setTextColor(ContextCompat.getColor(this,R.color.g_9696b8))
+            mDatabind.viewPager.currentItem = num
+        }else if(num==3){
+            mDatabind.txtHomeDefault.setTextColor(ContextCompat.getColor(this,R.color.g_9696b8))
+            mDatabind.txtHomeSingle.setTextColor(ContextCompat.getColor(this,R.color.g_9696b8))
+            mDatabind.txtHomeSum.setTextColor(ContextCompat.getColor(this,R.color.g_9696b8))
+            mDatabind.txtHomeDouble.setTextColor(ContextCompat.getColor(this,R.color.g_f7cf41))
+            mDatabind.txtHomeLeopard.setTextColor(ContextCompat.getColor(this,R.color.g_9696b8))
+            mDatabind.viewPager.currentItem = num
+        }else if(num==4){
+            mDatabind.txtHomeDefault.setTextColor(ContextCompat.getColor(this,R.color.g_9696b8))
+            mDatabind.txtHomeSingle.setTextColor(ContextCompat.getColor(this,R.color.g_9696b8))
+            mDatabind.txtHomeSum.setTextColor(ContextCompat.getColor(this,R.color.g_9696b8))
+            mDatabind.txtHomeDouble.setTextColor(ContextCompat.getColor(this,R.color.g_9696b8))
+            mDatabind.txtHomeLeopard.setTextColor(ContextCompat.getColor(this,R.color.g_f7cf41))
+            mDatabind.viewPager.currentItem = num
+        }
+
+
+    }
 }

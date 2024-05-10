@@ -25,7 +25,10 @@ import androidx.viewpager2.adapter.FragmentViewHolder
 import androidx.viewpager2.widget.ViewPager2
 import com.cn.game.sdk.R
 import com.cn.game.sdk.tool.indicator.CommonPagerIndicator
+import com.cn.game.sdk.view.ClickTextView
+import com.cn.game.sdk.view.CombinationOkView
 import com.google.android.material.tabs.TabLayout
+import com.xcjh.base_lib.utils.toHtml
 import net.lucode.hackware.magicindicator.MagicIndicator
 import net.lucode.hackware.magicindicator.ViewPagerHelper
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigator
@@ -313,7 +316,19 @@ fun MagicIndicator.bindViewPager(
         }
 
         override fun getTitleView(context: Context, index: Int): IPagerTitleView {
+            requestDisallowInterceptTouchEvent(true)
+          
             return ColorTransitionPagerTitleView(context).apply {
+//                setOnTouchListener(View.OnTouchListener { v, event ->
+//                    if (v is CombinationOkView) {
+//                    Log.i("VVVVVVVVV","1111111111111")
+//
+//                    }else{
+//                        Log.i("VVVVVVVVV","22222222222222")
+//                    }
+//
+//                    return@OnTouchListener false
+//                })
                 //设置文本
                 text = mStringList[index].toHtml()
                 //字体大小
@@ -329,6 +344,10 @@ fun MagicIndicator.bindViewPager(
                     viewPager.currentItem = index
                     action.invoke(index)
                 }
+
+
+
+
             }
         }
 
