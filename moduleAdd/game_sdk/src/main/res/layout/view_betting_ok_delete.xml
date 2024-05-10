@@ -21,30 +21,24 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-<!--            <com.cn.game.sdk.view.OutImageView-->
-<!--                android:id="@+id/ivOff"-->
-<!--                android:scaleType="centerCrop"-->
-<!--                android:layout_width="29dp"-->
-<!--                android:layout_height="23dp"-->
-<!--                app:srcCompat="@drawable/icon_hong_off"-->
-<!--             />-->
-<!--&lt;!&ndash;   app:srcCompat="@drawable/icon_hong_off" &ndash;&gt;-->
-<!--            <com.cn.game.sdk.view.OutImageView-->
-<!--                android:id="@+id/ivOk"-->
-<!--                android:scaleType="centerCrop"-->
-<!--                android:layout_width="29dp"-->
-<!--                android:layout_height="23dp"-->
-<!--                app:srcCompat="@drawable/icon_lv_ok"-->
-<!--                 />-->
-<!--&lt;!&ndash;app:srcCompat="@drawable/icon_lv_ok"&ndash;&gt;-->
-<!--            <com.cn.game.sdk.view.CombinationOkView-->
-<!--                android:id="@+id/coOkViewNew"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"/>-->
-<!--            <com.cn.game.sdk.view.BeyoundGoView-->
-<!--                android:id="@+id/coOkView"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"/>-->
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivOff"
+                android:scaleType="centerCrop"
+                android:layout_width="29dp"
+                android:layout_height="23dp"
+                app:srcCompat="@drawable/icon_hong_off"
+             />
+<!--   app:srcCompat="@drawable/icon_hong_off" -->
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivOk"
+                android:scaleType="centerCrop"
+                android:layout_width="29dp"
+                android:layout_height="23dp"
+                app:srcCompat="@drawable/icon_lv_ok"
+                android:layout_marginLeft="@dimen/dp_5"
+                 />
+<!--app:srcCompat="@drawable/icon_lv_ok"-->
+
         </LinearLayout>
 
         <androidx.appcompat.widget.AppCompatTextView

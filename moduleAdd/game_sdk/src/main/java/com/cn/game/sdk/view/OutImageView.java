@@ -41,9 +41,73 @@ public class OutImageView extends AppCompatImageView {
         init();
     }
 
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        Log.i("UUUUUUUUUUUUUUUUUUUuu","11111111111111111");
+    }
 
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        Log.i("UUUUUUUUUUUUUUUUUUUuu","2222222222222222");
+    }
+
+    @Override
+    public void requestLayout() {
+        super.requestLayout();
+        Log.i("UUUUUUUUUUUUUUUUUUUuu","33333333333333");
+    }
+
+
+
+    @Override
+    public void invalidate() {
+        super.invalidate();
+        Log.i("UUUUUUUUUUUUUUUUUUUuu","444444444");
+
+        this.post(new Runnable() {
+            @Override
+            public void run() {
+                getLocationOnScreen(location);
+                rectF.left = location[0];
+                rectF.top = location[1];
+                rectF.right = location[0] + getWidth();
+                rectF.bottom = location[1] + getHeight();
+
+                with = getWidth();
+                height = getHeight();
+
+            }
+        });
+
+
+    }
 
     private void init() {
+//        val viewTreeObserver = showRightTopMoney.viewTreeObserver
+//        viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
+//            override fun onGlobalLayout() {
+//                // 确保只监听一次
+//                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+//                    showRightTopMoney.viewTreeObserver.removeGlobalOnLayoutListener(this)
+//                } else {
+//                    showRightTopMoney.viewTreeObserver.removeOnGlobalLayoutListener(this)
+//                }
+//
+//
+//            }
+//        })
+
+        setOnTouchListener(new OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                Log.i("SSSSSSSSSSSSSSSSSSSS","------------------");
+                return false;
+            }
+        });
+
+
         this.post(new Runnable() {
             @Override
             public void run() {
@@ -65,21 +129,10 @@ public class OutImageView extends AppCompatImageView {
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-//                        float x = event.getX();
-//                        float y = event.getY();
-//                        // 更新ImageView的位置
-//                        getLocationOnScreen(location);
-//
-//                        rectF.set(location[0], location[1], location[0] + getWidth(), location[1] + getHeight());
-                        float x = event.getX();
-                        float y = event.getY();
-                        getLocationOnScreen(location);
-                        rectF.set(location[0], location[1], location[0] + getWidth(), location[1] + getHeight());
-                        Log.i("多大发的","宽度="+with+"高度="+ height);
-                        // 检查是否点击在ImageView内
-                        Log.i("SSSSSSSSSs","centerX="+rectF.centerX()+"centerY="+rectF.centerY());
-                        Log.i("SSSSSSSSSs","x="+x+"y="+y);
-                        if (rectF.contains(x, y) && getVisibility() == VISIBLE) {
+
+                        Log.i("BBBBBB","111===x========="+event.getRawX()+"======y==="+event.getRawY());
+
+                        if (rectF.contains(event.getRawX(), event.getRawY())&&getVisibility()==VISIBLE) {
                             Log.d("Touch", "T触摸在ImageView内部");
 
                             // 如果设置了点击事件监听器，则调用它

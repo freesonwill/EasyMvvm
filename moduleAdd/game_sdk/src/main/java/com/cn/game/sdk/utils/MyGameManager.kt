@@ -33,6 +33,16 @@ object MyGameManager {
     private var  openResultView: OpenResultView?=null
     private var mContext:Context?=null
 
+    /**
+     * 当前余额并且是点击了确定后扣除的真实
+     */
+      var currentMoney:Int=5000
+
+    /**
+     * 每次点击扣钱，但是不显示出来，确定后才把这个金额显示在真实钱上
+     */
+    var temporaryCurrentMoney:Int=5000
+
     //获取快三的浮动view
     fun   getFastThreeView(context:Context):FastLogoView{
         if(fastThreeView==null){

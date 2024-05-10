@@ -4,7 +4,7 @@ package com.xcjh.app.websocket
  *
  * @author zobo101
  */
-object WebSocketAction {
+object WebGameSocketAction {
     /**
      * 广播ACTION
      */

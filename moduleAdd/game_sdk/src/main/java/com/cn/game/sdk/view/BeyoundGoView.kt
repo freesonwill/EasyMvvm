@@ -32,4 +32,8 @@ class BeyoundGoView  @JvmOverloads constructor(context: Context, attrs: Attribut
 
     }
 
+    fun setDate(){
+
+    }
+
 }

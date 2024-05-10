@@ -18,13 +18,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1">
-                    <!-- 右上角-->
+                    <!-- 左上角-->
                 <RelativeLayout
                     android:id="@+id/rlClick"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="match_parent">
                     <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ivLeftTopshow"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:scaleType="fitXY"
@@ -104,7 +105,9 @@
                         </LinearLayout>
                     </LinearLayout>
                 </RelativeLayout>
+<!--  右上角-->
                 <RelativeLayout
+                    android:id="@+id/rlClickRightTop"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="match_parent">
@@ -201,7 +204,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1">
+                    <!--左下角-->
                     <RelativeLayout
+                        android:id="@+id/rlClickLeftBelow"
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="match_parent">
@@ -285,7 +290,9 @@
                             </LinearLayout>
                         </LinearLayout>
                     </RelativeLayout>
+<!--                右下角    -->
                     <RelativeLayout
+                        android:id="@+id/rlClickRightBelow"
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="match_parent">
@@ -374,10 +381,11 @@
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
-
+<!--中间-->
         <RelativeLayout
-            android:layout_width="95dp"
-            android:layout_height="75dp"
+            android:id="@+id/rlClickCentre"
+            android:layout_width="105dp"
+            android:layout_height="85dp"
             android:layout_centerInParent="true">
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="match_parent"
