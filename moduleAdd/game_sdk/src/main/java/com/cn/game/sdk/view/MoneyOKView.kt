@@ -1,14 +1,18 @@
 package com.cn.game.sdk.view
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import com.cn.game.sdk.R
+import com.cn.game.sdk.game.GameData
 import com.cn.game.sdk.view.CombinationOkView
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -16,21 +20,22 @@ import java.math.RoundingMode
 /**
  * 选择钱以后点击确定
  */
+@SuppressLint("ClickableViewAccessibility")
 class MoneyOKView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, null, defStyleAttr) {
     /**
      * 是否显示取消或者确定
      */
     lateinit var llShowTop: LinearLayout
 
-    /**
-     * 取消
-     */
-    lateinit var ivOff: OutImageView
-
-    /**
-     * 确定
-     */
-    lateinit var ivOk: OutImageView
+//    /**
+//     * 取消
+//     */
+//    lateinit var ivOff: OutImageView
+//
+//    /**
+//     * 确定
+//     */
+//    lateinit var ivOk: OutImageView
     /**
      * 显示的钱
      */
@@ -41,7 +46,10 @@ class MoneyOKView @JvmOverloads constructor(context: Context, attrs: AttributeSe
     lateinit var ivShowBg: AppCompatImageView
     lateinit var coOkView: CombinationOkView
 
-
+    /**
+     * 是否显示出来
+     */
+    private var isShow:Boolean=false
     // 声明一个变量来保存回调接口
     private var onMoneyOKClickListener: OnMoneyOKClickListener? = null
 
@@ -71,6 +79,9 @@ class MoneyOKView @JvmOverloads constructor(context: Context, attrs: AttributeSe
         ivShowBg = rootView. findViewById(R.id.ivShowBg)
         coOkView=CombinationOkView(context)
         llShowTop.addView(coOkView)
+        ivShowBg.setOnClickListener {
+            Log.i("VVVVVVVVVVVVVv","======"+isShow)
+        }
         coOkView.setMoneyOKClickListener(object :CombinationOkView.CombinationOkClickListener{
             override fun onDelete() {
                 onMoneyOKClickListener?.onDelete()
@@ -82,7 +93,46 @@ class MoneyOKView @JvmOverloads constructor(context: Context, attrs: AttributeSe
         })
 
 
+        GameData.getInstance().rootView?.setOnTouchListener(OnTouchListener { v, event ->
+            when (event.action) {
 
+                MotionEvent.ACTION_DOWN -> {
+                    // 判断隐藏显示
+                    Log.i("SSSSSSSSSSSSSssssss","[==========="+isShow)
+                    if (!isShow){
+                        return@OnTouchListener false
+                    }
+                    val locationOff = IntArray(2)
+                    val locationOk = IntArray(2)
+                    coOkView.getIvOffView().getLocationOnScreen(locationOff)
+                    coOkView.getIvOkView().getLocationOnScreen(locationOk)
+                    val x = event.rawX
+                    val y = event.rawY
+                    // 判断触摸位置是否在 ivOff 区域内
+                    val isTouchOnOff = x >= locationOff[0] && x <= (locationOff[0] + coOkView.getIvOffView().width)
+                            && y >= locationOff[1] && y <= (locationOff[1] + coOkView.getIvOffView().height)
+
+                    // 判断触摸位置是否在 ivOk 区域内
+                    val isTouchOnOk = x >= locationOk[0] && x <= (locationOk[0] + coOkView.getIvOkView().width)
+                            && y >= locationOk[1] && y <= (locationOk[1] + coOkView.getIvOkView().height)
+
+                    if (isTouchOnOff) {
+                        Log.i("DDDDDDDDDDDDdd", "触摸在 ivOff 区域内")
+                        onMoneyOKClickListener?.onDelete()
+                        // 处理 ivOff 的点击逻辑
+                        return@OnTouchListener true
+                    } else if (isTouchOnOk) {
+                        Log.i("DDDDDDDDDDDDdd", "触摸在 ivOk 区域内")
+                        onMoneyOKClickListener?.onConfirm()
+                        // 处理 ivOk 的点击逻辑
+                        return@OnTouchListener true
+                    }
+
+
+                }
+            }
+            false
+        })
 
 
 //        ivOff.setOnClickListener(object : OutImageView.OnClickListener  {
@@ -147,8 +197,11 @@ class MoneyOKView @JvmOverloads constructor(context: Context, attrs: AttributeSe
     /**
      * 隐藏头部的缺点和删除
      */
-    fun hiddenTop(){
+    fun hiddenTop(string:String="!111111"){
+        Log.i("SSSSSSAAAa","========="+string)
         llShowTop.visibility= View.INVISIBLE
+        isShow=false
+//        coOkView.setShowView(false)
     }
 
     /**
@@ -156,6 +209,8 @@ class MoneyOKView @JvmOverloads constructor(context: Context, attrs: AttributeSe
      */
     fun showTop(){
         llShowTop.visibility= View.VISIBLE
+        isShow=true
+//        coOkView.setShowView(true)
     }
 
     fun showMoneyFormat(money:Int):String{
@@ -175,7 +230,7 @@ class MoneyOKView @JvmOverloads constructor(context: Context, attrs: AttributeSe
             }
 
         }else{
-            val tenThousand = money / 10000 % 10
+            val tenThousand = money / 10000
             val thousand = money / 1000 % 10
             val hundred = money / 100 % 10
             val ten = money / 10 % 10

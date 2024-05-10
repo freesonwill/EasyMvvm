@@ -38,6 +38,17 @@ class CombinationOkView@JvmOverloads constructor(
     lateinit var rlClickOff: RelativeLayout
     lateinit var rlClickOk: RelativeLayout
 
+    /**
+     * 是否显示出来
+     */
+   private var isShow:Boolean=false
+
+   fun getIvOffView():AppCompatImageView{
+       return ivOff
+   }
+    fun getIvOkView():AppCompatImageView{
+        return ivOk
+    }
 
     init{
         val inflater = LayoutInflater.from(context)
@@ -49,46 +60,46 @@ class CombinationOkView@JvmOverloads constructor(
         rlClickOk = rootView.findViewById(R.id.rlClickOk)
         activity = context as Activity
 
-        GameData.getInstance().rootView?.setOnTouchListener(OnTouchListener { v, event ->
-
-            when (event.action) {
-
-                MotionEvent.ACTION_DOWN -> {
-                    //todo 判断隐藏显示
-                    if (ivOff.visibility== View.INVISIBLE){
-                        return@OnTouchListener false
-                    }
-                    val locationOff = IntArray(2)
-                    val locationOk = IntArray(2)
-                    rlClickOff.getLocationOnScreen(locationOff)
-                    rlClickOk.getLocationOnScreen(locationOk)
-                    val x = event.rawX
-                    val y = event.rawY
-                    // 判断触摸位置是否在 ivOff 区域内
-                    val isTouchOnOff = x >= locationOff[0] && x <= (locationOff[0] + ivOff.width)
-                            && y >= locationOff[1] && y <= (locationOff[1] + ivOff.height)
-
-                    // 判断触摸位置是否在 ivOk 区域内
-                    val isTouchOnOk = x >= locationOk[0] && x <= (locationOk[0] + ivOk.width)
-                            && y >= locationOk[1] && y <= (locationOk[1] + ivOk.height)
-
-                    if (isTouchOnOff) {
-                        Log.i("DDDDDDDDDDDDdd", "触摸在 ivOff 区域内")
-                        onCombinationOkClickListener?.onDelete()
-                        // 处理 ivOff 的点击逻辑
-                        return@OnTouchListener true
-                    } else if (isTouchOnOk) {
-                        Log.i("DDDDDDDDDDDDdd", "触摸在 ivOk 区域内")
-                        onCombinationOkClickListener?.onConfirm()
-                        // 处理 ivOk 的点击逻辑
-                        return@OnTouchListener true
-                    }
-
-
-                }
-            }
-            false
-        })
+//        GameData.getInstance().rootView?.setOnTouchListener(OnTouchListener { v, event ->
+//            when (event.action) {
+//
+//                MotionEvent.ACTION_DOWN -> {
+//                    // 判断隐藏显示
+//                    Log.i("SSSSSSSSSSSSSssssss","[==========="+isShow)
+//                    if (!isShow){
+//                        return@OnTouchListener false
+//                    }
+//                    val locationOff = IntArray(2)
+//                    val locationOk = IntArray(2)
+//                    rlClickOff.getLocationOnScreen(locationOff)
+//                    rlClickOk.getLocationOnScreen(locationOk)
+//                    val x = event.rawX
+//                    val y = event.rawY
+//                    // 判断触摸位置是否在 ivOff 区域内
+//                    val isTouchOnOff = x >= locationOff[0] && x <= (locationOff[0] + ivOff.width)
+//                            && y >= locationOff[1] && y <= (locationOff[1] + ivOff.height)
+//
+//                    // 判断触摸位置是否在 ivOk 区域内
+//                    val isTouchOnOk = x >= locationOk[0] && x <= (locationOk[0] + ivOk.width)
+//                            && y >= locationOk[1] && y <= (locationOk[1] + ivOk.height)
+//
+//                    if (isTouchOnOff) {
+//                        Log.i("DDDDDDDDDDDDdd", "触摸在 ivOff 区域内")
+//                        onCombinationOkClickListener?.onDelete()
+//                        // 处理 ivOff 的点击逻辑
+//                        return@OnTouchListener true
+//                    } else if (isTouchOnOk) {
+//                        Log.i("DDDDDDDDDDDDdd", "触摸在 ivOk 区域内")
+//                        onCombinationOkClickListener?.onConfirm()
+//                        // 处理 ivOk 的点击逻辑
+//                        return@OnTouchListener true
+//                    }
+//
+//
+//                }
+//            }
+//            false
+//        })
 //        ivOff.setOnClickListener {
 //            Log.i("AAAAAAA","============")
 //        }
@@ -97,18 +108,19 @@ class CombinationOkView@JvmOverloads constructor(
 
 
     }
-    override fun onTouchEvent(event: MotionEvent?): Boolean {
-        return super.onTouchEvent(event)
-    }
-    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
-        Log.i("CCCCCCCCCCCCCCc","=============")
-        return super.dispatchTouchEvent(ev)
-    }
+
+
+
+
     // 声明一个变量来保存回调接口
     private var onCombinationOkClickListener: CombinationOkClickListener? = null
 
     fun setMoneyOKClickListener(listener: CombinationOkClickListener) {
         onCombinationOkClickListener = listener
+    }
+
+    fun setShowView(show:Boolean){
+        isShow=show
     }
 
     /**

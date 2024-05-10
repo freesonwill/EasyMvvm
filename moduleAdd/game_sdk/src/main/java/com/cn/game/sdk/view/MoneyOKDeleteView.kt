@@ -172,7 +172,7 @@ class MoneyOKDeleteView @JvmOverloads constructor(context: Context, attrs: Attri
            }
 
        }else{
-           val tenThousand = money / 10000 % 10
+           val tenThousand = money / 10000
            val thousand = money / 1000 % 10
            val hundred = money / 100 % 10
            val ten = money / 10 % 10

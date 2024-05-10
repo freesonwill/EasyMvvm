@@ -116,16 +116,7 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
         }
         mDatabind.rlRoot.bringToFront()
         GameData.getInstance().rootView = mDatabind.tempTouth
-//        mDatabind.tempTouth.setOnTouchListener(View.OnTouchListener { v, event ->
-//            GlobalScope.launch {
-//                try {
-//                    FlowBus.with<MotionEvent>("tempTouth").post(event)
-//                }catch (e: Exception){
-//                    "======onMessage------------  ${e.message}".loge()
-//                }
-//            }
-//            return@OnTouchListener false
-//        })
+
 
 //        mViewModel.getddd()
         mDatabind.ivHomeLogo.clickNoRepeat {

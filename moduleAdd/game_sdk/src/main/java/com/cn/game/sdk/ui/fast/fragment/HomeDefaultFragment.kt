@@ -34,7 +34,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
     /**
      * 右角注区的控件确定
      */
-    lateinit var showRightTopMoney: MoneyOKDeleteView
+    lateinit var showRightTopMoney: MoneyOKView
 
     /**
      * 左下角注区的控件确定
@@ -82,8 +82,8 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
         })
 
         //初始化右上角
-        showRightTopMoney=MoneyOKDeleteView(requireContext())
-        showRightTopMoney.setMoneyOKClickListener(object :MoneyOKDeleteView.MoneyOKDeleteClickListener{
+        showRightTopMoney=MoneyOKView(requireContext())
+        showRightTopMoney.setMoneyOKClickListener(object :MoneyOKView.OnMoneyOKClickListener{
             override fun onDelete() {
 //                ComputeDefault.rightTop.moneyOkEmpty=20
                 if(ComputeDefault.rightTop.moneyOkEmpty<=0){
@@ -108,9 +108,27 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
 
         //左下
         showLeftBelowMoney=MoneyOKDeleteView(requireContext())
+        showLeftBelowMoney.setMoneyOKClickListener(object :MoneyOKDeleteView.MoneyOKDeleteClickListener{
+            override fun onDelete() {
+                if(ComputeDefault.leftBelow.moneyOkEmpty<=0){
+                    //判断控件是否加入了
+                    if (mDatabind.rlClickLeftBelow.indexOfChild(showLeftBelowMoney) != -1) {
+                        mDatabind.rlClickLeftBelow.removeView(showLeftBelowMoney)
+                    }
+                }
 
+                (context as GameHomeActivity).clickDelete()
+            }
 
+            override fun onConfirm() {
+                // 正确的逻辑是投注成功后再执行下面的代码，，现在是测试所以直接成功
+                /**
+                 * 点击确定，把所有的临时钱赋值给确定钱然后要把没有确定的删除掉,在Activity处理所有的
+                 */
+                (context as GameHomeActivity).clickOKBet()
+            }
 
+        })
 
         //右下
         showRightBelowMoney=MoneyOKDeleteView(requireContext())
@@ -256,8 +274,8 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
                         // 定义边缘阈值，可根据实际情况调整
 //                    val edgeThreshold = requireContext().dp2px(20) // 像素
 //                    val rihtThreshold = requireContext().dp2px(40) // 像素
-                        val edgeThreshold = requireContext().dp2px(10) // 像素
-                        val rihtThreshold = requireContext().dp2px(10) // 像素
+                        val edgeThreshold = requireContext().dp2px(20) // 像素
+                        val rihtThreshold = requireContext().dp2px(20) // 像素
                         // 判断点击位置是否在 View 的上下左右边缘
                         val isOnLeftEdge = x <= left + edgeThreshold
                         val isOnTopEdge = y <= top + edgeThreshold
@@ -298,83 +316,77 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
                     //先判断余额是否够这次
+                    //先判断余额是否够这次
                     if( (context as GameHomeActivity).isCanBetting()){
-                        //这样也要设置续压
+                        // 获取点击位置的坐标控件位置
+                        val x = event.x
+                        val y = event.y
+                        //屏幕的坐标
+                        val rax= event.rawX
+                        val ray= event.rawY
 
-                        val location = IntArray(2)
-                        mDatabind.rlClickRightTop.getLocationOnScreen(location)
-                        //========
-                        var selectNum=0
-                        for (i in 0 until   MyGameManager.noteList.size) {
-                            if(MyGameManager.noteList[i].select){
-                                selectNum=i
-                                break
+                        // 获取 View 的边界
+                        val left = v.left.toFloat()
+                        val top = v.top.toFloat()
+                        val right = v.right.toFloat()
+                        val bottom = v.bottom.toFloat()
+                        // 定义边缘阈值，可根据实际情况调整
+//                    val edgeThreshold = requireContext().dp2px(20) // 像素
+//                    val rihtThreshold = requireContext().dp2px(40) // 像素
+                        val edgeThreshold = requireContext().dp2px(20) // 像素
+                        val rihtThreshold = requireContext().dp2px(20) // 像素
+                        // 判断点击位置是否在 View 的上下左右边缘
+                        val isOnLeftEdge = x <= left + edgeThreshold
+                        val isOnTopEdge = y <= top + edgeThreshold
+                        val isOnRightEdge = x >= right - rihtThreshold
+                        val isOnBottomEdge = y >= bottom - rihtThreshold
+                        // 处理点击在边缘的逻辑
+//                        if (isOnLeftEdge || isOnTopEdge || isOnRightEdge || isOnBottomEdge) {
+//                            handleEdgeClick(isOnLeftEdge, isOnTopEdge, isOnRightEdge, isOnBottomEdge)
+//                        } else {
+
+
+
+                            //显示点击在Fragment的位置用于动画结束后显示
+                            if(ComputeDefault.rightTop.viewXYTemporary [0]==0&&ComputeDefault.rightTop.viewXYTemporary[1]==0){
+                                ComputeDefault.rightTop.viewXYTemporary[0]=x.toInt()
+                                ComputeDefault.rightTop.viewXYTemporary[1]=y.toInt()
                             }
-                        }
-                        //计算钱以及显示的东西
-                        clickAnimationIsHidden(1)
-                        showRightTopMoney.showTop()
-                        ComputeDefault.rightTop.moneyTemporary= ComputeDefault.rightTop.moneyTemporary+MyGameManager.noteList[selectNum].money
-                        showRightTopMoney.setShowMoney(ComputeDefault.rightTop.moneyTemporary+ComputeDefault.rightTop.moneyOkEmpty)
-
-
-                        if (mDatabind.rlClickRightTop.indexOfChild(showRightTopMoney) != -1) {
                             //显示在屏幕的绝对位置,动画的位置
-                            if(ComputeDefault.rightTop.screenXYTemporary[0]!=0&&ComputeDefault.rightTop.screenXYTemporary[1]!=0){
-                                (context as GameHomeActivity).startAnimation(ComputeDefault.rightTop.screenXYTemporary[0].toFloat(),ComputeDefault.rightTop.screenXYTemporary[1].toFloat())
+                            if(ComputeDefault.rightTop.screenXYTemporary[0]==0&&ComputeDefault.rightTop.screenXYTemporary[1]==0){
+                                ComputeDefault.rightTop.screenXYTemporary[0]=rax.toInt()
+                                ComputeDefault. rightTop.screenXYTemporary[1]=ray.toInt()
                             }
-
-                        } else {
-                            val viewTreeObserver = showRightTopMoney.viewTreeObserver
-                            viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
-                                override fun onGlobalLayout() {
-                                    // 确保只监听一次
-                                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-                                        showRightTopMoney.viewTreeObserver.removeGlobalOnLayoutListener(this)
-                                    } else {
-                                        showRightTopMoney.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                                    }
-
-                                    // 获取视图在屏幕上的绝对位置
-                                    val location = IntArray(2)
-                                    showRightTopMoney.getLocationOnScreen(location)
-                                    val xOnScreen = location[0]
-                                    val yOnScreen = location[1]
-
-                                    ComputeDefault.rightTop.screenXYTemporary[0]=xOnScreen
-                                    ComputeDefault. rightTop.screenXYTemporary[1]=yOnScreen+dp2px(context,47f)
-
-
-                                    (context as GameHomeActivity).startAnimation(ComputeDefault.rightTop.screenXYTemporary[0].toFloat(),ComputeDefault.rightTop.screenXYTemporary[1].toFloat())
-                                    //显示点击在Fragment的位置用于动画结束后显示
-                                    if(ComputeDefault.rightTop.viewXYTemporary[0]==0&&ComputeDefault.rightTop.viewXYTemporary[1]==0){
-                                        val location = IntArray(2)
-                                        showRightTopMoney.getLocationInWindow(location)
-
-                                        ComputeDefault.rightTop.viewXYTemporary[0]= showRightTopMoney.left
-                                        ComputeDefault.rightTop.viewXYTemporary[1]=showRightTopMoney.top
-                                    }
+                            var selectNum=0
+                            for (i in 0 until   MyGameManager.noteList.size) {
+                                if(MyGameManager.noteList[i].select){
+                                    selectNum=i
+                                    break
                                 }
-                            })
-                            if(ComputeDefault.rightTop.viewXYTemporary[0]!=0&&ComputeDefault.rightTop.viewXYTemporary[1]!=0){
-                                val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-                                params.leftMargin= ComputeDefault.rightTop.viewXYTemporary[0]
-                                params.topMargin= ComputeDefault.rightTop.viewXYTemporary[1]
-                                showRightTopMoney.layoutParams = params
-                                mDatabind.rlClickRightTop.addView(showRightTopMoney)
-                            }else{
-                                val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-                                mDatabind.rlClickRightTop.addView(showRightTopMoney, params)
-                                // 将新按钮设置为居中
-                                params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE)
-                                showRightTopMoney.layoutParams = params
                             }
+                            //计算钱
+                            ComputeDefault.rightTop.moneyTemporary= ComputeDefault.rightTop.moneyTemporary+MyGameManager.noteList[selectNum].money
+                            showRightTopMoney.setShowMoney(ComputeDefault.rightTop.moneyTemporary+ComputeDefault.rightTop.moneyOkEmpty)
+                            //判断是否添加上去了这个viwe
+                            if (mDatabind.rlHomeRoot.indexOfChild(showRightTopMoney) != -1) {
+                            } else {
+                                // 动态添加的视图未成功添加到布局中
+                                val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                                mDatabind.rlHomeRoot.addView(showRightTopMoney, params)
+                                showRightTopMoney.translationX =  event.rawX.toFloat()-requireContext().dp2px(15)
+                                showRightTopMoney.translationY =  ComputeDefault.rightTop.viewXYTemporary[1].toFloat()-requireContext().dp2px(52)
 
-                        }
+                            }
+                            (context as GameHomeActivity).startAnimation(ComputeDefault.rightTop.screenXYTemporary[0].toFloat(),ComputeDefault.rightTop.screenXYTemporary[1].toFloat(),true)
+
+                            //当前点击的这个注区头部显示出来
+                            showRightTopMoney.showTop()
+                            //点击每个模块的动画，隐藏没点击的所有的头部
+                            clickAnimationIsHidden(1)
+
+//                        }
 
                     }
-
-
 
 
                 }
@@ -389,8 +401,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
         isOnLeftEdge: Boolean,
         isOnTopEdge: Boolean,
         isOnRightEdge: Boolean,
-        isOnBottomEdge: Boolean
-    ) {
+        isOnBottomEdge: Boolean) {
         // 处理点击在边缘的逻辑
         if (isOnLeftEdge) {
             // 点击在左边缘
@@ -437,7 +448,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
             // 动态添加的视图未成功添加到布局中
             val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
             mDatabind.rlHomeRoot.addView(showLeftTopMoney, params)
-            showLeftTopMoney.translationX =  ComputeDefault.leftTop.viewXYTemporary[0].toFloat()-requireContext().dp2px(30)
+            showLeftTopMoney.translationX =  ComputeDefault.leftTop.viewXYTemporary[0].toFloat()-requireContext().dp2px(15)
             showLeftTopMoney.translationY =  ComputeDefault.leftTop.viewXYTemporary[1].toFloat()-requireContext().dp2px(52)
 
         }
