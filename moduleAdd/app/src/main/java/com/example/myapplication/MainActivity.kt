@@ -44,7 +44,7 @@ class MainActivity : Activity() {
         }
         appGameViewModel.ceshEvent.postValue(true)
         //初始化尾部
-//        MyWsManager.getInstance(this)?.initService()
+        MyWsManager.getInstance(this)?.initService()
 
     }
 }

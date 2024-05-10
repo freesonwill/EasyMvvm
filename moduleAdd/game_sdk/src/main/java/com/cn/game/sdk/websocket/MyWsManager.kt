@@ -17,7 +17,10 @@ import com.xcjh.base_lib.utils.*
 import game.common.proto.ClientReq
 import game.common.proto.ClientRes
 import game.common.proto.ClientRes.ErrorMessage
+import game.mod.proc.yf.proto.req.GameReq
+import game.mod.proc.yf.proto.res.GameRes
 import game.mod.proc.yf.proto.res.GameRes.EnterInfo
+import game.mod.proc.yf.proto.res.GameRes.GroupInfo
 import kotlinx.coroutines.*
 import org.java_websocket.enums.ReadyState
 import java.lang.Runnable
@@ -179,6 +182,32 @@ class MyWsManager private constructor(private val mContext: Context) {
         //登录成功之后直接进行后续操作
         if(sid == GameResCode.SUB_LOGON_RESP__SUCCESS){
             _gameMsg.enterInfo();
+        }
+        //进入房间存储数据
+        if(sid == GameResCode.S2C_ENTER_INFO){
+            var info = EnterInfo.parseFrom(byteArray)
+            GameData.getInstance().setEnterInfo(info)
+            var req = GameReq.EnterGroup.newBuilder()
+                .build()
+            _gameMsg.enterGroup(req)
+        }
+        //进入Group
+        if(sid == GameResCode.S2C_GROUP_INFO){
+            var info = GroupInfo.parseFrom(byteArray)
+            GameData.getInstance().setGroupInfo(info)
+            var miniGame = info.getMiniGameBasicInfoList(0)
+            var req = GameReq.EnterMiniGame.newBuilder()
+                .setMiniGameId(miniGame.miniGameId)
+                .build()
+            _gameMsg.enterGame(req)
+        }
+        //进入game
+        if(sid == GameResCode.S2C_ENTER_MINI_GAME_INFO){
+            var info = GameRes.EnterMiniGameInfo.parseFrom(byteArray)
+            GameData.getInstance().setGameInfo(info)
+        }
+        if(sid == GameResCode.S2C_BEGIN_ROUND){
+            "======开始游戏-------".loge()
         }
 
         GlobalScope.launch {
@@ -374,8 +403,10 @@ class MyWsManager private constructor(private val mContext: Context) {
             scheduledExecutorService!!.schedule({
                 try {
                     "-----------开启重连-----".loge("wsService===")
-                    client!!.reconnect()
-                    client!!.reconnectBlocking()
+                    client!!.close()
+                    initSocketClient()
+//                    client!!.reconnect()
+//                    client!!.reconnectBlocking()
                 } catch (e: InterruptedException) {
                     "-----------开启重连-----${ e.message}".loge("wsService===")
                 }

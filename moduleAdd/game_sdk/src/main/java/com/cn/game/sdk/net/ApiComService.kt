@@ -20,7 +20,7 @@ interface ApiComService {
         //test 预发布
          var SERVER_URL = "https://app.cbd246.com/apis/"//app通用 测试
         var SHARE_IP = "https://app.cbd246.com/"//比赛分享链接
-        var WEB_SOCKET_URL = "wss://ws.qxe68.com:7001/api/game/5701" ///test
+        var WEB_SOCKET_URL = "wss://ws.qxe68.com:7001/api/game/5702" ///test
 
 
 
