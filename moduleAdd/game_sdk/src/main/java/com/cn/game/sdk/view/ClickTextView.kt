@@ -33,6 +33,12 @@ class ClickTextView @JvmOverloads constructor(
         }
                     return@OnTouchListener false
       })
+
+
+    }
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        return super.onTouchEvent(event)
     }
 
 

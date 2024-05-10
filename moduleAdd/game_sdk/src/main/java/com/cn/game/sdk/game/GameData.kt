@@ -1,5 +1,6 @@
 package com.cn.game.sdk.game
 
+import android.view.View
 import game.mod.proc.yf.proto.req.GameReq.EnterMiniGame
 import game.mod.proc.yf.proto.res.GameRes
 import game.mod.proc.yf.proto.res.GameRes.GroupInfo
@@ -19,6 +20,8 @@ class GameData private constructor()  {
     private var enterInfo = GameRes.EnterInfo.newBuilder().build()
     private var groupInfo = GroupInfo.newBuilder().build()
     private var miniGameInfo = GameRes.EnterMiniGameInfo.newBuilder().build()
+
+    public var rootView:View? = null
 
     fun setEnterInfo(res:GameRes.EnterInfo) {
         enterInfo = res

@@ -7,12 +7,16 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
+import android.view.View
 import android.view.View.OnTouchListener
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import com.cn.game.sdk.R
+import com.cn.game.sdk.game.GameData
+import com.cn.game.sdk.game.GameServiceBack
+import com.xcjh.base_lib.utils.logi
 
 
 @SuppressLint("ClickableViewAccessibility")
@@ -45,9 +49,15 @@ class CombinationOkView@JvmOverloads constructor(
         rlClickOk = rootView.findViewById(R.id.rlClickOk)
         activity = context as Activity
 
-        activity!!.window.decorView.setOnTouchListener(OnTouchListener { v, event ->
+        GameData.getInstance().rootView?.setOnTouchListener(OnTouchListener { v, event ->
+
             when (event.action) {
+
                 MotionEvent.ACTION_DOWN -> {
+                    //todo 判断隐藏显示
+                    if (ivOff.visibility== View.INVISIBLE){
+                        return@OnTouchListener false
+                    }
                     val locationOff = IntArray(2)
                     val locationOk = IntArray(2)
                     rlClickOff.getLocationOnScreen(locationOff)
@@ -79,15 +89,17 @@ class CombinationOkView@JvmOverloads constructor(
             }
             false
         })
-        ivOff.setOnClickListener {
-            Log.i("AAAAAAA","============")
-        }
+//        ivOff.setOnClickListener {
+//            Log.i("AAAAAAA","============")
+//        }
 
 
 
 
     }
-
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        return super.onTouchEvent(event)
+    }
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
         Log.i("CCCCCCCCCCCCCCc","=============")
         return super.dispatchTouchEvent(ev)

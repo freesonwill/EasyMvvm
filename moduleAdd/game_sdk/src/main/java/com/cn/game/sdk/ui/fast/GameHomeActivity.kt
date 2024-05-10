@@ -10,6 +10,7 @@ import android.graphics.PathMeasure
 import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
+import android.view.MotionEvent
 import android.view.View
 import android.view.animation.LinearInterpolator
 import android.widget.ImageView
@@ -28,6 +29,9 @@ import com.cn.game.sdk.bean.SelectAnnotationBean
 import com.cn.game.sdk.databinding.ActivityGameHomeBinding
 import com.cn.game.sdk.databinding.ItemAnnotationListBinding
 import com.cn.game.sdk.databinding.ItemBetHistoryBinding
+import com.cn.game.sdk.game.GameData
+import com.cn.game.sdk.game.GameEmit
+import com.cn.game.sdk.game.GameServiceBack
 import com.cn.game.sdk.popup.CustomBubbleAttachPopup
 import com.cn.game.sdk.tool.bindViewPager
 import com.cn.game.sdk.tool.init
@@ -46,7 +50,11 @@ import com.drake.brv.utils.setup
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
 import com.xcjh.base_lib.utils.dp2px
+import com.xcjh.base_lib.utils.loge
+import com.xcjh.base_lib.utils.logw
 import com.xcjh.base_lib.utils.view.clickNoRepeat
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 
 class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>() {
@@ -80,8 +88,6 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
     var popup: BasePopupView?=null
     var bubbleAttach : CustomBubbleAttachPopup?=null
 
-
-
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         // 获取屏幕的高度
@@ -109,15 +115,17 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
             putInt("type",0)
         }
         mDatabind.rlRoot.bringToFront()
-        mDatabind.rlRoot.setOnTouchListener(View.OnTouchListener { v, event ->
-            if (v is CombinationOkView) {
-                Log.i("BBBBBBB","1111111111111")
-
-            }else{
-                Log.i("BBBBBBB","22222222222222")
-            }
-            return@OnTouchListener false
-        })
+        GameData.getInstance().rootView = mDatabind.tempTouth
+//        mDatabind.tempTouth.setOnTouchListener(View.OnTouchListener { v, event ->
+//            GlobalScope.launch {
+//                try {
+//                    FlowBus.with<MotionEvent>("tempTouth").post(event)
+//                }catch (e: Exception){
+//                    "======onMessage------------  ${e.message}".loge()
+//                }
+//            }
+//            return@OnTouchListener false
+//        })
 
 //        mViewModel.getddd()
         mDatabind.ivHomeLogo.clickNoRepeat {
@@ -174,7 +182,9 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
             select(4)
             false
         }
-
+        window.decorView.setOnClickListener{
+            Log.i("DDDDDDDDDDDDdd", "触摸在 ivOff 区域内")
+        }
 
         adapter()
         setClick()

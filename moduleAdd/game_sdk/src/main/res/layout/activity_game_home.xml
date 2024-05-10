@@ -140,7 +140,7 @@
                             android:paddingRight="12dp"
                             android:textColor="@color/g_f7cf41"
                             android:text="@string/g_home_txt_default"/>
-                        <androidx.appcompat.widget.AppCompatTextView
+                        <com.cn.game.sdk.view.ClickTextView
                             android:id="@+id/txtHomeSingle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -151,7 +151,7 @@
                             android:textSize="14sp"
                             android:textColor="@color/g_9696b8"
                             android:text="@string/g_home_tab_single"/>
-                        <androidx.appcompat.widget.AppCompatTextView
+                        <com.cn.game.sdk.view.ClickTextView
                             android:id="@+id/txtHomeSum"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -162,7 +162,7 @@
                             android:textSize="14sp"
                             android:textColor="@color/g_9696b8"
                             android:text="@string/g_home_tab_sum"/>
-                        <androidx.appcompat.widget.AppCompatTextView
+                        <com.cn.game.sdk.view.ClickTextView
                             android:id="@+id/txtHomeDouble"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -349,7 +349,10 @@
 
 
             </LinearLayout>
-
+            <RelativeLayout
+                android:id="@+id/tempTouth"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"></RelativeLayout>
         </RelativeLayout>
 
 
