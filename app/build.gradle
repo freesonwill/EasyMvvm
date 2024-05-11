@@ -234,12 +234,15 @@ dependencies {
     //滚轮
     implementation 'com.github.javakam:widget.wheelview:1.8.0@aar'
     implementation 'com.github.javakam:widget.pickerview:1.8.0@aar'
-    //多语言
+    //多语言sss
     implementation 'com.github.getActivity:MultiLanguages:9.3'
 
     implementation 'com.github.385841539:MarqueeView:1.0.0'
 
-    implementation files('libs/game_sdk.aar')
+//    implementation files('libs/game_sdk.aar')
+
+    implementation 'com.github.kongxiaojun:EasyFloat:3.0.1'
+
 }
 //获取编译时间
 static def releaseTime() {

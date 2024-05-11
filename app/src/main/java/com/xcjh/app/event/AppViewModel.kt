@@ -1,6 +1,7 @@
 package com.xcjh.app.event
 
 import com.kunminx.architecture.ui.callback.UnPeekLiveData
+import com.xcjh.app.bean.CPUReq
 import com.xcjh.app.bean.CurrentIndex
 import com.xcjh.app.bean.UserInfo
 import com.xcjh.app.bean.MsgBeanData
@@ -68,7 +69,12 @@ class AppViewModel : BaseViewModel() {
     //关闭群聊的软键盘，当横屏的时候
     var closeKeyboardEvent=EventLiveData<Boolean>()
 
+    //获取cpu
+    var cpuEvent=EventLiveData<CPUReq>()
 
+
+    //获取获取FPS
+    var fpsEvent=EventLiveData<String>()
     init {
         //默认值保存的账户信息，没有登陆过则为null started 或 resumed
         this.updateLoginEvent.value = CacheUtil.isLogin()

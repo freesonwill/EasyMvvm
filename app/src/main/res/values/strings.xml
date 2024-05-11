@@ -335,12 +335,12 @@
     <string name="vibrate_txt_title">Vibration settings</string>
     <string name="vibrate_txt_debut">Anchor start broadcasting vibration</string>
     <string name="vibrate_txt_navbar">Navigation bar vibration</string>
-    <string name="push_txt_title">Push settings</string>
+    <string name="push_txt_title">Push notifications settings</string>
     <string name="push_txt_set">Message notification settings</string>
     <string name="push_txt_suggest">Suggest to open, get the latest dynamics in time</string>
     <string name="push_txt_open">Go to open</string>
     <string name="push_txt_already">Enabled</string>
-    <string name="push_txt_concern">Follow the match notification</string>
+    <string name="push_txt_concern">Follow match notification</string>
     <string name="push_txt_debut">Anchor start broadcasting notification</string>
     <string name="expand">Open</string>
     <string name="pack_up">Close</string>
@@ -415,7 +415,7 @@
     <string name="live_zc">MF</string>
     <string name="place_txt_login">Log in with the current account on \n other devices</string>
     <string name="account_txt_set">Account setting</string>
-    <string name="number_txt_set_not">Set</string>
+    <string name="number_txt_set_not">Not Set</string>
     <string name="number_txt_title">Account Management</string>
     <string name="bind_txt_mailbox">Bind Email</string>
     <string name="bind_txt_phone">>Bind Phone</string>

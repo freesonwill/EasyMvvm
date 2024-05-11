@@ -3,8 +3,8 @@ ext {
             compileSdkVersion: 34,
             minSdkVersion    : 23,
             targetSdkVersion : 33,
-            versionCode      : 1,        // 聚合app
-            versionName      : "1.0.1"
+            versionCode      : 1,        // 聚合app1
+            versionName      : "1.0.1"    //1.0.1
     ]
     //androidx配置
     androidx = [

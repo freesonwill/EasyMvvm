@@ -930,7 +930,7 @@ fun BindingAdapter.BindingViewHolder.setLiveMatchItem(type:Int=0) {
         ////比赛类型 1足球，2篮球,可用值:1,2
         if(bean.matchType.equals("1")){
 
-            bindingItem.tvMatchVs.text="${bean.homeScore}:${bean.awayScore}"
+            bindingItem.tvMatchVs.text="${bean.homeScore}-${bean.awayScore}"
 //            bindingItem.ivLiveBe.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.bg_status_football))
             Glide.with(context)
                 .load(R.drawable.bg_status_football) // 替换为您要加载的图片 URL
@@ -949,7 +949,7 @@ fun BindingAdapter.BindingViewHolder.setLiveMatchItem(type:Int=0) {
 
 
 
-            bindingItem.tvMatchVs.text="${bean.awayScore}:${bean.homeScore}"
+            bindingItem.tvMatchVs.text="${bean.awayScore}-${bean.homeScore}"
 
             Glide.with(context)
                 .load(R.drawable.basketball_new_br) // 替换为您要加载的图片 URL

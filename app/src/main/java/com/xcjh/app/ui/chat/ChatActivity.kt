@@ -105,6 +105,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import okhttp3.MultipartBody
 import java.io.File
 import java.text.SimpleDateFormat
@@ -614,10 +615,16 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
 
                             binding.ivpic.setOnClickListener {
                                 listPic.clear()
-                                val options = ActivityOptions.makeCustomAnimation(context, R.anim.anim_fade_in, 0)
+                                //右边图片
+//                                val options = ActivityOptions.makeCustomAnimation(context, R.anim.anim_fade_in, android.R.anim.fade_out)
+//                                var inagte=Intent(this@ChatActivity,ImageViewActivity::class.java)
+//                                inagte.putExtra("imageUrl",matchBeanNew.content)
+//                                startActivity(inagte,options.toBundle())
+
                                 var inagte=Intent(this@ChatActivity,ImageViewActivity::class.java)
                                 inagte.putExtra("imageUrl",matchBeanNew.content)
-                                startActivity(inagte,options.toBundle())
+                                startActivity(inagte)
+//                                overridePendingTransition(R.anim.anim_fade_in, R.anim.admin_out_the)
 //                             var d=  startNewActivity<ImageViewActivity> {
 //                                 putExtra("imageUrl", imageUrl)
 //
@@ -1161,6 +1168,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                         listdata1.add(beanmy)
                         mDatabind.rv.addModels(listdata1, index = 0)
                         mDatabind.rv.scrollToPosition(0)
+                        //已读回复
                         MyWsManager.getInstance(this@ChatActivity)?.sendMessage(
                             Gson().toJson(
                                 ReadWsBean(
@@ -1171,11 +1179,26 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                         )
 
                         if(mDatabind.rv.models!=null){
-
                             if(CacheUtil.getUser()!=null){
+//                                var data = (mDatabind.rv.models as ArrayList<MsgBeanData>).reversed()
+//                                var liatNew=  data.takeLast(100) as ArrayList<MsgBeanData>
+//                                CacheDataList.globalCache[CacheUtil.getUser()!!.id+liatNew[0].anchorId!!]=liatNew
+
                                 var data = (mDatabind.rv.models as ArrayList<MsgBeanData>).reversed()
-                                var liatNew=  data.takeLast(50) as ArrayList<MsgBeanData>
-                                CacheDataList.globalCache[CacheUtil.getUser()!!.id+liatNew[0].anchorId!!]=liatNew
+                                var liatNew=  data.takeLast(100) as ArrayList<MsgBeanData>
+
+//                                var list=CacheUtil.getChatList()
+//                                var dataHistory=  list[CacheUtil.getUser()!!.id+liatNew[0].anchorId!!]
+//                                if(dataHistory!=null){
+//                                    mViewModel.recordList(liatNew,dataHistory!!)
+//                                }else{
+//                                    mViewModel.recordList(liatNew,ArrayList<MsgBeanData>())
+//                                }
+                                //获取是否有数据
+                                var listDate=CacheUtil.getChatList()
+                                listDate[CacheUtil.getUser()!!.id+userId]=liatNew
+                                CacheUtil.setChatList(listDate)
+
 
                             }
 
@@ -1195,12 +1218,11 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                                 sendDate=beanmy
                                 isShow=i
                                 mDatabind.rv.bindingAdapter.notifyItemChanged(i)
+
                                 break
-//
 
                             }
                         }
-
                         if(isShow!=-1){
                             //是重新发送
                             if(sendDate.againSend==1){
@@ -1213,14 +1235,27 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                             }
                         }
 
-
-
                         if(mDatabind.rv.models!=null){
                           var data = (mDatabind.rv.models as ArrayList<MsgBeanData> ).reversed()
-                          var liatNew=  data.takeLast(50) as  ArrayList<MsgBeanData>
-
+                          var liatNew=  data.takeLast(100)
+                            var  newlist=ArrayList<MsgBeanData>()
+                            newlist.addAll(liatNew)
                             if(CacheUtil.getUser()!=null){
-                                CacheDataList.globalCache[CacheUtil.getUser()!!.id+liatNew[0].anchorId!!]=liatNew
+                                CacheDataList.globalCache[CacheUtil.getUser()!!.id+liatNew[0].anchorId!!]=newlist
+//                                var list=CacheUtil.getChatList()
+//                                var dataHistory=  list[CacheUtil.getUser()!!.id+liatNew[0].anchorId!!]
+//
+//                                if(dataHistory!=null){
+//                                    mViewModel.recordList(liatNew,dataHistory!!)
+//                                }else{
+//                                    mViewModel.recordList(liatNew,ArrayList<MsgBeanData>())
+//                                }
+
+                                //获取是否有数据
+                                var listDate=CacheUtil.getChatList()
+                                listDate[CacheUtil.getUser()!!.id+userId]=newlist
+                                CacheUtil.setChatList(listDate)
+
                             }
 
                         }
@@ -1257,7 +1292,12 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
             try {
                 GlobalScope.launch {
 
-                    var data= CacheDataList.globalCache[CacheUtil.getUser()!!.id+ userId]
+//                    var data= CacheDataList.globalCache[CacheUtil.getUser()!!.id+ userId]
+                    //获取是否有数据
+                    var list=CacheUtil.getChatList()
+                    var data= list[CacheUtil.getUser()!!.id+userId]
+
+
                     if(data!=null){
                         val reversedList = data.reversed()
                         runOnUiThread {
@@ -1611,6 +1651,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                       //第一页
                     if(mViewModel.isRefresh){
                             if(it.size>0){
+                                //数据翻转
                                 var data= it.reversed()
                                 listdata.clear()
                                 listdata.addAll(data)
@@ -1625,6 +1666,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
 
                     }else{
                         if(it.size>0){
+                            //数据翻转
                             var data= it.reversed()
                             listdata.addAll(listdata.size,data)
 //                            mDatabind.rv.addModels(data, index =  0)
@@ -1758,6 +1800,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                     Gson().toJson(bean)
                 )
             }
+            //等于空的时候
             if (sendid.isEmpty()) {
                 mDatabind.edtcontent.setText("")
                 var beanmy: MsgBeanData = MsgBeanData()
@@ -1775,6 +1818,37 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                 beanmy.createTime = creatime
                 var listdata1: MutableList<MsgBeanData> = ArrayList<MsgBeanData>()
                 listdata1.add(beanmy)
+                //保存
+                var   newDate: MsgBeanData = MsgBeanData()
+                newDate.sentNew=2
+                newDate.anchorId = userId
+                newDate.fromId = bean.from
+                newDate.content = bean.content!!
+                newDate.chatType = 2
+                newDate.nick = nickname
+                newDate.avatar = userhead
+                newDate.id = sendID
+                newDate.sendId = sendID
+                newDate.cmd = 11
+                newDate.msgType = bean.msgType
+                newDate.createTime = creatime
+
+
+                var list=CacheUtil.getChatList()
+                var data= list[CacheUtil.getUser()!!.id+userId]
+                if(data!=null){
+                    list[CacheUtil.getUser()!!.id+userId]!!.add(newDate)
+                    CacheUtil.setChatList(list)
+                }else{
+                    var dataList=ArrayList<MsgBeanData>()
+                    dataList.add(newDate)
+                    list[CacheUtil.getUser()!!.id+userId]=dataList
+                    CacheUtil.setChatList(list)
+                }
+
+
+
+
                 mDatabind.state.showContent()
 //                if (isShowBottom) {
 //                    mDatabind.ivexpent.performClick()
@@ -1840,6 +1914,9 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
         }
     }
 
+    /**
+     * 点击从新发送
+     */
     fun reSendMsg(
         matchBeanNew: MsgBeanData,
         index: Int

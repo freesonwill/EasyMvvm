@@ -3,9 +3,9 @@ package com.xcjh.app.bean
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-
+import java.io.Serializable
 @Entity(tableName = "chat_db")
-class MsgBeanData {
+class MsgBeanData  : Serializable{
     @ColumnInfo(name = "fromId")
     var fromId: String? = ""//发送用户ID
     @ColumnInfo(name = "avatar")
@@ -35,7 +35,7 @@ class MsgBeanData {
     @ColumnInfo(name = "id")
     var id: String? = ""
     @ColumnInfo(name = "sendId")
-    var sendId: String? = "0" //消息唯一性，用来判断回调
+    var sendId: String? = "0" //消息唯一性，用来判断回调  //需要自己赋值的 是当前用户userId + it[i].createTime发送时间组合的
     @ColumnInfo(name = "identityType")
     var identityType: Int? = 0//发送者身份身份(0：普通用户，1主播 2助手 3运营)
     @ColumnInfo(name = "msgType")
@@ -43,7 +43,7 @@ class MsgBeanData {
     @ColumnInfo(name = "readable")
     var readable: Int? = 0//是否已读：0 未读 1 已读
     @ColumnInfo(name = "sentNew")
-    var sentNew: Int? = 1//是否已发送: 0 正在发送 1 已发送 2 发送失败
+    var sentNew: Int? = 1//是否已发送: 0 正在发送 1 已发送 2 发送失败   //这个是用于本地判断
     @ColumnInfo(name = "toId")
     var toId: String? = ""
     @ColumnInfo(name = "updateTime")

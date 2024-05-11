@@ -25,10 +25,26 @@ class TimeConstantsDat {
         var   options1ItemsSaiguo: List<JsonBean> = ArrayList()
         var options2ItemsSaiguo =  ArrayList<ArrayList<String>>()
         var options3ItemsSaiguo = ArrayList< ArrayList<ArrayList<String>>>()
-        //记录选择的
+        //记录选择的 赛果
         var  saiYi=0
         var  saiEr=0
         var  saiSan=0
+
+
+        //记录选择的  足球
+        var  zuYi=0
+        var zuEr=0
+        var  zuSan=0
+
+        //记录选择的  篮球
+        var  lanYi=0
+        var lanEr=0
+        var  lanSan=0
+
+        //记录选择的  推荐
+        var  tuiYi=0
+        var tuiEr=0
+        var tuiSan=0
         //重置
         var  saiYiNew=0
         var  saiErNew=0

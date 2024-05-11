@@ -4,6 +4,7 @@ package com.xcjh.app.ui
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ActivityManager
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -11,10 +12,14 @@ import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.Log
+import android.view.Choreographer
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
+import android.widget.RelativeLayout
+import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
@@ -35,6 +40,9 @@ import com.king.app.updater.http.OkHttpManager
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
 import com.lxj.xpopup.enums.PopupAnimation
+import com.lzf.easyfloat.EasyFloat
+import com.lzf.easyfloat.enums.ShowPattern
+import com.lzf.easyfloat.permission.PermissionUtils
 import com.xcjh.app.BuildConfig
 import com.xcjh.app.R
 import com.xcjh.app.adapter.PushCardPopup
@@ -45,6 +53,7 @@ import com.xcjh.app.bean.JsonBean
 import com.xcjh.app.bean.LoginInfo
 import com.xcjh.app.bean.TimeConstantsDat
 import com.xcjh.app.databinding.ActivityHomeBinding
+import com.xcjh.app.event.AppViewModel
 import com.xcjh.app.placeLoginDialog
 import com.xcjh.app.ui.details.MatchDetailActivity
 import com.xcjh.app.ui.home.home.HomeFragment
@@ -52,6 +61,7 @@ import com.xcjh.app.ui.home.msg.MsgFragment
 import com.xcjh.app.ui.home.my.MyUserFragment
 import com.xcjh.app.ui.home.schedule.ScheduleFragment
 import com.xcjh.app.utils.CacheUtil
+import com.xcjh.app.utils.PerformanceMonitor
 import com.xcjh.app.utils.SoundManager
 import com.xcjh.app.utils.getVerCode
 import com.xcjh.app.utils.judgeLogin
@@ -59,6 +69,7 @@ import com.xcjh.app.vm.MainVm
 import com.xcjh.app.websocket.MyWsManager
 import com.xcjh.app.websocket.listener.NoReadMsgPushListener
 import com.xcjh.app.websocket.listener.OtherPushListener
+import com.xcjh.base_lib.App
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.utils.initActivity
@@ -72,6 +83,7 @@ import kotlinx.coroutines.launch
 import java.io.File
 import java.util.Timer
 import java.util.TimerTask
+import java.util.concurrent.TimeUnit
 
 
 /**
@@ -92,7 +104,8 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
     //是否显示卡片
     private var isShowPush: Boolean = true
 
-
+    // 创建 Timer 对象并调度定时任务 10秒刷新一下
+    private var timerDetails: Timer? = null
 
     private var mFragList: ArrayList<Fragment> = arrayListOf(
         HomeFragment(),
@@ -114,10 +127,29 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         mDatabind.reDateShow.clickNoRepeat {}
         currentPage=0
 //        getApiService(ApiComService.SERVER_URL)
-
+//        //实时cpu
 //     var   performanceMonitor = PerformanceMonitor(this)
-//
 //        performanceMonitor.startMonitoring()
+//
+//        // 注册 FrameCallback  获取FPS
+//        Choreographer.getInstance().postFrameCallback(frameCallback)
+//        //打开显示
+//        if (PermissionUtils.checkPermission(this)) {
+//            showAppFloat2("CPU")
+//
+//
+//        }else{
+//            AlertDialog.Builder(this)
+//                .setMessage("使用浮窗功能，需要您授权悬浮窗权限。")
+//                .setPositiveButton("去开启") { _, _ ->
+//                    showAppFloat2("CPU")
+//                }
+//                .setNegativeButton("取消") { _, _ -> }
+//                .show()
+//        }
+
+
+
 
 
         //全部比赛 0全部 1 是足球   2是篮球    3是赛果
@@ -155,9 +187,6 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
                 }
 
             }
-
-
-
 
         }
 
@@ -383,10 +412,9 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
          * 暂时隐藏获取到线上最新版本然后升级
          */
         mViewModel.update.observe(this) {
-            Log.i("CCCCCCCCCCC","===========")
-            var code= getVerCode(this).toInt()
+            var code= getVerCode(this).toString()
 //            appUpdate(it.remarks,false,"")
-            if(it.version.toInt()>code){
+            if(!it.version.equals(code)){
                 // 是否强制更新：0 ：不强制 1：强制
                 if(it.forcedUpdate.equals("0")){
                     appUpdate(it.remarks,true,it.sourceUrl)
@@ -805,5 +833,73 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
 //            placeDialog?.show()
 //        }
 //    }
+
+    private fun showAppFloat2(tag: String) {
+
+
+
+
+        EasyFloat.with(this.applicationContext)
+            .setTag(tag)
+            .setShowPattern(ShowPattern.FOREGROUND)
+            .setLocation(100, 100)
+            .setAnimator(null)
+            .setLayout(R.layout.float_app_scale) {
+                val txtCpu = it.findViewById<TextView>(R.id.txtCpu)
+                val txtNpc = it.findViewById<TextView>(R.id.txtNpc)
+                val txtFPS = it.findViewById<TextView>(R.id.txtFPS)
+                it.findViewById<ImageView>(R.id.ivClose).setOnClickListener {
+                    EasyFloat.dismiss(tag)
+                }
+                appViewModel.cpuEvent.observeForever {
+                    if(txtCpu!=null){
+                        txtCpu.text="CPU："+it.cpu
+                        txtNpc.text="内存："+it.memory
+                    }
+
+                }
+
+                appViewModel.fpsEvent.observeForever {
+                    if(txtFPS!=null){
+                        txtFPS.text="FPS："+it
+                    }
+
+                }
+
+            }.show()
+
+    }
+    private var lastFrameTimeNanos: Long = 0
+    private var frameCount = 0
+    private val FRAME_RATE_INTERVAL = TimeUnit.SECONDS.toNanos(1) // 输出帧率的时间间隔为1秒
+    private val frameCallback = object : Choreographer.FrameCallback {
+        private var lastUpdateTimeNanos = System.nanoTime()
+
+        override fun doFrame(frameTimeNanos: Long) {
+            // 计算帧间隔时间
+            if (lastFrameTimeNanos != 0L) {
+                val frameIntervalNanos = frameTimeNanos - lastFrameTimeNanos
+                val frameRate = TimeUnit.SECONDS.toNanos(1) / frameIntervalNanos.toDouble()
+
+                // 获取当前时间
+                val currentTimeNanos = System.nanoTime()
+
+                // 检查是否到达输出时间间隔
+                if (currentTimeNanos - lastUpdateTimeNanos >= FRAME_RATE_INTERVAL) {
+                    // 将浮点数帧率转换为整数
+                    val roundedFrameRate = frameRate.toInt()
+//                    Log.d(TAG, "Frame rate: $roundedFrameRate")
+                    appViewModel.fpsEvent.postValue(roundedFrameRate.toString())
+                    lastUpdateTimeNanos = currentTimeNanos // 更新上次输出时间
+                }
+            }
+
+            // 更新上一帧时间
+            lastFrameTimeNanos = frameTimeNanos
+
+            // 继续注册下一帧回调
+            Choreographer.getInstance().postFrameCallback(this)
+        }
+    }
 
 }

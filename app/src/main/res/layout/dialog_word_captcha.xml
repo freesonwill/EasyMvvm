@@ -21,7 +21,18 @@
             android:text="@string/dialog_txt_woed_code"
             android:textColor="@android:color/black"
             android:textSize="18sp" />
-
+        <ImageView
+            android:id="@+id/tv_refresh"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_gravity="right|top"
+            android:paddingLeft="5dp"
+            android:paddingTop="10dp"
+            android:paddingRight="15dp"
+            android:paddingBottom="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_toLeftOf="@+id/tv_delete"
+            android:src="@drawable/icon_refresh" />
         <TextView
             android:id="@+id/tv_delete"
             android:layout_width="27dp"
@@ -55,16 +66,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center" />
 
-        <ImageView
-            android:id="@+id/tv_refresh"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:layout_gravity="right|top"
-            android:paddingLeft="5dp"
-            android:paddingTop="5dp"
-            android:paddingRight="15dp"
-            android:paddingBottom="5dp"
-            android:src="@drawable/icon_refresh" />
+
 
     </FrameLayout>
 

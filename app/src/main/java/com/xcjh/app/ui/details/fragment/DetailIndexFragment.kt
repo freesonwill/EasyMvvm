@@ -1,6 +1,7 @@
 package com.xcjh.app.ui.details.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
@@ -14,6 +15,11 @@ import com.xcjh.app.ui.details.fragment.index.Index1Fragment
 import com.xcjh.app.ui.details.fragment.index.Index2Fragment
 import com.xcjh.base_lib.utils.bindBgViewPager2
 import com.xcjh.base_lib.utils.initFragment
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 /**
  * 指数
@@ -22,6 +28,8 @@ import com.xcjh.base_lib.utils.initFragment
 class DetailIndexFragment(var matchId: String = "", var matchType: String = "1") :
     BaseVpFragment<DetailVm, FragmentDetailTabIndexBinding>() {
 
+    // 在你的类中定义一个变量来存储协程的引用
+    private var myCoroutine: Job? = null
     override val typeId: Long
         get() = 5
 
@@ -51,6 +59,29 @@ class DetailIndexFragment(var matchId: String = "", var matchType: String = "1")
             //mDatabind.layTabIndexFootball.visibility = View.GONE
         }
         loadData()
+
+
+        // 启动协程并存储引用
+        myCoroutine = GlobalScope.launch(Dispatchers.Main) {
+            // 使用 repeat 循环确保每隔10秒执行一次
+            repeat(Int.MAX_VALUE) {
+                // 每次执行前延迟10秒
+                delay(10000L)
+                // 在这里添加你想要执行的操作
+                Log.i("GGGGGGG","执行-==================")
+                if (isAdded && !isFirst) {
+                    loadData()
+                }
+
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if(myCoroutine!=null){
+            myCoroutine!!.cancel()
+        }
     }
     override fun lazyLoadData() {
         //ViewModelProvider.get()
@@ -66,9 +97,9 @@ class DetailIndexFragment(var matchId: String = "", var matchType: String = "1")
     override fun createObserver() {
         //appViewModel.appPolling.observeForever {
         appViewModel.appPolling.observe(activity as MatchDetailActivity) {
-            if (isAdded && !isFirst) {
-                loadData()
-            }
+//            if (isAdded && !isFirst) {
+//                loadData()
+//            }
         }
 
     }

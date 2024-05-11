@@ -272,6 +272,15 @@ data class CompetitionRed(
 
 
 
+@Keep
+data class CPUReq(
+    var cpu: String? = "",
+    var memory: String? = "",
+
+)
+
+
+
 
 
 

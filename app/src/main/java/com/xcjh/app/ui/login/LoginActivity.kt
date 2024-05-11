@@ -19,9 +19,6 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
-import com.cn.game.sdk.appGameViewModel
-import com.cn.game.sdk.ui.fast.GameHomeActivity
-import com.cn.game.sdk.utils.MyGameManager
 import com.engagelab.privates.core.api.MTCorePrivatesApi
 import com.gyf.immersionbar.ImmersionBar
 import com.kongzue.dialogx.dialogs.CustomDialog
@@ -39,9 +36,7 @@ import com.xcjh.app.view.slider.WordImageView
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.bindViewPager2
 import com.xcjh.base_lib.utils.initActivity
-import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.setOnclickNoRepeat
-import com.xcjh.base_lib.utils.view.clickNoRepeat
 
 /***
  * 登录
@@ -79,9 +74,11 @@ class LoginActivity : BaseActivity<LoginVm, ActivityLoaginBinding>() {
 
 
         mDatabind.titleTop.tvTitle.text = resources.getString(R.string.loginandre)
-        mDatabind.btn.clickNoRepeat {
-            MyGameManager.setToast(this)
-        }
+//        mDatabind.btn.clickNoRepeat {
+//           var dd= MyGameManager.getFastThreeView(this)
+//            mDatabind.llshow.addView(dd)
+//
+//        }
 
         mFragments.add(Fragment())
         mFragments.add(Fragment())

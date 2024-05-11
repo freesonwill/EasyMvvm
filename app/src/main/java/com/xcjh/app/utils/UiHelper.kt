@@ -765,6 +765,9 @@ fun setH5Data(webView: WebView?,content:String="",tvColor:String="#ffffff",fontS
         "<div style='display: -webkit-box; -webkit-line-clamp: ${maxLine}; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;'>${replacedString}</div>"
     val bb = "<html><head><style>*{font-size: ${fontSize};color:${tvColor};font-family: 'PingFang SC';margin: 0;padding: 0;word-wrap: break-word;}body {padding-left: 0px;padding-right: 0px;}img {max-width: 100%;height: auto;}</style></head><body>${(htmlText)}</body></html>"
     Log.i("SSSSSS","==="+bb)
+
+
+
     webView?.loadDataWithBaseURL(null, bb, "text/html", "UTF-8", null)
 
 }

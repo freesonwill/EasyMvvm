@@ -9,7 +9,10 @@
         <item name="colorAccent">@color/c_37373d</item>
         <item name="android:windowBackground">@color/base_bg</item>
         <!--  <item name="android:windowAnimationStyle">@android:style/Animation.Activity</item>-->
-        <item name="android:windowAnimationStyle">@style/activityAnim</item>
+<!--        动画-->
+<!--        <item name="android:windowAnimationStyle">@style/activityAnim</item>-->
+<!--        <item name="android:windowAnimationStyle">@style/customWindown</item>-->
+
         <!-- 设置底部导航栏半透明，默认false黑色，设置true半透明 -->
         <item name="android:windowTranslucentNavigation">true</item>
         <!-- Android 5.0+，设置状态栏全透明透明 -->
@@ -30,15 +33,24 @@
         <!-- Android 5.0+，设置状态栏全透明透明 -->
         <item name="android:windowFullscreen">true</item>
         <!--  <item name="android:windowAnimationStyle">@style/Animation_Splash</item>-->
-        <item name="android:windowAnimationStyle">@style/Animation_Splash</item>
+<!--        去除动画-->
+        <item name="android:windowAnimationStyle">@style/customWindown</item>
         <item name="android:windowTranslucentStatus">true</item> <!-- 设置状态栏半透明——解除注释 -->
-        <item name="android:windowLayoutInDisplayCutoutMode" tools:targetApi="o_mr1">shortEdges
-        </item>
+        <item name="android:windowLayoutInDisplayCutoutMode" tools:targetApi="o_mr1">shortEdges</item>
     </style>
 
     <style name="Theme.MyApplication.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.MyApplication.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+<!--    <style name="customWindown">-->
+<!--        <item name="android:windowEnterAnimation">@anim/anim_fade_in</item>-->
+<!--        <item name="android:windowExitAnimation">@anim/admin_out_the</item>-->
+<!--    </style>-->
+
+    <style name="customWindown">
+        <item name="android:windowEnterAnimation">@anim/slide_up</item>
+        <item name="android:windowExitAnimation">@anim/slide_down</item>
+    </style>
 
 </resources>

@@ -715,8 +715,8 @@ class MatchDetailActivity :
                 override fun onChangeMatchData(matchList: ArrayList<ReceiveChangeMsg>) {
                     try {
 
-                        //防止数据未初始化的情况
-                        if (::matchDetail.isInitialized && matchDetail.status in 0..if (matchType == "1") 7 else 9) {
+                        //防止数据未初始化的情况  7else9
+                        if (::matchDetail.isInitialized && matchDetail.status in 0..if (matchType == "1")8 else 10) {
                             matchList.forEach {
                                 //正在比赛
                                 if (matchId == it.matchId.toString() && matchType == it.matchType.toString()) {

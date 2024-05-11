@@ -24,6 +24,7 @@ class MyNoticeVm : BaseViewModel() {
     var hotMatchList = UnPeekLiveData<ListDataUiState<MatchBean>>()
     var noticeData = UnPeekLiveData<Boolean>()
     var unnoticeData = UnPeekLiveData<Boolean>()
+    var deletaItem=UnPeekLiveData<Int>()
     /**
      * 关注
      */
@@ -84,7 +85,7 @@ class MyNoticeVm : BaseViewModel() {
                     errMessage = it.errorMsg,
                     listData = arrayListOf()
                 )
-                myToast(it.errorMsg)
+//                myToast(it.errorMsg)
 
             }, true
         )

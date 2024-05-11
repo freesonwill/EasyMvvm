@@ -186,6 +186,7 @@
 -keep class sun.misc.Unsafe { *; }
 -keep class com.google.gson.** { *; }
 -keep class com.xcjh.app.bean.**{ *; }
+-keep class res.anim.** { *; }
 -keep class com.xcjh.app.websocket.bean.**{ *; }
 -keep class com.xcjh.base_lib.network.BaseResponse { *; }
 -keep class com.xcjh.base_lib.bean.** { *; }

@@ -700,6 +700,11 @@ class MsgChildFragment : BaseFragment<MsgVm, FrMsgchildBinding>() {
             data.idd = bean!!.idd
             //删除会显示在聊天列表的记录数据
             MyApplication.dataChatList!!.chatDao?.delete(data)
+            //获取聊天记录
+            var listDate=CacheUtil.getChatList()
+
+            listDate.remove(CacheUtil.getUser()!!.id+data.anchorId)
+            CacheUtil.setChatList(listDate)
 
             //删除跟这个主播相关的连天记录
 //            MyApplication.dataBase!!.chatDao?.deleteAllZeroId(data.anchorId!!)

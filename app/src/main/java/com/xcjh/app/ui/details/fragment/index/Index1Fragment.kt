@@ -49,13 +49,32 @@ class Index1Fragment() : BaseFragment<DetailVm, FragmentDetailTabIndexTab1Bindin
                         binding.lltContent.backgroundTintList = ColorStateList.valueOf(
                             ContextCompat.getColor(context, if (modelPosition%2==0) R.color.c_181819 else R.color.c_1D1D1D)
                         )
+//                        if (item.companyName.isNotEmpty()) {
+//                            if (item.companyName.length > 2) {
+//                                binding.tvCompany.text = item.companyName.substring(0 until 2) + "*"
+//                            } else {
+//                                binding.tvCompany.text = item.companyName.substring(0 until 1) + "*"
+//                            }
+//                        }
+
                         if (item.companyName.isNotEmpty()) {
-                            if (item.companyName.length > 2) {
-                                binding.tvCompany.text = item.companyName.substring(0 until 2) + "*"
-                            } else {
-                                binding.tvCompany.text = item.companyName.substring(0 until 1) + "*"
+                            when (item.companyName.length) {
+                                in 3..6 -> {
+                                    binding.tvCompany.text = item.companyName.substring(0 until 2) + "*".repeat(item.companyName.length-2)
+                                }
+                                2 -> {
+                                    binding.tvCompany.text = item.companyName.substring(0 until 1) + "*"
+                                }
+                                1 -> {
+                                    binding.tvCompany.text = item.companyName
+                                }
+                                else -> {
+                                    //大于6个字
+                                    binding.tvCompany.text = item.companyName.substring(0 until 2) + "****"
+                                }
                             }
                         }
+
 
                         //初盘数据
                         binding.tvChuHome.text = item.firstHomeWin//主胜

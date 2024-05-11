@@ -54,10 +54,14 @@ import com.xcjh.base_lib.utils.initActivity
 import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.vertical
 import com.xcjh.base_lib.utils.view.clickNoRepeat
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -150,7 +154,9 @@ class SearchActivity : BaseActivity<SearchVm, ActivitySearchBinding>() {
             }
 
         }
-
+        /**
+         * 监听
+         */
         mDatabind.etSearchInput.afterTextChanged {
 
             if (it.isNotEmpty()) {
@@ -210,11 +216,22 @@ class SearchActivity : BaseActivity<SearchVm, ActivitySearchBinding>() {
                 }
                 mDatabind.state.showEmpty()
 
-
+                mDatabind.rcSearchListNew.stopScroll()
                 if (mDatabind.rcSearchListNew.models?.size != null) {
-                    mDatabind.rcSearchListNew.mutable.clear()
+//                    mDatabind.rcSearchListNew.mutable.clear()
+                    GlobalScope.launch(Dispatchers.Main) { // 使用主线程的调度器
+                        delay(500L) // 延迟1秒（1000毫秒）
+//                        var remove = mDatabind.rcSearchListNew.mutable
+//                        mDatabind.rcSearchListNew.mutable.removeAll(remove)
+//                        mDatabind.rcSearchListNew.adapter!!.notifyItemRangeRemoved(0, remove.size)
+                        mDatabind.rcSearchListNew.mutable.clear()
+                        mDatabind.rcSearchListNew.adapter!!.notifyDataSetChanged()
+                        //没有更多数据
+                        mDatabind.smartCommon.finishLoadMoreWithNoMoreData()
+                    }
+
                 }
-                mDatabind.smartCommon.finishRefresh()
+//                mDatabind.smartCommon.finishRefresh()
                 mDatabind.stateNew.showEmpty()
 
             }
@@ -234,19 +251,19 @@ class SearchActivity : BaseActivity<SearchVm, ActivitySearchBinding>() {
             }
 
 
-            //清空
-            if (mDatabind.rcSearchList.models != null) {
-                var remove = mDatabind.rcSearchList.mutable
-                mDatabind.rcSearchList.mutable.removeAll(remove)
-                mDatabind.rcSearchList.adapter!!.notifyItemRangeRemoved(0, remove.size)
-            }
+//            //清空
+//            if (mDatabind.rcSearchList.models != null) {
+//                var remove = mDatabind.rcSearchList.mutable
+//                mDatabind.rcSearchList.mutable.removeAll(remove)
+//                mDatabind.rcSearchList.adapter!!.notifyItemRangeRemoved(0, remove.size)
+//            }
             mDatabind.state.showEmpty()
 
-
-            if (mDatabind.rcSearchListNew.models?.size != null) {
-                mDatabind.rcSearchListNew.mutable.clear()
-            }
-            mDatabind.smartCommon.finishRefresh()
+//            mDatabind.rcSearchListNew.stopScroll()
+//            if (mDatabind.rcSearchListNew.models?.size != null) {
+//                mDatabind.rcSearchListNew.mutable.clear()
+//            }
+//            mDatabind.smartCommon.finishRefresh()
             mDatabind.stateNew.showEmpty()
 
         }
@@ -511,6 +528,8 @@ class SearchActivity : BaseActivity<SearchVm, ActivitySearchBinding>() {
             addType<MatchBean>(R.layout.item_sch_all)
 
             onBind {
+
+
 
                 // findView<TextView>(R.id.tvname).text = getModel<MatchBean>().competitionName
                 var binding = getBinding<ItemSchAllBinding>()
@@ -976,13 +995,12 @@ class SearchActivity : BaseActivity<SearchVm, ActivitySearchBinding>() {
                                     R.color.c_34a853
                                 )
                             )
-                            binding.tvstatus.text =
-                                context.resources.getString(
-                                    R.string.main_txt_basketball_phase,
-                                    resources.getString(R.string.one)
-                                ) + context.resources.getString(
-                                    R.string.finis
-                                )
+                            binding.tvstatus.text =context.resources.getString(
+                                R.string.finis
+                            )+" "+ context.resources.getString(
+                                R.string.main_txt_basketball_phase,
+                                resources.getString(R.string.one)
+                            )
                             initAnimation(binding.txtMatchAnimation)
 
                         }
@@ -1028,13 +1046,12 @@ class SearchActivity : BaseActivity<SearchVm, ActivitySearchBinding>() {
                                     R.color.c_34a853
                                 )
                             )
-                            binding.tvstatus.text =
-                                context.resources.getString(
-                                    R.string.main_txt_basketball_phase,
-                                    resources.getString(R.string.two)
-                                ) + context.resources.getString(
-                                    R.string.finis
-                                )
+                            binding.tvstatus.text = context.resources.getString(
+                                R.string.finis
+                            )+" "+
+                                    context.resources.getString(
+                                        R.string.main_txt_basketball_phase,
+                                        resources.getString(R.string.two))
                             initAnimation(binding.txtMatchAnimation)
 
                         }
@@ -1080,13 +1097,12 @@ class SearchActivity : BaseActivity<SearchVm, ActivitySearchBinding>() {
                                     R.color.c_34a853
                                 )
                             )
-                            binding.tvstatus.text =
-                                context.resources.getString(
-                                    R.string.main_txt_basketball_phase,
-                                    resources.getString(R.string.three)
-                                ) + context.resources.getString(
-                                    R.string.finis
-                                )
+                            binding.tvstatus.text =context.resources.getString(
+                                R.string.finis
+                            )+" "+ context.resources.getString(
+                                R.string.main_txt_basketball_phase,
+                                resources.getString(R.string.three)
+                            )
                             initAnimation(binding.txtMatchAnimation)
 
                         }
@@ -1188,7 +1204,7 @@ class SearchActivity : BaseActivity<SearchVm, ActivitySearchBinding>() {
 
                                 "13" -> {
                                     binding.tvstatus.text =
-                                        context.resources.getString(R.string.main_txt_zd)
+                                        context.resources.getString(R.string.main_txt_yq)
                                 }
 
                                 "14" -> {
@@ -1426,15 +1442,29 @@ class SearchActivity : BaseActivity<SearchVm, ActivitySearchBinding>() {
                     when {
                         //第一页并没有数据 显示空布局界面
                         it.isFirstEmpty -> {
-                            if (mDatabind.rcSearchListNew.models?.size != null) {
-                                mDatabind.rcSearchListNew.mutable.clear()
-                            }
-                            mDatabind.smartCommon.finishRefresh()
-                            mDatabind.stateNew.showEmpty()
+
+                       mDatabind.rcSearchListNew.stopScroll()
+//                       mDatabind.rcSearchListNew.adapter!!.notifyDataSetChanged()
+                    GlobalScope.launch(Dispatchers.Main) { // 使用主线程的调度器
+                        delay(5000L) // 延迟1秒（1000毫秒）
+                        if (mDatabind.rcSearchListNew.models?.size != null) {
+                            mDatabind.rcSearchListNew.mutable.clear()
+
                         }
+
+                        mDatabind.smartCommon.finishRefresh()
+                        mDatabind.stateNew.showEmpty()
+                    }
+
+                    }
+
+
+
                         //是第一页
                         it.isRefresh -> {
+                            mDatabind.rcSearchListNew.stopScroll()
 
+//                            mDatabind.rcSearchListNew.adapter!!.notifyDataSetChanged()
                             mDatabind.smartCommon.finishRefresh()
                             mDatabind.smartCommon.resetNoMoreData()
                             mDatabind.rcSearchListNew.models = it.listData
@@ -1446,6 +1476,7 @@ class SearchActivity : BaseActivity<SearchVm, ActivitySearchBinding>() {
                                 mDatabind.smartCommon.finishLoadMoreWithNoMoreData()
                             }
                             mDatabind.stateNew.showContent()
+
 
 
                         }

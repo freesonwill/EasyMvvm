@@ -2,24 +2,15 @@ package com.xcjh.app
 
 import android.app.Activity
 import android.content.Context
-import android.content.res.Configuration
-import android.content.res.Resources
 import android.view.View
 import android.widget.TextView
-import androidx.core.app.ActivityCompat.recreate
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ProcessLifecycleOwner
-import androidx.lifecycle.ViewModelStore
-import androidx.lifecycle.ViewModelStoreOwner
 import androidx.room.Room
-import com.cn.game.sdk.MyGameApplication
-import com.cn.game.sdk.utils.GamePartyLibraryInitializer
-import com.drake.engine.base.app
 import com.drake.statelayout.StateConfig
 import com.engagelab.privates.core.api.MTCorePrivatesApi
 import com.engagelab.privates.push.api.MTPushPrivatesApi
-import com.hjq.language.LocaleContract
 import com.hjq.language.MultiLanguages
 import com.hjq.toast.Toaster
 import com.kingja.loadsir.callback.SuccessCallback
@@ -72,7 +63,6 @@ val eventViewModel: EventViewModel by lazy {
 }
 /** 在 Activity 更改状态时初始化、加载和显示广告的应用程序类 */
 class MyApplication : App() , LifecycleObserver {
-    private lateinit var mAppViewModelStore: ViewModelStore
     companion object {
         lateinit var dataBase: MyRoomDataBase
         lateinit var dataChatList: MyRoomChatList
@@ -90,13 +80,15 @@ class MyApplication : App() , LifecycleObserver {
     override fun onCreate() {
         super.onCreate()
         MMKV.initialize(appContext)
-        var ddd= GamePartyLibraryInitializer
-        ddd.initialize(this)
+
+
         //设置字体不走系统
         AutoSizeConfig.getInstance().isExcludeFontScale = true
         appViewModelInstance = getAppViewModelProvider()[AppViewModel::class.java]
         eventViewModelInstance = getAppViewModelProvider()[EventViewModel::class.java]
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
+//        var game= GamePartyLibraryInitializer
+//        game.initialize(this,this)
         //ijk内核，默认模式
         PlayerFactory.setPlayManager(IjkPlayerManager::class.java)
         initDataBase()

@@ -353,9 +353,31 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
                 val ivNext = it.findViewById<ImageView>(R.id.ivNext)
                 //重置   //0推荐    1 是足球   2是篮球    3是赛果
                 tvcz.setOnClickListener {
-                    if(matchtypeOld.equals("0")||matchtypeOld.equals("1")||matchtypeOld.equals("2")){
+                    if(matchtypeOld.equals("0") ){
+                        TimeConstantsDat.tuiYi=0
+                        TimeConstantsDat.tuiEr=0
+                        TimeConstantsDat.tuiSan=0
+                        selectYiNew=0
+                        selectErNew=0
+                        selectSanNew=0
                         pvOptions?.setSelectOptions(0,0,0)
-                    }else{
+                    }else  if(matchtypeOld.equals("1") ){
+                        TimeConstantsDat.zuYi=selectYi
+                        TimeConstantsDat.zuEr=selectEr
+                        TimeConstantsDat.zuSan=selectSan
+                        selectYiNew=0
+                        selectErNew=0
+                        selectSanNew=0
+                        pvOptions?.setSelectOptions(0,0,0)
+                    }else  if(matchtypeOld.equals("2") ){
+                        TimeConstantsDat.lanYi=selectYi
+                        TimeConstantsDat.lanEr=selectEr
+                        TimeConstantsDat.lanSan=selectSan
+                        selectYiNew=0
+                        selectErNew=0
+                        selectSanNew=0
+                        pvOptions?.setSelectOptions(0,0,0)
+                    } else{
                         selectYiNew=TimeConstantsDat.saiYiNew
                         selectErNew=TimeConstantsDat.saiErNew
                         selectSanNew=TimeConstantsDat.saiSanNew
@@ -367,14 +389,30 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
                     pvOptions?.dismiss()
                 }
                 tvsure.setOnClickListener {
+                    //0推荐    1 是足球   2是篮球    3是赛果
                     if(matchtypeOld.equals("3")){
                         TimeConstantsDat.saiYi=selectYiNew
                         TimeConstantsDat.saiEr=selectErNew
                         TimeConstantsDat.saiSan=selectSanNew
-                    }else{
+                    }else {
                         selectYi=selectYiNew
                         selectEr=selectErNew
                         selectSan=selectSanNew
+                       if(matchtypeOld.equals("0")){
+                           TimeConstantsDat.tuiYi=selectYi
+                           TimeConstantsDat.tuiEr=selectEr
+                           TimeConstantsDat.tuiSan=selectSan
+                       } else  if(matchtypeOld.equals("1")){
+                           TimeConstantsDat.zuYi=selectYi
+                           TimeConstantsDat.zuEr=selectEr
+                           TimeConstantsDat.zuSan=selectSan
+                       }else  if(matchtypeOld.equals("2")){
+                           TimeConstantsDat.lanYi=selectYi
+                           TimeConstantsDat.lanEr=selectEr
+                           TimeConstantsDat.lanSan=selectSan
+
+                       }
+
 
                     }
                     selectYi=selectYiNew
@@ -462,12 +500,30 @@ class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>(
             }
         }
 
-        if(matchtypeOld.equals("3")){
+
+        // 0推荐    1 是足球   2是篮球    3是赛果
+        if(matchtypeOld.equals("0")){
+            selectYiNew =TimeConstantsDat.tuiYi
+            selectErNew= TimeConstantsDat.tuiEr
+            selectSanNew =TimeConstantsDat.tuiSan
+        }else  if(matchtypeOld.equals("1")){
+            selectYiNew =TimeConstantsDat.zuYi
+            selectErNew= TimeConstantsDat.zuEr
+            selectSanNew =TimeConstantsDat.zuSan
+        }else  if(matchtypeOld.equals("2")){
+            selectYiNew =TimeConstantsDat.lanYi
+            selectErNew= TimeConstantsDat.lanEr
+            selectSanNew =TimeConstantsDat.lanSan
+        }else if(matchtypeOld.equals("3")){
             selectYiNew =TimeConstantsDat.saiYi
             selectErNew= TimeConstantsDat.saiEr
             selectSanNew =TimeConstantsDat.saiSan
             pvOptions!!.setSelectOptions(TimeConstantsDat.saiYi,TimeConstantsDat.saiEr,TimeConstantsDat.saiSan)
         }
+
+
+
+
 
         pvOptions!!.show()
 

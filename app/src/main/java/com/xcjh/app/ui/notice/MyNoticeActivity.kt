@@ -773,7 +773,7 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
 
                                     "13" -> {
                                         binding.tvstatus.text =
-                                            context.resources.getString(R.string.main_txt_zd)
+                                            context.resources.getString(R.string.main_txt_yq)
                                     }
 
                                     "14" -> {
@@ -1061,6 +1061,8 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                     }
                 }
             }
+
+
             mViewModel.unnoticeData.observe(this) {
                 mview!!.setAnimation("shoucang2.json")
                 mview!!.loop(false)
@@ -1086,8 +1088,8 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                 (mDatabind.rec.models!![index] as MatchBean).focus = false
 
                 appViewModel.updateCollection.postValue(true)
-                //  mDatabind.rec.mutable.removeAt(index)
-                // mDatabind.rec.bindingAdapter.notifyItemRemoved(index) // 通知更新
+                  mDatabind.rec.mutable.removeAt(index)
+                 mDatabind.rec.bindingAdapter.notifyItemRemoved(index) // 通知更新
                 mview1!!.setBackgroundResource(R.drawable.sc_shoucang_icon1)
 
             }

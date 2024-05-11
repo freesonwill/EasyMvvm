@@ -207,6 +207,7 @@ class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
 
     override fun createObserver() {
         super.createObserver()
+        //设置一些属性比如字体颜色和图片不能超过屏幕
         val js = "<script type=\"text/javascript\">\n" +
                 "var elements = document.querySelectorAll(':not(h4)');\n" +
                 "for(var i = 0; i < elements.length; i++) {\n" +
@@ -283,18 +284,5 @@ class WebActivity : BaseActivity<MainVm, ActivityWebBinding>() {
         }
     }
 
-    fun isActivityOpened(context: Context, activityClass: Class<*>): Boolean {
-        val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-        val runningTasks = activityManager.getRunningTasks(1) // 获取当前运行的任务列表
 
-        if (!runningTasks.isNullOrEmpty()) {
-            val topActivity = runningTasks[0].topActivity
-            if (topActivity != null && topActivity.className == activityClass.name) {
-                // 如果顶部的 Activity 是指定的 Activity，则说明它已经打开了
-                return true
-            }
-        }
-
-        return false
-    }
 }

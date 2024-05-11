@@ -14,7 +14,7 @@ import me.jessyan.autosize.utils.AutoSizeLog
 import me.jessyan.autosize.utils.AutoSizeLog.isDebug
 val appContext: App by lazy { App.app }
 open class App : Application(), Application.ActivityLifecycleCallbacks, ViewModelStoreOwner {
-    private lateinit var mAppViewModelStore: ViewModelStore
+    public lateinit var mAppViewModelStore: ViewModelStore
     private var mFactory: ViewModelProvider.Factory? = null
 
     companion object {
@@ -33,6 +33,8 @@ open class App : Application(), Application.ActivityLifecycleCallbacks, ViewMode
        // ARouter.init(this)
         mAppViewModelStore = ViewModelStore()
         registerActivityLifecycleCallbacks(this)
+
+
     }
 
 

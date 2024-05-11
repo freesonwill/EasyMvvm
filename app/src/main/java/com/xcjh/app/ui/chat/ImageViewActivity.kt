@@ -1,22 +1,15 @@
 package com.xcjh.app.ui.chat
 
-import android.app.ActivityOptions
-import android.content.Context
-import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.transition.Fade
 import android.view.KeyEvent
-import com.bumptech.glide.Glide
 import com.xcjh.app.R
 import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseActivity
-import com.xcjh.app.databinding.ActivityHomeBinding
 import com.xcjh.app.databinding.ActivityImageViewBinding
 import com.xcjh.app.utils.loadImageWithGlideMax
 import com.xcjh.app.vm.MainVm
 import com.xcjh.base_lib.utils.startNewActivity
-import com.xcjh.base_lib.utils.view.clickNoRepeat
+
 
 /**
  * 查看图片
@@ -38,6 +31,8 @@ class ImageViewActivity : BaseActivity<MainVm, ActivityImageViewBinding>() {
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
+        overridePendingTransition(R.anim.anim_fade_in,  R.anim.admin_out_the)
+
         intent.extras?.apply {
             mImageUrl = getString("imageUrl", null)
         }

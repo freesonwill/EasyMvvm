@@ -7,6 +7,7 @@ import com.tencent.mmkv.MMKV
 import com.xcjh.app.appViewModel
 import com.xcjh.app.bean.LoginInfo
 import com.xcjh.app.bean.MainDataBean
+import com.xcjh.app.bean.MsgBeanData
 import com.xcjh.app.bean.UserInfo
 import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.network.cookie.CookieManger
@@ -171,6 +172,35 @@ object CacheUtil {
     fun setNavigationVibrate(navigation: Boolean): Boolean {
         val kv = MMKV.mmkvWithID("app")
         return kv.encode("navigationVibrate", navigation)
+    }
+
+
+    /**
+     * 保存私聊的的前100条数据所以的
+     */
+    fun setChatList(list: MutableMap<String, ArrayList<MsgBeanData>>) {
+        val jsonString = Gson().toJson(list)
+        val kv = MMKV.mmkvWithID("app")
+        kv.encode("chatList", jsonString)
+    }
+
+
+
+    /**
+     * 获取私聊的的前100条数据所以的
+     */
+    fun getChatList(): MutableMap<String, ArrayList<MsgBeanData>>{
+        val kv = MMKV.mmkvWithID("app")
+        val jsonString = kv.decodeString("chatList")
+        var gson=Gson()
+        if (!TextUtils.isEmpty(jsonString)) {
+            val mapType = object : TypeToken<MutableMap<String, ArrayList<MsgBeanData>>>() {}.type
+            val mapFromJson: MutableMap<String, ArrayList<MsgBeanData>> = gson.fromJson(jsonString, mapType)
+
+            return mapFromJson
+        }
+        val globalCache: MutableMap<String, ArrayList<MsgBeanData>> = mutableMapOf()
+        return globalCache
     }
 
 

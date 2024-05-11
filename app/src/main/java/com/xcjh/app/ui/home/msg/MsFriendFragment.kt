@@ -123,8 +123,12 @@ class MsFriendFragment : BaseFragment<MsgVm, FrMsgfriendBinding>() {
             }.models = listdata
 
 
-            mDatabind.smartCommon.setOnRefreshListener { mViewModel.getFriendList(true, "") }
-                .setOnLoadMoreListener { mViewModel.getFriendList(false, "") }
+            mDatabind.smartCommon.setOnRefreshListener {
+                mViewModel.getFriendList(true, "")
+            }
+                .setOnLoadMoreListener {
+                    mViewModel.getFriendList(false, "")
+                }
 
 
             //登录或者登出

@@ -569,7 +569,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                     )
                                 )
                                 binding.tvstatus.text =
-                                    context.resources.getString(R.string.main_txt_yq)
+                                    context.resources.getString(R.string.main_txt_dd)
                                 clearAnimation(binding.txtMatchAnimation)
                             }
 
@@ -785,8 +785,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                 )
                                 binding.tvstatus.text =context.resources.getString(
                                     R.string.finis
-                                )+" "+
-                                    context.resources.getString(
+                                )+" "+ context.resources.getString(
                                         R.string.main_txt_basketball_phase,
                                         resources.getString(R.string.three)
                                     )
@@ -891,7 +890,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
                                     "13" -> {
                                         binding.tvstatus.text =
-                                            context.resources.getString(R.string.main_txt_zd)
+                                            context.resources.getString(R.string.main_txt_yq)
                                     }
 
                                     "14" -> {
@@ -909,8 +908,6 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                         }
 
                     }
-
-
 
                     if (item.anchorList != null && item.anchorList.isNotEmpty()) {
                         if (item.anchorList.size > 5) {

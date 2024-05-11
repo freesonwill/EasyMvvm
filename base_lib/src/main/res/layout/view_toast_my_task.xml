@@ -7,7 +7,7 @@
     android:background="@drawable/shape_4_22232480"
     android:gravity="center"
     android:orientation="horizontal">
-<!--shape_solid_c000_r8   android:backgroundTint="#cc1e1e1e"-->
+    <!--shape_solid_c000_r8   android:backgroundTint="#cc1e1e1e"-->
     <TextView
         android:id="@+id/tvToast"
         android:layout_width="wrap_content"

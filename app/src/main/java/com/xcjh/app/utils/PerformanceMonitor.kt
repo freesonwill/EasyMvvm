@@ -6,6 +6,8 @@ import android.os.Debug
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import com.xcjh.app.appViewModel
+import com.xcjh.app.bean.CPUReq
 
 class PerformanceMonitor(private val context: Context) {
 
@@ -30,8 +32,16 @@ class PerformanceMonitor(private val context: Context) {
 
                 // 在这里可以将 CPU 和内存的使用情况输出到日志或更新 UI
                 Log.d(TAG, "CPU Usage: $cpuUsagePercent")
-                Log.d(TAG, "Memory Usage: $memoryUsageMB MB")
+                val formattedNumber = String.format("%.2f", memoryUsageMB)
 
+
+                Log.d(TAG, "Memory Usage: $formattedNumber MB")
+                var cpu= CPUReq()
+                cpu.cpu=cpuUsagePercent
+                cpu.memory=formattedNumber
+
+
+                appViewModel.cpuEvent.postValue(cpu)
                 handler.postDelayed(this, INTERVAL.toLong())
             }
         }

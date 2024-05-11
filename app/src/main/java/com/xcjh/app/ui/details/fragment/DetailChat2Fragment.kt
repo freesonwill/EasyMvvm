@@ -174,7 +174,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
                         if (noticeBean.isOpen) getString(R.string.pack_up) else getString(R.string.expand)
                     startImageRotate(expandCollapse, noticeBean.isOpen)
                     if (noticeBean.isOpen) {
-                        setH5Data(mNoticeWeb, noticeBean.notice, tvColor = "#94999f", maxLine = 10)
+                        setH5Data(mNoticeWeb, noticeBean.notice, tvColor = "#94999f", maxLine = 40)
                     } else {
                         setH5Data(mNoticeWeb, noticeBean.notice, tvColor = "#94999f", maxLine = 2)
                     }

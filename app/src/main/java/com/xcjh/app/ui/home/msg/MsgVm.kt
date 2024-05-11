@@ -151,14 +151,14 @@ class MsgVm : BaseViewModel() {
                     listData = it.records
                 )
             }, {
-                //请求失败
-                frendList.value = ListDataUiState(
-                    isSuccess = false,
-                    isRefresh = isRefresh,
-                    errMessage = it.errorMsg,
-                    listData = arrayListOf()
-                )
-                myToast(it.errorMsg)
+//                //请求失败
+//                frendList.value = ListDataUiState(
+//                    isSuccess = false,
+//                    isRefresh = isRefresh,
+//                    errMessage = it.errorMsg,
+//                    listData = arrayListOf()
+//                )
+//                myToast(it.errorMsg)
             }, false
         )
     }
