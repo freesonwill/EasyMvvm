@@ -20,7 +20,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-
+<!--        <androidx.appcompat.widget.AppCompatImageView-->
+<!--            android:id="@+id/ivOff"-->
+<!--            app:srcCompat="@drawable/icon_hong_off"-->
+<!--            android:layout_width="29dp"-->
+<!--            android:layout_height="23dp"/>-->
+<!--            <androidx.appcompat.widget.AppCompatImageView-->
+<!--                android:id="@+id/ivOk"-->
+<!--                app:srcCompat="@drawable/icon_lv_ok"-->
+<!--                android:layout_width="29dp"-->
+<!--                android:layout_height="23dp"/>-->
 <!--            <com.cn.game.sdk.view.OutImageView-->
 <!--                android:id="@+id/ivOff"-->
 <!--                android:scaleType="centerCrop"-->

@@ -5,6 +5,7 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.MotionEvent
+import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.RelativeLayout
@@ -53,10 +54,24 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
 
     var isShowGou = false
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun initView(savedInstanceState: Bundle?) {
         arguments?.let {
             type = it.getInt("type")
         }
+
+//        mDatabind.rlHomeRoot.setOnTouchListener(View.OnTouchListener { v, event ->
+//            when (event.action) {
+//                MotionEvent.ACTION_DOWN -> {
+//                    // 判断隐藏显示
+//                    Log.i("SSSSSSSSSSSSSssssss", "[===========" )
+//
+//                }
+//
+//
+//            }
+//            return@OnTouchListener false
+//        })
         //初始化左上角
         showLeftTopMoney=MoneyOKView(requireContext(), this)
         showLeftTopMoney.setMoneyOKClickListener(object :MoneyOKView.OnMoneyOKClickListener{
@@ -314,7 +329,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
     /**
      * 点击右上角
      */
-    @SuppressLint("ClickableViewAccessibility")
+    @SuppressLint("ClickableViewAccessibility", "SuspiciousIndentation")
     fun  clickRightTop(){
         mDatabind.rlClickRightTop.setOnTouchListener { v, event ->
             when (event.action) {
@@ -353,7 +368,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
 
                             //显示点击在Fragment的位置用于动画结束后显示
                             if(ComputeDefault.rightTop.viewXYTemporary [0]==0&&ComputeDefault.rightTop.viewXYTemporary[1]==0){
-                                ComputeDefault.rightTop.viewXYTemporary[0]=x.toInt()
+                                ComputeDefault.rightTop.viewXYTemporary[0]=rax.toInt()
                                 ComputeDefault.rightTop.viewXYTemporary[1]=y.toInt()
                             }
                             //显示在屏幕的绝对位置,动画的位置
@@ -377,7 +392,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
                                 // 动态添加的视图未成功添加到布局中
                                 val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
                                 mDatabind.rlHomeRoot.addView(showRightTopMoney, params)
-                                showRightTopMoney.translationX =  event.rawX.toFloat()-requireContext().dp2px(15)
+                                showRightTopMoney.translationX =  ComputeDefault.rightTop.viewXYTemporary[0].toFloat()-requireContext().dp2px(30)
                                 showRightTopMoney.translationY =  ComputeDefault.rightTop.viewXYTemporary[1].toFloat()-requireContext().dp2px(52)
 
                             }
@@ -452,7 +467,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
             // 动态添加的视图未成功添加到布局中
             val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
             mDatabind.rlHomeRoot.addView(showLeftTopMoney, params)
-            showLeftTopMoney.translationX =  ComputeDefault.leftTop.viewXYTemporary[0].toFloat()-requireContext().dp2px(15)
+            showLeftTopMoney.translationX =  ComputeDefault.leftTop.viewXYTemporary[0].toFloat()-requireContext().dp2px(30)
             showLeftTopMoney.translationY =  ComputeDefault.leftTop.viewXYTemporary[1].toFloat()-requireContext().dp2px(52)
 
         }
@@ -467,37 +482,55 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
      */
     private fun clickAnimationIsHidden(num:Int ){
         isShowGou = true
-//        if(num!=0){
-//            showLeftTopMoney.hiddenTop()
-//        }
-//        if(num!=1){
-//            showRightTopMoney.hiddenTop()
-//        }
-//
-//        if(num!=2){
-//            showLeftBelowMoney.hiddenTop()
-//        }
-//        if(num!=3){
-//            showRightBelowMoney.hiddenTop()
-//        }
-//        if(num!=4){
-//            showCentreDateMoney.hiddenTop()
-//        }
-//
-//
+        if(num!=0){
+            showLeftTopMoney.hiddenTop()
+        }
+        if(num!=1){
+            showRightTopMoney.hiddenTop()
+        }
+
+        if(num!=2){
+            showLeftBelowMoney.hiddenTop()
+        }
+        if(num!=3){
+            showRightBelowMoney.hiddenTop()
+        }
+        if(num!=4){
+            showCentreDateMoney.hiddenTop()
+        }
+
+
 
     }
 
     /**
-     * 删除投注  就保留上一次的确定的钱,isEmpty是否清空临时的钱，如果是点击的叉叉就要清空~~如果是勾勾就不用清除
+     * 删除投注 1111 就保留上一次的确定的钱,isEmpty是否清空临时的钱，如果是点击的叉叉就要清空~~如果是勾勾就不用清除
      */
     fun deleteBet(isEmpty:Boolean=true){
+        //删除临时钱
         if(isEmpty){
             ComputeDefault.leftTop.moneyTemporary=0
             ComputeDefault.rightTop.moneyTemporary=0
             ComputeDefault.leftBelow.moneyTemporary=0
             ComputeDefault.rightBelow.moneyTemporary=0
             ComputeDefault.centreDate.moneyTemporary=0
+        }
+        //删除没有确定钱的坐标
+        if(ComputeDefault.leftTop.moneyOkEmpty<=0){
+            ComputeDefault.leftTop.viewXYTemporary=intArrayOf(0, 0)
+            ComputeDefault.leftTop.screenXYTemporary=intArrayOf(0, 0)
+        }
+        if(ComputeDefault.rightTop.moneyOkEmpty<=0){
+            ComputeDefault.rightTop.viewXYTemporary=intArrayOf(0, 0)
+            ComputeDefault.rightTop.screenXYTemporary=intArrayOf(0, 0)
+        }
+        if(ComputeDefault.leftBelow.moneyOkEmpty<=0){
+            ComputeDefault.leftBelow.viewXYTemporary=intArrayOf(0, 0)
+            ComputeDefault.leftBelow.screenXYTemporary=intArrayOf(0, 0)
+        }
+        if(ComputeDefault.rightBelow.moneyOkEmpty<=0){
+            ComputeDefault.rightBelow.viewXYTemporary=intArrayOf(0, 0)
+            ComputeDefault.rightBelow.screenXYTemporary=intArrayOf(0, 0)
         }
 
         //左上角确定的钱没有
@@ -514,8 +547,8 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
             //右上角确定的钱没有
             if(ComputeDefault.rightTop.moneyOkEmpty<=0){
                 //判断控件是否加入了
-                if (mDatabind.rlClickRightTop.indexOfChild(showRightTopMoney) != -1) {
-                    mDatabind.rlClickRightTop.removeView(showRightTopMoney)
+                if (mDatabind.rlHomeRoot.indexOfChild(showRightTopMoney) != -1) {
+                    mDatabind.rlHomeRoot.removeView(showRightTopMoney)
                 }
             }else{
                 showRightTopMoney.hiddenTop()

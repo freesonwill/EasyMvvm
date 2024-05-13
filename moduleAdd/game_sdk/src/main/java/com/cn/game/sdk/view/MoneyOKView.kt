@@ -7,36 +7,39 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
+import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import com.cn.game.sdk.R
+import com.cn.game.sdk.ToastUtli
 import com.cn.game.sdk.game.GameData
 import com.cn.game.sdk.ui.fast.fragment.HomeDefaultFragment
 import com.cn.game.sdk.view.CombinationOkView
+import com.xcjh.base_lib.utils.view.clickNoRepeat
 import java.math.BigDecimal
 import java.math.RoundingMode
 
 /**
  * 选择钱以后点击确定
  */
-@SuppressLint("ClickableViewAccessibility")
 class MoneyOKView @JvmOverloads constructor(context: Context, parent: HomeDefaultFragment, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, null, defStyleAttr) {
     /**
      * 是否显示取消或者确定
      */
     lateinit var llShowTop: LinearLayout
 
-//    /**
-//     * 取消
-//     */
-//    lateinit var ivOff: OutImageView
-//
-//    /**
-//     * 确定
-//     */
-//    lateinit var ivOk: OutImageView
+    /**
+     * 取消
+     */
+    lateinit var ivOff: ImageView
+
+    /**
+     * 确定
+     */
+    lateinit var ivOk: ImageView
     /**
      * 显示的钱
      */
@@ -79,6 +82,10 @@ class MoneyOKView @JvmOverloads constructor(context: Context, parent: HomeDefaul
         ivShowMoney =rootView. findViewById(R.id.ivShowMoney)
         ivShowBg = rootView. findViewById(R.id.ivShowBg)
         coOkView=CombinationOkView(context)
+
+//        ivOff = rootView. findViewById(R.id.ivOff)
+//        ivOk = rootView. findViewById(R.id.ivOk)
+
         llShowTop.addView(coOkView)
         ivShowBg.setOnClickListener {
             Log.i("VVVVVVVVVVVVVv","======"+isShow)
@@ -94,46 +101,48 @@ class MoneyOKView @JvmOverloads constructor(context: Context, parent: HomeDefaul
         })
 
 
-        GameData.getInstance().rootView?.setOnTouchListener(OnTouchListener { v, event ->
-            when (event.action) {
-
-                MotionEvent.ACTION_DOWN -> {
-                    // 判断隐藏显示
-                    Log.i("SSSSSSSSSSSSSssssss","[==========="+isShow)
-                    if (!parent.isShowGou){
-                        return@OnTouchListener false
-                    }
-                    val locationOff = IntArray(2)
-                    val locationOk = IntArray(2)
-                    coOkView.getIvOffView().getLocationOnScreen(locationOff)
-                    coOkView.getIvOkView().getLocationOnScreen(locationOk)
-                    val x = event.rawX
-                    val y = event.rawY
-                    // 判断触摸位置是否在 ivOff 区域内
-                    val isTouchOnOff = x >= locationOff[0] && x <= (locationOff[0] + coOkView.getIvOffView().width)
-                            && y >= locationOff[1] && y <= (locationOff[1] + coOkView.getIvOffView().height)
-
-                    // 判断触摸位置是否在 ivOk 区域内
-                    val isTouchOnOk = x >= locationOk[0] && x <= (locationOk[0] + coOkView.getIvOkView().width)
-                            && y >= locationOk[1] && y <= (locationOk[1] + coOkView.getIvOkView().height)
-
-                    if (isTouchOnOff) {
-                        Log.i("DDDDDDDDDDDDdd", "触摸在 ivOff 区域内")
-                        onMoneyOKClickListener?.onDelete()
-                        // 处理 ivOff 的点击逻辑
-                        return@OnTouchListener true
-                    } else if (isTouchOnOk) {
-                        Log.i("DDDDDDDDDDDDdd", "触摸在 ivOk 区域内")
-                        onMoneyOKClickListener?.onConfirm()
-                        // 处理 ivOk 的点击逻辑
-                        return@OnTouchListener true
-                    }
-
-
-                }
-            }
-            false
-        })
+//        GameData.getInstance().rootView?.setOnTouchListener(OnTouchListener { v, event ->
+//            when (event.action) {
+//
+//                MotionEvent.ACTION_DOWN -> {
+//                    // 判断隐藏显示
+//                    Log.i("SSSSSSSSSSSSSssssss","[==========="+isShow)
+//                    if (!parent.isShowGou){
+//                        return@OnTouchListener false
+//                    }
+//                    val locationOff = IntArray(2)
+//                    val locationOk = IntArray(2)
+//                    coOkView.getIvOffView().getLocationOnScreen(locationOff)
+//                    coOkView.getIvOkView().getLocationOnScreen(locationOk)
+//                    val x = event.rawX
+//                    val y = event.rawY
+//                    // 判断触摸位置是否在 ivOff 区域内
+//                    val isTouchOnOff = x >= locationOff[0] && x <= (locationOff[0] + coOkView.getIvOffView().width)
+//                            && y >= locationOff[1] && y <= (locationOff[1] + coOkView.getIvOffView().height)
+//
+//                    // 判断触摸位置是否在 ivOk 区域内
+//                    val isTouchOnOk = x >= locationOk[0] && x <= (locationOk[0] + coOkView.getIvOkView().width)
+//                            && y >= locationOk[1] && y <= (locationOk[1] + coOkView.getIvOkView().height)
+//
+//                    if (isTouchOnOff) {
+//                        Log.i("DDDDDDDDDDDDdd", "触摸在 ivOff 区域内")
+//                        onMoneyOKClickListener?.onDelete()
+//                        // 处理 ivOff 的点击逻辑
+//                        return@OnTouchListener true
+//                    } else if (isTouchOnOk) {
+//                        Log.i("DDDDDDDDDDDDdd", "触摸在 ivOk 区域内")
+//                        onMoneyOKClickListener?.onConfirm()
+//                        // 处理 ivOk 的点击逻辑
+//                        return@OnTouchListener true
+//                    }else{
+//                        Log.i("DDDDDDDDDDDDdd", "没有摸到")
+//                    }
+//
+//
+//                }
+//            }
+//            false
+//        })
 
 
 //        ivOff.setOnClickListener(object : OutImageView.OnClickListener  {
@@ -153,10 +162,14 @@ class MoneyOKView @JvmOverloads constructor(context: Context, parent: HomeDefaul
 
 
 
-
-
+//        ivOff.clickNoRepeat {
+//            Toast.makeText(context,"!2222",Toast.LENGTH_SHORT).show()
+////            onMoneyOKClickListener?.onConfirm()
+//        }
+//
 //        ivOk.clickNoRepeat {
-//            onMoneyOKClickListener?.onConfirm()
+//            Toast.makeText(context,"!1111111111",Toast.LENGTH_SHORT).show()
+////            onMoneyOKClickListener?.onConfirm()
 //        }
 
 

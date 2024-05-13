@@ -114,14 +114,14 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
         val basketball = Bundle().apply {
             putInt("type",0)
         }
-        mDatabind.rlRoot.bringToFront()
-        GameData.getInstance().rootView = mDatabind.tempTouth
+
+//        GameData.getInstance().rootView = mDatabind.tempTouth
 
 
 //        mViewModel.getddd()
         mDatabind.ivHomeLogo.clickNoRepeat {
             hiddenView()
-            mDatabind.rlShowResult.visibility=View.VISIBLE
+//            mDatabind.rlShowResult.visibility=View.VISIBLE
         }
         appGameViewModel.ceshEvent.observe(this){
         }
