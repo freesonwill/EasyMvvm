@@ -1,15 +1,12 @@
-package com.cn.game.sdk.common;
+package game.mod.proc.yf.entity;
 
 /**
  * response code
  */
 public interface GameResCode {
-    //登录成功
-    int SUB_LOGON_RESP__SUCCESS = 106;
-    //登录异常
-    int SUB_LOGON_RESP__LOGIN_ERROR = 107;
+
     /**
-     * 進入房間, 取得房間資訊 -> Res.EnterInfo
+     * 進入, 取得基本資訊 -> Res.EnterInfo
      */
     int S2C_ENTER_INFO = 1000;
     /**
@@ -49,8 +46,7 @@ public interface GameResCode {
     int S2C_LEAVE_MINI_GAME = 1009;
 
     /**
-     * 刷新屬性 -> Res.RefreshUserProperties
+     * 刷新金錢 -> Res.RefreshUserScore
      */
-    int S2C_REFRESH_USER_PROPS = 1050;
-
+    int S2C_REFRESH_USER_SCORE = 1050;
 }
