@@ -334,13 +334,14 @@
                         android:layout_height="match_parent"
                         android:scaleType="fitXY"
                         app:srcCompat="@drawable/icon_bg_btn"/>
+
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/ivHomeRotation"
                         android:layout_width="7dp"
                         android:layout_height="13dp"
-                        android:scaleType="fitXY"
                         android:layout_centerInParent="true"
-                        app:srcCompat="@drawable/icon_arrow_top"/>
+                        android:scaleType="fitXY"
+                        app:srcCompat="@drawable/icon_arrow_top" />
 
                 </RelativeLayout>
 

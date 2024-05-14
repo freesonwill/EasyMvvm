@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleObserver
@@ -42,6 +43,18 @@ object MyGameManager {
      * 每次点击扣钱，但是不显示出来，确定后才把这个金额显示在真实钱上
      */
     var temporaryCurrentMoney:Int=5000
+
+    /**
+     * 是否可以点击操作
+     */
+    var  isClickOperation:Boolean=true
+
+    /**
+     * 是否进入直播间了，如果进入直播间就要调用 进入直播间的消息
+     */
+    var  isStayLive:Boolean=false
+
+
 
     //获取快三的浮动view
     fun   getFastThreeView(context:Context):FastLogoView{
@@ -93,5 +106,42 @@ object MyGameManager {
             fastThreeView!!.setText("10:00")
         }
     }
+
+
+
+
+
+    /**
+     * 根据选中的item返回要飞的图片
+     */
+    fun getListImage(position:Int,context:Context): Drawable {
+        if(position==0){
+            return ContextCompat.getDrawable(context, R.drawable.icon_ok_shi)!!
+        }else if(position==1){
+            return ContextCompat.getDrawable(context, R.drawable.icon_ok_wushi)!!
+        }else if(position==2){
+            return ContextCompat.getDrawable(context, R.drawable.icon_ok_yibai)!!
+        }else if(position==3){
+            return ContextCompat.getDrawable(context, R.drawable.icon_ok_liangbai)!!
+        }else if(position==4){
+            return ContextCompat.getDrawable(context, R.drawable.icon_ok_wubai)!!
+        }else if(position==5){
+            return ContextCompat.getDrawable(context, R.drawable.icon_ok_qian)!!
+        }else if(position==6){
+            return ContextCompat.getDrawable(context, R.drawable.icon_ok_liangqian)!!
+        }else if(position==7){
+            return ContextCompat.getDrawable(context, R.drawable.icon_ok_wuqian)!!
+        }else if(position==8){
+            return ContextCompat.getDrawable(context, R.drawable.icon_ok_yiwan)!!
+        }else if(position==9){
+            return ContextCompat.getDrawable(context, R.drawable.icon_ok_liangwan)!!
+        }else if(position==10){
+            return ContextCompat.getDrawable(context, R.drawable.icon_ok_wuwan)!!
+        }else{
+            return ContextCompat.getDrawable(context, R.drawable.icon_ok_shiwan)!!
+        }
+
+    }
+
 
 }
