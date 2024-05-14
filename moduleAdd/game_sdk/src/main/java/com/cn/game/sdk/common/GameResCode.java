@@ -1,4 +1,4 @@
-package game.mod.proc.yf.entity;
+package com.cn.game.sdk.common;
 
 /**
  * response code
