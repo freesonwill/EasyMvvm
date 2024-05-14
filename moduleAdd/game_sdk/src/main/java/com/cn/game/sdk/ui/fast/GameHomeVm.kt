@@ -10,15 +10,9 @@ import kotlinx.coroutines.launch
 
 class GameHomeVm : BaseViewModel() {
     var submit= UnPeekLiveData<Boolean>()
-    fun getddd(){
 
-        Log.i("VVVVVVVVVVVV","11111111111111")
 
-    }
 
-    override fun onCleared() {
-        super.onCleared()
 
-    }
 
 }

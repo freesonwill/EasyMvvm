@@ -34,9 +34,12 @@ fun rewritingTouch(tempTouth: RelativeLayout, viewPager: ViewPager,
                     var  leftTop= homeDefaultFragment.requireView().findViewWithTag<MoneyOKView>("showLeftTopMoney")
                     var  rightTop= homeDefaultFragment.requireView().findViewWithTag<MoneyOKView>("showRightTopMoney")
                     var  leftBelow= homeDefaultFragment.requireView().findViewWithTag<MoneyOKView>("showLeftBelowMoney")
+                    var  rightBelow= homeDefaultFragment.requireView().findViewWithTag<MoneyOKView>("showRightBelowMoney")
                     //用于判断父类是否是在点击范围
                     var isTouchLeftTop:Boolean=false
                     var isTouchRightTop:Boolean=false
+                    var isTouchLeftBelow:Boolean=false
+                    var isTouchRightBelow:Boolean=false
                     if(leftTop!=null){
                         isTouchLeftTop = isShowTouch(leftTop,x,y)
                     }
@@ -45,9 +48,11 @@ fun rewritingTouch(tempTouth: RelativeLayout, viewPager: ViewPager,
                     }
 
                     if(leftBelow!=null){
-                        isTouchRightTop = isShowTouch(leftBelow,x,y)
+                        isTouchLeftBelow = isShowTouch(leftBelow,x,y)
                     }
-
+                    if(rightBelow!=null){
+                        isTouchRightBelow = isShowTouch(rightBelow,x,y)
+                    }
 
                     //判断放进去的控件是否为空，并且判断是不是在范围，是否隐藏了
                     if(leftTop!=null&&isTouchLeftTop&&leftTop.llShowTop.visibility== View.VISIBLE){
@@ -86,7 +91,7 @@ fun rewritingTouch(tempTouth: RelativeLayout, viewPager: ViewPager,
                             return@OnTouchListener false
                         }
 
-                    }else  if(leftBelow!=null&&isTouchRightTop&&leftBelow.llShowTop.visibility== View.VISIBLE){
+                    }else  if(leftBelow!=null&&isTouchLeftBelow&&leftBelow.llShowTop.visibility== View.VISIBLE){
                         //左下
                         leftBelow.ivOff.getLocationOnScreen(locationOff)
                         leftBelow.ivOk.getLocationOnScreen(locationOk)
@@ -99,6 +104,24 @@ fun rewritingTouch(tempTouth: RelativeLayout, viewPager: ViewPager,
                             return@OnTouchListener true
                         } else  if(isTouchOnOk&& leftBelow.ivOk.visibility== View.VISIBLE){
                             leftBelow.ivOk.performClick()
+                            return@OnTouchListener true
+                        }else {
+                            return@OnTouchListener false
+                        }
+
+                    }else  if(rightBelow!=null&&isTouchRightBelow&&rightBelow.llShowTop.visibility== View.VISIBLE){
+                        //右下
+                        rightBelow.ivOff.getLocationOnScreen(locationOff)
+                        rightBelow.ivOk.getLocationOnScreen(locationOk)
+                        val isTouchOnOff = x >= locationOff[0] && x <= (locationOff[0] + rightBelow.ivOff.width)
+                                && y >= locationOff[1] && y <= (locationOff[1] + rightBelow.ivOff.height)
+                        val isTouchOnOk = x >= locationOk[0] && x <= (locationOk[0] + rightBelow.ivOk.width)
+                                && y >= locationOk[1] && y <= (locationOk[1] + rightBelow.ivOk.height)
+                        if(isTouchOnOff&& rightBelow.ivOff.visibility== View.VISIBLE){
+                            rightBelow.ivOff.performClick()
+                            return@OnTouchListener true
+                        } else  if(isTouchOnOk&& rightBelow.ivOk.visibility== View.VISIBLE){
+                            rightBelow.ivOk.performClick()
                             return@OnTouchListener true
                         }else {
                             return@OnTouchListener false

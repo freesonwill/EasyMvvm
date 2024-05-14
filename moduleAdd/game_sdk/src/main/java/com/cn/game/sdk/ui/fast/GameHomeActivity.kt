@@ -11,6 +11,9 @@ import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
 import android.view.View
+import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.AccelerateInterpolator
+import android.view.animation.DecelerateInterpolator
 import android.view.animation.LinearInterpolator
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -70,10 +73,7 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
      */
     private var isShowResult:Boolean=true
 
-    /**
-     * 判断所有的按钮是否可以点击
-     */
-    private  var isClick:Boolean=true
+
 
     var popup: BasePopupView?=null
     var bubbleAttach : CustomBubbleAttachPopup?=null
@@ -110,7 +110,7 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
 
 
 
-//        mViewModel.getddd()
+
         mDatabind.ivHomeLogo.clickNoRepeat {
             hiddenView()
 //            mDatabind.rlShowResult.visibility=View.VISIBLE
@@ -165,9 +165,7 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
             select(4)
             false
         }
-        window.decorView.setOnClickListener{
-            Log.i("DDDDDDDDDDDDdd", "触摸在 ivOff 区域内")
-        }
+
 
         adapter()
         setClick()
@@ -207,6 +205,9 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
             leopardFragment=leopardFragment)
 
 
+
+
+
     }
 
 
@@ -231,7 +232,7 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
 
         mDatabind.rlClickHide.clickNoRepeat {
 
-            if(isClick){
+            if(MyGameManager.isClickOperation){
                 resultAnimation()
             }
 
@@ -620,6 +621,7 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
      * 重点 点击勾勾投注确定会调用此方法，要把所有的子页面的临时钱都要投注然后清空
      */
     fun clickOKBet(){
+        //默认的 ============
         //点击确定后，购买成功后要把临时的总金额传递给实际的
         MyGameManager.currentMoney= MyGameManager.temporaryCurrentMoney
         //获取当前余额
@@ -635,6 +637,29 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
         ComputeDefault.rightBelow.moneyTemporary=0
         ComputeDefault.centreDate.moneyOkEmpty+= ComputeDefault.centreDate.moneyTemporary
         ComputeDefault.centreDate.moneyTemporary=0
+        //保存需要的钱
+        ComputeDefault.leftTop.moneyOk= ComputeDefault.leftTop.moneyOkEmpty
+        ComputeDefault.rightTop.moneyOk= ComputeDefault.rightTop.moneyOkEmpty
+        ComputeDefault.leftBelow.moneyOk= ComputeDefault.leftBelow.moneyOkEmpty
+        ComputeDefault.rightBelow.moneyOk= ComputeDefault.rightBelow.moneyOkEmpty
+        ComputeDefault.centreDate.moneyOk= ComputeDefault.centreDate.moneyOkEmpty
+
+        //点击确定的时候要更新一下动画位置
+        if(ComputeDefault.leftTop.moneyOkEmpty>0){
+            ComputeDefault.leftTop.viewXYLast=ComputeDefault.leftTop.viewXYTemporary
+        }
+        if(ComputeDefault.rightTop.moneyOkEmpty>0){
+            ComputeDefault.rightTop.viewXYLast=ComputeDefault.rightTop.viewXYTemporary
+        }
+        if(ComputeDefault.leftBelow.moneyOkEmpty>0){
+            ComputeDefault.leftBelow.viewXYLast=ComputeDefault.leftBelow.viewXYTemporary
+        }
+        if(ComputeDefault.rightBelow.moneyOkEmpty>0){
+            ComputeDefault.rightBelow.viewXYLast=ComputeDefault.rightBelow.viewXYTemporary
+        }
+        if(ComputeDefault.centreDate.moneyOkEmpty>0){
+            ComputeDefault.centreDate.viewXYLast=ComputeDefault.centreDate.viewXYTemporary
+        }
         //设置一下最新的钱
         homeDefaultFragment.setAllShowViewMoney()
         //判断现在哪些要展示在注区
@@ -642,6 +667,7 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
 
         //刷新投注区适配器
         mDatabind.llShowBetList.adapter!!.notifyDataSetChanged()
+        //=============默认设置结束
 
     }
 
@@ -715,7 +741,7 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
         //代码new一个imageview，图片资源是上面的imageview的图片
         // (这个图片就是执行动画的图片，从开始位置出发，经过一个抛物线（贝塞尔曲线），移动到购物车里)
         val goods = ImageView(this)
-        goods.setImageDrawable( ComputeDefault.getListImage(num,this))
+        goods.setImageDrawable( MyGameManager.getListImage(num,this))
         val params = RelativeLayout.LayoutParams(dp2px(32), dp2px(32))
         mDatabind.rlRoot.addView(goods, params)
 
@@ -776,8 +802,8 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
         //★★★属性动画实现（从0到贝塞尔曲线的长度之间进行插值计算，获取中间过程的距离值）
         val valueAnimator = ValueAnimator.ofFloat(0f, mPathMeasure!!.length)
         valueAnimator.duration = 200
-        // 匀速线性插值器
-        valueAnimator.interpolator = LinearInterpolator()
+        // 匀速线性插值器 LinearInterpolator
+        valueAnimator.interpolator = AccelerateDecelerateInterpolator()
 
         valueAnimator.addUpdateListener(object : ValueAnimator.AnimatorUpdateListener {
             override fun onAnimationUpdate(animation: ValueAnimator) {
