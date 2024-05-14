@@ -13,16 +13,15 @@ import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.RelativeLayout
 import com.cn.game.sdk.appGameViewModel
 import com.cn.game.sdk.base.BaseGameFragment
+import com.cn.game.sdk.bean.InPrizeBean
 import com.cn.game.sdk.databinding.FragmentHomeDefaultBinding
-import com.cn.game.sdk.enums.NS_ENUM
+import com.cn.game.sdk.enums.NOTES_ENUM
 import com.cn.game.sdk.ui.fast.GameHomeActivity
 import com.cn.game.sdk.utils.ComputeDefault
 import com.cn.game.sdk.utils.MyGameManager
 import com.cn.game.sdk.view.MoneyOKDeleteView
 import com.cn.game.sdk.view.MoneyOKView
-import com.google.android.material.internal.ViewUtils.dpToPx
 import com.xcjh.base_lib.utils.dp2px
-import com.xcjh.base_lib.utils.view.clickNoRepeat
 import me.jessyan.autosize.utils.AutoSizeUtils.dp2px
 
 
@@ -61,7 +60,6 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
     @SuppressLint("ClickableViewAccessibility")
     override fun initView(savedInstanceState: Bundle?) {
 
-        Log.i("SSSSSSSSSCCC","==========="+ NS_ENUM.QTDefault.num)
         arguments?.let {
             type = it.getInt("type")
         }
@@ -233,7 +231,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
                     var ray=yOnScreen+dp2px(context,47f)
 
 
-                    (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat())
+                    (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(), animationView =showCentreDateMoney.ivShowBg )
 
                 } else {
                     val viewTreeObserver = showCentreDateMoney.viewTreeObserver
@@ -257,7 +255,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
                             var  rax=xOnScreen
                             var ray=yOnScreen+dp2px(context,47f)
 
-                            (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat())
+                            (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),animationView =showCentreDateMoney.ivShowBg)
                             //显示点击在Fragment的位置用于动画结束后显示
                             if(ComputeDefault.centreDate.viewXYTemporary[0]==0&&ComputeDefault.centreDate.viewXYTemporary[1]==0){
                                 val location = IntArray(2)
@@ -355,7 +353,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
                                 var  rax=xOnScreen
                                 var ray=yOnScreen+requireContext().dp2px(52)
 
-                                (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat())
+                                (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),  animationView=showLeftBelowMoney.ivShowBg)
                             } else {
 
                                 val viewTreeObserver = showLeftBelowMoney.viewTreeObserver
@@ -376,7 +374,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
                                         var  rax=xOnScreen
                                         var ray=yOnScreen+requireContext().dp2px(52)
 
-                                        (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat())
+                                        (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),animationView=showLeftBelowMoney.ivShowBg)
                                     }
                                 })
 
@@ -465,7 +463,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
                                 var  rax=xOnScreen
                                 var ray=yOnScreen+requireContext().dp2px(52)
 
-                                (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat())
+                                (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),speed=600, animationView =showRightBelowMoney.ivShowBg )
                             } else {
 
                                 val viewTreeObserver = showRightBelowMoney.viewTreeObserver
@@ -486,7 +484,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
                                         var  rax=xOnScreen
                                         var ray=yOnScreen+requireContext().dp2px(52)
 
-                                        (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat())
+                                        (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),speed=600,animationView =showRightBelowMoney.ivShowBg)
                                     }
                                 })
 
@@ -640,7 +638,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
                                 var  rax=xOnScreen
                                 var ray=yOnScreen+requireContext().dp2px(52)
 
-                                (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat())
+                                (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),speed=600, animationView = showRightTopMoney.ivShowBg)
 
                             } else {
                                 val viewTreeObserver = showRightTopMoney.viewTreeObserver
@@ -661,7 +659,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
                                         var  rax=xOnScreen
                                         var ray=yOnScreen+requireContext().dp2px(52)
 
-                                        (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat())
+                                        (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),speed=600, animationView = showRightTopMoney.ivShowBg)
                                      }
                                 })
 
@@ -745,7 +743,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
             //通过显示的控件得到相对于屏幕的位置
             var  rax=xOnScreen
             var ray=yOnScreen+dp2px(context,47f)
-            (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat())
+            (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(), animationView = showLeftTopMoney.ivShowBg)
 
         } else {
             val viewTreeObserver = showLeftTopMoney.viewTreeObserver
@@ -766,7 +764,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
                   var  rax=xOnScreen
                    var ray=yOnScreen+dp2px(context,47f)
 
-                    (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat())
+                    (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(), animationView = showLeftTopMoney.ivShowBg)
 
                 }
             })
@@ -959,8 +957,6 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
             ComputeDefault.rightBelow.viewXYTemporary[1]=ComputeDefault.rightBelow.viewXYLast[1]
             //计算钱
             showRightBelowMoney.setShowMoney(ComputeDefault.rightBelow.moneyTemporary+ComputeDefault.rightBelow.moneyOkEmpty)
-
-
             // 动态添加的视图未成功添加到布局中
             val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
             mDatabind.rlHomeRoot.addView(showRightBelowMoney, params)
@@ -988,12 +984,167 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
     }
 
     /**
-     * 中奖后模块闪缩
+     * inPrizeList   中奖的区域
+     * pressureIn    压中的区域
      */
-    fun flicker(){
+    fun flicker(inPrizeList:ArrayList<InPrizeBean>,pressureIn:ArrayList<InPrizeBean>){
+        closeBetting()
+        //中奖区域
+           var inPrizeBean=InPrizeBean()
+        inPrizeBean.inPrizType= NOTES_ENUM.QTDefaultBig.num
+        inPrizeList.add(inPrizeBean)
+          inPrizeBean=InPrizeBean()
+        inPrizeBean.inPrizType= NOTES_ENUM.QTDefaultTriple.num
+        inPrizeList.add(inPrizeBean)
+        //压中
+        for (i in 0 until  inPrizeList.size) {
+            if(inPrizeList[i].inPrizType==NOTES_ENUM.QTDefaultSmall.num&&ComputeDefault.leftTop.moneyOkEmpty>0){
+                var pressure=InPrizeBean()
+                pressure.inPrizType=NOTES_ENUM.QTDefaultSmall.num
+                pressure.money=(ComputeDefault.leftTop.moneyOkEmpty*2)
+                pressureIn.add(pressure)
+                break
+            }else  if(inPrizeList[i].inPrizType==NOTES_ENUM.QTDefaultBig.num&&ComputeDefault.rightTop.moneyOkEmpty>0){
+
+
+                var pressure=InPrizeBean()
+                pressure.inPrizType=NOTES_ENUM.QTDefaultBig.num
+                pressure.money=(ComputeDefault.rightTop.moneyOkEmpty*2)
+                pressureIn.add(pressure)
+                break
+            }else  if(inPrizeList[i].inPrizType==NOTES_ENUM.QTDefaultSingle.num&&ComputeDefault.leftBelow.moneyOkEmpty>0){
+                var pressure=InPrizeBean()
+                pressure.inPrizType=NOTES_ENUM.QTDefaultSingle.num
+                pressure.money=(ComputeDefault.leftBelow.moneyOkEmpty*2)
+                pressureIn.add(pressure)
+                break
+            } else  if(inPrizeList[i].inPrizType==NOTES_ENUM.QTDefaultDouble.num&&ComputeDefault.rightBelow.moneyOkEmpty>0){
+
+                var pressure=InPrizeBean()
+                pressure.inPrizType=NOTES_ENUM.QTDefaultDouble.num
+                pressure.money=(ComputeDefault.rightBelow.moneyOkEmpty*2)
+                pressureIn.add(pressure)
+                break
+            }else  if(inPrizeList[i].inPrizType==NOTES_ENUM.QTDefaultTriple.num&&ComputeDefault.centreDate.moneyOkEmpty>0){
+                var pressure=InPrizeBean()
+                pressure.inPrizType=NOTES_ENUM.QTDefaultTriple.num
+                pressure.money=(ComputeDefault.centreDate.moneyOkEmpty*2)
+                pressureIn.add(pressure)
+                break
+            }
+
+        }
+
+        //显示数据
+        for (i in 0 until  pressureIn.size) {
+            if(pressureIn[i].inPrizType==NOTES_ENUM.QTDefaultSmall.num){
+                //计算钱
+                showLeftTopMoney.setShowMoney(pressureIn[i].money)
+                val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                mDatabind.rlHomeRoot.addView(showLeftTopMoney, params)
+                showLeftTopMoney.translationX =  ComputeDefault.leftTop.viewXYLast[0].toFloat()-requireContext().dp2px(30)
+                showLeftTopMoney.translationY =  ComputeDefault.leftTop.viewXYLast[1].toFloat()-requireContext().dp2px(52)
+                break
+            }else  if(pressureIn[i].inPrizType==NOTES_ENUM.QTDefaultBig.num){
+                //计算钱
+                showRightTopMoney.setShowMoney(pressureIn[i].money)
+                // 动态添加的视图未成功添加到布局中
+                val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                mDatabind.rlHomeRoot.addView(showRightTopMoney, params)
+                showRightTopMoney.translationX =  ComputeDefault.rightTop.viewXYLast[0].toFloat()-requireContext().dp2px(30)
+                showRightTopMoney.translationY =  ComputeDefault.rightTop.viewXYLast[1].toFloat()-requireContext().dp2px(52)
+
+            }else  if(pressureIn[i].inPrizType==NOTES_ENUM.QTDefaultSingle.num){
+                //计算钱
+                showRightBelowMoney.setShowMoney(pressureIn[i].money)
+                // 动态添加的视图未成功添加到布局中
+                val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                mDatabind.rlHomeRoot.addView(showRightBelowMoney, params)
+                showRightBelowMoney.translationX =  ComputeDefault.rightBelow.viewXYLast[0].toFloat()-requireContext().dp2px(30)
+                showRightBelowMoney.translationY =  ComputeDefault.rightBelow.viewXYLast[1].toFloat()+requireContext().dp2px(35)
+
+            }else  if(pressureIn[i].inPrizType==NOTES_ENUM.QTDefaultDouble.num){
+                //计算钱
+                showRightBelowMoney.setShowMoney(pressureIn[i].money)
+                // 动态添加的视图未成功添加到布局中
+                val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                mDatabind.rlHomeRoot.addView(showRightBelowMoney, params)
+                showRightBelowMoney.translationX =  ComputeDefault.rightBelow.viewXYLast[0].toFloat()-requireContext().dp2px(30)
+                showRightBelowMoney.translationY =  ComputeDefault.rightBelow.viewXYLast[1].toFloat()+requireContext().dp2px(35)
+
+            }else  if(pressureIn[i].inPrizType==NOTES_ENUM.QTDefaultTriple.num){
+                //计算钱
+                showCentreDateMoney.setShowMoney(pressureIn[i].money)
+                val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                mDatabind.rlClickCentre.addView(showCentreDateMoney, params)
+                // 将新按钮设置为居中
+                params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE)
+                showCentreDateMoney.layoutParams = params
+            }
+
+
+            deletePreviousRound()
+
+
+        }
+
+
+
 
     }
 
+    /**
+     * 得到开奖信息后删除所有的在界面上的注码
+     */
+    fun closeBetting(){
+        if (mDatabind.rlHomeRoot.indexOfChild(showLeftTopMoney) != -1) {
+            mDatabind.rlHomeRoot.removeView(showLeftTopMoney)
+        }
+        if (mDatabind.rlHomeRoot.indexOfChild(showRightTopMoney) != -1) {
+            mDatabind.rlHomeRoot.removeView(showRightTopMoney)
+        }
+
+        if (mDatabind.rlHomeRoot.indexOfChild(showLeftBelowMoney) != -1) {
+            mDatabind.rlHomeRoot.removeView(showLeftBelowMoney)
+        }
+
+        if (mDatabind.rlHomeRoot.indexOfChild(showRightBelowMoney) != -1) {
+            mDatabind.rlHomeRoot.removeView(showRightBelowMoney)
+        }
+
+
+
+    }
+
+    /**
+     * 删除上一轮的数据
+     */
+    fun  deletePreviousRound(){
+        ComputeDefault.leftTop.viewXYTemporary= intArrayOf(0, 0)
+        ComputeDefault.leftTop.moneyTemporary= 0
+        ComputeDefault.leftTop.moneyOkEmpty= 0
+
+
+        ComputeDefault.rightTop.viewXYTemporary= intArrayOf(0, 0)
+        ComputeDefault.rightTop.moneyTemporary= 0
+        ComputeDefault.rightTop.moneyOkEmpty= 0
+
+
+        ComputeDefault.leftBelow.viewXYTemporary= intArrayOf(0, 0)
+        ComputeDefault.leftBelow.moneyTemporary= 0
+        ComputeDefault.leftBelow.moneyOkEmpty= 0
+
+
+        ComputeDefault.rightBelow.viewXYTemporary= intArrayOf(0, 0)
+        ComputeDefault.rightBelow.moneyTemporary= 0
+        ComputeDefault.rightBelow.moneyOkEmpty= 0
+
+
+        ComputeDefault.centreDate.viewXYTemporary= intArrayOf(0, 0)
+        ComputeDefault.centreDate.moneyTemporary= 0
+        ComputeDefault.centreDate.moneyOkEmpty= 0
+
+    }
 
 
 }

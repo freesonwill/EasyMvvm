@@ -4,6 +4,7 @@ package com.cn.game.sdk.ui.fast
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
+import android.animation.PropertyValuesHolder
 import android.animation.ValueAnimator
 import android.graphics.Path
 import android.graphics.PathMeasure
@@ -29,6 +30,7 @@ import com.cn.game.sdk.bean.SelectAnnotationBean
 import com.cn.game.sdk.databinding.ActivityGameHomeBinding
 import com.cn.game.sdk.databinding.ItemAnnotationListBinding
 import com.cn.game.sdk.databinding.ItemBetHistoryBinding
+import com.cn.game.sdk.listener.GameTimeStatic
 import com.cn.game.sdk.popup.CustomBubbleAttachPopup
 import com.cn.game.sdk.tool.bindViewPager
 import com.cn.game.sdk.tool.init
@@ -66,7 +68,9 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
     var isExecuteClose:Boolean=true
 
 
-
+    // 定义属性动画常量
+    private val SCALE_X = PropertyValuesHolder.ofFloat(View.SCALE_X, 1.0f, 1.4f, 1.0f)
+    private val SCALE_Y = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.0f, 1.4f, 1.0f)
 
     /**
      * 是否显示骰子的结果组合
@@ -80,6 +84,32 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
+
+        MyGameManager.setLiveStatusListener(this.toString(),object : GameTimeStatic{
+            override fun onCountdown(time: Long) {
+                super.onCountdown(time)
+                val seconds: Long = Math.round(time.toDouble() / 1000)
+                mDatabind.txtHomeTime.text=seconds.toString()
+
+
+            }
+
+            override fun onStatic(mStatic: Int) {
+                super.onStatic(mStatic)
+
+                MyGameManager.countDownTimer.start()
+                //1是下注   2结算
+                if(mStatic==2){
+                    mDatabind.txtHomeStatic.text=resources.getString(R.string.g_home_txt_please)
+                }else{
+                    MyGameManager.isClickOperation=true
+                    mDatabind.txtHomeStatic.text=resources.getString(R.string.g_home_balance)
+                }
+
+            }
+        })
+        MyGameManager.countDownTimer.start()
+
         // 获取屏幕的高度
         val screenHeight = resources.displayMetrics.heightPixels
 
@@ -113,7 +143,7 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
 
         mDatabind.ivHomeLogo.clickNoRepeat {
             hiddenView()
-//            mDatabind.rlShowResult.visibility=View.VISIBLE
+            mDatabind.rlShowResult.visibility=View.VISIBLE
         }
         appGameViewModel.ceshEvent.observe(this){
         }
@@ -682,7 +712,7 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
     /**
      * 执行动画  isCentered如果是true就是可以超出父类的
      */
-    fun startAnimation(x:Float, y:Float,isCentered:Boolean=false){
+    fun startAnimation(x:Float, y:Float,isCentered:Boolean=false,speed:Long=500,animationView:View){
 
         var num:Int=0
         var viewX:Int=0
@@ -782,8 +812,8 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
         val toX: Float = endLoc[0].toFloat()
         val toY = endLoc[1].toFloat()-dp2px(32)
 
-//        //   四、计算中间动画的插值坐标（贝塞尔曲线）（其实就是用贝塞尔曲线来完成起终点的过程）
-//        //开始绘制贝塞尔曲线
+        //   四、计算中间动画的插值坐标（贝塞尔曲线）（其实就是用贝塞尔曲线来完成起终点的过程）
+        //开始绘制贝塞尔曲线
 //        val path = Path()
 //        //移动到起始点（贝塞尔曲线的起点）
 //        path.moveTo(startX, startY)
@@ -801,7 +831,7 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
 
         //★★★属性动画实现（从0到贝塞尔曲线的长度之间进行插值计算，获取中间过程的距离值）
         val valueAnimator = ValueAnimator.ofFloat(0f, mPathMeasure!!.length)
-        valueAnimator.duration = 200
+        valueAnimator.duration = speed
         // 匀速线性插值器 LinearInterpolator
         valueAnimator.interpolator = AccelerateDecelerateInterpolator()
 
@@ -839,6 +869,9 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
                 //动画结束
                 // 把移动的图片imageview从父布局里移除
                 mDatabind.rlRoot.removeView(goods)
+                val animator = ObjectAnimator.ofPropertyValuesHolder(animationView, SCALE_X, SCALE_Y)
+                animator.duration = 200
+                animator.start()
             }
 
             override fun onAnimationCancel(animation: Animator) {

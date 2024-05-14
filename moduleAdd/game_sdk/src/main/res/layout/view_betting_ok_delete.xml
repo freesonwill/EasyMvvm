@@ -35,7 +35,6 @@
                 android:layout_width="29dp"
                 android:layout_height="23dp"
                 app:srcCompat="@drawable/icon_lv_ok"
-                android:layout_marginLeft="@dimen/dp_5"
                  />
 <!--app:srcCompat="@drawable/icon_lv_ok"-->
 

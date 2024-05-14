@@ -69,3 +69,12 @@ data class HistoryResultBean(
     var isShow:Boolean=true
 
     ): Serializable
+
+/**
+ * 中奖的区域和钱
+ */
+data class InPrizeBean(
+    var inPrizType: Int=-1,//类型
+    var money: Int=0,//中奖钱
+): Serializable
+

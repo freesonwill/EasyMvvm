@@ -16,4 +16,5 @@
     <string name="g_home_tab_double">对子</string>
     <string name="g_home_tab_leopard">豹子</string>
     <string name="g_home_tab_sum">总和</string>
+    <string name="g_home_balance">结算</string>
 </resources>

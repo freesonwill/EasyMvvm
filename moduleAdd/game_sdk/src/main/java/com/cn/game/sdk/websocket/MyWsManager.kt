@@ -16,6 +16,7 @@ import com.xcjh.base_lib.utils.*
 import game.common.proto.ClientReq
 import game.common.proto.ClientRes.ErrorMessage
 import kotlinx.coroutines.*
+import org.java_websocket.client.WebSocketClient
 import org.java_websocket.enums.ReadyState
 import java.lang.Runnable
 import java.net.URI
