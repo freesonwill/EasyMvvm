@@ -25,6 +25,8 @@ import com.drake.brv.utils.mutable
 import com.drake.brv.utils.setDifferModels
 import com.drake.brv.utils.setup
 import com.drake.statelayout.StateConfig
+import com.lxj.xpopup.XPopup
+import com.lxj.xpopup.core.BasePopupView
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
 import com.xcjh.app.R
@@ -44,6 +46,7 @@ import com.xcjh.app.databinding.ItemUnderWayBinding
 import com.xcjh.app.ui.details.MatchDetailActivity
 import com.xcjh.app.utils.SoundManager
 import com.xcjh.app.view.CustomHeader
+import com.xcjh.app.view.PopupKickOut
 import com.xcjh.app.websocket.MyWsManager
 import com.xcjh.app.websocket.bean.FeedSystemNoticeBean
 import com.xcjh.app.websocket.bean.LiveStatus
@@ -55,6 +58,7 @@ import com.xcjh.app.websocket.listener.LiveStatusListener
 import com.xcjh.app.websocket.listener.MOffListener
 import com.xcjh.base_lib.App
 import com.xcjh.base_lib.Constants
+import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.utils.myToast
 import com.youth.banner.util.BannerUtils
 import kotlinx.coroutines.delay
@@ -69,6 +73,10 @@ import java.util.Locale
 class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRecommendBinding>() {
     //默认是要加载后才刷新
     var  isShow:Boolean=false
+
+
+
+
 
     override fun initView(savedInstanceState: Bundle?) {
         mDatabind.state.apply {
@@ -244,6 +252,7 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
                                     if((mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].userId.equals(bean.anchorId)){
                                         (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.removeAt(j)
                                         mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
+                                        mViewModel.getNowLive(true)
                                         break
                                     }
                                 }

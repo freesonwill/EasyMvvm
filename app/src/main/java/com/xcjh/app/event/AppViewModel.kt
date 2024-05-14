@@ -75,6 +75,9 @@ class AppViewModel : BaseViewModel() {
 
     //获取获取FPS
     var fpsEvent=EventLiveData<String>()
+
+    var ceshiEvent=EventLiveData<Boolean>()
+
     init {
         //默认值保存的账户信息，没有登陆过则为null started 或 resumed
         this.updateLoginEvent.value = CacheUtil.isLogin()

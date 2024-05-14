@@ -1,5 +1,6 @@
 package com.xcjh.app.ui.home.msg
 
+import android.content.Context
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
@@ -10,6 +11,8 @@ import com.drake.brv.utils.models
 import com.drake.brv.utils.mutable
 import com.drake.brv.utils.setup
 import com.drake.statelayout.StateConfig
+import com.lxj.xpopup.XPopup
+import com.lxj.xpopup.core.BasePopupView
 import com.xcjh.app.R
 import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseFragment
@@ -21,6 +24,7 @@ import com.xcjh.app.utils.CacheUtil
 import com.xcjh.app.utils.SoundManager
 import com.xcjh.app.utils.delFriDilog
 import com.xcjh.app.view.CustomHeader
+import com.xcjh.app.view.PopupKickOut
 import com.xcjh.app.view.SideBarLayout.OnSideBarLayoutListener
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.LogUtils
@@ -44,6 +48,9 @@ class MsFriendFragment : BaseFragment<MsgVm, FrMsgfriendBinding>() {
             return fragment
         }
     }
+
+
+
 
     override fun initView(savedInstanceState: Bundle?) {
         try {

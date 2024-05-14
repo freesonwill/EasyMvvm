@@ -117,7 +117,7 @@
     <string name="main_txt_basketball">籃球</string>
     <string name="main_txt_news">新聞</string>
     <string name="main_txt_session">%s場</string>
-    <string name="main_txt_on_the_air">正在開播</string>
+    <string name="main_txt_on_the_air">正在直播</string>
     <string name="main_txt_no_live">暫未有主播開播</string>
     <string name="main_txt_basketball_phase">第%s節</string>
     <string name="zb_notice">主播公告</string>

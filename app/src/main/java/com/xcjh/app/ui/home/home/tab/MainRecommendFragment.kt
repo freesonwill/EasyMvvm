@@ -176,7 +176,7 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
             override fun onC2CReceive(chat: ReceiveChatMsg) {
 
             }
-
+            //比赛实时刷新
             override fun onChangeReceive(chat: ArrayList<ReceiveChangeMsg>) {
 
                 var refresh=ArrayList<Int>()

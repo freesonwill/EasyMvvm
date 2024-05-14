@@ -84,6 +84,8 @@ class DetailVm : BaseViewModel() {
 
     //获取比赛详情
     fun getMatchDetail(matchId: String, matchType: String?, showD: Boolean = false) {
+        Log.i("FFFFFf","matchId====="+matchId+"===="+matchType)
+
         request(
             {
                 apiService.getMatchDetail(matchId, matchType)
@@ -242,7 +244,7 @@ class DetailVm : BaseViewModel() {
         if (isRefresh) {
             pageNo = 1
         }
-        Log.i("VVVVVVVVRRRR","=="+exceptId)
+
         request({
             apiService.getNowLive(
                 LiveReq(

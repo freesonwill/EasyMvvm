@@ -192,6 +192,7 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
                                     if((mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).userId.equals(bean.anchorId)){
                                         mDatabind.rcvRecommend.mutable.removeAt(i)
                                         mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
+                                        mViewModel.getNowLive(true,type = type.toString())
                                         break
                                     }
                                 }

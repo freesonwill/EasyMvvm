@@ -1026,6 +1026,7 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
                         startAnmila(hd,1)
                     }
                     R.id.ivface->{
+
                         SoundManager.playMedia()
                         startAnmila(0f,2)
 

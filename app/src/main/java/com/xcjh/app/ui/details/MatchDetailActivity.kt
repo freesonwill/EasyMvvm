@@ -30,6 +30,7 @@ import com.gyf.immersionbar.ImmersionBar.getStatusBarHeight
 import com.kongzue.dialogx.dialogs.CustomDialog
 import com.kongzue.dialogx.interfaces.OnBindView
 import com.lxj.xpopup.XPopup
+import com.lxj.xpopup.core.BasePopupView
 import com.shuyu.gsyvideoplayer.GSYVideoManager
 import com.shuyu.gsyvideoplayer.builder.GSYVideoOptionBuilder
 import com.shuyu.gsyvideoplayer.model.VideoOptionModel
@@ -48,6 +49,7 @@ import com.xcjh.app.ui.details.common.GSYBaseActivity
 import com.xcjh.app.ui.details.fragment.*
 import com.xcjh.app.utils.*
 import com.xcjh.app.utils.TimeUtil
+import com.xcjh.app.view.PopupKickOut
 import com.xcjh.app.view.PopupSelectProjection
 import com.xcjh.app.view.balldetail.ControlShowListener
 import com.xcjh.app.websocket.MyWsManager
@@ -59,10 +61,12 @@ import com.xcjh.app.websocket.listener.NoReadMsgPushListener
 import com.xcjh.app.websocket.listener.OtherPushListener
 import com.xcjh.base_lib.App
 import com.xcjh.base_lib.Constants
+import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.utils.*
 import com.xcjh.base_lib.utils.view.clickNoRepeat
 import com.xcjh.base_lib.utils.view.visibleOrGone
 import com.xcjh.base_lib.utils.view.visibleOrInvisible
+import kotlinx.android.synthetic.main.dialog_video_volume.content
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -238,6 +242,11 @@ class MatchDetailActivity :
             }
     }
 
+
+
+
+
+
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
@@ -245,6 +254,9 @@ class MatchDetailActivity :
             .navigationBarColor(R.color.c_181819)
             .navigationBarDarkIcon(false)
             .titleBarMarginTop(mDatabind.rltTop).init()
+
+
+
 
 
         // 使用方法
@@ -717,9 +729,19 @@ class MatchDetailActivity :
 
                         //防止数据未初始化的情况  7else9
                         if (::matchDetail.isInitialized && matchDetail.status in 0..if (matchType == "1")8 else 10) {
+
                             matchList.forEach {
                                 //正在比赛
                                 if (matchId == it.matchId.toString() && matchType == it.matchType.toString()) {
+                                    //比赛类型 1足球，2篮球      如果是足球并且是未开赛
+                                    if(it.matchType.toString().equals("1")&&matchDetail.status.equals("1")&&it.status.toInt()>1){
+                                        mViewModel.getMatchDetail("4125913", "1", true)
+                                        Log.i("SSSSSSCCCCC","开始比赛")
+                                        return
+                                    }
+
+
+
                                     Gson().toJson(it).loge("===66666===")
                                     matchDetail.apply {
                                         status = BigDecimal(it.status).toInt()
@@ -737,14 +759,22 @@ class MatchDetailActivity :
                                     }.apply {
                                         needWsToUpdateUI()
                                     }
-                                }
-                            }
+
+
+
+
+                              }
+
+
+                         }
+
                         } else{
 
                             matchList.forEach {
                                 //正在比赛
                                 if (matchId == it.matchId.toString() && matchType == it.matchType.toString()) {
-                                    finishDilog(this@MatchDetailActivity)
+                                    placeLoginDialogFinish(this@MatchDetailActivity)
+//                                    finishDilog(this@MatchDetailActivity)
                                     //直播间结束
 //                                    isHasAnchor=false
 //                                    isShowVideo=false
@@ -1154,7 +1184,8 @@ class MatchDetailActivity :
                         blacklistDilog(this)
 
                     }else{
-                        finishDilog(this)
+//                        finishDilog(this)
+                        placeLoginDialogFinish(this)
                     }
 
                } else{
@@ -1230,6 +1261,23 @@ class MatchDetailActivity :
                         )
                     }
                     changeUI()
+                }else{
+                    //比赛开始的时候刷新页面
+                    //判断当前是否展示直播
+                    getAnchor {
+                        mDatabind.root.postDelayed(
+                            {
+                                if (isShowVideo) {
+                                    startVideo(anchor!!.playUrl)
+                                } else {
+                                    mDatabind.videoPlayer.release()
+                                }
+                                changeUI()
+                                showHideLive()
+
+                            }, 10
+                        )
+                    }
                 }
             }
         }
@@ -1485,7 +1533,7 @@ class MatchDetailActivity :
                     item.isSelect = true
                     anchor = item
                 }else{
-                      item = list[0]
+                    item = list[0]
                     item.isSelect = true
                     anchor = item
                 }
@@ -1800,6 +1848,11 @@ class MatchDetailActivity :
     }
 
 
+
+
+
+
+
     var   finisShow:CustomDialog?=null
 
     /***
@@ -1833,8 +1886,38 @@ class MatchDetailActivity :
         }
         if(!finisShow!!.isShow){
             finisShow!!.show()
+
         }
 
     }
+
+    var  showDialogFinish: PopupKickOut?=null
+    var popwindowFinish: BasePopupView?=null
+    fun placeLoginDialogFinish(context:Context){
+        if(showDialogFinish==null){
+            showDialogFinish= PopupKickOut(context,resources.getString(R.string.live_txt_end))
+            popwindowFinish= XPopup.Builder(context)
+                .hasShadowBg(true)
+                .moveUpToKeyboard(false) //如果不加这个，评论弹窗会移动到软键盘上面
+                .isViewMode(false)
+                .isClickThrough(false)
+                .dismissOnBackPressed(false)
+                .dismissOnTouchOutside(false)
+                .isDestroyOnDismiss(false) //对于只使用一次的弹窗，推荐设置这个
+                //                        .isThreeDrag(true) //是否开启三阶拖拽，如果设置enableDrag(false)则无效
+                .asCustom(showDialogFinish)
+        }
+        showDialogFinish!!.popupKickOutListener=object : PopupKickOut.PopupKickOutListener{
+            override fun clickClose() {
+                popwindowFinish!!.dismiss()
+            }
+
+        }
+
+        if(!popwindowFinish!!.isShow){
+            popwindowFinish!!.show()
+        }
+    }
+
 
 }

@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 /**
  * 异常退出
  */
-class PopupKickOut (context: Context) : BasePopupView(context) {
+class PopupKickOut (context: Context,var  content:String="") : BasePopupView(context) {
     override fun getInnerLayoutId(): Int {
         return R.layout.layout_dialogx_delmsg_new
     }
@@ -34,7 +34,13 @@ class PopupKickOut (context: Context) : BasePopupView(context) {
         val tvsure =  findViewById<TextView>(R.id.tvsure)
         val viewGen =  findViewById<View>(R.id.viewGen)
 
-        textName.text=resources.getString(R.string.place_txt_login)
+        if(content.isNotEmpty()){
+            textName.text=content
+        }else{
+            textName.text=resources.getString(R.string.place_txt_login)
+        }
+
+
         tvcancle.visibility=View.GONE
         viewGen.visibility=View.GONE
 
