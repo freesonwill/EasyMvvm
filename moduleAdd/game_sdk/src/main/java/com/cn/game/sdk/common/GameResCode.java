@@ -4,7 +4,10 @@ package com.cn.game.sdk.common;
  * response code
  */
 public interface GameResCode {
-
+    //登录成功
+    int SUB_LOGON_RESP__SUCCESS = 106;
+    //登录异常
+    int SUB_LOGON_RESP__LOGIN_ERROR = 107;
     /**
      * 進入, 取得基本資訊 -> Res.EnterInfo
      */
