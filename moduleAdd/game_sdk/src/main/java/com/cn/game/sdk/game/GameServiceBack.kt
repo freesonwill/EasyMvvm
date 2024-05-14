@@ -89,8 +89,8 @@ object GameServiceBack {
     }
 
     //刷新屬性
-    fun refreshUserProperties(lifecycleOwner: LifecycleOwner ,action: (t: GameRes.RefreshUserProperties) -> Unit){
-        FlowBus.with<GameRes.RefreshUserProperties>("$_prv_key.${GameResCode.S2C_REFRESH_USER_PROPS}").register(lifecycleOwner){
+    fun refreshUserProperties(lifecycleOwner: LifecycleOwner ,action: (t: GameRes.RefreshUserScore) -> Unit){
+        FlowBus.with<GameRes.RefreshUserScore>("$_prv_key.${GameResCode.S2C_REFRESH_USER_SCORE}").register(lifecycleOwner){
             action(it)
         }
     }
