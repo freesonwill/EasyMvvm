@@ -13,31 +13,31 @@ object ComputeDefault {
     /**
      * 左上角
      */
-    var  leftTop= BettingRecordBean(viewXYTemporary= intArrayOf(0, 0),screenXYTemporary= intArrayOf(0, 0),
-                                       viewXYLast= intArrayOf(0, 0),screenXYLast= intArrayOf(0, 0))
+    var  leftTop= BettingRecordBean(viewXYTemporary= intArrayOf(0, 0),
+                                       viewXYLast= intArrayOf(0, 0) )
     /**
      * 右上角
      */
-    var  rightTop= BettingRecordBean(viewXYTemporary= intArrayOf(0, 0),screenXYTemporary= intArrayOf(0, 0),
-        viewXYLast= intArrayOf(0, 0),screenXYLast= intArrayOf(0, 0))
+    var  rightTop= BettingRecordBean(viewXYTemporary= intArrayOf(0, 0),
+        viewXYLast= intArrayOf(0, 0) )
     /**
      * 左下角
      */
-    var  leftBelow= BettingRecordBean(viewXYTemporary= intArrayOf(0, 0),screenXYTemporary= intArrayOf(0, 0),
-        viewXYLast= intArrayOf(0, 0),screenXYLast= intArrayOf(0, 0))
+    var  leftBelow= BettingRecordBean(viewXYTemporary= intArrayOf(0, 0),
+        viewXYLast= intArrayOf(0, 0) )
 
 
     /**
      * 右下角
      */
-    var  rightBelow= BettingRecordBean(viewXYTemporary= intArrayOf(0, 0),screenXYTemporary= intArrayOf(0, 0),
-        viewXYLast= intArrayOf(0, 0),screenXYLast= intArrayOf(0, 0))
+    var  rightBelow= BettingRecordBean(viewXYTemporary= intArrayOf(0, 0),
+        viewXYLast= intArrayOf(0, 0) )
 
     /**
      * 中间注区
      */
-    var  centreDate= BettingRecordBean(viewXYTemporary= intArrayOf(0, 0),screenXYTemporary= intArrayOf(0, 0),
-        viewXYLast= intArrayOf(0, 0),screenXYLast= intArrayOf(0, 0))
+    var  centreDate= BettingRecordBean(viewXYTemporary= intArrayOf(0, 0),
+        viewXYLast= intArrayOf(0, 0))
 
 
 

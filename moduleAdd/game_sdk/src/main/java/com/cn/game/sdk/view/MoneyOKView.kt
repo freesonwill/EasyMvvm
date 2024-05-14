@@ -25,7 +25,7 @@ import java.math.RoundingMode
 /**
  * 选择钱以后点击确定
  */
-class MoneyOKView @JvmOverloads constructor(context: Context, parent: HomeDefaultFragment, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, null, defStyleAttr) {
+class MoneyOKView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, null, defStyleAttr) {
     /**
      * 是否显示取消或者确定
      */
@@ -50,10 +50,7 @@ class MoneyOKView @JvmOverloads constructor(context: Context, parent: HomeDefaul
     lateinit var ivShowBg: AppCompatImageView
     lateinit var coOkView: CombinationOkView
 
-    /**
-     * 是否显示出来
-     */
-    private var isShow:Boolean=false
+
     // 声明一个变量来保存回调接口
     private var onMoneyOKClickListener: OnMoneyOKClickListener? = null
 
@@ -83,13 +80,11 @@ class MoneyOKView @JvmOverloads constructor(context: Context, parent: HomeDefaul
         ivShowBg = rootView. findViewById(R.id.ivShowBg)
         coOkView=CombinationOkView(context)
 
-//        ivOff = rootView. findViewById(R.id.ivOff)
-//        ivOk = rootView. findViewById(R.id.ivOk)
+        ivOff = rootView. findViewById(R.id.ivOff)
+        ivOk = rootView. findViewById(R.id.ivOk)
 
-        llShowTop.addView(coOkView)
-        ivShowBg.setOnClickListener {
-            Log.i("VVVVVVVVVVVVVv","======"+isShow)
-        }
+//        llShowTop.addView(coOkView)
+
         coOkView.setMoneyOKClickListener(object :CombinationOkView.CombinationOkClickListener{
             override fun onDelete() {
                 onMoneyOKClickListener?.onDelete()
@@ -145,32 +140,16 @@ class MoneyOKView @JvmOverloads constructor(context: Context, parent: HomeDefaul
 //        })
 
 
-//        ivOff.setOnClickListener(object : OutImageView.OnClickListener  {
-//            override fun click() {
-//                Log.i("SSSSSSSSSSSSSSSs","1111111111111")
-//                myToast("关闭")
-//
-//            }
-//        })
-//        ivOk.setOnClickListener(object : OutImageView.OnClickListener  {
-//            override fun click() {
-//                Log.i("SSSSSSSSSSSSSSSs","22222222222")
-//                myToast("确定")
-//
-//            }
-//        })
 
 
 
-//        ivOff.clickNoRepeat {
-//            Toast.makeText(context,"!2222",Toast.LENGTH_SHORT).show()
-////            onMoneyOKClickListener?.onConfirm()
-//        }
-//
-//        ivOk.clickNoRepeat {
-//            Toast.makeText(context,"!1111111111",Toast.LENGTH_SHORT).show()
-////            onMoneyOKClickListener?.onConfirm()
-//        }
+        ivOff.clickNoRepeat {
+            onMoneyOKClickListener?.onDelete()
+        }
+
+        ivOk.clickNoRepeat {
+            onMoneyOKClickListener?.onConfirm()
+        }
 
 
     }
@@ -211,11 +190,8 @@ class MoneyOKView @JvmOverloads constructor(context: Context, parent: HomeDefaul
     /**
      * 隐藏头部的缺点和删除
      */
-    fun hiddenTop(string:String="!111111"){
-        Log.i("SSSSSSAAAa","========="+string)
+    fun hiddenTop(){
         llShowTop.visibility= View.INVISIBLE
-        isShow=false
-//        coOkView.setShowView(false)
     }
 
     /**
@@ -223,7 +199,6 @@ class MoneyOKView @JvmOverloads constructor(context: Context, parent: HomeDefaul
      */
     fun showTop(){
         llShowTop.visibility= View.VISIBLE
-        isShow=true
     }
 
     fun showMoneyFormat(money:Int):String{

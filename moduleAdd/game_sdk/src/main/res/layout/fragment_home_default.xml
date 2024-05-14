@@ -11,9 +11,7 @@
         android:layout_height="match_parent" >
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_alignParentBottom="true"
-            android:layout_height="180dp">
-
+            android:layout_height="match_parent">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -117,6 +115,7 @@
                         android:layout_weight="1"
                         android:layout_height="match_parent">
                         <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/rlClickIamge"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:scaleType="fitXY"
@@ -216,6 +215,7 @@
                             android:layout_weight="1"
                             android:layout_height="match_parent">
                             <androidx.appcompat.widget.AppCompatImageView
+                                android:id="@+id/rlClickLeftBelowImage"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:scaleType="fitXY"

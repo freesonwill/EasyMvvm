@@ -14,23 +14,14 @@ data class SelectAnnotationBean(
  */
 data class BettingRecordBean(
     /**
-     *  动画结束后显示的位置  相对于控件的位置  临时的
+     *  动画相对于控件的位置
      */
     var viewXYTemporary: IntArray = IntArray(2),
-    /**
-     * 动画位置  相对于屏幕的 位置临时的
-     */
-    var screenXYTemporary: IntArray = IntArray(2),
+
     /**
      *  动画结束后显示的位置  相对于控件的位置  要点击确定的时候保存
      */
     var viewXYLast: IntArray = IntArray(2),
-
-    /**
-     * 动画位置  相对于屏幕的 要点击确定的时候保存
-     */
-    var screenXYLast: IntArray = IntArray(2),
-
 
     /**
      *   用于保存默认临时钱   如果当前结束了要清空 而且点击了确定就要清空~~或者投注失败用于减去确定的钱

@@ -20,40 +20,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-<!--        <androidx.appcompat.widget.AppCompatImageView-->
-<!--            android:id="@+id/ivOff"-->
-<!--            app:srcCompat="@drawable/icon_hong_off"-->
-<!--            android:layout_width="29dp"-->
-<!--            android:layout_height="23dp"/>-->
-<!--            <androidx.appcompat.widget.AppCompatImageView-->
-<!--                android:id="@+id/ivOk"-->
-<!--                app:srcCompat="@drawable/icon_lv_ok"-->
-<!--                android:layout_width="29dp"-->
-<!--                android:layout_height="23dp"/>-->
-<!--            <com.cn.game.sdk.view.OutImageView-->
-<!--                android:id="@+id/ivOff"-->
-<!--                android:scaleType="centerCrop"-->
-<!--                android:layout_width="29dp"-->
-<!--                android:layout_height="23dp"-->
-<!--                app:srcCompat="@drawable/icon_hong_off"-->
-<!--             />-->
-<!--&lt;!&ndash;   app:srcCompat="@drawable/icon_hong_off" &ndash;&gt;-->
-<!--            <com.cn.game.sdk.view.OutImageView-->
-<!--                android:id="@+id/ivOk"-->
-<!--                android:scaleType="centerCrop"-->
-<!--                android:layout_width="29dp"-->
-<!--                android:layout_height="23dp"-->
-<!--                app:srcCompat="@drawable/icon_lv_ok"-->
-<!--                 />-->
-<!--&lt;!&ndash;app:srcCompat="@drawable/icon_lv_ok"&ndash;&gt;-->
-<!--            <com.cn.game.sdk.view.CombinationOkView-->
-<!--                android:id="@+id/coOkViewNew"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"/>-->
-<!--            <com.cn.game.sdk.view.BeyoundGoView-->
-<!--                android:id="@+id/coOkView"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"/>-->
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivOff"
+            app:srcCompat="@drawable/icon_hong_off"
+            android:layout_width="29dp"
+            android:layout_height="23dp"/>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivOk"
+                app:srcCompat="@drawable/icon_lv_ok"
+                android:layout_width="29dp"
+                android:layout_height="23dp"/>
+
         </LinearLayout>
 
         <androidx.appcompat.widget.AppCompatTextView

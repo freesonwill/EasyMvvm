@@ -10,18 +10,15 @@ import android.graphics.PathMeasure
 import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
-import android.view.MotionEvent
 import android.view.View
 import android.view.animation.LinearInterpolator
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cn.game.sdk.R
-import com.cn.game.sdk.adapter.CommonFragmentAdapter
 import com.cn.game.sdk.appGameViewModel
 import com.cn.game.sdk.base.BaseGameActivity
 import com.cn.game.sdk.bean.HistoryResultBean
@@ -29,9 +26,6 @@ import com.cn.game.sdk.bean.SelectAnnotationBean
 import com.cn.game.sdk.databinding.ActivityGameHomeBinding
 import com.cn.game.sdk.databinding.ItemAnnotationListBinding
 import com.cn.game.sdk.databinding.ItemBetHistoryBinding
-import com.cn.game.sdk.game.GameData
-import com.cn.game.sdk.game.GameEmit
-import com.cn.game.sdk.game.GameServiceBack
 import com.cn.game.sdk.popup.CustomBubbleAttachPopup
 import com.cn.game.sdk.tool.bindViewPager
 import com.cn.game.sdk.tool.init
@@ -42,19 +36,15 @@ import com.cn.game.sdk.ui.fast.fragment.SingleDiceFragment
 import com.cn.game.sdk.ui.fast.fragment.SumTotalFragment
 import com.cn.game.sdk.utils.ComputeDefault
 import com.cn.game.sdk.utils.MyGameManager
-import com.cn.game.sdk.view.CombinationOkView
+import com.cn.game.sdk.utils.rewritingTouch
+import com.cn.game.sdk.view.MoneyOKView
 import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.models
-import com.drake.brv.utils.mutable
 import com.drake.brv.utils.setup
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
 import com.xcjh.base_lib.utils.dp2px
-import com.xcjh.base_lib.utils.loge
-import com.xcjh.base_lib.utils.logw
 import com.xcjh.base_lib.utils.view.clickNoRepeat
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 
 class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>() {
@@ -111,11 +101,13 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
         // 设置状态栏颜色为透明getColor(android.R.color.transparent)
         window.statusBarColor = ContextCompat.getColor(this,android.R.color.transparent)
           homeDefaultFragment = HomeDefaultFragment()
+
         val basketball = Bundle().apply {
             putInt("type",0)
         }
 
 //        GameData.getInstance().rootView = mDatabind.tempTouth
+
 
 
 //        mViewModel.getddd()
@@ -210,9 +202,27 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
          }
         //获取当前余额
         mDatabind.txtCurrentMoney.text=MyGameManager.currentMoney.toString()
+        rewritingTouch(tempTouth=mDatabind.tempTouth,viewPager=mDatabind.viewPager,homeDefaultFragment=homeDefaultFragment,
+            singleDiceFragment=singleDiceFragment,sumTotalFragment=sumTotalFragment,pairsDiceFragment=pairsDiceFragment,
+            leopardFragment=leopardFragment)
 
 
     }
+
+
+    fun isTouchInsideView(view: View, x: Float, y: Float): Boolean {
+        val location = IntArray(2)
+        view.getLocationOnScreen(location)
+
+        val viewX = location[0]
+        val viewY = location[1]
+        val viewWidth = view.width
+        val viewHeight = view.height
+
+        return x >= viewX && x <= viewX + viewWidth && y >= viewY && y <= viewY + viewHeight
+    }
+
+
     private val initialUpperLayoutHeightMap = mutableMapOf<Int, Int>()
     private var initia = 0
     var isAdd:Boolean=true
@@ -740,10 +750,10 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
         val startX: Float =viewX.toFloat()+dp2px(12)
         val startY: Float =viewY.toFloat()-dp2px(24)
 
-        //商品掉落后的终点坐标：购物车起始点-父布局起始点+购物车图片的1/5
+        //商品掉落后的终点坐标：购物车起始点-父布局起始点+购物车图片的1/5   动画结束的时候
 //        val toX: Float = (endLoc[0] - parentLocation[0] +32).toFloat()
 //        val toY = (endLoc[1] - parentLocation[1]).toFloat()
-        val toX: Float = endLoc[0].toFloat()+dp2px(16)
+        val toX: Float = endLoc[0].toFloat()
         val toY = endLoc[1].toFloat()-dp2px(32)
 
 //        //   四、计算中间动画的插值坐标（贝塞尔曲线）（其实就是用贝塞尔曲线来完成起终点的过程）
@@ -881,4 +891,8 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
 
 
     }
+
+
+
+
 }
