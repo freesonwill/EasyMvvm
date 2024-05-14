@@ -66,6 +66,10 @@ message ActorPerform {
 message EnterMiniGameInfo {
     // 小游戏 id
     int32 miniGameId = 1;
+    // 当前所处阶段：1.下注 2.结算
+    int32 stage = 6;
+    // 当前阶段剩余时间倒计时(ms)
+    int32 countDown = 7;
 
     repeated AreaType areaTypes = 2; // 注区分类表
     repeated AreaInfo areaInfoList = 3; // 每个注区的设定
@@ -156,8 +160,7 @@ message LeaveMiniGames {
     repeated int32 miniGameIds = 1; //
 }
 
-// 选择性刷新玩家属性
-message RefreshUserProperties {
-    //optional string groupId = 1;
-    optional int64 score = 2;
+// 刷新玩家金錢
+message RefreshUserScore {
+    optional int64 score = 1;
 }
