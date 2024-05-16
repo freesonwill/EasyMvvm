@@ -159,29 +159,29 @@ class MoneyOKView @JvmOverloads constructor(context: Context, attrs: AttributeSe
      */
     fun setShowMoney(money:Int){
         ivShowMoney.text = showMoneyFormat(money)
-        if(money<=10){
+        if(money<50){
             ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_ok_shi))
-        }else if(money<=50){
+        }else if(money>=50){
             ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_ok_wushi))
-        }else if(money<=100){
+        }else if(money>=100){
             ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_ok_yibai))
-        }else if(money<=200){
+        }else if(money>=200){
             ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_ok_liangbai))
-        }else if(money<=500){
+        }else if(money>=500){
             ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_ok_wubai))
-        }else if(money<=1000){
+        }else if(money>=1000){
             ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_ok_qian))
-        }else if(money<=2000){
+        }else if(money>=2000){
             ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_ok_liangqian))
-        }else if(money<=5000){
+        }else if(money>=5000){
             ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_ok_wuqian))
-        }else if(money<=10000){
+        }else if(money>=10000){
             ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_ok_yiwan))
-        }else if(money<=20000){
+        }else if(money>=20000){
             ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_ok_liangwan))
-        }else if(money<=50000){
+        }else if(money>=50000){
             ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_ok_wuwan))
-        }else{
+        }else  {
             ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_ok_shiwan))
         }
 

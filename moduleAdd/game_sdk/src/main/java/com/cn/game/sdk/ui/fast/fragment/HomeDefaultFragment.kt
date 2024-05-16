@@ -1,6 +1,5 @@
 package com.cn.game.sdk.ui.fast.fragment
 
-import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.os.Build
@@ -17,7 +16,7 @@ import com.cn.game.sdk.bean.InPrizeBean
 import com.cn.game.sdk.databinding.FragmentHomeDefaultBinding
 import com.cn.game.sdk.enums.NOTES_ENUM
 import com.cn.game.sdk.ui.fast.GameHomeActivity
-import com.cn.game.sdk.utils.ComputeDefault
+import com.cn.game.sdk.bean.ComputeDefault
 import com.cn.game.sdk.utils.MyGameManager
 import com.cn.game.sdk.view.MoneyOKDeleteView
 import com.cn.game.sdk.view.MoneyOKView
@@ -54,8 +53,8 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
      * 中间注区
      */
     lateinit var showCentreDateMoney: MoneyOKDeleteView
-    private val animators = mutableListOf<ObjectAnimator>()
-    private var animatorSet: AnimatorSet? = null
+
+    private var animators: MutableList<ObjectAnimator> = mutableListOf()
 
     @SuppressLint("ClickableViewAccessibility")
     override fun initView(savedInstanceState: Bundle?) {
@@ -63,6 +62,8 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
         arguments?.let {
             type = it.getInt("type")
         }
+
+
 
         //初始化左上角
         showLeftTopMoney=MoneyOKView(requireContext())
@@ -218,7 +219,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
                 showCentreDateMoney.showTop()
                 //计算钱
                 ComputeDefault.centreDate.moneyTemporary= ComputeDefault.centreDate.moneyTemporary+MyGameManager.noteList[selectNum].money
-                showCentreDateMoney.setShowMoney(ComputeDefault.centreDate.moneyTemporary+ComputeDefault.centreDate.moneyOkEmpty)
+                showCentreDateMoney.setShowMoney(ComputeDefault.centreDate.moneyTemporary+ ComputeDefault.centreDate.moneyOkEmpty)
 
                 //动画位置
                 if (mDatabind.rlClickCentre.indexOfChild(showCentreDateMoney) != -1) {
@@ -257,7 +258,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
 
                             (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),animationView =showCentreDateMoney.ivShowBg)
                             //显示点击在Fragment的位置用于动画结束后显示
-                            if(ComputeDefault.centreDate.viewXYTemporary[0]==0&&ComputeDefault.centreDate.viewXYTemporary[1]==0){
+                            if(ComputeDefault.centreDate.viewXYTemporary[0]==0&& ComputeDefault.centreDate.viewXYTemporary[1]==0){
                                 val location = IntArray(2)
                                 showCentreDateMoney.getLocationInWindow(location)
 
@@ -327,7 +328,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
                         } else {
 
                             //显示点击在Fragment的位置用于动画结束后显示
-                            if(ComputeDefault.leftBelow.viewXYTemporary [0]==0&&ComputeDefault.leftBelow.viewXYTemporary[1]==0){
+                            if(ComputeDefault.leftBelow.viewXYTemporary [0]==0&& ComputeDefault.leftBelow.viewXYTemporary[1]==0){
                                 ComputeDefault.leftBelow.viewXYTemporary[0]=x.toInt()
                                 ComputeDefault.leftBelow.viewXYTemporary[1]=y.toInt()
                             }
@@ -341,7 +342,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
                             }
                             //计算钱
                             ComputeDefault.leftBelow.moneyTemporary= ComputeDefault.leftBelow.moneyTemporary+MyGameManager.noteList[selectNum].money
-                            showLeftBelowMoney.setShowMoney(ComputeDefault.leftBelow.moneyTemporary+ComputeDefault.leftBelow.moneyOkEmpty)
+                            showLeftBelowMoney.setShowMoney(ComputeDefault.leftBelow.moneyTemporary+ ComputeDefault.leftBelow.moneyOkEmpty)
                             //判断是否添加上去了这个viwe
                             if (mDatabind.rlHomeRoot.indexOfChild(showLeftBelowMoney) != -1) {
 
@@ -437,7 +438,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
                         } else {
 
                             //显示点击在Fragment的位置用于动画结束后显示
-                            if(ComputeDefault.rightBelow.viewXYTemporary [0]==0&&ComputeDefault.rightBelow.viewXYTemporary[1]==0){
+                            if(ComputeDefault.rightBelow.viewXYTemporary [0]==0&& ComputeDefault.rightBelow.viewXYTemporary[1]==0){
                                 ComputeDefault.rightBelow.viewXYTemporary[0]=rax.toInt()
                                 ComputeDefault.rightBelow.viewXYTemporary[1]=y.toInt()
                             }
@@ -451,7 +452,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
                             }
                             //计算钱
                             ComputeDefault.rightBelow.moneyTemporary= ComputeDefault.rightBelow.moneyTemporary+MyGameManager.noteList[selectNum].money
-                            showRightBelowMoney.setShowMoney(ComputeDefault.rightBelow.moneyTemporary+ComputeDefault.rightBelow.moneyOkEmpty)
+                            showRightBelowMoney.setShowMoney(ComputeDefault.rightBelow.moneyTemporary+ ComputeDefault.rightBelow.moneyOkEmpty)
                             //判断是否添加上去了这个viwe
                             if (mDatabind.rlHomeRoot.indexOfChild(showRightBelowMoney) != -1) {
 
@@ -612,7 +613,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
                             handleEdgeClick(isOnLeftEdge, isOnTopEdge, isOnRightEdge, isOnBottomEdge)
                         } else {
                             //显示点击在Fragment的位置用于动画结束后显示
-                            if(ComputeDefault.rightTop.viewXYTemporary [0]==0&&ComputeDefault.rightTop.viewXYTemporary[1]==0){
+                            if(ComputeDefault.rightTop.viewXYTemporary [0]==0&& ComputeDefault.rightTop.viewXYTemporary[1]==0){
                                 ComputeDefault.rightTop.viewXYTemporary[0]=rax.toInt()
                                 ComputeDefault.rightTop.viewXYTemporary[1]=y.toInt()
                             }
@@ -626,7 +627,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
                             }
                             //计算钱
                             ComputeDefault.rightTop.moneyTemporary= ComputeDefault.rightTop.moneyTemporary+MyGameManager.noteList[selectNum].money
-                            showRightTopMoney.setShowMoney(ComputeDefault.rightTop.moneyTemporary+ComputeDefault.rightTop.moneyOkEmpty)
+                            showRightTopMoney.setShowMoney(ComputeDefault.rightTop.moneyTemporary+ ComputeDefault.rightTop.moneyOkEmpty)
                             //判断是否添加上去了这个viwe
                             if (mDatabind.rlHomeRoot.indexOfChild(showRightTopMoney) != -1) {
 
@@ -717,7 +718,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
 
     private fun handleNonEdgeClick(x:Float,y:Float,rax:Float,ray:Float) {
         //显示点击在Fragment的位置用于动画结束后显示
-        if(ComputeDefault.leftTop.viewXYTemporary [0]==0&&ComputeDefault.leftTop.viewXYTemporary[1]==0){
+        if(ComputeDefault.leftTop.viewXYTemporary [0]==0&& ComputeDefault.leftTop.viewXYTemporary[1]==0){
             ComputeDefault.leftTop.viewXYTemporary[0]=x.toInt()
             ComputeDefault.leftTop.viewXYTemporary[1]=y.toInt()
         }
@@ -731,7 +732,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
         }
         //计算钱
         ComputeDefault.leftTop.moneyTemporary= ComputeDefault.leftTop.moneyTemporary+MyGameManager.noteList[selectNum].money
-        showLeftTopMoney.setShowMoney(ComputeDefault.leftTop.moneyTemporary+ComputeDefault.leftTop.moneyOkEmpty)
+        showLeftTopMoney.setShowMoney(ComputeDefault.leftTop.moneyTemporary+ ComputeDefault.leftTop.moneyOkEmpty)
         //判断是否添加上去了这个viwe
         if (mDatabind.rlHomeRoot.indexOfChild(showLeftTopMoney) != -1) {
 
@@ -910,10 +911,10 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
         //左上
         if(ComputeDefault.leftTop.moneyOkEmpty>0){
             //临时的动画位置也要赋值，不然点击的时候会有问题
-            ComputeDefault.leftTop.viewXYTemporary[0]=ComputeDefault.leftTop.viewXYLast[0]
-            ComputeDefault.leftTop.viewXYTemporary[1]=ComputeDefault.leftTop.viewXYLast[1]
+            ComputeDefault.leftTop.viewXYTemporary[0]= ComputeDefault.leftTop.viewXYLast[0]
+            ComputeDefault.leftTop.viewXYTemporary[1]= ComputeDefault.leftTop.viewXYLast[1]
             //计算钱
-            showLeftTopMoney.setShowMoney(ComputeDefault.leftTop.moneyTemporary+ComputeDefault.leftTop.moneyOkEmpty)
+            showLeftTopMoney.setShowMoney(ComputeDefault.leftTop.moneyTemporary+ ComputeDefault.leftTop.moneyOkEmpty)
             val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
             mDatabind.rlHomeRoot.addView(showLeftTopMoney, params)
             showLeftTopMoney.translationX =  ComputeDefault.leftTop.viewXYTemporary[0].toFloat()-requireContext().dp2px(30)
@@ -922,10 +923,10 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
         //右上
         if(ComputeDefault.rightTop.moneyOkEmpty>0){
             //临时的动画位置也要赋值，不然点击的时候会有问题
-            ComputeDefault.rightTop.viewXYTemporary[0]=ComputeDefault.rightTop.viewXYLast[0]
-            ComputeDefault.rightTop.viewXYTemporary[1]=ComputeDefault.rightTop.viewXYLast[1]
+            ComputeDefault.rightTop.viewXYTemporary[0]= ComputeDefault.rightTop.viewXYLast[0]
+            ComputeDefault.rightTop.viewXYTemporary[1]= ComputeDefault.rightTop.viewXYLast[1]
             //计算钱
-            showRightTopMoney.setShowMoney(ComputeDefault.rightTop.moneyTemporary+ComputeDefault.rightTop.moneyOkEmpty)
+            showRightTopMoney.setShowMoney(ComputeDefault.rightTop.moneyTemporary+ ComputeDefault.rightTop.moneyOkEmpty)
 
             // 动态添加的视图未成功添加到布局中
             val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
@@ -938,10 +939,10 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
         //左下
         if(ComputeDefault.leftBelow.moneyOkEmpty>0){
             //临时的动画位置也要赋值，不然点击的时候会有问题
-            ComputeDefault.leftBelow.viewXYTemporary[0]=ComputeDefault.leftBelow.viewXYLast[0]
-            ComputeDefault.leftBelow.viewXYTemporary[1]=ComputeDefault.leftBelow.viewXYLast[1]
+            ComputeDefault.leftBelow.viewXYTemporary[0]= ComputeDefault.leftBelow.viewXYLast[0]
+            ComputeDefault.leftBelow.viewXYTemporary[1]= ComputeDefault.leftBelow.viewXYLast[1]
             //计算钱
-            showLeftBelowMoney.setShowMoney(ComputeDefault.leftBelow.moneyTemporary+ComputeDefault.leftBelow.moneyOkEmpty)
+            showLeftBelowMoney.setShowMoney(ComputeDefault.leftBelow.moneyTemporary+ ComputeDefault.leftBelow.moneyOkEmpty)
 
             // 动态添加的视图未成功添加到布局中
             val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
@@ -953,10 +954,10 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
         //右下
         if(ComputeDefault.rightBelow.moneyOkEmpty>0){
             //临时的动画位置也要赋值，不然点击的时候会有问题
-            ComputeDefault.rightBelow.viewXYTemporary[0]=ComputeDefault.rightBelow.viewXYLast[0]
-            ComputeDefault.rightBelow.viewXYTemporary[1]=ComputeDefault.rightBelow.viewXYLast[1]
+            ComputeDefault.rightBelow.viewXYTemporary[0]= ComputeDefault.rightBelow.viewXYLast[0]
+            ComputeDefault.rightBelow.viewXYTemporary[1]= ComputeDefault.rightBelow.viewXYLast[1]
             //计算钱
-            showRightBelowMoney.setShowMoney(ComputeDefault.rightBelow.moneyTemporary+ComputeDefault.rightBelow.moneyOkEmpty)
+            showRightBelowMoney.setShowMoney(ComputeDefault.rightBelow.moneyTemporary+ ComputeDefault.rightBelow.moneyOkEmpty)
             // 动态添加的视图未成功添加到布局中
             val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
             mDatabind.rlHomeRoot.addView(showRightBelowMoney, params)
@@ -967,10 +968,10 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
         //中间
         if(ComputeDefault.centreDate.moneyOkEmpty>0){
             //临时的动画位置也要赋值，不然点击的时候会有问题
-            ComputeDefault.centreDate.viewXYTemporary[0]=ComputeDefault.centreDate.viewXYLast[0]
-            ComputeDefault.centreDate.viewXYTemporary[1]=ComputeDefault.centreDate.viewXYLast[1]
+            ComputeDefault.centreDate.viewXYTemporary[0]= ComputeDefault.centreDate.viewXYLast[0]
+            ComputeDefault.centreDate.viewXYTemporary[1]= ComputeDefault.centreDate.viewXYLast[1]
             //计算钱
-            showCentreDateMoney.setShowMoney(ComputeDefault.centreDate.moneyTemporary+ComputeDefault.centreDate.moneyOkEmpty)
+            showCentreDateMoney.setShowMoney(ComputeDefault.centreDate.moneyTemporary+ ComputeDefault.centreDate.moneyOkEmpty)
 
 
             val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
@@ -990,47 +991,48 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
     fun flicker(inPrizeList:ArrayList<InPrizeBean>,pressureIn:ArrayList<InPrizeBean>){
         closeBetting()
         //中奖区域
-           var inPrizeBean=InPrizeBean()
-        inPrizeBean.inPrizType= NOTES_ENUM.QTDefaultBig.num
+        var inPrizeBean=InPrizeBean()
+        inPrizeBean.inPrizType= NOTES_ENUM.QTDefaultSmall.num
         inPrizeList.add(inPrizeBean)
           inPrizeBean=InPrizeBean()
         inPrizeBean.inPrizType= NOTES_ENUM.QTDefaultTriple.num
         inPrizeList.add(inPrizeBean)
+        fadeOut(true,inPrizeList)
         //压中
         for (i in 0 until  inPrizeList.size) {
-            if(inPrizeList[i].inPrizType==NOTES_ENUM.QTDefaultSmall.num&&ComputeDefault.leftTop.moneyOkEmpty>0){
+            if(inPrizeList[i].inPrizType==NOTES_ENUM.QTDefaultSmall.num&& ComputeDefault.leftTop.moneyOkEmpty>0){
                 var pressure=InPrizeBean()
                 pressure.inPrizType=NOTES_ENUM.QTDefaultSmall.num
                 pressure.money=(ComputeDefault.leftTop.moneyOkEmpty*2)
                 pressureIn.add(pressure)
-                break
-            }else  if(inPrizeList[i].inPrizType==NOTES_ENUM.QTDefaultBig.num&&ComputeDefault.rightTop.moneyOkEmpty>0){
+
+            }else  if(inPrizeList[i].inPrizType==NOTES_ENUM.QTDefaultBig.num&& ComputeDefault.rightTop.moneyOkEmpty>0){
 
 
                 var pressure=InPrizeBean()
                 pressure.inPrizType=NOTES_ENUM.QTDefaultBig.num
                 pressure.money=(ComputeDefault.rightTop.moneyOkEmpty*2)
                 pressureIn.add(pressure)
-                break
-            }else  if(inPrizeList[i].inPrizType==NOTES_ENUM.QTDefaultSingle.num&&ComputeDefault.leftBelow.moneyOkEmpty>0){
+
+            }else  if(inPrizeList[i].inPrizType==NOTES_ENUM.QTDefaultSingle.num&& ComputeDefault.leftBelow.moneyOkEmpty>0){
                 var pressure=InPrizeBean()
                 pressure.inPrizType=NOTES_ENUM.QTDefaultSingle.num
                 pressure.money=(ComputeDefault.leftBelow.moneyOkEmpty*2)
                 pressureIn.add(pressure)
-                break
-            } else  if(inPrizeList[i].inPrizType==NOTES_ENUM.QTDefaultDouble.num&&ComputeDefault.rightBelow.moneyOkEmpty>0){
+
+            } else  if(inPrizeList[i].inPrizType==NOTES_ENUM.QTDefaultDouble.num&& ComputeDefault.rightBelow.moneyOkEmpty>0){
 
                 var pressure=InPrizeBean()
                 pressure.inPrizType=NOTES_ENUM.QTDefaultDouble.num
                 pressure.money=(ComputeDefault.rightBelow.moneyOkEmpty*2)
                 pressureIn.add(pressure)
-                break
-            }else  if(inPrizeList[i].inPrizType==NOTES_ENUM.QTDefaultTriple.num&&ComputeDefault.centreDate.moneyOkEmpty>0){
+
+            }else  if(inPrizeList[i].inPrizType==NOTES_ENUM.QTDefaultTriple.num&& ComputeDefault.centreDate.moneyOkEmpty>0){
                 var pressure=InPrizeBean()
                 pressure.inPrizType=NOTES_ENUM.QTDefaultTriple.num
                 pressure.money=(ComputeDefault.centreDate.moneyOkEmpty*2)
                 pressureIn.add(pressure)
-                break
+
             }
 
         }
@@ -1040,14 +1042,16 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
             if(pressureIn[i].inPrizType==NOTES_ENUM.QTDefaultSmall.num){
                 //计算钱
                 showLeftTopMoney.setShowMoney(pressureIn[i].money)
+                showLeftTopMoney.hiddenTop()
                 val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
                 mDatabind.rlHomeRoot.addView(showLeftTopMoney, params)
                 showLeftTopMoney.translationX =  ComputeDefault.leftTop.viewXYLast[0].toFloat()-requireContext().dp2px(30)
                 showLeftTopMoney.translationY =  ComputeDefault.leftTop.viewXYLast[1].toFloat()-requireContext().dp2px(52)
-                break
+
             }else  if(pressureIn[i].inPrizType==NOTES_ENUM.QTDefaultBig.num){
                 //计算钱
                 showRightTopMoney.setShowMoney(pressureIn[i].money)
+                showRightTopMoney.hiddenTop()
                 // 动态添加的视图未成功添加到布局中
                 val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
                 mDatabind.rlHomeRoot.addView(showRightTopMoney, params)
@@ -1057,6 +1061,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
             }else  if(pressureIn[i].inPrizType==NOTES_ENUM.QTDefaultSingle.num){
                 //计算钱
                 showRightBelowMoney.setShowMoney(pressureIn[i].money)
+                showRightBelowMoney.hiddenTop()
                 // 动态添加的视图未成功添加到布局中
                 val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
                 mDatabind.rlHomeRoot.addView(showRightBelowMoney, params)
@@ -1066,6 +1071,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
             }else  if(pressureIn[i].inPrizType==NOTES_ENUM.QTDefaultDouble.num){
                 //计算钱
                 showRightBelowMoney.setShowMoney(pressureIn[i].money)
+                showRightBelowMoney.hiddenTop()
                 // 动态添加的视图未成功添加到布局中
                 val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
                 mDatabind.rlHomeRoot.addView(showRightBelowMoney, params)
@@ -1075,6 +1081,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
             }else  if(pressureIn[i].inPrizType==NOTES_ENUM.QTDefaultTriple.num){
                 //计算钱
                 showCentreDateMoney.setShowMoney(pressureIn[i].money)
+                showCentreDateMoney.hiddenTop()
                 val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
                 mDatabind.rlClickCentre.addView(showCentreDateMoney, params)
                 // 将新按钮设置为居中
@@ -1111,7 +1118,9 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
         if (mDatabind.rlHomeRoot.indexOfChild(showRightBelowMoney) != -1) {
             mDatabind.rlHomeRoot.removeView(showRightBelowMoney)
         }
-
+        if (mDatabind.rlClickCentre.indexOfChild(showCentreDateMoney) != -1) {
+            mDatabind.rlClickCentre.removeView(showCentreDateMoney)
+        }
 
 
     }
@@ -1121,30 +1130,108 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
      */
     fun  deletePreviousRound(){
         ComputeDefault.leftTop.viewXYTemporary= intArrayOf(0, 0)
+        ComputeDefault.leftTop.viewXYLast= intArrayOf(0, 0)
         ComputeDefault.leftTop.moneyTemporary= 0
         ComputeDefault.leftTop.moneyOkEmpty= 0
 
-
         ComputeDefault.rightTop.viewXYTemporary= intArrayOf(0, 0)
+        ComputeDefault.rightTop.viewXYLast= intArrayOf(0, 0)
         ComputeDefault.rightTop.moneyTemporary= 0
         ComputeDefault.rightTop.moneyOkEmpty= 0
 
 
         ComputeDefault.leftBelow.viewXYTemporary= intArrayOf(0, 0)
+        ComputeDefault.leftBelow.viewXYLast= intArrayOf(0, 0)
         ComputeDefault.leftBelow.moneyTemporary= 0
         ComputeDefault.leftBelow.moneyOkEmpty= 0
 
 
         ComputeDefault.rightBelow.viewXYTemporary= intArrayOf(0, 0)
+        ComputeDefault.rightBelow.viewXYLast= intArrayOf(0, 0)
         ComputeDefault.rightBelow.moneyTemporary= 0
         ComputeDefault.rightBelow.moneyOkEmpty= 0
 
-
         ComputeDefault.centreDate.viewXYTemporary= intArrayOf(0, 0)
+        ComputeDefault.centreDate.viewXYLast= intArrayOf(0, 0)
         ComputeDefault.centreDate.moneyTemporary= 0
         ComputeDefault.centreDate.moneyOkEmpty= 0
 
     }
+
+    /**
+     * 中奖区域闪烁的动画
+     *isAnimation true  是执行动画   flase是取消动画
+     */
+    fun fadeOut(isAnimation:Boolean,inPrizeList:ArrayList<InPrizeBean> =ArrayList<InPrizeBean>()){
+        if(isAnimation){
+            inPrizeList.forEach {
+                if(it.inPrizType==NOTES_ENUM.QTDefaultSmall.num){
+                    mDatabind.ivFlickerLeftTop.visibility=View.VISIBLE
+                    animators.add(ObjectAnimator.ofFloat(mDatabind.ivFlickerLeftTop, "alpha", 1f, 0f, 1f).apply {
+                        duration = 400 // 设置动画持续时间
+                        repeatCount = ObjectAnimator.INFINITE // 设置无限循环
+                        repeatMode = ObjectAnimator.REVERSE // 设置反向循环以实现渐隐渐显效果
+                    })
+
+                }else  if(it.inPrizType==NOTES_ENUM.QTDefaultBig.num){
+                    mDatabind.ivFlickerRightTop.visibility=View.VISIBLE
+                    animators.add(ObjectAnimator.ofFloat(mDatabind.ivFlickerRightTop, "alpha", 1f, 0f, 1f).apply {
+                        duration = 400 // 设置动画持续时间
+                        repeatCount = ObjectAnimator.INFINITE // 设置无限循环
+                        repeatMode = ObjectAnimator.REVERSE // 设置反向循环以实现渐隐渐显效果
+                    })
+
+                }else  if(it.inPrizType==NOTES_ENUM.QTDefaultSingle.num){
+                    mDatabind.ivFlickerLeftBelow.visibility=View.VISIBLE
+                    animators.add(ObjectAnimator.ofFloat(mDatabind.ivFlickerLeftBelow, "alpha", 1f, 0f, 1f).apply {
+                        duration = 400 // 设置动画持续时间
+                        repeatCount = ObjectAnimator.INFINITE // 设置无限循环
+                        repeatMode = ObjectAnimator.REVERSE // 设置反向循环以实现渐隐渐显效果
+                    })
+
+                }else  if(it.inPrizType==NOTES_ENUM.QTDefaultDouble.num){
+                    mDatabind.ivFlickerRightBelow.visibility=View.VISIBLE
+                    animators.add(ObjectAnimator.ofFloat(mDatabind.ivFlickerRightBelow, "alpha", 1f, 0f, 1f).apply {
+                        duration = 400 // 设置动画持续时间
+                        repeatCount = ObjectAnimator.INFINITE // 设置无限循环
+                        repeatMode = ObjectAnimator.REVERSE // 设置反向循环以实现渐隐渐显效果
+                    })
+
+                }else  if(it.inPrizType==NOTES_ENUM.QTDefaultTriple.num){
+                    mDatabind.ivFlickerCenter.visibility=View.VISIBLE
+                    animators.add(ObjectAnimator.ofFloat(mDatabind.ivFlickerCenter, "alpha", 1f, 0f, 1f).apply {
+                        duration =400 // 设置动画持续时间
+                        repeatCount = ObjectAnimator.INFINITE // 设置无限循环
+                        repeatMode = ObjectAnimator.REVERSE // 设置反向循环以实现渐隐渐显效果
+                    })
+                }
+            }
+
+            // 开始动画
+            animators.forEach { it.start() }
+
+        }else{
+            mDatabind.ivFlickerLeftTop.visibility=View.GONE
+            mDatabind.ivFlickerRightTop.visibility=View.GONE
+            mDatabind.ivFlickerLeftBelow.visibility=View.GONE
+            mDatabind.ivFlickerRightBelow.visibility=View.GONE
+            mDatabind.ivFlickerCenter.visibility=View.GONE
+            animators.forEach { it.cancel() }
+            animators.clear()
+        }
+
+
+    }
+
+
+    /**
+     * 退出页面的时候要清空这些数据
+     */
+    fun closeActivity(){
+        animators.forEach { it.cancel() }
+        animators.clear()
+    }
+
 
 
 }

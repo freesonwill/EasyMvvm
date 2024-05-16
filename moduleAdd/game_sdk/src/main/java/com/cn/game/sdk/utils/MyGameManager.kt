@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.CountDownTimer
+import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleObserver
@@ -39,12 +40,12 @@ object MyGameManager {
     /**
      * 当前余额并且是点击了确定后扣除的真实
      */
-      var currentMoney:Int=5000
+      var currentMoney:Int=500000
 
     /**
      * 每次点击扣钱，但是不显示出来，确定后才把这个金额显示在真实钱上
      */
-    var temporaryCurrentMoney:Int=5000
+    var temporaryCurrentMoney:Int=500000
 
     /**
      * 是否可以点击操作
@@ -59,7 +60,7 @@ object MyGameManager {
     /**
      * 倒计时的时间是毫秒1000
      */
-    var countdownTime:Int=20000
+    var countdownTime:Int=10000
 
     /**
      * 倒计时的状态0没有连接上  1是下注   2结算
@@ -71,9 +72,14 @@ object MyGameManager {
         if(fastThreeView==null){
             mContext=context
             fastThreeView= FastLogoView(context)
+
         }
 
         return fastThreeView as FastLogoView
+    }
+
+    fun showFastThreeView(){
+        fastThreeView!!.llFastClick.visibility=View.VISIBLE
     }
 
     /**
@@ -168,9 +174,21 @@ object MyGameManager {
     }
 
 
-    val countDownTimer = object : CountDownTimer(20 * 1000, 500) {
-        override fun onTick(millisUntilFinished: Long) {
-            mGameListener.forEach{
+    var countDownTimer : CountDownTimer?=null
+
+    /**
+     * 是否主动暂停
+     */
+    var isActive:Boolean=false
+    fun staCountDownTimer(){
+        countDownTimer = object : CountDownTimer( countdownTime.toLong(), 500) {
+            override fun onTick(millisUntilFinished: Long) {
+
+                if(static!=-1){
+                    mGameListener.forEach{
+                        it.toPair().second.onCountdown(millisUntilFinished)
+                    }
+                }
 
                 val seconds: Long = Math.round(millisUntilFinished.toDouble() / 1000)
                 if(seconds.toInt()<=1||static==2){
@@ -178,27 +196,30 @@ object MyGameManager {
                 }
 
                 countdownTime=seconds.toInt()
-                it.toPair().second.onCountdown(millisUntilFinished)
-            }
-        }
-
-        override fun onFinish() {
-            countdownTime=0
-            if(static==1){
-                static=2
-                isClickOperation=false
-            }else{
-                static=1
-
-            }
-            mGameListener.forEach{
-                it.toPair().second.onStatic(static)
             }
 
+            override fun onFinish() {
+//                countdownTime=0
+                if(static==1){
+                    static=2
+                    isClickOperation=false
+                }
+                else{
+                    static=1
+
+                }
+                if(static!=-1){
+                    mGameListener.forEach{
+                        it.toPair().second.onStatic(static)
+                    }
+                }
 
 
-        }
+
+
+            }
+        }.start()
+
     }
-
 
 }

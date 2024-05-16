@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat.startActivity
@@ -51,8 +52,8 @@ public class FastLogoView @JvmOverloads constructor(context: Context, attrs: Att
 
             var inagte= Intent(context, GameHomeActivity::class.java)
             context.startActivity(inagte)
-
-//            onFastLogoClickListener?.onButtonClick()
+            llFastClick.visibility= View.GONE
+            onFastLogoClickListener?.onButtonClick()
 
         }
         // 使用完毕后记得回收 TypedArray

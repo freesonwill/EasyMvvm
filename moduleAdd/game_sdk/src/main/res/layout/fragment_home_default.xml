@@ -8,7 +8,7 @@
     <RelativeLayout
         android:id="@+id/rlHomeRoot"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="180dp" >
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -424,6 +424,13 @@
                         android:textColor="@color/g_f8e0c4"/>
 
                 </LinearLayout>
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivFlickerCenter"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/icon_lucency_centre"/>
             </RelativeLayout>
         </RelativeLayout>
         

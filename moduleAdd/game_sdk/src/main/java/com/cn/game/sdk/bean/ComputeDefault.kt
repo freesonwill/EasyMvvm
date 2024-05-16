@@ -1,4 +1,4 @@
-package com.cn.game.sdk.utils
+package com.cn.game.sdk.bean
 
 import android.content.Context
 import android.graphics.drawable.Drawable

@@ -32,8 +32,7 @@ class MainActivity : Activity() {
 
             views?.setFastLogoClickListener(object :FastLogoView.OnFastLogoClickListener{
                 override fun onButtonClick() {
-                    Toast.makeText(this@MainActivity,"111111111",Toast.LENGTH_SHORT).show()
-                }
+                 }
 
             })
         }
@@ -44,7 +43,7 @@ class MainActivity : Activity() {
         }
         appGameViewModel.ceshEvent.postValue(true)
         //初始化尾部
-        MyWsManager.getInstance(this)?.initService()
+//        MyWsManager.getInstance(this)?.initService()
 
     }
 }

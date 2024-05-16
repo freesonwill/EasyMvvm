@@ -9,8 +9,7 @@ import androidx.fragment.app.FragmentTransaction
 import com.cn.game.sdk.R
 import com.cn.game.sdk.base.BaseGameActivity
 import com.cn.game.sdk.databinding.ActivityCeshiSdkBinding
-import com.cn.game.sdk.databinding.ActivityGameHomeBinding
-import com.cn.game.sdk.tool.bindViewPager
+import com.cn.game.sdk.tool.bindViewPagerNew
 import com.cn.game.sdk.tool.init
 import com.cn.game.sdk.ui.fast.GameHomeVm
 import com.cn.game.sdk.ui.fast.fragment.CeFragment
@@ -47,7 +46,7 @@ class CeshiSdkActivity : BaseGameActivity<GameHomeVm,ActivityCeshiSdkBinding >()
             getString(R.string.g_home_txt_default),
             getString(R.string.g_home_txt_more)))
         mDatabind.viewPager.offscreenPageLimit =mFragList.size
-        mDatabind.magicIndicator.bindViewPager(mDatabind.viewPager,arrayListOf(
+        mDatabind.magicIndicator.bindViewPagerNew(mDatabind.viewPager,arrayListOf(
             getString(R.string.g_home_txt_default),
             getString(R.string.g_home_txt_more)),scrollEnable=true)
 

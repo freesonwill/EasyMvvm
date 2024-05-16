@@ -80,50 +80,50 @@ class CombinationOkView@JvmOverloads constructor(
 
         })
 
-
-        GameData.getInstance().rootView?.setOnTouchListener(OnTouchListener { v, event ->
-            when (event.action) {
-
-                MotionEvent.ACTION_DOWN -> {
-                    // 判断隐藏显示
-                    Log.i("SSSSSSSSSSSSSssssss","[==========="+isShow)
-//                    if (!isShow){
-//                        return@OnTouchListener false
+//
+//        GameData.getInstance().rootView?.setOnTouchListener(OnTouchListener { v, event ->
+//            when (event.action) {
+//
+//                MotionEvent.ACTION_DOWN -> {
+//                    // 判断隐藏显示
+//                    Log.i("SSSSSSSSSSSSSssssss","[==========="+isShow)
+////                    if (!isShow){
+////                        return@OnTouchListener false
+////                    }
+//
+//                    val locationOff = IntArray(2)
+//                    val locationOk = IntArray(2)
+//                    rlClickOff.getLocationOnScreen(locationOff)
+//                    rlClickOk.getLocationOnScreen(locationOk)
+//                    val x = event.rawX
+//                    val y = event.rawY
+//                    // 判断触摸位置是否在 ivOff 区域内
+//                    val isTouchOnOff = x >= locationOff[0] && x <= (locationOff[0] + rlClickOff.width)
+//                            && y >= locationOff[1] && y <= (locationOff[1] + rlClickOff.height)
+//
+//                    // 判断触摸位置是否在 ivOk 区域内
+//                    val isTouchOnOk = x >= locationOk[0] && x <= (locationOk[0] + ivOk.width)
+//                            && y >= locationOk[1] && y <= (locationOk[1] + ivOk.height)
+//
+//                    if (isTouchOnOff) {
+//                        Log.i("DDDDDDDDDDDDdd", "触摸在 ivOff 区域内")
+//                        onCombinationOkClickListener?.onDelete()
+//                        // 处理 ivOff 的点击逻辑
+//                        return@OnTouchListener true
+//                    } else if (isTouchOnOk) {
+//                        Log.i("DDDDDDDDDDDDdd", "触摸在 ivOk 区域内")
+//                        onCombinationOkClickListener?.onConfirm()
+//                        // 处理 ivOk 的点击逻辑
+//                        return@OnTouchListener true
+//                    }else{
+//                        Log.i("DDDDDDDDDDDDdd", "没有摸到")
 //                    }
-
-                    val locationOff = IntArray(2)
-                    val locationOk = IntArray(2)
-                    rlClickOff.getLocationOnScreen(locationOff)
-                    rlClickOk.getLocationOnScreen(locationOk)
-                    val x = event.rawX
-                    val y = event.rawY
-                    // 判断触摸位置是否在 ivOff 区域内
-                    val isTouchOnOff = x >= locationOff[0] && x <= (locationOff[0] + rlClickOff.width)
-                            && y >= locationOff[1] && y <= (locationOff[1] + rlClickOff.height)
-
-                    // 判断触摸位置是否在 ivOk 区域内
-                    val isTouchOnOk = x >= locationOk[0] && x <= (locationOk[0] + ivOk.width)
-                            && y >= locationOk[1] && y <= (locationOk[1] + ivOk.height)
-
-                    if (isTouchOnOff) {
-                        Log.i("DDDDDDDDDDDDdd", "触摸在 ivOff 区域内")
-                        onCombinationOkClickListener?.onDelete()
-                        // 处理 ivOff 的点击逻辑
-                        return@OnTouchListener true
-                    } else if (isTouchOnOk) {
-                        Log.i("DDDDDDDDDDDDdd", "触摸在 ivOk 区域内")
-                        onCombinationOkClickListener?.onConfirm()
-                        // 处理 ivOk 的点击逻辑
-                        return@OnTouchListener true
-                    }else{
-                        Log.i("DDDDDDDDDDDDdd", "没有摸到")
-                    }
-
-
-                }
-            }
-            false
-        })
+//
+//
+//                }
+//            }
+//            false
+//        })
 //        ivOff.setOnClickListener {
 //            Log.i("AAAAAAA","============")
 //        }

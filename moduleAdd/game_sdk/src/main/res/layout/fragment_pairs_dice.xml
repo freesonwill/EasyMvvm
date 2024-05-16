@@ -57,7 +57,13 @@
                             android:textColor="@color/g_f8e0c4"/>
 
                     </LinearLayout>
-
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ivPairsOne"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="fitXY"
+                        android:visibility="gone"
+                        app:srcCompat="@drawable/flash_left_top"/>
                 </RelativeLayout>
                 <RelativeLayout
                     android:id="@+id/rvPairsClickTwo"
@@ -93,6 +99,14 @@
                             android:textColor="@color/g_f8e0c4"/>
 
                     </LinearLayout>
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ivPairsTwo"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="fitXY"
+                        android:visibility="gone"
+                        app:srcCompat="@drawable/flash_centre"/>
                 </RelativeLayout>
                 <RelativeLayout
                     android:id="@+id/rvPairsClickThree"
@@ -128,6 +142,14 @@
                             android:textColor="@color/g_f8e0c4"/>
 
                     </LinearLayout>
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ivPairsThree"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="fitXY"
+                        android:visibility="gone"
+                        app:srcCompat="@drawable/flash_right_top"/>
                 </RelativeLayout>
             </LinearLayout>
             <LinearLayout
@@ -169,7 +191,13 @@
                             android:textColor="@color/g_f8e0c4"/>
 
                     </LinearLayout>
-
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ivPairsFour"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="fitXY"
+                        android:visibility="gone"
+                        app:srcCompat="@drawable/flash_left_be"/>
                 </RelativeLayout>
                 <RelativeLayout
                     android:id="@+id/rvPairsClickFive"
@@ -206,7 +234,13 @@
                             android:textColor="@color/g_f8e0c4"/>
 
                     </LinearLayout>
-
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ivPairsFive"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="fitXY"
+                        android:visibility="gone"
+                        app:srcCompat="@drawable/flash_centre"/>
                 </RelativeLayout>
                 <RelativeLayout
                     android:id="@+id/rvPairsClickSix"
@@ -250,7 +284,13 @@
                             android:textColor="@color/g_f8e0c4"/>
 
                     </LinearLayout>
-
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ivPairsSix"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="fitXY"
+                        android:visibility="gone"
+                        app:srcCompat="@drawable/flash_right_be"/>
                 </RelativeLayout>
             </LinearLayout>
         </LinearLayout>
