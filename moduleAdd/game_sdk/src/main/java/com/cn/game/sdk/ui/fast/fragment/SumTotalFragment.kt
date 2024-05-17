@@ -977,13 +977,117 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
         //显示数据
         for (i in 0 until  pressureIn.size) {
             if(pressureIn[i].inPrizType== NOTES_ENUM.GQTNumber4.num){
-                //计算钱
+                 //计算钱
                 showSumSiMoney.setShowMoney(pressureIn[i].money)
                 showSumSiMoney.hiddenTop()
                 val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
                 mDatabind.rlHomeRoot.addView(showSumSiMoney, params)
-                showSumSiMoney.translationX = ComputeSum.sumTotalSi.viewXYTemporary[0].toFloat()+requireContext().dp2px(10)
-                showSumSiMoney.translationY =  ComputeSum.sumTotalSi.viewXYTemporary[1].toFloat()-requireContext().dp2px(25)
+                showSumSiMoney.translationX = ComputeSum.sumTotalSi.viewXYTemporary[0].toFloat()
+                showSumSiMoney.translationY =  ComputeSum.sumTotalSi.viewXYTemporary[1].toFloat()
+            }else  if(pressureIn[i].inPrizType== NOTES_ENUM.GQTNumber5.num){
+                //计算钱
+                showSumWuMoney.setShowMoney(pressureIn[i].money)
+                showSumWuMoney.hiddenTop()
+                val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                mDatabind.rlHomeRoot.addView(showSumWuMoney, params)
+                showSumWuMoney.translationX = ComputeSum.sumTotalWu.viewXYTemporary[0].toFloat()
+                showSumWuMoney.translationY =  ComputeSum.sumTotalWu.viewXYTemporary[1].toFloat()
+            }else  if(pressureIn[i].inPrizType== NOTES_ENUM.GQTNumber6.num){
+                //计算钱
+                showSumLiuMoney.setShowMoney(pressureIn[i].money)
+                showSumLiuMoney.hiddenTop()
+                val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                mDatabind.rlHomeRoot.addView(showSumLiuMoney, params)
+                showSumLiuMoney.translationX = ComputeSum.sumTotalLiu.viewXYTemporary[0].toFloat()
+                showSumLiuMoney.translationY =  ComputeSum.sumTotalLiu.viewXYTemporary[1].toFloat()
+            }else  if(pressureIn[i].inPrizType== NOTES_ENUM.GQTNumber7.num){
+                //计算钱
+                showSumQiMoney.setShowMoney(pressureIn[i].money)
+                showSumQiMoney.hiddenTop()
+                val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                mDatabind.rlHomeRoot.addView(showSumQiMoney, params)
+                showSumQiMoney.translationX = ComputeSum.sumTotalQi.viewXYTemporary[0].toFloat()
+                showSumQiMoney.translationY =  ComputeSum.sumTotalQi.viewXYTemporary[1].toFloat()
+            }else  if(pressureIn[i].inPrizType== NOTES_ENUM.GQTNumber8.num){
+                //计算钱
+                showSumBaMoney.setShowMoney(pressureIn[i].money)
+                showSumBaMoney.hiddenTop()
+                val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                mDatabind.rlHomeRoot.addView(showSumBaMoney, params)
+                showSumBaMoney.translationX = ComputeSum.sumTotalBa.viewXYTemporary[0].toFloat()
+                showSumBaMoney.translationY =  ComputeSum.sumTotalBa.viewXYTemporary[1].toFloat()
+            }else  if(pressureIn[i].inPrizType== NOTES_ENUM.GQTNumber9.num){
+                //计算钱
+                showSumJiuMoney.setShowMoney(pressureIn[i].money)
+                showSumJiuMoney.hiddenTop()
+                val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                mDatabind.rlHomeRoot.addView(showSumJiuMoney, params)
+                showSumJiuMoney.translationX = ComputeSum.sumTotalJiu.viewXYTemporary[0].toFloat()
+                showSumJiuMoney.translationY =  ComputeSum.sumTotalJiu.viewXYTemporary[1].toFloat()
+            }else  if(pressureIn[i].inPrizType== NOTES_ENUM.GQTNumber10.num){
+                //计算钱
+                showSumShiMoney.setShowMoney(pressureIn[i].money)
+                showSumShiMoney.hiddenTop()
+                val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                mDatabind.rlHomeRoot.addView(showSumShiMoney, params)
+                showSumShiMoney.translationX = ComputeSum.sumTotalShi.viewXYTemporary[0].toFloat()
+                showSumShiMoney.translationY =  ComputeSum.sumTotalShi.viewXYTemporary[1].toFloat()
+            }else  if(pressureIn[i].inPrizType== NOTES_ENUM.GQTNumber11.num){
+                //计算钱
+                showSumShiYiMoney.setShowMoney(pressureIn[i].money)
+                showSumShiYiMoney.hiddenTop()
+                val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                mDatabind.rlHomeRoot.addView(showSumShiYiMoney, params)
+                showSumShiYiMoney.translationX = ComputeSum.sumTotalShiYi.viewXYTemporary[0].toFloat()
+                showSumShiYiMoney.translationY =  ComputeSum.sumTotalShiYi.viewXYTemporary[1].toFloat()
+            }else  if(pressureIn[i].inPrizType== NOTES_ENUM.GQTNumber12.num){
+                //计算钱
+                showSumShiErMoney.setShowMoney(pressureIn[i].money)
+                showSumShiErMoney.hiddenTop()
+                val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                mDatabind.rlHomeRoot.addView(showSumShiErMoney, params)
+                showSumShiErMoney.translationX = ComputeSum.sumTotalShiEr.viewXYTemporary[0].toFloat()
+                showSumShiErMoney.translationY =  ComputeSum.sumTotalShiEr.viewXYTemporary[1].toFloat()
+            }else  if(pressureIn[i].inPrizType== NOTES_ENUM.GQTNumber13.num){
+                //计算钱
+                showSumShiSanMoney.setShowMoney(pressureIn[i].money)
+                showSumShiSanMoney.hiddenTop()
+                val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                mDatabind.rlHomeRoot.addView(showSumShiSanMoney, params)
+                showSumShiSanMoney.translationX = ComputeSum.sumTotalShiSan.viewXYTemporary[0].toFloat()
+                showSumShiSanMoney.translationY =  ComputeSum.sumTotalShiSan.viewXYTemporary[1].toFloat()
+            }else  if(pressureIn[i].inPrizType== NOTES_ENUM.GQTNumber14.num){
+                //计算钱
+                showSumShiSiMoney.setShowMoney(pressureIn[i].money)
+                showSumShiSiMoney.hiddenTop()
+                val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                mDatabind.rlHomeRoot.addView(showSumShiSiMoney, params)
+                showSumShiSiMoney.translationX = ComputeSum.sumTotalShiSi.viewXYTemporary[0].toFloat()
+                showSumShiSiMoney.translationY =  ComputeSum.sumTotalShiSi.viewXYTemporary[1].toFloat()
+            }else  if(pressureIn[i].inPrizType== NOTES_ENUM.GQTNumber15.num){
+                //计算钱
+                showSumShiWuMoney.setShowMoney(pressureIn[i].money)
+                showSumShiWuMoney.hiddenTop()
+                val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                mDatabind.rlHomeRoot.addView(showSumShiWuMoney, params)
+                showSumShiWuMoney.translationX = ComputeSum.sumTotalShiWu.viewXYTemporary[0].toFloat()
+                showSumShiWuMoney.translationY =  ComputeSum.sumTotalShiWu.viewXYTemporary[1].toFloat()
+            }else  if(pressureIn[i].inPrizType== NOTES_ENUM.GQTNumber16.num){
+                //计算钱
+                showSumShiLiuMoney.setShowMoney(pressureIn[i].money)
+                showSumShiLiuMoney.hiddenTop()
+                val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                mDatabind.rlHomeRoot.addView(showSumShiLiuMoney, params)
+                showSumShiLiuMoney.translationX = ComputeSum.sumTotalShiLiu.viewXYTemporary[0].toFloat()
+                showSumShiLiuMoney.translationY =  ComputeSum.sumTotalShiLiu.viewXYTemporary[1].toFloat()
+            }else  if(pressureIn[i].inPrizType== NOTES_ENUM.GQTNumber17.num){
+                //计算钱
+                showSumShiQiMoney.setShowMoney(pressureIn[i].money)
+                showSumShiQiMoney.hiddenTop()
+                val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                mDatabind.rlHomeRoot.addView(showSumShiQiMoney, params)
+                showSumShiQiMoney.translationX = ComputeSum.sumTotalShiQi.viewXYTemporary[0].toFloat()
+                showSumShiQiMoney.translationY =  ComputeSum.sumTotalShiQi.viewXYTemporary[1].toFloat()
             }
 
 
@@ -1156,8 +1260,8 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                         }
                         if(ComputeSum.sumTotalSi.viewXYTemporary [0]==0&& ComputeSum.sumTotalSi.viewXYTemporary[1]==0){
 //                            ComputeSum.sumTotalWu.viewXYTemporary[0]=rax.toInt()
-                            ComputeSum.sumTotalSi.viewXYTemporary[0]=location[0]+mDatabind.rvSumClickFour.width/2
-                            ComputeSum.sumTotalSi.viewXYTemporary[1]=newY.toInt()
+                            ComputeSum.sumTotalSi.viewXYTemporary[0]=location[0]+mDatabind.rvSumClickFour.width/2-requireContext().dp2px(30)
+                            ComputeSum.sumTotalSi.viewXYTemporary[1]=newY.toInt()-requireContext().dp2px(52)
                         }
 
                         var selectNum=0
@@ -1204,27 +1308,20 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                                     val xOnScreen = location[0]
                                     val yOnScreen = location[1]
 
-
                                     //通过显示的控件得到相对于屏幕的位置
                                     var  rax=xOnScreen
                                     var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
 
                                     (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),animationView =showSumSiMoney.ivShowBg)
-                                    //显示点击在Fragment的位置用于动画结束后显示
-                                    if(ComputeSum.sumTotalSi.viewXYTemporary[0]==0&&ComputeSum.sumTotalSi.viewXYTemporary[1]==0){
-                                        val location = IntArray(2)
-                                        showSumSiMoney.getLocationInWindow(location)
 
-                                        ComputeSum.sumTotalSi.viewXYTemporary[0]= showSumSiMoney.left
-                                        ComputeSum.sumTotalSi.viewXYTemporary[1]=showSumSiMoney.top
-                                    }
                                 }
                             })
 
                             val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
                             mDatabind.rlHomeRoot.addView(showSumSiMoney, params)
-                            showSumSiMoney.translationX =  ComputeSum.sumTotalSi.viewXYTemporary[0].toFloat()-requireContext().dp2px(30)
-                            showSumSiMoney.translationY =  ComputeSum.sumTotalSi.viewXYTemporary[1].toFloat()-requireContext().dp2px(52)
+                            showSumSiMoney.translationX =  ComputeSum.sumTotalSi.viewXYTemporary[0].toFloat()
+                            showSumSiMoney.translationY =  ComputeSum.sumTotalSi.viewXYTemporary[1].toFloat()
+
                         }
 
 
@@ -1243,8 +1340,6 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
 
             false // 返回 true 表示事件已经被处理
         }
-
-
         /**
          * 五
          */
@@ -1255,7 +1350,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                     //先判断余额是否够这次 并且扣取钱
                     if( (context as GameHomeActivity).isCanBetting()&&MyGameManager.isClickOperation){
                         val x = event.x
-                        var y = event.y
+                        val y = event.y
 
                         val location = IntArray(2)
                         mDatabind.vSumClickFive.getLocationOnScreen(location)
@@ -1278,10 +1373,12 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                              }
 
                         }
+
+
                         if(ComputeSum.sumTotalWu.viewXYTemporary [0]==0&& ComputeSum.sumTotalWu.viewXYTemporary[1]==0){
 //                            ComputeSum.sumTotalWu.viewXYTemporary[0]=rax.toInt()
-                            ComputeSum.sumTotalWu.viewXYTemporary[0]=location[0]+mDatabind.vSumClickFive.width/2
-                            ComputeSum.sumTotalWu.viewXYTemporary[1]=newY.toInt()
+                            ComputeSum.sumTotalWu.viewXYTemporary[0]=location[0]+mDatabind.vSumClickFive.width/2-requireContext().dp2px(30)
+                            ComputeSum.sumTotalWu.viewXYTemporary[1]=newY.toInt()-requireContext().dp2px(52)
                         }
                         var selectNum=0
                         for (i in 0 until   MyGameManager.noteList.size) {
@@ -1290,7 +1387,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                                 break
                             }
                         }
-                        clickAnimationIsHidden(4)
+                        clickAnimationIsHidden(5)
                         showSumWuMoney.showTop()
                         //计算钱
                         ComputeSum.sumTotalWu.moneyTemporary= ComputeSum.sumTotalWu.moneyTemporary+MyGameManager.noteList[selectNum].money
@@ -1310,7 +1407,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                             (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(), animationView =showSumWuMoney.ivShowBg )
 
                         } else {
-                            val viewTreeObserver = showSumSiMoney.viewTreeObserver
+                            val viewTreeObserver = showSumWuMoney.viewTreeObserver
                             viewTreeObserver.addOnGlobalLayoutListener(object :
                                 ViewTreeObserver.OnGlobalLayoutListener {
                                 override fun onGlobalLayout() {
@@ -1346,28 +1443,1384 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
 
                             val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
                             mDatabind.rlHomeRoot.addView(showSumWuMoney, params)
-                            showSumWuMoney.translationX =  ComputeSum.sumTotalWu.viewXYTemporary[0].toFloat()-requireContext().dp2px(30)
-                            showSumWuMoney.translationY =  ComputeSum.sumTotalWu.viewXYTemporary[1].toFloat()-requireContext().dp2px(52)
+
+                            showSumWuMoney.translationX =  ComputeSum.sumTotalWu.viewXYTemporary[0].toFloat()
+                            showSumWuMoney.translationY =  ComputeSum.sumTotalWu.viewXYTemporary[1].toFloat()
                         }
 
 
 
                     }
 
+                }
 
                 }
 
+            false // 返回 true 表示事件已经被处理
+        }
 
+        /**
+         *六
+         */
+        mDatabind.vSumClickSix.setOnTouchListener { v, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+
+                    //先判断余额是否够这次 并且扣取钱
+                    if( (context as GameHomeActivity).isCanBetting()&&MyGameManager.isClickOperation){
+                        val x = event.x
+                        val y = event.y
+
+                        val location = IntArray(2)
+                        mDatabind.vSumClickSix.getLocationOnScreen(location)
+
+                        val edgeSizeInPixels =requireContext().dp2px(30) // 将5dp转换为像素值
+                        val viewBounds = Rect()
+                        v.getDrawingRect(viewBounds)
+                        viewBounds.inset(edgeSizeInPixels, edgeSizeInPixels)
+                        var newY:Float=0f
+                        newY=y
+                        if (!viewBounds.contains(x.toInt(), y.toInt())) {
+//                           // 点击事件超出了边缘范围，调整点击位置到距离边缘5dp的位置
+//                             val adjustedX =    if (x < viewBounds.left) viewBounds.left else if (x > viewBounds.right) viewBounds.right else x
+                            if (y < viewBounds.top) {
+                                newY=  viewBounds.top.toFloat()
+                            }  else  if (y > viewBounds.bottom) {
+                                newY=   viewBounds.bottom.toFloat()
+                            } else {
+                                newY=  y
+                            }
+
+                        }
+
+
+                        if(ComputeSum.sumTotalLiu.viewXYTemporary [0]==0&& ComputeSum.sumTotalLiu.viewXYTemporary[1]==0){
+//                            ComputeSum.sumTotalWu.viewXYTemporary[0]=rax.toInt()
+                            ComputeSum.sumTotalLiu.viewXYTemporary[0]=location[0]+mDatabind.vSumClickSix.width/2-requireContext().dp2px(30)
+                            ComputeSum.sumTotalLiu.viewXYTemporary[1]=newY.toInt()-requireContext().dp2px(52)
+                        }
+                        var selectNum=0
+                        for (i in 0 until   MyGameManager.noteList.size) {
+                            if(MyGameManager.noteList[i].select){
+                                selectNum=i
+                                break
+                            }
+                        }
+                        clickAnimationIsHidden(6)
+                        showSumLiuMoney.showTop()
+                        //计算钱
+                        ComputeSum.sumTotalLiu.moneyTemporary= ComputeSum.sumTotalLiu.moneyTemporary+MyGameManager.noteList[selectNum].money
+                        showSumLiuMoney.setShowMoney(ComputeSum.sumTotalLiu.moneyTemporary+ ComputeSum.sumTotalLiu.moneyOkEmpty)
+
+                        //动画位置
+                        if (mDatabind.rlHomeRoot.indexOfChild(showSumLiuMoney) != -1) {
+                            val location = IntArray(2)
+                            showSumLiuMoney.getLocationOnScreen(location)
+                            val xOnScreen = location[0]
+                            val yOnScreen = location[1]
+                            //通过显示的控件得到相对于屏幕的位置
+                            var  rax=xOnScreen
+                            var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
+
+
+                            (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(), animationView =showSumLiuMoney.ivShowBg )
+
+                        } else {
+                            val viewTreeObserver = showSumLiuMoney.viewTreeObserver
+                            viewTreeObserver.addOnGlobalLayoutListener(object :
+                                ViewTreeObserver.OnGlobalLayoutListener {
+                                override fun onGlobalLayout() {
+                                    // 确保只监听一次
+                                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                                        showSumLiuMoney.viewTreeObserver.removeGlobalOnLayoutListener(this)
+                                    } else {
+                                        showSumLiuMoney.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                                    }
+
+                                    // 获取视图在屏幕上的绝对位置
+                                    val location = IntArray(2)
+                                    showSumLiuMoney.getLocationOnScreen(location)
+                                    val xOnScreen = location[0]
+                                    val yOnScreen = location[1]
+
+
+                                    //通过显示的控件得到相对于屏幕的位置
+                                    var  rax=xOnScreen
+                                    var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
+
+                                    (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),animationView =showSumLiuMoney.ivShowBg)
+                                    //显示点击在Fragment的位置用于动画结束后显示
+                                    if(ComputeSum.sumTotalLiu.viewXYTemporary[0]==0&&ComputeSum.sumTotalLiu.viewXYTemporary[1]==0){
+                                        val location = IntArray(2)
+                                        showSumLiuMoney.getLocationInWindow(location)
+
+                                        ComputeSum.sumTotalLiu.viewXYTemporary[0]= showSumLiuMoney.left
+                                        ComputeSum.sumTotalLiu.viewXYTemporary[1]=showSumLiuMoney.top
+                                    }
+                                }
+                            })
+
+                            val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                            mDatabind.rlHomeRoot.addView(showSumLiuMoney, params)
+
+                            showSumLiuMoney.translationX =  ComputeSum.sumTotalLiu.viewXYTemporary[0].toFloat()
+                            showSumLiuMoney.translationY =  ComputeSum.sumTotalLiu.viewXYTemporary[1].toFloat()
+                        }
+
+
+
+                    }
 
                 }
 
+            }
+
+            false // 返回 true 表示事件已经被处理
+        }
+        /**
+         *7
+         */
+        mDatabind.vSumClickSeven.setOnTouchListener { v, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+
+                    //先判断余额是否够这次 并且扣取钱
+                    if( (context as GameHomeActivity).isCanBetting()&&MyGameManager.isClickOperation){
+                        val x = event.x
+                        val y = event.y
+
+                        val location = IntArray(2)
+                        mDatabind.vSumClickSeven.getLocationOnScreen(location)
+                        val edgeSizeInPixels =requireContext().dp2px(30) // 将5dp转换为像素值
+                        val viewBounds = Rect()
+                        v.getDrawingRect(viewBounds)
+                        viewBounds.inset(edgeSizeInPixels, edgeSizeInPixels)
+                        var newY:Float=0f
+                        newY=y
+                        if (!viewBounds.contains(x.toInt(), y.toInt())) {
+//                           // 点击事件超出了边缘范围，调整点击位置到距离边缘5dp的位置
+//                             val adjustedX =    if (x < viewBounds.left) viewBounds.left else if (x > viewBounds.right) viewBounds.right else x
+                            if (y < viewBounds.top) {
+                                newY=  viewBounds.top.toFloat()
+                            }  else  if (y > viewBounds.bottom) {
+                                newY=   viewBounds.bottom.toFloat()
+                            } else {
+                                newY=  y
+                            }
+
+                        }
+
+                        if(ComputeSum.sumTotalQi.viewXYTemporary [0]==0&& ComputeSum.sumTotalQi.viewXYTemporary[1]==0){
+                            ComputeSum.sumTotalQi.viewXYTemporary[0]=location[0]+mDatabind.vSumClickSeven.width/2-requireContext().dp2px(30)
+                            ComputeSum.sumTotalQi.viewXYTemporary[1]=newY.toInt()-requireContext().dp2px(52)
+                        }
+                        var selectNum=0
+                        for (i in 0 until   MyGameManager.noteList.size) {
+                            if(MyGameManager.noteList[i].select){
+                                selectNum=i
+                                break
+                            }
+                        }
+                        clickAnimationIsHidden(7)
+                        showSumQiMoney.showTop()
+                        //计算钱
+                        ComputeSum.sumTotalQi.moneyTemporary= ComputeSum.sumTotalQi.moneyTemporary+MyGameManager.noteList[selectNum].money
+                        showSumQiMoney.setShowMoney(ComputeSum.sumTotalQi.moneyTemporary+ ComputeSum.sumTotalQi.moneyOkEmpty)
+
+                        //动画位置
+                        if (mDatabind.rlHomeRoot.indexOfChild(showSumQiMoney) != -1) {
+                            val location = IntArray(2)
+                            showSumQiMoney.getLocationOnScreen(location)
+                            val xOnScreen = location[0]
+                            val yOnScreen = location[1]
+                            //通过显示的控件得到相对于屏幕的位置
+                            var  rax=xOnScreen
+                            var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
 
 
+                            (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(), animationView =showSumQiMoney.ivShowBg )
+
+                        } else {
+                            val viewTreeObserver = showSumQiMoney.viewTreeObserver
+                            viewTreeObserver.addOnGlobalLayoutListener(object :
+                                ViewTreeObserver.OnGlobalLayoutListener {
+                                override fun onGlobalLayout() {
+                                    // 确保只监听一次
+                                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                                        showSumQiMoney.viewTreeObserver.removeGlobalOnLayoutListener(this)
+                                    } else {
+                                        showSumQiMoney.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                                    }
+
+                                    // 获取视图在屏幕上的绝对位置
+                                    val location = IntArray(2)
+                                    showSumQiMoney.getLocationOnScreen(location)
+                                    val xOnScreen = location[0]
+                                    val yOnScreen = location[1]
+
+
+                                    //通过显示的控件得到相对于屏幕的位置
+                                    var  rax=xOnScreen
+                                    var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
+
+                                    (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),animationView =showSumQiMoney.ivShowBg)
+                                    //显示点击在Fragment的位置用于动画结束后显示
+                                    if(ComputeSum.sumTotalQi.viewXYTemporary[0]==0&&ComputeSum.sumTotalQi.viewXYTemporary[1]==0){
+                                        val location = IntArray(2)
+                                        showSumQiMoney.getLocationInWindow(location)
+
+                                        ComputeSum.sumTotalQi.viewXYTemporary[0]= showSumQiMoney.left
+                                        ComputeSum.sumTotalQi.viewXYTemporary[1]=showSumQiMoney.top
+                                    }
+                                }
+                            })
+
+                            val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                            mDatabind.rlHomeRoot.addView(showSumQiMoney, params)
+
+                            showSumQiMoney.translationX =  ComputeSum.sumTotalQi.viewXYTemporary[0].toFloat()
+                            showSumQiMoney.translationY =  ComputeSum.sumTotalQi.viewXYTemporary[1].toFloat()
+                        }
+
+
+
+                    }
+
+                }
+
+            }
+
+            false // 返回 true 表示事件已经被处理
+        }
+        /**
+         *8
+         */
+        mDatabind.vSumClickEight.setOnTouchListener { v, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+
+                    //先判断余额是否够这次 并且扣取钱
+                    if( (context as GameHomeActivity).isCanBetting()&&MyGameManager.isClickOperation){
+                        val x = event.x
+                        val y = event.y
+
+                        val location = IntArray(2)
+                        mDatabind.vSumClickEight.getLocationOnScreen(location)
+                        val edgeSizeInPixels =requireContext().dp2px(30) // 将5dp转换为像素值
+                        val viewBounds = Rect()
+                        v.getDrawingRect(viewBounds)
+                        viewBounds.inset(edgeSizeInPixels, edgeSizeInPixels)
+                        var newY:Float=0f
+                        newY=y
+                        if (!viewBounds.contains(x.toInt(), y.toInt())) {
+//                           // 点击事件超出了边缘范围，调整点击位置到距离边缘5dp的位置
+//                             val adjustedX =    if (x < viewBounds.left) viewBounds.left else if (x > viewBounds.right) viewBounds.right else x
+                            if (y < viewBounds.top) {
+                                newY=  viewBounds.top.toFloat()
+                            }  else  if (y > viewBounds.bottom) {
+                                newY=   viewBounds.bottom.toFloat()
+                            } else {
+                                newY=  y
+                            }
+
+                        }
+
+                        if(ComputeSum.sumTotalBa.viewXYTemporary [0]==0&& ComputeSum.sumTotalBa.viewXYTemporary[1]==0){
+                            ComputeSum.sumTotalBa.viewXYTemporary[0]=location[0]+mDatabind.vSumClickEight.width/2-requireContext().dp2px(30)
+                            ComputeSum.sumTotalBa.viewXYTemporary[1]=newY.toInt()-requireContext().dp2px(52)
+                        }
+                        var selectNum=0
+                        for (i in 0 until   MyGameManager.noteList.size) {
+                            if(MyGameManager.noteList[i].select){
+                                selectNum=i
+                                break
+                            }
+                        }
+                        clickAnimationIsHidden(8)
+                        showSumBaMoney.showTop()
+                        //计算钱
+                        ComputeSum.sumTotalBa.moneyTemporary= ComputeSum.sumTotalBa.moneyTemporary+MyGameManager.noteList[selectNum].money
+                        showSumBaMoney.setShowMoney(ComputeSum.sumTotalBa.moneyTemporary+ ComputeSum.sumTotalBa.moneyOkEmpty)
+
+                        //动画位置
+                        if (mDatabind.rlHomeRoot.indexOfChild(showSumBaMoney) != -1) {
+                            val location = IntArray(2)
+                            showSumBaMoney.getLocationOnScreen(location)
+                            val xOnScreen = location[0]
+                            val yOnScreen = location[1]
+                            //通过显示的控件得到相对于屏幕的位置
+                            var  rax=xOnScreen
+                            var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
+                            (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(), animationView =showSumBaMoney.ivShowBg )
+
+                        } else {
+                            val viewTreeObserver = showSumBaMoney.viewTreeObserver
+                            viewTreeObserver.addOnGlobalLayoutListener(object :
+                                ViewTreeObserver.OnGlobalLayoutListener {
+                                override fun onGlobalLayout() {
+                                    // 确保只监听一次
+                                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                                        showSumBaMoney.viewTreeObserver.removeGlobalOnLayoutListener(this)
+                                    } else {
+                                        showSumBaMoney.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                                    }
+
+                                    // 获取视图在屏幕上的绝对位置
+                                    val location = IntArray(2)
+                                    showSumBaMoney.getLocationOnScreen(location)
+                                    val xOnScreen = location[0]
+                                    val yOnScreen = location[1]
+
+
+                                    //通过显示的控件得到相对于屏幕的位置
+                                    var  rax=xOnScreen
+                                    var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
+
+                                    (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),animationView =showSumBaMoney.ivShowBg)
+                                    //显示点击在Fragment的位置用于动画结束后显示
+                                    if(ComputeSum.sumTotalBa.viewXYTemporary[0]==0&&ComputeSum.sumTotalBa.viewXYTemporary[1]==0){
+                                        val location = IntArray(2)
+                                        showSumBaMoney.getLocationInWindow(location)
+
+                                        ComputeSum.sumTotalBa.viewXYTemporary[0]= showSumBaMoney.left
+                                        ComputeSum.sumTotalBa.viewXYTemporary[1]=showSumBaMoney.top
+                                    }
+                                }
+                            })
+
+                            val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                            mDatabind.rlHomeRoot.addView(showSumBaMoney, params)
+
+                            showSumBaMoney.translationX =  ComputeSum.sumTotalBa.viewXYTemporary[0].toFloat()
+                            showSumBaMoney.translationY =  ComputeSum.sumTotalBa.viewXYTemporary[1].toFloat()
+                        }
+
+
+
+                    }
+
+                }
+
+            }
+
+            false // 返回 true 表示事件已经被处理
+        }
+        /**
+         *9
+         */
+        mDatabind.rvSumClickNine.setOnTouchListener { v, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+
+                    //先判断余额是否够这次 并且扣取钱
+                    if( (context as GameHomeActivity).isCanBetting()&&MyGameManager.isClickOperation){
+                        val x = event.x
+                        val y = event.y
+
+                        val location = IntArray(2)
+                        mDatabind.rvSumClickNine.getLocationOnScreen(location)
+                        val edgeSizeInPixels =requireContext().dp2px(30) // 将5dp转换为像素值
+                        val viewBounds = Rect()
+                        v.getDrawingRect(viewBounds)
+                        viewBounds.inset(edgeSizeInPixels, edgeSizeInPixels)
+                        var newY:Float=0f
+                        newY=y
+                        if (!viewBounds.contains(x.toInt(), y.toInt())) {
+//                           // 点击事件超出了边缘范围，调整点击位置到距离边缘5dp的位置
+//                             val adjustedX =    if (x < viewBounds.left) viewBounds.left else if (x > viewBounds.right) viewBounds.right else x
+                            if (y < viewBounds.top) {
+                                newY=  viewBounds.top.toFloat()
+                            }  else  if (y > viewBounds.bottom) {
+                                newY=   viewBounds.bottom.toFloat()
+                            } else {
+                                newY=  y
+                            }
+
+                        }
+
+                        if(ComputeSum.sumTotalJiu.viewXYTemporary [0]==0&& ComputeSum.sumTotalJiu.viewXYTemporary[1]==0){
+                            ComputeSum.sumTotalJiu.viewXYTemporary[0]=location[0]+mDatabind.rvSumClickNine.width/2-requireContext().dp2px(30)
+                            ComputeSum.sumTotalJiu.viewXYTemporary[1]=newY.toInt()+requireContext().dp2px(8)
+                        }
+                        var selectNum=0
+                        for (i in 0 until   MyGameManager.noteList.size) {
+                            if(MyGameManager.noteList[i].select){
+                                selectNum=i
+                                break
+                            }
+                        }
+                        clickAnimationIsHidden(9)
+                        showSumJiuMoney.showTop()
+                        //计算钱
+                        ComputeSum.sumTotalJiu.moneyTemporary= ComputeSum.sumTotalJiu.moneyTemporary+MyGameManager.noteList[selectNum].money
+                        showSumJiuMoney.setShowMoney(ComputeSum.sumTotalJiu.moneyTemporary+ ComputeSum.sumTotalJiu.moneyOkEmpty)
+
+                        //动画位置
+                        if (mDatabind.rlHomeRoot.indexOfChild(showSumJiuMoney) != -1) {
+                            val location = IntArray(2)
+                            showSumJiuMoney.getLocationOnScreen(location)
+                            val xOnScreen = location[0]
+                            val yOnScreen = location[1]
+                            //通过显示的控件得到相对于屏幕的位置
+                            var  rax=xOnScreen
+                            var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
+                            (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(), animationView =showSumJiuMoney.ivShowBg )
+
+                        } else {
+                            val viewTreeObserver = showSumJiuMoney.viewTreeObserver
+                            viewTreeObserver.addOnGlobalLayoutListener(object :
+                                ViewTreeObserver.OnGlobalLayoutListener {
+                                override fun onGlobalLayout() {
+                                    // 确保只监听一次
+                                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                                        showSumJiuMoney.viewTreeObserver.removeGlobalOnLayoutListener(this)
+                                    } else {
+                                        showSumJiuMoney.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                                    }
+
+                                    // 获取视图在屏幕上的绝对位置
+                                    val location = IntArray(2)
+                                    showSumJiuMoney.getLocationOnScreen(location)
+                                    val xOnScreen = location[0]
+                                    val yOnScreen = location[1]
+
+
+                                    //通过显示的控件得到相对于屏幕的位置
+                                    var  rax=xOnScreen
+                                    var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
+
+                                    (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),animationView =showSumJiuMoney.ivShowBg)
+                                    //显示点击在Fragment的位置用于动画结束后显示
+                                    if(ComputeSum.sumTotalJiu.viewXYTemporary[0]==0&&ComputeSum.sumTotalJiu.viewXYTemporary[1]==0){
+                                        val location = IntArray(2)
+                                        showSumJiuMoney.getLocationInWindow(location)
+
+                                        ComputeSum.sumTotalJiu.viewXYTemporary[0]= showSumJiuMoney.left
+                                        ComputeSum.sumTotalJiu.viewXYTemporary[1]=showSumJiuMoney.top
+                                    }
+                                }
+                            })
+
+                            val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                            mDatabind.rlHomeRoot.addView(showSumJiuMoney, params)
+
+                            showSumJiuMoney.translationX =  ComputeSum.sumTotalJiu.viewXYTemporary[0].toFloat()
+                            showSumJiuMoney.translationY =  ComputeSum.sumTotalJiu.viewXYTemporary[1].toFloat()
+                        }
+
+
+
+                    }
+
+                }
+
+            }
+
+            false // 返回 true 表示事件已经被处理
+        }
+        /**
+         *10
+         */
+        mDatabind.rvSumClickTen.setOnTouchListener { v, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+
+                    //先判断余额是否够这次 并且扣取钱
+                    if( (context as GameHomeActivity).isCanBetting()&&MyGameManager.isClickOperation){
+                        val x = event.x
+                        val y = event.y
+
+                        val location = IntArray(2)
+                        mDatabind.rvSumClickTen.getLocationOnScreen(location)
+                        val edgeSizeInPixels =requireContext().dp2px(30) // 将5dp转换为像素值
+                        val viewBounds = Rect()
+                        v.getDrawingRect(viewBounds)
+                        viewBounds.inset(edgeSizeInPixels, edgeSizeInPixels)
+                        var newY:Float=0f
+                        newY=y
+                        if (!viewBounds.contains(x.toInt(), y.toInt())) {
+//                           // 点击事件超出了边缘范围，调整点击位置到距离边缘5dp的位置
+//                             val adjustedX =    if (x < viewBounds.left) viewBounds.left else if (x > viewBounds.right) viewBounds.right else x
+                            if (y < viewBounds.top) {
+                                newY=  viewBounds.top.toFloat()
+                            }  else  if (y > viewBounds.bottom) {
+                                newY=   viewBounds.bottom.toFloat()
+                            } else {
+                                newY=  y
+                            }
+
+                        }
+
+                        if(ComputeSum.sumTotalShi.viewXYTemporary [0]==0&& ComputeSum.sumTotalShi.viewXYTemporary[1]==0){
+                            ComputeSum.sumTotalShi.viewXYTemporary[0]=location[0]+mDatabind.rvSumClickTen.width/2-requireContext().dp2px(30)
+                            ComputeSum.sumTotalShi.viewXYTemporary[1]=newY.toInt()+requireContext().dp2px(8)
+                        }
+                        var selectNum=0
+                        for (i in 0 until   MyGameManager.noteList.size) {
+                            if(MyGameManager.noteList[i].select){
+                                selectNum=i
+                                break
+                            }
+                        }
+                        clickAnimationIsHidden(10)
+                        showSumShiMoney.showTop()
+                        //计算钱
+                        ComputeSum.sumTotalShi.moneyTemporary= ComputeSum.sumTotalShi.moneyTemporary+MyGameManager.noteList[selectNum].money
+                        showSumShiMoney.setShowMoney(ComputeSum.sumTotalShi.moneyTemporary+ ComputeSum.sumTotalShi.moneyOkEmpty)
+
+                        //动画位置
+                        if (mDatabind.rlHomeRoot.indexOfChild(showSumShiMoney) != -1) {
+                            val location = IntArray(2)
+                            showSumShiMoney.getLocationOnScreen(location)
+                            val xOnScreen = location[0]
+                            val yOnScreen = location[1]
+                            //通过显示的控件得到相对于屏幕的位置
+                            var  rax=xOnScreen
+                            var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
+                            (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(), animationView =showSumShiMoney.ivShowBg )
+
+                        } else {
+                            val viewTreeObserver = showSumShiMoney.viewTreeObserver
+                            viewTreeObserver.addOnGlobalLayoutListener(object :
+                                ViewTreeObserver.OnGlobalLayoutListener {
+                                override fun onGlobalLayout() {
+                                    // 确保只监听一次
+                                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                                        showSumShiMoney.viewTreeObserver.removeGlobalOnLayoutListener(this)
+                                    } else {
+                                        showSumShiMoney.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                                    }
+
+                                    // 获取视图在屏幕上的绝对位置
+                                    val location = IntArray(2)
+                                    showSumShiMoney.getLocationOnScreen(location)
+                                    val xOnScreen = location[0]
+                                    val yOnScreen = location[1]
+
+
+                                    //通过显示的控件得到相对于屏幕的位置
+                                    var  rax=xOnScreen
+                                    var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
+
+                                    (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),animationView =showSumShiMoney.ivShowBg)
+                                    //显示点击在Fragment的位置用于动画结束后显示
+                                    if(ComputeSum.sumTotalShi.viewXYTemporary[0]==0&&ComputeSum.sumTotalShi.viewXYTemporary[1]==0){
+                                        val location = IntArray(2)
+                                        showSumShiMoney.getLocationInWindow(location)
+
+                                        ComputeSum.sumTotalShi.viewXYTemporary[0]= showSumShiMoney.left
+                                        ComputeSum.sumTotalShi.viewXYTemporary[1]=showSumShiMoney.top
+                                    }
+                                }
+                            })
+
+                            val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                            mDatabind.rlHomeRoot.addView(showSumShiMoney, params)
+
+                            showSumShiMoney.translationX =  ComputeSum.sumTotalShi.viewXYTemporary[0].toFloat()
+                            showSumShiMoney.translationY =  ComputeSum.sumTotalShi.viewXYTemporary[1].toFloat()
+                        }
+
+
+
+                    }
+
+                }
+
+            }
+
+            false // 返回 true 表示事件已经被处理
+        }
+        /**
+         *11
+         */
+        mDatabind.rvSumClickEleven.setOnTouchListener { v, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+
+                    //先判断余额是否够这次 并且扣取钱
+                    if( (context as GameHomeActivity).isCanBetting()&&MyGameManager.isClickOperation){
+                        val x = event.x
+                        val y = event.y
+
+                        val location = IntArray(2)
+                        mDatabind.rvSumClickEleven.getLocationOnScreen(location)
+                        val edgeSizeInPixels =requireContext().dp2px(30) // 将5dp转换为像素值
+                        val viewBounds = Rect()
+                        v.getDrawingRect(viewBounds)
+                        viewBounds.inset(edgeSizeInPixels, edgeSizeInPixels)
+                        var newY:Float=0f
+                        newY=y
+                        if (!viewBounds.contains(x.toInt(), y.toInt())) {
+//                           // 点击事件超出了边缘范围，调整点击位置到距离边缘5dp的位置
+//                             val adjustedX =    if (x < viewBounds.left) viewBounds.left else if (x > viewBounds.right) viewBounds.right else x
+                            if (y < viewBounds.top) {
+                                newY=  viewBounds.top.toFloat()
+                            }  else  if (y > viewBounds.bottom) {
+                                newY=   viewBounds.bottom.toFloat()
+                            } else {
+                                newY=  y
+                            }
+
+                        }
+
+                        if(ComputeSum.sumTotalShiYi.viewXYTemporary [0]==0&& ComputeSum.sumTotalShiYi.viewXYTemporary[1]==0){
+                            ComputeSum.sumTotalShiYi.viewXYTemporary[0]=location[0]+mDatabind.rvSumClickEleven.width/2-requireContext().dp2px(30)
+                            ComputeSum.sumTotalShiYi.viewXYTemporary[1]=newY.toInt()+requireContext().dp2px(8)
+                        }
+                        var selectNum=0
+                        for (i in 0 until   MyGameManager.noteList.size) {
+                            if(MyGameManager.noteList[i].select){
+                                selectNum=i
+                                break
+                            }
+                        }
+                        clickAnimationIsHidden(11)
+                        showSumShiYiMoney.showTop()
+                        //计算钱
+                        ComputeSum.sumTotalShiYi.moneyTemporary= ComputeSum.sumTotalShiYi.moneyTemporary+MyGameManager.noteList[selectNum].money
+                        showSumShiYiMoney.setShowMoney(ComputeSum.sumTotalShiYi.moneyTemporary+ ComputeSum.sumTotalShiYi.moneyOkEmpty)
+
+                        //动画位置
+                        if (mDatabind.rlHomeRoot.indexOfChild(showSumShiYiMoney) != -1) {
+                            val location = IntArray(2)
+                            showSumShiYiMoney.getLocationOnScreen(location)
+                            val xOnScreen = location[0]
+                            val yOnScreen = location[1]
+                            //通过显示的控件得到相对于屏幕的位置
+                            var  rax=xOnScreen
+                            var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
+                            (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(), animationView =showSumShiYiMoney.ivShowBg )
+
+                        } else {
+                            val viewTreeObserver = showSumShiYiMoney.viewTreeObserver
+                            viewTreeObserver.addOnGlobalLayoutListener(object :
+                                ViewTreeObserver.OnGlobalLayoutListener {
+                                override fun onGlobalLayout() {
+                                    // 确保只监听一次
+                                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                                        showSumShiYiMoney.viewTreeObserver.removeGlobalOnLayoutListener(this)
+                                    } else {
+                                        showSumShiYiMoney.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                                    }
+
+                                    // 获取视图在屏幕上的绝对位置
+                                    val location = IntArray(2)
+                                    showSumShiYiMoney.getLocationOnScreen(location)
+                                    val xOnScreen = location[0]
+                                    val yOnScreen = location[1]
+
+
+                                    //通过显示的控件得到相对于屏幕的位置
+                                    var  rax=xOnScreen
+                                    var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
+
+                                    (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),animationView =showSumShiYiMoney.ivShowBg)
+                                    //显示点击在Fragment的位置用于动画结束后显示
+                                    if(ComputeSum.sumTotalShiYi.viewXYTemporary[0]==0&&ComputeSum.sumTotalShiYi.viewXYTemporary[1]==0){
+                                        val location = IntArray(2)
+                                        showSumShiYiMoney.getLocationInWindow(location)
+
+                                        ComputeSum.sumTotalShiYi.viewXYTemporary[0]= showSumShiYiMoney.left
+                                        ComputeSum.sumTotalShiYi.viewXYTemporary[1]=showSumShiYiMoney.top
+                                    }
+                                }
+                            })
+
+                            val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                            mDatabind.rlHomeRoot.addView(showSumShiYiMoney, params)
+
+                            showSumShiYiMoney.translationX =  ComputeSum.sumTotalShiYi.viewXYTemporary[0].toFloat()
+                            showSumShiYiMoney.translationY =  ComputeSum.sumTotalShiYi.viewXYTemporary[1].toFloat()
+                        }
+
+
+
+                    }
+
+                }
+
+            }
+
+            false // 返回 true 表示事件已经被处理
+        }
+        /**
+         *12
+         */
+        mDatabind.rvSumClickTwelve.setOnTouchListener { v, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+
+                    //先判断余额是否够这次 并且扣取钱
+                    if( (context as GameHomeActivity).isCanBetting()&&MyGameManager.isClickOperation){
+                        val x = event.x
+                        val y = event.y
+
+                        val location = IntArray(2)
+                        mDatabind.rvSumClickTwelve.getLocationOnScreen(location)
+                        val edgeSizeInPixels =requireContext().dp2px(30) // 将5dp转换为像素值
+                        val viewBounds = Rect()
+                        v.getDrawingRect(viewBounds)
+                        viewBounds.inset(edgeSizeInPixels, edgeSizeInPixels)
+                        var newY:Float=0f
+                        newY=y
+                        if (!viewBounds.contains(x.toInt(), y.toInt())) {
+//                           // 点击事件超出了边缘范围，调整点击位置到距离边缘5dp的位置
+//                             val adjustedX =    if (x < viewBounds.left) viewBounds.left else if (x > viewBounds.right) viewBounds.right else x
+                            if (y < viewBounds.top) {
+                                newY=  viewBounds.top.toFloat()
+                            }  else  if (y > viewBounds.bottom) {
+                                newY=   viewBounds.bottom.toFloat()
+                            } else {
+                                newY=  y
+                            }
+
+                        }
+                        if(ComputeSum.sumTotalShiEr.viewXYTemporary [0]==0&& ComputeSum.sumTotalShiEr.viewXYTemporary[1]==0){
+                            ComputeSum.sumTotalShiEr.viewXYTemporary[0]=location[0]+mDatabind.rvSumClickTwelve.width/2-requireContext().dp2px(30)
+                            ComputeSum.sumTotalShiEr.viewXYTemporary[1]=newY.toInt()+requireContext().dp2px(8)
+                        }
+                        var selectNum=0
+                        for (i in 0 until   MyGameManager.noteList.size) {
+                            if(MyGameManager.noteList[i].select){
+                                selectNum=i
+                                break
+                            }
+                        }
+                        clickAnimationIsHidden(12)
+                        showSumShiErMoney.showTop()
+                        //计算钱
+                        ComputeSum.sumTotalShiEr.moneyTemporary= ComputeSum.sumTotalShiEr.moneyTemporary+MyGameManager.noteList[selectNum].money
+                        showSumShiErMoney.setShowMoney(ComputeSum.sumTotalShiEr.moneyTemporary+ ComputeSum.sumTotalShiEr.moneyOkEmpty)
+
+                        //动画位置
+                        if (mDatabind.rlHomeRoot.indexOfChild(showSumShiErMoney) != -1) {
+                            val location = IntArray(2)
+                            showSumShiErMoney.getLocationOnScreen(location)
+                            val xOnScreen = location[0]
+                            val yOnScreen = location[1]
+                            //通过显示的控件得到相对于屏幕的位置
+                            var  rax=xOnScreen
+                            var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
+                            (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(), animationView =showSumShiErMoney.ivShowBg )
+
+                        } else {
+                            val viewTreeObserver = showSumShiErMoney.viewTreeObserver
+                            viewTreeObserver.addOnGlobalLayoutListener(object :
+                                ViewTreeObserver.OnGlobalLayoutListener {
+                                override fun onGlobalLayout() {
+                                    // 确保只监听一次
+                                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                                        showSumShiErMoney.viewTreeObserver.removeGlobalOnLayoutListener(this)
+                                    } else {
+                                        showSumShiErMoney.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                                    }
+
+                                    // 获取视图在屏幕上的绝对位置
+                                    val location = IntArray(2)
+                                    showSumShiErMoney.getLocationOnScreen(location)
+                                    val xOnScreen = location[0]
+                                    val yOnScreen = location[1]
+
+
+                                    //通过显示的控件得到相对于屏幕的位置
+                                    var  rax=xOnScreen
+                                    var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
+
+                                    (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),animationView =showSumShiErMoney.ivShowBg)
+                                    //显示点击在Fragment的位置用于动画结束后显示
+                                    if(ComputeSum.sumTotalShiEr.viewXYTemporary[0]==0&&ComputeSum.sumTotalShiEr.viewXYTemporary[1]==0){
+                                        val location = IntArray(2)
+                                        showSumShiErMoney.getLocationInWindow(location)
+
+                                        ComputeSum.sumTotalShiEr.viewXYTemporary[0]= showSumShiErMoney.left
+                                        ComputeSum.sumTotalShiEr.viewXYTemporary[1]=showSumShiErMoney.top
+                                    }
+                                }
+                            })
+
+                            val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                            mDatabind.rlHomeRoot.addView(showSumShiErMoney, params)
+
+                            showSumShiErMoney.translationX =  ComputeSum.sumTotalShiEr.viewXYTemporary[0].toFloat()
+                            showSumShiErMoney.translationY =  ComputeSum.sumTotalShiEr.viewXYTemporary[1].toFloat()
+                        }
+
+
+
+                    }
+
+                }
+
+            }
 
             false // 返回 true 表示事件已经被处理
         }
 
 
+         /**
+         *13
+         */
+        mDatabind.rvSumClickThirteen.setOnTouchListener { v, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+
+                    //先判断余额是否够这次 并且扣取钱
+                    if( (context as GameHomeActivity).isCanBetting()&&MyGameManager.isClickOperation){
+                        val x = event.x
+                        val y = event.y
+
+                        val location = IntArray(2)
+                        mDatabind.rvSumClickThirteen.getLocationOnScreen(location)
+                        val edgeSizeInPixels =requireContext().dp2px(30) // 将5dp转换为像素值
+                        val viewBounds = Rect()
+                        v.getDrawingRect(viewBounds)
+                        viewBounds.inset(edgeSizeInPixels, edgeSizeInPixels)
+                        var newY:Float=0f
+                        newY=y
+                        if (!viewBounds.contains(x.toInt(), y.toInt())) {
+//                           // 点击事件超出了边缘范围，调整点击位置到距离边缘5dp的位置
+//                             val adjustedX =    if (x < viewBounds.left) viewBounds.left else if (x > viewBounds.right) viewBounds.right else x
+                            if (y < viewBounds.top) {
+                                newY=  viewBounds.top.toFloat()
+                            }  else  if (y > viewBounds.bottom) {
+                                newY=   viewBounds.bottom.toFloat()
+                            } else {
+                                newY=  y
+                            }
+
+                        }
+                        if(ComputeSum.sumTotalShiSan.viewXYTemporary [0]==0&& ComputeSum.sumTotalShiSan.viewXYTemporary[1]==0){
+                            ComputeSum.sumTotalShiSan.viewXYTemporary[0]=location[0]+mDatabind.rvSumClickThirteen.width/2-requireContext().dp2px(30)
+                            ComputeSum.sumTotalShiSan.viewXYTemporary[1]=newY.toInt()+requireContext().dp2px(8)
+                        }
+                        var selectNum=0
+                        for (i in 0 until   MyGameManager.noteList.size) {
+                            if(MyGameManager.noteList[i].select){
+                                selectNum=i
+                                break
+                            }
+                        }
+                        clickAnimationIsHidden(13)
+                        showSumShiSanMoney.showTop()
+                        //计算钱
+                        ComputeSum.sumTotalShiSan.moneyTemporary= ComputeSum.sumTotalShiSan.moneyTemporary+MyGameManager.noteList[selectNum].money
+                        showSumShiSanMoney.setShowMoney(ComputeSum.sumTotalShiSan.moneyTemporary+ ComputeSum.sumTotalShiSan.moneyOkEmpty)
+
+                        //动画位置
+                        if (mDatabind.rlHomeRoot.indexOfChild(showSumShiSanMoney) != -1) {
+                            val location = IntArray(2)
+                            showSumShiSanMoney.getLocationOnScreen(location)
+                            val xOnScreen = location[0]
+                            val yOnScreen = location[1]
+                            //通过显示的控件得到相对于屏幕的位置
+                            var  rax=xOnScreen
+                            var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
+                            (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(), animationView =showSumShiSanMoney.ivShowBg )
+
+                        } else {
+                            val viewTreeObserver = showSumShiSanMoney.viewTreeObserver
+                            viewTreeObserver.addOnGlobalLayoutListener(object :
+                                ViewTreeObserver.OnGlobalLayoutListener {
+                                override fun onGlobalLayout() {
+                                    // 确保只监听一次
+                                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                                        showSumShiSanMoney.viewTreeObserver.removeGlobalOnLayoutListener(this)
+                                    } else {
+                                        showSumShiSanMoney.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                                    }
+
+                                    // 获取视图在屏幕上的绝对位置
+                                    val location = IntArray(2)
+                                    showSumShiSanMoney.getLocationOnScreen(location)
+                                    val xOnScreen = location[0]
+                                    val yOnScreen = location[1]
+
+
+                                    //通过显示的控件得到相对于屏幕的位置
+                                    var  rax=xOnScreen
+                                    var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
+
+                                    (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),animationView =showSumShiSanMoney.ivShowBg)
+                                    //显示点击在Fragment的位置用于动画结束后显示
+                                    if(ComputeSum.sumTotalShiSan.viewXYTemporary[0]==0&&ComputeSum.sumTotalShiSan.viewXYTemporary[1]==0){
+                                        val location = IntArray(2)
+                                        showSumShiSanMoney.getLocationInWindow(location)
+
+                                        ComputeSum.sumTotalShiSan.viewXYTemporary[0]= showSumShiSanMoney.left
+                                        ComputeSum.sumTotalShiSan.viewXYTemporary[1]=showSumShiSanMoney.top
+                                    }
+                                }
+                            })
+
+                            val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                            mDatabind.rlHomeRoot.addView(showSumShiSanMoney, params)
+
+                            showSumShiSanMoney.translationX =  ComputeSum.sumTotalShiSan.viewXYTemporary[0].toFloat()
+                            showSumShiSanMoney.translationY =  ComputeSum.sumTotalShiSan.viewXYTemporary[1].toFloat()
+                        }
+
+
+
+                    }
+
+                }
+
+            }
+
+            false // 返回 true 表示事件已经被处理
+        }
+
+        /**
+         *14
+         */
+        mDatabind.rvSumClickFourteen.setOnTouchListener { v, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+
+                    //先判断余额是否够这次 并且扣取钱
+                    if( (context as GameHomeActivity).isCanBetting()&&MyGameManager.isClickOperation){
+                        val x = event.x
+                        val y = event.y
+
+                        val location = IntArray(2)
+                        mDatabind.rvSumClickFourteen.getLocationOnScreen(location)
+                        val edgeSizeInPixels =requireContext().dp2px(30) // 将5dp转换为像素值
+                        val viewBounds = Rect()
+                        v.getDrawingRect(viewBounds)
+                        viewBounds.inset(edgeSizeInPixels, edgeSizeInPixels)
+                        var newY:Float=0f
+                        newY=y
+                        if (!viewBounds.contains(x.toInt(), y.toInt())) {
+//                           // 点击事件超出了边缘范围，调整点击位置到距离边缘5dp的位置
+//                             val adjustedX =    if (x < viewBounds.left) viewBounds.left else if (x > viewBounds.right) viewBounds.right else x
+                            if (y < viewBounds.top) {
+                                newY=  viewBounds.top.toFloat()
+                            }  else  if (y > viewBounds.bottom) {
+                                newY=   viewBounds.bottom.toFloat()
+                            } else {
+                                newY=  y
+                            }
+
+                        }
+                        if(ComputeSum.sumTotalShiSi.viewXYTemporary [0]==0&& ComputeSum.sumTotalShiSi.viewXYTemporary[1]==0){
+                            ComputeSum.sumTotalShiSi.viewXYTemporary[0]=location[0]+mDatabind.rvSumClickFourteen.width/2-requireContext().dp2px(30)
+                            ComputeSum.sumTotalShiSi.viewXYTemporary[1]=newY.toInt()+requireContext().dp2px(68)
+                        }
+                        var selectNum=0
+                        for (i in 0 until   MyGameManager.noteList.size) {
+                            if(MyGameManager.noteList[i].select){
+                                selectNum=i
+                                break
+                            }
+                        }
+                        clickAnimationIsHidden(14)
+                        showSumShiSiMoney.showTop()
+                        //计算钱
+                        ComputeSum.sumTotalShiSi.moneyTemporary= ComputeSum.sumTotalShiSi.moneyTemporary+MyGameManager.noteList[selectNum].money
+                        showSumShiSiMoney.setShowMoney(ComputeSum.sumTotalShiSi.moneyTemporary+ ComputeSum.sumTotalShiSi.moneyOkEmpty)
+
+                        //动画位置
+                        if (mDatabind.rlHomeRoot.indexOfChild(showSumShiSiMoney) != -1) {
+                            val location = IntArray(2)
+                            showSumShiSiMoney.getLocationOnScreen(location)
+                            val xOnScreen = location[0]
+                            val yOnScreen = location[1]
+                            //通过显示的控件得到相对于屏幕的位置
+                            var  rax=xOnScreen
+                            var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
+                            (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(), animationView =showSumShiSiMoney.ivShowBg )
+
+                        } else {
+                            val viewTreeObserver = showSumShiSiMoney.viewTreeObserver
+                            viewTreeObserver.addOnGlobalLayoutListener(object :
+                                ViewTreeObserver.OnGlobalLayoutListener {
+                                override fun onGlobalLayout() {
+                                    // 确保只监听一次
+                                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                                        showSumShiSiMoney.viewTreeObserver.removeGlobalOnLayoutListener(this)
+                                    } else {
+                                        showSumShiSiMoney.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                                    }
+
+                                    // 获取视图在屏幕上的绝对位置
+                                    val location = IntArray(2)
+                                    showSumShiSiMoney.getLocationOnScreen(location)
+                                    val xOnScreen = location[0]
+                                    val yOnScreen = location[1]
+
+
+                                    //通过显示的控件得到相对于屏幕的位置
+                                    var  rax=xOnScreen
+                                    var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
+
+                                    (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),animationView =showSumShiSiMoney.ivShowBg)
+                                    //显示点击在Fragment的位置用于动画结束后显示
+                                    if(ComputeSum.sumTotalShiSi.viewXYTemporary[0]==0&&ComputeSum.sumTotalShiSi.viewXYTemporary[1]==0){
+                                        val location = IntArray(2)
+                                        showSumShiSiMoney.getLocationInWindow(location)
+
+                                        ComputeSum.sumTotalShiSi.viewXYTemporary[0]= showSumShiSiMoney.left
+                                        ComputeSum.sumTotalShiSi.viewXYTemporary[1]=showSumShiSiMoney.top
+                                    }
+                                }
+                            })
+
+                            val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                            mDatabind.rlHomeRoot.addView(showSumShiSiMoney, params)
+
+                            showSumShiSiMoney.translationX =  ComputeSum.sumTotalShiSi.viewXYTemporary[0].toFloat()
+                            showSumShiSiMoney.translationY =  ComputeSum.sumTotalShiSi.viewXYTemporary[1].toFloat()
+                        }
+
+
+
+                    }
+
+                }
+
+            }
+
+            false // 返回 true 表示事件已经被处理
+        }
+        /**
+         *15
+         */
+        mDatabind.rvSumClickFifteen.setOnTouchListener { v, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+
+                    //先判断余额是否够这次 并且扣取钱
+                    if( (context as GameHomeActivity).isCanBetting()&&MyGameManager.isClickOperation){
+                        val x = event.x
+                        val y = event.y
+
+                        val location = IntArray(2)
+                        mDatabind.rvSumClickFifteen.getLocationOnScreen(location)
+                        val edgeSizeInPixels =requireContext().dp2px(30) // 将5dp转换为像素值
+                        val viewBounds = Rect()
+                        v.getDrawingRect(viewBounds)
+                        viewBounds.inset(edgeSizeInPixels, edgeSizeInPixels)
+                        var newY:Float=0f
+                        newY=y
+                        if (!viewBounds.contains(x.toInt(), y.toInt())) {
+//                           // 点击事件超出了边缘范围，调整点击位置到距离边缘5dp的位置
+//                             val adjustedX =    if (x < viewBounds.left) viewBounds.left else if (x > viewBounds.right) viewBounds.right else x
+                            if (y < viewBounds.top) {
+                                newY=  viewBounds.top.toFloat()
+                            }  else  if (y > viewBounds.bottom) {
+                                newY=   viewBounds.bottom.toFloat()
+                            } else {
+                                newY=  y
+                            }
+
+                        }
+                        if(ComputeSum.sumTotalShiWu.viewXYTemporary [0]==0&& ComputeSum.sumTotalShiWu.viewXYTemporary[1]==0){
+                            ComputeSum.sumTotalShiWu.viewXYTemporary[0]=location[0]+mDatabind.rvSumClickFifteen.width/2-requireContext().dp2px(30)
+                            ComputeSum.sumTotalShiWu.viewXYTemporary[1]=newY.toInt()+requireContext().dp2px(68)
+                        }
+                        var selectNum=0
+                        for (i in 0 until   MyGameManager.noteList.size) {
+                            if(MyGameManager.noteList[i].select){
+                                selectNum=i
+                                break
+                            }
+                        }
+                        clickAnimationIsHidden(15)
+                        showSumShiWuMoney.showTop()
+                        //计算钱
+                        ComputeSum.sumTotalShiWu.moneyTemporary= ComputeSum.sumTotalShiWu.moneyTemporary+MyGameManager.noteList[selectNum].money
+                        showSumShiWuMoney.setShowMoney(ComputeSum.sumTotalShiWu.moneyTemporary+ ComputeSum.sumTotalShiWu.moneyOkEmpty)
+
+                        //动画位置
+                        if (mDatabind.rlHomeRoot.indexOfChild(showSumShiWuMoney) != -1) {
+                            val location = IntArray(2)
+                            showSumShiWuMoney.getLocationOnScreen(location)
+                            val xOnScreen = location[0]
+                            val yOnScreen = location[1]
+                            //通过显示的控件得到相对于屏幕的位置
+                            var  rax=xOnScreen
+                            var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
+                            (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(), animationView =showSumShiWuMoney.ivShowBg )
+
+                        } else {
+                            val viewTreeObserver = showSumShiWuMoney.viewTreeObserver
+                            viewTreeObserver.addOnGlobalLayoutListener(object :
+                                ViewTreeObserver.OnGlobalLayoutListener {
+                                override fun onGlobalLayout() {
+                                    // 确保只监听一次
+                                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                                        showSumShiWuMoney.viewTreeObserver.removeGlobalOnLayoutListener(this)
+                                    } else {
+                                        showSumShiWuMoney.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                                    }
+
+                                    // 获取视图在屏幕上的绝对位置
+                                    val location = IntArray(2)
+                                    showSumShiWuMoney.getLocationOnScreen(location)
+                                    val xOnScreen = location[0]
+                                    val yOnScreen = location[1]
+
+
+                                    //通过显示的控件得到相对于屏幕的位置
+                                    var  rax=xOnScreen
+                                    var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
+
+                                    (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),animationView =showSumShiWuMoney.ivShowBg)
+                                    //显示点击在Fragment的位置用于动画结束后显示
+                                    if(ComputeSum.sumTotalShiWu.viewXYTemporary[0]==0&&ComputeSum.sumTotalShiWu.viewXYTemporary[1]==0){
+                                        val location = IntArray(2)
+                                        showSumShiWuMoney.getLocationInWindow(location)
+
+                                        ComputeSum.sumTotalShiWu.viewXYTemporary[0]= showSumShiWuMoney.left
+                                        ComputeSum.sumTotalShiWu.viewXYTemporary[1]=showSumShiWuMoney.top
+                                    }
+                                }
+                            })
+
+                            val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                            mDatabind.rlHomeRoot.addView(showSumShiWuMoney, params)
+
+                            showSumShiWuMoney.translationX =  ComputeSum.sumTotalShiWu.viewXYTemporary[0].toFloat()
+                            showSumShiWuMoney.translationY =  ComputeSum.sumTotalShiWu.viewXYTemporary[1].toFloat()
+                        }
+
+
+
+                    }
+
+                }
+
+            }
+
+            false // 返回 true 表示事件已经被处理
+        }
+
+        /**
+         *16
+         */
+        mDatabind.rvSumClickSixteen.setOnTouchListener { v, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+
+                    //先判断余额是否够这次 并且扣取钱
+                    if( (context as GameHomeActivity).isCanBetting()&&MyGameManager.isClickOperation){
+                        val x = event.x
+                        val y = event.y
+
+                        val location = IntArray(2)
+                        mDatabind.rvSumClickSixteen.getLocationOnScreen(location)
+                        val edgeSizeInPixels =requireContext().dp2px(30) // 将5dp转换为像素值
+                        val viewBounds = Rect()
+                        v.getDrawingRect(viewBounds)
+                        viewBounds.inset(edgeSizeInPixels, edgeSizeInPixels)
+                        var newY:Float=0f
+                        newY=y
+                        if (!viewBounds.contains(x.toInt(), y.toInt())) {
+//                           // 点击事件超出了边缘范围，调整点击位置到距离边缘5dp的位置
+//                             val adjustedX =    if (x < viewBounds.left) viewBounds.left else if (x > viewBounds.right) viewBounds.right else x
+                            if (y < viewBounds.top) {
+                                newY=  viewBounds.top.toFloat()
+                            }  else  if (y > viewBounds.bottom) {
+                                newY=   viewBounds.bottom.toFloat()
+                            } else {
+                                newY=  y
+                            }
+
+                        }
+                        if(ComputeSum.sumTotalShiLiu.viewXYTemporary [0]==0&& ComputeSum.sumTotalShiLiu.viewXYTemporary[1]==0){
+                            ComputeSum.sumTotalShiLiu.viewXYTemporary[0]=location[0]+mDatabind.rvSumClickSixteen.width/2-requireContext().dp2px(30)
+                            ComputeSum.sumTotalShiLiu.viewXYTemporary[1]=newY.toInt()+requireContext().dp2px(68)
+                        }
+                        var selectNum=0
+                        for (i in 0 until   MyGameManager.noteList.size) {
+                            if(MyGameManager.noteList[i].select){
+                                selectNum=i
+                                break
+                            }
+                        }
+                        clickAnimationIsHidden(16)
+                        showSumShiLiuMoney.showTop()
+                        //计算钱
+                        ComputeSum.sumTotalShiLiu.moneyTemporary= ComputeSum.sumTotalShiLiu.moneyTemporary+MyGameManager.noteList[selectNum].money
+                        showSumShiLiuMoney.setShowMoney(ComputeSum.sumTotalShiLiu.moneyTemporary+ ComputeSum.sumTotalShiLiu.moneyOkEmpty)
+
+                        //动画位置
+                        if (mDatabind.rlHomeRoot.indexOfChild(showSumShiLiuMoney) != -1) {
+                            val location = IntArray(2)
+                            showSumShiLiuMoney.getLocationOnScreen(location)
+                            val xOnScreen = location[0]
+                            val yOnScreen = location[1]
+                            //通过显示的控件得到相对于屏幕的位置
+                            var  rax=xOnScreen
+                            var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
+                            (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(), animationView =showSumShiLiuMoney.ivShowBg )
+
+                        } else {
+                            val viewTreeObserver = showSumShiLiuMoney.viewTreeObserver
+                            viewTreeObserver.addOnGlobalLayoutListener(object :
+                                ViewTreeObserver.OnGlobalLayoutListener {
+                                override fun onGlobalLayout() {
+                                    // 确保只监听一次
+                                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                                        showSumShiLiuMoney.viewTreeObserver.removeGlobalOnLayoutListener(this)
+                                    } else {
+                                        showSumShiLiuMoney.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                                    }
+
+                                    // 获取视图在屏幕上的绝对位置
+                                    val location = IntArray(2)
+                                    showSumShiLiuMoney.getLocationOnScreen(location)
+                                    val xOnScreen = location[0]
+                                    val yOnScreen = location[1]
+
+
+                                    //通过显示的控件得到相对于屏幕的位置
+                                    var  rax=xOnScreen
+                                    var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
+
+                                    (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),animationView =showSumShiLiuMoney.ivShowBg)
+                                    //显示点击在Fragment的位置用于动画结束后显示
+                                    if(ComputeSum.sumTotalShiLiu.viewXYTemporary[0]==0&&ComputeSum.sumTotalShiLiu.viewXYTemporary[1]==0){
+                                        val location = IntArray(2)
+                                        showSumShiLiuMoney.getLocationInWindow(location)
+
+                                        ComputeSum.sumTotalShiLiu.viewXYTemporary[0]= showSumShiLiuMoney.left
+                                        ComputeSum.sumTotalShiLiu.viewXYTemporary[1]=showSumShiLiuMoney.top
+                                    }
+                                }
+                            })
+
+                            val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                            mDatabind.rlHomeRoot.addView(showSumShiLiuMoney, params)
+
+                            showSumShiLiuMoney.translationX =  ComputeSum.sumTotalShiLiu.viewXYTemporary[0].toFloat()
+                            showSumShiLiuMoney.translationY =  ComputeSum.sumTotalShiLiu.viewXYTemporary[1].toFloat()
+                        }
+
+
+
+                    }
+
+                }
+
+            }
+
+            false // 返回 true 表示事件已经被处理
+        }
+
+        /**
+         *17
+         */
+        mDatabind.rvSumClickSeventeen.setOnTouchListener { v, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+
+                    //先判断余额是否够这次 并且扣取钱
+                    if( (context as GameHomeActivity).isCanBetting()&&MyGameManager.isClickOperation){
+                        val x = event.x
+                        val y = event.y
+
+                        val location = IntArray(2)
+                        mDatabind.rvSumClickSeventeen.getLocationOnScreen(location)
+                        val edgeSizeInPixels =requireContext().dp2px(30) // 将5dp转换为像素值
+                        val viewBounds = Rect()
+                        v.getDrawingRect(viewBounds)
+                        viewBounds.inset(edgeSizeInPixels, edgeSizeInPixels)
+                        var newY:Float=0f
+                        newY=y
+                        if (!viewBounds.contains(x.toInt(), y.toInt())) {
+//                           // 点击事件超出了边缘范围，调整点击位置到距离边缘5dp的位置
+//                             val adjustedX =    if (x < viewBounds.left) viewBounds.left else if (x > viewBounds.right) viewBounds.right else x
+                            if (y < viewBounds.top) {
+                                newY=  viewBounds.top.toFloat()
+                            }  else  if (y > viewBounds.bottom) {
+                                newY=   viewBounds.bottom.toFloat()
+                            } else {
+                                newY=  y
+                            }
+
+                        }
+                        if(ComputeSum.sumTotalShiQi.viewXYTemporary [0]==0&& ComputeSum.sumTotalShiQi.viewXYTemporary[1]==0){
+                            ComputeSum.sumTotalShiQi.viewXYTemporary[0]=location[0]+mDatabind.rvSumClickSeventeen.width/2-requireContext().dp2px(30)
+                            ComputeSum.sumTotalShiQi.viewXYTemporary[1]=newY.toInt()+requireContext().dp2px(68)
+                        }
+                        var selectNum=0
+                        for (i in 0 until   MyGameManager.noteList.size) {
+                            if(MyGameManager.noteList[i].select){
+                                selectNum=i
+                                break
+                            }
+                        }
+                        clickAnimationIsHidden(17)
+                        showSumShiQiMoney.showTop()
+                        //计算钱
+                        ComputeSum.sumTotalShiQi.moneyTemporary= ComputeSum.sumTotalShiQi.moneyTemporary+MyGameManager.noteList[selectNum].money
+                        showSumShiQiMoney.setShowMoney(ComputeSum.sumTotalShiQi.moneyTemporary+ ComputeSum.sumTotalShiQi.moneyOkEmpty)
+
+                        //动画位置
+                        if (mDatabind.rlHomeRoot.indexOfChild(showSumShiQiMoney) != -1) {
+                            val location = IntArray(2)
+                            showSumShiQiMoney.getLocationOnScreen(location)
+                            val xOnScreen = location[0]
+                            val yOnScreen = location[1]
+                            //通过显示的控件得到相对于屏幕的位置
+                            var  rax=xOnScreen
+                            var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
+                            (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(), animationView =showSumShiQiMoney.ivShowBg )
+
+                        } else {
+                            val viewTreeObserver = showSumShiQiMoney.viewTreeObserver
+                            viewTreeObserver.addOnGlobalLayoutListener(object :
+                                ViewTreeObserver.OnGlobalLayoutListener {
+                                override fun onGlobalLayout() {
+                                    // 确保只监听一次
+                                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                                        showSumShiQiMoney.viewTreeObserver.removeGlobalOnLayoutListener(this)
+                                    } else {
+                                        showSumShiQiMoney.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                                    }
+
+                                    // 获取视图在屏幕上的绝对位置
+                                    val location = IntArray(2)
+                                    showSumShiQiMoney.getLocationOnScreen(location)
+                                    val xOnScreen = location[0]
+                                    val yOnScreen = location[1]
+
+
+                                    //通过显示的控件得到相对于屏幕的位置
+                                    var  rax=xOnScreen
+                                    var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
+
+                                    (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),animationView =showSumShiQiMoney.ivShowBg)
+                                    //显示点击在Fragment的位置用于动画结束后显示
+                                    if(ComputeSum.sumTotalShiQi.viewXYTemporary[0]==0&&ComputeSum.sumTotalShiQi.viewXYTemporary[1]==0){
+                                        val location = IntArray(2)
+                                        showSumShiQiMoney.getLocationInWindow(location)
+
+                                        ComputeSum.sumTotalShiQi.viewXYTemporary[0]= showSumShiQiMoney.left
+                                        ComputeSum.sumTotalShiQi.viewXYTemporary[1]=showSumShiQiMoney.top
+                                    }
+                                }
+                            })
+
+                            val params = RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                            mDatabind.rlHomeRoot.addView(showSumShiQiMoney, params)
+
+                            showSumShiQiMoney.translationX =  ComputeSum.sumTotalShiQi.viewXYTemporary[0].toFloat()
+                            showSumShiQiMoney.translationY =  ComputeSum.sumTotalShiQi.viewXYTemporary[1].toFloat()
+                        }
+
+
+
+                    }
+
+                }
+
+            }
+
+            false // 返回 true 表示事件已经被处理
+        }
 
     }
 }

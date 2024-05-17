@@ -9,8 +9,6 @@ import androidx.fragment.app.FragmentTransaction
 import com.cn.game.sdk.R
 import com.cn.game.sdk.base.BaseGameActivity
 import com.cn.game.sdk.databinding.ActivityCeshiSdkBinding
-import com.cn.game.sdk.tool.bindViewPagerNew
-import com.cn.game.sdk.tool.init
 import com.cn.game.sdk.ui.fast.GameHomeVm
 import com.cn.game.sdk.ui.fast.fragment.CeFragment
 import com.cn.game.sdk.ui.fast.fragment.HomeDefaultFragment
@@ -42,13 +40,13 @@ class CeshiSdkActivity : BaseGameActivity<GameHomeVm,ActivityCeshiSdkBinding >()
         }
         homeDefaultFragmentNew222.arguments = basketballNew222
         mFragList.add(homeDefaultFragmentNew222)
-        mDatabind.viewPager.init(supportFragmentManager,mFragList,arrayListOf(
-            getString(R.string.g_home_txt_default),
-            getString(R.string.g_home_txt_more)))
-        mDatabind.viewPager.offscreenPageLimit =mFragList.size
-        mDatabind.magicIndicator.bindViewPagerNew(mDatabind.viewPager,arrayListOf(
-            getString(R.string.g_home_txt_default),
-            getString(R.string.g_home_txt_more)),scrollEnable=true)
+//        mDatabind.viewPager.init(supportFragmentManager,mFragList,arrayListOf(
+//            getString(R.string.g_home_txt_default),
+//            getString(R.string.g_home_txt_more)))
+//        mDatabind.viewPager.offscreenPageLimit =mFragList.size
+//        mDatabind.magicIndicator.bindViewPagerNew(mDatabind.viewPager,arrayListOf(
+//            getString(R.string.g_home_txt_default),
+//            getString(R.string.g_home_txt_more)),scrollEnable=true)
 
 
 //        mDatabind.viewPager2.initActivity(this, mFragListNew, true,2)

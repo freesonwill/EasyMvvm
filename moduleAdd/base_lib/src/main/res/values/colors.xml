@@ -31,7 +31,7 @@
     <color name="shadow_color">#424242</color>
 
     <color name="yellow_color_FF">#FFBA19</color>
-
+    <color name="selectColor">#112233</color>
     <color name="blacks">#B3000000</color>
     <color name="black">#000000</color>
     <color name="blacks_tr">#77000000</color>
