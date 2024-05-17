@@ -56,6 +56,10 @@ import com.xcjh.base_lib.utils.toHtml
 import com.xcjh.base_lib.utils.view.clickNoRepeat
 import com.xcjh.base_lib.utils.view.visibleOrGone
 import kotlinx.android.synthetic.main.fragment_detail_tab_chat.view.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 /**
@@ -127,6 +131,8 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
 
 //            mDatabind.edtChatMsg.isFocusable=false
             mDatabind.edtChatMsg.setText("")
+            mDatabind.edtChatMsg.isFocusable = false
+            mDatabind.edtChatMsg.isFocusableInTouchMode = false
 //            mDatabind.edtChatMsg.hint=resources.getString(R.string.str_stoptalk)
 //            mDatabind.edtChatMsg.gravity= Gravity.CENTER
 //            mDatabind.sendChat.isEnabled=false
@@ -134,6 +140,8 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
         }else{
             mDatabind.txtProhibit.visibility=View.GONE
             mDatabind.edtChatMsg.setText("")
+            mDatabind.edtChatMsg.isFocusable = true
+            mDatabind.edtChatMsg.isFocusableInTouchMode = true
 //            mDatabind.edtChatMsg.hint=resources.getString(R.string.say_something)
 //            mDatabind.edtChatMsg.isFocusable = true
 //            mDatabind.edtChatMsg.isFocusableInTouchMode = true
@@ -175,8 +183,27 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
                     startImageRotate(expandCollapse, noticeBean.isOpen)
                     if (noticeBean.isOpen) {
                         setH5Data(mNoticeWeb, noticeBean.notice, tvColor = "#94999f", maxLine = 40)
+//                GlobalScope.launch(Dispatchers.Main) { // 使用主线程的调度器
+//                    delay(100L) // 延迟1秒（1000毫秒）
+//
+//                    val params = mDatabind.rcvChat.layoutParams
+//                    params.height = mDatabind.page.height
+//                    mDatabind.rcvChat.layoutParams = params
+//                    mDatabind.rcvChat.requestLayout()
+//
+//                }
+
                     } else {
                         setH5Data(mNoticeWeb, noticeBean.notice, tvColor = "#94999f", maxLine = 2)
+//                        GlobalScope.launch(Dispatchers.Main) { // 使用主线程的调度器
+//                            delay(100L) // 延迟1秒（1000毫秒）
+//
+//                            val params = mDatabind.rcvChat.layoutParams
+//                            params.height = mDatabind.page.height
+//                            mDatabind.rcvChat.layoutParams = params
+//                            mDatabind.rcvChat.requestLayout()
+//
+//                        }
                     }
                 }
             }

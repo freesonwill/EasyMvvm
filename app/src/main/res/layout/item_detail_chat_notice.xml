@@ -66,6 +66,17 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+<!--            <TextView-->
+<!--                android:id="@+id/expandableText"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_alignBottom="@id/agentWeb"-->
+<!--                android:layout_alignTop="@id/agentWeb"-->
+<!--                android:visibility="invisible"-->
+<!--                tools:text=""-->
+<!--                android:ellipsize="end"-->
+<!--                android:textColor="@color/c_94999f"-->
+<!--                android:textSize="@dimen/sp_14" />-->
             <TextView
                 android:id="@+id/expandableText"
                 android:layout_width="match_parent"

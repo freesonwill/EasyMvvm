@@ -1,8 +1,7 @@
 package com.xcjh.app.ui.login
 
 
-import android.app.ActivityOptions
-import android.content.Intent
+import android.app.Activity
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Bundle
@@ -34,9 +33,10 @@ import com.xcjh.app.view.slider.CaptchaCheckOt
 import com.xcjh.app.view.slider.ImageUtil
 import com.xcjh.app.view.slider.WordImageView
 import com.xcjh.base_lib.Constants
-import com.xcjh.base_lib.utils.bindViewPager2
+import com.xcjh.base_lib.utils.bindViewPagerEr
 import com.xcjh.base_lib.utils.initActivity
 import com.xcjh.base_lib.utils.setOnclickNoRepeat
+import com.xcjh.base_lib.utils.view.clickNoRepeat
 
 /***
  * 登录
@@ -74,23 +74,23 @@ class LoginActivity : BaseActivity<LoginVm, ActivityLoaginBinding>() {
 
 
         mDatabind.titleTop.tvTitle.text = resources.getString(R.string.loginandre)
-//        mDatabind.btn.clickNoRepeat {
+        mDatabind.btn.clickNoRepeat {
 //           var dd= MyGameManager.getFastThreeView(this)
 //            mDatabind.llshow.addView(dd)
-//
-//        }
+
+        }
 
         mFragments.add(Fragment())
         mFragments.add(Fragment())
         mDatabind.vp.initActivity(this, mFragments, false)
-        mDatabind.magicIndicator.bindViewPager2(
+        mDatabind.magicIndicator.bindViewPagerEr(
             mDatabind.vp, arrayListOf(
                 resources.getString(R.string.txt_phone_lagoin),
                 resources.getString(R.string.txt_email_login)
             ),
             R.color.black,
             R.color.black,
-            16f, 16f, false, scrollEnable=false,
+            16f, 16f, false, scrollEnable=true,
             R.color.c_34a853, 38, margin = 30
         )
         mDatabind.vp.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
@@ -557,6 +557,11 @@ class LoginActivity : BaseActivity<LoginVm, ActivityLoaginBinding>() {
             mDatabind.tvgo.text = Constants.PHONE_CODE
             Constants.PHONE_CODE=""
         }
+
+        val windowManager = (this@LoginActivity as Activity).windowManager
+        val display = windowManager.defaultDisplay
+        val lp = window!!.attributes
+        lp.width = display.width
     }
 
 
@@ -659,11 +664,12 @@ class LoginActivity : BaseActivity<LoginVm, ActivityLoaginBinding>() {
     }
 
 
+
     fun  dialogText(){
-//        val windowManager = (this@LoginActivity as Activity).windowManager
-//        val display = windowManager.defaultDisplay
-//        val lp = window!!.attributes
-//        lp.width = display.width * 9 / 10//设置宽度为屏幕的0.9
+        val windowManager = (this@LoginActivity as Activity).windowManager
+        val display = windowManager.defaultDisplay
+        val lp = window!!.attributes
+        lp.width = display.width * 9 / 10//设置宽度为屏幕的0.9
 
             customDialog= CustomDialog.build()
                 .setCustomView(object : OnBindView<CustomDialog?>(R.layout.dialog_word_captcha) {
@@ -801,7 +807,7 @@ class LoginActivity : BaseActivity<LoginVm, ActivityLoaginBinding>() {
 
 
                 }).setAlign(CustomDialog.ALIGN.CENTER).setCancelable(false)
-//                .setWidth(display.width * 9 / 10)
+                .setWidth(display.width * 9 / 10)
                 .setMaskColor(//背景遮罩
                     ContextCompat.getColor(this, com.xcjh.base_lib.R.color.blacks_tr)
 

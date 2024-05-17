@@ -89,7 +89,7 @@ class MainRecommendNewVm : BaseViewModel() {
         }
 
         request(
-            { apiService.getNowLive(LiveReq(current=pageNo,size=500)) },
+            { apiService.getNowLive(LiveReq(current=pageNo,size=1000)) },
             {
                 pageNo++
 

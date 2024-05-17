@@ -55,7 +55,7 @@
     <string name="str_stoptalk">當前您已被禁言</string>
     <string name="str_inputcontent">請輸入內容</string>
     <string name="copy">複製</string>
-    <string name="collect_success">收藏成功</string>
+    <string name="collect_success">訂閱成功</string>
     <string name="cancel_collect_success">已取消收藏</string>
     <string name="share_success">分享成功</string>
     <string name="price_s">$%s</string>

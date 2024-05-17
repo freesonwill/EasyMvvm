@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
-import android.util.Log
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
@@ -25,7 +24,7 @@ import com.xcjh.app.websocket.bean.ReceiveChangeMsg
 import com.xcjh.app.websocket.listener.LiveStatusListener
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.LogUtils
-import com.xcjh.base_lib.utils.bindViewPager2
+import com.xcjh.base_lib.utils.bindViewPagerEr
 import com.xcjh.base_lib.utils.initActivity
 import org.json.JSONArray
 
@@ -123,7 +122,7 @@ class ScheduleFragment : BaseFragment<MainVm, FrCourseBinding>() {
             }
             mDatabind.vp.initActivity(requireActivity(), mFragments, true)
             //初始化 magic_indicator
-            mDatabind.magicIndicator.bindViewPager2(
+            mDatabind.magicIndicator.bindViewPagerEr(
                 mDatabind.vp, arrayListOf(
                     mTitles!![0],
                     mTitles!![1],

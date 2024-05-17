@@ -116,3 +116,13 @@ data class UpdateLiveContentBean(
     val liveId: String = "", //直播间id
     val openInfoId: String = "", //修改直播间信息
 )
+
+
+/**
+ *纯净流结束
+ */
+data class PureFlowCloseBean(
+    var matchld: String = "", //比赛id
+    var matchType:String="",//比赛类型1:足球 2:篮球
+    var status:Int=0,//比赛状态
+)

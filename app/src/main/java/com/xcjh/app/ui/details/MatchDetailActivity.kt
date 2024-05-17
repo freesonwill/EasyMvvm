@@ -23,6 +23,9 @@ import com.android.cling.startBindUpnpService
 import com.android.cling.stopUpnpService
 import com.android.cling.util.Utils
 import com.bumptech.glide.Glide
+import com.drake.brv.utils.bindingAdapter
+import com.drake.brv.utils.models
+import com.drake.brv.utils.mutable
 import com.google.android.material.appbar.AppBarLayout
 import com.google.gson.Gson
 import com.gyf.immersionbar.ImmersionBar
@@ -40,6 +43,8 @@ import com.xcjh.app.R
 import com.xcjh.app.adapter.ViewPager2Adapter
 import com.xcjh.app.appViewModel
 import com.xcjh.app.bean.AnchorListBean
+import com.xcjh.app.bean.MainTxtBean
+import com.xcjh.app.bean.MatchBean
 import com.xcjh.app.bean.MatchDetailBean
 import com.xcjh.app.databinding.ActivityMatchDetailBinding
 import com.xcjh.app.isTopActivity
@@ -53,8 +58,13 @@ import com.xcjh.app.view.PopupKickOut
 import com.xcjh.app.view.PopupSelectProjection
 import com.xcjh.app.view.balldetail.ControlShowListener
 import com.xcjh.app.websocket.MyWsManager
+import com.xcjh.app.websocket.bean.FeedSystemNoticeBean
 import com.xcjh.app.websocket.bean.LiveStatus
+import com.xcjh.app.websocket.bean.PureFlowCloseBean
 import com.xcjh.app.websocket.bean.ReceiveChangeMsg
+import com.xcjh.app.websocket.bean.ReceiveChatMsg
+import com.xcjh.app.websocket.bean.ReceiveWsBean
+import com.xcjh.app.websocket.listener.C2CListener
 import com.xcjh.app.websocket.listener.LiveStatusListener
 import com.xcjh.app.websocket.listener.MOffListener
 import com.xcjh.app.websocket.listener.NoReadMsgPushListener
@@ -75,6 +85,7 @@ import org.fourthline.cling.model.meta.Device
 import tv.danmaku.ijk.media.player.IjkMediaPlayer
 import java.math.BigDecimal
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.math.abs
 
 
@@ -458,6 +469,47 @@ class MatchDetailActivity :
         })
         initVideoBuilderMode()
 
+        /**
+         * 直播流关闭
+         */
+        MyWsManager.getInstance(App.app)?.setC2CListener(javaClass.name, object : C2CListener {
+            override fun onSendMsgIsOk(isOk: Boolean, bean: ReceiveWsBean<*>) {
+            }
+            override fun onSystemMsgReceive(chat: FeedSystemNoticeBean) {
+
+            }
+
+            override fun onC2CReceive(chat: ReceiveChatMsg) {
+
+            }
+            //纯净流关闭
+            override fun onPureFlowClose(pure: PureFlowCloseBean) {
+                super.onPureFlowClose(pure)
+                    if(matchDetail!=null&&matchDetail.anchorList!!.size>0){
+                        var data=AnchorListBean()
+                        matchDetail.anchorList!!.forEach {
+                            if(it.isSelect){
+                                data=it
+                            }
+
+                        }
+                        if(data.isSelect&&data.pureFlow&&matchDetail.matchId.equals(pure.matchld)&&matchDetail.matchType.equals(pure.matchType)){
+                            placeLoginDialogFinish(this@MatchDetailActivity)
+                        }
+
+
+                    }
+
+
+            }
+
+            override fun onChangeReceive(chat: ArrayList<ReceiveChangeMsg>) {
+
+            }
+
+        })
+
+
         MyWsManager.getInstance(App.app)?.setNoReadMsgListener(javaClass.name, object :NoReadMsgPushListener{
             override fun onUserIsKicked() {
                 super.onUserIsKicked()
@@ -773,7 +825,7 @@ class MatchDetailActivity :
                             matchList.forEach {
                                 //正在比赛
                                 if (matchId == it.matchId.toString() && matchType == it.matchType.toString()) {
-                                    placeLoginDialogFinish(this@MatchDetailActivity)
+//                                    placeLoginDialogFinish(this@MatchDetailActivity)
 //                                    finishDilog(this@MatchDetailActivity)
                                     //直播间结束
 //                                    isHasAnchor=false
@@ -864,6 +916,7 @@ class MatchDetailActivity :
     private fun setBaseListener() {
         //分享按钮
         mDatabind.tvToShare.setOnClickListener {
+
             SoundManager.playMedia()
             setShareDate()
         }
@@ -1061,8 +1114,10 @@ class MatchDetailActivity :
             if (it == 2) {
 //                this.setIsLandscape(true)
                 if (!mDatabind.videoPlayer.isIfCurrentIsFullscreen) {
-
+//                    GSYVideoType.setScreenScaleRatio(gSYVideoPlayer!!.gsyVideoManager.currentVideoWidth /gSYVideoPlayer!!.gsyVideoManager.currentVideoHeight.toFloat())
+//                    GSYVideoType.setShowType(GSYVideoType.SCREEN_TYPE_CUSTOM)
                     GSYVideoType.setShowType(GSYVideoType.SCREEN_TYPE_FULL)
+//                    GSYVideoType.setShowType(GSYVideoType.SCREEN_TYPE_FULL)
                 }
 
 //                if( mDatabind.videoPlayer.isIfCurrentIsFullscreen){
@@ -1183,10 +1238,11 @@ class MatchDetailActivity :
                     if( matchDetail.status in 0..if (matchType == "1") 7 else 9){
                         blacklistDilog(this)
 
-                    }else{
-//                        finishDilog(this)
-                        placeLoginDialogFinish(this)
                     }
+//                    else{
+////                        finishDilog(this)
+//                        placeLoginDialogFinish(this)
+//                    }
 
                } else{
                    myToast(resources.getString(R.string.matche_txt_live_end))
@@ -1910,6 +1966,7 @@ class MatchDetailActivity :
         showDialogFinish!!.popupKickOutListener=object : PopupKickOut.PopupKickOutListener{
             override fun clickClose() {
                 popwindowFinish!!.dismiss()
+                finish()
             }
 
         }

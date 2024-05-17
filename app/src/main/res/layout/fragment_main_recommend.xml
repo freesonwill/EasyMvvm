@@ -28,11 +28,12 @@
                 android:layout_height="match_parent" />
             </com.drake.statelayout.StateLayout>
         </com.drake.brv.PageRefreshLayout>
-<!--        <Button-->
-<!--            android:id="@+id/btn"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="添加"/>-->
+        <Button
+            android:id="@+id/btn"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="添加"/>
 
     </RelativeLayout>
 </layout>

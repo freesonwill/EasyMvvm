@@ -5,12 +5,9 @@ import android.content.res.ColorStateList
 import android.content.res.Resources
 import android.graphics.Paint
 import android.graphics.Typeface
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
@@ -23,7 +20,6 @@ import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
-import com.lihang.ShadowLayout
 import com.xcjh.base_lib.R
 import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.bean.MsgTitle
@@ -143,7 +139,7 @@ fun dip2px(dipValue: Float): Int {
 /**
  *
  */
-fun MagicIndicator.bindViewPager2(
+fun MagicIndicator.bindViewPagerEr(
     viewPager: ViewPager2,
     mStringList: List<String> = arrayListOf(),
     selectColor: Int = R.color.selectColor,
@@ -810,6 +806,7 @@ fun MagicIndicator.bindBgViewPager2(
     lineIndicatorColor: Int = 0,//横线指示器
     isLineIndicator: Boolean = true,//是否为普通滑动背景
     paddingWidth: Double = 0.0,//内边距
+    newSet:Boolean=false,
     action: (index: Int) -> Unit = {}
 ) {
     //viewPager.offscreenPageLimit = mStringList.size
@@ -852,12 +849,39 @@ fun MagicIndicator.bindBgViewPager2(
                 customLayout =
                     LayoutInflater.from(context).inflate(R.layout.live_tab_title_layout, null)
                 titleText = customLayout.findViewById(R.id.title_text)
+
+//                if(newSet){
+//                    if( mStringList[index].length==2){
+//                        titleText.setPadding(
+//                            UIUtil.dip2px(context, paddingH+10),
+//                            UIUtil.dip2px(context, paddingV),
+//                            UIUtil.dip2px(context, paddingH),
+//                            UIUtil.dip2px(context, paddingV),
+//                        )
+//                    }else{
+//                        titleText.setPadding(
+//                            UIUtil.dip2px(context, paddingH),
+//                            UIUtil.dip2px(context, paddingV),
+//                            UIUtil.dip2px(context, paddingH),
+//                            UIUtil.dip2px(context, paddingV),
+//                        )
+//                    }
+//
+//                }else{
+//                    titleText.setPadding(
+//                        UIUtil.dip2px(context, paddingH),
+//                        UIUtil.dip2px(context, paddingV),
+//                        UIUtil.dip2px(context, paddingH),
+//                        UIUtil.dip2px(context, paddingV),
+//                    )
+//                }
                 titleText.setPadding(
                     UIUtil.dip2px(context, paddingH),
                     UIUtil.dip2px(context, paddingV),
                     UIUtil.dip2px(context, paddingH),
                     UIUtil.dip2px(context, paddingV),
                 )
+
             }
 
             // titleText.gravity=View.TEXT_ALIGNMENT_VIEW_START

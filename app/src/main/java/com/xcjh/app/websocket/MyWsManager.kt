@@ -17,6 +17,7 @@ import com.xcjh.app.utils.onWsUserLogin
 import com.xcjh.app.websocket.bean.FeedSystemNoticeBean
 import com.xcjh.app.websocket.bean.LiveStatus
 import com.xcjh.app.websocket.bean.NoReadMsg
+import com.xcjh.app.websocket.bean.PureFlowCloseBean
 import com.xcjh.app.websocket.bean.ReceiveChangeMsg
 import com.xcjh.app.websocket.bean.ReceiveChatMsg
 import com.xcjh.app.websocket.bean.ReceiveWsBean
@@ -355,6 +356,15 @@ class MyWsManager private constructor(private val mContext: Context) {
                     it.toPair().second.onUpdateLiveContent(feedMsgBean)
                 }
             }
+            40 -> {//用户登录被踢
+                val wsBean2 = jsonToObject2<ReceiveWsBean<PureFlowCloseBean>>(msg)
+                val pureFlow = wsBean2?.data as PureFlowCloseBean
+
+                mC2CListener.forEach {
+                    it.toPair().second.onPureFlowClose(pureFlow)
+                }
+            }
+
             41 -> {//用户登录被踢
 
                 mNoReadMsgListener.forEach {

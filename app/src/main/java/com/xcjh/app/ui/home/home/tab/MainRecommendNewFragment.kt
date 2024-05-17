@@ -50,6 +50,7 @@ import com.xcjh.app.view.PopupKickOut
 import com.xcjh.app.websocket.MyWsManager
 import com.xcjh.app.websocket.bean.FeedSystemNoticeBean
 import com.xcjh.app.websocket.bean.LiveStatus
+import com.xcjh.app.websocket.bean.PureFlowCloseBean
 import com.xcjh.app.websocket.bean.ReceiveChangeMsg
 import com.xcjh.app.websocket.bean.ReceiveChatMsg
 import com.xcjh.app.websocket.bean.ReceiveWsBean
@@ -252,7 +253,7 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
                                     if((mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].userId.equals(bean.anchorId)){
                                         (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.removeAt(j)
                                         mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
-                                        mViewModel.getNowLive(true)
+//                                        mViewModel.getNowLive(true)
                                         break
                                     }
                                 }
@@ -279,6 +280,35 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
             override fun onC2CReceive(chat: ReceiveChatMsg) {
 
             }
+            //纯净流关闭
+            override fun onPureFlowClose(pure: PureFlowCloseBean) {
+                super.onPureFlowClose(pure)
+                if(mDatabind.rcvRecommend.models!=null){
+                    for (i in 0 until  mDatabind.rcvRecommend.mutable.size){
+                        if(mDatabind.rcvRecommend.mutable[i] is MainTxtBean){
+                            for (j in 0 until  (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.size){
+                                if((mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].pureFlow&&
+                                    (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].matchId.equals(pure.matchld)&&
+                                    (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].matchType.equals(pure.matchType)){
+                                    (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.removeAt(j)
+                                    mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
+                                    break
+//                                    mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+
+
+            }
+
             //收到热门比赛的推送比分
             override fun onChangeReceive(chat: ArrayList<ReceiveChangeMsg>) {
                 var isShowMatch:Boolean=false
@@ -303,9 +333,6 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
                                 }
                             }
 
-
-
-
                          //正在直播刷新
                         }else  if(mDatabind.rcvRecommend.mutable[i] is MainTxtBean){
                             //赋值新的参数
@@ -327,36 +354,36 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
 
                             }
                             //进行删除直播完的
-                            for (j in 0 until (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.size) {
-
-                                    if((mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].status!=null){
-                                        //足球>9  移除   篮球10
-                                        if((mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].matchType.equals("1")){
-                                            //删除完赛的
-                                            if((mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].status.equals("8")||
-                                                (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].status.equals("9")||
-                                                (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].status.equals("10")||
-                                                (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].status.equals("11")||
-                                                (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].status.equals("12")||
-                                                (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].status.equals("13")){
-                                                (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.removeAt(j)
-                                            }
-
-                                        }else if((mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].matchType.equals("2")){
-
-                                            if((mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].status.equals("10")||
-                                                (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].status.equals("11")||
-                                                (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].status.equals("12")||
-                                                (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].status.equals("13")||
-                                                (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].status.equals("14")||
-                                                (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].status.equals("15")){
-                                                (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.removeAt(j)
-                                            }
-                                        }
-                                    }
-
-
-                            }
+//                            for (j in 0 until (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.size) {
+//
+//                                    if((mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].status!=null){
+//                                        //足球>9  移除   篮球10
+//                                        if((mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].matchType.equals("1")){
+//                                            //删除完赛的
+//                                            if((mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].status.equals("8")||
+//                                                (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].status.equals("9")||
+//                                                (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].status.equals("10")||
+//                                                (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].status.equals("11")||
+//                                                (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].status.equals("12")||
+//                                                (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].status.equals("13")){
+//                                                (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.removeAt(j)
+//                                            }
+//
+//                                        }else if((mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].matchType.equals("2")){
+//
+//                                            if((mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].status.equals("10")||
+//                                                (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].status.equals("11")||
+//                                                (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].status.equals("12")||
+//                                                (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].status.equals("13")||
+//                                                (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].status.equals("14")||
+//                                                (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].status.equals("15")){
+//                                                (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.removeAt(j)
+//                                            }
+//                                        }
+//                                    }
+//
+//
+//                            }
 //                            mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
                         }
                     }

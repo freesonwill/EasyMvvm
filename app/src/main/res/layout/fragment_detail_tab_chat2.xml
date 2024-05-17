@@ -32,15 +32,25 @@
              </LinearLayout>
          </androidx.core.widget.NestedScrollView>-->
 
-
+        <!--    主播公告-->
+<!--        <LinearLayout-->
+<!--            android:id="@+id/lltNotice"-->
+<!--            android:background="@color/c_181819"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content">-->
+<!--            <include-->
+<!--                android:id="@+id/notice"-->
+<!--                layout="@layout/item_detail_chat_notice"-->
+<!--                android:visibility="gone" />-->
+<!--        </LinearLayout>-->
 
 
         <com.drake.brv.PageRefreshLayout
             android:id="@+id/page"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="110dp"
             android:layout_above="@id/llInput"
+            android:layout_marginTop="@dimen/dp_100"
             app:page_upFetchEnabled="true">
 
             <!--  <com.scwang.smart.refresh.header.MaterialHeader
@@ -59,7 +69,6 @@
                 tools:listitem="@layout/item_detail_chat" />
 
         </com.drake.brv.PageRefreshLayout>
-        <!--    主播公告-->
         <LinearLayout
             android:id="@+id/lltNotice"
             android:background="@color/c_181819"
@@ -70,6 +79,7 @@
                 layout="@layout/item_detail_chat_notice"
                 android:visibility="gone" />
         </LinearLayout>
+
         <RelativeLayout
             android:id="@+id/llInput"
             android:layout_width="match_parent"

@@ -3,6 +3,7 @@ package com.xcjh.app.websocket.listener
 import com.xcjh.app.bean.BeingLiveBean
 import com.xcjh.app.websocket.bean.FeedSystemNoticeBean
 import com.xcjh.app.websocket.bean.LiveStatus
+import com.xcjh.app.websocket.bean.PureFlowCloseBean
 import com.xcjh.app.websocket.bean.ReceiveChangeMsg
 import com.xcjh.app.websocket.bean.ReceiveChatMsg
 import com.xcjh.app.websocket.bean.ReceiveWsBean
@@ -146,8 +147,11 @@ interface C2CListener {
     fun onSystemMsgReceive(chat: FeedSystemNoticeBean)
     /// 收到主播的消息
     fun onC2CReceive(chat: ReceiveChatMsg)
-    /// 收到推送消息
+    // 收到推送消息 比分实时数据
     fun onChangeReceive(chat: ArrayList<ReceiveChangeMsg>)
+
+    // 收到推送消息 比分实时数据
+    fun onPureFlowClose(pure: PureFlowCloseBean){}
 }
 
 

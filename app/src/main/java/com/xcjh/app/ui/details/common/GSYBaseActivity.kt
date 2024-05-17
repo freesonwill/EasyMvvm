@@ -277,7 +277,10 @@ abstract class GSYBaseActivity<VM : BaseViewModel, DB : ViewDataBinding,T : GSYB
         if (orientationUtils != null) {
             orientationUtils!!.backToProtVideo()
         }
+//        GSYVideoType.setShowType(GSYVideoType.SCREEN_TYPE_FULL)
         GSYVideoType.setShowType(GSYVideoType.SCREEN_TYPE_FULL)
+//        GSYVideoType.setScreenScaleRatio(gSYVideoPlayer!!.gsyVideoManager.currentVideoWidth /gSYVideoPlayer!!.gsyVideoManager.currentVideoHeight.toFloat())
+//        GSYVideoType.setShowType(GSYVideoType.SCREEN_TYPE_CUSTOM)
  //        mDatabind.videoPlayer.fullscreen
     }
 

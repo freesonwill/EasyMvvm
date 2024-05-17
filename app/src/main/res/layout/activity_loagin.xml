@@ -29,15 +29,14 @@
             tools:ignore="UsingOnClickInXml" />
         <net.lucode.hackware.magicindicator.MagicIndicator
             android:id="@+id/magicIndicator"
-            android:layout_width="match_parent"
-
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
             android:layout_marginTop="42dp"
-            android:layout_height="@dimen/dp_44"
-            />
+            android:layout_height="@dimen/dp_44" />
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/vp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="1dp"/>
 
         <LinearLayout
             android:id="@+id/linphone"

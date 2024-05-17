@@ -4,10 +4,7 @@ package com.xcjh.app.ui.search
 import android.animation.Animator
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import androidx.appcompat.widget.AppCompatEditText
@@ -16,7 +13,6 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.airbnb.lottie.LottieAnimationView
 import com.bumptech.glide.Glide
@@ -31,10 +27,8 @@ import com.xcjh.app.bean.BeingLiveBean
 import com.xcjh.app.bean.MatchBean
 import com.xcjh.app.databinding.ActivitySearchBinding
 import com.xcjh.app.databinding.ItemJsBinding
-import com.xcjh.app.databinding.ItemMainLiveListBinding
 import com.xcjh.app.databinding.ItemSchAllBinding
 import com.xcjh.app.databinding.ItemSearchHotTitleBinding
-import com.xcjh.app.ui.details.DetailVm
 import com.xcjh.app.ui.details.MatchDetailActivity
 import com.xcjh.app.ui.home.home.tab.setLiveMatchItem
 import com.xcjh.app.ui.notice.MyNoticeVm
@@ -43,9 +37,8 @@ import com.xcjh.app.utils.TimeUtil
 import com.xcjh.app.utils.judgeLogin
 import com.xcjh.app.view.CustomHeader
 import com.xcjh.base_lib.Constants
-import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.utils.LogUtils
-import com.xcjh.base_lib.utils.bindViewPager2
+import com.xcjh.base_lib.utils.bindViewPagerEr
 import com.xcjh.base_lib.utils.bindadapter.CustomBindAdapter.afterTextChanged
 import com.xcjh.base_lib.utils.distance
 import com.xcjh.base_lib.utils.dp2px
@@ -57,10 +50,6 @@ import com.xcjh.base_lib.utils.view.clickNoRepeat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -101,7 +90,7 @@ class SearchActivity : BaseActivity<SearchVm, ActivitySearchBinding>() {
         mDatabind.viewPager.initActivity(this, mFragList, true, 4)
 
         //初始化 magic_indicator
-        mDatabind.magicIndicator.bindViewPager2(
+        mDatabind.magicIndicator.bindViewPagerEr(
             mDatabind.viewPager, arrayListOf(
                 getString(R.string.search_txt_live),
                 getString(R.string.search_txt_game),

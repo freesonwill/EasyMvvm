@@ -4,8 +4,6 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.gyf.immersionbar.ImmersionBar
-import com.hjq.language.LocaleContract
-import com.hjq.language.MultiLanguages
 import com.xcjh.app.R
 import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseFragment
@@ -16,7 +14,7 @@ import com.xcjh.app.ui.home.home.tab.MainRecommendNewFragment
 import com.xcjh.app.ui.search.SearchActivity
 import com.xcjh.app.utils.SoundManager
 import com.xcjh.app.vm.MainVm
-import com.xcjh.base_lib.utils.bindViewPager2
+import com.xcjh.base_lib.utils.bindViewPagerEr
 import com.xcjh.base_lib.utils.initActivity
 import com.xcjh.base_lib.utils.view.clickNoRepeat
 
@@ -50,7 +48,7 @@ class HomeFragment : BaseFragment<MainVm, FragmentHomeBinding>() {
         //初始化viewpager2
         mDatabind.viewPager.initActivity(requireActivity(), mFragList, true,4)
         //初始化 magic_indicator
-        mDatabind.magicIndicator.bindViewPager2(
+        mDatabind.magicIndicator.bindViewPagerEr(
             mDatabind.viewPager, arrayListOf(
                 getString(R.string.main_txt_recommended),
                 getString(R.string.main_txt_soccer),

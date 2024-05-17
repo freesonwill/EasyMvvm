@@ -11,7 +11,7 @@ import com.xcjh.app.base.BaseFragment
 import com.xcjh.app.databinding.FrMsgBinding
 import com.xcjh.app.utils.SoundManager
 import com.xcjh.app.utils.clearMsg
-import com.xcjh.base_lib.utils.bindViewPager2
+import com.xcjh.base_lib.utils.bindViewPagerEr
 import com.xcjh.base_lib.utils.initActivity
 import com.xcjh.base_lib.utils.setOnclickNoRepeat
 
@@ -60,7 +60,7 @@ class MsgFragment : BaseFragment<MsgVm, FrMsgBinding>() {
             mDatabind.vp.initActivity(requireActivity(), mFragments, false)
 
             //初始化 magic_indicator
-            mDatabind.magicIndicator.bindViewPager2(
+            mDatabind.magicIndicator.bindViewPagerEr(
                 mDatabind.vp, arrayListOf(
                     mTitles!![0],
                     mTitles!![1]

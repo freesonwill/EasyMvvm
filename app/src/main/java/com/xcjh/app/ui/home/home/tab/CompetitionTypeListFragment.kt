@@ -20,6 +20,7 @@ import com.xcjh.app.base.BaseFragment
 import com.xcjh.app.bean.BeingLiveBean
 import com.xcjh.app.bean.HotReq
 import com.xcjh.app.bean.MainTxtBean
+import com.xcjh.app.bean.MatchBean
 import com.xcjh.app.databinding.FragmentCompetitionTypeListBinding
 import com.xcjh.app.databinding.ItemMainLiveListBinding
 import com.xcjh.app.ui.details.MatchDetailActivity
@@ -27,7 +28,13 @@ import com.xcjh.app.utils.SoundManager
 import com.xcjh.app.view.CustomHeader
 import com.xcjh.app.view.NestedScrollView
 import com.xcjh.app.websocket.MyWsManager
+import com.xcjh.app.websocket.bean.FeedSystemNoticeBean
 import com.xcjh.app.websocket.bean.LiveStatus
+import com.xcjh.app.websocket.bean.PureFlowCloseBean
+import com.xcjh.app.websocket.bean.ReceiveChangeMsg
+import com.xcjh.app.websocket.bean.ReceiveChatMsg
+import com.xcjh.app.websocket.bean.ReceiveWsBean
+import com.xcjh.app.websocket.listener.C2CListener
 import com.xcjh.app.websocket.listener.LiveStatusListener
 import com.xcjh.app.websocket.listener.MOffListener
 import com.xcjh.base_lib.App
@@ -204,6 +211,63 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
                 }
             }
 
+
+        })
+
+
+
+        MyWsManager.getInstance(App.app)?.setC2CListener(javaClass.name, object : C2CListener {
+            override fun onSendMsgIsOk(isOk: Boolean, bean: ReceiveWsBean<*>) {
+            }
+            override fun onSystemMsgReceive(chat: FeedSystemNoticeBean) {
+
+            }
+
+            override fun onC2CReceive(chat: ReceiveChatMsg) {
+
+            }
+            //纯净流关闭
+            override fun onPureFlowClose(pure: PureFlowCloseBean) {
+                super.onPureFlowClose(pure)
+                if(mDatabind.rcvRecommend.models!=null){
+                    for (i in 0 until  mDatabind.rcvRecommend.mutable.size){
+                                if((mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).pureFlow&&
+                                    (mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).matchId.equals(pure.matchld)&&
+                                    (mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).matchType.equals(pure.matchType)){
+                                    mDatabind.rcvRecommend.mutable.remove(i)
+                                    mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
+                                    break
+                                }
+                    }
+
+                }
+
+
+
+            }
+
+            //收到热门比赛的推送比分
+            override fun onChangeReceive(chat: ArrayList<ReceiveChangeMsg>) {
+                if(mDatabind.rcvRecommend.models!=null){
+                    for (i in 0 until  mDatabind.rcvRecommend.mutable.size){
+                            //赋值新的参数
+                                for (k in 0 until  chat.size){
+                                    if(chat[k].matchId.equals((mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).matchId)&&
+                                        chat[k].matchType.equals((mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).matchType) ){
+                                        (mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).awayScore =chat[k].awayHalfScore.toString()
+                                        (mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).awayScore=chat[k].awayScore.toString()
+                                        (mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).homeScore=chat[k].homeHalfScore.toString()
+                                        (mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).homeScore=chat[k].homeScore.toString()
+                                        (mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).status=chat[k].status.toString()
+                                        mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
+                                    }
+                                }
+                    }
+
+                }
+
+
+            }
 
         })
 
