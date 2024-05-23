@@ -106,7 +106,9 @@ class Index1Fragment() : BaseFragment<DetailVm, FragmentDetailTabIndexTab1Bindin
                             setColor(binding.tvJiPin, item.firstDraw.toFloat(), item.currentDraw.toFloat())
                             setColor(binding.tvJiAway, item.firstAwayWin.toFloat(), item.currentAwayWin.toFloat())
                             try {
+                                //修改
                                 binding.tvJiPf.text = "${(item.currentLossRatio.toFloat()*100).toInt()}%"//赔付率
+                                setColor(binding.tvJiPf, item.firstLossRatio.toFloat(), item.currentLossRatio.toFloat())
                             }catch (e:Exception){
                                 binding.tvJiPf.text = "-"//赔付率
                             }

@@ -40,6 +40,7 @@ class DetailLineUpFragment(var match: MatchDetailBean) :
                 typefaceBold = true,
                 scrollEnable = false,
                 lineIndicatorColor = R.color.c_323235,
+                zhengMargin = true
             )
             mDatabind.viewPager.offscreenPageLimit = 2
         }

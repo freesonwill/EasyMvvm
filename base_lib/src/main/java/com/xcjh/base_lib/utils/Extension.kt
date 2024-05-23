@@ -5,6 +5,7 @@ import android.content.res.ColorStateList
 import android.content.res.Resources
 import android.graphics.Paint
 import android.graphics.Typeface
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -806,7 +807,7 @@ fun MagicIndicator.bindBgViewPager2(
     lineIndicatorColor: Int = 0,//横线指示器
     isLineIndicator: Boolean = true,//是否为普通滑动背景
     paddingWidth: Double = 0.0,//内边距
-    newSet:Boolean=false,
+    zhengMargin:Boolean=false,//是否是阵容并且添加了sdk
     action: (index: Int) -> Unit = {}
 ) {
     //viewPager.offscreenPageLimit = mStringList.size
@@ -850,44 +851,68 @@ fun MagicIndicator.bindBgViewPager2(
                     LayoutInflater.from(context).inflate(R.layout.live_tab_title_layout, null)
                 titleText = customLayout.findViewById(R.id.title_text)
 
-//                if(newSet){
-//                    if( mStringList[index].length==2){
-//                        titleText.setPadding(
-//                            UIUtil.dip2px(context, paddingH+10),
-//                            UIUtil.dip2px(context, paddingV),
-//                            UIUtil.dip2px(context, paddingH),
-//                            UIUtil.dip2px(context, paddingV),
-//                        )
-//                    }else{
-//                        titleText.setPadding(
-//                            UIUtil.dip2px(context, paddingH),
-//                            UIUtil.dip2px(context, paddingV),
-//                            UIUtil.dip2px(context, paddingH),
-//                            UIUtil.dip2px(context, paddingV),
-//                        )
-//                    }
-//
-//                }else{
-//                    titleText.setPadding(
-//                        UIUtil.dip2px(context, paddingH),
-//                        UIUtil.dip2px(context, paddingV),
-//                        UIUtil.dip2px(context, paddingH),
-//                        UIUtil.dip2px(context, paddingV),
-//                    )
-//                }
-                titleText.setPadding(
-                    UIUtil.dip2px(context, paddingH),
-                    UIUtil.dip2px(context, paddingV),
-                    UIUtil.dip2px(context, paddingH),
-                    UIUtil.dip2px(context, paddingV),
-                )
+                val className = "com.cn.game.sdk.utils.GamePartyLibraryInitializer"
+                val isExist = isThirdPartyClassExist(className)
+                if (isExist) {
+                    Log.i("FSFSFSFSFSF","引入了-============")
+                    if(zhengMargin){
+                        if( mStringList[index].length==2){
+                            titleText.setPadding(
+                                UIUtil.dip2px(context, paddingH+40),
+                                UIUtil.dip2px(context, paddingV),
+                                UIUtil.dip2px(context, paddingH),
+                                UIUtil.dip2px(context, paddingV),
+                            )
+                        }else{
+                            titleText.setPadding(
+                                UIUtil.dip2px(context, paddingH+32),
+                                UIUtil.dip2px(context, paddingV),
+                                UIUtil.dip2px(context, paddingH),
+                                UIUtil.dip2px(context, paddingV),
+                            )
+                        }
+                    }else{
+
+
+                        if( mStringList[index].length==2){
+                            titleText.setPadding(
+                                UIUtil.dip2px(context, paddingH+10),
+                                UIUtil.dip2px(context, paddingV),
+                                UIUtil.dip2px(context, paddingH),
+                                UIUtil.dip2px(context, paddingV),
+                            )
+                        }else{
+                            titleText.setPadding(
+                                UIUtil.dip2px(context, paddingH+12),
+                                UIUtil.dip2px(context, paddingV),
+                                UIUtil.dip2px(context, paddingH),
+                                UIUtil.dip2px(context, paddingV),
+                            )
+                        }
+                    }
+
+                } else {
+                    Log.i("FSFSFSFSFSF","没有引入-=====")
+                    titleText.setPadding(
+                        UIUtil.dip2px(context, paddingH),
+                        UIUtil.dip2px(context, paddingV),
+                        UIUtil.dip2px(context, paddingH),
+                        UIUtil.dip2px(context, paddingV),
+                    )
+
+
+                }
+
+
+
+
 
             }
 
             // titleText.gravity=View.TEXT_ALIGNMENT_VIEW_START
             titleText.text = mStringList[index].toHtml()
             titleText.textSize = unSelectSize
-            titleText.gravity = Gravity.CENTER_VERTICAL
+            titleText.gravity = Gravity.CENTER
 
             commonPagerTitleView.setContentView(customLayout)
             commonPagerTitleView.onPagerTitleChangeListener = object : OnPagerTitleChangeListener {
@@ -1409,4 +1434,13 @@ fun webViewBreak(data: String): String {
         data1 = data.replace("<p>".toRegex(), "<p style=\"word-break:break-all\">")
     }
     return data1
+}
+
+fun isThirdPartyClassExist(className: String): Boolean {
+    try {
+        Class.forName(className)
+        return true
+    } catch (e: ClassNotFoundException) {
+        return false
+    }
 }

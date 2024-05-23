@@ -42,6 +42,7 @@ import com.lxj.xpopup.core.BasePopupView
 import com.lxj.xpopup.enums.PopupAnimation
 import com.lzf.easyfloat.EasyFloat
 import com.lzf.easyfloat.enums.ShowPattern
+import com.lzf.easyfloat.interfaces.OnPermissionResult
 import com.lzf.easyfloat.permission.PermissionUtils
 import com.xcjh.app.BuildConfig
 import com.xcjh.app.R
@@ -121,13 +122,16 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
 //        placeLoginDialog()
         showStatusBar()
 
+
+
+
         //初始化提示音类
         SoundManager.initialize(appContext)
 
         mDatabind.reDateShow.clickNoRepeat {}
         currentPage=0
 //        getApiService(ApiComService.SERVER_URL)
-//        //实时cpu
+        //实时cpu
 //     var   performanceMonitor = PerformanceMonitor(this)
 //        performanceMonitor.startMonitoring()
 //
@@ -275,6 +279,8 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         //初始化viewpager2
         mDatabind.viewPager.initActivity(this, mFragList, false)
         mDatabind.viewPager.offscreenPageLimit = mFragList.size
+
+
         setOnclickNoRepeat(
             mDatabind.llHomeSelectMain, mDatabind.llHomeSelectSchedule,
             mDatabind.llHomeSelectMsg, mDatabind.llHomeSelectMine, interval = 200
@@ -834,11 +840,10 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
 //        }
 //    }
 
+    /**
+     * 显示cpu
+     */
     private fun showAppFloat2(tag: String) {
-
-
-
-
         EasyFloat.with(this.applicationContext)
             .setTag(tag)
             .setShowPattern(ShowPattern.FOREGROUND)
@@ -901,5 +906,8 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
             Choreographer.getInstance().postFrameCallback(this)
         }
     }
+
+
+
 
 }

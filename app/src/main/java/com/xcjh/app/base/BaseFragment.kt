@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.databinding.ViewDataBinding
 import androidx.viewbinding.ViewBinding
+import com.xcjh.app.utils.SoundManager
 import com.xcjh.app.utils.dismissLoadingExt
 import com.xcjh.app.utils.showLoadingExt
 import com.xcjh.base_lib.base.BaseViewModel
@@ -55,6 +56,7 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewDataBinding> : BaseVmDb
     }
 
     open fun finishTopClick(view: View?) {
+        SoundManager.playMedia()
         activity?.finish()
     }
 

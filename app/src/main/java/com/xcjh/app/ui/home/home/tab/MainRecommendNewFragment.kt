@@ -167,9 +167,6 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
                         being.competitionName=bean.competitionNameEn
                     }
 
-
-
-
                     var num=0   //保存这个应该插入哪个
                     var type=0//大类型
                     var fuzhi=false
@@ -215,6 +212,103 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
                     mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
 
                 }
+
+
+                override fun onOpenPureFlow(bean: LiveStatus) {
+                    super.onOpenPureFlow(bean)
+                    if(mDatabind.rcvRecommend.models!=null){
+                        for (i in 0 until  mDatabind.rcvRecommend.mutable.size){
+                            if(mDatabind.rcvRecommend.mutable[i] is MainTxtBean){
+                                for (j in 0 until  (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.size){
+                                    if( (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].matchId.equals(bean.matchId)&&
+                                        (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].matchType.equals(bean.matchType)&&
+                                        (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].pureFlow){
+                                        (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.removeAt(j)
+
+
+
+                                        break
+                                    }
+                                }
+                                mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
+                            }
+
+                        }
+
+                    }
+
+                    var being=BeingLiveBean()
+                    being.matchType=bean.matchType
+                    being.matchId=bean.matchId
+                    being.homeTeamName=bean.homeTeamName
+                    being.awayTeamName=bean.awayTeamName
+                    being.nickName=bean.nickName
+                    being.userId=bean.anchorId
+                    being.playUrl=bean.playUrl
+                    being.hotValue=bean.hotValue
+                    being.titlePage=bean.coverImg
+                    being.userLogo=bean.userLogo
+                    being.pureFlow=false
+                    //语言 0是中文  1是繁体  2是英文
+                    if(Constants.languageType==0){
+                        being.homeTeamName=bean.homeTeamName
+                        being.awayTeamName=bean.awayTeamName
+                        being.competitionName=bean.competitionName
+                    }else if(Constants.languageType==1){
+                        being.homeTeamName=bean.homeTeamNameZht
+                        being.awayTeamName=bean.awayTeamNameZht
+                        being.competitionName=bean.competitionNameZht
+                    }else{
+                        being.homeTeamName=bean.homeTeamNameEn
+                        being.awayTeamName=bean.awayTeamNameEn
+                        being.competitionName=bean.competitionNameEn
+                    }
+
+                    var num=0   //保存这个应该插入哪个
+                    var type=0//大类型
+                    var fuzhi=false
+                    if(mDatabind.rcvRecommend.models!=null){
+                        for (i in 0 until mDatabind.rcvRecommend.mutable!!.size) {
+                            if(mDatabind.rcvRecommend.mutable[i] is MainTxtBean){
+                                type=i
+                                num=(mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.size-1
+                                for (a in 0 until (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.size) {
+                                    if((mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[a].pureFlow){
+                                        if(fuzhi==false){
+                                            num=a
+                                            fuzhi=true
+                                            break
+                                        }
+
+                                    }
+                                }
+
+                            }
+                        }
+                        var list:ArrayList<BeingLiveBean> = arrayListOf()
+                        if((mDatabind.rcvRecommend.mutable[type] as MainTxtBean).list.size==0){
+                            list.add(being)
+                            for (i in 0 until (mDatabind.rcvRecommend.mutable[type] as MainTxtBean).list.size) {
+                                list.add((mDatabind.rcvRecommend.mutable[type] as MainTxtBean).list[i])
+                            }
+
+                        }else {
+                            for (i in 0 until (mDatabind.rcvRecommend.mutable[type] as MainTxtBean).list.size) {
+                                if(num==i){
+                                    list.add(being)
+                                    list.add((mDatabind.rcvRecommend.mutable[type] as MainTxtBean).list[i])
+                                }else{
+                                    list.add((mDatabind.rcvRecommend.mutable[type] as MainTxtBean).list[i])
+                                }
+
+                            }
+                        }
+                        (mDatabind.rcvRecommend.mutable[type] as MainTxtBean).list=list
+
+                    }
+                    mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
+                }
+
                 //直播间关闭废弃
                 override fun onCloseLive(bean: LiveStatus) {
                     super.onCloseLive(bean)
@@ -283,12 +377,14 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
             //纯净流关闭
             override fun onPureFlowClose(pure: PureFlowCloseBean) {
                 super.onPureFlowClose(pure)
+
+
                 if(mDatabind.rcvRecommend.models!=null){
                     for (i in 0 until  mDatabind.rcvRecommend.mutable.size){
                         if(mDatabind.rcvRecommend.mutable[i] is MainTxtBean){
                             for (j in 0 until  (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.size){
                                 if((mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].pureFlow&&
-                                    (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].matchId.equals(pure.matchld)&&
+                                    (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].matchId.equals(pure.matchId)&&
                                     (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].matchType.equals(pure.matchType)){
                                     (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.removeAt(j)
                                     mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()

@@ -356,12 +356,21 @@ class MyWsManager private constructor(private val mContext: Context) {
                     it.toPair().second.onUpdateLiveContent(feedMsgBean)
                 }
             }
-            40 -> {//用户登录被踢
+            42 -> {//纯净流关播
+                Log.i("RRRRRR","收到消息========")
                 val wsBean2 = jsonToObject2<ReceiveWsBean<PureFlowCloseBean>>(msg)
                 val pureFlow = wsBean2?.data as PureFlowCloseBean
-
+                Log.i("RRRRRR","转换数据========"+Gson().toJson(pureFlow))
                 mC2CListener.forEach {
                     it.toPair().second.onPureFlowClose(pureFlow)
+                }
+            }
+
+            43 -> {//纯净流开播
+                val wsBean2 = jsonToObject2<ReceiveWsBean<LiveStatus>>(msg)
+                val chatMsgBean = wsBean2?.data as LiveStatus
+                mLiveStatusListener.forEach {
+                    it.toPair().second.onOpenPureFlow(chatMsgBean)
                 }
             }
 

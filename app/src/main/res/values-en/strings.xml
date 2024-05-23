@@ -418,7 +418,7 @@
     <string name="number_txt_set_not">Not Set</string>
     <string name="number_txt_title">Account Management</string>
     <string name="bind_txt_mailbox">Bind Email</string>
-    <string name="bind_txt_phone">>Bind Phone</string>
+    <string name="bind_txt_phone">Bind Phone</string>
     <string name="place_txt_login_zhong">当前账号在其他设备登录</string>
     <string name="place_txt_login_Fanti">當前帳號在其他裝置登入</string>
     <string name="place_txt_login_ying">Log in with the current account on \n other devices</string>

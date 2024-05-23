@@ -82,6 +82,11 @@ interface LiveStatusListener {
      * 服务器主动推送直播间开播
      */
     fun onOpenLive(bean: LiveStatus){}
+
+    /**
+     * 纯净流开播
+     */
+    fun onOpenPureFlow(bean: LiveStatus){}
     /**
      * 服务器主动推送直播间关播
      */
@@ -150,7 +155,7 @@ interface C2CListener {
     // 收到推送消息 比分实时数据
     fun onChangeReceive(chat: ArrayList<ReceiveChangeMsg>)
 
-    // 收到推送消息 比分实时数据
+    // 纯净流关闭
     fun onPureFlowClose(pure: PureFlowCloseBean){}
 }
 

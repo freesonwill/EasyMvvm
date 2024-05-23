@@ -526,7 +526,7 @@
                             android:layout_width="@dimen/dp_44"
                             android:layout_height="@dimen/dp_44"
                             android:layout_marginStart="5dp"
-                            android:onClick="finishTopClick"
+
                             android:padding="0dp"
                             android:src="@drawable/ic_back"
                             app:tint="@color/white_to_dark_selector"

@@ -23,9 +23,6 @@ import com.android.cling.startBindUpnpService
 import com.android.cling.stopUpnpService
 import com.android.cling.util.Utils
 import com.bumptech.glide.Glide
-import com.drake.brv.utils.bindingAdapter
-import com.drake.brv.utils.models
-import com.drake.brv.utils.mutable
 import com.google.android.material.appbar.AppBarLayout
 import com.google.gson.Gson
 import com.gyf.immersionbar.ImmersionBar
@@ -266,8 +263,17 @@ class MatchDetailActivity :
             .navigationBarDarkIcon(false)
             .titleBarMarginTop(mDatabind.rltTop).init()
 
-
-
+        mDatabind.ivBack.clickNoRepeat {
+            SoundManager.playMedia()
+            finish()
+        }
+//        //打开SDK
+//        try {
+//
+//            MyGameManager.showFastView(this)
+//        }catch (e:Exception){
+//            Log.i("BBBBBB","错误------=")
+//        }
 
 
         // 使用方法
@@ -419,6 +425,8 @@ class MatchDetailActivity :
 
         mDatabind.viewPager.initChangeActivity(this, mFragList, true)
         pager2Adapter = mDatabind.viewPager.adapter as ViewPager2Adapter
+
+
         //初始化Tab控件
         mDatabind.magicIndicator.bindMatchViewPager2(
             mDatabind.viewPager,
@@ -485,16 +493,26 @@ class MatchDetailActivity :
             //纯净流关闭
             override fun onPureFlowClose(pure: PureFlowCloseBean) {
                 super.onPureFlowClose(pure)
+                Log.i("RRRRRR","收到回调========"  )
                     if(matchDetail!=null&&matchDetail.anchorList!!.size>0){
                         var data=AnchorListBean()
                         matchDetail.anchorList!!.forEach {
                             if(it.isSelect){
                                 data=it
+                                Log.i("RRRRRR","得到要关闭的========" + Gson().toJson(data) )
+                                Log.i("RRRRRR","得到要关闭的========matchDetail.matchId==" +matchDetail.matchId+"===matchDetail.matchType"+matchDetail.matchType  )
                             }
-
                         }
-                        if(data.isSelect&&data.pureFlow&&matchDetail.matchId.equals(pure.matchld)&&matchDetail.matchType.equals(pure.matchType)){
+                        if(data.isSelect&&data.pureFlow&&matchDetail.matchId.equals(pure.matchId)&&matchDetail.matchType.equals(pure.matchType)){
+                             //比赛类型1:足球 2:篮球
+//                            if(pure.matchType.equals("1")&&pure.status>=8){
+//                                placeLoginDialogFinish(this@MatchDetailActivity)
+//                            }else if(pure.matchType.equals("2")&&pure.status>=10){
+//                                placeLoginDialogFinish(this@MatchDetailActivity)
+//                            }
                             placeLoginDialogFinish(this@MatchDetailActivity)
+                        }else{
+                            Log.i("RRRRRR","判断有问题========"   )
                         }
 
 
@@ -1688,7 +1706,7 @@ class MatchDetailActivity :
         MyWsManager.getInstance(App.app)?.removeLiveStatusListener(this.toString())
         MyWsManager.getInstance(App.app)?.removeOtherPushListener(this.toString())
         MyWsManager.getInstance(App.app)?.removeMOtherOffListenerListener(this.toString())
-
+        MyWsManager.getInstance(App.app)?.removeC2CListener(this.toString())
 
     }
 
@@ -1909,7 +1927,7 @@ class MatchDetailActivity :
 
 
 
-    var   finisShow:CustomDialog?=null
+    var  finisShow:CustomDialog?=null
 
     /***
      * 直播结束

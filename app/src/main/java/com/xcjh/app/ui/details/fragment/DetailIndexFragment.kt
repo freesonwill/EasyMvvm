@@ -53,8 +53,7 @@ class DetailIndexFragment(var matchId: String = "", var matchType: String = "1")
                 typefaceBold = true,
                 scrollEnable = false,
                 paddingH = 25.0,
-                lineIndicatorColor = R.color.c_323235,
-                newSet = true
+                lineIndicatorColor = R.color.c_323235
             )
             mDatabind.viewPager.offscreenPageLimit = 3
         } else {

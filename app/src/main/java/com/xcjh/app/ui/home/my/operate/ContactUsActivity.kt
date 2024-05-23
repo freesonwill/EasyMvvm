@@ -178,7 +178,7 @@ class ContactUsActivity : BaseActivity<ContactUsVm, ActivityContactUsBinding>() 
         //点击提交
         mDatabind.txtContactSub.clickNoRepeat {
             SoundManager.playMedia()
-            if(selectType!=null&& mDatabind.editContactInput.text.toString().trim().isNotEmpty()){
+            if(selectType!=null&& mDatabind.editContactInput.text.toString().isNotEmpty()){
                 mViewModel.showLoading()
                 mViewModel.imageList.clear()
                 if(mAdapter!!.data.size>0){
@@ -373,7 +373,7 @@ class ContactUsActivity : BaseActivity<ContactUsVm, ActivityContactUsBinding>() 
     }
 
     fun isSelect(){
-        if(selectType!=null&& mDatabind.editContactInput.text.toString().trim().isNotEmpty()){
+        if(selectType!=null&& mDatabind.editContactInput.text.toString().isNotEmpty()){
             mDatabind.txtContactSub.background=ContextCompat.getDrawable(this@ContactUsActivity,R.drawable.shape_r24_34a853)
             mDatabind.txtContactSub.setTextColor(ContextCompat.getColor(this,R.color.c_ffffff))
         }else{

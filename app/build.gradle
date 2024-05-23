@@ -239,10 +239,10 @@ dependencies {
 
     implementation 'com.github.385841539:MarqueeView:1.0.0'
 
-//    implementation files('libs/game_sdk.aar')
-
-
     implementation 'com.github.kongxiaojun:EasyFloat:3.0.1'
+
+
+
 
 }
 //获取编译时间

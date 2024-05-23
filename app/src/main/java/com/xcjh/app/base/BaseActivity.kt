@@ -12,6 +12,7 @@ import com.hjq.language.MultiLanguages
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
 import com.xcjh.app.R
+import com.xcjh.app.utils.SoundManager
 import com.xcjh.app.utils.dismissLoadingExt
 import com.xcjh.app.utils.showLoadingExt
 import com.xcjh.app.view.PopupKickOut
@@ -81,6 +82,7 @@ abstract class BaseActivity<VM : BaseViewModel, DB : ViewDataBinding> : BaseVmDb
     }
 
     open fun finishTopClick(view: View?) {
+        SoundManager.playMedia()
         finish()
     }
 

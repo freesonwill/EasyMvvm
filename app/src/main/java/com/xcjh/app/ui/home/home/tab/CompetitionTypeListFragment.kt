@@ -93,7 +93,7 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
                                 (mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).matchType.equals(bean.matchType)){
                                 if( (mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).userId!=null){
                                     if((mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).userId.equals(bean.anchorId)){
-                                        (mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).userId.equals(bean.anchorId)
+                                        mDatabind.rcvRecommend.mutable.removeAt(i)
                                     }
 
                                 } else{
@@ -183,6 +183,102 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
                     mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
 
                 }
+
+
+                override fun onOpenPureFlow(bean: LiveStatus) {
+                    super.onOpenPureFlow(bean)
+                    if(!bean.matchType.equals(type.toString())){
+                        return
+                    }
+
+                    if(mDatabind.rcvRecommend.models!=null){
+                        for (i in 0 until  mDatabind.rcvRecommend.mutable.size){
+                            if((mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).matchId.equals(bean.matchId)&&
+                                (mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).matchType.equals(bean.matchType)&&
+                                (mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).pureFlow){
+                                mDatabind.rcvRecommend.mutable.removeAt(i)
+
+                                break
+                            }
+
+                        }
+                        mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
+                    }
+
+                    var being=BeingLiveBean()
+                    being.matchType=bean.matchType
+                    being.matchId=bean.matchId
+                    being.homeTeamName=bean.homeTeamName
+                    being.awayTeamName=bean.awayTeamName
+                    being.nickName=bean.nickName
+                    being.userId=bean.anchorId
+                    being.playUrl=bean.playUrl
+                    being.hotValue=bean.hotValue
+                    being.titlePage=bean.coverImg
+                    being.userLogo=bean.userLogo
+                    being.pureFlow=false
+                    //语言 0是中文  1是繁体  2是英文
+                    if(Constants.languageType==0){
+                        being.homeTeamName=bean.homeTeamName
+                        being.awayTeamName=bean.awayTeamName
+                        being.competitionName=bean.competitionName
+                    }else if(Constants.languageType==1){
+                        being.homeTeamName=bean.homeTeamNameZht
+                        being.awayTeamName=bean.awayTeamNameZht
+                        being.competitionName=bean.competitionNameZht
+                    }else{
+                        being.homeTeamName=bean.homeTeamNameEn
+                        being.awayTeamName=bean.awayTeamNameEn
+                        being.competitionName=bean.competitionNameEn
+                    }
+
+
+
+
+                    var num=0   //保存这个应该插入哪个
+                    var fuzhi=false
+
+                    if(mDatabind.rcvRecommend.models!=null){
+                        num=mDatabind.rcvRecommend.mutable.size-1
+                        for (i in 0 until mDatabind.rcvRecommend.mutable!!.size) {
+                            if((mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).pureFlow){
+                                if(fuzhi==false){
+                                    num=i
+                                    break
+                                }
+
+                            }
+
+
+
+                        }
+
+                        var list:ArrayList<BeingLiveBean> = arrayListOf()
+                        if(mDatabind.rcvRecommend.mutable.size==0){
+                            list.add(being)
+                            for (i in 0 until mDatabind.rcvRecommend.mutable.size) {
+                                list.add((mDatabind.rcvRecommend.mutable[i] as BeingLiveBean))
+                            }
+
+                        }else {
+                            for (i in 0 until mDatabind.rcvRecommend.mutable.size) {
+                                if(num==i){
+                                    list.add(being)
+                                    list.add((mDatabind.rcvRecommend.mutable[i] as BeingLiveBean))
+                                }else{
+                                    list.add((mDatabind.rcvRecommend.mutable[i] as BeingLiveBean))
+                                }
+
+                            }
+                        }
+                        mDatabind.rcvRecommend.mutable.clear()
+                        mDatabind.rcvRecommend.addModels(list)
+
+
+                    }
+                    mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
+
+                }
                 //直播间关闭废弃
                 override fun onCloseLive(bean: LiveStatus) {
                     super.onCloseLive(bean)
@@ -232,7 +328,7 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
                 if(mDatabind.rcvRecommend.models!=null){
                     for (i in 0 until  mDatabind.rcvRecommend.mutable.size){
                                 if((mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).pureFlow&&
-                                    (mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).matchId.equals(pure.matchld)&&
+                                    (mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).matchId.equals(pure.matchId)&&
                                     (mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).matchType.equals(pure.matchType)){
                                     mDatabind.rcvRecommend.mutable.remove(i)
                                     mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
