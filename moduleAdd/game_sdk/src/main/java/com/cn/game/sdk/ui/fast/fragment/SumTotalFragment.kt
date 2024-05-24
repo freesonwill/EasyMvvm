@@ -22,6 +22,8 @@ import com.cn.game.sdk.bean.ComputeSum
 import com.cn.game.sdk.bean.InPrizeBean
 import com.cn.game.sdk.databinding.FragmentSumTotalBinding
 import com.cn.game.sdk.enums.NOTES_ENUM
+import com.cn.game.sdk.tool.HomeXPopupDialog
+import com.cn.game.sdk.tool.PromptSoundPlay
 import com.cn.game.sdk.ui.fast.GameHomeActivity
 import com.cn.game.sdk.utils.MyGameManager
 import com.cn.game.sdk.view.MoneyOKView
@@ -90,7 +92,11 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
     lateinit var showSumShiQiMoney: MoneyOKView
 
 
+    lateinit var  homeXPopupDialog: HomeXPopupDialog
 
+    fun   setHomeXPopupDialogDate(homeXPopupDialog: HomeXPopupDialog){
+        this.homeXPopupDialog=homeXPopupDialog
+    }
 
     private var animators: MutableList<ObjectAnimator> = mutableListOf()
     @SuppressLint("ClickableViewAccessibility")
@@ -106,7 +112,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                         mDatabind.rvSumClickFour.removeView(showSumSiMoney)
                     }
                 }
-                (context as GameHomeActivity).clickDelete()
+                homeXPopupDialog.clickDelete()
             }
 
             override fun onConfirm() {
@@ -114,7 +120,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                 /**
                  * 点击确定，把所有的临时钱赋值给确定钱然后要把没有确定的删除掉,在Activity处理所有的
                  */
-                (context as GameHomeActivity).clickOKBet()
+                homeXPopupDialog.clickOKBet()
             }
 
         })
@@ -130,7 +136,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                         mDatabind.rvSumClickFour.removeView(showSumWuMoney)
                     }
                 }
-                (context as GameHomeActivity).clickDelete()
+                homeXPopupDialog.clickDelete()
             }
 
             override fun onConfirm() {
@@ -138,7 +144,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                 /**
                  * 点击确定，把所有的临时钱赋值给确定钱然后要把没有确定的删除掉,在Activity处理所有的
                  */
-                (context as GameHomeActivity).clickOKBet()
+                homeXPopupDialog.clickOKBet()
             }
 
         })
@@ -154,7 +160,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                         mDatabind.rvSumClickFour.removeView(showSumLiuMoney)
                     }
                 }
-                (context as GameHomeActivity).clickDelete()
+                homeXPopupDialog.clickDelete()
             }
 
             override fun onConfirm() {
@@ -162,7 +168,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                 /**
                  * 点击确定，把所有的临时钱赋值给确定钱然后要把没有确定的删除掉,在Activity处理所有的
                  */
-                (context as GameHomeActivity).clickOKBet()
+                homeXPopupDialog.clickOKBet()
             }
 
         })
@@ -178,7 +184,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                         mDatabind.rvSumClickFour.removeView(showSumQiMoney)
                     }
                 }
-                (context as GameHomeActivity).clickDelete()
+                homeXPopupDialog.clickDelete()
             }
 
             override fun onConfirm() {
@@ -186,7 +192,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                 /**
                  * 点击确定，把所有的临时钱赋值给确定钱然后要把没有确定的删除掉,在Activity处理所有的
                  */
-                (context as GameHomeActivity).clickOKBet()
+                homeXPopupDialog.clickOKBet()
             }
 
         })
@@ -202,7 +208,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                         mDatabind.rvSumClickFour.removeView(showSumBaMoney)
                     }
                 }
-                (context as GameHomeActivity).clickDelete()
+                homeXPopupDialog.clickDelete()
             }
 
             override fun onConfirm() {
@@ -210,7 +216,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                 /**
                  * 点击确定，把所有的临时钱赋值给确定钱然后要把没有确定的删除掉,在Activity处理所有的
                  */
-                (context as GameHomeActivity).clickOKBet()
+                homeXPopupDialog.clickOKBet()
             }
 
         })
@@ -226,7 +232,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                         mDatabind.rvSumClickFour.removeView(showSumJiuMoney)
                     }
                 }
-                (context as GameHomeActivity).clickDelete()
+                homeXPopupDialog.clickDelete()
             }
 
             override fun onConfirm() {
@@ -234,7 +240,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                 /**
                  * 点击确定，把所有的临时钱赋值给确定钱然后要把没有确定的删除掉,在Activity处理所有的
                  */
-                (context as GameHomeActivity).clickOKBet()
+                homeXPopupDialog.clickOKBet()
             }
 
         })
@@ -250,7 +256,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                         mDatabind.rvSumClickFour.removeView(showSumShiMoney)
                     }
                 }
-                (context as GameHomeActivity).clickDelete()
+                homeXPopupDialog.clickDelete()
             }
 
             override fun onConfirm() {
@@ -258,7 +264,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                 /**
                  * 点击确定，把所有的临时钱赋值给确定钱然后要把没有确定的删除掉,在Activity处理所有的
                  */
-                (context as GameHomeActivity).clickOKBet()
+                homeXPopupDialog.clickOKBet()
             }
 
         })
@@ -274,7 +280,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                         mDatabind.rvSumClickFour.removeView(showSumShiYiMoney)
                     }
                 }
-                (context as GameHomeActivity).clickDelete()
+                homeXPopupDialog.clickDelete()
             }
 
             override fun onConfirm() {
@@ -282,7 +288,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                 /**
                  * 点击确定，把所有的临时钱赋值给确定钱然后要把没有确定的删除掉,在Activity处理所有的
                  */
-                (context as GameHomeActivity).clickOKBet()
+                homeXPopupDialog.clickOKBet()
             }
 
         })
@@ -298,7 +304,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                         mDatabind.rvSumClickFour.removeView(showSumShiErMoney)
                     }
                 }
-                (context as GameHomeActivity).clickDelete()
+                homeXPopupDialog.clickDelete()
             }
 
             override fun onConfirm() {
@@ -306,7 +312,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                 /**
                  * 点击确定，把所有的临时钱赋值给确定钱然后要把没有确定的删除掉,在Activity处理所有的
                  */
-                (context as GameHomeActivity).clickOKBet()
+                homeXPopupDialog.clickOKBet()
             }
 
         })
@@ -322,7 +328,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                         mDatabind.rvSumClickFour.removeView(showSumShiSanMoney)
                     }
                 }
-                (context as GameHomeActivity).clickDelete()
+                homeXPopupDialog.clickDelete()
             }
 
             override fun onConfirm() {
@@ -330,7 +336,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                 /**
                  * 点击确定，把所有的临时钱赋值给确定钱然后要把没有确定的删除掉,在Activity处理所有的
                  */
-                (context as GameHomeActivity).clickOKBet()
+                homeXPopupDialog.clickOKBet()
             }
 
         })
@@ -346,7 +352,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                         mDatabind.rvSumClickFour.removeView(showSumShiSiMoney)
                     }
                 }
-                (context as GameHomeActivity).clickDelete()
+                homeXPopupDialog.clickDelete()
             }
 
             override fun onConfirm() {
@@ -354,7 +360,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                 /**
                  * 点击确定，把所有的临时钱赋值给确定钱然后要把没有确定的删除掉,在Activity处理所有的
                  */
-                (context as GameHomeActivity).clickOKBet()
+                homeXPopupDialog.clickOKBet()
             }
 
         })
@@ -370,7 +376,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                         mDatabind.rvSumClickFour.removeView(showSumShiWuMoney)
                     }
                 }
-                (context as GameHomeActivity).clickDelete()
+                homeXPopupDialog.clickDelete()
             }
 
             override fun onConfirm() {
@@ -378,7 +384,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                 /**
                  * 点击确定，把所有的临时钱赋值给确定钱然后要把没有确定的删除掉,在Activity处理所有的
                  */
-                (context as GameHomeActivity).clickOKBet()
+                homeXPopupDialog.clickOKBet()
             }
 
         })
@@ -394,7 +400,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                         mDatabind.rvSumClickFour.removeView(showSumShiLiuMoney)
                     }
                 }
-                (context as GameHomeActivity).clickDelete()
+                homeXPopupDialog.clickDelete()
             }
 
             override fun onConfirm() {
@@ -402,7 +408,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                 /**
                  * 点击确定，把所有的临时钱赋值给确定钱然后要把没有确定的删除掉,在Activity处理所有的
                  */
-                (context as GameHomeActivity).clickOKBet()
+                homeXPopupDialog.clickOKBet()
             }
 
         })
@@ -418,7 +424,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                         mDatabind.rvSumClickFour.removeView(showSumShiQiMoney)
                     }
                 }
-                (context as GameHomeActivity).clickDelete()
+                homeXPopupDialog.clickDelete()
             }
 
             override fun onConfirm() {
@@ -426,7 +432,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                 /**
                  * 点击确定，把所有的临时钱赋值给确定钱然后要把没有确定的删除掉,在Activity处理所有的
                  */
-                (context as GameHomeActivity).clickOKBet()
+                homeXPopupDialog.clickOKBet()
             }
 
         })
@@ -1235,7 +1241,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                 MotionEvent.ACTION_DOWN -> {
 
                     //先判断余额是否够这次 并且扣取钱
-                    if( (context as GameHomeActivity).isCanBetting()&&MyGameManager.isClickOperation){
+                    if( homeXPopupDialog.isCanBetting()&&MyGameManager.isClickOperation&& PromptSoundPlay.handleClick()){
                         val x = event.x
                         var y = event.y
 
@@ -1288,7 +1294,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                             var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
 
 
-                            (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(), animationView =showSumSiMoney.ivShowBg )
+                            homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(), animationView =showSumSiMoney.ivShowBg )
 
                         } else {
                             val viewTreeObserver = showSumSiMoney.viewTreeObserver
@@ -1312,7 +1318,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                                     var  rax=xOnScreen
                                     var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
 
-                                    (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),animationView =showSumSiMoney.ivShowBg)
+                                    homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(),animationView =showSumSiMoney.ivShowBg)
 
                                 }
                             })
@@ -1348,7 +1354,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                 MotionEvent.ACTION_DOWN -> {
 
                     //先判断余额是否够这次 并且扣取钱
-                    if( (context as GameHomeActivity).isCanBetting()&&MyGameManager.isClickOperation){
+                    if(homeXPopupDialog.isCanBetting()&&MyGameManager.isClickOperation&&PromptSoundPlay.handleClick()){
                         val x = event.x
                         val y = event.y
 
@@ -1404,7 +1410,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                             var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
 
 
-                            (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(), animationView =showSumWuMoney.ivShowBg )
+                            homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(), animationView =showSumWuMoney.ivShowBg )
 
                         } else {
                             val viewTreeObserver = showSumWuMoney.viewTreeObserver
@@ -1429,7 +1435,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                                     var  rax=xOnScreen
                                     var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
 
-                                    (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),animationView =showSumWuMoney.ivShowBg)
+                                    homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(),animationView =showSumWuMoney.ivShowBg)
                                     //显示点击在Fragment的位置用于动画结束后显示
                                     if(ComputeSum.sumTotalWu.viewXYTemporary[0]==0&&ComputeSum.sumTotalWu.viewXYTemporary[1]==0){
                                         val location = IntArray(2)
@@ -1467,7 +1473,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                 MotionEvent.ACTION_DOWN -> {
 
                     //先判断余额是否够这次 并且扣取钱
-                    if( (context as GameHomeActivity).isCanBetting()&&MyGameManager.isClickOperation){
+                    if( homeXPopupDialog.isCanBetting()&&MyGameManager.isClickOperation&&PromptSoundPlay.handleClick()){
                         val x = event.x
                         val y = event.y
 
@@ -1523,7 +1529,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                             var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
 
 
-                            (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(), animationView =showSumLiuMoney.ivShowBg )
+                            homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(), animationView =showSumLiuMoney.ivShowBg )
 
                         } else {
                             val viewTreeObserver = showSumLiuMoney.viewTreeObserver
@@ -1548,7 +1554,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                                     var  rax=xOnScreen
                                     var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
 
-                                    (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),animationView =showSumLiuMoney.ivShowBg)
+                                    homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(),animationView =showSumLiuMoney.ivShowBg)
                                     //显示点击在Fragment的位置用于动画结束后显示
                                     if(ComputeSum.sumTotalLiu.viewXYTemporary[0]==0&&ComputeSum.sumTotalLiu.viewXYTemporary[1]==0){
                                         val location = IntArray(2)
@@ -1585,7 +1591,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                 MotionEvent.ACTION_DOWN -> {
 
                     //先判断余额是否够这次 并且扣取钱
-                    if( (context as GameHomeActivity).isCanBetting()&&MyGameManager.isClickOperation){
+                    if(homeXPopupDialog.isCanBetting()&&MyGameManager.isClickOperation&&PromptSoundPlay.handleClick()){
                         val x = event.x
                         val y = event.y
 
@@ -1638,7 +1644,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                             var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
 
 
-                            (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(), animationView =showSumQiMoney.ivShowBg )
+                            homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(), animationView =showSumQiMoney.ivShowBg )
 
                         } else {
                             val viewTreeObserver = showSumQiMoney.viewTreeObserver
@@ -1663,7 +1669,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                                     var  rax=xOnScreen
                                     var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
 
-                                    (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),animationView =showSumQiMoney.ivShowBg)
+                                    homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(),animationView =showSumQiMoney.ivShowBg)
                                     //显示点击在Fragment的位置用于动画结束后显示
                                     if(ComputeSum.sumTotalQi.viewXYTemporary[0]==0&&ComputeSum.sumTotalQi.viewXYTemporary[1]==0){
                                         val location = IntArray(2)
@@ -1700,7 +1706,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                 MotionEvent.ACTION_DOWN -> {
 
                     //先判断余额是否够这次 并且扣取钱
-                    if( (context as GameHomeActivity).isCanBetting()&&MyGameManager.isClickOperation){
+                    if( homeXPopupDialog.isCanBetting()&&MyGameManager.isClickOperation&&PromptSoundPlay.handleClick()){
                         val x = event.x
                         val y = event.y
 
@@ -1751,7 +1757,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                             //通过显示的控件得到相对于屏幕的位置
                             var  rax=xOnScreen
                             var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
-                            (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(), animationView =showSumBaMoney.ivShowBg )
+                            homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(), animationView =showSumBaMoney.ivShowBg )
 
                         } else {
                             val viewTreeObserver = showSumBaMoney.viewTreeObserver
@@ -1776,7 +1782,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                                     var  rax=xOnScreen
                                     var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
 
-                                    (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),animationView =showSumBaMoney.ivShowBg)
+                                    homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(),animationView =showSumBaMoney.ivShowBg)
                                     //显示点击在Fragment的位置用于动画结束后显示
                                     if(ComputeSum.sumTotalBa.viewXYTemporary[0]==0&&ComputeSum.sumTotalBa.viewXYTemporary[1]==0){
                                         val location = IntArray(2)
@@ -1813,7 +1819,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                 MotionEvent.ACTION_DOWN -> {
 
                     //先判断余额是否够这次 并且扣取钱
-                    if( (context as GameHomeActivity).isCanBetting()&&MyGameManager.isClickOperation){
+                    if(homeXPopupDialog.isCanBetting()&&MyGameManager.isClickOperation&&PromptSoundPlay.handleClick()){
                         val x = event.x
                         val y = event.y
 
@@ -1864,7 +1870,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                             //通过显示的控件得到相对于屏幕的位置
                             var  rax=xOnScreen
                             var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
-                            (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(), animationView =showSumJiuMoney.ivShowBg )
+                            homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(), animationView =showSumJiuMoney.ivShowBg )
 
                         } else {
                             val viewTreeObserver = showSumJiuMoney.viewTreeObserver
@@ -1889,7 +1895,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                                     var  rax=xOnScreen
                                     var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
 
-                                    (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),animationView =showSumJiuMoney.ivShowBg)
+                                    homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(),animationView =showSumJiuMoney.ivShowBg)
                                     //显示点击在Fragment的位置用于动画结束后显示
                                     if(ComputeSum.sumTotalJiu.viewXYTemporary[0]==0&&ComputeSum.sumTotalJiu.viewXYTemporary[1]==0){
                                         val location = IntArray(2)
@@ -1926,7 +1932,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                 MotionEvent.ACTION_DOWN -> {
 
                     //先判断余额是否够这次 并且扣取钱
-                    if( (context as GameHomeActivity).isCanBetting()&&MyGameManager.isClickOperation){
+                    if(homeXPopupDialog.isCanBetting()&&MyGameManager.isClickOperation&&PromptSoundPlay.handleClick()){
                         val x = event.x
                         val y = event.y
 
@@ -1977,7 +1983,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                             //通过显示的控件得到相对于屏幕的位置
                             var  rax=xOnScreen
                             var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
-                            (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(), animationView =showSumShiMoney.ivShowBg )
+                            homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(), animationView =showSumShiMoney.ivShowBg )
 
                         } else {
                             val viewTreeObserver = showSumShiMoney.viewTreeObserver
@@ -2002,7 +2008,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                                     var  rax=xOnScreen
                                     var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
 
-                                    (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),animationView =showSumShiMoney.ivShowBg)
+                                    homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(),animationView =showSumShiMoney.ivShowBg)
                                     //显示点击在Fragment的位置用于动画结束后显示
                                     if(ComputeSum.sumTotalShi.viewXYTemporary[0]==0&&ComputeSum.sumTotalShi.viewXYTemporary[1]==0){
                                         val location = IntArray(2)
@@ -2039,7 +2045,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                 MotionEvent.ACTION_DOWN -> {
 
                     //先判断余额是否够这次 并且扣取钱
-                    if( (context as GameHomeActivity).isCanBetting()&&MyGameManager.isClickOperation){
+                    if( homeXPopupDialog.isCanBetting()&&MyGameManager.isClickOperation&&PromptSoundPlay.handleClick()){
                         val x = event.x
                         val y = event.y
 
@@ -2090,7 +2096,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                             //通过显示的控件得到相对于屏幕的位置
                             var  rax=xOnScreen
                             var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
-                            (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(), animationView =showSumShiYiMoney.ivShowBg )
+                            homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(), animationView =showSumShiYiMoney.ivShowBg )
 
                         } else {
                             val viewTreeObserver = showSumShiYiMoney.viewTreeObserver
@@ -2115,7 +2121,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                                     var  rax=xOnScreen
                                     var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
 
-                                    (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),animationView =showSumShiYiMoney.ivShowBg)
+                                    homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(),animationView =showSumShiYiMoney.ivShowBg)
                                     //显示点击在Fragment的位置用于动画结束后显示
                                     if(ComputeSum.sumTotalShiYi.viewXYTemporary[0]==0&&ComputeSum.sumTotalShiYi.viewXYTemporary[1]==0){
                                         val location = IntArray(2)
@@ -2152,7 +2158,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                 MotionEvent.ACTION_DOWN -> {
 
                     //先判断余额是否够这次 并且扣取钱
-                    if( (context as GameHomeActivity).isCanBetting()&&MyGameManager.isClickOperation){
+                    if( homeXPopupDialog.isCanBetting()&&MyGameManager.isClickOperation&&PromptSoundPlay.handleClick()){
                         val x = event.x
                         val y = event.y
 
@@ -2202,7 +2208,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                             //通过显示的控件得到相对于屏幕的位置
                             var  rax=xOnScreen
                             var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
-                            (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(), animationView =showSumShiErMoney.ivShowBg )
+                            homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(), animationView =showSumShiErMoney.ivShowBg )
 
                         } else {
                             val viewTreeObserver = showSumShiErMoney.viewTreeObserver
@@ -2227,7 +2233,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                                     var  rax=xOnScreen
                                     var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
 
-                                    (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),animationView =showSumShiErMoney.ivShowBg)
+                                    homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(),animationView =showSumShiErMoney.ivShowBg)
                                     //显示点击在Fragment的位置用于动画结束后显示
                                     if(ComputeSum.sumTotalShiEr.viewXYTemporary[0]==0&&ComputeSum.sumTotalShiEr.viewXYTemporary[1]==0){
                                         val location = IntArray(2)
@@ -2266,7 +2272,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                 MotionEvent.ACTION_DOWN -> {
 
                     //先判断余额是否够这次 并且扣取钱
-                    if( (context as GameHomeActivity).isCanBetting()&&MyGameManager.isClickOperation){
+                    if( homeXPopupDialog.isCanBetting()&&MyGameManager.isClickOperation&&PromptSoundPlay.handleClick()){
                         val x = event.x
                         val y = event.y
 
@@ -2316,7 +2322,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                             //通过显示的控件得到相对于屏幕的位置
                             var  rax=xOnScreen
                             var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
-                            (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(), animationView =showSumShiSanMoney.ivShowBg )
+                            homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(), animationView =showSumShiSanMoney.ivShowBg )
 
                         } else {
                             val viewTreeObserver = showSumShiSanMoney.viewTreeObserver
@@ -2341,7 +2347,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                                     var  rax=xOnScreen
                                     var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
 
-                                    (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),animationView =showSumShiSanMoney.ivShowBg)
+                                    homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(),animationView =showSumShiSanMoney.ivShowBg)
                                     //显示点击在Fragment的位置用于动画结束后显示
                                     if(ComputeSum.sumTotalShiSan.viewXYTemporary[0]==0&&ComputeSum.sumTotalShiSan.viewXYTemporary[1]==0){
                                         val location = IntArray(2)
@@ -2379,7 +2385,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                 MotionEvent.ACTION_DOWN -> {
 
                     //先判断余额是否够这次 并且扣取钱
-                    if( (context as GameHomeActivity).isCanBetting()&&MyGameManager.isClickOperation){
+                    if(homeXPopupDialog.isCanBetting()&&MyGameManager.isClickOperation&&PromptSoundPlay.handleClick()){
                         val x = event.x
                         val y = event.y
 
@@ -2429,7 +2435,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                             //通过显示的控件得到相对于屏幕的位置
                             var  rax=xOnScreen
                             var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
-                            (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(), animationView =showSumShiSiMoney.ivShowBg )
+                            homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(), animationView =showSumShiSiMoney.ivShowBg )
 
                         } else {
                             val viewTreeObserver = showSumShiSiMoney.viewTreeObserver
@@ -2454,7 +2460,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                                     var  rax=xOnScreen
                                     var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
 
-                                    (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),animationView =showSumShiSiMoney.ivShowBg)
+                                    homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(),animationView =showSumShiSiMoney.ivShowBg)
                                     //显示点击在Fragment的位置用于动画结束后显示
                                     if(ComputeSum.sumTotalShiSi.viewXYTemporary[0]==0&&ComputeSum.sumTotalShiSi.viewXYTemporary[1]==0){
                                         val location = IntArray(2)
@@ -2491,7 +2497,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                 MotionEvent.ACTION_DOWN -> {
 
                     //先判断余额是否够这次 并且扣取钱
-                    if( (context as GameHomeActivity).isCanBetting()&&MyGameManager.isClickOperation){
+                    if(homeXPopupDialog.isCanBetting()&&MyGameManager.isClickOperation&&PromptSoundPlay.handleClick()){
                         val x = event.x
                         val y = event.y
 
@@ -2541,7 +2547,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                             //通过显示的控件得到相对于屏幕的位置
                             var  rax=xOnScreen
                             var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
-                            (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(), animationView =showSumShiWuMoney.ivShowBg )
+                            homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(), animationView =showSumShiWuMoney.ivShowBg )
 
                         } else {
                             val viewTreeObserver = showSumShiWuMoney.viewTreeObserver
@@ -2566,7 +2572,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                                     var  rax=xOnScreen
                                     var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
 
-                                    (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),animationView =showSumShiWuMoney.ivShowBg)
+                                    homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(),animationView =showSumShiWuMoney.ivShowBg)
                                     //显示点击在Fragment的位置用于动画结束后显示
                                     if(ComputeSum.sumTotalShiWu.viewXYTemporary[0]==0&&ComputeSum.sumTotalShiWu.viewXYTemporary[1]==0){
                                         val location = IntArray(2)
@@ -2604,7 +2610,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                 MotionEvent.ACTION_DOWN -> {
 
                     //先判断余额是否够这次 并且扣取钱
-                    if( (context as GameHomeActivity).isCanBetting()&&MyGameManager.isClickOperation){
+                    if(homeXPopupDialog.isCanBetting()&&MyGameManager.isClickOperation&&PromptSoundPlay.handleClick()){
                         val x = event.x
                         val y = event.y
 
@@ -2654,7 +2660,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                             //通过显示的控件得到相对于屏幕的位置
                             var  rax=xOnScreen
                             var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
-                            (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(), animationView =showSumShiLiuMoney.ivShowBg )
+                            homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(), animationView =showSumShiLiuMoney.ivShowBg )
 
                         } else {
                             val viewTreeObserver = showSumShiLiuMoney.viewTreeObserver
@@ -2679,7 +2685,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                                     var  rax=xOnScreen
                                     var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
 
-                                    (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),animationView =showSumShiLiuMoney.ivShowBg)
+                                    homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(),animationView =showSumShiLiuMoney.ivShowBg)
                                     //显示点击在Fragment的位置用于动画结束后显示
                                     if(ComputeSum.sumTotalShiLiu.viewXYTemporary[0]==0&&ComputeSum.sumTotalShiLiu.viewXYTemporary[1]==0){
                                         val location = IntArray(2)
@@ -2717,7 +2723,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                 MotionEvent.ACTION_DOWN -> {
 
                     //先判断余额是否够这次 并且扣取钱
-                    if( (context as GameHomeActivity).isCanBetting()&&MyGameManager.isClickOperation){
+                    if(homeXPopupDialog.isCanBetting()&&MyGameManager.isClickOperation&&PromptSoundPlay.handleClick()){
                         val x = event.x
                         val y = event.y
 
@@ -2767,7 +2773,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                             //通过显示的控件得到相对于屏幕的位置
                             var  rax=xOnScreen
                             var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
-                            (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(), animationView =showSumShiQiMoney.ivShowBg )
+                            homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(), animationView =showSumShiQiMoney.ivShowBg )
 
                         } else {
                             val viewTreeObserver = showSumShiQiMoney.viewTreeObserver
@@ -2792,7 +2798,7 @@ class SumTotalFragment : BaseGameFragment<SumTotalVm, FragmentSumTotalBinding>()
                                     var  rax=xOnScreen
                                     var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
 
-                                    (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),animationView =showSumShiQiMoney.ivShowBg)
+                                    homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(),animationView =showSumShiQiMoney.ivShowBg)
                                     //显示点击在Fragment的位置用于动画结束后显示
                                     if(ComputeSum.sumTotalShiQi.viewXYTemporary[0]==0&&ComputeSum.sumTotalShiQi.viewXYTemporary[1]==0){
                                         val location = IntArray(2)

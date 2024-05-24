@@ -14,6 +14,8 @@ import com.cn.game.sdk.bean.ComputeSingle
 import com.cn.game.sdk.bean.InPrizeBean
 import com.cn.game.sdk.databinding.FragmentSingleDiceBinding
 import com.cn.game.sdk.enums.NOTES_ENUM
+import com.cn.game.sdk.tool.HomeXPopupDialog
+import com.cn.game.sdk.tool.PromptSoundPlay
 import com.cn.game.sdk.ui.fast.GameHomeActivity
 import com.cn.game.sdk.utils.MyGameManager
 import com.cn.game.sdk.view.MoneyOKDeleteView
@@ -53,7 +55,11 @@ class SingleDiceFragment : BaseGameFragment<SingleDiceVm, FragmentSingleDiceBind
 
 
     private var animators: MutableList<ObjectAnimator> = mutableListOf()
+    lateinit var  homeXPopupDialog: HomeXPopupDialog
 
+    fun   setHomeXPopupDialogDate(homeXPopupDialog: HomeXPopupDialog){
+        this.homeXPopupDialog=homeXPopupDialog
+    }
 
     @SuppressLint("ClickableViewAccessibility")
     override fun initView(savedInstanceState: Bundle?) {
@@ -68,7 +74,7 @@ class SingleDiceFragment : BaseGameFragment<SingleDiceVm, FragmentSingleDiceBind
                         mDatabind.rvDiceClickOne.removeView(showSingleYiMoney)
                     }
                 }
-                (context as GameHomeActivity).clickDelete()
+                homeXPopupDialog.clickDelete()
             }
 
             override fun onConfirm() {
@@ -77,7 +83,7 @@ class SingleDiceFragment : BaseGameFragment<SingleDiceVm, FragmentSingleDiceBind
                 /**
                  * 点击确定，把所有的临时钱赋值给确定钱然后要把没有确定的删除掉,在Activity处理所有的
                  */
-                (context as GameHomeActivity).clickOKBet()
+                homeXPopupDialog.clickOKBet()
             }
 
         })
@@ -92,7 +98,7 @@ class SingleDiceFragment : BaseGameFragment<SingleDiceVm, FragmentSingleDiceBind
                         mDatabind.rvDiceClickTwo.removeView(showSingleErMoney)
                     }
                 }
-                (context as GameHomeActivity).clickDelete()
+                homeXPopupDialog.clickDelete()
             }
 
             override fun onConfirm() {
@@ -101,7 +107,7 @@ class SingleDiceFragment : BaseGameFragment<SingleDiceVm, FragmentSingleDiceBind
                 /**
                  * 点击确定，把所有的临时钱赋值给确定钱然后要把没有确定的删除掉,在Activity处理所有的
                  */
-                (context as GameHomeActivity).clickOKBet()
+                homeXPopupDialog.clickOKBet()
             }
 
         })
@@ -116,7 +122,7 @@ class SingleDiceFragment : BaseGameFragment<SingleDiceVm, FragmentSingleDiceBind
                         mDatabind.rvDiceClickThree.removeView(showSingleSanMoney)
                     }
                 }
-                (context as GameHomeActivity).clickDelete()
+                homeXPopupDialog.clickDelete()
             }
 
             override fun onConfirm() {
@@ -125,7 +131,7 @@ class SingleDiceFragment : BaseGameFragment<SingleDiceVm, FragmentSingleDiceBind
                 /**
                  * 点击确定，把所有的临时钱赋值给确定钱然后要把没有确定的删除掉,在Activity处理所有的
                  */
-                (context as GameHomeActivity).clickOKBet()
+                homeXPopupDialog.clickOKBet()
             }
 
         })
@@ -139,7 +145,7 @@ class SingleDiceFragment : BaseGameFragment<SingleDiceVm, FragmentSingleDiceBind
                         mDatabind.rvDiceClickFour.removeView(showSingleSiMoney)
                     }
                 }
-                (context as GameHomeActivity).clickDelete()
+                homeXPopupDialog.clickDelete()
             }
 
             override fun onConfirm() {
@@ -148,7 +154,7 @@ class SingleDiceFragment : BaseGameFragment<SingleDiceVm, FragmentSingleDiceBind
                 /**
                  * 点击确定，把所有的临时钱赋值给确定钱然后要把没有确定的删除掉,在Activity处理所有的
                  */
-                (context as GameHomeActivity).clickOKBet()
+                homeXPopupDialog.clickOKBet()
             }
 
         })
@@ -162,7 +168,7 @@ class SingleDiceFragment : BaseGameFragment<SingleDiceVm, FragmentSingleDiceBind
                         mDatabind.rvDiceClickFive.removeView(showSingleWuMoney)
                     }
                 }
-                (context as GameHomeActivity).clickDelete()
+                homeXPopupDialog.clickDelete()
             }
 
             override fun onConfirm() {
@@ -171,7 +177,7 @@ class SingleDiceFragment : BaseGameFragment<SingleDiceVm, FragmentSingleDiceBind
                 /**
                  * 点击确定，把所有的临时钱赋值给确定钱然后要把没有确定的删除掉,在Activity处理所有的
                  */
-                (context as GameHomeActivity).clickOKBet()
+                homeXPopupDialog.clickOKBet()
             }
 
         })
@@ -185,7 +191,7 @@ class SingleDiceFragment : BaseGameFragment<SingleDiceVm, FragmentSingleDiceBind
                         mDatabind.rvDiceClickSix.removeView(showSingleLiuMoney)
                     }
                 }
-                (context as GameHomeActivity).clickDelete()
+                homeXPopupDialog.clickDelete()
             }
 
             override fun onConfirm() {
@@ -194,7 +200,7 @@ class SingleDiceFragment : BaseGameFragment<SingleDiceVm, FragmentSingleDiceBind
                 /**
                  * 点击确定，把所有的临时钱赋值给确定钱然后要把没有确定的删除掉,在Activity处理所有的
                  */
-                (context as GameHomeActivity).clickOKBet()
+                homeXPopupDialog.clickOKBet()
             }
 
         })
@@ -203,7 +209,7 @@ class SingleDiceFragment : BaseGameFragment<SingleDiceVm, FragmentSingleDiceBind
      //点击一
      mDatabind.rvDiceClickOne. setOnClickListener {
          //先判断余额是否够这次 并且扣取钱
-         if( (context as GameHomeActivity).isCanBetting()&&MyGameManager.isClickOperation){
+         if( homeXPopupDialog.isCanBetting()&&MyGameManager.isClickOperation&& PromptSoundPlay.handleClick()){
              val location = IntArray(2)
              mDatabind.rvDiceClickOne.getLocationOnScreen(location)
              var selectNum=0
@@ -230,7 +236,7 @@ class SingleDiceFragment : BaseGameFragment<SingleDiceVm, FragmentSingleDiceBind
                  var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
 
 
-                 (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(), animationView =showSingleYiMoney.ivShowBg )
+                 homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(), animationView =showSingleYiMoney.ivShowBg )
 
              } else {
                  val viewTreeObserver = showSingleYiMoney.viewTreeObserver
@@ -255,7 +261,7 @@ class SingleDiceFragment : BaseGameFragment<SingleDiceVm, FragmentSingleDiceBind
                          var  rax=xOnScreen
                          var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
 
-                         (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),animationView =showSingleYiMoney.ivShowBg)
+                         homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(),animationView =showSingleYiMoney.ivShowBg)
                          //显示点击在Fragment的位置用于动画结束后显示
                          if(ComputeSingle.singleYi.viewXYTemporary[0]==0&& ComputeSingle.singleYi.viewXYTemporary[1]==0){
                              val location = IntArray(2)
@@ -282,7 +288,7 @@ class SingleDiceFragment : BaseGameFragment<SingleDiceVm, FragmentSingleDiceBind
      //点击二
      mDatabind.rvDiceClickTwo. setOnClickListener {
             //先判断余额是否够这次 并且扣取钱
-            if( (context as GameHomeActivity).isCanBetting()&&MyGameManager.isClickOperation){
+            if( homeXPopupDialog.isCanBetting()&&MyGameManager.isClickOperation&&PromptSoundPlay.handleClick()){
                 val location = IntArray(2)
                 mDatabind.rvDiceClickTwo.getLocationOnScreen(location)
                 var selectNum=0
@@ -309,7 +315,7 @@ class SingleDiceFragment : BaseGameFragment<SingleDiceVm, FragmentSingleDiceBind
                     var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
 
 
-                    (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(), animationView =showSingleErMoney.ivShowBg )
+                    homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(), animationView =showSingleErMoney.ivShowBg )
 
                 } else {
                     val viewTreeObserver = showSingleErMoney.viewTreeObserver
@@ -334,7 +340,7 @@ class SingleDiceFragment : BaseGameFragment<SingleDiceVm, FragmentSingleDiceBind
                             var  rax=xOnScreen
                             var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
 
-                            (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),animationView =showSingleErMoney.ivShowBg)
+                            homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(),animationView =showSingleErMoney.ivShowBg)
                             //显示点击在Fragment的位置用于动画结束后显示
                             if(ComputeSingle.singleEr.viewXYTemporary[0]==0&& ComputeSingle.singleEr.viewXYTemporary[1]==0){
                                 val location = IntArray(2)
@@ -362,7 +368,7 @@ class SingleDiceFragment : BaseGameFragment<SingleDiceVm, FragmentSingleDiceBind
       //点击三
       mDatabind.rvDiceClickThree. setOnClickListener {
             //先判断余额是否够这次 并且扣取钱
-            if( (context as GameHomeActivity).isCanBetting()&&MyGameManager.isClickOperation){
+            if( homeXPopupDialog.isCanBetting()&&MyGameManager.isClickOperation&&PromptSoundPlay.handleClick()){
                 val location = IntArray(2)
                 mDatabind.rvDiceClickThree.getLocationOnScreen(location)
                 var selectNum=0
@@ -389,7 +395,7 @@ class SingleDiceFragment : BaseGameFragment<SingleDiceVm, FragmentSingleDiceBind
                     var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
 
 
-                    (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(), animationView =showSingleSanMoney.ivShowBg )
+                    homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(), animationView =showSingleSanMoney.ivShowBg )
 
                 } else {
                     val viewTreeObserver = showSingleSanMoney.viewTreeObserver
@@ -414,7 +420,7 @@ class SingleDiceFragment : BaseGameFragment<SingleDiceVm, FragmentSingleDiceBind
                             var  rax=xOnScreen
                             var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
 
-                            (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),animationView =showSingleSanMoney.ivShowBg)
+                            homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(),animationView =showSingleSanMoney.ivShowBg)
                             //显示点击在Fragment的位置用于动画结束后显示
                             if(ComputeSingle.singleSan.viewXYTemporary[0]==0&& ComputeSingle.singleSan.viewXYTemporary[1]==0){
                                 val location = IntArray(2)
@@ -442,7 +448,7 @@ class SingleDiceFragment : BaseGameFragment<SingleDiceVm, FragmentSingleDiceBind
         //点击4
      mDatabind.rvDiceClickFour. setOnClickListener {
             //先判断余额是否够这次 并且扣取钱
-            if( (context as GameHomeActivity).isCanBetting()&&MyGameManager.isClickOperation){
+            if( homeXPopupDialog.isCanBetting()&&MyGameManager.isClickOperation&&PromptSoundPlay.handleClick()){
                 val location = IntArray(2)
                 mDatabind.rvDiceClickFour.getLocationOnScreen(location)
                 var selectNum=0
@@ -469,7 +475,7 @@ class SingleDiceFragment : BaseGameFragment<SingleDiceVm, FragmentSingleDiceBind
                     var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
 
 
-                    (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(), animationView =showSingleSiMoney.ivShowBg )
+                    homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(), animationView =showSingleSiMoney.ivShowBg )
 
                 } else {
                     val viewTreeObserver = showSingleSiMoney.viewTreeObserver
@@ -494,7 +500,7 @@ class SingleDiceFragment : BaseGameFragment<SingleDiceVm, FragmentSingleDiceBind
                             var  rax=xOnScreen
                             var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
 
-                            (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),animationView =showSingleSiMoney.ivShowBg)
+                            homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(),animationView =showSingleSiMoney.ivShowBg)
                             //显示点击在Fragment的位置用于动画结束后显示
                             if(ComputeSingle.singleSi.viewXYTemporary[0]==0&& ComputeSingle.singleSi.viewXYTemporary[1]==0){
                                 val location = IntArray(2)
@@ -522,7 +528,7 @@ class SingleDiceFragment : BaseGameFragment<SingleDiceVm, FragmentSingleDiceBind
         //点击5
        mDatabind.rvDiceClickFive. setOnClickListener {
             //先判断余额是否够这次 并且扣取钱
-            if( (context as GameHomeActivity).isCanBetting()&&MyGameManager.isClickOperation){
+            if(homeXPopupDialog.isCanBetting()&&MyGameManager.isClickOperation&&PromptSoundPlay.handleClick()){
                 val location = IntArray(2)
                 mDatabind.rvDiceClickFive.getLocationOnScreen(location)
                 var selectNum=0
@@ -549,7 +555,7 @@ class SingleDiceFragment : BaseGameFragment<SingleDiceVm, FragmentSingleDiceBind
                     var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
 
 
-                    (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(), animationView =showSingleWuMoney.ivShowBg )
+                    homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(), animationView =showSingleWuMoney.ivShowBg )
 
                 } else {
                     val viewTreeObserver = showSingleWuMoney.viewTreeObserver
@@ -574,7 +580,7 @@ class SingleDiceFragment : BaseGameFragment<SingleDiceVm, FragmentSingleDiceBind
                             var  rax=xOnScreen
                             var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
 
-                            (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),animationView =showSingleWuMoney.ivShowBg)
+                            homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(),animationView =showSingleWuMoney.ivShowBg)
                             //显示点击在Fragment的位置用于动画结束后显示
                             if(ComputeSingle.singleWu.viewXYTemporary[0]==0&& ComputeSingle.singleWu.viewXYTemporary[1]==0){
                                 val location = IntArray(2)
@@ -602,7 +608,7 @@ class SingleDiceFragment : BaseGameFragment<SingleDiceVm, FragmentSingleDiceBind
         //点击6
        mDatabind.rvDiceClickSix. setOnClickListener {
             //先判断余额是否够这次 并且扣取钱
-            if( (context as GameHomeActivity).isCanBetting()&&MyGameManager.isClickOperation){
+            if( homeXPopupDialog.isCanBetting()&&MyGameManager.isClickOperation&&PromptSoundPlay.handleClick()){
                 val location = IntArray(2)
                 mDatabind.rvDiceClickSix.getLocationOnScreen(location)
                 var selectNum=0
@@ -629,7 +635,7 @@ class SingleDiceFragment : BaseGameFragment<SingleDiceVm, FragmentSingleDiceBind
                     var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
 
 
-                    (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(), animationView =showSingleLiuMoney.ivShowBg )
+                    homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(), animationView =showSingleLiuMoney.ivShowBg )
 
                 } else {
                     val viewTreeObserver = showSingleLiuMoney.viewTreeObserver
@@ -654,7 +660,7 @@ class SingleDiceFragment : BaseGameFragment<SingleDiceVm, FragmentSingleDiceBind
                             var  rax=xOnScreen
                             var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
 
-                            (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),animationView =showSingleLiuMoney.ivShowBg)
+                            homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(),animationView =showSingleLiuMoney.ivShowBg)
                             //显示点击在Fragment的位置用于动画结束后显示
                             if(ComputeSingle.singleLiu.viewXYTemporary[0]==0&& ComputeSingle.singleLiu.viewXYTemporary[1]==0){
                                 val location = IntArray(2)
@@ -941,12 +947,8 @@ class SingleDiceFragment : BaseGameFragment<SingleDiceVm, FragmentSingleDiceBind
                 showSingleLiuMoney.layoutParams = params
             }
 
-
-            deletePreviousRound()
-
-
         }
-
+        deletePreviousRound()
     }
 
 

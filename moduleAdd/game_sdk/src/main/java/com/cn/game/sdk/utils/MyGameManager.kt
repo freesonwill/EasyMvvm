@@ -6,19 +6,22 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.CountDownTimer
+import android.util.Log
+import android.view.Gravity
 import android.view.View
-import android.widget.Toast
+import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.ProcessLifecycleOwner
-import com.cn.game.sdk.MyGameApplication
 import com.cn.game.sdk.R
 import com.cn.game.sdk.bean.SelectAnnotationBean
 import com.cn.game.sdk.listener.GameTimeStatic
+import com.cn.game.sdk.tool.HomeXPopupDialog
 import com.cn.game.sdk.ui.fast.GameHomeActivity
 import com.cn.game.sdk.view.FastLogoView
 import com.cn.game.sdk.view.OpenResultView
-import com.xcjh.base_lib.App.Companion.appGame
+import com.lxj.xpopup.XPopup
+import com.lxj.xpopup.enums.PopupAnimation
+import com.lzf.easyfloat.EasyFloat
+import com.lzf.easyfloat.enums.SidePattern
 
 @SuppressLint("StaticFieldLeak")
 object MyGameManager {
@@ -27,7 +30,7 @@ object MyGameManager {
      */
     var noteList=ArrayList<SelectAnnotationBean>()
     /**
-     * 快三的浮动View
+     * 快三的浮动View  不能拖动的
      */
     private var  fastThreeView:FastLogoView?=null
 
@@ -66,6 +69,7 @@ object MyGameManager {
      * 倒计时的状态0没有连接上  1是下注   2结算
      */
     var  static=1
+
 
     //获取快三的浮动view
     fun   getFastThreeView(context:Context):FastLogoView{
@@ -176,50 +180,139 @@ object MyGameManager {
 
     var countDownTimer : CountDownTimer?=null
 
+
+//    var mTimer : CountDownTimerSupport?=null
+
     /**
      * 是否主动暂停
      */
     var isActive:Boolean=false
+
+    /**
+     * 倒计时
+     */
     fun staCountDownTimer(){
-        countDownTimer = object : CountDownTimer( countdownTime.toLong(), 500) {
-            override fun onTick(millisUntilFinished: Long) {
+        if(countDownTimer==null){
+            countDownTimer = object : CountDownTimer( countdownTime.toLong(), 1000) {
+                override fun onTick(millisUntilFinished: Long) {
+                    var secondsddd = (millisUntilFinished / 1000).toInt()
+                    val minutes = secondsddd / 60
+                    secondsddd = secondsddd % 60
+                    Log.d("Countdown", "Time remaining: $minutes:$secondsddd")
+                    if(static!=-1){
 
-                if(static!=-1){
-                    mGameListener.forEach{
-                        it.toPair().second.onCountdown(millisUntilFinished)
+                        mGameListener.forEach{
+                            it.toPair().second.onCountdown(millisUntilFinished)
+                        }
                     }
+
+                    val seconds: Long = Math.round(millisUntilFinished.toDouble() / 1000)
+                    if(seconds.toInt()<=1||static==2){
+                        isClickOperation=false
+                    }
+
+                    countdownTime=seconds.toInt()
                 }
 
-                val seconds: Long = Math.round(millisUntilFinished.toDouble() / 1000)
-                if(seconds.toInt()<=1||static==2){
-                    isClickOperation=false
-                }
-
-                countdownTime=seconds.toInt()
-            }
-
-            override fun onFinish() {
+                override fun onFinish() {
+                    Log.i("SVVVVV","结束======")
 //                countdownTime=0
-                if(static==1){
-                    static=2
-                    isClickOperation=false
-                }
-                else{
-                    static=1
-
-                }
-                if(static!=-1){
-                    mGameListener.forEach{
-                        it.toPair().second.onStatic(static)
+                    if(static==1){
+                        static=2
+                        isClickOperation=false
                     }
+                    else{
+                        static=1
+
+                    }
+                    if(static!=-1){
+                        mGameListener.forEach{
+                            it.toPair().second.onStatic(static)
+                        }
+                    }
+
+
+
+
                 }
-
-
-
-
             }
-        }.start()
+        }
+        countDownTimer!!.start()
+       //====
+//        if(mTimer==null){
+//            mTimer = CountDownTimerSupport(countdownTime.toLong(), 1000)
+//            mTimer!!.setOnCountDownTimerListener(object :OnCountDownTimerListener{
+//                override fun onTick(millisUntilFinished: Long) {
+//                    // 倒计时间隔
+//                    if(static!=-1){
+//                        mGameListener.forEach{
+//                            it.toPair().second.onCountdown(millisUntilFinished)
+//                        }
+//                    }
+//                    val seconds: Long = Math.round(millisUntilFinished.toDouble() / 1000)
+//                    if(seconds.toInt()<=1||static==2){
+//                        isClickOperation=false
+//                    }
+//                    countdownTime=seconds.toInt()
+//                }
+//
+//                override fun onFinish() {
+//                    // 倒计时结束
+//
+//                    if(static==1){
+//                        static=2
+//                        isClickOperation=false
+//                    }
+//                    else{
+//                        static=1
+//
+//                    }
+//                    if(static!=-1){
+//                        mGameListener.forEach{
+//                            it.toPair().second.onStatic(static)
+//                        }
+//                    }
+//                }
+//
+//                override fun onCancel() {
+//                    // 倒计时手动停止
+//                }
+//
+//            })
+//        }
+//
+//        mTimer!!.start()
+    }
 
+      const val TAG_1 = "TAG_1"
+    /**
+     * 打开界面的可拖动的
+     */
+    fun showFastView(context:Context){
+        EasyFloat.with(context).setSidePattern(SidePattern.DEFAULT)
+            .setImmersionStatusBar(true)
+            .setTag(TAG_1)
+            .setGravity(Gravity.END, 0, 300)
+            .setLayout(R.layout.drag_fast_easy) {
+                val llFastClick = it.findViewById<LinearLayout>(R.id.llFastClick)
+                llFastClick.setOnClickListener {
+//                    var inagte= Intent(context, GameHomeActivity::class.java)
+//                    context.startActivity(inagte)
+                    var popupExitLogin= HomeXPopupDialog(context)
+                    var popwindow = XPopup.Builder(context)
+                        .hasShadowBg(false)
+                        .popupAnimation(PopupAnimation.TranslateFromBottom)
+                        .moveUpToKeyboard(false) //如果不加这个，评论弹窗会移动到软键盘上面
+                        .isViewMode(true)
+                        .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                         .isThreeDrag(false) //是否开启三阶拖拽，如果设置enableDrag(false)则无效
+                        .enableDrag(false)
+                        .asCustom(popupExitLogin).show()
+
+
+                    EasyFloat.hide(TAG_1)
+                }
+            }.show()
     }
 
 }

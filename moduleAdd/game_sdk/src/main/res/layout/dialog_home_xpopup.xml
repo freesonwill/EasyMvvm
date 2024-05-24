@@ -9,28 +9,12 @@
 
     <RelativeLayout
         android:id="@+id/rlRoot"
+        android:tag="root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipChildren="false"
         android:clipToPadding="false"
         android:orientation="vertical">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:orientation="horizontal">
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/tingzhi"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="停止"/>
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/kaishi"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="开始"/>
-        </LinearLayout>
-
         <LinearLayout
             android:id="@+id/llShowSection"
             android:layout_width="match_parent"
@@ -142,67 +126,7 @@
                 android:clipChildren="false"
                 android:clipToPadding="false"
                 android:orientation="vertical">
-                <LinearLayout
-                    android:visibility="gone"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:paddingLeft="@dimen/dp_10"
-                    android:orientation="horizontal">
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/txtHomeDefault"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:clipChildren="false"
-                        android:clipToPadding="false"
-                        android:textSize="14sp"
-                        android:paddingRight="12dp"
-                        android:textColor="@color/g_f7cf41"
-                        android:text="@string/g_home_txt_default"/>
-                    <com.cn.game.sdk.view.ClickTextView
-                        android:id="@+id/txtHomeSingle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:clipChildren="false"
-                        android:clipToPadding="false"
-                        android:paddingRight="12dp"
-                        android:paddingLeft="12dp"
-                        android:textSize="14sp"
-                        android:textColor="@color/g_9696b8"
-                        android:text="@string/g_home_tab_single"/>
-                    <com.cn.game.sdk.view.ClickTextView
-                        android:id="@+id/txtHomeSum"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:clipChildren="false"
-                        android:clipToPadding="false"
-                        android:paddingRight="12dp"
-                        android:paddingLeft="12dp"
-                        android:textSize="14sp"
-                        android:textColor="@color/g_9696b8"
-                        android:text="@string/g_home_tab_sum"/>
-                    <com.cn.game.sdk.view.ClickTextView
-                        android:id="@+id/txtHomeDouble"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:clipChildren="false"
-                        android:clipToPadding="false"
-                        android:paddingRight="12dp"
-                        android:paddingLeft="12dp"
-                        android:textSize="14sp"
-                        android:textColor="@color/g_9696b8"
-                        android:text="@string/g_home_tab_double"/>
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/txtHomeLeopard"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:clipChildren="false"
-                        android:clipToPadding="false"
-                        android:paddingRight="12dp"
-                        android:paddingLeft="12dp"
-                        android:textSize="14sp"
-                        android:textColor="@color/g_9696b8"
-                        android:text="@string/g_home_tab_leopard"/>
-                </LinearLayout>
+
                 <net.lucode.hackware.magicindicator.MagicIndicator
                     android:id="@+id/magicIndicator"
                     android:layout_width="match_parent"
@@ -253,30 +177,33 @@
                 android:clipChildren="false"
                 android:clipToPadding="false">
                 <androidx.viewpager.widget.ViewPager
-                    android:id="@+id/viewPager"
+                    android:id="@+id/viewPagerNew"
                     android:clipChildren="false"
                     android:clipToPadding="false"
                     android:layout_marginTop="8dp"
                     android:layout_width="match_parent"
                     android:layout_height="180dp"/>
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivHomeBg"
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@+id/llShowBetList"
+                    android:scaleType="fitXY"
+                    android:layout_alignBottom="@+id/rlClickHide"
+                    app:srcCompat="@drawable/icon_home_bg"/>
                 <!--            开奖结果-->
                 <RelativeLayout
                     android:id="@+id/rlShowResult"
-                    android:layout_width="match_parent"
-                    android:layout_height="70dp"
                     android:visibility="gone"
-                    android:layout_alignBottom="@+id/llShowBetList">
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:scaleType="fitXY"
-                        app:srcCompat="@drawable/icon_home_bg"/>
+                    android:layout_alignBottom="@+id/llShowBetList"
+                    android:layout_width="match_parent"
+                    android:layout_marginBottom="5dp"
+                    android:layout_height="wrap_content">
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
                         android:layout_centerHorizontal="true"
-                        android:layout_marginBottom="8dp"
                         android:gravity="center"
                         android:orientation="horizontal">
                         <androidx.appcompat.widget.AppCompatImageView
@@ -319,10 +246,12 @@
 
 
                 </RelativeLayout>
+
+
                 <!--            选择投注-->
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/llShowBetList"
-                    android:layout_below="@+id/viewPager"
+                    android:layout_below="@+id/viewPagerNew"
                     android:layout_width="match_parent"
                     tools:itemCount="1"
                     tools:listitem="@layout/item_annotation_list"
@@ -365,6 +294,8 @@
 
 
         </LinearLayout>
+
+
         <RelativeLayout
             android:id="@+id/tempTouth"
             android:layout_width="match_parent"

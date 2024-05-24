@@ -17,6 +17,8 @@ import com.cn.game.sdk.databinding.FragmentHomeDefaultBinding
 import com.cn.game.sdk.enums.NOTES_ENUM
 import com.cn.game.sdk.ui.fast.GameHomeActivity
 import com.cn.game.sdk.bean.ComputeDefault
+import com.cn.game.sdk.tool.HomeXPopupDialog
+import com.cn.game.sdk.tool.PromptSoundPlay
 import com.cn.game.sdk.utils.MyGameManager
 import com.cn.game.sdk.view.MoneyOKDeleteView
 import com.cn.game.sdk.view.MoneyOKView
@@ -55,7 +57,12 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
     lateinit var showCentreDateMoney: MoneyOKDeleteView
 
     private var animators: MutableList<ObjectAnimator> = mutableListOf()
+    var lastClickTime = 0L
+    lateinit var  homeXPopupDialog:HomeXPopupDialog
 
+    fun   setHomeXPopupDialogDate(homeXPopupDialog:HomeXPopupDialog){
+        this.homeXPopupDialog=homeXPopupDialog
+    }
     @SuppressLint("ClickableViewAccessibility")
     override fun initView(savedInstanceState: Bundle?) {
 
@@ -76,7 +83,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
                         mDatabind.rlHomeRoot.removeView(showLeftTopMoney)
                     }
                 }
-                (context as GameHomeActivity).clickDelete()
+                homeXPopupDialog.clickDelete()
             }
 
             override fun onConfirm() {
@@ -85,7 +92,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
                 /**
                  * 点击确定，把所有的临时钱赋值给确定钱然后要把没有确定的删除掉,在Activity处理所有的
                  */
-                (context as GameHomeActivity).clickOKBet()
+                homeXPopupDialog.clickOKBet()
             }
 
         })
@@ -102,7 +109,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
                         mDatabind.rlClickRightTop.removeView(showRightTopMoney)
                     }
                 }
-                (context as GameHomeActivity).clickDelete()
+                homeXPopupDialog.clickDelete()
             }
 
             override fun onConfirm() {
@@ -110,7 +117,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
                 /**
                  * 点击确定，把所有的临时钱赋值给确定钱然后要把没有确定的删除掉,在Activity处理所有的
                  */
-                (context as GameHomeActivity).clickOKBet()
+                homeXPopupDialog.clickOKBet()
 
 
             }
@@ -129,7 +136,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
                     }
                 }
 
-                (context as GameHomeActivity).clickDelete()
+                homeXPopupDialog.clickDelete()
             }
 
             override fun onConfirm() {
@@ -137,7 +144,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
                 /**
                  * 点击确定，把所有的临时钱赋值给确定钱然后要把没有确定的删除掉,在Activity处理所有的
                  */
-                (context as GameHomeActivity).clickOKBet()
+                homeXPopupDialog.clickOKBet()
             }
 
         })
@@ -154,7 +161,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
                     }
                 }
 
-                (context as GameHomeActivity).clickDelete()
+                homeXPopupDialog.clickDelete()
             }
 
             override fun onConfirm() {
@@ -162,7 +169,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
                 /**
                  * 点击确定，把所有的临时钱赋值给确定钱然后要把没有确定的删除掉,在Activity处理所有的
                  */
-                (context as GameHomeActivity).clickOKBet()
+                homeXPopupDialog.clickOKBet()
             }
 
         })
@@ -179,7 +186,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
                     }
                 }
 
-                (context as GameHomeActivity).clickDelete()
+                homeXPopupDialog.clickDelete()
             }
 
             override fun onConfirm() {
@@ -187,7 +194,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
                 /**
                  * 点击确定，把所有的临时钱赋值给确定钱然后要把没有确定的删除掉,在Activity处理所有的
                  */
-                (context as GameHomeActivity).clickOKBet()
+                homeXPopupDialog.clickOKBet()
             }
 
         })
@@ -205,7 +212,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
          */
         mDatabind.rlClickCentre.setOnClickListener {
             //先判断余额是否够这次 并且扣取钱
-            if( (context as GameHomeActivity).isCanBetting()&&MyGameManager.isClickOperation){
+            if( homeXPopupDialog.isCanBetting()&&MyGameManager.isClickOperation&&PromptSoundPlay.handleClick()){
                 val location = IntArray(2)
                 mDatabind.rlClickCentre.getLocationOnScreen(location)
                 var selectNum=0
@@ -232,7 +239,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
                     var ray=yOnScreen+dp2px(context,47f)
 
 
-                    (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(), animationView =showCentreDateMoney.ivShowBg )
+                    homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(), animationView =showCentreDateMoney.ivShowBg )
 
                 } else {
                     val viewTreeObserver = showCentreDateMoney.viewTreeObserver
@@ -256,7 +263,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
                             var  rax=xOnScreen
                             var ray=yOnScreen+dp2px(context,47f)
 
-                            (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),animationView =showCentreDateMoney.ivShowBg)
+                            homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(),animationView =showCentreDateMoney.ivShowBg)
                             //显示点击在Fragment的位置用于动画结束后显示
                             if(ComputeDefault.centreDate.viewXYTemporary[0]==0&& ComputeDefault.centreDate.viewXYTemporary[1]==0){
                                 val location = IntArray(2)
@@ -300,7 +307,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
                     //先判断余额是否够这次
-                    if( (context as GameHomeActivity).isCanBetting()&&MyGameManager.isClickOperation){
+                    if( homeXPopupDialog.isCanBetting()&&MyGameManager.isClickOperation&&PromptSoundPlay.handleClick()){
                         // 获取点击位置的坐标控件位置
                         val x = event.x
                         val y = event.y
@@ -354,7 +361,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
                                 var  rax=xOnScreen
                                 var ray=yOnScreen+requireContext().dp2px(52)
 
-                                (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),  animationView=showLeftBelowMoney.ivShowBg)
+                                homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(),  animationView=showLeftBelowMoney.ivShowBg)
                             } else {
 
                                 val viewTreeObserver = showLeftBelowMoney.viewTreeObserver
@@ -375,7 +382,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
                                         var  rax=xOnScreen
                                         var ray=yOnScreen+requireContext().dp2px(52)
 
-                                        (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),animationView=showLeftBelowMoney.ivShowBg)
+                                        homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(),animationView=showLeftBelowMoney.ivShowBg)
                                     }
                                 })
 
@@ -400,6 +407,8 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
 
 
                 }
+
+
             }
             false // 返回 true 表示事件已经被处理
         }
@@ -410,7 +419,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
                     //先判断余额是否够这次
-                    if( (context as GameHomeActivity).isCanBetting()&&MyGameManager.isClickOperation){
+                    if( homeXPopupDialog.isCanBetting()&&MyGameManager.isClickOperation&&PromptSoundPlay.handleClick()){
                         // 获取点击位置的坐标控件位置
                         val x = event.x
                         val y = event.y
@@ -464,7 +473,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
                                 var  rax=xOnScreen
                                 var ray=yOnScreen+requireContext().dp2px(52)
 
-                                (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),speed=600, animationView =showRightBelowMoney.ivShowBg )
+                                homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(), animationView =showRightBelowMoney.ivShowBg )
                             } else {
 
                                 val viewTreeObserver = showRightBelowMoney.viewTreeObserver
@@ -485,7 +494,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
                                         var  rax=xOnScreen
                                         var ray=yOnScreen+requireContext().dp2px(52)
 
-                                        (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),speed=600,animationView =showRightBelowMoney.ivShowBg)
+                                        homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(),animationView =showRightBelowMoney.ivShowBg)
                                     }
                                 })
 
@@ -526,11 +535,16 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
      */
     @SuppressLint("ClickableViewAccessibility")
     fun  clickLeftTop(){
-        mDatabind.rlClick.setOnTouchListener { v, event ->
+       mDatabind.rlClick.setOnTouchListener { v, event ->
+           Log.i("BTBTBTBTB","999==========="+event.action)
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
+                    Log.i("FFFFF","44444444444444")
+                    val currentTime = System.currentTimeMillis()
                     //先判断余额是否够这次   并且是否可以点击
-                    if( (context as GameHomeActivity).isCanBetting()&&MyGameManager.isClickOperation){
+
+                    if( homeXPopupDialog.isCanBetting()&&MyGameManager.isClickOperation&&PromptSoundPlay.handleClick()){
+
                         // 获取点击位置的坐标控件位置
                         val x = event.x
                         val y = event.y
@@ -565,8 +579,11 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
                         }
 
                 }
+                    lastClickTime = currentTime
 
-
+                }
+                MotionEvent.ACTION_UP -> {
+                    Log.i("FFFFF","555555")
 
                 }
             }
@@ -585,9 +602,10 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
         mDatabind.rlClickIamge.setOnTouchListener { v, event ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
+                    Log.i("VVVVVVV","=============按下")
                     //先判断余额是否够这次
                     //先判断余额是否够这次
-                    if( (context as GameHomeActivity).isCanBetting()&&MyGameManager.isClickOperation){
+                    if(homeXPopupDialog.isCanBetting()&&MyGameManager.isClickOperation&&PromptSoundPlay.handleClick()){
                         // 获取点击位置的坐标控件位置
                         val x = event.x
                         val y = event.y
@@ -639,7 +657,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
                                 var  rax=xOnScreen
                                 var ray=yOnScreen+requireContext().dp2px(52)
 
-                                (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),speed=600, animationView = showRightTopMoney.ivShowBg)
+                                homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(), animationView = showRightTopMoney.ivShowBg)
 
                             } else {
                                 val viewTreeObserver = showRightTopMoney.viewTreeObserver
@@ -660,7 +678,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
                                         var  rax=xOnScreen
                                         var ray=yOnScreen+requireContext().dp2px(52)
 
-                                        (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),speed=600, animationView = showRightTopMoney.ivShowBg)
+                                        homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(), animationView = showRightTopMoney.ivShowBg)
                                      }
                                 })
 
@@ -685,6 +703,10 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
 
 
                 }
+                MotionEvent.ACTION_MOVE -> {
+                    Log.i("VVVVVVV","=============移动")
+                }
+
             }
             false // 返回 true 表示事件已经被处理
         }
@@ -744,7 +766,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
             //通过显示的控件得到相对于屏幕的位置
             var  rax=xOnScreen
             var ray=yOnScreen+dp2px(context,47f)
-            (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(), animationView = showLeftTopMoney.ivShowBg)
+            homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(), animationView = showLeftTopMoney.ivShowBg)
 
         } else {
             val viewTreeObserver = showLeftTopMoney.viewTreeObserver
@@ -765,7 +787,7 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
                   var  rax=xOnScreen
                    var ray=yOnScreen+dp2px(context,47f)
 
-                    (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(), animationView = showLeftTopMoney.ivShowBg)
+                    homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(), animationView = showLeftTopMoney.ivShowBg)
 
                 }
             })
@@ -1090,12 +1112,9 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
             }
 
 
-            deletePreviousRound()
-
-
         }
 
-
+        deletePreviousRound()
 
 
     }

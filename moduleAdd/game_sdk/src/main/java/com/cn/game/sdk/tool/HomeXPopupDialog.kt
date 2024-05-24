@@ -1,34 +1,33 @@
-package com.cn.game.sdk.ui.fast
-
+package com.cn.game.sdk.tool
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
-import android.animation.TypeEvaluator
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Context
 import android.graphics.Path
 import android.graphics.PathMeasure
-import android.graphics.Point
 import android.os.Bundle
-import android.view.KeyEvent
+import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.AccelerateInterpolator
-import android.view.animation.DecelerateInterpolator
-import android.view.animation.LinearInterpolator
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cn.game.sdk.R
 import com.cn.game.sdk.appGameViewModel
-import com.cn.game.sdk.base.BaseGameActivity
-import com.cn.game.sdk.bean.BettingRecordBean
 import com.cn.game.sdk.bean.ComputeDefault
 import com.cn.game.sdk.bean.ComputeLeopard
 import com.cn.game.sdk.bean.ComputePairs
@@ -37,15 +36,11 @@ import com.cn.game.sdk.bean.ComputeSum
 import com.cn.game.sdk.bean.HistoryResultBean
 import com.cn.game.sdk.bean.InPrizeBean
 import com.cn.game.sdk.bean.SelectAnnotationBean
-import com.cn.game.sdk.databinding.ActivityGameHomeBinding
+import com.cn.game.sdk.databinding.DialogHomeXpopupBinding
 import com.cn.game.sdk.databinding.ItemAnnotationListBinding
 import com.cn.game.sdk.databinding.ItemBetHistoryBinding
 import com.cn.game.sdk.listener.GameTimeStatic
 import com.cn.game.sdk.popup.CustomBubbleAttachPopup
-import com.cn.game.sdk.tool.MediaPlayerManager
-import com.cn.game.sdk.tool.PromptSoundPlay
-import com.cn.game.sdk.tool.bindViewPagerNewGame
-import com.cn.game.sdk.tool.initGameViewPager
 import com.cn.game.sdk.ui.fast.fragment.HomeDefaultFragment
 import com.cn.game.sdk.ui.fast.fragment.LeopardFragment
 import com.cn.game.sdk.ui.fast.fragment.PairsDiceFragment
@@ -59,12 +54,15 @@ import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
+import com.lxj.xpopup.core.BottomPopupView
 import com.lzf.easyfloat.EasyFloat
 import com.xcjh.base_lib.utils.dp2px
 import com.xcjh.base_lib.utils.view.clickNoRepeat
 
-
-class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>() {
+/**
+ * 首页显示的
+ */
+class HomeXPopupDialog(context: Context) : BottomPopupView(context) {
     private var mFragList = ArrayList<Fragment>()
     //默认
     var homeDefaultFragment = HomeDefaultFragment()
@@ -84,6 +82,8 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
     private val SCALE_X = PropertyValuesHolder.ofFloat(View.SCALE_X, 1.0f, 1.4f, 1.0f)
     private val SCALE_Y = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.0f, 1.4f, 1.0f)
 
+
+
     /**
      * 是否显示骰子的结果组合
      */
@@ -95,30 +95,56 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
     var bubbleAttach : CustomBubbleAttachPopup?=null
 
 
+    private val initialUpperLayoutHeightMap = mutableMapOf<Int, Int>()
+    private var initia = 0
+    var isAdd:Boolean=true
 
+    override fun getImplLayoutId(): Int {
+        return R.layout.dialog_home_xpopup
+    }
 
-    override fun initView(savedInstanceState: Bundle?) {
-        super.initView(savedInstanceState)
+    /**
+     * 关闭页面
+     */
+    override fun dismiss() {
+        super.dismiss()
+        MyGameManager.removeLiveStatusListener("home")
+        //关闭的时候要把这个赋值为0选择
+        MyGameManager.noteList.forEach {
+            it.select=false
+
+        }
+        MyGameManager.noteList[0].select=true
+        //清空临时的
+        clickDelete()
+
+        homeDefaultFragment.closeActivity()
+        singleDiceFragment.closeActivity()
+        pairsDiceFragment.closeActivity()
+        leopardFragment.closeActivity()
+        sumTotalFragment.closeActivity()
+        //关闭倒计时
+//        MyGameManager.mTimer!!.stop()
+        MyGameManager.countDownTimer!!.cancel()
+        MyGameManager.countDownTimer=null
+        EasyFloat.show(MyGameManager.TAG_1)
+    }
+    private lateinit var mDatabind: DialogHomeXpopupBinding
+    override fun onCreate() {
+        super.onCreate()
+        mDatabind = DialogHomeXpopupBinding.bind(findViewById<View>(R.id.rlRoot))
         MyGameManager.static=1
         MyGameManager.countdownTime=10000
-        MyGameManager.staCountDownTimer()
-        //停止
-        mDatabind.tingzhi.setOnClickListener {
-            MyGameManager.isActive=true
-//            MyGameManager.countDownTimer!!.cancel()
-//            MyGameManager.countdownTime=0
-        }
-
-        mDatabind.kaishi.setOnClickListener {
-//            MyGameManager.countDownTimer.start()
-//            MyGameManager.staCountDownTimer()
-
-        }
-
-        MyGameManager.setLiveStatusListener(this.toString(),object : GameTimeStatic{
+        MyGameManager.setLiveStatusListener("home",object : GameTimeStatic{
             override fun onCountdown(time: Long) {
                 super.onCountdown(time)
-                val seconds: Long = Math.round(time.toDouble() / 1000)
+
+                val seconds = Math.round(time.toDouble() / 1000)
+
+                if(seconds.toInt()!=0&&seconds.toInt()<=5&&MyGameManager.static==1){
+
+                    PromptSoundPlay.countdownGameTip(context)
+                }
                 mDatabind.txtHomeTime.text=seconds.toString()
 
 
@@ -128,22 +154,25 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
                 super.onStatic(mStatic)
                 mDatabind.txtHomeTime.text="0"
                 MyGameManager.countdownTime=10000
-//                MyGameManager.countDownTimer!!.start()
-//                MyGameManager.staCountDownTimer()
+                MyGameManager.staCountDownTimer()
+//                MyGameManager.mTimer!!.start()
                 //1是下注   2结算
                 if(mStatic==2){
-
+                    Log.i("SSSSSSSSSSs","=========="+mStatic)
+                    //关闭
+                    PromptSoundPlay.endGameTip(context)
                     val childAlphaAnimator = ObjectAnimator.ofFloat(mDatabind.llShowBetList, "alpha", 1f, 0f)
                     childAlphaAnimator.duration = 200 // 设置渐隐动画持续时间
                     val animatorSet = AnimatorSet()
                     animatorSet.play(childAlphaAnimator)
-                    animatorSet.addListener(object :AnimatorListenerAdapter() {
+                    animatorSet.addListener(object :AnimatorListenerAdapter(){
                         override fun onAnimationEnd(animation: Animator ) {
                             super.onAnimationEnd(animation)
                             //注区
                             mDatabind.llShowBetList.visibility=View.INVISIBLE
                             //显示开奖结果
                             mDatabind.rlShowResult.visibility=View.VISIBLE
+                            mDatabind.ivHomeBg.visibility=View.VISIBLE
                             hiddenView()
                         }
                     })
@@ -162,6 +191,9 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
 
                     sumTotalFragment.flicker(ArrayList<InPrizeBean>(),ArrayList<InPrizeBean>())
                 }else{
+                    Log.i("SSSSSSSSSSs","2222===")
+                    //开始语音
+                    PromptSoundPlay.startGameTip(context)
                     //可以下注
 //                    mDatabind.rlShowResult.visibility=View.GONE
 //                    mDatabind.llShowBetList.visibility=View.VISIBLE
@@ -176,12 +208,11 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
                             mDatabind.llShowBetList.visibility=View.VISIBLE
                             //显示开奖结果
                             mDatabind.rlShowResult.visibility=View.GONE
+                            mDatabind.ivHomeBg.visibility=View.GONE
                             hiddenView(true)
                         }
                     })
                     animatorSet.start()
-
-
 
                     //新的下注要删除所有的
                     MyGameManager.isClickOperation=true
@@ -210,30 +241,13 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
 
             }
         })
+//        MyGameManager.staCountDownTimer()
 
-//        MyGameManager.countDownTimer.start()
-
-        // 获取屏幕的高度
-        val screenHeight = resources.displayMetrics.heightPixels
-
-        // 设置动画的起始值和结束值（百分比）
-        val startPercentage = 1f // 从屏幕底部开始（百分之一处）
-        val endPercentage = 0f // 移动到屏幕顶部（百分之百处）
-
-        // 将百分比转换为实际像素值
-        val startY = screenHeight * startPercentage
-        val endY = screenHeight * endPercentage
-        // 设置进入动画
-        val enterAnimator = ObjectAnimator.ofFloat(findViewById(R.id.rlRoot), "translationY", startY, endY)
-        enterAnimator.duration =1300
-
-        // 启动进入动画
-        enterAnimator.start()
-
-        supportActionBar?.hide()
-        // 设置状态栏颜色为透明getColor(android.R.color.transparent)
-        window.statusBarColor = ContextCompat.getColor(this,android.R.color.transparent)
-          homeDefaultFragment = HomeDefaultFragment()
+        homeDefaultFragment.setHomeXPopupDialogDate(this)
+        singleDiceFragment.setHomeXPopupDialogDate(this)
+        sumTotalFragment.setHomeXPopupDialogDate(this)
+        pairsDiceFragment.setHomeXPopupDialogDate(this)
+        leopardFragment.setHomeXPopupDialogDate(this)
 
         val basketball = Bundle().apply {
             putInt("type",0)
@@ -245,6 +259,9 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
 
 
         mDatabind.ivHomeLogo.clickNoRepeat {
+
+
+
 
         }
         appGameViewModel.ceshEvent.observe(this){
@@ -258,51 +275,32 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
         mFragList.add(pairsDiceFragment)
         mFragList.add(leopardFragment)
         mFragList.add(sumTotalFragment)
-        mDatabind.viewPager.initGameViewPager(supportFragmentManager,mFragList,arrayListOf(
-            getString(R.string.g_home_txt_default),
-            getString(R.string.g_home_tab_single),
-            getString(R.string.g_home_tab_double),
-            getString(R.string.g_home_tab_leopard),
-            getString(R.string.g_home_tab_sum)))
+        var activity = context as AppCompatActivity
+        mDatabind.viewPagerNew.initGameViewPager(activity!!.supportFragmentManager,mFragList,arrayListOf(
+            context.getString(R.string.g_home_txt_default),
+            context.getString(R.string.g_home_tab_single),
+            context.getString(R.string.g_home_tab_double),
+            context.getString(R.string.g_home_tab_leopard),
+            context.getString(R.string.g_home_tab_sum)))
 //        mDatabind.viewPager.offscreenPageLimit =mFragList.size
 
-        mDatabind.magicIndicator.bindViewPagerNewGame(mDatabind.viewPager,arrayListOf(
-            getString(R.string.g_home_txt_default),
-            getString(R.string.g_home_tab_single),
-            getString(R.string.g_home_tab_double),
-            getString(R.string.g_home_tab_leopard),
-            getString(R.string.g_home_tab_sum)),scrollEnable=true){
+        mDatabind.magicIndicator.bindViewPagerNewGame(mDatabind.viewPagerNew,arrayListOf(
+            context. getString(R.string.g_home_txt_default),
+            context.getString(R.string.g_home_tab_single),
+            context. getString(R.string.g_home_tab_double),
+            context. getString(R.string.g_home_tab_leopard),
+            context. getString(R.string.g_home_tab_sum)),scrollEnable=true){
 
         }
-        mDatabind.viewPager.offscreenPageLimit = mFragList.size
+        mDatabind.viewPagerNew.offscreenPageLimit = mFragList.size
 
 
-        mDatabind.txtHomeDefault.setOnClickListener {
-            select(0)
-            false
-        }
-        mDatabind.txtHomeSingle.setOnClickListener {
-            select(1)
-            false
-        }
-        mDatabind.txtHomeSum.setOnClickListener {
-            select(2)
-            false
-        }
 
-        mDatabind.txtHomeDouble.setOnClickListener {
-            select(3)
-            false
-        }
-        mDatabind.txtHomeLeopard.setOnClickListener {
-            select(4)
-            false
-        }
 
 
         adapter()
         setClick()
-        bubbleAttach=CustomBubbleAttachPopup(this)
+        bubbleAttach=CustomBubbleAttachPopup(context)
         bubbleAttach!!.customBubbleAttachListener=object :CustomBubbleAttachPopup.CustomBubbleAttachListener{
             override fun switchGame() {
                 popup!!.dismiss()
@@ -310,14 +308,14 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
 
         }
 
-        popup= XPopup.Builder(this)
+        popup= XPopup.Builder(context)
             .hasShadowBg(false)
             .isTouchThrough(true)
             .atView(mDatabind.llHomeMore)
             .hasShadowBg(false) // 去掉半透明背景
             .asCustom(bubbleAttach)
         //点击更多弹出框
-         mDatabind.llHomeMore.clickNoRepeat {
+        mDatabind.llHomeMore.clickNoRepeat {
 //             XPopup.Builder(this)
 //                 .hasShadowBg(false)
 //                 .isTouchThrough(true)
@@ -327,123 +325,134 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
 //                 .asCustom(CustomBubbleAttachPopup(this))
 //                 .show()
 
-             PromptSoundPlay.btnPlayMedia(this)
-             popup!!.show()
+            PromptSoundPlay.btnPlayMedia(context)
+            popup!!.show()
 
 
 
-         }
+        }
         //获取当前余额
         mDatabind.txtCurrentMoney.text= MyGameManager.currentMoney.addCommas()
-        rewritingTouch(tempTouth=mDatabind.tempTouth,viewPager=mDatabind.viewPager,homeDefaultFragment=homeDefaultFragment,
+        rewritingTouch(tempTouth=mDatabind.tempTouth,viewPager=mDatabind.viewPagerNew,homeDefaultFragment=homeDefaultFragment,
             singleDiceFragment=singleDiceFragment,sumTotalFragment=sumTotalFragment,pairsDiceFragment=pairsDiceFragment,
             leopardFragment=leopardFragment)
 
+
+
     }
 
 
-    fun isTouchInsideView(view: View, x: Float, y: Float): Boolean {
-        val location = IntArray(2)
-        view.getLocationOnScreen(location)
-
-        val viewX = location[0]
-        val viewY = location[1]
-        val viewWidth = view.width
-        val viewHeight = view.height
-
-        return x >= viewX && x <= viewX + viewWidth && y >= viewY && y <= viewY + viewHeight
-    }
 
 
-    private val initialUpperLayoutHeightMap = mutableMapOf<Int, Int>()
-    private var initia = 0
-    var isAdd:Boolean=true
-    fun setClick(){
-
-
-        mDatabind.rlClickHide.clickNoRepeat {
-            PromptSoundPlay.btnPlayMedia(this)
-//            if(MyGameManager.isClickOperation){
-//                resultAnimation()
-//            }
+    /**
+     * 开奖结果隐藏不要的控件  。如果是投注的话就不应酬
+     */
+    fun  hiddenView(isBetting:Boolean=false){
+        if(isShowResult&&!isBetting){
             resultAnimation()
         }
+
+
     }
 
 
     /**
-     * 关闭页面
+     * 开奖结果显示或者隐藏动画
      */
-    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        // 判断是否按下了返回按钮
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            //执行了一次就不能执行了
-            if(isExecuteClose){
-                //关闭的时候要把这个赋值为0选择
-                MyGameManager.noteList.forEach {
-                    it.select=false
-
-                }
-                MyGameManager.noteList[0].select=true
-                //清空临时的
-                clickDelete()
-                //======
-
-                // 在这里执行你想要的操作，比如关闭当前活动
-                // 获取屏幕的高度
-                val screenHeight = resources.displayMetrics.heightPixels
-
-                    // 设置动画的起始值和结束值（百分比）
-                val startPercentage = 1f // 从屏幕底部开始（百分之百处）
-                val endPercentage = 0f // 移动到屏幕顶部（百分之零处）
-
-                // 将百分比转换为实际像素值
-                val startY = screenHeight * startPercentage
-                val endY = screenHeight * endPercentage
-                  //            val exitAnimator = ObjectAnimator.ofFloat(findViewById(R.id.rlRoot), "translationY", 0f, 1000f)
-                val exitAnimator = ObjectAnimator.ofFloat(findViewById(R.id.rlRoot), "translationY", endY,startY )
-                    //            exitAnimator.interpolator = AccelerateInterpolator()
-                exitAnimator.duration = 800
-                // 添加动画监听器
-                exitAnimator.addListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator) {
-                        super.onAnimationEnd(animation)
-                        // 在动画结束时调用 finish() 方法关闭 Activity
-                        finish()
-                        homeDefaultFragment.closeActivity()
-                        singleDiceFragment.closeActivity()
-                        pairsDiceFragment.closeActivity()
-                        leopardFragment.closeActivity()
-                        sumTotalFragment.closeActivity()
+    @SuppressLint("ObjectAnimatorBinding")
+    fun  resultAnimation(){
+        if(isShowResult){
+            //这个是隐藏往下的动画
+            mDatabind.ivHomeRotation.rotation=180f
+            isShowResult=!isShowResult
+            var yici:Boolean=true
+            for (i in 0 until  mDatabind.rvHomeHistory.models!!.size) {
+                var viewHolder=  mDatabind.rvHomeHistory.findViewHolderForLayoutPosition(i)
+                if(viewHolder!=null){
+                    (mDatabind.rvHomeHistory.models!![i] as HistoryResultBean).isShow=false
+                    var  llShowDice= viewHolder!!.itemView.findViewById<LinearLayout>(R.id.llShowDice)
+                    //llShowDice.height.toFloat()高度是205
+                    if(isAdd){
+                        initia=llShowDice.height
+                        isAdd=false
                     }
-                })
-                // 启动退出动画
-                exitAnimator.start()
-//            MyGameManager.showFastThreeView()
-                EasyFloat.show(MyGameManager.TAG_1)
-                isExecuteClose=false
+
+                    val anim = ObjectAnimator.ofFloat(llShowDice, "translationY", 0f, llShowDice.height.toFloat())
+                    anim.duration = 500 // 设置动画持续时间
+//                    anim.addUpdateListener {
+//                        val layoutParams = mDatabind.llShowSection.layoutParams as RelativeLayout.LayoutParams
+//                        layoutParams.height =mDatabind.llShowSection.height-dp2px(10)
+//                        mDatabind.llShowSection.layoutParams = layoutParams
+//
+//                        Log.i("@@@@@@@@@@@@@@@@@@@","==========")
+//                    }
+                    // 动画结束后隐藏上半部分布局
+                    anim.addListener(object : AnimatorListenerAdapter() {
+                        override fun onAnimationEnd(animation: Animator ) {
+                            super.onAnimationEnd(animation)
+                            llShowDice.visibility = View.GONE
+                        }
+                    })
+
+                    anim.start()
+
+
+
+
+                }else{
+                    (mDatabind.rvHomeHistory.models!![i] as HistoryResultBean).isShow=false
+                    mDatabind.rvHomeHistory.bindingAdapter.notifyItemChanged(i)
+                }
+
+
             }
+        }else{
+            //显示 往上的动画
+            mDatabind.ivHomeRotation.rotation=0f
+            isShowResult=!isShowResult
+            for (i in 0 until  mDatabind.rvHomeHistory.models!!.size) {
+                var viewHolder=  mDatabind.rvHomeHistory.findViewHolderForLayoutPosition(i)
+                if(viewHolder!=null){
+                    (mDatabind.rvHomeHistory.models!![i] as HistoryResultBean).isShow=true
+                    var  llShowDice= viewHolder!!.itemView.findViewById<LinearLayout>(R.id.llShowDice)
+                    llShowDice.visibility = View.VISIBLE
+                    llShowDice.translationY =initia.toFloat()
+
+                    // 创建动画，将视图向上平移显示
+                    val anim = ObjectAnimator.ofFloat(llShowDice, "translationY", initia.toFloat(), 0f)
+                    anim.duration = 500 // 设置动画持续时间
+                    anim.start()
+//                         动画结束后显示上半部分布局
+                    anim.addListener(object : AnimatorListenerAdapter() {
+                        override fun onAnimationEnd(animation: Animator) {
+                            super.onAnimationEnd(animation)
+
+                        }
+                    })
 
 
 
-//            finish()
-//            overridePendingTransition(R.anim.slide_up,  R.anim.slide_down)
-            return true  // 返回 true 表示事件已经处理，不会继续传递
+                }else{
+                    (mDatabind.rvHomeHistory.models!![i] as HistoryResultBean).isShow=true
+                }
+
+
+            }
+            mDatabind.rvHomeHistory.postDelayed({
+                mDatabind.rvHomeHistory.bindingAdapter.notifyDataSetChanged()
+            }, 600)
+
         }
-
-        return super.onKeyDown(keyCode, event)
     }
 
-    override fun createObserver() {
-        super.createObserver()
 
-    }
 
     /**
      * 投注的适配器
      */
     fun adapter() {
-        mDatabind.llShowBetList.layoutManager=LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false)
+        mDatabind.llShowBetList.layoutManager=
+            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL,false)
         mDatabind.llShowBetList.setup {
             addType<SelectAnnotationBean>(R.layout.item_annotation_list)
             onBind {
@@ -614,7 +623,8 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
             list.add(HistoryResultBean())
         }
         //历史结果
-        mDatabind.rvHomeHistory.layoutManager=LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false)
+        mDatabind.rvHomeHistory.layoutManager=
+            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL,false)
         mDatabind.rvHomeHistory.setup {
 
             addType<HistoryResultBean>(R.layout.item_bet_history)
@@ -657,126 +667,15 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
 
     }
 
-    /**
-     * 开奖结果隐藏不要的控件  。如果是投注的话就不应酬
-     */
-    fun  hiddenView(isBetting:Boolean=false){
-        if(isShowResult&&!isBetting){
+    fun setClick(){
+
+
+        mDatabind.rlClickHide.clickNoRepeat {
+            PromptSoundPlay.btnPlayMedia(context)
+//            if(MyGameManager.isClickOperation){
+//                resultAnimation()
+//            }
             resultAnimation()
-        }
-
-
-    }
-
-    /**
-     * 开奖结果显示或者隐藏动画
-     */
-    fun  resultAnimation(){
-        if(isShowResult){
-            //这个是隐藏往下的动画
-            mDatabind.ivHomeRotation.rotation=180f
-            isShowResult=!isShowResult
-            var yici:Boolean=true
-            for (i in 0 until  mDatabind.rvHomeHistory.models!!.size) {
-                var viewHolder=  mDatabind.rvHomeHistory.findViewHolderForLayoutPosition(i)
-                if(viewHolder!=null){
-                    (mDatabind.rvHomeHistory.models!![i] as HistoryResultBean).isShow=false
-                    var  llShowDice= viewHolder!!.itemView.findViewById<LinearLayout>(R.id.llShowDice)
-                    //llShowDice.height.toFloat()高度是205
-                    if(isAdd){
-                        initia=llShowDice.height
-                        isAdd=false
-                    }
-//                    if(yici){
-//                      // 创建子布局 llShowDice 的 Y 轴属性动画
-//                        val childAnimator = ObjectAnimator.ofFloat(llShowDice, "translationY", 0f, llShowDice.height.toFloat())
-//                        childAnimator.duration = 500 // 设置动画持续时间
-//
-//                          // 创建父布局 llShowSection 的 Y 轴属性动画
-//                        val parentAnimator = ObjectAnimator.ofFloat(mDatabind.llShowSection, "translationY", 0f, llShowDice.height.toFloat())
-//                        parentAnimator.duration = 500 // 设置动画持续时间
-//
-//                        // 创建一个 AnimatorSet，并将两个动画添加进去
-//                        val animatorSet = AnimatorSet()
-//                        animatorSet.playTogether(childAnimator, parentAnimator)
-//                        animatorSet.addListener(object :AnimatorListenerAdapter(){
-//                            override fun onAnimationEnd(animation: Animator ) {
-//                                super.onAnimationEnd(animation)
-//                                llShowDice.visibility = View.GONE
-//                            }
-//                        })
-//                    // 启动 AnimatorSet，这样子布局和父布局会同时执行 Y 轴动画
-//                        animatorSet.start()
-//                        yici=false
-//                    }else{
-//
-//                        val anim = ObjectAnimator.ofFloat(llShowDice, "translationY", 0f, llShowDice.height.toFloat())
-//                        anim.duration = 500 // 设置动画持续时间
-//                        anim.start()
-//                        // 动画结束后隐藏上半部分布局
-//                        anim.addListener(object : AnimatorListenerAdapter() {
-//                            override fun onAnimationEnd(animation: Animator ) {
-//                                super.onAnimationEnd(animation)
-//                                llShowDice.visibility = View.GONE
-//                            }
-//                        })
-//                    }
-                    val anim = ObjectAnimator.ofFloat(llShowDice, "translationY", 0f, llShowDice.height.toFloat())
-                    anim.duration = 500 // 设置动画持续时间
-                    anim.start()
-                    // 动画结束后隐藏上半部分布局
-                    anim.addListener(object : AnimatorListenerAdapter() {
-                        override fun onAnimationEnd(animation: Animator ) {
-                            super.onAnimationEnd(animation)
-                            llShowDice.visibility = View.GONE
-                        }
-                    })
-
-
-
-                }else{
-                    (mDatabind.rvHomeHistory.models!![i] as HistoryResultBean).isShow=false
-                    mDatabind.rvHomeHistory.bindingAdapter.notifyItemChanged(i)
-                }
-
-
-            }
-        }else{
-            //显示 往上的动画
-            mDatabind.ivHomeRotation.rotation=0f
-            isShowResult=!isShowResult
-            for (i in 0 until  mDatabind.rvHomeHistory.models!!.size) {
-                var viewHolder=  mDatabind.rvHomeHistory.findViewHolderForLayoutPosition(i)
-                if(viewHolder!=null){
-                    (mDatabind.rvHomeHistory.models!![i] as HistoryResultBean).isShow=true
-                    var  llShowDice= viewHolder!!.itemView.findViewById<LinearLayout>(R.id.llShowDice)
-                    llShowDice.visibility = View.VISIBLE
-                    llShowDice.translationY =initia.toFloat()
-
-                    // 创建动画，将视图向上平移显示
-                    val anim = ObjectAnimator.ofFloat(llShowDice, "translationY", initia.toFloat(), 0f)
-                    anim.duration = 500 // 设置动画持续时间
-                    anim.start()
-//                         动画结束后显示上半部分布局
-                    anim.addListener(object : AnimatorListenerAdapter() {
-                        override fun onAnimationEnd(animation: Animator) {
-                            super.onAnimationEnd(animation)
-
-                        }
-                    })
-
-
-
-                }else{
-                    (mDatabind.rvHomeHistory.models!![i] as HistoryResultBean).isShow=true
-                }
-
-
-            }
-            mDatabind.rvHomeHistory.postDelayed({
-                mDatabind.rvHomeHistory.bindingAdapter.notifyDataSetChanged()
-            }, 600)
-
         }
     }
 
@@ -785,23 +684,23 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
      * 通知所有子页面都要进行
      */
     fun clickDelete(){
-            //默认
-            //恢复实际的钱
-            MyGameManager.temporaryCurrentMoney=MyGameManager.currentMoney
-            homeDefaultFragment.deleteBet()
-            //删除后要设置钱
-            homeDefaultFragment.setAllShowViewMoney()
+        //默认
+        //恢复实际的钱
+        MyGameManager.temporaryCurrentMoney=MyGameManager.currentMoney
+        homeDefaultFragment.deleteBet()
+        //删除后要设置钱
+        homeDefaultFragment.setAllShowViewMoney()
 
-             //单筛
-            singleDiceFragment.deleteBet()
-             //删除后要设置钱
-             singleDiceFragment.setAllShowViewMoney()
+        //单筛
+        singleDiceFragment.deleteBet()
+        //删除后要设置钱
+        singleDiceFragment.setAllShowViewMoney()
 
 
-            //对子
-            pairsDiceFragment.deleteBet()
-            //删除后要设置钱
-            pairsDiceFragment.setAllShowViewMoney()
+        //对子
+        pairsDiceFragment.deleteBet()
+        //删除后要设置钱
+        pairsDiceFragment.setAllShowViewMoney()
 
 
         //豹子
@@ -814,8 +713,8 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
         //删除后要设置钱
         sumTotalFragment.setAllShowViewMoney()
 
-            //刷新投注区适配器
-       mDatabind.llShowBetList.adapter!!.notifyDataSetChanged()
+        //刷新投注区适配器
+        mDatabind.llShowBetList.adapter!!.notifyDataSetChanged()
 
 
 
@@ -872,7 +771,7 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
 
         //=============默认设置结束
 
-       //单骰子============
+        //单骰子============
         // 点击确定后加入然后清空临时的钱
         ComputeSingle.singleYi.moneyOkEmpty += ComputeSingle.singleYi.moneyTemporary
         ComputeSingle.singleYi.moneyTemporary=0
@@ -1124,33 +1023,56 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
     }
 
 
+    /**
+     * 判断当前余额是否支持投注,并且扣了临时的总金额的钱
+     */
+    fun isCanBetting() :Boolean{
+        for (i in 0 until  mDatabind.llShowBetList.models!!.size) {
+            if((mDatabind.llShowBetList.models!![i] as SelectAnnotationBean).select){
+                if(MyGameManager.temporaryCurrentMoney>=(mDatabind.llShowBetList.models!![i] as SelectAnnotationBean).money){
+                    MyGameManager.temporaryCurrentMoney=(MyGameManager.temporaryCurrentMoney-(mDatabind.llShowBetList.models!![i] as SelectAnnotationBean).money)
+                    mDatabind.llShowBetList.adapter!!.notifyDataSetChanged()
+                    return true
+
+                }else{
+
+                    return false
+                }
+
+                break
+            }
+        }
+
+
+        return false
+    }
+
 
     /**
      * 执行动画  isCentered如果是true就是可以超出父类的
      */
-    fun startAnimation(x:Float, y:Float,isCentered:Boolean=false,speed:Long=400,animationView:View){
+    fun startAnimation(x:Float, y:Float,isCentered:Boolean=false,speed:Long=300,animationView:View){
 //        PromptSoundPlay.goldPlayMedia(this)
 //        PromptSoundPlay.goldPlayMediaNew(this)
-        if(!PromptSoundPlay.isPhoneSilent(this)){
-            PromptSoundPlay.playAudio(this)
-        }
 
-          var mPathMeasure: PathMeasure? = null
+        PromptSoundPlay.playAudio(context)
+
+        var mPathMeasure: PathMeasure? = null
 
         /**
          * 贝塞尔曲线中间过程的点的坐标
          */
-          val mCurrentPosition = FloatArray(2)
+        val mCurrentPosition = FloatArray(2)
 
         var num:Int=0
         var viewX:Int=0
         var viewY:Int=0
 
         for (i in 0 until  mDatabind.llShowBetList.models!!.size) {
-                if((mDatabind.llShowBetList.models!![i] as SelectAnnotationBean).select){
-                    num=i
-                    break
-                }
+            if((mDatabind.llShowBetList.models!![i] as SelectAnnotationBean).select){
+                num=i
+                break
+            }
         }
         val itemCount = mDatabind.llShowBetList.adapter!!.itemCount
         val layoutManager = mDatabind.llShowBetList.layoutManager as LinearLayoutManager
@@ -1175,8 +1097,8 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
             //      一、创造出执行动画的主题---imageview
             //代码new一个imageview，图片资源是上面的imageview的图片
             // (这个图片就是执行动画的图片，从开始位置出发，经过一个抛物线（贝塞尔曲线），移动到购物车里)
-            val goods = ImageView(this)
-            goods.setImageDrawable( MyGameManager.getListImage(num,this))
+            val goods = ImageView(context)
+            goods.setImageDrawable( MyGameManager.getListImage(num,context))
             val params = RelativeLayout.LayoutParams(dp2px(32), dp2px(32))
             mDatabind.rlRoot.addView(goods, params)
 //        二、计算动画开始/结束点的坐标的准备工作
@@ -1189,13 +1111,14 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
             startLoc[0]=viewY
             //得到购物车图片的坐标(用于计算动画结束后的坐标)  动画结束的位置
             val endLoc = IntArray(2)
-            if(isCentered){
-                endLoc[0]=x.toInt()-dp2px(10)
-
-            }else{
-                endLoc[0]=x.toInt()+dp2px(10)
-            }
-            endLoc[1]=y.toInt()
+//            if(isCentered){
+//                endLoc[0]=x.toInt()-dp2px(10)
+//
+//            }else{
+//                endLoc[0]=x.toInt()+dp2px(10)
+//            }
+            endLoc[0]=x.toInt()+dp2px(20)
+            endLoc[1]=y.toInt()+dp2px(20)
 //        三、正式开始计算动画开始/结束的坐标
             //开始掉落的商品的起始点：商品起始点-父布局起始点+该商品图片的一半
 //        val startX: Float = (startLoc[0] - parentLocation[0] + selectImageView!!.width / 2).toFloat()
@@ -1207,7 +1130,7 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
 //        val toX: Float = (endLoc[0] - parentLocation[0] +32).toFloat()
 //        val toY = (endLoc[1] - parentLocation[1]).toFloat()
             val toX: Float = endLoc[0].toFloat()
-            val toY = endLoc[1].toFloat()-dp2px(32)
+            val toY = endLoc[1].toFloat()-dp2px(35)
 
             //   四、计算中间动画的插值坐标（贝塞尔曲线）（其实就是用贝塞尔曲线来完成起终点的过程）
             //开始绘制贝塞尔曲线
@@ -1220,7 +1143,7 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
             val path = Path()
             // 移动到起始点
             path.moveTo(startX, startY)
-             // 添加一条直线到目标点
+            // 添加一条直线到目标点
             path.lineTo(toX, toY)
             //mPathMeasure用来计算贝塞尔曲线的曲线长度和贝塞尔曲线中间插值的坐标，
             // 如果是true，path会形成一个闭环
@@ -1304,8 +1227,8 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
                 //      一、创造出执行动画的主题---imageview
                 //代码new一个imageview，图片资源是上面的imageview的图片
                 // (这个图片就是执行动画的图片，从开始位置出发，经过一个抛物线（贝塞尔曲线），移动到购物车里)
-                val goods = ImageView(this)
-                goods.setImageDrawable( MyGameManager.getListImage(num,this))
+                val goods = ImageView(context)
+                goods.setImageDrawable( MyGameManager.getListImage(num,context))
                 val params = RelativeLayout.LayoutParams(dp2px(32), dp2px(32))
                 mDatabind.rlRoot.addView(goods, params)
 //        二、计算动画开始/结束点的坐标的准备工作
@@ -1442,130 +1365,6 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
 
     }
 
-    /**
-     * 判断当前余额是否支持投注,并且扣了临时的总金额的钱
-     */
-    fun isCanBetting() :Boolean{
-        for (i in 0 until  mDatabind.llShowBetList.models!!.size) {
-            if((mDatabind.llShowBetList.models!![i] as SelectAnnotationBean).select){
-                if(MyGameManager.temporaryCurrentMoney>=(mDatabind.llShowBetList.models!![i] as SelectAnnotationBean).money){
-                    MyGameManager.temporaryCurrentMoney=(MyGameManager.temporaryCurrentMoney-(mDatabind.llShowBetList.models!![i] as SelectAnnotationBean).money)
-                    mDatabind.llShowBetList.adapter!!.notifyDataSetChanged()
-                    return true
-
-                }else{
-
-                    return false
-                }
-
-                break
-            }
-        }
-
-
-        return false
-    }
-
-    fun select(num:Int){
-        if(num==0){
-            mDatabind.txtHomeDefault.setTextColor(ContextCompat.getColor(this,R.color.g_f7cf41))
-            mDatabind.txtHomeSingle.setTextColor(ContextCompat.getColor(this,R.color.g_9696b8))
-            mDatabind.txtHomeSum.setTextColor(ContextCompat.getColor(this,R.color.g_9696b8))
-            mDatabind.txtHomeDouble.setTextColor(ContextCompat.getColor(this,R.color.g_9696b8))
-            mDatabind.txtHomeLeopard.setTextColor(ContextCompat.getColor(this,R.color.g_9696b8))
-            mDatabind.viewPager.currentItem = num
-        }else if(num==1){
-            mDatabind.txtHomeDefault.setTextColor(ContextCompat.getColor(this,R.color.g_9696b8))
-            mDatabind.txtHomeSingle.setTextColor(ContextCompat.getColor(this,R.color.g_f7cf41))
-            mDatabind.txtHomeSum.setTextColor(ContextCompat.getColor(this,R.color.g_9696b8))
-            mDatabind.txtHomeDouble.setTextColor(ContextCompat.getColor(this,R.color.g_9696b8))
-            mDatabind.txtHomeLeopard.setTextColor(ContextCompat.getColor(this,R.color.g_9696b8))
-            mDatabind.viewPager.currentItem = num
-        }else if(num==2){
-            mDatabind.txtHomeDefault.setTextColor(ContextCompat.getColor(this,R.color.g_9696b8))
-            mDatabind.txtHomeSingle.setTextColor(ContextCompat.getColor(this,R.color.g_9696b8))
-            mDatabind.txtHomeSum.setTextColor(ContextCompat.getColor(this,R.color.g_f7cf41))
-            mDatabind.txtHomeDouble.setTextColor(ContextCompat.getColor(this,R.color.g_9696b8))
-            mDatabind.txtHomeLeopard.setTextColor(ContextCompat.getColor(this,R.color.g_9696b8))
-            mDatabind.viewPager.currentItem = num
-        }else if(num==3){
-            mDatabind.txtHomeDefault.setTextColor(ContextCompat.getColor(this,R.color.g_9696b8))
-            mDatabind.txtHomeSingle.setTextColor(ContextCompat.getColor(this,R.color.g_9696b8))
-            mDatabind.txtHomeSum.setTextColor(ContextCompat.getColor(this,R.color.g_9696b8))
-            mDatabind.txtHomeDouble.setTextColor(ContextCompat.getColor(this,R.color.g_f7cf41))
-            mDatabind.txtHomeLeopard.setTextColor(ContextCompat.getColor(this,R.color.g_9696b8))
-            mDatabind.viewPager.currentItem = num
-        }else if(num==4){
-            mDatabind.txtHomeDefault.setTextColor(ContextCompat.getColor(this,R.color.g_9696b8))
-            mDatabind.txtHomeSingle.setTextColor(ContextCompat.getColor(this,R.color.g_9696b8))
-            mDatabind.txtHomeSum.setTextColor(ContextCompat.getColor(this,R.color.g_9696b8))
-            mDatabind.txtHomeDouble.setTextColor(ContextCompat.getColor(this,R.color.g_9696b8))
-            mDatabind.txtHomeLeopard.setTextColor(ContextCompat.getColor(this,R.color.g_f7cf41))
-            mDatabind.viewPager.currentItem = num
-        }
-
-
-    }
-
-
-    override fun onDestroy() {
-        super.onDestroy()
-        MyGameManager.removeLiveStatusListener(this.toString())
-
-        MyGameManager.static=-1
-        MyGameManager.countdownTime=20000
-        MyGameManager.isClickOperation=true
-//        MyGameManager.countDownTimer!!.cancel()
-        //清除
-        ComputeDefault.leftTop= BettingRecordBean(viewXYTemporary= intArrayOf(0, 0), viewXYLast= intArrayOf(0, 0) )
-        ComputeDefault.rightTop= BettingRecordBean(viewXYTemporary= intArrayOf(0, 0), viewXYLast= intArrayOf(0, 0) )
-        ComputeDefault.leftBelow= BettingRecordBean(viewXYTemporary= intArrayOf(0, 0), viewXYLast= intArrayOf(0, 0) )
-        ComputeDefault.leftBelow= BettingRecordBean(viewXYTemporary= intArrayOf(0, 0), viewXYLast= intArrayOf(0, 0) )
-        ComputeDefault.centreDate= BettingRecordBean(viewXYTemporary= intArrayOf(0, 0), viewXYLast= intArrayOf(0, 0) )
-
-
-        //单筛子
-        ComputeSingle.singleYi= BettingRecordBean(viewXYTemporary= intArrayOf(0, 0), viewXYLast= intArrayOf(0, 0) )
-        ComputeSingle.singleEr= BettingRecordBean(viewXYTemporary= intArrayOf(0, 0), viewXYLast= intArrayOf(0, 0) )
-        ComputeSingle.singleSan= BettingRecordBean(viewXYTemporary= intArrayOf(0, 0), viewXYLast= intArrayOf(0, 0) )
-        ComputeSingle.singleSi= BettingRecordBean(viewXYTemporary= intArrayOf(0, 0), viewXYLast= intArrayOf(0, 0) )
-        ComputeSingle.singleWu= BettingRecordBean(viewXYTemporary= intArrayOf(0, 0), viewXYLast= intArrayOf(0, 0) )
-        ComputeSingle.singleLiu= BettingRecordBean(viewXYTemporary= intArrayOf(0, 0), viewXYLast= intArrayOf(0, 0) )
-        //对子
-        ComputePairs.pairsYi= BettingRecordBean(viewXYTemporary= intArrayOf(0, 0), viewXYLast= intArrayOf(0, 0) )
-        ComputePairs.pairsEr= BettingRecordBean(viewXYTemporary= intArrayOf(0, 0), viewXYLast= intArrayOf(0, 0) )
-        ComputePairs.pairsSan= BettingRecordBean(viewXYTemporary= intArrayOf(0, 0), viewXYLast= intArrayOf(0, 0) )
-        ComputePairs.pairsSi= BettingRecordBean(viewXYTemporary= intArrayOf(0, 0), viewXYLast= intArrayOf(0, 0) )
-        ComputePairs.pairsWu= BettingRecordBean(viewXYTemporary= intArrayOf(0, 0), viewXYLast= intArrayOf(0, 0) )
-        ComputePairs.pairsLiu= BettingRecordBean(viewXYTemporary= intArrayOf(0, 0), viewXYLast= intArrayOf(0, 0) )
-
-        //豹子
-        ComputeLeopard.leopardYi= BettingRecordBean(viewXYTemporary= intArrayOf(0, 0), viewXYLast= intArrayOf(0, 0) )
-        ComputeLeopard.leopardEr= BettingRecordBean(viewXYTemporary= intArrayOf(0, 0), viewXYLast= intArrayOf(0, 0) )
-        ComputeLeopard.leopardSan= BettingRecordBean(viewXYTemporary= intArrayOf(0, 0), viewXYLast= intArrayOf(0, 0) )
-        ComputeLeopard.leopardSi= BettingRecordBean(viewXYTemporary= intArrayOf(0, 0), viewXYLast= intArrayOf(0, 0) )
-        ComputeLeopard.leopardWu= BettingRecordBean(viewXYTemporary= intArrayOf(0, 0), viewXYLast= intArrayOf(0, 0) )
-        ComputeLeopard.leopardLiu= BettingRecordBean(viewXYTemporary= intArrayOf(0, 0), viewXYLast= intArrayOf(0, 0) )
-        //总和
-        ComputeSum.sumTotalSi= BettingRecordBean(viewXYTemporary= intArrayOf(0, 0), viewXYLast= intArrayOf(0, 0) )
-        ComputeSum.sumTotalWu= BettingRecordBean(viewXYTemporary= intArrayOf(0, 0), viewXYLast= intArrayOf(0, 0) )
-        ComputeSum.sumTotalLiu= BettingRecordBean(viewXYTemporary= intArrayOf(0, 0), viewXYLast= intArrayOf(0, 0) )
-        ComputeSum.sumTotalQi= BettingRecordBean(viewXYTemporary= intArrayOf(0, 0), viewXYLast= intArrayOf(0, 0) )
-        ComputeSum.sumTotalBa= BettingRecordBean(viewXYTemporary= intArrayOf(0, 0), viewXYLast= intArrayOf(0, 0) )
-        ComputeSum.sumTotalJiu= BettingRecordBean(viewXYTemporary= intArrayOf(0, 0), viewXYLast= intArrayOf(0, 0) )
-        ComputeSum.sumTotalShi= BettingRecordBean(viewXYTemporary= intArrayOf(0, 0), viewXYLast= intArrayOf(0, 0) )
-        ComputeSum.sumTotalShiYi= BettingRecordBean(viewXYTemporary= intArrayOf(0, 0), viewXYLast= intArrayOf(0, 0) )
-        ComputeSum.sumTotalShiEr= BettingRecordBean(viewXYTemporary= intArrayOf(0, 0), viewXYLast= intArrayOf(0, 0) )
-        ComputeSum.sumTotalShiSan= BettingRecordBean(viewXYTemporary= intArrayOf(0, 0), viewXYLast= intArrayOf(0, 0) )
-        ComputeSum.sumTotalShiSi= BettingRecordBean(viewXYTemporary= intArrayOf(0, 0), viewXYLast= intArrayOf(0, 0) )
-        ComputeSum.sumTotalShiWu= BettingRecordBean(viewXYTemporary= intArrayOf(0, 0), viewXYLast= intArrayOf(0, 0) )
-        ComputeSum.sumTotalShiLiu= BettingRecordBean(viewXYTemporary= intArrayOf(0, 0), viewXYLast= intArrayOf(0, 0) )
-        ComputeSum.sumTotalShiQi= BettingRecordBean(viewXYTemporary= intArrayOf(0, 0), viewXYLast= intArrayOf(0, 0) )
-    }
-
-
-
-
     fun scrollToItemAndPerformAction(recyclerView: RecyclerView, position: Int, action: () -> Unit) {
 
         val layoutManager = recyclerView.layoutManager as LinearLayoutManager
@@ -1590,45 +1389,22 @@ class GameHomeActivity : BaseGameActivity<GameHomeVm, ActivityGameHomeBinding>()
         scrollToMiddleHorizontal(recyclerView,position)
     }
 
-    // 检查项是否完全可见
-    private fun isItemFullyVisible(recyclerView: RecyclerView, position: Int): Boolean {
-        val layoutManager = recyclerView.layoutManager as LinearLayoutManager  ?: return false
-        val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
-        val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
-        return position in firstVisibleItemPosition..lastVisibleItemPosition
-    }
 
-//    fun scrollToMiddleHorizontal(recyclerView: RecyclerView, position: Int) {
-//        val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-//        val screenWidth = recyclerView.width
-//        val itemWidth = layoutManager.findViewByPosition(position)?.width ?: 0
-//        val scrollDistance = (screenWidth - itemWidth)/2
-//
-////        recyclerView.smoothScrollBy(scrollDistance,0)
-//        recyclerView.smoothScrollToPosition(scrollDistance)
-//    }
+    fun scrollToMiddleHorizontal(recyclerView: RecyclerView, position: Int) {
+        val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+        val screenWidth = recyclerView.width
+        val itemWidth = layoutManager.findViewByPosition(position)?.width ?: 0
+        val scrollDistance = (screenWidth - itemWidth) / 2
 
-fun scrollToMiddleHorizontal(recyclerView: RecyclerView, position: Int) {
-    val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-    val screenWidth = recyclerView.width
-    val itemWidth = layoutManager.findViewByPosition(position)?.width ?: 0
-    val scrollDistance = (screenWidth - itemWidth) / 2
-
-    layoutManager.scrollToPositionWithOffset(position, -scrollDistance)
-    recyclerView.post {
-        val targetView = layoutManager.findViewByPosition(position)
-        if (targetView != null) {
-            val targetDistance = targetView.left + targetView.width / 2 - screenWidth / 2
-            recyclerView.smoothScrollBy(targetDistance, 0)
+        layoutManager.scrollToPositionWithOffset(position, -scrollDistance)
+        recyclerView.post {
+            val targetView = layoutManager.findViewByPosition(position)
+            if (targetView != null) {
+                val targetDistance = targetView.left + targetView.width / 2 - screenWidth / 2
+                recyclerView.smoothScrollBy(targetDistance, 0)
+            }
         }
     }
-}
 
-    class PointEvaluator : TypeEvaluator<Point> {
-        override fun evaluate(fraction: Float, startValue: Point, endValue: Point): Point {
-            val x = startValue.x + (endValue.x - startValue.x) * fraction
-            val y = startValue.y + (endValue.y - startValue.y) * fraction
-            return Point(x.toInt(), y.toInt())
-        }
-    }
+
 }

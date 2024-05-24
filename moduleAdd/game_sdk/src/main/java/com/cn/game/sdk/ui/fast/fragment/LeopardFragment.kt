@@ -14,6 +14,8 @@ import com.cn.game.sdk.bean.ComputeSingle
 import com.cn.game.sdk.bean.InPrizeBean
 import com.cn.game.sdk.databinding.FragmentLeopardBinding
 import com.cn.game.sdk.enums.NOTES_ENUM
+import com.cn.game.sdk.tool.HomeXPopupDialog
+import com.cn.game.sdk.tool.PromptSoundPlay
 import com.cn.game.sdk.ui.fast.GameHomeActivity
 import com.cn.game.sdk.utils.MyGameManager
 import com.cn.game.sdk.view.MoneyOKDeleteView
@@ -51,6 +53,14 @@ class LeopardFragment : BaseGameFragment<LeopardVm, FragmentLeopardBinding>() {
     lateinit var showLeopardLiuMoney: MoneyOKDeleteView
 
     private var animators: MutableList<ObjectAnimator> = mutableListOf()
+
+    lateinit var  homeXPopupDialog: HomeXPopupDialog
+
+    fun   setHomeXPopupDialogDate(homeXPopupDialog: HomeXPopupDialog){
+        this.homeXPopupDialog=homeXPopupDialog
+    }
+
+
     override fun initView(savedInstanceState: Bundle?) {
         showLeopardYiMoney=MoneyOKDeleteView(requireContext())
         showLeopardYiMoney.tag = "showLeopardYiMoney"
@@ -62,7 +72,7 @@ class LeopardFragment : BaseGameFragment<LeopardVm, FragmentLeopardBinding>() {
                         mDatabind.rvLeopardClickOne.removeView(showLeopardYiMoney)
                     }
                 }
-                (context as GameHomeActivity).clickDelete()
+                homeXPopupDialog.clickDelete()
             }
 
             override fun onConfirm() {
@@ -71,7 +81,7 @@ class LeopardFragment : BaseGameFragment<LeopardVm, FragmentLeopardBinding>() {
                 /**
                  * 点击确定，把所有的临时钱赋值给确定钱然后要把没有确定的删除掉,在Activity处理所有的
                  */
-                (context as GameHomeActivity).clickOKBet()
+                homeXPopupDialog.clickOKBet()
             }
 
         })
@@ -85,7 +95,7 @@ class LeopardFragment : BaseGameFragment<LeopardVm, FragmentLeopardBinding>() {
                         mDatabind.rvLeopardClickTwo.removeView(showLeopardErMoney)
                     }
                 }
-                (context as GameHomeActivity).clickDelete()
+                homeXPopupDialog.clickDelete()
             }
 
             override fun onConfirm() {
@@ -94,7 +104,7 @@ class LeopardFragment : BaseGameFragment<LeopardVm, FragmentLeopardBinding>() {
                 /**
                  * 点击确定，把所有的临时钱赋值给确定钱然后要把没有确定的删除掉,在Activity处理所有的
                  */
-                (context as GameHomeActivity).clickOKBet()
+                homeXPopupDialog.clickOKBet()
             }
 
         })
@@ -108,7 +118,7 @@ class LeopardFragment : BaseGameFragment<LeopardVm, FragmentLeopardBinding>() {
                         mDatabind.rvLeopardClickThree.removeView(showLeopardSanMoney)
                     }
                 }
-                (context as GameHomeActivity).clickDelete()
+                homeXPopupDialog.clickDelete()
             }
 
             override fun onConfirm() {
@@ -117,7 +127,7 @@ class LeopardFragment : BaseGameFragment<LeopardVm, FragmentLeopardBinding>() {
                 /**
                  * 点击确定，把所有的临时钱赋值给确定钱然后要把没有确定的删除掉,在Activity处理所有的
                  */
-                (context as GameHomeActivity).clickOKBet()
+                homeXPopupDialog.clickOKBet()
             }
 
         })
@@ -131,7 +141,7 @@ class LeopardFragment : BaseGameFragment<LeopardVm, FragmentLeopardBinding>() {
                         mDatabind.rvLeopardClickFour.removeView(showLeopardSiMoney)
                     }
                 }
-                (context as GameHomeActivity).clickDelete()
+                homeXPopupDialog.clickDelete()
             }
 
             override fun onConfirm() {
@@ -140,7 +150,7 @@ class LeopardFragment : BaseGameFragment<LeopardVm, FragmentLeopardBinding>() {
                 /**
                  * 点击确定，把所有的临时钱赋值给确定钱然后要把没有确定的删除掉,在Activity处理所有的
                  */
-                (context as GameHomeActivity).clickOKBet()
+                homeXPopupDialog.clickOKBet()
             }
 
         })
@@ -154,7 +164,7 @@ class LeopardFragment : BaseGameFragment<LeopardVm, FragmentLeopardBinding>() {
                         mDatabind.rvLeopardClickFive.removeView(showLeopardWuMoney)
                     }
                 }
-                (context as GameHomeActivity).clickDelete()
+                homeXPopupDialog.clickDelete()
             }
 
             override fun onConfirm() {
@@ -163,7 +173,7 @@ class LeopardFragment : BaseGameFragment<LeopardVm, FragmentLeopardBinding>() {
                 /**
                  * 点击确定，把所有的临时钱赋值给确定钱然后要把没有确定的删除掉,在Activity处理所有的
                  */
-                (context as GameHomeActivity).clickOKBet()
+                homeXPopupDialog.clickOKBet()
             }
 
         })
@@ -177,7 +187,7 @@ class LeopardFragment : BaseGameFragment<LeopardVm, FragmentLeopardBinding>() {
                         mDatabind.rvLeopardClickSix.removeView(showLeopardLiuMoney)
                     }
                 }
-                (context as GameHomeActivity).clickDelete()
+                homeXPopupDialog.clickDelete()
             }
 
             override fun onConfirm() {
@@ -186,7 +196,7 @@ class LeopardFragment : BaseGameFragment<LeopardVm, FragmentLeopardBinding>() {
                 /**
                  * 点击确定，把所有的临时钱赋值给确定钱然后要把没有确定的删除掉,在Activity处理所有的
                  */
-                (context as GameHomeActivity).clickOKBet()
+                homeXPopupDialog.clickOKBet()
             }
 
         })
@@ -194,7 +204,7 @@ class LeopardFragment : BaseGameFragment<LeopardVm, FragmentLeopardBinding>() {
         //点击一
         mDatabind.rvLeopardClickOne. setOnClickListener {
             //先判断余额是否够这次 并且扣取钱
-            if( (context as GameHomeActivity).isCanBetting()&& MyGameManager.isClickOperation){
+            if(homeXPopupDialog.isCanBetting()&& MyGameManager.isClickOperation&& PromptSoundPlay.handleClick()){
                 val location = IntArray(2)
                 mDatabind.rvLeopardClickOne.getLocationOnScreen(location)
                 var selectNum=0
@@ -221,7 +231,7 @@ class LeopardFragment : BaseGameFragment<LeopardVm, FragmentLeopardBinding>() {
                     var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
 
 
-                    (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(), animationView =showLeopardYiMoney.ivShowBg )
+                    homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(), animationView =showLeopardYiMoney.ivShowBg )
 
                 } else {
                     val viewTreeObserver = showLeopardYiMoney.viewTreeObserver
@@ -246,7 +256,7 @@ class LeopardFragment : BaseGameFragment<LeopardVm, FragmentLeopardBinding>() {
                             var  rax=xOnScreen
                             var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
 
-                            (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),animationView =showLeopardYiMoney.ivShowBg)
+                            homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(),animationView =showLeopardYiMoney.ivShowBg)
                             //显示点击在Fragment的位置用于动画结束后显示
                             if(ComputeLeopard.leopardYi.viewXYTemporary[0]==0&& ComputeLeopard.leopardYi.viewXYTemporary[1]==0){
                                 val location = IntArray(2)
@@ -274,7 +284,7 @@ class LeopardFragment : BaseGameFragment<LeopardVm, FragmentLeopardBinding>() {
         //点击二
         mDatabind.rvLeopardClickTwo. setOnClickListener {
             //先判断余额是否够这次 并且扣取钱
-            if( (context as GameHomeActivity).isCanBetting()&& MyGameManager.isClickOperation){
+            if(homeXPopupDialog.isCanBetting()&& MyGameManager.isClickOperation&&PromptSoundPlay.handleClick()){
                 val location = IntArray(2)
                 mDatabind.rvLeopardClickTwo.getLocationOnScreen(location)
                 var selectNum=0
@@ -301,7 +311,7 @@ class LeopardFragment : BaseGameFragment<LeopardVm, FragmentLeopardBinding>() {
                     var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
 
 
-                    (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(), animationView =showLeopardErMoney.ivShowBg )
+                    homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(), animationView =showLeopardErMoney.ivShowBg )
 
                 } else {
                     val viewTreeObserver = showLeopardErMoney.viewTreeObserver
@@ -326,7 +336,7 @@ class LeopardFragment : BaseGameFragment<LeopardVm, FragmentLeopardBinding>() {
                             var  rax=xOnScreen
                             var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
 
-                            (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),animationView =showLeopardErMoney.ivShowBg)
+                            homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(),animationView =showLeopardErMoney.ivShowBg)
                             //显示点击在Fragment的位置用于动画结束后显示
                             if(ComputeLeopard.leopardEr.viewXYTemporary[0]==0&& ComputeLeopard.leopardEr.viewXYTemporary[1]==0){
                                 val location = IntArray(2)
@@ -354,7 +364,7 @@ class LeopardFragment : BaseGameFragment<LeopardVm, FragmentLeopardBinding>() {
         //点击三
         mDatabind.rvLeopardClickThree. setOnClickListener {
             //先判断余额是否够这次 并且扣取钱
-            if( (context as GameHomeActivity).isCanBetting()&& MyGameManager.isClickOperation){
+            if( homeXPopupDialog.isCanBetting()&& MyGameManager.isClickOperation&&PromptSoundPlay.handleClick()){
                 val location = IntArray(2)
                 mDatabind.rvLeopardClickThree.getLocationOnScreen(location)
                 var selectNum=0
@@ -381,7 +391,7 @@ class LeopardFragment : BaseGameFragment<LeopardVm, FragmentLeopardBinding>() {
                     var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
 
 
-                    (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(), animationView =showLeopardSanMoney.ivShowBg )
+                    homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(), animationView =showLeopardSanMoney.ivShowBg )
 
                 } else {
                     val viewTreeObserver = showLeopardSanMoney.viewTreeObserver
@@ -406,7 +416,7 @@ class LeopardFragment : BaseGameFragment<LeopardVm, FragmentLeopardBinding>() {
                             var  rax=xOnScreen
                             var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
 
-                            (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),animationView =showLeopardSanMoney.ivShowBg)
+                            homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(),animationView =showLeopardSanMoney.ivShowBg)
                             //显示点击在Fragment的位置用于动画结束后显示
                             if(ComputeLeopard.leopardSan.viewXYTemporary[0]==0&& ComputeLeopard.leopardSan.viewXYTemporary[1]==0){
                                 val location = IntArray(2)
@@ -435,7 +445,7 @@ class LeopardFragment : BaseGameFragment<LeopardVm, FragmentLeopardBinding>() {
         //点击四
         mDatabind.rvLeopardClickFour. setOnClickListener {
             //先判断余额是否够这次 并且扣取钱
-            if( (context as GameHomeActivity).isCanBetting()&& MyGameManager.isClickOperation){
+            if( homeXPopupDialog.isCanBetting()&& MyGameManager.isClickOperation&&PromptSoundPlay.handleClick()){
                 val location = IntArray(2)
                 mDatabind.rvLeopardClickFour.getLocationOnScreen(location)
                 var selectNum=0
@@ -462,7 +472,7 @@ class LeopardFragment : BaseGameFragment<LeopardVm, FragmentLeopardBinding>() {
                     var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
 
 
-                    (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(), animationView =showLeopardSiMoney.ivShowBg )
+                    homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(), animationView =showLeopardSiMoney.ivShowBg )
 
                 } else {
                     val viewTreeObserver = showLeopardSiMoney.viewTreeObserver
@@ -487,7 +497,7 @@ class LeopardFragment : BaseGameFragment<LeopardVm, FragmentLeopardBinding>() {
                             var  rax=xOnScreen
                             var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
 
-                            (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),animationView =showLeopardSiMoney.ivShowBg)
+                            homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(),animationView =showLeopardSiMoney.ivShowBg)
                             //显示点击在Fragment的位置用于动画结束后显示
                             if(ComputeLeopard.leopardSi.viewXYTemporary[0]==0&& ComputeLeopard.leopardSi.viewXYTemporary[1]==0){
                                 val location = IntArray(2)
@@ -515,7 +525,7 @@ class LeopardFragment : BaseGameFragment<LeopardVm, FragmentLeopardBinding>() {
         //点击五
         mDatabind.rvLeopardClickFive. setOnClickListener {
             //先判断余额是否够这次 并且扣取钱
-            if( (context as GameHomeActivity).isCanBetting()&& MyGameManager.isClickOperation){
+            if( homeXPopupDialog.isCanBetting()&& MyGameManager.isClickOperation&&PromptSoundPlay.handleClick()){
                 val location = IntArray(2)
                 mDatabind.rvLeopardClickFive.getLocationOnScreen(location)
                 var selectNum=0
@@ -542,7 +552,7 @@ class LeopardFragment : BaseGameFragment<LeopardVm, FragmentLeopardBinding>() {
                     var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
 
 
-                    (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(), animationView =showLeopardWuMoney.ivShowBg )
+                    homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(), animationView =showLeopardWuMoney.ivShowBg )
 
                 } else {
                     val viewTreeObserver = showLeopardWuMoney.viewTreeObserver
@@ -567,7 +577,7 @@ class LeopardFragment : BaseGameFragment<LeopardVm, FragmentLeopardBinding>() {
                             var  rax=xOnScreen
                             var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
 
-                            (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),animationView =showLeopardWuMoney.ivShowBg)
+                            homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(),animationView =showLeopardWuMoney.ivShowBg)
                             //显示点击在Fragment的位置用于动画结束后显示
                             if(ComputeLeopard.leopardWu.viewXYTemporary[0]==0&& ComputeLeopard.leopardWu.viewXYTemporary[1]==0){
                                 val location = IntArray(2)
@@ -596,7 +606,7 @@ class LeopardFragment : BaseGameFragment<LeopardVm, FragmentLeopardBinding>() {
         //点击六
         mDatabind.rvLeopardClickSix. setOnClickListener {
             //先判断余额是否够这次 并且扣取钱
-            if( (context as GameHomeActivity).isCanBetting()&& MyGameManager.isClickOperation){
+            if(homeXPopupDialog.isCanBetting()&& MyGameManager.isClickOperation&&PromptSoundPlay.handleClick()){
                 val location = IntArray(2)
                 mDatabind.rvLeopardClickFive.getLocationOnScreen(location)
                 var selectNum=0
@@ -623,7 +633,7 @@ class LeopardFragment : BaseGameFragment<LeopardVm, FragmentLeopardBinding>() {
                     var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
 
 
-                    (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(), animationView =showLeopardLiuMoney.ivShowBg )
+                    homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(), animationView =showLeopardLiuMoney.ivShowBg )
 
                 } else {
                     val viewTreeObserver = showLeopardLiuMoney.viewTreeObserver
@@ -648,7 +658,7 @@ class LeopardFragment : BaseGameFragment<LeopardVm, FragmentLeopardBinding>() {
                             var  rax=xOnScreen
                             var ray=yOnScreen+ AutoSizeUtils.dp2px(context, 47f)
 
-                            (context as GameHomeActivity).startAnimation(rax.toFloat(),ray.toFloat(),animationView =showLeopardLiuMoney.ivShowBg)
+                            homeXPopupDialog.startAnimation(rax.toFloat(),ray.toFloat(),animationView =showLeopardLiuMoney.ivShowBg)
                             //显示点击在Fragment的位置用于动画结束后显示
                             if(ComputeLeopard.leopardLiu.viewXYTemporary[0]==0&& ComputeLeopard.leopardLiu.viewXYTemporary[1]==0){
                                 val location = IntArray(2)

@@ -7,15 +7,15 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.cn.game.sdk.appGameViewModel
-import com.cn.game.sdk.common.GameReqCode
 import com.cn.game.sdk.utils.MyGameManager
 import com.cn.game.sdk.view.FastLogoView
-import com.cn.game.sdk.websocket.MyWsManager
-import game.common.proto.ClientReq.LoginReq
 
-class MainActivity : Activity() {
+class MainActivity :  AppCompatActivity() {
       var  views: FastLogoView?=null
+    private var mFragList = ArrayList<Fragment>()
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,16 +25,21 @@ class MainActivity : Activity() {
         var btnXiu=findViewById<Button>(R.id.btnXiu)
 
 
+
+
+
+
         ddd.setOnClickListener {
                 var ddd= com.cn.game.sdk.utils.MyGameManager
-            views=   ddd.getFastThreeView(this)
-            llshow.addView(views)
-
-            views?.setFastLogoClickListener(object :FastLogoView.OnFastLogoClickListener{
-                override fun onButtonClick() {
-                 }
-
-            })
+//            views=   ddd.getFastThreeView(this)
+//            llshow.addView(views)
+//
+//            views?.setFastLogoClickListener(object :FastLogoView.OnFastLogoClickListener{
+//                override fun onButtonClick() {
+//                 }
+//
+//            })
+            ddd.showFastView(this)
         }
         btnXiu.setOnClickListener {
 //            MyWsManager.getInstance(this)?.onTest()

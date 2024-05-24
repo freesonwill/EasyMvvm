@@ -1,33 +1,13 @@
 package com.cn.game.sdk.tool
 
 import android.content.Context
-import android.content.res.ColorStateList
-import android.content.res.Resources
 import android.graphics.Paint
-import android.graphics.Typeface
-import android.util.Log
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
-import android.view.animation.AccelerateInterpolator
-import android.view.animation.DecelerateInterpolator
-import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.*
-import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
-import androidx.viewpager2.adapter.FragmentStateAdapter
-import androidx.viewpager2.adapter.FragmentViewHolder
-import androidx.viewpager2.widget.ViewPager2
 import com.cn.game.sdk.R
 import com.cn.game.sdk.tool.indicator.CommonPagerIndicator
-import com.cn.game.sdk.view.ClickTextView
-import com.cn.game.sdk.view.CombinationOkView
-import com.google.android.material.tabs.TabLayout
 import com.xcjh.base_lib.utils.toHtml
 import net.lucode.hackware.magicindicator.MagicIndicator
 import net.lucode.hackware.magicindicator.ViewPagerHelper
@@ -35,9 +15,7 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigat
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapter
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerIndicator
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerTitleView
-import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.ColorTransitionPagerTitleView
-import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.CommonPagerTitleView
 
 import java.math.RoundingMode
 import java.text.DecimalFormat
@@ -47,7 +25,40 @@ import java.text.DecimalFormat
  * 各种公共扩展方法
  */
 
-fun ViewPager.init(
+fun ViewPager.initGameViewPager(
+    fragmentManager: FragmentManager,
+    fragments: ArrayList<Fragment>,
+    titles: ArrayList<String>? = null
+): ViewPager {
+    //设置适配器
+    adapter = object : FragmentStatePagerAdapter(
+        fragmentManager,
+        BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
+    ) {
+        override fun getCount(): Int {
+            return fragments.size
+        }
+
+        override fun getItem(position: Int): Fragment {
+            return fragments[position]
+        }
+
+        override fun getPageTitle(position: Int): CharSequence? {
+            return titles?.get(position)
+        }
+
+    }
+
+    return this
+}
+
+
+/**
+ * 该文件只添加扩展方法，其他top函数根据业务情况合理安置，便于查找、管理
+ * 各种公共扩展方法
+ */
+
+fun ViewPager.initActivityGame(
     fragmentManager: FragmentManager,
     fragments: ArrayList<Fragment>,
     titles: ArrayList<String>? = null
@@ -77,23 +88,10 @@ fun ViewPager.init(
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 /*
  * ViewPager + MagicIndicator 指示器
  */
-fun MagicIndicator.bindViewPagerNew(
+fun MagicIndicator.bindViewPagerNewGame(
     viewPager: ViewPager,
     mStringList: List<String> = arrayListOf(),
     scrollEnable: Boolean = false,

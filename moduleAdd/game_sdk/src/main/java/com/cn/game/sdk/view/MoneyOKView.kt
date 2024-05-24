@@ -16,7 +16,9 @@ import androidx.core.content.ContextCompat
 import com.cn.game.sdk.R
 import com.cn.game.sdk.ToastUtli
 import com.cn.game.sdk.game.GameData
+import com.cn.game.sdk.tool.PromptSoundPlay
 import com.cn.game.sdk.ui.fast.fragment.HomeDefaultFragment
+import com.cn.game.sdk.utils.MyGameManager
 import com.cn.game.sdk.view.CombinationOkView
 import com.xcjh.base_lib.utils.view.clickNoRepeat
 import java.math.BigDecimal
@@ -144,10 +146,12 @@ class MoneyOKView @JvmOverloads constructor(context: Context, attrs: AttributeSe
 
 
         ivOff.clickNoRepeat {
+            PromptSoundPlay.btnPlayMedia(context)
             onMoneyOKClickListener?.onDelete()
         }
 
         ivOk.clickNoRepeat {
+            PromptSoundPlay.playAudio(context)
             onMoneyOKClickListener?.onConfirm()
         }
 
@@ -161,25 +165,25 @@ class MoneyOKView @JvmOverloads constructor(context: Context, attrs: AttributeSe
         ivShowMoney.text = showMoneyFormat(money)
         if(money<50){
             ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_ok_shi))
-        }else if(money>=50){
+        }else if(money>=50&&money<100){
             ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_ok_wushi))
-        }else if(money>=100){
+        }else if(money>=100&&money<200){
             ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_ok_yibai))
-        }else if(money>=200){
+        }else if(money>=200&&money<500){
             ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_ok_liangbai))
-        }else if(money>=500){
+        }else if(money>=500&&money<1000){
             ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_ok_wubai))
-        }else if(money>=1000){
+        }else if(money>=1000&&money<2000){
             ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_ok_qian))
-        }else if(money>=2000){
+        }else if(money>=2000&&money<5000){
             ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_ok_liangqian))
-        }else if(money>=5000){
+        }else if(money>=5000&&money<10000){
             ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_ok_wuqian))
-        }else if(money>=10000){
+        }else if(money>=10000&&money<20000){
             ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_ok_yiwan))
-        }else if(money>=20000){
+        }else if(money>=20000&&money<50000){
             ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_ok_liangwan))
-        }else if(money>=50000){
+        }else if(money>=50000&&money<100000){
             ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_ok_wuwan))
         }else  {
             ivShowBg.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.icon_ok_shiwan))

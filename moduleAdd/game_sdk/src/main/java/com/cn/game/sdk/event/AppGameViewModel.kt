@@ -15,6 +15,7 @@ class AppGameViewModel : BaseViewModel() {
     var wsStatusGameOpen = EventLiveData<Boolean>()//开启
 
     var ceshEvent=EventLiveData<Boolean>()
+    var yiciEvent=EventLiveData<Float>()
 
 
     init {
