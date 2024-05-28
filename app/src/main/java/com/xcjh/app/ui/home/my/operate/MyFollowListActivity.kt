@@ -74,7 +74,18 @@ class MyFollowListActivity : BaseActivity<MyFollowListVm, ActivityMyFollowListBi
             }
 
             override fun onLoadMore(refreshLayout: RefreshLayout) {
-                mViewModel.getAnchorPageList(false)
+
+                if(mDatabind.rcvRecommend.models!=null){
+                    var list=  mDatabind.rcvRecommend.models as ArrayList<FollowAnchorBean>
+                    var data=  list.findLast { it.isFollow }
+                    if(data!=null){
+                        mViewModel.getAnchorPageList(false,data.id)
+                    }else{
+                        mViewModel.getAnchorPageList(false)
+                    }
+                }else{
+                    mViewModel.getAnchorPageList(false)
+                }
             }
         })
     }

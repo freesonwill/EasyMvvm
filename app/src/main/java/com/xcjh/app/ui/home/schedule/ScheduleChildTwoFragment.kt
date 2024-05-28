@@ -155,7 +155,8 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                 strTime = strTimeRuslt
                 endTime = strTimeRuslt
             }
-            return
+            //隐藏只要一天的
+//            return
             //=======
 
             //以前的逻辑可以查询当前日期往后或者往前2天
@@ -192,7 +193,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                 mOneTabIndex = bundle.getInt(ScheduleChildTwoFragment.OneIndex)
                 mTwoTabIndex = bundle.getInt(ScheduleChildTwoFragment.TwoIndex)
             }
-            mDatabind.smartCommon.setEnableRefresh(false)
+//            mDatabind.smartCommon.setEnableRefresh(false)
             mDatabind.smartCommon.setEnableOverScrollDrag(true)
             mDatabind.state.apply {
                 StateConfig.setRetryIds(R.id.ivEmptyIcon, R.id.txtEmptyName)
@@ -942,6 +943,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                     .thumbnail(0.1f) // 设置缩略图大小比例（例如0.1表示原图的十分之一）
                                     .override(64, 64) // 指定目标宽度和高度
                                     .into(binding1.ivhead)
+                                //点击主播
                                 binding1.linroot.setOnClickListener {
                                     SoundManager.playMedia()
                                     MatchDetailActivity.open(
@@ -995,6 +997,8 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                     //点击全部
                     binding.conroot.setOnClickListener {
                         SoundManager.playMedia()
+
+
                         MatchDetailActivity.open(
                             matchType = item.matchType,
                             matchId = item.matchId,
@@ -1139,7 +1143,6 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                     mDatabind.recBottom.bindingAdapter.notifyItemChanged(i)
                                 } else {
                                     if (it.liveStatus == 2) {//开播
-
                                         var hasdata = false
                                         for (i in 0 until bean.anchorList.size) {
                                             if (bean.anchorList[i].userId == it.anchorId) {
@@ -1162,9 +1165,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                         for (i in 0 until bean.anchorList.size) {
                                             if (bean.anchorList[i].userId == it.anchorId) {
                                                 bean.anchorList.removeAt(i)
-                                                mDatabind.recBottom.bindingAdapter.notifyItemChanged(
-                                                    i
-                                                )
+                                                mDatabind.recBottom.bindingAdapter.notifyItemChanged(i)
                                                 break
                                             }
                                         }
@@ -1237,8 +1238,8 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
             Constants.isLoading = true
             initTime()
 
-//            Log.i("KAIAKI","开始-===="+strTime)
-//            Log.i("KAIAKI","结束-===="+endTime)
+            Log.i("KAIAKI","开始-===="+strTime)
+            Log.i("KAIAKI","结束-===="+endTime)
             mViewModel.getHotMatchDataList(
                 isresh,
                 iLoading, PostSchMatchListBean(

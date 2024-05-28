@@ -26,7 +26,7 @@ class MyFollowListVm : BaseViewModel() {
     /**
      * 获取我关注的主播列表
      */
-    fun getAnchorPageList(isRefresh: Boolean){
+    fun getAnchorPageList(isRefresh: Boolean,offset:String?=null){
         if (isRefresh) {
             pageNo = 1
         }

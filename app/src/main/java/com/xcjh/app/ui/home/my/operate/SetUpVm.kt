@@ -27,7 +27,7 @@ class SetUpVm : BaseViewModel() {
                 //请求失败
                 myToast(it.errorMsg)
 
-            },isShowDialog=true
+            },isShowDialog=false
         )
     }
 
@@ -47,7 +47,7 @@ class SetUpVm : BaseViewModel() {
 //                myToast(it.errorMsg)
                 exitLogin()
 
-            },isShowDialog=true
+            },isShowDialog=false
         )
     }
 

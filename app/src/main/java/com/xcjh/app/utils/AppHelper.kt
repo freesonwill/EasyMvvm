@@ -771,7 +771,7 @@ fun getVerName(context: Context): String {
     } catch (e: PackageManager.NameNotFoundException) {
         e.printStackTrace()
     }
-    return "V$verName"
+    return "$verName"
 }
 
 /**

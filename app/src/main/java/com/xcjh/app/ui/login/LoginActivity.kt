@@ -571,6 +571,7 @@ class LoginActivity : BaseActivity<LoginVm, ActivityLoaginBinding>() {
         mViewModel.sendingMessage.observe(this){
 //            type = 1//1是手机号登录，2是邮箱登录
             if(type==1){
+                //发送短信
                 mViewModel.getMessage(mDatabind.edtphone.text.toString().trim(),mDatabind.tvgo.text.toString().trim())
 
             }else{

@@ -61,12 +61,12 @@ class MyNoticeVm : BaseViewModel() {
     /**
      * 晒哼
      */
-    fun getMyNoticeList(isRefresh: Boolean) {
+    fun getMyNoticeList(isRefresh: Boolean,offset:String?=null) {
         if (isRefresh) {
             pageNo = 1
         }
         request(
-            { apiService.getMyNoticeList(BasePage(pageNo,BASE_PAGE_SIZE)) },
+            { apiService.getMyNoticeList(BasePage(pageNo,BASE_PAGE_SIZE,offset)) },
 
             {
                 pageNo++
@@ -87,7 +87,7 @@ class MyNoticeVm : BaseViewModel() {
                 )
 //                myToast(it.errorMsg)
 
-            }, true
+            }
         )
     }
 }

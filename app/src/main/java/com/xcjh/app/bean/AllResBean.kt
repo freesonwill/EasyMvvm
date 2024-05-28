@@ -107,6 +107,7 @@ data class CountryListBean(
  */
 @Keep
 data class MatchBean(
+    var id:String="",
     var competitionId: String = "",//赛事ID
     var competitionName: String = "",//赛事
     var matchId: String = "",//比赛id
@@ -490,6 +491,7 @@ data class EventsBean(
  */
 @Keep
 data class FollowAnchorBean(
+     var id:String="",
     var anchorId: String = "",// ID
     var nickName: String = "",// 昵称
     var head: String = "",// 头像

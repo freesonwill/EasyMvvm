@@ -65,6 +65,7 @@ import com.xcjh.app.utils.CacheUtil
 import com.xcjh.app.utils.PerformanceMonitor
 import com.xcjh.app.utils.SoundManager
 import com.xcjh.app.utils.getVerCode
+import com.xcjh.app.utils.getVerName
 import com.xcjh.app.utils.judgeLogin
 import com.xcjh.app.vm.MainVm
 import com.xcjh.app.websocket.MyWsManager
@@ -418,7 +419,8 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
          * 暂时隐藏获取到线上最新版本然后升级
          */
         mViewModel.update.observe(this) {
-            var code= getVerCode(this).toString()
+//            var code= getVerCode(this).toString()
+            var code= getVerName(this).toString()
 //            appUpdate(it.remarks,false,"")
             if(!it.version.equals(code)){
                 // 是否强制更新：0 ：不强制 1：强制
@@ -576,9 +578,8 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         if (currentPage != pos && vibrate) {
             if (CacheUtil.isNavigationVibrate()) {
                 vibrate(this)
-                SoundManager.playMedia()
-
             }
+            SoundManager.playMedia()
         }
 
         if (pos == 0&&currentPage != pos){

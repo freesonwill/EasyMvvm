@@ -907,7 +907,24 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
             //mAdapter.isEmptyViewEnable = true
             mViewModel.getMyNoticeList(true)
             mDatabind.smartCommon.setOnRefreshListener { mViewModel.getMyNoticeList(true) }
-                .setOnLoadMoreListener { mViewModel.getMyNoticeList(false) }
+                .setOnLoadMoreListener {
+
+                    if(mDatabind.rec.models!=null){
+                      var list=  mDatabind.rec.models as ArrayList<MatchBean>
+                      var data=  list.findLast { it.focus }
+                        if(data!=null){
+                            mViewModel.getMyNoticeList(false,data.id)
+                        }else{
+                            mViewModel.getMyNoticeList(false)
+                        }
+                    }else{
+                        mViewModel.getMyNoticeList(false)
+                    }
+
+
+
+
+                }
             appViewModel.appPushMsg.observe(this) {
 
                 for (j in 0 until it.size) {
@@ -1088,8 +1105,8 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                 (mDatabind.rec.models!![index] as MatchBean).focus = false
 
                 appViewModel.updateCollection.postValue(true)
-                  mDatabind.rec.mutable.removeAt(index)
-                 mDatabind.rec.bindingAdapter.notifyItemRemoved(index) // 通知更新
+//                  mDatabind.rec.mutable.removeAt(index)
+//                 mDatabind.rec.bindingAdapter.notifyItemRemoved(index) // 通知更新
                 mview1!!.setBackgroundResource(R.drawable.sc_shoucang_icon1)
 
             }

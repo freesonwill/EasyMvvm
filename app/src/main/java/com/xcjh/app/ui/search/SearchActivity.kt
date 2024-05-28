@@ -138,7 +138,7 @@ class SearchActivity : BaseActivity<SearchVm, ActivitySearchBinding>() {
                 var icon = this.findViewById<AppCompatImageView>(R.id.ivEmptyIcon)
                 var txt = this.findViewById<AppCompatTextView>(R.id.txtEmptyName)
                 icon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.zwt_search))
-                txt.text = resources.getString(R.string.no_data_hint)
+                txt.text = resources.getString(R.string.search_txt_empty_name)
 
             }
 

@@ -31,7 +31,8 @@ class LevelMissionActivity  : BaseActivity<LevelMissionVm, ActivityLevelMissionB
             .navigationBarDarkIcon(true)
             .navigationBarColor(R.color.c_ffffff)
             .init()
-
+        //先设置一下最后在更新
+        data()
         //更新用户信息
         appViewModel.userInfo.observe(this){
             data()

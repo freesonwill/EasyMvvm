@@ -7,6 +7,9 @@ import android.os.Message
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
+import com.drake.brv.utils.bindingAdapter
+import com.drake.brv.utils.models
+import com.drake.brv.utils.mutable
 import com.google.gson.Gson
 import com.gyf.immersionbar.ImmersionBar
 import com.xcjh.app.R
@@ -14,6 +17,7 @@ import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseFragment
 import com.xcjh.app.bean.CurrentIndex
 import com.xcjh.app.bean.JsonBean
+import com.xcjh.app.bean.MainTxtBean
 import com.xcjh.app.bean.TimeConstantsDat
 import com.xcjh.app.databinding.FrCourseBinding
 import com.xcjh.app.utils.GetJsonDataUtil
@@ -22,6 +26,8 @@ import com.xcjh.app.websocket.MyWsManager
 import com.xcjh.app.websocket.bean.LiveStatus
 import com.xcjh.app.websocket.bean.ReceiveChangeMsg
 import com.xcjh.app.websocket.listener.LiveStatusListener
+import com.xcjh.app.websocket.listener.MOffListener
+import com.xcjh.base_lib.App
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.LogUtils
 import com.xcjh.base_lib.utils.bindViewPagerEr
@@ -57,12 +63,25 @@ class ScheduleFragment : BaseFragment<MainVm, FrCourseBinding>() {
                     super.onOpenLive(bean)
                     appViewModel.appPushLive.postValue(bean)
                 }
-
+                //废弃
                 override fun onCloseLive(bean: LiveStatus) {
                     super.onCloseLive(bean)
                     appViewModel.appPushLive.postValue(bean)
                 }
             })
+
+
+        MyWsManager.getInstance(App.app)?.setOtherPushListener(this.toString(),object :
+            MOffListener {
+            override fun onCloseLive(bean: LiveStatus) {
+                appViewModel.appPushLive.postValue(bean)
+            }
+
+
+        })
+
+
+
     }
 
     override fun onDestroy() {

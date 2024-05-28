@@ -1,6 +1,7 @@
 package com.xcjh.app.utils
 
 import android.content.Context
+import android.media.AudioManager
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Handler
@@ -56,28 +57,35 @@ object SoundManager {
      */
     fun playMedia() {
         val currentTime = System.currentTimeMillis()
-        if (lastClickTime != 0L && (currentTime -  lastClickTime > 500)) {
-            if (mediaPlayer != null) {
-                // 检查播放器状态
-                if(mediaPlayer!!.isPlaying){
-                    // 如果正在播放，先停止播放
-                    mediaPlayer!!.stop()
-                }
-                // 重置 MediaPlayer 对象
-                mediaPlayer!!.reset()
 
-                try {
-                    // 设置要播放的媒体资源
-                    mediaPlayer!!.setDataSource(appContext, getResourceUri(appContext,R.raw.sx_common_click))
-                    // 准备MediaPlayer
-                    mediaPlayer!!.prepare()
-                    // 启动播放
-                    mediaPlayer!!.start()
-                } catch (e: IOException) {
-                    e.printStackTrace()
+        if(!isPhoneSilent(appContext)){
+
+            if (lastClickTime != 0L && (currentTime -  lastClickTime > 500)) {
+                if (mediaPlayer != null) {
+                    // 检查播放器状态
+                    if(mediaPlayer!!.isPlaying){
+                        // 如果正在播放，先停止播放
+                        mediaPlayer!!.stop()
+                    }
+                    // 重置 MediaPlayer 对象
+                    mediaPlayer!!.reset()
+
+                    try {
+                        // 设置要播放的媒体资源
+                        mediaPlayer!!.setDataSource(appContext, getResourceUri(appContext,R.raw.sx_common_click))
+                        // 准备MediaPlayer
+                        mediaPlayer!!.prepare()
+                        // 启动播放
+                        mediaPlayer!!.start()
+                    } catch (e: IOException) {
+                        e.printStackTrace()
+                    }
                 }
             }
+
         }
+
+
         lastClickTime = currentTime
 
 
@@ -87,5 +95,16 @@ object SoundManager {
         return Uri.parse("android.resource://" + context.packageName + "/" + resId)
     }
 
+
+    /**
+     * 是否是静音或者震动模式
+     */
+    fun isPhoneSilent(context: Context): Boolean {
+        val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        return when (audioManager.ringerMode) {
+            AudioManager.RINGER_MODE_SILENT, AudioManager.RINGER_MODE_VIBRATE -> true // 静音或振动模式
+            else -> false // 声音模式
+        }
+    }
 
 }

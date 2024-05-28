@@ -15,6 +15,7 @@ import com.haibin.calendarview.Calendar
 import com.haibin.calendarview.CalendarView
 import com.kongzue.dialogx.dialogs.BottomDialog
 import com.kongzue.dialogx.dialogs.CustomDialog
+import com.kongzue.dialogx.interfaces.BaseDialog
 import com.kongzue.dialogx.interfaces.OnBindView
 import com.xcjh.app.R
 import com.xcjh.app.bean.AnchorListBean
@@ -377,6 +378,9 @@ fun delFriDilog(context: Context, block: (isSure: Boolean) -> Unit) {
             ContextCompat.getColor(context, com.xcjh.base_lib.R.color.blacks_tr)
         ).show()
 }
+
+var bottomDoalog: BottomDialog?=null
+
 /**
  * 信号源选择
  */
@@ -394,8 +398,9 @@ fun showSignalDialog(
         }
     }
 
+
     //模式数据
-    BottomDialog.build()
+    bottomDoalog=  BottomDialog.build()
         .setCustomView(object : OnBindView<BottomDialog>(R.layout.dialog_signal_list) {
             override fun onBind(dialog: BottomDialog, v: View) {
                 if (dialog.dialogImpl.imgTab != null) {
@@ -438,7 +443,10 @@ fun showSignalDialog(
         // .setAlign(CustomDialog.ALIGN.BOTTOM)
         .setMaskColor(ContextCompat.getColor(App.app, com.xcjh.base_lib.R.color.blacks_tr))
         .setCancelable(true)
-        .show()
+//        .show()
+    if(!bottomDoalog!!.isShow){
+        bottomDoalog!!.show()
+    }
 }
 
 

@@ -94,14 +94,16 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
                                 if( (mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).userId!=null){
                                     if((mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).userId.equals(bean.anchorId)){
                                         mDatabind.rcvRecommend.mutable.removeAt(i)
+                                        break
                                     }
 
                                 } else{
                                     mDatabind.rcvRecommend.mutable.removeAt(i)
+                                    break
                                 }
 
 
-                                break
+
                             }
 
 
@@ -184,7 +186,9 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
 
                 }
 
-
+                /**
+                 * 纯净流开播
+                 */
                 override fun onOpenPureFlow(bean: LiveStatus) {
                     super.onOpenPureFlow(bean)
                     if(!bean.matchType.equals(type.toString())){
@@ -239,39 +243,42 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
                     var fuzhi=false
 
                     if(mDatabind.rcvRecommend.models!=null){
-                        num=mDatabind.rcvRecommend.mutable.size-1
-                        for (i in 0 until mDatabind.rcvRecommend.mutable!!.size) {
-                            if((mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).pureFlow){
-                                if(fuzhi==false){
-                                    num=i
-                                    break
-                                }
-
-                            }
-
-
-
-                        }
-
-                        var list:ArrayList<BeingLiveBean> = arrayListOf()
-                        if(mDatabind.rcvRecommend.mutable.size==0){
-                            list.add(being)
-                            for (i in 0 until mDatabind.rcvRecommend.mutable.size) {
-                                list.add((mDatabind.rcvRecommend.mutable[i] as BeingLiveBean))
-                            }
-
-                        }else {
-                            for (i in 0 until mDatabind.rcvRecommend.mutable.size) {
-                                if(num==i){
-                                    list.add(being)
-                                    list.add((mDatabind.rcvRecommend.mutable[i] as BeingLiveBean))
-                                }else{
-                                    list.add((mDatabind.rcvRecommend.mutable[i] as BeingLiveBean))
-                                }
-
-                            }
-                        }
-                        mDatabind.rcvRecommend.mutable.clear()
+//                        num=mDatabind.rcvRecommend.mutable.size-1
+//                        for (i in 0 until mDatabind.rcvRecommend.mutable!!.size) {
+//                            if((mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).pureFlow){
+//                                if(fuzhi==false){
+//                                    num=i
+//                                    break
+//                                }
+//
+//                            }
+//
+//
+//
+//                        }
+//
+//                        var list:ArrayList<BeingLiveBean> = arrayListOf()
+//                        if(mDatabind.rcvRecommend.mutable.size==0){
+//                            list.add(being)
+//                            for (i in 0 until mDatabind.rcvRecommend.mutable.size) {
+//                                list.add((mDatabind.rcvRecommend.mutable[i] as BeingLiveBean))
+//                            }
+//
+//                        }else {
+//                            for (i in 0 until mDatabind.rcvRecommend.mutable.size) {
+//                                if(num==i){
+//                                    list.add(being)
+//                                    list.add((mDatabind.rcvRecommend.mutable[i] as BeingLiveBean))
+//                                }else{
+//                                    list.add((mDatabind.rcvRecommend.mutable[i] as BeingLiveBean))
+//                                }
+//
+//                            }
+//                        }
+//                        mDatabind.rcvRecommend.mutable.clear()
+//                        mDatabind.rcvRecommend.addModels(list)
+                        var list =ArrayList<BeingLiveBean>()
+                        list.add(being)
                         mDatabind.rcvRecommend.addModels(list)
 
 
@@ -295,7 +302,7 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
                                     if((mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).userId.equals(bean.anchorId)){
                                         mDatabind.rcvRecommend.mutable.removeAt(i)
                                         mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
-                                        mViewModel.getNowLive(true,type = type.toString())
+//                                        mViewModel.getNowLive(true,type = type.toString())
                                         break
                                     }
                                 }

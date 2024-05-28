@@ -190,6 +190,8 @@
 -keep class com.xcjh.app.websocket.bean.**{ *; }
 -keep class com.xcjh.base_lib.network.BaseResponse { *; }
 -keep class com.xcjh.base_lib.bean.** { *; }
+
+-keep class com.xcjh.app.view.** { *; }
 # 使用Gson时需要配置Gson的解析对象及变量都不混淆。不然Gson会找不到变量。
 #okhttp
 -dontwarn okhttp3.**
@@ -307,3 +309,14 @@
 -keep class com.hjq.language.** {*;}
 #权限控制
 -keep class com.hjq.permissions.** {*;}
+
+#===
+-keep class com.kongzue.dialogx.** { *; }
+-dontwarn com.kongzue.dialogx.**
+
+# 额外的，建议将 android.view 也列入 keep 范围：
+-keep class android.view.** { *; }
+
+# 若启用模糊效果，请增加如下配置：
+-dontwarn androidx.renderscript.**
+-keep public class androidx.renderscript.** { *; }

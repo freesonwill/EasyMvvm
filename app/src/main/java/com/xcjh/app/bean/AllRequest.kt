@@ -123,7 +123,8 @@ data class PostSchMatchListNewBean(
 @Keep
 data class BasePage(
     var current: Int = 1,//第几页
-    var size: Int = Constants.BASE_PAGE_SIZE//每页显示多少条
+    var size: Int = Constants.BASE_PAGE_SIZE,//每页显示多少条
+    val offset: String? = null,
 )
 
 @Keep
@@ -175,6 +176,7 @@ data class ListReq(
     var current: Int = 0,//第几页
     var size: Int = 20,//每页显示多少条
     var status: String? = null,//活动状态:0：下架； 1：上架
+    val offset: String? = null,
 )
 
 data class HistoryMsgReq(

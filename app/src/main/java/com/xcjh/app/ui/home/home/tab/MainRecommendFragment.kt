@@ -106,7 +106,7 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                                 for (j in 0 until  (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.size){
                                     if((mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].userId.equals(bean.anchorId)){
                                         (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.removeAt(j)
-
+                                        mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
                                     }
                                 }
                             }
@@ -114,7 +114,7 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                         }
                     }
 
-//                        mViewModel.getOngoingMatchList(bean.id)
+//                       mViewModel.getOngoingMatchList(bean.id)
 
                         var being=BeingLiveBean()
                         being.matchType=bean.matchType

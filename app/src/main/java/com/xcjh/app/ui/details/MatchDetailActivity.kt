@@ -438,7 +438,8 @@ class MatchDetailActivity :
             typefaceBold = true,
             scrollEnable = true,
             lineIndicatorColor = R.color.c_34a853,
-            margin = 18
+            margin = 18,
+            smoothScroll=false
         ) {
             if (it == 0) {
                 setUnScroll(mDatabind.lltFold)
@@ -601,7 +602,8 @@ class MatchDetailActivity :
                                     )
                                 )
                             }
-                            if(isPure){
+                            //ss
+                            if(isPure&&pureFlow){
                                 if (mDatabind.videoPlayer.isIfCurrentIsFullscreen) {
                                     mDatabind.videoPlayer.exitFullScreen()
                                 }
@@ -721,10 +723,11 @@ class MatchDetailActivity :
                         isShowVideo = false
                         showHideLive(true)
                         anchor?.isOpen = false
-
+                        Log.i("GGGGGGG","主播关闭得到对比对了")
                         //查询直播间详情
                         mViewModel.getMatchDetailAnchorList(matchId, matchType, false)
                     }else{
+                        Log.i("GGGGGGG","主播id不一样")
                         val iterator = matchDetail.anchorList?.iterator()
                         if (iterator != null) {
                             for (tab in iterator) {
@@ -771,6 +774,8 @@ class MatchDetailActivity :
 //                            }
 //                        }
 //                    }
+                }else{
+                    Log.i("GGGGGGG","11111对比失败")
                 }
             }
 
@@ -804,14 +809,11 @@ class MatchDetailActivity :
                                 //正在比赛
                                 if (matchId == it.matchId.toString() && matchType == it.matchType.toString()) {
                                     //比赛类型 1足球，2篮球      如果是足球并且是未开赛
-                                    if(it.matchType.toString().equals("1")&&matchDetail.status.equals("1")&&it.status.toInt()>1){
-                                        mViewModel.getMatchDetail("4125913", "1", true)
-                                        Log.i("SSSSSSCCCCC","开始比赛")
-                                        return
-                                    }
-
-
-
+//                                    if(it.matchType.toString().equals("1")&&matchDetail.status.equals("1")&&it.status.toInt()>1){
+////                                        mViewModel.getMatchDetail("4125913", "1", true)
+//                                        Log.i("SSSSSSCCCCC","开始比赛")
+//                                        return
+//                                    }
                                     Gson().toJson(it).loge("===66666===")
                                     matchDetail.apply {
                                         status = BigDecimal(it.status).toInt()
@@ -970,6 +972,10 @@ class MatchDetailActivity :
                     //无改变
                     return@showSignalDialog
                 }
+                //如果选择了有改变就不是纯净流了
+                pureFlow=false
+
+
                 val iterator = matchDetail.anchorList?.iterator()
                 //如果已经关闭了后就删除
                 if (iterator != null) {
@@ -1250,19 +1256,19 @@ class MatchDetailActivity :
     override fun createObserver() {
         //收到关播信息后
         mViewModel.refreshDetail.observe(this){match ->
-
+            Log.i("GGGGGGG","返回数据")
             if(match!=null){
+                Log.i("GGGGGGG","有数据")
                if(match.anchorList!!.size==1){//就是纯净流
-                    if( matchDetail.status in 0..if (matchType == "1") 7 else 9){
-                        blacklistDilog(this)
-
-                    }
-//                    else{
-////                        finishDilog(this)
-//                        placeLoginDialogFinish(this)
+                   blacklistDilog(this)
+                   Log.i("GGGGGGG","当前状态======"+matchDetail.status)
+//                    if( matchDetail.status in 0..if (matchType == "1") 7 else 9){
+//                        blacklistDilog(this)
+//                    }else{
+////                        placeLoginDialogFinish(this)
 //                    }
-
                } else{
+                   Log.i("GGGGGGG","还有主播")
                    myToast(resources.getString(R.string.matche_txt_live_end))
                    matchDetail.anchorList!!.clear()
                    matchDetail.anchorList!!.addAll(match.anchorList!!)
@@ -1270,8 +1276,10 @@ class MatchDetailActivity :
 
                }
             }else{
+                Log.i("GGGGGGG","请求失败==")
+//                myToast("没有获取到数据", isDeep = true)
                 //没有查到最新的
-                if (anchor?.userId == offBean!!.anchorId) {
+                if (anchor?.userId.equals(offBean!!.anchorId)) {
                     mDatabind.videoPlayer.release()
                     GSYVideoManager.releaseAllVideos()
                     isShowVideo = false
@@ -1299,7 +1307,15 @@ class MatchDetailActivity :
 //                        delay(500L) // 延迟1秒（1000毫秒）
 //                        blacklistDilog(this@MatchDetailActivity)
 //                    }
+
+//               GlobalScope.launch(Dispatchers.Main) { // 使用主线程的调度器
+//                        delay(500L) // 延迟1秒（1000毫秒）
+//                       blacklistDilog(this@MatchDetailActivity)
+//                   Log.i("GGGGGGG","打开了")
+//                    }
+
                 } else {
+                    Log.i("GGGGGGG","对比失败")
                     val iterator = matchDetail.anchorList?.iterator()
                     if (iterator != null) {
                         for (tab in iterator) {
@@ -1327,7 +1343,7 @@ class MatchDetailActivity :
                         mViewModel.startTimeRepeat(match.runTime)
                     }
                     ///判断当前是否展示直播
-                    getAnchor {
+                    getAnchor(true) {
                         mDatabind.root.postDelayed(
                             {
                                 startVideo(it)
@@ -1574,18 +1590,21 @@ class MatchDetailActivity :
         }
     }
 
-
-    private fun getAnchor(action: (String?) -> Unit = {}) {
+    /**
+     * isNew是否是初始化，如果是第一次就要判断一下是不是纯净流
+     */
+    private fun getAnchor(isNew:Boolean=false, action: (String?) -> Unit = {}) {
         matchDetail.anchorList.notNull({ list ->
             "anchorList===${Gson().toJson(list)}".loge()
             //降序 sortByDescending可变列表的排序； sortedBytDescending 不可变列表的排序，需创建一个新的列表来保存排序后的结果
             list.sortByDescending {
                 it.hotValue
             }
-            // 是否找到流
+
+
+
+            // 是否找到流  true就是找到了主播  false是只有纯净流
             var findAnchor = false
-
-
             if (isHasAnchor) {
                 for ((i, item) in list.withIndex()) {
                     if (anchorId == item.userId) {
@@ -1598,6 +1617,13 @@ class MatchDetailActivity :
                     }
                 }
             }
+            //主要用于赛程进来，赛程进来的话是不知道有没有主播~~~判断是不是只有纯净流
+            if(isNew&&!pureFlow){
+                if(!findAnchor){
+                    pureFlow=true
+                }
+            }
+
             //没找到主播流 播第一个主播
             if (!findAnchor) {
                 //如果是纯净流进来的
@@ -1853,7 +1879,7 @@ class MatchDetailActivity :
 
     var   blacklist:CustomDialog?=null
     /***
-     * 弹出提示是否选择纯净流
+     * 弹出提示是否选择纯净流  该主播以下播
      */
     fun blacklistDilog(context: Context ) {
         if(blacklist==null){
