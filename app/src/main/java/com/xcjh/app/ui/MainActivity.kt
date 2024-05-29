@@ -219,6 +219,7 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
             mDatabind.vLogoAnim.playAnimation()
         }
 
+
         Constants.isLoading = true
         onIntent(intent)
         CacheUtil.setFirst(false)

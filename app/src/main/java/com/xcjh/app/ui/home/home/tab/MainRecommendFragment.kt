@@ -929,7 +929,6 @@ fun BindingAdapter.BindingViewHolder.setLiveMatchItem(type:Int=0) {
         bindingItem.txtLiveCompetition.visibility=View.GONE
         ////比赛类型 1足球，2篮球,可用值:1,2
         if(bean.matchType.equals("1")){
-
             bindingItem.tvMatchVs.text="${bean.homeScore}-${bean.awayScore}"
 //            bindingItem.ivLiveBe.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.bg_status_football))
             Glide.with(context)

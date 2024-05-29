@@ -212,7 +212,7 @@
                     android:layout_marginLeft="@dimen/dp_12"
                     android:hint="@string/txt_inputcode"
                     android:singleLine="true"
-                    android:maxLength="8"
+                    android:maxLength="6"
                     android:layout_toLeftOf="@id/tvgetcode_emalie"
                     android:textSize="@dimen/sp_15"
                     android:textColorHint="@color/c_a6a6b2"

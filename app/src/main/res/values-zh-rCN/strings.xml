@@ -430,7 +430,7 @@
     <string name="matche_txt_main">返回首页</string>
     <string name="matche_txt_switching">切换纯净流</string>
     <string name="dialog_txt_woed_code">请完成安全验证</string>
-    <string name="detail_txt_home">主队</string>
+    <string name="detail_txt_home">主</string>
     <string name="app_update_title">发现新版本</string>
     <string name="app_update_content">更新内容</string>
 </resources>

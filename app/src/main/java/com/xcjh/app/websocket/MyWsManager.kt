@@ -543,13 +543,14 @@ class MyWsManager private constructor(private val mContext: Context) {
         override fun onReceive(context: Context?, intent: Intent?) {
             val msg = intent?.getStringExtra("message") ?: return
             "onReceive====------------  $msg".loge()
-//            parsingServiceLogin(msg)
+
             try {
                 //appViewModel
                 parsingServiceLogin(msg)
             } catch (e: Exception) {
                 "======onReceive===webSocket解析异常------------  ${e.message}".loge()
             }
+//            parsingServiceLogin(msg)
         }
     }
     /**

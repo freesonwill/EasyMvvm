@@ -82,30 +82,27 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
             ?.setLiveStatusListener(this.toString(), object : LiveStatusListener {
                 //z直播间开播
                 override fun onOpenLive(bean: LiveStatus) {
-
+                    //热度 时间  maid
                     if(!bean.matchType.equals(type.toString())){
                         return
                     }
 
                     if(mDatabind.rcvRecommend.models!=null){
-                        for (i in 0 until  mDatabind.rcvRecommend.mutable.size){
+                        outer@ for (i in 0 until  mDatabind.rcvRecommend.mutable.size){
                             if((mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).matchId.equals(bean.matchId)&&
                                 (mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).matchType.equals(bean.matchType)){
                                 if( (mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).userId!=null){
                                     if((mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).userId.equals(bean.anchorId)){
                                         mDatabind.rcvRecommend.mutable.removeAt(i)
-                                        break
+                                        break@outer
                                     }
 
                                 } else{
-                                    mDatabind.rcvRecommend.mutable.removeAt(i)
-                                    break
+//                                    mDatabind.rcvRecommend.mutable.removeAt(i)
+//                                    break@outer
                                 }
 
-
-
                             }
-
 
                         }
                         mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
@@ -119,6 +116,16 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
                     being.nickName=bean.nickName
                     being.userId=bean.anchorId
                     being.playUrl=bean.playUrl
+                    being.id=bean.id
+                    being.matchTime=bean.matchTime
+                    being.hotCompetition=bean.hotCompetition
+                    being.homeTeamLogo=bean.homeTeamLogo
+                    being.awayTeamLogo=bean.awayTeamLogo
+//                    if(bean.nickName.equals("红孩儿本红")){
+//                        being.hotValue=500
+//                    }else{
+//                        being.hotValue=bean.hotValue
+//                    }
                     being.hotValue=bean.hotValue
                     being.titlePage=bean.coverImg
                     being.userLogo=bean.userLogo
@@ -139,11 +146,9 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
                     }
 
 
-
-
                     var num=0   //保存这个应该插入哪个
                     var fuzhi=false
-
+                    var list:ArrayList<BeingLiveBean> = arrayListOf()
                     if(mDatabind.rcvRecommend.models!=null){
                         num=mDatabind.rcvRecommend.mutable.size-1
                         for (i in 0 until mDatabind.rcvRecommend.mutable!!.size) {
@@ -159,7 +164,6 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
 
                         }
 
-                        var list:ArrayList<BeingLiveBean> = arrayListOf()
                         if(mDatabind.rcvRecommend.mutable.size==0){
                             list.add(being)
                             for (i in 0 until mDatabind.rcvRecommend.mutable.size) {
@@ -169,19 +173,71 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
                         }else {
                             for (i in 0 until mDatabind.rcvRecommend.mutable.size) {
                                 if(num==i){
-                                    list.add(being)
-                                    list.add((mDatabind.rcvRecommend.mutable[i] as BeingLiveBean))
+//                                    list.add(being)
+//                                    list.add((mDatabind.rcvRecommend.mutable[i] as BeingLiveBean))
+                                    if(fuzhi){
+                                        list.add(being)
+                                        list.add((mDatabind.rcvRecommend.mutable[i] as BeingLiveBean))
+
+                                    }else{
+                                        list.add((mDatabind.rcvRecommend.mutable[i] as BeingLiveBean))
+                                        list.add(being)
+                                    }
+
+
                                 }else{
                                     list.add((mDatabind.rcvRecommend.mutable[i] as BeingLiveBean))
                                 }
 
                             }
                         }
-                         mDatabind.rcvRecommend.mutable.clear()
-                        mDatabind.rcvRecommend.addModels(list)
-
-
+                    }else{
+                        list.add(being)
                     }
+
+
+
+                        var liveList=ArrayList<BeingLiveBean>()
+                        //纯净流
+                        var pureList=ArrayList<BeingLiveBean>()
+                        //热门纯净流
+                        var popularList=ArrayList<BeingLiveBean>()
+
+                        list.forEach {
+                            if(it.pureFlow){
+                                //纯净流
+                                //是否是热门纯净流
+                                if(it.hotCompetition){
+                                    popularList.add(it)
+                                }else{
+                                    pureList.add(it)
+                                }
+
+                            }else{
+                                liveList.add(it)
+                            }
+                        }
+
+
+                        //主播开播比赛 倒序
+                        var newLive=liveList.sortedWith(compareByDescending<BeingLiveBean>{it.hotValue}.thenByDescending { it.id.toLong() })
+                        //热门纯净流 升序
+                        var newPopular=popularList.sortedWith(compareBy<BeingLiveBean>{it.matchTime.toLong()}.thenBy { it.matchId.toLong() })
+                        //纯净流比赛升序
+                        var newPure=pureList.sortedWith(compareBy<BeingLiveBean>{it.matchTime.toLong()}.thenBy { it.matchId.toLong() })
+
+
+                    if(mDatabind.rcvRecommend.models!=null){
+                        mDatabind.rcvRecommend.mutable.clear()
+                    }
+
+
+//                        mDatabind.rcvRecommend.addModels(newList)
+                        mDatabind.rcvRecommend.addModels(newLive)
+                        mDatabind.rcvRecommend.addModels(newPopular)
+                        mDatabind.rcvRecommend.addModels(newPure)
+
+
                     mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
 
                 }
@@ -201,7 +257,6 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
                                 (mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).matchType.equals(bean.matchType)&&
                                 (mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).pureFlow){
                                 mDatabind.rcvRecommend.mutable.removeAt(i)
-
                                 break
                             }
 
@@ -217,10 +272,16 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
                     being.nickName=bean.nickName
                     being.userId=bean.anchorId
                     being.playUrl=bean.playUrl
+                    being.matchTime=bean.matchTime
                     being.hotValue=bean.hotValue
                     being.titlePage=bean.coverImg
                     being.userLogo=bean.userLogo
-                    being.pureFlow=false
+                    being.status=bean.status
+                    being.id=bean.id
+                    being.homeTeamLogo=bean.homeTeamLogo
+                    being.awayTeamLogo=bean.awayTeamLogo
+                    being.hotCompetition=bean.hotCompetition
+                    being.pureFlow=true
                     //语言 0是中文  1是繁体  2是英文
                     if(Constants.languageType==0){
                         being.homeTeamName=bean.homeTeamName
@@ -237,52 +298,51 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
                     }
 
 
-
-
-                    var num=0   //保存这个应该插入哪个
-                    var fuzhi=false
-
+                    var dataList=ArrayList<BeingLiveBean>()
                     if(mDatabind.rcvRecommend.models!=null){
-//                        num=mDatabind.rcvRecommend.mutable.size-1
-//                        for (i in 0 until mDatabind.rcvRecommend.mutable!!.size) {
-//                            if((mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).pureFlow){
-//                                if(fuzhi==false){
-//                                    num=i
-//                                    break
-//                                }
-//
-//                            }
-//
-//
-//
-//                        }
-//
-//                        var list:ArrayList<BeingLiveBean> = arrayListOf()
-//                        if(mDatabind.rcvRecommend.mutable.size==0){
-//                            list.add(being)
-//                            for (i in 0 until mDatabind.rcvRecommend.mutable.size) {
-//                                list.add((mDatabind.rcvRecommend.mutable[i] as BeingLiveBean))
-//                            }
-//
-//                        }else {
-//                            for (i in 0 until mDatabind.rcvRecommend.mutable.size) {
-//                                if(num==i){
-//                                    list.add(being)
-//                                    list.add((mDatabind.rcvRecommend.mutable[i] as BeingLiveBean))
-//                                }else{
-//                                    list.add((mDatabind.rcvRecommend.mutable[i] as BeingLiveBean))
-//                                }
-//
-//                            }
-//                        }
-//                        mDatabind.rcvRecommend.mutable.clear()
-//                        mDatabind.rcvRecommend.addModels(list)
-                        var list =ArrayList<BeingLiveBean>()
-                        list.add(being)
-                        mDatabind.rcvRecommend.addModels(list)
-
-
+                        //获取当前的数据
+                          dataList=mDatabind.rcvRecommend.models as ArrayList<BeingLiveBean>
                     }
+                    dataList.add(being)
+
+                        var liveList=ArrayList<BeingLiveBean>()
+                        //纯净流
+                        var pureList=ArrayList<BeingLiveBean>()
+                        //热门纯净流
+                        var popularList=ArrayList<BeingLiveBean>()
+
+                        dataList.forEach {
+                            if(it.pureFlow){
+                                //纯净流
+                                //是否是热门纯净流
+                                if(it.hotCompetition){
+                                    popularList.add(it)
+                                }else{
+                                    pureList.add(it)
+                                }
+
+                            }else{
+                                liveList.add(it)
+                            }
+                        }
+
+                        //主播开播比赛 倒序
+                        var newLive=liveList.sortedWith(compareByDescending<BeingLiveBean>{it.hotValue}.thenByDescending { it.id.toLong() })
+                        //热门纯净流 升序
+                        var newPopular=popularList.sortedWith(compareBy<BeingLiveBean>{it.matchTime.toLong()}.thenBy { it.matchId.toLong() })
+                        //纯净流比赛升序
+                        var newPure=pureList.sortedWith(compareBy<BeingLiveBean>{it.matchTime.toLong()}.thenBy { it.matchId.toLong() })
+                        if(mDatabind.rcvRecommend.models!=null){
+                            mDatabind.rcvRecommend.mutable.clear()
+                        }
+
+                        mDatabind.rcvRecommend.addModels(newLive)
+                        mDatabind.rcvRecommend.addModels(newPopular)
+                        mDatabind.rcvRecommend.addModels(newPure)
+//                        mDatabind.rcvRecommend.addModels(list)
+
+
+
                     mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
 
                 }

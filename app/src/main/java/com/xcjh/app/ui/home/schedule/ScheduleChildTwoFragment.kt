@@ -999,12 +999,20 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                         SoundManager.playMedia()
 
 
+//                        MatchDetailActivity.open(
+//                            matchType = item.matchType,
+//                            matchId = item.matchId,
+//                            matchName = "${item.homeName}VS${item.awayName}",
+//                            anchorId = "",
+//                            videoUrl = "",
+//
+//                        )
+
                         MatchDetailActivity.open(
                             matchType = item.matchType,
                             matchId = item.matchId,
                             matchName = "${item.homeName}VS${item.awayName}",
-                            anchorId = "",
-                            videoUrl = ""
+                            pureFlow = true
                         )
 
                     }

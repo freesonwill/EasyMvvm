@@ -661,6 +661,16 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
         this.liveId = liveId
         this.userId = userId
 
+        if(this.userId!=null){
+            if (CacheUtil.isLogin()&&(userId!=null&&!userId.equals("")) ) {
+                mViewModel.getAnchorControlUserInfo(userId!!)
+            }else{
+                setProhibition(false)
+            }
+        }else{
+            setProhibition(false)
+        }
+
 
         offset = ""
         setNotice()
@@ -683,7 +693,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
 
 
     /***
-     * 是黑名单 1是进入直播间  2是在直播间的时候被退出
+     * 是黑名单 1是进入直播间  2是在直播间的时候被退出  刷新
      */
     fun blacklistDilog(context: Context, type:Int) {
         CustomDialog.build()

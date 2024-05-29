@@ -101,14 +101,18 @@ data class LiveStatus(
     val userLogo:String="",//主播头像
     val matchType:String="",//比赛类型
     val coverImg:String="",//封面图
+    var matchTime:String="", //比赛时间
+    var homeTeamLogo: String = "",//主队LOGO
+    var awayTeamLogo: String = "",//	客队LOGO
+    var status:String="",
     var awayTeamNameEn: String = "",//	客队英文名字
     var awayTeamNameZht: String = "",//	客队繁体名字
     var homeTeamNameEn: String = "",//	主队英文名
     var homeTeamNameZht: String = "",//	主队繁体名
     var competitionNameEn: String = "",//	赛事英文
     var competitionNameZht: String = "",//	赛事英文繁体
-
     var pureFlow: Boolean = false,//	是否是纯净流
+    var hotCompetition:Boolean=false,  //热门字段默认 不是热门比赛
 )
 
 /**
