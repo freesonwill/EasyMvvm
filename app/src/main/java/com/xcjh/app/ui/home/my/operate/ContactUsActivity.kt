@@ -1,6 +1,7 @@
 package com.xcjh.app.ui.home.my.operate
 
 import android.content.Context
+import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -150,6 +151,7 @@ class ContactUsActivity : BaseActivity<ContactUsVm, ActivityContactUsBinding>() 
                     .isPageStrategy(true)
                     .setMaxSelectNum(maxSelectNum)
                     .isGif(false)
+                    .setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)//禁止横屏
                     .isPageSyncAlbumCount(true)
                     .setSelectedData(mAdapter!!.data)
                     .forResult(object : OnResultCallbackListener<LocalMedia> {

@@ -851,57 +851,12 @@ fun MagicIndicator.bindBgViewPager2(
                     LayoutInflater.from(context).inflate(R.layout.live_tab_title_layout, null)
                 titleText = customLayout.findViewById(R.id.title_text)
 
-                val className = "com.cn.game.sdk.utils.GamePartyLibraryInitializer"
-                val isExist = isThirdPartyClassExist(className)
-                if (isExist) {
-                    Log.i("FSFSFSFSFSF","引入了-============")
-                    if(zhengMargin){
-                        if( mStringList[index].length==2){
-                            titleText.setPadding(
-                                UIUtil.dip2px(context, paddingH+40),
-                                UIUtil.dip2px(context, paddingV),
-                                UIUtil.dip2px(context, paddingH),
-                                UIUtil.dip2px(context, paddingV),
-                            )
-                        }else{
-                            titleText.setPadding(
-                                UIUtil.dip2px(context, paddingH+32),
-                                UIUtil.dip2px(context, paddingV),
-                                UIUtil.dip2px(context, paddingH),
-                                UIUtil.dip2px(context, paddingV),
-                            )
-                        }
-                    }else{
-
-
-                        if( mStringList[index].length==2){
-                            titleText.setPadding(
-                                UIUtil.dip2px(context, paddingH+10),
-                                UIUtil.dip2px(context, paddingV),
-                                UIUtil.dip2px(context, paddingH),
-                                UIUtil.dip2px(context, paddingV),
-                            )
-                        }else{
-                            titleText.setPadding(
-                                UIUtil.dip2px(context, paddingH+12),
-                                UIUtil.dip2px(context, paddingV),
-                                UIUtil.dip2px(context, paddingH),
-                                UIUtil.dip2px(context, paddingV),
-                            )
-                        }
-                    }
-
-                } else {
-                    Log.i("FSFSFSFSFSF","没有引入-=====")
-                    titleText.setPadding(
-                        UIUtil.dip2px(context, paddingH),
-                        UIUtil.dip2px(context, paddingV),
-                        UIUtil.dip2px(context, paddingH),
-                        UIUtil.dip2px(context, paddingV),
-                    )
-
-
-                }
+                titleText.setPadding(
+                    UIUtil.dip2px(context, paddingH),
+                    UIUtil.dip2px(context, paddingV),
+                    UIUtil.dip2px(context, paddingH),
+                    UIUtil.dip2px(context, paddingV),
+                )
 
 
 

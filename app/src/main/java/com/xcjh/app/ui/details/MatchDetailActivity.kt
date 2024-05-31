@@ -262,7 +262,7 @@ class MatchDetailActivity :
             .navigationBarColor(R.color.c_181819)
             .navigationBarDarkIcon(false)
             .titleBarMarginTop(mDatabind.rltTop).init()
-
+        Log.i("BDBDBDBDB","=========="+this.toString())
         mDatabind.ivBack.clickNoRepeat {
             SoundManager.playMedia()
             finish()
@@ -439,7 +439,7 @@ class MatchDetailActivity :
             scrollEnable = true,
             lineIndicatorColor = R.color.c_34a853,
             margin = 18,
-            smoothScroll=false
+            smoothScroll=true
         ) {
             if (it == 0) {
                 setUnScroll(mDatabind.lltFold)

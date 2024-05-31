@@ -934,10 +934,10 @@ fun BindingAdapter.BindingViewHolder.setLiveMatchItem(type:Int=0) {
             Glide.with(context)
                 .load(R.drawable.bg_status_football) // 替换为您要加载的图片 URL
                 .into(bindingItem.ivLiveBe)
-            Glide.with(context).load(bean.homeTeamLogo).placeholder(R.drawable.default_anchor_icon)
+            Glide.with(context).load(bean.homeTeamLogo).placeholder(R.drawable.morentouxiang)
                 .into(  bindingItem.ivHomeIcon)
 
-            Glide.with(context).load(bean.awayTeamLogo).placeholder(R.drawable.default_anchor_icon)
+            Glide.with(context).load(bean.awayTeamLogo).placeholder(R.drawable.morentouxiang)
                 .into(  bindingItem.ivAwayIcon)
             bindingItem.tvHomeName.text =bean.homeTeamName
 
@@ -955,9 +955,9 @@ fun BindingAdapter.BindingViewHolder.setLiveMatchItem(type:Int=0) {
                 .into(bindingItem.ivLiveBe)
 //            bindingItem.ivLiveBe.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.bg_top_basketball))
 
-            Glide.with(context).load(bean.awayTeamLogo).placeholder(R.drawable.default_anchor_icon)
+            Glide.with(context).load(bean.awayTeamLogo).placeholder(R.drawable.morentouxiang)
                 .into(  bindingItem.ivHomeIcon)
-            Glide.with(context).load(bean.homeTeamLogo).placeholder(R.drawable.default_anchor_icon)
+            Glide.with(context).load(bean.homeTeamLogo).placeholder(R.drawable.morentouxiang)
                 .into(  bindingItem.ivAwayIcon)
             bindingItem.tvHomeName.text =bean.awayTeamName
             bindingItem.tvAwayName.text =bean.homeTeamName
@@ -979,8 +979,8 @@ fun BindingAdapter.BindingViewHolder.setLiveMatchItem(type:Int=0) {
 
         Glide.with(context)
             .load(bean.userLogo) // 替换为您要加载的图片 URL
-            .error(R.drawable.default_anchor_icon)
-            .placeholder(R.drawable.default_anchor_icon)
+            .error(R.drawable.morentouxiang)
+            .placeholder(R.drawable.morentouxiang)
             .into(bindingItem.ivLiveHead)
 
         Glide.with(context)

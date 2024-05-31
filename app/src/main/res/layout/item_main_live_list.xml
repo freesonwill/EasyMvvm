@@ -116,7 +116,7 @@
                     android:layout_width="@dimen/dp_20"
                     android:layout_height="@dimen/dp_20"
                     app:round="@dimen/dp_2"
-                    tools:src="@drawable/default_team_logo" />
+                    tools:src="@drawable/morentouxiang" />
                 <TextView
                     android:id="@+id/tvHomeName"
                     android:layout_width="wrap_content"
@@ -181,7 +181,7 @@
                     android:id="@+id/ivAwayIcon"
                     android:layout_width="@dimen/dp_20"
                     android:layout_height="@dimen/dp_20"
-                    tools:src="@drawable/default_team_logo" />
+                    tools:src="@drawable/morentouxiang" />
                 <TextView
                     android:id="@+id/tvAwayName"
                     android:layout_width="wrap_content"
@@ -237,7 +237,7 @@
             android:layout_height="32dp"
             android:scaleType="centerCrop"
             app:is_circle="true"
-            app:srcCompat="@drawable/default_anchor_icon"/>
+            app:srcCompat="@drawable/morentouxiang"/>
 
         <LinearLayout
             android:layout_width="match_parent"

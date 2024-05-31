@@ -136,14 +136,16 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/txtProhibit"
                 android:layout_width="match_parent"
-                android:layout_height="55dp"
+                android:layout_height="35dp"
                 android:text="@string/str_stoptalk"
                 android:textColor="@color/c_94999f"
                 android:gravity="center"
                 android:textSize="14sp"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
                 android:visibility="gone"
                 android:layout_centerInParent="true"
-                android:background="@color/c_1f1f20"/>
+                android:background="@drawable/shape_35_1f1f20"/>
         </RelativeLayout>
 
     </RelativeLayout>

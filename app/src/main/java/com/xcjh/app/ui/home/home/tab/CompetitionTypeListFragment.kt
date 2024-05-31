@@ -89,8 +89,7 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
 
                     if(mDatabind.rcvRecommend.models!=null){
                         outer@ for (i in 0 until  mDatabind.rcvRecommend.mutable.size){
-                            if((mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).matchId.equals(bean.matchId)&&
-                                (mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).matchType.equals(bean.matchType)){
+                            if(!(mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).pureFlow){
                                 if( (mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).userId!=null){
                                     if((mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).userId.equals(bean.anchorId)){
                                         mDatabind.rcvRecommend.mutable.removeAt(i)

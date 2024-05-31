@@ -83,6 +83,7 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
 
 
     override fun initView(savedInstanceState: Bundle?) {
+
         mDatabind.state.apply {
             StateConfig.setRetryIds(R.id.lltContent, R.id.stateLoadingImg)
             onEmpty {
@@ -123,8 +124,20 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
                         outer@ for (i in 0 until  mDatabind.rcvRecommend.mutable.size){
                             if(mDatabind.rcvRecommend.mutable[i] is MainTxtBean){
                                 for (j in 0 until  (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.size){
-                                    if( (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].matchId.equals(bean.matchId)&&
-                                        (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].matchType.equals(bean.matchType)){
+//                                    if( (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].matchId.equals(bean.matchId)&&
+//                                        (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].matchType.equals(bean.matchType)){
+//                                        if((mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].userId!=null){
+//                                            if((mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].userId.equals(bean.anchorId)){
+//                                                (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.removeAt(j)
+//                                                break@outer
+//                                            }
+//                                        }else{
+////                                            (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.removeAt(j)
+////                                            break@outer
+//                                        }
+//
+//                                    }
+                                    if(!(mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].pureFlow){
                                         if((mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].userId!=null){
                                             if((mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].userId.equals(bean.anchorId)){
                                                 (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.removeAt(j)
@@ -165,11 +178,6 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
                     being.awayTeamLogo=bean.awayTeamLogo
                     being.pureFlow=false
 
-//                if(bean.nickName.equals("红孩儿本红")){
-//                        being.hotValue=500
-//                    }else{
-//                        being.hotValue=bean.hotValue
-//                    }
                     //语言 0是中文  1是繁体  2是英文
                     if(Constants.languageType==0){
                         being.homeTeamName=bean.homeTeamName
@@ -258,24 +266,15 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
                     }
                     //主播开播比赛 倒序
                     var newLive=liveList.sortedWith(compareByDescending<BeingLiveBean>{
-                        Log.i("SDSDSDSDSDSDS","热度====="+it.hotValue)
-                        it.hotValue
-
-                    }.thenByDescending {
-                        Log.i("SDSDSDSDSDSDS","id====="+it.id)
-                        it.id.toLong() })
+                        it.hotValue }.thenByDescending { it.id.toLong() })
                     //热门纯净流 升序
                     var newPopular=popularList.sortedWith(compareBy<BeingLiveBean>{it.matchTime.toLong()}.thenBy { it.matchId.toLong() })
                     //纯净流比赛升序
                     var newPure=pureList.sortedWith(compareBy<BeingLiveBean>{it.matchTime.toLong()}.thenBy { it.matchId.toLong() })
-
                     (mDatabind.rcvRecommend.mutable[type] as MainTxtBean).list.clear()
                     (mDatabind.rcvRecommend.mutable[type] as MainTxtBean).list.addAll(newLive)
                     (mDatabind.rcvRecommend.mutable[type] as MainTxtBean).list.addAll(newPopular)
                     (mDatabind.rcvRecommend.mutable[type] as MainTxtBean).list.addAll(newPure)
-
-
-
                     mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
 
 
