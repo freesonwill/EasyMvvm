@@ -153,8 +153,6 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                                     }
                                 }
 
-
-
                             }
 
                         }

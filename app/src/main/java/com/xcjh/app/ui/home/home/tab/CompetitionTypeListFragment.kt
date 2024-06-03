@@ -366,9 +366,6 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
                                     }
                                 }
 
-
-
-
                     }
                 }
             }

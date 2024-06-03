@@ -37,8 +37,7 @@ interface ApiComService {
       /*  const val SERVER_URL = "https://holdem.news/apis/"//app通用 正式
         const val SHARE_IP = "https://www.2web3.net/user-user/"//比赛分享链接
         const val WEB_SOCKET_URL = "ws://192.168.101.15:8888" ///正式*/
-
-        const val SERVER_URL_EMAIL = "https://www.2web3.net/user-user/"//邮箱验证
+//        const val SERVER_URL_EMAIL = "https://www.2web3.net/user-user/"//邮箱验证
     }
 
 
