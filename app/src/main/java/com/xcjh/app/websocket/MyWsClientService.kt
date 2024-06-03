@@ -27,7 +27,7 @@ import java.util.concurrent.*
  * 2、先调用onBind再调用startService
  * onCreate() --onBind()--onStartCommand--onUnBind--onDestroy
  *
- * @author zobo101
+ * @author
  */
 class MyWsClientService : Service() {
     lateinit var client: WebSocketClient

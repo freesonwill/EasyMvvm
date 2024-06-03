@@ -20,7 +20,7 @@ import com.xcjh.base_lib.utils.*
 
 
 /**
- * @author zobo101
+ * @author
  * 管理 webSocket
  */
 //class MyWsManager private constructor() {

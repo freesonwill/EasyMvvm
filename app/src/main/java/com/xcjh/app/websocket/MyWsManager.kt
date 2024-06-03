@@ -43,7 +43,7 @@ import java.util.concurrent.atomic.AtomicInteger
 
 
 /**
- * @author zobo101
+ * @author
  * 管理 webSocket
  */
 class MyWsManager private constructor(private val mContext: Context) {

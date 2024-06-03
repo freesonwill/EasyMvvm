@@ -10,7 +10,7 @@ import com.xcjh.app.websocket.bean.ReceiveWsBean
 import com.xcjh.app.websocket.bean.UpdateLiveContentBean
 
 /**
- * @author zobo101
+ * @author
  * webSocket 返回的各种数据
  */
 
