@@ -143,9 +143,6 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
                                                 (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.removeAt(j)
                                                 break@outer
                                             }
-                                        }else{
-//                                            (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.removeAt(j)
-//                                            break@outer
                                         }
 
                                     }
