@@ -32,6 +32,7 @@
             android:layout_marginLeft="5dp"
             android:layout_toLeftOf="@+id/tv_delete"
             android:src="@drawable/icon_refresh" />
+<!--   et_delete     ic_close   -->
         <TextView
             android:id="@+id/tv_delete"
             android:layout_width="27dp"
@@ -39,7 +40,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="10dp"
-            android:background="@drawable/et_delete" />
+            android:background="@drawable/ic_close" />
     </RelativeLayout>
 
     <View
@@ -64,9 +65,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center" />
-
-
-
     </FrameLayout>
 
     <TextView

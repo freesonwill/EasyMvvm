@@ -679,11 +679,11 @@ class LoginActivity : BaseActivity<LoginVm, ActivityLoaginBinding>() {
                     var shifting:Double=0.0
 
                     override fun onBind(dialog: CustomDialog?, v: View) {
-                       wordView= v.findViewById<WordImageView>(R.id.wordView)
+                            wordView= v.findViewById<WordImageView>(R.id.wordView)
                           tv_delete = v.findViewById<TextView>(R.id.tv_delete)
                           tv_refresh = v.findViewById<ImageView>(R.id.tv_refresh)
                            bottomTitle = v.findViewById<TextView>(R.id.bottomTitle)
-                        rl_pb_word = v.findViewById<ProgressBar>(R.id.rl_pb_word)
+                         rl_pb_word = v.findViewById<ProgressBar>(R.id.rl_pb_word)
 
 
 

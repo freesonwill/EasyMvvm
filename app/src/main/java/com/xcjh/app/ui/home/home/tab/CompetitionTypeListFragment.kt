@@ -157,10 +157,7 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
                                             break
                                         }
 
-                                    }
-
-
-
+                                 }
                         }
 
                         if(mDatabind.rcvRecommend.mutable.size==0){

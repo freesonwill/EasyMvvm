@@ -1503,6 +1503,9 @@ class ChatActivity : BaseActivity<ChatVm, ActivityChatBinding>() {
         }
     }
 
+    /**
+     * 弹出框
+     */
     fun initLongClick(view: View, content: String, firstVisiblePosition: Int) {
         try {
 

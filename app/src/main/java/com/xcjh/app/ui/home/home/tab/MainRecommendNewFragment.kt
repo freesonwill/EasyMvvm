@@ -262,8 +262,7 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
                         }
                     }
                     //主播开播比赛 倒序
-                    var newLive=liveList.sortedWith(compareByDescending<BeingLiveBean>{
-                        it.hotValue }.thenByDescending { it.id.toLong() })
+                    var newLive=liveList.sortedWith(compareByDescending<BeingLiveBean>{ it.hotValue }.thenByDescending { it.id.toLong() })
                     //热门纯净流 升序
                     var newPopular=popularList.sortedWith(compareBy<BeingLiveBean>{it.matchTime.toLong()}.thenBy { it.matchId.toLong() })
                     //纯净流比赛升序
@@ -416,8 +415,6 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
                     (mDatabind.rcvRecommend.mutable[type] as MainTxtBean).list.addAll(newLive)
                     (mDatabind.rcvRecommend.mutable[type] as MainTxtBean).list.addAll(newPopular)
                     (mDatabind.rcvRecommend.mutable[type] as MainTxtBean).list.addAll(newPure)
-
-
                     mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
                 }
 
