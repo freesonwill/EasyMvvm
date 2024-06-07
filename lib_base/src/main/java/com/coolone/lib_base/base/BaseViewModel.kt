@@ -1,4 +1,4 @@
-package com.coolone.lib_base
+package com.coolone.lib_base.base
 
 import androidx.lifecycle.ViewModel
 import com.coolone.lib_base.inner.IViewModel

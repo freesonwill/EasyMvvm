@@ -1,6 +1,6 @@
 package com.coolone.mvvm
 
-import com.coolone.lib_base.BaseViewModel
+import com.coolone.lib_base.base.BaseViewModel
 
 /**
  * Description:

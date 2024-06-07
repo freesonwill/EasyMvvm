@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace 'com.coolone.mvvm'
-    compileSdk 33
+    compileSdk Versions.compileSdk
 
     defaultConfig {
         applicationId "com.coolone.mvvm"
-        minSdk 24
-        targetSdk 33
+        minSdk Versions.minSdk
+        targetSdk Versions.targetSdk
         versionCode 1
         versionName "1.0"
 

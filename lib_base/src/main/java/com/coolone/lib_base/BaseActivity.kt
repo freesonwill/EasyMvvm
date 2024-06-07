@@ -7,9 +7,9 @@ import android.view.ViewStub
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentContainerView
 import androidx.viewbinding.ViewBinding
+import com.coolone.lib_base.base.BaseViewModel
 import com.coolone.lib_base.inner.IToolBarView
 import com.coolone.lib_base.inner.IView
-import com.gyf.immersionbar.ImmersionBar
 
 /**
  * Description:
