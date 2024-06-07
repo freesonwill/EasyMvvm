@@ -1,4 +1,4 @@
-package com.coolone.lib_base.utils
+package com.coolone.lib_base.utils.ext
 
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
