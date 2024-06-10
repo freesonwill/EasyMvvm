@@ -2,6 +2,8 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
 }
+apply from: rootProject.file("flavor.gradle")
+//如果是同级目录可以这样写：apply from: "flavor.gradle"
 
 android {
     namespace 'com.coolone.mvvm'

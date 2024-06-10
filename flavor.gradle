@@ -1,0 +1,36 @@
+android {
+    flavorDimensions "versionCode"
+
+    productFlavors {
+        //下面的flavor 不能定义debug,release,test重复的
+        develop {
+            applicationId = "com.freesonwill.develop"
+            versionCode = 100
+            versionName = "ada"
+            buildConfigField "String", "HTTP_URL", "\"http://172.16.10.121:8884/api/\""
+            buildConfigField "String", "NETTY_URL", "\"172.16.10.111:8888\""
+        }
+
+        innerTest {
+            applicationId = "com.freesonwill.innerTest"
+            buildConfigField "String", "HTTP_URL", "\"http://172.16.10.121:8884/api/\""
+            buildConfigField "String", "NETTY_URL", "\"172.16.10.111:8888\""
+        }
+
+        formal {
+            applicationId = "com.freesonwill.formal"
+            buildConfigField "String", "HTTP_URL", "\"http://172.16.10.121:8884/api/\""
+            buildConfigField "String", "NETTY_URL", "\"172.16.10.111:8888\""
+
+        }
+
+    }
+
+    productFlavors.all {
+        flavor ->
+            {
+                //println("flavor-->" + name)
+                flavor.manifestPlaceholders.put("CHANNEL", name)
+            }
+    }
+}
