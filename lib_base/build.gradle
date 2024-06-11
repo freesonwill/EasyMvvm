@@ -51,7 +51,7 @@ dependencies {
     //api 'com.kunminx.arch:unpeek-livedata:7.8.0'
     api 'com.kunminx.archi:unpeek-livedata:4.4.1-beta1'
 
-    implementation(Dependencies.core_ktx)
+    api(Dependencies.core_ktx)
     implementation(Dependencies.appcompat)
     implementation(Dependencies.material)
     implementation(Dependencies.immersionbar)

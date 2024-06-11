@@ -9,17 +9,18 @@ import androidx.appcompat.app.AppCompatActivity
  */
 object UIExt {
 
-    /**
-     * Activity的返回扩展函数
-     */
-    @JvmStatic()
-    fun AppCompatActivity.onBackPressed(enabled: Boolean, callback: () -> Unit) {
-        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(enabled) {
-            override fun handleOnBackPressed() {
-                callback()
-            }
-        })
-    }
+
+}
+/**
+ * Activity的返回扩展函数
+ */
+@JvmName("onBackPressed")
+fun AppCompatActivity.onBackPressed(enabled: Boolean, callback: () -> Unit) {
+    onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(enabled) {
+        override fun handleOnBackPressed() {
+            callback()
+        }
+    })
 }
 
 
