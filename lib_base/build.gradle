@@ -36,13 +36,14 @@ android {
 }
 
 dependencies {
-    //api Libs.blankj
+    api Libs.blankj
     api Libs.immersionbar
     implementation Libs.viewModel
     //base dependencies
     implementation Libs.core_ktx
     api Libs.appcompat
     api Libs.material
+    api project(":lib_res")
 
     testImplementation Libs.junit
     androidTestImplementation Libs.ext_junit

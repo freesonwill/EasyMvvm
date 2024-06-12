@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace 'com.luxury.lib_common'
+    namespace 'com.luxury.lib_res'
     compileSdk 33
 
     defaultConfig {
-        minSdk 24
+        minSdk 23
         targetSdk 33
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -31,10 +31,4 @@ android {
 }
 
 dependencies {
-    implementation Libs.core_ktx
-    implementation Libs.appcompat
-    implementation Libs.material
-    testImplementation Libs.junit
-    androidTestImplementation Libs.ext_junit
-    androidTestImplementation Libs.espresso_core
 }

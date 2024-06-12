@@ -15,7 +15,5 @@ object Libs {
     const val immersionbar = "com.geyifeng.immersionbar:immersionbar:3.2.2"
     const val blankj = "com.blankj:utilcodex:1.31.1"
     const val viewModel = "androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2"
-    const val lifecycle = ""
-
-
+    const val androidx_startup = "androidx.startup:startup-runtime:1.1.1"
 }

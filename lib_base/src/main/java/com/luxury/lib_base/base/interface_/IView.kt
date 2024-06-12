@@ -10,6 +10,11 @@ interface IView {
     fun initView(savedInstanceState: Bundle?)
 
     /**
+     * 初始化状态栏
+     */
+    fun initStatusBar()
+
+    /**
      * 注册LiveData的观察者
      */
     fun initObserver()

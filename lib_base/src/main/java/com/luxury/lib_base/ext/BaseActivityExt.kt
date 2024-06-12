@@ -3,12 +3,22 @@ package com.luxury.lib_base.ext
 import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.ViewDataBinding
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.viewbinding.ViewBinding
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.ParameterizedType
 
 @JvmName("inflateWithGeneric")
 fun <VB : ViewBinding> AppCompatActivity.inflateBindingWithGeneric(layoutInflater: LayoutInflater): VB =
+    withGenericBindingClass<VB>(this) { clazz ->
+        clazz.getMethod("inflate", LayoutInflater::class.java).invoke(null, layoutInflater) as VB
+    }.also { binding ->
+        if (binding is ViewDataBinding) {
+            binding.lifecycleOwner = this
+        }
+    }
+fun <VB : ViewBinding> Fragment.inflateBindingWithGeneric(layoutInflater: LayoutInflater): VB =
     withGenericBindingClass<VB>(this) { clazz ->
         clazz.getMethod("inflate", LayoutInflater::class.java).invoke(null, layoutInflater) as VB
     }.also { binding ->
@@ -23,7 +33,7 @@ private fun <VB : ViewBinding> withGenericBindingClass(any: Any, block: (Class<V
     while (superclass != null) {
         if (genericSuperclass is ParameterizedType) {
             try {
-                return block.invoke(genericSuperclass.actualTypeArguments[1] as Class<VB>)
+                return block.invoke(genericSuperclass.actualTypeArguments[0] as Class<VB>)
             } catch (e: NoSuchMethodException) {
             } catch (e: ClassCastException) {
             } catch (e: InvocationTargetException) {

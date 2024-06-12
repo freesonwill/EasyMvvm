@@ -36,6 +36,7 @@ android {
 
 dependencies {
     implementation project(":lib_base")
+    implementation Libs.androidx_startup
     testImplementation Libs.junit
     androidTestImplementation Libs.ext_junit
     androidTestImplementation Libs.espresso_core

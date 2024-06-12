@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <application>
         <activity
@@ -12,6 +13,26 @@
             </intent-filter>
         </activity>
 
+        <!--
+           1. name 为固定 androidx.startup.InitializationProvider，则知道是用这个来进行初始化的
+           2. authorities = "${applicationId}.androidx-startup" 用于避免多个应用导致的重复
+           3. exported 仅供自身使用，不对外暴露
+           4. tools:node = "merge" 表示合并相同的 InitializationProvider，在这里代表合并其他组件的 meta-data
+        -->
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <!--
+                 1.  name 为 CustomInitializer 的全路径，或者相对于资源文件的路径
+                 2.  value 为固定的 androidx.startup，用于提取 CustomInitializer 的路径
+            -->
+            <meta-data
+                android:name="com.luxury.module_login.ModuleInitializer"
+                android:value="androidx.startup" />
+        </provider>
+        <!-- ... -->
     </application>
 
 </manifest>
