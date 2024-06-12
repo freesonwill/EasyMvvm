@@ -5,8 +5,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewbinding.ViewBinding
+import com.alibaba.android.arouter.launcher.ARouter
 import com.gyf.immersionbar.ImmersionBar
-import com.luxury.lib_res.R
 import com.luxury.lib_base.base.interface_.IView
 import com.luxury.lib_base.ext.inflateBindingWithGeneric
 import com.luxury.lib_base.utils.DayModeUtil
@@ -19,11 +19,11 @@ import java.lang.reflect.ParameterizedType
  */
 abstract class BaseActivity<VB : ViewBinding, VM : BaseViewModel> : AppCompatActivity(), IView {
     protected lateinit var mBinding: VB
-    protected lateinit var mModel: VM
+    protected lateinit var mViewModel: VM
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mModel = createViewModel()
+        mViewModel = createViewModel()
         mBinding = inflateBindingWithGeneric(layoutInflater)
         if (mBinding is ViewDataBinding) {
             (mBinding as ViewDataBinding).lifecycleOwner = this
@@ -31,10 +31,30 @@ abstract class BaseActivity<VB : ViewBinding, VM : BaseViewModel> : AppCompatAct
         initStatusBar()
         setContentView(mBinding.root)
         initView(savedInstanceState)
-        initObserver()
+        registerUiChange()
         //设置ARouter
+        ARouter.getInstance().inject(this)
     }
 
+    private fun registerUiChange() {
+        //显示弹窗
+        mViewModel.loadingChange.showDialog.observe(this) {
+            showLoading(it)
+        }
+        //关闭弹窗
+        mViewModel.loadingChange.dismissDialog.observe(this) {
+            dismissLoading()
+        }
+        registerObserver()
+    }
+
+    override fun showLoading(message: String) {
+
+    }
+
+    override fun dismissLoading() {
+
+    }
     override fun initStatusBar() {
         //初始化设置澄清状态栏
         ImmersionBar.with(this).keyboardEnable(true)

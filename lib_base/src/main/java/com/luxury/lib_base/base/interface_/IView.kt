@@ -17,7 +17,7 @@ interface IView {
     /**
      * 注册LiveData的观察者
      */
-    fun initObserver()
+    fun registerObserver()
 
     /**
      * ViewModel的构造非无参构造，需要听Factory
@@ -25,4 +25,8 @@ interface IView {
     fun provideViewModelFactory(): ViewModelProvider.Factory? {
         return null
     }
+    fun showLoading(message: String = "请求网络中...")
+
+    fun dismissLoading()
+
 }

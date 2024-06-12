@@ -24,10 +24,8 @@
 
         <item name="colorAccent">@color/c_37373d</item>
         <item name="android:windowBackground">@color/base_bg</item>
-        <!--  <item name="android:windowAnimationStyle">@android:style/Animation.Activity</item>-->
-        <!--        动画-->
+        <!-- 动画-->
         <item name="android:windowAnimationStyle">@style/activityAnim</item>
-        <!--        <item name="android:windowAnimationStyle">@style/customWindown</item>-->
 
         <!-- 设置底部导航栏半透明，默认false黑色，设置true半透明 -->
         <item name="android:windowTranslucentNavigation">true</item>

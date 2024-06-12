@@ -15,7 +15,6 @@ import com.luxury.lib_base.base.BaseActivity
 import com.luxury.module_login.databinding.ActivityLoginBinding
 
 import com.luxury.module_login.R
-import com.luxury.module_login.data.LoginRepository
 
 class LoginActivity : BaseActivity<ActivityLoginBinding,LoginViewModel>() {
 
@@ -30,7 +29,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding,LoginViewModel>() {
 
         //mModel = ViewModelProvider(this, LoginViewModelFactory()).get(LoginViewModel::class.java)
 
-        mModel.loginFormState.observe(this@LoginActivity, Observer {
+        mViewModel.loginFormState.observe(this@LoginActivity, Observer {
             val loginState = it ?: return@Observer
 
             // disable login button unless both username / password is valid
@@ -44,7 +43,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding,LoginViewModel>() {
             }
         })
 
-        mModel.loginResult.observe(this@LoginActivity, Observer {
+        mViewModel.loginResult.observe(this@LoginActivity, Observer {
             val loginResult = it ?: return@Observer
 
             loading.visibility = View.GONE
@@ -61,7 +60,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding,LoginViewModel>() {
         })
 
         username.afterTextChanged {
-            mModel.loginDataChanged(
+            mViewModel.loginDataChanged(
                 username.text.toString(),
                 password.text.toString()
             )
@@ -69,7 +68,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding,LoginViewModel>() {
 
         password.apply {
             afterTextChanged {
-                mModel.loginDataChanged(
+                mViewModel.loginDataChanged(
                     username.text.toString(),
                     password.text.toString()
                 )
@@ -78,7 +77,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding,LoginViewModel>() {
             setOnEditorActionListener { _, actionId, _ ->
                 when (actionId) {
                     EditorInfo.IME_ACTION_DONE ->
-                        mModel.login(
+                        mViewModel.login(
                             username.text.toString(),
                             password.text.toString()
                         )
@@ -88,12 +87,12 @@ class LoginActivity : BaseActivity<ActivityLoginBinding,LoginViewModel>() {
 
             login.setOnClickListener {
                 loading.visibility = View.VISIBLE
-                mModel.login(username.text.toString(), password.text.toString())
+                mViewModel.login(username.text.toString(), password.text.toString())
             }
         }
     }
 
-    override fun initObserver() {
+    override fun registerObserver() {
     }
 
     private fun updateUiWithUser(model: LoggedInUserView) {

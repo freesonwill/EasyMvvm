@@ -34,7 +34,7 @@ abstract class BaseFragment<VB : ViewBinding, VM : ViewModel> : Fragment(), IVie
             (mBinding as ViewDataBinding).lifecycleOwner = this
         }
         initView(savedInstanceState)
-        initObserver()
+        registerObserver()
         return mBinding.root
     }
 

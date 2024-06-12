@@ -11,7 +11,7 @@ class MainActivity : BaseActivity<ActivityMainBinding,EmptyViewModel>() {
 
     }
 
-    override fun initObserver() {
+    override fun registerObserver() {
 
     }
 
