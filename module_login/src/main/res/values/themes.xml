@@ -1,0 +1,4 @@
+<resources>
+
+    <style name="Theme.Android_frame" parent="Theme.MaterialComponents.Light" />
+</resources>
