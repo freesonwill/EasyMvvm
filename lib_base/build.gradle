@@ -1,6 +1,13 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
+}
+
+kapt {
+    arguments {
+        arg("AROUTER_MODULE_NAME", project.getName())
+    }
 }
 
 android {
@@ -33,17 +40,20 @@ android {
         viewBinding true
         dataBinding true
     }
+
 }
 
 dependencies {
     api Libs.blankj
     api Libs.immersionbar
-    implementation Libs.viewModel
+    implementation Libs.viewModelScope
     //base dependencies
     implementation Libs.core_ktx
     api Libs.appcompat
     api Libs.material
     api project(":lib_res")
+    api Libs.arouter_api
+    kapt Libs.arouter_compiler
 
     testImplementation Libs.junit
     androidTestImplementation Libs.ext_junit

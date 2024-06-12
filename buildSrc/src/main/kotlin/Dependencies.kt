@@ -11,9 +11,17 @@ object Libs {
     const val junit = "junit:junit:4.13.2"
     const val ext_junit = "androidx.test.ext:junit:1.1.3"
     const val espresso_core = "androidx.test.espresso:espresso-core:3.4.0"
-    const val lib_ui = ":lib_ui"
     const val immersionbar = "com.geyifeng.immersionbar:immersionbar:3.2.2"
     const val blankj = "com.blankj:utilcodex:1.31.1"
-    const val viewModel = "androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2"
+    const val viewModelScope = "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1"
+    const val lifecyleScope = "androidx.lifecycle:lifecycle-runtime-ktx:2.5.1"
     const val androidx_startup = "androidx.startup:startup-runtime:1.1.1"
+    const val MMKV = "com.tencent:mmkv:1.0.23"
+    const val google_gson = "com.google.code.gson:gson:2.8.9"
+
+
+    //阿里路由框架
+    const val arouter_api = "com.alibaba:arouter-api:1.4.1"
+    const val arouter_compiler = "com.alibaba:arouter-compiler:1.2.2"
+
 }

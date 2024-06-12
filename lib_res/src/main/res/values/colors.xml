@@ -1,6 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
 
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="deepDark">#222222</color>
+    <color name="transparent">#00000000</color>
+    <color name="keyboardBackColor">#212121</color>
+    <color name="keyboardKeyBack">#474749</color>
+    <color name="darkGray">#A9A9A9</color>
+    <color name="lightGray">#D3D3D3</color>
+    <color name="keyboardNormal">#1c69ac</color>
+    <color name="keyboardDeep">#991c69ac</color>
+    <color name="keyboardPress">#1296db</color>
+    <color name="colorRed">#FF0000</color>
+    <color name="deepDarkTransparent">#99222222</color>
+
+
+
+    <color name="keyboardNormalTrans">#8a1c69ac</color>
+    <color name="keyboardPressTrans">#aa1296db</color>
+    <color name="keyboardKeyBackTrans">#aa474749</color>
+    <color name="keyboard_bg">#D2D3D9</color>
+
+    <color name="mColorPrimary">#EF5350</color>
+    <color name="mColorPrimaryDark">#303030</color>
+    <color name="mColorAccent">#EF5350</color>
+
+    <color name="app_universal_black_color">#333333</color>
+    <color name="app_universal_gray_color">#999999</color>
+    <color name="app_universal_dialog_line_color">#F0F0F0</color>
+    <color name="app_safe_code_check_notice_text_color">#333333</color>
+
+    <color name="blue_ed">#2082ED</color>
+    <color name="blue_e6">#1473E6</color>
+    <color name="blue_ff">#E9F4FF</color>
+
+    <color name="c_37373d">#37373D</color>
+    <color name="base_bg">#F9F9F9</color>
 </resources>

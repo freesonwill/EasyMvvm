@@ -1,0 +1,22 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <!-- Customize your theme here. -->
+        <!--        <item name="android:windowAnimationStyle">@style/Animation_Activity</item>-->
+        <item name="android:windowContentTransitions">true</item>
+        <item name="colorPrimary">@color/mColorPrimary</item>
+        <item name="colorPrimaryDark">@color/mColorPrimaryDark</item>
+        <item name="colorAccent">@color/mColorAccent</item>
+        <!--  修复android8.0 设置  android:screenOrientation="portrait" 闪退-->
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowDisablePreview">true</item>
+        <!--取消水波纹效果-->
+        <!--        <item name="android:colorControlHighlight">@android:color/transparent</item>-->
+    </style>
+    <style name="DialogFragment.FullScreen" parent="Theme.AppCompat.Dialog">
+        <item name="android:padding">0dp</item>
+        <item name="android:windowBackground">@color/deepDarkTransparent</item>
+    </style>
+
+</resources>

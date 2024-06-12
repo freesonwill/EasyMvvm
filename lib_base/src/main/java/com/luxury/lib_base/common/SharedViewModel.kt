@@ -55,9 +55,9 @@ class VMStore : ViewModelStoreOwner {
         }
     }
 
-    override val viewModelStore: ViewModelStore
-        get() {
-            if (vmStore == null) vmStore = ViewModelStore()
-            return vmStore!!
-        }
+    override fun getViewModelStore(): ViewModelStore {
+        if (vmStore == null) vmStore = ViewModelStore()
+        return vmStore!!
+    }
+
 }
