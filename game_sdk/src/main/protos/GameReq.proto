@@ -15,7 +15,7 @@ package game.mod.proc.yf.proto.req;
 // 進入群組(可用於進入直播間)
 message EnterGroup {
     string id = 1; // group id
-    repeated int32 miniGameIds = 2; // 小游戏 id
+    repeated int32 miniGameIds = 2; // 直播主預設的小游戏 id
     string data = 3; // 透传资料（转抛）
 }
 

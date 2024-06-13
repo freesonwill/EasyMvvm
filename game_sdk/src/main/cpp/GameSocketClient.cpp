@@ -28,11 +28,11 @@ extern "C"
 JNIEXPORT jbyteArray JNICALL
 
 Java_com_cn_game_sdk_websocket_JWebSocketClient_pack(JNIEnv *env,
-                                                         jobject thiz,
-                                                         jshort mid,
-                                                         jshort sid,
-                                                         jstring data,
-                                                         jint dataSize
+         jobject thiz,
+         jshort mid,
+         jshort sid,
+         jstring data,
+         jint dataSize
 )
 {
 
