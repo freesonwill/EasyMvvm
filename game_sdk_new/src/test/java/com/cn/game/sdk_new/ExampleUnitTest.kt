@@ -1,4 +1,4 @@
-package com.cn.game.sdk
+package com.cn.game.sdk2
 
 import org.junit.Test
 

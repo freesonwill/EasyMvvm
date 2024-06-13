@@ -1,4 +1,4 @@
-package com.cn.game.sdk
+package com.cn.game.sdk2
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

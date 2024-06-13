@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace 'com.cn.game.sdk'
+    namespace 'com.cn.game.sdk2'
     compileSdk 33
 
     defaultConfig {
