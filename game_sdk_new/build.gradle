@@ -1,0 +1,109 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+    id 'maven-publish'
+    id 'com.google.protobuf'
+}
+
+android {
+    namespace 'com.cn.game.sdk'
+    compileSdk 33
+
+    defaultConfig {
+        minSdk 21
+        targetSdk 33
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+        ndk {
+            // 只接入 armeabi-v7a 和 x86 架构
+            //abiFilters 'armeabi-v7a', 'x86', 'arm64-v8a', 'x86_64'
+            abiFilters 'armeabi-v7a', 'arm64-v8a'
+        }
+        externalNativeBuild {
+            cmake {
+                //cppFlags "-Isrc/main/cpp"
+                cppFlags '-std=c++11'
+            }
+        }
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+        }
+    }
+    libraryVariants.all { variant ->
+        if (variant.buildType.name == 'release') {
+            variant.outputs.all { output ->
+                outputFileName = "game_sdk-release.aar"
+            }
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    buildFeatures {
+        viewBinding true
+        dataBinding true
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    /*externalNativeBuild {
+        cmake {
+            path file('src/main/cpp/CMakeLists.txt')
+            version '3.18.1'
+        }
+    }*/
+
+    sourceSets {
+        main {
+            proto {
+                srcDir 'src/main/protos'
+            }
+        }
+    }
+    protobuf {
+        protoc {
+            artifact = 'com.google.protobuf:protoc:3.19.2'
+        }
+        generateProtoTasks {
+            all().each { task ->
+                task.builtins {
+                    remove java
+                }
+                task.builtins {
+                    java {}// 生产java源码
+                }
+            }
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
+    implementation Libs.appcompat
+    implementation Libs.material
+
+    //组件依赖基础库
+    implementation project(':base_lib')
+    implementation 'com.github.liangjingkanji:Engine:0.0.74' // 快速开发基础库
+    implementation 'com.google.protobuf:protobuf-java:3.19.1'
+
+    implementation('com.github.li-xiaojun:XPopup:2.10.0') {
+        exclude group: "com.davemorrissey.labs", module: "subsampling-scale-image-view-androidx"
+    }
+    implementation 'io.github.h07000223:flycoTabLayout:3.0.0'
+    //拖动的
+    implementation 'com.github.kongxiaojun:EasyFloat:3.0.1'
+
+}

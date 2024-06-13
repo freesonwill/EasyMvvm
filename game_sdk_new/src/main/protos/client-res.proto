@@ -1,0 +1,114 @@
+syntax = "proto3";
+// 因用于生成，默认值字段也需要有数据，不能用 pb3
+
+package game.common.proto;
+
+// server -> client 方向的消息
+
+// 0-1: server 主动发出的心跳
+// 0-2: 回复 client 的心跳
+
+// 回复 client 登录（7-7）
+// 7-106: 登录成功
+message InfoAfterLoginSuccess {
+    string resource_base_url = 1; // 更新資源的root路徑
+}
+// 7-107: 登录异常，携带数据 ErrorMessage
+//      code = 1000  其他服有正在进行的游戏，应跳转过去
+//          仅此时有 serverId/ip/port/serverType/subType 信息
+//          desc = 您当前还在其他游戏中，是否立刻回到该游戏？ // 713
+//      code = 1001  token验证失败
+//          desc = Token验证失败，请您重新登录 // 712
+//          desc = 您的帐号不存在或者密码输入有误，请查证后再次尝试登录！(S715) // 账号无效
+//          desc = 您的帐号不存在或者密码输入有误，请查证后再次尝试登录！(S705) // 平台参数无效
+//      code = 1002  余额不足
+//          desc = 当前房间需要%s金币才可进入，请您充值 // 720, 731
+//          desc = 金币不够%s元，请先充值 // 732 黑名单渠道入场限制
+//      code = 1005  游戏服即将关闭，client 应换一个服
+//          desc = 当前服务器正在维护 (S703)
+//      code = 200   其他情况
+//          desc = 服务器已满 (S704)
+//          desc = 登录游戏失败，请稍后重试。(S706)
+//          desc = 由于您严重违反游戏规定，进行伙牌或者有刷号行为，伤害其他玩家利益，您的账号被永久封禁！ // 716
+//      预留 code = 1003  （未使用）视讯百家乐游戏维护
+//      预留 code = 1004  （未使用）触发 client 重启
+//      预留 code = 1006  （未使用）h5，由于 client 版本不够新而不允许登录
+
+message ErrorMessage {
+    sint32 code = 1; // 异常错误码
+    string desc = 2; // 提示文案
+    int32 server_id = 7; // 跳转到服务器：服务器Id
+    string ip = 3; // 跳转到服务器：服务器ip
+    int32 port = 4; // 跳转到服务器：服务器端口
+    int32 server_type = 5; // 跳转到服务器：服务器游戏类型
+    int32 sub_type = 6; // 跳转到服务器：服务器房间类型
+}
+
+// 回复 client 进房间（8-7）
+// 500-1000: 进房间成功，返回房间状态，携带数据因游戏而异
+
+// 回复 client 离开游戏（8-10）
+// 无返回，直接断开连接
+
+// 回复 client 除登录外其他操作
+// 7-600: 操作异常，携带数据 ErrorMessage，仅有 code/desc 字段
+//      code = 200   常规异常
+//          游戏异常均使用此 code 返回
+//          desc = 您当前不在房间内，无需再离开房间。 // 离开游戏无效
+//          desc = 该类型房间已满，请选择其他房间
+//          desc = 请选择全押。
+//          desc = 全押之后无法弃牌哦。
+//      code = 1     常规异常
+//          desc = 您已经被请出房间了，请重新登录房间 // 未登录时坐下
+//      code = 1003  视讯百家乐游戏版本过旧
+//          desc = 请退出重新登录进入游戏。
+
+// 500-700: 服务器维护，踢出用户，无携带数据
+// 500-701: 不在房间内超时，踢出用户，无携带数据
+// 500-702: 当前连接被另一个登录顶掉了，无携带数据，目前仅h5/h5试玩启用
+// 500-720: 用户余额有更新，推送给 client，携带数据 UpdateScoreRes
+message UpdateScoreRes {
+    int64 userId = 1; // 玩家id
+    int64 score = 2; // 当前金币数量
+}
+
+// 10-11: 客户端展示跑马灯式的公告
+message SystemMessage {
+    repeated sint32 type = 1; // 跑马灯播放的地方 -1：每个场景都播放 0：游戏大厅 1：捕鱼 2：斗地主 3：炸金花 4：百人牛牛 5：抢庄牛牛
+    string content = 2; // 跑马灯内容
+}
+
+/* ------------------------- 部分游戏共用消息 ------------------------- */
+
+// 初版跑马灯
+message UserMessage {
+    int32 type = 1; // 游戏类型 1：捕鱼 2：斗地主（不会有该类型的通知） 3：炸金花 4：百人牛牛 5：抢庄牛牛
+    int32 vip = 2; // 玩家VIP等级
+    int32 cannon = 3; // 炮
+    int32 gold = 5; // 所赢金币
+    int32 fishId = 6; // 打死鱼的id
+    int32 cardType = 7; // 牌型 （炸金花：5 同花顺 6 豹子 | 百人牛牛、抢庄牛牛：11 牛牛 12 四炸 13 五花牛）
+}
+
+// 新版跑马灯
+message NewUserMessage {
+    int32 type = 1; // 游戏服务器类型
+    int32 vip = 2; // 玩家VIP等级
+    int32 gold = 4; // 所赢金币
+
+    int32 param1 = 5; // 自定义int参数1
+    int32 param2 = 6; // 自定义int参数2
+    int32 param3 = 7; // 自定义int参数3
+    string param4 = 8; // 自定义string参数1
+    string param5 = 9; // 自定义string参数2
+}
+
+// 对局类游戏，某座位退出房间
+message LeaveRes {
+    sint32 chairId = 1;
+}
+
+// 刷新某些用户的最新余额
+message UpdateScores {
+    repeated UpdateScoreRes userScores = 1;
+}
