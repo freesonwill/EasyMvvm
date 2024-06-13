@@ -20,7 +20,7 @@ class MainActivity :  AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        var ddd=findViewById<TextView>(R.id.ceshi)
+        var btnOpen=findViewById<TextView>(R.id.btnOpen)
         var llshow=findViewById<LinearLayout>(R.id.llshow)
         var btnXiu=findViewById<Button>(R.id.btnXiu)
 
@@ -29,16 +29,9 @@ class MainActivity :  AppCompatActivity() {
 
 
 
-        ddd.setOnClickListener {
-                var ddd= com.cn.game.sdk.utils.MyGameManager
-//            views=   ddd.getFastThreeView(this)
-//            llshow.addView(views)
-//
-//            views?.setFastLogoClickListener(object :FastLogoView.OnFastLogoClickListener{
-//                override fun onButtonClick() {
-//                 }
-//
-//            })
+        btnOpen.setOnClickListener {
+                var ddd=MyGameManager
+
             ddd.showFastView(this)
         }
         btnXiu.setOnClickListener {

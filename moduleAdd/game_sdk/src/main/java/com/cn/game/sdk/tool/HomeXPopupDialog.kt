@@ -39,6 +39,7 @@ import com.cn.game.sdk.bean.SelectAnnotationBean
 import com.cn.game.sdk.databinding.DialogHomeXpopupBinding
 import com.cn.game.sdk.databinding.ItemAnnotationListBinding
 import com.cn.game.sdk.databinding.ItemBetHistoryBinding
+import com.cn.game.sdk.game.GameData
 import com.cn.game.sdk.listener.GameTimeStatic
 import com.cn.game.sdk.popup.CustomBubbleAttachPopup
 import com.cn.game.sdk.ui.fast.fragment.HomeDefaultFragment
@@ -253,8 +254,8 @@ class HomeXPopupDialog(context: Context) : BottomPopupView(context) {
             putInt("type",0)
         }
 
-//        GameData.getInstance().rootView = mDatabind.tempTouth
-
+        GameData.getInstance().rootView = mDatabind.tempTouth
+        GameData.getInstance().getGameInfo()
 
 
 

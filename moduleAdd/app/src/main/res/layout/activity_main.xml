@@ -8,18 +8,19 @@
     android:id="@+id/llshow"
     tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/ceshi"
+    <Button
+        android:id="@+id/btnOpen"
         android:layout_marginTop="100dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="渲染图片"
+        android:text="打开"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
     <Button
         android:id="@+id/btnXiu"
+        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="修改状态"/>
