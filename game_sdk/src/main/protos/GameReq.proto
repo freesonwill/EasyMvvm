@@ -1,0 +1,56 @@
+syntax = "proto3";
+package game.mod.proc.yf.proto.req;
+
+// 各种单位:
+// 机率 1=0.0001, ex: 1234 = 12.34%
+// 金钱 1=0.01, ex: 123 = 1.23元
+// 赔率 1=1, ex: 1.2 = 1.2倍
+// 时间 1=1ms, ex: 12400 = 12.4 s = 12400 ms
+
+// 流程:
+// 1. 登入(7-7)+進房(8-7)
+// 2. 進入group
+// 3. 進入小遊戲
+
+// 進入群組(可用於進入直播間)
+message EnterGroup {
+    string id = 1; // group id
+    repeated int32 miniGameIds = 2; // 小游戏 id
+    string data = 3; // 透传资料（转抛）
+}
+
+// 進入小遊戲
+message EnterMiniGame {
+    int32 miniGameId = 1;
+}
+
+// 離開小遊戲
+message LeaveMiniGamesReq{
+    repeated int32 miniGameIds = 1;
+}
+
+// 下注
+message BetReq {
+    // 小游戏 id
+    int32 miniGameId = 1;
+    // 下注资料
+    repeated AreaBetReq areaBet = 2;
+}
+
+// 每个注区的押注资料
+message AreaBetReq {
+    // 注区ID:
+    int32 areaCode = 1;
+    // 玩家注区总下注金额
+    int32 betScore = 2;
+}
+
+//---------- 测试用相关 ----------//
+// 盘面指定
+message TestAssign {
+    // 小游戏 id
+    int32 miniGameId = 1;
+    // 牌面
+    repeated int32 elements = 2;
+}
+

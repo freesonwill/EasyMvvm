@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+     android:paddingLeft="12dp"
+    android:paddingRight="12dp"
+    android:orientation="vertical" >
+    <RelativeLayout
+        android:id="@+id/rlPopClickRecords"
+        android:layout_width="match_parent"
+        android:layout_height="38dp">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:orientation="horizontal">
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginLeft="1dp"
+                app:srcCompat="@drawable/home_icon_records"/>
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:text="@string/g_home_txt_records"
+                android:textColor="@color/g_141624"/>
+        </LinearLayout>
+    <View
+        android:layout_width="84dp"
+        android:layout_height="0.5dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/g_e8e8e9"/>
+
+
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/rlPopClickService"
+        android:layout_width="match_parent"
+        android:layout_height="38dp">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+             android:gravity="center"
+            android:layout_centerVertical="true"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginLeft="1dp"
+                app:srcCompat="@drawable/home_icon_service" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:text="@string/g_home_txt_service"
+                android:textColor="@color/g_141624"
+                android:textSize="14sp" />
+        </LinearLayout>
+        <View
+            android:layout_width="84dp"
+            android:layout_height="0.5dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/g_e8e8e9"/>
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/rlPopClickToggle"
+        android:layout_width="match_parent"
+        android:layout_height="38dp">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_centerVertical="true"
+            android:orientation="horizontal">
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                app:srcCompat="@drawable/home_icon_toggle"/>
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:text="@string/g_home_txt_toggle"
+                android:textColor="@color/g_141624"/>
+        </LinearLayout>
+        <View
+            android:layout_width="84dp"
+            android:layout_height="0.5dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/g_e8e8e9"/>
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/rlPopClickAssist"
+        android:layout_width="match_parent"
+        android:layout_height="38dp">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:orientation="horizontal">
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginLeft="1dp"
+                app:srcCompat="@drawable/home_icon_assist"/>
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:text="@string/g_home_txt_assist"
+                android:textColor="@color/g_141624"/>
+        </LinearLayout>
+
+    </RelativeLayout>
+
+
+
+</LinearLayout>
