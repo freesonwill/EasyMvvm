@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <declare-styleable name="FastLogoViewString">
-        <attr name="tv_fast_time" format="string"/>
-
-    </declare-styleable>
-
-
-</resources>
