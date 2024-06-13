@@ -17,4 +17,6 @@
     <string name="g_home_tab_leopard">豹子</string>
     <string name="g_home_tab_sum">总和</string>
     <string name="g_home_balance">结算中</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

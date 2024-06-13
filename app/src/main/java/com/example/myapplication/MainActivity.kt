@@ -25,8 +25,8 @@ class MainActivity : AppCompatActivity() {
         var btnXiu = findViewById<Button>(R.id.btnXiu)
 
         btnOpen.setOnClickListener {
-            //ViewHelper.showFastView(this)
-            MyGameManager.showFastView(this)
+            ViewHelper.showFastView(this)
+            //MyGameManager.showFastView(this)
         }
         btnXiu.setOnClickListener {
 //            MyWsManager.getInstance(this)?.onTest()
