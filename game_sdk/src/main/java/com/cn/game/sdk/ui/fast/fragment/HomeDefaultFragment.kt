@@ -1,6 +1,7 @@
 package com.cn.game.sdk.ui.fast.fragment
 
 import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
@@ -10,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.RelativeLayout
+import android.widget.TextView
 import com.cn.game.sdk.appGameViewModel
 import com.cn.game.sdk.base.BaseGameFragment
 import com.cn.game.sdk.bean.InPrizeBean
@@ -24,6 +26,9 @@ import com.cn.game.sdk.view.MoneyOKDeleteView
 import com.cn.game.sdk.view.MoneyOKView
 import com.xcjh.base_lib.utils.dp2px
 import me.jessyan.autosize.utils.AutoSizeUtils.dp2px
+import java.math.BigDecimal
+import java.math.RoundingMode
+import kotlin.time.Duration
 
 
 /**
@@ -539,6 +544,8 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
            Log.i("BTBTBTBTB","999==========="+event.action)
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
+                    doNumberAnim(mDatabind.txtSmallMoney,9076f,10276f)
+
                     Log.i("FFFFF","44444444444444")
                     val currentTime = System.currentTimeMillis()
                     //先判断余额是否够这次   并且是否可以点击
@@ -711,6 +718,25 @@ class HomeDefaultFragment : BaseGameFragment<HomeDefaultVm, FragmentHomeDefaultB
             false // 返回 true 表示事件已经被处理
         }
 
+    }
+
+    /**
+     * 默认玩法数字变化动画
+     * @param durationMs 动画执行时间
+     * @param scale 保留小数位 默认2
+     */
+    private fun doNumberAnim(targetView: TextView,
+                             startNum:Float,
+                             endNumber:Float,
+                             durationMs: Long = 500,
+                             scale:Int=2){
+        ValueAnimator.ofFloat(startNum,endNumber).apply {
+            duration = durationMs
+            addUpdateListener {
+                targetView.text = BigDecimal(it.animatedValue.toString()).setScale(scale,RoundingMode.HALF_UP).toString()
+            }
+            start()
+        }
     }
 
 

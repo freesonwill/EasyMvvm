@@ -51,12 +51,17 @@ object ViewHelper {
                         .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                         .isThreeDrag(false) //是否开启三阶拖拽，如果设置enableDrag(false)则无效
                         .enableDrag(false)
-                        .asCustom(MyGamePopupDialog(context))
+
+                        //首页骰子隐藏动画使用这个dialog,只实现了动画，其他操作可能崩溃
+//                        .asCustom(MyGamePopupDialog(context))
+
+                        //首页数字跳动动画，:默认玩法下注小
+                        .asCustom(com.cn.game.sdk.tool.HomeXPopupDialog(context))
+//
 //                        .asCustom(HomeXPopupDialog(context,LayoutInflater.from(context).inflate(R.layout.dialog_home_xpopup,null,false)).apply {
 //                            homeXPopupDialog = this
 //                            Game1Fragment().view
-//                        }
-//                        )
+//                        })
                         .show()
                     EasyFloat.hide(TAG_FASTVIEW)
                 }

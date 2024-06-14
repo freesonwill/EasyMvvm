@@ -429,7 +429,6 @@ class MyGameFragment : BaseGameFragment<MyGameViewModel, FragmentMyBinding>() {
                             val params = llShowDice.layoutParams
                             params?.height = value
                             llShowDice.layoutParams = params
-                            llShowDice.requestLayout()
                         }
                         resultAnimatorList.add(this)
                     }
