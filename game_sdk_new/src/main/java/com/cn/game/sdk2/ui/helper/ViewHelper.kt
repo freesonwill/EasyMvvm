@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.widget.LinearLayout
+import com.cn.game.sdk.popup.MyGamePopupDialog
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.ui.Game1Fragment
 import com.cn.game.sdk2.ui.HomeXPopupDialog
@@ -50,10 +51,12 @@ object ViewHelper {
                         .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                         .isThreeDrag(false) //是否开启三阶拖拽，如果设置enableDrag(false)则无效
                         .enableDrag(false)
-                        .asCustom(HomeXPopupDialog(context,LayoutInflater.from(context).inflate(R.layout.dialog_home_xpopup,null,false)).apply {
-                            homeXPopupDialog = this
-                            Game1Fragment().view
-                        })
+                        .asCustom(MyGamePopupDialog(context))
+//                        .asCustom(HomeXPopupDialog(context,LayoutInflater.from(context).inflate(R.layout.dialog_home_xpopup,null,false)).apply {
+//                            homeXPopupDialog = this
+//                            Game1Fragment().view
+//                        }
+//                        )
                         .show()
                     EasyFloat.hide(TAG_FASTVIEW)
                 }

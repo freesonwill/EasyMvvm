@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat
 import com.cn.game.sdk.R
 import com.cn.game.sdk.bean.SelectAnnotationBean
 import com.cn.game.sdk.listener.GameTimeStatic
+import com.cn.game.sdk.popup.MyGamePopupDialog
 import com.cn.game.sdk.tool.HomeXPopupDialog
 import com.cn.game.sdk.ui.fast.GameHomeActivity
 import com.cn.game.sdk.view.FastLogoView
@@ -298,7 +299,7 @@ object MyGameManager {
                 llFastClick.setOnClickListener {
 //                    var inagte= Intent(context, GameHomeActivity::class.java)
 //                    context.startActivity(inagte)
-                    var popupExitLogin= HomeXPopupDialog(context)
+                    var popupExitLogin= MyGamePopupDialog(context)
                     var popwindow = XPopup.Builder(context)
                         .hasShadowBg(false)
                         .popupAnimation(PopupAnimation.TranslateFromBottom)

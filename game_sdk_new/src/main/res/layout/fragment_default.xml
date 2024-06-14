@@ -433,7 +433,7 @@
                     app:srcCompat="@drawable/icon_lucency_centre"/>
             </RelativeLayout>
         </RelativeLayout>
-        
+
     </RelativeLayout>
 
 </layout>

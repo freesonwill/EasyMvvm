@@ -203,6 +203,7 @@ class MoneyOKView @JvmOverloads constructor(context: Context, attrs: AttributeSe
      */
     fun showTop(){
         llShowTop.visibility= View.VISIBLE
+        bringToFront()
     }
 
     fun showMoneyFormat(money:Int):String{
