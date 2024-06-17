@@ -263,8 +263,15 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
     override fun createObserver() {
         mViewModel.moneyAnimCallback = object : Fast3ViewModel.MoneyAnimCallback{
-            override fun startAnim(x: Float, y: Float, isCentered: Boolean, speed: Long, areaView: GameAreaView) {
-                tryMoneyAnimation(x, y, isCentered, speed, areaView)
+            override fun startAnim(
+                x: Float,
+                y: Float,
+                isCentered: Boolean,
+                speed: Long,
+                areaView: GameAreaView,
+                endCallBack: (() -> Unit)?
+            ) {
+                tryMoneyAnimation(x, y, isCentered, speed, areaView,endCallBack)
             }
         }
         mViewModel.betOkClick.observe(this){
@@ -865,7 +872,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                           y: Float,
                           isCentered: Boolean = false,
                           speed: Long = 300,
-                          areaView: GameAreaView
+                          areaView: GameAreaView,
+                          endCallBack:(()->Unit)?=null
     ) {
 //        PromptSoundPlay.goldPlayMedia(this)
 //        PromptSoundPlay.goldPlayMediaNew(this)
@@ -894,7 +902,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         }
         //判断选择的筹码是不是在屏幕外面
         if (finallyView != null) {
-            startMoneyAnimation(x,y,isCentered,speed,areaView,finallyView)
+            startMoneyAnimation(x,y,isCentered,speed,areaView,finallyView,endCallBack)
         } else {
             scrollToItemAndPerformAction(mDatabind.llShowBetList, num) {
                 //从新获取到为止
@@ -905,7 +913,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                         break
                     }
                 }
-                finallyView?.let { startMoneyAnimation(x,y,isCentered,speed,areaView, it) }
+                finallyView?.let { startMoneyAnimation(x,y,isCentered,speed,areaView, it,endCallBack) }
             }
         }
 
@@ -916,7 +924,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                     isCentered: Boolean = false,
                                     speed: Long = 300,
                                     areaView: GameAreaView,
-                                    jettonView : View){
+                                    jettonView : View,
+                                    endCallBack: (() -> Unit)?){
         var mPathMeasure: PathMeasure? = null
 
         /**
@@ -1029,6 +1038,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
             override fun onAnimationEnd(animation: Animator) {
                 //动画结束
+                endCallBack?.invoke()
                 // 把移动的图片imageview从父布局里移除
                 mDatabind.rlRoot.removeView(goods)
                 val animator =

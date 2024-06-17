@@ -21,9 +21,9 @@ class Fast3ViewModel:BaseViewModel() {
     public var tempMoneyMap:MutableMap<Int,MutablePair<Int,WeakReference<MoneyOKView>>> = mutableMapOf()
     public var moneyAnimCallback: MoneyAnimCallback?= null
 
-    public fun emitMoneyAnim(x: Float, y: Float, isCentered: Boolean = false, speed: Long = 300, areaView: GameAreaView){
+    public fun emitMoneyAnim(x: Float, y: Float, isCentered: Boolean = false, speed: Long = 300, areaView: GameAreaView,endCallBack:(()->Unit)?=null){
         moneyAnimCallback?.apply {
-            startAnim(x, y, isCentered, speed, areaView)
+            startAnim(x, y, isCentered, speed, areaView,endCallBack)
         }
     }
 
@@ -36,6 +36,6 @@ class Fast3ViewModel:BaseViewModel() {
     }
 
     interface MoneyAnimCallback{
-        fun startAnim(x: Float, y: Float,isCentered: Boolean = false, speed: Long = 300, areaView: GameAreaView)
+        fun startAnim(x: Float, y: Float,isCentered: Boolean = false, speed: Long = 300, areaView: GameAreaView,endCallBack: (() -> Unit)?)
     }
 }
