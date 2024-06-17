@@ -65,7 +65,7 @@ fun onWsUserLoginOut(callback: (Boolean) -> Unit) {
 }
 
 /**
- * 加入群聊
+ * 加入群聊  断连后重连调用，打开页面， 切换直播源
  */
 fun onWsUserEnterRoom(groupId: String) {
     MyWsManager.getInstance(App.app)?.sendMessage(
@@ -80,7 +80,7 @@ fun onWsUserEnterRoom(groupId: String) {
 }
 
 /**
- * 退出群聊
+ * 退出群聊    关闭页面   切换直播源调用
  */
 fun onWsUserExitRoom(groupId: String) {
     MyWsManager.getInstance(App.app)?.sendMessage(
@@ -88,6 +88,22 @@ fun onWsUserExitRoom(groupId: String) {
             SendCommonWsBean(
                 21,
                 CacheUtil.getUser()?.id?: getUUID(),
+                groupId = groupId,
+            )
+        )
+    )
+}
+
+
+/**
+ * 退出游客的群聊
+ */
+fun onWsTouristExitRoom(groupId: String) {
+    MyWsManager.getInstance(App.app)?.sendMessage(
+        Gson().toJson(
+            SendCommonWsBean(
+                21,
+                  getUUID(),
                 groupId = groupId,
             )
         )

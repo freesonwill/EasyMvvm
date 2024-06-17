@@ -4,6 +4,7 @@ import android.util.Log
 import com.google.gson.Gson
 import com.kunminx.architecture.ui.callback.UnPeekLiveData
 import com.xcjh.app.R
+import com.xcjh.app.appViewModel
 import com.xcjh.app.bean.CaptchaCheckIt
 import com.xcjh.app.bean.CaptchaGetIt
 import com.xcjh.app.bean.CaptchaVOReq
@@ -55,6 +56,8 @@ class LoginVm : BaseViewModel() {
             { apiService.getLogin(bean) },
 
             {
+                //这个通知是如果当前在直播间的时候，并且是游客身份，登录成功要断开游客的群聊
+                appViewModel.loginExitGroupEvent.postValue(true)
                 CacheUtil.setIsLogin(true, LoginInfo("", "", it))
                 logain.value = it
             }, {

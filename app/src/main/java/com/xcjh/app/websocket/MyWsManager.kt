@@ -34,6 +34,7 @@ import kotlinx.coroutines.launch
 import org.java_websocket.client.WebSocketClient
 import org.java_websocket.handshake.ServerHandshake
 import java.net.URI
+import java.nio.ByteBuffer
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.ScheduledThreadPoolExecutor
 import java.util.concurrent.ThreadFactory
@@ -585,6 +586,8 @@ class MyWsManager private constructor(private val mContext: Context) {
                      "======onReceive===webSocket解析异常------------  ${e.message}".loge()
                  }*/
             }
+
+
 
             override fun onOpen(handshakedata: ServerHandshake) {
                 "websocket连接成功wsStatus===${appViewModel.wsStatusOpen.value}".loge("MyWsClient===")

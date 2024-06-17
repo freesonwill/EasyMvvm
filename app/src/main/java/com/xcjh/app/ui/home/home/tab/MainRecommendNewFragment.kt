@@ -79,9 +79,6 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
     var  isShow:Boolean=false
 
 
-
-
-
     override fun initView(savedInstanceState: Bundle?) {
 
         mDatabind.state.apply {
@@ -115,7 +112,7 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
         //取消下拉刷新
 //        mDatabind.smartCommon.setEnableRefresh(false)
         mDatabind.smartCommon.setEnableOverScrollDrag(true)
-        mDatabind.smartCommon.setRefreshHeader( CustomHeader(requireContext()))
+        mDatabind.smartCommon.setRefreshHeader(CustomHeader(requireContext()))
         MyWsManager.getInstance(App.app)
             ?.setLiveStatusListener(this.toString(), object : LiveStatusListener {
                 //z直播间开播
@@ -915,6 +912,7 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
 //                                this.putExtra(Constants.WEB_URL, data.targetUrl)
 //                                this.putExtra(Constants.CHAT_TITLE, getString(R.string.my_app_name))
 //                            }
+
                             jumpOutUrl(data.targetUrl)
                         }
                         //嵌套在列表里面代码设置圆角
@@ -1300,13 +1298,17 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
     }
 
     private fun jumpOutUrl(url: String) {
-        if (url.contains("http")) {
-            val intent = Intent()
-            intent.action = "android.intent.action.VIEW"
-            val contentUrl: Uri = Uri.parse(url)
-            intent.data = contentUrl
-            startActivity(intent)
+        if(url!=null){
+            if (url.isNotEmpty()&&url.contains("http")) {
+                val intent = Intent()
+                intent.action = "android.intent.action.VIEW"
+                val contentUrl: Uri = Uri.parse(url)
+                intent.data = contentUrl
+                startActivity(intent)
+            }
         }
+
+
     }
 
 }

@@ -943,11 +943,7 @@ fun BindingAdapter.BindingViewHolder.setLiveMatchItem(type:Int=0) {
 
             bindingItem.ivLiveHead.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.live_icon_zu))
         }else{
-
-
-
             bindingItem.tvMatchVs.text="${bean.awayScore}-${bean.homeScore}"
-
             Glide.with(context)
                 .load(R.drawable.basketball_new_br) // 替换为您要加载的图片 URL
                 .into(bindingItem.ivLiveBe)

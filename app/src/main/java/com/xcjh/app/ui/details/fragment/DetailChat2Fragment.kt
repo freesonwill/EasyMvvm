@@ -113,7 +113,13 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
         appViewModel.closeKeyboardEvent.observe(this){
             closeKeyboard(mDatabind.edtChatMsg,requireContext())
         }
+        //如果是在直播间登录后要退出游客的群聊
+        appViewModel.loginExitGroupEvent.observeForever{
+            if(isAdded){
+                onWsTouristExitRoom(liveId)
+            }
 
+        }
 
 
 //        setProhibition(true)
@@ -294,6 +300,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
                 judgeLogin()
             }
         }
+        //点击发送按钮
         mDatabind.edtChatMsg.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_SEND) {
                 sendMsg()
@@ -498,7 +505,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
         }
         //hideSoftInput()
     }
-
+    //关闭当前页面
     override fun onDestroy() {
         mAgentWeb?.webLifeCycle?.onDestroy()
         clearWebView(mNoticeWeb)

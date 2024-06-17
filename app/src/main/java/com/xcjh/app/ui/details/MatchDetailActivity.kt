@@ -796,6 +796,7 @@ class MatchDetailActivity :
             finish()
         }
 
+
         MyWsManager.getInstance(App.app)
             ?.setOtherPushListener(this.toString(), object : OtherPushListener {
                 //收到比赛实时数据
@@ -1657,13 +1658,16 @@ class MatchDetailActivity :
     }
 
     private fun jumpOutUrl(url: String) {
-        if (url.contains("http")) {
-            val intent = Intent()
-            intent.action = "android.intent.action.VIEW"
-            val contentUrl: Uri = Uri.parse(url)
-            intent.data = contentUrl
-            startActivity(intent)
+        if(url!=null){
+            if (url.isNotEmpty()&&url.contains("http")) {
+                val intent = Intent()
+                intent.action = "android.intent.action.VIEW"
+                val contentUrl: Uri = Uri.parse(url)
+                intent.data = contentUrl
+                startActivity(intent)
+            }
         }
+
     }
 
     override fun onStop() {

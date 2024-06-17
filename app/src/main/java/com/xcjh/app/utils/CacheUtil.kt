@@ -1,6 +1,7 @@
 package com.xcjh.app.utils
 
 import android.text.TextUtils
+import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tencent.mmkv.MMKV
@@ -74,6 +75,7 @@ object CacheUtil {
     fun setIsLogin(isLogin: Boolean, login: LoginInfo? = null) {
 
         if (isLogin && login != null) {
+
             saveToken(login.tokenValue)
             onWsUserLogin(){}
         } else {

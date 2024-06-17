@@ -331,6 +331,7 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
 //                }
                 SoundManager.playMedia()
                 jumpOutUrl(mViewModel.advertisement.value!!.targetUrl)
+
             }
 
         }
@@ -392,7 +393,7 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
                     .into(mDatabind.ivMyHead)
                 mDatabind.txtMyName.text = user!!.name
 
-                if (user!!.lvNum.equals("1")) {
+                                                  if (user!!.lvNum.equals("1")) {
                     mDatabind.txtMyNum.text = "${resources.getString(R.string.level1)}"
                 }else if (user!!.lvNum.equals("2")) {
                     mDatabind.txtMyNum.text = "${resources.getString(R.string.level2)}"
@@ -594,13 +595,17 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
 //        })
     }
     private fun jumpOutUrl(url: String) {
-        if (url.contains("http")) {
-            val intent = Intent()
-            intent.action = "android.intent.action.VIEW"
-            val contentUrl: Uri = Uri.parse(url)
-            intent.data = contentUrl
-            startActivity(intent)
+        if(url!=null){
+            if (url.isNotEmpty()&&url.contains("http")) {
+                val intent = Intent()
+                intent.action = "android.intent.action.VIEW"
+                val contentUrl: Uri = Uri.parse(url)
+                intent.data = contentUrl
+                startActivity(intent)
+            }
         }
+
+
     }
 
 }

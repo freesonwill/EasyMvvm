@@ -22,12 +22,13 @@ class MyHeadInterceptor : Interceptor {
         val builder = chain.request().newBuilder()
         builder.addHeader("device", "Android")
         builder.addHeader("appId", Constants.APP_ID)
+        builder.addHeader("tourist", getUUID().toString())
         if (CacheUtil.isLogin()){
             //登录用户
             builder.addHeader("sportstoken", CacheUtil.getToken())
         }else{
             //游客
-            builder.addHeader("tourist", getUUID().toString())
+//            builder.addHeader("tourist", getUUID().toString())
             //builder.addHeader("tourist", "aaaabbbbbccccdddeee")
         }
 

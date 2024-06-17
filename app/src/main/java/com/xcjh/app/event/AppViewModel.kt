@@ -77,6 +77,8 @@ class AppViewModel : BaseViewModel() {
     var fpsEvent=EventLiveData<String>()
 
     var ceshiEvent=EventLiveData<Boolean>()
+    //在直播间详情的时候，登录成功后要退出游客的群聊
+    var  loginExitGroupEvent=EventLiveData<Boolean>()
 
     init {
         //默认值保存的账户信息，没有登陆过则为null started 或 resumed
