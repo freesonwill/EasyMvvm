@@ -1,4 +1,4 @@
-package com.cn.game.sdk2.viewmodel
+package com.cn.game.sdk2.ui.viewmodel
 
 import com.xcjh.base_lib.base.BaseViewModel
 

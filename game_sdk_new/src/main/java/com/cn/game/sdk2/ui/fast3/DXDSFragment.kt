@@ -15,8 +15,8 @@ import com.cn.game.sdk2.ui.helper.ViewHelper.isAdd
 import com.cn.game.sdk2.utils.MyGameManager
 import com.cn.game.sdk2.ui.view.MoneyOKView
 import com.cn.game.sdk2.ui.view.game.GameAreaView
-import com.cn.game.sdk2.viewmodel.fast3.Fast3ViewModel
-import com.cn.game.sdk2.viewmodel.fast3.DXDSVm
+import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
+import com.cn.game.sdk2.ui.viewmodel.fast3.DXDSVm
 import me.jessyan.autosize.utils.AutoSizeUtils.dp2px
 
 

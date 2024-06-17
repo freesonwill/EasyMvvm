@@ -1,4 +1,4 @@
-package com.cn.game.sdk2.viewmodel.fast3
+package com.cn.game.sdk2.ui.viewmodel.fast3
 
 import android.view.View
 import com.cn.game.sdk2.ui.view.MoneyOKView
@@ -19,7 +19,7 @@ class Fast3ViewModel:BaseViewModel() {
     //<areaCode,<money,View>>
     public var savedMoneyMap:MutableMap<Int,MutablePair<Int,WeakReference<MoneyOKView>>> = mutableMapOf()
     public var tempMoneyMap:MutableMap<Int,MutablePair<Int,WeakReference<MoneyOKView>>> = mutableMapOf()
-    public var moneyAnimCallback: MoneyAnimCallback ?= null
+    public var moneyAnimCallback: MoneyAnimCallback?= null
 
     public fun emitMoneyAnim(x: Float, y: Float, isCentered: Boolean = false, speed: Long = 300, areaView: GameAreaView){
         moneyAnimCallback?.apply {
