@@ -61,6 +61,7 @@ fun Context.dp2px(dp: Int): Int {
     val scale = resources.displayMetrics.density
     return (dp * scale + 0.5f).toInt()
 }
+
 fun Context.dp2px(dp: Double): Int {
     val scale = resources.displayMetrics.density
     return (dp * scale + 0.5f).toInt()
@@ -98,10 +99,7 @@ fun Context.copyToClipboard(text: String, label: String = appContext.packageName
     clipboardManager?.setPrimaryClip(clipData)
 
 
-
 }
-
-
 
 
 /**
@@ -162,7 +160,7 @@ fun String.toHtml(flag: Int = Html.FROM_HTML_MODE_LEGACY): Spanned {
 /**
  * 有图片的富文本
  */
-fun String.toHtml( action: (Spanned?) -> Unit ){
+fun String.toHtml(action: (Spanned?) -> Unit) {
     Thread {
         val imageGetter = ImageGetter { source ->
             val drawable: Drawable? = getImageNetwork(source)
@@ -203,3 +201,17 @@ fun getImageNetwork(imageUrl: String?): Drawable? {
     return drawable
 }
 
+fun View.measureView() {
+    val params = layoutParams
+    val width = if (params.width > 0) {
+        View.MeasureSpec.makeMeasureSpec(params.width, View.MeasureSpec.EXACTLY)
+    } else {
+        View.MeasureSpec.makeMeasureSpec(0, View.SOUND_EFFECTS_ENABLED)
+    }
+    val height = if (params.height > 0) {
+        View.MeasureSpec.makeMeasureSpec(params.height, View.MeasureSpec.EXACTLY)
+    } else {
+        View.MeasureSpec.makeMeasureSpec(0, View.SOUND_EFFECTS_ENABLED)
+    }
+    measure(width, height)
+}

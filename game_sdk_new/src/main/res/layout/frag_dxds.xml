@@ -7,6 +7,7 @@
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/rlHomeRoot"
+        android:clipChildren="false"
         android:layout_width="match_parent"
         android:layout_height="180dp" >
         <!-- 左上角-->
