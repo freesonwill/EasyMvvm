@@ -105,6 +105,6 @@ dependencies {
     implementation 'io.github.h07000223:flycoTabLayout:3.0.0'
     //拖动的
     implementation 'com.github.kongxiaojun:EasyFloat:3.0.1'
-    implementation project(':game_sdk')
+    //implementation project(':game_sdk')
 
 }

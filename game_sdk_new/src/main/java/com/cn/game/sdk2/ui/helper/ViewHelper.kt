@@ -1,12 +1,19 @@
 package com.cn.game.sdk2.ui.helper
 
 import android.content.Context
+import android.graphics.Paint
 import android.view.Gravity
-import android.view.LayoutInflater
+import android.view.View
 import android.widget.LinearLayout
-import com.cn.game.sdk.popup.MyGamePopupDialog
+import android.widget.TextView
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentStatePagerAdapter
+import androidx.viewpager.widget.ViewPager
 import com.cn.game.sdk2.R
-import com.cn.game.sdk2.ui.Game1Fragment
+import com.cn.game.sdk2.data.enums.GAME_ID_ENUM
+import com.cn.game.sdk2.tool.indicator.CommonPagerIndicator
 import com.cn.game.sdk2.ui.HomeXPopupDialog
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
@@ -14,6 +21,14 @@ import com.lxj.xpopup.enums.PopupAnimation
 import com.lxj.xpopup.interfaces.SimpleCallback
 import com.lzf.easyfloat.EasyFloat
 import com.lzf.easyfloat.enums.SidePattern
+import com.xcjh.base_lib.utils.toHtml
+import net.lucode.hackware.magicindicator.MagicIndicator
+import net.lucode.hackware.magicindicator.ViewPagerHelper
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigator
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapter
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerIndicator
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerTitleView
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.ColorTransitionPagerTitleView
 
 /**
  * Description:
@@ -51,16 +66,168 @@ object ViewHelper {
                         .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                         .isThreeDrag(false) //是否开启三阶拖拽，如果设置enableDrag(false)则无效
                         .enableDrag(false)
-                        .asCustom(MyGamePopupDialog(context))
-//                        .asCustom(HomeXPopupDialog(context,LayoutInflater.from(context).inflate(R.layout.dialog_home_xpopup,null,false)).apply {
-//                            homeXPopupDialog = this
-//                            Game1Fragment().view
-//                        }
-//                        )
+                        .asCustom(HomeXPopupDialog(context,GAME_ID_ENUM.GAME_FAST3.num).apply {
+                            homeXPopupDialog = this
+                        })
                         .show()
                     EasyFloat.hide(TAG_FASTVIEW)
                 }
             }.show()
+    }
+
+    fun ViewPager.initGameViewPager(
+        fragmentManager: FragmentManager,
+        fragments: ArrayList<Fragment>,
+        titles: ArrayList<String>? = null
+    ): ViewPager {
+        //设置适配器
+        adapter = object : FragmentStatePagerAdapter(
+            fragmentManager,
+            BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
+        ) {
+            override fun getCount(): Int {
+                return fragments.size
+            }
+
+            override fun getItem(position: Int): Fragment {
+                return fragments[position]
+            }
+
+            override fun getPageTitle(position: Int): CharSequence? {
+                return titles?.get(position)
+            }
+        }
+        return this
+    }
+
+
+    /**
+     * 该文件只添加扩展方法，其他top函数根据业务情况合理安置，便于查找、管理
+     * 各种公共扩展方法
+     */
+
+    fun ViewPager.initActivityGame(
+        fragmentManager: FragmentManager,
+        fragments: ArrayList<Fragment>,
+        titles: ArrayList<String>? = null
+    ): ViewPager {
+        //设置适配器
+        adapter = object : FragmentStatePagerAdapter(
+            fragmentManager,
+            BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
+        ) {
+            override fun getCount(): Int {
+                return fragments.size
+            }
+
+            override fun getItem(position: Int): Fragment {
+                return fragments[position]
+            }
+
+            override fun getPageTitle(position: Int): CharSequence? {
+                return titles?.get(position)
+            }
+
+        }
+
+        return this
+    }
+
+
+
+
+    /*
+     * ViewPager + MagicIndicator 指示器
+     */
+    fun MagicIndicator.bindViewPagerNewGame(
+        viewPager: ViewPager,
+        mStringList: List<String> = arrayListOf(),
+        scrollEnable: Boolean = false,
+        action: (index: Int) -> Unit = {}
+    ) {
+        // viewPager.offscreenPageLimit = mStringList.size
+        val commonNavigator = CommonNavigator(context)
+        if (scrollEnable) {
+            commonNavigator.isSkimOver = true
+        } else {
+            commonNavigator.isAdjustMode = true
+        }
+        commonNavigator.adapter = object : CommonNavigatorAdapter() {
+
+            override fun getCount(): Int {
+                return mStringList.size
+            }
+
+            override fun getTitleView(context: Context, index: Int): IPagerTitleView {
+                requestDisallowInterceptTouchEvent(true)
+
+                return ColorTransitionPagerTitleView(context).apply {
+//                setOnTouchListener(View.OnTouchListener { v, event ->
+//                    if (v is CombinationOkView) {
+//                    Log.i("VVVVVVVVV","1111111111111")
+//
+//                    }else{
+//                        Log.i("VVVVVVVVV","22222222222222")
+//                    }
+//
+//                    return@OnTouchListener false
+//                })
+                    //设置文本
+                    text = mStringList[index].toHtml()
+                    //字体大小
+                    textSize = 14f
+                    setTextBold(this, true)
+                    // setBackgroundColor(ContextCompat.getColor(appContext, R.color.red_F7736D))
+                    //未选中颜色
+                    normalColor = ContextCompat.getColor(context, R.color.g_9696b8)
+                    //选中颜色
+                    selectedColor = ContextCompat.getColor(context, R.color.g_f7cf41)
+                    //点击事件
+                    setOnClickListener {
+                        viewPager.currentItem = index
+                        action.invoke(index)
+                    }
+
+
+
+
+                }
+            }
+
+            override fun getIndicator(context: Context): IPagerIndicator {
+                return CommonPagerIndicator(context).apply {
+                    mode = 0
+                    // indicatorDrawable = ContextCompat.getDrawable(context, R.drawable.ic_select)
+                }
+            }
+
+        }
+        this.navigator = commonNavigator
+
+        //viewPager 绑定 navigator
+        ViewPagerHelper.bind(this, viewPager)
+    }
+
+
+
+
+
+
+    /**
+     * 文字加粗无效的时候，如： textView.setTypeface(null, Typeface.BOLD) 或者 textView.typeface = Typeface.DEFAULT_BOLD
+     */
+    fun setTextBold(textView: TextView?, isBold: Boolean) {
+        try {
+            if (textView != null) {
+                val paint: Paint? = textView.paint
+                paint?.isFakeBoldText = isBold
+            }
+        } catch (_: Exception) {
+        }
+    }
+
+    fun View.isAdd():Boolean{
+        return parent != null
     }
 
 }

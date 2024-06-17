@@ -397,7 +397,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="fitXY"
-                    app:srcCompat="@drawable/home_center"/>
+                    app:srcCompat="@drawable/home_centre"/>
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/ivFlickerCentre"
                     android:layout_width="match_parent"

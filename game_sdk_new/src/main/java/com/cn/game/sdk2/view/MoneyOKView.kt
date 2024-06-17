@@ -11,6 +11,7 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.tool.PromptSoundPlay
+import com.xcjh.base_lib.utils.StringFormatUtil
 import com.xcjh.base_lib.utils.view.clickNoRepeat
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -26,27 +27,38 @@ class MoneyOKView @JvmOverloads constructor(
     /**
      * 是否显示取消或者确定
      */
-   private var llShowTop: LinearLayout
+    var llShowTop: LinearLayout
 
     /**
      * 取消
      */
-   private var ivOff: ImageView
+    var ivOff: ImageView
 
     /**
      * 确定
      */
-   private var ivOk: ImageView
+    var ivOk: ImageView
 
     /**
      * 显示的钱
      */
-    private var ivShowMoney: AppCompatTextView
+    var ivShowMoney: AppCompatTextView
 
     /**
      * 显示的背景钱
      */
-    private var ivShowBg: AppCompatImageView
+    var ivShowBg: AppCompatImageView
+
+    /**
+     *  动画相对于控件的位置
+     */
+    var viewXYTemporary: IntArray = intArrayOf(0, 0)
+
+    /**
+     *  动画结束后显示的位置  相对于控件的位置  要点击确定的时候保存
+     */
+    var viewXYLast: IntArray = intArrayOf(0, 0)
+
 
 
     // 声明一个变量来保存回调接口
@@ -134,14 +146,14 @@ class MoneyOKView @JvmOverloads constructor(
             ivShowMoney.text = money.toString()
         } else if (money < 10000) {
             if ((money % 1000) == 0) {
-                val resultNoDecimal = (money / 1000).toFloat().round(0)
+                val resultNoDecimal = (money / 1000f).round(0)
                 return resultNoDecimal.toString() + "k"
 
             } else if ((money % 100) == 0) {
-                val resultNoDecimal = (money / 1000).toFloat().round(1)
+                val resultNoDecimal = (money / 1000f).round(1)
                 return resultNoDecimal.toString() + "k"
             } else {
-                val resultNoDecimal = (money / 1000).toFloat().round(2)
+                val resultNoDecimal = (money / 1000f).round(2)
                 return resultNoDecimal.toString() + "k"
             }
 

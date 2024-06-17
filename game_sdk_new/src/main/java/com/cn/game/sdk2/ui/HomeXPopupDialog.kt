@@ -2,12 +2,10 @@ package com.cn.game.sdk2.ui
 
 
 import android.content.Context
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.FragmentContainer
-import androidx.fragment.app.FragmentContainerView
+import androidx.fragment.app.FragmentActivity
 import com.cn.game.sdk2.R
+import com.cn.game.sdk2.databinding.DialogHomeXpopupContainerBinding
+import com.cn.game.sdk2.ui.fast3.Fast3MainFragment
 import com.lxj.xpopup.core.BottomPopupView
 
 /**
@@ -15,30 +13,22 @@ import com.lxj.xpopup.core.BottomPopupView
  * author       : zhangsan
  * createTime   : 2024/6/13 18:18
  **/
-open class HomeXPopupDialog(context: Context, private var contentView: View) : BottomPopupView(context) {
+open class HomeXPopupDialog(context: Context, private var miniGameId: Int) : BottomPopupView(context) {
+    var binding:DialogHomeXpopupContainerBinding ?= null
 
     override fun onCreate() {
         super.onCreate()
-        setContentView(contentView)
+        binding = DialogHomeXpopupContainerBinding.bind(popupImplView)
+        val activity = context as FragmentActivity
+        val transaction = activity!!.supportFragmentManager.beginTransaction();
+        val fragment  = Fast3MainFragment();
+        transaction.add(R.id.fl_container,fragment).commit();
+
     }
 
     override fun getImplLayoutId(): Int {
         return R.layout.dialog_home_xpopup_container
     }
 
-    fun setContentView(contentView: View) {
-        if (popupImplView == null) return
-        val container = popupImplView as ViewGroup
-        this.contentView = contentView
-        container.removeAllViews()
-        container.addView(contentView)
-    }
 
-//    fun setContentView(contentView: View) {
-//        if (popupImplView == null) return
-//        val container = popupImplView as FragmentContainerView
-//        this.contentView = contentView
-//        container.removeAllViews()
-//        container.addView(contentView)
-//    }
 }

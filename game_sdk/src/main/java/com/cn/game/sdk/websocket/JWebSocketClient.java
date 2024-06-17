@@ -57,6 +57,7 @@ public class JWebSocketClient extends WebSocketClient {
     public void onOpen(ServerHandshake handShakeData) {//在webSocket连接开启时调用
         //this.testLogin();
         //login("wali-internal","6", 8, "android","14%3AhRyvRPoB");
+        //GameReq.BetReq.newBuilder().getAreaBetList();
         ClientReq.LoginReq req = ClientReq.LoginReq.newBuilder()
                 .setAgentName("wali-internal")
                 .setServer(8)
