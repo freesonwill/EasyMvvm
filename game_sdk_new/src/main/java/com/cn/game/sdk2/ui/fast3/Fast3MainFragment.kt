@@ -27,7 +27,7 @@ import com.cn.game.sdk2.data.bean.SelectAnnotationBean
 import com.cn.game.sdk2.databinding.FragFast3HomeBinding
 import com.cn.game.sdk2.databinding.ItemAnnotationListBinding
 import com.cn.game.sdk2.databinding.ItemBetHistoryBinding
-import com.cn.game.sdk2.listener.GameTimeStatic
+import com.cn.game.sdk2.manager.listener.GameTimeStatic
 import com.cn.game.sdk2.ui.view.CustomBubbleAttachPopup
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.ui.helper.ViewHelper.bindViewPagerNewGame
@@ -96,8 +96,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     PromptSoundPlay.countdownGameTip(requireContext())
                 }
                 mDatabind.txtHomeTime.text = seconds.toString()
-
-
             }
 
             override fun onStatic(mStatic: Int) {

@@ -1,8 +1,14 @@
 package com.xcjh.base_lib.utils
 
+import android.graphics.drawable.Drawable
+import androidx.annotation.ColorRes
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.xcjh.base_lib.ModuleInitializer
 import com.xcjh.base_lib.base.BaseViewModel
 import com.xcjh.base_lib.network.*
 import kotlinx.coroutines.*
@@ -14,7 +20,6 @@ import okio.BufferedSource
  * 时间　: 2020/4/8
  * 描述　:BaseViewModel请求协程封装
  */
-
 
 
 /**
@@ -67,7 +72,7 @@ fun <T> ViewModel.requestNoCheck(
         }.onSuccess {
             resultState.paresResult(it)
         }.onFailure {
-          //  it.message?.loge()
+            //  it.message?.loge()
             //打印错误栈信息
             it.printStackTrace()
             resultState.paresException(it)
@@ -93,7 +98,7 @@ fun <T> BaseViewModel.request(
     //如果需要弹窗 通知Activity/fragment弹窗
     return viewModelScope.launch {
         runCatching {
-            if (isShowDialog)  loadingChange.showDialog.postValue(loadingMessage)
+            if (isShowDialog) loadingChange.showDialog.postValue(loadingMessage)
             //请求体
             block()
         }.onSuccess {
@@ -101,11 +106,12 @@ fun <T> BaseViewModel.request(
             loadingChange.dismissDialog.postValue(false)
             runCatching {
                 //校验请求结果码是否正确，不正确会抛出异常走下面的onFailure
-                executeResponse(it) { t -> success(t)
+                executeResponse(it) { t ->
+                    success(t)
                 }
             }.onFailure { e ->
                 //打印错误消息
-               // e.message?.loge()
+                // e.message?.loge()
                 //打印错误栈信息
                 e.printStackTrace()
                 //失败回调
@@ -115,7 +121,7 @@ fun <T> BaseViewModel.request(
             //网络请求异常 关闭弹窗
             loadingChange.dismissDialog.postValue(false)
             //打印错误消息
-           // it.message?.loge()
+            // it.message?.loge()
             //打印错误栈信息
             it.printStackTrace()
             //失败回调
@@ -132,7 +138,7 @@ fun <T> BaseViewModel.request(
  * @param isShowDialog 是否显示加载框
  * @param loadingMessage 加载框提示内容
  */
-fun  BaseViewModel.requestStream(
+fun BaseViewModel.requestStream(
     block: suspend () -> ResponseBody,
     success: (BufferedSource) -> Unit,
     error: (AppException) -> Unit = {},
@@ -142,7 +148,7 @@ fun  BaseViewModel.requestStream(
     //如果需要弹窗 通知Activity/fragment弹窗
     return viewModelScope.launch {
         runCatching {
-            if (isShowDialog)  loadingChange.showDialog.postValue(loadingMessage)
+            if (isShowDialog) loadingChange.showDialog.postValue(loadingMessage)
             //请求体
             block()
         }.onSuccess {
@@ -155,7 +161,7 @@ fun  BaseViewModel.requestStream(
                 success(it.source())
             }.onFailure { e ->
                 //打印错误消息
-               // e.message?.loge()
+                // e.message?.loge()
                 //打印错误栈信息
                 e.printStackTrace()
                 //失败回调
@@ -165,7 +171,7 @@ fun  BaseViewModel.requestStream(
             //网络请求异常 关闭弹窗
             loadingChange.dismissDialog.postValue(false)
             //打印错误消息
-           // it.message?.loge()
+            // it.message?.loge()
             //打印错误栈信息
             it.printStackTrace()
             //失败回调
@@ -173,6 +179,7 @@ fun  BaseViewModel.requestStream(
         }
     }
 }
+
 /**
  * 过滤服务器结果，失败抛异常 不处理加载框
  * @param block 请求体方法，必须要用suspend关键字修饰
@@ -193,7 +200,8 @@ fun <T> BaseViewModel.requestNoDialog(
             //网络请求成功 关闭弹窗
             runCatching {
                 //校验请求结果码是否正确，不正确会抛出异常走下面的onFailure
-                executeResponse(it) { t -> success(t)
+                executeResponse(it) { t ->
+                    success(t)
                 }
             }.onFailure { e ->
                 //打印错误消息
@@ -245,7 +253,7 @@ fun <T> BaseViewModel.requestNoCheck(
             //网络请求异常 关闭弹窗
             loadingChange.dismissDialog.postValue(false)
             //打印错误消息
-           // it.message?.loge()
+            // it.message?.loge()
             //打印错误栈信息
             it.printStackTrace()
             //失败回调
@@ -266,6 +274,7 @@ suspend fun <T> executeResponse(
             response.isSucces() -> {
                 success(response.getResponseData())
             }
+
             else -> {
                 throw AppException(
                     response.getResponseCode(),
@@ -299,4 +308,16 @@ fun <T> ViewModel.launch(
             error(it)
         }
     }
+}
+fun BaseViewModel.getString(@StringRes resId: Int): String {
+    return ModuleInitializer.application.getString(resId)
+}
+
+
+fun BaseViewModel.getDrawable(@DrawableRes resId: Int): Drawable? {
+    return ContextCompat.getDrawable(ModuleInitializer.application,resId)
+}
+
+fun BaseViewModel.getColor(@ColorRes resId: Int): Int {
+    return ContextCompat.getColor(ModuleInitializer.application,resId)
 }

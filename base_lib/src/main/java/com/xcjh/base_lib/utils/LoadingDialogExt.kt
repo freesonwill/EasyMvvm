@@ -41,7 +41,7 @@ fun Fragment.showLoadingExt(message: String = "请求网络中") {
             }
         }
     }catch (e:Exception){
-
+        e.printStackTrace()
     }
 }
 

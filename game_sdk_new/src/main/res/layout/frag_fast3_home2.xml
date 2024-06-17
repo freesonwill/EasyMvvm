@@ -1,0 +1,341 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="model"
+            type="com.cn.game.sdk2.ui.viewmodel.Fast3ViewModel" />
+    </data>
+
+    <RelativeLayout
+        android:id="@+id/rlRoot"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:orientation="vertical"
+        android:tag="root">
+
+        <LinearLayout
+            android:id="@+id/llShowSection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@color/g_141624"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:orientation="vertical"
+            android:paddingBottom="34dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="10dp"
+                android:clipChildren="false"
+                android:clipToPadding="false">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivHomeLogo"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+
+                    app:srcCompat="@drawable/icon_kuai_logo" />
+
+                <LinearLayout
+                    android:id="@+id/llShowCountdown"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:orientation="horizontal">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/txtHomeStatic"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/g_home_txt_please"
+                        android:textColor="@color/g_e8e8e9"
+                        android:textSize="15sp" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/txtHomeTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:text="@{model.timeLiveData,default=`10`}"
+                        android:textColor="@color/g_700000"
+                        android:textSize="15sp" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/txtHomeUnit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="S"
+                        android:textColor="@color/g_e8e8e9"
+                        android:textSize="15sp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/llHomeVideo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:layout_width="22dp"
+                            android:layout_height="18dp"
+                            android:scaleType="fitXY"
+                            app:srcCompat="@drawable/icon_video_bo" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/g_home_txt_video"
+                            android:textColor="@color/g_f3f3f3"
+                            android:textSize="9sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/llHomeMore"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="15dp"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:layout_width="22dp"
+                            android:layout_height="18dp"
+                            android:scaleType="fitXY"
+                            app:srcCompat="@drawable/icon_more" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/g_home_txt_more"
+                            android:textColor="@color/g_f3f3f3"
+                            android:textSize="9sp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/vvvvvv"
+                android:layout_width="match_parent"
+                android:layout_height="21dp"
+                android:layout_marginTop="5dp"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:orientation="vertical">
+
+                <net.lucode.hackware.magicindicator.MagicIndicator
+                    android:id="@+id/magicIndicator"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginEnd="5dp"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    app:layout_constraintEnd_toStartOf="@id/frrl"
+                    app:layout_constraintStart_toStartOf="parent"
+                    tools:ignore="MissingConstraints" />
+
+                <LinearLayout
+                    android:id="@+id/frrl"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="12dp"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="$"
+                        android:textColor="@color/g_f7cf41"
+                        android:textSize="13sp" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/txtCurrentMoney"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{model.moneyTotal}"
+                        android:textColor="@color/g_f7cf41"
+                        android:textSize="13sp"
+                        tools:text="20000"
+                        />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="5dp"
+                        android:layout_height="8dp"
+                        android:layout_marginLeft="@dimen/dp_5"
+                        app:srcCompat="@drawable/icon_right" />
+
+                </LinearLayout>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rlccccc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipChildren="false"
+                android:clipToPadding="false">
+
+                <androidx.viewpager.widget.ViewPager
+                    android:id="@+id/viewPagerNew"
+                    android:layout_width="match_parent"
+                    android:layout_height="180dp"
+                    android:layout_marginTop="8dp"
+                    android:clipChildren="false"
+                    android:clipToPadding="false" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivHomeBg"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@+id/llShowBetList"
+                    android:layout_alignBottom="@+id/rlClickHide"
+                    android:scaleType="fitXY"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/icon_home_bg" />
+                <!--            开奖结果-->
+                <RelativeLayout
+                    android:id="@+id/rlShowResult"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/llShowBetList"
+                    android:layout_marginBottom="5dp"
+                    android:visibility="gone">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/ivDrawYi"
+                            android:layout_width="34dp"
+                            android:layout_height="34dp"
+                            app:srcCompat="@drawable/icon_dice_yi" />
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/ivDrawEr"
+                            android:layout_width="34dp"
+                            android:layout_height="34dp"
+                            android:layout_marginLeft="15dp"
+                            app:srcCompat="@drawable/icon_dice_er" />
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/ivDrawSan"
+                            android:layout_width="34dp"
+                            android:layout_height="34dp"
+                            android:layout_marginLeft="15dp"
+                            app:srcCompat="@drawable/icon_dice_san" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/txtHomeTotal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:text="9"
+                            android:textColor="@color/c_ffffff"
+                            android:textSize="25sp"
+                            android:textStyle="bold" />
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:layout_width="22dp"
+                            android:layout_height="26dp"
+                            android:layout_marginLeft="16dp"
+                            app:srcCompat="@drawable/icon_home_result_small" />
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:layout_width="22dp"
+                            android:layout_height="26dp"
+                            android:layout_marginLeft="16dp"
+                            app:srcCompat="@drawable/icon_home_result_double" />
+                    </LinearLayout>
+
+
+                </RelativeLayout>
+
+
+                <!--            选择投注-->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/llShowBetList"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_below="@+id/viewPagerNew"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    tools:itemCount="1"
+                    tools:listitem="@layout/item_annotation_list" />
+                <!--             历史记录-->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvHomeHistory"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/llShowBetList"
+                    android:layout_marginLeft="@dimen/dp_5"
+                    android:layout_marginRight="27dp"
+                    tools:itemCount="1"
+                    tools:listitem="@layout/item_bet_history" />
+                <!--                隐藏或者显示撒子数-->
+                <RelativeLayout
+                    android:id="@+id/rlClickHide"
+                    android:layout_width="23dp"
+                    android:layout_height="39dp"
+                    android:layout_alignBottom="@+id/rvHomeHistory"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="4dp">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="fitXY"
+                        app:srcCompat="@drawable/icon_bg_btn" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ivHomeRotation"
+                        android:layout_width="7dp"
+                        android:layout_height="13dp"
+                        android:layout_centerInParent="true"
+                        android:scaleType="fitXY"
+                        app:srcCompat="@drawable/icon_arrow_top" />
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+
+        </LinearLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/tempTouth"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </RelativeLayout>
+
+
+</layout>

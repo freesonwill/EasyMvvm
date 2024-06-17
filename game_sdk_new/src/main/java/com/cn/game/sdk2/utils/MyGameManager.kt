@@ -8,7 +8,7 @@ import android.util.Log
 import androidx.core.content.ContextCompat
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.data.bean.SelectAnnotationBean
-import com.cn.game.sdk2.listener.GameTimeStatic
+import com.cn.game.sdk2.manager.listener.GameTimeStatic
 import com.cn.game.sdk2.ui.view.OpenResultView
 
 @SuppressLint("StaticFieldLeak")

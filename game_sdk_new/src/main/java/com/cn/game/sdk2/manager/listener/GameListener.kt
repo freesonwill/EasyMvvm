@@ -1,4 +1,4 @@
-package com.cn.game.sdk2.listener
+package com.cn.game.sdk2.manager.listener
 
 
 interface GameTimeStatic{
@@ -8,7 +8,7 @@ interface GameTimeStatic{
     fun  onCountdown(time:Long){}
 
     /**
-     * 返回倒计时
+     * 结算结束
      */
     fun  onStatic(mStatic:Int){}
 

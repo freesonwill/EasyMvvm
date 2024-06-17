@@ -12,7 +12,7 @@ class ProxyApplication : Application()  , ViewModelStoreOwner{
     override fun onCreate() {
         super.onCreate()
         mAppViewModelStore = ViewModelStore()
-        var ddd=GamePartyLibraryInitializer
+        val ddd=GamePartyLibraryInitializer
         ddd.initialize(this,this)
     }
     override fun getViewModelStore(): ViewModelStore {

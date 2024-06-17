@@ -93,12 +93,12 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
     implementation Libs.appcompat
     implementation Libs.material
+    //implementation(Libs.blankj)
 
     //组件依赖基础库
     implementation project(':base_lib')
     implementation 'com.github.liangjingkanji:Engine:0.0.74' // 快速开发基础库
     implementation 'com.google.protobuf:protobuf-java:3.19.1'
-
     implementation('com.github.li-xiaojun:XPopup:2.10.0') {
         exclude group: "com.davemorrissey.labs", module: "subsampling-scale-image-view-androidx"
     }

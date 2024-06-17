@@ -14,7 +14,9 @@ import androidx.lifecycle.ViewModelProvider
 import com.xcjh.base_lib.base.BaseViewModel
 import com.xcjh.base_lib.network.manager.NetState
 import com.xcjh.base_lib.network.manager.NetworkStateManager
+import com.xcjh.base_lib.utils.dismissLoadingExt
 import com.xcjh.base_lib.utils.getVmClazz
+import com.xcjh.base_lib.utils.showLoadingExt
 
 /**
  * 作者　:
@@ -69,7 +71,7 @@ abstract class BaseVmFragment<VM : BaseViewModel> : Fragment() {
     /**
      * 创建viewModel
      */
-    private fun createViewModel(): VM {
+    open fun createViewModel(): VM {
         return ViewModelProvider(this)[getVmClazz(this)]
     }
 
@@ -118,9 +120,13 @@ abstract class BaseVmFragment<VM : BaseViewModel> : Fragment() {
      */
     open fun initData() {}
 
-    abstract fun showLoading(message: String = "请求网络中...")
+    open fun showLoading(message: String = "请求网络中..."){
+        showLoadingExt(message)
+    }
 
-    abstract fun dismissLoading()
+    open fun dismissLoading() {
+        dismissLoadingExt()
+    }
 
     /**
      * 注册 UI 事件

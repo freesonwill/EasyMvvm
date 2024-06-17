@@ -17,6 +17,10 @@
     <string name="g_home_tab_leopard">豹子</string>
     <string name="g_home_tab_sum">总和</string>
     <string name="g_home_balance">结算中</string>
+    <string name="g_home_betting_begin">开始下注</string>
+    <string name="g_home_betting_end">下注结束</string>
+    <string name="g_home_drawing_begin">开始结算</string>
+    <string name="g_home_drawing_end">结算结束</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

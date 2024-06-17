@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentActivity
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.databinding.DialogHomeXpopupContainerBinding
 import com.cn.game.sdk2.ui.fast3.Fast3MainFragment
+import com.cn.game.sdk2.ui.fast3.Fast3MainFragment2
 import com.lxj.xpopup.core.BottomPopupView
 
 /**
@@ -13,7 +14,7 @@ import com.lxj.xpopup.core.BottomPopupView
  * author       : zhangsan
  * createTime   : 2024/6/13 18:18
  **/
-open class HomeXPopupDialog(context: Context, private var miniGameId: Int) : BottomPopupView(context) {
+class HomeXPopupDialog(context: Context, private var miniGameId: Int) : BottomPopupView(context) {
     var binding:DialogHomeXpopupContainerBinding ?= null
 
     override fun onCreate() {
@@ -21,7 +22,7 @@ open class HomeXPopupDialog(context: Context, private var miniGameId: Int) : Bot
         binding = DialogHomeXpopupContainerBinding.bind(popupImplView)
         val activity = context as FragmentActivity
         val transaction = activity.supportFragmentManager.beginTransaction();
-        val fragment  = Fast3MainFragment();
+        val fragment  = Fast3MainFragment2()
         transaction.add(R.id.fl_container,fragment).commit();
 
     }
