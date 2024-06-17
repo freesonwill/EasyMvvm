@@ -1,4 +1,4 @@
-package com.cn.game.sdk2.tool
+package com.cn.game.sdk2.utils.tool
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -12,7 +12,7 @@ object MediaPlayerManager {
     private var isPlaying = false
 
     fun initialize(context: Context) {
-        this.context = context.applicationContext
+        MediaPlayerManager.context = context.applicationContext
         mediaPlayer.setOnCompletionListener {
             playNext()
         }

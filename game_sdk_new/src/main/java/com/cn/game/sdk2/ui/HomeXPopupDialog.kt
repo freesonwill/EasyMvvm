@@ -20,7 +20,7 @@ open class HomeXPopupDialog(context: Context, private var miniGameId: Int) : Bot
         super.onCreate()
         binding = DialogHomeXpopupContainerBinding.bind(popupImplView)
         val activity = context as FragmentActivity
-        val transaction = activity!!.supportFragmentManager.beginTransaction();
+        val transaction = activity.supportFragmentManager.beginTransaction();
         val fragment  = Fast3MainFragment();
         transaction.add(R.id.fl_container,fragment).commit();
 

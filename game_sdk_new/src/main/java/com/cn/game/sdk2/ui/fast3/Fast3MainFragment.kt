@@ -28,12 +28,12 @@ import com.cn.game.sdk2.databinding.FragFast3HomeBinding
 import com.cn.game.sdk2.databinding.ItemAnnotationListBinding
 import com.cn.game.sdk2.databinding.ItemBetHistoryBinding
 import com.cn.game.sdk2.listener.GameTimeStatic
-import com.cn.game.sdk2.popup.CustomBubbleAttachPopup
-import com.cn.game.sdk2.tool.PromptSoundPlay
+import com.cn.game.sdk2.ui.view.CustomBubbleAttachPopup
+import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.ui.helper.ViewHelper.bindViewPagerNewGame
 import com.cn.game.sdk2.ui.helper.ViewHelper.initGameViewPager
 import com.cn.game.sdk2.utils.MyGameManager
-import com.cn.game.sdk2.view.game.GameAreaView
+import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.viewmodel.fast3.Fast3ViewModel
 import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.models

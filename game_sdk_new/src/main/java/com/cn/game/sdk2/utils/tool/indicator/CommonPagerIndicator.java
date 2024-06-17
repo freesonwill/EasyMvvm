@@ -1,4 +1,4 @@
-package com.cn.game.sdk2.tool.indicator;
+package com.cn.game.sdk2.utils.tool.indicator;
 
 import android.content.Context;
 import android.graphics.Canvas;

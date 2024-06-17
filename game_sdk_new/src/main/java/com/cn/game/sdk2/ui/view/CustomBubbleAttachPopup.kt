@@ -1,4 +1,4 @@
-package com.cn.game.sdk2.popup
+package com.cn.game.sdk2.ui.view
 
 import android.content.Context
 import android.widget.RelativeLayout

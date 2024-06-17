@@ -10,11 +10,11 @@ import android.widget.FrameLayout
 import com.cn.game.sdk2.base.BaseGameFragment
 import com.cn.game.sdk2.data.enums.NOTES_ENUM
 import com.cn.game.sdk2.databinding.FragDxdsBinding
-import com.cn.game.sdk2.tool.PromptSoundPlay
+import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.ui.helper.ViewHelper.isAdd
 import com.cn.game.sdk2.utils.MyGameManager
-import com.cn.game.sdk2.view.MoneyOKView
-import com.cn.game.sdk2.view.game.GameAreaView
+import com.cn.game.sdk2.ui.view.MoneyOKView
+import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.viewmodel.fast3.Fast3ViewModel
 import com.cn.game.sdk2.viewmodel.fast3.DXDSVm
 import me.jessyan.autosize.utils.AutoSizeUtils.dp2px
@@ -43,7 +43,7 @@ class DXDSFragment(var fast3VM: Fast3ViewModel) : BaseGameFragment<DXDSVm, FragD
         areaViewList.add(mDatabind.leopardView)
 
         for(areaView in areaViewList){
-            areaView.moneyView.setMoneyOKClickListener(object :MoneyOKView.OnMoneyOKClickListener{
+            areaView.moneyView.setMoneyOKClickListener(object : MoneyOKView.OnMoneyOKClickListener{
                 override fun onConfirm() {
                     fast3VM.betOkClick.value = true;
                 }
@@ -55,7 +55,7 @@ class DXDSFragment(var fast3VM: Fast3ViewModel) : BaseGameFragment<DXDSVm, FragD
             areaView.setOnClickListener{
                 //先判断余额是否够这次 并且扣取钱
                 //if( homeXPopupDialog.isCanBetting()&&MyGameManager.isClickOperation&&PromptSoundPlay.handleClick()){
-                if(MyGameManager.isClickOperation&&PromptSoundPlay.handleClick()){
+                if(MyGameManager.isClickOperation&& PromptSoundPlay.handleClick()){
                     //fast3VM.updateAnchorView(areaView.moneyView)
 
                     //计算钱

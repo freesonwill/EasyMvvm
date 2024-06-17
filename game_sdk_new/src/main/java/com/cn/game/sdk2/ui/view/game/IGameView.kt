@@ -1,4 +1,4 @@
-package com.cn.game.sdk2.view.game
+package com.cn.game.sdk2.ui.view.game
 
 public interface IGameView {
     fun isCanBetting(): Boolean

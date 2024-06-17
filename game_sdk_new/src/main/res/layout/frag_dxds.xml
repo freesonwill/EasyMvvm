@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="180dp" >
         <!-- 左上角-->
-        <com.cn.game.sdk2.view.game.GameAreaView
+        <com.cn.game.sdk2.ui.view.game.GameAreaView
             android:id="@+id/small_view"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/big_view"
@@ -102,9 +102,9 @@
                     </LinearLayout>
                 </LinearLayout>
             </RelativeLayout>
-        </com.cn.game.sdk2.view.game.GameAreaView>
+        </com.cn.game.sdk2.ui.view.game.GameAreaView>
         <!--  右上角-->
-        <com.cn.game.sdk2.view.game.GameAreaView
+        <com.cn.game.sdk2.ui.view.game.GameAreaView
             android:id="@+id/big_view"
             app:layout_constraintStart_toEndOf="@id/small_view"
             app:layout_constraintEnd_toEndOf="parent"
@@ -199,9 +199,9 @@
                     </LinearLayout>
                 </LinearLayout>
             </RelativeLayout>
-        </com.cn.game.sdk2.view.game.GameAreaView>
+        </com.cn.game.sdk2.ui.view.game.GameAreaView>
         <!--左下角-->
-        <com.cn.game.sdk2.view.game.GameAreaView
+        <com.cn.game.sdk2.ui.view.game.GameAreaView
             android:id="@+id/single_view"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/double_view"
@@ -293,9 +293,9 @@
                     </LinearLayout>
                 </LinearLayout>
             </RelativeLayout>
-        </com.cn.game.sdk2.view.game.GameAreaView>
+        </com.cn.game.sdk2.ui.view.game.GameAreaView>
         <!-- 右下角-->
-        <com.cn.game.sdk2.view.game.GameAreaView
+        <com.cn.game.sdk2.ui.view.game.GameAreaView
             android:id="@+id/double_view"
             app:layout_constraintStart_toEndOf="@id/single_view"
             app:layout_constraintEnd_toEndOf="parent"
@@ -389,9 +389,9 @@
                     </LinearLayout>
                 </LinearLayout>
             </RelativeLayout>
-        </com.cn.game.sdk2.view.game.GameAreaView>
+        </com.cn.game.sdk2.ui.view.game.GameAreaView>
         <!--中间-->
-        <com.cn.game.sdk2.view.game.GameAreaView
+        <com.cn.game.sdk2.ui.view.game.GameAreaView
             android:id="@+id/leopard_view"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -442,7 +442,7 @@
                     android:visibility="gone"
                     app:srcCompat="@drawable/icon_lucency_centre"/>
             </RelativeLayout>
-        </com.cn.game.sdk2.view.game.GameAreaView>
+        </com.cn.game.sdk2.ui.view.game.GameAreaView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

@@ -1,4 +1,4 @@
-package com.cn.game.sdk2.view
+package com.cn.game.sdk2.ui.view
 
 import android.content.Context
 import android.util.AttributeSet

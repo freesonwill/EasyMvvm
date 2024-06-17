@@ -1,4 +1,4 @@
-package com.cn.game.sdk2.view
+package com.cn.game.sdk2.ui.view
 
 import android.content.Context
 import android.util.AttributeSet
@@ -10,7 +10,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import com.cn.game.sdk2.R
-import com.cn.game.sdk2.tool.PromptSoundPlay
+import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.xcjh.base_lib.utils.StringFormatUtil
 import com.xcjh.base_lib.utils.view.clickNoRepeat
 import java.math.BigDecimal

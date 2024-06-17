@@ -9,7 +9,7 @@ import androidx.core.content.ContextCompat
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.data.bean.SelectAnnotationBean
 import com.cn.game.sdk2.listener.GameTimeStatic
-import com.cn.game.sdk2.view.OpenResultView
+import com.cn.game.sdk2.ui.view.OpenResultView
 
 @SuppressLint("StaticFieldLeak")
 object MyGameManager {

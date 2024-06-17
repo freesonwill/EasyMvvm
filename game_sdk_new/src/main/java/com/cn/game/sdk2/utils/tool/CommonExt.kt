@@ -1,4 +1,4 @@
-package com.cn.game.sdk2.tool
+package com.cn.game.sdk2.utils.tool
 
 import android.content.ClipData
 import android.content.ClipboardManager
