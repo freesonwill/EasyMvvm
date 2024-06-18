@@ -22,7 +22,7 @@ class HomeXPopupDialog(context: Context, private var miniGameId: Int) : BottomPo
         binding = DialogHomeXpopupContainerBinding.bind(popupImplView)
         val activity = context as FragmentActivity
         val transaction = activity.supportFragmentManager.beginTransaction();
-        val fragment  = Fast3MainFragment2()
+        val fragment  = Fast3MainFragment()
         transaction.add(R.id.fl_container,fragment).commit();
 
     }

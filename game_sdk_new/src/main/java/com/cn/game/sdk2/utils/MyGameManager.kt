@@ -1,7 +1,9 @@
 package com.cn.game.sdk2.utils
 
 import android.annotation.SuppressLint
+import android.app.ActivityOptions
 import android.content.Context
+import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.CountDownTimer
 import android.util.Log
@@ -115,6 +117,18 @@ object MyGameManager {
         }
 
         return openResultView as OpenResultView
+    }
+
+    fun  setToast(context: Context){
+        val options = ActivityOptions.makeCustomAnimation(context, R.anim.slide_up, R.anim.slide_down)
+        /*var inagte= Intent(context, GameHomeActivity::class.java)
+        ContextCompat.startActivity(context, inagte, options.toBundle())*/
+    }
+
+    fun setLogoTime(){
+        /*if(fastThreeView!=null){
+            fastThreeView!!.setText("10:00")
+        }*/
     }
 
     /**

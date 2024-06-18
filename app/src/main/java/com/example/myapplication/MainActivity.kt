@@ -7,10 +7,10 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.cn.game.sdk.appGameViewModel
-import com.cn.game.sdk.utils.MyGameManager
-import com.cn.game.sdk.view.FastLogoView
+
 import com.cn.game.sdk2.ui.helper.ViewHelper
+import com.cn.game.sdk2.ui.view.FastLogoView
+import com.cn.game.sdk2.utils.MyGameManager
 
 class MainActivity : AppCompatActivity() {
     var views: FastLogoView? = null
@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
             MyGameManager.setToast(this)
 
         }
-        appGameViewModel.ceshEvent.postValue(true)
+        //appGameViewModel.ceshEvent.postValue(true)
         //初始化尾部
 //        MyWsManager.getInstance(this)?.initService()
 

@@ -83,6 +83,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     private var isAdd: Boolean = true
 
     override fun initView(savedInstanceState: Bundle?) {
+        mDatabind.tempTouch.linkViewModel(mViewModel)
         MyGameManager.static = 1
         MyGameManager.countdownTime = 10000
         MyGameManager.setLiveStatusListener("home", object : GameTimeStatic {
@@ -345,7 +346,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             //这个是隐藏往下的动画
             mDatabind.ivHomeRotation.rotation = 180f
             isShowResult = !isShowResult
-            //todo:
             for (i in 0 until mDatabind.rvHomeHistory.models!!.size) {
                 val viewHolder = mDatabind.rvHomeHistory.findViewHolderForLayoutPosition(i)
                 if (viewHolder != null) {

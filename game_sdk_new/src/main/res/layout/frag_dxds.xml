@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -50,7 +51,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="14sp"
-                        android:text="1:0.96"
+                        tools:text="1:0.96"
                         android:textColor="@color/g_f8e0c4"/>
 
                 </LinearLayout>
@@ -77,7 +78,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textSize="10sp"
-                            android:text="9899"
+                            tools:text="9899"
                             android:layout_marginLeft="2dp"
                             android:textColor="@color/g_f8e0c4"/>
 
@@ -96,7 +97,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textSize="10sp"
-                            android:text="978"
+                            tools:text="978"
                             android:layout_marginLeft="2dp"
                             android:textColor="@color/g_f8e0c4"/>
 
@@ -140,10 +141,11 @@
                         android:layout_height="29dp"
                         app:srcCompat="@drawable/icon_txt_big"/>
                     <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/txtOddsBig"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="14sp"
-                        android:text="1:0.96"
+                        tools:text="1:0.96"
                         android:textColor="@color/g_f8e0c4"/>
 
                 </LinearLayout>
@@ -173,7 +175,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textSize="10sp"
-                            android:text="9899"
+                            tools:text="9899"
                             android:layout_marginLeft="2dp"
                             android:textColor="@color/g_f8e0c4"/>
 
@@ -193,7 +195,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textSize="10sp"
-                            android:text="978"
+                            tools:text="978"
                             android:layout_marginLeft="2dp"
                             android:textColor="@color/g_f8e0c4"/>
 
@@ -236,12 +238,14 @@
                         android:layout_width="29dp"
                         android:layout_height="29dp"
                         app:srcCompat="@drawable/icon_txt_single"/>
+
                     <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/txtOddsSingle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:textColor="@color/g_f8e0c4"
                         android:textSize="14sp"
-                        android:text="1:0.96"
-                        android:textColor="@color/g_f8e0c4"/>
+                        tools:text="1:0.96" />
 
                 </LinearLayout>
 
@@ -268,7 +272,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textSize="10sp"
-                            android:text="9899"
+                            tools:text="9899"
                             android:layout_marginLeft="2dp"
                             android:textColor="@color/g_f8e0c4"/>
 
@@ -287,7 +291,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textSize="10sp"
-                            android:text="978"
+                            tools:text="978"
                             android:layout_marginLeft="2dp"
                             android:textColor="@color/g_f8e0c4"/>
 
@@ -332,10 +336,11 @@
                         android:layout_height="29dp"
                         app:srcCompat="@drawable/icon_txt_double"/>
                     <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/txtOddsDouble"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="14sp"
-                        android:text="1:0.96"
+                        tools:text="1:0.96"
                         android:textColor="@color/g_f8e0c4"/>
 
                 </LinearLayout>
@@ -364,7 +369,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textSize="10sp"
-                            android:text="9899"
+                            tools:text="9899"
                             android:layout_marginLeft="2dp"
                             android:textColor="@color/g_f8e0c4"/>
 
@@ -383,7 +388,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textSize="10sp"
-                            android:text="978"
+                            tools:text="978"
                             android:layout_marginLeft="2dp"
                             android:textColor="@color/g_f8e0c4"/>
 
@@ -428,10 +433,11 @@
                         android:layout_height="20dp"
                         app:srcCompat="@drawable/icon_txt_leopard"/>
                     <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/txtOddsLeopard"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="14sp"
-                        android:text="1:0.96"
+                        tools:text="1:0.96"
                         android:textColor="@color/g_f8e0c4"/>
 
                 </LinearLayout>
