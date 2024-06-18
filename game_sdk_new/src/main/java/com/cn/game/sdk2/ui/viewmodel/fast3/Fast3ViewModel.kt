@@ -49,7 +49,7 @@ class Fast3ViewModel:BaseViewModel() {
             list.add(HistoryResultBean(result = listOf(c % 6+1, (c + 1) % 6+1, (c + 2) % 6+1)))
         }
         (historyResultBeans as UnPeekLiveData).value = list
-        GameManager.instance.setLiveStatusListener("home",object : IGameListener{
+        GameManager.instance.setLiveStatusListener("home",object : IGameListener {
 
             override fun onCountdown(time: Long) {
                 val seconds = (time.toFloat() / 1000).roundToInt()
@@ -94,7 +94,31 @@ class Fast3ViewModel:BaseViewModel() {
         anchorMoneyView = WeakReference(anchor)
     }
 
-    interface MoneyAnimCallback{
-        fun startAnim(x: Float, y: Float,isCentered: Boolean = false, speed: Long = 300, areaView: GameAreaView,endCallBack: (() -> Unit)?)
+    fun addTemMoney(areaView: GameAreaView, betMoney: Int) {
+        tempMoneyMap.apply {
+            if (!containsKey(areaView.areaCode)) {
+                put(
+                    areaView.areaCode,
+                    MutablePair(betMoney, WeakReference(areaView.moneyView)
+                ))
+            } else {
+                get(areaView.areaCode)?.apply { first += betMoney }
+            }
+            get(areaView.areaCode)?.first?.let {
+                val sum = savedMoneyMap[areaView.areaCode]?.first ?: 0
+                areaView.moneyView.setShowMoney(it.plus(sum))
+            }
+        }
+    }
+
+    interface MoneyAnimCallback {
+        fun startAnim(
+            x: Float,
+            y: Float,
+            isCentered: Boolean = false,
+            speed: Long = 300,
+            areaView: GameAreaView,
+            endCallBack: (() -> Unit)?
+        )
     }
 }

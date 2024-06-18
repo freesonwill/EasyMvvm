@@ -16,6 +16,7 @@ import com.cn.game.sdk2.ui.view.OpenResultView
 @SuppressLint("StaticFieldLeak")
 object MyGameManager {
     const val TAG_1 = "TAG_1"
+
     /**
      * 投注的钱
      */
@@ -119,13 +120,14 @@ object MyGameManager {
         return openResultView as OpenResultView
     }
 
-    fun  setToast(context: Context){
-        val options = ActivityOptions.makeCustomAnimation(context, R.anim.slide_up, R.anim.slide_down)
+    fun setToast(context: Context) {
+        val options =
+            ActivityOptions.makeCustomAnimation(context, R.anim.slide_up, R.anim.slide_down)
         /*var inagte= Intent(context, GameHomeActivity::class.java)
         ContextCompat.startActivity(context, inagte, options.toBundle())*/
     }
 
-    fun setLogoTime(){
+    fun setLogoTime() {
         /*if(fastThreeView!=null){
             fastThreeView!!.setText("10:00")
         }*/

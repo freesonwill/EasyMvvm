@@ -17,6 +17,8 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
+import androidx.core.animation.addListener
+import androidx.core.animation.doOnEnd
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -268,7 +270,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 areaView: GameAreaView,
                 endCallBack: (() -> Unit)?
             ) {
-                tryMoneyAnimation(x, y, isCentered, speed, areaView, endCallBack)
+                tryMoneyAnimation(x, y, speed, areaView, endCallBack)
             }
         }
         mViewModel.betOkClick.observe(this) {
@@ -303,9 +305,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     //直接移除MoneyView
                 } else {
                     mViewModel.tempMoneyMap[key]?.second?.get()?.let {
-                        Log.e(this.toString(), "moneyOkView = $it")
-                        Log.e(this.toString(), "viewparent = " + it.parent)
-                        var parent = it.parent as ViewGroup
+                        val parent = it.parent as ViewGroup
                         parent.removeView(it)
                     }
                 }
@@ -581,7 +581,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     fun tryMoneyAnimation(
         x: Float,
         y: Float,
-        isCentered: Boolean = false,
         speed: Long = 300,
         areaView: GameAreaView,
         endCallBack: (() -> Unit)? = null
@@ -591,179 +590,91 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
         PromptSoundPlay.playAudio(requireContext())
 
-        var num: Int = 0
+        //获取选中的筹码所在的position
+        val selectedPosition =
+            (mDatabind.llShowBetList.models as List<SelectAnnotationBean>?)?.indexOfFirst {
+                it.select
+            } ?: 0
 
-        for (i in 0 until mDatabind.llShowBetList.models!!.size) {
-            if ((mDatabind.llShowBetList.models!![i] as SelectAnnotationBean).money == betMoney) {
-                num = i
-                break
-            }
-        }
-        val itemCount = mDatabind.llShowBetList.adapter!!.itemCount
         val layoutManager = mDatabind.llShowBetList.layoutManager as LinearLayoutManager
-        var finallyView: View? = null
+        var finallyView = layoutManager.findViewByPosition(selectedPosition)
 
-        for (i in 0 until itemCount) {
-            val view = layoutManager.findViewByPosition(i)
-            if (view === betView) {
-                finallyView = view
-                break
-            }
-
-        }
         //判断选择的筹码是不是在屏幕外面
         if (finallyView != null) {
-            startMoneyAnimation(x, y, isCentered, speed, areaView, finallyView, endCallBack)
+            startMoneyAnimation(x, y, speed, areaView, finallyView, endCallBack)
         } else {
-            scrollToItemAndPerformAction(mDatabind.llShowBetList, num) {
-                //从新获取到为止
-                for (i in 0 until itemCount) {
-                    val view = layoutManager.findViewByPosition(i)
-                    if (num == i) {
-                        finallyView = view
-                        break
-                    }
-                }
+            scrollToItemAndPerformAction(mDatabind.llShowBetList, selectedPosition) {
+                finallyView = layoutManager.findViewByPosition(selectedPosition)
                 finallyView?.let {
-                    startMoneyAnimation(
-                        x,
-                        y,
-                        isCentered,
-                        speed,
-                        areaView,
-                        it,
-                        endCallBack
-                    )
+                    startMoneyAnimation(x, y, speed, areaView, it, endCallBack)
                 }
             }
         }
-
     }
 
     private fun startMoneyAnimation(
         x: Float,
         y: Float,
-        isCentered: Boolean = false,
         speed: Long = 300,
         areaView: GameAreaView,
         jettonView: View,
         endCallBack: (() -> Unit)?
     ) {
-        var mPathMeasure: PathMeasure? = null
-
-        /**
-         * 贝塞尔曲线中间过程的点的坐标
-         */
+        //贝塞尔曲线中间过程的点的坐标
         val mCurrentPosition = FloatArray(2)
-
-        var num: Int = 0
-        var viewX: Int = 0
-        var viewY: Int = 0
         val location = IntArray(2)
         jettonView.getLocationInWindow(location)
-        viewX = location[0] + jettonView.width / 2 - requireContext().dp2px(25)
-        viewY = location[1]
+        val viewX = location[0] + jettonView.width / 2 - requireContext().dp2px(25)
+        val viewY = location[1]
 
-        //===============
-        //      一、创造出执行动画的主题---imageview
-        //代码new一个imageview，图片资源是上面的imageview的图片
-        // (这个图片就是执行动画的图片，从开始位置出发，经过一个抛物线（贝塞尔曲线），移动到购物车里)
-        val goods = ImageView(requireContext())
-        goods.setImageDrawable(MyGameManager.getListImage(num, requireContext()))
+        // (这个图片就是执行动画的图片，从开始位置出发，经过一个抛物线（贝塞尔曲线))
+        val betImageView = ImageView(requireContext())
+        betImageView.setImageDrawable(jettonView.findViewById<ImageView>(R.id.ivShowBg).drawable)
         val params = RelativeLayout.LayoutParams(
             requireContext().dp2px(32),
             requireContext().dp2px(32)
         )
-        mDatabind.rlRoot.addView(goods, params)
-//        二、计算动画开始/结束点的坐标的准备工作
-        //得到父布局的起始点坐标（用于辅助计算动画开始/结束时的点的坐标）
-        val parentLocation = IntArray(2)
-        mDatabind.rlRoot.getLocationInWindow(parentLocation)
-        //得到商品图片的坐标（用于计算动画开始的坐标）
+        mDatabind.rlRoot.addView(betImageView, params)
+        //筹码图片的坐标（用于计算动画开始的坐标）
         val startLoc = IntArray(2)
         startLoc[0] = viewX
         startLoc[0] = viewY
-        //得到购物车图片的坐标(用于计算动画结束后的坐标)  动画结束的位置
+        //gameArea点击区域坐标(用于计算动画结束后的坐标)  动画结束的位置
         val endLoc = IntArray(2)
-//            if(isCentered){
-//                endLoc[0]=x.toInt()-dp2px(10)
-//
-//            }else{
-//                endLoc[0]=x.toInt()+dp2px(10)
-//            }
         endLoc[0] = x.toInt() + requireContext().dp2px(20)
         endLoc[1] = y.toInt() + requireContext().dp2px(20)
-//        三、正式开始计算动画开始/结束的坐标
-        //开始掉落的商品的起始点：商品起始点-父布局起始点+该商品图片的一半
-//        val startX: Float = (startLoc[0] - parentLocation[0] + selectImageView!!.width / 2).toFloat()
-//        val startY: Float = (startLoc[1] - parentLocation[1] + selectImageView!!.height / 2).toFloat()
+        //正式开始计算动画开始/结束的坐标
         val startX: Float = viewX.toFloat() + requireContext().dp2px(12)
         val startY: Float = viewY.toFloat() - requireContext().dp2px(24)
 
-        //商品掉落后的终点坐标：购物车起始点-父布局起始点+购物车图片的1/5   动画结束的时候
-//        val toX: Float = (endLoc[0] - parentLocation[0] +32).toFloat()
-//        val toY = (endLoc[1] - parentLocation[1]).toFloat()
+        //掉落后的终点坐标
         val toX: Float = endLoc[0].toFloat()
         val toY = endLoc[1].toFloat() - requireContext().dp2px(32)
 
-        //   四、计算中间动画的插值坐标（贝塞尔曲线）（其实就是用贝塞尔曲线来完成起终点的过程）
-        //开始绘制贝塞尔曲线
-//        val path = Path()
-//        //移动到起始点（贝塞尔曲线的起点）
-//        path.moveTo(startX, startY)
-//        //使用二次萨贝尔曲线：注意第一个起始坐标越大，贝塞尔曲线的横向距离就会越大，一般按照下面的式子取即可
-//        path.quadTo((startX + toX) / 2, startY, toX, toY)
-
         val path = Path()
-// 移动到起始点
         path.moveTo(startX, startY)
-// 添加一条直线到目标点
         path.lineTo(toX, toY)
-        //mPathMeasure用来计算贝塞尔曲线的曲线长度和贝塞尔曲线中间插值的坐标，
-        // 如果是true，path会形成一个闭环
-        mPathMeasure = PathMeasure(path, false)
+        val mPathMeasure = PathMeasure(path, false)
 
         //★★★属性动画实现（从0到贝塞尔曲线的长度之间进行插值计算，获取中间过程的距离值）
-        val valueAnimator = ValueAnimator.ofFloat(0f, mPathMeasure!!.length)
-        valueAnimator.duration = speed
-        // 匀速线性插值器 LinearInterpolator
-        valueAnimator.interpolator = AccelerateDecelerateInterpolator()
-
-        valueAnimator.addUpdateListener(object : ValueAnimator.AnimatorUpdateListener {
-            override fun onAnimationUpdate(animation: ValueAnimator) {
-                // 当插值计算进行时，获取中间的每个值，
-                // 这里这个值是中间过程中的曲线长度（下面根据这个值来得出中间点的坐标值）
+        val valueAnimator = ValueAnimator.ofFloat(0f, mPathMeasure.length).apply {
+            addUpdateListener { animation ->
                 val value = animation.animatedValue as Float
                 // ★★★★★获取当前点坐标封装到mCurrentPosition
-                // boolean getPosTan(float distance, float[] pos, float[] tan) ：
                 // 传入一个距离distance(0<=distance<=getLength())，然后会计算当前距
                 // 离的坐标点和切线，pos会自动填充上坐标，这个方法很重要。
-                mPathMeasure!!.getPosTan(
-                    value,
-                    mCurrentPosition,
-                    null
-                ) //mCurrentPosition此时就是中间距离点的坐标值
+                mPathMeasure.getPosTan(value, mCurrentPosition, null)
 
-                // 移动的商品图片（动画图片）的坐标设置为该中间点的坐标
-                goods.translationX = mCurrentPosition.get(0)
-                goods.translationY = mCurrentPosition.get(1)
-
+                // 筹码图片偏移
+                betImageView.translationX = mCurrentPosition[0]
+                betImageView.translationY = mCurrentPosition[1]
             }
 
-        })
-        //五、 开始执行动画
-        valueAnimator.start()
-        //  六、动画结束后的处理
-        valueAnimator.addListener(object : Animator.AnimatorListener {
-            override fun onAnimationStart(animation: Animator) {
-
-            }
-
-            override fun onAnimationEnd(animation: Animator) {
+            addListener(onEnd = {
                 //动画结束
                 endCallBack?.invoke()
                 // 把移动的图片imageview从父布局里移除
-                mDatabind.rlRoot.removeView(goods)
+                mDatabind.rlRoot.removeView(betImageView)
                 val animator =
                     ObjectAnimator.ofPropertyValuesHolder(
                         areaView.moneyView.ivShowBg,
@@ -773,39 +684,15 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 animator.duration = 200
                 animator.start()
 
-                /*val params = FrameLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-                areaView.addView(areaView.moneyView, params)
-                // 将新按钮设置为居中
-                params.bottomMargin = AutoSizeUtils.dp2px(requireContext(), 20f)
-                params.gravity = Gravity.CENTER
-                areaView.moneyView.layoutParams = params*/
                 //筹码栈处理
                 mViewModel.updateAnchorView(areaView.moneyView)
-                mViewModel.tempMoneyMap.apply {
-                    if (!containsKey(areaView.areaCode)) {
-                        put(
-                            areaView.areaCode,
-                            MutablePair(betMoney, WeakReference(areaView.moneyView))
-                        )
-                    } else {
-                        get(areaView.areaCode)?.apply { first += betMoney }
-                    }
-                    get(areaView.areaCode)?.first?.let {
-                        val sum = mViewModel.savedMoneyMap[areaView.areaCode]?.first ?: 0
-                        areaView.moneyView.setShowMoney(it.plus(sum))
-                    }
-                }
-            }
+                mViewModel.addTemMoney(areaView, betMoney)
+            })
+        }
 
-            override fun onAnimationCancel(animation: Animator) {
-
-            }
-
-            override fun onAnimationRepeat(animation: Animator) {
-
-            }
-
-        })
+        valueAnimator.duration = speed
+        valueAnimator.interpolator = AccelerateDecelerateInterpolator()
+        valueAnimator.start()
     }
 
     private fun scrollToItemAndPerformAction(
@@ -815,7 +702,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     ) {
 
         val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-        val screenWidth = recyclerView.width
         // 添加滚动监听器
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -827,9 +713,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                         // 执行操作
                         action.invoke()
                         recyclerView.removeOnScrollListener(this)
-
                     }
-
                 }
             }
         })
