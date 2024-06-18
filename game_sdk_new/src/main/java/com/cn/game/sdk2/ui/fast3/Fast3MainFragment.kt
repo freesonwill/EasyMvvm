@@ -19,6 +19,7 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cn.game.sdk2.R
@@ -45,43 +46,33 @@ import com.xcjh.base_lib.base.fragment.BaseVmDbFragment
 import com.xcjh.base_lib.bean.MutablePair
 import com.xcjh.base_lib.utils.dp2px
 import com.xcjh.base_lib.utils.view.clickNoRepeat
+import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 
 class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>() {
+    private val TAG = "Fast3MainFragment"
     private var mFragList = ArrayList<Fragment>()
-
     //默认
     lateinit var dxdsFragment : DXDSFragment
-
     //是否执行关闭动画
     var isExecuteClose: Boolean = true
-
-
     // 定义属性动画常量
     private val SCALE_X = PropertyValuesHolder.ofFloat(View.SCALE_X, 1.0f, 1.4f, 1.0f)
     private val SCALE_Y = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.0f, 1.4f, 1.0f)
-
     var betView : View ?=null
     var betMoney : Int = 0
-
     /**
      * 是否显示骰子的结果组合
      */
     private var isShowResult: Boolean = true
-
-
-    var popup: BasePopupView? = null
-    var bubbleAttach: CustomBubbleAttachPopup? = null
-
-
+    private var homeMorePop: BasePopupView? = null
     private val initialUpperLayoutHeightMap = mutableMapOf<Int, Int>()
-
-
     private val resultAnimatorList by lazy { mutableListOf<Animator>() }
     private val resultAnimatorSet by lazy { AnimatorSet() }
     private var resultAnimMoveHeight = 0
     private var isAdd: Boolean = true
 
+    //==================================== Method ===============================================//
     override fun initView(savedInstanceState: Bundle?) {
         mDatabind.tempTouch.linkViewModel(mViewModel)
         MyGameManager.static = 1
@@ -109,8 +100,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     Log.i("SSSSSSSSSSs", "==========" + mStatic)
                     //关闭
                     PromptSoundPlay.endGameTip(requireContext())
-                    val childAlphaAnimator =
-                        ObjectAnimator.ofFloat(mDatabind.llShowBetList, "alpha", 1f, 0f)
+                    val childAlphaAnimator = ObjectAnimator.ofFloat(mDatabind.llShowBetList, "alpha", 1f, 0f)
                     childAlphaAnimator.duration = 200 // 设置渐隐动画持续时间
                     val animatorSet = AnimatorSet()
                     animatorSet.play(childAlphaAnimator)
@@ -196,55 +186,44 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         mDatabind.viewPagerNew.initGameViewPager(
             childFragmentManager, mFragList, arrayListOf(
                 requireContext().getString(R.string.g_home_txt_default),
-              /*  requireContext().getString(R.string.g_home_tab_single),
+                requireContext().getString(R.string.g_home_tab_single),
                 requireContext().getString(R.string.g_home_tab_double),
                 requireContext().getString(R.string.g_home_tab_leopard),
-                requireContext().getString(R.string.g_home_tab_sum)*/
+                requireContext().getString(R.string.g_home_tab_sum)
             )
         )
         mDatabind.magicIndicator.bindViewPagerNewGame(
             mDatabind.viewPagerNew, arrayListOf(
                 requireContext().getString(R.string.g_home_txt_default),
-                /*requireContext().getString(R.string.g_home_tab_single),
+                requireContext().getString(R.string.g_home_tab_single),
                 requireContext().getString(R.string.g_home_tab_double),
                 requireContext().getString(R.string.g_home_tab_leopard),
-                requireContext().getString(R.string.g_home_tab_sum)*/
+                requireContext().getString(R.string.g_home_tab_sum)
             ), scrollEnable = true
         )
         mDatabind.viewPagerNew.offscreenPageLimit = mFragList.size
 
-        adapter()
+        setBetAdapter()
         setClick()
-        bubbleAttach = CustomBubbleAttachPopup(requireContext())
-        bubbleAttach!!.customBubbleAttachListener =
-            object : CustomBubbleAttachPopup.CustomBubbleAttachListener {
-                override fun switchGame() {
-                    popup!!.dismiss()
-                }
-
-            }
-
-        popup = XPopup.Builder(requireContext())
-            .hasShadowBg(false)
-            .isTouchThrough(true)
-            .atView(mDatabind.llHomeMore)
-            .hasShadowBg(false) // 去掉半透明背景
-            .asCustom(bubbleAttach)
         //点击更多弹出框
         mDatabind.llHomeMore.clickNoRepeat {
-//             XPopup.Builder(this)
-//                 .hasShadowBg(false)
-//                 .isTouchThrough(true)
-//                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-//                 .atView(mDatabind.llHomeMore)
-//                 .hasShadowBg(false) // 去掉半透明背景
-//                 .asCustom(CustomBubbleAttachPopup(this))
-//                 .show()
-
+            if (homeMorePop == null) {
+                val bubbleAttach = CustomBubbleAttachPopup(requireContext())
+                bubbleAttach.customBubbleAttachListener =
+                    object : CustomBubbleAttachPopup.CustomBubbleAttachListener {
+                        override fun switchGame() {
+                            homeMorePop!!.dismiss()
+                        }
+                    }
+                homeMorePop = XPopup.Builder(requireContext())
+                    .hasShadowBg(false)
+                    .isTouchThrough(true)
+                    .atView(mDatabind.llHomeMore)
+                    .hasShadowBg(false) // 去掉半透明背景
+                    .asCustom(bubbleAttach)
+            }
             PromptSoundPlay.btnPlayMedia(requireContext())
-            popup!!.show()
-
-
+            homeMorePop!!.show()
         }
         //获取当前余额
         //mDatabind.txtCurrentMoney.text = MyGameManager.currentMoney.addCommas()
@@ -410,377 +389,88 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     /**
      * 投注的适配器
      */
-    private fun adapter() {
+    private fun setBetAdapter() {
         mDatabind.llShowBetList.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         mDatabind.llShowBetList.setup {
+            addModels(MyGameManager.noteList)
             addType<SelectAnnotationBean>(R.layout.item_annotation_list)
             onBind {
                 when (itemViewType) {
                     R.layout.item_annotation_list -> {
-                        if(betView == null){
+                        if (betView == null) {
                             betView = itemView
                             betMoney = MyGameManager.noteList[0].money
                         }
-                        var binding = getBinding<ItemAnnotationListBinding>()
+                        val binding = getBinding<ItemAnnotationListBinding>()
                         val bean = _data as SelectAnnotationBean
-                        //todo:
-                        if (layoutPosition == 0) {
-                            if (MyGameManager.temporaryCurrentMoney < 10) {
-                                binding.ivShowBg.setImageDrawable(
-                                    ContextCompat.getDrawable(
-                                        requireContext(),
-                                        R.drawable.icon_shortage_shi
-                                    )
-                                )
-                            } else {
-                                if (bean.select) {
-                                    binding.ivShowBg.setImageDrawable(
-                                        ContextCompat.getDrawable(
-                                            requireContext(),
-                                            R.drawable.icon_select_shi
-                                        )
-                                    )
-                                } else {
-                                    binding.ivShowBg.setImageDrawable(
-                                        ContextCompat.getDrawable(
-                                            requireContext(),
-                                            R.drawable.icon_no_shi
-                                        )
-                                    )
-                                }
-                            }
-                        } else if (layoutPosition == 1) {
-                            if (MyGameManager.temporaryCurrentMoney < 50) {
-                                binding.ivShowBg.setImageDrawable(
-                                    ContextCompat.getDrawable(
-                                        requireContext(),
-                                        R.drawable.icon_shortage_wushi
-                                    )
-                                )
-                            } else {
-                                if (bean.select) {
-                                    binding.ivShowBg.setImageDrawable(
-                                        ContextCompat.getDrawable(
-                                            requireContext(),
-                                            R.drawable.icon_select_wushi
-                                        )
-                                    )
-                                } else {
-                                    binding.ivShowBg.setImageDrawable(
-                                        ContextCompat.getDrawable(
-                                            requireContext(),
-                                            R.drawable.icon_no_wushi
-                                        )
-                                    )
-                                }
-                            }
-                        } else if (layoutPosition == 2) {
-                            if (MyGameManager.temporaryCurrentMoney < 100) {
-                                binding.ivShowBg.setImageDrawable(
-                                    ContextCompat.getDrawable(
-                                        requireContext(),
-                                        R.drawable.icon_shortage_yibai
-                                    )
-                                )
-                            } else {
-                                if (bean.select) {
-                                    binding.ivShowBg.setImageDrawable(
-                                        ContextCompat.getDrawable(
-                                            requireContext(),
-                                            R.drawable.icon_select_yibai
-                                        )
-                                    )
-                                } else {
-                                    binding.ivShowBg.setImageDrawable(
-                                        ContextCompat.getDrawable(
-                                            requireContext(),
-                                            R.drawable.icon_no_yibai
-                                        )
-                                    )
-                                }
-                            }
-
-                        } else if (layoutPosition == 3) {
-
-                            if (MyGameManager.temporaryCurrentMoney < 200) {
-                                binding.ivShowBg.setImageDrawable(
-                                    ContextCompat.getDrawable(
-                                        requireContext(),
-                                        R.drawable.icon_shortage_liangbai
-                                    )
-                                )
-                            } else {
-
-                                if (bean.select) {
-                                    binding.ivShowBg.setImageDrawable(
-                                        ContextCompat.getDrawable(
-                                            requireContext(),
-                                            R.drawable.icon_select_liangbai
-                                        )
-                                    )
-                                } else {
-                                    binding.ivShowBg.setImageDrawable(
-                                        ContextCompat.getDrawable(
-                                            requireContext(),
-                                            R.drawable.icon_no_liangbai
-                                        )
-                                    )
-                                }
-                            }
-                        } else if (layoutPosition == 4) {
-                            if (MyGameManager.temporaryCurrentMoney < 500) {
-                                binding.ivShowBg.setImageDrawable(
-                                    ContextCompat.getDrawable(
-                                        requireContext(),
-                                        R.drawable.icon_shortage_wubai
-                                    )
-                                )
-                            } else {
-
-                                if (bean.select) {
-                                    binding.ivShowBg.setImageDrawable(
-                                        ContextCompat.getDrawable(
-                                            requireContext(),
-                                            R.drawable.icon_select_wubai
-                                        )
-                                    )
-                                } else {
-                                    binding.ivShowBg.setImageDrawable(
-                                        ContextCompat.getDrawable(
-                                            requireContext(),
-                                            R.drawable.icon_no_wubai
-                                        )
-                                    )
-                                }
-                            }
-                        } else if (layoutPosition == 5) {
-                            if (MyGameManager.temporaryCurrentMoney < 1000) {
-                                binding.ivShowBg.setImageDrawable(
-                                    ContextCompat.getDrawable(
-                                        requireContext(),
-                                        R.drawable.icon_shortage_qian
-                                    )
-                                )
-                            } else {
-                                if (bean.select) {
-                                    binding.ivShowBg.setImageDrawable(
-                                        ContextCompat.getDrawable(
-                                            requireContext(),
-                                            R.drawable.icon_select_qian
-                                        )
-                                    )
-                                } else {
-                                    binding.ivShowBg.setImageDrawable(
-                                        ContextCompat.getDrawable(
-                                            requireContext(),
-                                            R.drawable.icon_no_qian
-                                        )
-                                    )
-                                }
-                            }
-
-                        } else if (layoutPosition == 6) {
-
-                            if (MyGameManager.temporaryCurrentMoney < 2000) {
-                                binding.ivShowBg.setImageDrawable(
-                                    ContextCompat.getDrawable(
-                                        requireContext(),
-                                        R.drawable.icon_shortage_liangqian
-                                    )
-                                )
-                            } else {
-
-                                if (bean.select) {
-                                    binding.ivShowBg.setImageDrawable(
-                                        ContextCompat.getDrawable(
-                                            requireContext(),
-                                            R.drawable.icon_select_liangqian
-                                        )
-                                    )
-                                } else {
-                                    binding.ivShowBg.setImageDrawable(
-                                        ContextCompat.getDrawable(
-                                            requireContext(),
-                                            R.drawable.icon_no_liangqian
-                                        )
-                                    )
-                                }
-
-                            }
-                        } else if (layoutPosition == 7) {
-
-                            if (MyGameManager.temporaryCurrentMoney < 5000) {
-                                binding.ivShowBg.setImageDrawable(
-                                    ContextCompat.getDrawable(
-                                        requireContext(),
-                                        R.drawable.icon_shortage_wuqian
-                                    )
-                                )
-                            } else {
-
-                                if (bean.select) {
-                                    binding.ivShowBg.setImageDrawable(
-                                        ContextCompat.getDrawable(
-                                            requireContext(),
-                                            R.drawable.icon_select_wuqian
-                                        )
-                                    )
-                                } else {
-                                    binding.ivShowBg.setImageDrawable(
-                                        ContextCompat.getDrawable(
-                                            requireContext(),
-                                            R.drawable.icon_no_wuqian
-                                        )
-                                    )
-                                }
-                            }
-                        } else if (layoutPosition == 8) {
-                            if (MyGameManager.temporaryCurrentMoney < 10000) {
-                                binding.ivShowBg.setImageDrawable(
-                                    ContextCompat.getDrawable(
-                                        requireContext(),
-                                        R.drawable.icon_shortage_yiwan
-                                    )
-                                )
-                            } else {
-                                if (bean.select) {
-                                    binding.ivShowBg.setImageDrawable(
-                                        ContextCompat.getDrawable(
-                                            requireContext(),
-                                            R.drawable.icon_select_yiwan
-                                        )
-                                    )
-                                } else {
-                                    binding.ivShowBg.setImageDrawable(
-                                        ContextCompat.getDrawable(
-                                            requireContext(),
-                                            R.drawable.icon_no_yiwan
-                                        )
-                                    )
-                                }
-                            }
-
-                        } else if (layoutPosition == 9) {
-                            if (MyGameManager.temporaryCurrentMoney < 20000) {
-                                binding.ivShowBg.setImageDrawable(
-                                    ContextCompat.getDrawable(
-                                        requireContext(),
-                                        R.drawable.icon_shortage_liangwan
-                                    )
-                                )
-                            } else {
-                                if (bean.select) {
-                                    binding.ivShowBg.setImageDrawable(
-                                        ContextCompat.getDrawable(
-                                            requireContext(),
-                                            R.drawable.icon_select_liangwan
-                                        )
-                                    )
-                                } else {
-                                    binding.ivShowBg.setImageDrawable(
-                                        ContextCompat.getDrawable(
-                                            requireContext(),
-                                            R.drawable.icon_no_liangwan
-                                        )
-                                    )
-                                }
-                            }
-                        } else if (layoutPosition == 10) {
-
-                            if (MyGameManager.temporaryCurrentMoney < 50000) {
-                                binding.ivShowBg.setImageDrawable(
-                                    ContextCompat.getDrawable(
-                                        requireContext(),
-                                        R.drawable.icon_shortage_wuwan
-                                    )
-                                )
-                            } else {
-                                if (bean.select) {
-                                    binding.ivShowBg.setImageDrawable(
-                                        ContextCompat.getDrawable(
-                                            requireContext(),
-                                            R.drawable.icon_select_wuwan
-                                        )
-                                    )
-                                } else {
-                                    binding.ivShowBg.setImageDrawable(
-                                        ContextCompat.getDrawable(
-                                            requireContext(),
-                                            R.drawable.icon_no_wuwan
-                                        )
-                                    )
-                                }
-
-                            }
+                        val temporaryCurrentMoney = MyGameManager.temporaryCurrentMoney
+                        val id = if (temporaryCurrentMoney < bean.money) {
+                            resources.getIdentifier(
+                                "icon_shortage_" + bean.moneyPinyin,
+                                "drawable",
+                                requireContext().packageName
+                            )
                         } else {
-                            if (MyGameManager.temporaryCurrentMoney < 100000) {
-                                binding.ivShowBg.setImageDrawable(
-                                    ContextCompat.getDrawable(
-                                        requireContext(),
-                                        R.drawable.icon_shortage_shiwan
-                                    )
+                            if (bean.select) {
+                                resources.getIdentifier(
+                                    "icon_select_" + bean.moneyPinyin,
+                                    "drawable",
+                                    requireContext().packageName
                                 )
                             } else {
-
-                                if (bean.select) {
-                                    binding.ivShowBg.setImageDrawable(
-                                        ContextCompat.getDrawable(
-                                            requireContext(),
-                                            R.drawable.icon_select_shiwan
-                                        )
-                                    )
-                                } else {
-                                    binding.ivShowBg.setImageDrawable(
-                                        ContextCompat.getDrawable(
-                                            requireContext(),
-                                            R.drawable.icon_no_shiwan
-                                        )
-                                    )
-                                }
+                                resources.getIdentifier(
+                                    "icon_no_" + bean.moneyPinyin,
+                                    "drawable",
+                                    requireContext().packageName
+                                )
                             }
-
+                        }
+                        binding.ivShowBg.setImageResource(id)
+                        Log.d(TAG, "onBind-->${layoutPosition},bean:${bean}")
+                        if (bean.select) {
+                            binding.ivShowBg.scaleX = 1.1f
+                            binding.ivShowBg.scaleY = 1.1f
+                        } else {
+                            binding.ivShowBg.scaleX = 1f
+                            binding.ivShowBg.scaleY = 1f
                         }
                     }
-
                 }
 
             }
-            R.id.ivShowBg.onClick {
+            onClick(R.id.ivShowBg)  {
+                val bean = _data as SelectAnnotationBean
                 PromptSoundPlay.btnPlayMedia(requireContext())
+                val models: List<SelectAnnotationBean> = models as List<SelectAnnotationBean>
+                val positions = mutableListOf<Int>(layoutPosition)
                 //选择新的筹码
-                var binding = getBinding<ItemAnnotationListBinding>()
-                for (i in 0 until mDatabind.llShowBetList.models!!.size) {
-                    (mDatabind.llShowBetList.models!![i] as SelectAnnotationBean).select = false
+                for (i in models.indices) {
+                    if (models[i].select) positions.add(i)
+                    models[i].select = false
                     MyGameManager.noteList[i].select = false
                 }
-                (mDatabind.llShowBetList.models!![modelPosition] as SelectAnnotationBean).select =
-                    true
-                //todo:
-                notifyDataSetChanged()
+                bean.select = true
+                positions.forEach { notifyItemChanged(it) }
                 MyGameManager.noteList[modelPosition].select = true
                 betMoney = MyGameManager.noteList[modelPosition].money
                 betView = itemView
             }
-
-        }.addModels(MyGameManager.noteList)
-
-        var list = ArrayList<HistoryResultBean>()
+        }
+        val list = ArrayList<HistoryResultBean>()
         for (c in 0 until 20) {
             list.add(HistoryResultBean())
         }
         //历史结果
-        mDatabind.rvHomeHistory.layoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        mDatabind.rvHomeHistory.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         mDatabind.rvHomeHistory.setup {
-
+            addModels(list)
             addType<HistoryResultBean>(R.layout.item_bet_history)
-
             onBind {
                 when (itemViewType) {
                     R.layout.item_bet_history -> {
-                        var binding = getBinding<ItemBetHistoryBinding>()
-                        var mainTxtBean = _data as HistoryResultBean
+                        val binding = getBinding<ItemBetHistoryBinding>()
+                        val mainTxtBean = _data as HistoryResultBean
 
                         if (mainTxtBean.isShow) {
                             binding.llShowDice.visibility = View.VISIBLE
@@ -797,11 +487,10 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     }
                 }
             }
-        }.addModels(list)
-
-        mDatabind.rvHomeHistory.postDelayed({
+        }
+        lifecycleScope.launchWhenResumed {
             mDatabind.rvHomeHistory.scrollToPosition(mDatabind.rvHomeHistory.models!!.size - 1)
-        }, 200)
+        }
     }
 
     private fun setClick() {
