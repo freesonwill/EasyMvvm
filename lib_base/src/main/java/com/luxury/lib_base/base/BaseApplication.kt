@@ -6,7 +6,7 @@ import com.luxury.lib_base.BuildConfig
 
 /**
  * Description:
- * author       : baoyuedong
+ * author       : brain
  * createTime   : 2024/6/12 11:58
  **/
 class BaseApplication : Application() {

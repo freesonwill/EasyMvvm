@@ -2,7 +2,7 @@ package com.luxury.lib_base.base.repository
 
 /**
  * Description: 仓库基类
- * author       : baoyuedong
+ * author       : brain
  * createTime   : 2024/6/12 13:42
  **/
 class BaseRepositoryBoth<L : IRepositoryLocalSource, R : IRepositoryRemoteSource>(

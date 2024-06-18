@@ -12,6 +12,19 @@
         android:supportsRtl="true"
         android:theme="@style/App.Theme"
         tools:targetApi="31">
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <!--
+                 1.  name 为 CustomInitializer 的全路径，或者相对于资源文件的路径
+                 2.  value 为固定的 androidx.startup，用于提取 CustomInitializer 的路径
+            -->
+            <meta-data
+                android:name="com.luxury.lib_base.ModuleInitializer"
+                android:value="androidx.startup" />
+        </provider>
 
     </application>
 </manifest>

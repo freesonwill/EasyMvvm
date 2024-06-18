@@ -6,9 +6,25 @@ import com.luxury.lib_base.bean.UnPeekLiveData
 
 abstract class BaseViewModel : ViewModel(), IModel {
     val loadingChange: UiLoadingChange by lazy { UiLoadingChange() }
+    //数据回收操作
+    private val dataGC by lazy { mutableSetOf<() -> Unit>() }
+    //============================ Method ================================//
+    init {
+        this.onInit()
+    }
 
     override fun onCleared() {
         super.onCleared()
+        val it = dataGC.iterator()
+        while (it.hasNext()) {
+            it.next().invoke()
+            it.remove()
+        }
+    }
+
+    //注册数据的自动回收
+    fun registerDataGC(onClear: () -> Unit) {
+        dataGC.add(onClear)
     }
 
     override fun showLoading(title: String?) {
@@ -22,6 +38,7 @@ abstract class BaseViewModel : ViewModel(), IModel {
     inner class UiLoadingChange {
         //显示加载框
         val showDialog by lazy { UnPeekLiveData<String>() }
+
         //隐藏
         val dismissDialog by lazy { UnPeekLiveData<Boolean>() }
     }

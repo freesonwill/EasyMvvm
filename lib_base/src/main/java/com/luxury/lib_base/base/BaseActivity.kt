@@ -14,7 +14,7 @@ import java.lang.reflect.ParameterizedType
 
 /**
  * @Description: Activity基类
- * @Author: baoyuedong
+ * @Author: brain
  * @Date: 2024/6/12 11:49
  */
 abstract class BaseActivity<VB : ViewBinding, VM : BaseViewModel> : AppCompatActivity(), IView {

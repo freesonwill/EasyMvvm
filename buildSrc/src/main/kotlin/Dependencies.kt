@@ -18,7 +18,7 @@ object Libs {
     const val androidx_startup = "androidx.startup:startup-runtime:1.1.1"
     const val MMKV = "com.tencent:mmkv:1.0.23"
     const val google_gson = "com.google.code.gson:gson:2.8.9"
-
+    const val retrofit2 =  "com.squareup.retrofit2:converter-gson:2.9.0"
 
     //阿里路由框架
     const val arouter_api = "com.alibaba:arouter-api:1.4.1"

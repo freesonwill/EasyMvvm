@@ -1,5 +1,6 @@
-package com.luxury.module_login
+package com.luxury.lib_base
 
+import android.app.Application
 import android.content.Context
 import android.util.Log
 import androidx.startup.Initializer
@@ -11,12 +12,14 @@ import androidx.startup.Initializer
  */
 class ModuleInitializer : Initializer<String> {
     companion object {
-        const val TAG = "module_login"
+        const val TAG = "lib_base"
+        lateinit var application: Application
     }
 
     override fun create(context: Context): String {
         Log.d(TAG, "ModuleInitializer--->create")
-        return "module_login"
+        application = context as Application
+        return TAG
     }
 
     override fun dependencies(): List<Class<out Initializer<*>>> {

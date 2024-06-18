@@ -1,15 +1,17 @@
 package com.luxury.module_login.ui.login
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import android.util.Patterns
 import com.luxury.lib_base.base.BaseViewModel
+import com.luxury.lib_base.ext.getString
 import com.luxury.module_login.data.LoginRepository
 import com.luxury.module_login.data.Result
 
 import com.luxury.module_login.R
-
+const val TAG = "LoginViewModel"
 class LoginViewModel(private val loginRepository: LoginRepository) : BaseViewModel() {
 
     private val _loginForm = MutableLiveData<LoginFormState>()
@@ -17,6 +19,10 @@ class LoginViewModel(private val loginRepository: LoginRepository) : BaseViewMod
 
     private val _loginResult = MutableLiveData<LoginResult>()
     val loginResult: LiveData<LoginResult> = _loginResult
+
+    override fun onInit() {
+        //Log.d(TAG,"login-->getString--->${getString(R.string.login_failed)}")
+    }
 
     fun login(username: String, password: String) {
         // can be launched in a separate asynchronous job

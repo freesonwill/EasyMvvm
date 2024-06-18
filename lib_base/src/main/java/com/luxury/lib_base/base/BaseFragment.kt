@@ -16,7 +16,7 @@ import java.lang.reflect.ParameterizedType
 
 /**
  * @Description: Fragment基类
- * @Author: baoyuedong
+ * @Author: brain
  * @Date: 2024/6/12 11:49
  */
 abstract class BaseFragment<VB : ViewBinding, VM : ViewModel> : Fragment(), IView {

@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatDelegate
  * @Description:   
  * @Params: 明亮/暗黑模式工具类
  * @Return:  
- * @Author: baoyuedong 
+ * @Author: brain 
  * @Date: 2024/6/12 14:33
 */
 object DayModeUtil {

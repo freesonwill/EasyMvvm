@@ -2,7 +2,7 @@ package com.luxury.lib_base.bean;
 
 /**
  * Description:
- * author       : baoyuedong
+ * author       : brain
  * createTime   : 2024/6/12 16:55
  **/
 public class UnPeekLiveData<T> extends ProtectedUnPeekLiveData<T> {

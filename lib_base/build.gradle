@@ -49,6 +49,8 @@ dependencies {
     implementation Libs.viewModelScope
     //base dependencies
     implementation Libs.core_ktx
+    implementation Libs.androidx_startup
+    api Libs.retrofit2
     api Libs.appcompat
     api Libs.material
     api project(":lib_res")
