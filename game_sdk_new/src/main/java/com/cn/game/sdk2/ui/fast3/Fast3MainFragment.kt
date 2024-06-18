@@ -158,14 +158,15 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         }
     }
 
-    private fun startBetting(){
+    private fun startBetting() {
         lifecycleScope.launch {
-            showLoading(getString(R.string.g_home_betting_begin),2000)
+            showLoading(getString(R.string.g_home_betting_begin), 2000)
             //开始语音
             PromptSoundPlay.startGameTip(requireContext())
             mDatabind.txtHomeStatic.text = resources.getString(R.string.g_home_txt_please)
             //下注闪动动画
-            val childAlphaAnimator = ObjectAnimator.ofFloat(mDatabind.llShowBetList, "alpha", 0f, 1f)
+            val childAlphaAnimator =
+                ObjectAnimator.ofFloat(mDatabind.llShowBetList, "alpha", 0f, 1f)
             childAlphaAnimator.duration = 200 // 设置渐隐动画持续时间
             val animatorSet = AnimatorSet()
             animatorSet.play(childAlphaAnimator)
@@ -184,9 +185,10 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             animatorSet.start()
         }
     }
-    private fun startSetting(){ //开始结算
+
+    private fun startSetting() { //开始结算
         lifecycleScope.launch {
-            showLoading(getString(R.string.g_home_setting_begin),1000)
+            showLoading(getString(R.string.g_home_setting_begin), 1000)
             //关闭
             PromptSoundPlay.endGameTip(requireContext())
             mDatabind.txtHomeStatic.text = resources.getString(R.string.g_home_balance)
@@ -197,8 +199,9 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             leopardFragment.flicker(ArrayList<InPrizeBean>(), ArrayList<InPrizeBean>())
 
             sumTotalFragment.flicker(ArrayList<InPrizeBean>(), ArrayList<InPrizeBean>())*/
-            suspendCoroutine { continuation->
-                val childAlphaAnimator = ObjectAnimator.ofFloat(mDatabind.llShowBetList, "alpha", 1f, 0f)
+            suspendCoroutine { continuation ->
+                val childAlphaAnimator =
+                    ObjectAnimator.ofFloat(mDatabind.llShowBetList, "alpha", 1f, 0f)
                 childAlphaAnimator.duration = 200 // 设置渐隐动画持续时间
                 val animatorSet = AnimatorSet()
                 animatorSet.play(childAlphaAnimator)
@@ -220,17 +223,19 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         }
 
     }
-    private fun startDrawing(){ //开始开奖
+
+    private fun startDrawing() { //开始开奖
         lifecycleScope.launch {
-            showLoading(getString(R.string.g_home_drawing_begin),1000)
+            showLoading(getString(R.string.g_home_drawing_begin), 1000)
             mDatabind.txtHomeStatic.text = resources.getString(R.string.g_home_drawing_being)
             delay(2000)
             //do something
             startBetting()
         }
     }
+
     override fun createObserver() {
-        mViewModel.homeTimeVisibility.observe(requireActivity()){
+        mViewModel.homeTimeVisibility.observe(requireActivity()) {
             mDatabind.txtHomeTime.visibility = it
             mDatabind.txtHomeUnit.visibility = it
         }
@@ -242,15 +247,17 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 GameState.Settling -> {
                     startSetting()
                 }
-                GameState.Drawing ->{
+
+                GameState.Drawing -> {
                     startDrawing()
                 }
-                else ->{}
+
+                else -> {}
             }
         }
-        mViewModel.homeTime.observe(requireActivity()) { seconds->
+        mViewModel.homeTime.observe(requireActivity()) { seconds ->
             mDatabind.txtHomeTime.text = seconds.toString()
-            if (mViewModel.gameState == GameState.Betting && seconds != 0 && seconds <= 5 ) {
+            if (mViewModel.gameState == GameState.Betting && seconds != 0 && seconds <= 5) {
                 PromptSoundPlay.countdownGameTip(requireContext())
             }
         }
@@ -411,7 +418,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     R.layout.item_annotation_list -> {
                         if (betView == null) {
                             betView = itemView
-                            betMoney = MyGameManager.noteList[0].money
                         }
                         val binding = getBinding<ItemAnnotationListBinding>()
                         val bean = _data as SelectAnnotationBean
@@ -464,7 +470,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 bean.select = true
                 positions.forEach { notifyItemChanged(it) }
                 MyGameManager.noteList[modelPosition].select = true
-                betMoney = MyGameManager.noteList[modelPosition].money
                 betView = itemView
             }
         }
@@ -591,11 +596,9 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         PromptSoundPlay.playAudio(requireContext())
 
         //获取选中的筹码所在的position
-        val selectedPosition =
-            (mDatabind.llShowBetList.models as List<SelectAnnotationBean>?)?.indexOfFirst {
-                it.select
-            } ?: 0
-
+        val betList = mDatabind.llShowBetList.models as List<SelectAnnotationBean>
+        val selectedPosition = betList.indexOfFirst { it.select }
+        betMoney = betList[selectedPosition].money
         val layoutManager = mDatabind.llShowBetList.layoutManager as LinearLayoutManager
         var finallyView = layoutManager.findViewByPosition(selectedPosition)
 
