@@ -124,7 +124,7 @@ message MyMiniGameBetResult{
 }
     message BetResultInfo {
         AreaBet areaBet = 1;
-        int32 result = 2;// BetStatus
+        int32 result = 2;// result 0、succes 1、余额不足 2、押注超时 3、4、请求超时
     }
 
 

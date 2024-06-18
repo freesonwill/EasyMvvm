@@ -30,7 +30,7 @@ dependencyResolutionManagement {
 }
 rootProject.name = "My Application"
 include ':app'
-//include ':game_sdk'
+include ':game_sdk'
 include ':base_lib'
 
 include ':game_sdk_new'

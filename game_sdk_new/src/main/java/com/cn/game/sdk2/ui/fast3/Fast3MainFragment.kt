@@ -286,9 +286,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 //直接移除MoneyView
                 }else{
                     mViewModel.tempMoneyMap[key]?.second?.get()?.let{
-                        Log.e(this.toString(),"moneyOkView = $it")
-                        Log.e(this.toString(),"viewparent = "+it.parent)
-                        var parent = it.parent as ViewGroup
+                        val parent = it.parent as ViewGroup
                         parent.removeView(it)
                     }
                 }
