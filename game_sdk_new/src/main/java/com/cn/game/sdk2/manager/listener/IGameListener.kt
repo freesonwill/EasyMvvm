@@ -7,15 +7,20 @@ import com.cn.game.sdk2.data.enums.GameState
  * author       : zhangsan
  * createTime   : 2024/6/17 11:33
  **/
-interface IGameCountDownListener {
+interface IGameListener {
 
     /**
      * 返回倒计时
      */
-    fun  onCountdown(time:Long)
+    fun onCountdown(time: Long)
 
     /**
      * 结算结束
      */
-    fun  onFinish(state:GameState)
+    fun onFinish(state: GameState)
+
+    /**
+     *游戏状态变化
+     */
+    fun onGameStateChanged(oldValue: GameState, newValue: GameState)
 }

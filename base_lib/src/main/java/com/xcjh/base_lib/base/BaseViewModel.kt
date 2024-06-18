@@ -1,13 +1,17 @@
 package com.xcjh.base_lib.base
 
+import android.app.Application
 import androidx.lifecycle.ViewModel
 import com.kunminx.architecture.ui.callback.UnPeekLiveData
+import com.xcjh.base_lib.ModuleInitializer
 
 
-open class BaseViewModel : ViewModel() {
+abstract class BaseViewModel : ViewModel() {
 
     val loadingChange: UiLoadingChange by lazy { UiLoadingChange() }
-
+    //数据回收操作
+    private val dataGC by lazy { mutableSetOf<() -> Unit>() }
+    //============================ Method ================================//
     /**
      * 内置封装好的可通知Activity/fragment 显示隐藏加载框 因为需要跟网络请求显示隐藏loading配套才加的，不然我加他个鸡儿加
      */
@@ -17,5 +21,19 @@ open class BaseViewModel : ViewModel() {
         //隐藏
         val dismissDialog by lazy { UnPeekLiveData<Boolean>() }
     }
+    open fun onInit(){
 
+    }
+    override fun onCleared() {
+        super.onCleared()
+        val it = dataGC.iterator()
+        while (it.hasNext()) {
+            it.next().invoke()
+            it.remove()
+        }
+    }
+    fun registerDataGC(onClear: () -> Unit) {
+        dataGC.add(onClear)
+    }
+    val application:Application get() = ModuleInitializer.application
 }

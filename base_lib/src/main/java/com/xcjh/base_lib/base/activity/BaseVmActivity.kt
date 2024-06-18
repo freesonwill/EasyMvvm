@@ -39,7 +39,7 @@ abstract class BaseVmActivity<VM : BaseViewModel> : AppCompatActivity() {
     }
 
     private fun init(savedInstanceState: Bundle?) {
-        mViewModel = createViewModel()
+        mViewModel = createViewModel().also { it.onInit() }
         registerUiChange()
         initView(savedInstanceState)
         createObserver()

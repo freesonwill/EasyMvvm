@@ -88,7 +88,7 @@ object PromptSoundPlay {
         if(!isPhoneSilent(context)){
             val startMediaPlayer = MediaPlayer()
             try {
-                startMediaPlayer!!.setDataSource(context, getResourceUri(context, R.raw.sx_common_start))
+                startMediaPlayer.setDataSource(context, getResourceUri(context, R.raw.sx_common_start))
                 startMediaPlayer.setOnCompletionListener(OnCompletionListener { mp ->
                     mp.release() // 在播放完成后释放MediaPlayer
                 })
@@ -109,7 +109,7 @@ object PromptSoundPlay {
         if(!isPhoneSilent(context)){
             val endMediaPlayer = MediaPlayer()
             try {
-                endMediaPlayer!!.setDataSource(context, getResourceUri(context, R.raw.sx_common_countdown))
+                endMediaPlayer.setDataSource(context, getResourceUri(context, R.raw.sx_common_countdown))
                 endMediaPlayer.setOnCompletionListener(OnCompletionListener { mp ->
                     mp.release() // 在播放完成后释放MediaPlayer
                 })
@@ -118,8 +118,6 @@ object PromptSoundPlay {
             } catch (e: IOException) {
                 e.printStackTrace()
             }
-
-
         }
     }
 

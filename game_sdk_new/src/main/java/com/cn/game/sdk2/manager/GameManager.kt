@@ -1,12 +1,8 @@
 package com.cn.game.sdk2.manager
 
 import android.os.CountDownTimer
-import android.util.Log
 import com.cn.game.sdk2.data.enums.GameState
-import com.cn.game.sdk2.manager.listener.GameTimeStatic
-import com.cn.game.sdk2.manager.listener.IGameCountDownListener
-import com.cn.game.sdk2.utils.MyGameManager
-import com.xcjh.base_lib.utils.LogUtils
+import com.cn.game.sdk2.manager.listener.IGameListener
 
 /**
  * Description: 游戏管理类
@@ -26,28 +22,44 @@ class GameManager private constructor() : IGameManager {
         private const val TAG = "GameManager"
     }
 
+    var gameState: GameState = GameState.Init
+        set(value) {
+            val oldValue = field
+            field = value
+            if(oldValue != value){
+                mGameListener.forEach { it.value.onGameStateChanged(oldValue, value) }
+            }
+        }
+    private val mGameListener = linkedMapOf<String, IGameListener>()
     //================================ Method ===================================================//
-    override var gameState: GameState = GameState.Init
 
-    override fun startCountDownTimer(lis: IGameCountDownListener?) {
+    override fun startCountDownTimer(
+        countdownTime: Int,
+        countDownInterval: Int,
+        lis: IGameListener?
+    ) {
         countDownTimer?.cancel()
-        if (countDownTimer == null) {
-            countDownTimer = object : CountDownTimer(countdownTime.toLong(), 1000) {
+        countDownTimer =
+            object : CountDownTimer(countdownTime.toLong(), countDownInterval.toLong()) {
                 override fun onTick(millisUntilFinished: Long) {
                     lis?.onCountdown(millisUntilFinished)
+                    mGameListener.forEach {
+                        it.value.onCountdown(millisUntilFinished)
+                    }
                 }
 
                 override fun onFinish() {
-                    gameState = if (gameState == GameState.Betting) {
-                        GameState.Settling
-                    } else {
-                        GameState.Betting
+                    when (gameState) {
+                        GameState.Betting -> gameState = GameState.Settling
+                        GameState.Settling -> gameState = GameState.Drawing
+                        GameState.Drawing -> gameState = GameState.Betting
+                        else -> throw IllegalStateException("error game state:${gameState}")
                     }
                     lis?.onFinish(gameState)
+                    mGameListener.forEach { it.value.onFinish(gameState) }
                     countDownTimer = null
                 }
             }
-        }
         countDownTimer?.start()
     }
 
@@ -55,4 +67,27 @@ class GameManager private constructor() : IGameManager {
         get() {
             return this.gameState == GameState.Betting
         }
+
+    fun startBetting() {
+        gameState = GameState.Betting
+        startCountDownTimer(10_000, 1_000)
+    }
+
+    fun startSettling() {
+        gameState = GameState.Settling
+        startCountDownTimer(10_000, 1_000)
+    }
+
+    fun startDrawing() {
+        gameState = GameState.Drawing
+        startCountDownTimer(10_000, 1_000)
+    }
+
+    fun setLiveStatusListener(tag: String, listener: IGameListener) {
+        mGameListener[tag] = listener
+    }
+
+    fun removeLiveStatusListener(tag: String) {
+        mGameListener.remove(tag)
+    }
 }

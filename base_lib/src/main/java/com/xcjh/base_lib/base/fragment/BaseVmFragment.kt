@@ -11,12 +11,15 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.xcjh.base_lib.base.BaseViewModel
 import com.xcjh.base_lib.network.manager.NetState
 import com.xcjh.base_lib.network.manager.NetworkStateManager
 import com.xcjh.base_lib.utils.dismissLoadingExt
 import com.xcjh.base_lib.utils.getVmClazz
 import com.xcjh.base_lib.utils.showLoadingExt
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 /**
  * 作者　:
@@ -56,7 +59,7 @@ abstract class BaseVmFragment<VM : BaseViewModel> : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         isFirst = true
-        mViewModel = createViewModel()
+        mViewModel = createViewModel().also { it.onInit() }
         initView(savedInstanceState)
         createObserver()
         registorDefUIChange()
@@ -126,6 +129,12 @@ abstract class BaseVmFragment<VM : BaseViewModel> : Fragment() {
 
     open fun dismissLoading() {
         dismissLoadingExt()
+    }
+
+    open suspend fun showLoading(message: String = "请求网络中...",dismissMills:Long){
+        showLoadingExt(message)
+        delay(dismissMills)
+        dismissLoading()
     }
 
     /**
