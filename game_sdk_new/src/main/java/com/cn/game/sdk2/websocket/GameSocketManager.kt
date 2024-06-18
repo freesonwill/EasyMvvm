@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import com.cn.game.sdk2.network.code.GameResCode
 import com.cn.game.sdk2.websocket.imp.GameServiceImp
 import com.xcjh.base_lib.utils.loge
+import game.common.proto.ClientRes
 import game.mod.proc.yf.proto.res.GameRes
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -154,9 +155,30 @@ class GameSocketManager private constructor() : OnMessageListener {
                 )
 
                 GameResCode.S2C_REFRESH_USER_SCORE -> gameServerMessageConvertFactory?.refreshUserProperties(
-                    GameRes.RefreshUserScore.parseFrom(byteArray))
+                    GameRes.RefreshUserScore.parseFrom(byteArray)
+                )
 
-                GameResCode.S2C_LEAVE_GROUP -> gameServerMessageConvertFactory?.leaveGroup(GameRes.LeaveGroup.parseFrom(byteArray))
+                GameResCode.S2C_LEAVE_GROUP -> gameServerMessageConvertFactory?.leaveGroup(
+                    GameRes.LeaveGroup.parseFrom(
+                        byteArray
+                    )
+                )
+
+                GameResCode.S2C_SYNC_AREA_BET_INFO -> gameServerMessageConvertFactory?.syncAreaBetInfoBack(
+                    GameRes.SyncAreaBetInfo.parseFrom(byteArray)
+                )
+
+                GameResCode.S2C_USER_BET_RESULT -> gameServerMessageConvertFactory?.miniGameBetResult(
+                    GameRes.MyMiniGameBetResult.parseFrom(byteArray)
+                )
+
+                GameResCode.SUB_LOGON_RESP__SUCCESS -> gameServerMessageConvertFactory?.loginSuccess(
+                    ClientRes.InfoAfterLoginSuccess.parseFrom(byteArray)
+                )
+
+                GameResCode.SUB_LOGON_RESP__LOGIN_ERROR -> gameServerMessageConvertFactory?.loginError(
+                    ClientRes.ErrorMessage.parseFrom(byteArray)
+                )
             }
         }
     }

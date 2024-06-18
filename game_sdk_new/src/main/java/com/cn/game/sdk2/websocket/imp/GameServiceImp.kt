@@ -208,6 +208,11 @@ class GameServiceImp(private val client: GameSocketClient) : GameService,
     }
 
     override fun loginSuccess(afterLoginSuccess: ClientRes.InfoAfterLoginSuccess) {
+
+    }
+
+    override fun loginError(errorMessage: ClientRes.ErrorMessage) {
+
     }
 
     override fun enterInfo(enterInfo: GameRes.EnterInfo) {
@@ -223,6 +228,7 @@ class GameServiceImp(private val client: GameSocketClient) : GameService,
     }
 
     override fun enterMiniGameInfo(miniGame: GameRes.EnterMiniGameInfo) {
+        miniGame.miniGameId
     }
 
     override fun miniGameBetResult(result: GameRes.MyMiniGameBetResult) {
