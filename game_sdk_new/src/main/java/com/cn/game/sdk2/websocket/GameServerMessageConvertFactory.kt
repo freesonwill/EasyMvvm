@@ -1,7 +1,6 @@
 package com.cn.game.sdk2.websocket
 
 import game.common.proto.ClientRes
-import game.common.proto.ClientRes.InfoAfterLoginSuccess
 import game.mod.proc.yf.proto.res.GameRes
 import game.mod.proc.yf.proto.res.GameRes.BeginSettle
 import game.mod.proc.yf.proto.res.GameRes.ClearTrends
@@ -12,7 +11,7 @@ interface GameServerMessageConvertFactory {
     /**
      * 登陆成功
      */
-    fun loginSuccess(afterLoginSuccess: InfoAfterLoginSuccess)
+    fun loginSuccess(afterLoginSuccess: ClientRes.InfoAfterLoginSuccess)
 
     /**
      * 进入房间
