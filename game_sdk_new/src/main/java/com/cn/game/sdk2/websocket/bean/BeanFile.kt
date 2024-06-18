@@ -1,9 +1,9 @@
-package com.cn.game.sdk2.websocket
+package com.cn.game.sdk2.websocket.bean
 
 import java.io.Serializable
 
 
-
+//var gameStage:
 /**
  * 每次点击下注就传入该对象
  */
@@ -133,15 +133,19 @@ data class SINGLE_1(
 data class SINGLE_2(
     override var number: Int = 20, override var multipliers: List<Float> = listOf(2f, 3f, 4f)
 ) : SINGLE()
+
 data class SINGLE_3(
     override var number: Int = 22, override var multipliers: List<Float> = listOf(2f, 3f, 4f)
 ) : SINGLE()
+
 data class SINGLE_4(
     override var number: Int = 22, override var multipliers: List<Float> = listOf(2f, 3f, 4f)
 ) : SINGLE()
+
 data class SINGLE_5(
     override var number: Int = 23, override var multipliers: List<Float> = listOf(2f, 3f, 4f)
 ) : SINGLE()
+
 data class SINGLE_6(
     override var number: Int = 24, override var multipliers: List<Float> = listOf(2f, 3f, 4f)
 ) : SINGLE()
@@ -149,18 +153,23 @@ data class SINGLE_6(
 data class DOUBLE_1(
     override var number: Int = 25, override var multiplier: Float = 12f
 ) : DOUBLE()
+
 data class DOUBLE_2(
     override var number: Int = 26, override var multiplier: Float = 12f
 ) : DOUBLE()
+
 data class DOUBLE_3(
     override var number: Int = 27, override var multiplier: Float = 12f
 ) : DOUBLE()
+
 data class DOUBLE_4(
     override var number: Int = 28, override var multiplier: Float = 12f
 ) : DOUBLE()
+
 data class DOUBLE_5(
     override var number: Int = 29, override var multiplier: Float = 12f
 ) : DOUBLE()
+
 data class DOUBLE_6(
     override var number: Int = 30, override var multiplier: Float = 12f
 ) : DOUBLE()
@@ -168,24 +177,55 @@ data class DOUBLE_6(
 data class BOOM_1(
     override var number: Int = 31, override var multiplier: Float = 180f
 ) : BOOM()
+
 data class BOOM_2(
     override var number: Int = 32, override var multiplier: Float = 180f
 ) : BOOM()
+
 data class BOOM_3(
     override var number: Int = 33, override var multiplier: Float = 180f
 ) : BOOM()
+
 data class BOOM_4(
     override var number: Int = 34, override var multiplier: Float = 180f
 ) : BOOM()
+
 data class BOOM_5(
     override var number: Int = 35, override var multiplier: Float = 180f
 ) : BOOM()
+
 data class BOOM_6(
     override var number: Int = 36, override var multiplier: Float = 180f
 ) : BOOM()
 
 data class BOOM_ALL(
     override var number: Int = 37, override var multiplier: Float = 32f
-):BOOM()
+) : BOOM()
 
+sealed class GameStage {
+    open var miniGameId: Int = 0
+    open var countDown: Int = 0
+    open var roundId: String = ""
+}
 
+data class GameNew(
+    override var miniGameId: Int, override var countDown: Int, override var roundId: String
+) : GameStage()
+
+data class GameDeal(
+    override var miniGameId: Int, override var countDown: Int, override var roundId: String
+) : GameStage()
+
+data class GameSettle(
+    override var miniGameId: Int,
+    override var countDown: Int,
+    var roundInfo: RoundInfo,
+    var winScore: Int
+) : GameStage()
+
+data class RoundInfo(var roundId: String, var elementType: Int, var performs: List<ActorPerform>)
+data class ActorPerform(
+    var elements: List<Int>,
+    var patterns: List<Int>,
+    var performResult: List<Int>
+)

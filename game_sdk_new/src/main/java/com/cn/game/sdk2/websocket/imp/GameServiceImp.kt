@@ -1,19 +1,21 @@
 package com.cn.game.sdk2.websocket.imp
 
 import com.cn.game.sdk2.network.code.GameReqCode
-import com.cn.game.sdk2.websocket.Betting
-import com.cn.game.sdk2.websocket.BettingRecordBean
-import com.cn.game.sdk2.websocket.DEFAULT_BIG
+import com.cn.game.sdk2.websocket.bean.Betting
+import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import com.cn.game.sdk2.websocket.GameServerMessageConvertFactory
 import com.cn.game.sdk2.websocket.GameSocketClient
 import com.cn.game.sdk2.websocket.GameSocketManager
 import com.cn.game.sdk2.websocket.appListener
 import com.cn.game.sdk2.websocket.balance
+import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.interfaces.GameService
 import com.cn.game.sdk2.websocket.isCanBetting
 import com.cn.game.sdk2.websocket.isEmpty
 import com.cn.game.sdk2.websocket.isNotEmpty
+import com.cn.game.sdk2.websocket.miniGameId
 import com.cn.game.sdk2.websocket.previousSuccess
+import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 import game.common.proto.ClientReq
 import game.common.proto.ClientRes
 import game.mod.proc.yf.proto.req.GameReq
@@ -109,12 +111,12 @@ class GameServiceImp(private val client: GameSocketClient) : GameService,
     private var currentTempCountMoney = 0
 
     /**
-     * 当前确认总下注金额
+     * 当前确认总下注金额 已下注部分无法取消
      */
     private var currentConfirmCountMoney = 0
 
     /**
-     * 当前总下注金额
+     * 当前总下注金额 界面需要显示
      */
     private var currentCountMoney = 0
 
@@ -196,7 +198,7 @@ class GameServiceImp(private val client: GameSocketClient) : GameService,
         previousSuccess = false
         var index = 0
         val betReq = BetReq.newBuilder()
-        betReq.setMiniGameId(1)
+        betReq.setMiniGameId(miniGameId)
         bettingListTemp.forEach { (betting, bettingRecordBean) ->
             val areaBetReq = AreaBetReq.newBuilder().setAreaCode(betting.number)
                 .setBetScore(bettingRecordBean.money).build()
@@ -228,24 +230,66 @@ class GameServiceImp(private val client: GameSocketClient) : GameService,
     }
 
     override fun enterMiniGameInfo(miniGame: GameRes.EnterMiniGameInfo) {
-        miniGame.miniGameId
+        miniGameId = miniGame.miniGameId
     }
 
     override fun miniGameBetResult(result: GameRes.MyMiniGameBetResult) {
+        //result = 0 成功 1 余额不住 3超时
+        when (result.betResultInfoListList[0].result) {
+            0 -> {
+                //下注成功后 保存当前下注总额为已确认下注金额；并将当前下注总额清空
+                currentConfirmCountMoney = currentCountMoney
+                currentCountMoney = 0
+                previousSuccess = true
+                bettingListTemp.forEach { (betting, temBean) ->
+                    if (bettingListConfirmed.containsKey(betting)) {
+                        temBean.money += bettingListConfirmed[betting]?.money!!
+                    }
+                    bettingListConfirmed[betting] = temBean
+                }
+                bettingListTemp.clear()
+            }
+
+            1 -> {
+
+            }
+
+            2 -> {}
+            else -> {}
+        }
+
     }
 
     override fun refreshUserProperties(userScore: GameRes.RefreshUserScore) {
+        balance = userScore.score.toInt()
     }
 
     override fun beginRound(round: GameRes.BeginNewRound) {
         isCanBetting = true
+        gameAboutModel.miniGameId = round.miniGameId
+        gameAboutModel.roundId = round.roundId //期号
+        gameAboutModel.countDown = round.countDown //当前阶段剩余时间倒计时
+        gameAboutModel.changeStage(GameAboutModel.Stage.NEW)
     }
 
     override fun beginDeal(round: GameRes.BeginDeal) {
         isCanBetting = false
+        gameAboutModel.miniGameId = round.miniGameId
+        gameAboutModel.roundId = round.roundId //期号
+        gameAboutModel.countDown = round.countDown //当前阶段剩余时间倒计时
+        gameAboutModel.changeStage(GameAboutModel.Stage.DEAL)
     }
 
     override fun beginSettle(settle: GameRes.BeginSettle) {
+        isCanBetting = false
+        gameAboutModel.miniGameId = settle.miniGameId
+        gameAboutModel.roundId = settle.roundInfo.roundId //期号
+        gameAboutModel.countDown = settle.countDown //当前阶段剩余时间倒计时
+        gameAboutModel.changeStage(GameAboutModel.Stage.SETTLE)
+       if (settle.winScore>0) {
+         var netIncome = settle.winScore -currentConfirmCountMoney
+       }
+        settle.roundInfo.performsList[0].performResultList
     }
 
     override fun syncAreaBetInfoBack(syncAreaBetInfo: GameRes.SyncAreaBetInfo) {
@@ -258,5 +302,9 @@ class GameServiceImp(private val client: GameSocketClient) : GameService,
     }
 
     override fun tokenLoseEffectiveness() {
+    }
+
+    private fun calculateCosts() {
+
     }
 }
