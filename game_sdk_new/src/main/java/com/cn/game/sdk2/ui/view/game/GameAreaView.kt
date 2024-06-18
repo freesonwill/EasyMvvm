@@ -4,17 +4,16 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
 import android.widget.FrameLayout
-import com.cn.game.sdk2.data.bean.BettingRecordBean
+import android.widget.TextView
 import com.cn.game.sdk2.ui.view.MoneyOKView
-import game.mod.proc.yf.proto.res.GameRes2.AreaInfo
 import kotlin.math.abs
 
 class GameAreaView : FrameLayout {
     lateinit var content: View
     lateinit var gameCallback: IGameView
     lateinit var moneyView: MoneyOKView
+    var tvOdds :TextView ?= null
     var areaCode: Int = 0
 
     private var oldX = 0f
@@ -39,6 +38,12 @@ class GameAreaView : FrameLayout {
     private fun initView() {
         content = getChildAt(0);
         moneyView = MoneyOKView(context)
+    }
+
+    fun setOdds(odds:String){
+        tvOdds?.apply {
+            text = odds
+        }
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
