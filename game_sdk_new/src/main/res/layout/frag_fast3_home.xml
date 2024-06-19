@@ -60,11 +60,10 @@
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/txtHomeTime"
-                        android:layout_width="wrap_content"
+                        android:layout_width="17dp"
                         android:layout_height="wrap_content"
-                        android:paddingLeft="5dp"
-                        android:paddingRight="5dp"
                         android:text="10"
+                        android:gravity="center"
                         android:textColor="@color/g_700000"
                         android:textSize="15sp" />
 

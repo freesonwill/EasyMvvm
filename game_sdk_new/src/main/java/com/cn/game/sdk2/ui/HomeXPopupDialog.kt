@@ -6,7 +6,6 @@ import androidx.fragment.app.FragmentActivity
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.databinding.DialogHomeXpopupContainerBinding
 import com.cn.game.sdk2.ui.fast3.Fast3MainFragment
-import com.cn.game.sdk2.ui.fast3.Fast3MainFragment2
 import com.lxj.xpopup.core.BottomPopupView
 
 /**

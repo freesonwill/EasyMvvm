@@ -14,4 +14,6 @@ enum class GameState(var code:Int) {
     Settling(2),
     //开奖中
     Drawing(3),
+    //开奖结束
+    DrawFinish(4),
 }

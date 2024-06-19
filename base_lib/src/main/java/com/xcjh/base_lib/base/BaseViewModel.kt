@@ -32,7 +32,9 @@ abstract class BaseViewModel : ViewModel() {
             it.remove()
         }
     }
-    fun registerDataGC(onClear: () -> Unit) {
+
+    //注册自动回收数据
+    fun registerAutoGC(onClear: () -> Unit) {
         dataGC.add(onClear)
     }
     val application:Application get() = ModuleInitializer.application
