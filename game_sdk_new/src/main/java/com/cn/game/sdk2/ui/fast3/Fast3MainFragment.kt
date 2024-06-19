@@ -18,7 +18,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import androidx.core.animation.addListener
-import androidx.core.animation.doOnCancel
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,18 +34,16 @@ import com.cn.game.sdk2.ui.view.CustomBubbleAttachPopup
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.ui.helper.ViewHelper.bindViewPagerNewGame
 import com.cn.game.sdk2.ui.helper.ViewHelper.initGameViewPager
-import com.cn.game.sdk2.utils.MyGameManager
+import com.cn.game.sdk2.ui.view.MoneyOKView
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
 import com.cn.game.sdk2.utils.Ext
 import com.cn.game.sdk2.utils.Ext.toPinyin
-import com.drake.brv.BindingAdapter
 import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
-import com.lzf.easyfloat.EasyFloat
 import com.xcjh.base_lib.base.fragment.BaseVmDbFragment
 import com.xcjh.base_lib.bean.MutablePair
 import com.xcjh.base_lib.utils.dp2px
@@ -58,9 +56,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     private val TAG = "Fast3MainFragment"
     private var mFragList = ArrayList<Fragment>()
 
-    //默认
-    lateinit var dxdsFragment: DXDSFragment
-
     //是否执行关闭动画
     var isExecuteClose: Boolean = true
 
@@ -72,13 +67,16 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     private var resultAnim: ValueAnimator? = null
     private var resultRvHeight = -1
     private var resultAnimMoveHeight = -1
+    private var anchorMoneyView: MoneyOKView? = null
+    //<areaCode,<money,View>>
+    private var savedMoneyMap: MutableMap<Int, MutablePair<Int, MoneyOKView>> = mutableMapOf()
+    private var tempMoneyMap: MutableMap<Int, MutablePair<Int, MoneyOKView>> = mutableMapOf()
 
     //==================================== Method ===============================================//
     override fun initView(savedInstanceState: Bundle?) {
-        mDatabind.tempTouch.linkViewModel(mViewModel)
-        dxdsFragment = DXDSFragment(mViewModel)
         //viewpager
-        mFragList.add(dxdsFragment)
+        mFragList.add(DXDSFragment(mViewModel))
+        mFragList.add(SingleDiceFragment(mViewModel))
 
         mDatabind.viewPagerNew.initGameViewPager(
             childFragmentManager, mFragList, arrayListOf(
@@ -122,8 +120,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             PromptSoundPlay.btnPlayMedia(requireContext())
             homeMorePop!!.show()
         }
-        //获取当前余额
-        //mDatabind.txtCurrentMoney.text = MyGameManager.currentMoney.addCommas()
         /*rewritingTouch(
             tempTouth = mDatabind.tempTouth,
             viewPager = mDatabind.viewPagerNew,
@@ -140,6 +136,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     }
 
     override fun initData() {
+        //获取当前余额
+        mDatabind.txtCurrentMoney.text = mViewModel.currentMoney.value.toString()
         lifecycleScope.launchWhenResumed {
             //开始下注
             Log.d(TAG, "initData startBetting")
@@ -226,6 +224,10 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
     override fun createObserver() {
         Log.i(TAG, "createObserver------------>")
+        mViewModel.onGameAreaLocationClick.observe(viewLifecycleOwner) {
+
+        }
+
         mViewModel.homeTimeVisibility.observe(requireActivity()) {
             mDatabind.txtHomeTime.visibility = it
             mDatabind.txtHomeUnit.visibility = it
@@ -269,6 +271,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             if (adapter.models!!.isNotEmpty()) {
                 mDatabind.rvHomeHistory.scrollToPosition(adapter.models!!.size - 1)
             }
+            mDatabind.rlClickHide.isVisible = adapter.models!!.isNotEmpty()
         }
         mViewModel.moneyAnimCallback = object : Fast3ViewModel.MoneyAnimCallback {
             override fun startAnim(
@@ -283,44 +286,42 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             }
         }
         mViewModel.betOkClick.observe(this) {
-            mViewModel.anchorMoneyView?.get()?.hiddenTop()
+            anchorMoneyView?.hiddenTop()
             var tempMoney: Int
             //将tempMap中的数据更新至savedMap
-            for (key in mViewModel.tempMoneyMap.keys) {
-                tempMoney = mViewModel.tempMoneyMap[key]?.first ?: 0
+            for (key in tempMoneyMap.keys) {
+                tempMoney = tempMoneyMap[key]?.first ?: 0
                 //保存新数据saved+temp
-                if (mViewModel.savedMoneyMap.containsKey(key)) {
-                    mViewModel.savedMoneyMap[key]?.apply { first += tempMoney }
+                if (savedMoneyMap.containsKey(key)) {
+                    savedMoneyMap[key]?.apply { first += tempMoney }
                     //创建saved数据
                 } else {
-                    mViewModel.tempMoneyMap[key]?.let {
-                        mViewModel.savedMoneyMap[key] = MutablePair(tempMoney, (it.second))
+                    tempMoneyMap[key]?.let {
+                        savedMoneyMap[key] = MutablePair(tempMoney, (it.second))
                     }
                 }
             }
-            mViewModel.anchorMoneyView?.get()?.hiddenTop()
-
         }
 
         mViewModel.betDeleteClick.observe(this) {
-            for (key in mViewModel.tempMoneyMap.keys) {
+            for (key in tempMoneyMap.keys) {
                 //还原savedmap中的数据
-                if (mViewModel.savedMoneyMap.containsKey(key)) {
-                    mViewModel.savedMoneyMap[key]?.apply {
-                        second.get()?.apply {
+                if (savedMoneyMap.containsKey(key)) {
+                    savedMoneyMap[key]?.apply {
+                        second.apply {
                             setShowMoney(first)
                         }
                     }
                     //直接移除MoneyView
                 } else {
-                    mViewModel.tempMoneyMap[key]?.second?.get()?.let {
+                    tempMoneyMap[key]?.second?.let {
                         val parent = it.parent as ViewGroup
                         parent.removeView(it)
                     }
                 }
             }
-            mViewModel.anchorMoneyView?.get()?.hiddenTop()
-            mViewModel.tempMoneyMap.clear()
+            anchorMoneyView?.hiddenTop()
+            tempMoneyMap.clear()
         }
     }
 
@@ -391,7 +392,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     R.layout.item_annotation_list -> {
                         val binding = getBinding<ItemAnnotationListBinding>()
                         val bean = _data as SelectAnnotationBean
-                        val temporaryCurrentMoney = MyGameManager.temporaryCurrentMoney
+                        val temporaryCurrentMoney = mViewModel.temporaryCurrentMoney
                         val id = if (temporaryCurrentMoney < bean.money) {
                             resources.getIdentifier(
                                 "icon_shortage_" + bean.moneyPinyin,
@@ -436,7 +437,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 }
                 notifyItemRangeChanged(0, modelCount)
             }
-        }.models = MyGameManager.noteList
+        }.models = mViewModel.noteList
         //历史结果
         mDatabind.rvHomeHistory.itemAnimator = null
         mDatabind.rvHomeHistory.layoutManager = LinearLayoutManager(
@@ -474,6 +475,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             if (mDatabind.rvHomeHistory.models!!.isNotEmpty()) {
                 mDatabind.rvHomeHistory.scrollToPosition(mDatabind.rvHomeHistory.models!!.size - 1)
             }
+            mDatabind.rlClickHide.isVisible = mDatabind.rvHomeHistory.models!!.isNotEmpty()
         }
     }
 
@@ -489,17 +491,15 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
      * 关闭页面
      */
     override fun onDestroy() {
-        MyGameManager.removeLiveStatusListener("home")
         //关闭的时候要把这个赋值为0选择
-        MyGameManager.noteList.forEach {
+        mViewModel.noteList.forEach {
             it.select = false
         }
-        MyGameManager.noteList[0].select = true
+        mViewModel.noteList[0].select = true
         //清空临时的
+
+        mViewModel.stopCountDown()
         //关闭倒计时
-        MyGameManager.countDownTimer!!.cancel()
-        MyGameManager.countDownTimer = null
-        EasyFloat.show(MyGameManager.TAG_1)
         //关闭动画
         resultAnim?.cancel()
         super.onDestroy()
@@ -601,8 +601,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 endCallBack?.invoke()
                 // 把移动的图片imageview从父布局里移除
                 mDatabind.rlRoot.removeView(betImageView)
-                val animator =
-                    ObjectAnimator.ofPropertyValuesHolder(
+                val animator = ObjectAnimator.ofPropertyValuesHolder(
                         areaView.moneyView.ivShowBg,
                         SCALE_X,
                         SCALE_Y
@@ -611,14 +610,21 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 animator.start()
 
                 //筹码栈处理
-                mViewModel.updateAnchorView(areaView.moneyView)
-                mViewModel.addTemMoney(areaView, betMoney)
+                updateAnchorView(areaView.moneyView)
+                addTemMoney(areaView, betMoney)
             })
         }
 
         valueAnimator.duration = speed
         valueAnimator.interpolator = AccelerateDecelerateInterpolator()
         valueAnimator.start()
+    }
+
+    private fun updateAnchorView(anchor: MoneyOKView){
+        anchorMoneyView?.hiddenTop()
+        anchor.showTop()
+        anchorMoneyView = anchor
+        mDatabind.tempTouch.setAnchorMoneyView(anchor)
     }
 
     private fun scrollToItemAndPerformAction(
@@ -659,6 +665,20 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             if (targetView != null) {
                 val targetDistance = targetView.left + targetView.width / 2 - screenWidth / 2
                 recyclerView.smoothScrollBy(targetDistance, 0)
+            }
+        }
+    }
+
+    private fun addTemMoney(areaView: GameAreaView, betMoney: Int) {
+        tempMoneyMap.apply {
+            if (!containsKey(areaView.areaCode)) {
+                put(areaView.areaCode, MutablePair(betMoney, areaView.moneyView))
+            } else {
+                get(areaView.areaCode)?.apply { first += betMoney }
+            }
+            get(areaView.areaCode)?.first?.let {
+                val sum = savedMoneyMap[areaView.areaCode]?.first ?: 0
+                areaView.moneyView.setShowMoney(it.plus(sum))
             }
         }
     }

@@ -3,10 +3,9 @@ package com.cn.game.sdk2.ui.view
 import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
-import android.view.View
 import android.widget.FrameLayout
 import androidx.core.view.isVisible
-import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
+import com.cn.game.sdk2.utils.Ext.isInArea
 
 /**
  * 首页遮照触摸
@@ -14,8 +13,7 @@ import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
  * 需要关联viewmodel获取当前的MoneyView
  */
 class DoTouchFrameLayout : FrameLayout {
-    private var mViewModel: Fast3ViewModel? = null
-
+    private var anchorMoneyView: MoneyOKView? = null
     constructor(context: Context) : this(context, null)
 
     constructor(context: Context, attributeSet: AttributeSet?) : this(context, attributeSet, 0)
@@ -26,47 +24,30 @@ class DoTouchFrameLayout : FrameLayout {
         defStyleAttr
     )
 
-
-    /**
-     * 关联viewmodel 用于获取当前的moneyView
-     */
-    fun linkViewModel(viewModel: Fast3ViewModel) {
-        this.mViewModel = viewModel
+    fun setAnchorMoneyView(anchorMoneyView: MoneyOKView){
+        this.anchorMoneyView = anchorMoneyView
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         when (event?.action) {
             MotionEvent.ACTION_DOWN -> {
-                mViewModel?.anchorMoneyView?.get()?.let {
+                anchorMoneyView?.let {
                     val x = event.rawX
                     val y = event.rawY
                     if (it.llShowTop.isVisible) {
-                        val offLocation = IntArray(2)
-                        val okLocation = IntArray(2)
-                        it.ivOff.getLocationOnScreen(offLocation)
-                        it.ivOk.getLocationOnScreen(okLocation)
-                        val offX = offLocation[0]
-                        val offY = offLocation[1]
-                        val okX = okLocation[0]
-                        val okY = okLocation[1]
-                        val isTouchOnOff = x >= offX && x <= (offX + it.ivOff.width)
-                                && y >= offY && y <= (offY + it.ivOff.height)
-                        val isTouchOnOk = x >= okX && x <= (okX + it.ivOk.width)
-                                && y >= okY && y <= (okY + it.ivOk.height)
-                        if (isTouchOnOff && it.ivOff.isVisible) {
+                        return if (it.ivOff.isInArea(x,y) && it.ivOff.isVisible) {
                             it.ivOff.performClick()
-                            return true
-                        } else if (isTouchOnOk && it.ivOk.isVisible) {
+                            true
+                        } else if (it.ivOk.isInArea(x,y) && it.ivOk.isVisible) {
                             it.ivOk.performClick()
-                            return true
+                            true
                         } else {
-                            return false
+                            false
                         }
                     }
                 }
             }
         }
-
         return super.onTouchEvent(event)
     }
 

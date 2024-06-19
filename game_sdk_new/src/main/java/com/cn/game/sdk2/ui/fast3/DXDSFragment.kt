@@ -1,17 +1,14 @@
 package com.cn.game.sdk2.ui.fast3
 
-import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.Gravity
 import android.view.ViewGroup
-import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.FrameLayout
-import android.widget.TextView
-import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.base.BaseGameFragment
+import com.cn.game.sdk2.data.bean.LocationClickPoint
 import com.cn.game.sdk2.data.enums.NOTES_ENUM
 import com.cn.game.sdk2.databinding.FragDxdsBinding
 import com.cn.game.sdk2.ui.helper.ViewHelper.isAdd
@@ -20,18 +17,14 @@ import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.view.game.IGameView
 import com.cn.game.sdk2.ui.viewmodel.fast3.DXDSVm
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
-import com.cn.game.sdk2.utils.MyGameManager
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.utils.tool.measureView
-import me.jessyan.autosize.utils.AutoSizeUtils.dp2px
 
 
 /**
  * 默认
  */
 class DXDSFragment(var fast3VM: Fast3ViewModel) : BaseGameFragment<DXDSVm, FragDxdsBinding>() {
-    private var animators: MutableList<ObjectAnimator> = mutableListOf()
-
     private var areaViewList: MutableList<GameAreaView> = mutableListOf();
 
     @SuppressLint("ClickableViewAccessibility")
@@ -49,64 +42,26 @@ class DXDSFragment(var fast3VM: Fast3ViewModel) : BaseGameFragment<DXDSVm, FragD
             areaViewList.add(leopardView)
         }
 
-        mDatabind.bigView.let {
-            it.gameCallback = object : IGameView {
-                override fun bindView() {
-                    it.tvOdds = mDatabind.txtOddsBig
-                }
-
+        val dic = mapOf(
+            mDatabind.bigView to mDatabind.txtOddsBig,
+            mDatabind.smallView to mDatabind.txtOddsSmall,
+            mDatabind.singleView to mDatabind.txtOddsSingle,
+            mDatabind.doubleView to mDatabind.txtOddsDouble,
+            mDatabind.leopardView to mDatabind.txtOddsLeopard,
+        )
+        dic.forEach {
+            it.key.gameCallback = object : IGameView {
                 override fun winFlash() {
-
+                    it.key.tvOdds = it.value
                 }
-            }
-        }
-        mDatabind.smallView.let {
-            it.gameCallback = object : IGameView {
+
                 override fun bindView() {
-                    it.tvOdds = mDatabind.txtOddsSmall
                 }
 
-                override fun winFlash() {
-
-                }
-            }
-        }
-        mDatabind.singleView.let {
-            it.gameCallback = object : IGameView {
-                override fun bindView() {
-                    it.tvOdds = mDatabind.txtOddsSingle
-                }
-
-                override fun winFlash() {
-
-                }
-            }
-        }
-        mDatabind.doubleView.let {
-            it.gameCallback = object : IGameView {
-                override fun bindView() {
-                    it.tvOdds = mDatabind.txtOddsDouble
-                }
-
-                override fun winFlash() {
-
-                }
-            }
-        }
-        mDatabind.leopardView.let {
-            it.gameCallback = object : IGameView {
-                override fun bindView() {
-                    it.tvOdds = mDatabind.txtOddsLeopard
-                }
-
-                override fun winFlash() {
-
-                }
             }
         }
 
         for (areaView in areaViewList) {
-
             areaView.moneyView.setMoneyOKClickListener(object : MoneyOKView.OnMoneyOKClickListener {
                 override fun onConfirm() {
                     fast3VM.betOkClick.value = true;
@@ -119,20 +74,14 @@ class DXDSFragment(var fast3VM: Fast3ViewModel) : BaseGameFragment<DXDSVm, FragD
 
             areaView.setOnLocationClickListener(object : GameAreaView.LocationClickListener {
                 override fun onLocationClick(x: Float, y: Float, rawX: Float, rawY: Float) {
+                    fast3VM.onGameAreaLocationClick.value = LocationClickPoint(x,y,rawX,rawY)
                     //处理点击事件
                     //先判断余额是否够这次 并且扣取钱
                     //if( homeXPopupDialog.isCanBetting()&&MyGameManager.isClickOperation&&PromptSoundPlay.handleClick()){
-                    if (MyGameManager.isClickOperation && PromptSoundPlay.handleClick()) {
-                        fast3VM.anchorMoneyView?.get()?.let {
-                            if (it !== areaView.moneyView) {
-                                it.hiddenTop()
-                            }
-                        }
-
+                    if (fast3VM.isClickOperation && PromptSoundPlay.handleClick()) {
                         if (!areaView.moneyView.isAdd()) {
                             addMoneyOkView(areaView, x, y, rawY)
                         }
-
                         emitMoneyAnim(areaView, areaView.moneyView)
 
                     }
@@ -141,6 +90,18 @@ class DXDSFragment(var fast3VM: Fast3ViewModel) : BaseGameFragment<DXDSVm, FragD
         }
     }
 
+    override fun createObserver() {
+        super.createObserver()
+        fast3VM.betOkClick.observe(viewLifecycleOwner) {
+
+        }
+        fast3VM.betDeleteClick.observe(viewLifecycleOwner){
+
+        }
+        fast3VM.onGameAreaLocationClick.observe(viewLifecycleOwner) {
+
+        }
+    }
     /**
      * 添加moneyView 计算偏移
      */
@@ -254,9 +215,4 @@ class DXDSFragment(var fast3VM: Fast3ViewModel) : BaseGameFragment<DXDSVm, FragD
         })
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        animators.forEach { it.cancel() }
-        animators.clear()
-    }
 }

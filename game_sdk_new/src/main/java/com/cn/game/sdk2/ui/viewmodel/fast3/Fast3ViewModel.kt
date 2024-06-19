@@ -5,41 +5,36 @@ import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import com.cn.game.sdk2.data.bean.HistoryResultBean
+import com.cn.game.sdk2.data.bean.LocationClickPoint
+import com.cn.game.sdk2.data.bean.SelectAnnotationBean
 import com.cn.game.sdk2.data.enums.GameState
 import com.cn.game.sdk2.manager.GameManager
 import com.cn.game.sdk2.manager.listener.IGameListener
-import com.cn.game.sdk2.ui.view.MoneyOKView
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.utils.Ext.isMainThread
+import com.cn.game.sdk2.utils.MyGameManager
 import com.kunminx.architecture.ui.callback.UnPeekLiveData
 import com.xcjh.base_lib.base.BaseViewModel
-import com.xcjh.base_lib.bean.MutablePair
-import java.lang.ref.WeakReference
 import kotlin.math.roundToInt
 
 class Fast3ViewModel : BaseViewModel() {
+
     private val TAG = "Fast3ViewModel"
     var betOkClick: UnPeekLiveData<Boolean> = UnPeekLiveData()
     var betDeleteClick: UnPeekLiveData<Boolean> = UnPeekLiveData()
 
-    var anchorMoneyView: WeakReference<MoneyOKView>? = null
 
-    //<areaCode,<money,View>>
-    var savedMoneyMap: MutableMap<Int, MutablePair<Int, WeakReference<MoneyOKView>>> =
-        mutableMapOf()
-    var tempMoneyMap: MutableMap<Int, MutablePair<Int, WeakReference<MoneyOKView>>> = mutableMapOf()
     var moneyAnimCallback: MoneyAnimCallback? = null
+
     val historyResultBeans: MutableList<HistoryResultBean> by lazy { mutableListOf() }
     val historyResultBeanLD: LiveData<HistoryResultBean> by lazy { UnPeekLiveData()}
     private val countdownTime = 10_000
     val homeTime: LiveData<Int> by lazy { UnPeekLiveData(countDownSeconds) }
     private val countDownSeconds: Int get() = countdownTime / 1000
     val gameStateLV: LiveData<GameState> by lazy { UnPeekLiveData(GameState.Init) }
-    val isClickOperation by lazy { UnPeekLiveData<Boolean>() }
-    val gameState: GameState
-        get() {
-            return gameStateLV.value!!
-        }
+    val isClickOperationLD by lazy { UnPeekLiveData<Boolean>(true) }
+    val gameState: GameState get() = gameStateLV.value!!
+    val isClickOperation: Boolean get() = isClickOperationLD.value!!
     val homeTimeVisibility by lazy {
         Transformations.map(this.gameStateLV) {
             return@map when (it) {
@@ -52,6 +47,18 @@ class Fast3ViewModel : BaseViewModel() {
      * 是否显示骰子的结果组合
      */
     var isShowResult: Boolean = true
+    val currentMoney: LiveData<Int> by lazy { UnPeekLiveData(10000) }
+
+    val onGameAreaLocationClick:UnPeekLiveData<LocationClickPoint> by lazy { UnPeekLiveData() }
+
+    /**
+     * 投注的钱
+     */
+    var noteList = ArrayList<SelectAnnotationBean>()
+    /**
+     * 每次点击扣钱，但是不显示出来，确定后才把这个金额显示在真实钱上
+     */
+    var temporaryCurrentMoney: Int = 500000
     //========================================== Method =========================================//
     override fun onInit() {
 
@@ -75,12 +82,22 @@ class Fast3ViewModel : BaseViewModel() {
                 Log.d(TAG, "onDrawingResult run on $isMainThread result:$result")
                 (historyResultBeanLD as UnPeekLiveData<HistoryResultBean>).value = result
             }
-        })
-        registerAutoGC {
+        }).let { registerAutoGC {
             Log.d(TAG, "removeLiveStatusListener home")
             GameManager.instance.removeLiveStatusListener("home")
-        }
-
+        }}
+        noteList.add(SelectAnnotationBean(money = 10, select = true))
+        noteList.add(SelectAnnotationBean(money = 50))
+        noteList.add(SelectAnnotationBean(money = 100))
+        noteList.add(SelectAnnotationBean(money = 200))
+        noteList.add(SelectAnnotationBean(money = 500))
+        noteList.add(SelectAnnotationBean(money = 1000))
+        noteList.add(SelectAnnotationBean(money = 2000))
+        noteList.add(SelectAnnotationBean(money = 5000))
+        noteList.add(SelectAnnotationBean(money = 10000))
+        noteList.add(SelectAnnotationBean(money = 20000))
+        noteList.add(SelectAnnotationBean(money = 50000))
+        noteList.add(SelectAnnotationBean(money = 100000))
     }
 
     fun startBetting() {
@@ -89,6 +106,10 @@ class Fast3ViewModel : BaseViewModel() {
 
     fun startCountDown(time:Int) {
         GameManager.instance.startCountDownTimer(time)
+    }
+
+    fun stopCountDown() {
+        GameManager.instance.stopCountDown()
     }
 
     fun startSettling() {
@@ -105,30 +126,8 @@ class Fast3ViewModel : BaseViewModel() {
         }
     }
 
-    fun updateAnchorView(anchor: MoneyOKView){
-        anchorMoneyView?.get()?.apply {
-            hiddenTop()
-        }
-        anchor.showTop()
-        anchorMoneyView = WeakReference(anchor)
-    }
 
-    fun addTemMoney(areaView: GameAreaView, betMoney: Int) {
-        tempMoneyMap.apply {
-            if (!containsKey(areaView.areaCode)) {
-                put(
-                    areaView.areaCode,
-                    MutablePair(betMoney, WeakReference(areaView.moneyView)
-                ))
-            } else {
-                get(areaView.areaCode)?.apply { first += betMoney }
-            }
-            get(areaView.areaCode)?.first?.let {
-                val sum = savedMoneyMap[areaView.areaCode]?.first ?: 0
-                areaView.moneyView.setShowMoney(it.plus(sum))
-            }
-        }
-    }
+
 
     interface MoneyAnimCallback {
         fun startAnim(

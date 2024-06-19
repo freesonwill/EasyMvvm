@@ -6,6 +6,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.TextView
+import com.cn.game.sdk2.data.bean.LocationClickPoint
 import com.cn.game.sdk2.ui.view.MoneyOKView
 import kotlin.math.abs
 
@@ -75,4 +76,5 @@ class GameAreaView : FrameLayout {
     interface LocationClickListener {
         fun onLocationClick(x: Float, y: Float,rawX:Float,rawY:Float)
     }
+
 }

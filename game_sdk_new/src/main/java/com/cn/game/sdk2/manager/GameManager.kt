@@ -48,8 +48,7 @@ class GameManager private constructor() : IGameManager {
         lis: IGameListener?
     ) {
         countDownTimer?.cancel()
-        countDownTimer =
-            object : CountDownTimer(countdownTime.toLong(), countDownInterval.toLong()) {
+        countDownTimer = object : CountDownTimer(countdownTime.toLong(), countDownInterval.toLong()) {
                 override fun onTick(millisUntilFinished: Long) {
                     Log.d(TAG, "startCountDownTimer onTick run $isMainThread,$millisUntilFinished")
                     lis?.onCountdown(millisUntilFinished)
@@ -71,6 +70,9 @@ class GameManager private constructor() : IGameManager {
                 }
             }
         countDownTimer?.start()
+    }
+    fun stopCountDown(){
+        countDownTimer?.cancel()
     }
 
     override val isClickOperation: Boolean
