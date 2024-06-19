@@ -296,7 +296,6 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
                         }
 
                     }
-
                     var being=BeingLiveBean()
                     being.matchType=bean.matchType
                     being.matchId=bean.matchId

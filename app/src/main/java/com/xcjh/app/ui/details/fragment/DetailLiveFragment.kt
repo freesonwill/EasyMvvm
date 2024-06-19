@@ -78,8 +78,6 @@ class DetailLiveFragment(var matchId: String, var matchType: String) :
                     if(bean.pureFlow){
                         activity?.finish()
                         MatchDetailActivity.open(matchType =bean.matchType, matchId = bean.matchId,matchName = "${bean.homeTeamName}VS${bean.awayTeamName}", pureFlow = true )
-
-
                     }else{
                         activity?.finish()
                         MatchDetailActivity.open(matchType =bean.matchType, matchId = bean.matchId,matchName = "${bean.homeTeamName}VS${bean.awayTeamName}", anchorId = bean.userId,videoUrl = bean.playUrl )

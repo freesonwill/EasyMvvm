@@ -494,14 +494,12 @@ class MatchDetailActivity :
             //纯净流关闭
             override fun onPureFlowClose(pure: PureFlowCloseBean) {
                 super.onPureFlowClose(pure)
-                Log.i("RRRRRR","收到回调========"  )
+
                     if(matchDetail!=null&&matchDetail.anchorList!!.size>0){
                         var data=AnchorListBean()
                         matchDetail.anchorList!!.forEach {
                             if(it.isSelect){
                                 data=it
-                                Log.i("RRRRRR","得到要关闭的========" + Gson().toJson(data) )
-                                Log.i("RRRRRR","得到要关闭的========matchDetail.matchId==" +matchDetail.matchId+"===matchDetail.matchType"+matchDetail.matchType  )
                             }
                         }
                         if(data.isSelect&&data.pureFlow&&matchDetail.matchId.equals(pure.matchId)&&matchDetail.matchType.equals(pure.matchType)){
@@ -704,6 +702,32 @@ class MatchDetailActivity :
                             }
                         }
                     }
+
+                }
+                /**
+                 * 纯净流开播
+                 */
+                override fun onOpenPureFlow(bean: LiveStatus) {
+                    super.onOpenPureFlow(bean)
+
+//                        if(matchId == bean.matchId&& matchDetail.anchorList!!.size>0&&!isShowVideo){
+//                            //是否有播放地址是没有
+//                            var isPayUrl:Boolean=false
+//
+//                            matchDetail.anchorList!!.forEach {
+//                                if(!it.playUrl.isNullOrEmpty()&&it.pureFlow){
+//                                    isPayUrl=true
+//                                }
+//                            }
+//                            //如果没有播放地址
+//                            if(!isPayUrl){
+//                                mViewModel.getNewList(matchId, matchType, false)
+//                            }
+//
+//
+//                        }
+
+
 
                 }
 
@@ -967,16 +991,25 @@ class MatchDetailActivity :
         if (matchDetail.anchorList?.isNotEmpty() == true) {
             showSignalDialog(matchDetail.anchorList) { anchor, pos ->
                 matchDetail.anchorList?.forEach {
-                    it.isSelect = it.userId == anchor.userId
+                        if(it.pureFlow){
+                            it.isSelect = it.nickName.equals(anchor.nickName)
+                        }else{
+                            it.isSelect = it.userId == anchor.userId
+                        }
+
                 }
-                if (this.anchor?.userId == anchor.userId) {
+                if (!anchor.pureFlow&&  this.anchor?.userId == anchor.userId) {
                     //无改变
                     return@showSignalDialog
                 }
+                //当前选择的是纯净流并且和判断选择的是不是正在播放的纯净流
+                if(anchor.pureFlow&&this.anchor?.nickName!!.equals(anchor.nickName)){
+                    //无改变
+                    return@showSignalDialog
+                }
+
                 //如果选择了有改变就不是纯净流了
                 pureFlow=false
-
-
                 val iterator = matchDetail.anchorList?.iterator()
                 //如果已经关闭了后就删除
                 if (iterator != null) {
@@ -992,7 +1025,6 @@ class MatchDetailActivity :
                 if (anchor.pureFlow) {
                     mDatabind.ivMatchVideo.visibility = View.GONE
                     this.setIsLandscape(false)
-
                     isHasAnchor = false
 
                     if (anchor.playUrl.isNullOrEmpty()) {
@@ -1122,7 +1154,6 @@ class MatchDetailActivity :
         //先停
         // stopVideo()
         //再开
-        Log.i("SSSSSSSSSs","========"+url)
         mDatabind.videoPlayer.visibleOrGone(true)
         mDatabind.videoPlayer.setUp(url, false, "")
         mDatabind.videoPlayer.startPlayLogic()
@@ -1255,21 +1286,42 @@ class MatchDetailActivity :
 
     //数据处理
     override fun createObserver() {
+        //如果是当前纯净流播放地址是null 的时候 刷新并且播放第一个
+        mViewModel.newAnchorList.observe(this) { match ->
+
+//            if(match!=null){
+//                if(match.anchorList!!.size>0&&!pureFlow ){
+//                    var select =AnchorListBean()
+//                    match.anchorList!!.forEach {
+//
+//                    }
+//                }
+//                matchDetail.anchorList!!.clear()
+//                matchDetail.anchorList!!.addAll(match.anchorList!!)
+//
+//
+//
+//
+//
+//            }
+
+        }
+
         //收到关播信息后
         mViewModel.refreshDetail.observe(this){match ->
-            Log.i("GGGGGGG","返回数据")
+
             if(match!=null){
-                Log.i("GGGGGGG","有数据")
+
                if(match.anchorList!!.size==1){//就是纯净流
                    blacklistDilog(this)
-                   Log.i("GGGGGGG","当前状态======"+matchDetail.status)
+
 //                    if( matchDetail.status in 0..if (matchType == "1") 7 else 9){
 //                        blacklistDilog(this)
 //                    }else{
 ////                        placeLoginDialogFinish(this)
 //                    }
                } else{
-                   Log.i("GGGGGGG","还有主播")
+
                    myToast(resources.getString(R.string.matche_txt_live_end))
                    matchDetail.anchorList!!.clear()
                    matchDetail.anchorList!!.addAll(match.anchorList!!)
@@ -1277,7 +1329,7 @@ class MatchDetailActivity :
 
                }
             }else{
-                Log.i("GGGGGGG","请求失败==")
+
 //                myToast("没有获取到数据", isDeep = true)
                 //没有查到最新的
                 if (anchor?.userId.equals(offBean!!.anchorId)) {
@@ -1598,11 +1650,27 @@ class MatchDetailActivity :
         matchDetail.anchorList.notNull({ list ->
             "anchorList===${Gson().toJson(list)}".loge()
             //降序 sortByDescending可变列表的排序； sortedBytDescending 不可变列表的排序，需创建一个新的列表来保存排序后的结果
-            list.sortByDescending {
-                it.hotValue
+            var live=ArrayList<AnchorListBean>()
+            var pureFlowList=ArrayList<AnchorListBean>()
+            list.forEach {
+                if(it.pureFlow){
+                    pureFlowList.add(it)
+                }else{
+                    live.add(it)
+                }
             }
+            if(live.size>0){
+                live.sortByDescending{
+                    it.hotValue
+                }
+            }
+            list.clear()
+            list.addAll(live)
+            list.addAll(pureFlowList)
 
-
+//            list.sortByDescending {
+//                it.hotValue
+//            }
 
             // 是否找到流  true就是找到了主播  false是只有纯净流
             var findAnchor = false
@@ -1629,15 +1697,18 @@ class MatchDetailActivity :
             if (!findAnchor) {
                 //如果是纯净流进来的
                 var item = list[0]
-                if(pureFlow){
-                      item = list[list.size-1]
-                    item.isSelect = true
-                    anchor = item
-                }else{
-                    item = list[0]
-                    item.isSelect = true
-                    anchor = item
-                }
+//                if(pureFlow){
+//                      item = list[list.size-1]
+//                    item.isSelect = true
+//                    anchor = item
+//                }else{
+//                    item = list[0]
+//                    item.isSelect = true
+//                    anchor = item
+//                }
+//                item = list[0]
+                item.isSelect = true
+                anchor = item
 
                 if (item.pureFlow) {//纯净流 无主播
                     isHasAnchor = false

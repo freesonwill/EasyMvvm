@@ -54,7 +54,9 @@ class DetailVm : BaseViewModel() {
 
     //刷新主播详情
     var refreshDetail= UnPeekLiveData<MatchDetailBean?>()
-
+    //
+    //如果是当前纯净流播放地址是null 的时候 刷新并且播放第一个
+    var newAnchorList= UnPeekLiveData<MatchDetailBean?>()
     var scrollTextList = UnPeekLiveData<UpdateUiState<ArrayList<ScrollTextBean>>>()
     var showAd = UnPeekLiveData<UpdateUiState<ScrollTextBean>>()
     //主播详情接口返回
@@ -429,5 +431,23 @@ class DetailVm : BaseViewModel() {
             }, showD
         )
     }
+
+    /**
+     * 如果推送过来时43 的话就要刷新一下
+     */
+    fun getNewList(matchId: String, matchType: String?, showD: Boolean = false) {
+        request(
+            {
+                apiService.getMatchDetail(matchId, matchType)
+            }, {
+                newAnchorList.value = it
+
+            }, {
+                newAnchorList.value = null
+//                myToast(it.errorMsg, isDeep = true)
+            }, showD
+        )
+    }
+
 
 }

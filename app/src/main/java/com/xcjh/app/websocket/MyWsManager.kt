@@ -358,10 +358,8 @@ class MyWsManager private constructor(private val mContext: Context) {
                 }
             }
             42 -> {//纯净流关播
-                Log.i("RRRRRR","收到消息========")
                 val wsBean2 = jsonToObject2<ReceiveWsBean<PureFlowCloseBean>>(msg)
                 val pureFlow = wsBean2?.data as PureFlowCloseBean
-                Log.i("RRRRRR","转换数据========"+Gson().toJson(pureFlow))
                 mC2CListener.forEach {
                     it.toPair().second.onPureFlowClose(pureFlow)
                 }
@@ -546,7 +544,6 @@ class MyWsManager private constructor(private val mContext: Context) {
             "onReceive====------------  $msg".loge()
 
             try {
-                //appViewModel
                 parsingServiceLogin(msg)
             } catch (e: Exception) {
                 "======onReceive===webSocket解析异常------------  ${e.message}".loge()
