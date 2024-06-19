@@ -9,9 +9,6 @@ abstract class BaseViewModel : ViewModel(), IModel {
     //数据回收操作
     private val dataGC by lazy { mutableSetOf<() -> Unit>() }
     //============================ Method ================================//
-    init {
-        this.onInit()
-    }
 
     override fun onCleared() {
         super.onCleared()

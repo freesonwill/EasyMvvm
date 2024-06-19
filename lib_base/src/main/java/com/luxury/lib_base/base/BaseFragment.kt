@@ -19,7 +19,7 @@ import java.lang.reflect.ParameterizedType
  * @Author: brain
  * @Date: 2024/6/12 11:49
  */
-abstract class BaseFragment<VB : ViewBinding, VM : ViewModel> : Fragment(), IView {
+abstract class BaseFragment<VB : ViewBinding, VM : BaseViewModel> : Fragment(), IView {
     protected lateinit var mBinding: VB
     protected lateinit var mModel: VM
 
@@ -28,7 +28,7 @@ abstract class BaseFragment<VB : ViewBinding, VM : ViewModel> : Fragment(), IVie
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        mModel = createViewModel()
+        mModel = createViewModel().also { it.onInit() }
         mBinding = inflateBindingWithGeneric(layoutInflater)
         if (mBinding is ViewDataBinding) {
             (mBinding as ViewDataBinding).lifecycleOwner = this
@@ -38,7 +38,7 @@ abstract class BaseFragment<VB : ViewBinding, VM : ViewModel> : Fragment(), IVie
         return mBinding.root
     }
 
-    private fun createViewModel(): VM {
+    open fun createViewModel(): VM {
         val factory = provideViewModelFactory()
         return if (factory == null)
             ViewModelProvider(this).get(getVmClazz(this))

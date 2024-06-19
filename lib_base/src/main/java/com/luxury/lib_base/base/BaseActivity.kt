@@ -23,7 +23,7 @@ abstract class BaseActivity<VB : ViewBinding, VM : BaseViewModel> : AppCompatAct
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mViewModel = createViewModel()
+        mViewModel = createViewModel().also { it.onInit() }
         mBinding = inflateBindingWithGeneric(layoutInflater)
         if (mBinding is ViewDataBinding) {
             (mBinding as ViewDataBinding).lifecycleOwner = this
@@ -62,7 +62,7 @@ abstract class BaseActivity<VB : ViewBinding, VM : BaseViewModel> : AppCompatAct
             .transparentStatusBar().init()
     }
 
-    private fun createViewModel(): VM {
+    open fun createViewModel(): VM {
         val factory = provideViewModelFactory()
         return if (factory == null)
             ViewModelProvider(this).get(getVmClazz(this))
