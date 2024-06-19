@@ -18,6 +18,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import androidx.core.animation.addListener
+import androidx.core.animation.doOnCancel
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -66,12 +67,10 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     // 定义属性动画常量
     private val SCALE_X = PropertyValuesHolder.ofFloat(View.SCALE_X, 1.0f, 1.4f, 1.0f)
     private val SCALE_Y = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.0f, 1.4f, 1.0f)
-    var betView: View? = null
-    var betMoney: Int = 0
 
     private var homeMorePop: BasePopupView? = null
-    private val resultAnimatorList by lazy { mutableListOf<Animator>() }
-    private val resultAnimatorSet by lazy { AnimatorSet() }
+    private var resultAnim: ValueAnimator? = null
+    private var resultRvHeight = -1
     private var resultAnimMoveHeight = -1
 
     //==================================== Method ===============================================//
@@ -262,7 +261,10 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         mViewModel.historyResultBeanLD.observe(requireActivity()) { bean ->
             val adapter = mDatabind.rvHomeHistory.bindingAdapter
             mViewModel.historyResultBeans.add(bean)
-            Log.d(TAG, "onDrawingResult run on ${Ext.isMainThread} result:$bean,"+mViewModel.historyResultBeans.size)
+            Log.d(
+                TAG,
+                "onDrawingResult run on ${Ext.isMainThread} result:$bean," + mViewModel.historyResultBeans.size
+            )
             adapter.notifyItemInserted(adapter.models!!.size)
             if (adapter.models!!.isNotEmpty()) {
                 mDatabind.rvHomeHistory.scrollToPosition(adapter.models!!.size - 1)
@@ -338,66 +340,39 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
      */
     @SuppressLint("ObjectAnimatorBinding")
     fun resultAnimation() {
-        resultAnimatorList.clear()
-        if (mViewModel.isShowResult) {
-            //这个是隐藏往下的动画
-            mDatabind.ivHomeRotation.rotation = 180f
+        mDatabind.apply {
+            if (rvHomeHistory.models.isNullOrEmpty()) return
+            resultAnim?.cancel()
             mViewModel.isShowResult = !mViewModel.isShowResult
-            for (i in 0 until mDatabind.rvHomeHistory.models!!.size) {
-                val viewHolder = mDatabind.rvHomeHistory.findViewHolderForLayoutPosition(i)
-                if (viewHolder != null) {
-                    (mDatabind.rvHomeHistory.models!![i] as HistoryResultBean).isShow = false
-                    val llShowDice = viewHolder.itemView.findViewById<LinearLayout>(R.id.llShowDice)
-                    //llShowDice.height.toFloat()高度是205
-                    if (resultAnimMoveHeight == -1) {
-                        resultAnimMoveHeight = llShowDice.height
-                    }
-                    ValueAnimator.ofFloat(resultAnimMoveHeight.toFloat(), 0f).apply {
-                        addUpdateListener {
-                            val value = (it.animatedValue as Float).toInt()
-                            val params = llShowDice.layoutParams
-                            params?.height = value
-                            llShowDice.layoutParams = params
-                        }
-                        resultAnimatorList.add(this)
-                    }
-                } else {
-                    (mDatabind.rvHomeHistory.models!![i] as HistoryResultBean).isShow = false
-                }
+            if (resultRvHeight == -1) {
+                resultRvHeight = rvHomeHistory.height
             }
-        } else {
-            //显示 往上的动画
-            mDatabind.ivHomeRotation.rotation = 0f
-            mViewModel.isShowResult = !mViewModel.isShowResult
-            for (i in 0 until mDatabind.rvHomeHistory.models!!.size) {
-                val viewHolder = mDatabind.rvHomeHistory.findViewHolderForLayoutPosition(i)
-                if (viewHolder != null) {
-                    (mDatabind.rvHomeHistory.models!![i] as HistoryResultBean).isShow = true
-                    val llShowDice = viewHolder.itemView.findViewById<LinearLayout>(R.id.llShowDice)
-                    ValueAnimator.ofFloat(0f, resultAnimMoveHeight.toFloat()).apply {
-                        addUpdateListener {
-                            val value = (it.animatedValue as Float).toInt()
-                            val params = llShowDice.layoutParams
-                            params?.height = value
-                            llShowDice.layoutParams = params
-                            llShowDice.requestLayout()
-                        }
-                        resultAnimatorList.add(this)
-                    }
-                } else {
-                    (mDatabind.rvHomeHistory.models!![i] as HistoryResultBean).isShow = true
-                }
+            if (resultAnimMoveHeight == -1) {
+                val manager = rvHomeHistory.layoutManager as LinearLayoutManager
+                val firstPosition = manager.findFirstVisibleItemPosition()
+                val viewHolder = rvHomeHistory.findViewHolderForLayoutPosition(firstPosition)
+                val llShowDice = viewHolder!!.itemView.findViewById<LinearLayout>(R.id.llShowDice)
+                resultAnimMoveHeight = llShowDice.height
             }
-        }
+            ivHomeRotation.rotation = if (mViewModel.isShowResult) 0f else 180f
+            val startHeight = rvHomeHistory.height.toFloat()
+            val endHeight =
+                if (mViewModel.isShowResult) resultRvHeight else resultRvHeight -resultAnimMoveHeight
 
-        //执行动画集合
-        if (resultAnimatorList.isNotEmpty()) {
-            resultAnimatorSet.cancel()
-            resultAnimatorSet.apply {
-                duration = 400
-                playTogether(resultAnimatorList)
-                start()
-            }
+            resultAnim =
+                ValueAnimator.ofFloat(startHeight, endHeight.toFloat()).apply {
+                    duration = 400
+                    addUpdateListener {
+                        val value = (it.animatedValue as Float).toInt()
+                        val params = rvHomeHistory.layoutParams
+                        params?.height = value
+                        rvHomeHistory.layoutParams = params
+                        if (mViewModel.isShowResult) {
+                            rvHomeHistory.bindingAdapter.notifyDataSetChanged()
+                        }
+                    }
+                }
+            resultAnim?.start()
         }
     }
 
@@ -406,6 +381,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
      * 投注的适配器
      */
     private fun setBetAdapter() {
+        mDatabind.llShowBetList.itemAnimator = null
         mDatabind.llShowBetList.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         mDatabind.llShowBetList.setup {
@@ -413,9 +389,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             onBind {
                 when (itemViewType) {
                     R.layout.item_annotation_list -> {
-                        if (betView == null) {
-                            betView = itemView
-                        }
                         val binding = getBinding<ItemAnnotationListBinding>()
                         val bean = _data as SelectAnnotationBean
                         val temporaryCurrentMoney = MyGameManager.temporaryCurrentMoney
@@ -456,21 +429,16 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             onClick(R.id.ivShowBg) {
                 val bean = _data as SelectAnnotationBean
                 PromptSoundPlay.btnPlayMedia(requireContext())
+                if (bean.select) return@onClick
                 val models: List<SelectAnnotationBean> = models as List<SelectAnnotationBean>
-                val positions = mutableListOf(layoutPosition)
-                //选择新的筹码
-                for (i in models.indices) {
-                    if (models[i].select) positions.add(i)
-                    models[i].select = false
-                    MyGameManager.noteList[i].select = false
+                for (data in models) {
+                    data.select = bean == data
                 }
-                bean.select = true
-                positions.forEach { notifyItemChanged(it) }
-                MyGameManager.noteList[modelPosition].select = true
-                betView = itemView
+                notifyItemRangeChanged(0, modelCount)
             }
         }.models = MyGameManager.noteList
         //历史结果
+        mDatabind.rvHomeHistory.itemAnimator = null
         mDatabind.rvHomeHistory.layoutManager = LinearLayoutManager(
             requireContext(),
             LinearLayoutManager.HORIZONTAL, false
@@ -498,11 +466,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                         binding.txtBetOdd.text =
                             if (mainTxtBean.resultOdd == "odd") getString(R.string.g_home_txt_single)
                             else getString(R.string.g_home_txt_double)
-                        if (mainTxtBean.isShow) {
-                            binding.llShowDice.visibility = View.VISIBLE
-                        } else {
-                            binding.llShowDice.visibility = View.GONE
-                        }
                     }
                 }
             }
@@ -522,7 +485,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     }
 
 
-
     /**
      * 关闭页面
      */
@@ -539,8 +501,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         MyGameManager.countDownTimer = null
         EasyFloat.show(MyGameManager.TAG_1)
         //关闭动画
-        resultAnimatorSet.cancel()
-        resultAnimatorList.clear()
+        resultAnim?.cancel()
         super.onDestroy()
     }
 
@@ -563,18 +524,18 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         //获取选中的筹码所在的position
         val betList = mDatabind.llShowBetList.models as List<SelectAnnotationBean>
         val selectedPosition = betList.indexOfFirst { it.select }
-        betMoney = betList[selectedPosition].money
+        val betMoney = betList[selectedPosition].money
         val layoutManager = mDatabind.llShowBetList.layoutManager as LinearLayoutManager
         var finallyView = layoutManager.findViewByPosition(selectedPosition)
 
         //判断选择的筹码是不是在屏幕外面
         if (finallyView != null) {
-            startMoneyAnimation(x, y, speed, areaView, finallyView, endCallBack)
+            startMoneyAnimation(x, y, speed, areaView, finallyView, betMoney, endCallBack)
         } else {
             scrollToItemAndPerformAction(mDatabind.llShowBetList, selectedPosition) {
                 finallyView = layoutManager.findViewByPosition(selectedPosition)
                 finallyView?.let {
-                    startMoneyAnimation(x, y, speed, areaView, it, endCallBack)
+                    startMoneyAnimation(x, y, speed, areaView, it, betMoney, endCallBack)
                 }
             }
         }
@@ -586,6 +547,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         speed: Long = 300,
         areaView: GameAreaView,
         jettonView: View,
+        betMoney: Int,
         endCallBack: (() -> Unit)?
     ) {
         //贝塞尔曲线中间过程的点的坐标
@@ -603,10 +565,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             requireContext().dp2px(32)
         )
         mDatabind.rlRoot.addView(betImageView, params)
-        //筹码图片的坐标（用于计算动画开始的坐标）
-        val startLoc = IntArray(2)
-        startLoc[0] = viewX
-        startLoc[0] = viewY
         //gameArea点击区域坐标(用于计算动画结束后的坐标)  动画结束的位置
         val endLoc = IntArray(2)
         endLoc[0] = x.toInt() + requireContext().dp2px(20)
