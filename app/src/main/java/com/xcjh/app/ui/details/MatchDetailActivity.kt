@@ -136,10 +136,11 @@ class MatchDetailActivity :
     //收到关播信息后
     private var offBean: LiveStatus?=null
 
-    //是否是纯净流第一次进入设置的时候
+    /**
+     * 是否是纯净流第一次进入设置的时候  默认不是纯净流
+     */
     private var pureFlow:Boolean=false
-    //是否是滴一个
-    private var  isDi:Boolean=true
+
 
     companion object {
         fun open(
@@ -267,6 +268,8 @@ class MatchDetailActivity :
             SoundManager.playMedia()
             finish()
         }
+
+
 //        //打开SDK
 //        try {
 //
@@ -710,22 +713,23 @@ class MatchDetailActivity :
                 override fun onOpenPureFlow(bean: LiveStatus) {
                     super.onOpenPureFlow(bean)
 
-//                        if(matchId == bean.matchId&& matchDetail.anchorList!!.size>0&&!isShowVideo){
-//                            //是否有播放地址是没有
-//                            var isPayUrl:Boolean=false
-//
-//                            matchDetail.anchorList!!.forEach {
-//                                if(!it.playUrl.isNullOrEmpty()&&it.pureFlow){
-//                                    isPayUrl=true
-//                                }
-//                            }
-//                            //如果没有播放地址
-//                            if(!isPayUrl){
-//                                mViewModel.getNewList(matchId, matchType, false)
-//                            }
-//
-//
-//                        }
+                        if(matchId == bean.matchId&& matchDetail.anchorList!!.size>0&&!isShowVideo){
+
+                            //是否有播放地址是没有
+                            var isPayUrl:Boolean=false
+
+                            matchDetail.anchorList!!.forEach {
+                                if(!it.playUrl.isNullOrEmpty()&&it.pureFlow){
+                                    isPayUrl=true
+                                }
+                            }
+                            //如果没有播放地址
+                            if(!isPayUrl){
+                                mViewModel.getNewList(matchId, matchType, false)
+                            }
+
+
+                        }
 
 
 
@@ -1288,6 +1292,97 @@ class MatchDetailActivity :
     override fun createObserver() {
         //如果是当前纯净流播放地址是null 的时候 刷新并且播放第一个
         mViewModel.newAnchorList.observe(this) { match ->
+            if(match!=null){ //修改pureFlow
+                if(match.anchorList!!.size>0&&pureFlow){
+                    //如果是纯净流的时候
+                    if(this.anchor!!.pureFlow&&!isShowVideo){
+                        //获取当前第一个纯净流
+                        var dataFalse:Boolean=false
+                        for (i in 0 until  match.anchorList!!.size) {
+                            if(match.anchorList!![i].pureFlow&&match.anchorList!![i].nickName.equals(this.anchor!!.nickName)&&
+                                !match.anchorList!![i].playUrl.isNullOrEmpty()){
+                                 match.anchorList!![i].isSelect=true
+                                this.anchor = match.anchorList!![i]
+                                dataFalse=true
+                                break
+                            }
+                        }
+                        //如果有数据在进行切换
+                        if(dataFalse){
+                            matchDetail.anchorList!!.clear()
+                            matchDetail.anchorList!!.addAll(match.anchorList!!)
+                            mDatabind.ivMatchVideo.visibility = View.GONE
+                            this.setIsLandscape(false)
+                            isHasAnchor = false
+                            if (anchor!!.playUrl.isNullOrEmpty()) {
+                                isShowVideo = false
+                            } else {
+                                isShowVideo = true
+
+                            }
+                            if (mDatabind.videoPlayer.isIfCurrentIsFullscreen) {
+                                exitFullScreen()
+                            }
+                            mDatabind.tvToShare.visibleOrGone(true)
+
+                            if (isShowVideo) {
+                                startVideo(anchor!!.playUrl)
+                            } else {
+                                mDatabind.videoPlayer.release()
+                            }
+                            changeUI()
+                        }
+
+
+                    }else{
+                        //如果当前不是纯净流的话，当前选择的是主播
+                        var dataFalse:Boolean=false
+                        for (i in 0 until  match.anchorList!!.size) {
+                            if(!match.anchorList!![i].pureFlow&&!match.anchorList!![i].userId.isNullOrEmpty()&&
+                                match.anchorList!![i].userId.equals(this.anchor!!.userId)){
+                                dataFalse=true
+                                match.anchorList!![i].isSelect=true
+                                this.anchor = match.anchorList!![i]
+                                break
+                            }
+
+                        }
+                        //如果有数据在进行切换
+                        if(!dataFalse){
+                            match.anchorList!![0].isSelect=true
+                            matchDetail.anchorList!!.clear()
+                            matchDetail.anchorList!!.addAll(match.anchorList!!)
+                            mDatabind.ivMatchVideo.visibility = View.GONE
+                            this.setIsLandscape(false)
+                            isHasAnchor = false
+                            if (anchor!!.playUrl.isNullOrEmpty()) {
+                                isShowVideo = false
+                            } else {
+                                isShowVideo = true
+
+                            }
+                            if (mDatabind.videoPlayer.isIfCurrentIsFullscreen) {
+                                exitFullScreen()
+                            }
+                            mDatabind.tvToShare.visibleOrGone(true)
+
+                            if (isShowVideo) {
+                                startVideo(anchor!!.playUrl)
+                            } else {
+                                mDatabind.videoPlayer.release()
+                            }
+                            changeUI()
+                        }else{
+                            matchDetail.anchorList!!.clear()
+                            matchDetail.anchorList!!.addAll(match.anchorList!!)
+                        }
+
+
+
+                    }
+                }
+
+            }
 
 //            if(match!=null){
 //                if(match.anchorList!!.size>0&&!pureFlow ){

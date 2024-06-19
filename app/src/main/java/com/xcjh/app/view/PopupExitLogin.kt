@@ -1,8 +1,13 @@
 package com.xcjh.app.view
 
+import android.animation.Animator
+import android.animation.AnimatorSet
+import android.animation.ValueAnimator
 import android.app.Activity
 import android.app.ActivityManager
 import android.content.Context
+import android.view.View
+import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatTextView
 import com.lxj.xpopup.core.BottomPopupView
 import com.xcjh.app.R
@@ -23,10 +28,12 @@ class PopupExitLogin(context: Context) : BottomPopupView(context) {
     }
 
 
+
     override fun onCreate() {
         super.onCreate()
         var txtDialogCancel=findViewById<AppCompatTextView>(R.id.txtDialogCancel)
         var txtDialogLogin= findViewById<AppCompatTextView>(R.id.txtDialogLogin)
+
         txtDialogCancel.clickNoRepeat {
            dismiss()
         }

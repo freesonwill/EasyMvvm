@@ -440,7 +440,9 @@ class DetailVm : BaseViewModel() {
             {
                 apiService.getMatchDetail(matchId, matchType)
             }, {
+ 
                 newAnchorList.value = it
+
 
             }, {
                 newAnchorList.value = null
