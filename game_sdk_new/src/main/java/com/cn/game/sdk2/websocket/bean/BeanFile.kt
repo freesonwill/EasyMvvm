@@ -2,8 +2,22 @@ package com.cn.game.sdk2.websocket.bean
 
 import java.io.Serializable
 
+data class RoundInfoBean(
+    var roundId: String,
+    var performs: List<Int>,
+    var sum: Int,
+    var isBig: Boolean,
+    var isDouble: Boolean
+)
 
-//var gameStage:
+
+/**
+ * 同步注区信息时用
+ */
+data class AreaBetBean(
+    var areaCode: Betting, var betScore: Int, var userCount: Int
+)
+
 /**
  * 每次点击下注就传入该对象
  */
@@ -21,6 +35,8 @@ data class BettingRecordBean(
 
     /**
      * * 下注金额
+     *  - 传入时：该字段单位是元
+     *  - 收到时：该字段单位是分，所以需要缩小100倍
      */
     var money: Int = 0,
 
@@ -47,6 +63,14 @@ sealed class Betting {
     open var number: Int = 0
     open var multiplier: Float = 0f
     open var multipliers: List<Float> = listOf()
+    open var count: Int = 0
+    override fun hashCode(): Int {
+        return number.hashCode()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        return other is Betting && other.number == number
+    }
 }
 
 sealed class DEFAULT : Betting()
@@ -127,27 +151,39 @@ data class SUM_17(
 ) : SUM()
 
 data class SINGLE_1(
-    override var number: Int = 19, override var multipliers: List<Float> = listOf(2f, 3f, 4f)
+    override var number: Int = 19,
+    override var multipliers: List<Float> = listOf(2f, 3f, 4f),
+    override var count: Int = 0
 ) : SINGLE()
 
 data class SINGLE_2(
-    override var number: Int = 20, override var multipliers: List<Float> = listOf(2f, 3f, 4f)
+    override var number: Int = 20,
+    override var multipliers: List<Float> = listOf(2f, 3f, 4f),
+    override var count: Int = 0
 ) : SINGLE()
 
 data class SINGLE_3(
-    override var number: Int = 22, override var multipliers: List<Float> = listOf(2f, 3f, 4f)
+    override var number: Int = 22,
+    override var multipliers: List<Float> = listOf(2f, 3f, 4f),
+    override var count: Int = 0
 ) : SINGLE()
 
 data class SINGLE_4(
-    override var number: Int = 22, override var multipliers: List<Float> = listOf(2f, 3f, 4f)
+    override var number: Int = 22,
+    override var multipliers: List<Float> = listOf(2f, 3f, 4f),
+    override var count: Int = 0
 ) : SINGLE()
 
 data class SINGLE_5(
-    override var number: Int = 23, override var multipliers: List<Float> = listOf(2f, 3f, 4f)
+    override var number: Int = 23,
+    override var multipliers: List<Float> = listOf(2f, 3f, 4f),
+    override var count: Int = 0
 ) : SINGLE()
 
 data class SINGLE_6(
-    override var number: Int = 24, override var multipliers: List<Float> = listOf(2f, 3f, 4f)
+    override var number: Int = 24,
+    override var multipliers: List<Float> = listOf(2f, 3f, 4f),
+    override var count: Int = 0
 ) : SINGLE()
 
 data class DOUBLE_1(
@@ -202,30 +238,42 @@ data class BOOM_ALL(
     override var number: Int = 37, override var multiplier: Float = 32f
 ) : BOOM()
 
-sealed class GameStage {
-    open var miniGameId: Int = 0
-    open var countDown: Int = 0
-    open var roundId: String = ""
-}
-
-data class GameNew(
-    override var miniGameId: Int, override var countDown: Int, override var roundId: String
-) : GameStage()
-
-data class GameDeal(
-    override var miniGameId: Int, override var countDown: Int, override var roundId: String
-) : GameStage()
-
-data class GameSettle(
-    override var miniGameId: Int,
-    override var countDown: Int,
-    var roundInfo: RoundInfo,
-    var winScore: Int
-) : GameStage()
-
-data class RoundInfo(var roundId: String, var elementType: Int, var performs: List<ActorPerform>)
-data class ActorPerform(
-    var elements: List<Int>,
-    var patterns: List<Int>,
-    var performResult: List<Int>
+val areaMap = mutableMapOf<Int, Betting>(
+    1 to DEFAULT_BIG(),
+    2 to DEFAULT_SMALL(),
+    3 to DEFAULT_SINGLE(),
+    4 to DEFAULT_DOUBLE(),
+    5 to SUM_4(),
+    6 to SUM_5(),
+    7 to SUM_6(),
+    8 to SUM_7(),
+    9 to SUM_8(),
+    10 to SUM_9(),
+    11 to SUM_10(),
+    12 to SUM_11(),
+    13 to SUM_12(),
+    14 to SUM_13(),
+    15 to SUM_14(),
+    16 to SUM_15(),
+    17 to SUM_16(),
+    18 to SUM_17(),
+    19 to SINGLE_1(),
+    20 to SINGLE_2(),
+    21 to SINGLE_3(),
+    22 to SINGLE_4(),
+    23 to SINGLE_5(),
+    24 to SINGLE_6(),
+    25 to DOUBLE_1(),
+    26 to DOUBLE_2(),
+    27 to DOUBLE_3(),
+    28 to DOUBLE_4(),
+    29 to DOUBLE_5(),
+    30 to DOUBLE_6(),
+    31 to BOOM_1(),
+    32 to BOOM_2(),
+    33 to BOOM_3(),
+    34 to BOOM_4(),
+    35 to BOOM_5(),
+    36 to BOOM_6(),
+    37 to BOOM_ALL(),
 )

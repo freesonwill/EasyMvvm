@@ -8,13 +8,22 @@ import com.cn.game.sdk2.websocket.GameSocketClient
 import com.cn.game.sdk2.websocket.GameSocketManager
 import com.cn.game.sdk2.websocket.appListener
 import com.cn.game.sdk2.websocket.balance
+import com.cn.game.sdk2.websocket.bean.AreaBetBean
+import com.cn.game.sdk2.websocket.bean.RoundInfoBean
+import com.cn.game.sdk2.websocket.bean.areaMap
+import com.cn.game.sdk2.websocket.calculateArea
+import com.cn.game.sdk2.websocket.calculateUserLotteryResult
+import com.cn.game.sdk2.websocket.convertBetting
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.interfaces.GameService
+import com.cn.game.sdk2.websocket.isBig
 import com.cn.game.sdk2.websocket.isCanBetting
+import com.cn.game.sdk2.websocket.isDouble
 import com.cn.game.sdk2.websocket.isEmpty
 import com.cn.game.sdk2.websocket.isNotEmpty
 import com.cn.game.sdk2.websocket.miniGameId
 import com.cn.game.sdk2.websocket.previousSuccess
+import com.cn.game.sdk2.websocket.sum
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 import game.common.proto.ClientReq
 import game.common.proto.ClientRes
@@ -210,7 +219,6 @@ class GameServiceImp(private val client: GameSocketClient) : GameService,
     }
 
     override fun loginSuccess(afterLoginSuccess: ClientRes.InfoAfterLoginSuccess) {
-
     }
 
     override fun loginError(errorMessage: ClientRes.ErrorMessage) {
@@ -218,15 +226,44 @@ class GameServiceImp(private val client: GameSocketClient) : GameService,
     }
 
     override fun enterInfo(enterInfo: GameRes.EnterInfo) {
+        balance = enterInfo.self.score.toInt()
+        gameAboutModel.changeBalance(enterInfo.self.score.toInt())
+
     }
 
     override fun groupInfo(groupInfo: GameRes.GroupInfo) {
+        val miniGameBasicInfo = groupInfo.miniGameBasicInfoListList[0]
+        miniGameId = miniGameBasicInfo.miniGameId
+        gameAboutModel.miniGameId = miniGameId
+        gameAboutModel.countDown = miniGameBasicInfo.countDown
+        val roundInfoListList = miniGameBasicInfo.trend.roundInfoListList
+        val roundHistoryList = ArrayList<RoundInfoBean>()
+        roundInfoListList.forEach {
+            val elements = it.performsList[0].performResultList
+            roundHistoryList.add(
+                RoundInfoBean(
+                    it.roundId,
+                    elements,
+                    elements.sum(),
+                    elements.isBig(),
+                    elements.isDouble()
+                )
+            )
+        }
+        gameAboutModel.addHistoryRounds(roundHistoryList)
+        when (miniGameBasicInfo.stage) {
+            1 -> gameAboutModel.changeStage(GameAboutModel.Stage.NEW)
+            2 -> gameAboutModel.changeStage(GameAboutModel.Stage.DEAL)
+            3 -> gameAboutModel.changeStage(GameAboutModel.Stage.SETTLE)
+        }
     }
 
     override fun leaveGroup(leave: GameRes.LeaveGroup) {
+
     }
 
     override fun leaveMiniGameInfo(miniGame: GameRes.LeaveMiniGames) {
+
     }
 
     override fun enterMiniGameInfo(miniGame: GameRes.EnterMiniGameInfo) {
@@ -262,6 +299,7 @@ class GameServiceImp(private val client: GameSocketClient) : GameService,
 
     override fun refreshUserProperties(userScore: GameRes.RefreshUserScore) {
         balance = userScore.score.toInt()
+        gameAboutModel.changeBalance(balance)
     }
 
     override fun beginRound(round: GameRes.BeginNewRound) {
@@ -285,17 +323,43 @@ class GameServiceImp(private val client: GameSocketClient) : GameService,
         gameAboutModel.miniGameId = settle.miniGameId
         gameAboutModel.roundId = settle.roundInfo.roundId //期号
         gameAboutModel.countDown = settle.countDown //当前阶段剩余时间倒计时
+        if (settle.winScore > 0) {
+            //如果中奖 就计算净收入
+            gameAboutModel.netIncome = settle.winScore - (currentConfirmCountMoney * 100)
+        }
+        //开奖号码
+        val lotteryNumbers = settle.roundInfo.performsList[0].performResultList
+        //中奖注区
+        val lotteryResultList = lotteryNumbers.calculateArea()
+        //添加历史记录
+        gameAboutModel.addHistoryRound(
+            RoundInfoBean(
+                settle.roundInfo.roundId,
+                lotteryNumbers,
+                lotteryNumbers.sum(),
+                lotteryNumbers.isBig(),
+                lotteryNumbers.isDouble()
+            )
+        )
+
+        gameAboutModel.lotteryResultList = lotteryResultList
+        //计算用户中奖注区及金额
+        gameAboutModel.userLotteryResult =
+            lotteryResultList.calculateUserLotteryResult(bettingListConfirmed)
+        //跟新阶段
         gameAboutModel.changeStage(GameAboutModel.Stage.SETTLE)
-       if (settle.winScore>0) {
-         var netIncome = settle.winScore -currentConfirmCountMoney
-       }
-        settle.roundInfo.performsList[0].performResultList
     }
 
     override fun syncAreaBetInfoBack(syncAreaBetInfo: GameRes.SyncAreaBetInfo) {
+        val syncAreaList = ArrayList<AreaBetBean>()
+        syncAreaBetInfo.areaBetsList.forEach {
+            syncAreaList.add(AreaBetBean(it.areaCode.convertBetting()!!, it.betScore, it.userCount))
+        }
+        gameAboutModel.changeAreaBetInfo(syncAreaList)
     }
 
     override fun clearTrendsBackBlock(clearTrends: GameRes.ClearTrends) {
+        gameAboutModel.clearTrends(clearTrends.miniGameIdsList)
     }
 
     override fun errorMessage(errorMessage: ClientRes.ErrorMessage) {
@@ -304,7 +368,4 @@ class GameServiceImp(private val client: GameSocketClient) : GameService,
     override fun tokenLoseEffectiveness() {
     }
 
-    private fun calculateCosts() {
-
-    }
 }
