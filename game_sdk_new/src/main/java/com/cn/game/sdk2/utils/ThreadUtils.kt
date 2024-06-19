@@ -8,7 +8,7 @@ import android.os.Looper
  * author       : zhangsan
  * createTime   : 2024/6/18 15:37
  **/
-class ThreadUtils {
+object ThreadUtils {
     private val HANDLER by lazy { Handler(Looper.getMainLooper()) }
 
     fun runOnUiThread(runnable: Runnable) {

@@ -1,8 +1,17 @@
 package com.cn.game.sdk2.manager
 
 import android.os.CountDownTimer
+import android.util.Log
+import com.cn.game.sdk2.data.bean.HistoryResultBean
 import com.cn.game.sdk2.data.enums.GameState
 import com.cn.game.sdk2.manager.listener.IGameListener
+import com.cn.game.sdk2.utils.Ext.isMainThread
+import com.kunminx.architecture.ui.callback.UnPeekLiveData
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
+import kotlin.random.Random
 
 /**
  * Description: 游戏管理类
@@ -26,7 +35,7 @@ class GameManager private constructor() : IGameManager {
         set(value) {
             val oldValue = field
             field = value
-            if(oldValue != value){
+            if (oldValue != value) {
                 mGameListener.forEach { it.value.onGameStateChanged(oldValue, value) }
             }
         }
@@ -42,21 +51,22 @@ class GameManager private constructor() : IGameManager {
         countDownTimer =
             object : CountDownTimer(countdownTime.toLong(), countDownInterval.toLong()) {
                 override fun onTick(millisUntilFinished: Long) {
+                    Log.d(TAG, "startCountDownTimer onTick run $isMainThread,$millisUntilFinished")
                     lis?.onCountdown(millisUntilFinished)
-                    mGameListener.forEach {
-                        it.value.onCountdown(millisUntilFinished)
-                    }
+                    mGameListener.forEach { it.value.onCountdown(millisUntilFinished) }
                 }
 
                 override fun onFinish() {
+                    Log.d(TAG,"startCountDownTimer onFinish run $isMainThread")
                     when (gameState) {
                         GameState.Betting -> gameState = GameState.Settling
-                        GameState.Settling -> gameState = GameState.Drawing
-                        GameState.Drawing -> gameState = GameState.Betting
+                        GameState.Settling -> {
+                            startDrawing()
+                        }
                         else -> throw IllegalStateException("error game state:${gameState}")
                     }
-                    lis?.onFinish(gameState)
-                    mGameListener.forEach { it.value.onFinish(gameState) }
+                    lis?.onCountDownFinish(gameState)
+                    mGameListener.forEach { it.value.onCountDownFinish(gameState) }
                     countDownTimer = null
                 }
             }
@@ -70,17 +80,27 @@ class GameManager private constructor() : IGameManager {
 
     fun startBetting() {
         gameState = GameState.Betting
-        startCountDownTimer(10_000, 1_000)
     }
 
     fun startSettling() {
         gameState = GameState.Settling
-        startCountDownTimer(10_000, 1_000)
     }
 
     fun startDrawing() {
-        gameState = GameState.Drawing
-        startCountDownTimer(10_000, 1_000)
+        runBlocking {
+            gameState = GameState.Drawing
+            val bean = HistoryResultBean(
+                isShow = false,
+                result = listOf(
+                    Random.nextInt(1, 7),
+                    Random.nextInt(1, 7),
+                    Random.nextInt(1, 7)
+                )
+            )
+            mGameListener.forEach { it.value.onDrawingResult(bean) }
+            delay(200)
+            gameState = GameState.DrawFinish
+        }
     }
 
     fun setLiveStatusListener(tag: String, listener: IGameListener) {
