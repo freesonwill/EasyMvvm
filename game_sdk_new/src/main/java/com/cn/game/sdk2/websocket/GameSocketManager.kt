@@ -26,7 +26,8 @@ class GameSocketManager private constructor() : OnMessageListener {
         private var HAS_HEART = true
         private var client: GameSocketClient? = null
         private var gameServerMessageConvertFactory: GameServerMessageConvertFactory? = null
-        lateinit var gameService: GameServiceImp
+
+        var gameService: GameServiceImp? = null
 
         @SuppressLint("StaticFieldLeak")
         private var INSTANCE: GameSocketManager? = null
@@ -56,7 +57,7 @@ class GameSocketManager private constructor() : OnMessageListener {
                 while (true) {
                     if (HAS_HEART) {
                         client?.let {
-                            if (it.readyState == ReadyState.OPEN) gameService.ping() //正常发送心跳
+                            if (it.readyState == ReadyState.OPEN) gameService?.ping() //正常发送心跳
                             if (it.isClosed) reconnect() //断线重连
                         }
                     } else {
@@ -80,6 +81,7 @@ class GameSocketManager private constructor() : OnMessageListener {
             client!!.reconnectBlocking()
             reconnectCount++
         }.onFailure {
+            "---第${reconnectCount}次重连,失败---".loge()
             it.printStackTrace()
             if (reconnectCount < 4) {
                 reconnect()
@@ -111,7 +113,7 @@ class GameSocketManager private constructor() : OnMessageListener {
         }
     }
 
-    fun getGameService(): GameServiceImp {
+    fun getGameService(): GameServiceImp? {
         return gameService
     }
 
