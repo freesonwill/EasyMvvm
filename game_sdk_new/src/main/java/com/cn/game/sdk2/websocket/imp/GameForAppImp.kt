@@ -52,7 +52,7 @@ object GameSDK : IGameForApp {
      * - Parameter liveId: 直播間id
      * - Parameter gIds: 遊戲ids
      * - Parameter data_p: 透传资料（转抛）
-     * - type ==1 成功
+     * - type ==1 成功 随便
      */
     override fun enterLive(liveId: String, gameIds: List<Int>, data: String) {
         val req = GameReq.EnterGroup.newBuilder()
