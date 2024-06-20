@@ -31,6 +31,7 @@ object GameForAppImp : IGameForApp {
      * - Parameter token: 用户token
      * - type ==1 成功 type =1000（desc：您当前还在其他游戏中）type =1001 （desc：token验证失败）type =1002 （desc：余额不足）type =1005（desc：当前服务器正在维护）type =200（desc：其他情况）
      */
+    //platform= 0 ,requestId = 0,version = "1"
     override fun loginGameWithAgentName(agentName: String, token: String) {
         val req = ClientReq.LoginReq.newBuilder().setAgentName(agentName).setServer(8).setToken(token)
             .setRequestId(6).setVersion("6").setNickname("android").build()

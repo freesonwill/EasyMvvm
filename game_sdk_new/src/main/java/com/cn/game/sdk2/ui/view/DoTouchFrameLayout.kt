@@ -2,10 +2,12 @@ package com.cn.game.sdk2.ui.view
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.FrameLayout
 import androidx.core.view.isVisible
+import com.cn.game.sdk2.ui.helper.ViewHelper.isAdd
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
 
 /**
@@ -38,9 +40,9 @@ class DoTouchFrameLayout : FrameLayout {
         when (event?.action) {
             MotionEvent.ACTION_DOWN -> {
                 mViewModel?.anchorMoneyView?.get()?.let {
-                    val x = event.rawX
-                    val y = event.rawY
-                    if (it.llShowTop.isVisible) {
+                    if (it.isAdd() && it.llShowTop.isVisible) {
+                        val x = event.rawX
+                        val y = event.rawY
                         val offLocation = IntArray(2)
                         val okLocation = IntArray(2)
                         it.ivOff.getLocationOnScreen(offLocation)
@@ -56,17 +58,16 @@ class DoTouchFrameLayout : FrameLayout {
                         if (isTouchOnOff && it.ivOff.isVisible) {
                             it.ivOff.performClick()
                             return true
-                        } else if (isTouchOnOk && it.ivOk.isVisible) {
+                        }
+                        if (isTouchOnOk && it.ivOk.isVisible) {
                             it.ivOk.performClick()
                             return true
-                        } else {
-                            return false
                         }
+                        return false
                     }
                 }
             }
         }
-
         return super.onTouchEvent(event)
     }
 

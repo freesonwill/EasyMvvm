@@ -11,6 +11,7 @@ import com.cn.game.sdk2.manager.listener.IGameListener
 import com.cn.game.sdk2.ui.view.MoneyOKView
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.utils.Ext.isMainThread
+import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import com.kunminx.architecture.ui.callback.UnPeekLiveData
 import com.xcjh.base_lib.base.BaseViewModel
 import com.xcjh.base_lib.bean.MutablePair
@@ -21,7 +22,6 @@ class Fast3ViewModel : BaseViewModel() {
     private val TAG = "Fast3ViewModel"
     var betOkClick: UnPeekLiveData<Boolean> = UnPeekLiveData()
     var betDeleteClick: UnPeekLiveData<Boolean> = UnPeekLiveData()
-
     var anchorMoneyView: WeakReference<MoneyOKView>? = null
 
     //<areaCode,<money,View>>
@@ -29,6 +29,10 @@ class Fast3ViewModel : BaseViewModel() {
         mutableMapOf()
     var tempMoneyMap: MutableMap<Int, MutablePair<Int, WeakReference<MoneyOKView>>> = mutableMapOf()
     var moneyAnimCallback: MoneyAnimCallback? = null
+    var betMoney: Int = 0
+    var currentBettingRecordBean:BettingRecordBean ?= null
+    var tempBetRecordMap:MutableMap<Int,MutablePair<BettingRecordBean, WeakReference<MoneyOKView>>> = mutableMapOf()
+
     val historyResultBeans: MutableList<HistoryResultBean> by lazy { mutableListOf() }
     val historyResultBeanLD: LiveData<HistoryResultBean> by lazy { UnPeekLiveData()}
     private val countdownTime = 10_000
@@ -106,15 +110,22 @@ class Fast3ViewModel : BaseViewModel() {
     }
 
     fun updateAnchorView(anchor: MoneyOKView){
-        anchorMoneyView?.get()?.apply {
-            hiddenTop()
-        }
+        hiddenAnchorTop()
         anchor.showTop()
         anchorMoneyView = WeakReference(anchor)
     }
 
-    fun addTemMoney(areaView: GameAreaView, betMoney: Int) {
-        tempMoneyMap.apply {
+    fun hiddenAnchorTop(){
+        anchorMoneyView?.get()?.hiddenTop()
+    }
+
+    fun addTempMoney(areaView: GameAreaView, betMoney: Int) {
+        if(areaView.areaCode == currentBettingRecordBean?.bettingArea?.number){
+            currentBettingRecordBean?.money?.let {
+                areaView.moneyView.setShowMoney(it)
+            }
+        }
+        /*tempMoneyMap.apply {
             if (!containsKey(areaView.areaCode)) {
                 put(
                     areaView.areaCode,
@@ -127,7 +138,7 @@ class Fast3ViewModel : BaseViewModel() {
                 val sum = savedMoneyMap[areaView.areaCode]?.first ?: 0
                 areaView.moneyView.setShowMoney(it.plus(sum))
             }
-        }
+        }*/
     }
 
     interface MoneyAnimCallback {

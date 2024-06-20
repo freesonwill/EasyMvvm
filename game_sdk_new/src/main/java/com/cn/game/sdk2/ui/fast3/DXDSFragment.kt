@@ -5,14 +5,10 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.Gravity
 import android.view.ViewGroup
-import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.FrameLayout
-import android.widget.TextView
-import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.base.BaseGameFragment
-import com.cn.game.sdk2.data.enums.NOTES_ENUM
 import com.cn.game.sdk2.databinding.FragDxdsBinding
 import com.cn.game.sdk2.ui.helper.ViewHelper.isAdd
 import com.cn.game.sdk2.ui.view.MoneyOKView
@@ -23,7 +19,15 @@ import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
 import com.cn.game.sdk2.utils.MyGameManager
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.utils.tool.measureView
-import me.jessyan.autosize.utils.AutoSizeUtils.dp2px
+import com.cn.game.sdk2.websocket.GameSocketManager
+import com.cn.game.sdk2.websocket.bean.BOOM_ALL
+import com.cn.game.sdk2.websocket.bean.BettingRecordBean
+import com.cn.game.sdk2.websocket.bean.DEFAULT_BIG
+import com.cn.game.sdk2.websocket.bean.DEFAULT_DOUBLE
+import com.cn.game.sdk2.websocket.bean.DEFAULT_SINGLE
+import com.cn.game.sdk2.websocket.bean.DEFAULT_SMALL
+import com.xcjh.base_lib.bean.MutablePair
+import java.lang.ref.WeakReference
 
 
 /**
@@ -37,11 +41,12 @@ class DXDSFragment(var fast3VM: Fast3ViewModel) : BaseGameFragment<DXDSVm, FragD
     @SuppressLint("ClickableViewAccessibility")
     override fun initView(savedInstanceState: Bundle?) {
         mDatabind.apply {
-            bigView.areaCode = NOTES_ENUM.QTDefaultBig.num
-            smallView.areaCode = NOTES_ENUM.QTDefaultSmall.num
-            singleView.areaCode = NOTES_ENUM.QTDefaultSingle.num
-            doubleView.areaCode = NOTES_ENUM.QTDefaultDouble.num
-            leopardView.areaCode = NOTES_ENUM.QTDefaultTriple.num
+            bigView.areaInfo = DEFAULT_BIG()
+            smallView.areaInfo = DEFAULT_SMALL()
+            singleView.areaInfo = DEFAULT_SINGLE()
+            doubleView.areaInfo = DEFAULT_DOUBLE()
+            leopardView.areaInfo = BOOM_ALL()
+
             areaViewList.add(bigView)
             areaViewList.add(smallView)
             areaViewList.add(singleView)
@@ -122,19 +127,30 @@ class DXDSFragment(var fast3VM: Fast3ViewModel) : BaseGameFragment<DXDSVm, FragD
                     //处理点击事件
                     //先判断余额是否够这次 并且扣取钱
                     //if( homeXPopupDialog.isCanBetting()&&MyGameManager.isClickOperation&&PromptSoundPlay.handleClick()){
+                    //todo:整个流程转移至FastMainFragment
                     if (MyGameManager.isClickOperation && PromptSoundPlay.handleClick()) {
-                        fast3VM.anchorMoneyView?.get()?.let {
-                            if (it !== areaView.moneyView) {
-                                it.hiddenTop()
+                        GameSocketManager.getInstance()?.getGameService()?.apply {
+                            addBetting(BettingRecordBean(areaView.areaInfo!!, money = fast3VM.betMoney)){ isMoneyEnough, result ->
+                                if(isMoneyEnough){
+                                    fast3VM.currentBettingRecordBean = result
+                                    if (result != null) {
+                                        if(fast3VM.tempBetRecordMap.containsKey(result.bettingArea.number)){
+                                            fast3VM.tempBetRecordMap[result.bettingArea.number]?.first = result
+                                        }else{
+                                            //todo:moneyView单独用map缓存，解除与areaView的依赖
+                                            fast3VM.tempBetRecordMap[result.bettingArea.number] = MutablePair(result,
+                                                WeakReference(areaView.moneyView)
+                                            )
+                                        }
+                                        fast3VM.hiddenAnchorTop()
+                                        if (!areaView.moneyView.isAdd()) {
+                                            addMoneyOkView(areaView, x, y, rawY)
+                                        }
+                                        emitMoneyAnim(areaView, areaView.moneyView)
+                                    }
+                                }//todo:toast
                             }
                         }
-
-                        if (!areaView.moneyView.isAdd()) {
-                            addMoneyOkView(areaView, x, y, rawY)
-                        }
-
-                        emitMoneyAnim(areaView, areaView.moneyView)
-
                     }
                 }
             })

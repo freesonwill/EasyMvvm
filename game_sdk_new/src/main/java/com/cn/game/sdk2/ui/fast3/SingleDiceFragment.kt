@@ -177,12 +177,6 @@ class SingleDiceFragment(var fast3VM: Fast3ViewModel) : BaseGameFragment<DXDSVm,
                                                 //动画结束后再显示View
                                                 it.isVisible = true
                                             })
-
-                                        //显示点击在Fragment的位置用于动画结束后显示
-                                        val location1 = IntArray(2)
-                                        it.getLocationInWindow(location1)
-                                        it.viewXYTemporary[0] = it.left
-                                        it.viewXYTemporary[1] = it.top
                                     }
                                 })
                                 val params = FrameLayout.LayoutParams(
