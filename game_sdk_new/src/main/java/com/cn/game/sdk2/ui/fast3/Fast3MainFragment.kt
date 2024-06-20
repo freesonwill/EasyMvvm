@@ -32,21 +32,16 @@ import com.cn.game.sdk2.databinding.ItemAnnotationListBinding
 import com.cn.game.sdk2.databinding.ItemBetHistoryBinding
 import com.cn.game.sdk2.ui.helper.ViewHelper.bindViewPagerNewGame
 import com.cn.game.sdk2.ui.helper.ViewHelper.initGameViewPager
-import com.cn.game.sdk2.ui.view.MoneyOKView
 import com.cn.game.sdk2.ui.helper.ViewHelper.isAdd
 import com.cn.game.sdk2.ui.view.CustomBubbleAttachPopup
+import com.cn.game.sdk2.ui.view.MoneyOKView
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
+import com.cn.game.sdk2.utils.ext.CommonExt
 import com.cn.game.sdk2.utils.ext.CommonExt.isMainThread
 import com.cn.game.sdk2.utils.ext.CommonExt.toPinyin
-import com.cn.game.sdk2.utils.Ext
-import com.cn.game.sdk2.utils.Ext.toPinyin
-import com.cn.game.sdk2.utils.MyGameManager
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.websocket.GameSocketManager
-import com.cn.game.sdk2.websocket.bean.BettingRecordBean
-import com.cn.game.sdk2.websocket.imp.GameServiceImp
-import com.drake.brv.BindingAdapter
 import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
@@ -57,7 +52,6 @@ import com.xcjh.base_lib.bean.MutablePair
 import com.xcjh.base_lib.utils.dp2px
 import com.xcjh.base_lib.utils.view.clickNoRepeat
 import kotlinx.coroutines.launch
-import java.lang.ref.WeakReference
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -267,7 +261,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         mViewModel.historyResultBeanLD.observe(requireActivity()) { bean ->
             val adapter = mDatabind.rvHomeHistory.bindingAdapter
             mViewModel.historyResultBeans.add(bean)
-            Log.d(TAG, "onDrawingResult run on ${Ext.isMainThread} result:$bean,"+mViewModel.historyResultBeans.size)
+            Log.d(TAG, "onDrawingResult run on ${CommonExt.isMainThread} result:$bean,"+mViewModel.historyResultBeans.size)
             Log.d(
                 TAG,
                 "onDrawingResult run on $isMainThread result:$bean," + mViewModel.historyResultBeans.size
