@@ -20,6 +20,8 @@ class GameAboutModel : ViewModel() {
     private val _clearTrendsIds = MutableLiveData<List<Int>>()
     private val _historyRounds = MutableLiveData<List<RoundInfoBean>>()
 
+    private val _isCanAgain = MutableLiveData<Boolean>()
+
     /**
      * 实现currentStage的observe，监听阶段变化
      */
@@ -39,11 +41,24 @@ class GameAboutModel : ViewModel() {
     val syncAreaBetInfo: LiveData<List<AreaBetBean>>
         get() = _syncAreaBetInfo
 
+    /**
+     * 暂时无用
+     */
     val clearTrendsIds: LiveData<List<Int>>
         get() = _clearTrendsIds
 
-    val historyRounds:LiveData<List<RoundInfoBean>>
+    val historyRounds: LiveData<List<RoundInfoBean>>
         get() = _historyRounds
+
+    /**
+     * 监听isCanAgain 显示隐藏续压按钮
+     */
+    val isCanAgain: LiveData<Boolean>
+        get() = _isCanAgain
+
+    fun changeCanAgain(canAgain: Boolean) {
+        _isCanAgain.value = canAgain
+    }
 
     fun changeBalance(b: Int) {
         _balance.value = b
@@ -53,19 +68,19 @@ class GameAboutModel : ViewModel() {
         _currentStage.value = stage
     }
 
-    fun changeAreaBetInfo(info:List<AreaBetBean>){
+    fun changeAreaBetInfo(info: List<AreaBetBean>) {
         _syncAreaBetInfo.value = info
     }
 
-    fun clearTrends(ids:List<Int>){
+    fun clearTrends(ids: List<Int>) {
         _clearTrendsIds.value = ids
     }
 
-    fun addHistoryRounds(history: List<RoundInfoBean> ){
+    fun addHistoryRounds(history: List<RoundInfoBean>) {
         _historyRounds.value = history
     }
 
-    fun addHistoryRound(item:RoundInfoBean){
+    fun addHistoryRound(item: RoundInfoBean) {
         val history = _historyRounds.value ?: listOf()
         _historyRounds.value = history + item
     }

@@ -25,6 +25,7 @@ import com.cn.game.sdk2.websocket.miniGameId
 import com.cn.game.sdk2.websocket.previousSuccess
 import com.cn.game.sdk2.websocket.sum
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
+import com.xcjh.base_lib.utils.loge
 import game.common.proto.ClientReq
 import game.common.proto.ClientRes
 import game.mod.proc.yf.proto.req.GameReq
@@ -116,11 +117,14 @@ class GameServiceImp(private val client: GameSocketClient) : GameService,
 
     /**
      * 当前临时总下注金额
+     * - 取消下注 清零
+     * - 新的一局开始 清零
      */
     private var currentTempCountMoney = 0
 
     /**
      * 当前确认总下注金额 已下注部分无法取消
+     * - 新的一局开始 清零
      */
     private var currentConfirmCountMoney = 0
 
@@ -135,9 +139,18 @@ class GameServiceImp(private val client: GameSocketClient) : GameService,
     private val bettingListTemp: MutableMap<Betting, BettingRecordBean> = mutableMapOf()
 
     /**
-     * 已确认下注列表
+     * 已确认下注列表;
+     *  - 仅当前局有效，当前局结算后会被清空
      */
     private val bettingListConfirmed: MutableMap<Betting, BettingRecordBean> = mutableMapOf()
+
+    /**
+     * 续压下注列表;
+     *  - 会保存到下一局结算时被下一句数据覆盖
+     */
+    private var againBettingList: MutableMap<Betting, BettingRecordBean> = mutableMapOf()
+
+    private var againCountMoney = 0
 
     /**
      * 临时下注
@@ -178,6 +191,15 @@ class GameServiceImp(private val client: GameSocketClient) : GameService,
                 bettingListTemp[recordBean.bettingArea] = recordBean
                 block(balance >= currentCountMoney, recordBean)
             }
+//            //根据 续压集合是否为空来判断⬆是不是刚进来
+//            againBettingList.isNotEmpty {
+//                //当前下注总金额大于余额时 无法续压
+//                if (balance >= (currentCountMoney + againCountMoney) * 100) {
+//                    gameAboutModel.changeCanAgain(true)
+//                } else {
+//                    gameAboutModel.changeCanAgain(false)
+//                }
+//            }
         } else {
             block(false, null)
         }
@@ -209,6 +231,7 @@ class GameServiceImp(private val client: GameSocketClient) : GameService,
         val betReq = BetReq.newBuilder()
         betReq.setMiniGameId(miniGameId)
         bettingListTemp.forEach { (betting, bettingRecordBean) ->
+            "注区${betting.number},下注金额：${bettingRecordBean.money}".loge("GameService-确认下注")
             val areaBetReq = AreaBetReq.newBuilder().setAreaCode(betting.number)
                 .setBetScore(bettingRecordBean.money).build()
             betReq.setAreaBet(index, areaBetReq)
@@ -218,7 +241,27 @@ class GameServiceImp(private val client: GameSocketClient) : GameService,
         bet(build)
     }
 
+    /**
+     * 续压
+     *
+     */
+    fun againBetting(): Map<Betting, BettingRecordBean>? {
+        if (previousSuccess) {
+            bettingListTemp.putAll(againBettingList)
+            return againBettingList
+        } else {
+            return null
+        }
+    }
+
+    fun doubleBetting() {
+        if (previousSuccess) {
+
+        }
+    }
+
     override fun loginSuccess(afterLoginSuccess: ClientRes.InfoAfterLoginSuccess) {
+
     }
 
     override fun loginError(errorMessage: ClientRes.ErrorMessage) {
@@ -242,11 +285,7 @@ class GameServiceImp(private val client: GameSocketClient) : GameService,
             val elements = it.performsList[0].performResultList
             roundHistoryList.add(
                 RoundInfoBean(
-                    it.roundId,
-                    elements,
-                    elements.sum(),
-                    elements.isBig(),
-                    elements.isDouble()
+                    it.roundId, elements, elements.sum(), elements.isBig(), elements.isDouble()
                 )
             )
         }
@@ -308,6 +347,18 @@ class GameServiceImp(private val client: GameSocketClient) : GameService,
         gameAboutModel.roundId = round.roundId //期号
         gameAboutModel.countDown = round.countDown //当前阶段剩余时间倒计时
         gameAboutModel.changeStage(GameAboutModel.Stage.NEW)
+
+        againBettingList.isNotEmpty {
+            if (againCountMoney <= balance) gameAboutModel.changeCanAgain(true)
+            else gameAboutModel.changeCanAgain(false)
+        }.isEmpty {
+            gameAboutModel.changeCanAgain(false)
+        }
+        //重置上一局的所有钱
+        currentCountMoney = 0
+        currentConfirmCountMoney = 0
+        currentTempCountMoney = 0
+
     }
 
     override fun beginDeal(round: GameRes.BeginDeal) {
@@ -327,6 +378,8 @@ class GameServiceImp(private val client: GameSocketClient) : GameService,
             //如果中奖 就计算净收入
             gameAboutModel.netIncome = settle.winScore - (currentConfirmCountMoney * 100)
         }
+        //结束时更新余额
+        balance = balance + settle.winScore - (currentConfirmCountMoney * 100)
         //开奖号码
         val lotteryNumbers = settle.roundInfo.performsList[0].performResultList
         //中奖注区
@@ -348,6 +401,10 @@ class GameServiceImp(private val client: GameSocketClient) : GameService,
             lotteryResultList.calculateUserLotteryResult(bettingListConfirmed)
         //跟新阶段
         gameAboutModel.changeStage(GameAboutModel.Stage.SETTLE)
+        //清空本局已下注数据，并复制到续压集合里
+        againBettingList = bettingListConfirmed
+        againCountMoney = currentConfirmCountMoney
+        bettingListConfirmed.clear()
     }
 
     override fun syncAreaBetInfoBack(syncAreaBetInfo: GameRes.SyncAreaBetInfo) {
@@ -360,12 +417,17 @@ class GameServiceImp(private val client: GameSocketClient) : GameService,
 
     override fun clearTrendsBackBlock(clearTrends: GameRes.ClearTrends) {
         gameAboutModel.clearTrends(clearTrends.miniGameIdsList)
+        gameAboutModel.addHistoryRounds(listOfNotNull())
     }
 
     override fun errorMessage(errorMessage: ClientRes.ErrorMessage) {
+        val code = errorMessage.code
+        val desc = errorMessage.desc
+
     }
 
     override fun tokenLoseEffectiveness() {
+        appListener?.getTokenLoseEffectiveness()
     }
 
 }

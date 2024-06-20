@@ -57,8 +57,6 @@ object GameSDK : IGameForApp {
     override fun enterLive(liveId: String, gameIds: List<Int>, data: String) {
         val req = GameReq.EnterGroup.newBuilder()
         var index = 0
-        var index1 = 0
-        var index2 = 0
         gameIds.forEach {
             req.setMiniGameIds(index, it)
             index++
