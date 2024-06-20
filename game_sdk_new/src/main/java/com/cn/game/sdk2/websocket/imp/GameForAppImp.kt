@@ -56,15 +56,15 @@ object GameSDK : IGameForApp {
      */
     override fun enterLive(liveId: String, gameIds: List<Int>, data: String) {
         val req = GameReq.EnterGroup.newBuilder()
-        var index = 0
         gameIds.forEach {
-            req.setMiniGameIds(index, it)
-            index++
+            req.addMiniGameIds(it)
         }
         val build = req.setData(data).setId(liveId).build()
 
         gameMassageManager?.enterGroup(build)
-        gameMassageManager?.enterGame(GameReq.EnterMiniGame.newBuilder().setMiniGameId(gameIds[0]).build())
+        gameMassageManager?.enterGame(
+            GameReq.EnterMiniGame.newBuilder().setMiniGameId(gameIds[0]).build()
+        )
     }
 
     /** 离开直播間

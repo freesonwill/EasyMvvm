@@ -159,6 +159,7 @@ class GameServiceImp(private val client: GameSocketClient) : GameService,
      * @param block 下注成功回调
      *          - isMoneyEnough 当次下注余额是否足够
      *          - result 返回当次下注成功的结果，里面有当前的下注的总金额;当此参数为null时，表示上一次下注结果还未返回
+     *          - isMoneyEnough = false 并且 result = null 说明上一次确认下注还未返回结果
      */
     fun addBetting(
         recordBean: BettingRecordBean,
@@ -211,8 +212,13 @@ class GameServiceImp(private val client: GameSocketClient) : GameService,
      *   - 返回已确认下注集合
      */
     fun cancelBetting(block: (result: List<BettingRecordBean>?) -> Unit) {
+        //重置当前局总下注金额为已提交的金额
+        currentCountMoney = currentConfirmCountMoney
+        //重置临时总额
         currentTempCountMoney = 0
+        //清空临时集合
         bettingListTemp.clear()
+        //返回已确认的集合
         bettingListConfirmed.isNotEmpty {
             val confirmedList = ArrayList<BettingRecordBean>()
             it.forEach { (_, bettingRecordBean) ->
@@ -227,15 +233,13 @@ class GameServiceImp(private val client: GameSocketClient) : GameService,
     fun commitBetting() {
         //等有返回结果后 再赋值成true
         previousSuccess = false
-        var index = 0
         val betReq = BetReq.newBuilder()
         betReq.setMiniGameId(miniGameId)
         bettingListTemp.forEach { (betting, bettingRecordBean) ->
             "注区${betting.number},下注金额：${bettingRecordBean.money}".loge("GameService-确认下注")
             val areaBetReq = AreaBetReq.newBuilder().setAreaCode(betting.number)
                 .setBetScore(bettingRecordBean.money).build()
-            betReq.setAreaBet(index, areaBetReq)
-            index++
+            betReq.addAreaBet(areaBetReq)
         }
         val build = betReq.build()
         bet(build)
@@ -243,10 +247,15 @@ class GameServiceImp(private val client: GameSocketClient) : GameService,
 
     /**
      * 续压
-     *
+     * 1，上一句的总额就是这一句临时额度 currentTempCountMoney
+     * 2，牌面上无下注时才能续压，所以续压的总金额就是当前页面的总金额
      */
     fun againBetting(): Map<Betting, BettingRecordBean>? {
         if (previousSuccess) {
+            //1
+            currentTempCountMoney = againCountMoney
+            //2
+            currentCountMoney = againCountMoney
             bettingListTemp.putAll(againBettingList)
             return againBettingList
         } else {
@@ -254,8 +263,28 @@ class GameServiceImp(private val client: GameSocketClient) : GameService,
         }
     }
 
-    fun doubleBetting() {
+    /**
+     * 加倍
+     * 加倍后的总金额算法：@doubleMoney 只是用于传入接口的金额
+     *    currentTempCountMoney * 2 + currentConfirmCountMoney
+     */
+    fun doubleBetting(block: (isMoneyEnough: Boolean, result: Map<Betting, BettingRecordBean>?) -> Unit) {
         if (previousSuccess) {
+            //先判断是否足够加倍
+            val doubleMoney = currentTempCountMoney * 2 + currentConfirmCountMoney
+            if (doubleMoney > balance) {
+                bettingListTemp.mapValues {
+                    it.value.money *= 2
+                    if (bettingListConfirmed.containsKey(it.key)) {
+                        it.value.money += 2 * bettingListConfirmed[it.key]?.money!!
+                    }
+                    it.value
+                }
+                currentTempCountMoney = doubleMoney
+                block(true, bettingListTemp)
+            } else {
+                block(false, null)
+            }
 
         }
     }
@@ -315,7 +344,9 @@ class GameServiceImp(private val client: GameSocketClient) : GameService,
         when (result.betResultInfoListList[0].result) {
             0 -> {
                 //下注成功后 保存当前下注总额为已确认下注金额；并将当前下注总额清空
+                //currentCountMoney包含之前确认的和现在临时的，所以可以直接覆盖已提交的
                 currentConfirmCountMoney = currentCountMoney
+                //提交成功后临时总和清空
                 currentCountMoney = 0
                 previousSuccess = true
                 bettingListTemp.forEach { (betting, temBean) ->
