@@ -8,7 +8,7 @@ import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.launcher.ARouter
 import com.gyf.immersionbar.ImmersionBar
 import com.luxury.lib_base.base.interface_.IView
-import com.luxury.lib_base.ext.inflateBindingWithGeneric
+import com.luxury.lib_base.utils.ext.inflateBindingWithGeneric
 import com.luxury.lib_base.utils.DayModeUtil
 import java.lang.reflect.ParameterizedType
 

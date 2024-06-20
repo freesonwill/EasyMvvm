@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import android.util.Patterns
 import com.luxury.lib_base.base.BaseViewModel
-import com.luxury.lib_base.ext.getString
+import com.luxury.lib_base.utils.ext.getString
 import com.luxury.module_login.data.LoginRepository
 import com.luxury.module_login.data.Result
 

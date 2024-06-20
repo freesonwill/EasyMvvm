@@ -10,7 +10,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewbinding.ViewBinding
 import com.luxury.lib_base.base.interface_.IView
-import com.luxury.lib_base.ext.inflateBindingWithGeneric
+import com.luxury.lib_base.utils.ext.inflateBindingWithGeneric
 import java.lang.reflect.ParameterizedType
 
 

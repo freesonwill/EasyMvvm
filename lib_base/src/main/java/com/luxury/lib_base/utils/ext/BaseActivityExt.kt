@@ -1,4 +1,4 @@
-package com.luxury.lib_base.ext
+package com.luxury.lib_base.utils.ext
 
 import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
