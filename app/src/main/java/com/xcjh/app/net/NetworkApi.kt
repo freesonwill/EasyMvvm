@@ -28,26 +28,10 @@ import kotlin.properties.Delegates
 val apiService: ApiComService by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) {
     NetworkApi.INSTANCE.getApi(ApiComService::class.java, ApiComService.SERVER_URL)
 }
-//val apiServiceNew: ApiComService = NetworkApi.INSTANCE.getApi(ApiComService::class.java, ApiComService.SERVER_URL)
-//  lateinit var apiService: ApiComService
-//private val apiServiceLock = Any()
-//private var baseUrl: String = ApiComService.SERVER_URL
-//fun changeBaseUrl(newBaseUrl: String) {
-//    synchronized(apiServiceLock) {
-//        baseUrl= newBaseUrl
-//        // 在 baseUrl 发生变化时，不需要重新创建实例，因为 apiService 会在下次调用 getApiService 时重新创建
-//    }
-//}
-//@JvmName("fetchApiService")
-//fun getApiService(serverUrl: String): ApiComService {
-//    synchronized(apiServiceLock) {
-//        if (!::apiService.isInitialized ||  baseUrl != NetworkApi.baseUrl) {
-//            // 如果 apiService 未初始化或者 baseUrl 发生变化，则重新创建实例
-//            apiService = NetworkApi.INSTANCE.getApi(ApiComService::class.java, baseUrl)
-//        }
-//    }
-//    return apiService
-//}
+
+//var apiService: ApiComService = NetworkApi.INSTANCE.getApi(ApiComService::class.java, ApiComService.SERVER_URL)
+
+
 class NetworkApi : BaseNetworkApi() {
 
     //新添加的修改url

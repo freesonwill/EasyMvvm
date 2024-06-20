@@ -55,6 +55,9 @@ import com.xcjh.app.bean.LoginInfo
 import com.xcjh.app.bean.TimeConstantsDat
 import com.xcjh.app.databinding.ActivityHomeBinding
 import com.xcjh.app.event.AppViewModel
+import com.xcjh.app.net.ApiComService
+import com.xcjh.app.net.NetworkApi
+import com.xcjh.app.net.apiService
 import com.xcjh.app.placeLoginDialog
 import com.xcjh.app.ui.details.MatchDetailActivity
 import com.xcjh.app.ui.home.home.HomeFragment
@@ -538,13 +541,13 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
                     }
 
                 }).start()
-            if(!isForce){
-                AppDialog.INSTANCE.dismissDialog()
-            }
+//            if(isForce){
+//                AppDialog.INSTANCE.dismissDialog()
+//            }
 //
         }
         //false就是强制
-        AppDialog.INSTANCE.showDialog(this, view, false)
+        AppDialog.INSTANCE.showDialog(this, view, isForce)
 
     }
 

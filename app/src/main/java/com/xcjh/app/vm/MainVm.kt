@@ -6,7 +6,9 @@ import androidx.lifecycle.viewModelScope
 import com.kunminx.architecture.ui.callback.UnPeekLiveData
 import com.xcjh.app.appViewModel
 import com.xcjh.app.bean.*
+import com.xcjh.app.enums.DomainNameEnums
 import com.xcjh.app.event.AppViewModel
+import com.xcjh.app.net.ApiComService
 import com.xcjh.app.net.apiService
 import com.xcjh.app.utils.CacheUtil
 import com.xcjh.base_lib.Constants
@@ -95,13 +97,33 @@ class MainVm : BaseViewModel() {
      * 获取app是否更新
      */
     fun appUpdate() {
+        var domain:String=""
+        domain = when (ApiComService.SERVER_URL) {
+            "http://192.168.101.15:6003/apis/"->{
+                DomainNameEnums.TestDomainName.name
+            }
+
+            "https://app.cbd246.com/apis/"->{
+                DomainNameEnums.PreDomainName.name
+            }
+
+            "https://app.wyjxx.cn/apis/"->{
+                DomainNameEnums.DomainName.name
+            }
+
+            else ->{
+                DomainNameEnums.NewDomainName.name
+            }
+        }
+
+
         request(
-            { apiService.getLatestVersion() },
+            { apiService.getLatestVersion(domain=domain) },
             {
                 update.value = it
 
             }, {
-                Log.i("SSSSSSSSSSSS","======="+it.errorMsg)
+
             }
         )
     }

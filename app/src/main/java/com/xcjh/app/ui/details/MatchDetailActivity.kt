@@ -993,7 +993,8 @@ class MatchDetailActivity :
      */
     private fun showSignal() {
         if (matchDetail.anchorList?.isNotEmpty() == true) {
-            showSignalDialog(matchDetail.anchorList) { anchor, pos ->
+            //  showSignalDialog   showSignalPopup
+            showSignalPopup(this,matchDetail.anchorList) { anchor, pos ->
                 matchDetail.anchorList?.forEach {
                         if(it.pureFlow){
                             it.isSelect = it.nickName.equals(anchor.nickName)
@@ -1004,12 +1005,12 @@ class MatchDetailActivity :
                 }
                 if (!anchor.pureFlow&&  this.anchor?.userId == anchor.userId) {
                     //无改变
-                    return@showSignalDialog
+                    return@showSignalPopup
                 }
                 //当前选择的是纯净流并且和判断选择的是不是正在播放的纯净流
                 if(anchor.pureFlow&&this.anchor?.nickName!!.equals(anchor.nickName)){
                     //无改变
-                    return@showSignalDialog
+                    return@showSignalPopup
                 }
 
                 //如果选择了有改变就不是纯净流了
@@ -1792,18 +1793,24 @@ class MatchDetailActivity :
             if (!findAnchor) {
                 //如果是纯净流进来的
                 var item = list[0]
-//                if(pureFlow){
-//                      item = list[list.size-1]
-//                    item.isSelect = true
-//                    anchor = item
-//                }else{
-//                    item = list[0]
-//                    item.isSelect = true
-//                    anchor = item
-//                }
+                if(pureFlow){
+                    for (i in 0 until  list.size) {
+                        if(list[i].pureFlow){
+                            item = list[i]
+                            item.isSelect = true
+                            anchor = item
+                            break
+                        }
+                    }
+
+                }else{
+                    item = list[0]
+                    item.isSelect = true
+                    anchor = item
+                }
 //                item = list[0]
-                item.isSelect = true
-                anchor = item
+//                item.isSelect = true
+//                anchor = item
 
                 if (item.pureFlow) {//纯净流 无主播
                     isHasAnchor = false
