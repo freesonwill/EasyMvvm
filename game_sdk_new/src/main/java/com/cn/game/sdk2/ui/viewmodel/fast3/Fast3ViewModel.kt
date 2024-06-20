@@ -13,6 +13,7 @@ import com.cn.game.sdk2.manager.listener.IGameListener
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.utils.Ext.isMainThread
 import com.cn.game.sdk2.utils.MyGameManager
+import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import com.kunminx.architecture.ui.callback.UnPeekLiveData
 import com.xcjh.base_lib.base.BaseViewModel
 import kotlin.math.roundToInt
@@ -23,8 +24,12 @@ class Fast3ViewModel : BaseViewModel() {
     var betOkClick: UnPeekLiveData<Boolean> = UnPeekLiveData()
     var betDeleteClick: UnPeekLiveData<Boolean> = UnPeekLiveData()
 
+    var anchorMoneyView: WeakReference<MoneyOKView>? = null
 
     var moneyAnimCallback: MoneyAnimCallback? = null
+
+    var currentBettingRecordBean:BettingRecordBean ?= null
+    var tempBetRecordMap:MutableMap<Int,MutablePair<BettingRecordBean, WeakReference<MoneyOKView>>> = mutableMapOf()
 
     val historyResultBeans: MutableList<HistoryResultBean> by lazy { mutableListOf() }
     val historyResultBeanLD: LiveData<HistoryResultBean> by lazy { UnPeekLiveData()}
@@ -126,8 +131,37 @@ class Fast3ViewModel : BaseViewModel() {
         }
     }
 
+    fun updateAnchorView(anchor: MoneyOKView){
+        hiddenAnchorTop()
+        anchor.showTop()
+        anchorMoneyView = WeakReference(anchor)
+    }
 
+    fun hiddenAnchorTop(){
+        anchorMoneyView?.get()?.hiddenTop()
+    }
 
+    fun addTempMoney(areaView: GameAreaView, betMoney: Int) {
+        if(areaView.areaCode == currentBettingRecordBean?.bettingArea?.number){
+            currentBettingRecordBean?.money?.let {
+                areaView.moneyView.setShowMoney(it)
+            }
+        }
+        /*tempMoneyMap.apply {
+            if (!containsKey(areaView.areaCode)) {
+                put(
+                    areaView.areaCode,
+                    MutablePair(betMoney, WeakReference(areaView.moneyView)
+                ))
+            } else {
+                get(areaView.areaCode)?.apply { first += betMoney }
+            }
+            get(areaView.areaCode)?.first?.let {
+                val sum = savedMoneyMap[areaView.areaCode]?.first ?: 0
+                areaView.moneyView.setShowMoney(it.plus(sum))
+            }
+        }*/
+    }
 
     interface MoneyAnimCallback {
         fun startAnim(

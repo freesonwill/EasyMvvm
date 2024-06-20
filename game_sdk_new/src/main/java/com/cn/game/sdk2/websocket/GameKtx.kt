@@ -54,7 +54,7 @@ var WEB_SOCKET_URL = "wss://ws.qxe68.com:7001/api/game/5702" ///test
 /**
  * data层使用，view不管
  */
-var balance: Int = 0
+var balance: Int = 20000
 
 /**
  * 小游戏id
