@@ -77,23 +77,26 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         //viewpager
         mFragList.add(DXDSFragment(mViewModel))
         mFragList.add(SingleDiceFragment(mViewModel))
+        mFragList.add(SumTotalFragment(mViewModel))
+        mFragList.add(PairsDiceFragment(mViewModel))
+        mFragList.add(LeopardFragment(mViewModel))
 
         mDatabind.viewPagerNew.initGameViewPager(
             childFragmentManager, mFragList, arrayListOf(
                 requireContext().getString(R.string.g_home_txt_default),
                 requireContext().getString(R.string.g_home_tab_single),
+                requireContext().getString(R.string.g_home_tab_sum),
                 requireContext().getString(R.string.g_home_tab_double),
-                requireContext().getString(R.string.g_home_tab_leopard),
-                requireContext().getString(R.string.g_home_tab_sum)
+                requireContext().getString(R.string.g_home_tab_leopard)
             )
         )
         mDatabind.magicIndicator.bindViewPagerNewGame(
             mDatabind.viewPagerNew, arrayListOf(
                 requireContext().getString(R.string.g_home_txt_default),
                 requireContext().getString(R.string.g_home_tab_single),
+                requireContext().getString(R.string.g_home_tab_sum),
                 requireContext().getString(R.string.g_home_tab_double),
-                requireContext().getString(R.string.g_home_tab_leopard),
-                requireContext().getString(R.string.g_home_tab_sum)
+                requireContext().getString(R.string.g_home_tab_leopard)
             ), scrollEnable = true
         )
         mDatabind.viewPagerNew.offscreenPageLimit = mFragList.size
@@ -522,6 +525,11 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         //PromptSoundPlay.goldPlayMedia(this)
         //PromptSoundPlay.goldPlayMediaNew(this)
         PromptSoundPlay.playAudio(requireContext())
+
+        if (this.anchorMoneyView !== areaView.moneyView){
+            anchorMoneyView?.hiddenTop()
+        }
+
         //获取选中的筹码所在的position
         val betList = mDatabind.llShowBetList.models as List<SelectAnnotationBean>
         val selectedPosition = betList.indexOfFirst { it.select }
@@ -622,7 +630,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     }
 
     private fun updateAnchorView(anchor: MoneyOKView){
-        anchorMoneyView?.hiddenTop()
+//        anchorMoneyView?.hiddenTop()
         anchor.showTop()
         anchorMoneyView = anchor
         mDatabind.tempTouch.setAnchorMoneyView(anchor)
