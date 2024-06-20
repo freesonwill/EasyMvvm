@@ -10,6 +10,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import com.cn.game.sdk2.R
+import com.cn.game.sdk2.databinding.ViewBettingOkBinding
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.xcjh.base_lib.utils.StringFormatUtil
 import com.xcjh.base_lib.utils.view.clickNoRepeat
@@ -49,15 +50,7 @@ class MoneyOKView @JvmOverloads constructor(
      */
     var ivShowBg: AppCompatImageView
 
-    /**
-     *  动画相对于控件的位置
-     */
-    var viewXYTemporary: IntArray = intArrayOf(0, 0)
-
-    /**
-     *  动画结束后显示的位置  相对于控件的位置  要点击确定的时候保存
-     */
-    var viewXYLast: IntArray = intArrayOf(0, 0)
+    var binding:ViewBettingOkBinding ?= null
 
 
 
@@ -85,11 +78,12 @@ class MoneyOKView @JvmOverloads constructor(
 
     init {
         LayoutInflater.from(context).inflate(R.layout.view_betting_ok, this).apply {
-            llShowTop = this.findViewById(R.id.llShowTop)
-            ivShowMoney = this.findViewById(R.id.ivShowMoney)
-            ivShowBg = this.findViewById(R.id.ivShowBg)
-            ivOff = this.findViewById(R.id.ivOff)
-            ivOk = this.findViewById(R.id.ivOk)
+            binding = ViewBettingOkBinding.bind(this)
+            llShowTop = binding!!.llShowTop
+            ivShowMoney =  binding!!.ivShowMoney
+            ivShowBg =  binding!!.ivShowBg
+            ivOff = binding!!.ivOff
+            ivOk = binding!!.ivOk
         }
 
         ivOff.clickNoRepeat {
