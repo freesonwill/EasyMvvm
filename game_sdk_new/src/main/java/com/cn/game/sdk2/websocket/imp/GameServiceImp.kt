@@ -242,7 +242,10 @@ class GameServiceImp(private val client: GameSocketClient) : GameService,
             betReq.addAreaBet(areaBetReq)
         }
         val build = betReq.build()
-        bet(build)
+        //bet(build)
+        //临时本地调试代码
+        previousSuccess = true
+        bettingListTemp.clear()
     }
 
     /**
