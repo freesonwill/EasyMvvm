@@ -310,6 +310,7 @@ class GameServiceImp(private val client: GameSocketClient) : GameService,
     }
 
     override fun miniGameBetResult(result: GameRes.MyMiniGameBetResult) {
+        previousSuccess = true
         //result = 0 成功 1 余额不住 3超时
         when (result.betResultInfoListList[0].result) {
             0 -> {
