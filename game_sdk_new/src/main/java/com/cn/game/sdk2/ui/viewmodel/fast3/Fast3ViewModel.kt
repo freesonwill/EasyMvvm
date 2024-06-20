@@ -10,20 +10,29 @@ import com.cn.game.sdk2.data.bean.SelectAnnotationBean
 import com.cn.game.sdk2.data.enums.GameState
 import com.cn.game.sdk2.manager.GameManager
 import com.cn.game.sdk2.manager.listener.IGameListener
+import com.cn.game.sdk2.ui.view.MoneyOKView
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.utils.ext.CommonExt.isMainThread
+import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import com.kunminx.architecture.ui.callback.UnPeekLiveData
 import com.xcjh.base_lib.base.BaseViewModel
+import com.xcjh.base_lib.bean.MutablePair
+import java.lang.ref.WeakReference
 import kotlin.math.roundToInt
 
 class Fast3ViewModel : BaseViewModel() {
     private val TAG = "Fast3ViewModel"
     var betOkClick: UnPeekLiveData<Boolean> = UnPeekLiveData()
     var betDeleteClick: UnPeekLiveData<Boolean> = UnPeekLiveData()
+
     var moneyAnimCallback: MoneyAnimCallback? = null
+
+    var currentBettingRecordBean:BettingRecordBean ?= null
+    var tempBetRecordMap:MutableMap<Int, MutablePair<BettingRecordBean, WeakReference<MoneyOKView>>> = mutableMapOf()
+
     val historyResultBeans: MutableList<HistoryResultBean> by lazy { mutableListOf() }
     val historyResultBeanLD: LiveData<HistoryResultBean> by lazy { UnPeekLiveData()}
-    private val countdownTime = 10_000
+    private val countdownTime = 20_000
     val homeTime: LiveData<Int> by lazy { UnPeekLiveData(countDownSeconds) }
     private val countDownSeconds: Int get() = countdownTime / 1000
     val gameStateLV: LiveData<GameState> by lazy { UnPeekLiveData(GameState.Init) }
@@ -54,6 +63,11 @@ class Fast3ViewModel : BaseViewModel() {
      * 投注的钱
      */
     var noteList = ArrayList<SelectAnnotationBean>()
+    val betMoney:Int
+        get() {
+            val selectedPosition = noteList.indexOfFirst { it.select }
+            return noteList[selectedPosition].money
+        }
     /**
      * 每次点击扣钱，但是不显示出来，确定后才把这个金额显示在真实钱上
      */
@@ -130,7 +144,6 @@ class Fast3ViewModel : BaseViewModel() {
             startAnim(x, y, isCentered, speed, areaView,endCallBack)
         }
     }
-
 
     interface MoneyAnimCallback {
         fun startAnim(
