@@ -22,6 +22,6 @@ object Ext {
     fun View.isInArea(rawX:Float,rawY:Float):Boolean{
         val rawXY = IntArray(2)
         getLocationOnScreen(rawXY)
-        return rawX >= rawXY[0] && rawX <= (rawX + width) && rawY >= rawXY[1] && rawY <= (rawXY[1] + height)
+        return rawX >= rawXY[0] && rawX <= (rawXY[0] + width) && rawY >= rawXY[1] && rawY <= (rawXY[1] + height)
     }
 }
