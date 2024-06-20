@@ -303,20 +303,32 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         mViewModel.betDeleteClick.observe(this) {
             hiddenAnchorTop()
             GameSocketManager.getInstance()?.getGameService()?.cancelBetting { result ->
-                result?.forEach {
-                    if(mViewModel.tempBetRecordMap.containsKey(it.bettingArea.number)){
-                        mViewModel.tempBetRecordMap[it.bettingArea.number]?.first = it
-                        mViewModel.tempBetRecordMap[it.bettingArea.number]?.apply {
-                            second.get()?.setShowMoney(first.money)
-                        }
-                    }else{
-                                                                                                                                                            mViewModel.tempBetRecordMap[it.bettingArea.number]?.second?.get()?.let { moneyView ->
-                            if(moneyView.isAdd()) {
+                if(null == result){
+                    mViewModel.tempBetRecordMap.forEach{
+                        it.value.second.get()?.let { moneyView ->
+                            if (moneyView.isAdd()) {
                                 val parent = moneyView.parent as ViewGroup
                                 parent.removeView(moneyView)
                             }
                         }
-                        mViewModel.tempBetRecordMap.remove(it.bettingArea.number)
+                    }
+                }else {
+                    result.forEach {
+                        if (mViewModel.tempBetRecordMap.containsKey(it.bettingArea.number)) {
+                            mViewModel.tempBetRecordMap[it.bettingArea.number]?.first = it
+                            mViewModel.tempBetRecordMap[it.bettingArea.number]?.apply {
+                                second.get()?.setShowMoney(first.money)
+                            }
+                        } else {
+                            mViewModel.tempBetRecordMap[it.bettingArea.number]?.second?.get()
+                                ?.let { moneyView ->
+                                    if (moneyView.isAdd()) {
+                                        val parent = moneyView.parent as ViewGroup
+                                        parent.removeView(moneyView)
+                                    }
+                                }
+                            mViewModel.tempBetRecordMap.remove(it.bettingArea.number)
+                        }
                     }
                 }
             }

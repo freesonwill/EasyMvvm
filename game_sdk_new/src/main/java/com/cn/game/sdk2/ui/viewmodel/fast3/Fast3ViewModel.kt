@@ -53,7 +53,7 @@ class Fast3ViewModel : BaseViewModel() {
      * 是否显示骰子的结果组合
      */
     var isShowResult: Boolean = true
-    val currentMoney: LiveData<Int> by lazy { UnPeekLiveData(100) }
+    val currentMoney: LiveData<Int> by lazy { UnPeekLiveData(100000) }
 
     val onGameAreaLocationClick:UnPeekLiveData<LocationClickPoint> by lazy { UnPeekLiveData() }
 
@@ -61,10 +61,15 @@ class Fast3ViewModel : BaseViewModel() {
      * 投注的钱
      */
     var noteList = ArrayList<SelectAnnotationBean>()
+    val betMoney:Int
+        get() {
+            val selectedPosition = noteList.indexOfFirst { it.select }
+            return noteList[selectedPosition].money
+        }
     /**
      * 每次点击扣钱，但是不显示出来，确定后才把这个金额显示在真实钱上
      */
-    var temporaryCurrentMoney: Int = 500
+    var temporaryCurrentMoney: Int = 500000
     //========================================== Method =========================================//
     override fun onInit() {
 
