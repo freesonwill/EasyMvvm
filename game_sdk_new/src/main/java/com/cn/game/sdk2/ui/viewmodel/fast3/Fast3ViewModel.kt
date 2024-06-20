@@ -11,8 +11,7 @@ import com.cn.game.sdk2.data.enums.GameState
 import com.cn.game.sdk2.manager.GameManager
 import com.cn.game.sdk2.manager.listener.IGameListener
 import com.cn.game.sdk2.ui.view.game.GameAreaView
-import com.cn.game.sdk2.utils.Ext.isMainThread
-import com.cn.game.sdk2.utils.MyGameManager
+import com.cn.game.sdk2.utils.ext.CommonExt.isMainThread
 import com.kunminx.architecture.ui.callback.UnPeekLiveData
 import com.xcjh.base_lib.base.BaseViewModel
 import kotlin.math.roundToInt

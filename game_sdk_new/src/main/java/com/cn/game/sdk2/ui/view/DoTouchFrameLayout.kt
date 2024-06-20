@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.widget.FrameLayout
 import androidx.core.view.isVisible
-import com.cn.game.sdk2.utils.Ext.isInArea
+import com.cn.game.sdk2.utils.ext.ViewExt.isInArea
 
 /**
  * 首页遮照触摸

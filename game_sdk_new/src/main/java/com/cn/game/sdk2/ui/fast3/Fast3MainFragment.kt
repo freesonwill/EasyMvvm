@@ -37,8 +37,8 @@ import com.cn.game.sdk2.ui.helper.ViewHelper.initGameViewPager
 import com.cn.game.sdk2.ui.view.MoneyOKView
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
-import com.cn.game.sdk2.utils.Ext
-import com.cn.game.sdk2.utils.Ext.toPinyin
+import com.cn.game.sdk2.utils.ext.CommonExt.isMainThread
+import com.cn.game.sdk2.utils.ext.CommonExt.toPinyin
 import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
@@ -234,6 +234,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         }
         mViewModel.gameStateLV.observe(requireActivity()) {
             Log.i(TAG, "gameStateLV changed:${it}")
+            mDatabind.tempTouch.isEnabled = it == GameState.Betting
             when (it) {
                 GameState.Betting -> {
                     onStartBetting()
@@ -265,7 +266,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             mViewModel.historyResultBeans.add(bean)
             Log.d(
                 TAG,
-                "onDrawingResult run on ${Ext.isMainThread} result:$bean," + mViewModel.historyResultBeans.size
+                "onDrawingResult run on $isMainThread result:$bean," + mViewModel.historyResultBeans.size
             )
             adapter.notifyItemInserted(adapter.models!!.size)
             if (adapter.models!!.isNotEmpty()) {

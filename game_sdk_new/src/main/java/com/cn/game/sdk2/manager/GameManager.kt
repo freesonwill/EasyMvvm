@@ -5,12 +5,9 @@ import android.util.Log
 import com.cn.game.sdk2.data.bean.HistoryResultBean
 import com.cn.game.sdk2.data.enums.GameState
 import com.cn.game.sdk2.manager.listener.IGameListener
-import com.cn.game.sdk2.utils.Ext.isMainThread
-import com.kunminx.architecture.ui.callback.UnPeekLiveData
-import kotlinx.coroutines.Dispatchers
+import com.cn.game.sdk2.utils.ext.CommonExt.isMainThread
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import kotlin.random.Random
 
 /**
