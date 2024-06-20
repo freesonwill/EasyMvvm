@@ -210,6 +210,7 @@ class GameServiceImp(private val client: GameSocketClient) : GameService,
      *  取消下注
      *   - 清空临时下注集合
      *   - 返回已确认下注集合
+     *  @param block 取消下注后返回已确认的下注
      */
     fun cancelBetting(block: (result: List<BettingRecordBean>?) -> Unit) {
         //重置当前局总下注金额为已提交的金额
@@ -290,20 +291,23 @@ class GameServiceImp(private val client: GameSocketClient) : GameService,
     }
 
     override fun loginSuccess(afterLoginSuccess: ClientRes.InfoAfterLoginSuccess) {
-
+        gameAboutModel.setLoginResult(true)
     }
 
     override fun loginError(errorMessage: ClientRes.ErrorMessage) {
-
+        gameAboutModel.loginErrorMessage = errorMessage.desc
+        gameAboutModel.setLoginResult(true)
     }
 
     override fun enterInfo(enterInfo: GameRes.EnterInfo) {
+        gameAboutModel.isSitDown(true)
         balance = enterInfo.self.score.toInt()
         gameAboutModel.changeBalance(enterInfo.self.score.toInt())
 
     }
 
     override fun groupInfo(groupInfo: GameRes.GroupInfo) {
+        gameAboutModel.isEnterGroup(true)
         val miniGameBasicInfo = groupInfo.miniGameBasicInfoListList[0]
         miniGameId = miniGameBasicInfo.miniGameId
         gameAboutModel.miniGameId = miniGameId
@@ -327,7 +331,8 @@ class GameServiceImp(private val client: GameSocketClient) : GameService,
     }
 
     override fun leaveGroup(leave: GameRes.LeaveGroup) {
-
+        leave.groupId
+        gameAboutModel.isLeaveGroup(true)
     }
 
     override fun leaveMiniGameInfo(miniGame: GameRes.LeaveMiniGames) {

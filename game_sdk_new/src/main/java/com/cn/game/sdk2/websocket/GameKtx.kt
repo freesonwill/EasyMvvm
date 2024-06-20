@@ -67,7 +67,6 @@ var gameAboutModel = GameAboutModel()
  * 是否能下注
  * 判断依据：
  *  - 游戏状态
- *  - 余额是否足够
  */
 var isCanBetting: Boolean = true
     get() {

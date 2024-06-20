@@ -21,6 +21,22 @@ class GameAboutModel : ViewModel() {
     private val _historyRounds = MutableLiveData<List<RoundInfoBean>>()
 
     private val _isCanAgain = MutableLiveData<Boolean>()
+    private val _isLoginSuccess = MutableLiveData<Boolean>()
+    private val _isSitDown = MutableLiveData<Boolean>()
+    private val _isEnterGroup = MutableLiveData<Boolean>()
+    private val _isLeaveGroup = MutableLiveData<Boolean>()
+
+    val isLoginSuccess :LiveData<Boolean>
+        get() = _isLoginSuccess
+
+    val isSitDown :LiveData<Boolean>
+        get() = _isSitDown
+
+    val isEnterGroup :LiveData<Boolean>
+        get() = _isEnterGroup
+
+    val isLeaveGroup :LiveData<Boolean>
+        get() = _isLeaveGroup
 
     /**
      * 实现currentStage的observe，监听阶段变化
@@ -56,6 +72,21 @@ class GameAboutModel : ViewModel() {
     val isCanAgain: LiveData<Boolean>
         get() = _isCanAgain
 
+    fun setLoginResult(isSuccess:Boolean){
+        _isLoginSuccess.value = isSuccess
+    }
+
+    fun isSitDown(sitDown:Boolean){
+        _isSitDown.value = sitDown
+    }
+    fun isEnterGroup(enter:Boolean){
+        _isEnterGroup.value = enter
+    }
+
+    fun isLeaveGroup(leave:Boolean){
+        _isLeaveGroup.value = leave
+    }
+
     fun changeCanAgain(canAgain: Boolean) {
         _isCanAgain.value = canAgain
     }
@@ -88,6 +119,7 @@ class GameAboutModel : ViewModel() {
     var miniGameId: Int = 0
     var countDown: Int = 0 //阶段倒计时
     var roundId: String = "" //期号
+    var loginErrorMessage = ""
 
     /**
      * 结算阶段使用
