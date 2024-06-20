@@ -15,6 +15,7 @@ import com.cn.game.sdk2.websocket.calculateArea
 import com.cn.game.sdk2.websocket.calculateUserLotteryResult
 import com.cn.game.sdk2.websocket.convertBetting
 import com.cn.game.sdk2.websocket.gameAboutModel
+import com.cn.game.sdk2.websocket.gameMassageManager
 import com.cn.game.sdk2.websocket.interfaces.GameService
 import com.cn.game.sdk2.websocket.isBig
 import com.cn.game.sdk2.websocket.isCanBetting
@@ -31,7 +32,10 @@ import game.common.proto.ClientRes
 import game.mod.proc.yf.proto.req.GameReq
 import game.mod.proc.yf.proto.req.GameReq.AreaBetReq
 import game.mod.proc.yf.proto.req.GameReq.BetReq
+import game.mod.proc.yf.proto.req.GameReq.EnterMiniGame
 import game.mod.proc.yf.proto.res.GameRes
+import game.mod.proc.yf.proto.res.GameRes.EnterInfo
+import game.mod.proc.yf.proto.res.GameRes.GroupInfo
 
 /**
  * 提供ui层调用的统一对象
@@ -55,6 +59,7 @@ class GameServiceImp(private val client: GameSocketClient) : GameService,
         val mid: Short = 7
         val sid: Short = 7
         send(mid, sid, req.toByteArray())
+        "请求登录 login".loge()
     }
 
     override fun enterGroup(req: GameReq.EnterGroup) {
@@ -295,18 +300,24 @@ class GameServiceImp(private val client: GameSocketClient) : GameService,
 
     override fun loginSuccess(afterLoginSuccess: ClientRes.InfoAfterLoginSuccess) {
         gameAboutModel.setLoginResult(true)
+        //初始化step2:登录成功后坐下
+        enterInfo()
+        "loginSuccess：enterInfo()".loge()
     }
 
     override fun loginError(errorMessage: ClientRes.ErrorMessage) {
         gameAboutModel.loginErrorMessage = errorMessage.desc
         gameAboutModel.setLoginResult(true)
+        "loginError：${errorMessage.desc}".loge()
     }
 
     override fun enterInfo(enterInfo: GameRes.EnterInfo) {
         gameAboutModel.isSitDown(true)
         balance = enterInfo.self.score.toInt()
         gameAboutModel.changeBalance(enterInfo.self.score.toInt())
-
+        //初始化step3:进入直播间
+        "enterInfo Success: enterLive".loge()
+        GameSDK.enterLive("1213", listOf(3),"")
     }
 
     override fun groupInfo(groupInfo: GameRes.GroupInfo) {
@@ -331,6 +342,8 @@ class GameServiceImp(private val client: GameSocketClient) : GameService,
             2 -> gameAboutModel.changeStage(GameAboutModel.Stage.DEAL)
             3 -> gameAboutModel.changeStage(GameAboutModel.Stage.SETTLE)
         }
+        val miniGame:EnterMiniGame = EnterMiniGame.newBuilder().setMiniGameId(3).build()
+        enterGame(miniGame)
     }
 
     override fun leaveGroup(leave: GameRes.LeaveGroup) {
