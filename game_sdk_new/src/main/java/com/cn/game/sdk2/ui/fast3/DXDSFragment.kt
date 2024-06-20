@@ -17,6 +17,7 @@ import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.view.game.IGameView
 import com.cn.game.sdk2.ui.viewmodel.fast3.DXDSVm
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
+import com.cn.game.sdk2.utils.ext.ViewExt.locationOnScreen
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.utils.tool.measureView
 
@@ -197,12 +198,8 @@ class DXDSFragment(var fast3VM: Fast3ViewModel) : BaseGameFragment<DXDSVm, FragD
         }
     }
 
-    private fun emitMoneyAnim(
-        areaView: GameAreaView,
-        moneyOKView: MoneyOKView,
-    ) {
-        val location = IntArray(2)
-        moneyOKView.getLocationOnScreen(location)
+    private fun emitMoneyAnim(areaView: GameAreaView, moneyOKView: MoneyOKView) {
+        val location = moneyOKView.locationOnScreen
         val rax = location[0].toFloat()
         val ray = location[1].toFloat() + moneyOKView.measuredHeight / 2
         fast3VM.emitMoneyAnim(rax, ray, areaView = areaView, endCallBack = {

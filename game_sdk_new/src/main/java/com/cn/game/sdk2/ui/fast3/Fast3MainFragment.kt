@@ -234,7 +234,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         }
         mViewModel.gameStateLV.observe(requireActivity()) {
             Log.i(TAG, "gameStateLV changed:${it}")
-            mDatabind.tempTouch.isEnabled = it == GameState.Betting
+            mViewModel.isClickOperation = it == GameState.Betting
             when (it) {
                 GameState.Betting -> {
                     onStartBetting()
@@ -275,14 +275,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             mDatabind.rlClickHide.isVisible = adapter.models!!.isNotEmpty()
         }
         mViewModel.moneyAnimCallback = object : Fast3ViewModel.MoneyAnimCallback {
-            override fun startAnim(
-                x: Float,
-                y: Float,
-                isCentered: Boolean,
-                speed: Long,
-                areaView: GameAreaView,
-                endCallBack: (() -> Unit)?
-            ) {
+            override fun startAnim(x: Float, y: Float, isCentered: Boolean, speed: Long, areaView: GameAreaView, endCallBack: (() -> Unit)?) {
                 tryMoneyAnimation(x, y, speed, areaView, endCallBack)
             }
         }
@@ -352,14 +345,13 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             if (resultAnimMoveHeight == -1) {
                 val manager = rvHomeHistory.layoutManager as LinearLayoutManager
                 val firstPosition = manager.findFirstVisibleItemPosition()
-                val viewHolder = rvHomeHistory.findViewHolderForLayoutPosition(firstPosition)
-                val llShowDice = viewHolder!!.itemView.findViewById<LinearLayout>(R.id.llShowDice)
+                val viewHolder = rvHomeHistory.findViewHolderForLayoutPosition(firstPosition) ?: return@apply
+                val llShowDice = viewHolder.itemView.findViewById<LinearLayout>(R.id.llShowDice)
                 resultAnimMoveHeight = llShowDice.height
             }
             ivHomeRotation.rotation = if (mViewModel.isShowResult) 0f else 180f
             val startHeight = rvHomeHistory.height.toFloat()
-            val endHeight =
-                if (mViewModel.isShowResult) resultRvHeight else resultRvHeight -resultAnimMoveHeight
+            val endHeight = if (mViewModel.isShowResult) resultRvHeight else resultRvHeight -resultAnimMoveHeight
 
             resultAnim =
                 ValueAnimator.ofFloat(startHeight, endHeight.toFloat()).apply {
@@ -487,11 +479,21 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         }
     }
 
+    override fun onDetach() {
+        super.onDetach()
+        Log.d(TAG,"onDetach~~~~~~~~~~~~~~")
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Log.d(TAG,"onDestroyView~~~~~~~~~~~~~~")
+    }
 
     /**
      * 关闭页面
      */
     override fun onDestroy() {
+        Log.d(TAG,"onDestroy~~~~~~~~~~~~~~")
         //关闭的时候要把这个赋值为0选择
         mViewModel.noteList.forEach {
             it.select = false
@@ -517,11 +519,9 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         areaView: GameAreaView,
         endCallBack: (() -> Unit)? = null
     ) {
-//        PromptSoundPlay.goldPlayMedia(this)
-//        PromptSoundPlay.goldPlayMediaNew(this)
-
+        //PromptSoundPlay.goldPlayMedia(this)
+        //PromptSoundPlay.goldPlayMediaNew(this)
         PromptSoundPlay.playAudio(requireContext())
-
         //获取选中的筹码所在的position
         val betList = mDatabind.llShowBetList.models as List<SelectAnnotationBean>
         val selectedPosition = betList.indexOfFirst { it.select }

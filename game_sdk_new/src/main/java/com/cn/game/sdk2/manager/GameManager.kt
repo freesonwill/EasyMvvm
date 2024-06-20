@@ -80,7 +80,9 @@ class GameManager private constructor() : IGameManager {
     fun startBetting() {
         gameState = GameState.Betting
     }
-
+    fun reset(){
+        gameState = GameState.Init
+    }
     fun startSettling() {
         gameState = GameState.Settling
     }

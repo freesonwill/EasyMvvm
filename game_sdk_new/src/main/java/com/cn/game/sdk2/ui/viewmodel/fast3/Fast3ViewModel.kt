@@ -17,23 +17,23 @@ import com.xcjh.base_lib.base.BaseViewModel
 import kotlin.math.roundToInt
 
 class Fast3ViewModel : BaseViewModel() {
-
     private val TAG = "Fast3ViewModel"
     var betOkClick: UnPeekLiveData<Boolean> = UnPeekLiveData()
     var betDeleteClick: UnPeekLiveData<Boolean> = UnPeekLiveData()
-
-
     var moneyAnimCallback: MoneyAnimCallback? = null
-
     val historyResultBeans: MutableList<HistoryResultBean> by lazy { mutableListOf() }
     val historyResultBeanLD: LiveData<HistoryResultBean> by lazy { UnPeekLiveData()}
     private val countdownTime = 10_000
     val homeTime: LiveData<Int> by lazy { UnPeekLiveData(countDownSeconds) }
     private val countDownSeconds: Int get() = countdownTime / 1000
     val gameStateLV: LiveData<GameState> by lazy { UnPeekLiveData(GameState.Init) }
-    val isClickOperationLD by lazy { UnPeekLiveData<Boolean>(true) }
+    val isClickOperationLD:LiveData<Boolean> by lazy { UnPeekLiveData(true) }
     val gameState: GameState get() = gameStateLV.value!!
-    val isClickOperation: Boolean get() = isClickOperationLD.value!!
+    //是否可点击
+    var isClickOperation: Boolean get() = isClickOperationLD.value!!
+        set(value) {
+            (isClickOperationLD as UnPeekLiveData).value = value
+        }
     val homeTimeVisibility by lazy {
         Transformations.map(this.gameStateLV) {
             return@map when (it) {
@@ -111,6 +111,12 @@ class Fast3ViewModel : BaseViewModel() {
         GameManager.instance.stopCountDown()
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        Log.d(TAG,"onCleared")
+        GameManager.instance.reset()
+    }
+
     fun startSettling() {
         GameManager.instance.startSettling()
     }
@@ -124,8 +130,6 @@ class Fast3ViewModel : BaseViewModel() {
             startAnim(x, y, isCentered, speed, areaView,endCallBack)
         }
     }
-
-
 
 
     interface MoneyAnimCallback {
