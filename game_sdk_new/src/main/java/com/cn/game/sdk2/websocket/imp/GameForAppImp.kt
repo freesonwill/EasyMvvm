@@ -39,14 +39,16 @@ object GameSDK : IGameForApp {
      * - Parameter agentName: 平台名称
      * - Parameter token: 用户token
      * - type ==1 成功 type =1000（desc：您当前还在其他游戏中）type =1001 （desc：token验证失败）type =1002 （desc：余额不足）type =1005（desc：当前服务器正在维护）type =200（desc：其他情况）
+     * - 初始化流程：1）App调用登录：loadGame + loginGameWithAgentName ——>2）进入房间坐下：GameServiceImp.enterInfo()
+     * - ——>3)App进入直播间:GameServiceImp.groupInfo() ——>4)进入小游戏:GameServiceImp.gameInfo()
      */
-    //platform= 0 ,requestId = 0,version = "1"
+    //platform= 6 ,requestId = 0,version = "1"
     override fun loginGameWithAgentName(agentName: String, token: String) {
         val req =
-            ClientReq.LoginReq.newBuilder().setAgentName(agentName).setServer(8).setToken(token)
-                .setRequestId(6).setVersion("6").setNickname("android").build()
+            ClientReq.LoginReq.newBuilder().setPlatform(6).setRequestId(0).setVersion("1").setNickname("Aubrey Wolff")
+                .setAgentName(agentName).setToken(token).build()
         gameMassageManager?.login(req)
-        gameMassageManager?.enterInfo()
+        //gameMassageManager?.enterInfo()
     }
 
     /** 进入直播間
@@ -55,6 +57,7 @@ object GameSDK : IGameForApp {
      * - Parameter data_p: 透传资料（转抛）
      * - type ==1 成功 随便
      */
+    //1213,3
     override fun enterLive(liveId: String, gameIds: List<Int>, data: String) {
         val req = GameReq.EnterGroup.newBuilder()
         gameIds.forEach {

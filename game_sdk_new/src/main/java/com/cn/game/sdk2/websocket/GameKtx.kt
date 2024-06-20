@@ -50,7 +50,7 @@ import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
  * socket-url
  */
 //var WEB_SOCKET_URL = "wss://ws.qxe68.com:7001/api/game/5702" ///test
-var WEB_SOCKET_URL = "wss://ws.qxe99.com:7001/api/game/5702" ///test
+var WEB_SOCKET_URL = "wss://ws.qxe68.com:7001/api/game/5702" ///test
 /**
  * data层使用，view不管
  */
