@@ -92,7 +92,7 @@ class DXDSFragment(var fast3VM: Fast3ViewModel) : BaseGameFragment<DXDSVm, FragD
                     //todo:整个流程转移至FastMainFragment
                     if (MyGameManager.isClickOperation && PromptSoundPlay.handleClick()) {
                         GameSocketManager.getInstance()?.getGameService()?.apply {
-                            addBetting(BettingRecordBean(areaView.areaInfo!!, money = fast3VM.betMoney)){ isMoneyEnough, result ->
+                            addBetting(BettingRecordBean(areaView.areaInfo!!, money = fast3VM.currentMoney.value!!)){ isMoneyEnough, result ->
                                 if(isMoneyEnough){
                                     fast3VM.currentBettingRecordBean = result
                                     if (result != null) {
@@ -104,7 +104,6 @@ class DXDSFragment(var fast3VM: Fast3ViewModel) : BaseGameFragment<DXDSVm, FragD
                                                 WeakReference(areaView.moneyView)
                                             )
                                         }
-                                        fast3VM.hiddenAnchorTop()
                                         if (!areaView.moneyView.isAdd()) {
                                             addMoneyOkView(areaView, x, y, rawY)
                                         }

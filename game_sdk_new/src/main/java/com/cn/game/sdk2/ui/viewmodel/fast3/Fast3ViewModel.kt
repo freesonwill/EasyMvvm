@@ -10,12 +10,15 @@ import com.cn.game.sdk2.data.bean.SelectAnnotationBean
 import com.cn.game.sdk2.data.enums.GameState
 import com.cn.game.sdk2.manager.GameManager
 import com.cn.game.sdk2.manager.listener.IGameListener
+import com.cn.game.sdk2.ui.view.MoneyOKView
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.utils.Ext.isMainThread
 import com.cn.game.sdk2.utils.MyGameManager
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import com.kunminx.architecture.ui.callback.UnPeekLiveData
 import com.xcjh.base_lib.base.BaseViewModel
+import com.xcjh.base_lib.bean.MutablePair
+import java.lang.ref.WeakReference
 import kotlin.math.roundToInt
 
 class Fast3ViewModel : BaseViewModel() {
@@ -24,16 +27,14 @@ class Fast3ViewModel : BaseViewModel() {
     var betOkClick: UnPeekLiveData<Boolean> = UnPeekLiveData()
     var betDeleteClick: UnPeekLiveData<Boolean> = UnPeekLiveData()
 
-    var anchorMoneyView: WeakReference<MoneyOKView>? = null
-
     var moneyAnimCallback: MoneyAnimCallback? = null
 
     var currentBettingRecordBean:BettingRecordBean ?= null
-    var tempBetRecordMap:MutableMap<Int,MutablePair<BettingRecordBean, WeakReference<MoneyOKView>>> = mutableMapOf()
+    var tempBetRecordMap:MutableMap<Int, MutablePair<BettingRecordBean, WeakReference<MoneyOKView>>> = mutableMapOf()
 
     val historyResultBeans: MutableList<HistoryResultBean> by lazy { mutableListOf() }
     val historyResultBeanLD: LiveData<HistoryResultBean> by lazy { UnPeekLiveData()}
-    private val countdownTime = 10_000
+    private val countdownTime = 20_000
     val homeTime: LiveData<Int> by lazy { UnPeekLiveData(countDownSeconds) }
     private val countDownSeconds: Int get() = countdownTime / 1000
     val gameStateLV: LiveData<GameState> by lazy { UnPeekLiveData(GameState.Init) }
@@ -52,7 +53,7 @@ class Fast3ViewModel : BaseViewModel() {
      * 是否显示骰子的结果组合
      */
     var isShowResult: Boolean = true
-    val currentMoney: LiveData<Int> by lazy { UnPeekLiveData(10000) }
+    val currentMoney: LiveData<Int> by lazy { UnPeekLiveData(100) }
 
     val onGameAreaLocationClick:UnPeekLiveData<LocationClickPoint> by lazy { UnPeekLiveData() }
 
@@ -63,7 +64,7 @@ class Fast3ViewModel : BaseViewModel() {
     /**
      * 每次点击扣钱，但是不显示出来，确定后才把这个金额显示在真实钱上
      */
-    var temporaryCurrentMoney: Int = 500000
+    var temporaryCurrentMoney: Int = 500
     //========================================== Method =========================================//
     override fun onInit() {
 
@@ -129,38 +130,6 @@ class Fast3ViewModel : BaseViewModel() {
         moneyAnimCallback?.apply {
             startAnim(x, y, isCentered, speed, areaView,endCallBack)
         }
-    }
-
-    fun updateAnchorView(anchor: MoneyOKView){
-        hiddenAnchorTop()
-        anchor.showTop()
-        anchorMoneyView = WeakReference(anchor)
-    }
-
-    fun hiddenAnchorTop(){
-        anchorMoneyView?.get()?.hiddenTop()
-    }
-
-    fun addTempMoney(areaView: GameAreaView, betMoney: Int) {
-        if(areaView.areaCode == currentBettingRecordBean?.bettingArea?.number){
-            currentBettingRecordBean?.money?.let {
-                areaView.moneyView.setShowMoney(it)
-            }
-        }
-        /*tempMoneyMap.apply {
-            if (!containsKey(areaView.areaCode)) {
-                put(
-                    areaView.areaCode,
-                    MutablePair(betMoney, WeakReference(areaView.moneyView)
-                ))
-            } else {
-                get(areaView.areaCode)?.apply { first += betMoney }
-            }
-            get(areaView.areaCode)?.first?.let {
-                val sum = savedMoneyMap[areaView.areaCode]?.first ?: 0
-                areaView.moneyView.setShowMoney(it.plus(sum))
-            }
-        }*/
     }
 
     interface MoneyAnimCallback {

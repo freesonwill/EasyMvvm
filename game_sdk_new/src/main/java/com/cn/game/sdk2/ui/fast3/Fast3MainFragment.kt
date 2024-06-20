@@ -55,6 +55,7 @@ import com.xcjh.base_lib.bean.MutablePair
 import com.xcjh.base_lib.utils.dp2px
 import com.xcjh.base_lib.utils.view.clickNoRepeat
 import kotlinx.coroutines.launch
+import java.lang.ref.WeakReference
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -170,7 +171,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 animatorSet.start()
             }
             //倒计时
-            mViewModel.startCountDown(3_000)
+            mViewModel.startCountDown(20_000)
         }
     }
 
@@ -207,7 +208,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 })
                 animatorSet.start()
             }
-            mViewModel.startCountDown(3_000)
+            mViewModel.startCountDown(20_000)
         }
 
     }
@@ -280,7 +281,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             }
         }
         mViewModel.betOkClick.observe(this) {
-            mViewModel.hiddenAnchorTop()
+            hiddenAnchorTop()
             //todo:bet失败处理
             GameSocketManager.getInstance()?.getGameService()?.commitBetting()
             /*var tempMoney: Int
@@ -300,7 +301,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         }
 
         mViewModel.betDeleteClick.observe(this) {
-            mViewModel.hiddenAnchorTop()
+            hiddenAnchorTop()
             GameSocketManager.getInstance()?.getGameService()?.cancelBetting { result ->
                 result?.forEach {
                     if(mViewModel.tempBetRecordMap.containsKey(it.bettingArea.number)){
@@ -503,7 +504,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         }
     }
 
-
     /**
      * 关闭页面
      */
@@ -536,7 +536,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 //        PromptSoundPlay.goldPlayMedia(this)
 //        PromptSoundPlay.goldPlayMediaNew(this)
         PromptSoundPlay.playAudio(requireContext())
-
+        hiddenAnchorTop()
         //获取选中的筹码所在的position
         val betList = mDatabind.llShowBetList.models as List<SelectAnnotationBean>
         val selectedPosition = betList.indexOfFirst { it.select }
@@ -627,14 +627,22 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 animator.start()
 
                 //筹码栈处理
-                mViewModel.updateAnchorView(areaView.moneyView)
-                mViewModel.addTempMoney(areaView, mViewModel.betMoney)
+                updateAnchorView(areaView.moneyView)
+                addTempMoney(areaView)
             })
         }
 
         valueAnimator.duration = speed
         valueAnimator.interpolator = AccelerateDecelerateInterpolator()
         valueAnimator.start()
+    }
+
+    private fun addTempMoney(areaView: GameAreaView) {
+        mViewModel.currentBettingRecordBean?.let {
+            if(areaView.areaCode == it.bettingArea.number){
+                areaView.moneyView.setShowMoney(mViewModel.currentBettingRecordBean!!.money)
+            }
+        }
     }
 
     private fun scrollToItemAndPerformAction(
@@ -678,5 +686,17 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             }
         }
     }
+
+    fun updateAnchorView(anchor: MoneyOKView){
+        hiddenAnchorTop()
+        anchor.showTop()
+        anchorMoneyView = anchor
+        mDatabind.tempTouch.setAnchorMoneyView(anchor)
+    }
+
+    fun hiddenAnchorTop(){
+        anchorMoneyView?.hiddenTop()
+    }
+
 
 }
