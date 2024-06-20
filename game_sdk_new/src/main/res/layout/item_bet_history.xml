@@ -15,24 +15,28 @@
             android:layout_width="19dp"
             android:layout_height="19dp"
             android:scaleType="fitXY"
+            android:layout_marginTop="2dp"
             app:srcCompat="@drawable/icon_dice_yi" />
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ivBetEr"
             android:layout_width="19dp"
             android:layout_height="19dp"
             android:scaleType="fitXY"
+            android:layout_marginTop="2dp"
             app:srcCompat="@drawable/icon_dice_er" />
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ivBetSan"
             android:layout_width="19dp"
             android:layout_height="19dp"
             android:scaleType="fitXY"
+            android:layout_marginTop="2dp"
             app:srcCompat="@drawable/icon_dice_san" />
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/txtBetNum"
             android:layout_width="19dp"
             android:layout_height="14dp"
             android:gravity="center"
+            android:layout_marginTop="2dp"
             android:layout_gravity="center"
             android:textColor="@color/g_000000"
             android:textSize="11sp"
@@ -44,7 +48,8 @@
          android:id="@+id/txtBetSize"
          android:layout_width="match_parent"
          android:layout_height="19dp"
-         android:textSize="10sp"
+         android:textSize="11sp"
+         android:layout_marginTop="2dp"
          android:layout_gravity="center"
          android:gravity="center"
          android:textColor="@color/c_ffffff"
@@ -55,7 +60,8 @@
         android:id="@+id/txtBetOdd"
         android:layout_width="match_parent"
         android:layout_height="19dp"
-        android:textSize="10sp"
+        android:layout_marginTop="2dp"
+        android:textSize="11sp"
         android:layout_gravity="center"
         android:gravity="center"
         android:textColor="@color/c_ffffff"

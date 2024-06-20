@@ -29,13 +29,6 @@
                     android:layout_height="match_parent"
                     android:scaleType="fitXY"
                     app:srcCompat="@drawable/home_left_top"/>
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivFlickerLeftTop"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="fitXY"
-                    android:visibility="gone"
-                    app:srcCompat="@drawable/icon_lucency_left_top"/>
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -103,6 +96,14 @@
 
                     </LinearLayout>
                 </LinearLayout>
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivFlickerLeftTop"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    android:visibility="gone"
+                    app:tint="@color/c_ffffff"
+                    app:srcCompat="@drawable/icon_lucency_left_top"/>
             </RelativeLayout>
         </com.cn.game.sdk2.ui.view.game.GameAreaView>
         <!--  右上角-->
@@ -123,13 +124,7 @@
                     android:layout_height="match_parent"
                     android:scaleType="fitXY"
                     app:srcCompat="@drawable/home_right_top"/>
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivFlickerRightTop"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="fitXY"
-                    android:visibility="gone"
-                    app:srcCompat="@drawable/iocn_lucency_right_top"/>
+
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -201,6 +196,15 @@
 
                     </LinearLayout>
                 </LinearLayout>
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivFlickerRightTop"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    app:tint="@color/c_ffffff"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/iocn_lucency_right_top"/>
             </RelativeLayout>
         </com.cn.game.sdk2.ui.view.game.GameAreaView>
         <!--左下角-->
@@ -221,13 +225,7 @@
                     android:layout_height="match_parent"
                     android:scaleType="fitXY"
                     app:srcCompat="@drawable/home_left_below"/>
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivFlickerLeftBelow"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="fitXY"
-                    android:visibility="gone"
-                    app:srcCompat="@drawable/icon_lucency_left_below"/>
+
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -297,6 +295,15 @@
 
                     </LinearLayout>
                 </LinearLayout>
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivFlickerLeftBelow"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    app:tint="@color/c_ffffff"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/icon_lucency_left_below"/>
             </RelativeLayout>
         </com.cn.game.sdk2.ui.view.game.GameAreaView>
         <!-- 右下角-->
@@ -317,13 +324,7 @@
                     android:layout_height="match_parent"
                     android:scaleType="fitXY"
                     app:srcCompat="@drawable/home_right_below"/>
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivFlickerRightBelow"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="fitXY"
-                    android:visibility="gone"
-                    app:srcCompat="@drawable/icon_lucency_right_below"/>
+
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -394,6 +395,15 @@
 
                     </LinearLayout>
                 </LinearLayout>
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivFlickerRightBelow"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    android:visibility="gone"
+                    app:tint="@color/c_ffffff"
+                    app:srcCompat="@drawable/icon_lucency_right_below"/>
             </RelativeLayout>
         </com.cn.game.sdk2.ui.view.game.GameAreaView>
         <!--中间-->
@@ -414,13 +424,6 @@
                     android:layout_height="match_parent"
                     android:scaleType="fitXY"
                     app:srcCompat="@drawable/home_centre"/>
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivFlickerCentre"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="fitXY"
-                    android:visibility="gone"
-                    app:srcCompat="@drawable/icon_lucency_centre"/>
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -447,6 +450,7 @@
                     android:layout_height="match_parent"
                     android:scaleType="fitXY"
                     android:visibility="gone"
+                    app:tint="@color/c_ffffff"
                     app:srcCompat="@drawable/icon_lucency_centre"/>
             </RelativeLayout>
         </com.cn.game.sdk2.ui.view.game.GameAreaView>

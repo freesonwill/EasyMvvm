@@ -37,12 +37,13 @@ import com.cn.game.sdk2.ui.view.CustomBubbleAttachPopup
 import com.cn.game.sdk2.ui.view.MoneyOKView
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
-import com.cn.game.sdk2.utils.ext.CommonExt
 import com.cn.game.sdk2.utils.ext.CommonExt.isMainThread
 import com.cn.game.sdk2.utils.ext.CommonExt.toPinyin
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.websocket.GameSocketManager
+import com.drake.brv.annotaion.DividerOrientation
 import com.drake.brv.utils.bindingAdapter
+import com.drake.brv.utils.dividerSpace
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.lxj.xpopup.XPopup
@@ -51,6 +52,7 @@ import com.xcjh.base_lib.base.fragment.BaseVmDbFragment
 import com.xcjh.base_lib.bean.MutablePair
 import com.xcjh.base_lib.utils.dp2px
 import com.xcjh.base_lib.utils.view.clickNoRepeat
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -74,7 +76,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     //<areaCode,<money,View>>
     private var savedMoneyMap: MutableMap<Int, MutablePair<Int, MoneyOKView>> = mutableMapOf()
     private var tempMoneyMap: MutableMap<Int, MutablePair<Int, MoneyOKView>> = mutableMapOf()
-
     //==================================== Method ===============================================//
     override fun initView(savedInstanceState: Bundle?) {
         //viewpager
@@ -150,8 +151,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             mDatabind.txtHomeStatic.text = resources.getString(R.string.g_home_txt_please)
             //下注闪动动画
             suspendCoroutine { continuation ->
-                val childAlphaAnimator =
-                    ObjectAnimator.ofFloat(mDatabind.llShowBetList, "alpha", 0f, 1f)
+                val childAlphaAnimator = ObjectAnimator.ofFloat(mDatabind.llShowBetList, "alpha", 0f, 1f)
                 childAlphaAnimator.duration = 200 // 设置渐隐动画持续时间
                 val animatorSet = AnimatorSet()
                 animatorSet.play(childAlphaAnimator)
@@ -170,7 +170,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 animatorSet.start()
             }
             //倒计时
-            mViewModel.startCountDown(20_000)
+            mViewModel.startCountDown(mViewModel.bettingCountDownTime)
         }
     }
 
@@ -188,8 +188,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
             sumTotalFragment.flicker(ArrayList<InPrizeBean>(), ArrayList<InPrizeBean>())*/
             suspendCoroutine { continuation ->
-                val childAlphaAnimator =
-                    ObjectAnimator.ofFloat(mDatabind.llShowBetList, "alpha", 1f, 0f)
+                val childAlphaAnimator = ObjectAnimator.ofFloat(mDatabind.llShowBetList, "alpha", 1f, 0f)
                 childAlphaAnimator.duration = 200 // 设置渐隐动画持续时间
                 val animatorSet = AnimatorSet()
                 animatorSet.play(childAlphaAnimator)
@@ -207,7 +206,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 })
                 animatorSet.start()
             }
-            mViewModel.startCountDown(20_000)
+            mViewModel.startCountDown(mViewModel.settingCountDownTime)
         }
 
     }
@@ -216,6 +215,13 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         lifecycleScope.launch {
             showLoading(getString(R.string.g_home_drawing_begin), 1000)
             mDatabind.txtHomeStatic.text = resources.getString(R.string.g_home_drawing_being)
+        }
+    }
+    private fun onDrawFinish(){
+        lifecycleScope.launch {
+            delay(mViewModel.prizeAnimTime + 2000)
+            //播放开奖动画
+            mViewModel.startBetting()
         }
     }
 
@@ -246,7 +252,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 }
 
                 GameState.DrawFinish -> {
-                    mViewModel.startBetting()
+                    onDrawFinish()
                 }
 
                 else -> {}
@@ -260,13 +266,9 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         }
         mViewModel.historyResultBeanLD.observe(requireActivity()) { bean ->
             val adapter = mDatabind.rvHomeHistory.bindingAdapter
-            mViewModel.historyResultBeans.add(bean)
-            Log.d(TAG, "onDrawingResult run on ${CommonExt.isMainThread} result:$bean,"+mViewModel.historyResultBeans.size)
-            Log.d(
-                TAG,
-                "onDrawingResult run on $isMainThread result:$bean," + mViewModel.historyResultBeans.size
-            )
-            adapter.notifyItemInserted(adapter.models!!.size)
+            adapter.addModels(mutableListOf(bean),false)
+            //mViewModel.historyResultBeans.add(bean)
+            Log.d(TAG, "onDrawingResult run on $isMainThread result:$bean," + mViewModel.historyResultBeans.size)
             if (adapter.models!!.isNotEmpty()) {
                 mDatabind.rvHomeHistory.scrollToPosition(adapter.models!!.size - 1)
             }
@@ -470,6 +472,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             requireContext(),
             LinearLayoutManager.HORIZONTAL, false
         )
+        mDatabind.rvHomeHistory.dividerSpace(requireContext().dp2px(2),DividerOrientation.HORIZONTAL)
         mDatabind.rvHomeHistory.setup {
             addType<HistoryResultBean>(R.layout.item_bet_history)
             onBind {
@@ -487,11 +490,9 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                             child.setImageResource(id)
                         }
                         binding.txtBetNum.text = mainTxtBean.resultSum.toString()
-                        binding.txtBetSize.text =
-                            if (mainTxtBean.resultSize == "big") getString(R.string.g_home_txt_big)
+                        binding.txtBetSize.text = if (mainTxtBean.resultSize == "big") getString(R.string.g_home_txt_big)
                             else getString(R.string.g_home_txt_small)
-                        binding.txtBetOdd.text =
-                            if (mainTxtBean.resultOdd == "odd") getString(R.string.g_home_txt_single)
+                        binding.txtBetOdd.text = if (mainTxtBean.resultSingle == "single") getString(R.string.g_home_txt_single)
                             else getString(R.string.g_home_txt_double)
                     }
                 }
@@ -534,7 +535,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         mViewModel.noteList[0].select = true
         //清空临时的
 
-        mViewModel.stopCountDown()
+        mViewModel.clear()
         //关闭倒计时
         //关闭动画
         resultAnim?.cancel()

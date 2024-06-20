@@ -21,7 +21,10 @@ import java.lang.ref.WeakReference
 import kotlin.math.roundToInt
 
 class Fast3ViewModel : BaseViewModel() {
-    private val TAG = "Fast3ViewModel"
+    companion object {
+        private val TAG = "Fast3ViewModel"
+
+    }
     var betOkClick: UnPeekLiveData<Boolean> = UnPeekLiveData()
     var betDeleteClick: UnPeekLiveData<Boolean> = UnPeekLiveData()
 
@@ -72,6 +75,21 @@ class Fast3ViewModel : BaseViewModel() {
      * 每次点击扣钱，但是不显示出来，确定后才把这个金额显示在真实钱上
      */
     var temporaryCurrentMoney: Int = 500000
+
+    /**
+     * 开奖动画时间(ms)
+     */
+    val prizeAnimTime = 800L*5
+
+    /**
+     * 下注倒计时(ms)
+     */
+    val bettingCountDownTime = 20_000
+
+    /**
+     * 结算倒计时(ms)
+     */
+    val settingCountDownTime = 20_000
     //========================================== Method =========================================//
     override fun onInit() {
 
@@ -121,13 +139,8 @@ class Fast3ViewModel : BaseViewModel() {
         GameManager.instance.startCountDownTimer(time)
     }
 
-    fun stopCountDown() {
+    fun clear(){
         GameManager.instance.stopCountDown()
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        Log.d(TAG,"onCleared")
         GameManager.instance.reset()
     }
 

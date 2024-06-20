@@ -1,15 +1,15 @@
 package com.cn.game.sdk2.ui.fast3
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.Gravity
+import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.base.BaseGameFragment
 import com.cn.game.sdk2.data.bean.LocationClickPoint
-import com.cn.game.sdk2.data.enums.NOTES_ENUM
 import com.cn.game.sdk2.databinding.FragDxdsBinding
 import com.cn.game.sdk2.ui.helper.ViewHelper.isAdd
 import com.cn.game.sdk2.ui.view.MoneyOKView
@@ -21,6 +21,7 @@ import com.cn.game.sdk2.utils.ext.ViewExt.locationOnScreen
 import com.cn.game.sdk2.utils.MyGameManager
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.utils.tool.measureView
+import kotlinx.coroutines.launch
 import com.cn.game.sdk2.websocket.GameSocketManager
 import com.cn.game.sdk2.websocket.bean.BOOM_ALL
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
@@ -36,9 +37,8 @@ import java.lang.ref.WeakReference
  * 默认
  */
 class DXDSFragment(var fast3VM: Fast3ViewModel) : BaseGameFragment<DXDSVm, FragDxdsBinding>() {
-    private var areaViewList: MutableList<GameAreaView> = mutableListOf();
+    private var areaViewList: MutableList<GameAreaView> = mutableListOf()
 
-    @SuppressLint("ClickableViewAccessibility")
     override fun initView(savedInstanceState: Bundle?) {
         mDatabind.apply {
             bigView.areaInfo = DEFAULT_BIG()
@@ -130,7 +130,18 @@ class DXDSFragment(var fast3VM: Fast3ViewModel) : BaseGameFragment<DXDSVm, FragD
         fast3VM.onGameAreaLocationClick.observe(viewLifecycleOwner) {
 
         }
+        fast3VM.historyResultBeanLD.observe(viewLifecycleOwner) { bean ->
+            lifecycleScope.launch {
+                val views = mutableListOf<View>().also {
+                    if(bean.resultSingle == "single") it.add(mDatabind.ivFlickerLeftBelow) else it.add(mDatabind.ivFlickerRightBelow)
+                    if(bean.resultSize == "big") it.add(mDatabind.ivFlickerRightTop) else it.add(mDatabind.ivFlickerLeftTop)
+                    if(bean.resultLeopard != null) it.add(mDatabind.ivFlickerCenter)
+                }
+                playAlphaAnimTogether(views,fast3VM.prizeAnimTime/5,5)
+            }
+        }
     }
+
     /**
      * 添加moneyView 计算偏移
      */
