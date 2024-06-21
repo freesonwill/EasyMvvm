@@ -1,6 +1,7 @@
 package com.cn.game.sdk2.websocket.interfaces
 
 import android.view.View
+import kotlinx.coroutines.CoroutineScope
 
 interface IGameForApp {
 

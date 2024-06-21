@@ -43,6 +43,7 @@ import com.cn.game.sdk2.websocket.bean.SUM_7
 import com.cn.game.sdk2.websocket.bean.SUM_8
 import com.cn.game.sdk2.websocket.bean.SUM_9
 import com.cn.game.sdk2.websocket.bean.areaMap
+import com.cn.game.sdk2.websocket.imp.GameServiceImp
 import com.cn.game.sdk2.websocket.interfaces.IAppForGame
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 
@@ -51,6 +52,7 @@ import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
  */
 //var WEB_SOCKET_URL = "wss://ws.qxe68.com:7001/api/game/5702" ///test
 var WEB_SOCKET_URL = "wss://ws.qxe68.com:7001/api/game/5702" ///test
+
 /**
  * data层使用，view不管
  */
@@ -115,7 +117,7 @@ var appListener: IAppForGame? = null
 /**
  *
  */
-var gameMassageManager = GameSocketManager.getInstance()?.getGameService()
+var gameMassageManager: GameServiceImp? = null
 
 fun <T> List<T>.isNotEmpty(block: (List<T>) -> Unit): Boolean {
     if (this.isNotEmpty()) {
@@ -140,6 +142,7 @@ fun Boolean.isEmpty(block: () -> Unit) {
 }
 
 fun List<Int>.calculateArea(): ArrayList<Betting> {
+    if (this.size != 3) return java.util.ArrayList()
     val num1 = this[0]
     val num2 = this[1]
     val num3 = this[2]
@@ -288,25 +291,33 @@ fun List<Int>.calculateArea(): ArrayList<Betting> {
 }
 
 fun List<Int>.isEquals(): Boolean {
+    if (this.size != 3) return false
     return this[0] == this[1] && this[0] == this[2]
 }
 
 fun List<Int>.isDouble(block: (double: Boolean, num: Int) -> Unit) {
-    val num1 = this[0]
-    val num2 = this[1]
-    val num3 = this[2]
-    if (num1 == num2) {
-        block(true, num1)
-    } else if (num1 == num3) {
-        block(true, num1)
-    } else if (num2 == num3) {
-        block(true, num2)
-    } else {
+    if (this.size != 3) {
         block(false, -1)
+    } else {
+        val num1 = this[0]
+        val num2 = this[1]
+        val num3 = this[2]
+        if (num1 == num2) {
+            block(true, num1)
+        } else if (num1 == num3) {
+            block(true, num1)
+        } else if (num2 == num3) {
+            block(true, num2)
+        } else {
+            block(false, -1)
+        }
     }
 }
 
 fun List<Int>.sum(): Int {
+    if (this.size != 3) {
+        return 0
+    }
     val num1 = this[0]
     val num2 = this[1]
     val num3 = this[2]
@@ -318,6 +329,9 @@ fun List<Int>.isBig(): Boolean {
 }
 
 fun List<Int>.isDouble(): Boolean {
+    if (this.size != 3) {
+        return false
+    }
     val num1 = this[0]
     val num2 = this[1]
     val num3 = this[2]

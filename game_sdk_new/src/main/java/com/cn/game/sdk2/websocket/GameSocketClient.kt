@@ -1,6 +1,7 @@
 package com.cn.game.sdk2.websocket
 
 import android.util.Log
+import com.xcjh.base_lib.utils.loge
 import org.java_websocket.client.WebSocketClient
 import org.java_websocket.handshake.ServerHandshake
 import java.net.URI
@@ -24,6 +25,7 @@ class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
     external fun newUnpack(data: ByteArray?): Array<Any?>?
     external fun nativeCreateChiper(): Long
     external fun nativeFinalizer(ptr: Long)
+    external fun reset()
 
 
     private var mNativePtr: Long = 0
@@ -32,6 +34,12 @@ class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
 
     fun setOnMessageListener(listener: OnMessageListener) {
         onMessageListener = listener
+    }
+
+    fun re() {
+        reset()
+        "---尝试重连---".loge()
+        reconnect()
     }
 
     override fun onOpen(handshakedata: ServerHandshake?) {
@@ -43,6 +51,7 @@ class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
     }
 
     override fun onMessage(bytes: ByteBuffer?) {
+        Log.i(_tag, "GameSocketMessage-onMessage")
         if (!bytes!!.hasRemaining()) {
             return
         }
@@ -53,17 +62,19 @@ class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
         if (resps.size > 2) {
             str = (resps[2] as ByteArray?)!!
         }
+        Log.i(_tag, "GameSocketMessage-onMessage:mid-$mid sid-$sid")
         onMessageListener?.onMessage(mid, sid, str)
     }
 
     override fun onClose(code: Int, reason: String?, remote: Boolean) {
-        Log.i(_tag, "GameSocketClose-code:$code")
-        Log.i(_tag, "GameSocketClose-reason:$reason")
-        Log.i(_tag, "GameSocketClose-remote:$remote")
+        "socket-onClose-->code:${code}-reason:$reason-remote:$remote".loge(_tag)
+        onMessageListener?.onClose(code, reason, remote)
+
     }
 
     override fun onError(ex: Exception?) {
         ex?.printStackTrace()
+        ex?.message?.loge(_tag)
     }
 
     private fun createChiper() {

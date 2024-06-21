@@ -47,13 +47,13 @@ class GameManager private constructor() : IGameManager {
         countDownTimer?.cancel()
         countDownTimer = object : CountDownTimer(countdownTime.toLong(), countDownInterval.toLong()) {
                 override fun onTick(millisUntilFinished: Long) {
-                    Log.d(TAG, "startCountDownTimer onTick run $isMainThread,$millisUntilFinished")
+//                    Log.d(TAG, "startCountDownTimer onTick run $isMainThread,$millisUntilFinished")
                     lis?.onCountdown(millisUntilFinished)
                     mGameListener.forEach { it.value.onCountdown(millisUntilFinished) }
                 }
 
                 override fun onFinish() {
-                    Log.d(TAG,"startCountDownTimer onFinish run $isMainThread")
+//                    Log.d(TAG,"startCountDownTimer onFinish run $isMainThread")
                     when (gameState) {
                         GameState.Betting -> gameState = GameState.Settling
                         GameState.Settling -> {

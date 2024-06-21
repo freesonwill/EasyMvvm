@@ -1,15 +1,21 @@
 package com.cn.game.sdk2.websocket
 
 import android.annotation.SuppressLint
+import android.util.Log
+import androidx.test.runner.intent.IntentStubberRegistry.reset
 import com.cn.game.sdk2.network.code.GameResCode
 import com.cn.game.sdk2.websocket.imp.GameServiceImp
 import com.xcjh.base_lib.utils.loge
 import game.common.proto.ClientRes
 import game.mod.proc.yf.proto.res.GameRes
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.java_websocket.enums.ReadyState
 import java.net.URI
 
@@ -18,6 +24,8 @@ import java.net.URI
  */
 class GameSocketManager private constructor() : OnMessageListener {
     companion object {
+        private val tag = GameSocketManager::class.java.name
+
         /**
          * 每隔10秒进行一次对长连接的心跳检测
          */
@@ -27,7 +35,7 @@ class GameSocketManager private constructor() : OnMessageListener {
         private var client: GameSocketClient? = null
         private var gameServerMessageConvertFactory: GameServerMessageConvertFactory? = null
 
-        var gameService: GameServiceImp? = null
+//        var gameService: GameServiceImp? = null
 
         @SuppressLint("StaticFieldLeak")
         private var INSTANCE: GameSocketManager? = null
@@ -45,46 +53,29 @@ class GameSocketManager private constructor() : OnMessageListener {
 
     @OptIn(DelicateCoroutinesApi::class)
     fun initSocketClient() {
+        "initSocketClient".loge(tag)
         val uri = URI.create(WEB_SOCKET_URL)
-        client = GameSocketClient(uri) //获得client对象
-        client?.setOnMessageListener(this)
-        gameService = GameServiceImp(client!!) //获得接口对象
-        kotlin.runCatching {
-            client?.connectionLostTimeout = 0
-            client!!.connectBlocking() //连接socket
-            GlobalScope.launch {
+        GlobalScope.launch {
+            withContext(Dispatchers.IO) {
+                client = GameSocketClient(uri) //获得client对象
+                client?.setOnMessageListener(this@GameSocketManager)
+                gameMassageManager = GameServiceImp(client!!) //获得接口对象
+                client?.connectionLostTimeout = 0
+                client!!.connectBlocking() //连接socket
                 //心跳发送
                 while (true) {
+                    delay(HEART_BEAT_RATE)
                     if (HAS_HEART) {
                         client?.let {
-                            if (it.readyState == ReadyState.OPEN) gameService?.ping() //正常发送心跳
-                            if (it.isClosed) reconnect() //断线重连
+                            if (it.readyState == ReadyState.OPEN) gameMassageManager?.ping() //正常发送心跳
+                            if (it.isClosed)  it.re()
                         }
                     } else {
                         client?.let {
                             if (it.readyState == ReadyState.OPEN) HAS_HEART = true //socket恢复
                         }
                     }
-                    delay(HEART_BEAT_RATE)
                 }
-            }
-        }.onFailure {
-            it.printStackTrace()
-        }
-    }
-
-    private fun reconnect() {
-        HAS_HEART = false
-        kotlin.runCatching {
-            "---尝试第${reconnectCount}次重连---".loge()
-            client!!.reconnect()
-            client!!.reconnectBlocking()
-            reconnectCount++
-        }.onFailure {
-            "---第${reconnectCount}次重连,失败---".loge()
-            it.printStackTrace()
-            if (reconnectCount < 4) {
-                reconnect()
             }
         }
     }
@@ -114,7 +105,7 @@ class GameSocketManager private constructor() : OnMessageListener {
     }
 
     fun getGameService(): GameServiceImp? {
-        return gameService
+        return gameMassageManager
     }
 
     fun setGameServerMessageConvertFactory(factory: GameServerMessageConvertFactory) {
@@ -122,6 +113,14 @@ class GameSocketManager private constructor() : OnMessageListener {
     }
 
     override fun onMessage(mid: Int?, sid: Int?, byteArray: ByteArray) {
+        GlobalScope.launch {
+            withContext(Dispatchers.Main) {
+                convertMessage(mid, sid, byteArray)
+            }
+        }
+    }
+
+    private fun convertMessage(mid: Int?, sid: Int?, byteArray: ByteArray) {
         sid?.apply {
             when (this) {
                 GameResCode.S2C_ENTER_INFO -> gameServerMessageConvertFactory?.enterInfo(
@@ -185,8 +184,18 @@ class GameSocketManager private constructor() : OnMessageListener {
         }
     }
 
+    override fun onClose(code: Int, reason: String?, remote: Boolean) {
+//        client?.re()
+    }
+
 }
 
 interface OnMessageListener {
     fun onMessage(mid: Int?, sid: Int?, byteArray: ByteArray)
+
+    fun onClose(code: Int, reason: String?, remote: Boolean) {
+        "GameSocketClose-code:$code".loge()
+        "GameSocketClose-reason:$reason".loge()
+        "GameSocketClose-remote:$remote".loge()
+    }
 }

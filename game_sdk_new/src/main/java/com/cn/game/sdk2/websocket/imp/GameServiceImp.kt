@@ -27,6 +27,7 @@ import com.cn.game.sdk2.websocket.previousSuccess
 import com.cn.game.sdk2.websocket.sum
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 import com.xcjh.base_lib.utils.loge
+import com.xcjh.base_lib.utils.toJson
 import game.common.proto.ClientReq
 import game.common.proto.ClientRes
 import game.mod.proc.yf.proto.req.GameReq
@@ -43,23 +44,24 @@ import game.mod.proc.yf.proto.res.GameRes.GroupInfo
 class GameServiceImp(private val client: GameSocketClient) : GameService,
     GameServerMessageConvertFactory {
 
+    private val tag = GameServiceImp::class.java.name
+
     init {
         GameSocketManager.getInstance()?.setGameServerMessageConvertFactory(this)
     }
 
     override fun enterInfo() {
         send(
-            8,
-            GameReqCode.SUB_LOGON_REQ__LOGIN.toShort(),
-            ClientReq.PingBackReq.newBuilder().build().toByteArray()
+            8, GameReqCode.SUB_LOGON_REQ__LOGIN.toShort(), ByteArray(0)
         )
     }
 
     override fun login(req: ClientReq.LoginReq) {
         val mid: Short = 7
         val sid: Short = 7
+//        "请求登录 login".loge()
         send(mid, sid, req.toByteArray())
-        "请求登录 login".loge()
+
     }
 
     override fun enterGroup(req: GameReq.EnterGroup) {
@@ -87,15 +89,16 @@ class GameServiceImp(private val client: GameSocketClient) : GameService,
     }
 
     override fun ping() {
-        send(0, 2, ClientReq.PingBackReq.newBuilder().build().toByteArray())
+        send(0, 2, ByteArray(0))
     }
 
     private fun send(mid: Short, sid: Short, data: ByteArray) {
-        kotlin.runCatching {
+        "send()->mid:$mid-sid:$sid".loge(tag)
+        try {
             val msg = client.newPack(mid, sid, data, data.size)
             client.send(msg)
-        }.recoverCatching {
-            it.printStackTrace()
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
@@ -193,9 +196,16 @@ class GameServiceImp(private val client: GameSocketClient) : GameService,
                     block(balance >= currentCountMoney, recordBean)
                 }
             }.isEmpty {
-                //bettingListTemp 临时下注为空 直接保存当次下注
+                //新的下注
                 bettingListTemp[recordBean.bettingArea] = recordBean
-                block(balance >= currentCountMoney, recordBean)
+                if (bettingListConfirmed.containsKey(recordBean.bettingArea)) {
+                    //已下注过 存在确认过的金额
+                    recordBean.money += bettingListConfirmed[recordBean.bettingArea]?.money!!
+                    block(balance >= currentCountMoney, recordBean)
+                } else {
+                    //bettingListTemp 临时下注为空 直接保存当次下注
+                    block(balance >= currentCountMoney, recordBean)
+                }
             }
 //            //根据 续压集合是否为空来判断⬆是不是刚进来
 //            againBettingList.isNotEmpty {
@@ -299,16 +309,17 @@ class GameServiceImp(private val client: GameSocketClient) : GameService,
     }
 
     override fun loginSuccess(afterLoginSuccess: ClientRes.InfoAfterLoginSuccess) {
+        "loginSuccess：${afterLoginSuccess.isInitialized}".loge()
         gameAboutModel.setLoginResult(true)
         //初始化step2:登录成功后坐下
         enterInfo()
-        "loginSuccess：enterInfo()".loge()
+
     }
 
     override fun loginError(errorMessage: ClientRes.ErrorMessage) {
         gameAboutModel.loginErrorMessage = errorMessage.desc
         gameAboutModel.setLoginResult(true)
-        "loginError：${errorMessage.desc}".loge()
+        "loginError：${errorMessage.desc}".loge(tag)
     }
 
     override fun enterInfo(enterInfo: GameRes.EnterInfo) {
@@ -317,11 +328,13 @@ class GameServiceImp(private val client: GameSocketClient) : GameService,
         gameAboutModel.changeBalance(enterInfo.self.score.toInt())
         //初始化step3:进入直播间
         "enterInfo Success: enterLive".loge()
-        GameSDK.enterLive("1213", listOf(3),"")
+        GameSDK.enterLive("1213", listOf(1), "")
     }
 
     override fun groupInfo(groupInfo: GameRes.GroupInfo) {
         gameAboutModel.isEnterGroup(true)
+        groupInfo.toJson().loge("toJson")
+
         val miniGameBasicInfo = groupInfo.miniGameBasicInfoListList[0]
         miniGameId = miniGameBasicInfo.miniGameId
         gameAboutModel.miniGameId = miniGameId
@@ -342,7 +355,7 @@ class GameServiceImp(private val client: GameSocketClient) : GameService,
             2 -> gameAboutModel.changeStage(GameAboutModel.Stage.DEAL)
             3 -> gameAboutModel.changeStage(GameAboutModel.Stage.SETTLE)
         }
-        val miniGame:EnterMiniGame = EnterMiniGame.newBuilder().setMiniGameId(3).build()
+        val miniGame: EnterMiniGame = EnterMiniGame.newBuilder().setMiniGameId(3).build()
         enterGame(miniGame)
     }
 

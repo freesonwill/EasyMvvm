@@ -8,8 +8,10 @@ import com.cn.game.sdk2.websocket.interfaces.IAppForGame
 import com.cn.game.sdk2.websocket.interfaces.IGameForApp
 import com.cn.game.sdk2.websocket.isAllowedBet
 import com.cn.game.sdk2.websocket.isShowGame
+import com.xcjh.base_lib.utils.loge
 import game.common.proto.ClientReq
 import game.mod.proc.yf.proto.req.GameReq
+import kotlinx.coroutines.CoroutineScope
 
 /**
  * 提供给app调用的方法
@@ -44,11 +46,11 @@ object GameSDK : IGameForApp {
      */
     //platform= 6 ,requestId = 0,version = "1"
     override fun loginGameWithAgentName(agentName: String, token: String) {
+
         val req =
-            ClientReq.LoginReq.newBuilder().setPlatform(6).setRequestId(0).setVersion("1").setNickname("Aubrey Wolff")
+            ClientReq.LoginReq.newBuilder().setPlatform(0).setRequestId(0).setVersion("1").setNickname("Aubrey Wolff")
                 .setAgentName(agentName).setToken(token).build()
         gameMassageManager?.login(req)
-        //gameMassageManager?.enterInfo()
     }
 
     /** 进入直播間
@@ -82,7 +84,7 @@ object GameSDK : IGameForApp {
      * 注销游戏
      */
     override fun cancelGame() {
-        GameSocketManager.getInstance()?.stopService()
+//        GameSocketManager.getInstance()?.stopService()
     }
 
     /**
