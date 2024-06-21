@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 /**
  * 总和
  */
-class SumTotalFragment(private val fast3VM:Fast3ViewModel):BaseGameFragment<SumTotalVm,FragmentSumTotalBinding>() {
+class SumTotalFragment(private val fast3VM:Fast3ViewModel):BaseFast3Fragment<SumTotalVm,FragmentSumTotalBinding>() {
     override fun initView(savedInstanceState: Bundle?) {
     }
 

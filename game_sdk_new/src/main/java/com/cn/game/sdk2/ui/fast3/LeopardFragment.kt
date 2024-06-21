@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 /**
  * 豹子
  */
-class LeopardFragment(private val fast3VM:Fast3ViewModel):BaseGameFragment<LeopardVm,FragmentLeopardBinding>() {
+class LeopardFragment(private val fast3VM:Fast3ViewModel):BaseFast3Fragment<LeopardVm,FragmentLeopardBinding>() {
     override fun initView(savedInstanceState: Bundle?) {
 
     }

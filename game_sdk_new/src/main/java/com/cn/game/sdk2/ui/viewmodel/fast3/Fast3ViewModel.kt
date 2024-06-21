@@ -16,8 +16,6 @@ import com.cn.game.sdk2.utils.ext.CommonExt.isMainThread
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import com.kunminx.architecture.ui.callback.UnPeekLiveData
 import com.xcjh.base_lib.base.BaseViewModel
-import com.xcjh.base_lib.bean.MutablePair
-import java.lang.ref.WeakReference
 import kotlin.math.roundToInt
 
 class Fast3ViewModel : BaseViewModel() {
@@ -29,23 +27,28 @@ class Fast3ViewModel : BaseViewModel() {
     var betDeleteClick: UnPeekLiveData<Boolean> = UnPeekLiveData()
 
     var moneyAnimCallback: MoneyAnimCallback? = null
-
-    var currentBettingRecordBean:BettingRecordBean ?= null
-    var tempBetRecordMap:MutableMap<Int, MutablePair<BettingRecordBean, WeakReference<MoneyOKView>>> = mutableMapOf()
+    //Todo viewModel不应该持有view的任何东西
+    val currentBettingRecordBeanLD:LiveData<Pair<BettingRecordBean,MoneyOKView>> by lazy { UnPeekLiveData() }
+    var currentBettingRecordBean:Pair<BettingRecordBean,MoneyOKView>?
+        set(value) {
+            (currentBettingRecordBeanLD as UnPeekLiveData).value = value
+        }
+        get() = currentBettingRecordBeanLD.value
+    //var tempBetRecordMap:MutableMap<Int, MutablePair<BettingRecordBean, WeakReference<MoneyOKView>>> = mutableMapOf()
 
     val historyResultBeans: MutableList<HistoryResultBean> by lazy { mutableListOf() }
     val historyResultBeanLD: LiveData<HistoryResultBean> by lazy { UnPeekLiveData()}
-    private val countdownTime = 20_000
-    val homeTime: LiveData<Int> by lazy { UnPeekLiveData(countDownSeconds) }
-    private val countDownSeconds: Int get() = countdownTime / 1000
+    val homeTime: LiveData<Int> by lazy { UnPeekLiveData(bettingCountDownTime) }
+    //游戏状态
     val gameStateLV: LiveData<GameState> by lazy { UnPeekLiveData(GameState.Init) }
-    val isClickOperationLD:LiveData<Boolean> by lazy { UnPeekLiveData(true) }
     val gameState: GameState get() = gameStateLV.value!!
     //是否可点击
+    val isClickOperationLD:LiveData<Boolean> by lazy { UnPeekLiveData(true) }
     var isClickOperation: Boolean get() = isClickOperationLD.value!!
         set(value) {
             (isClickOperationLD as UnPeekLiveData).value = value
         }
+
     val homeTimeVisibility by lazy {
         Transformations.map(this.gameStateLV) {
             return@map when (it) {
@@ -54,6 +57,7 @@ class Fast3ViewModel : BaseViewModel() {
             }
         }
     }
+
     /**
      * 是否显示骰子的结果组合
      */
@@ -142,6 +146,7 @@ class Fast3ViewModel : BaseViewModel() {
     fun clear(){
         GameManager.instance.stopCountDown()
         GameManager.instance.reset()
+        currentBettingRecordBean = null
     }
 
     fun startSettling() {

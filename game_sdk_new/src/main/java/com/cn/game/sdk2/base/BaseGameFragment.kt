@@ -17,7 +17,7 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 abstract class BaseGameFragment <VM : BaseViewModel, VB : ViewDataBinding> : BaseVmDbFragment<VM, VB>() {
-    private val TAG = this::class.java.simpleName
+    protected val TAG = this::class.java.simpleName
 
     abstract override fun initView(savedInstanceState: Bundle?)
 
@@ -81,38 +81,6 @@ abstract class BaseGameFragment <VM : BaseViewModel, VB : ViewDataBinding> : Bas
         startActivity(intent)
     }
 
-    /**
-     * 播放透明度动画
-     */
-    protected suspend fun playAlphaAnimTogether(dic:List<View>, duration:Long, count:Int){
-        suspendCoroutine { continuation ->
-            val animatorSet = AnimatorSet()
-            val animators = dic.map { maskView->
-                val animator = ObjectAnimator.ofFloat(maskView, "alpha", 1f, 0f, 1f).apply {
-                    this.duration = duration // 设置动画持续时间
-                    this.repeatCount = count // 设置无限循环
-                    this.repeatMode = ObjectAnimator.REVERSE // 设置反向循环以实现渐隐渐显效果
-                    this.addListener( onStart = {
-                        maskView.isVisible = true
-                        Log.d(TAG,"maskView-->${maskView} visible true")
-                    }, onEnd = {
-                        it.cancel()
-                        maskView.isVisible = false
-                        Log.d(TAG,"maskView-->${maskView} visible false")
-                    })
-                }
-                animator
-            }
-            animatorSet.playTogether(animators)
-            animatorSet.addListener(onEnd = {
-                dic.forEach {
-                    it.isVisible = false
-                    Log.d(TAG,"maskView-->${it} visible false")
-                }
-                continuation.resume("")
-            })
-            animatorSet.start()
-        }
-    }
+
 
 }

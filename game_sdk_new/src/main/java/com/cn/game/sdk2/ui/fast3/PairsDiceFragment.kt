@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 /**
  * 对子
  */
-class PairsDiceFragment(private val fast3VM: Fast3ViewModel):BaseGameFragment<PairsDiceVm,FragmentPairsDiceBinding>() {
+class PairsDiceFragment(private val fast3VM: Fast3ViewModel):BaseFast3Fragment<PairsDiceVm,FragmentPairsDiceBinding>() {
     override fun initView(savedInstanceState: Bundle?) {
 
     }

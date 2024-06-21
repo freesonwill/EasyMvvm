@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 /**
  * 默认
  */
-class SingleDiceFragment(private var fast3VM: Fast3ViewModel) : BaseGameFragment<SingleDiceVm, FragmentSingleDiceBinding>() {
+class SingleDiceFragment(private var fast3VM: Fast3ViewModel) : BaseFast3Fragment<SingleDiceVm, FragmentSingleDiceBinding>() {
     private lateinit var areaViewList: MutableList<GameAreaView>
 
     override fun initView(savedInstanceState: Bundle?) {

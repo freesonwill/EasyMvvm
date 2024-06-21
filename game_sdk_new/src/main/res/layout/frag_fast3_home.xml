@@ -65,7 +65,7 @@
                         android:layout_width="17dp"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="10"
+                        android:text="3"
                         android:textColor="@color/g_700000"
                         android:textSize="15sp" />
 
@@ -206,6 +206,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_5"
                 android:layout_marginRight="27dp"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 tools:itemCount="1"
                 tools:listitem="@layout/item_bet_history" />
