@@ -120,9 +120,20 @@ Java_com_cn_game_sdk2_websocket_GameSocketClient_nativeCreateChiper(JNIEnv *env,
     CCPayloadCipher *chiper = new CCPayloadCipher();
 
     LOGD("create chipper=%p", chiper);
-
     return (jlong)chiper;
 }
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_cn_game_sdk2_websocket_GameSocketClient_reset(JNIEnv *env, jobject thiz) {
+    // TODO: implement nativeCreateChiper()
+
+    CCPayloadCipher *chiper = new CCPayloadCipher();
+
+    LOGD("reset chipper=%p", chiper);
+    chiper->reset();
+}
+
 extern "C"
 JNIEXPORT jobjectArray JNICALL
 Java_com_cn_game_sdk2_websocket_GameSocketClient_unpack(JNIEnv *env,
