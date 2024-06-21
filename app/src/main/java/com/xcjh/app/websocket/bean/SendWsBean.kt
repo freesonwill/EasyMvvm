@@ -1,5 +1,7 @@
 package com.xcjh.app.websocket.bean
 
+import com.xcjh.base_lib.utils.getUUID
+
 /**
  * 发出的数据
  *
@@ -28,8 +30,10 @@ data class SendCommonWsBean(
     val fromUserId: String? = null,
     //source（字符串）: 登陆来源 1IOS 2android 3H5 4小程序
     val source: String? = "1",
+    //上一个用户的就是访客用户
+    val oldUserId: String? = getUUID(),
 
-)
+    )
 
 /**
  * 发送消息

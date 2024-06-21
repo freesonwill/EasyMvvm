@@ -57,7 +57,8 @@ class LoginVm : BaseViewModel() {
 
             {
                 //这个通知是如果当前在直播间的时候，并且是游客身份，登录成功要断开游客的群聊
-                appViewModel.loginExitGroupEvent.postValue(true)
+//                appViewModel.loginExitGroupEvent.postValue(true)
+                getUserInfo()
                 CacheUtil.setIsLogin(true, LoginInfo("", "", it))
                 logain.value = it
             }, {
@@ -69,6 +70,24 @@ class LoginVm : BaseViewModel() {
             }, true
         )
     }
+
+
+    /**
+     * 获取用户信息
+     */
+    fun getUserInfo() {
+        request(
+            { apiService.getUserBaseInfo() },
+            {
+                CacheUtil.setUser(it)
+                appViewModel.loginExitGroupEvent.postValue(true)
+
+            }, {
+
+            }
+        )
+    }
+
 
     /**
      * 极光推送绑定用户

@@ -26,13 +26,13 @@ interface ApiComService {
 //        const val SHARE_IP = "https://app.wyjxx.cn/"//比赛分享链接
 //        const val WEB_SOCKET_URL = "wss://app.wyjxx.cn/ws-sports-chat" ///test
         //test 发布2 最新
-//        const val SERVER_URL = "https://app.gdhsbp.cn/apis/"//app通用 测试
-//        const val SHARE_IP = "https://app.gdhsbp.cn/"//比赛分享链接
-//        const val WEB_SOCKET_URL = "wss://app.gdhsbp.cn/ws-sports-chat" ///test
+        const val SERVER_URL = "https://app.gdhsbp.cn/apis/"//app通用 测试
+        const val SHARE_IP = "https://app.gdhsbp.cn/"//比赛分享链接
+        const val WEB_SOCKET_URL = "wss://app.gdhsbp.cn/ws-sports-chat" ///test
 //        预发布
-        const val SERVER_URL = "https://app.cbd246.com/apis/"//app通用 测试
-        const val SHARE_IP = "https://app.cbd246.com/"//比赛分享链接
-        const val WEB_SOCKET_URL = "wss://app.cbd246.com/ws-sports-chat" ///test
+//        const val SERVER_URL = "https://app.cbd246.com/apis/"//app通用 测试
+//        const val SHARE_IP = "https://app.cbd246.com/"//比赛分享链接
+//        const val WEB_SOCKET_URL = "wss://app.cbd246.com/ws-sports-chat" ///test
 
 
     }
@@ -348,12 +348,22 @@ interface ApiComService {
         @Path("matchType") matchType: String?,
     ): ApiResponse<MatchDetailBean>
 
+//    /**
+//     * 获取是否更新
+//     * 	渠道：1：安卓 2：IOS
+//     */
+//    @POST("app/version/getLatestVersion/{channel}")
+//    suspend fun getLatestVersion(@Path("channel") channel: String = "2",
+//                                 @Query("domain") domain: String): ApiResponse<AppUpdateBean>
+
+
     /**
      * 获取是否更新
      * 	渠道：1：安卓 2：IOS
      */
-    @POST("app/version/getLatestVersion/{channel}")
-    suspend fun getLatestVersion(@Path("channel") channel: String = "2",@Path("domain") domain: String = ""): ApiResponse<AppUpdateBean>
+    @POST("app/version/getLatestVersion/{channel}/{domain}")
+    suspend fun getLatestVersion(@Path("channel") channel: String = "2",
+                                 @Path("domain") domain: String): ApiResponse<AppUpdateBean>
 
     /**
      * 个人中心广告

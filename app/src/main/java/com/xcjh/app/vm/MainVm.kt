@@ -100,24 +100,23 @@ class MainVm : BaseViewModel() {
         var domain:String=""
         domain = when (ApiComService.SERVER_URL) {
             "http://192.168.101.15:6003/apis/"->{
-                DomainNameEnums.TestDomainName.name
+                DomainNameEnums.TestDomainName.type
             }
 
             "https://app.cbd246.com/apis/"->{
-                DomainNameEnums.PreDomainName.name
+                DomainNameEnums.PreDomainName.type
             }
 
             "https://app.wyjxx.cn/apis/"->{
-                DomainNameEnums.DomainName.name
+                DomainNameEnums.DomainName.type
             }
 
             else ->{
-                DomainNameEnums.NewDomainName.name
+                DomainNameEnums.NewDomainName.type
             }
         }
-
-
-        request(
+//        domain =DomainNameEnums.NewDomainName.type
+            request(
             { apiService.getLatestVersion(domain=domain) },
             {
                 update.value = it

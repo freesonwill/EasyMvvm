@@ -50,6 +50,7 @@ import com.xcjh.app.websocket.listener.LiveRoomListener
 import com.xcjh.base_lib.App
 import com.xcjh.base_lib.utils.dip2px
 import com.xcjh.base_lib.utils.dp2px
+import com.xcjh.base_lib.utils.getUUID
 import com.xcjh.base_lib.utils.loge
 import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.toHtml
@@ -100,6 +101,8 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
 
 
     override fun initView(savedInstanceState: Bundle?) {
+
+        Log.i("SSSSSSSSDSDSDSD","========"+ getUUID())
         mDatabind.v = this
         mDatabind.m = mViewModel
         setNotice()
@@ -116,7 +119,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
         //如果是在直播间登录后要退出游客的群聊
         appViewModel.loginExitGroupEvent.observeForever{
             if(isAdded){
-                onWsTouristExitRoom(liveId)
+                onWsUserEnterRoom(liveId)
             }
 
         }
@@ -465,6 +468,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
     override fun onStart() {
         super.onStart()
         MyWsManager.getInstance(App.app)?.setLiveRoomListener(activity.toString(), this)
+        Log.i("SSSSSSSSDSDSDSD","333333333333333========"+liveId)
         onWsUserEnterRoom(liveId)
     }
 

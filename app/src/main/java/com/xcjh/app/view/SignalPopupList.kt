@@ -8,6 +8,7 @@ import com.lxj.xpopup.core.BottomPopupView
 import com.xcjh.app.R
 import com.xcjh.app.bean.AnchorListBean
 import com.xcjh.app.databinding.DialogSignalListBinding
+import com.xcjh.base_lib.utils.view.clickNoRepeat
 
 /**
  * 弹出框
@@ -22,7 +23,9 @@ class SignalPopupList (context: Context, var  anchorList: List<AnchorListBean>) 
     override fun onCreate() {
         super.onCreate()
         mDatabind = DialogSignalListBinding.bind(findViewById<View>(R.id.rlRoot))
-
+        mDatabind.tvCancel.clickNoRepeat {
+            dismiss()
+        }
         var pos = 0
         if (anchorList != null) {
             for ((i, item) in anchorList.withIndex()) {
