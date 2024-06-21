@@ -16,7 +16,7 @@
         android:orientation="vertical"
         android:tag="root">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/llShowSection"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -28,13 +28,15 @@
             android:paddingBottom="34dp">
 
             <RelativeLayout
+                android:id="@+id/topLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginRight="10dp"
                 android:clipChildren="false"
-                android:clipToPadding="false">
+                android:clipToPadding="false"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/ivHomeLogo"
@@ -62,8 +64,8 @@
                         android:id="@+id/txtHomeTime"
                         android:layout_width="17dp"
                         android:layout_height="wrap_content"
-                        android:text="10"
                         android:gravity="center"
+                        android:text="10"
                         android:textColor="@color/g_700000"
                         android:textSize="15sp" />
 
@@ -138,7 +140,8 @@
                 android:layout_marginTop="5dp"
                 android:clipChildren="false"
                 android:clipToPadding="false"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                app:layout_constraintTop_toBottomOf="@id/topLayout">
 
                 <net.lucode.hackware.magicindicator.MagicIndicator
                     android:id="@+id/magicIndicator"
@@ -187,140 +190,160 @@
                 </LinearLayout>
             </RelativeLayout>
 
-            <RelativeLayout
-                android:id="@+id/rlccccc"
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivHomeBg"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:scaleType="fitXY"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="@id/centerLayout"
+                app:srcCompat="@drawable/icon_home_bg" />
+
+            <!--             历史记录-->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvHomeHistory"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_5"
+                android:layout_marginRight="27dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                tools:itemCount="1"
+                tools:listitem="@layout/item_bet_history" />
+
+            <FrameLayout
+                android:id="@+id/flRvHistory"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:layout_constrainedHeight="true"
+                app:layout_constraintVertical_bias="1"
+                app:layout_constraintTop_toTopOf="@id/rvHomeHistory"
+                app:layout_constraintBottom_toBottomOf="@id/rvHomeHistory" />
+
+            <RelativeLayout
+                android:id="@+id/rlClickHide"
+                android:layout_width="23dp"
+                android:layout_height="39dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="4dp"
+                app:layout_constraintBottom_toBottomOf="@id/rvHomeHistory"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    app:srcCompat="@drawable/icon_bg_btn" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivHomeRotation"
+                    android:layout_width="7dp"
+                    android:layout_height="13dp"
+                    android:layout_centerInParent="true"
+                    android:scaleType="fitXY"
+                    app:srcCompat="@drawable/icon_arrow_top" />
+
+            </RelativeLayout>
+
+            <!--            开奖结果-->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/centerLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/vvvvvv"
+                android:layout_marginTop="8dp"
                 android:clipChildren="false"
-                android:clipToPadding="false">
+                android:clipToPadding="false"
+                app:layout_constraintBottom_toTopOf="@id/llShowBetList"
+                android:background="@color/g_141624">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivHomeBgCenter"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scaleType="fitXY"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:srcCompat="@drawable/icon_home_bg" />
 
                 <androidx.viewpager.widget.ViewPager
                     android:id="@+id/viewPagerNew"
                     android:layout_width="match_parent"
                     android:layout_height="180dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="5dp"
                     android:clipChildren="false"
+                    app:layout_constraintBottom_toTopOf="@id/rlShowResult"
                     android:clipToPadding="false" />
 
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivHomeBg"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignTop="@+id/llShowBetList"
-                    android:layout_alignBottom="@+id/rlClickHide"
-                    android:scaleType="fitXY"
-                    android:visibility="gone"
-                    app:srcCompat="@drawable/icon_home_bg" />
-                <!--            开奖结果-->
-                <RelativeLayout
+                <LinearLayout
                     android:id="@+id/rlShowResult"
-                    android:layout_width="match_parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignBottom="@+id/llShowBetList"
                     android:layout_marginBottom="5dp"
-                    android:visibility="gone">
+                    android:gravity="center"
+                    android:visibility="gone"
+                    android:orientation="horizontal">
 
-                    <LinearLayout
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ivDrawYi"
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        app:srcCompat="@drawable/icon_dice_yi" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ivDrawEr"
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        android:layout_marginLeft="15dp"
+                        app:srcCompat="@drawable/icon_dice_er" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ivDrawSan"
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        android:layout_marginLeft="15dp"
+                        app:srcCompat="@drawable/icon_dice_san" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/txtHomeTotal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:gravity="center"
-                        android:orientation="horizontal">
-
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/ivDrawYi"
-                            android:layout_width="34dp"
-                            android:layout_height="34dp"
-                            app:srcCompat="@drawable/icon_dice_yi" />
-
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/ivDrawEr"
-                            android:layout_width="34dp"
-                            android:layout_height="34dp"
-                            android:layout_marginLeft="15dp"
-                            app:srcCompat="@drawable/icon_dice_er" />
-
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/ivDrawSan"
-                            android:layout_width="34dp"
-                            android:layout_height="34dp"
-                            android:layout_marginLeft="15dp"
-                            app:srcCompat="@drawable/icon_dice_san" />
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/txtHomeTotal"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="20dp"
-                            android:text="9"
-                            android:textColor="@color/c_ffffff"
-                            android:textSize="25sp"
-                            android:textStyle="bold" />
-
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:layout_width="22dp"
-                            android:layout_height="26dp"
-                            android:layout_marginLeft="16dp"
-                            app:srcCompat="@drawable/icon_home_result_small" />
-
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:layout_width="22dp"
-                            android:layout_height="26dp"
-                            android:layout_marginLeft="16dp"
-                            app:srcCompat="@drawable/icon_home_result_double" />
-                    </LinearLayout>
-
-
-                </RelativeLayout>
-
-
-                <!--            选择投注-->
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/llShowBetList"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:layout_below="@+id/viewPagerNew"
-                    tools:itemCount="1"
-                    tools:listitem="@layout/item_annotation_list" />
-                <!--             历史记录-->
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvHomeHistory"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/llShowBetList"
-                    android:layout_marginLeft="@dimen/dp_5"
-                    android:layout_marginRight="27dp"
-                    tools:itemCount="1"
-                    tools:listitem="@layout/item_bet_history" />
-                <!--                隐藏或者显示撒子数-->
-                <RelativeLayout
-                    android:id="@+id/rlClickHide"
-                    android:layout_width="23dp"
-                    android:layout_height="39dp"
-                    android:layout_alignBottom="@+id/rvHomeHistory"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="4dp">
+                        android:layout_marginLeft="20dp"
+                        android:text="9"
+                        android:textColor="@color/c_ffffff"
+                        android:textSize="25sp"
+                        android:textStyle="bold" />
 
                     <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:scaleType="fitXY"
-                        app:srcCompat="@drawable/icon_bg_btn" />
+                        android:layout_width="22dp"
+                        android:layout_height="26dp"
+                        android:layout_marginLeft="16dp"
+                        app:srcCompat="@drawable/icon_home_result_small" />
 
                     <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/ivHomeRotation"
-                        android:layout_width="7dp"
-                        android:layout_height="13dp"
-                        android:layout_centerInParent="true"
-                        android:scaleType="fitXY"
-                        app:srcCompat="@drawable/icon_arrow_top" />
-
-                </RelativeLayout>
-
-            </RelativeLayout>
+                        android:layout_width="22dp"
+                        android:layout_height="26dp"
+                        android:layout_marginLeft="16dp"
+                        app:srcCompat="@drawable/icon_home_result_double" />
+                </LinearLayout>
 
 
-        </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!--            选择投注-->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/llShowBetList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/g_141624"
+                android:paddingBottom="5dp"
+                app:layout_constraintBottom_toTopOf="@id/flRvHistory"
+                tools:itemCount="1"
+                tools:listitem="@layout/item_annotation_list" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
         <com.cn.game.sdk2.ui.view.DoTouchFrameLayout

@@ -163,6 +163,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                         //显示开奖结果
                         mDatabind.rlShowResult.visibility = View.GONE
                         mDatabind.ivHomeBg.visibility = View.GONE
+                        mDatabind.ivHomeBgCenter.visibility = View.GONE
                         hiddenView(true)
                         continuation.resume("")
                     }
@@ -196,10 +197,11 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     override fun onAnimationEnd(animation: Animator) {
                         super.onAnimationEnd(animation)
                         //注区
-                        mDatabind.llShowBetList.visibility = View.INVISIBLE
+                        mDatabind.llShowBetList.visibility = View.GONE
                         //显示开奖结果
                         mDatabind.rlShowResult.visibility = View.VISIBLE
                         mDatabind.ivHomeBg.visibility = View.VISIBLE
+                        mDatabind.ivHomeBgCenter.visibility = View.VISIBLE
                         hiddenView()
                         continuation.resume("finish")
                     }
@@ -385,7 +387,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 resultAnimMoveHeight = llShowDice.height
             }
             ivHomeRotation.rotation = if (mViewModel.isShowResult) 0f else 180f
-            val startHeight = rvHomeHistory.height.toFloat()
+            val startHeight = flRvHistory.height.toFloat()
             val endHeight = if (mViewModel.isShowResult) resultRvHeight else resultRvHeight -resultAnimMoveHeight
 
             resultAnim =
@@ -393,12 +395,9 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     duration = 400
                     addUpdateListener {
                         val value = (it.animatedValue as Float).toInt()
-                        val params = rvHomeHistory.layoutParams
+                        val params = flRvHistory.layoutParams
                         params?.height = value
-                        rvHomeHistory.layoutParams = params
-                        if (mViewModel.isShowResult) {
-                            rvHomeHistory.bindingAdapter.notifyDataSetChanged()
-                        }
+                        flRvHistory.layoutParams = params
                     }
                 }
             resultAnim?.start()
@@ -556,7 +555,9 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         //PromptSoundPlay.goldPlayMedia(this)
         //PromptSoundPlay.goldPlayMediaNew(this)
         PromptSoundPlay.playAudio(requireContext())
-        hiddenAnchorTop()
+        if (areaView.moneyView != anchorMoneyView) {
+            hiddenAnchorTop()
+        }
         //获取选中的筹码所在的position
         val betList = mDatabind.llShowBetList.models as List<SelectAnnotationBean>
         val selectedPosition = betList.indexOfFirst { it.select }
