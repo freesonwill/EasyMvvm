@@ -7,13 +7,13 @@ interface IGameForApp {
 
     fun loadGame()
 
-    fun loginGameWithAgentName(agentName: String, token: String)
+    fun loginGameWithAgentName(agentName: String, token: String,callback: SDKCallbackListener)
 
-    fun enterLive(liveId: String, gameIds: List<Int>, data: String)
+    fun enterLive(liveId: String, gameIds: List<Int>, data: String,callback: SDKCallbackListener)
 
-    fun leaveLive(liveId:String)
+    fun leaveLive(liveId:String,callback: SDKCallbackListener)
 
-    fun cancelGame()
+    fun cancelGame(callback: SDKCallbackListener)
 
     fun gameFloatingDetailViewStatusWithBlock(isShow:Boolean)
 

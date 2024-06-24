@@ -69,7 +69,7 @@ class GameSocketManager private constructor() : OnMessageListener {
                     if (HAS_HEART) {
                         client?.let {
                             if (it.readyState == ReadyState.OPEN) gameMassageManager?.ping() //正常发送心跳
-                            if (it.isClosed)  it.re()
+                            if (it.isClosed) it.re()
                         }
                     } else {
                         client?.let {
@@ -113,6 +113,7 @@ class GameSocketManager private constructor() : OnMessageListener {
         gameServerMessageConvertFactory = factory
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onMessage(mid: Int?, sid: Int?, byteArray: ByteArray) {
         GlobalScope.launch {
             withContext(Dispatchers.Main) {
@@ -121,6 +122,10 @@ class GameSocketManager private constructor() : OnMessageListener {
         }
     }
 
+    /**
+     * 因为sid无重复 暂时只用sid
+     * @see [client-res.proto]
+     */
     private fun convertMessage(mid: Int?, sid: Int?, byteArray: ByteArray) {
         sid?.apply {
             when (this) {
@@ -148,6 +153,10 @@ class GameSocketManager private constructor() : OnMessageListener {
                     GameRes.BeginNewRound.parseFrom(
                         byteArray
                     )
+                )
+
+                GameResCode.S2C_BEGIN_DEAL -> gameServerMessageConvertFactory?.beginDeal(
+                    GameRes.BeginDeal.parseFrom(byteArray)
                 )
 
                 GameResCode.S2C_BEGIN_SETTLE -> gameServerMessageConvertFactory?.beginSettle(
@@ -181,6 +190,21 @@ class GameSocketManager private constructor() : OnMessageListener {
                 GameResCode.SUB_LOGON_RESP__LOGIN_ERROR -> gameServerMessageConvertFactory?.loginError(
                     ClientRes.ErrorMessage.parseFrom(byteArray)
                 )
+
+                GameResCode.S2C_OTHER_ERROR -> gameServerMessageConvertFactory?.errorMessage(
+                    ClientRes.ErrorMessage.parseFrom(byteArray)
+                )
+
+                GameResCode.S2C_CLEAR_TRENDS -> gameServerMessageConvertFactory?.clearTrendsBackBlock(
+                    GameRes.ClearTrends.parseFrom(byteArray)
+                )
+
+                GameResCode.S2C_MULTI_USER_LOGIN -> gameServerMessageConvertFactory?.tokenLoseEffectiveness()
+
+                GameResCode.S2C_SERVER_MAINTENANCE -> gameServerMessageConvertFactory?.serverMaintenance()
+
+                GameResCode.S2C_ROOM_TIMEOUT -> gameServerMessageConvertFactory?.roomTimeout()
+
             }
         }
     }

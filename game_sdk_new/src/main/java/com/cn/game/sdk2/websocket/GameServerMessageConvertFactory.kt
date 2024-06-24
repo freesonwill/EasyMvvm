@@ -83,4 +83,8 @@ interface GameServerMessageConvertFactory {
     fun errorMessage(errorMessage: ClientRes.ErrorMessage)
 
     fun tokenLoseEffectiveness()
+
+    fun roomTimeout()
+
+    fun serverMaintenance()
 }

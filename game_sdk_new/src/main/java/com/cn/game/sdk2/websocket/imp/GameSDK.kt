@@ -6,8 +6,10 @@ import com.cn.game.sdk2.websocket.appListener
 import com.cn.game.sdk2.websocket.gameMassageManager
 import com.cn.game.sdk2.websocket.interfaces.IAppForGame
 import com.cn.game.sdk2.websocket.interfaces.IGameForApp
+import com.cn.game.sdk2.websocket.interfaces.SDKCallbackListener
 import com.cn.game.sdk2.websocket.isAllowedBet
 import com.cn.game.sdk2.websocket.isShowGame
+import com.cn.game.sdk2.websocket.mCallback
 import com.xcjh.base_lib.utils.loge
 import game.common.proto.ClientReq
 import game.mod.proc.yf.proto.req.GameReq
@@ -45,11 +47,12 @@ object GameSDK : IGameForApp {
      * - ——>3)App进入直播间:GameServiceImp.groupInfo() ——>4)进入小游戏:GameServiceImp.gameInfo()
      */
     //platform= 6 ,requestId = 0,version = "1"
-    override fun loginGameWithAgentName(agentName: String, token: String) {
-
-        val req =
-            ClientReq.LoginReq.newBuilder().setPlatform(0).setRequestId(0).setVersion("1").setNickname("Aubrey Wolff")
-                .setAgentName(agentName).setToken(token).build()
+    override fun loginGameWithAgentName(
+        agentName: String, token: String, callback: SDKCallbackListener
+    ) {
+        mCallback = callback
+        val req = ClientReq.LoginReq.newBuilder().setPlatform(0).setRequestId(0).setVersion("1")
+            .setNickname("Aubrey Wolff").setAgentName(agentName).setToken(token).build()
         gameMassageManager?.login(req)
     }
 
@@ -60,7 +63,10 @@ object GameSDK : IGameForApp {
      * - type ==1 成功 随便
      */
     //1213,3
-    override fun enterLive(liveId: String, gameIds: List<Int>, data: String) {
+    override fun enterLive(
+        liveId: String, gameIds: List<Int>, data: String, callback: SDKCallbackListener
+    ) {
+        mCallback = callback
         val req = GameReq.EnterGroup.newBuilder()
         gameIds.forEach {
             req.addMiniGameIds(it)
@@ -76,14 +82,16 @@ object GameSDK : IGameForApp {
     /** 离开直播間
      * - Parameter liveId: 直播間id
      */
-    override fun leaveLive(liveId: String) {
+    override fun leaveLive(liveId: String, callback: SDKCallbackListener) {
+        mCallback = callback
         gameMassageManager?.levelGroup()
     }
 
     /**
      * 注销游戏
      */
-    override fun cancelGame() {
+    override fun cancelGame(callback: SDKCallbackListener) {
+        mCallback = callback
         GameSocketManager.getInstance()?.stopService()
     }
 

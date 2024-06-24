@@ -17,11 +17,13 @@ import com.cn.game.sdk2.websocket.convertBetting
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.gameMassageManager
 import com.cn.game.sdk2.websocket.interfaces.GameService
+import com.cn.game.sdk2.websocket.interfaces.SDKCallbackListener
 import com.cn.game.sdk2.websocket.isBig
 import com.cn.game.sdk2.websocket.isCanBetting
 import com.cn.game.sdk2.websocket.isDouble
 import com.cn.game.sdk2.websocket.isEmpty
 import com.cn.game.sdk2.websocket.isNotEmpty
+import com.cn.game.sdk2.websocket.mCallback
 import com.cn.game.sdk2.websocket.miniGameId
 import com.cn.game.sdk2.websocket.previousSuccess
 import com.cn.game.sdk2.websocket.sum
@@ -153,27 +155,60 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
         gameAboutModel.setLoginResult(true)
         //初始化step2:登录成功后坐下
         enterInfo()
-
+        mCallback?.callback(1)
     }
 
     override fun loginError(errorMessage: ClientRes.ErrorMessage) {
+        mCallback?.callback(errorMessage.code, errorMessage.desc)
         gameAboutModel.loginErrorMessage = errorMessage.desc
-        gameAboutModel.setLoginResult(true)
+        gameAboutModel.setLoginResult(false)
         "loginError：${errorMessage.desc}".loge(tag)
+        when (errorMessage.code) {
+            1000 -> {//其他服有正在进行的游戏，应跳转过去
+//          desc = 您当前还在其他游戏中，是否立刻回到该游戏？ // 713
+            }
+
+            1001 -> {//token验证失败
+//          desc = Token验证失败，请您重新登录 // 712
+//          desc = 您的帐号不存在或者密码输入有误，请查证后再次尝试登录！(S715) // 账号无效
+//          desc = 您的帐号不存在或者密码输入有误，请查证后再次尝试登录！(S705) // 平台参数无效
+            }
+
+            1002 -> {//余额不足
+//          desc = 当前房间需要%s金币才可进入，请您充值 // 720, 731
+//          desc = 金币不够%s元，请先充值 // 732 黑名单渠道入场限制
+            }
+
+            1005 -> {//游戏服即将关闭，client 应换一个服
+                //desc = 当前服务器正在维护
+            }
+
+            200 -> {
+                //code = 200   其他情况
+                //desc = 服务器已满 (S704)
+                //desc = 登录游戏失败，请稍后重试。(S706)
+
+            }
+        }
     }
 
     override fun enterInfo(enterInfo: GameRes.EnterInfo) {
+        mCallback?.callback(1)
         gameAboutModel.isSitDown(true)
         balance = enterInfo.self.score.toInt()
         gameAboutModel.changeBalance(enterInfo.self.score.toInt())
         //初始化step3:进入直播间
         "enterInfo Success: enterLive".loge()
-        GameSDK.enterLive("1213", listOf(1), "")
+        GameSDK.enterLive("1213", listOf(1), "", object : SDKCallbackListener {
+            override fun callback(code: Int, message: String?) {
+
+            }
+        })
     }
 
     override fun groupInfo(groupInfo: GameRes.GroupInfo) {
+        mCallback?.callback(1)
         gameAboutModel.isEnterGroup(true)
-        groupInfo.toJson().loge("toJson")
 
         val miniGameBasicInfo = groupInfo.miniGameBasicInfoListList[0]
         miniGameId = miniGameBasicInfo.miniGameId
@@ -200,7 +235,6 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
     }
 
     override fun leaveGroup(leave: GameRes.LeaveGroup) {
-        leave.groupId
         gameAboutModel.isLeaveGroup(true)
     }
 
@@ -235,6 +269,11 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
 
             1 -> {
                 gameAboutModel.bettingMessage = "余额不住"
+                gameAboutModel.setBettingSuccess(false)
+            }
+
+            2 -> {
+                gameAboutModel.bettingMessage = "押注超时"
                 gameAboutModel.setBettingSuccess(false)
             }
 
@@ -332,13 +371,20 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
     }
 
     override fun errorMessage(errorMessage: ClientRes.ErrorMessage) {
-        val code = errorMessage.code
         val desc = errorMessage.desc
-
+        gameAboutModel.setToastErrorMessage(desc)
     }
 
     override fun tokenLoseEffectiveness() {
         appListener?.getTokenLoseEffectiveness()
+    }
+
+    override fun roomTimeout() {
+
+    }
+
+    override fun serverMaintenance() {
+
     }
 
 }

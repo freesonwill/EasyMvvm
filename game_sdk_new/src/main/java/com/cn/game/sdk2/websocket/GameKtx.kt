@@ -46,6 +46,7 @@ import com.cn.game.sdk2.websocket.bean.areaMap
 import com.cn.game.sdk2.websocket.imp.GameServiceImp
 import com.cn.game.sdk2.websocket.imp.UIMethodImpl
 import com.cn.game.sdk2.websocket.interfaces.IAppForGame
+import com.cn.game.sdk2.websocket.interfaces.SDKCallbackListener
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 
 /**
@@ -119,6 +120,11 @@ var appListener: IAppForGame? = null
  *
  */
 var gameMassageManager: UIMethodImpl? = null
+
+/**
+ * app调用时的返回方法
+ */
+var mCallback: SDKCallbackListener? = null
 
 fun <T> List<T>.isNotEmpty(block: (List<T>) -> Unit): Boolean {
     if (this.isNotEmpty()) {

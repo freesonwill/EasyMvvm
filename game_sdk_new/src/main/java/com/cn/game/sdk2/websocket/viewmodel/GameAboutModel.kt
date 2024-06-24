@@ -28,33 +28,35 @@ class GameAboutModel : ViewModel() {
     private val _isLeaveGroup = MutableLiveData<Boolean>()
 
     private val _isBettingSuccess = MutableLiveData<Boolean>()
+    private val _toastErrorMessage = MutableLiveData<String>()
 
-   /** 需要监听的字段
-    * @see currentStage : 监听阶段变化
-    *  @param [NEW, DEAL, SETTLE] -> [新局开始，开奖中，结算中]
-    *  @param countDown
-    *  @param roundId
-    *  当stage = SETTLE时，开奖结果为   @see [currentSettleResult]
-    *                     开奖注区     @see [lotteryResultList]
-    *                     净收入       @see [netIncome]
-    *                     用户中奖注区  @see [userLotteryResult]
-    *
-    * @see balance : 监听余额变化,需要缩小100倍，保留两位小数用于展示
-    *
-    * @see syncAreaBetInfo ; 监听default牌面的人数变化
-    *
-    * @see historyRounds : 开奖历史记录
-    *
-    * @see isCanAgain : 显示隐藏续压按钮
-    *
-    * @see isBettingSuccess : 下注是否成功
-    *  @param bettingMessage 下注结果
-    *
-    * @see isLoginSuccess : 登录结果
-    *  @param loginErrorMessage 登录失败才有
-    *
-    *
-    * 直接使用的字段
+    /** 需要监听的字段
+     * @see currentStage : 监听阶段变化
+     *  @param [NEW, DEAL, SETTLE] -> [新局开始，开奖中，结算中]
+     *  @param countDown
+     *  @param roundId
+     *  当stage = SETTLE时，开奖结果为   @see [currentSettleResult]
+     *                     开奖注区     @see [lotteryResultList]
+     *                     净收入       @see [netIncome]
+     *                     用户中奖注区  @see [userLotteryResult]
+     *
+     * @see balance : 监听余额变化,需要缩小100倍，保留两位小数用于展示
+     *
+     * @see syncAreaBetInfo ; 监听default牌面的人数变化
+     *
+     * @see historyRounds : 开奖历史记录
+     *
+     * @see isCanAgain : 显示隐藏续压按钮
+     *
+     * @see isBettingSuccess : 下注是否成功
+     *  @param bettingMessage 下注结果
+     *
+     * @see isLoginSuccess : 登录结果
+     *  @param loginErrorMessage 登录失败才有
+     *
+     *  @see toastErrorMessage 弹窗信息
+     *
+     * 直接使用的字段
     > - countDown 阶段倒计时
     > - roundId 期号
     > - loginErrorMessage
@@ -62,7 +64,7 @@ class GameAboutModel : ViewModel() {
     > - netIncome 净收入，用于展示中奖动画；使用时需要缩小100倍
     > - userLotteryResult 用户中奖后的面板砝码金额已经中奖注区
     > - bettingMessage 下注失败的message
-    */
+     */
 
     val isLoginSuccess: LiveData<Boolean>
         get() = _isLoginSuccess
@@ -75,6 +77,12 @@ class GameAboutModel : ViewModel() {
 
     val isLeaveGroup: LiveData<Boolean>
         get() = _isLeaveGroup
+
+    /**
+     * 接口返回错误信息 可能需要弹窗提示
+     */
+    val toastErrorMessage: LiveData<String>
+        get() = _toastErrorMessage
 
     /**
      * 下注是否成功
@@ -173,6 +181,10 @@ class GameAboutModel : ViewModel() {
     fun addHistoryRound(item: RoundInfoBean) {
         val history = _historyRounds.value ?: listOf()
         _historyRounds.value = history + item
+    }
+
+    fun setToastErrorMessage(msg: String) {
+        _toastErrorMessage.value = msg
     }
 
     var miniGameId: Int = 0
