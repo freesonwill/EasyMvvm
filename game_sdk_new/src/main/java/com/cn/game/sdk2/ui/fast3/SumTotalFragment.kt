@@ -12,8 +12,9 @@ import kotlinx.coroutines.launch
 /**
  * 总和
  */
-class SumTotalFragment(private val fast3VM:Fast3ViewModel):BaseFast3Fragment<SumTotalVm,FragmentSumTotalBinding>() {
+class SumTotalFragment(private val fast3VM: Fast3ViewModel) : BaseFast3Fragment<SumTotalVm, FragmentSumTotalBinding>() {
     override fun initView(savedInstanceState: Bundle?) {
+        mDatabind.model = mViewModel
     }
 
     override fun createObserver() {
@@ -38,7 +39,7 @@ class SumTotalFragment(private val fast3VM:Fast3ViewModel):BaseFast3Fragment<Sum
                         17 -> it.add(mDatabind.ivSumFlashSeventeen)
                     }
                 }
-                playAlphaAnimTogether(views,fast3VM.prizeAnimTime/5,5)
+                playAlphaAnimTogether(views, fast3VM.prizeAnimTime / 5, 5)
             }
         }
     }

@@ -19,6 +19,7 @@ class SingleDiceFragment(private var fast3VM: Fast3ViewModel) : BaseFast3Fragmen
     private lateinit var areaViewList: MutableList<GameAreaView>
 
     override fun initView(savedInstanceState: Bundle?) {
+        mDatabind.model = mViewModel
         areaViewList = mutableListOf(
             mDatabind.gavDiceOne.also { it.areaCode = NOTES_ENUM.QTSingle1.num},
             mDatabind.gavDiceTwo.also { it.areaCode = NOTES_ENUM.QTSingle2.num},

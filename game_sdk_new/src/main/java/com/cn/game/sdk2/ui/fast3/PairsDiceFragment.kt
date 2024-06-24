@@ -14,25 +14,29 @@ import kotlinx.coroutines.launch
  */
 class PairsDiceFragment(private val fast3VM: Fast3ViewModel):BaseFast3Fragment<PairsDiceVm,FragmentPairsDiceBinding>() {
     override fun initView(savedInstanceState: Bundle?) {
-
+        mDatabind.model = mViewModel
     }
+
 
     override fun createObserver() {
         super.createObserver()
-        fast3VM.historyResultBeanLD.observe(viewLifecycleOwner) { bean ->
-            lifecycleScope.launch {
-                val views = mutableListOf<View>().also {
-                    when (bean.resultPair) {
-                        1 -> it.add(mDatabind.ivPairsOne)
-                        2 -> it.add(mDatabind.ivPairsTwo)
-                        3 -> it.add(mDatabind.ivPairsThree)
-                        4 -> it.add(mDatabind.ivPairsFour)
-                        5 -> it.add(mDatabind.ivPairsFive)
-                        6 -> it.add(mDatabind.ivPairsSix)
-                    }
-                }
-                playAlphaAnimTogether(views,fast3VM.prizeAnimTime/5,5)
-            }
-        }
+//        fast3VM.userLotteryResultLiveData.observe(viewLifecycleOwner) { resultList ->
+//            setLotteryResult(resultList, areaViewList, fast3VM.prizeAnimTime / 5, 5)
+//        }
+//        fast3VM.historyResultBeanLD.observe(viewLifecycleOwner) { bean ->
+//            lifecycleScope.launch {
+//                val views = mutableListOf<View>().also {
+//                    when (bean.resultPair) {
+//                        1 -> it.add(mDatabind.ivPairsOne)
+//                        2 -> it.add(mDatabind.ivPairsTwo)
+//                        3 -> it.add(mDatabind.ivPairsThree)
+//                        4 -> it.add(mDatabind.ivPairsFour)
+//                        5 -> it.add(mDatabind.ivPairsFive)
+//                        6 -> it.add(mDatabind.ivPairsSix)
+//                    }
+//                }
+//                playAlphaAnimTogether(views,fast3VM.prizeAnimTime/5,5)
+//            }
+//        }
     }
 }

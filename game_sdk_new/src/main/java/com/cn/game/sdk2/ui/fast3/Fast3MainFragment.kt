@@ -36,11 +36,17 @@ import com.cn.game.sdk2.ui.view.CustomBubbleAttachPopup
 import com.cn.game.sdk2.ui.view.MoneyOKView
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
+import com.cn.game.sdk2.utils.ToastUtil
 import com.cn.game.sdk2.utils.ext.CommonExt.isMainThread
 import com.cn.game.sdk2.utils.ext.CommonExt.toPinyin
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.utils.tool.measureView
 import com.cn.game.sdk2.websocket.GameSocketManager
+import com.cn.game.sdk2.websocket.bean.AreaBetBean
+import com.cn.game.sdk2.websocket.bean.BettingRecordBean
+import com.cn.game.sdk2.websocket.bean.RoundInfoBean
+import com.cn.game.sdk2.websocket.gameAboutModel
+import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 import com.drake.brv.annotaion.DividerOrientation
 import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.dividerSpace
@@ -75,8 +81,9 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     private var anchorMoneyView: MoneyOKView? = null
 
     //<areaCode,<money,View>>
-    private var savedMoneyMap: MutableMap<Int, MutablePair<Int, MoneyOKView>> = mutableMapOf()
-    private var tempMoneyMap: MutableMap<Int, MutablePair<Int, MoneyOKView>> = mutableMapOf()
+//    private var savedMoneyMap: MutableMap<Int, MutablePair<Int, MoneyOKView>> = mutableMapOf()
+//    private var tempMoneyMap: MutableMap<Int, MutablePair<Int, MoneyOKView>> = mutableMapOf()
+    private val moneyOkViewMap by lazy { mutableMapOf<Int, MoneyOKView>() }
 
     //==================================== Method ===============================================//
     override fun initView(savedInstanceState: Bundle?) {
@@ -109,26 +116,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
         setBetAdapter()
         setClick()
-        //点击更多弹出框
-        mDatabind.llHomeMore.clickNoRepeat {
-            if (homeMorePop == null) {
-                val bubbleAttach = CustomBubbleAttachPopup(requireContext())
-                bubbleAttach.customBubbleAttachListener =
-                    object : CustomBubbleAttachPopup.CustomBubbleAttachListener {
-                        override fun switchGame() {
-                            homeMorePop!!.dismiss()
-                        }
-                    }
-                homeMorePop = XPopup.Builder(requireContext())
-                    .hasShadowBg(false)
-                    .isTouchThrough(true)
-                    .atView(mDatabind.llHomeMore)
-                    .hasShadowBg(false) // 去掉半透明背景
-                    .asCustom(bubbleAttach)
-            }
-            PromptSoundPlay.btnPlayMedia(requireContext())
-            homeMorePop!!.show()
-        }
+
     }
 
     override fun lazyLoadData() {
@@ -174,7 +162,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 animatorSet.start()
             }
             //倒计时
-            mViewModel.startCountDown(mViewModel.bettingCountDownTime)
+            mViewModel.startCountDown(gameAboutModel.countDown)
         }
     }
 
@@ -212,15 +200,43 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 })
                 animatorSet.start()
             }
-            mViewModel.startCountDown(mViewModel.settingCountDownTime)
+            //开奖结果注区动画闪烁
+            mViewModel.userLotteryResultLiveData.value = gameAboutModel.lotteryResultList
+
+            //中奖区域金额刷新
+            notifyMoneyOkView(gameAboutModel.userLotteryResult)
+
+            mViewModel.startCountDown(gameAboutModel.countDown)
         }
 
     }
 
-    private fun onStartDrawing() { //开始开奖
+    /**
+     * 开奖中
+     */
+    private fun onStartDrawing(roundInfo: RoundInfoBean?) {
         lifecycleScope.launch {
             showLoading(getString(R.string.g_home_drawing_begin), 1000)
-            mDatabind.txtHomeStatic.text = resources.getString(R.string.g_home_drawing_being)
+            mDatabind.apply {
+                txtHomeStatic.text = resources.getString(R.string.g_home_drawing_being)
+                roundInfo?.run {
+                    performs.forEachIndexed { index, item ->
+                        val id = resources.getIdentifier(
+                            "icon_dice_" + item.toPinyin(),
+                            "drawable",
+                            requireContext().packageName
+                        )
+                        when (index) {
+                            0 -> ivDrawYi.setImageResource(id)
+                            1 -> ivDrawEr.setImageResource(id)
+                            2 -> ivDrawSan.setImageResource(id)
+                        }
+                    }
+                    txtHomeTotal.text = sum.toString()
+                    ivBetSize.setImageResource(if (isBig) R.drawable.icon_home_result_big else R.drawable.icon_home_result_small)
+                    ivBetOdd.setImageResource(if (isDouble) R.drawable.icon_home_result_double else R.drawable.icon_home_result_single)
+                }
+            }
         }
     }
 
@@ -237,64 +253,54 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         mViewModel.currentMoneyLD.observe(viewLifecycleOwner) { balance ->
             mDatabind.txtCurrentMoney.text = balance
         }
-        mViewModel.currentBettingRecordBeanLD.observe(viewLifecycleOwner) { pair ->
-            val result = pair.first
-            val moneyOKView = pair.second
-            if (tempMoneyMap.containsKey(result.bettingArea.number)) {
-                tempMoneyMap[result.bettingArea.number]?.first = result.money
-            } else {
-                tempMoneyMap[result.bettingArea.number] = MutablePair(result.money, moneyOKView)
-            }
-        }
+//        mViewModel.currentBettingRecordBeanLD.observe(viewLifecycleOwner) { pair ->
+//            val result = pair.first
+//            val moneyOKView = pair.second
+//            if (tempMoneyMap.containsKey(result.bettingArea.number)) {
+//                tempMoneyMap[result.bettingArea.number]?.first = result.money
+//            } else {
+//                tempMoneyMap[result.bettingArea.number] = MutablePair(result.money, moneyOKView)
+//            }
+//        }
 
         mViewModel.homeTimeVisibility.observe(requireActivity()) {
             mDatabind.txtHomeTime.visibility = it
             mDatabind.txtHomeUnit.visibility = it
         }
-        mViewModel.gameStateLV.observe(requireActivity()) {
-            Log.i(TAG, "gameStateLV changed:${it}")
-            mViewModel.isClickOperation = it == GameState.Betting
-            when (it) {
-                GameState.Betting -> {
-                    onStartBetting()
-                }
-
-                GameState.Settling -> {
-                    onStartSetting()
-                }
-
-                GameState.Drawing -> {
-                    onStartDrawing()
-                }
-
-                GameState.DrawFinish -> {
-                    onDrawFinish()
-                }
-
-                else -> {}
-            }
-        }
+//        mViewModel.gameStateLV.observe(requireActivity()) {
+//            Log.i(TAG, "gameStateLV changed:${it}")
+//            mViewModel.isClickOperation = it == GameState.Betting
+//            when (it) {
+//                GameState.Betting -> {
+//                    onStartBetting()
+//                }
+//
+//                GameState.Settling -> {
+//                    onStartSetting()
+//                }
+//
+//                GameState.Drawing -> {
+//                    onStartDrawing(null)
+//                }
+//
+//                GameState.DrawFinish -> {
+//                    onDrawFinish()
+//                }
+//
+//                else -> {}
+//            }
+//        }
         mViewModel.homeTime.observe(requireActivity()) { seconds ->
             mDatabind.txtHomeTime.text = seconds.toString()
             if (mViewModel.gameState == GameState.Betting && seconds != 0 && seconds <= 5) {
                 PromptSoundPlay.countdownGameTip(requireContext())
             }
         }
-        mViewModel.historyResultBeanLD.observe(requireActivity()) { bean ->
-            val adapter = mDatabind.rvHomeHistory.bindingAdapter
-            adapter.addModels(mutableListOf(bean), false)
-//            if(adapter.models!!.size == 1) resultAnimation(isShowResult = false, animation = false)
-            Log.d(
-                TAG,
-                "onDrawingResult run on $isMainThread result:$bean," + mViewModel.historyResultBeans.size
-            )
-            mDatabind.rlClickHide.isVisible = adapter.models!!.isNotEmpty()
-        }
+
         mViewModel.moneyAnimCallback = object : Fast3ViewModel.MoneyAnimCallback {
             override fun startAnim(
                 x: Float,
                 y: Float,
-                isCentered: Boolean,
                 speed: Long,
                 areaView: GameAreaView,
                 endCallBack: (() -> Unit)?
@@ -306,70 +312,87 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             hiddenAnchorTop()
             //todo:bet失败处理
             GameSocketManager.getInstance()?.getGameService()?.commitBetting()
-            //将tempMap中的数据更新至savedMap
-            for (key in tempMoneyMap.keys) {
-                val tempMoney = tempMoneyMap[key]?.first ?: 0
-                //保存新数据saved+temp
-                if (savedMoneyMap.containsKey(key)) {
-                    savedMoneyMap[key]?.apply { first += tempMoney }
-                    //创建saved数据
-                } else {
-                    tempMoneyMap[key]?.let {
-                        savedMoneyMap[key] = MutablePair(tempMoney, (it.second))
+        }
+
+        mViewModel.betDeleteClick.observe(this) {
+            cancelTemBetting()
+        }
+
+        //游戏状态监听
+        gameAboutModel.currentStage.observe(viewLifecycleOwner) { stage ->
+            stage?.run {
+                when (this) {
+                    GameAboutModel.Stage.NEW -> {
+                        onStartBetting()
+                    }
+
+                    GameAboutModel.Stage.DEAL -> {
+                        onStartDrawing(gameAboutModel.currentSettleResult)
+                    }
+
+                    GameAboutModel.Stage.SETTLE -> {
+                        onStartSetting()
                     }
                 }
             }
         }
 
-        mViewModel.betDeleteClick.observe(this) {
-            hiddenAnchorTop()
-            GameSocketManager.getInstance()?.getGameService()?.cancelBetting { result ->
-                if (null == result) {
-                    tempMoneyMap.forEach {
-                        it.value.second.let { moneyView ->
-                            if (moneyView.isAdd()) {
-                                val parent = moneyView.parent as ViewGroup
-                                parent.removeView(moneyView)
-                            }
-                        }
-                    }
+        //开奖历史记录
+        gameAboutModel.historyRounds.observe(viewLifecycleOwner) {
+            val adapter = mDatabind.rvHomeHistory.bindingAdapter
+            adapter.models = it
+            mDatabind.rlClickHide.isVisible = adapter.models!!.isNotEmpty()
+        }
 
-                } else {
-                    result.forEach {
-                        if (tempMoneyMap.containsKey(it.bettingArea.number)) {
-                            tempMoneyMap[it.bettingArea.number]?.first = it.money
-                            tempMoneyMap[it.bettingArea.number]?.apply {
-                                second.setShowMoney(first)
-                            }
-                        } else {
-                            tempMoneyMap[it.bettingArea.number]?.second
-                                ?.let { moneyView ->
-                                    if (moneyView.isAdd()) {
-                                        val parent = moneyView.parent as ViewGroup
-                                        parent.removeView(moneyView)
-                                    }
-                                }
-                            tempMoneyMap.remove(it.bettingArea.number)
-                        }
+        //下注结果
+        gameAboutModel.isBettingSuccess.observe(viewLifecycleOwner) { isSuccess ->
+            if (!isSuccess) {
+                //失败时显示delete ok按钮
+                ToastUtil.showToast(requireContext(), gameAboutModel.bettingMessage)
+                anchorMoneyView?.showTop()
+            }
+        }
+    }
+
+    /**
+     * 取消临时下注
+     */
+    private fun cancelTemBetting() {
+        hiddenAnchorTop()
+        GameSocketManager.getInstance()?.getGameService()?.cancelBetting { result ->
+            notifyMoneyOkView(result)
+        }
+    }
+
+    /**
+     * 刷新页面上注区里moneyView显示
+     * 取消下注、结算时刷新中奖区域金额
+     */
+    private fun notifyMoneyOkView(list: List<BettingRecordBean>?) {
+        if (list.isNullOrEmpty()) {
+            moneyOkViewMap.forEach {
+                it.value.let { moneyView ->
+                    if (moneyView.isAdd()) {
+                        val parent = moneyView.parent as ViewGroup
+                        parent.removeView(moneyView)
                     }
                 }
             }
-
-            /*for (key in tempMoneyMap.keys) {
-                //还原savedmap中的数据
-                if (savedMoneyMap.containsKey(key)) {
-                    savedMoneyMap[key]?.apply { second.setShowMoney(first) }
-                    //直接移除MoneyView
+            moneyOkViewMap.clear()
+        } else {
+            list.forEach {
+                if (moneyOkViewMap.containsKey(it.bettingArea.number)) {
+                    moneyOkViewMap[it.bettingArea.number]?.setShowMoney(it.money)
                 } else {
-                    tempMoneyMap[key]?.second?.let {
-                        if (it.isAdd()) {
-                            val parent = it.parent as ViewGroup
-                            parent.removeView(it)
+                    moneyOkViewMap[it.bettingArea.number]?.let { moneyView ->
+                        if (moneyView.isAdd()) {
+                            val parent = moneyView.parent as ViewGroup
+                            parent.removeView(moneyView)
                         }
                     }
+                    moneyOkViewMap.remove(it.bettingArea.number)
                 }
             }
-            tempMoneyMap.clear()*/
         }
     }
 
@@ -473,9 +496,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         mDatabind.rvHomeHistory.dividerSpace(
             requireContext().dp2px(2),
             DividerOrientation.HORIZONTAL
-        )
-        mDatabind.rvHomeHistory.setup {
-            addType<HistoryResultBean>(R.layout.item_bet_history)
+        ).setup {
+            addType<RoundInfoBean>(R.layout.item_bet_history)
             onBind {
                 when (itemViewType) {
                     R.layout.item_bet_history -> {
@@ -492,8 +514,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                 mDatabind.flRvHistory.layoutParams = params
                             }
 
-                            val mainTxtBean = _data as HistoryResultBean
-                            mainTxtBean.result.forEachIndexed { index, item ->
+                            val mainTxtBean = _data as RoundInfoBean
+                            mainTxtBean.performs.forEachIndexed { index, item ->
                                 val child = llShowDice.getChildAt(index) as ImageView
                                 val id = resources.getIdentifier(
                                     "icon_dice_" + item.toPinyin(),
@@ -502,30 +524,56 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                 )
                                 child.setImageResource(id)
                             }
-                            txtBetNum.text = mainTxtBean.resultSum.toString()
+                            txtBetNum.text = mainTxtBean.sum.toString()
                             txtBetSize.text =
-                                if (mainTxtBean.resultSize == "big") getString(R.string.g_home_txt_big)
-                                else getString(R.string.g_home_txt_small)
+                                if (mainTxtBean.isBig) getString(R.string.g_home_txt_big) else getString(
+                                    R.string.g_home_txt_small
+                                )
                             txtBetOdd.text =
-                                if (mainTxtBean.resultSingle == "single") getString(R.string.g_home_txt_single)
-                                else getString(R.string.g_home_txt_double)
+                                if (mainTxtBean.isDouble)
+                                    getString(R.string.g_home_txt_double)
+                                else
+                                    getString(R.string.g_home_txt_single)
                         }
                     }
                 }
             }
-        }.models = mViewModel.historyResultBeans
+        }.models = gameAboutModel.historyRounds.value
         lifecycleScope.launchWhenResumed {
-            if (mDatabind.rvHomeHistory.models!!.isNotEmpty()) {
+            if (!mDatabind.rvHomeHistory.models.isNullOrEmpty()) {
                 mDatabind.rvHomeHistory.scrollToPosition(mDatabind.rvHomeHistory.models!!.size - 1)
             }
-            mDatabind.rlClickHide.isVisible = mDatabind.rvHomeHistory.models!!.isNotEmpty()
+            mDatabind.rlClickHide.isVisible = !mDatabind.rvHomeHistory.models.isNullOrEmpty()
         }
     }
 
     private fun setClick() {
-        mDatabind.rlClickHide.clickNoRepeat {
-            PromptSoundPlay.btnPlayMedia(requireContext())
-            resultAnimation(!mViewModel.isShowResult)
+        mDatabind.apply {
+            rlClickHide.clickNoRepeat {
+                PromptSoundPlay.btnPlayMedia(requireContext())
+                resultAnimation(!mViewModel.isShowResult)
+            }
+
+            //点击更多弹出框
+            llHomeMore.clickNoRepeat {
+                if (homeMorePop == null) {
+                    val bubbleAttach = CustomBubbleAttachPopup(requireContext())
+                    bubbleAttach.customBubbleAttachListener =
+                        object : CustomBubbleAttachPopup.CustomBubbleAttachListener {
+                            override fun switchGame() {
+                                homeMorePop!!.dismiss()
+                            }
+                        }
+                    homeMorePop = XPopup.Builder(requireContext())
+                        .hasShadowBg(false)
+                        .isTouchThrough(true)
+                        .atView(mDatabind.llHomeMore)
+                        .hasShadowBg(false) // 去掉半透明背景
+                        .asCustom(bubbleAttach)
+                }
+                PromptSoundPlay.btnPlayMedia(requireContext())
+                homeMorePop!!.show()
+            }
         }
     }
 
@@ -578,19 +626,17 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         //获取选中的筹码所在的position
         val betList = mDatabind.llShowBetList.models as List<SelectAnnotationBean>
         val selectedPosition = betList.indexOfFirst { it.select }
-        val betMoney = betList[selectedPosition].money
-        //mViewModel.betMoney = betList[selectedPosition].money
         val layoutManager = mDatabind.llShowBetList.layoutManager as LinearLayoutManager
         var finallyView = layoutManager.findViewByPosition(selectedPosition)
 
         //判断选择的筹码是不是在屏幕外面
         if (finallyView != null) {
-            startMoneyAnimation(x, y, speed, areaView, finallyView, betMoney, endCallBack)
+            startMoneyAnimation(x, y, speed, areaView, finallyView, endCallBack)
         } else {
             scrollToItemAndPerformAction(mDatabind.llShowBetList, selectedPosition) {
                 finallyView = layoutManager.findViewByPosition(selectedPosition)
                 finallyView?.let {
-                    startMoneyAnimation(x, y, speed, areaView, it, betMoney, endCallBack)
+                    startMoneyAnimation(x, y, speed, areaView, it, endCallBack)
                 }
             }
         }
@@ -602,7 +648,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         speed: Long = 300,
         areaView: GameAreaView,
         jettonView: View,
-        betMoney: Int,
         endCallBack: (() -> Unit)?
     ) {
         //贝塞尔曲线中间过程的点的坐标
@@ -665,8 +710,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 animator.start()
 
                 //筹码栈处理
-                updateAnchorView(areaView.moneyView)
-                addTempMoney(areaView)
+                updateAnchorView(areaView)
+//                addTempMoney(areaView)
             })
         }
 
@@ -675,19 +720,20 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         valueAnimator.start()
     }
 
-    private fun addTempMoney(areaView: GameAreaView) {
-        mViewModel.currentBettingRecordBean?.let {
-            if (areaView.areaCode == it.first.bettingArea.number) {
-                areaView.moneyView.setShowMoney(it.first.money)
-            }
-        }
-    }
+//    private fun addTempMoney(areaView: GameAreaView) {
+//        mViewModel.currentBettingRecordBean?.let {
+//            if (areaView.areaCode == it.first.bettingArea.number) {
+//                areaView.moneyView.setShowMoney(it.first.money)
+//            }
+//        }
+//    }
 
-    private fun updateAnchorView(anchor: MoneyOKView) {
+    private fun updateAnchorView(areaView: GameAreaView) {
         hiddenAnchorTop()
-        anchor.showTop()
-        anchorMoneyView = anchor
-        mDatabind.tempTouch.setAnchorMoneyView(anchor)
+        areaView.moneyView.showTop()
+        anchorMoneyView = areaView.moneyView
+        moneyOkViewMap[areaView.areaCode] = areaView.moneyView
+        mDatabind.tempTouch.setAnchorMoneyView(areaView.moneyView)
     }
 
     private fun hiddenAnchorTop() {

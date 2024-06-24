@@ -3,6 +3,7 @@ package com.cn.game.sdk2.ui.viewmodel.fast3
 import android.util.Log
 import android.view.View
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.cn.game.sdk2.data.bean.HistoryResultBean
 import com.cn.game.sdk2.data.bean.LocationClickPoint
@@ -13,6 +14,7 @@ import com.cn.game.sdk2.manager.listener.IGameListener
 import com.cn.game.sdk2.ui.view.MoneyOKView
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.utils.ext.CommonExt.isMainThread
+import com.cn.game.sdk2.websocket.bean.Betting
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.kunminx.architecture.ui.callback.UnPeekLiveData
@@ -32,15 +34,17 @@ class Fast3ViewModel : BaseViewModel() {
     var moneyAnimCallback: MoneyAnimCallback? = null
 
     //Todo viewModel不应该持有view的任何东西
-    val currentBettingRecordBeanLD: LiveData<Pair<BettingRecordBean, MoneyOKView>> by lazy { UnPeekLiveData() }
-    var currentBettingRecordBean: Pair<BettingRecordBean, MoneyOKView>?
-        set(value) {
-            (currentBettingRecordBeanLD as UnPeekLiveData).value = value
-        }
-        get() = currentBettingRecordBeanLD.value
+//    val currentBettingRecordBeanLD: LiveData<Pair<BettingRecordBean, MoneyOKView>> by lazy { UnPeekLiveData() }
+//    var currentBettingRecordBean: Pair<BettingRecordBean, MoneyOKView>?
+//        set(value) {
+//            (currentBettingRecordBeanLD as UnPeekLiveData).value = value
+//        }
+//        get() = currentBettingRecordBeanLD.value
     //var tempBetRecordMap:MutableMap<Int, MutablePair<BettingRecordBean, WeakReference<MoneyOKView>>> = mutableMapOf()
 
-    val historyResultBeans: MutableList<HistoryResultBean> by lazy { mutableListOf() }
+    //    val historyResultBeans: MutableList<HistoryResultBean> by lazy { mutableListOf() }
+    val userLotteryResultLiveData :UnPeekLiveData<ArrayList<Betting>> =UnPeekLiveData()
+
     val historyResultBeanLD: LiveData<HistoryResultBean> by lazy { UnPeekLiveData() }
     val homeTime: LiveData<Int> by lazy { UnPeekLiveData(bettingCountDownTime) }
 
@@ -168,7 +172,7 @@ class Fast3ViewModel : BaseViewModel() {
     fun clear() {
         GameManager.instance.stopCountDown()
         GameManager.instance.reset()
-        currentBettingRecordBean = null
+//        currentBettingRecordBean = null
     }
 
     fun startSettling() {
@@ -182,13 +186,12 @@ class Fast3ViewModel : BaseViewModel() {
     fun emitMoneyAnim(
         x: Float,
         y: Float,
-        isCentered: Boolean = false,
         speed: Long = 300,
         areaView: GameAreaView,
         endCallBack: (() -> Unit)? = null
     ) {
         moneyAnimCallback?.apply {
-            startAnim(x, y, isCentered, speed, areaView, endCallBack)
+            startAnim(x, y, speed, areaView, endCallBack)
         }
     }
 
@@ -196,7 +199,6 @@ class Fast3ViewModel : BaseViewModel() {
         fun startAnim(
             x: Float,
             y: Float,
-            isCentered: Boolean = false,
             speed: Long = 300,
             areaView: GameAreaView,
             endCallBack: (() -> Unit)?

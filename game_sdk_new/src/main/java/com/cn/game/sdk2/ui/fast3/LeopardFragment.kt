@@ -38,12 +38,12 @@ class LeopardFragment(private val fast3VM:Fast3ViewModel):BaseFast3Fragment<Leop
 
     override fun initView(savedInstanceState: Bundle?) {
         mDatabind.apply {
-            gavLeopardOne.areaInfo = BOOM_1()
-            gavLeopardTwo.areaInfo = BOOM_2()
-            gavLeopardThree.areaInfo = BOOM_3()
-            gavLeopardFour.areaInfo = BOOM_4()
-            gavLeopardFive.areaInfo = BOOM_5()
-            gavLeopardSix.areaInfo = BOOM_6()
+            gavLeopardOne.areaInfo = mViewModel.bettingArray[1]
+            gavLeopardTwo.areaInfo =  mViewModel.bettingArray[2]
+            gavLeopardThree.areaInfo =  mViewModel.bettingArray[3]
+            gavLeopardFour.areaInfo =  mViewModel.bettingArray[3]
+            gavLeopardFive.areaInfo =  mViewModel.bettingArray[4]
+            gavLeopardSix.areaInfo =  mViewModel.bettingArray[5]
 
             areaViewList.add(gavLeopardOne)
             areaViewList.add(gavLeopardTwo)
@@ -77,23 +77,31 @@ class LeopardFragment(private val fast3VM:Fast3ViewModel):BaseFast3Fragment<Leop
         }
     }
 
+    override fun initData() {
+        super.initData()
+        mDatabind.model = mViewModel
+    }
+
     override fun createObserver() {
         super.createObserver()
-        fast3VM.historyResultBeanLD.observe(viewLifecycleOwner) { bean ->
-            lifecycleScope.launch {
-                val views = mutableListOf<View>().also {
-                    when (bean.resultLeopard) {
-                        1 -> it.add(mDatabind.ivLeopardOne)
-                        2 -> it.add(mDatabind.ivLeopardTwo)
-                        3 -> it.add(mDatabind.ivLeopardThree)
-                        4 -> it.add(mDatabind.ivLeopardFour)
-                        5 -> it.add(mDatabind.ivLeopardFive)
-                        6 -> it.add(mDatabind.ivLeopardSix)
-                    }
-                }
-                playAlphaAnimTogether(views, fast3VM.prizeAnimTime / 5, 5)
-            }
+        fast3VM.userLotteryResultLiveData.observe(viewLifecycleOwner) { resultList ->
+            setLotteryResult(resultList, areaViewList, fast3VM.prizeAnimTime / 5, 5)
         }
+//        fast3VM.historyResultBeanLD.observe(viewLifecycleOwner) { bean ->
+//            lifecycleScope.launch {
+//                val views = mutableListOf<View>().also {
+//                    when (bean.resultLeopard) {
+//                        1 -> it.add(mDatabind.ivLeopardOne)
+//                        2 -> it.add(mDatabind.ivLeopardTwo)
+//                        3 -> it.add(mDatabind.ivLeopardThree)
+//                        4 -> it.add(mDatabind.ivLeopardFour)
+//                        5 -> it.add(mDatabind.ivLeopardFive)
+//                        6 -> it.add(mDatabind.ivLeopardSix)
+//                    }
+//                }
+//                playAlphaAnimTogether(views, fast3VM.prizeAnimTime / 5, 5)
+//            }
+//        }
     }
 
     private fun addMoneyOkView(areaView: GameAreaView) {
