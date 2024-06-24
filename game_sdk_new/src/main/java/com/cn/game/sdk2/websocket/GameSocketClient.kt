@@ -41,7 +41,11 @@ class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
     }
 
     fun re() {
-        reset()
+        GlobalScope.launch {
+            withContext(Dispatchers.Main) {
+                reset()
+            }
+        }
         "---尝试重连---".loge()
         reconnect()
     }
