@@ -137,7 +137,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
     override fun initData() {
         //获取当前余额
-        mDatabind.txtCurrentMoney.text = mViewModel.currentMoney.value.toString()
+        mDatabind.txtCurrentMoney.text = mViewModel.currentMoney
         lifecycleScope.launchWhenResumed {
             //开始下注
             Log.d(TAG, "initData startBetting")
@@ -234,6 +234,9 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
     override fun createObserver() {
         Log.i(TAG, "createObserver------------>")
+        mViewModel.currentMoneyLD.observe(viewLifecycleOwner) { balance ->
+            mDatabind.txtCurrentMoney.text = balance
+        }
         mViewModel.currentBettingRecordBeanLD.observe(viewLifecycleOwner) { pair ->
             val result = pair.first
             val moneyOKView = pair.second
@@ -352,28 +355,23 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 }
             }
 
-            /*for (key in mViewModel.tempMoneyMap.keys) {
+            /*for (key in tempMoneyMap.keys) {
                 //还原savedmap中的数据
-                if (mViewModel.savedMoneyMap.containsKey(key)) {
-                    mViewModel.savedMoneyMap[key]?.apply {
-                        second.get()?.apply {
-                            setShowMoney(first)
-                        }
-                    }
+                if (savedMoneyMap.containsKey(key)) {
+                    savedMoneyMap[key]?.apply { second.setShowMoney(first) }
                     //直接移除MoneyView
                 } else {
-                    mViewModel.tempMoneyMap[key]?.second?.get()?.let {
-                        if(it.isAdd()) {
+                    tempMoneyMap[key]?.second?.let {
+                        if (it.isAdd()) {
                             val parent = it.parent as ViewGroup
                             parent.removeView(it)
                         }
                     }
                 }
             }
-            mViewModel.tempMoneyMap.clear()*/
+            tempMoneyMap.clear()*/
         }
     }
-
 
     /**
      * 开奖结果显示或者隐藏动画
