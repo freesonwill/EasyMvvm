@@ -5,7 +5,6 @@ import com.cn.game.sdk2.websocket.bean.Betting
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import com.cn.game.sdk2.websocket.GameServerMessageConvertFactory
 import com.cn.game.sdk2.websocket.GameSocketClient
-import com.cn.game.sdk2.websocket.GameSocketManager
 import com.cn.game.sdk2.websocket.appListener
 import com.cn.game.sdk2.websocket.balance
 import com.cn.game.sdk2.websocket.bean.AreaBetBean
@@ -15,13 +14,15 @@ import com.cn.game.sdk2.websocket.calculateUserLotteryResult
 import com.cn.game.sdk2.websocket.convertBetting
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.interfaces.GameService
-import com.cn.game.sdk2.websocket.interfaces.SDKCallbackListener
+import com.cn.game.sdk2.websocket.interfaces.SDKEnterLiveCallbackListener
 import com.cn.game.sdk2.websocket.isBig
 import com.cn.game.sdk2.websocket.isCanBetting
 import com.cn.game.sdk2.websocket.isDouble
 import com.cn.game.sdk2.websocket.isEmpty
 import com.cn.game.sdk2.websocket.isNotEmpty
-import com.cn.game.sdk2.websocket.mCallback
+import com.cn.game.sdk2.websocket.mEnterLiveCallback
+import com.cn.game.sdk2.websocket.mLeaveLiveCallback
+import com.cn.game.sdk2.websocket.mLoginCallback
 import com.cn.game.sdk2.websocket.miniGameId
 import com.cn.game.sdk2.websocket.previousSuccess
 import com.cn.game.sdk2.websocket.sum
@@ -139,11 +140,11 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
         gameAboutModel.setLoginResult(true)
         //初始化step2:登录成功后坐下
         enterInfo()
-        mCallback?.callback(1)
+        mLoginCallback?.callback(1)
     }
 
     override fun loginError(errorMessage: ClientRes.ErrorMessage) {
-        mCallback?.callback(errorMessage.code, errorMessage.desc)
+        mLoginCallback?.callback(errorMessage.code, errorMessage.desc)
         gameAboutModel.loginErrorMessage = errorMessage.desc
         gameAboutModel.setLoginResult(false)
         "loginError：${errorMessage.desc}".loge(tag)
@@ -177,21 +178,21 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
     }
 
     override fun enterInfo(enterInfo: GameRes.EnterInfo) {
-        mCallback?.callback(1)
+        mLoginCallback?.callback(1)
         gameAboutModel.isSitDown(true)
         balance = enterInfo.self.score.toInt()
         gameAboutModel.changeBalance(enterInfo.self.score.toInt())
         //初始化step3:进入直播间
         "enterInfo Success: enterLive".loge()
-        GameSDK.enterLive("1213", listOf(1), "", object : SDKCallbackListener {
+        GameSDK.enterLive("1213", listOf(1), "", object : SDKEnterLiveCallbackListener {
             override fun callback(code: Int, message: String?) {
-
+                "enterLive:code-$code,message$message".loge()
             }
         })
     }
 
     override fun groupInfo(groupInfo: GameRes.GroupInfo) {
-        mCallback?.callback(1)
+        mEnterLiveCallback?.callback(1)
         gameAboutModel.isEnterGroup(true)
 
         val miniGameBasicInfo = groupInfo.miniGameBasicInfoListList[0]
@@ -220,7 +221,7 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
 
     override fun leaveGroup(leave: GameRes.LeaveGroup) {
         gameAboutModel.isLeaveGroup(true)
-        mCallback?.callback(1)
+        mLeaveLiveCallback?.callback(1)
     }
 
     override fun leaveMiniGameInfo(miniGame: GameRes.LeaveMiniGames) {

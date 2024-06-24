@@ -6,10 +6,16 @@ import com.cn.game.sdk2.websocket.appListener
 import com.cn.game.sdk2.websocket.gameMassageManager
 import com.cn.game.sdk2.websocket.interfaces.IAppForGame
 import com.cn.game.sdk2.websocket.interfaces.IGameForApp
-import com.cn.game.sdk2.websocket.interfaces.SDKCallbackListener
+import com.cn.game.sdk2.websocket.interfaces.SDKCancelGameCallbackListener
+import com.cn.game.sdk2.websocket.interfaces.SDKEnterLiveCallbackListener
+import com.cn.game.sdk2.websocket.interfaces.SDKLeaveLiveCallbackListener
+import com.cn.game.sdk2.websocket.interfaces.SDKLoginCallbackListener
 import com.cn.game.sdk2.websocket.isAllowedBet
 import com.cn.game.sdk2.websocket.isShowGame
-import com.cn.game.sdk2.websocket.mCallback
+import com.cn.game.sdk2.websocket.mCancelGameCallback
+import com.cn.game.sdk2.websocket.mEnterLiveCallback
+import com.cn.game.sdk2.websocket.mLeaveLiveCallback
+import com.cn.game.sdk2.websocket.mLoginCallback
 import game.common.proto.ClientReq
 import game.mod.proc.yf.proto.req.GameReq
 
@@ -46,9 +52,9 @@ object GameSDK : IGameForApp {
      */
     //platform= 6 ,requestId = 0,version = "1"
     override fun loginGameWithAgentName(
-        agentName: String, token: String, callback: SDKCallbackListener
+        agentName: String, token: String, callback: SDKLoginCallbackListener
     ) {
-        mCallback = callback
+        mLoginCallback = callback
         val req = ClientReq.LoginReq.newBuilder().setPlatform(0).setRequestId(0).setVersion("1")
             .setNickname("Aubrey Wolff").setAgentName(agentName).setToken(token).build()
         gameMassageManager?.login(req)
@@ -62,9 +68,9 @@ object GameSDK : IGameForApp {
      */
     //1213,3
     override fun enterLive(
-        liveId: String, gameIds: List<Int>, data: String, callback: SDKCallbackListener
+        liveId: String, gameIds: List<Int>, data: String, callback: SDKEnterLiveCallbackListener
     ) {
-        mCallback = callback
+        mEnterLiveCallback = callback
         val req = GameReq.EnterGroup.newBuilder()
         gameIds.forEach {
             req.addMiniGameIds(it)
@@ -80,16 +86,16 @@ object GameSDK : IGameForApp {
     /** 离开直播間
      * - Parameter liveId: 直播間id
      */
-    override fun leaveLive(liveId: String, callback: SDKCallbackListener) {
-        mCallback = callback
+    override fun leaveLive(liveId: String, callback: SDKLeaveLiveCallbackListener) {
+        mLeaveLiveCallback = callback
         gameMassageManager?.levelGroup()
     }
 
     /**
      * 注销游戏
      */
-    override fun cancelGame(callback: SDKCallbackListener) {
-        mCallback = callback
+    override fun cancelGame(callback: SDKCancelGameCallbackListener) {
+        mCancelGameCallback = callback
         GameSocketManager.getInstance()?.stopService()
     }
 

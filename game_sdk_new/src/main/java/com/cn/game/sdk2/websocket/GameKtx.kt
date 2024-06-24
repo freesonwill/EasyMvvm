@@ -43,10 +43,12 @@ import com.cn.game.sdk2.websocket.bean.SUM_7
 import com.cn.game.sdk2.websocket.bean.SUM_8
 import com.cn.game.sdk2.websocket.bean.SUM_9
 import com.cn.game.sdk2.websocket.bean.areaMap
-import com.cn.game.sdk2.websocket.imp.GameServiceImp
 import com.cn.game.sdk2.websocket.imp.UIMethodImpl
 import com.cn.game.sdk2.websocket.interfaces.IAppForGame
-import com.cn.game.sdk2.websocket.interfaces.SDKCallbackListener
+import com.cn.game.sdk2.websocket.interfaces.SDKCancelGameCallbackListener
+import com.cn.game.sdk2.websocket.interfaces.SDKEnterLiveCallbackListener
+import com.cn.game.sdk2.websocket.interfaces.SDKLeaveLiveCallbackListener
+import com.cn.game.sdk2.websocket.interfaces.SDKLoginCallbackListener
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 
 /**
@@ -124,7 +126,10 @@ var gameMassageManager: UIMethodImpl? = null
 /**
  * app调用时的返回方法
  */
-var mCallback: SDKCallbackListener? = null
+var mLoginCallback: SDKLoginCallbackListener? = null
+var mEnterLiveCallback: SDKEnterLiveCallbackListener? = null
+var mLeaveLiveCallback: SDKLeaveLiveCallbackListener? = null
+var mCancelGameCallback: SDKCancelGameCallbackListener? = null
 
 fun <T> List<T>.isNotEmpty(block: (List<T>) -> Unit): Boolean {
     if (this.isNotEmpty()) {

@@ -12,7 +12,7 @@ import com.cn.game.sdk2.ui.helper.ViewHelper
 import com.cn.game.sdk2.ui.view.FastLogoView
 import com.cn.game.sdk2.utils.MyGameManager
 import com.cn.game.sdk2.websocket.imp.GameSDK
-import com.cn.game.sdk2.websocket.interfaces.SDKCallbackListener
+import com.cn.game.sdk2.websocket.interfaces.SDKLoginCallbackListener
 import com.xcjh.base_lib.utils.loge
 
 class MainActivity : AppCompatActivity() {
@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
             ViewHelper.showFastView(this)
             //MyGameManager.showFastView(this)
             GameSDK.loginGameWithAgentName(
-                "wali-internal", "81:zdw2oSuv", object : SDKCallbackListener {
+                "wali-internal", "81:zdw2oSuv", object : SDKLoginCallbackListener {
                     override fun callback(code: Int, message: String?) {
                         "login:code-${code},message-${message}".loge()
                     }

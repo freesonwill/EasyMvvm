@@ -87,7 +87,7 @@ data class DEFAULT_SMALL(
 ) : DEFAULT()
 
 data class DEFAULT_SINGLE(
-    override var number: Int = 4, override var multiplier: Float = 1.99f
+    override var number: Int = 3, override var multiplier: Float = 1.99f
 ) : DEFAULT()
 
 data class DEFAULT_DOUBLE(

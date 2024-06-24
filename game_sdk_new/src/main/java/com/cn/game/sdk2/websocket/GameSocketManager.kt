@@ -1,19 +1,14 @@
 package com.cn.game.sdk2.websocket
 
 import android.annotation.SuppressLint
-import android.util.Log
-import androidx.test.runner.intent.IntentStubberRegistry.reset
 import com.cn.game.sdk2.network.code.GameResCode
-import com.cn.game.sdk2.websocket.imp.GameServiceImp
 import com.cn.game.sdk2.websocket.imp.UIMethodImpl
 import com.xcjh.base_lib.utils.loge
 import game.common.proto.ClientRes
 import game.mod.proc.yf.proto.res.GameRes
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -103,7 +98,7 @@ class GameSocketManager private constructor() : OnMessageListener {
             closeConnect()
             client = null
             INSTANCE = null
-            mCallback?.callback(1)
+            mLoginCallback?.callback(1)
         }.onFailure {
             it.printStackTrace()
         }
@@ -119,7 +114,7 @@ class GameSocketManager private constructor() : OnMessageListener {
 
     @OptIn(DelicateCoroutinesApi::class)
     override fun onMessage(mid: Int?, sid: Int?, byteArray: ByteArray) {
-        mCallback?.callback(1)
+        mLoginCallback?.callback(1)
         GlobalScope.launch {
             withContext(Dispatchers.Main) {
                 convertMessage(mid, sid, byteArray)

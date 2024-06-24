@@ -13,6 +13,16 @@ interface IAppForGame {
     fun getTokenLoseEffectiveness()
 }
 
-interface SDKCallbackListener {
+interface SDKLoginCallbackListener {
+    fun callback(code: Int, message: String? = null)
+}
+
+interface SDKEnterLiveCallbackListener {
+    fun callback(code: Int, message: String? = null)
+}
+interface SDKLeaveLiveCallbackListener {
+    fun callback(code: Int, message: String? = null)
+}
+interface SDKCancelGameCallbackListener {
     fun callback(code: Int, message: String? = null)
 }
