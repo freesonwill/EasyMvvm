@@ -38,6 +38,8 @@ import com.cn.game.sdk2.websocket.bean.DEFAULT_SMALL
 import com.cn.game.sdk2.websocket.isNotEmpty
 import com.google.gson.Gson
 import kotlinx.coroutines.delay
+import java.text.DateFormat
+import java.text.DecimalFormat
 
 
 /**
@@ -114,15 +116,17 @@ class DXDSFragment(var fast3VM: Fast3ViewModel) : BaseFast3Fragment<DXDSVm, Frag
     override fun initData() {
         super.initData()
         updateAreaBetInfo(mViewModel.syncAreaBetInfoLD.value)
+        //testUpdateAareaBetInfo()
     }
     private fun testUpdateAareaBetInfo() {
         lifecycleScope.launch {
             delay(1000)
             val ld = mViewModel.syncAreaBetInfoLD as MutableLiveData
             ld.value = mutableListOf<AreaBetBean>().also {
-                it.add(AreaBetBean(DEFAULT_BIG(), 100, 300))
-                it.add(AreaBetBean(DEFAULT_SMALL(), 200, 200))
-                it.add(AreaBetBean(DEFAULT_SINGLE(), 300, 100))
+                it.add(AreaBetBean(DEFAULT_BIG(), 10090, 300))
+                it.add(AreaBetBean(DEFAULT_SMALL(), 20012, 200))
+                it.add(AreaBetBean(DEFAULT_SINGLE(), 30034, 100))
+                it.add(AreaBetBean(DEFAULT_DOUBLE(), 3320034, 100))
             }
         }
     }
@@ -133,7 +137,7 @@ class DXDSFragment(var fast3VM: Fast3ViewModel) : BaseFast3Fragment<DXDSVm, Frag
         list.forEach { item ->
             val pair = moneyViewList.get(item.areaCode.number)
             if (pair != null) {
-                pair.first.text = item.betScore.toString()
+                pair.first.text = DecimalFormat("#.##").format(item.betScore/100f).toString()
                 pair.second.text = item.userCount.toString()
             }
         }
