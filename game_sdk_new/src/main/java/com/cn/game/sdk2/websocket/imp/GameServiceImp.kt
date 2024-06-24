@@ -80,7 +80,6 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
     private val tag = GameServiceImp::class.java.name
 
 
-
     override fun enterInfo() {
         send(
             8, GameReqCode.SUB_LOGON_REQ__LOGIN.toShort(), ByteArray(0)
@@ -121,7 +120,7 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
 
     override fun ping() {
         var bytearray = ByteArray(1)
-        bytearray.set(0,1)
+        bytearray.set(0, 1)
         send(0, 2, bytearray)
     }
 
@@ -321,15 +320,15 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
         //中奖注区
         val lotteryResultList = lotteryNumbers.calculateArea()
         //添加历史记录
-        gameAboutModel.addHistoryRound(
-            RoundInfoBean(
-                settle.roundInfo.roundId,
-                lotteryNumbers,
-                lotteryNumbers.sum(),
-                lotteryNumbers.isBig(),
-                lotteryNumbers.isDouble()
-            )
+        val currentRound = RoundInfoBean(
+            settle.roundInfo.roundId,
+            lotteryNumbers,
+            lotteryNumbers.sum(),
+            lotteryNumbers.isBig(),
+            lotteryNumbers.isDouble()
         )
+        gameAboutModel.addHistoryRound(currentRound)
+        gameAboutModel.currentSettleResult = currentRound
 
         gameAboutModel.lotteryResultList = lotteryResultList
         //计算用户中奖注区及金额
