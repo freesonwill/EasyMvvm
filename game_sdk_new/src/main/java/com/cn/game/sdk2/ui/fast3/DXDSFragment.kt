@@ -62,6 +62,12 @@ class DXDSFragment(var fast3VM: Fast3ViewModel) : BaseFast3Fragment<DXDSVm, Frag
             moneyViewList[mViewModel.bettingArray[3].number] = txtSingleMoney to txtSingleNum
             moneyViewList[mViewModel.bettingArray[4].number] = txtDoubleMoney to txtDoubleNum
 
+            bigView.flickerView = ivFlickerRightTop
+            smallView.flickerView = ivFlickerLeftTop
+            doubleView.flickerView = ivFlickerRightBelow
+            singleView.flickerView = ivFlickerLeftBelow
+            leopardView.flickerView = ivFlickerCenter
+
             areaViewList.add(bigView)
             areaViewList.add(smallView)
             areaViewList.add(singleView)
