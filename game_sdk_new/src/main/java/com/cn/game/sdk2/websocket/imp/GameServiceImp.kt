@@ -316,7 +316,7 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
         //结束时更新余额
         balance = balance + settle.winScore - (currentConfirmCountMoney * 100)
         //开奖号码
-        val lotteryNumbers = settle.roundInfo.performsList[0].performResultList
+        val lotteryNumbers = settle.roundInfo.performsList[0].elementsList
         //中奖注区
         val lotteryResultList = lotteryNumbers.calculateArea()
         //添加历史记录
