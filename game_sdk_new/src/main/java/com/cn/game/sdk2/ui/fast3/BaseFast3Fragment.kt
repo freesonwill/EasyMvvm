@@ -3,10 +3,7 @@ package com.cn.game.sdk2.ui.fast3
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.util.Log
-import android.view.Gravity
 import android.view.View
-import android.view.ViewGroup
-import android.widget.FrameLayout
 import androidx.core.animation.addListener
 import androidx.core.view.isVisible
 import androidx.databinding.ViewDataBinding
@@ -19,7 +16,6 @@ import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
 import com.cn.game.sdk2.utils.ext.ViewExt.locationOnScreen
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
-import com.cn.game.sdk2.utils.tool.measureView
 import com.cn.game.sdk2.websocket.GameSocketManager
 import com.cn.game.sdk2.websocket.bean.Betting
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean

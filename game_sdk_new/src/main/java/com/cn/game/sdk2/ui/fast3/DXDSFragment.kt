@@ -1,12 +1,18 @@
 package com.cn.game.sdk2.ui.fast3
 
 import android.os.Bundle
+import android.util.Log
+import android.util.SparseArray
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.FrameLayout
+import android.widget.TextView
 import androidx.core.view.isVisible
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.databinding.FragDxdsBinding
@@ -21,6 +27,7 @@ import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.utils.tool.measureView
 import kotlinx.coroutines.launch
 import com.cn.game.sdk2.websocket.GameSocketManager
+import com.cn.game.sdk2.websocket.bean.AreaBetBean
 import com.cn.game.sdk2.websocket.bean.BOOM_ALL
 import com.cn.game.sdk2.websocket.bean.Betting
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
@@ -29,6 +36,8 @@ import com.cn.game.sdk2.websocket.bean.DEFAULT_DOUBLE
 import com.cn.game.sdk2.websocket.bean.DEFAULT_SINGLE
 import com.cn.game.sdk2.websocket.bean.DEFAULT_SMALL
 import com.cn.game.sdk2.websocket.isNotEmpty
+import com.google.gson.Gson
+import kotlinx.coroutines.delay
 
 
 /**
@@ -36,6 +45,7 @@ import com.cn.game.sdk2.websocket.isNotEmpty
  */
 class DXDSFragment(var fast3VM: Fast3ViewModel) : BaseFast3Fragment<DXDSVm, FragDxdsBinding>() {
     private var areaViewList: MutableList<GameAreaView> = mutableListOf()
+    private var moneyViewList: SparseArray<Pair<TextView,TextView>> = SparseArray()
 
     override fun initView(savedInstanceState: Bundle?) {
         mDatabind.model = mViewModel
@@ -45,6 +55,10 @@ class DXDSFragment(var fast3VM: Fast3ViewModel) : BaseFast3Fragment<DXDSVm, Frag
             singleView.areaInfo = mViewModel.bettingArray[3]
             doubleView.areaInfo = mViewModel.bettingArray[4]
             leopardView.areaInfo = mViewModel.bettingArray[5]
+            moneyViewList[mViewModel.bettingArray[1].number] = txtBigMoney to txtBigNum
+            moneyViewList[mViewModel.bettingArray[2].number] = txtSmallMoney to txtSmallNum
+            moneyViewList[mViewModel.bettingArray[3].number] = txtSingleMoney to txtSingleNum
+            moneyViewList[mViewModel.bettingArray[4].number] = txtDoubleMoney to txtDoubleNum
 
             areaViewList.add(bigView)
             areaViewList.add(smallView)
@@ -52,27 +66,6 @@ class DXDSFragment(var fast3VM: Fast3ViewModel) : BaseFast3Fragment<DXDSVm, Frag
             areaViewList.add(doubleView)
             areaViewList.add(leopardView)
         }
-
-        val dic = mapOf(
-            mDatabind.bigView to mDatabind.txtOddsBig,
-            mDatabind.smallView to mDatabind.txtOddsSmall,
-            mDatabind.singleView to mDatabind.txtOddsSingle,
-            mDatabind.doubleView to mDatabind.txtOddsDouble,
-            mDatabind.leopardView to mDatabind.txtOddsLeopard,
-        )
-        dic.forEach {
-            it.value.text = it.key.areaInfo!!.multiplier.toString()
-            it.key.gameCallback = object : IGameView {
-                override fun winFlash() {
-                    it.key.tvOdds = it.value
-                }
-
-                override fun bindView() {
-                }
-
-            }
-        }
-
         for (areaView in areaViewList) {
             areaView.moneyView.setMoneyOKClickListener(object : MoneyOKView.OnMoneyOKClickListener {
                 override fun onConfirm() {
@@ -114,10 +107,34 @@ class DXDSFragment(var fast3VM: Fast3ViewModel) : BaseFast3Fragment<DXDSVm, Frag
                 }
             })
         }
+        lifecycleScope.launch {
+            delay(1000)
+            val ld = mViewModel.syncAreaBetInfoLD as MutableLiveData
+            ld.value = mutableListOf<AreaBetBean>().also {
+                it.add(AreaBetBean(DEFAULT_BIG(),100,300))
+                it.add(AreaBetBean(DEFAULT_SMALL(),200,200))
+                it.add(AreaBetBean(DEFAULT_SINGLE(),300,100))
+           }
+        }
+    }
+
+    private fun updateAreaBetInfo(list:List<AreaBetBean>?){
+        if(list == null) return
+        Log.d(TAG,"updateAreaBetInfo--->"+list.size)
+        list.forEach { item->
+            val pair = moneyViewList.get(item.areaCode.number)
+            if(pair != null){
+                pair.first.text = item.betScore.toString()
+                pair.second.text = item.userCount.toString()
+            }
+        }
     }
 
     override fun createObserver() {
         super.createObserver()
+        mViewModel.syncAreaBetInfoLD.observe(viewLifecycleOwner){ list ->
+            updateAreaBetInfo(list)
+        }
         fast3VM.betOkClick.observe(viewLifecycleOwner) {
 
         }
