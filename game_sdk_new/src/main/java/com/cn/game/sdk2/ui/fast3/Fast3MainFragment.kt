@@ -179,27 +179,27 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             leopardFragment.flicker(ArrayList<InPrizeBean>(), ArrayList<InPrizeBean>())
 
             sumTotalFragment.flicker(ArrayList<InPrizeBean>(), ArrayList<InPrizeBean>())*/
-//            suspendCoroutine { continuation ->
-//                val childAlphaAnimator =
-//                    ObjectAnimator.ofFloat(mDatabind.llShowBetList, "alpha", 1f, 0f)
-//                childAlphaAnimator.duration = 200 // 设置渐隐动画持续时间
-//                val animatorSet = AnimatorSet()
-//                animatorSet.play(childAlphaAnimator)
-//                animatorSet.addListener(object : AnimatorListenerAdapter() {
-//                    override fun onAnimationEnd(animation: Animator) {
-//                        super.onAnimationEnd(animation)
-//                        //注区
-//                        mDatabind.llShowBetList.visibility = View.INVISIBLE
-//                        //显示开奖结果
-//                        mDatabind.rlShowResult.visibility = View.VISIBLE
-//                        mDatabind.ivHomeBg.visibility = View.VISIBLE
-//                        mDatabind.ivHomeBgCenter.visibility = View.VISIBLE
-//                        //hiddenView()
-//                        continuation.resume("finish")
-//                    }
-//                })
-//                animatorSet.start()
-//            }
+            suspendCoroutine { continuation ->
+                val childAlphaAnimator =
+                    ObjectAnimator.ofFloat(mDatabind.llShowBetList, "alpha", 1f, 0f)
+                childAlphaAnimator.duration = 200 // 设置渐隐动画持续时间
+                val animatorSet = AnimatorSet()
+                animatorSet.play(childAlphaAnimator)
+                animatorSet.addListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator) {
+                        super.onAnimationEnd(animation)
+                        //注区
+                        mDatabind.llShowBetList.visibility = View.INVISIBLE
+                        //显示开奖结果
+                        mDatabind.rlShowResult.visibility = View.VISIBLE
+                        mDatabind.ivHomeBg.visibility = View.VISIBLE
+                        mDatabind.ivHomeBgCenter.visibility = View.VISIBLE
+                        //hiddenView()
+                        continuation.resume("finish")
+                    }
+                })
+                animatorSet.start()
+            }
             //开奖结果注区动画闪烁
             mViewModel.userLotteryResultLiveData.value = gameAboutModel.lotteryResultList
 
