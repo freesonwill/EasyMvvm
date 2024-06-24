@@ -175,6 +175,9 @@ class GameServiceImp(private val client: GameSocketClient) : GameService,
     ) {
         if (previousSuccess) {
             currentTempCountMoney += recordBean.money
+            //每个注区的总金额 -》currentCountMoney
+            //每个注区的临时总金额 -》currentTempCountMoney
+            //每个注区的确认总金额 -》currentConfirmCountMoney
             currentCountMoney = currentTempCountMoney + currentConfirmCountMoney
 
             bettingListTemp.isNotEmpty {
@@ -188,21 +191,26 @@ class GameServiceImp(private val client: GameSocketClient) : GameService,
                         currentMoney
                     }
                     existRecord.money = countMoney
+                    "下注194：$existRecord".loge("addBetting")
                     block(balance >= currentCountMoney, existRecord)
                 }
                 //不存在已下注 注区；直接保存当次下注
                 else {
                     bettingListTemp[recordBean.bettingArea] = recordBean
+                    "下注200：$recordBean".loge("addBetting")
                     block(balance >= currentCountMoney, recordBean)
                 }
             }.isEmpty {
-                //新的下注
+                //新的下注 或者 提交过一次
                 bettingListTemp[recordBean.bettingArea] = recordBean
+                //判断这次下注是否是已提交过的注区
                 if (bettingListConfirmed.containsKey(recordBean.bettingArea)) {
                     //已下注过 存在确认过的金额
                     recordBean.money += bettingListConfirmed[recordBean.bettingArea]?.money!!
+                    "下注210：$recordBean".loge("addBetting")
                     block(balance >= currentCountMoney, recordBean)
                 } else {
+                    "下注213：$recordBean".loge("addBetting")
                     //bettingListTemp 临时下注为空 直接保存当次下注
                     block(balance >= currentCountMoney, recordBean)
                 }
@@ -217,6 +225,7 @@ class GameServiceImp(private val client: GameSocketClient) : GameService,
 //                }
 //            }
         } else {
+            "下注228：上次下注还未返回".loge("addBetting")
             block(false, null)
         }
     }
@@ -377,6 +386,7 @@ class GameServiceImp(private val client: GameSocketClient) : GameService,
         //result = 0 成功 1 余额不住 3超时
         when (result.betResultInfoListList[0].result) {
             0 -> {
+                gameAboutModel.setBettingSuccess(true)
                 //下注成功后 保存当前下注总额为已确认下注金额；并将当前下注总额清空
                 //currentCountMoney包含之前确认的和现在临时的，所以可以直接覆盖已提交的
                 currentConfirmCountMoney = currentCountMoney
@@ -393,11 +403,15 @@ class GameServiceImp(private val client: GameSocketClient) : GameService,
             }
 
             1 -> {
-
+                gameAboutModel.bettingMessage = "余额不住"
+                gameAboutModel.setBettingSuccess(false)
             }
 
-            2 -> {}
-            else -> {}
+            else -> {
+                gameAboutModel.bettingMessage = "超时"
+                gameAboutModel.setBettingSuccess(false)
+
+            }
         }
 
     }

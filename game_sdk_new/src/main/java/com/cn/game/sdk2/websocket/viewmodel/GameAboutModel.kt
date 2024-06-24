@@ -10,6 +10,7 @@ import com.cn.game.sdk2.websocket.bean.RoundInfoBean
 import org.junit.experimental.max.MaxHistory
 
 class GameAboutModel : ViewModel() {
+
     enum class Stage {
         NEW, DEAL, SETTLE
     }
@@ -26,23 +27,58 @@ class GameAboutModel : ViewModel() {
     private val _isEnterGroup = MutableLiveData<Boolean>()
     private val _isLeaveGroup = MutableLiveData<Boolean>()
 
-    val isLoginSuccess :LiveData<Boolean>
+    private val _isBettingSuccess = MutableLiveData<Boolean>()
+
+   /*** 需要监听的字段
+    > - currentStage : 监听阶段变化
+    > - balance : 监听余额变化,需要缩小100倍，保留两位小数用于展示
+    > - syncAreaBetInfo ; 监听default牌面的人数变化
+    > - historyRounds : 开奖历史记录
+    > - isCanAgain : 显示隐藏续压按钮
+    > - isBettingSuccess : 下注是否成功
+    * 直接使用的字段
+    > - countDown 阶段倒计时
+    > - roundId 期号
+    > - loginErrorMessage
+    > - lotteryResultList ->返回的是注区集合：结算阶段使用，开奖注区，用于展示注区的闪闪动画
+    > - netIncome 净收入，用于展示中奖动画；使用时需要缩小100倍
+    > - userLotteryResult 用户中奖后的面板砝码金额已经中奖注区
+    > - bettingMessage 下注失败的message
+    */
+
+    val isLoginSuccess: LiveData<Boolean>
         get() = _isLoginSuccess
 
-    val isSitDown :LiveData<Boolean>
+    val isSitDown: LiveData<Boolean>
         get() = _isSitDown
 
-    val isEnterGroup :LiveData<Boolean>
+    val isEnterGroup: LiveData<Boolean>
         get() = _isEnterGroup
 
-    val isLeaveGroup :LiveData<Boolean>
+    val isLeaveGroup: LiveData<Boolean>
         get() = _isLeaveGroup
 
     /**
+     * 下注是否成功
+     * 绑定使用 bettingMessage
+     */
+    val isBettingSuccess: LiveData<Boolean>
+        get() = _isBettingSuccess
+
+    var bettingMessage: String = ""
+
+    /**
      * 实现currentStage的observe，监听阶段变化
+     * 绑定使用
+     *  - 每个阶段
+     *   - roundId 期号
+     *   - countDown 倒计时
+     *  - 结算结果 currentSettleResult
      */
     val currentStage: LiveData<Stage>
         get() = _currentStage
+
+    var currentSettleResult: RoundInfoBean? = null
 
     /**
      * 实现balance的observe，监听余额变化
@@ -72,18 +108,23 @@ class GameAboutModel : ViewModel() {
     val isCanAgain: LiveData<Boolean>
         get() = _isCanAgain
 
-    fun setLoginResult(isSuccess:Boolean){
+    fun setBettingSuccess(isSuccess: Boolean) {
+        _isBettingSuccess.value = isSuccess
+    }
+
+    fun setLoginResult(isSuccess: Boolean) {
         _isLoginSuccess.value = isSuccess
     }
 
-    fun isSitDown(sitDown:Boolean){
+    fun isSitDown(sitDown: Boolean) {
         _isSitDown.value = sitDown
     }
-    fun isEnterGroup(enter:Boolean){
+
+    fun isEnterGroup(enter: Boolean) {
         _isEnterGroup.value = enter
     }
 
-    fun isLeaveGroup(leave:Boolean){
+    fun isLeaveGroup(leave: Boolean) {
         _isLeaveGroup.value = leave
     }
 
