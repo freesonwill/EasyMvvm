@@ -1,13 +1,12 @@
 package com.cn.game.sdk2.websocket.interfaces
 
 import android.view.View
-import kotlinx.coroutines.CoroutineScope
 
 interface IGameForApp {
 
     fun loadGame()
 
-    fun loginGameWithAgentName(agentName: String, token: String,callback: SDKCallbackListener)
+    fun loginGameWithAgentName(agentName: String, token: String, callback: SDKCallbackListener)
 
     fun enterLive(liveId: String, gameIds: List<Int>, data: String,callback: SDKCallbackListener)
 

@@ -10,10 +10,8 @@ import com.cn.game.sdk2.websocket.interfaces.SDKCallbackListener
 import com.cn.game.sdk2.websocket.isAllowedBet
 import com.cn.game.sdk2.websocket.isShowGame
 import com.cn.game.sdk2.websocket.mCallback
-import com.xcjh.base_lib.utils.loge
 import game.common.proto.ClientReq
 import game.mod.proc.yf.proto.req.GameReq
-import kotlinx.coroutines.CoroutineScope
 
 /**
  * 提供给app调用的方法

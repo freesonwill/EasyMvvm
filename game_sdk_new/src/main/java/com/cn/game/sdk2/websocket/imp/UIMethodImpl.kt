@@ -1,6 +1,7 @@
 package com.cn.game.sdk2.websocket.imp
 
 import com.cn.game.sdk2.websocket.GameSocketClient
+import com.cn.game.sdk2.websocket.GameSocketManager
 import com.cn.game.sdk2.websocket.appListener
 import com.cn.game.sdk2.websocket.balance
 import com.cn.game.sdk2.websocket.bean.Betting
@@ -19,6 +20,10 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
         fun generate(client: GameSocketClient): UIMethodImpl {
             return UIMethodImpl(client)
         }
+    }
+
+    init {
+        GameSocketManager.getInstance()?.setGameServerMessageConvertFactory(this)
     }
 
     /**

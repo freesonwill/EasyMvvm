@@ -68,7 +68,9 @@ class GameSocketManager private constructor() : OnMessageListener {
                     delay(HEART_BEAT_RATE)
                     if (HAS_HEART) {
                         client?.let {
-                            if (it.readyState == ReadyState.OPEN) gameMassageManager?.ping() //正常发送心跳
+                            if (it.readyState == ReadyState.OPEN) {
+                                gameMassageManager?.ping()
+                            }//正常发送心跳
                             if (it.isClosed) it.re()
                         }
                     } else {
@@ -79,6 +81,7 @@ class GameSocketManager private constructor() : OnMessageListener {
                 }
             }
         }
+
     }
 
     /**
@@ -100,6 +103,7 @@ class GameSocketManager private constructor() : OnMessageListener {
             closeConnect()
             client = null
             INSTANCE = null
+            mCallback?.callback(1)
         }.onFailure {
             it.printStackTrace()
         }
@@ -115,6 +119,7 @@ class GameSocketManager private constructor() : OnMessageListener {
 
     @OptIn(DelicateCoroutinesApi::class)
     override fun onMessage(mid: Int?, sid: Int?, byteArray: ByteArray) {
+        mCallback?.callback(1)
         GlobalScope.launch {
             withContext(Dispatchers.Main) {
                 convertMessage(mid, sid, byteArray)

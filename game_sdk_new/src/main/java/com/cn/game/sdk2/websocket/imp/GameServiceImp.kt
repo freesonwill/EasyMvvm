@@ -10,12 +10,10 @@ import com.cn.game.sdk2.websocket.appListener
 import com.cn.game.sdk2.websocket.balance
 import com.cn.game.sdk2.websocket.bean.AreaBetBean
 import com.cn.game.sdk2.websocket.bean.RoundInfoBean
-import com.cn.game.sdk2.websocket.bean.areaMap
 import com.cn.game.sdk2.websocket.calculateArea
 import com.cn.game.sdk2.websocket.calculateUserLotteryResult
 import com.cn.game.sdk2.websocket.convertBetting
 import com.cn.game.sdk2.websocket.gameAboutModel
-import com.cn.game.sdk2.websocket.gameMassageManager
 import com.cn.game.sdk2.websocket.interfaces.GameService
 import com.cn.game.sdk2.websocket.interfaces.SDKCallbackListener
 import com.cn.game.sdk2.websocket.isBig
@@ -29,16 +27,11 @@ import com.cn.game.sdk2.websocket.previousSuccess
 import com.cn.game.sdk2.websocket.sum
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 import com.xcjh.base_lib.utils.loge
-import com.xcjh.base_lib.utils.toJson
 import game.common.proto.ClientReq
 import game.common.proto.ClientRes
 import game.mod.proc.yf.proto.req.GameReq
-import game.mod.proc.yf.proto.req.GameReq.AreaBetReq
-import game.mod.proc.yf.proto.req.GameReq.BetReq
 import game.mod.proc.yf.proto.req.GameReq.EnterMiniGame
 import game.mod.proc.yf.proto.res.GameRes
-import game.mod.proc.yf.proto.res.GameRes.EnterInfo
-import game.mod.proc.yf.proto.res.GameRes.GroupInfo
 
 /**
  * 提供ui层调用的统一对象
@@ -85,9 +78,7 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
 
     private val tag = GameServiceImp::class.java.name
 
-    init {
-        GameSocketManager.getInstance()?.setGameServerMessageConvertFactory(this)
-    }
+
 
     override fun enterInfo() {
         send(
@@ -142,15 +133,6 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
             e.printStackTrace()
         }
     }
-
-
-    /**
-     * token失效通知app
-     */
-    fun pushTokenLoseEffectiveness() {
-        appListener?.getTokenLoseEffectiveness()
-    }
-
 
     override fun loginSuccess(afterLoginSuccess: ClientRes.InfoAfterLoginSuccess) {
         "loginSuccess：${afterLoginSuccess.isInitialized}".loge()
@@ -238,6 +220,7 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
 
     override fun leaveGroup(leave: GameRes.LeaveGroup) {
         gameAboutModel.isLeaveGroup(true)
+        mCallback?.callback(1)
     }
 
     override fun leaveMiniGameInfo(miniGame: GameRes.LeaveMiniGames) {
@@ -333,7 +316,7 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
         //结束时更新余额
         balance = balance + settle.winScore - (currentConfirmCountMoney * 100)
         //开奖号码
-        val lotteryNumbers = settle.roundInfo.performsList[0].performResultList
+        val lotteryNumbers = settle.roundInfo.performsList[0].elementsList
         //中奖注区
         val lotteryResultList = lotteryNumbers.calculateArea()
         //添加历史记录
@@ -377,6 +360,9 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
         gameAboutModel.setToastErrorMessage(desc)
     }
 
+    /**
+     * token失效通知app
+     */
     override fun tokenLoseEffectiveness() {
         appListener?.getTokenLoseEffectiveness()
     }
