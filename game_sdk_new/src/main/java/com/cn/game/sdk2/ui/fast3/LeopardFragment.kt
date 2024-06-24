@@ -1,17 +1,13 @@
 package com.cn.game.sdk2.ui.fast3
 
-import android.os.Build
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.FrameLayout
-import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
-import com.cn.game.sdk2.R
-import com.cn.game.sdk2.base.BaseGameFragment
 import com.cn.game.sdk2.databinding.FragmentLeopardBinding
 import com.cn.game.sdk2.ui.helper.ViewHelper.isAdd
 import com.cn.game.sdk2.ui.view.MoneyOKView
@@ -19,16 +15,7 @@ import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
 import com.cn.game.sdk2.ui.viewmodel.fast3.LeopardVm
 import com.cn.game.sdk2.utils.ext.ViewExt.locationOnScreen
-import com.cn.game.sdk2.utils.tool.measureView
-import com.cn.game.sdk2.websocket.bean.BOOM
-import com.cn.game.sdk2.websocket.bean.BOOM_1
-import com.cn.game.sdk2.websocket.bean.BOOM_2
-import com.cn.game.sdk2.websocket.bean.BOOM_3
-import com.cn.game.sdk2.websocket.bean.BOOM_4
-import com.cn.game.sdk2.websocket.bean.BOOM_5
-import com.cn.game.sdk2.websocket.bean.BOOM_6
 import kotlinx.coroutines.launch
-import me.jessyan.autosize.utils.AutoSizeUtils
 
 /**
  * 豹子
@@ -37,6 +24,7 @@ class LeopardFragment(private val fast3VM:Fast3ViewModel):BaseFast3Fragment<Leop
     private var areaViewList: MutableList<GameAreaView> = mutableListOf()
 
     override fun initView(savedInstanceState: Bundle?) {
+        mDatabind.model = mViewModel
         mDatabind.apply {
             gavLeopardOne.areaInfo = mViewModel.bettingArray[1]
             gavLeopardTwo.areaInfo =  mViewModel.bettingArray[2]

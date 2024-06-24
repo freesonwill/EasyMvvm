@@ -1,6 +1,5 @@
 package com.cn.game.sdk2.ui.viewmodel.fast3
 
-import android.util.Log
 import android.util.SparseArray
 import com.cn.game.sdk2.utils.ext.CommonExt
 import com.cn.game.sdk2.websocket.bean.BOOM_ALL
@@ -9,6 +8,7 @@ import com.cn.game.sdk2.websocket.bean.DEFAULT_BIG
 import com.cn.game.sdk2.websocket.bean.DEFAULT_DOUBLE
 import com.cn.game.sdk2.websocket.bean.DEFAULT_SINGLE
 import com.cn.game.sdk2.websocket.bean.DEFAULT_SMALL
+import com.cn.game.sdk2.websocket.gameAboutModel
 import com.xcjh.base_lib.base.BaseViewModel
 
 class DXDSVm : BaseViewModel() {
@@ -21,10 +21,7 @@ class DXDSVm : BaseViewModel() {
             it[5] = BOOM_ALL()
         }
     }
-
     fun multiplierStr(number: Int): String = CommonExt.multiplierStr(bettingArray[number])
+    val syncAreaBetInfoLD = gameAboutModel.syncAreaBetInfo
 
-    fun getShow(){
-        Log.i("CCCCCCCCCCCc","11111111111111")
-    }
 }

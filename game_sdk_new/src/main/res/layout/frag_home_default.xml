@@ -77,14 +77,15 @@
                                     android:layout_width="8dp"
                                     android:layout_height="8dp"
                                     app:srcCompat="@drawable/icon_money"/>
+
                                 <androidx.appcompat.widget.AppCompatTextView
                                     android:id="@+id/txtSmallMoney"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:textSize="10sp"
-                                    android:text="9899"
                                     android:layout_marginLeft="2dp"
-                                    android:textColor="@color/g_f8e0c4"/>
+                                    android:text="9899"
+                                    android:textColor="@color/g_f8e0c4"
+                                    android:textSize="10sp" />
 
                             </LinearLayout>
                             <LinearLayout

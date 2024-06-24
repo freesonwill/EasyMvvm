@@ -119,7 +119,9 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
     }
 
     override fun ping() {
-        send(0, 2, ByteArray(0))
+        var bytearray = ByteArray(1)
+        bytearray.set(0,1)
+        send(0, 2, bytearray)
     }
 
     private fun send(mid: Short, sid: Short, data: ByteArray) {
