@@ -574,7 +574,16 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 PromptSoundPlay.btnPlayMedia(requireContext())
                 homeMorePop!!.show()
             }
+            //加倍
+            ivMultiple2.clickNoRepeat {
+
+            }
+            //续压
+            ivXuya.clickNoRepeat {
+
+            }
         }
+
     }
 
     override fun onDetach() {

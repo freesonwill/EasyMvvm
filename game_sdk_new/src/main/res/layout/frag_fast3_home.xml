@@ -42,7 +42,6 @@
                     android:id="@+id/ivHomeLogo"
                     android:layout_width="34dp"
                     android:layout_height="34dp"
-
                     app:srcCompat="@drawable/icon_kuai_logo" />
 
                 <LinearLayout
@@ -344,6 +343,30 @@
                     tools:itemCount="1"
                     tools:listitem="@layout/item_annotation_list" />
 
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivXuya"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/icon_xuya_sel"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="@+id/llShowBetList"
+                    app:layout_constraintBottom_toBottomOf="@+id/llShowBetList"
+                    />
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivMultiple2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:srcCompat="@drawable/icon_multiple2_sel"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="@+id/llShowBetList"
+                    app:layout_constraintBottom_toBottomOf="@+id/llShowBetList"
+                    />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
