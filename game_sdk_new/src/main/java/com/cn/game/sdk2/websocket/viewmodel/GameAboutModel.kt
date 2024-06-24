@@ -29,13 +29,31 @@ class GameAboutModel : ViewModel() {
 
     private val _isBettingSuccess = MutableLiveData<Boolean>()
 
-   /*** 需要监听的字段
-    > - currentStage : 监听阶段变化
-    > - balance : 监听余额变化,需要缩小100倍，保留两位小数用于展示
-    > - syncAreaBetInfo ; 监听default牌面的人数变化
-    > - historyRounds : 开奖历史记录
-    > - isCanAgain : 显示隐藏续压按钮
-    > - isBettingSuccess : 下注是否成功
+   /** 需要监听的字段
+    * @see currentStage : 监听阶段变化
+    *  @param [NEW, DEAL, SETTLE] -> [新局开始，开奖中，结算中]
+    *  @param countDown
+    *  @param roundId
+    *  当stage = SETTLE时，开奖结果为   @see [currentSettleResult]
+    *                     开奖注区     @see [lotteryResultList]
+    *                     净收入       @see [netIncome]
+    *                     用户中奖注区  @see [userLotteryResult]
+    *
+    * @see balance : 监听余额变化,需要缩小100倍，保留两位小数用于展示
+    *
+    * @see syncAreaBetInfo ; 监听default牌面的人数变化
+    *
+    * @see historyRounds : 开奖历史记录
+    *
+    * @see isCanAgain : 显示隐藏续压按钮
+    *
+    * @see isBettingSuccess : 下注是否成功
+    *  @param bettingMessage 下注结果
+    *
+    * @see isLoginSuccess : 登录结果
+    *  @param loginErrorMessage 登录失败才有
+    *
+    *
     * 直接使用的字段
     > - countDown 阶段倒计时
     > - roundId 期号

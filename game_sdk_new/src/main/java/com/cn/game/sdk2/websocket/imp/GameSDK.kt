@@ -84,7 +84,7 @@ object GameSDK : IGameForApp {
      * 注销游戏
      */
     override fun cancelGame() {
-//        GameSocketManager.getInstance()?.stopService()
+        GameSocketManager.getInstance()?.stopService()
     }
 
     /**

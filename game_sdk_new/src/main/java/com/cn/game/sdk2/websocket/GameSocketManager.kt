@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.test.runner.intent.IntentStubberRegistry.reset
 import com.cn.game.sdk2.network.code.GameResCode
 import com.cn.game.sdk2.websocket.imp.GameServiceImp
+import com.cn.game.sdk2.websocket.imp.UIMethodImpl
 import com.xcjh.base_lib.utils.loge
 import game.common.proto.ClientRes
 import game.mod.proc.yf.proto.res.GameRes
@@ -59,7 +60,7 @@ class GameSocketManager private constructor() : OnMessageListener {
             withContext(Dispatchers.IO) {
                 client = GameSocketClient(uri) //获得client对象
                 client?.setOnMessageListener(this@GameSocketManager)
-                gameMassageManager = GameServiceImp(client!!) //获得接口对象
+                gameMassageManager = UIMethodImpl.generate(client!!) //获得接口对象
                 client?.connectionLostTimeout = 0
                 client!!.connectBlocking() //连接socket
                 //心跳发送
@@ -104,7 +105,7 @@ class GameSocketManager private constructor() : OnMessageListener {
         }
     }
 
-    fun getGameService(): GameServiceImp? {
+    fun getGameService(): UIMethodImpl? {
         return gameMassageManager
     }
 
