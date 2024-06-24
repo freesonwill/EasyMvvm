@@ -45,7 +45,7 @@ import kotlinx.coroutines.delay
  */
 class DXDSFragment(var fast3VM: Fast3ViewModel) : BaseFast3Fragment<DXDSVm, FragDxdsBinding>() {
     private var areaViewList: MutableList<GameAreaView> = mutableListOf()
-    private var moneyViewList: SparseArray<Pair<TextView,TextView>> = SparseArray()
+    private var moneyViewList: SparseArray<Pair<TextView, TextView>> = SparseArray()
 
     override fun initView(savedInstanceState: Bundle?) {
         mDatabind.model = mViewModel
@@ -107,23 +107,32 @@ class DXDSFragment(var fast3VM: Fast3ViewModel) : BaseFast3Fragment<DXDSVm, Frag
                 }
             })
         }
+        /*
+        }*/
+    }
+
+    override fun initData() {
+        super.initData()
+        updateAreaBetInfo(mViewModel.syncAreaBetInfoLD.value)
+    }
+    private fun testUpdateAareaBetInfo() {
         lifecycleScope.launch {
             delay(1000)
             val ld = mViewModel.syncAreaBetInfoLD as MutableLiveData
             ld.value = mutableListOf<AreaBetBean>().also {
-                it.add(AreaBetBean(DEFAULT_BIG(),100,300))
-                it.add(AreaBetBean(DEFAULT_SMALL(),200,200))
-                it.add(AreaBetBean(DEFAULT_SINGLE(),300,100))
-           }
+                it.add(AreaBetBean(DEFAULT_BIG(), 100, 300))
+                it.add(AreaBetBean(DEFAULT_SMALL(), 200, 200))
+                it.add(AreaBetBean(DEFAULT_SINGLE(), 300, 100))
+            }
         }
     }
 
-    private fun updateAreaBetInfo(list:List<AreaBetBean>?){
-        if(list == null) return
-        Log.d(TAG,"updateAreaBetInfo--->"+list.size)
-        list.forEach { item->
+    private fun updateAreaBetInfo(list: List<AreaBetBean>?) {
+        if (list == null) return
+        Log.d(TAG, "updateAreaBetInfo--->" + list.size)
+        list.forEach { item ->
             val pair = moneyViewList.get(item.areaCode.number)
-            if(pair != null){
+            if (pair != null) {
                 pair.first.text = item.betScore.toString()
                 pair.second.text = item.userCount.toString()
             }
@@ -132,7 +141,7 @@ class DXDSFragment(var fast3VM: Fast3ViewModel) : BaseFast3Fragment<DXDSVm, Frag
 
     override fun createObserver() {
         super.createObserver()
-        mViewModel.syncAreaBetInfoLD.observe(viewLifecycleOwner){ list ->
+        mViewModel.syncAreaBetInfoLD.observe(viewLifecycleOwner) { list ->
             updateAreaBetInfo(list)
         }
         fast3VM.betOkClick.observe(viewLifecycleOwner) {
