@@ -150,10 +150,10 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
             betReq.addAreaBet(areaBetReq)
         }
         val build = betReq.build()
-        //bet(build)
+        bet(build)
         //临时本地调试代码
-        previousSuccess = true
-        bettingListTemp.clear()
+//        previousSuccess = true
+//        bettingListTemp.clear()
     }
 
     /**

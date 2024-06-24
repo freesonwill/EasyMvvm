@@ -16,7 +16,7 @@
         <!-- 左上角-->
         <com.cn.game.sdk2.ui.view.game.GameAreaView
             android:id="@+id/small_view"
-            app:areaInfo="@{model.bettingArray[1]}"
+            app:areaInfo="@{model.bettingArray[2]}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/big_view"
             app:layout_constraintTop_toTopOf="parent"
@@ -113,7 +113,7 @@
         <!--  右上角-->
         <com.cn.game.sdk2.ui.view.game.GameAreaView
             android:id="@+id/big_view"
-            app:areaInfo="@{model.bettingArray[2]}"
+            app:areaInfo="@{model.bettingArray[1]}"
             app:layout_constraintStart_toEndOf="@id/small_view"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"

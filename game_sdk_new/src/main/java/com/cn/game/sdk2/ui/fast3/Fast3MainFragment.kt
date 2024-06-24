@@ -157,69 +157,53 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                         mDatabind.ivHomeBg.visibility = View.GONE
                         mDatabind.ivHomeBgCenter.visibility = View.GONE
                         //hiddenView(true)
-                        continuation.resume("")
+//                        continuation.resume("")
                     }
                 })
                 animatorSet.start()
             }
             //倒计时
-            mViewModel.startCountDown(gameAboutModel.countDown)
+//            mViewModel.startCountDown(gameAboutModel.countDown)
         }
     }
 
-    private fun onStartSetting() { //开始结算
+    private fun onStartSetting(roundInfo: RoundInfoBean?) { //开始结算
         lifecycleScope.launch {
-            showLoading(getString(R.string.g_home_setting_begin), 1000)
-            //关闭
-            PromptSoundPlay.endGameTip(requireContext())
-            mDatabind.txtHomeStatic.text = resources.getString(R.string.g_home_balance)
-            //结算的时候要把每个模块中奖的信息显示出来 默认
-            /*homeDefaultFragment.flicker(ArrayList<InPrizeBean>(), ArrayList<InPrizeBean>())
-            singleDiceFragment.flicker(ArrayList<InPrizeBean>(), ArrayList<InPrizeBean>())
-            pairsDiceFragment.flicker(ArrayList<InPrizeBean>(), ArrayList<InPrizeBean>())
-            leopardFragment.flicker(ArrayList<InPrizeBean>(), ArrayList<InPrizeBean>())
-
-            sumTotalFragment.flicker(ArrayList<InPrizeBean>(), ArrayList<InPrizeBean>())*/
-            suspendCoroutine { continuation ->
-                val childAlphaAnimator = ObjectAnimator.ofFloat(mDatabind.llShowBetList, "alpha", 1f, 0f)
-                childAlphaAnimator.duration = 200 // 设置渐隐动画持续时间
-                val animatorSet = AnimatorSet()
-                animatorSet.play(childAlphaAnimator)
-                animatorSet.addListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator) {
-                        super.onAnimationEnd(animation)
-                        //注区
-                        mDatabind.llShowBetList.visibility = View.INVISIBLE
-                        //显示开奖结果
-                        mDatabind.rlShowResult.visibility = View.VISIBLE
-                        mDatabind.ivHomeBg.visibility = View.VISIBLE
-                        mDatabind.ivHomeBgCenter.visibility = View.VISIBLE
-                        //hiddenView()
-                        continuation.resume("finish")
-                    }
-                })
-                animatorSet.start()
-            }
-            //开奖结果注区动画闪烁
-            mViewModel.userLotteryResultLiveData.value = gameAboutModel.lotteryResultList
-
-            //中奖区域金额刷新
-            notifyMoneyOkView(gameAboutModel.userLotteryResult)
-
-            mViewModel.startCountDown(gameAboutModel.countDown)
-        }
-
-    }
-
-    /**
-     * 开奖中
-     */
-    private fun onStartDrawing(roundInfo: RoundInfoBean?) {
-        Log.e(TAG,"开奖中"+roundInfo.toString())
-        lifecycleScope.launch {
-            showLoading(getString(R.string.g_home_drawing_begin), 1000)
             mDatabind.apply {
-                txtHomeStatic.text = resources.getString(R.string.g_home_drawing_being)
+                showLoading(getString(R.string.g_home_setting_begin), 1000)
+                //关闭
+                PromptSoundPlay.endGameTip(requireContext())
+                mDatabind.txtHomeStatic.text = resources.getString(R.string.g_home_balance)
+                //结算的时候要把每个模块中奖的信息显示出来 默认
+                /*homeDefaultFragment.flicker(ArrayList<InPrizeBean>(), ArrayList<InPrizeBean>())
+                singleDiceFragment.flicker(ArrayList<InPrizeBean>(), ArrayList<InPrizeBean>())
+                pairsDiceFragment.flicker(ArrayList<InPrizeBean>(), ArrayList<InPrizeBean>())
+                leopardFragment.flicker(ArrayList<InPrizeBean>(), ArrayList<InPrizeBean>())
+
+                sumTotalFragment.flicker(ArrayList<InPrizeBean>(), ArrayList<InPrizeBean>())*/
+                suspendCoroutine { continuation ->
+                    val childAlphaAnimator =
+                        ObjectAnimator.ofFloat(mDatabind.llShowBetList, "alpha", 1f, 0f)
+                    childAlphaAnimator.duration = 0 // 设置渐隐动画持续时间
+                    val animatorSet = AnimatorSet()
+                    animatorSet.play(childAlphaAnimator)
+                    animatorSet.addListener(object : AnimatorListenerAdapter() {
+                        override fun onAnimationEnd(animation: Animator) {
+                            super.onAnimationEnd(animation)
+                            //注区
+                            llShowBetList.visibility = View.INVISIBLE
+                            //显示开奖结果
+                            rlShowResult.visibility = View.VISIBLE
+                            ivHomeBg.visibility = View.VISIBLE
+                            ivHomeBgCenter.visibility = View.VISIBLE
+                            //hiddenView()
+                            continuation.resume("")
+                        }
+                    })
+                    animatorSet.start()
+                }
+
+                Log.e(TAG, "结算item" + roundInfo.toString())
                 roundInfo?.run {
                     performs.forEachIndexed { index, item ->
                         val id = resources.getIdentifier(
@@ -237,6 +221,26 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     ivBetSize.setImageResource(if (isBig) R.drawable.icon_home_result_big else R.drawable.icon_home_result_small)
                     ivBetOdd.setImageResource(if (isDouble) R.drawable.icon_home_result_double else R.drawable.icon_home_result_single)
                 }
+
+                //开奖结果注区动画闪烁
+                mViewModel.userLotteryResultLiveData.value = gameAboutModel.lotteryResultList
+
+                //中奖区域金额刷新
+                notifyMoneyOkView(gameAboutModel.userLotteryResult)
+
+//            mViewModel.startCountDown(gameAboutModel.countDown)
+            }
+        }
+    }
+
+    /**
+     * 开奖中
+     */
+    private fun onStartDrawing() {
+        lifecycleScope.launch {
+            showLoading(getString(R.string.g_home_drawing_begin), 1000)
+            mDatabind.apply {
+                txtHomeStatic.text = resources.getString(R.string.g_home_drawing_being)
             }
         }
     }
@@ -322,20 +326,22 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         //游戏状态监听
         gameAboutModel.currentStage.observe(viewLifecycleOwner) { stage ->
             stage?.run {
+                mViewModel.startCountDown(gameAboutModel.countDown)
                 when (this) {
                     GameAboutModel.Stage.NEW -> {
-                        Log.e(TAG,"游戏状态监听->New")
+                        Log.e(TAG, "游戏状态监听->New")
                         onStartBetting()
                     }
 
                     GameAboutModel.Stage.DEAL -> {
-                        Log.e(TAG,"游戏状态监听->DEAL ")
-                        onStartDrawing(gameAboutModel.currentSettleResult)
+                        Log.e(TAG, "游戏状态监听->DEAL ")
+                        onStartDrawing()
                     }
 
                     GameAboutModel.Stage.SETTLE -> {
-                        Log.e(TAG,"游戏状态监听->SETTLE ")
-                        onStartSetting()
+                        Log.e(TAG, "游戏状态监听->SETTLE ")
+                        Log.e(TAG,"${gameAboutModel.userLotteryResult}")
+                        onStartSetting(gameAboutModel.currentSettleResult)
                     }
                 }
             }
@@ -343,17 +349,20 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
         //开奖历史记录
         gameAboutModel.historyRounds.observe(viewLifecycleOwner) {
-            Log.e(TAG,"开奖历史结果->$it")
-            val adapter = mDatabind.rvHomeHistory.bindingAdapter
-            adapter.models = it
-            mDatabind.rlClickHide.isVisible = adapter.models!!.isNotEmpty()
+            Log.e(TAG, "开奖历史结果->$it")
+            lifecycleScope.launch {
+                delay(1000)
+                val adapter = mDatabind.rvHomeHistory.bindingAdapter
+                adapter.models = it
+                mDatabind.rlClickHide.isVisible = adapter.models!!.isNotEmpty()
+            }
         }
 
         //下注结果
         gameAboutModel.isBettingSuccess.observe(viewLifecycleOwner) { isSuccess ->
             if (!isSuccess) {
                 //失败时显示delete ok按钮
-                ToastUtil.showToast(requireContext(), gameAboutModel.bettingMessage)
+                ToastUtil.showToast(requireContext(), "网络连接失败")
                 anchorMoneyView?.showTop()
             }
         }
