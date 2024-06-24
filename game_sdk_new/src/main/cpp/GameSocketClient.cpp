@@ -97,19 +97,14 @@ Java_com_cn_game_sdk2_websocket_GameSocketClient_newPack(JNIEnv *env,
     cipher->pack(mid, sid, reinterpret_cast<char *>(dataBytes), dataSize,
                  outData, &outDataSize);
 
-    LOGD("ReleaseByteArrayElements");
     env->ReleaseByteArrayElements(data, dataBytes, 0);
 
-    LOGD("jarrRet");
     jbyteArray jarrRet = env->NewByteArray(outDataSize);
     if (jarrRet == nullptr) {
         return nullptr;
     }
-    LOGD("108");
     jbyte *outDataPtr = reinterpret_cast<jbyte *>(outData);
-    LOGD("110");
     env->SetByteArrayRegion(jarrRet, 0, outDataSize, outDataPtr);
-    LOGD("112");
     return jarrRet;
 }
 extern "C"

@@ -120,11 +120,7 @@ class GameSocketManager private constructor() : OnMessageListener {
     @OptIn(DelicateCoroutinesApi::class)
     override fun onMessage(mid: Int?, sid: Int?, byteArray: ByteArray) {
         mCallback?.callback(1)
-        GlobalScope.launch {
-            withContext(Dispatchers.Main) {
-                convertMessage(mid, sid, byteArray)
-            }
-        }
+        convertMessage(mid, sid, byteArray)
     }
 
     /**
