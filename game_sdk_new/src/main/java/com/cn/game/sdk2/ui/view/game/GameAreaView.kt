@@ -16,6 +16,7 @@ class GameAreaView : FrameLayout {
     lateinit var content: View
     lateinit var gameCallback: IGameView
     lateinit var moneyView: MoneyOKView
+    lateinit var flickerView:View
     var tvOdds :TextView ?= null
     var areaCode: Int = 0
     var areaInfo: Betting?= null

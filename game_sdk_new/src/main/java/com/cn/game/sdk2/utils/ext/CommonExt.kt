@@ -27,13 +27,13 @@ object CommonExt {
     @JvmStatic
     fun multiplierStr(betting: Betting): String {
         betting.apply {
-            val decimalFormat = DecimalFormat("x#.##")
+            val decimalFormat = DecimalFormat("#.##")
             if (multipliers.isNotEmpty()) {
-                return multipliers.joinToString(", ", "[", "]", transform = {
+                return multipliers.joinToString(", ", "x[", "]", transform = {
                     decimalFormat.format(it)
                 })
             }
-            return decimalFormat.format(multiplier)
+            return "x"+decimalFormat.format(multiplier)
         }
     }
 }

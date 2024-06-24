@@ -8,6 +8,7 @@ import android.animation.PropertyValuesHolder
 import android.animation.ValueAnimator
 import android.graphics.Path
 import android.graphics.PathMeasure
+import android.nfc.Tag
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -180,8 +181,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
             sumTotalFragment.flicker(ArrayList<InPrizeBean>(), ArrayList<InPrizeBean>())*/
             suspendCoroutine { continuation ->
-                val childAlphaAnimator =
-                    ObjectAnimator.ofFloat(mDatabind.llShowBetList, "alpha", 1f, 0f)
+                val childAlphaAnimator = ObjectAnimator.ofFloat(mDatabind.llShowBetList, "alpha", 1f, 0f)
                 childAlphaAnimator.duration = 200 // 设置渐隐动画持续时间
                 val animatorSet = AnimatorSet()
                 animatorSet.play(childAlphaAnimator)
@@ -215,6 +215,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
      * 开奖中
      */
     private fun onStartDrawing(roundInfo: RoundInfoBean?) {
+        Log.e(TAG,"开奖中"+roundInfo.toString())
         lifecycleScope.launch {
             showLoading(getString(R.string.g_home_drawing_begin), 1000)
             mDatabind.apply {
@@ -323,14 +324,17 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             stage?.run {
                 when (this) {
                     GameAboutModel.Stage.NEW -> {
+                        Log.e(TAG,"游戏状态监听->New")
                         onStartBetting()
                     }
 
                     GameAboutModel.Stage.DEAL -> {
+                        Log.e(TAG,"游戏状态监听->DEAL ")
                         onStartDrawing(gameAboutModel.currentSettleResult)
                     }
 
                     GameAboutModel.Stage.SETTLE -> {
+                        Log.e(TAG,"游戏状态监听->SETTLE ")
                         onStartSetting()
                     }
                 }
@@ -339,6 +343,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
         //开奖历史记录
         gameAboutModel.historyRounds.observe(viewLifecycleOwner) {
+            Log.e(TAG,"开奖历史结果->$it")
             val adapter = mDatabind.rvHomeHistory.bindingAdapter
             adapter.models = it
             mDatabind.rlClickHide.isVisible = adapter.models!!.isNotEmpty()
@@ -574,7 +579,16 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 PromptSoundPlay.btnPlayMedia(requireContext())
                 homeMorePop!!.show()
             }
+            //加倍
+            ivMultiple2.clickNoRepeat {
+
+            }
+            //续压
+            ivXuya.clickNoRepeat {
+
+            }
         }
+
     }
 
     override fun onDetach() {

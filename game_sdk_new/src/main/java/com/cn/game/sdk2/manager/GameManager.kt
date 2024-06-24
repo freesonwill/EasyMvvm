@@ -54,16 +54,16 @@ class GameManager private constructor() : IGameManager {
 
                 override fun onFinish() {
 //                    Log.d(TAG,"startCountDownTimer onFinish run $isMainThread")
-                    when (gameState) {
-                        GameState.Betting -> gameState = GameState.Settling
-                        GameState.Settling -> {
-                            startDrawing()
-                        }
-                        else -> throw IllegalStateException("error game state:${gameState}")
-                    }
-                    lis?.onCountDownFinish(gameState)
-                    mGameListener.forEach { it.value.onCountDownFinish(gameState) }
-                    countDownTimer = null
+//                    when (gameState) {
+//                        GameState.Betting -> gameState = GameState.Settling
+//                        GameState.Settling -> {
+//                            startDrawing()
+//                        }
+//                        else -> throw IllegalStateException("error game state:${gameState}")
+//                    }
+//                    lis?.onCountDownFinish(gameState)
+//                    mGameListener.forEach { it.value.onCountDownFinish(gameState) }
+//                    countDownTimer = null
                 }
             }
         countDownTimer?.start()
