@@ -3,69 +3,84 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="19dp"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:gravity="bottom"
     android:orientation="vertical">
-     <LinearLayout
-         android:id="@+id/llShowDice"
+
+    <LinearLayout
+        android:id="@+id/llShowDice"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:visibility="visible">
+
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ivBetYi"
             android:layout_width="19dp"
             android:layout_height="19dp"
-            android:scaleType="fitXY"
             android:layout_marginTop="2dp"
+            android:scaleType="fitXY"
             app:srcCompat="@drawable/icon_dice_yi" />
+
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ivBetEr"
             android:layout_width="19dp"
             android:layout_height="19dp"
-            android:scaleType="fitXY"
             android:layout_marginTop="2dp"
+            android:scaleType="fitXY"
             app:srcCompat="@drawable/icon_dice_er" />
+
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ivBetSan"
             android:layout_width="19dp"
             android:layout_height="19dp"
-            android:scaleType="fitXY"
             android:layout_marginTop="2dp"
+            android:scaleType="fitXY"
             app:srcCompat="@drawable/icon_dice_san" />
+
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/txtBetNum"
             android:layout_width="19dp"
             android:layout_height="14dp"
-            android:gravity="center"
-            android:layout_marginTop="2dp"
             android:layout_gravity="center"
-            android:textColor="@color/g_000000"
-            android:textSize="11sp"
+            android:layout_marginTop="2dp"
             android:background="@drawable/shape_3_e0e0e0"
-            android:text="6"/>
+            android:gravity="center"
+            android:text="6"
+            android:textColor="@color/g_000000"
+            android:textSize="11sp" />
     </LinearLayout>
-<!--    小是蓝色 大是红色 -->
-     <androidx.appcompat.widget.AppCompatTextView
-         android:id="@+id/txtBetSize"
-         android:layout_width="match_parent"
-         android:layout_height="19dp"
-         android:textSize="11sp"
-         android:layout_marginTop="2dp"
-         android:layout_gravity="center"
-         android:gravity="center"
-         android:textColor="@color/c_ffffff"
-         android:background="@drawable/shape_3_006ce4"
-         android:text="@string/g_home_txt_small"/>
-    <!--    单是蓝色 双是红色 -->
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/txtBetOdd"
-        android:layout_width="match_parent"
-        android:layout_height="19dp"
-        android:layout_marginTop="2dp"
-        android:textSize="11sp"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:textColor="@color/c_ffffff"
-        android:background="@drawable/shape_3_b83030"
-        android:text="@string/g_home_txt_double"/>
 
+    <LinearLayout
+        android:id="@+id/llBetResult"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:paddingTop="2dp"
+        android:layout_height="wrap_content">
+        <!--    小是蓝色 大是红色 -->
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txtBetSize"
+            android:layout_width="match_parent"
+            android:layout_height="19dp"
+            android:layout_gravity="center"
+            android:background="@drawable/shape_3_006ce4"
+            android:gravity="center"
+            android:text="@string/g_home_txt_small"
+            android:textColor="@color/c_ffffff"
+            android:textSize="11sp" />
+        <!--    单是蓝色 双是红色 -->
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txtBetOdd"
+            android:layout_width="match_parent"
+            android:layout_height="19dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="2dp"
+            android:background="@drawable/shape_3_b83030"
+            android:gravity="center"
+            android:text="@string/g_home_txt_double"
+            android:textColor="@color/c_ffffff"
+            android:textSize="11sp" />
+
+    </LinearLayout>
 </androidx.appcompat.widget.LinearLayoutCompat>

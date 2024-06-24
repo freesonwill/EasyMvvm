@@ -206,12 +206,12 @@ fun View.measureView() {
     val width = if (params.width > 0) {
         View.MeasureSpec.makeMeasureSpec(params.width, View.MeasureSpec.EXACTLY)
     } else {
-        View.MeasureSpec.makeMeasureSpec(0, View.SOUND_EFFECTS_ENABLED)
+        View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
     }
     val height = if (params.height > 0) {
         View.MeasureSpec.makeMeasureSpec(params.height, View.MeasureSpec.EXACTLY)
     } else {
-        View.MeasureSpec.makeMeasureSpec(0, View.SOUND_EFFECTS_ENABLED)
+        View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
     }
     measure(width, height)
 }

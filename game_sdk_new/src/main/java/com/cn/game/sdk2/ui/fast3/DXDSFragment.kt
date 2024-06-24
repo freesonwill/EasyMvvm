@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.FrameLayout
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
@@ -92,8 +93,9 @@ class DXDSFragment(var fast3VM: Fast3ViewModel) : BaseFast3Fragment<DXDSVm, Frag
                                         fast3VM.currentBettingRecordBean = Pair(result,areaView.moneyView)
                                         if (!areaView.moneyView.isAdd()) {
                                             addMoneyOkView(areaView, x, y, rawY)
+                                        }else{
+                                            emitMoneyAnim(areaView, areaView.moneyView)
                                         }
-                                        emitMoneyAnim(areaView, areaView.moneyView)
                                     }
                                 }
                             }
@@ -132,100 +134,110 @@ class DXDSFragment(var fast3VM: Fast3ViewModel) : BaseFast3Fragment<DXDSVm, Frag
      */
     private fun addMoneyOkView(areaView: GameAreaView, x: Float, y: Float, rawY: Float) {
         areaView.moneyView.let {
+            val viewTreeObserver = it.viewTreeObserver
+            viewTreeObserver.addOnGlobalLayoutListener(object :
+                ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    // 确保只监听一次
+                    it.viewTreeObserver.removeOnGlobalLayoutListener(this)
+
+                    //默认偏移控件中心点
+                    val dx = x - it.measuredWidth / 2
+                    val dy = y - it.measuredHeight / 2
+
+                    //处理水平偏移
+                    val areaWidth = areaView.width
+                    when (areaView.id) {
+                        R.id.small_view, R.id.big_view -> {
+                            it.translationX = when {
+                                //不超出左右边界
+                                dx > 0 && dx + it.measuredWidth <= areaWidth -> dx
+                                dx + it.measuredWidth > areaWidth -> (areaWidth - it.measuredWidth).toFloat()
+                                else -> 0f
+                            }
+                        }
+
+                        R.id.single_view -> {
+                            //单 处理有边界
+                            val leopardLocation = IntArray(2)
+                            mDatabind.leopardView.getLocationOnScreen(leopardLocation)
+                            val leopardX = leopardLocation[0]
+                            it.translationX = when {
+                                //不超出左右边界
+                                dx > 0 && dx + it.measuredWidth <= leopardX -> dx
+                                dx + it.measuredWidth > leopardX -> (leopardX - it.measuredWidth).toFloat()
+                                else -> 0f
+                            }
+                        }
+
+                        R.id.double_view -> {
+                            //双 处理左边界
+                            val leopardLocation = IntArray(2)
+                            mDatabind.leopardView.getLocationOnScreen(leopardLocation)
+                            val leopardX = leopardLocation[0]
+                            val leftX =
+                                leopardX + mDatabind.leopardView.width - areaWidth
+                            it.translationX = when {
+                                //不超出左右边界
+                                dx > leftX && dx + it.measuredWidth <= areaWidth -> dx
+                                dx + it.measuredWidth > areaWidth -> (areaWidth - it.measuredWidth).toFloat()
+                                else -> leftX.toFloat()
+                            }
+                        }
+                    }
+
+                    //处理垂直偏移
+                    val areaLocation = IntArray(2)
+                    areaView.getLocationOnScreen(areaLocation)
+                    val areaY = areaLocation[1]
+                    when (areaView.id) {
+                        // 小 大
+                        R.id.small_view, R.id.big_view -> {
+                            val smallLocation = IntArray(2)
+                            mDatabind.txtSmallMoney.getLocationOnScreen(smallLocation)
+                            val textY = smallLocation[1]
+                            it.translationY = when {
+                                rawY + it.measuredHeight / 2 > textY -> (textY - areaY - areaView.height).toFloat()
+                                else -> dy
+                            }
+                        }
+
+                        //单双
+                        R.id.single_view, R.id.double_view -> {
+                            val singLocation = IntArray(2)
+                            mDatabind.txtSingleMoney.getLocationOnScreen(singLocation)
+                            val textY = singLocation[1]
+                            it.translationY = when {
+                                rawY + it.measuredHeight / 2 > textY -> (textY - areaY - areaView.height).toFloat()
+                                else -> dy
+                            }
+                        }
+                    }
+
+                    emitMoneyAnim(areaView, it, isNewAdd = true)
+                }
+            })
+
             //先添加view再计算位置执行动画
             val params = FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
-            areaView.addView(it, params)
-            it.isVisible = false
             // 将新按钮设置为居底部，方便向上偏移
             // 豹子暂时居中，不做偏移
             params.gravity =
                 if (areaView.id == R.id.leopard_view) Gravity.CENTER else Gravity.BOTTOM
-            if (it.measuredWidth <= 0) {
-                it.measureView()
-            }
-
-            //默认偏移控件中心点
-            val dx = x - it.measuredWidth / 2
-            val dy = y - it.measuredHeight / 2
-
-            //处理水平偏移
-            val areaWidth = areaView.width
-            when (areaView.id) {
-                R.id.small_view, R.id.big_view -> {
-                    it.translationX = when {
-                        //不超出左右边界
-                        dx > 0 && dx + it.measuredWidth <= areaWidth -> dx
-                        dx + it.measuredWidth > areaWidth -> (areaWidth - it.measuredWidth).toFloat()
-                        else -> 0f
-                    }
-                }
-
-                R.id.single_view -> {
-                    //单 处理有边界
-                    val leopardLocation = IntArray(2)
-                    mDatabind.leopardView.getLocationOnScreen(leopardLocation)
-                    val leopardX = leopardLocation[0]
-                    it.translationX = when {
-                        //不超出左右边界
-                        dx > 0 && dx + it.measuredWidth <= leopardX -> dx
-                        dx + it.measuredWidth > leopardX -> (leopardX - it.measuredWidth).toFloat()
-                        else -> 0f
-                    }
-                }
-
-                R.id.double_view -> {
-                    //双 处理左边界
-                    val leopardLocation = IntArray(2)
-                    mDatabind.leopardView.getLocationOnScreen(leopardLocation)
-                    val leopardX = leopardLocation[0]
-                    val leftX =
-                        leopardX + mDatabind.leopardView.width - areaWidth
-                    it.translationX = when {
-                        //不超出左右边界
-                        dx > leftX && dx + it.measuredWidth <= areaWidth -> dx
-                        dx + it.measuredWidth > areaWidth -> (areaWidth - it.measuredWidth).toFloat()
-                        else -> leftX.toFloat()
-                    }
-                }
-            }
-
-            //处理垂直偏移
-            val areaLocation = IntArray(2)
-            areaView.getLocationOnScreen(areaLocation)
-            val areaY = areaLocation[1]
-            when (areaView.id) {
-                // 小 大
-                R.id.small_view, R.id.big_view -> {
-                    val smallLocation = IntArray(2)
-                    mDatabind.txtSmallMoney.getLocationOnScreen(smallLocation)
-                    val textY = smallLocation[1]
-                    it.translationY = when {
-                        rawY + it.measuredHeight / 2 > textY -> (textY - areaY - areaView.height).toFloat()
-                        else -> dy
-                    }
-                }
-
-                //单双
-                R.id.single_view, R.id.double_view -> {
-                    val singLocation = IntArray(2)
-                    mDatabind.txtSingleMoney.getLocationOnScreen(singLocation)
-                    val textY = singLocation[1]
-                    it.translationY = when {
-                        rawY + it.measuredHeight / 2 > textY -> (textY - areaY - areaView.height).toFloat()
-                        else -> dy
-                    }
-                }
-            }
+            areaView.addView(it, params)
         }
     }
 
-    private fun emitMoneyAnim(areaView: GameAreaView, moneyOKView: MoneyOKView) {
+    private fun emitMoneyAnim(areaView: GameAreaView, moneyOKView: MoneyOKView,isNewAdd:Boolean = false) {
         val location = moneyOKView.locationOnScreen
         val rax = location[0].toFloat()
         val ray = location[1].toFloat() + moneyOKView.measuredHeight / 2
+        if(isNewAdd){
+            moneyOKView.isVisible = false
+        }
         fast3VM.emitMoneyAnim(rax, ray, areaView = areaView, endCallBack = {
             moneyOKView.isVisible = true
 //            显示点击在Fragment的位置用于动画结束后显示

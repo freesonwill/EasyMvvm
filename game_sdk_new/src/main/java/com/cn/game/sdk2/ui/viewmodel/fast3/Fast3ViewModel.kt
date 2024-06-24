@@ -61,7 +61,7 @@ class Fast3ViewModel : BaseViewModel() {
     /**
      * 是否显示骰子的结果组合
      */
-    var isShowResult: Boolean = true
+    var isShowResult: Boolean = false
     val currentMoney: LiveData<Int> by lazy { UnPeekLiveData(10000) }
 
     val onGameAreaLocationClick:UnPeekLiveData<LocationClickPoint> by lazy { UnPeekLiveData() }
@@ -88,12 +88,12 @@ class Fast3ViewModel : BaseViewModel() {
     /**
      * 下注倒计时(ms)
      */
-    val bettingCountDownTime = 20_000
+    val bettingCountDownTime = 3_000
 
     /**
      * 结算倒计时(ms)
      */
-    val settingCountDownTime = 20_000
+    val settingCountDownTime = 3_000
     //========================================== Method =========================================//
     override fun onInit() {
 

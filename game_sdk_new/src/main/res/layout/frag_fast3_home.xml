@@ -206,7 +206,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_5"
                 android:layout_marginRight="27dp"
-                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 tools:itemCount="1"
                 tools:listitem="@layout/item_bet_history" />
@@ -216,9 +215,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 app:layout_constrainedHeight="true"
-                app:layout_constraintVertical_bias="1"
+                app:layout_constraintBottom_toBottomOf="@id/rvHomeHistory"
                 app:layout_constraintTop_toTopOf="@id/rvHomeHistory"
-                app:layout_constraintBottom_toBottomOf="@id/rvHomeHistory" />
+                app:layout_constraintVertical_bias="1" />
 
             <RelativeLayout
                 android:id="@+id/rlClickHide"
@@ -238,6 +237,7 @@
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/ivHomeRotation"
                     android:layout_width="7dp"
+                    android:rotation="180"
                     android:layout_height="13dp"
                     android:layout_centerInParent="true"
                     android:scaleType="fitXY"
@@ -250,12 +250,12 @@
                 android:id="@+id/centerLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/vvvvvv"
                 android:layout_marginTop="8dp"
+                android:background="@color/g_141624"
                 android:clipChildren="false"
                 android:clipToPadding="false"
-                app:layout_constraintBottom_toTopOf="@id/llShowBetList"
-                android:background="@color/g_141624">
+                app:layout_constraintBottom_toTopOf="@id/flRvHistory"
+                app:layout_constraintTop_toBottomOf="@id/vvvvvv">
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/ivHomeBgCenter"
@@ -273,20 +273,20 @@
                     android:layout_height="180dp"
                     android:layout_marginBottom="5dp"
                     android:clipChildren="false"
-                    app:layout_constraintBottom_toTopOf="@id/rlShowResult"
-                    android:clipToPadding="false" />
+                    android:clipToPadding="false"
+                    app:layout_constraintBottom_toTopOf="@id/llShowBetList" />
 
                 <LinearLayout
                     android:id="@+id/rlShowResult"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
                     android:gravity="center"
+                    android:orientation="horizontal"
                     android:visibility="gone"
-                    android:orientation="horizontal">
+                    app:layout_constraintTop_toTopOf="@id/llShowBetList"
+                    app:layout_constraintBottom_toBottomOf="@id/llShowBetList"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent">
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/ivDrawYi"
@@ -331,21 +331,20 @@
                         app:srcCompat="@drawable/icon_home_result_double" />
                 </LinearLayout>
 
+                <!--            选择投注-->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/llShowBetList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/g_141624"
+                    android:paddingBottom="5dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    tools:itemCount="1"
+                    tools:listitem="@layout/item_annotation_list" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <!--            选择投注-->
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/llShowBetList"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/g_141624"
-                android:paddingBottom="5dp"
-                app:layout_constraintBottom_toTopOf="@id/flRvHistory"
-                tools:itemCount="1"
-                tools:listitem="@layout/item_annotation_list" />
         </androidx.constraintlayout.widget.ConstraintLayout>
-
 
         <com.cn.game.sdk2.ui.view.DoTouchFrameLayout
             android:id="@+id/tempTouch"

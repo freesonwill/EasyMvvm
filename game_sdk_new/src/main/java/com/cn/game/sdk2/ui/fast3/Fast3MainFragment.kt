@@ -73,9 +73,11 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     private var resultRvHeight = -1
     private var resultAnimMoveHeight = -1
     private var anchorMoneyView: MoneyOKView? = null
+
     //<areaCode,<money,View>>
     private var savedMoneyMap: MutableMap<Int, MutablePair<Int, MoneyOKView>> = mutableMapOf()
     private var tempMoneyMap: MutableMap<Int, MutablePair<Int, MoneyOKView>> = mutableMapOf()
+
     //==================================== Method ===============================================//
     override fun initView(savedInstanceState: Bundle?) {
         //viewpager
@@ -151,7 +153,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             mDatabind.txtHomeStatic.text = resources.getString(R.string.g_home_txt_please)
             //下注闪动动画
             suspendCoroutine { continuation ->
-                val childAlphaAnimator = ObjectAnimator.ofFloat(mDatabind.llShowBetList, "alpha", 0f, 1f)
+                val childAlphaAnimator =
+                    ObjectAnimator.ofFloat(mDatabind.llShowBetList, "alpha", 0f, 1f)
                 childAlphaAnimator.duration = 200 // 设置渐隐动画持续时间
                 val animatorSet = AnimatorSet()
                 animatorSet.play(childAlphaAnimator)
@@ -189,7 +192,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
             sumTotalFragment.flicker(ArrayList<InPrizeBean>(), ArrayList<InPrizeBean>())*/
             suspendCoroutine { continuation ->
-                val childAlphaAnimator = ObjectAnimator.ofFloat(mDatabind.llShowBetList, "alpha", 1f, 0f)
+                val childAlphaAnimator =
+                    ObjectAnimator.ofFloat(mDatabind.llShowBetList, "alpha", 1f, 0f)
                 childAlphaAnimator.duration = 200 // 设置渐隐动画持续时间
                 val animatorSet = AnimatorSet()
                 animatorSet.play(childAlphaAnimator)
@@ -197,7 +201,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     override fun onAnimationEnd(animation: Animator) {
                         super.onAnimationEnd(animation)
                         //注区
-                        mDatabind.llShowBetList.visibility = View.GONE
+                        mDatabind.llShowBetList.visibility = View.INVISIBLE
                         //显示开奖结果
                         mDatabind.rlShowResult.visibility = View.VISIBLE
                         mDatabind.ivHomeBg.visibility = View.VISIBLE
@@ -219,7 +223,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             mDatabind.txtHomeStatic.text = resources.getString(R.string.g_home_drawing_being)
         }
     }
-    private fun onDrawFinish(){
+
+    private fun onDrawFinish() {
         lifecycleScope.launch {
             delay(mViewModel.prizeAnimTime + 2000)
             //播放开奖动画
@@ -229,12 +234,12 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
     override fun createObserver() {
         Log.i(TAG, "createObserver------------>")
-        mViewModel.currentBettingRecordBeanLD.observe(viewLifecycleOwner) { pair->
+        mViewModel.currentBettingRecordBeanLD.observe(viewLifecycleOwner) { pair ->
             val result = pair.first
             val moneyOKView = pair.second
-            if(tempMoneyMap.containsKey(result.bettingArea.number)){
+            if (tempMoneyMap.containsKey(result.bettingArea.number)) {
                 tempMoneyMap[result.bettingArea.number]?.first = result.money
-            }else{
+            } else {
                 tempMoneyMap[result.bettingArea.number] = MutablePair(result.money, moneyOKView)
             }
         }
@@ -274,13 +279,23 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         }
         mViewModel.historyResultBeanLD.observe(requireActivity()) { bean ->
             val adapter = mDatabind.rvHomeHistory.bindingAdapter
-            adapter.addModels(mutableListOf(bean),false)
-            if(adapter.models!!.size == 1) resultAnimation(isShowResult = false, animation = false)
-            Log.d(TAG, "onDrawingResult run on $isMainThread result:$bean," + mViewModel.historyResultBeans.size)
+            adapter.addModels(mutableListOf(bean), false)
+//            if(adapter.models!!.size == 1) resultAnimation(isShowResult = false, animation = false)
+            Log.d(
+                TAG,
+                "onDrawingResult run on $isMainThread result:$bean," + mViewModel.historyResultBeans.size
+            )
             mDatabind.rlClickHide.isVisible = adapter.models!!.isNotEmpty()
         }
         mViewModel.moneyAnimCallback = object : Fast3ViewModel.MoneyAnimCallback {
-            override fun startAnim(x: Float, y: Float, isCentered: Boolean, speed: Long, areaView: GameAreaView, endCallBack: (() -> Unit)?) {
+            override fun startAnim(
+                x: Float,
+                y: Float,
+                isCentered: Boolean,
+                speed: Long,
+                areaView: GameAreaView,
+                endCallBack: (() -> Unit)?
+            ) {
                 tryMoneyAnimation(x, y, speed, areaView, endCallBack)
             }
         }
@@ -306,7 +321,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         mViewModel.betDeleteClick.observe(this) {
             hiddenAnchorTop()
             GameSocketManager.getInstance()?.getGameService()?.cancelBetting { result ->
-                if(null == result){
+                if (null == result) {
                     tempMoneyMap.forEach {
                         it.value.second.let { moneyView ->
                             if (moneyView.isAdd()) {
@@ -316,7 +331,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                         }
                     }
 
-                }else {
+                } else {
                     result.forEach {
                         if (tempMoneyMap.containsKey(it.bettingArea.number)) {
                             tempMoneyMap[it.bettingArea.number]?.first = it.money
@@ -360,61 +375,33 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     }
 
 
-
     /**
      * 开奖结果显示或者隐藏动画
      */
-    private fun resultAnimation(isShowResult:Boolean,animation:Boolean=true) {
-        lifecycleScope.launch {
-            mDatabind.apply {
-                if (rvHomeHistory.models.isNullOrEmpty()) return@apply
-                resultAnim?.cancel()
-                if (resultRvHeight == -1) {
-                    rvHomeHistory.measureView()
-                    resultRvHeight = rvHomeHistory.measuredHeight
-                    Log.d(TAG, "resultRvHeight_rvHomeHistory: ${rvHomeHistory.measuredHeight}")
-                }
-                rvHomeHistory.isVisible = true
-                Log.d(TAG, "resultRvHeight: $resultRvHeight")
-                Log.d(TAG, "resultRvHeight_rvHomeHistory: ${rvHomeHistory.measuredHeight}")
-                mViewModel.isShowResult = isShowResult
-                if (resultAnimMoveHeight == -1) {
-                    val manager = rvHomeHistory.layoutManager as LinearLayoutManager
-                    var firstPosition = manager.findFirstVisibleItemPosition()
-                    var viewHolder = rvHomeHistory.findViewHolderForLayoutPosition(firstPosition)
-                    while (viewHolder == null){
-                        firstPosition = manager.findFirstVisibleItemPosition()
-                        viewHolder = rvHomeHistory.findViewHolderForLayoutPosition(firstPosition)
-                        delay(1)
-                    }
-                    val llShowDice = viewHolder.itemView.findViewById<LinearLayout>(R.id.llShowDice)
-                    resultAnimMoveHeight = llShowDice.height
-                }
-                Log.d(TAG, "resultRvHeight_rvHomeHistory: ${rvHomeHistory.measuredHeight}")
-                rvHomeHistory.isVisible = true
-                ivHomeRotation.rotation = if (isShowResult) 0f else 180f
-                val startHeight = flRvHistory.height.toFloat()
-                val endHeight = if (isShowResult) resultRvHeight else resultRvHeight -resultAnimMoveHeight
-                if(!animation) {
-                    val params = flRvHistory.layoutParams
-                    params?.height = endHeight
-                    flRvHistory.layoutParams = params
-                    return@apply
-                }
-                resultAnim = ValueAnimator.ofFloat(startHeight, endHeight.toFloat()).apply {
-                    duration = 400
-                    addUpdateListener {
-                        val value = (it.animatedValue as Float).toInt()
-                        val params = flRvHistory.layoutParams
-                        params?.height = value
-                        flRvHistory.layoutParams = params
-                    }
-                    addListener(onStart = {
-                        rvHomeHistory.scrollToPosition(rvHomeHistory.models!!.size - 1)
-                    })
-                }
-                resultAnim?.start()
+    private fun resultAnimation(isShowResult: Boolean) {
+        mDatabind.apply {
+            if (rvHomeHistory.models.isNullOrEmpty()) return@apply
+            resultAnim?.cancel()
+            mViewModel.isShowResult = isShowResult
+            if (resultRvHeight == -1) {
+                rvHomeHistory.measureView()
+                resultRvHeight = rvHomeHistory.measuredHeight
+                Log.d(TAG, "resultRvHeight_rvHomeHistory: $resultRvHeight")
             }
+            ivHomeRotation.rotation = if (isShowResult) 0f else 180f
+            val startHeight = flRvHistory.height.toFloat()
+            val endHeight =
+                if (isShowResult) resultRvHeight else resultRvHeight - resultAnimMoveHeight
+            resultAnim = ValueAnimator.ofFloat(startHeight, endHeight.toFloat()).apply {
+                duration = 400
+                addUpdateListener {
+                    val value = (it.animatedValue as Float).toInt()
+                    val params = flRvHistory.layoutParams
+                    params?.height = value
+                    flRvHistory.layoutParams = params
+                }
+            }
+            resultAnim?.start()
         }
     }
 
@@ -485,28 +472,46 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             requireContext(),
             LinearLayoutManager.HORIZONTAL, false
         )
-        mDatabind.rvHomeHistory.dividerSpace(requireContext().dp2px(2),DividerOrientation.HORIZONTAL)
+        mDatabind.rvHomeHistory.dividerSpace(
+            requireContext().dp2px(2),
+            DividerOrientation.HORIZONTAL
+        )
         mDatabind.rvHomeHistory.setup {
             addType<HistoryResultBean>(R.layout.item_bet_history)
             onBind {
                 when (itemViewType) {
                     R.layout.item_bet_history -> {
-                        val binding = getBinding<ItemBetHistoryBinding>()
-                        val mainTxtBean = _data as HistoryResultBean
-                        mainTxtBean.result.forEachIndexed { index, item ->
-                            val child = binding.llShowDice.getChildAt(index) as ImageView
-                            val id = resources.getIdentifier(
-                                "icon_dice_" + item.toPinyin(),
-                                "drawable",
-                                requireContext().packageName
-                            )
-                            child.setImageResource(id)
+                        getBinding<ItemBetHistoryBinding>().apply {
+                            if (resultAnimMoveHeight == -1) {
+                                llShowDice.measureView()
+                                resultAnimMoveHeight = llShowDice.measuredHeight
+                                llBetResult.measureView()
+                                resultRvHeight = resultAnimMoveHeight + llBetResult.measuredHeight
+                                Log.d(TAG, "resultAnimMoveHeight: $resultAnimMoveHeight")
+                                Log.d(TAG, "llBetResult: ${resultRvHeight}}")
+                                val params = mDatabind.flRvHistory.layoutParams
+                                params?.height = llBetResult.measuredHeight
+                                mDatabind.flRvHistory.layoutParams = params
+                            }
+
+                            val mainTxtBean = _data as HistoryResultBean
+                            mainTxtBean.result.forEachIndexed { index, item ->
+                                val child = llShowDice.getChildAt(index) as ImageView
+                                val id = resources.getIdentifier(
+                                    "icon_dice_" + item.toPinyin(),
+                                    "drawable",
+                                    requireContext().packageName
+                                )
+                                child.setImageResource(id)
+                            }
+                            txtBetNum.text = mainTxtBean.resultSum.toString()
+                            txtBetSize.text =
+                                if (mainTxtBean.resultSize == "big") getString(R.string.g_home_txt_big)
+                                else getString(R.string.g_home_txt_small)
+                            txtBetOdd.text =
+                                if (mainTxtBean.resultSingle == "single") getString(R.string.g_home_txt_single)
+                                else getString(R.string.g_home_txt_double)
                         }
-                        binding.txtBetNum.text = mainTxtBean.resultSum.toString()
-                        binding.txtBetSize.text = if (mainTxtBean.resultSize == "big") getString(R.string.g_home_txt_big)
-                            else getString(R.string.g_home_txt_small)
-                        binding.txtBetOdd.text = if (mainTxtBean.resultSingle == "single") getString(R.string.g_home_txt_single)
-                            else getString(R.string.g_home_txt_double)
                     }
                 }
             }
@@ -528,19 +533,19 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
     override fun onDetach() {
         super.onDetach()
-        Log.d(TAG,"onDetach~~~~~~~~~~~~~~")
+        Log.d(TAG, "onDetach~~~~~~~~~~~~~~")
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        Log.d(TAG,"onDestroyView~~~~~~~~~~~~~~")
+        Log.d(TAG, "onDestroyView~~~~~~~~~~~~~~")
     }
 
     /**
      * 关闭页面
      */
     override fun onDestroy() {
-        Log.d(TAG,"onDestroy~~~~~~~~~~~~~~")
+        Log.d(TAG, "onDestroy~~~~~~~~~~~~~~")
         //关闭的时候要把这个赋值为0选择
         mViewModel.noteList.forEach {
             it.select = false
@@ -654,10 +659,10 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 // 把移动的图片imageview从父布局里移除
                 mDatabind.rlRoot.removeView(betImageView)
                 val animator = ObjectAnimator.ofPropertyValuesHolder(
-                        areaView.moneyView.ivShowBg,
-                        SCALE_X,
-                        SCALE_Y
-                    )
+                    areaView.moneyView.ivShowBg,
+                    SCALE_X,
+                    SCALE_Y
+                )
                 animator.duration = 200
                 animator.start()
 
@@ -674,20 +679,20 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
     private fun addTempMoney(areaView: GameAreaView) {
         mViewModel.currentBettingRecordBean?.let {
-            if(areaView.areaCode == it.first.bettingArea.number){
+            if (areaView.areaCode == it.first.bettingArea.number) {
                 areaView.moneyView.setShowMoney(it.first.money)
             }
         }
     }
 
-    private fun updateAnchorView(anchor: MoneyOKView){
+    private fun updateAnchorView(anchor: MoneyOKView) {
         hiddenAnchorTop()
         anchor.showTop()
         anchorMoneyView = anchor
         mDatabind.tempTouch.setAnchorMoneyView(anchor)
     }
 
-    private fun hiddenAnchorTop(){
+    private fun hiddenAnchorTop() {
         anchorMoneyView?.hiddenTop()
     }
 
