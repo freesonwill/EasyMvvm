@@ -38,12 +38,12 @@ class LeopardFragment(private val fast3VM:Fast3ViewModel):BaseFast3Fragment<Leop
 
     override fun initView(savedInstanceState: Bundle?) {
         mDatabind.apply {
-            gavLeopardOne.areaInfo = BOOM_1()
-            gavLeopardTwo.areaInfo = BOOM_2()
-            gavLeopardThree.areaInfo = BOOM_3()
-            gavLeopardFour.areaInfo = BOOM_4()
-            gavLeopardFive.areaInfo = BOOM_5()
-            gavLeopardSix.areaInfo = BOOM_6()
+            gavLeopardOne.areaInfo = mViewModel.bettingArray[1]
+            gavLeopardTwo.areaInfo =  mViewModel.bettingArray[2]
+            gavLeopardThree.areaInfo =  mViewModel.bettingArray[3]
+            gavLeopardFour.areaInfo =  mViewModel.bettingArray[3]
+            gavLeopardFive.areaInfo =  mViewModel.bettingArray[4]
+            gavLeopardSix.areaInfo =  mViewModel.bettingArray[5]
 
             areaViewList.add(gavLeopardOne)
             areaViewList.add(gavLeopardTwo)
@@ -75,6 +75,11 @@ class LeopardFragment(private val fast3VM:Fast3ViewModel):BaseFast3Fragment<Leop
                 })
             }
         }
+    }
+
+    override fun initData() {
+        super.initData()
+        mDatabind.model = mViewModel
     }
 
     override fun createObserver() {

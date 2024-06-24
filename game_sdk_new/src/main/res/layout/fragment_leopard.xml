@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools">
 
     <data>
-
+        <variable
+            name="model"
+            type="com.cn.game.sdk2.ui.viewmodel.fast3.LeopardVm" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -63,7 +66,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_4"
-                    android:text="x2"
+                    android:text="@{model.multiplierStr(1)}"
                     android:textColor="@color/g_f8e0c4"
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -126,7 +129,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_4"
-                    android:text="x2"
+                    android:text="@{model.multiplierStr(2)}"
                     android:textColor="@color/g_f8e0c4"
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -188,7 +191,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_4"
-                    android:text="x2"
+                    android:text="@{model.multiplierStr(3)}"
                     android:textColor="@color/g_f8e0c4"
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -244,13 +247,12 @@
                     app:layout_constraintStart_toEndOf="@id/ivLeopardFourLeft"
                     app:layout_constraintTop_toTopOf="@id/ivLeopardFourLeft"
                     app:srcCompat="@drawable/icon_dice_si" />
-
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txtLeopardOddsFour"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_4"
-                    android:text="x2"
+                    android:text="@{model.multiplierStr(3)}"
                     android:textColor="@color/g_f8e0c4"
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -312,7 +314,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_4"
-                    android:text="x2"
+                    android:text="@{model.multiplierStr(5)}"
                     android:textColor="@color/g_f8e0c4"
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -374,7 +376,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_4"
-                    android:text="x2"
+                    android:text="@{model.multiplierStr(6)}"
                     android:textColor="@color/g_f8e0c4"
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"

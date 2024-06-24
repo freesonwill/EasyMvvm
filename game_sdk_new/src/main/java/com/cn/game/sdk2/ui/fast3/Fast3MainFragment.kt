@@ -283,11 +283,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         mViewModel.historyResultBeanLD.observe(requireActivity()) { bean ->
             val adapter = mDatabind.rvHomeHistory.bindingAdapter
             adapter.addModels(mutableListOf(bean), false)
-//            if(adapter.models!!.size == 1) resultAnimation(isShowResult = false, animation = false)
-            Log.d(
-                TAG,
-                "onDrawingResult run on $isMainThread result:$bean," + mViewModel.historyResultBeans.size
-            )
+            Log.d(TAG, "onDrawingResult run on $isMainThread result:$bean," + mViewModel.historyResultBeans.size)
             mDatabind.rlClickHide.isVisible = adapter.models!!.isNotEmpty()
         }
         mViewModel.moneyAnimCallback = object : Fast3ViewModel.MoneyAnimCallback {

@@ -14,8 +14,9 @@ import kotlinx.coroutines.launch
  */
 class PairsDiceFragment(private val fast3VM: Fast3ViewModel):BaseFast3Fragment<PairsDiceVm,FragmentPairsDiceBinding>() {
     override fun initView(savedInstanceState: Bundle?) {
-
+        mDatabind.model = mViewModel
     }
+
 
     override fun createObserver() {
         super.createObserver()

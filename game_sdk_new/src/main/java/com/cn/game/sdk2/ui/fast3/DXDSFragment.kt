@@ -36,12 +36,13 @@ class DXDSFragment(var fast3VM: Fast3ViewModel) : BaseFast3Fragment<DXDSVm, Frag
     private var areaViewList: MutableList<GameAreaView> = mutableListOf()
 
     override fun initView(savedInstanceState: Bundle?) {
+        mDatabind.model = mViewModel
         mDatabind.apply {
-            bigView.areaInfo = DEFAULT_BIG()
-            smallView.areaInfo = DEFAULT_SMALL()
-            singleView.areaInfo = DEFAULT_SINGLE()
-            doubleView.areaInfo = DEFAULT_DOUBLE()
-            leopardView.areaInfo = BOOM_ALL()
+            bigView.areaInfo = mViewModel.bettingArray[1]
+            smallView.areaInfo = mViewModel.bettingArray[2]
+            singleView.areaInfo = mViewModel.bettingArray[3]
+            doubleView.areaInfo = mViewModel.bettingArray[4]
+            leopardView.areaInfo = mViewModel.bettingArray[5]
 
             areaViewList.add(bigView)
             areaViewList.add(smallView)
@@ -58,6 +59,7 @@ class DXDSFragment(var fast3VM: Fast3ViewModel) : BaseFast3Fragment<DXDSVm, Frag
             mDatabind.leopardView to mDatabind.txtOddsLeopard,
         )
         dic.forEach {
+            it.value.text = it.key.areaInfo!!.multiplier.toString()
             it.key.gameCallback = object : IGameView {
                 override fun winFlash() {
                     it.key.tvOdds = it.value

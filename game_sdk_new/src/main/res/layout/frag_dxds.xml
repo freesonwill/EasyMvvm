@@ -2,10 +2,12 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
-
     <data>
-
+        <variable
+            name="model"
+            type="com.cn.game.sdk2.ui.viewmodel.fast3.DXDSVm" />
     </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/rlHomeRoot"
         android:clipChildren="false"
@@ -14,6 +16,7 @@
         <!-- 左上角-->
         <com.cn.game.sdk2.ui.view.game.GameAreaView
             android:id="@+id/small_view"
+            app:areaInfo="@{model.bettingArray[1]}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/big_view"
             app:layout_constraintTop_toTopOf="parent"
@@ -44,6 +47,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="14sp"
+                        android:text="@{model.multiplierStr(1)}"
                         tools:text="1:0.96"
                         android:textColor="@color/g_f8e0c4"/>
 
@@ -109,6 +113,7 @@
         <!--  右上角-->
         <com.cn.game.sdk2.ui.view.game.GameAreaView
             android:id="@+id/big_view"
+            app:areaInfo="@{model.bettingArray[2]}"
             app:layout_constraintStart_toEndOf="@id/small_view"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -140,6 +145,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="14sp"
+                        android:text="@{model.multiplierStr(2)}"
                         tools:text="1:0.96"
                         android:textColor="@color/g_f8e0c4"/>
 
@@ -210,6 +216,7 @@
         <!--左下角-->
         <com.cn.game.sdk2.ui.view.game.GameAreaView
             android:id="@+id/single_view"
+            app:areaInfo="@{model.bettingArray[3]}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/double_view"
             app:layout_constraintTop_toBottomOf="@id/small_view"
@@ -242,6 +249,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/g_f8e0c4"
+                        android:text="@{model.multiplierStr(1)}"
                         android:textSize="14sp"
                         tools:text="1:0.96" />
 
@@ -309,6 +317,7 @@
         <!-- 右下角-->
         <com.cn.game.sdk2.ui.view.game.GameAreaView
             android:id="@+id/double_view"
+            app:areaInfo="@{model.bettingArray[4]}"
             app:layout_constraintStart_toEndOf="@id/single_view"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/big_view"
@@ -340,6 +349,7 @@
                         android:id="@+id/txtOddsDouble"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="@{model.multiplierStr(4)}"
                         android:textSize="14sp"
                         tools:text="1:0.96"
                         android:textColor="@color/g_f8e0c4"/>
@@ -412,6 +422,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:areaInfo="@{model.bettingArray[5]}"
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
@@ -439,6 +450,7 @@
                         android:id="@+id/txtOddsLeopard"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="@{model.multiplierStr(5)}"
                         android:textSize="14sp"
                         tools:text="1:0.96"
                         android:textColor="@color/g_f8e0c4"/>
