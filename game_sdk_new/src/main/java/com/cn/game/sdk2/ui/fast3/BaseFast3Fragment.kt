@@ -42,7 +42,7 @@ abstract class BaseFast3Fragment<VM : BaseViewModel, VB : ViewDataBinding> :
             val views = mutableListOf<View>()
             for (areaView in areaViewList) {
                 if (resultList.contains(areaView.areaInfo)) {
-                    views.add(areaView)
+                    views.add(areaView.flickerView)
                 }
             }
             if (views.isNotEmpty()) {
