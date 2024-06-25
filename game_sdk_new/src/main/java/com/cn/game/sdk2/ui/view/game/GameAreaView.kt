@@ -2,6 +2,7 @@ package com.cn.game.sdk2.ui.view.game
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
 import android.widget.FrameLayout
@@ -17,7 +18,7 @@ class GameAreaView : FrameLayout {
     lateinit var gameCallback: IGameView
     lateinit var moneyView: MoneyOKView
     lateinit var flickerView:View
-    var tvOdds :TextView ?= null
+    var okViewGravity: Int = Gravity.BOTTOM
     var areaCode: Int = 0
     var areaInfo: Betting?= null
         set(value) {

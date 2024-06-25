@@ -139,14 +139,14 @@
                             android:textColor="@color/g_e8e8e9"
                             android:textSize="15sp" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/txtHomeTime"
-                        android:layout_width="18dp"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        tools:text="30"
-                        android:textColor="@{model.homeTimeColorLD,default=@color/c_62DF57}"
-                        android:textSize="15sp" />
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/txtHomeTime"
+                            android:layout_width="18dp"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            tools:text="30"
+                            android:textColor="@{model.homeTimeColorLD,default=@color/c_62DF57}"
+                            android:textSize="15sp" />
 
                         <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/txtHomeUnit"

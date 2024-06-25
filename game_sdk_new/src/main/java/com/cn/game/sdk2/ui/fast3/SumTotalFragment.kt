@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 /**
  * 总和
  */
-class SumTotalFragment(private val fast3VM: Fast3ViewModel) : BaseFast3Fragment<SumTotalVm, FragmentSumTotalBinding>() {
+class SumTotalFragment(fast3VM: Fast3ViewModel) : BaseFast3Fragment<SumTotalVm, FragmentSumTotalBinding>(fast3VM) {
     override fun initView(savedInstanceState: Bundle?) {
         mDatabind.model = mViewModel
     }

@@ -52,8 +52,7 @@ import java.text.DecimalFormat
 /**
  * 默认
  */
-class DXDSFragment(var fast3VM: Fast3ViewModel) : BaseFast3Fragment<DXDSVm, FragDxdsBinding>() {
-    private var areaViewList: MutableList<GameAreaView> = mutableListOf()
+class DXDSFragment(fast3VM: Fast3ViewModel) : BaseFast3Fragment<DXDSVm, FragDxdsBinding>(fast3VM){
     private var moneyViewList: SparseArray<Pair<TextView, TextView>> = SparseArray()
     private val numAnimators by lazy { mutableListOf<Animator>() }
     private val numAnimSet by lazy { AnimatorSet() }
@@ -66,6 +65,7 @@ class DXDSFragment(var fast3VM: Fast3ViewModel) : BaseFast3Fragment<DXDSVm, Frag
             singleView.areaInfo = mViewModel.bettingArray[3]
             doubleView.areaInfo = mViewModel.bettingArray[4]
             leopardView.areaInfo = mViewModel.bettingArray[5]
+            leopardView.okViewGravity = Gravity.CENTER
             moneyViewList[mViewModel.bettingArray[1].number] = txtBigMoney to txtBigNum
             moneyViewList[mViewModel.bettingArray[2].number] = txtSmallMoney to txtSmallNum
             moneyViewList[mViewModel.bettingArray[3].number] = txtSingleMoney to txtSingleNum
@@ -111,7 +111,7 @@ class DXDSFragment(var fast3VM: Fast3ViewModel) : BaseFast3Fragment<DXDSVm, Frag
 //                                        fast3VM.currentBettingRecordBean = Pair(result,areaView.moneyView)
                                         areaView.moneyView.setShowMoney(result.money)
                                         if (!areaView.moneyView.isAdd()) {
-                                            addMoneyOkView(areaView, x, y, rawY)
+                                            addMoneyOkView(result,areaView, x, y, rawY)
                                         } else {
                                             emitMoneyAnim(areaView, areaView.moneyView)
                                         }
@@ -227,7 +227,7 @@ class DXDSFragment(var fast3VM: Fast3ViewModel) : BaseFast3Fragment<DXDSVm, Frag
     /**
      * 添加moneyView 计算偏移
      */
-    private fun addMoneyOkView(areaView: GameAreaView, x: Float, y: Float, rawY: Float) {
+    private fun addMoneyOkView(recordBean: BettingRecordBean,areaView: GameAreaView, x: Float, y: Float, rawY: Float) {
         areaView.moneyView.let {
             val viewTreeObserver = it.viewTreeObserver
             viewTreeObserver.addOnGlobalLayoutListener(object :
@@ -320,9 +320,10 @@ class DXDSFragment(var fast3VM: Fast3ViewModel) : BaseFast3Fragment<DXDSVm, Frag
             )
             // 将新按钮设置为居底部，方便向上偏移
             // 豹子暂时居中，不做偏移
-            params.gravity =
-                if (areaView.id == R.id.leopard_view) Gravity.CENTER else Gravity.BOTTOM
+            params.gravity = areaView.okViewGravity
             areaView.addView(it, params)
+            recordBean.viewXYTemporary[0] = it.translationX
+            recordBean.viewXYTemporary[1] = it.translationY
         }
     }
 
