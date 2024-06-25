@@ -128,7 +128,7 @@ object PromptSoundPlay {
         if(!isPhoneSilent(context)){
             val endMediaPlayer = MediaPlayer()
             try {
-                endMediaPlayer!!.setDataSource(context, getResourceUri(context, R.raw.sx_common_stop))
+                endMediaPlayer.setDataSource(context, getResourceUri(context, R.raw.sx_common_stop))
                 endMediaPlayer.setOnCompletionListener(OnCompletionListener { mp ->
                     mp.release() // 在播放完成后释放MediaPlayer
                 })
