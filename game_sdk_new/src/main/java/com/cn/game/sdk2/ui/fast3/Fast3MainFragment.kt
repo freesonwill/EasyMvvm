@@ -14,6 +14,7 @@ import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
@@ -620,7 +621,25 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             ivXuya.clickNoRepeat {
                 val map = GameSocketManager.getInstance()?.getGameService()?.againBetting()
                 if(!map.isNullOrEmpty()){
-
+                    map.forEach{
+                        allGameAreaMap[it.key.number]?.let { areaView->
+                            if(!areaView.moneyView.isAdd()){
+                                val params = FrameLayout.LayoutParams(
+                                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                                    ViewGroup.LayoutParams.WRAP_CONTENT
+                                )
+                                params.gravity = areaView.okViewGravity
+                                areaView.moneyView.let { moneyView->
+                                    areaView.addView(moneyView, params)
+                                    moneyView.translationX = it.value.viewXYTemporary[0]
+                                    moneyView.translationY = it.value.viewXYTemporary[1]
+                                    moneyOkViewMap[it.key.number] = moneyView
+                                    moneyView.setShowMoney(it.value.money)
+                                }
+                            }
+                        }
+                    }
+                    //updateanchor
                 }
             }
         }

@@ -31,7 +31,7 @@ data class BettingRecordBean(
     /**
      *  动画相对于控件的位置
      */
-    var viewXYTemporary: IntArray = IntArray(2),
+    var viewXYTemporary: FloatArray = FloatArray(2),
 
     /**
      * * 下注金额
