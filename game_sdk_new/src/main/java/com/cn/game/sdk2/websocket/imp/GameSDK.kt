@@ -55,7 +55,7 @@ object GameSDK : IGameForApp {
         agentName: String, token: String, callback: SDKLoginCallbackListener
     ) {
         mLoginCallback = callback
-        val req = ClientReq.LoginReq.newBuilder().setPlatform(0).setRequestId(0).setVersion("1")
+        val req = ClientReq.LoginReq.newBuilder().setPlatform(6).setRequestId(0).setVersion("1")
             .setNickname("Aubrey Wolff").setAgentName(agentName).setToken(token).build()
         gameMassageManager?.login(req)
     }

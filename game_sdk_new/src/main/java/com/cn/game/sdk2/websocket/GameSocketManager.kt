@@ -55,7 +55,7 @@ class GameSocketManager private constructor() : OnMessageListener {
         GlobalScope.launch {
             withContext(Dispatchers.IO) {
                 client = GameSocketClient(uri) //获得client对象
-                client?.reset()
+                //client?.reset()
                 client?.setOnMessageListener(this@GameSocketManager)
                 gameMassageManager = UIMethodImpl.generate(client!!) //获得接口对象
 
