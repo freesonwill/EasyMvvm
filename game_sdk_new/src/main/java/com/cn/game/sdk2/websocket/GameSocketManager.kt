@@ -57,7 +57,7 @@ class GameSocketManager private constructor() : OnMessageListener {
                 client = GameSocketClient(uri) //获得client对象
                 client?.setOnMessageListener(this@GameSocketManager)
                 gameMassageManager = UIMethodImpl.generate(client!!) //获得接口对象
-                messageViewModel = MessageViewModel(client!!)
+
                 client?.connectionLostTimeout = 0
                 client!!.connectBlocking() //连接socket
                 //心跳发送
@@ -78,6 +78,7 @@ class GameSocketManager private constructor() : OnMessageListener {
                 }
             }
         }
+        messageViewModel = MessageViewModel()
         messageViewModel?.data?.observeForever {
             "observeForever".loge()
             val newUnpack = client?.newUnpack(it)
