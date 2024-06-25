@@ -30,6 +30,7 @@ class MainActivity : AppCompatActivity() {
         btnOpen.setOnClickListener {
             ViewHelper.showFastView(this)
             //MyGameManager.showFastView(this)
+            //92:ZyBmhNCJ   87:MHxIHlYM
             GameSDK.loginGameWithAgentName(
                 "wali-internal", "87:MHxIHlYM", object : SDKLoginCallbackListener {
                     override fun callback(code: Int, message: String?) {

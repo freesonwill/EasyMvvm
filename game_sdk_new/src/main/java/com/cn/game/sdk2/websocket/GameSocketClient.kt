@@ -41,16 +41,21 @@ class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
     }
 
     fun re() {
-         GlobalScope.launch {
+        /* GlobalScope.launch {
             withContext(Dispatchers.Main) {
                 reset()
             }
-        }
+        }*/
         "---尝试重连---".loge()
         reconnect()
     }
 
     override fun onOpen(handshakedata: ServerHandshake?) {
+         GlobalScope.launch {
+            withContext(Dispatchers.Main) {
+                reset()
+            }
+        }
         Log.i(_tag, "GameSocketClient-连接成功！")
     }
 

@@ -78,13 +78,13 @@ Java_com_cn_game_sdk2_websocket_GameSocketClient_newPack(JNIEnv *env,
                                                          jbyteArray data,
                                                          jint dataSize
 ) {
-    LOGD("[jni] dataSize = %d", dataSize);
+    //LOGD("[jni] dataSize = %d", dataSize);
     // 获取CCPayloadCipher对象
     CCPayloadCipher *cipher = getChipper(env, thiz);
     if (cipher == nullptr) {
         return nullptr;
     }
-    LOGD("GetByteArrayElements");
+    //LOGD("GetByteArrayElements");
     jbyte *dataBytes = env->GetByteArrayElements(data, nullptr);
     if (dataBytes == nullptr) {
         return nullptr;
@@ -93,7 +93,7 @@ Java_com_cn_game_sdk2_websocket_GameSocketClient_newPack(JNIEnv *env,
     unsigned char outData[SOCKET_BUFFER];
     memset(outData, 0, SOCKET_BUFFER);
     unsigned short outDataSize = 0;
-    LOGD("cipher->pack");
+    LOGD("cipher->pack : sid=%d,mid=%d",sid,mid);
     cipher->pack(mid, sid, reinterpret_cast<char *>(dataBytes), dataSize,
                  outData, &outDataSize);
 
@@ -105,6 +105,7 @@ Java_com_cn_game_sdk2_websocket_GameSocketClient_newPack(JNIEnv *env,
     }
     jbyte *outDataPtr = reinterpret_cast<jbyte *>(outData);
     env->SetByteArrayRegion(jarrRet, 0, outDataSize, outDataPtr);
+    //LOGD("cipher->pack end");
     return jarrRet;
 }
 extern "C"
@@ -207,7 +208,7 @@ Java_com_cn_game_sdk2_websocket_GameSocketClient_newUnpack(JNIEnv *env, jobject 
     jobjectArray retobjarr = env->NewObjectArray(3, env->FindClass("java/lang/Object"), nullptr);
     env->SetObjectArrayElement(retobjarr, 0, NewInteger(env, mid));
     env->SetObjectArrayElement(retobjarr, 1, NewInteger(env, sid));
-    LOGD("mid=%u, sid=%u", mid, sid);
+    //LOGD("mid=%u, sid=%u", mid, sid);
     env->SetObjectArrayElement(retobjarr, 2, dataBufferArray);
 //    LOGD("before to string");
     // Log the results
