@@ -348,9 +348,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:srcCompat="@drawable/icon_xuya_sel"
-                    android:layout_marginBottom="5dp"
+                    android:layout_marginBottom="45dp"
                     android:layout_marginEnd="5dp"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     app:layout_constraintEnd_toEndOf="@+id/llShowBetList"
                     app:layout_constraintBottom_toBottomOf="@+id/llShowBetList"
                     />
@@ -363,7 +363,7 @@
                     app:srcCompat="@drawable/icon_multiple2_sel"
                     android:layout_marginBottom="5dp"
                     android:layout_marginEnd="5dp"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     app:layout_constraintEnd_toEndOf="@+id/llShowBetList"
                     app:layout_constraintBottom_toBottomOf="@+id/llShowBetList"
                     />

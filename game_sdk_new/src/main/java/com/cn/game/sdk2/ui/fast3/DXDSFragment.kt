@@ -45,8 +45,7 @@ import java.text.DecimalFormat
 /**
  * 默认
  */
-class DXDSFragment(var fast3VM: Fast3ViewModel) : BaseFast3Fragment<DXDSVm, FragDxdsBinding>() {
-    private var areaViewList: MutableList<GameAreaView> = mutableListOf()
+class DXDSFragment(fast3VM: Fast3ViewModel) : BaseFast3Fragment<DXDSVm, FragDxdsBinding>(fast3VM){
     private var moneyViewList: SparseArray<Pair<TextView, TextView>> = SparseArray()
 
     override fun initView(savedInstanceState: Bundle?) {

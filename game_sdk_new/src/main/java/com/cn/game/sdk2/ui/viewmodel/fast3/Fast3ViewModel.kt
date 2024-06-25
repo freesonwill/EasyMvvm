@@ -32,6 +32,7 @@ class Fast3ViewModel : BaseViewModel() {
     var betDeleteClick: UnPeekLiveData<Boolean> = UnPeekLiveData()
 
     var moneyAnimCallback: MoneyAnimCallback? = null
+    var updateAreaViewMap : UnPeekLiveData<Int> = UnPeekLiveData()
 
     //Todo viewModel不应该持有view的任何东西
 //    val currentBettingRecordBeanLD: LiveData<Pair<BettingRecordBean, MoneyOKView>> by lazy { UnPeekLiveData() }

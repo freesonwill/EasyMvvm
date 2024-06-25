@@ -2,18 +2,22 @@ package com.cn.game.sdk2.ui.fast3
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.core.animation.addListener
 import androidx.core.view.isVisible
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.base.BaseGameFragment
+import com.cn.game.sdk2.data.EventConst
 import com.cn.game.sdk2.ui.helper.ViewHelper.isAdd
 import com.cn.game.sdk2.ui.view.MoneyOKView
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
+import com.cn.game.sdk2.utils.FlowBus
 import com.cn.game.sdk2.utils.ext.ViewExt.locationOnScreen
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.websocket.GameSocketManager
@@ -29,9 +33,14 @@ import kotlin.coroutines.suspendCoroutine
  * author       : zhangsan
  * createTime   : 2024/6/21 18:14
  **/
-abstract class BaseFast3Fragment<VM : BaseViewModel, VB : ViewDataBinding> :
+abstract class BaseFast3Fragment<VM : BaseViewModel, VB : ViewDataBinding> (var fast3VM: Fast3ViewModel):
     BaseGameFragment<VM, VB>() {
+    protected var areaViewList: MutableList<GameAreaView> = mutableListOf()
 
+    override fun createObserver() {
+        super.createObserver()
+        FlowBus.with<List<GameAreaView>>(EventConst.UPDATE_ALL_AREA_VIEW).post(fast3VM.viewModelScope,areaViewList)
+    }
     protected fun setLotteryResult(
         resultList: ArrayList<Betting>,
         areaViewList: MutableList<GameAreaView>,
