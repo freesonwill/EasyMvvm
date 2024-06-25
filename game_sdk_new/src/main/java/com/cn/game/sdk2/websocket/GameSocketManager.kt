@@ -111,7 +111,6 @@ class GameSocketManager private constructor() : OnMessageListener {
             closeConnect()
             client = null
             INSTANCE = null
-            mLoginCallback?.callback(1)
         }.onFailure {
             it.printStackTrace()
         }
@@ -127,7 +126,6 @@ class GameSocketManager private constructor() : OnMessageListener {
 
 
     override fun onMessage(mid: Int?, sid: Int?, byteArray: ByteArray) {
-        mLoginCallback?.callback(1)
         convertMessage(mid, sid, byteArray)
     }
 

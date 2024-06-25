@@ -195,7 +195,6 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
     }
 
     override fun enterInfo(enterInfo: GameRes.EnterInfo) {
-        mLoginCallback?.callback(1)
         gameAboutModel.isSitDown(true)
         balance = enterInfo.self.score.toInt()
         gameAboutModel.changeBalance(enterInfo.self.score.toInt())
