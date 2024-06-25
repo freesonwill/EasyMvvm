@@ -15,6 +15,7 @@ import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.ImageView
 import android.widget.RelativeLayout
+import android.widget.Toast
 import androidx.core.animation.addListener
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -128,7 +129,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
     private fun onStartBetting() {
         lifecycleScope.launch {
-            showLoading(getString(R.string.g_home_betting_begin), 2000)
+            ToastUtil.showToastNormal(getString(R.string.g_home_betting_begin),2000)
             //开始语音
             PromptSoundPlay.startGameTip(requireContext())
             mDatabind.txtHomeStatic.text = resources.getString(R.string.g_home_txt_please)
@@ -161,7 +162,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     private fun onStartSetting(roundInfo: RoundInfoBean?) { //开始结算
         lifecycleScope.launch {
             mDatabind.apply {
-                showLoading(getString(R.string.g_home_setting_begin), 1000)
+                ToastUtil.showToastNormal(getString(R.string.g_home_setting_begin), 1000)
                 //关闭
                 PromptSoundPlay.endGameTip(requireContext())
                 mDatabind.txtHomeStatic.text = resources.getString(R.string.g_home_balance)
@@ -222,7 +223,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
      */
     private fun onStartDrawing() {
         lifecycleScope.launch {
-            showLoading(getString(R.string.g_home_drawing_begin), 1000)
+            ToastUtil.showToastNormal(getString(R.string.g_home_drawing_begin), 1000)
             mDatabind.apply {
                 txtHomeStatic.text = resources.getString(R.string.g_home_drawing_being)
             }
@@ -306,7 +307,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         gameAboutModel.isBettingSuccess.observe(viewLifecycleOwner) { isSuccess ->
             if (!isSuccess) {
                 //失败时显示delete ok按钮
-                ToastUtil.showToastNormal(requireContext(), "网络连接失败")
+                ToastUtil.showToastNormal("网络连接失败")
                 anchorMoneyView?.showTop()
             }
         }

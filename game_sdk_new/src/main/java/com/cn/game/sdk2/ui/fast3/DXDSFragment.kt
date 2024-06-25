@@ -22,6 +22,7 @@ import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.view.game.IGameView
 import com.cn.game.sdk2.ui.viewmodel.fast3.DXDSVm
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
+import com.cn.game.sdk2.utils.ToastUtil
 import com.cn.game.sdk2.utils.ext.ViewExt.locationOnScreen
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.utils.tool.measureView
@@ -88,7 +89,6 @@ class DXDSFragment(var fast3VM: Fast3ViewModel) : BaseFast3Fragment<DXDSVm, Frag
                 override fun onLocationClick(x: Float, y: Float, rawX: Float, rawY: Float) {
                     //处理点击事件
                     //先判断余额是否够这次 并且扣取钱
-                    //if( homeXPopupDialog.isCanBetting()&&MyGameManager.isClickOperation&&PromptSoundPlay.handleClick()){
                     //todo:整个流程转移至FastMainFragment
                     if (fast3VM.isClickOperation && PromptSoundPlay.handleClick()) {
                         GameSocketManager.getInstance()?.getGameService()?.apply {
@@ -108,6 +108,8 @@ class DXDSFragment(var fast3VM: Fast3ViewModel) : BaseFast3Fragment<DXDSVm, Frag
                                             emitMoneyAnim(areaView, areaView.moneyView)
                                         }
                                     }
+                                } else {
+                                    ToastUtil.showToastWarning(getString(R.string.money_insufficient))
                                 }
                             }
                         }
@@ -124,6 +126,7 @@ class DXDSFragment(var fast3VM: Fast3ViewModel) : BaseFast3Fragment<DXDSVm, Frag
         updateAreaBetInfo(mViewModel.syncAreaBetInfoLD.value)
         //testUpdateAareaBetInfo()
     }
+
     private fun testUpdateAareaBetInfo() {
         lifecycleScope.launch {
             delay(1000)
@@ -143,7 +146,7 @@ class DXDSFragment(var fast3VM: Fast3ViewModel) : BaseFast3Fragment<DXDSVm, Frag
         list.forEach { item ->
             val pair = moneyViewList.get(item.areaCode.number)
             if (pair != null) {
-                pair.first.text = DecimalFormat("#.##").format(item.betScore/100f).toString()
+                pair.first.text = DecimalFormat("#.##").format(item.betScore / 100f).toString()
                 pair.second.text = item.userCount.toString()
             }
         }

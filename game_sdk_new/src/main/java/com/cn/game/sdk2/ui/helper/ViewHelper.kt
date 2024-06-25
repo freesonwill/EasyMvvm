@@ -41,7 +41,7 @@ object ViewHelper {
     private var homeXPopupDialog: HomeXPopupDialog? = null
 
     fun showFastView(context: Context) {
-        ToastUtil.showToastNormal(context,"开始押注", gravity = Gravity.BOTTOM)
+        //ToastUtil.showToastNormal(context,"开始押注", gravity = Gravity.BOTTOM)
         EasyFloat.with(context).setSidePattern(SidePattern.DEFAULT)
             .setImmersionStatusBar(true)
             .setTag(TAG_FASTVIEW)
