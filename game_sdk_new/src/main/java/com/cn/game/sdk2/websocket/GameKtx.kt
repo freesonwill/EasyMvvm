@@ -50,6 +50,7 @@ import com.cn.game.sdk2.websocket.interfaces.SDKEnterLiveCallbackListener
 import com.cn.game.sdk2.websocket.interfaces.SDKLeaveLiveCallbackListener
 import com.cn.game.sdk2.websocket.interfaces.SDKLoginCallbackListener
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
+import com.cn.game.sdk2.websocket.viewmodel.MessageViewModel
 
 /**
  * socket-url
@@ -68,6 +69,8 @@ var balance: Int = 2000000
 var miniGameId: Int = 0
 
 var gameAboutModel = GameAboutModel()
+
+var messageViewModel: MessageViewModel? = null
 
 /**
  * 是否能下注
@@ -341,7 +344,7 @@ fun List<Int>.isBig(): Boolean {
 }
 
 fun List<Int>.isDouble(): Boolean {
-   return sum() % 2 == 0
+    return sum() % 2 == 0
 }
 
 fun List<Int>.countSingle(): HashMap<Int, Int> {
