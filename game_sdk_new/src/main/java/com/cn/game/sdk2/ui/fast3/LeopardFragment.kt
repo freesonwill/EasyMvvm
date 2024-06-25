@@ -98,7 +98,7 @@ class LeopardFragment(fast3VM:Fast3ViewModel):BaseFast3Fragment<LeopardVm,Fragme
                 ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
                     // 确保只监听一次
-                    viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    it.viewTreeObserver.removeOnGlobalLayoutListener(this)
                     emitMoneyAnim(areaView, it, isNewAdd = true)
                 }
             })

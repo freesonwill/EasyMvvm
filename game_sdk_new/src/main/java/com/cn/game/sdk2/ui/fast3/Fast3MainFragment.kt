@@ -125,7 +125,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     override fun initData() {
         //获取当前余额
         mDatabind.txtCurrentMoney.text = mViewModel.currentMoney
-        mDatabind.txtHomeTime.text = ""+mViewModel.homeTime.value
+        mDatabind.txtHomeTime.text = "" + mViewModel.homeTime.value
         lifecycleScope.launchWhenResumed {
             //开始下注
             Log.d(TAG, "initData startBetting")
@@ -135,13 +135,14 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
     private fun onStartBetting() {
         lifecycleScope.launch {
-            ToastUtil.showToastNormal(getString(R.string.g_home_betting_begin),2000)
+            ToastUtil.showToastNormal(getString(R.string.g_home_betting_begin), 2000)
             //开始语音
             PromptSoundPlay.startGameTip(requireContext())
             mDatabind.txtHomeStatic.text = resources.getString(R.string.g_home_txt_please)
             //下注闪动动画
             suspendCoroutine { continuation ->
-                val childAlphaAnimator = ObjectAnimator.ofFloat(mDatabind.llShowBetList, "alpha", 0f, 1f)
+                val childAlphaAnimator =
+                    ObjectAnimator.ofFloat(mDatabind.llShowBetList, "alpha", 0f, 1f)
                 childAlphaAnimator.duration = 200 // 设置渐隐动画持续时间
                 val animatorSet = AnimatorSet()
                 animatorSet.play(childAlphaAnimator)
@@ -160,6 +161,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 })
                 animatorSet.start()
             }
+            //重置注区筹码
+            notifyMoneyOkView(null)
             //倒计时
             //mViewModel.startCountDown(gameAboutModel.countDown)
         }
@@ -173,7 +176,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 PromptSoundPlay.endGameTip(requireContext())
                 mDatabind.txtHomeStatic.text = resources.getString(R.string.g_home_balance)
                 suspendCoroutine { continuation ->
-                    val childAlphaAnimator = ObjectAnimator.ofFloat(mDatabind.llShowBetList, "alpha", 1f, 0f)
+                    val childAlphaAnimator =
+                        ObjectAnimator.ofFloat(mDatabind.llShowBetList, "alpha", 1f, 0f)
                     childAlphaAnimator.duration = 0 // 设置渐隐动画持续时间
                     val animatorSet = AnimatorSet()
                     animatorSet.play(childAlphaAnimator)
@@ -241,12 +245,12 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
      * 播放中奖lottie动画
      */
     @SuppressLint("SetTextI18n")
-    private fun startWinLottieAnim(endCallBack: (() -> Unit)?){
+    private fun startWinLottieAnim(endCallBack: (() -> Unit)?) {
         mDatabind.apply {
             groupWinLottie.isVisible = true
 //            txtWinMoney.text = "$${gameAboutModel.netIncome}"
             txtWinMoney.text = "$100000001"
-            lottieAnimView.addAnimatorListener(object :Animator.AnimatorListener{
+            lottieAnimView.addAnimatorListener(object : Animator.AnimatorListener {
                 override fun onAnimationStart(animation: Animator) {
                 }
 
@@ -276,11 +280,12 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
     override fun createObserver() {
         Log.i(TAG, "createObserver------------>")
-        FlowBus.with<List<GameAreaView>>(EventConst.UPDATE_ALL_AREA_VIEW).register(viewLifecycleOwner){list->
-            list.forEach{
-                allGameAreaMap[it.areaCode] = it
+        FlowBus.with<List<GameAreaView>>(EventConst.UPDATE_ALL_AREA_VIEW)
+            .register(viewLifecycleOwner) { list ->
+                list.forEach {
+                    allGameAreaMap[it.areaCode] = it
+                }
             }
-        }
 
         mViewModel.currentMoneyLD.observe(viewLifecycleOwner) { balance ->
             mDatabind.txtCurrentMoney.text = balance
@@ -299,7 +304,13 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             }
         }
         mViewModel.moneyAnimCallback = object : Fast3ViewModel.MoneyAnimCallback {
-            override fun startAnim(x: Float, y: Float, speed: Long, areaView: GameAreaView, endCallBack: (() -> Unit)?) {
+            override fun startAnim(
+                x: Float,
+                y: Float,
+                speed: Long,
+                areaView: GameAreaView,
+                endCallBack: (() -> Unit)?
+            ) {
                 tryMoneyAnimation(x, y, speed, areaView, endCallBack)
             }
         }
@@ -398,17 +409,16 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             }
             moneyOkViewMap.clear()
         } else {
-            list.forEach {
-                if (moneyOkViewMap.containsKey(it.bettingArea.number)) {
-                    moneyOkViewMap[it.bettingArea.number]?.setShowMoney(it.money)
-                } else {
-                    moneyOkViewMap[it.bettingArea.number]?.let { moneyView ->
-                        if (moneyView.isAdd()) {
-                            val parent = moneyView.parent as ViewGroup
-                            parent.removeView(moneyView)
+            list.forEach { bettingBean ->
+                moneyOkViewMap.forEach {
+                    if (bettingBean.bettingArea.number == it.key) {
+                        it.value.setShowMoney(bettingBean.money)
+                    } else {
+                        if (it.value.isAdd()) {
+                            val parent = it.value.parent as ViewGroup
+                            parent.removeView(it.value)
                         }
                     }
-                    moneyOkViewMap.remove(it.bettingArea.number)
                 }
             }
         }
@@ -594,37 +604,40 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             }
             //加倍
             ivMultiple2.clickNoRepeat {
-                GameSocketManager.getInstance()?.getGameService()?.doubleBetting{isMoneyEnough, map ->
-                    if (isMoneyEnough){
-                        if (!map.isNullOrEmpty()) {
-                            map.forEach {
-                                it.value.let { record ->
-                                    if(moneyOkViewMap.containsKey(record.bettingArea.number)){
-                                        moneyOkViewMap[record.bettingArea.number]?.setShowMoney(record.money)
-                                    }else{
-                                        //addview
+                GameSocketManager.getInstance()?.getGameService()
+                    ?.doubleBetting { isMoneyEnough, map ->
+                        if (isMoneyEnough) {
+                            if (!map.isNullOrEmpty()) {
+                                map.forEach {
+                                    it.value.let { record ->
+                                        if (moneyOkViewMap.containsKey(record.bettingArea.number)) {
+                                            moneyOkViewMap[record.bettingArea.number]?.setShowMoney(
+                                                record.money
+                                            )
+                                        } else {
+                                            //addview
+                                        }
                                     }
                                 }
+                            } else {
+                                //余额不足
                             }
-                        } else {
-                            //余额不足
                         }
                     }
-                }
             }
             //续压
             ivXuya.clickNoRepeat {
                 val map = GameSocketManager.getInstance()?.getGameService()?.againBetting()
-                if(!map.isNullOrEmpty()){
-                    map.forEach{
-                        allGameAreaMap[it.key.number]?.let { areaView->
-                            if(!areaView.moneyView.isAdd()){
+                if (!map.isNullOrEmpty()) {
+                    map.forEach {
+                        allGameAreaMap[it.key.number]?.let { areaView ->
+                            if (!areaView.moneyView.isAdd()) {
                                 val params = FrameLayout.LayoutParams(
                                     ViewGroup.LayoutParams.WRAP_CONTENT,
                                     ViewGroup.LayoutParams.WRAP_CONTENT
                                 )
                                 params.gravity = areaView.okViewGravity
-                                areaView.moneyView.let { moneyView->
+                                areaView.moneyView.let { moneyView ->
                                     areaView.addView(moneyView, params)
                                     moneyView.translationX = it.value.viewXYTemporary[0]
                                     moneyView.translationY = it.value.viewXYTemporary[1]
