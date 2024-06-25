@@ -3,6 +3,7 @@ package com.xcjh.app.websocket
 import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
+import com.xcjh.app.utils.getDomain
 import org.java_websocket.client.WebSocketClient
 import java.net.Socket
 import java.security.SecureRandom
@@ -68,6 +69,7 @@ class MyWsClientCert {
             ssl.init(null, trustAllCerts, SecureRandom())
             val sslSocketFactory = ssl.socketFactory
             client.setSocketFactory(sslSocketFactory)
+
         } catch (e: Exception) {
         }
     }

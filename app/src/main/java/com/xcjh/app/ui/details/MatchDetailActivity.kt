@@ -924,13 +924,14 @@ class MatchDetailActivity :
             if (CacheUtil.isLogin()) {
                 mViewModel.addLiveShare(anchor?.liveId)
             }
-            ApiComService.SHARE_IP + "#/roomDetail?id=${matchId}&liveId=${anchor?.liveId}&type=${matchType}&userId=${anchor?.userId}"
+           "#/roomDetail?id=${matchId}&liveId=${anchor?.liveId}&type=${matchType}&userId=${anchor?.userId}"
         } else {
-            ApiComService.SHARE_IP + "#/roomDetail?id=${matchId}&type=${matchType}&pureFlow=true"
+           "#/roomDetail?id=${matchId}&type=${matchType}&pureFlow=true"
         }
         /*  copyToClipboard(url)
           myToast(getString(R.string.copy_success))*/
-        shareText(this, url)
+//        shareText(this, url)
+        shareUrl(this, url)
     }
 
     private fun setBaseListener() {

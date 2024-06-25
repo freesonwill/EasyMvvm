@@ -52,6 +52,8 @@ import com.xcjh.app.R
 import com.xcjh.app.adapter.ViewPager2Adapter
 import com.xcjh.app.databinding.LayoutEmptyBinding
 import com.xcjh.app.databinding.LayoutEmptyNoscrollBinding
+import com.xcjh.app.enums.DomainNameEnums
+import com.xcjh.app.net.ApiComService
 import com.xcjh.app.ui.login.LoginActivity
 import com.xcjh.app.view.callback.EmptyCallback
 import com.xcjh.app.view.callback.LoadingCallback
@@ -912,4 +914,54 @@ fun loadServiceInit(view: View, callback: () -> Unit): LoadService<Any> {
     }
     loadsir.showSuccess()
     return loadsir
+}
+
+
+
+fun shareUrl(context: Context, shareText: String?) {
+    var url:String=""
+    url = when (ApiComService.SERVER_URL) {
+        "http://192.168.101.15:6003/apis/"->{
+            "http://192.168.101.180:1820/?m=Xe3wxn/$shareText"
+        }
+
+        "https://app.cbd246.com/apis/"->{
+            "https://app.cbd246.com/?m=HageRQ/$shareText"
+        }
+
+        "https://app.wyjxx.cn/apis/"->{
+            "https://appuser.wyjxx.cn/$shareText"
+        }
+
+        else ->{
+            "https://app.gdhsbp.cn/$shareText"
+        }
+
+    }
+    val intent = Intent(Intent.ACTION_SEND)
+    intent.type = "text/plain"
+    intent.putExtra(Intent.EXTRA_TEXT, url)
+    context.startActivity(Intent.createChooser(intent, "分享"))
+}
+
+fun getDomain():String{
+    var domain:String=""
+    domain = when (ApiComService.SERVER_URL) {
+        "http://192.168.101.15:6003/apis/"->{
+            DomainNameEnums.TestDomainName.type
+        }
+
+        "https://app.cbd246.com/apis/"->{
+            DomainNameEnums.PreDomainName.type
+        }
+
+        "https://app.wyjxx.cn/apis/"->{
+            DomainNameEnums.DomainName.type
+        }
+
+        else ->{
+            DomainNameEnums.NewDomainName.type
+        }
+    }
+    return domain
 }

@@ -13,6 +13,7 @@ import com.xcjh.app.appViewModel
 import com.xcjh.app.bean.BeingLiveBean
 import com.xcjh.app.net.ApiComService.Companion.WEB_SOCKET_URL
 import com.xcjh.app.utils.CacheUtil
+import com.xcjh.app.utils.getDomain
 import com.xcjh.app.utils.onWsUserLogin
 import com.xcjh.app.websocket.bean.FeedSystemNoticeBean
 import com.xcjh.app.websocket.bean.LiveStatus
@@ -544,11 +545,11 @@ class MyWsManager private constructor(private val mContext: Context) {
             "onReceive====------------  $msg".loge()
 
             try {
-                parsingServiceLogin(msg)
+//                parsingServiceLogin(msg)
             } catch (e: Exception) {
                 "======onReceive===webSocket解析异常------------  ${e.message}".loge()
             }
-//            parsingServiceLogin(msg)
+            parsingServiceLogin(msg)
         }
     }
     /**
@@ -612,6 +613,7 @@ class MyWsManager private constructor(private val mContext: Context) {
 
             }
         }
+
         doRegisterReceiver()
         connect()
     }
@@ -624,6 +626,7 @@ class MyWsManager private constructor(private val mContext: Context) {
             scheduledExecutorService!!.schedule({
                 try {
                     client?.connectionLostTimeout = 0
+                    client?.addHeader("domain", getDomain())
                     //connectBlocking多出一个等待操作，会先连接再发送，否则未连接发送会报错
                     client!!.connectBlocking()
                     //client!!.connect()

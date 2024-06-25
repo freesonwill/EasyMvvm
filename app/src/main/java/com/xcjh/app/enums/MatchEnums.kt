@@ -6,6 +6,11 @@ package com.xcjh.app.enums
  *   1 未开赛;2 第一节;3 第一节完;4 第二节;5 第二节完;6 第三节;7 第三节完;8 第四节;9 加时;10 完场;11 中断;12 取消;13 延期;14 腰斩;15 待定;
  */
 enum class BasketballStateEnum(var state : Int) {
+
+    /**
+     * 0 比赛异常
+     */
+    Anomaly(0),
     /**
      * 1未开赛
      */
@@ -102,6 +107,10 @@ enum class SoccerStateEnum(var state : Int){
      *5 加时赛
      */
     Overtime(5),
+    /**
+     *5 加时赛(弃用)
+     */
+    OvertimeAbandoned(6),
     /**
      *7 点球决战
      */

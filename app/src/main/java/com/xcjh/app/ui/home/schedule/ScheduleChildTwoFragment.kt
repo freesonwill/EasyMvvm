@@ -30,6 +30,8 @@ import com.xcjh.app.bean.PostSchMatchListBean
 import com.xcjh.app.databinding.FrScheduletwoBinding
 import com.xcjh.app.databinding.ItemJsBinding
 import com.xcjh.app.databinding.ItemSchAllBinding
+import com.xcjh.app.enums.BasketballStateEnum
+import com.xcjh.app.enums.SoccerStateEnum
 import com.xcjh.app.ui.details.MatchDetailActivity
 import com.xcjh.app.utils.SoundManager
 import com.xcjh.app.utils.TimeUtil
@@ -224,7 +226,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                     var time = TimeUtil.getDayOfWeek(item!!.matchTime.toLong(), context)
                     var time1 = TimeUtil.timeStamp2Date(item!!.matchTime.toLong(), null)
                     if (item.focus) {
-                        LogUtils.d("收藏了"+bindingAdapterPosition)
+
                         binding.ivsc.setBackgroundResource(R.drawable.sc_shoucang_icon2)
                     } else {
                         binding.ivsc.setBackgroundResource(R.drawable.sc_shoucang_icon1)
@@ -297,13 +299,13 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                         binding.ivtype.setBackgroundResource(R.drawable.football)
 
                         when (item.status) {
-                            "0" -> {
+                            SoccerStateEnum.MatchAbnormal.state.toString()-> {
                                 binding.txtMatchAnimation.visibility = View.GONE
                                 binding.tvstatus.visibility = View.GONE
                                 //  clearAnimation(binding.txtMatchAnimation)
                             }
 
-                            "1" -> {
+                            SoccerStateEnum.NotStart.state.toString() -> {
                                 binding.tvvs.text = "VS"
                                 binding.txtMatchAnimation.visibility = View.GONE
                                 binding.tvstatus.visibility = View.VISIBLE
@@ -324,7 +326,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                 clearAnimation(binding.txtMatchAnimation)
                             }
 
-                            "2" -> {
+                            SoccerStateEnum.FirstHalf.state.toString()-> {
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.txtMatchAnimation.visibility = View.VISIBLE
                                 binding.tvvs.text = item.homeScore + "-" + item.awayScore
@@ -350,7 +352,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                 initAnimation(binding.txtMatchAnimation)
                             }
 
-                            "3" -> {
+                            SoccerStateEnum.Midfield.state.toString() -> {
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.txtMatchAnimation.visibility = View.VISIBLE
                                 binding.tvvs.text = item.homeScore + "-" + item.awayScore
@@ -372,7 +374,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                 initAnimation(binding.txtMatchAnimation)
                             }
 
-                            "4" -> {
+                            SoccerStateEnum.SecondHalf.state.toString() -> {
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.txtMatchAnimation.visibility = View.VISIBLE
                                 binding.tvvs.text = item.homeScore + "-" + item.awayScore
@@ -397,7 +399,8 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                 initAnimation(binding.txtMatchAnimation)
                             }
 
-                            "5", "6" -> {
+                            SoccerStateEnum.Overtime.state.toString() ,
+                            SoccerStateEnum.OvertimeAbandoned.state.toString() -> {
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.txtMatchAnimation.visibility = View.VISIBLE
                                 binding.tvvs.text = item.homeScore + "-" + item.awayScore
@@ -420,7 +423,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
                             }
 
-                            "7" -> {
+                            SoccerStateEnum.PenaltyKick.state.toString() -> {
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.txtMatchAnimation.visibility = View.VISIBLE
                                 binding.tvvs.text = item.homeScore + "-" + item.awayScore
@@ -443,7 +446,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
                             }
 
-                            "8" -> {
+                            SoccerStateEnum.Completion.state.toString() -> {
                                 binding.txtMatchAnimation.visibility = View.GONE
                                 binding.tvvs.text = item.homeScore + "-" + item.awayScore
                                 binding.tvstatus.visibility = View.VISIBLE
@@ -465,7 +468,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
                             }
 
-                            "9" -> {
+                            SoccerStateEnum.PutOff.state.toString()-> {
 
                                 binding.txtMatchAnimation.visibility = View.GONE
                                 binding.tvvs.text = "VS"
@@ -488,7 +491,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
                             }
 
-                            "10" -> {
+                            SoccerStateEnum.Interrupt.state.toString() -> {
                                 binding.txtMatchAnimation.visibility = View.GONE
                                 binding.tvvs.text = "VS"
                                 binding.tvstatus.visibility = View.VISIBLE
@@ -510,7 +513,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
                             }
 
-                            "11" -> {
+                            SoccerStateEnum.WaistChopping.state.toString() -> {
                                 binding.txtMatchAnimation.visibility = View.GONE
                                 binding.tvvs.text = "VS"
                                 binding.tvstatus.visibility = View.VISIBLE
@@ -532,7 +535,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                 clearAnimation(binding.txtMatchAnimation)
                             }
 
-                            "12" -> {
+                            SoccerStateEnum.Cancel.state.toString()  -> {
                                 binding.txtMatchAnimation.visibility = View.GONE
                                 binding.tvvs.text = "VS"
                                 binding.tvstatus.visibility = View.VISIBLE
@@ -553,7 +556,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                 clearAnimation(binding.txtMatchAnimation)
                             }
 
-                            "13" -> {
+                            SoccerStateEnum.Undetermined.state.toString() -> {
                                 binding.txtMatchAnimation.visibility = View.GONE
                                 binding.tvvs.text = "VS"
                                 binding.tvstatus.visibility = View.VISIBLE
@@ -575,7 +578,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                             }
 
                             else -> {
-                                LogUtils.d("走这里了 哈哈哈")
+
                                 binding.txtMatchAnimation.visibility = View.GONE
                                 binding.tvstatus.visibility = View.VISIBLE
                                 binding.tvvs.text = "VS"
@@ -612,13 +615,13 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                             .placeholder(R.drawable.def_basketball).into(binding.tvflagRight)
                         binding.ivtype.setBackgroundResource(R.drawable.basketball)
                         when (item.status) {
-                            "0" -> {
+                            BasketballStateEnum.Anomaly.state.toString()-> {
                                 binding.txtMatchAnimation.visibility = View.GONE
                                 binding.tvstatus.visibility = View.GONE
                                 clearAnimation(binding.txtMatchAnimation)
                             }
 
-                            "1" -> {
+                            BasketballStateEnum.NotStart.state.toString() -> {
                                 binding.tvvs.text = "VS"
                                 binding.txtMatchAnimation.visibility = View.GONE
                                 binding.tvstatus.visibility = View.VISIBLE
@@ -640,7 +643,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
                             }
 
-                            "2" -> {
+                            BasketballStateEnum.SectionOneSection.state.toString() -> {
                                 binding.txtMatchAnimation.visibility = View.VISIBLE
                                 binding.tvvs.text = item.awayScore + "-" + item.homeScore
                                 binding.tvstatus.visibility = View.VISIBLE
@@ -665,7 +668,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
                             }
 
-                            "3" -> {
+                            BasketballStateEnum.SectionOneSectionEnd.state.toString()-> {
                                 binding.txtMatchAnimation.visibility = View.VISIBLE
                                 binding.tvvs.text = item.awayScore + "-" + item.homeScore
                                 binding.tvstatus.visibility = View.VISIBLE
@@ -691,7 +694,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
                             }
 
-                            "4" -> {
+                            BasketballStateEnum.SectionTwoSection.state.toString()-> {
                                 binding.txtMatchAnimation.visibility = View.VISIBLE
                                 binding.tvvs.text = item.awayScore + "-" + item.homeScore
                                 binding.tvstatus.visibility = View.VISIBLE
@@ -716,7 +719,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
                             }
 
-                            "5" -> {
+                            BasketballStateEnum.SectionTwoSectionEnd.state.toString() -> {
                                 binding.txtMatchAnimation.visibility = View.VISIBLE
                                 binding.tvvs.text = item.awayScore + "-" + item.homeScore
                                 binding.tvstatus.visibility = View.VISIBLE
@@ -743,7 +746,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
                             }
 
-                            "6" -> {
+                            BasketballStateEnum.SectionThreeSection.state.toString() -> {
                                 binding.txtMatchAnimation.visibility = View.VISIBLE
                                 binding.tvvs.text = item.awayScore + "-" + item.homeScore
                                 binding.tvstatus.visibility = View.VISIBLE
@@ -768,7 +771,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
                             }
 
-                            "7" -> {
+                            BasketballStateEnum.SectionThreeSectionEnd.state.toString() -> {
                                 binding.txtMatchAnimation.visibility = View.VISIBLE
                                 binding.tvvs.text = item.awayScore + "-" + item.homeScore
                                 binding.tvstatus.visibility = View.VISIBLE
@@ -794,7 +797,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
                             }
 
-                            "8" -> {
+                            BasketballStateEnum.SectionFourSection.state.toString()-> {
                                 binding.txtMatchAnimation.visibility = View.VISIBLE
                                 binding.tvvs.text = item.awayScore + "-" + item.homeScore
                                 binding.tvstatus.visibility = View.VISIBLE
@@ -818,7 +821,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                 initAnimation(binding.txtMatchAnimation)
                             }
 
-                            "9" -> {
+                            BasketballStateEnum.Overtime.state.toString()-> {
                                 binding.txtMatchAnimation.visibility = View.VISIBLE
                                 binding.tvvs.text = item.awayScore + "-" + item.homeScore
                                 binding.tvstatus.visibility = View.VISIBLE
@@ -839,7 +842,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                 initAnimation(binding.txtMatchAnimation)
                             }
 
-                            "10" -> {
+                            BasketballStateEnum.Completion.state.toString() -> {
                                 binding.txtMatchAnimation.visibility = View.GONE
                                 binding.tvvs.text = item.awayScore + "-" + item.homeScore
                                 binding.tvstatus.visibility = View.VISIBLE
@@ -861,7 +864,11 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
                             }
 
-                            "11", "12", "13", "14", "15" -> {
+                            BasketballStateEnum.Interrupt.state.toString() ,
+                            BasketballStateEnum.Cancel.state.toString(),
+                            BasketballStateEnum.Delay.state.toString(),
+                            BasketballStateEnum.WaistChopping.state.toString(),
+                            BasketballStateEnum.Undetermined.state.toString() -> {
                                 binding.txtMatchAnimation.visibility = View.GONE
                                 clearAnimation(binding.txtMatchAnimation)
                                 binding.tvvs.text = "VS"
@@ -879,27 +886,27 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                                     )
                                 )
                                 when (item.status) {
-                                    "11" -> {
+                                    BasketballStateEnum.Interrupt.state.toString()-> {
                                         binding.tvstatus.text =
                                             context.resources.getString(R.string.main_txt_zd)
                                     }
 
-                                    "12" -> {
+                                    BasketballStateEnum.Cancel.state.toString() -> {
                                         binding.tvstatus.text =
                                             context.resources.getString(R.string.main_txt_qx)
                                     }
 
-                                    "13" -> {
+                                    BasketballStateEnum.Delay.state.toString()-> {
                                         binding.tvstatus.text =
                                             context.resources.getString(R.string.main_txt_yq)
                                     }
 
-                                    "14" -> {
+                                    BasketballStateEnum.WaistChopping.state.toString() -> {
                                         binding.tvstatus.text =
                                             context.resources.getString(R.string.main_txt_yz)
                                     }
 
-                                    "15" -> {
+                                    BasketballStateEnum.Undetermined.state.toString() -> {
                                         binding.tvstatus.text =
                                             context.resources.getString(R.string.main_txt_dd)
                                     }

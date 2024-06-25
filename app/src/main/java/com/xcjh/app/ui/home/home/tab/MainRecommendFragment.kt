@@ -583,7 +583,7 @@ class MainRecommendFragment : BaseFragment<MainRecommendVm, FragmentMainRecommen
                                         //比赛类型：1：足球；2：篮球,可用值:1,2
                                         binding.txtMatchTime.visibility=View.GONE
                                         binding.txtMatchIsStart.visibility=View.GONE
-                                        if(matchBean.matchType.equals("2")){
+                                        if(matchBean.matchType.equals("2")){//比赛类型：1：足球；2：篮球,可用值:1,2
                                             binding.txtMatchStatus.visibility=View.GONE
                                             Glide.with(requireContext())
                                                 .load(matchBean.awayLogo) // 替换为您要加载的图片 URL

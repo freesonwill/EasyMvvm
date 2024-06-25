@@ -219,12 +219,14 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
                         mDatabind.rcvRecommend.mutable.clear()
                     }
 
-
-//                        mDatabind.rcvRecommend.addModels(newList)
                         mDatabind.rcvRecommend.addModels(newLive)
                         mDatabind.rcvRecommend.addModels(newPopular)
                         mDatabind.rcvRecommend.addModels(newPure)
-
+                        if(mDatabind.rcvRecommend.models!=null&& mDatabind.rcvRecommend.models!!.isNotEmpty()){
+                            mDatabind.state.showContent()
+                        }else{
+                            mDatabind.state.showEmpty()
+                        }
 
                     mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
 
@@ -327,8 +329,11 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
                         mDatabind.rcvRecommend.addModels(newLive)
                         mDatabind.rcvRecommend.addModels(newPopular)
                         mDatabind.rcvRecommend.addModels(newPure)
-//                        mDatabind.rcvRecommend.addModels(list)
-
+                    if(mDatabind.rcvRecommend.models!=null&& mDatabind.rcvRecommend.models!!.isNotEmpty()){
+                        mDatabind.state.showContent()
+                    }else{
+                        mDatabind.state.showEmpty()
+                    }
                     mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
 
                 }
@@ -344,12 +349,19 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
                                     if((mDatabind.rcvRecommend.mutable[i] as BeingLiveBean).userId.equals(bean.anchorId)){
                                         mDatabind.rcvRecommend.mutable.removeAt(i)
                                         mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
-//                                        mViewModel.getNowLive(true,type = type.toString())
+
                                         break
                                     }
                                 }
 
                     }
+                }
+
+
+                if(mDatabind.rcvRecommend.models!=null&& mDatabind.rcvRecommend.models!!.isNotEmpty()){
+                    mDatabind.state.showContent()
+                }else{
+                    mDatabind.state.showEmpty()
                 }
             }
 
@@ -384,7 +396,11 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
 
                 }
 
-
+                if(mDatabind.rcvRecommend.models!=null&& mDatabind.rcvRecommend.models!!.isNotEmpty()){
+                    mDatabind.state.showContent()
+                }else{
+                    mDatabind.state.showEmpty()
+                }
 
             }
 
@@ -423,43 +439,7 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
                 when (itemViewType) {
                     R.layout.item_main_live_list -> {
                         setLiveMatchItem()
-//                        var bindingItem=getBinding<ItemMainLiveListBinding>()
-//                        var  bean=_data as BeingLiveBean
-//                        Glide.with(context)
-//                            .load(bean.titlePage) // 替换为您要加载的图片 URL
-//                            .error(R.drawable.main_top_load)
-//                            .placeholder(R.drawable.main_top_load)
-//                            .into(bindingItem.ivLiveBe)
-//                        Glide.with(context)
-//                            .load(bean.userLogo) // 替换为您要加载的图片 URL
-//                            .error(R.drawable.default_anchor_icon)
-//                            .placeholder(R.drawable.default_anchor_icon)
-//                            .into(bindingItem.ivLiveHead)
-//                        bindingItem.txtLiveName.text=bean.nickName
-//                        //比赛类型 1足球，2篮球,可用值:1,2
-//                        if(type==1){
-//                            bindingItem.txtLiveTeam.text="${bean.homeTeamName}VS${bean.awayTeamName}"
-//                        }else{
-//                            bindingItem.txtLiveTeam.text="${bean.awayTeamName }VS${bean.homeTeamName}"
-//                        }
-//
-//
-//                        bindingItem.txtLiveCompetition.text=bean.competitionName
-//                        if(bean.hotValue<=9999){
-//                            bindingItem.txtLiveHeat.text="${bean.hotValue}"
-//                        }else{
-//                            bindingItem.txtLiveHeat.text="9999+"
-//                        }
-//
-//                        if(layoutPosition%2==0){
-//                            val layoutParams = bindingItem.llLiveSpacing.layoutParams as ViewGroup.MarginLayoutParams
-//                            layoutParams.setMargins(0, 0, context.dp2px(4), context.dp2px(8))
-//                            bindingItem.llLiveSpacing.layoutParams =layoutParams
-//                        }else{
-//                            val layoutParams = bindingItem.llLiveSpacing.layoutParams as ViewGroup.MarginLayoutParams
-//                            layoutParams.setMargins(context.dp2px(4), 0, 0, context.dp2px(8))
-//                            bindingItem.llLiveSpacing.layoutParams =layoutParams
-//                        }
+
                     }
 
 

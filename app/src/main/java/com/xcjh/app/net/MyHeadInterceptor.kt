@@ -3,9 +3,11 @@ package com.xcjh.app.net
 import android.util.Log
 import com.hjq.language.LocaleContract
 import com.hjq.language.MultiLanguages
+import com.xcjh.app.enums.DomainNameEnums
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.utils.getUUID
 import com.xcjh.app.utils.CacheUtil
+import com.xcjh.app.utils.getDomain
 import com.xcjh.base_lib.appContext
 import okhttp3.Interceptor
 import okhttp3.Response
@@ -23,6 +25,8 @@ class MyHeadInterceptor : Interceptor {
         builder.addHeader("device", "Android")
         builder.addHeader("appId", Constants.APP_ID)
         builder.addHeader("tourist", getUUID().toString())
+        builder.addHeader("domain", getDomain())
+
         if (CacheUtil.isLogin()){
             //登录用户
             builder.addHeader("sportstoken", CacheUtil.getToken())
