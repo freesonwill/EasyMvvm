@@ -29,173 +29,13 @@
             android:orientation="vertical"
             android:paddingBottom="34dp">
 
-            <RelativeLayout
-                android:id="@+id/topLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginRight="10dp"
-                android:clipChildren="false"
-                android:clipToPadding="false"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivHomeLogo"
-                    android:layout_width="34dp"
-                    android:layout_height="34dp"
-                    app:srcCompat="@drawable/icon_kuai_logo" />
-
-                <LinearLayout
-                    android:id="@+id/llShowCountdown"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:orientation="horizontal">
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/txtHomeStatic"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/g_home_txt_please"
-                        android:textColor="@color/g_e8e8e9"
-                        android:textSize="15sp" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/txtHomeTime"
-                        android:layout_width="18dp"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        tools:text="30"
-                        android:textColor="@{model.homeTimeColorLD,default=@color/c_62DF57}"
-                        android:textSize="15sp" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/txtHomeUnit"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="S"
-                        android:textColor="@color/g_e8e8e9"
-                        android:textSize="15sp" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-
-                    <LinearLayout
-                        android:id="@+id/llHomeVideo"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:layout_width="22dp"
-                            android:layout_height="18dp"
-                            android:scaleType="fitXY"
-                            app:srcCompat="@drawable/icon_video_bo" />
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/g_home_txt_video"
-                            android:textColor="@color/g_f3f3f3"
-                            android:textSize="9sp" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/llHomeMore"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginLeft="15dp"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:layout_width="22dp"
-                            android:layout_height="18dp"
-                            android:scaleType="fitXY"
-                            app:srcCompat="@drawable/icon_more" />
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/g_home_txt_more"
-                            android:textColor="@color/g_f3f3f3"
-                            android:textSize="9sp" />
-                    </LinearLayout>
-                </LinearLayout>
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/vvvvvv"
-                android:layout_width="match_parent"
-                android:layout_height="21dp"
-                android:layout_marginTop="5dp"
-                android:clipChildren="false"
-                android:clipToPadding="false"
-                android:orientation="vertical"
-                app:layout_constraintTop_toBottomOf="@id/topLayout">
-
-                <net.lucode.hackware.magicindicator.MagicIndicator
-                    android:id="@+id/magicIndicator"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginEnd="5dp"
-                    android:clipChildren="false"
-                    android:clipToPadding="false"
-                    app:layout_constraintEnd_toStartOf="@id/frrl"
-                    app:layout_constraintStart_toStartOf="parent"
-                    tools:ignore="MissingConstraints" />
-
-                <LinearLayout
-                    android:id="@+id/frrl"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="12dp"
-                    android:gravity="center"
-                    android:orientation="horizontal"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="$"
-                        android:textColor="@color/g_f7cf41"
-                        android:textSize="13sp" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/txtCurrentMoney"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="20000"
-                        android:textColor="@color/g_f7cf41"
-                        android:textSize="13sp" />
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="5dp"
-                        android:layout_height="8dp"
-                        android:layout_marginLeft="@dimen/dp_5"
-                        app:srcCompat="@drawable/icon_right" />
-
-                </LinearLayout>
-            </RelativeLayout>
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/ivHomeBg"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:scaleType="fitXY"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toTopOf="@id/centerLayout"
                 app:srcCompat="@drawable/icon_home_bg" />
@@ -203,11 +43,13 @@
             <!--             历史记录-->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvHomeHistory"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_5"
-                android:layout_marginRight="27dp"
+                android:layout_marginEnd="4dp"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/rlClickHide"
+                app:layout_constraintStart_toStartOf="parent"
                 tools:itemCount="1"
                 tools:listitem="@layout/item_bet_history" />
 
@@ -224,8 +66,7 @@
                 android:id="@+id/rlClickHide"
                 android:layout_width="23dp"
                 android:layout_height="39dp"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="4dp"
+                android:layout_marginEnd="4dp"
                 app:layout_constraintBottom_toBottomOf="@id/rvHomeHistory"
                 app:layout_constraintEnd_toEndOf="parent">
 
@@ -238,9 +79,9 @@
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/ivHomeRotation"
                     android:layout_width="7dp"
-                    android:rotation="180"
                     android:layout_height="13dp"
                     android:layout_centerInParent="true"
+                    android:rotation="180"
                     android:scaleType="fitXY"
                     app:srcCompat="@drawable/icon_arrow_top" />
 
@@ -251,12 +92,11 @@
                 android:id="@+id/centerLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 android:background="@color/g_141624"
                 android:clipChildren="false"
                 android:clipToPadding="false"
                 app:layout_constraintBottom_toTopOf="@id/flRvHistory"
-                app:layout_constraintTop_toBottomOf="@id/vvvvvv">
+                app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/ivHomeBgCenter"
@@ -265,8 +105,169 @@
                     android:scaleType="fitXY"
                     android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
                     app:srcCompat="@drawable/icon_home_bg" />
+
+                <RelativeLayout
+                    android:id="@+id/topLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:paddingVertical="@dimen/dp_8"
+                    app:layout_constraintBottom_toTopOf="@id/vvvvvv">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ivHomeLogo"
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        app:srcCompat="@drawable/icon_kuai_logo" />
+
+                    <LinearLayout
+                        android:id="@+id/llShowCountdown"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:orientation="horizontal">
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/txtHomeStatic"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/g_home_txt_please"
+                            android:textColor="@color/g_e8e8e9"
+                            android:textSize="15sp" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/txtHomeTime"
+                        android:layout_width="18dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        tools:text="30"
+                        android:textColor="@{model.homeTimeColorLD,default=@color/c_62DF57}"
+                        android:textSize="15sp" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/txtHomeUnit"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="S"
+                            android:textColor="@color/g_e8e8e9"
+                            android:textSize="15sp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:id="@+id/llHomeVideo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:layout_width="22dp"
+                                android:layout_height="18dp"
+                                android:scaleType="fitXY"
+                                app:srcCompat="@drawable/icon_video_bo" />
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/g_home_txt_video"
+                                android:textColor="@color/g_f3f3f3"
+                                android:textSize="9sp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/llHomeMore"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="15dp"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:layout_width="22dp"
+                                android:layout_height="18dp"
+                                android:scaleType="fitXY"
+                                app:srcCompat="@drawable/icon_more" />
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/g_home_txt_more"
+                                android:textColor="@color/g_f3f3f3"
+                                android:textSize="9sp" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/vvvvvv"
+                    android:layout_width="match_parent"
+                    android:layout_height="21dp"
+                    android:layout_marginBottom="5dp"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:orientation="vertical"
+                    app:layout_constraintBottom_toTopOf="@id/viewPagerNew">
+
+                    <net.lucode.hackware.magicindicator.MagicIndicator
+                        android:id="@+id/magicIndicator"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginEnd="5dp"
+                        android:clipChildren="false"
+                        android:clipToPadding="false"
+                        app:layout_constraintEnd_toStartOf="@id/frrl"
+                        app:layout_constraintStart_toStartOf="parent"
+                        tools:ignore="MissingConstraints" />
+
+                    <LinearLayout
+                        android:id="@+id/frrl"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="12dp"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="$"
+                            android:textColor="@color/g_f7cf41"
+                            android:textSize="13sp" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/txtCurrentMoney"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="20000"
+                            android:textColor="@color/g_f7cf41"
+                            android:textSize="13sp" />
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:layout_width="5dp"
+                            android:layout_height="8dp"
+                            android:layout_marginLeft="@dimen/dp_5"
+                            app:srcCompat="@drawable/icon_right" />
+
+                    </LinearLayout>
+                </RelativeLayout>
 
                 <androidx.viewpager.widget.ViewPager
                     android:id="@+id/viewPagerNew"
@@ -284,10 +285,10 @@
                     android:gravity="center"
                     android:orientation="horizontal"
                     android:visibility="gone"
-                    app:layout_constraintTop_toTopOf="@id/llShowBetList"
                     app:layout_constraintBottom_toBottomOf="@id/llShowBetList"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent">
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/llShowBetList">
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/ivDrawYi"
@@ -321,15 +322,15 @@
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/ivBetSize"
-                        android:layout_width="22dp"
-                        android:layout_height="26dp"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
                         android:layout_marginLeft="16dp"
                         app:srcCompat="@drawable/icon_home_result_small" />
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/ivBetOdd"
-                        android:layout_width="22dp"
-                        android:layout_height="26dp"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
                         android:layout_marginLeft="16dp"
                         app:srcCompat="@drawable/icon_home_result_double" />
                 </LinearLayout>
@@ -349,29 +350,93 @@
                     android:id="@+id/ivXuya"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/icon_xuya_sel"
-                    android:layout_marginBottom="5dp"
                     android:layout_marginEnd="5dp"
+                    android:layout_marginBottom="5dp"
                     android:visibility="gone"
-                    app:layout_constraintEnd_toEndOf="@+id/llShowBetList"
                     app:layout_constraintBottom_toBottomOf="@+id/llShowBetList"
-                    />
+                    app:layout_constraintEnd_toEndOf="@+id/llShowBetList"
+                    app:srcCompat="@drawable/icon_xuya_sel" />
+
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/ivMultiple2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginBottom="5dp"
                     android:clickable="true"
                     android:focusable="true"
-                    app:srcCompat="@drawable/icon_multiple2_sel"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginEnd="5dp"
                     android:visibility="gone"
-                    app:layout_constraintEnd_toEndOf="@+id/llShowBetList"
                     app:layout_constraintBottom_toBottomOf="@+id/llShowBetList"
-                    />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    app:layout_constraintEnd_toEndOf="@+id/llShowBetList"
+                    app:srcCompat="@drawable/icon_multiple2_sel" />
 
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivResultBg"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/result_bg"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@id/viewPagerNew"
+                    app:layout_constraintEnd_toEndOf="@id/viewPagerNew"
+                    app:layout_constraintStart_toStartOf="@id/viewPagerNew"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/lottieLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@id/viewPagerNew"
+                    app:layout_constraintEnd_toEndOf="@id/viewPagerNew"
+                    app:layout_constraintStart_toStartOf="@id/viewPagerNew"
+                    app:layout_constraintTop_toTopOf="@id/viewPagerNew">
+
+                    <com.airbnb.lottie.LottieAnimationView
+                        android:id="@+id/lottieAnimView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:lottie_fileName="redcircle.json" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/txtWinMoneyLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="你赢了"
+                        android:textColor="#FFE3CA"
+                        android:textSize="13.5sp"
+                        app:layout_constraintBottom_toTopOf="@id/txtWinMoney"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_chainStyle="packed" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/txtWinMoney"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:text="$5011111"
+                        android:gravity="center"
+                        app:autoSizeTextType="uniform"
+                        android:maxLines="1"
+                        android:textColor="#FFE3CA"
+                        android:maxWidth="75dp"
+                        android:textSize="30sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/txtWinMoneyLabel" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.Group
+                    android:id="@+id/groupWinLottie"
+                    android:layout_width="wrap_content"
+                    android:visibility="gone"
+                    android:layout_height="wrap_content"
+                    app:constraint_referenced_ids="ivResultBg,lottieLayout" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
+
 
         <com.cn.game.sdk2.ui.view.DoTouchFrameLayout
             android:id="@+id/tempTouch"
