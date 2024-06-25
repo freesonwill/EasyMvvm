@@ -102,7 +102,6 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
 
     override fun initView(savedInstanceState: Bundle?) {
 
-        Log.i("SSSSSSSSDSDSDSD","========"+ getUUID())
         mDatabind.v = this
         mDatabind.m = mViewModel
         setNotice()

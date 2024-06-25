@@ -85,6 +85,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.util.Timer
 import java.util.TimerTask
@@ -125,7 +126,6 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         //MTPushPrivatesApi.clearNotification(this)
 //        placeLoginDialog()
         showStatusBar()
-
 
 
 

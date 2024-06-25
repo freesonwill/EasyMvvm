@@ -13,6 +13,7 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.android.cling.ClingDLNAManager
 import com.android.cling.control.DeviceControl
 import com.android.cling.control.OnDeviceControlListener
@@ -218,12 +219,12 @@ class MatchDetailActivity :
                                     object :
                                         ServiceActionCallback<Unit> {
                                         override fun onSuccess(result: Unit) {
-//                                "投放成功".showToast()
+
                                             control?.play() //有些还要重新调用一次播放
                                         }
 
                                         override fun onFailure(msg: String) {
-//                                "投放失败:$msg".showToast()
+
                                             myToast("链接失败")
                                         }
                                     })
@@ -232,8 +233,7 @@ class MatchDetailActivity :
 
                             override fun onDisconnected(device: Device<*, *, *>) {
                                 super.onDisconnected(device)
-                                Log.i("SSSSSSSSSCCCC", "=" + device)
-//                            myToast("无法连接")
+
                                 deviceErr = device
                                 ClingDLNAManager.getInstant().disconnectDevice(device)
                             }
@@ -298,15 +298,25 @@ class MatchDetailActivity :
         appViewModel.landscapeShareEvent.observe(this) {
             if (topActivity) {
                 if (it == 1) {
-                    GlobalScope.launch(Dispatchers.Main) { // 使用主线程的调度器
+                    lifecycleScope.launch {
+                        // 在这里执行协程操作
                         setShareDate()
                     }
+//                    GlobalScope.launch(Dispatchers.Main) { // 使用主线程的调度器
+//                        setShareDate()
+//                    }
                 } else if (it == 2) {//
-                    GlobalScope.launch(Dispatchers.Main) { // 使用主线程的调度器
+                    lifecycleScope.launch {
+                        // 在这里执行协程操作
                         delay(1000L) // 延迟1秒（1000毫秒）
                         ClingDLNAManager.getInstant().searchDevices()
                         dataPopup()
                     }
+//                    GlobalScope.launch(Dispatchers.Main) { // 使用主线程的调度器
+//                        delay(1000L) // 延迟1秒（1000毫秒）
+//                        ClingDLNAManager.getInstant().searchDevices()
+//                        dataPopup()
+//                    }
 
                 } else if (it == 3) {
                     showSignal()
@@ -608,7 +618,11 @@ class MatchDetailActivity :
                                 if (mDatabind.videoPlayer.isIfCurrentIsFullscreen) {
                                     mDatabind.videoPlayer.exitFullScreen()
                                 }
-                                GlobalScope.launch(Dispatchers.Main) { // 使用主线程的调度器
+//                                GlobalScope.launch(Dispatchers.Main) { // 使用主线程的调度器
+//                                    delay(500L) // 延迟1秒（1000毫秒）
+//                                    showSignal()
+//                                }
+                                lifecycleScope.launch {
                                     delay(500L) // 延迟1秒（1000毫秒）
                                     showSignal()
                                 }
@@ -621,55 +635,7 @@ class MatchDetailActivity :
 
                     }
                 }
-                //关播报错的回调
-                override fun onCloseLive(bean: LiveStatus) {
-                    //"onReceive========${bean.id}===${anchor?.liveId}".loge()
 
-                    if (matchId == bean.matchId) {
-                        if (anchor?.userId == bean.anchorId) {
-
-                            mDatabind.videoPlayer.release()
-                            GSYVideoManager.releaseAllVideos()
-                            isShowVideo = false
-                            showHideLive(true)
-                            anchor?.isOpen = false
-                            matchDetail.anchorList?.forEach {
-                                it.isOpen = it.userId != bean.anchorId
-                            }
-//                            if( mDatabind.videoPlayer.isIfCurrentIsFullscreen){
-//                                if(mDatabind.videoPlayer.currentPlayer.lltLiveErrorNew!=null){
-//                                    mDatabind.videoPlayer.currentPlayer.lltLiveErrorNew.visibility=View.GONE
-//                                    mDatabind.videoPlayer.currentPlayer.ivMatchBgNew.visibility=View.VISIBLE
-//                                    mDatabind.videoPlayer.currentPlayer.lltNoLiveNew.visibility=View.VISIBLE
-//                                }
-//
-//                            }
-                            //关闭直播间的时候如果是横屏也是
-                            if (mDatabind.videoPlayer.isIfCurrentIsFullscreen) {
-                                exitFullScreen()
-//                                isShowVideo = false
-//                                showHideLive(true)
-                                setIsLandscape(false)
-                            }
-//                            GlobalScope.launch(Dispatchers.Main) { // 使用主线程的调度器
-//                                delay(500L) // 延迟1秒（1000毫秒）
-//                                blacklistDilog(this@MatchDetailActivity)
-//                            }
-
-
-
-                        } else {
-                            val iterator = matchDetail.anchorList?.iterator()
-                            if (iterator != null) {
-                                for (tab in iterator) {
-                                    if (tab.userId == bean.anchorId) {
-                                        iterator.remove()
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
 
                 override fun onChangeLive(bean: LiveStatus) {
                     if (matchId == bean.matchId) {
@@ -685,11 +651,16 @@ class MatchDetailActivity :
                                     if (mDatabind.videoPlayer.isIfCurrentIsFullscreen) {
                                         exitFullScreen()
                                     }
-                                    GlobalScope.launch(Dispatchers.Main) { // 使用主线程的调度器
+//                                    GlobalScope.launch(Dispatchers.Main) { // 使用主线程的调度器
+//                                        delay(1000L) // 延迟1秒（1000毫秒）
+//                                        startVideo(anchor?.playUrl)
+////
+//                                    }
+                                    lifecycleScope.launch {
                                         delay(1000L) // 延迟1秒（1000毫秒）
                                         startVideo(anchor?.playUrl)
-//
                                     }
+
                                     //这个是横屏时候要处理
 //                                    mDatabind.videoPlayer.currentPlayer.release();
 //                                    GSYVideoManager.instance().releaseMediaPlayer();
@@ -751,11 +722,11 @@ class MatchDetailActivity :
                         isShowVideo = false
                         showHideLive(true)
                         anchor?.isOpen = false
-                        Log.i("GGGGGGG","主播关闭得到对比对了")
+
                         //查询直播间详情
                         mViewModel.getMatchDetailAnchorList(matchId, matchType, false)
                     }else{
-                        Log.i("GGGGGGG","主播id不一样")
+
                         val iterator = matchDetail.anchorList?.iterator()
                         if (iterator != null) {
                             for (tab in iterator) {
@@ -803,7 +774,7 @@ class MatchDetailActivity :
 //                        }
 //                    }
                 }else{
-                    Log.i("GGGGGGG","11111对比失败")
+
                 }
             }
 
@@ -1220,11 +1191,7 @@ class MatchDetailActivity :
 
                 }
 
-//                GlobalScope.launch(Dispatchers.Main) { // 使用主线程的调度器
-//                    delay(1000L) // 延迟1秒（1000毫秒）
-//
-//
-//                }
+
                 this.setIsLandscape(false)
 //                    if (isShowVideo) {
 //                        //有视频布局  修改
@@ -1411,11 +1378,6 @@ class MatchDetailActivity :
                if(match.anchorList!!.size==1){//就是纯净流
                    blacklistDilog(this)
 
-//                    if( matchDetail.status in 0..if (matchType == "1") 7 else 9){
-//                        blacklistDilog(this)
-//                    }else{
-////                        placeLoginDialogFinish(this)
-//                    }
                } else{
 
                    myToast(resources.getString(R.string.matche_txt_live_end))
@@ -1426,7 +1388,6 @@ class MatchDetailActivity :
                }
             }else{
 
-//                myToast("没有获取到数据", isDeep = true)
                 //没有查到最新的
                 if (anchor?.userId.equals(offBean!!.anchorId)) {
                     mDatabind.videoPlayer.release()
@@ -1452,19 +1413,10 @@ class MatchDetailActivity :
 //                                showHideLive(true)
                         setIsLandscape(false)
                     }
-//                    GlobalScope.launch(Dispatchers.Main) { // 使用主线程的调度器
-//                        delay(500L) // 延迟1秒（1000毫秒）
-//                        blacklistDilog(this@MatchDetailActivity)
-//                    }
 
-//               GlobalScope.launch(Dispatchers.Main) { // 使用主线程的调度器
-//                        delay(500L) // 延迟1秒（1000毫秒）
-//                       blacklistDilog(this@MatchDetailActivity)
-//                   Log.i("GGGGGGG","打开了")
-//                    }
 
                 } else {
-                    Log.i("GGGGGGG","对比失败")
+
                     val iterator = matchDetail.anchorList?.iterator()
                     if (iterator != null) {
                         for (tab in iterator) {
@@ -1872,7 +1824,8 @@ class MatchDetailActivity :
         super.onResume()
         topActivity = true
 
-        GlobalScope.launch(Dispatchers.Main) { // 使用主线程的调度器
+
+        lifecycleScope.launch {
             delay(1000L) // 延迟1秒（1000毫秒）
             // 在这里写下你想要在1秒后执行的代码
             initScreenProjection()
@@ -1891,7 +1844,9 @@ class MatchDetailActivity :
 
 
             }
+
         }
+
 
         if (isShowVideo && !isTopActivity(this)) {
             startVideo(anchor?.playUrl)

@@ -101,7 +101,6 @@ abstract class GSYBaseActivity<VM : BaseViewModel, DB : ViewDataBinding,T : GSYB
 
     }
 
-
     fun  setisLandscape(static:Boolean){
         isLandscape=static
         if(!isLandscape){

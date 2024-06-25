@@ -60,11 +60,8 @@ import com.xcjh.app.websocket.listener.LiveStatusListener
 import com.xcjh.app.websocket.listener.MOffListener
 import com.xcjh.base_lib.App
 import com.xcjh.base_lib.Constants
-import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.utils.myToast
 import com.youth.banner.util.BannerUtils
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -414,27 +411,7 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
                     mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
                 }
 
-                //直播间关闭废弃
-                override fun onCloseLive(bean: LiveStatus) {
-                    super.onCloseLive(bean)
-                    if(mDatabind.rcvRecommend.models!=null){
-                        for (i in 0 until  mDatabind.rcvRecommend.mutable.size){
-                            if(mDatabind.rcvRecommend.mutable[i] is MainTxtBean){
-                                for (j in 0 until  (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.size){
-                                    if((mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].userId!=null){
-                                        if((mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].userId.equals(bean.anchorId)){
-                                            (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.removeAt(j)
-                                            mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
-                                        }
-                                    }
 
-
-                                }
-                            }
-
-                        }
-                    }
-                }
             })
 
 
@@ -494,7 +471,7 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
                                     (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.removeAt(j)
 
                                     break@outer
-//                                    mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
+
 
                                 }
 
@@ -556,38 +533,7 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
 
 
                             }
-                            //进行删除直播完的
-//                            for (j in 0 until (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.size) {
-//
-//                                    if((mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].status!=null){
-//                                        //足球>9  移除   篮球10
-//                                        if((mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].matchType.equals("1")){
-//                                            //删除完赛的
-//                                            if((mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].status.equals("8")||
-//                                                (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].status.equals("9")||
-//                                                (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].status.equals("10")||
-//                                                (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].status.equals("11")||
-//                                                (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].status.equals("12")||
-//                                                (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].status.equals("13")){
-//                                                (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.removeAt(j)
-//                                            }
-//
-//                                        }else if((mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].matchType.equals("2")){
-//
-//                                            if((mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].status.equals("10")||
-//                                                (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].status.equals("11")||
-//                                                (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].status.equals("12")||
-//                                                (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].status.equals("13")||
-//                                                (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].status.equals("14")||
-//                                                (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list[j].status.equals("15")){
-//                                                (mDatabind.rcvRecommend.mutable[i] as MainTxtBean).list.removeAt(j)
-//                                            }
-//                                        }
-//                                    }
-//
-//
-//                            }
-//                            mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
+
                         }
                     }
 
@@ -739,9 +685,7 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
         }
         //正在直播的比赛
         mViewModel.liveList.observe(this){
-//          var dd=  it.listData[0]
-//            it.listData.clear()
-//            it.listData.add(dd)
+
             //是否是下拉刷新
             if(it.isRefresh){
                 if( mDatabind.rcvRecommend.models?.size!=null){

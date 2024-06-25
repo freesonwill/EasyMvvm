@@ -96,9 +96,6 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
                                         break@outer
                                     }
 
-                                } else{
-//                                    mDatabind.rcvRecommend.mutable.removeAt(i)
-//                                    break@outer
                                 }
 
                             }
@@ -120,11 +117,6 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
                     being.hotCompetition=bean.hotCompetition
                     being.homeTeamLogo=bean.homeTeamLogo
                     being.awayTeamLogo=bean.awayTeamLogo
-//                    if(bean.nickName.equals("红孩儿本红")){
-//                        being.hotValue=500
-//                    }else{
-//                        being.hotValue=bean.hotValue
-//                    }
                     being.hotValue=bean.hotValue
                     being.titlePage=bean.coverImg
                     being.userLogo=bean.userLogo
@@ -337,16 +329,10 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
                         mDatabind.rcvRecommend.addModels(newPure)
 //                        mDatabind.rcvRecommend.addModels(list)
 
-
-
                     mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
 
                 }
-                //直播间关闭废弃
-                override fun onCloseLive(bean: LiveStatus) {
-                    super.onCloseLive(bean)
 
-                }
             })
         //主播关闭
         MyWsManager.getInstance(App.app)?.setOtherPushListener(this.toString(),object :
