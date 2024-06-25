@@ -136,9 +136,9 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
             val betReq = GameReq.BetReq.newBuilder()
             betReq.setMiniGameId(miniGameId)
             bettingListTemp.forEach { (betting, bettingRecordBean) ->
-                "注区${betting.number},下注金额：${bettingRecordBean.money}".loge("GameService-确认下注")
+                "注区${betting.number},下注金额：${bettingRecordBean.money * 100}".loge("GameService-确认下注")
                 val areaBetReq = GameReq.AreaBetReq.newBuilder().setAreaCode(betting.number)
-                    .setBetScore(bettingRecordBean.money).build()
+                    .setBetScore(bettingRecordBean.money * 100).build()
                 betReq.addAreaBet(areaBetReq)
             }
             val build = betReq.build()
@@ -154,7 +154,7 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
      * 1，上一句的总额就是这一句临时额度 currentTempCountMoney
      * 2，牌面上无下注时才能续压，所以续压的总金额就是当前页面的总金额
      */
-    fun againBetting(): Map<Betting, BettingRecordBean>? {
+    fun againBetting(): Map<Betting, BettingRecordBean> {
         //1
         currentTempCountMoney = againCountMoney
         //2

@@ -59,7 +59,6 @@ class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
     }
 
     override fun onMessage(bytes: ByteBuffer?) {
-        Log.i(_tag, "GameSocketMessage-onMessage")
         if (!bytes!!.hasRemaining()) {
             return
         }

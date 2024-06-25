@@ -81,7 +81,6 @@ class GameSocketManager private constructor() : OnMessageListener {
         }
         messageViewModel = MessageViewModel()
         messageViewModel?.data?.observeForever {
-            "observeForever".loge()
             val newUnpack = client?.newUnpack(it)
             val mid = newUnpack!![0] as Int?
             val sid = newUnpack[1] as Int?
