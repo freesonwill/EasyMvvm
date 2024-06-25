@@ -13,22 +13,47 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.ColorInt
+import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getColor
 import com.cn.game.sdk2.R
+import com.xcjh.base_lib.ModuleInitializer
 
 object ToastUtil {
     private val LOADED_TOAST_TYPEFACE: Typeface = Typeface.create("sans-serif-condensed", Typeface.NORMAL)
     private var currentTypeface: Typeface = LOADED_TOAST_TYPEFACE
     private var textSize: Int = 16 // in SP
     private var tintIcon: Boolean = true
-    private var allowQueue: Boolean = true
+    private var allowQueue: Boolean = false
     private var lastToast: Toast? = null
 
     @JvmOverloads
-    fun showToastNormal(context: Context, message: CharSequence, duration: Int = Toast.LENGTH_SHORT,gravity: Int=Gravity.CENTER) {
+    fun showToastNormal(message: CharSequence, duration: Int = Toast.LENGTH_SHORT,gravity: Int=Gravity.CENTER) {
+        val context = ModuleInitializer.application
         val toast = showToastCustom(context, message, null, getColor(context, android.R.color.transparent), getColor(context, R.color.white), duration, true, false,gravity)
         toast.show()
     }
+
+    @JvmOverloads
+    fun showToastWarning(message: CharSequence, duration: Int = Toast.LENGTH_SHORT,gravity: Int=Gravity.CENTER) {
+        val context = ModuleInitializer.application
+        val toast = showToastCustom(context, message, ContextCompat.getDrawable(context, R.drawable.ic_tips), getColor(context, android.R.color.transparent), getColor(context, R.color.white), duration, true, false,gravity)
+        toast.show()
+    }
+
+    @JvmOverloads
+    fun showToastError(message: CharSequence, duration: Int = Toast.LENGTH_SHORT,gravity: Int=Gravity.CENTER) {
+        val context = ModuleInitializer.application
+        val toast = showToastCustom(context, message, ContextCompat.getDrawable(context, R.drawable.icon_svg_close_white), getColor(context, android.R.color.transparent), getColor(context, R.color.white), duration, true, false,gravity)
+        toast.show()
+    }
+
+    @JvmOverloads
+    fun showToastSuccess(message: CharSequence, duration: Int = Toast.LENGTH_SHORT,gravity: Int=Gravity.CENTER) {
+        val context = ModuleInitializer.application
+        val toast = showToastCustom(context, message, ContextCompat.getDrawable(context, R.drawable.icon_svg_check_white), getColor(context, android.R.color.transparent), getColor(context, R.color.white), duration, true, false,gravity)
+        toast.show()
+    }
+
 
     @JvmOverloads
     fun showToastCustom(context: Context, message: CharSequence, icon: Drawable?,

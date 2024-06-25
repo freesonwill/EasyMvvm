@@ -25,15 +25,16 @@ object CommonExt {
 
     //赔率string化
     @JvmStatic
-    fun multiplierStr(betting: Betting): String {
+    @JvmOverloads
+    fun multiplierStr(betting: Betting,format:String): String {
         betting.apply {
-            val decimalFormat = DecimalFormat("#.##")
+            val decimalFormat = DecimalFormat(format)
             if (multipliers.isNotEmpty()) {
                 return multipliers.joinToString(", ", "x[", "]", transform = {
                     decimalFormat.format(it)
                 })
             }
-            return "x"+decimalFormat.format(multiplier)
+            return decimalFormat.format(multiplier)
         }
     }
 }
