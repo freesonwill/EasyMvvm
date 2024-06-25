@@ -79,11 +79,13 @@ class GameSocketManager private constructor() : OnMessageListener {
             }
         }
         messageViewModel?.data?.observeForever {
-            val mid = it!![0] as Int?
-            val sid = it[1] as Int?
+            "observeForever".loge()
+            val newUnpack = client?.newUnpack(it)
+            val mid = newUnpack!![0] as Int?
+            val sid = newUnpack[1] as Int?
             var str = ByteArray(0)
             if (it.size > 2) {
-                str = (it[2] as ByteArray?)!!
+                str = (newUnpack[2] as ByteArray?)!!
             }
             onMessage(mid, sid, str)
         }

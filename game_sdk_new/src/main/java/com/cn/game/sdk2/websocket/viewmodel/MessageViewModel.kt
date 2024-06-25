@@ -9,18 +9,16 @@ import kotlinx.coroutines.Dispatchers
 
 class MessageViewModel(private val client: GameSocketClient) : ViewModel() {
 
-    private val  _byte = MutableLiveData<ByteArray>()
+    private val _byte = MutableLiveData<ByteArray>()
 
-    val data: LiveData<Array<Any?>?> = liveData(Dispatchers.Main) {
-        val result = doConvert()
-        emit(result)
+    val data: LiveData<ByteArray>
+        get() = _byte
+
+    private fun doConvert(data: ByteArray): Array<Any?>? {
+        return client.newUnpack(data)
     }
 
-    private fun doConvert(): Array<Any?>? {
-        return client.newUnpack(_byte.value)
-    }
-
-    fun setData(data:ByteArray){
-        _byte.value = data
+    fun setData(data: ByteArray) {
+        _byte.postValue(data)
     }
 }
