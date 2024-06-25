@@ -18,7 +18,7 @@ object GamePartyLibraryInitializer {
         // appGameViewModelInstance= ViewModelProvider(context)[AppGameViewModel::class.java]
         mAppContext = mApp
         "初始化step1:loadGame".loge("GamePartyLibraryInitializer")
-//        GameSDK.loadGame()
+        GameSDK.loadGame()
 
         //初始化获取到快三结果的View
 //        MyGameManager.getOpenResultView(mAppContext!!)

@@ -41,7 +41,7 @@ class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
     }
 
     fun re() {
-        GlobalScope.launch {
+         GlobalScope.launch {
             withContext(Dispatchers.Main) {
                 reset()
             }
@@ -59,29 +59,34 @@ class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
     }
 
     override fun onMessage(bytes: ByteBuffer?) {
-        GlobalScope.launch {
-            withContext(Dispatchers.Main) {
-                Log.i(_tag, "GameSocketMessage-onMessage")
-                if (!bytes!!.hasRemaining()) {
-                    return@withContext
-                }
-                val resps = newUnpack(bytes.array())
-                val mid = resps!![0] as Int?
-                val sid = resps[1] as Int?
-                var str = bytes.array()
-                if (resps.size > 2) {
-                    str = (resps[2] as ByteArray?)!!
-                }
-                Log.i(_tag, "GameSocketMessage-onMessage:mid-$mid sid-$sid")
-                onMessageListener?.onMessage(mid, sid, str)
-            }
+        if (!bytes!!.hasRemaining()) {
+            return
         }
+        messageViewModel?.setData(bytes.array())
+//        val messageJob = GlobalScope.launch {
+//            withContext(Dispatchers.Main) {
+//                Log.i(_tag, "GameSocketMessage-onMessage")
+//                if (!bytes!!.hasRemaining()) {
+//                    return@withContext
+//                }
+//                messageViewModel?.setData(bytes.array())
+//                val resps = newUnpack(bytes.array())
+//                val mid = resps!![0] as Int?
+//                val sid = resps[1] as Int?
+//                var str = bytes.array()
+//                if (resps.size > 2) {
+//                    str = (resps[2] as ByteArray?)!!
+//                }
+//                Log.i(_tag, "GameSocketMessage-onMessage:mid-$mid sid-$sid")
+//                onMessageListener?.onMessage(mid, sid, str)
+//            }
+//        }
+//        messageJob.cancel()
     }
 
     override fun onClose(code: Int, reason: String?, remote: Boolean) {
         "socket-onClose-->code:${code}-reason:$reason-remote:$remote".loge(_tag)
         onMessageListener?.onClose(code, reason, remote)
-
     }
 
     override fun onError(ex: Exception?) {

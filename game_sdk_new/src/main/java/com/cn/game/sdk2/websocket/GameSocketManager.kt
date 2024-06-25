@@ -3,6 +3,7 @@ package com.cn.game.sdk2.websocket
 import android.annotation.SuppressLint
 import com.cn.game.sdk2.network.code.GameResCode
 import com.cn.game.sdk2.websocket.imp.UIMethodImpl
+import com.cn.game.sdk2.websocket.viewmodel.MessageViewModel
 import com.xcjh.base_lib.utils.loge
 import game.common.proto.ClientRes
 import game.mod.proc.yf.proto.res.GameRes
@@ -56,6 +57,7 @@ class GameSocketManager private constructor() : OnMessageListener {
                 client = GameSocketClient(uri) //获得client对象
                 client?.setOnMessageListener(this@GameSocketManager)
                 gameMassageManager = UIMethodImpl.generate(client!!) //获得接口对象
+                messageViewModel = MessageViewModel(client!!)
                 client?.connectionLostTimeout = 0
                 client!!.connectBlocking() //连接socket
                 //心跳发送
@@ -76,7 +78,15 @@ class GameSocketManager private constructor() : OnMessageListener {
                 }
             }
         }
-
+        messageViewModel?.data?.observeForever {
+            val mid = it!![0] as Int?
+            val sid = it[1] as Int?
+            var str = ByteArray(0)
+            if (it.size > 2) {
+                str = (it[2] as ByteArray?)!!
+            }
+            onMessage(mid, sid, str)
+        }
     }
 
     /**
@@ -112,7 +122,7 @@ class GameSocketManager private constructor() : OnMessageListener {
         gameServerMessageConvertFactory = factory
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
+
     override fun onMessage(mid: Int?, sid: Int?, byteArray: ByteArray) {
         mLoginCallback?.callback(1)
         convertMessage(mid, sid, byteArray)
