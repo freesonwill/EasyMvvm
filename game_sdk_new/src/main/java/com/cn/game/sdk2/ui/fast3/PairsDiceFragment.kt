@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 /**
  * 对子
  */
-class PairsDiceFragment(private val fast3VM: Fast3ViewModel):BaseFast3Fragment<PairsDiceVm,FragmentPairsDiceBinding>() {
+class PairsDiceFragment(fast3VM: Fast3ViewModel):BaseFast3Fragment<PairsDiceVm,FragmentPairsDiceBinding>(fast3VM) {
 
     override fun initView(savedInstanceState: Bundle?) {
         mDatabind.model = mViewModel

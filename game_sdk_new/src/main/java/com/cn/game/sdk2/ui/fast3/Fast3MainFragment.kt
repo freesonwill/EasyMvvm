@@ -13,6 +13,7 @@ import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.core.animation.addListener
@@ -22,6 +23,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cn.game.sdk2.R
+import com.cn.game.sdk2.data.EventConst
+import com.cn.game.sdk2.data.bean.HistoryResultBean
 import com.cn.game.sdk2.data.bean.SelectAnnotationBean
 import com.cn.game.sdk2.data.enums.GameState
 import com.cn.game.sdk2.databinding.FragFast3HomeBinding
@@ -34,6 +37,7 @@ import com.cn.game.sdk2.ui.view.CustomBubbleAttachPopup
 import com.cn.game.sdk2.ui.view.MoneyOKView
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
+import com.cn.game.sdk2.utils.FlowBus
 import com.cn.game.sdk2.utils.ToastUtil
 import com.cn.game.sdk2.utils.ext.CommonExt.toPinyin
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
@@ -77,6 +81,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
     //<areaCode,<money,View>>
     private val moneyOkViewMap by lazy { mutableMapOf<Int, MoneyOKView>() }
+    private val allGameAreaMap by lazy { mutableMapOf<Int, GameAreaView>() }
 
     //==================================== Method ===============================================//
     override fun initView(savedInstanceState: Bundle?) {
@@ -110,7 +115,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
         setBetAdapter()
         setClick()
-
     }
 
     override fun lazyLoadData() {
@@ -241,6 +245,12 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
     override fun createObserver() {
         Log.i(TAG, "createObserver------------>")
+        FlowBus.with<List<GameAreaView>>(EventConst.UPDATE_ALL_AREA_VIEW).register(viewLifecycleOwner){list->
+            list.forEach{
+                allGameAreaMap[it.areaCode] = it
+            }
+        }
+
         mViewModel.currentMoneyLD.observe(viewLifecycleOwner) { balance ->
             mDatabind.txtCurrentMoney.text = balance
         }
@@ -544,11 +554,48 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             }
             //加倍
             ivMultiple2.clickNoRepeat {
-
+                GameSocketManager.getInstance()?.getGameService()?.doubleBetting{isMoneyEnough, map ->
+                    if (isMoneyEnough){
+                        if (!map.isNullOrEmpty()) {
+                            map.forEach {
+                                it.value.let { record ->
+                                    if(moneyOkViewMap.containsKey(record.bettingArea.number)){
+                                        moneyOkViewMap[record.bettingArea.number]?.setShowMoney(record.money)
+                                    }else{
+                                        //addview
+                                    }
+                                }
+                            }
+                        } else {
+                            //余额不足
+                        }
+                    }
+                }
             }
             //续压
             ivXuya.clickNoRepeat {
-
+                val map = GameSocketManager.getInstance()?.getGameService()?.againBetting()
+                if(!map.isNullOrEmpty()){
+                    map.forEach{
+                        allGameAreaMap[it.key.number]?.let { areaView->
+                            if(!areaView.moneyView.isAdd()){
+                                val params = FrameLayout.LayoutParams(
+                                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                                    ViewGroup.LayoutParams.WRAP_CONTENT
+                                )
+                                params.gravity = areaView.okViewGravity
+                                areaView.moneyView.let { moneyView->
+                                    areaView.addView(moneyView, params)
+                                    moneyView.translationX = it.value.viewXYTemporary[0]
+                                    moneyView.translationY = it.value.viewXYTemporary[1]
+                                    moneyOkViewMap[it.key.number] = moneyView
+                                    moneyView.setShowMoney(it.value.money)
+                                }
+                            }
+                        }
+                    }
+                    //updateanchor
+                }
             }
         }
 

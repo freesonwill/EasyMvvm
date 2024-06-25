@@ -20,8 +20,7 @@ import kotlinx.coroutines.launch
 /**
  * 豹子
  */
-class LeopardFragment(private val fast3VM:Fast3ViewModel):BaseFast3Fragment<LeopardVm,FragmentLeopardBinding>() {
-    private var areaViewList: MutableList<GameAreaView> = mutableListOf()
+class LeopardFragment(fast3VM:Fast3ViewModel):BaseFast3Fragment<LeopardVm,FragmentLeopardBinding>(fast3VM) {
 
     override fun initView(savedInstanceState: Bundle?) {
         mDatabind.model = mViewModel
