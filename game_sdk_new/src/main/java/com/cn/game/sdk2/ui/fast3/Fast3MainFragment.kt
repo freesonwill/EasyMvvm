@@ -15,7 +15,6 @@ import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.ImageView
 import android.widget.RelativeLayout
-import android.widget.Toast
 import androidx.core.animation.addListener
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -81,6 +80,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
     //==================================== Method ===============================================//
     override fun initView(savedInstanceState: Bundle?) {
+        mDatabind.model = mViewModel
         //viewpager
         mFragList.add(DXDSFragment(mViewModel))
         mFragList.add(SingleDiceFragment(mViewModel))
@@ -120,6 +120,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     override fun initData() {
         //获取当前余额
         mDatabind.txtCurrentMoney.text = mViewModel.currentMoney
+        mDatabind.txtHomeTime.text = ""+mViewModel.homeTime.value
         lifecycleScope.launchWhenResumed {
             //开始下注
             Log.d(TAG, "initData startBetting")
@@ -243,6 +244,9 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         mViewModel.currentMoneyLD.observe(viewLifecycleOwner) { balance ->
             mDatabind.txtCurrentMoney.text = balance
         }
+        /*mViewModel.homeTimeColorLD.observe(viewLifecycleOwner){
+            mDatabind.txtHomeTime.setTextColor(it)
+        }*/
         mViewModel.homeTimeVisibility.observe(requireActivity()) {
             mDatabind.txtHomeTime.visibility = it
             mDatabind.txtHomeUnit.visibility = it
@@ -271,6 +275,11 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         //游戏状态监听
         gameAboutModel.currentStage.observe(viewLifecycleOwner) { stage ->
             stage?.run {
+                mViewModel.isClickOperation = stage == GameAboutModel.Stage.NEW
+                gameAboutModel.currentAgainDoubleState.value.let {
+                    mDatabind.ivXuya.isVisible = it == GameAboutModel.AgainDoubleState.AGAIN
+                    mDatabind.ivMultiple2.isVisible = it == GameAboutModel.AgainDoubleState.DOUBLE
+                }
                 mViewModel.startCountDown(gameAboutModel.countDown)
                 when (this) {
                     GameAboutModel.Stage.NEW -> {//下注

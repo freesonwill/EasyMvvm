@@ -3,22 +3,21 @@ package com.cn.game.sdk2.ui.viewmodel.fast3
 import android.util.Log
 import android.view.View
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
+import com.cn.game.sdk2.R
 import com.cn.game.sdk2.data.bean.HistoryResultBean
 import com.cn.game.sdk2.data.bean.LocationClickPoint
 import com.cn.game.sdk2.data.bean.SelectAnnotationBean
 import com.cn.game.sdk2.data.enums.GameState
 import com.cn.game.sdk2.manager.GameManager
 import com.cn.game.sdk2.manager.listener.IGameListener
-import com.cn.game.sdk2.ui.view.MoneyOKView
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.utils.ext.CommonExt.isMainThread
 import com.cn.game.sdk2.websocket.bean.Betting
-import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.kunminx.architecture.ui.callback.UnPeekLiveData
 import com.xcjh.base_lib.base.BaseViewModel
+import com.xcjh.base_lib.utils.getColor
 import java.util.Locale
 import kotlin.math.roundToInt
 
@@ -46,7 +45,12 @@ class Fast3ViewModel : BaseViewModel() {
     val userLotteryResultLiveData :UnPeekLiveData<ArrayList<Betting>> =UnPeekLiveData()
 
     val historyResultBeanLD: LiveData<HistoryResultBean> by lazy { UnPeekLiveData() }
-    val homeTime: LiveData<Int> by lazy { UnPeekLiveData(bettingCountDownTime) }
+    val homeTime: LiveData<Int> by lazy { UnPeekLiveData(bettingCountDownTime/1000) }
+    val homeTimeColorLD:LiveData<Int> by lazy { Transformations.map(this.homeTime){
+        if(it <= 5) return@map getColor(R.color.c_F34D41)
+        if(it <= 10) return@map getColor(R.color.c_FFCB15)
+        return@map getColor(R.color.c_62DF57)
+    } }
 
     //游戏状态
     val gameStateLV: LiveData<GameState> by lazy { UnPeekLiveData(GameState.Init) }
@@ -111,7 +115,7 @@ class Fast3ViewModel : BaseViewModel() {
     /**
      * 下注倒计时(ms)
      */
-    val bettingCountDownTime = 3_000
+    val bettingCountDownTime = 11_000
 
     /**
      * 结算倒计时(ms)

@@ -26,5 +26,5 @@ class SingleDiceVm : BaseViewModel() {
 
 
     @JvmOverloads
-    fun multiplierStr(number: Int,format:String="x#.##"): String = CommonExt.multiplierStr(bettingArray[number],format)
+    fun multiplierStr(number: Int,format:String="#.##"): String = CommonExt.multiplierStr(bettingArray[number],format)
 }
