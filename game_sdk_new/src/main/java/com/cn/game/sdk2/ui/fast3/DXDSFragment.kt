@@ -1,5 +1,8 @@
 package com.cn.game.sdk2.ui.fast3
 
+import android.animation.Animator
+import android.animation.AnimatorSet
+import android.animation.ValueAnimator
 import android.os.Bundle
 import android.util.Log
 import android.util.SparseArray
@@ -9,6 +12,7 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.FrameLayout
 import android.widget.TextView
+import androidx.core.animation.doOnEnd
 import androidx.core.view.isVisible
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -39,6 +43,8 @@ import com.cn.game.sdk2.websocket.bean.DEFAULT_SMALL
 import com.cn.game.sdk2.websocket.isNotEmpty
 import com.google.gson.Gson
 import kotlinx.coroutines.delay
+import java.math.BigDecimal
+import java.math.RoundingMode
 import java.text.DateFormat
 import java.text.DecimalFormat
 
@@ -49,6 +55,8 @@ import java.text.DecimalFormat
 class DXDSFragment(var fast3VM: Fast3ViewModel) : BaseFast3Fragment<DXDSVm, FragDxdsBinding>() {
     private var areaViewList: MutableList<GameAreaView> = mutableListOf()
     private var moneyViewList: SparseArray<Pair<TextView, TextView>> = SparseArray()
+    private val numAnimators by lazy { mutableListOf<Animator>() }
+    private val numAnimSet by lazy { AnimatorSet() }
 
     override fun initView(savedInstanceState: Bundle?) {
         mDatabind.model = mViewModel
@@ -142,13 +150,42 @@ class DXDSFragment(var fast3VM: Fast3ViewModel) : BaseFast3Fragment<DXDSVm, Frag
 
     private fun updateAreaBetInfo(list: List<AreaBetBean>?) {
         if (list == null) return
-        Log.d(TAG, "updateAreaBetInfo--->" + list.size)
+        Log.d(TAG, "updateAreaBetInfo--->" + list)
+        numAnimators.clear()
         list.forEach { item ->
             val pair = moneyViewList.get(item.areaCode.number)
             if (pair != null) {
-                pair.first.text = DecimalFormat("#.##").format(item.betScore / 100f).toString()
                 pair.second.text = item.userCount.toString()
+                val startNum = pair.first.text.toString().toFloatOrNull() ?: 0f
+                val endNumber = item.betScore / 100f
+                numAnimators.add(doNumberAnim(pair.first, startNum, endNumber))
             }
+        }
+        if (numAnimSet.isRunning) {
+            Log.d(TAG, "updateAreaBetInfo--->running")
+        } else {
+            numAnimSet.playTogether(numAnimators)
+            numAnimSet.start()
+        }
+    }
+
+    /**
+     * 默认玩法数字变化动画
+     */
+    private fun doNumberAnim(
+        targetView: TextView,
+        startNum: Float,
+        endNumber: Float,
+    ): ValueAnimator {
+        return ValueAnimator.ofFloat(startNum, endNumber).apply {
+            addUpdateListener {
+                duration = 500
+                targetView.text = (it.animatedValue as Float).toInt().toString()
+
+            }
+//            addListener(doOnEnd {
+//                targetView.text = DecimalFormat("#.##").format(endNumber).toString()
+//            })
         }
     }
 

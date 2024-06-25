@@ -6,6 +6,7 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.graphics.Path
 import android.graphics.PathMeasure
 import android.os.Bundle
@@ -167,7 +168,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 //关闭
                 PromptSoundPlay.endGameTip(requireContext())
                 mDatabind.txtHomeStatic.text = resources.getString(R.string.g_home_balance)
-                //结算的时候要把每个模块中奖的信息显示出来 默认
                 suspendCoroutine { continuation ->
                     val childAlphaAnimator = ObjectAnimator.ofFloat(mDatabind.llShowBetList, "alpha", 1f, 0f)
                     childAlphaAnimator.duration = 0 // 设置渐隐动画持续时间
@@ -179,9 +179,9 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                             //注区
                             llShowBetList.visibility = View.INVISIBLE
                             //显示开奖结果
-                            rlShowResult.visibility = View.VISIBLE
-                            ivHomeBg.visibility = View.VISIBLE
-                            ivHomeBgCenter.visibility = View.VISIBLE
+                            rlShowResult.isVisible = true
+                            ivHomeBg.isVisible = true
+                            ivHomeBgCenter.isVisible = true
                             //hiddenView()
                             continuation.resume(Unit)
                         }
@@ -208,11 +208,13 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     ivBetOdd.setImageResource(if (isDouble) R.drawable.icon_home_result_double else R.drawable.icon_home_result_single)
                 }
 
-                //开奖结果注区动画闪烁
-                mViewModel.userLotteryResultLiveData.value = gameAboutModel.lotteryResultList
+                startWinLottieAnim(endCallBack = {
+                    //开奖结果注区动画闪烁
+                    mViewModel.userLotteryResultLiveData.value = gameAboutModel.lotteryResultList
 
-                //中奖区域金额刷新
-                notifyMoneyOkView(gameAboutModel.userLotteryResult)
+                    //中奖区域金额刷新
+                    notifyMoneyOkView(gameAboutModel.userLotteryResult)
+                })
 
 //            mViewModel.startCountDown(gameAboutModel.countDown)
             }
@@ -228,6 +230,35 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             mDatabind.apply {
                 txtHomeStatic.text = resources.getString(R.string.g_home_drawing_being)
             }
+        }
+    }
+
+    /**
+     * 播放中奖lottie动画
+     */
+    @SuppressLint("SetTextI18n")
+    private fun startWinLottieAnim(endCallBack: (() -> Unit)?){
+        mDatabind.apply {
+            groupWinLottie.isVisible = true
+//            txtWinMoney.text = "$${gameAboutModel.netIncome}"
+            txtWinMoney.text = "$100000001"
+            lottieAnimView.addAnimatorListener(object :Animator.AnimatorListener{
+                override fun onAnimationStart(animation: Animator) {
+                }
+
+                override fun onAnimationEnd(animation: Animator) {
+                    endCallBack?.invoke()
+                    groupWinLottie.isVisible = false
+                }
+
+                override fun onAnimationCancel(animation: Animator) {
+                }
+
+                override fun onAnimationRepeat(animation: Animator) {
+                }
+            })
+
+            lottieAnimView.playAnimation()
         }
     }
 
@@ -281,6 +312,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     mDatabind.ivMultiple2.isVisible = it == GameAboutModel.AgainDoubleState.DOUBLE
                 }
                 mViewModel.startCountDown(gameAboutModel.countDown)
+                mViewModel.isClickOperation = stage == GameAboutModel.Stage.NEW
                 when (this) {
                     GameAboutModel.Stage.NEW -> {//下注
                         Log.e(TAG, "游戏状态监听->New")
@@ -294,7 +326,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
                     GameAboutModel.Stage.SETTLE -> {//结算
                         Log.e(TAG, "游戏状态监听->SETTLE ")
-                        Log.e(TAG,"${gameAboutModel.userLotteryResult}")
+                        Log.e(TAG, "${gameAboutModel.userLotteryResult}")
                         onStartSetting(gameAboutModel.currentSettleResult)
                     }
                 }
@@ -309,6 +341,14 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 val adapter = mDatabind.rvHomeHistory.bindingAdapter
                 adapter.models = it
                 mDatabind.rlClickHide.isVisible = adapter.models!!.isNotEmpty()
+                if (it.isEmpty()) {
+                    //重置result动画高度
+                    resultAnimMoveHeight = -1
+                    mDatabind.ivHomeRotation.rotation = 180f
+                    val params = mDatabind.flRvHistory.layoutParams
+                    params?.height = 0
+                    mDatabind.flRvHistory.layoutParams = params
+                }
             }
         }
 

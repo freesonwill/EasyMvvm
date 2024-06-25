@@ -112,5 +112,6 @@ dependencies {
     //拖动的
     implementation 'com.github.kongxiaojun:EasyFloat:3.0.1'
     //implementation project(':game_sdk')
-
+    //https://github.com/airbnb/lottie-android
+    implementation 'com.airbnb.android:lottie:6.4.0'
 }
