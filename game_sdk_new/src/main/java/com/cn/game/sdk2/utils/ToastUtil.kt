@@ -25,8 +25,8 @@ object ToastUtil {
     private var lastToast: Toast? = null
 
     @JvmOverloads
-    fun showToastNormal(context: Context, message: CharSequence, duration: Int = Toast.LENGTH_SHORT) {
-        val toast = showToastCustom(context, message, null, getColor(context, android.R.color.transparent), getColor(context, R.color.white), duration, true, false)
+    fun showToastNormal(context: Context, message: CharSequence, duration: Int = Toast.LENGTH_SHORT,gravity: Int=Gravity.CENTER) {
+        val toast = showToastCustom(context, message, null, getColor(context, android.R.color.transparent), getColor(context, R.color.white), duration, true, false,gravity)
         toast.show()
     }
 
@@ -34,7 +34,8 @@ object ToastUtil {
     fun showToastCustom(context: Context, message: CharSequence, icon: Drawable?,
                         @ColorInt tintColor: Int,
                         @ColorInt textColor: Int, duration: Int,
-                        withIcon: Boolean, shouldTint: Boolean, gravity: Int = Gravity.CENTER
+                        withIcon: Boolean, shouldTint: Boolean,
+                        gravity: Int = Gravity.CENTER
     ): Toast {
         val context = context.applicationContext
         val currentToast = Toast.makeText(context, "", duration)
