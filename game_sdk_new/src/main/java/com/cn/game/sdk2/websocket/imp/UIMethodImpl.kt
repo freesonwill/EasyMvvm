@@ -6,6 +6,7 @@ import com.cn.game.sdk2.websocket.appListener
 import com.cn.game.sdk2.websocket.balance
 import com.cn.game.sdk2.websocket.bean.Betting
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
+import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.isEmpty
 import com.cn.game.sdk2.websocket.isNotEmpty
 import com.cn.game.sdk2.websocket.miniGameId
@@ -56,60 +57,48 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
         recordBean: BettingRecordBean,
         block: (isMoneyEnough: Boolean, result: BettingRecordBean?) -> Unit
     ) {
-        if (previousSuccess) {
-            currentTempCountMoney += recordBean.money
-            //每个注区的总金额 -》currentCountMoney
-            //每个注区的临时总金额 -》currentTempCountMoney
-            //每个注区的确认总金额 -》currentConfirmCountMoney
-            currentCountMoney = currentTempCountMoney + currentConfirmCountMoney
+        currentTempCountMoney += recordBean.money
+        //每个注区的总金额 -》currentCountMoney
+        //每个注区的临时总金额 -》currentTempCountMoney
+        //每个注区的确认总金额 -》currentConfirmCountMoney
+        currentCountMoney = currentTempCountMoney + currentConfirmCountMoney
+        //跟新again和double
+        gameAboutModel.setOnceCountMoney(currentCountMoney)
 
-            bettingListTemp.isNotEmpty {
-                //已存在同样注区的下注 累计计算已下注金额
-                if (it.containsKey(recordBean.bettingArea)) {
-                    val existRecord = it[recordBean.bettingArea]
-                    val currentMoney = existRecord?.money!! + recordBean.money
-                    val countMoney = if (bettingListConfirmed.containsKey(recordBean.bettingArea)) {
-                        currentMoney + bettingListConfirmed[recordBean.bettingArea]?.money!!
-                    } else {
-                        currentMoney
-                    }
-                    existRecord.money = countMoney
-                    "下注194：$existRecord".loge("addBetting")
-                    block(balance >= currentCountMoney, existRecord)
-                }
-                //不存在已下注 注区；直接保存当次下注
-                else {
-                    bettingListTemp[recordBean.bettingArea] = recordBean
-                    "下注200：$recordBean".loge("addBetting")
-                    block(balance >= currentCountMoney, recordBean)
-                }
-            }.isEmpty {
-                //新的下注 或者 提交过一次
-                bettingListTemp[recordBean.bettingArea] = recordBean
-                //判断这次下注是否是已提交过的注区
-                if (bettingListConfirmed.containsKey(recordBean.bettingArea)) {
-                    //已下注过 存在确认过的金额
-                    recordBean.money += bettingListConfirmed[recordBean.bettingArea]?.money!!
-                    "下注210：$recordBean".loge("addBetting")
-                    block(balance >= currentCountMoney, recordBean)
+        bettingListTemp.isNotEmpty {
+            //已存在同样注区的下注 累计计算已下注金额
+            if (it.containsKey(recordBean.bettingArea)) {
+                val existRecord = it[recordBean.bettingArea]
+                val currentMoney = existRecord?.money!! + recordBean.money
+                val countMoney = if (bettingListConfirmed.containsKey(recordBean.bettingArea)) {
+                    currentMoney + bettingListConfirmed[recordBean.bettingArea]?.money!!
                 } else {
-                    "下注213：$recordBean".loge("addBetting")
-                    //bettingListTemp 临时下注为空 直接保存当次下注
-                    block(balance >= currentCountMoney, recordBean)
+                    currentMoney
                 }
+                existRecord.money = countMoney
+                "下注194：$existRecord".loge("addBetting")
+                block(balance >= currentCountMoney, existRecord)
             }
-//            //根据 续压集合是否为空来判断⬆是不是刚进来
-//            againBettingList.isNotEmpty {
-//                //当前下注总金额大于余额时 无法续压
-//                if (balance >= (currentCountMoney + againCountMoney) * 100) {
-//                    gameAboutModel.changeCanAgain(true)
-//                } else {
-//                    gameAboutModel.changeCanAgain(false)
-//                }
-//            }
-        } else {
-            "下注228：上次下注还未返回".loge("addBetting")
-            block(false, null)
+            //不存在已下注 注区；直接保存当次下注
+            else {
+                bettingListTemp[recordBean.bettingArea] = recordBean
+                "下注200：$recordBean".loge("addBetting")
+                block(balance >= currentCountMoney, recordBean)
+            }
+        }.isEmpty {
+            //新的下注 或者 提交过一次
+            bettingListTemp[recordBean.bettingArea] = recordBean
+            //判断这次下注是否是已提交过的注区
+            if (bettingListConfirmed.containsKey(recordBean.bettingArea)) {
+                //已下注过 存在确认过的金额
+                recordBean.money += bettingListConfirmed[recordBean.bettingArea]?.money!!
+                "下注210：$recordBean".loge("addBetting")
+                block(balance >= currentCountMoney, recordBean)
+            } else {
+                "下注213：$recordBean".loge("addBetting")
+                //bettingListTemp 临时下注为空 直接保存当次下注
+                block(balance >= currentCountMoney, recordBean)
+            }
         }
     }
 
@@ -126,6 +115,8 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
         currentTempCountMoney = 0
         //清空临时集合
         bettingListTemp.clear()
+        //跟新again和double
+        gameAboutModel.setOnceCountMoney(currentCountMoney)
         //返回已确认的集合
         bettingListConfirmed.isNotEmpty {
             val confirmedList = ArrayList<BettingRecordBean>()
@@ -139,21 +130,23 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
     }
 
     fun commitBetting() {
-        //等有返回结果后 再赋值成true
-        previousSuccess = false
-        val betReq = GameReq.BetReq.newBuilder()
-        betReq.setMiniGameId(miniGameId)
-        bettingListTemp.forEach { (betting, bettingRecordBean) ->
-            "注区${betting.number},下注金额：${bettingRecordBean.money}".loge("GameService-确认下注")
-            val areaBetReq = GameReq.AreaBetReq.newBuilder().setAreaCode(betting.number)
-                .setBetScore(bettingRecordBean.money).build()
-            betReq.addAreaBet(areaBetReq)
+        if (previousSuccess) {
+            //等有返回结果后 再赋值成true
+            previousSuccess = false
+            val betReq = GameReq.BetReq.newBuilder()
+            betReq.setMiniGameId(miniGameId)
+            bettingListTemp.forEach { (betting, bettingRecordBean) ->
+                "注区${betting.number},下注金额：${bettingRecordBean.money}".loge("GameService-确认下注")
+                val areaBetReq = GameReq.AreaBetReq.newBuilder().setAreaCode(betting.number)
+                    .setBetScore(bettingRecordBean.money).build()
+                betReq.addAreaBet(areaBetReq)
+            }
+            val build = betReq.build()
+            bet(build)
+        } else {
+            "下注228：上次下注还未返回".loge("addBetting")
+            gameAboutModel.setBettingSuccess(false)
         }
-        val build = betReq.build()
-        //bet(build)
-        //临时本地调试代码
-        previousSuccess = true
-        bettingListTemp.clear()
     }
 
     /**
@@ -162,16 +155,12 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
      * 2，牌面上无下注时才能续压，所以续压的总金额就是当前页面的总金额
      */
     fun againBetting(): Map<Betting, BettingRecordBean>? {
-        if (previousSuccess) {
-            //1
-            currentTempCountMoney = againCountMoney
-            //2
-            currentCountMoney = againCountMoney
-            bettingListTemp.putAll(againBettingList)
-            return againBettingList
-        } else {
-            return null
-        }
+        //1
+        currentTempCountMoney = againCountMoney
+        //2
+        currentCountMoney = againCountMoney
+        bettingListTemp.putAll(againBettingList)
+        return againBettingList
     }
 
     /**
@@ -180,23 +169,40 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
      *    currentTempCountMoney * 2 + currentConfirmCountMoney
      */
     fun doubleBetting(block: (isMoneyEnough: Boolean, result: Map<Betting, BettingRecordBean>?) -> Unit) {
-        if (previousSuccess) {
-            //先判断是否足够加倍
-            val doubleMoney = currentTempCountMoney * 2 + currentConfirmCountMoney
-            if (doubleMoney > balance) {
-                bettingListTemp.mapValues {
-                    it.value.money *= 2
+        //先判断是否足够加倍
+        if (doubleMoney < balance) {
+            val uiMap = HashMap<Betting, BettingRecordBean>()
+            bettingListTemp.isNotEmpty { map ->
+                map.mapValues {
+                    val uiMoney: Int
                     if (bettingListConfirmed.containsKey(it.key)) {
                         it.value.money += 2 * bettingListConfirmed[it.key]?.money!!
+                        uiMoney = it.value.money * 2 + bettingListConfirmed[it.key]?.money!! * 2
+                    } else {
+                        uiMoney = it.value.money * 2
+                        it.value.money *= 2
                     }
+                    val uiBean = it.value
+                    uiBean.money = uiMoney
+                    uiMap[it.key] = uiBean
                     it.value
                 }
-                currentTempCountMoney = doubleMoney
-                block(true, bettingListTemp)
-            } else {
-                block(false, null)
+            }.isEmpty {
+                bettingListConfirmed.isNotEmpty { map ->
+                    val mapValues = map.mapValues {
+                        val uiMoney: Int = it.value.money * 2
+                        val uiBean = it.value
+                        uiBean.money = uiMoney
+                        uiMap[it.key] = uiBean
+                        it.value
+                    }
+                    bettingListTemp.putAll(mapValues)
+                }
             }
-
+            currentTempCountMoney = doubleMoney
+            block(true, uiMap)
+        } else {
+            block(false, null)
         }
     }
 
