@@ -72,9 +72,9 @@ class LeopardFragment(private val fast3VM:Fast3ViewModel):BaseFast3Fragment<Leop
 
     override fun createObserver() {
         super.createObserver()
-        fast3VM.userLotteryResultLiveData.observe(viewLifecycleOwner) { resultList ->
-            setLotteryResult(resultList, areaViewList, fast3VM.prizeAnimTime / 5, 5)
-        }
+//        fast3VM.userLotteryResultLiveData.observe(viewLifecycleOwner) { resultList ->
+//            setLotteryResult(resultList, areaViewList, fast3VM.prizeAnimTime / 5, 5)
+//        }
 //        fast3VM.historyResultBeanLD.observe(viewLifecycleOwner) { bean ->
 //            lifecycleScope.launch {
 //                val views = mutableListOf<View>().also {

@@ -15,6 +15,7 @@ import com.cn.game.sdk2.R
 import com.cn.game.sdk2.data.enums.GAME_ID_ENUM
 import com.cn.game.sdk2.utils.tool.indicator.CommonPagerIndicator
 import com.cn.game.sdk2.ui.HomeXPopupDialog
+import com.cn.game.sdk2.utils.ToastUtil
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
 import com.lxj.xpopup.enums.PopupAnimation
@@ -40,6 +41,7 @@ object ViewHelper {
     private var homeXPopupDialog: HomeXPopupDialog? = null
 
     fun showFastView(context: Context) {
+        ToastUtil.showToastNormal(context,"开始押注", gravity = Gravity.BOTTOM)
         EasyFloat.with(context).setSidePattern(SidePattern.DEFAULT)
             .setImmersionStatusBar(true)
             .setTag(TAG_FASTVIEW)

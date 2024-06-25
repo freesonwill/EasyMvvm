@@ -34,6 +34,10 @@ import game.common.proto.ClientRes
 import game.mod.proc.yf.proto.req.GameReq
 import game.mod.proc.yf.proto.req.GameReq.EnterMiniGame
 import game.mod.proc.yf.proto.res.GameRes
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * 提供ui层调用的统一对象
@@ -130,18 +134,21 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
     }
 
     override fun ping() {
-        var bytearray = ByteArray(1)
-        bytearray.set(0, 1)
-        send(0, 2, bytearray)
+        send(0, 2, ByteArray(0))
     }
 
     private fun send(mid: Short, sid: Short, data: ByteArray) {
-        "send()->mid:$mid-sid:$sid".loge(tag)
-        try {
-            val msg = client.newPack(mid, sid, data, data.size)
-            client.send(msg)
-        } catch (e: Exception) {
-            e.printStackTrace()
+
+        GlobalScope.launch {
+            withContext(Dispatchers.Main) {
+                "send()->mid:$mid-sid:$sid".loge(tag)
+                try {
+                    val msg = client.newPack(mid, sid, data, data.size)
+                    client.send(msg)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
         }
     }
 
@@ -248,6 +255,7 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
     override fun miniGameBetResult(result: GameRes.MyMiniGameBetResult) {
         previousSuccess = true
         //result = 0 成功 1 余额不住 3超时
+        result.toString().loge("ssssss")
         when (result.betResultInfoListList[0].result) {
             0 -> {
                 gameAboutModel.lastBetting = tempLastBetting
