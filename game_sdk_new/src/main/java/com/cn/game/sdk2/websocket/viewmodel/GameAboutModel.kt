@@ -7,7 +7,6 @@ import com.cn.game.sdk2.websocket.bean.AreaBetBean
 import com.cn.game.sdk2.websocket.bean.Betting
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import com.cn.game.sdk2.websocket.bean.RoundInfoBean
-import org.junit.experimental.max.MaxHistory
 
 class GameAboutModel : ViewModel() {
 
@@ -15,13 +14,18 @@ class GameAboutModel : ViewModel() {
         NEW, DEAL, SETTLE
     }
 
+    enum class AgainDoubleState {
+        NUll, AGAIN, DOUBLE
+    }
+
     private val _currentStage = MutableLiveData<Stage>()
+    private val _currentAgainDoubleState = MutableLiveData<AgainDoubleState>()
     private val _balance = MutableLiveData<Int>()
     private val _syncAreaBetInfo = MutableLiveData<List<AreaBetBean>>()
     private val _clearTrendsIds = MutableLiveData<List<Int>>()
     private val _historyRounds = MutableLiveData<List<RoundInfoBean>>()
 
-    private val _isCanAgain = MutableLiveData<Boolean>()
+    private val _isMeetAgain = MutableLiveData<Boolean>()
     private val _isLoginSuccess = MutableLiveData<Boolean>()
     private val _isSitDown = MutableLiveData<Boolean>()
     private val _isEnterGroup = MutableLiveData<Boolean>()
@@ -31,6 +35,11 @@ class GameAboutModel : ViewModel() {
     private val _toastErrorMessage = MutableLiveData<String>()
 
     /** 需要监听的字段
+     * @see currentAgainDoubleState 续压和加倍监听
+     *  NUll 不显示
+     *  AGAIN 续压
+     *  DOUBLE 加倍
+     *
      * @see currentStage : 监听阶段变化
      *  @param [NEW, DEAL, SETTLE] -> [新局开始，开奖中，结算中]
      *  @param countDown
@@ -46,7 +55,7 @@ class GameAboutModel : ViewModel() {
      *
      * @see historyRounds : 开奖历史记录
      *
-     * @see isCanAgain : 显示隐藏续压按钮
+     * @see isMeetAgain : 显示隐藏续压按钮
      *
      * @see isBettingSuccess : 下注是否成功
      *  @param bettingMessage 下注结果
@@ -57,6 +66,8 @@ class GameAboutModel : ViewModel() {
      *  @see toastErrorMessage 弹窗信息
      *
      * 直接使用的字段
+     *
+     *
     > - countDown 阶段倒计时
     > - roundId 期号
     > - loginErrorMessage
@@ -104,6 +115,9 @@ class GameAboutModel : ViewModel() {
     val currentStage: LiveData<Stage>
         get() = _currentStage
 
+    val currentAgainDoubleState: LiveData<AgainDoubleState>
+        get() = _currentAgainDoubleState
+
     var currentSettleResult: RoundInfoBean? = null
 
     /**
@@ -129,10 +143,10 @@ class GameAboutModel : ViewModel() {
         get() = _historyRounds
 
     /**
-     * 监听isCanAgain 显示隐藏续压按钮
+     * 监听isMeetAgain
      */
-    val isCanAgain: LiveData<Boolean>
-        get() = _isCanAgain
+    val isMeetAgain: LiveData<Boolean>
+        get() = _isMeetAgain
 
     fun setBettingSuccess(isSuccess: Boolean) {
         _isBettingSuccess.value = isSuccess
@@ -154,8 +168,8 @@ class GameAboutModel : ViewModel() {
         _isLeaveGroup.value = leave
     }
 
-    fun changeCanAgain(canAgain: Boolean) {
-        _isCanAgain.value = canAgain
+    fun changeMeetAgain(canAgain: Boolean) {
+        _isMeetAgain.value = canAgain
     }
 
     fun changeBalance(b: Int) {
@@ -164,6 +178,10 @@ class GameAboutModel : ViewModel() {
 
     fun changeStage(stage: Stage) {
         _currentStage.value = stage
+    }
+
+    fun changeAgainDoubleState(state: AgainDoubleState) {
+        _currentAgainDoubleState.value = state
     }
 
     fun changeAreaBetInfo(info: List<AreaBetBean>) {
@@ -187,11 +205,6 @@ class GameAboutModel : ViewModel() {
         _toastErrorMessage.value = msg
     }
 
-    var miniGameId: Int = 0
-    var countDown: Int = 0 //阶段倒计时
-    var roundId: String = "" //期号
-    var loginErrorMessage = ""
-
     /**
      * 结算阶段使用
      * 开奖注区，用于展示注区的闪闪动画
@@ -209,4 +222,19 @@ class GameAboutModel : ViewModel() {
      * 用户中间后的面板砝码金额已经中奖注区
      */
     var userLotteryResult: ArrayList<BettingRecordBean>? = null
+
+    private val _onceCountMoney = MutableLiveData<Int>()
+
+    val onceCountMoney: LiveData<Int>
+        get() = _onceCountMoney
+
+    fun setOnceCountMoney(money: Int) {
+        _onceCountMoney.value = money
+    }
+
+    var miniGameId: Int = 0
+    var countDown: Int = 0 //阶段倒计时
+    var roundId: String = "" //期号
+    var loginErrorMessage = ""
+    var lastBetting: Betting? = null
 }

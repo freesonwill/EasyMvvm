@@ -241,7 +241,7 @@ fun List<Int>.calculateArea(): ArrayList<Betting> {
         17 -> betAreaList.add(SUM_17())
     }
     //------对子------
-    isDouble { double, num ->
+    isPairs { double, num ->
         if (double) {
             when (num) {
                 1 -> {
@@ -307,7 +307,7 @@ fun List<Int>.isEquals(): Boolean {
     return this[0] == this[1] && this[0] == this[2]
 }
 
-fun List<Int>.isDouble(block: (double: Boolean, num: Int) -> Unit) {
+fun List<Int>.isPairs(block: (double: Boolean, num: Int) -> Unit) {
     if (this.size != 3) {
         block(false, -1)
     } else {
@@ -341,21 +341,7 @@ fun List<Int>.isBig(): Boolean {
 }
 
 fun List<Int>.isDouble(): Boolean {
-    if (this.size != 3) {
-        return false
-    }
-    val num1 = this[0]
-    val num2 = this[1]
-    val num3 = this[2]
-    return if (num1 == num2) {
-        true
-    } else if (num1 == num3) {
-        true
-    } else if (num2 == num3) {
-        true
-    } else {
-        false
-    }
+   return sum() % 2 == 0
 }
 
 fun List<Int>.countSingle(): HashMap<Int, Int> {

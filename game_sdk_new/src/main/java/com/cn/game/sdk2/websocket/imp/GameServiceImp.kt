@@ -1,5 +1,6 @@
 package com.cn.game.sdk2.websocket.imp
 
+import androidx.lifecycle.LifecycleOwner
 import com.cn.game.sdk2.network.code.GameReqCode
 import com.cn.game.sdk2.websocket.bean.Betting
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
@@ -39,6 +40,16 @@ import game.mod.proc.yf.proto.res.GameRes
  */
 open class GameServiceImp(private val client: GameSocketClient) : GameService,
     GameServerMessageConvertFactory {
+
+    /**
+     * 临时最后点击
+     */
+    protected var tempLastBetting: Betting? = null
+
+    /**
+     * 加倍时需要的
+     */
+    protected var doubleMoney: Int = 0
 
     /**
      * 当前临时总下注金额
@@ -211,7 +222,10 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
         gameAboutModel.addHistoryRounds(roundHistoryList)
         when (miniGameBasicInfo.stage) {
             1 -> gameAboutModel.changeStage(GameAboutModel.Stage.NEW)
-            2 -> gameAboutModel.changeStage(GameAboutModel.Stage.DEAL)
+            2 -> {
+                gameAboutModel.changeStage(GameAboutModel.Stage.DEAL)
+            }
+
             3 -> gameAboutModel.changeStage(GameAboutModel.Stage.SETTLE)
         }
         val miniGame: EnterMiniGame = EnterMiniGame.newBuilder().setMiniGameId(3).build()
@@ -236,12 +250,15 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
         //result = 0 成功 1 余额不住 3超时
         when (result.betResultInfoListList[0].result) {
             0 -> {
+                gameAboutModel.lastBetting = tempLastBetting
                 gameAboutModel.setBettingSuccess(true)
                 //下注成功后 保存当前下注总额为已确认下注金额；并将当前下注总额清空
                 //currentCountMoney包含之前确认的和现在临时的，所以可以直接覆盖已提交的
                 currentConfirmCountMoney = currentCountMoney
                 //提交成功后临时总和清空
                 currentCountMoney = 0
+                //跟新again和double
+                gameAboutModel.setOnceCountMoney(currentConfirmCountMoney)
                 previousSuccess = true
                 bettingListTemp.forEach { (betting, temBean) ->
                     if (bettingListConfirmed.containsKey(betting)) {
@@ -282,12 +299,16 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
         gameAboutModel.roundId = round.roundId //期号
         gameAboutModel.countDown = round.countDown //当前阶段剩余时间倒计时
         gameAboutModel.changeStage(GameAboutModel.Stage.NEW)
-
         againBettingList.isNotEmpty {
-            if (againCountMoney <= balance) gameAboutModel.changeCanAgain(true)
-            else gameAboutModel.changeCanAgain(false)
+            //新的一局开始，并且上一局有数据，并且余额足够
+            if (againCountMoney <= balance) {
+                gameAboutModel.changeMeetAgain(true)
+            } else {
+                //新的一局开始，并且上一局有数据，但是余额不足
+                gameAboutModel.changeMeetAgain(false)
+            }
         }.isEmpty {
-            gameAboutModel.changeCanAgain(false)
+            gameAboutModel.changeMeetAgain(false)
         }
         //重置上一局的所有钱
         currentCountMoney = 0
@@ -373,6 +394,65 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
 
     override fun serverMaintenance() {
 
+    }
+
+    private var curStage: GameAboutModel.Stage = GameAboutModel.Stage.NEW
+    private var onceCountMoney = 0
+    private var isMeetAgain = true
+
+    /**
+     * step1: 判断是不是新的一局
+     * step2: 判断能不能again (代表上一局有数据，并且余额足够)
+     * step3: 判断牌面上是否有下注
+     *  step1 = false 无法续压
+     *
+     */
+    private fun observeAgainDoubleState(owner: LifecycleOwner) {
+        gameAboutModel.currentStage.observe(owner) {
+            curStage = it
+            checkAgain()
+        }
+        gameAboutModel.onceCountMoney.observe(owner) {
+            onceCountMoney = it
+            checkAgain()
+        }
+        gameAboutModel.isMeetAgain.observe(owner) {
+            isMeetAgain = it
+            checkAgain()
+        }
+    }
+
+    private fun checkAgain() {
+        if (curStage == GameAboutModel.Stage.NEW) {
+            if (isMeetAgain) {
+                //满足基本需要要求
+                if (onceCountMoney == 0) {
+                    //牌面上没有下注才能 需要
+                    gameAboutModel.changeAgainDoubleState(GameAboutModel.AgainDoubleState.AGAIN)
+                } else {
+                    //牌面上已有下注
+                    checkDouble()
+                }
+            } else {
+                if (onceCountMoney > 0) {
+                    checkDouble()
+                } else {
+                    //不满足续压 牌面为空
+                    gameAboutModel.changeAgainDoubleState(GameAboutModel.AgainDoubleState.NUll)
+                }
+            }
+        } else {
+            gameAboutModel.changeAgainDoubleState(GameAboutModel.AgainDoubleState.NUll)
+        }
+    }
+
+    private fun checkDouble() {
+        //不满足续压 计算加倍
+        doubleMoney = currentTempCountMoney * 2 + currentConfirmCountMoney
+        if (doubleMoney < balance) gameAboutModel.changeAgainDoubleState(GameAboutModel.AgainDoubleState.DOUBLE)
+        else
+        //既不满足续压 钱也不够加倍
+            gameAboutModel.changeAgainDoubleState(GameAboutModel.AgainDoubleState.NUll)
     }
 
 }
