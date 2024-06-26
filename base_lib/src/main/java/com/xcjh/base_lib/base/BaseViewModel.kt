@@ -7,7 +7,7 @@ import com.xcjh.base_lib.ModuleInitializer
 
 
 abstract class BaseViewModel : ViewModel() {
-
+    protected val TAG get() = this.javaClass.simpleName
     val loadingChange: UiLoadingChange by lazy { UiLoadingChange() }
     //数据回收操作
     private val dataGC by lazy { mutableSetOf<() -> Unit>() }

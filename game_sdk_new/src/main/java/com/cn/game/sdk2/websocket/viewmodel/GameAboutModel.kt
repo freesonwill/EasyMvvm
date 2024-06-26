@@ -7,6 +7,7 @@ import com.cn.game.sdk2.websocket.bean.AreaBetBean
 import com.cn.game.sdk2.websocket.bean.Betting
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import com.cn.game.sdk2.websocket.bean.RoundInfoBean
+import com.kunminx.architecture.ui.callback.UnPeekLiveData
 
 class GameAboutModel : ViewModel() {
 
@@ -18,7 +19,7 @@ class GameAboutModel : ViewModel() {
         NUll, AGAIN, DOUBLE
     }
 
-    private val _currentStage = MutableLiveData<Stage>()
+    private val _currentStage = UnPeekLiveData<Stage>()
     private val _currentAgainDoubleState = MutableLiveData<AgainDoubleState>()
     private val _balance = MutableLiveData<Int>()
     private val _syncAreaBetInfo = MutableLiveData<List<AreaBetBean>>()

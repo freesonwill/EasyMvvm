@@ -1,6 +1,7 @@
 package com.cn.game.sdk2.ui.fast3
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,7 @@ import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
 import com.cn.game.sdk2.ui.viewmodel.fast3.SumTotalVm
 import com.cn.game.sdk2.utils.ext.ViewExt.locationOnScreen
+import com.cn.game.sdk2.utils.tool.measureView
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import kotlinx.coroutines.launch
 
@@ -64,16 +66,14 @@ class SumTotalFragment(fast3VM: Fast3ViewModel) :
                     // 确保只监听一次
                     it.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
-//                    val areaViewLocation = areaView.locationOnScreen
-//                    val moneyViewLocation = it.locationOnScreen
+                    val areaViewLocation = areaView.locationOnScreen
+                    val moneyViewLocation = it.locationOnScreen
 //                    //x轴偏移至中心点
-//                    it.translationX = areaViewLocation[0] + (areaView.width - it.measuredWidth) / 2f
+                    it.translationX = areaViewLocation[0] + (areaView.width - it.measuredWidth) / 2f
 //                    //y轴偏移至底部
-//                    it.translationY = when {
-//                        moneyViewLocation[1] + it.measuredHeight > areaViewLocation[1] ->
-//                            areaViewLocation[1] - moneyViewLocation[1] + it.measuredHeight.toFloat()
-//                        else->0f
-//                    }
+                    val areaY = areaViewLocation[1] + areaView.measuredHeight
+                    val moneyY = moneyViewLocation[1] + it.measuredHeight
+                    it.translationY = areaY - moneyY.toFloat()
 
 //                    it.translationX =50f
 //                    it.translationY = -50f
@@ -89,8 +89,9 @@ class SumTotalFragment(fast3VM: Fast3ViewModel) :
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
-            params.gravity = Gravity.CENTER
-//            areaView.clipChildren = false(it, params)
+            mDatabind.rlHomeRoot.addView(it, params)
+            it.translationY = 0f
+            it.translationX = 0f
         }
     }
 }

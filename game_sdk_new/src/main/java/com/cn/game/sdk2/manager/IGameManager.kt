@@ -11,7 +11,7 @@ import com.cn.game.sdk2.manager.listener.IGameListener
 interface IGameManager {
 
     //开始倒计时
-    fun startCountDownTimer(countdownTime:Int,countDownInterval:Int=1000,lis: IGameListener? = null)
+    fun startCountDownTimer(countdownTime:Long,countDownInterval:Long=1000L,lis: IGameListener? = null)
 
     //是否可以点击
     val isClickOperation: Boolean
