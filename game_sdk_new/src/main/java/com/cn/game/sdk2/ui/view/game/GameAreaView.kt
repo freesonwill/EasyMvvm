@@ -17,16 +17,10 @@ class GameAreaView : FrameLayout {
     lateinit var content: View
     lateinit var gameCallback: IGameView
     lateinit var moneyView: MoneyOKView
-    lateinit var flickerView:View
+    lateinit var flickerView: View
     var okViewGravity: Int = Gravity.BOTTOM
-    var areaCode: Int = 0
-    var areaInfo: Betting?= null
-        set(value) {
-            value?.number ?.let {
-                areaCode = it
-            }
-            field = value
-        }
+    var areaInfo: Betting? = null
+    val areaCode: Int get() = areaInfo?.number ?: 0
 
     private var oldX = 0f
     private var oldY = 0f
@@ -61,7 +55,7 @@ class GameAreaView : FrameLayout {
                 val newY = event.y
                 if (abs(oldX - newX) < 5 && abs(oldY - newY) < 5) {
                     //处理点击事件
-                    onLocationClickListener?.onLocationClick(newX,newY,event.rawX,event.rawY)
+                    onLocationClickListener?.onLocationClick(newX, newY, event.rawX, event.rawY)
                 }
             }
         }
@@ -71,12 +65,12 @@ class GameAreaView : FrameLayout {
     /**
      * 触摸点击事件，返回点击的坐标信息
      */
-    fun setOnLocationClickListener(listener:LocationClickListener){
+    fun setOnLocationClickListener(listener: LocationClickListener) {
         onLocationClickListener = listener
     }
 
     interface LocationClickListener {
-        fun onLocationClick(x: Float, y: Float,rawX:Float,rawY:Float)
+        fun onLocationClick(x: Float, y: Float, rawX: Float, rawY: Float)
     }
 
 }

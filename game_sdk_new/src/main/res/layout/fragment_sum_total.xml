@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="model"
             type="com.cn.game.sdk2.ui.viewmodel.fast3.SumTotalVm" />
@@ -51,12 +52,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{model.multiplierStr(4)}"
-                    tools:text="x61"
                     android:textColor="@color/g_f8e0c4"
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivSumFour" />
+                    app:layout_constraintTop_toBottomOf="@id/ivSumFour"
+                    tools:text="x61" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -103,12 +104,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{model.multiplierStr(5)}"
-                    tools:text="x31"
                     android:textColor="@color/g_f8e0c4"
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivSumFive" />
+                    app:layout_constraintTop_toBottomOf="@id/ivSumFive"
+                    tools:text="x31" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -156,12 +157,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{model.multiplierStr(6)}"
-                    tools:text="x19"
                     android:textColor="@color/g_f8e0c4"
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivSumSix" />
+                    app:layout_constraintTop_toBottomOf="@id/ivSumSix"
+                    tools:text="x19" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -209,12 +210,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{model.multiplierStr(7)}"
-                    tools:text="x13"
                     android:textColor="@color/g_f8e0c4"
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivSumSeven" />
+                    app:layout_constraintTop_toBottomOf="@id/ivSumSeven"
+                    tools:text="x13" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -262,12 +263,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{model.multiplierStr(8)}"
-                    tools:text="x9"
                     android:textColor="@color/g_f8e0c4"
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivSumEight" />
+                    app:layout_constraintTop_toBottomOf="@id/ivSumEight"
+                    tools:text="x9" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -315,12 +316,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{model.multiplierStr(9)}"
-                    tools:text="x7"
                     android:textColor="@color/g_f8e0c4"
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivSumNine" />
+                    app:layout_constraintTop_toBottomOf="@id/ivSumNine"
+                    tools:text="x7" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -367,12 +368,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{model.multiplierStr(10)}"
-                    tools:text="x7"
                     android:textColor="@color/g_f8e0c4"
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivSumTen" />
+                    app:layout_constraintTop_toBottomOf="@id/ivSumTen"
+                    tools:text="x7" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -419,12 +420,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{model.multiplierStr(14)}"
-                    tools:text="x7"
                     android:textColor="@color/g_f8e0c4"
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivSumEleven" />
+                    app:layout_constraintTop_toBottomOf="@id/ivSumEleven"
+                    tools:text="x7" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -471,12 +472,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{model.multiplierStr(12)}"
-                    tools:text="x7"
                     android:textColor="@color/g_f8e0c4"
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivSumTwelve" />
+                    app:layout_constraintTop_toBottomOf="@id/ivSumTwelve"
+                    tools:text="x7" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -523,12 +524,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{model.multiplierStr(13)}"
-                    tools:text="x9"
                     android:textColor="@color/g_f8e0c4"
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivSumThirteen" />
+                    app:layout_constraintTop_toBottomOf="@id/ivSumThirteen"
+                    tools:text="x9" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -544,6 +545,7 @@
             android:id="@+id/gavSumFourteen"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            app:areaInfo="@{model.bettingArray[14]}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/gavSumFifteen"
             app:layout_constraintStart_toStartOf="parent"
@@ -574,12 +576,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{model.multiplierStr(14)}"
-                    tools:text="x13"
                     android:textColor="@color/g_f8e0c4"
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivSumFourTeen" />
+                    app:layout_constraintTop_toBottomOf="@id/ivSumFourTeen"
+                    tools:text="x13" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -595,6 +597,7 @@
             android:id="@+id/gavSumFifteen"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            app:areaInfo="@{model.bettingArray[15]}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/gavSumSixteen"
             app:layout_constraintStart_toEndOf="@id/gavSumFourteen"
@@ -625,12 +628,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{model.multiplierStr(15)}"
-                    tools:text="x19"
                     android:textColor="@color/g_f8e0c4"
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivSumFifteen" />
+                    app:layout_constraintTop_toBottomOf="@id/ivSumFifteen"
+                    tools:text="x19" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -646,6 +649,7 @@
             android:id="@+id/gavSumSixteen"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            app:areaInfo="@{model.bettingArray[16]}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/gavSumSeventeen"
             app:layout_constraintStart_toEndOf="@id/gavSumFifteen"
@@ -676,12 +680,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{model.multiplierStr(16)}"
-                    tools:text="x31"
                     android:textColor="@color/g_f8e0c4"
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivSumSixteen" />
+                    app:layout_constraintTop_toBottomOf="@id/ivSumSixteen"
+                    tools:text="x31" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -697,6 +701,7 @@
             android:id="@+id/gavSumSeventeen"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            app:areaInfo="@{model.bettingArray[17]}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/gavSumTwelve"
             app:layout_constraintStart_toEndOf="@id/gavSumSixteen"
@@ -726,13 +731,13 @@
                     android:id="@+id/txtSumSeventeen"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    tools:text="x61"
                     android:text="@{model.multiplierStr(17)}"
                     android:textColor="@color/g_f8e0c4"
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivSumSeventeen" />
+                    app:layout_constraintTop_toBottomOf="@id/ivSumSeventeen"
+                    tools:text="x61" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

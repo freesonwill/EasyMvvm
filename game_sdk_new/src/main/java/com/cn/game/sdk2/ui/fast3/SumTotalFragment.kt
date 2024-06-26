@@ -1,46 +1,96 @@
 package com.cn.game.sdk2.ui.fast3
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
+import android.view.ViewTreeObserver
+import android.widget.FrameLayout
 import androidx.lifecycle.lifecycleScope
 import com.cn.game.sdk2.base.BaseGameFragment
 import com.cn.game.sdk2.databinding.FragmentSumTotalBinding
+import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
 import com.cn.game.sdk2.ui.viewmodel.fast3.SumTotalVm
+import com.cn.game.sdk2.utils.ext.ViewExt.locationOnScreen
+import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import kotlinx.coroutines.launch
 
 /**
  * 总和
  */
-class SumTotalFragment(fast3VM: Fast3ViewModel) : BaseFast3Fragment<SumTotalVm, FragmentSumTotalBinding>(fast3VM) {
-    override fun initView(savedInstanceState: Bundle?) {
+class SumTotalFragment(fast3VM: Fast3ViewModel) :
+    BaseFast3Fragment<SumTotalVm, FragmentSumTotalBinding>(fast3VM) {
+
+    override fun initAreaViewList() {
         mDatabind.model = mViewModel
+        mDatabind.apply {
+            areaViewList = mutableListOf(
+                gavSumFour.also { it.flickerView = ivSumFlashFour },
+                gavSumFive.also { it.flickerView = ivSumFlashFive },
+                gavSumSix.also { it.flickerView = ivSumFlashSix },
+                gavSumSeven.also { it.flickerView = ivSumFlashSeven },
+                gavSumEight.also { it.flickerView = ivSumFlashEight },
+                gavSumNine.also { it.flickerView = ivSumFlashNine },
+                gavSumTen.also { it.flickerView = ivSumFlashTen },
+                gavSumEleven.also { it.flickerView = ivSumFlashEleven },
+                gavSumTwelve.also { it.flickerView = ivSumFlashTwelve },
+                gavSumThirteen.also { it.flickerView = ivSumFlashThirteen },
+                gavSumFourteen.also { it.flickerView = ivSumFlashFourteen },
+                gavSumFifteen.also { it.flickerView = ivSumFlashFifteen },
+                gavSumSixteen.also { it.flickerView = ivSumFlashSixteen },
+                gavSumSeventeen.also { it.flickerView = ivSumFlashSeventeen },
+            )
+        }
     }
 
     override fun createObserver() {
         super.createObserver()
-        fast3VM.historyResultBeanLD.observe(viewLifecycleOwner) { bean ->
-            lifecycleScope.launch {
-                val views = mutableListOf<View>().also {
-                    when (bean.resultSum) {
-                        4 -> it.add(mDatabind.ivSumFlashFour)
-                        5 -> it.add(mDatabind.ivSumFlashFive)
-                        6 -> it.add(mDatabind.ivSumFlashSix)
-                        7 -> it.add(mDatabind.ivSumFlashSeven)
-                        8 -> it.add(mDatabind.ivSumFlashEight)
-                        9 -> it.add(mDatabind.ivSumFlashNine)
-                        10 -> it.add(mDatabind.ivSumFlashTen)
-                        11 -> it.add(mDatabind.ivSumFlashEleven)
-                        12 -> it.add(mDatabind.ivSumFlashTwelve)
-                        13 -> it.add(mDatabind.ivSumFlashThirteen)
-                        14 -> it.add(mDatabind.ivSumFlashFourteen)
-                        15 -> it.add(mDatabind.ivSumFlashFifteen)
-                        16 -> it.add(mDatabind.ivSumFlashSixteen)
-                        17 -> it.add(mDatabind.ivSumFlashSeventeen)
-                    }
+    }
+
+    override fun addMoneyOkView(
+        recordBean: BettingRecordBean,
+        areaView: GameAreaView,
+        x: Float,
+        y: Float,
+        rawY: Float,
+        emitAnimCallBack: () -> Unit
+    ) {
+        areaView.moneyView.let {
+            val viewTreeObserver = it.viewTreeObserver
+            viewTreeObserver.addOnGlobalLayoutListener(object :
+                ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    // 确保只监听一次
+                    it.viewTreeObserver.removeOnGlobalLayoutListener(this)
+
+//                    val areaViewLocation = areaView.locationOnScreen
+//                    val moneyViewLocation = it.locationOnScreen
+//                    //x轴偏移至中心点
+//                    it.translationX = areaViewLocation[0] + (areaView.width - it.measuredWidth) / 2f
+//                    //y轴偏移至底部
+//                    it.translationY = when {
+//                        moneyViewLocation[1] + it.measuredHeight > areaViewLocation[1] ->
+//                            areaViewLocation[1] - moneyViewLocation[1] + it.measuredHeight.toFloat()
+//                        else->0f
+//                    }
+
+//                    it.translationX =50f
+//                    it.translationY = -50f
+
+                    recordBean.viewXYTemporary[0] = it.translationX
+                    recordBean.viewXYTemporary[1] = it.translationY
+                    emitAnimCallBack.invoke()
                 }
-                playAlphaAnimTogether(views, fast3VM.prizeAnimTime / 5, 5)
-            }
+            })
+
+            //先添加view再计算位置执行动画
+            val params = FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            params.gravity = Gravity.CENTER
+//            areaView.clipChildren = false(it, params)
         }
     }
 }

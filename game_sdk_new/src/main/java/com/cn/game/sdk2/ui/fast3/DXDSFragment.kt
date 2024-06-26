@@ -38,12 +38,12 @@ import kotlinx.coroutines.launch
 /**
  * 默认
  */
-class DXDSFragment(fast3VM: Fast3ViewModel) : BaseFast3Fragment<DXDSVm, FragDxdsBinding>(fast3VM){
+class DXDSFragment(fast3VM: Fast3ViewModel) : BaseFast3Fragment<DXDSVm, FragDxdsBinding>(fast3VM) {
     private var moneyViewList: SparseArray<Pair<TextView, TextView>> = SparseArray()
     private val numAnimators by lazy { mutableListOf<Animator>() }
     private val numAnimSet by lazy { AnimatorSet() }
 
-    override fun initView(savedInstanceState: Bundle?) {
+    override fun initAreaViewList() {
         mDatabind.model = mViewModel
         mDatabind.apply {
             bigView.areaInfo = mViewModel.bettingArray[1]
@@ -69,51 +69,6 @@ class DXDSFragment(fast3VM: Fast3ViewModel) : BaseFast3Fragment<DXDSVm, FragDxds
             areaViewList.add(doubleView)
             areaViewList.add(leopardView)
         }
-        for (areaView in areaViewList) {
-            areaView.moneyView.setMoneyOKClickListener(object : MoneyOKView.OnMoneyOKClickListener {
-                override fun onConfirm() {
-                    fast3VM.betOkClick.value = true;
-                }
-
-                override fun onDelete() {
-                    fast3VM.betDeleteClick.value = true;
-                }
-            })
-            areaView.setOnLocationClickListener(object : GameAreaView.LocationClickListener {
-                override fun onLocationClick(x: Float, y: Float, rawX: Float, rawY: Float) {
-                    //处理点击事件
-                    //先判断余额是否够这次 并且扣取钱
-                    //todo:整个流程转移至FastMainFragment
-                    Log.d(TAG,"setOnLocationClickListener isClickOperation:"+fast3VM.isClickOperation)
-                    if (fast3VM.isClickOperation && PromptSoundPlay.handleClick()) {
-                        GameSocketManager.getInstance()?.getGameService()?.apply {
-                            addBetting(
-                                BettingRecordBean(
-                                    areaView.areaInfo!!,
-                                    money = fast3VM.betMoney
-                                )
-                            ) { isMoneyEnough, result ->
-                                if (isMoneyEnough) {
-                                    if (result != null) {
-//                                        fast3VM.currentBettingRecordBean = Pair(result,areaView.moneyView)
-                                        areaView.moneyView.setShowMoney(result.money)
-                                        if (!areaView.moneyView.isAdd()) {
-                                            addMoneyOkView(result,areaView, x, y, rawY)
-                                        } else {
-                                            emitMoneyAnim(areaView, areaView.moneyView)
-                                        }
-                                    }
-                                } else {
-                                    ToastUtil.showToastWarning(getString(R.string.money_insufficient))
-                                }
-                            }
-                        }
-                    }
-                }
-            })
-        }
-        /*
-        }*/
     }
 
     override fun initData() {
@@ -190,31 +145,19 @@ class DXDSFragment(fast3VM: Fast3ViewModel) : BaseFast3Fragment<DXDSVm, FragDxds
         fast3VM.onGameAreaLocationClick.observe(viewLifecycleOwner) {
 
         }
-
-        fast3VM.userLotteryResultLiveData.observe(viewLifecycleOwner) { resultList ->
-            setLotteryResult(resultList, areaViewList, fast3VM.prizeAnimTime / 5, 5)
-        }
-
-//        fast3VM.historyResultBeanLD.observe(viewLifecycleOwner) { bean ->
-//            lifecycleScope.launch {
-//                val views = mutableListOf<View>().also {
-//                    if (bean.resultSingle == "single") it.add(mDatabind.ivFlickerLeftBelow) else it.add(
-//                        mDatabind.ivFlickerRightBelow
-//                    )
-//                    if (bean.resultSize == "big") it.add(mDatabind.ivFlickerRightTop) else it.add(
-//                        mDatabind.ivFlickerLeftTop
-//                    )
-//                    if (bean.resultLeopard != null) it.add(mDatabind.ivFlickerCenter)
-//                }
-//                playAlphaAnimTogether(views, fast3VM.prizeAnimTime / 5, 5)
-//            }
-//        }
     }
 
     /**
      * 添加moneyView 计算偏移
      */
-    private fun addMoneyOkView(recordBean: BettingRecordBean,areaView: GameAreaView, x: Float, y: Float, rawY: Float) {
+    override fun addMoneyOkView(
+        recordBean: BettingRecordBean,
+        areaView: GameAreaView,
+        x: Float,
+        y: Float,
+        rawY: Float,
+        emitAnimCallBack: () -> Unit
+    ) {
         areaView.moneyView.let {
             val viewTreeObserver = it.viewTreeObserver
             viewTreeObserver.addOnGlobalLayoutListener(object :
@@ -296,7 +239,10 @@ class DXDSFragment(fast3VM: Fast3ViewModel) : BaseFast3Fragment<DXDSVm, FragDxds
                         }
                     }
 
-                    emitMoneyAnim(areaView, it, isNewAdd = true)
+
+                    recordBean.viewXYTemporary[0] = it.translationX
+                    recordBean.viewXYTemporary[1] = it.translationY
+                    emitAnimCallBack.invoke()
                 }
             })
 
@@ -309,25 +255,6 @@ class DXDSFragment(fast3VM: Fast3ViewModel) : BaseFast3Fragment<DXDSVm, FragDxds
             // 豹子暂时居中，不做偏移
             params.gravity = areaView.okViewGravity
             areaView.addView(it, params)
-            recordBean.viewXYTemporary[0] = it.translationX
-            recordBean.viewXYTemporary[1] = it.translationY
         }
     }
-
-    private fun emitMoneyAnim(
-        areaView: GameAreaView,
-        moneyOKView: MoneyOKView,
-        isNewAdd: Boolean = false
-    ) {
-        val location = moneyOKView.locationOnScreen
-        val rax = location[0].toFloat()
-        val ray = location[1].toFloat() + moneyOKView.measuredHeight / 2
-        if (isNewAdd) {
-            moneyOKView.isVisible = false
-        }
-        fast3VM.emitMoneyAnim(rax, ray, areaView = areaView, endCallBack = {
-            moneyOKView.isVisible = true
-        })
-    }
-
 }

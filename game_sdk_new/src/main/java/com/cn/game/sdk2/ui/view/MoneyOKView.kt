@@ -11,6 +11,7 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.databinding.ViewBettingOkBinding
+import com.cn.game.sdk2.utils.ext.CommonExt.formatRealMoney
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.xcjh.base_lib.utils.StringFormatUtil
 import com.xcjh.base_lib.utils.view.clickNoRepeat
@@ -50,8 +51,7 @@ class MoneyOKView @JvmOverloads constructor(
      */
     var ivShowBg: AppCompatImageView
 
-    var binding:ViewBettingOkBinding ?= null
-
+    var binding: ViewBettingOkBinding? = null
 
 
     // 声明一个变量来保存回调接口
@@ -80,8 +80,8 @@ class MoneyOKView @JvmOverloads constructor(
         LayoutInflater.from(context).inflate(R.layout.view_betting_ok, this).apply {
             binding = ViewBettingOkBinding.bind(this)
             llShowTop = binding!!.llShowTop
-            ivShowMoney =  binding!!.ivShowMoney
-            ivShowBg =  binding!!.ivShowBg
+            ivShowMoney = binding!!.ivShowMoney
+            ivShowBg = binding!!.ivShowBg
             ivOff = binding!!.ivOff
             ivOk = binding!!.ivOk
         }
@@ -104,17 +104,33 @@ class MoneyOKView @JvmOverloads constructor(
         ivShowMoney.text = showMoneyFormat(money)
         ivShowBg.setImageDrawable(
             when {
-                money < 50 -> ContextCompat.getDrawable(context, R.drawable.icon_ok_shi)
-                money in 50..99 -> ContextCompat.getDrawable(context, R.drawable.icon_ok_wushi)
-                money in 100..199 -> ContextCompat.getDrawable(context, R.drawable.icon_ok_yibai)
-                money in 200..499 -> ContextCompat.getDrawable(context, R.drawable.icon_ok_liangbai)
-                money in 500..999 -> ContextCompat.getDrawable(context, R.drawable.icon_ok_wubai)
-                money in 1000..1999 -> ContextCompat.getDrawable(context, R.drawable.icon_ok_qian)
-                money in 2000..4999 -> ContextCompat.getDrawable(context, R.drawable.icon_ok_liangqian)
-                money in 5000..9999 -> ContextCompat.getDrawable(context, R.drawable.icon_ok_wuqian)
-                money in 10000..19999 -> ContextCompat.getDrawable(context, R.drawable.icon_ok_yiwan)
-                money in 20000..49999 -> ContextCompat.getDrawable(context, R.drawable.icon_ok_liangwan)
-                money in 50000..99999 -> ContextCompat.getDrawable(context, R.drawable.icon_ok_wuwan)
+                money < 5000 -> ContextCompat.getDrawable(context, R.drawable.icon_ok_shi)
+                money in 5000..9999 -> ContextCompat.getDrawable(context, R.drawable.icon_ok_wushi)
+                money in 10000..19999 -> ContextCompat.getDrawable(context, R.drawable.icon_ok_yibai)
+                money in 20000..49999 -> ContextCompat.getDrawable(context, R.drawable.icon_ok_liangbai)
+                money in 50000..99999 -> ContextCompat.getDrawable(context, R.drawable.icon_ok_wubai)
+                money in 100000..199999 -> ContextCompat.getDrawable(context, R.drawable.icon_ok_qian)
+                money in 200000..499999 -> ContextCompat.getDrawable(
+                    context,
+                    R.drawable.icon_ok_liangqian
+                )
+
+                money in 500000..999999 -> ContextCompat.getDrawable(context, R.drawable.icon_ok_wuqian)
+                money in 1000000..1999999 -> ContextCompat.getDrawable(
+                    context,
+                    R.drawable.icon_ok_yiwan
+                )
+
+                money in 2000000..4999999 -> ContextCompat.getDrawable(
+                    context,
+                    R.drawable.icon_ok_liangwan
+                )
+
+                money in 5000000..9999999 -> ContextCompat.getDrawable(
+                    context,
+                    R.drawable.icon_ok_wuwan
+                )
+
                 else -> ContextCompat.getDrawable(context, R.drawable.icon_ok_shiwan)
             }
         )
@@ -136,26 +152,25 @@ class MoneyOKView @JvmOverloads constructor(
     }
 
     private fun showMoneyFormat(money: Int): String {
-        if (money < 1000) {
-            ivShowMoney.text = money.toString()
-        } else if (money < 10000) {
-            if ((money % 1000) == 0) {
-                val resultNoDecimal = (money / 1000f).round(0)
+        if (money < 1000 * 100) {
+            return money.formatRealMoney()
+        } else if (money < 10000 * 100) {
+            if ((money % 100000) == 0) {
+                val resultNoDecimal = (money / 100000f).round(0)
                 return resultNoDecimal.toString() + "k"
 
-            } else if ((money % 100) == 0) {
-                val resultNoDecimal = (money / 1000f).round(1)
+            } else if ((money % 10000) == 0) {
+                val resultNoDecimal = (money / 100000f).round(1)
                 return resultNoDecimal.toString() + "k"
             } else {
-                val resultNoDecimal = (money / 1000f).round(2)
+                val resultNoDecimal = (money / 100000f).round(2)
                 return resultNoDecimal.toString() + "k"
             }
-
         } else {
-            val tenThousand = money / 10000
-            val thousand = money / 1000 % 10
-            val hundred = money / 100 % 10
-            val ten = money / 10 % 10
+            val tenThousand = money / 1000000
+            val thousand = money / 100000 % 10
+            val hundred = money / 10000 % 10
+            val ten = money / 1000 % 10
             if (thousand > 0) { // 千位有值
                 return if (hundred > 0) { // 百位有值
                     if (ten > 0) { // 十位有值
@@ -189,7 +204,6 @@ class MoneyOKView @JvmOverloads constructor(
                 }
             }
         }
-        return "$money"
     }
 
     /**
