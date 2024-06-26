@@ -25,7 +25,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.data.EventConst
-import com.cn.game.sdk2.data.bean.HistoryResultBean
 import com.cn.game.sdk2.data.bean.SelectAnnotationBean
 import com.cn.game.sdk2.data.enums.GameState
 import com.cn.game.sdk2.databinding.FragFast3HomeBinding
@@ -173,8 +172,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         lifecycleScope.launch {
             mDatabind.apply {
                 ToastUtil.showToastNormal(getString(R.string.g_home_setting_begin), 1000)
-                //关闭
-                PromptSoundPlay.endGameTip(requireContext())
+
                 mDatabind.txtHomeStatic.text = resources.getString(R.string.g_home_balance)
                 suspendCoroutine { continuation ->
                     val childAlphaAnimator =
@@ -234,10 +232,13 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
      * 开奖中
      */
     private fun onStartDrawing() {
-        lifecycleScope.launch {
+        lifecycleScope.launch {//关闭
+            PromptSoundPlay.endGameTip(requireContext())
             ToastUtil.showToastNormal(getString(R.string.g_home_drawing_begin), 1000)
+            cancelTemBetting()
+            //开奖时取消临时下注的
             mDatabind.apply {
-                txtHomeStatic.text = resources.getString(R.string.g_home_drawing_being)
+                txtHomeStatic.text = getString(R.string.g_home_drawing_being)
             }
         }
     }
