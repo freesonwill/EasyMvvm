@@ -326,11 +326,11 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         mViewModel.currentMoneyLD.observe(viewLifecycleOwner) { balance ->
             mDatabind.txtCurrentMoney.text = balance
         }
-        mViewModel.homeTimeVisibility.observe(requireActivity()) {
+        mViewModel.homeTimeVisibility.observe(viewLifecycleOwner) {
             mDatabind.txtHomeTime.visibility = it
             mDatabind.txtHomeUnit.visibility = it
         }
-        mViewModel.homeTime.observe(requireActivity()) { seconds ->
+        mViewModel.homeTime.observe(viewLifecycleOwner) { seconds ->
             mDatabind.txtHomeTime.text = seconds.toString()
             if (mViewModel.gameState == GameState.Betting && seconds != 0 && seconds <= 5) {
                 PromptSoundPlay.countdownGameTip(requireContext())
@@ -383,8 +383,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
         //续压、加倍状态监听
         gameAboutModel.currentAgainDoubleState.observe(viewLifecycleOwner){
-            mDatabind.ivXuya.isVisible = it == GameAboutModel.AgainDoubleState.AGAIN
-            mDatabind.ivMultiple2.isVisible = it == GameAboutModel.AgainDoubleState.DOUBLE
+            //mDatabind.ivXuya.isVisible = it == GameAboutModel.AgainDoubleState.AGAIN
+            //mDatabind.ivMultiple2.isVisible = it == GameAboutModel.AgainDoubleState.DOUBLE
         }
 
         //开奖历史记录
@@ -413,6 +413,9 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 ToastUtil.showToastNormal("网络连接失败")
                 anchorMoneyView?.showTop()
             }
+        }
+        gameAboutModel.toastErrorMessage.observe(viewLifecycleOwner){string->
+            ToastUtil.showToastNormal("网络连接失败")
         }
     }
 

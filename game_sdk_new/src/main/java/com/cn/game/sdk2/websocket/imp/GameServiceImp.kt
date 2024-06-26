@@ -36,10 +36,6 @@ import game.common.proto.ClientRes
 import game.mod.proc.yf.proto.req.GameReq
 import game.mod.proc.yf.proto.req.GameReq.EnterMiniGame
 import game.mod.proc.yf.proto.res.GameRes
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 /**
  * 提供ui层调用的统一对象
@@ -455,6 +451,7 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
 
     override fun errorMessage(errorMessage: ClientRes.ErrorMessage) {
         val desc = errorMessage.desc
+        "code = ${errorMessage.code},msg = ${errorMessage.desc}".loge()
         gameAboutModel.setToastErrorMessage(desc)
     }
 

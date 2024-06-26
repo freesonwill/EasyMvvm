@@ -6,12 +6,6 @@ import android.util.Log
 import com.cn.game.sdk2.websocket.imp.GameSDK
 import com.cn.game.sdk2.websocket.interfaces.SDKLoginCallbackListener
 import com.xcjh.base_lib.utils.loge
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.Runnable
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.java_websocket.client.WebSocketClient
 import org.java_websocket.handshake.ServerHandshake
 import java.net.URI
@@ -61,23 +55,23 @@ class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
 //            }
 //        }
         Log.i(_tag, "GameSocketClient-连接成功！")
+        if(isReconnecting){
+            isReconnecting = false
+        }
         handler.post{
             reset()
-            if(isReconnecting){
-                isReconnecting = false
-                if(isLogin) {
-                    GameSDK.loginGameWithAgentName(
-                        "wali-internal",
-                        token,
-                        "Gregg Denesik",
-                        object : SDKLoginCallbackListener {
-                            override fun callback(code: Int, message: String?) {
-                                "login:code-${code},message-${message}".loge()
-                            }
-
+            if(isLogin) {
+                GameSDK.loginGameWithAgentName(
+                    "wali-internal",
+                    token,
+                    "Gregg Denesik",
+                    object : SDKLoginCallbackListener {
+                        override fun callback(code: Int, message: String?) {
+                            "login:code-${code},message-${message}".loge()
                         }
-                    )
-                }
+
+                    }
+                )
             }
         }
     }
