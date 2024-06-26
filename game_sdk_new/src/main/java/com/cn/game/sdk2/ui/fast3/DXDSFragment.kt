@@ -7,46 +7,32 @@ import android.os.Bundle
 import android.util.Log
 import android.util.SparseArray
 import android.view.Gravity
-import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.FrameLayout
 import android.widget.TextView
-import androidx.core.animation.doOnEnd
 import androidx.core.view.isVisible
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.databinding.FragDxdsBinding
 import com.cn.game.sdk2.ui.helper.ViewHelper.isAdd
 import com.cn.game.sdk2.ui.view.MoneyOKView
 import com.cn.game.sdk2.ui.view.game.GameAreaView
-import com.cn.game.sdk2.ui.view.game.IGameView
 import com.cn.game.sdk2.ui.viewmodel.fast3.DXDSVm
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
 import com.cn.game.sdk2.utils.ToastUtil
 import com.cn.game.sdk2.utils.ext.ViewExt.locationOnScreen
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
-import com.cn.game.sdk2.utils.tool.measureView
-import kotlinx.coroutines.launch
 import com.cn.game.sdk2.websocket.GameSocketManager
 import com.cn.game.sdk2.websocket.bean.AreaBetBean
-import com.cn.game.sdk2.websocket.bean.BOOM_ALL
-import com.cn.game.sdk2.websocket.bean.Betting
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import com.cn.game.sdk2.websocket.bean.DEFAULT_BIG
 import com.cn.game.sdk2.websocket.bean.DEFAULT_DOUBLE
 import com.cn.game.sdk2.websocket.bean.DEFAULT_SINGLE
 import com.cn.game.sdk2.websocket.bean.DEFAULT_SMALL
-import com.cn.game.sdk2.websocket.isNotEmpty
-import com.google.gson.Gson
 import kotlinx.coroutines.delay
-import java.math.BigDecimal
-import java.math.RoundingMode
-import java.text.DateFormat
-import java.text.DecimalFormat
+import kotlinx.coroutines.launch
 
 
 /**
@@ -98,6 +84,7 @@ class DXDSFragment(fast3VM: Fast3ViewModel) : BaseFast3Fragment<DXDSVm, FragDxds
                     //处理点击事件
                     //先判断余额是否够这次 并且扣取钱
                     //todo:整个流程转移至FastMainFragment
+                    Log.d(TAG,"setOnLocationClickListener isClickOperation:"+fast3VM.isClickOperation)
                     if (fast3VM.isClickOperation && PromptSoundPlay.handleClick()) {
                         GameSocketManager.getInstance()?.getGameService()?.apply {
                             addBetting(
@@ -340,11 +327,6 @@ class DXDSFragment(fast3VM: Fast3ViewModel) : BaseFast3Fragment<DXDSVm, FragDxds
         }
         fast3VM.emitMoneyAnim(rax, ray, areaView = areaView, endCallBack = {
             moneyOKView.isVisible = true
-//            显示点击在Fragment的位置用于动画结束后显示
-//            val location1 = IntArray(2)
-//            moneyOKView.getLocationInWindow(location1)
-//            moneyOKView.viewXYTemporary[0] = moneyOKView.left
-//            moneyOKView.viewXYTemporary[1] = moneyOKView.top
         })
     }
 
