@@ -54,15 +54,14 @@ class GameSocketManager private constructor() : OnMessageListener {
     fun initSocketClient() {
         "initSocketClient".loge(tag)
         val uri = URI.create(WEB_SOCKET_URL)
-        client = GameSocketClient(uri) //获得client对象
-        client?.setOnMessageListener(this@GameSocketManager)
-        gameMassageManager = UIMethodImpl.generate(client!!) //获得接口对象
         GlobalScope.launch {
             withContext(Dispatchers.IO) {
                 //client?.reset()
 //                client?.setOnMessageListener(this@GameSocketManager)
 //                gameMassageManager = UIMethodImpl.generate(client!!) //获得接口对象
-
+                client = GameSocketClient(uri) //获得client对象
+                client?.setOnMessageListener(this@GameSocketManager)
+                gameMassageManager = UIMethodImpl.generate(client!!) //获得接口对象
                 client?.connectionLostTimeout = 0
                 client!!.connectBlocking() //连接socket
                 //心跳发送
