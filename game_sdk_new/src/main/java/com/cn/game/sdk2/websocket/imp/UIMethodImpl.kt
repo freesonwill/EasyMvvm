@@ -80,7 +80,7 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
         val countMoney: Int =
             currentMoney + tempMoney + confirmedMoney + tempConfirmedMoney //本次下注后页面上应该显示的总金额
         //跟新again和double
-        gameAboutModel.setOnceCountMoney(countMoney)
+        gameAboutModel.setOnceCountMoney(getPanelAllMoney())
         recordBean.money = currentMoney + tempMoney
         bettingListTemp[recordBean.bettingArea] = recordBean
         recordBean.money = countMoney
@@ -127,14 +127,20 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
                     .setBetScore(bettingRecordBean.money).build()
                 betReq.addAreaBet(areaBetReq)
             }
-            val build = betReq.build()
-            bet(build)
+
             //--- 保存临时数据到中间态 清空临时数据
+            bettingListTempConfirmed.toString().loge("commitBetting-1")
+            bettingListTemp.toString().loge("commitBetting-2")
             bettingListTempConfirmed = bettingListTemp
+            bettingListTempConfirmed.toString().loge("commitBetting-3")
             confirmTempMoney = tempMoney
             tempMoney = 0
             bettingListTemp.clear()
             //---
+
+            val build = betReq.build()
+            bet(build)
+
 
         } else {
             "下注228：上次下注还未返回".loge("addBetting")
