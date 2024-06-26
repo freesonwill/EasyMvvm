@@ -15,6 +15,7 @@ import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.imp.GameSDK
 import com.cn.game.sdk2.websocket.interfaces.SDKEnterLiveCallbackListener
 import com.cn.game.sdk2.websocket.interfaces.SDKLoginCallbackListener
+import com.cn.game.sdk2.websocket.token
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 import com.xcjh.base_lib.utils.loge
 
@@ -42,7 +43,7 @@ class MainActivity : AppCompatActivity() {
             }else{
                 //92:ZyBmhNCJ   87:MHxIHlYM
                 GameSDK.loginGameWithAgentName(
-                    "wali-internal", "87:MHxIHlYM","Gregg Denesik", object : SDKLoginCallbackListener {
+                    "wali-internal", token,"Gregg Denesik", object : SDKLoginCallbackListener {
                         override fun callback(code: Int, message: String?) {
                             "login:code-${code},message-${message}".loge()
                         }

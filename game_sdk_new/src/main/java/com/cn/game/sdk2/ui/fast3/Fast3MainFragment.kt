@@ -664,6 +664,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                         }
                     }
                     //updateanchor
+                    showAnchorTop()
                 }
             }
         }
@@ -831,6 +832,10 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
     private fun hiddenAnchorTop() {
         anchorMoneyView?.hiddenTop()
+    }
+
+    private fun showAnchorTop(){
+        anchorMoneyView?.showTop()
     }
 
     private fun scrollToItemAndPerformAction(

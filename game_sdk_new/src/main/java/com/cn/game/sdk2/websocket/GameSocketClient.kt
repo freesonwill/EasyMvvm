@@ -63,7 +63,7 @@ class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
             if(isLogin) {
                 GameSDK.loginGameWithAgentName(
                     "wali-internal",
-                    "87:MHxIHlYM",
+                    token,
                     "Gregg Denesik",
                     object : SDKLoginCallbackListener {
                         override fun callback(code: Int, message: String?) {
