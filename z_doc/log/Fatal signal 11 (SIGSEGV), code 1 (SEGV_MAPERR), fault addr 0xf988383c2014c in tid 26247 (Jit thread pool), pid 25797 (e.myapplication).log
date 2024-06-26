@@ -1,0 +1,511 @@
+2024-06-26 10:05:56.268  1564-1796  PackageMan...ilsExtImpl system_server                        E  Fix up user restrict data of pkg: com.example.myapplication
+2024-06-26 10:05:56.529  1564-1796  ArtManagerService       system_server                        E  Failed to prepare profile for com.example.myapplication:/data/app/~~pvHXH5pf-br3IWL3UhpOWQ==/com.example.myapplication-spQasnHu-lh4RRT4Dv3kEA==/base.apk
+2024-06-26 10:05:56.529  1564-1796  ArtManagerService       system_server                        E  Failed to prepare profile for com.example.myapplication:/data/app/~~pvHXH5pf-br3IWL3UhpOWQ==/com.example.myapplication-spQasnHu-lh4RRT4Dv3kEA==/base.apk
+2024-06-26 10:05:57.065  1564-1704  OplusThermalStats       system_server                        E  Error getting package info: com.example.myapplication
+2024-06-26 10:05:57.090 23130-23130 CompactWindowAppManager com.example.myapplication            D  initCompactApplicationInfo
+2024-06-26 10:05:57.115 23130-23130 libc                    com.example.myapplication            W  Access denied finding property "ro.odm.prev.product.name"
+2024-06-26 10:05:57.117 23130-23130 LoadedApk               com.example.myapplication            D  mApplicationInfo overrideDisplayId:null
+2024-06-26 10:05:57.122 23130-23130 ziparchive              com.example.myapplication            W  Unable to open '/data/app/~~pvHXH5pf-br3IWL3UhpOWQ==/com.example.myapplication-spQasnHu-lh4RRT4Dv3kEA==/base.dm': No such file or directory
+2024-06-26 10:05:57.122 23130-23130 ziparchive              com.example.myapplication            W  Unable to open '/data/app/~~pvHXH5pf-br3IWL3UhpOWQ==/com.example.myapplication-spQasnHu-lh4RRT4Dv3kEA==/base.dm': No such file or directory
+2024-06-26 10:05:57.276 23130-23130 GraphicsEnvironment     com.example.myapplication            V  ANGLE Developer option for 'com.example.myapplication' set to: 'default'
+2024-06-26 10:05:57.276 23130-23130 GraphicsEnvironment     com.example.myapplication            V  ANGLE GameManagerService for com.example.myapplication: false
+2024-06-26 10:05:57.277 23130-23130 GraphicsEnvironment     com.example.myapplication            V  App is not on the allowlist for updatable production driver.
+2024-06-26 10:05:57.282 23130-23130 NetworkSecurityConfig   com.example.myapplication            D  No Network Security Config specified, using platform default
+2024-06-26 10:05:57.283 23130-23130 NetworkSecurityConfig   com.example.myapplication            D  No Network Security Config specified, using platform default
+2024-06-26 10:05:57.285 23130-23130 Compatibil...geReporter com.example.myapplication            D  Compat change id reported: 183155436; UID 10518; state: ENABLED
+2024-06-26 10:05:57.295 23130-23130 AndroidAutoSize         com.example.myapplication            D  designWidthInDp = 360, designHeightInDp = 640, screenWidth = 1080, screenHeight = 2290
+2024-06-26 10:05:57.296 23130-23130 AndroidAutoSize         com.example.myapplication            D  initDensity = 3.0, initScaledDensity = 3.0
+2024-06-26 10:05:57.300 23130-23130 base_lib                com.example.myapplication            D  ModuleInitializer--->create
+2024-06-26 10:05:57.319 23130-23130 GamePartyL...nitializer com.example.myapplication            E  初始化step1:loadGame
+2024-06-26 10:05:57.320 23130-23130 com.cn.gam...ketManager com.example.myapplication            E  initSocketClient
+2024-06-26 10:05:57.332 23130-23130 OplusActivityManager    com.example.myapplication            D  get AMS extension: android.os.BinderProxy@906923b
+2024-06-26 10:05:57.339 23130-25916 OplusGraphicsEvent      com.example.myapplication            D  OplusGraphicsEventListener create now!
+2024-06-26 10:05:57.340 23130-25916 OplusGraphicsEvent      com.example.myapplication            D  addEventListener success!
+2024-06-26 10:05:57.344 23130-25918 libMEOW                 com.example.myapplication            D  meow new tls: 0xb400007682eab400
+2024-06-26 10:05:57.346 23130-25918 libMEOW                 com.example.myapplication            D  meow reload base cfg path: na
+2024-06-26 10:05:57.346 23130-25918 libMEOW                 com.example.myapplication            D  meow reload overlay cfg path: na
+2024-06-26 10:05:57.346 23130-25918 QT                      com.example.myapplication            W  qt_process_init() called
+2024-06-26 10:05:57.346 23130-25918 QT                      com.example.myapplication            E  [QT]file does not exist
+2024-06-26 10:05:57.346 23130-25918 QT                      com.example.myapplication            W  Support!!
+2024-06-26 10:05:57.366 23130-25918 QT                      com.example.myapplication            E  [QT]file does not exist
+2024-06-26 10:05:57.366 23130-25918 libMEOW                 com.example.myapplication            D  applied 1 plugins for [com.example.myapplication]:
+2024-06-26 10:05:57.366 23130-25918 libMEOW                 com.example.myapplication            D    plugin 1: [libMEOW_gift.so]: 0xb400007672720380
+2024-06-26 10:05:57.366 23130-25918 libMEOW                 com.example.myapplication            D  rebuild call chain: 0xb400007682ef1280
+2024-06-26 10:05:57.366 23130-25918 libMEOW                 com.example.myapplication            D  meow delete tls: 0xb400007682eab400
+2024-06-26 10:05:57.370 23130-23130 AppCompatDelegate       com.example.myapplication            D  Checking for metadata for AppLocalesMetadataHolderService : Service not found
+2024-06-26 10:05:57.410 23130-23130 AndroidAutoSize         com.example.myapplication            D  com.example.myapplication.MainActivity used the global configuration.
+2024-06-26 10:05:57.412 23130-23130 AndroidAutoSize         com.example.myapplication            D  The com.example.myapplication.MainActivity has been adapted!
+                                                                                                    MainActivity Info: isBaseOnWidth = true, designWidthInDp = 375.000000, designWidthInSubunits = 375.000000, targetDensity = 2.880000, targetScaledDensity = 2.880000, targetDensityDpi = 460, targetXdpi = 2.880000, targetScreenWidthDp = 375, targetScreenHeightDp = 756
+2024-06-26 10:05:57.416 23130-23130 oplus.andr...actoryImpl com.example.myapplication            I  Unknow feature:IOplusTextViewRTLUtilForUG
+2024-06-26 10:05:57.425 23130-23130 OplusWindowManager      com.example.myapplication            D  get WMS extension: android.os.BinderProxy@2ec9a3
+2024-06-26 10:05:57.428 23130-25912 System.err              com.example.myapplication            W  SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
+2024-06-26 10:05:57.428 23130-25912 System.err              com.example.myapplication            W  SLF4J: Defaulting to no-operation (NOP) logger implementation
+2024-06-26 10:05:57.428 23130-25912 System.err              com.example.myapplication            W  SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.
+2024-06-26 10:05:57.441 23130-25912 e.myapplication         com.example.myapplication            D  createChiper1:0
+2024-06-26 10:05:57.441 23130-25912 realgo                  com.example.myapplication            D  create chipper=0xb4000076726cc770
+2024-06-26 10:05:57.441 23130-25912 e.myapplication         com.example.myapplication            D  createChiper2:-5476376638156650640
+2024-06-26 10:05:57.463 23130-23130 e.myapplication         com.example.myapplication            W  Accessing hidden method Landroid/view/View;->computeFitSystemWindows(Landroid/graphics/Rect;Landroid/graphics/Rect;)Z (unsupported, reflection, allowed)
+2024-06-26 10:05:57.463 23130-23130 e.myapplication         com.example.myapplication            W  Accessing hidden method Landroid/view/ViewGroup;->makeOptionalFitsSystemWindows()V (unsupported, reflection, allowed)
+2024-06-26 10:05:57.466 23130-25938 TrafficStats            com.example.myapplication            D  tagSocket(92) with statsTag=0xffffffff, statsUid=-1
+2024-06-26 10:05:57.471 23130-23130 OplusCusto...ionManager com.example.myapplication            E  sInstance is null, start a new sInstance
+2024-06-26 10:05:57.477 23130-23130 Compatibil...geReporter com.example.myapplication            D  Compat change id reported: 210923482; UID 10518; state: ENABLED
+2024-06-26 10:05:57.503 23130-23130 AndroidAutoSize         com.example.myapplication            D  com.example.myapplication.MainActivity used the global configuration.
+2024-06-26 10:05:57.504 23130-23130 AndroidAutoSize         com.example.myapplication            D  The com.example.myapplication.MainActivity has been adapted!
+                                                                                                    MainActivity Info: isBaseOnWidth = true, designWidthInDp = 375.000000, designWidthInSubunits = 375.000000, targetDensity = 2.880000, targetScaledDensity = 2.880000, targetDensityDpi = 460, targetXdpi = 2.880000, targetScreenWidthDp = 375, targetScreenHeightDp = 756
+2024-06-26 10:05:57.523 23130-23130 PowerHalWrapper         com.example.myapplication            I  PowerHalWrapper.getInstance
+2024-06-26 10:05:57.523 23130-25953 PowerHalWrapper         com.example.myapplication            I  PowerHalWrapper.getInstance
+2024-06-26 10:05:57.541  1564-1787  VerityUtils             system_server                        E  Failed to measure fs-verity, errno 1: /data/app/~~pvHXH5pf-br3IWL3UhpOWQ==/com.example.myapplication-spQasnHu-lh4RRT4Dv3kEA==/base.apk
+2024-06-26 10:05:57.556 23130-23130 MSYNC3-Var...efreshRate com.example.myapplication            I  Variable refreshrate is disabled
+2024-06-26 10:05:57.557 23130-23130 ExtensionsLoader        com.example.myapplication            D  createInstance(64bit) : createExtendedFactory
+2024-06-26 10:05:57.558 23130-23130 ExtensionsLoader        com.example.myapplication            D  Opened libSchedAssistExtImpl.so
+2024-06-26 10:05:57.558 23130-23130 e.myapplication         com.example.myapplication            E  ofbOpen failed with error=No such file or directory
+2024-06-26 10:05:57.558 23130-23130 e.myapplication         com.example.myapplication            E  sysOpen failed with error=No such file or directory
+2024-06-26 10:05:57.560 23130-23130 OplusInputMethodUtil    com.example.myapplication            D  init sDebug to false, init sDebugIme to false, init sAlwaysOn to false
+2024-06-26 10:05:57.560 23130-23130 OplusInputMethodUtil    com.example.myapplication            D  updateDebugToClass InputMethodManager.DEBUG = false
+2024-06-26 10:05:57.560 23130-23130 OplusInputMethodUtil    com.example.myapplication            D  updateDebugToClass ImeFocusController.DEBUG = false
+2024-06-26 10:05:57.560 23130-23130 OplusInputMethodUtil    com.example.myapplication            D  updateDebugToClass BaseInputConnection.DEBUG = false
+2024-06-26 10:05:57.560 23130-23130 OplusInputMethodUtil    com.example.myapplication            D  updateDebugToClass ImeFocusController.sDebugIme = false
+2024-06-26 10:05:57.573 23130-23130 SurfaceFactory          com.example.myapplication            I  [static] sSurfaceFactory = com.mediatek.view.impl.SurfaceFactoryImpl@85913a8
+2024-06-26 10:05:57.580 23130-23130 WindowManager           com.example.myapplication            D  Add to mViews: DecorView@6883666[MainActivity],pkg= com.example.myapplication
+2024-06-26 10:05:57.583 23130-25916 ExtensionsLoader        com.example.myapplication            D  createInstance(64bit) : createExtendedFactory
+2024-06-26 10:05:57.584 23130-25916 ExtensionsLoader        com.example.myapplication            D  Opened libhwuiextimpl.so
+2024-06-26 10:05:57.584 23130-23130 ExtensionsLoader        com.example.myapplication            D  createInstance(64bit) : createExtendedFactory
+2024-06-26 10:05:57.584 23130-23130 ExtensionsLoader        com.example.myapplication            D  Opened libSchedAssistExtImpl.so
+2024-06-26 10:05:57.594 23130-23130 ViewRootImplExtImpl     com.example.myapplication            D  onDisplayChanged -1 for VRI android.view.ViewRootImpl@8c0afc0
+2024-06-26 10:05:57.595  7203-25972 AF.SDK.XmlReader        com.heytap.accessory                 E  No meta data found with key: AccessoryServicesLocation in com.example.myapplication
+2024-06-26 10:05:57.595 23130-23130 libMEOW                 com.example.myapplication            D  meow new tls: 0xb40000760ce90fc0
+2024-06-26 10:05:57.595 23130-23130 libMEOW                 com.example.myapplication            D  applied 1 plugins for [com.example.myapplication]:
+2024-06-26 10:05:57.595 23130-23130 libMEOW                 com.example.myapplication            D    plugin 1: [libMEOW_gift.so]: 0xb400007672720380
+2024-06-26 10:05:57.595 23130-23130 libMEOW                 com.example.myapplication            D  rebuild call chain: 0xb40000760ce9f500
+2024-06-26 10:05:57.596 23130-23130 InputEventReceiver      com.example.myapplication            D  Input log is disabled
+2024-06-26 10:05:57.602 23130-25971 OplusSlideAnimOptHelper com.example.myapplication            I  checkListMode: is blacklist mode = true
+2024-06-26 10:05:57.604 23130-25971 OplusSlideAnimOptHelper com.example.myapplication            D  com.example.myapplication scrollEffectOpt enable = true
+2024-06-26 10:05:57.609 23130-23130 AndroidAutoSize         com.example.myapplication            D  initScaledDensity = 3.0 on ConfigurationChanged
+2024-06-26 10:05:57.611 23130-23130 VRI[MainActivity]       com.example.myapplication            D  setWindowStopped stopped:true
+2024-06-26 10:05:57.613 23130-23130 OplusScrollToTopManager com.example.myapplication            D  unregisterGuidePopupDismissReceiverInSystemUI
+2024-06-26 10:05:57.614 23130-23130 OplusScrollToTopManager com.example.myapplication            D  Receiver not registered: android.view.OplusScrollToTopManager$1@ab6e86d
+2024-06-26 10:05:57.614 23130-23130 OplusScrollToTopManager com.example.myapplication            D  unregisterSystemUIBroadcastReceiver
+2024-06-26 10:05:57.614 23130-23130 OplusScrollToTopManager com.example.myapplication            D  java.lang.IllegalArgumentException: Receiver not registered: android.view.OplusScrollToTopManager$2@c005ca2
+2024-06-26 10:05:57.647 23130-23130 AndroidAutoSize         com.example.myapplication            D  com.example.myapplication.MainActivity used the global configuration.
+2024-06-26 10:05:57.647 23130-23130 AndroidAutoSize         com.example.myapplication            D  The com.example.myapplication.MainActivity has been adapted!
+                                                                                                    MainActivity Info: isBaseOnWidth = true, designWidthInDp = 375.000000, designWidthInSubunits = 375.000000, targetDensity = 2.880000, targetScaledDensity = 2.880000, targetDensityDpi = 460, targetXdpi = 2.880000, targetScreenWidthDp = 375, targetScreenHeightDp = 756
+2024-06-26 10:05:57.651 23130-25982 libMEOW                 com.example.myapplication            D  meow new tls: 0xb400007682f73000
+2024-06-26 10:05:57.651 23130-25982 libMEOW                 com.example.myapplication            D  applied 1 plugins for [com.example.myapplication]:
+2024-06-26 10:05:57.651 23130-25982 libMEOW                 com.example.myapplication            D    plugin 1: [libMEOW_gift.so]: 0xb400007672720380
+2024-06-26 10:05:57.651 23130-25982 libMEOW                 com.example.myapplication            D  rebuild call chain: 0xb400007682f8cd00
+2024-06-26 10:05:57.651 23130-25982 libMEOW                 com.example.myapplication            D  meow delete tls: 0xb400007682f73000
+2024-06-26 10:05:57.679 23130-23130 AndroidAutoSize         com.example.myapplication            D  com.example.myapplication.MainActivity used the global configuration.
+2024-06-26 10:05:57.679 23130-23130 AndroidAutoSize         com.example.myapplication            D  The com.example.myapplication.MainActivity has been adapted!
+                                                                                                    MainActivity Info: isBaseOnWidth = true, designWidthInDp = 375.000000, designWidthInSubunits = 375.000000, targetDensity = 2.880000, targetScaledDensity = 2.880000, targetDensityDpi = 460, targetXdpi = 2.880000, targetScreenWidthDp = 375, targetScreenHeightDp = 756
+2024-06-26 10:05:57.685 23130-23130 WindowManager           com.example.myapplication            D  Add to mViews: DecorView@8f3630d[MainActivity],pkg= com.example.myapplication
+2024-06-26 10:05:57.693 23130-23130 ViewRootImplExtImpl     com.example.myapplication            D  onDisplayChanged -1 for VRI android.view.ViewRootImpl@5002309
+2024-06-26 10:05:57.694 23130-23130 InputEventReceiver      com.example.myapplication            D  Input log is disabled
+2024-06-26 10:05:57.696 23130-23130 Quality                 com.example.myapplication            I  Skipped: false 1 cost 14.719693 refreshRate 11166123 bit true processName com.example.myapplication
+2024-06-26 10:05:57.714 23130-23130 BufferQueueConsumer     com.example.myapplication            D  [](id:5a5a00000000,api:0,p:-1,c:23130) connect: controlledByApp=false
+2024-06-26 10:05:57.715 23130-23130 ExtensionsLoader        com.example.myapplication            D  createInstance(64bit) : createExtendedFactory
+2024-06-26 10:05:57.716 23130-23130 ExtensionsLoader        com.example.myapplication            D  Opened libSchedAssistExtImpl.so
+2024-06-26 10:05:57.716 23130-23130 FBI                     com.example.myapplication            E  Can't load library: dlopen failed: library "libmagtsync.so" not found
+2024-06-26 10:05:57.718 23130-23130 ZoomWindowDecorView     com.example.myapplication            V  setLastReportedMergedConfiguration mZoomDisplayHeight: 2400 getDecorView.150168333
+2024-06-26 10:05:57.718 23130-25916 libMEOW                 com.example.myapplication            D  meow new tls: 0xb40000760c20d5c0
+2024-06-26 10:05:57.718 23130-25916 libMEOW                 com.example.myapplication            D  applied 1 plugins for [com.example.myapplication]:
+2024-06-26 10:05:57.718 23130-25916 libMEOW                 com.example.myapplication            D    plugin 1: [libMEOW_gift.so]: 0xb400007672720380
+2024-06-26 10:05:57.718 23130-25916 libMEOW                 com.example.myapplication            D  rebuild call chain: 0xb40000760c220d00
+2024-06-26 10:05:57.721 23130-23130 VRI[MainActivity]       com.example.myapplication            D  registerCallbacksForSync syncBuffer=false
+2024-06-26 10:05:57.797 23130-25916 hw-ProcessState         com.example.myapplication            D  Binder ioctl to enable oneway spam detection failed: Invalid argument
+2024-06-26 10:05:57.852 23130-25916 BLASTBufferQueue        com.example.myapplication            D  [VRI[MainActivity][com.example.myapplication/com.example.myapplication.MainActivity]#0](f:0,a:1) acquireNextBufferLocked size=1080x2400 mFrameNumber=1 applyTransaction=true mTimestamp=119250142800030(auto) mPendingTransactions.size=0 graphicBufferId=99342593556480 transform=0
+2024-06-26 10:05:57.852 23130-25916 VRI[MainActivity]       com.example.myapplication            D  Received frameCommittedCallback lastAttemptedDrawFrameNum=1 didProduceBuffer=true syncBuffer=false
+2024-06-26 10:05:57.854 23130-25916 Parcel                  com.example.myapplication            W  Expecting binder but got null!
+2024-06-26 10:05:57.854 23130-23130 VRI[MainActivity]       com.example.myapplication            D  draw finished.
+2024-06-26 10:05:57.858 23130-23130 Quality                 com.example.myapplication            I  Skipped: false 14 cost 157.61258 refreshRate 11111111 bit true processName com.example.myapplication
+2024-06-26 10:05:57.870 23130-23130 VRI[MainActivity]       com.example.myapplication            D  registerCallbacksForSync syncBuffer=false
+2024-06-26 10:05:57.874 23130-25916 VRI[MainActivity]       com.example.myapplication            D  Received frameCommittedCallback lastAttemptedDrawFrameNum=3 didProduceBuffer=true syncBuffer=false
+2024-06-26 10:05:57.874 23130-23130 VRI[MainActivity]       com.example.myapplication            D  draw finished.
+2024-06-26 10:05:57.894 23130-23130 VRI[MainActivity]       com.example.myapplication            D  onFocusEvent true
+2024-06-26 10:05:58.293 23130-25938 GameSocketClient        com.example.myapplication            I  GameSocketClient-连接成功！
+2024-06-26 10:06:00.013 23130-23130 ViewRootImplExtImpl     com.example.myapplication            D  onDisplayChanged 0 for VRI android.view.ViewRootImpl@5002309
+2024-06-26 10:06:02.182  7062-7874  Battery                 com.oplus.battery                    E  AppStats: Uid = 10016; pkgName = com.example.myapplication; CpuFgTime = 0 ms; CpuBgTime = 0 ms.
+2024-06-26 10:06:02.182  7062-7874  Battery                 com.oplus.battery                    E  AppStats: Uid = 10016; pkgName = com.example.myapplication; CpuKernelFgTime = 0 ms; CpuKernelBgTime = 0 ms.
+2024-06-26 10:06:02.182  7062-7874  Battery                 com.oplus.battery                    E  AppStats: Uid = 10016; pkgName = com.example.myapplication; CpuUserFgTime = 0 ms ; CpuUserBgTime = 0 ms.
+2024-06-26 10:06:02.182  7062-7874  Battery                 com.oplus.battery                    E  AppStats: Uid = 10016; pkgName = com.example.myapplication; CpuFgPower = 0.0 mAh.; CpuBgPower = 0.0 mAh.
+2024-06-26 10:06:02.182  7062-7874  Battery                 com.oplus.battery                    E  AppStats: Uid = 10016; pkgName = com.example.myapplication; AlarmFgWakeupCount = 0; AlarmBgWakeupCount = 0
+2024-06-26 10:06:02.182  7062-7874  Battery                 com.oplus.battery                    E  AppStats: Uid = 10016; pkgName = com.example.myapplication; JobFgCount = 0; JobBgCount = 0; JobFgTime = 0; JobBgTime = 0
+2024-06-26 10:06:02.182  7062-7874  Battery                 com.oplus.battery                    E  AppStats: Uid = 10016; pkgName = com.example.myapplication; SyncFgCount = 0; SyncBgCount = 0; SyncFgTime = 0; SyncBgTime = 0
+2024-06-26 10:06:02.183  7062-7874  Battery                 com.oplus.battery                    E  AppStats: Uid = 10016; pkgName = com.example.myapplication; WakeLockFgTime = 0 ms; WakeLockFgPower = 0.0 mAh.; WakeLockBgTime = 0 ms; WakeLockBgPower = 0.0 mAh.
+2024-06-26 10:06:02.183  7062-7874  Battery                 com.oplus.battery                    E  AppStats: Uid = 10016; pkgName = com.example.myapplication; ScreenFgTime = 51818938 ms; ScreenFgPower = 100.75904611111112 mAh.
+2024-06-26 10:06:02.183  7062-7874  Battery                 com.oplus.battery                    E  AppStats: Uid = 10016; pkgName = com.example.myapplication; FgWifiRxBytes = 0 Bytes; BgWifiRxBytes = 0 Bytes; FgWifiTxBytes = 0 Bytes; BgWifiTxBytes = 0 Bytes; FgWifiRxPackets = 0 ; BgWifiRxPackets = 0 ; FgWifiTxPackets = 0 ; BgWifiTxPackets = 0 ; FgWiFiScanTimeMs = 0 ; BgWiFiScanTimeMs = 0 ; FgWiFiBatchScanTimeMs = 0 ; BgWiFiBatchScanTimeMs = 0
+2024-06-26 10:06:02.183  7062-7874  Battery                 com.oplus.battery                    E  AppStats: Uid = 10016; pkgName = com.example.myapplication; FgWifiRxPacketsPower = 0.0 mAh; BgWifiRxPacketsPower = 0.0 mAh; FgWifiTxPacketsPower = 0.0 mAh; BgWifiTxPacketsPower = 0.0 mAh; FgWifiScanPower = 0.0 mAh; BgWifiScanPower = 0.0 mAh; FgWifiBatchScanPower = 0.0 mAh; BgWifiBatchScanPower = 0.0 mAh; FgWiFiTotalPower = 0.0 mAh; BgWiFiTotalPower = 0.0 mAh.
+2024-06-26 10:06:02.183  7062-7874  Battery                 com.oplus.battery                    E  AppStats: Uid = 10016; pkgName = com.example.myapplication; FgGpsTime = 0 ms; BgGpsTime = 0 ms.
+2024-06-26 10:06:02.183  7062-7874  Battery                 com.oplus.battery                    E  AppStats: Uid = 10016; pkgName = com.example.myapplication; FgGpsPower = 0.0 mAh; BgGpsPower = 0.0 mAh.
+2024-06-26 10:06:02.183  7062-7874  Battery                 com.oplus.battery                    E  AppStats: Uid = 10016; pkgName = com.example.myapplication; FgSensorTime = 0 ms; BgSensorTime = 0 ms.
+2024-06-26 10:06:02.183  7062-7874  Battery                 com.oplus.battery                    E  AppStats: Uid = 10016; pkgName = com.example.myapplication; FgSensorPower = 0.0 mAh; BgSensorPower = 0.0 mAh.
+2024-06-26 10:06:02.183  7062-7874  Battery                 com.oplus.battery                    E  AppStats: Uid = 10016; pkgName = com.example.myapplication; FgCameraTime = 0 ms; BgCameraTime = 0 ms
+2024-06-26 10:06:02.183  7062-7874  Battery                 com.oplus.battery                    E  AppStats: Uid = 10016; pkgName = com.example.myapplication; FgCameraPower = 0.0 mAh; BgCameraPower = 0.0 mAh
+2024-06-26 10:06:02.183  7062-7874  Battery                 com.oplus.battery                    E  AppStats: Uid = 10016; pkgName = com.example.myapplication; FgFlashLightTime = 0 ms; BgFlashLightTime = 0 ms
+2024-06-26 10:06:02.183  7062-7874  Battery                 com.oplus.battery                    E  AppStats: Uid = 10016; pkgName = com.example.myapplication; FgFlashLightPower = 0.0 mAh; BgFlashLightPower = 0.0 mAh
+2024-06-26 10:06:08.308 23130-23130 com.cn.gam...ServiceImp com.example.myapplication            E  send()->mid:0-sid:2
+2024-06-26 10:06:08.902 23130-25938 GameSocketClient        com.example.myapplication            E  socket-onClose-->code:1000-reason:Bye-remote:true
+2024-06-26 10:06:18.300 23130-25919 客户端====                 com.example.myapplication            E  ---尝试重连---
+2024-06-26 10:06:18.302 23130-23130 realgo                  com.example.myapplication            D  reset chipper=0xb4000076726cc770
+2024-06-26 10:06:18.304 23130-26159 TrafficStats            com.example.myapplication            D  tagSocket(81) with statsTag=0xffffffff, statsUid=-1
+2024-06-26 10:06:19.221 23130-26159 GameSocketClient        com.example.myapplication            I  GameSocketClient-连接成功！
+2024-06-26 10:06:22.088 23130-25896 e.myapplication         com.example.myapplication            W  Cleared Reference was only reachable from finalizer (only reported once)
+2024-06-26 10:06:22.092 23130-25896 e.myapplication         com.example.myapplication            I  Background concurrent copying GC freed 74953(3527KB) AllocSpace objects, 3(60KB) LOS objects, 63% free, 3492KB/9636KB, paused 254us,56us total 110.450ms
+2024-06-26 10:06:22.089 23130-23130 FinalizerDaemon         com.example.myapplication            W  type=1400 audit(0.0:1324): avc: denied { getopt } for path="/dev/socket/usap_pool_primary" scontext=u:r:untrusted_app:s0:c6,c258,c512,c768 tcontext=u:r:zygote:s0 tclass=unix_stream_socket permissive=0 app=com.example.myapplication
+2024-06-26 10:06:28.308 23130-23130 com.cn.gam...ServiceImp com.example.myapplication            E  send()->mid:0-sid:2
+2024-06-26 10:06:28.500 23130-23130 realgo                  com.example.myapplication            D  >.>Java_com_cn_game_sdk2_websocket_GameSocketClient_newUnpack: mid=0, sid=2, text=[], textSize=[0]
+2024-06-26 10:06:30.545 23130-23130 realgo                  com.example.myapplication            D  >.>Java_com_cn_game_sdk2_websocket_GameSocketClient_newUnpack: mid=0, sid=1, text=[], textSize=[0]
+2024-06-26 10:06:36.486 23130-23130 realgo                  com.example.myapplication            D  >.>Java_com_cn_game_sdk2_websocket_GameSocketClient_newUnpack: mid=0, sid=1, text=[], textSize=[0]
+2024-06-26 10:06:38.312 23130-23130 com.cn.gam...ServiceImp com.example.myapplication            E  send()->mid:0-sid:2
+2024-06-26 10:06:38.464 23130-23130 realgo                  com.example.myapplication            D  >.>Java_com_cn_game_sdk2_websocket_GameSocketClient_newUnpack: mid=0, sid=2, text=[], textSize=[0]
+2024-06-26 10:06:42.412 23130-23130 realgo                  com.example.myapplication            D  >.>Java_com_cn_game_sdk2_websocket_GameSocketClient_newUnpack: mid=0, sid=1, text=[], textSize=[0]
+2024-06-26 10:06:45.624 23130-23130 OplusSyste...ureExtImpl com.example.myapplication            D  regionString = null
+2024-06-26 10:06:45.644 23130-23130 ViewRootImplExtImpl     com.example.myapplication            D  onDisplayChanged 0 for VRI android.view.ViewRootImpl@5002309
+2024-06-26 10:06:45.818 23130-23130 OplusInput...erInternal com.example.myapplication            D  get inputMethodManager extension: com.android.internal.view.IInputMethodManager$Stub$Proxy@8999a64
+2024-06-26 10:06:45.838 23130-23130 ThemeUtils              com.example.myapplication            E  View class androidx.appcompat.widget.AppCompatImageView is an AppCompat widget that can only be used with a Theme.AppCompat theme (or descendant).
+2024-06-26 10:06:45.855 23130-23130 ThemeUtils              com.example.myapplication            E  View class androidx.appcompat.widget.AppCompatTextView is an AppCompat widget that can only be used with a Theme.AppCompat theme (or descendant).
+2024-06-26 10:06:45.867 23130-23130 WindowManager           com.example.myapplication            D  Add to mViews: com.lzf.easyfloat.widget.ParentFrameLayout{abbd1fc I.E...... ......I. 0,0-0,0},pkg= null
+2024-06-26 10:06:45.886 23130-23130 ViewRootImplExtImpl     com.example.myapplication            D  onDisplayChanged -1 for VRI android.view.ViewRootImpl@df211e8
+2024-06-26 10:06:45.889 23130-23130 InputEventReceiver      com.example.myapplication            D  Input log is disabled
+2024-06-26 10:06:45.904 23130-23130 Quality                 com.example.myapplication            I  Skipped: false 2 cost 24.670116 refreshRate 11168179 bit true processName com.example.myapplication
+2024-06-26 10:06:45.955 23130-23130 com.cn.gam...ServiceImp com.example.myapplication            E  send()->mid:7-sid:7
+2024-06-26 10:06:45.956 23130-23130 Quality                 com.example.myapplication            I  Skipped: false 3 cost 42.752342 refreshRate 11167672 bit true processName com.example.myapplication
+2024-06-26 10:06:45.963 23130-23130 BufferQueueConsumer     com.example.myapplication            D  [](id:5a5a00000001,api:0,p:-1,c:23130) connect: controlledByApp=false
+2024-06-26 10:06:45.967 23130-23130 VRI[]                   com.example.myapplication            D  registerCallbacksForSync syncBuffer=false
+2024-06-26 10:06:45.985 23130-25916 BLASTBufferQueue        com.example.myapplication            D  [VRI[][]#1](f:0,a:1) acquireNextBufferLocked size=167x212 mFrameNumber=1 applyTransaction=true mTimestamp=119298275807725(auto) mPendingTransactions.size=0 graphicBufferId=99342593556488 transform=0
+2024-06-26 10:06:45.985 23130-25916 VRI[]                   com.example.myapplication            D  Received frameCommittedCallback lastAttemptedDrawFrameNum=1 didProduceBuffer=true syncBuffer=false
+2024-06-26 10:06:45.986 23130-25916 Parcel                  com.example.myapplication            W  Expecting binder but got null!
+2024-06-26 10:06:45.986 23130-23130 VRI[]                   com.example.myapplication            D  draw finished.
+2024-06-26 10:06:45.992 23130-23130 Quality                 com.example.myapplication            I  Skipped: false 3 cost 34.1597 refreshRate 11166013 bit true processName com.example.myapplication
+2024-06-26 10:06:46.011 23130-25916 BLASTBufferQueue        com.example.myapplication            D  [VRI[][]#1](f:0,a:2) producer disconnected before: mAbandoned=0
+                                                                                                    - BufferQueue mMaxAcquiredBufferCount=4 mMaxDequeuedBufferCount=2
+                                                                                                      mDequeueBufferCannotBlock=0 mAsyncMode=0
+                                                                                                      mQueueBufferCanDrop=0 mLegacyBufferDrop=1
+                                                                                                      default-size=[167x212] default-format=1   transform-hint=00 frame-counter=2
+                                                                                                      mTransformHintInUse=00 mAutoPrerotation=0
+                                                                                                    FIFO(0):
+                                                                                                    (mConsumerName=VRI[][]#1(BLAST Consumer)1, mConnectedApi=1, mConsumerUsageBits=2304, mId=5a5a00000001, producer=[23130:com.example.myapplication], consumer=[23130:com.example.myapplication])
+                                                                                                    Slots:
+                                                                                                     >[00:0xb400007683d48100] state=ACQUIRED 0xb40000760c3e9f00 frame=2 [ 167x 212: 192,  1]
+                                                                                                      [01:0x0] state=FREE
+                                                                                                      [02:0x0] state=FREE
+                                                                                                      [03:0x0] state=FREE
+                                                                                                      [04:0x0] state=FREE
+                                                                                                      [05:0x0] state=FREE
+2024-06-26 10:06:46.019 23130-23130 VRI[]                   com.example.myapplication            D  registerCallbacksForSync syncBuffer=false
+2024-06-26 10:06:46.022 23130-25916 VRI[]                   com.example.myapplication            D  Received frameCommittedCallback lastAttemptedDrawFrameNum=3 didProduceBuffer=true syncBuffer=false
+2024-06-26 10:06:46.023 23130-23130 VRI[]                   com.example.myapplication            D  draw finished.
+2024-06-26 10:06:46.028 23130-23130 Quality                 com.example.myapplication            I  Skipped: false 1 cost 14.726562 refreshRate 11164662 bit true processName com.example.myapplication
+2024-06-26 10:06:46.052 23130-23130 com.cn.gam...ServiceImp com.example.myapplication            E  send()->mid:7-sid:7
+2024-06-26 10:06:46.122 23130-23130 realgo                  com.example.myapplication            D  >.>Java_com_cn_game_sdk2_websocket_GameSocketClient_newUnpack: mid=7, sid=106, text=[
+                                                                                                    http://www.qxe68.com:9333], textSize=[27]
+2024-06-26 10:06:46.123 23130-23130 客户端====                 com.example.myapplication            E  loginSuccess：true
+2024-06-26 10:06:46.123 23130-23130 客户端====                 com.example.myapplication            E  login:code-1,message-null
+2024-06-26 10:06:46.124 23130-23130 com.cn.gam...ServiceImp com.example.myapplication            E  send()->mid:8-sid:7
+2024-06-26 10:06:46.137 23130-25895 e.myapplication         com.example.myapplication            I  Compiler allocated 4937KB to compile void android.view.ViewRootImpl.performTraversals()
+2024-06-26 10:06:46.276 23130-23130 realgo                  com.example.myapplication            D  >.>Java_com_cn_game_sdk2_websocket_GameSocketClient_newUnpack: mid=7, sid=106, text=[
+                                                                                                    http://www.qxe68.com:9333], textSize=[27]
+2024-06-26 10:06:46.277 23130-23130 客户端====                 com.example.myapplication            E  loginSuccess：true
+2024-06-26 10:06:46.277 23130-23130 客户端====                 com.example.myapplication            E  login:code-1,message-null
+2024-06-26 10:06:46.279 23130-23130 com.cn.gam...ServiceImp com.example.myapplication            E  send()->mid:8-sid:7
+2024-06-26 10:06:46.427 23130-23130 realgo                  com.example.myapplication            D  >.>Java_com_cn_game_sdk2_websocket_GameSocketClient_newUnpack: mid=500, sid=1000, text=[
+                                                                                                    0.1	???-??@?î??2"? d(??z d(??z d(??z d(??z d(??z d(??z d(??z d(??z	 d(??z
+                                                                                                     d(??z d(??z d(??z d(??z d(??z d(??z d(??z d(??z d(??z d(??z d(??z d(??z d(??z d(??z d(??z d(??z d(??z d(??z d(??z d(??z d(??z d(??z  d(??z! d(??z" d(??z# d(??z$ d(??z% d(??z], textSize=[398]
+2024-06-26 10:06:46.438 23130-23130 客户端====                 com.example.myapplication            E  enterInfo Success: enterLive
+2024-06-26 10:06:46.450 23130-23130 Quality                 com.example.myapplication            I  Skipped: false 2 cost 22.745728 refreshRate 11167288 bit true processName com.example.myapplication
+2024-06-26 10:06:46.454 23130-23130 com.cn.gam...ServiceImp com.example.myapplication            E  send()->mid:500-sid:1001
+2024-06-26 10:06:46.455 23130-23130 com.cn.gam...ServiceImp com.example.myapplication            E  send()->mid:500-sid:1005
+2024-06-26 10:06:46.571 23130-23130 realgo                  com.example.myapplication            D  >.>Java_com_cn_game_sdk2_websocket_GameSocketClient_newUnpack: mid=500, sid=1000, text=[
+                                                                                                    0.1	???-??@?Į??2"? d(??z d(??z d(??z d(??z d(??z d(??z d(??z d(??z	 d(??z
+                                                                                                     d(??z d(??z d(??z d(??z d(??z d(??z d(??z d(??z d(??z d(??z d(??z d(??z d(??z d(??z d(??z d(??z d(??z d(??z d(??z d(??z d(??z d(??z  d(??z! d(??z" d(??z# d(??z$ d(??z% d(??z], textSize=[398]
+2024-06-26 10:06:46.572 23130-23130 客户端====                 com.example.myapplication            E  enterInfo Success: enterLive
+2024-06-26 10:06:46.574 23130-23130 com.cn.gam...ServiceImp com.example.myapplication            E  send()->mid:500-sid:1001
+2024-06-26 10:06:46.575 23130-23130 com.cn.gam...ServiceImp com.example.myapplication            E  send()->mid:500-sid:1005
+2024-06-26 10:06:46.722 23130-23130 realgo                  com.example.myapplication            D  >.>Java_com_cn_game_sdk2_websocket_GameSocketClient_newUnpack: mid=7, sid=600, text=[?尚未进入直播间], textSize=[26]
+2024-06-26 10:06:46.758 23130-23130 realgo                  com.example.myapplication            D  >.>Java_com_cn_game_sdk2_websocket_GameSocketClient_newUnpack: mid=500, sid=1001, text=[
+                                                                                                    V؂"一分快三*>
+                                                                                                    
+                                                                                                    2406261006210
+
+                                                                                                    	
+                                                                                                    
+                                                                                                    2406261005705
+
+                                                                                                    
+                                                                                                    ], textSize=[88]
+2024-06-26 10:06:46.763 23130-23130 客户端====                 com.example.myapplication            E  enterLive:code-1,messagenull
+2024-06-26 10:06:46.766 23130-23130 com.cn.gam...ServiceImp com.example.myapplication            E  send()->mid:500-sid:1005
+2024-06-26 10:06:46.868 23130-23130 realgo                  com.example.myapplication            D  >.>Java_com_cn_game_sdk2_websocket_GameSocketClient_newUnpack: mid=500, sid=1001, text=[
+                                                                                                    VÁ"一分快三*>
+                                                                                                    
+                                                                                                    2406261006210
+
+                                                                                                    	
+                                                                                                    
+                                                                                                    2406261005705
+
+                                                                                                    
+                                                                                                    ], textSize=[88]
+2024-06-26 10:06:46.869 23130-23130 客户端====                 com.example.myapplication            E  enterLive:code-1,messagenull
+2024-06-26 10:06:46.871 23130-23130 com.cn.gam...ServiceImp com.example.myapplication            E  send()->mid:500-sid:1005
+2024-06-26 10:06:46.922 23130-23130 realgo                  com.example.myapplication            D  >.>Java_com_cn_game_sdk2_websocket_GameSocketClient_newUnpack: mid=500, sid=1003, text=[2406261006714"?m08Á], textSize=[32]
+2024-06-26 10:06:46.975 23130-23130 realgo                  com.example.myapplication            D  >.>Java_com_cn_game_sdk2_websocket_GameSocketClient_newUnpack: mid=500, sid=1007, text=[?u], textSize=[11]
+2024-06-26 10:06:47.451 23130-23130 realgo                  com.example.myapplication            D  >.>Java_com_cn_game_sdk2_websocket_GameSocketClient_newUnpack: mid=500, sid=1007, text=[??], textSize=[12]
+2024-06-26 10:06:47.953 23130-23130 realgo                  com.example.myapplication            D  >.>Java_com_cn_game_sdk2_websocket_GameSocketClient_newUnpack: mid=500, sid=1007, text=[??], textSize=[12]
+2024-06-26 10:06:48.315 23130-23130 com.cn.gam...ServiceImp com.example.myapplication            E  send()->mid:0-sid:2
+2024-06-26 10:06:48.478 23130-23130 realgo                  com.example.myapplication            D  >.>Java_com_cn_game_sdk2_websocket_GameSocketClient_newUnpack: mid=0, sid=1, text=[], textSize=[0]
+2024-06-26 10:06:48.480 23130-23130 realgo                  com.example.myapplication            D  >.>Java_com_cn_game_sdk2_websocket_GameSocketClient_newUnpack: mid=500, sid=1007, text=[??*], textSize=[12]
+2024-06-26 10:06:48.498 23130-23130 realgo                  com.example.myapplication            D  >.>Java_com_cn_game_sdk2_websocket_GameSocketClient_newUnpack: mid=0, sid=2, text=[], textSize=[0]
+2024-06-26 10:06:48.978 23130-23130 realgo                  com.example.myapplication            D  >.>Java_com_cn_game_sdk2_websocket_GameSocketClient_newUnpack: mid=500, sid=1007, text=[??3], textSize=[12]
+2024-06-26 10:06:49.484 23130-23130 realgo                  com.example.myapplication            D  >.>Java_com_cn_game_sdk2_websocket_GameSocketClient_newUnpack: mid=500, sid=1007, text=[??8], textSize=[12]
+2024-06-26 10:06:50.062 23130-23130 ViewRootImplExtImpl     com.example.myapplication            D  onDisplayChanged 0 for VRI android.view.ViewRootImpl@5002309
+2024-06-26 10:06:50.064 23130-23130 ViewRootImplExtImpl     com.example.myapplication            D  onDisplayChanged 0 for VRI android.view.ViewRootImpl@df211e8
+2024-06-26 10:06:50.517 23130-23130 realgo                  com.example.myapplication            D  >.>Java_com_cn_game_sdk2_websocket_GameSocketClient_newUnpack: mid=500, sid=1007, text=[??8?'], textSize=[21]
+2024-06-26 10:06:51.028 23130-23130 realgo                  com.example.myapplication            D  >.>Java_com_cn_game_sdk2_websocket_GameSocketClient_newUnpack: mid=500, sid=1007, text=[??8??], textSize=[22]
+2024-06-26 10:06:51.541 23130-23130 realgo                  com.example.myapplication            D  >.>Java_com_cn_game_sdk2_websocket_GameSocketClient_newUnpack: mid=500, sid=1007, text=[??8??], textSize=[22]
+2024-06-26 10:06:52.051 23130-23130 realgo                  com.example.myapplication            D  >.>Java_com_cn_game_sdk2_websocket_GameSocketClient_newUnpack: mid=500, sid=1007, text=[??8??], textSize=[22]
+2024-06-26 10:06:52.979 23130-23130 realgo                  com.example.myapplication            D  >.>Java_com_cn_game_sdk2_websocket_GameSocketClient_newUnpack: mid=500, sid=1007, text=[??8??	], textSize=[22]
+2024-06-26 10:06:53.995 23130-23130 realgo                  com.example.myapplication            D  >.>Java_com_cn_game_sdk2_websocket_GameSocketClient_newUnpack: mid=500, sid=1007, text=[??8І
+                                                                                                    ], textSize=[22]
+2024-06-26 10:06:54.505 23130-23130 realgo                  com.example.myapplication            D  >.>Java_com_cn_game_sdk2_websocket_GameSocketClient_newUnpack: mid=0, sid=1, text=[], textSize=[0]
+2024-06-26 10:06:54.506 23130-23130 realgo                  com.example.myapplication            D  >.>Java_com_cn_game_sdk2_websocket_GameSocketClient_newUnpack: mid=500, sid=1007, text=[??8??], textSize=[22]
+2024-06-26 10:06:55.020 23130-23130 realgo                  com.example.myapplication            D  >.>Java_com_cn_game_sdk2_websocket_GameSocketClient_newUnpack: mid=500, sid=1007, text=[??8??], textSize=[22]
+2024-06-26 10:06:55.635 23130-23130 realgo                  com.example.myapplication            D  >.>Java_com_cn_game_sdk2_websocket_GameSocketClient_newUnpack: mid=500, sid=1007, text=[??8??], textSize=[22]
+2024-06-26 10:06:55.957 23130-23130 realgo                  com.example.myapplication            D  >.>Java_com_cn_game_sdk2_websocket_GameSocketClient_newUnpack: mid=500, sid=1007, text=[??8???N??], textSize=[41]
+2024-06-26 10:06:56.969 23130-23130 realgo                  com.example.myapplication            D  >.>Java_com_cn_game_sdk2_websocket_GameSocketClient_newUnpack: mid=500, sid=1007, text=[??8??????], textSize=[42]
+2024-06-26 10:06:56.972 23130-23130 realgo                  com.example.myapplication            D  >.>Java_com_cn_game_sdk2_websocket_GameSocketClient_newUnpack: mid=500, sid=1007, text=[??8??І??], textSize=[42]
+2024-06-26 10:06:57.479 23130-23130 realgo                  com.example.myapplication            D  >.>Java_com_cn_game_sdk2_websocket_GameSocketClient_newUnpack: mid=500, sid=1007, text=[??8??????], textSize=[42]
+2024-06-26 10:06:57.991 23130-23130 realgo                  com.example.myapplication            D  >.>Java_com_cn_game_sdk2_websocket_GameSocketClient_newUnpack: mid=500, sid=1007, text=[??8??????], textSize=[42]
+2024-06-26 10:06:58.319 23130-23130 com.cn.gam...ServiceImp com.example.myapplication            E  send()->mid:0-sid:2
+2024-06-26 10:06:58.496 23130-23130 realgo                  com.example.myapplication            D  >.>Java_com_cn_game_sdk2_websocket_GameSocketClient_newUnpack: mid=500, sid=1007, text=[??8??????], textSize=[42]
+2024-06-26 10:06:58.526 23130-23130 realgo                  com.example.myapplication            D  >.>Java_com_cn_game_sdk2_websocket_GameSocketClient_newUnpack: mid=0, sid=2, text=[], textSize=[0]
+2024-06-26 10:06:58.962 23130-23130 realgo                  com.example.myapplication            D  >.>Java_com_cn_game_sdk2_websocket_GameSocketClient_newUnpack: mid=500, sid=1007, text=[??8??????	], textSize=[42]
+2024-06-26 10:06:59.462 23130-23130 realgo                  com.example.myapplication            D  >.>Java_com_cn_game_sdk2_websocket_GameSocketClient_newUnpack: mid=500, sid=1007, text=[??8??????	], textSize=[42]
+2024-06-26 10:06:59.961 23130-23130 realgo                  com.example.myapplication            D  >.>Java_com_cn_game_sdk2_websocket_GameSocketClient_newUnpack: mid=500, sid=1007, text=[??8??????
+                                                                                                    	], textSize=[42]
+2024-06-26 10:07:00.411 23130-23130 realgo                  com.example.myapplication            D  >.>Java_com_cn_game_sdk2_websocket_GameSocketClient_newUnpack: mid=0, sid=1, text=[], textSize=[0]
+2024-06-26 10:07:00.499 23130-23130 realgo                  com.example.myapplication            D  >.>Java_com_cn_game_sdk2_websocket_GameSocketClient_newUnpack: mid=500, sid=1007, text=[??8????
+                                                                                                    ??
+                                                                                                    	], textSize=[42]
+2024-06-26 10:07:01.169 23130-23130 realgo                  com.example.myapplication            D  >.>Java_com_cn_game_sdk2_websocket_GameSocketClient_newUnpack: mid=500, sid=1007, text=[??8??????
+                                                                                                    	], textSize=[42]
+2024-06-26 10:07:01.466 23130-23130 realgo                  com.example.myapplication            D  >.>Java_com_cn_game_sdk2_websocket_GameSocketClient_newUnpack: mid=500, sid=1007, text=[??8??????
+                                                                                                    ], textSize=[42]
+2024-06-26 10:07:04.145 23130-23130 realgo                  com.example.myapplication            D  >.>Java_com_cn_game_sdk2_websocket_GameSocketClient_newUnpack: mid=500, sid=1010, text=[?2406261006714], textSize=[20]
+2024-06-26 10:07:06.493 23130-23130 realgo                  com.example.myapplication            D  >.>Java_com_cn_game_sdk2_websocket_GameSocketClient_newUnpack: mid=0, sid=1, text=[], textSize=[0]
+2024-06-26 10:07:06.497 23130-23130 realgo                  com.example.myapplication            D  >.>Java_com_cn_game_sdk2_websocket_GameSocketClient_newUnpack: mid=500, sid=1005, text=[?*
+                                                                                                    2406261006714
+
+                                                                                                    ], textSize=[36]
+2024-06-26 10:07:08.324 23130-23130 com.cn.gam...ServiceImp com.example.myapplication            E  send()->mid:0-sid:2
+2024-06-26 10:07:08.480 23130-23130 realgo                  com.example.myapplication            D  >.>Java_com_cn_game_sdk2_websocket_GameSocketClient_newUnpack: mid=0, sid=2, text=[], textSize=[0]
+2024-06-26 10:07:12.220  1347-1347  OPLUS_KEVENT_RECORD     oplus_kevent                         E  OPLUS_KEVENT payload:10518,path@@/data/data/com.example.myapplication/code_cache/install_server-8e9a2d18
+2024-06-26 10:07:12.593 25797-25797 e.myapplication         com.example.myapplication            I  Late-enabling -Xcheck:jni
+2024-06-26 10:07:12.620 25797-25797 e.myapplication         com.example.myapplication            E  Unknown bits set in runtime_flags: 0x40000000
+2024-06-26 10:07:12.630 25797-25797 ziparchive              com.example.myapplication            W  Unable to open '/system/framework/mediatek-framework.dm': No such file or directory
+2024-06-26 10:07:12.630 25797-25797 ziparchive              com.example.myapplication            W  Unable to open '/system/framework/mediatek-framework.dm': No such file or directory
+2024-06-26 10:07:12.631 25797-25797 OneTrace                com.example.myapplication            I  Mark active for pid=25797? true
+2024-06-26 10:07:12.631 25797-25797 cutils-dev              com.example.myapplication            D  otrace_set_tracing_enabled? true
+2024-06-26 10:07:12.643 25797-26253 cutils-dev              com.example.myapplication            D  properties changed in otrace_seq_number_changed!
+2024-06-26 10:07:12.649  1564-1704  OplusThermalStats       system_server                        E  Error getting package info: com.example.myapplication
+2024-06-26 10:07:12.657 25797-25797 re-initialized>         com.example.myapplication            W  type=1400 audit(0.0:1330): avc: granted { execute } for path="/data/data/com.example.myapplication/code_cache/startup_agents/8e9a2d18-agent.so" dev="dm-47" ino=49486 scontext=u:r:untrusted_app:s0:c6,c258,c512,c768 tcontext=u:object_r:app_data_file:s0:c6,c258,c512,c768 tclass=file app=com.example.myapplication
+2024-06-26 10:07:12.671 25797-25797 e.myapplication         com.example.myapplication            W  DexFile /data/data/com.example.myapplication/code_cache/.studio/instruments-bd0f66b3.jar is in boot class path but is not in a known location
+2024-06-26 10:07:12.674 25797-25797 e.myapplication         com.example.myapplication            W  Current dex file has more than one class in it. Calling RetransformClasses on this class might fail if no transformations are applied to it!
+2024-06-26 10:07:12.676 25797-25797 e.myapplication         com.example.myapplication            W  Current dex file has more than one class in it. Calling RetransformClasses on this class might fail if no transformations are applied to it!
+2024-06-26 10:07:12.677 25797-25797 e.myapplication         com.example.myapplication            W  Redefining intrinsic method java.lang.Thread java.lang.Thread.currentThread(). This may cause the unexpected use of the original definition of java.lang.Thread java.lang.Thread.currentThread()in methods that have already been compiled.
+2024-06-26 10:07:12.677 25797-25797 e.myapplication         com.example.myapplication            W  Redefining intrinsic method boolean java.lang.Thread.interrupted(). This may cause the unexpected use of the original definition of boolean java.lang.Thread.interrupted()in methods that have already been compiled.
+2024-06-26 10:07:12.680 25797-25797 e.myapplication         com.example.myapplication            W  Current dex file has more than one class in it. Calling RetransformClasses on this class might fail if no transformations are applied to it!
+2024-06-26 10:07:12.684 25797-25797 e.myapplication         com.example.myapplication            W  Current dex file has more than one class in it. Calling RetransformClasses on this class might fail if no transformations are applied to it!
+2024-06-26 10:07:12.690 25797-25797 e.myapplication         com.example.myapplication            W  Current dex file has more than one class in it. Calling RetransformClasses on this class might fail if no transformations are applied to it!
+2024-06-26 10:07:12.695 25797-25797 Compatibil...geReporter com.example.myapplication            D  Compat change id reported: 171979766; UID 10518; state: ENABLED
+2024-06-26 10:07:12.696 25797-25797 oplus.andr...actoryImpl com.example.myapplication            I  get feature:IOplusAutoResolutionFeature
+2024-06-26 10:07:12.696 25797-25797 oplus.andr...actoryImpl com.example.myapplication            I  getOplusAutoResolutionFeature
+2024-06-26 10:07:12.711 25797-25797 OplusFeatureCache       com.example.myapplication            I  Milliseconds spent on init(): 15
+2024-06-26 10:07:12.712 25797-25797 CompactWindowAppManager com.example.myapplication            D  initCompactApplicationInfo
+2024-06-26 10:07:12.732 25797-25797 libc                    com.example.myapplication            W  Access denied finding property "ro.odm.prev.product.name"
+2024-06-26 10:07:12.734 25797-25797 LoadedApk               com.example.myapplication            D  mApplicationInfo overrideDisplayId:null
+2024-06-26 10:07:12.740 25797-25797 ziparchive              com.example.myapplication            W  Unable to open '/data/data/com.example.myapplication/code_cache/.overlay/base.apk/classes.dm': No such file or directory
+2024-06-26 10:07:12.741 25797-25797 ziparchive              com.example.myapplication            W  Unable to open '/data/data/com.example.myapplication/code_cache/.overlay/base.apk/classes10.dm': No such file or directory
+2024-06-26 10:07:12.741 25797-25797 ziparchive              com.example.myapplication            W  Unable to open '/data/data/com.example.myapplication/code_cache/.overlay/base.apk/classes12.dm': No such file or directory
+2024-06-26 10:07:12.741 25797-25797 ziparchive              com.example.myapplication            W  Unable to open '/data/data/com.example.myapplication/code_cache/.overlay/base.apk/classes13.dm': No such file or directory
+2024-06-26 10:07:12.741 25797-25797 ziparchive              com.example.myapplication            W  Unable to open '/data/data/com.example.myapplication/code_cache/.overlay/base.apk/classes14.dm': No such file or directory
+2024-06-26 10:07:12.741 25797-25797 ziparchive              com.example.myapplication            W  Unable to open '/data/data/com.example.myapplication/code_cache/.overlay/base.apk/classes23.dm': No such file or directory
+2024-06-26 10:07:12.741 25797-25797 ziparchive              com.example.myapplication            W  Unable to open '/data/data/com.example.myapplication/code_cache/.overlay/base.apk/classes4.dm': No such file or directory
+2024-06-26 10:07:12.741 25797-25797 ziparchive              com.example.myapplication            W  Unable to open '/data/app/~~pvHXH5pf-br3IWL3UhpOWQ==/com.example.myapplication-spQasnHu-lh4RRT4Dv3kEA==/base.dm': No such file or directory
+2024-06-26 10:07:12.741 25797-25797 ziparchive              com.example.myapplication            W  Unable to open '/data/app/~~pvHXH5pf-br3IWL3UhpOWQ==/com.example.myapplication-spQasnHu-lh4RRT4Dv3kEA==/base.dm': No such file or directory
+2024-06-26 10:07:12.893 25797-25797 GraphicsEnvironment     com.example.myapplication            V  ANGLE Developer option for 'com.example.myapplication' set to: 'default'
+2024-06-26 10:07:12.893 25797-25797 GraphicsEnvironment     com.example.myapplication            V  ANGLE GameManagerService for com.example.myapplication: false
+2024-06-26 10:07:12.894 25797-25797 GraphicsEnvironment     com.example.myapplication            V  App is not on the allowlist for updatable production driver.
+2024-06-26 10:07:12.899 25797-25797 NetworkSecurityConfig   com.example.myapplication            D  No Network Security Config specified, using platform default
+2024-06-26 10:07:12.899 25797-25797 NetworkSecurityConfig   com.example.myapplication            D  No Network Security Config specified, using platform default
+2024-06-26 10:07:12.901 25797-25797 Compatibil...geReporter com.example.myapplication            D  Compat change id reported: 183155436; UID 10518; state: ENABLED
+2024-06-26 10:07:12.908 25797-25797 AndroidAutoSize         com.example.myapplication            D  designWidthInDp = 375, designHeightInDp = 720, screenWidth = 1080, screenHeight = 2290
+2024-06-26 10:07:12.908 25797-25797 AndroidAutoSize         com.example.myapplication            D  initDensity = 3.0, initScaledDensity = 3.0
+2024-06-26 10:07:12.914 25797-25797 base_lib                com.example.myapplication            D  ModuleInitializer--->create
+2024-06-26 10:07:12.922 25797-25797 GamePartyL...nitializer com.example.myapplication            E  初始化step1:loadGame
+2024-06-26 10:07:12.922 25797-25797 com.cn.gam...ketManager com.example.myapplication            E  initSocketClient
+2024-06-26 10:07:12.933 25797-25797 OplusActivityManager    com.example.myapplication            D  get AMS extension: android.os.BinderProxy@2dbdf96
+2024-06-26 10:07:12.936 25797-26272 OplusGraphicsEvent      com.example.myapplication            D  OplusGraphicsEventListener create now!
+2024-06-26 10:07:12.937 25797-26272 OplusGraphicsEvent      com.example.myapplication            D  addEventListener success!
+2024-06-26 10:07:12.941 25797-26274 libMEOW                 com.example.myapplication            D  meow new tls: 0xb400007682e8b400
+2024-06-26 10:07:12.941 25797-26274 libMEOW                 com.example.myapplication            D  meow reload base cfg path: na
+2024-06-26 10:07:12.941 25797-26274 libMEOW                 com.example.myapplication            D  meow reload overlay cfg path: na
+2024-06-26 10:07:12.941 25797-26274 QT                      com.example.myapplication            W  qt_process_init() called
+2024-06-26 10:07:12.942 25797-26274 QT                      com.example.myapplication            E  [QT]file does not exist
+2024-06-26 10:07:12.942 25797-26274 QT                      com.example.myapplication            W  Support!!
+2024-06-26 10:07:12.943 25797-26270 System.err              com.example.myapplication            W  SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
+2024-06-26 10:07:12.943 25797-26270 System.err              com.example.myapplication            W  SLF4J: Defaulting to no-operation (NOP) logger implementation
+2024-06-26 10:07:12.943 25797-26270 System.err              com.example.myapplication            W  SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.
+2024-06-26 10:07:12.943 25797-26274 QT                      com.example.myapplication            E  [QT]file does not exist
+2024-06-26 10:07:12.944 25797-26274 libMEOW                 com.example.myapplication            D  applied 1 plugins for [com.example.myapplication]:
+2024-06-26 10:07:12.944 25797-26274 libMEOW                 com.example.myapplication            D    plugin 1: [libMEOW_gift.so]: 0xb400007672720380
+2024-06-26 10:07:12.944 25797-26274 libMEOW                 com.example.myapplication            D  rebuild call chain: 0xb400007682ead280
+2024-06-26 10:07:12.944 25797-26274 libMEOW                 com.example.myapplication            D  meow delete tls: 0xb400007682e8b400
+2024-06-26 10:07:12.945 25797-26270 e.myapplication         com.example.myapplication            D  createChiper1:0
+2024-06-26 10:07:12.946 25797-26270 realgo                  com.example.myapplication            D  create chipper=0xb4000076726ccb10
+2024-06-26 10:07:12.946 25797-26270 e.myapplication         com.example.myapplication            D  createChiper2:-5476376638156649712
+2024-06-26 10:07:12.947 25797-26275 TrafficStats            com.example.myapplication            D  tagSocket(90) with statsTag=0xffffffff, statsUid=-1
+2024-06-26 10:07:12.951 25797-25797 AppCompatDelegate       com.example.myapplication            D  Checking for metadata for AppLocalesMetadataHolderService : Service not found
+2024-06-26 10:07:12.974 25797-25797 AndroidAutoSize         com.example.myapplication            D  com.example.myapplication.MainActivity used the global configuration.
+2024-06-26 10:07:12.975 25797-25797 AndroidAutoSize         com.example.myapplication            D  The com.example.myapplication.MainActivity has been adapted!
+                                                                                                    MainActivity Info: isBaseOnWidth = true, designWidthInDp = 375.000000, designWidthInSubunits = 375.000000, targetDensity = 2.880000, targetScaledDensity = 2.880000, targetDensityDpi = 460, targetXdpi = 2.880000, targetScreenWidthDp = 375, targetScreenHeightDp = 756
+2024-06-26 10:07:12.978 25797-25797 oplus.andr...actoryImpl com.example.myapplication            I  Unknow feature:IOplusTextViewRTLUtilForUG
+2024-06-26 10:07:12.985 25797-25797 OplusWindowManager      com.example.myapplication            D  get WMS extension: android.os.BinderProxy@2097acc
+2024-06-26 10:07:12.997 25797-25797 e.myapplication         com.example.myapplication            W  Accessing hidden method Landroid/view/View;->computeFitSystemWindows(Landroid/graphics/Rect;Landroid/graphics/Rect;)Z (unsupported, reflection, allowed)
+2024-06-26 10:07:12.997 25797-25797 e.myapplication         com.example.myapplication            W  Accessing hidden method Landroid/view/ViewGroup;->makeOptionalFitsSystemWindows()V (unsupported, reflection, allowed)
+2024-06-26 10:07:13.003 25797-25797 OplusCusto...ionManager com.example.myapplication            E  sInstance is null, start a new sInstance
+2024-06-26 10:07:13.006 25797-25797 Compatibil...geReporter com.example.myapplication            D  Compat change id reported: 210923482; UID 10518; state: ENABLED
+2024-06-26 10:07:13.026 25797-25797 AndroidAutoSize         com.example.myapplication            D  com.example.myapplication.MainActivity used the global configuration.
+2024-06-26 10:07:13.026 25797-25797 AndroidAutoSize         com.example.myapplication            D  The com.example.myapplication.MainActivity has been adapted!
+                                                                                                    MainActivity Info: isBaseOnWidth = true, designWidthInDp = 375.000000, designWidthInSubunits = 375.000000, targetDensity = 2.880000, targetScaledDensity = 2.880000, targetDensityDpi = 460, targetXdpi = 2.880000, targetScreenWidthDp = 375, targetScreenHeightDp = 756
+2024-06-26 10:07:13.033 25797-25797 PowerHalWrapper         com.example.myapplication            I  PowerHalWrapper.getInstance
+2024-06-26 10:07:13.033 25797-26278 PowerHalWrapper         com.example.myapplication            I  PowerHalWrapper.getInstance
+2024-06-26 10:07:13.033 25797-25797 MSYNC3-Var...efreshRate com.example.myapplication            I  Variable refreshrate is disabled
+2024-06-26 10:07:13.034 25797-25797 ExtensionsLoader        com.example.myapplication            D  createInstance(64bit) : createExtendedFactory
+2024-06-26 10:07:13.035 25797-25797 ExtensionsLoader        com.example.myapplication            D  Opened libSchedAssistExtImpl.so
+2024-06-26 10:07:13.035 25797-25797 e.myapplication         com.example.myapplication            E  ofbOpen failed with error=No such file or directory
+2024-06-26 10:07:13.035 25797-25797 e.myapplication         com.example.myapplication            E  sysOpen failed with error=No such file or directory
+2024-06-26 10:07:13.036 25797-25797 OplusInputMethodUtil    com.example.myapplication            D  init sDebug to false, init sDebugIme to false, init sAlwaysOn to false
+2024-06-26 10:07:13.036 25797-25797 OplusInputMethodUtil    com.example.myapplication            D  updateDebugToClass InputMethodManager.DEBUG = false
+2024-06-26 10:07:13.036 25797-25797 OplusInputMethodUtil    com.example.myapplication            D  updateDebugToClass ImeFocusController.DEBUG = false
+2024-06-26 10:07:13.036 25797-25797 OplusInputMethodUtil    com.example.myapplication            D  updateDebugToClass BaseInputConnection.DEBUG = false
+2024-06-26 10:07:13.036 25797-25797 OplusInputMethodUtil    com.example.myapplication            D  updateDebugToClass ImeFocusController.sDebugIme = false
+2024-06-26 10:07:13.039 25797-25797 SurfaceFactory          com.example.myapplication            I  [static] sSurfaceFactory = com.mediatek.view.impl.SurfaceFactoryImpl@1766da7
+2024-06-26 10:07:13.043 25797-26281 OplusSlideAnimOptHelper com.example.myapplication            I  checkListMode: is blacklist mode = true
+2024-06-26 10:07:13.043 25797-26281 OplusSlideAnimOptHelper com.example.myapplication            D  com.example.myapplication scrollEffectOpt enable = true
+2024-06-26 10:07:13.043 25797-25797 WindowManager           com.example.myapplication            D  Add to mViews: DecorView@d1385fd[MainActivity],pkg= com.example.myapplication
+2024-06-26 10:07:13.047 25797-26272 ExtensionsLoader        com.example.myapplication            D  createInstance(64bit) : createExtendedFactory
+2024-06-26 10:07:13.048 25797-26272 ExtensionsLoader        com.example.myapplication            D  Opened libhwuiextimpl.so
+2024-06-26 10:07:13.048 25797-25797 ExtensionsLoader        com.example.myapplication            D  createInstance(64bit) : createExtendedFactory
+2024-06-26 10:07:13.048 25797-25797 ExtensionsLoader        com.example.myapplication            D  Opened libSchedAssistExtImpl.so
+2024-06-26 10:07:13.060 25797-25797 ViewRootImplExtImpl     com.example.myapplication            D  onDisplayChanged -1 for VRI android.view.ViewRootImpl@9116a9f
+2024-06-26 10:07:13.061 25797-25797 libMEOW                 com.example.myapplication            D  meow new tls: 0xb400007608d001c0
+2024-06-26 10:07:13.061 25797-25797 libMEOW                 com.example.myapplication            D  applied 1 plugins for [com.example.myapplication]:
+2024-06-26 10:07:13.061 25797-25797 libMEOW                 com.example.myapplication            D    plugin 1: [libMEOW_gift.so]: 0xb400007672720380
+2024-06-26 10:07:13.061 25797-25797 libMEOW                 com.example.myapplication            D  rebuild call chain: 0xb400007608d0ff80
+2024-06-26 10:07:13.062 25797-25797 InputEventReceiver      com.example.myapplication            D  Input log is disabled
+2024-06-26 10:07:13.085 25797-25797 BufferQueueConsumer     com.example.myapplication            D  [](id:64c500000000,api:0,p:-1,c:25797) connect: controlledByApp=false
+2024-06-26 10:07:13.086 25797-25797 ExtensionsLoader        com.example.myapplication            D  createInstance(64bit) : createExtendedFactory
+2024-06-26 10:07:13.086 25797-25797 ExtensionsLoader        com.example.myapplication            D  Opened libSchedAssistExtImpl.so
+2024-06-26 10:07:13.086 25797-25797 FBI                     com.example.myapplication            E  Can't load library: dlopen failed: library "libmagtsync.so" not found
+2024-06-26 10:07:13.088 25797-25797 ZoomWindowDecorView     com.example.myapplication            V  setLastReportedMergedConfiguration mZoomDisplayHeight: 2400 getDecorView.219383293
+2024-06-26 10:07:13.089 25797-26272 libMEOW                 com.example.myapplication            D  meow new tls: 0xb400007608d7de40
+2024-06-26 10:07:13.089 25797-26272 libMEOW                 com.example.myapplication            D  applied 1 plugins for [com.example.myapplication]:
+2024-06-26 10:07:13.089 25797-26272 libMEOW                 com.example.myapplication            D    plugin 1: [libMEOW_gift.so]: 0xb400007672720380
+2024-06-26 10:07:13.089 25797-26272 libMEOW                 com.example.myapplication            D  rebuild call chain: 0xb400007608d96880
+2024-06-26 10:07:13.091 25797-25797 VRI[MainActivity]       com.example.myapplication            D  registerCallbacksForSync syncBuffer=false
+2024-06-26 10:07:13.110 25797-26272 hw-ProcessState         com.example.myapplication            D  Binder ioctl to enable oneway spam detection failed: Invalid argument
+2024-06-26 10:07:13.122 25797-26272 BLASTBufferQueue        com.example.myapplication            D  [VRI[MainActivity][com.example.myapplication/com.example.myapplication.MainActivity]#0](f:0,a:1) acquireNextBufferLocked size=1080x2400 mFrameNumber=1 applyTransaction=true mTimestamp=119325413082112(auto) mPendingTransactions.size=0 graphicBufferId=110797271334912 transform=0
+2024-06-26 10:07:13.122 25797-26272 VRI[MainActivity]       com.example.myapplication            D  Received frameCommittedCallback lastAttemptedDrawFrameNum=1 didProduceBuffer=true syncBuffer=false
+2024-06-26 10:07:13.124 25797-26272 Parcel                  com.example.myapplication            W  Expecting binder but got null!
+2024-06-26 10:07:13.124 25797-25797 VRI[MainActivity]       com.example.myapplication            D  draw finished.
+2024-06-26 10:07:13.126 25797-25797 Quality                 com.example.myapplication            I  Skipped: false 3 cost 50.933716 refreshRate 16666667 bit true processName com.example.myapplication
+2024-06-26 10:07:13.129 25797-25797 ViewRootImplExtImpl     com.example.myapplication            D  onDisplayChanged 0 for VRI android.view.ViewRootImpl@9116a9f
+2024-06-26 10:07:13.148 25797-25797 VRI[MainActivity]       com.example.myapplication            D  onFocusEvent true
+2024-06-26 10:07:13.163 25797-25797 ViewRootImplExtImpl     com.example.myapplication            D  onDisplayChanged 0 for VRI android.view.ViewRootImpl@9116a9f
+2024-06-26 10:07:13.670 25797-26275 GameSocketClient        com.example.myapplication            I  GameSocketClient-连接成功！
+2024-06-26 10:07:13.672 25797-25797 realgo                  com.example.myapplication            D  reset chipper=0xb4000076726ccb10
+2024-06-26 10:07:14.477 25797-25797 OplusSyste...ureExtImpl com.example.myapplication            D  regionString = null
+2024-06-26 10:07:14.503 25797-25797 ViewRootImplExtImpl     com.example.myapplication            D  onDisplayChanged 0 for VRI android.view.ViewRootImpl@9116a9f
+2024-06-26 10:07:14.559 25797-25797 OplusInput...erInternal com.example.myapplication            D  get inputMethodManager extension: com.android.internal.view.IInputMethodManager$Stub$Proxy@40478e4
+2024-06-26 10:07:14.567 25797-25797 ThemeUtils              com.example.myapplication            E  View class androidx.appcompat.widget.AppCompatImageView is an AppCompat widget that can only be used with a Theme.AppCompat theme (or descendant).
+2024-06-26 10:07:14.578 25797-25797 ThemeUtils              com.example.myapplication            E  View class androidx.appcompat.widget.AppCompatTextView is an AppCompat widget that can only be used with a Theme.AppCompat theme (or descendant).
+2024-06-26 10:07:14.589 25797-25797 WindowManager           com.example.myapplication            D  Add to mViews: com.lzf.easyfloat.widget.ParentFrameLayout{fd4007c I.E...... ......I. 0,0-0,0},pkg= null
+2024-06-26 10:07:14.605 25797-25797 ViewRootImplExtImpl     com.example.myapplication            D  onDisplayChanged -1 for VRI android.view.ViewRootImpl@a9ea868
+2024-06-26 10:07:14.607 25797-25797 InputEventReceiver      com.example.myapplication            D  Input log is disabled
+2024-06-26 10:07:14.621 25797-25797 Quality                 com.example.myapplication            I  Skipped: false 5 cost 58.435753 refreshRate 11111111 bit true processName com.example.myapplication
+2024-06-26 10:07:14.683 25797-25797 com.cn.gam...ServiceImp com.example.myapplication            E  send()->mid:7-sid:7
+2024-06-26 10:07:14.685 25797-25797 Quality                 com.example.myapplication            I  Skipped: false 4 cost 55.01822 refreshRate 11169685 bit true processName com.example.myapplication
+2024-06-26 10:07:14.710 25797-25797 BufferQueueConsumer     com.example.myapplication            D  [](id:64c500000001,api:0,p:-1,c:25797) connect: controlledByApp=false
+2024-06-26 10:07:14.717 25797-25797 VRI[]                   com.example.myapplication            D  registerCallbacksForSync syncBuffer=false
+2024-06-26 10:07:14.725 25797-26272 BLASTBufferQueue        com.example.myapplication            D  [VRI[][]#1](f:0,a:1) acquireNextBufferLocked size=167x212 mFrameNumber=1 applyTransaction=true mTimestamp=119327015592958(auto) mPendingTransactions.size=0 graphicBufferId=110797271334920 transform=0
+2024-06-26 10:07:14.725 25797-26272 VRI[]                   com.example.myapplication            D  Received frameCommittedCallback lastAttemptedDrawFrameNum=1 didProduceBuffer=true syncBuffer=false
+2024-06-26 10:07:14.726 25797-26272 Parcel                  com.example.myapplication            W  Expecting binder but got null!
+2024-06-26 10:07:14.726 25797-25797 VRI[]                   com.example.myapplication            D  draw finished.
+2024-06-26 10:07:14.731 25797-25797 Quality                 com.example.myapplication            I  Skipped: false 3 cost 33.546898 refreshRate 11168221 bit true processName com.example.myapplication
+2024-06-26 10:07:14.759 25797-26272 BLASTBufferQueue        com.example.myapplication            D  [VRI[][]#1](f:0,a:2) producer disconnected before: mAbandoned=0
+                                                                                                    - BufferQueue mMaxAcquiredBufferCount=4 mMaxDequeuedBufferCount=2
+                                                                                                      mDequeueBufferCannotBlock=0 mAsyncMode=0
+                                                                                                      mQueueBufferCanDrop=0 mLegacyBufferDrop=1
+                                                                                                      default-size=[167x212] default-format=1   transform-hint=00 frame-counter=2
+                                                                                                      mTransformHintInUse=00 mAutoPrerotation=0
+                                                                                                    FIFO(0):
+                                                                                                    (mConsumerName=VRI[][]#1(BLAST Consumer)1, mConnectedApi=1, mConsumerUsageBits=2304, mId=64c500000001, producer=[25797:com.example.myapplication], consumer=[25797:com.example.myapplication])
+                                                                                                    Slots:
+                                                                                                     >[00:0xb4000075f489d500] state=ACQUIRED 0xb400007682eecb80 frame=2 [ 167x 212: 192,  1]
+                                                                                                      [01:0x0] state=FREE
+                                                                                                      [02:0x0] state=FREE
+                                                                                                      [03:0x0] state=FREE
+                                                                                                      [04:0x0] state=FREE
+                                                                                                      [05:0x0] state=FREE
+2024-06-26 10:07:14.762 25797-25797 Quality                 com.example.myapplication            I  Skipped: false 1 cost 19.574896 refreshRate 11168158 bit true processName com.example.myapplication
+2024-06-26 10:07:14.779 25797-25797 VRI[]                   com.example.myapplication            D  registerCallbacksForSync syncBuffer=false
+2024-06-26 10:07:14.787 25797-26272 VRI[]                   com.example.myapplication            D  Received frameCommittedCallback lastAttemptedDrawFrameNum=3 didProduceBuffer=true syncBuffer=false
+2024-06-26 10:07:14.788 25797-25797 VRI[]                   com.example.myapplication            D  draw finished.
+2024-06-26 10:07:14.794 25797-25797 Quality                 com.example.myapplication            I  Skipped: false 2 cost 29.322886 refreshRate 11168259 bit true processName com.example.myapplication
+2024-06-26 10:07:14.810 25797-25797 Quality                 com.example.myapplication            I  Skipped: false 1 cost 12.011444 refreshRate 11167410 bit true processName com.example.myapplication
+2024-06-26 10:07:14.878 25797-26247 libc                    com.example.myapplication            A  Fatal signal 11 (SIGSEGV), code 1 (SEGV_MAPERR), fault addr 0xf988383c2014c in tid 26247 (Jit thread pool), pid 25797 (e.myapplication)
+2024-06-26 10:07:14.899 25797-25797 Quality                 com.example.myapplication            I  Skipped: false 1 cost 12.137888 refreshRate 11165205 bit true processName com.example.myapplication
+2024-06-26 10:07:14.948 25797-25797 Quality                 com.example.myapplication            I  Skipped: false 1 cost 16.166857 refreshRate 11164615 bit true processName com.example.myapplication
+2024-06-26 10:07:15.208 26315-26315 DEBUG                   pid-26315                            A  Process name is com.example.myapplication, not key_process
+2024-06-26 10:07:15.208 26315-26315 DEBUG                   pid-26315                            A  Cmdline: com.example.myapplication
+2024-06-26 10:07:15.208 26315-26315 DEBUG                   pid-26315                            A  pid: 25797, tid: 26247, name: Jit thread pool  >>> com.example.myapplication <<<
+2024-06-26 10:07:15.226 25797-25797 OplusSyste...ureExtImpl com.example.myapplication            D  regionString = null
+2024-06-26 10:07:22.773 26460-26460 e.myapplication         com.example.myapplication            I  Late-enabling -Xcheck:jni
+2024-06-26 10:07:22.809 26460-26460 e.myapplication         com.example.myapplication            E  Unknown bits set in runtime_flags: 0x40000000
+2024-06-26 10:07:22.823 26460-26460 ziparchive              com.example.myapplication            W  Unable to open '/system/framework/mediatek-framework.dm': No such file or directory
+2024-06-26 10:07:22.823 26460-26460 ziparchive              com.example.myapplication            W  Unable to open '/system/framework/mediatek-framework.dm': No such file or directory
+2024-06-26 10:07:22.825 26460-26460 OneTrace                com.example.myapplication            I  Mark active for pid=26460? true
+2024-06-26 10:07:22.826 26460-26460 cutils-dev              com.example.myapplication            D  otrace_set_tracing_enabled? true
+2024-06-26 10:07:22.838 26460-26479 cutils-dev              com.example.myapplication            D  properties changed in otrace_seq_number_changed!
+2024-06-26 10:07:22.849 26460-26460 re-initialized>         com.example.myapplication            W  type=1400 audit(0.0:1331): avc: granted { execute } for path="/data/data/com.example.myapplication/code_cache/startup_agents/8e9a2d18-agent.so" dev="dm-47" ino=49486 scontext=u:r:untrusted_app:s0:c6,c258,c512,c768 tcontext=u:object_r:app_data_file:s0:c6,c258,c512,c768 tclass=file app=com.example.myapplication
+2024-06-26 10:07:22.869 26460-26460 e.myapplication         com.example.myapplication            W  DexFile /data/data/com.example.myapplication/code_cache/.studio/instruments-bd0f66b3.jar is in boot class path but is not in a known location
+2024-06-26 10:07:22.893 26460-26460 e.myapplication         com.example.myapplication            W  Redefining intrinsic method java.lang.Thread java.lang.Thread.currentThread(). This may cause the unexpected use of the original definition of java.lang.Thread java.lang.Thread.currentThread()in methods that have already been compiled.
+2024-06-26 10:07:22.893 26460-26460 e.myapplication         com.example.myapplication            W  Redefining intrinsic method boolean java.lang.Thread.interrupted(). This may cause the unexpected use of the original definition of boolean java.lang.Thread.interrupted()in methods that have already been compiled.
+2024-06-26 10:07:22.900 26460-26460 Compatibil...geReporter com.example.myapplication            D  Compat change id reported: 171979766; UID 10518; state: ENABLED
+2024-06-26 10:07:22.900 26460-26460 oplus.andr...actoryImpl com.example.myapplication            I  get feature:IOplusAutoResolutionFeature
+2024-06-26 10:07:22.901 26460-26460 oplus.andr...actoryImpl com.example.myapplication            I  getOplusAutoResolutionFeature
+2024-06-26 10:07:22.955 26460-26460 OplusFeatureCache       com.example.myapplication            I  Milliseconds spent on init(): 54
+2024-06-26 10:07:22.958 26460-26460 CompactWindowAppManager com.example.myapplication            D  initCompactApplicationInfo
+2024-06-26 10:07:23.013 26460-26460 libc                    com.example.myapplication            W  Access denied finding property "ro.odm.prev.product.name"
+2024-06-26 10:07:23.017 26460-26460 LoadedApk               com.example.myapplication            D  mApplicationInfo overrideDisplayId:null
+2024-06-26 10:07:23.037 26460-26460 ziparchive              com.example.myapplication            W  Unable to open '/data/data/com.example.myapplication/code_cache/.overlay/base.apk/classes.dm': No such file or directory
+2024-06-26 10:07:23.037 26460-26460 ziparchive              com.example.myapplication            W  Unable to open '/data/data/com.example.myapplication/code_cache/.overlay/base.apk/classes10.dm': No such file or directory
+2024-06-26 10:07:23.038 26460-26460 ziparchive              com.example.myapplication            W  Unable to open '/data/data/com.example.myapplication/code_cache/.overlay/base.apk/classes12.dm': No such file or directory
+2024-06-26 10:07:23.038 26460-26460 ziparchive              com.example.myapplication            W  Unable to open '/data/data/com.example.myapplication/code_cache/.overlay/base.apk/classes13.dm': No such file or directory
+2024-06-26 10:07:23.041 26460-26460 ziparchive              com.example.myapplication            W  Unable to open '/data/data/com.example.myapplication/code_cache/.overlay/base.apk/classes14.dm': No such file or directory
+2024-06-26 10:07:23.041 26460-26460 ziparchive              com.example.myapplication            W  Unable to open '/data/data/com.example.myapplication/code_cache/.overlay/base.apk/classes23.dm': No such file or directory
+2024-06-26 10:07:23.041 26460-26460 ziparchive              com.example.myapplication            W  Unable to open '/data/data/com.example.myapplication/code_cache/.overlay/base.apk/classes4.dm': No such file or directory
+2024-06-26 10:07:23.042 26460-26460 ziparchive              com.example.myapplication            W  Unable to open '/data/app/~~pvHXH5pf-br3IWL3UhpOWQ==/com.example.myapplication-spQasnHu-lh4RRT4Dv3kEA==/base.dm': No such file or directory
+2024-06-26 10:07:23.042 26460-26460 ziparchive              com.example.myapplication            W  Unable to open '/data/app/~~pvHXH5pf-br3IWL3UhpOWQ==/com.example.myapplication-spQasnHu-lh4RRT4Dv3kEA==/base.dm': No such file or directory
+2024-06-26 10:07:23.318 26460-26460 GraphicsEnvironment     com.example.myapplication            V  ANGLE Developer option for 'com.example.myapplication' set to: 'default'
+2024-06-26 10:07:23.319 26460-26460 GraphicsEnvironment     com.example.myapplication            V  ANGLE GameManagerService for com.example.myapplication: false
+2024-06-26 10:07:23.320 26460-26460 GraphicsEnvironment     com.example.myapplication            V  App is not on the allowlist for updatable production driver.
+2024-06-26 10:07:23.329 26460-26460 NetworkSecurityConfig   com.example.myapplication            D  No Network Security Config specified, using platform default
+2024-06-26 10:07:23.331 26460-26460 NetworkSecurityConfig   com.example.myapplication            D  No Network Security Config specified, using platform default
+2024-06-26 10:07:23.336 26460-26460 Compatibil...geReporter com.example.myapplication            D  Compat change id reported: 183155436; UID 10518; state: ENABLED
+2024-06-26 10:07:23.350 26460-26460 AndroidAutoSize         com.example.myapplication            D  designWidthInDp = 375, designHeightInDp = 720, screenWidth = 1080, screenHeight = 2290
+2024-06-26 10:07:23.351 26460-26460 AndroidAutoSize         com.example.myapplication            D  initDensity = 3.0, initScaledDensity = 3.0
+2024-06-26 10:07:23.363 26460-26460 base_lib                com.example.myapplication            D  ModuleInitializer--->create
+2024-06-26 10:07:23.382 26460-26460 GamePartyL...nitializer com.example.myapplication            E  初始化step1:loadGame
+2024-06-26 10:07:23.383 26460-26460 com.cn.gam...ketManager com.example.myapplication            E  initSocketClient
+2024-06-26 10:07:23.409 26460-26460 OplusActivityManager    com.example.myapplication            D  get AMS extension: android.os.BinderProxy@2dbdf96
