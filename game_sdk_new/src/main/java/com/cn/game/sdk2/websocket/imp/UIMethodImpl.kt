@@ -76,14 +76,13 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
                 } else {
                     currentMoney
                 }
-                existRecord.money = countMoney
-                "下注194：$existRecord".loge("addBetting")
+                existRecord.money = countMoney * 100
                 block(balance >= currentCountMoney, existRecord)
             }
             //不存在已下注 注区；直接保存当次下注
             else {
                 bettingListTemp[recordBean.bettingArea] = recordBean
-                "下注200：$recordBean".loge("addBetting")
+                recordBean.money *= 100
                 block(balance >= currentCountMoney, recordBean)
             }
         }.isEmpty {
@@ -94,10 +93,12 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
                 //已下注过 存在确认过的金额
                 recordBean.money += bettingListConfirmed[recordBean.bettingArea]?.money!!
                 "下注210：$recordBean".loge("addBetting")
+                recordBean.money *= 100
                 block(balance >= currentCountMoney, recordBean)
             } else {
                 "下注213：$recordBean".loge("addBetting")
                 //bettingListTemp 临时下注为空 直接保存当次下注
+                recordBean.money *= 100
                 block(balance >= currentCountMoney, recordBean)
             }
         }
@@ -122,6 +123,7 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
         bettingListConfirmed.isNotEmpty {
             val confirmedList = ArrayList<BettingRecordBean>()
             it.forEach { (_, bettingRecordBean) ->
+                bettingRecordBean.money *= 100
                 confirmedList.add(bettingRecordBean)
             }
             block(confirmedList)
@@ -161,7 +163,12 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
         //2
         currentCountMoney = againCountMoney
         bettingListTemp.putAll(againBettingList)
-        return againBettingList
+        val uiList = HashMap<Betting, BettingRecordBean>()
+        bettingListTemp.forEach { (betting, bettingRecordBean) ->
+            bettingRecordBean.money *= 100
+            uiList[betting] = bettingRecordBean
+        }
+        return uiList
     }
 
     /**
@@ -184,7 +191,7 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
                         it.value.money *= 2
                     }
                     val uiBean = it.value
-                    uiBean.money = uiMoney
+                    uiBean.money = uiMoney * 100
                     uiMap[it.key] = uiBean
                     it.value
                 }
@@ -193,7 +200,7 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
                     val mapValues = map.mapValues {
                         val uiMoney: Int = it.value.money * 2
                         val uiBean = it.value
-                        uiBean.money = uiMoney
+                        uiBean.money = uiMoney * 100
                         uiMap[it.key] = uiBean
                         it.value
                     }
@@ -228,7 +235,7 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
      *  step1 = false 无法续压
      *
      */
-     fun observeAgainDoubleState(owner: LifecycleOwner) {
+    fun observeAgainDoubleState(owner: LifecycleOwner) {
         gameAboutModel.currentStage.observe(owner) {
             curStage = it
             checkAgain()
