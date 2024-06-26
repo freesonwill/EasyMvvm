@@ -14,8 +14,7 @@
         android:id="@+id/rlHomeRoot"
         android:layout_width="match_parent"
         android:layout_height="180dp"
-        android:clipChildren="false"
-        android:clipToPadding="false">
+        android:clipChildren="false">
 
         <com.cn.game.sdk2.ui.view.game.GameAreaView
             android:id="@+id/gavSumFour"
@@ -26,6 +25,8 @@
             app:layout_constraintEnd_toStartOf="@id/gavSumFive"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
+
+
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="match_parent"
@@ -530,6 +531,8 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/ivSumThirteen"
                     tools:text="x9" />
+
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.appcompat.widget.AppCompatImageView
