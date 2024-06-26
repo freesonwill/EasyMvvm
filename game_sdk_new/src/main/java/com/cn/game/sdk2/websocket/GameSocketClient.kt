@@ -1,5 +1,7 @@
 package com.cn.game.sdk2.websocket
 
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import com.cn.game.sdk2.websocket.imp.GameSDK
 import com.cn.game.sdk2.websocket.interfaces.SDKLoginCallbackListener
@@ -7,6 +9,7 @@ import com.xcjh.base_lib.utils.loge
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.Runnable
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.java_websocket.client.WebSocketClient
@@ -38,6 +41,7 @@ class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
     private var mNativePtr: Long = 0
     private var _tag = "GameSocketClient"
     private var onMessageListener: OnMessageListener? = null
+    var handler:Handler = Handler(Looper.getMainLooper())
 
     fun setOnMessageListener(listener: OnMessageListener) {
         onMessageListener = listener
@@ -57,21 +61,23 @@ class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
 //            }
 //        }
         Log.i(_tag, "GameSocketClient-连接成功！")
-        reset()
-        if(isReconnecting){
-            isReconnecting = false
-            if(isLogin) {
-                GameSDK.loginGameWithAgentName(
-                    "wali-internal",
-                    token,
-                    "Gregg Denesik",
-                    object : SDKLoginCallbackListener {
-                        override fun callback(code: Int, message: String?) {
-                            "login:code-${code},message-${message}".loge()
-                        }
+        handler.post{
+            reset()
+            if(isReconnecting){
+                isReconnecting = false
+                if(isLogin) {
+                    GameSDK.loginGameWithAgentName(
+                        "wali-internal",
+                        token,
+                        "Gregg Denesik",
+                        object : SDKLoginCallbackListener {
+                            override fun callback(code: Int, message: String?) {
+                                "login:code-${code},message-${message}".loge()
+                            }
 
-                    }
-                )
+                        }
+                    )
+                }
             }
         }
     }
@@ -79,37 +85,27 @@ class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
     override fun onMessage(message: String?) {
         Log.i(_tag, "GameSocketMessage-$message")
     }
-    val jobs = ArrayList<Job>()
+
     override fun onMessage(bytes: ByteBuffer?) {
         if (!bytes!!.hasRemaining()) {
             return
         }
         //messageViewModel?.setData(bytes.array())
-        val messageJob = GlobalScope.launch {
-            withContext(Dispatchers.Main) {
-                Log.i(_tag, "GameSocketMessage-onMessage")
-                if (!bytes!!.hasRemaining()) {
-                    return@withContext
-                }
-                //messageViewModel?.setData(bytes.array())
-                val resps = newUnpack(bytes.array())
-                val mid = resps!![0] as Int?
-                val sid = resps[1] as Int?
-                var str = bytes.array()
-                if (resps.size > 2) {
-                    str = (resps[2] as ByteArray?)!!
-                }
-                Log.i(_tag, "GameSocketMessage-onMessage:mid-$mid sid-$sid")
-                onMessageListener?.onMessage(mid, sid, str)
+        handler.post{
+            Log.i(_tag, "GameSocketMessage-onMessage")
+            if (!bytes!!.hasRemaining()) {
+                return@post
             }
-        }
-        jobs.add(messageJob)
-        //messageJob.cancel()
-        jobs.forEach {
-            if (!it.isActive){
-                it.cancel()
-//                jobs.remove(it)
+            //messageViewModel?.setData(bytes.array())
+            val resps = newUnpack(bytes.array())
+            val mid = resps!![0] as Int?
+            val sid = resps[1] as Int?
+            var str = bytes.array()
+            if (resps.size > 2) {
+                str = (resps[2] as ByteArray?)!!
             }
+            Log.i(_tag, "GameSocketMessage-onMessage:mid-$mid sid-$sid")
+            onMessageListener?.onMessage(mid, sid, str)
         }
     }
 

@@ -1,6 +1,8 @@
 package com.cn.game.sdk2.websocket
 
 import android.annotation.SuppressLint
+import android.os.Handler
+import android.os.Looper
 import com.cn.game.sdk2.network.code.GameResCode
 import com.cn.game.sdk2.websocket.imp.UIMethodImpl
 import com.cn.game.sdk2.websocket.viewmodel.MessageViewModel
@@ -52,9 +54,9 @@ class GameSocketManager private constructor() : OnMessageListener {
     fun initSocketClient() {
         "initSocketClient".loge(tag)
         val uri = URI.create(WEB_SOCKET_URL)
+        client = GameSocketClient(uri) //获得client对象
         GlobalScope.launch {
             withContext(Dispatchers.IO) {
-                client = GameSocketClient(uri) //获得client对象
                 //client?.reset()
                 client?.setOnMessageListener(this@GameSocketManager)
                 gameMassageManager = UIMethodImpl.generate(client!!) //获得接口对象
@@ -79,23 +81,23 @@ class GameSocketManager private constructor() : OnMessageListener {
                 }
             }
         }
-        messageViewModel = MessageViewModel()
-        messageViewModel?.data?.observeForever {
-            val newUnpack = client?.newUnpack(it)
-            val mid = newUnpack!![0] as Int?
-            val sid = newUnpack[1] as Int?
-            var str = ByteArray(0)
-            if (it.size > 2) {
-                str = (newUnpack[2] as ByteArray?)!!
-            }
-            onMessage(mid, sid, str)
-        }
-
-        messageViewModel?.sendData?.observeForever {
-            "send()->mid:${it.mid}-sid:${it.sid}".loge(tag)
-            val newPack = client?.newPack(it.mid, it.sid, it.data, it.data.size)
-            client?.send(newPack)
-        }
+//        messageViewModel = MessageViewModel()
+//        messageViewModel?.data?.observeForever {
+//            val newUnpack = client?.newUnpack(it)
+//            val mid = newUnpack!![0] as Int?
+//            val sid = newUnpack[1] as Int?
+//            var str = ByteArray(0)
+//            if (it.size > 2) {
+//                str = (newUnpack[2] as ByteArray?)!!
+//            }
+//            onMessage(mid, sid, str)
+//        }
+//
+//        messageViewModel?.sendData?.observeForever {
+//            "send()->mid:${it.mid}-sid:${it.sid}".loge(tag)
+//            val newPack = client?.newPack(it.mid, it.sid, it.data, it.data.size)
+//            client?.send(newPack)
+//        }
     }
 
     /**

@@ -149,15 +149,13 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
 
     private fun send(mid: Short, sid: Short, data: ByteArray) {
         //messageViewModel?.setSendData(SendDataBean(mid, sid, data))
-        GlobalScope.launch {
-            withContext(Dispatchers.Main) {
-                "send()->mid:$mid-sid:$sid".loge(tag)
-                try {
-                    val msg = client.newPack(mid, sid, data, data.size)
-                    client.send(msg)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
+        client.handler.post{
+            "send()->mid:$mid-sid:$sid".loge(tag)
+            try {
+                val msg = client.newPack(mid, sid, data, data.size)
+                client.send(msg)
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
     }
