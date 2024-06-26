@@ -15,6 +15,7 @@ import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.utils.ext.CommonExt.isMainThread
 import com.cn.game.sdk2.websocket.bean.Betting
 import com.cn.game.sdk2.websocket.gameAboutModel
+import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel.Stage
 import com.kunminx.architecture.ui.callback.UnPeekLiveData
 import com.xcjh.base_lib.base.BaseViewModel
 import com.xcjh.base_lib.utils.getColor
@@ -39,8 +40,13 @@ class Fast3ViewModel : BaseViewModel() {
     } }
 
     //游戏状态
-    val gameStateLV: LiveData<GameState> by lazy { UnPeekLiveData(GameState.Init) }
-    val gameState: GameState get() = gameStateLV.value!!
+
+    val gameState: GameState get() = when(gameAboutModel.currentStage.value){
+        Stage.NEW -> GameState.Betting
+        Stage.DEAL -> GameState.Settling
+        Stage.SETTLE -> GameState.Drawing
+        else ->GameState.Init
+    }
 
     //是否可点击
     val isClickOperationLD: LiveData<Boolean> by lazy { UnPeekLiveData(true) }
@@ -51,9 +57,9 @@ class Fast3ViewModel : BaseViewModel() {
         }
 
     val homeTimeVisibility by lazy {
-        Transformations.map(this.gameStateLV) {
+        Transformations.map(gameAboutModel.currentStage) {
             return@map when (it) {
-                GameState.Drawing -> View.GONE
+                Stage.SETTLE -> View.GONE
                 else -> View.VISIBLE
             }
         }
@@ -88,15 +94,14 @@ class Fast3ViewModel : BaseViewModel() {
             val selectedPosition = noteList.indexOfFirst { it.select }
             return noteList[selectedPosition].money
         }
-    var countDown:Long
+    val countDown:Long
         get(){
-            Log.d(TAG,"countDown get ${GameManager.instance.countDown}")
-            return GameManager.instance.countDown
+            Log.d(TAG,"countDown get ${gameAboutModel.countDown}")
+            //return GameManager.instance.countDown
+            return gameAboutModel.countDown.toLong()
         }
-        set(value) {
-            Log.d(TAG,"countDown set $value")
-            GameManager.instance.countDown = value
-        }
+    val isCountDownStart:Boolean get() = gameAboutModel.isCountDownStart
+
     /**
      * 每次点击扣钱，但是不显示出来，确定后才把这个金额显示在真实钱上
      */
@@ -132,7 +137,6 @@ class Fast3ViewModel : BaseViewModel() {
 
             override fun onGameStateChanged(oldValue: GameState, newValue: GameState) {
                 Log.d(TAG, "onGameStateChanged run on $isMainThread $oldValue-->$newValue")
-                (gameStateLV as UnPeekLiveData).value = newValue
             }
 
             override fun onDrawingResult(result: HistoryResultBean) {
