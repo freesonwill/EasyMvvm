@@ -48,6 +48,7 @@ import com.cn.game.sdk2.websocket.GameSocketManager
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import com.cn.game.sdk2.websocket.bean.RoundInfoBean
 import com.cn.game.sdk2.websocket.gameAboutModel
+import com.cn.game.sdk2.websocket.imp.GameServiceImp
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 import com.drake.brv.annotaion.DividerOrientation
 import com.drake.brv.utils.bindingAdapter
@@ -290,6 +291,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     allGameAreaMap[it.areaCode] = it
                 }
             }
+        GameSocketManager.getInstance()?.getGameService()?.observeAgainDoubleState(this)
 
         mViewModel.currentMoneyLD.observe(viewLifecycleOwner) { balance ->
             mDatabind.txtCurrentMoney.text = balance
@@ -333,8 +335,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             stage?.run {
                 mViewModel.isClickOperation = stage == GameAboutModel.Stage.NEW
                 gameAboutModel.currentAgainDoubleState.value.let {
-                    mDatabind.ivXuya.isVisible = it == GameAboutModel.AgainDoubleState.AGAIN
-                    mDatabind.ivMultiple2.isVisible = it == GameAboutModel.AgainDoubleState.DOUBLE
+                    //mDatabind.ivXuya.isVisible = it == GameAboutModel.AgainDoubleState.AGAIN
+                    //mDatabind.ivMultiple2.isVisible = it == GameAboutModel.AgainDoubleState.DOUBLE
                 }
                 mViewModel.startCountDown(gameAboutModel.countDown)
                 mViewModel.isClickOperation = stage == GameAboutModel.Stage.NEW
