@@ -63,11 +63,14 @@ import com.xcjh.base_lib.utils.getVmClazz
 import com.xcjh.base_lib.utils.view.clickNoRepeat
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import retrofit2.http.Tag
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>() {
-    private val TAG = "Fast3MainFragment"
+    companion object{
+        const val TAG = "Fast3MainFragment"
+    }
     private var mFragList = ArrayList<Fragment>()
 
     //是否执行关闭动画
@@ -333,11 +336,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         gameAboutModel.currentStage.observe(viewLifecycleOwner) { stage ->
             mViewModel.countDown = gameAboutModel.countDown * 1L
             stage?.run {
-                mViewModel.isClickOperation = stage == GameAboutModel.Stage.NEW
-                gameAboutModel.currentAgainDoubleState.value.let {
-                    //mDatabind.ivXuya.isVisible = it == GameAboutModel.AgainDoubleState.AGAIN
-                    //mDatabind.ivMultiple2.isVisible = it == GameAboutModel.AgainDoubleState.DOUBLE
-                }
                 mViewModel.startCountDown(mViewModel.countDown)
                 mViewModel.isClickOperation = stage == GameAboutModel.Stage.NEW
                 when (this) {
@@ -358,6 +356,12 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     }
                 }
             }
+        }
+
+        //续压、加倍状态监听
+        gameAboutModel.currentAgainDoubleState.observe(viewLifecycleOwner){
+            mDatabind.ivXuya.isVisible = it == GameAboutModel.AgainDoubleState.AGAIN
+            mDatabind.ivMultiple2.isVisible = it == GameAboutModel.AgainDoubleState.DOUBLE
         }
 
         //开奖历史记录
@@ -654,7 +658,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                 )
                                 params.gravity = areaView.okViewGravity
                                 areaView.moneyView.let { moneyView ->
-                                    areaView.addView(moneyView, params)
+                                    moneyView.parentView?.addView(moneyView,params)
                                     moneyView.translationX = it.value.viewXYTemporary[0]
                                     moneyView.translationY = it.value.viewXYTemporary[1]
                                     moneyOkViewMap[it.key.number] = moneyView
@@ -759,21 +763,14 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             requireContext().dp2px(32)
         )
         mDatabind.rlRoot.addView(betImageView, params)
-        //gameArea点击区域坐标(用于计算动画结束后的坐标)  动画结束的位置
-        val endLoc = IntArray(2)
-        endLoc[0] = x.toInt() + requireContext().dp2px(20)
-        endLoc[1] = y.toInt() + requireContext().dp2px(20)
+
         //正式开始计算动画开始/结束的坐标
         val startX: Float = viewX.toFloat() + requireContext().dp2px(12)
         val startY: Float = viewY.toFloat() - requireContext().dp2px(24)
 
-        //掉落后的终点坐标
-        val toX: Float = endLoc[0].toFloat()
-        val toY = endLoc[1].toFloat() - requireContext().dp2px(32)
-
         val path = Path()
         path.moveTo(startX, startY)
-        path.lineTo(toX, toY)
+        path.lineTo(x, y)
         val mPathMeasure = PathMeasure(path, false)
 
         //★★★属性动画实现（从0到贝塞尔曲线的长度之间进行插值计算，获取中间过程的距离值）
