@@ -20,6 +20,7 @@ import android.widget.RelativeLayout
 import androidx.core.animation.addListener
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -60,7 +61,6 @@ import com.xcjh.base_lib.utils.dp2px
 import com.xcjh.base_lib.utils.view.clickNoRepeat
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import retrofit2.http.Tag
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -169,7 +169,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 //下注闪动动画
                 suspendCoroutine { continuation ->
                     val childAlphaAnimator = ObjectAnimator.ofFloat(mDatabind.llShowBetList, "alpha", 0f, 1f)
-                    childAlphaAnimator.duration = 200 // 设置渐隐动画持续时间
+                    childAlphaAnimator.duration = 0 // 设置渐隐动画持续时间
                     val animatorSet = AnimatorSet()
                     animatorSet.play(childAlphaAnimator)
                     animatorSet.addListener(object : AnimatorListenerAdapter() {
@@ -326,13 +326,13 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         mViewModel.currentMoneyLD.observe(viewLifecycleOwner) { balance ->
             mDatabind.txtCurrentMoney.text = balance
         }
-        mViewModel.homeTimeVisibility.observe(requireActivity()) {
+        mViewModel.homeTimeVisibility.observe(viewLifecycleOwner) {
             mDatabind.txtHomeTime.visibility = it
             mDatabind.txtHomeUnit.visibility = it
         }
-        mViewModel.homeTime.observe(requireActivity()) { seconds ->
+        mViewModel.homeTime.observe(viewLifecycleOwner) { seconds ->
             mDatabind.txtHomeTime.text = seconds.toString()
-            if (mViewModel.gameState == GameState.Betting && seconds != 0 && seconds <= 5) {
+            if (mViewModel.gameState == GameState.Betting && seconds in 1..5) {
                 PromptSoundPlay.countdownGameTip(requireContext())
             }
         }
@@ -391,7 +391,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         gameAboutModel.historyRounds.observe(viewLifecycleOwner) {
             Log.e(TAG, "开奖历史结果->$it")
             lifecycleScope.launch {
-                delay(1000)
                 val adapter = mDatabind.rvHomeHistory.bindingAdapter
                 adapter.models = it
                 mDatabind.rlClickHide.isVisible = adapter.models!!.isNotEmpty()
@@ -414,6 +413,30 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 anchorMoneyView?.showTop()
             }
         }
+        mViewModel.playAlphaAnimationLD.observe(viewLifecycleOwner,object : Observer<Boolean> {
+            var animator:ObjectAnimator? = null
+            override fun onChanged(play: Boolean) {
+                mDatabind.rvHomeHistory.scrollToPosition(mDatabind.rvHomeHistory.models!!.size-1)
+                val layoutManager = mDatabind.rvHomeHistory.layoutManager as LinearLayoutManager
+                val position = layoutManager.findLastVisibleItemPosition()
+                val view = layoutManager.findViewByPosition(position)
+                Log.d(TAG,"receive playAlphaAnimationLD:$play,view:$view")
+                if(view == null) return
+                if(play) {
+                    animator = ObjectAnimator.ofFloat(view, "alpha", 1f, 0f, 1f).apply {
+                        duration = mViewModel.prizeAnimTime // 设置动画持续时间
+                        repeatCount = mViewModel.prizeAnimCount // 设置无限循环
+                        repeatMode = ObjectAnimator.REVERSE // 设置反向循环以实现渐隐渐显效果
+                    }
+                    Log.d(TAG,"receive playAlphaAnimationLD:${animator}")
+                    animator?.start()
+                } else {
+                    Log.d(TAG,"receive playAlphaAnimationLD:${animator}")
+                    animator?.cancel()
+                    view.alpha = 1f
+                }
+            }
+        })
     }
 
     /**
