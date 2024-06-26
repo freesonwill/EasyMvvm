@@ -22,26 +22,11 @@ import java.util.Locale
 import kotlin.math.roundToInt
 
 class Fast3ViewModel : BaseViewModel() {
-    companion object {
-        private val TAG = "Fast3ViewModel"
-
-    }
-
     var betOkClick: UnPeekLiveData<Boolean> = UnPeekLiveData()
     var betDeleteClick: UnPeekLiveData<Boolean> = UnPeekLiveData()
 
     var moneyAnimCallback: MoneyAnimCallback? = null
     var updateAreaViewMap : UnPeekLiveData<Int> = UnPeekLiveData()
-
-    //Todo viewModel不应该持有view的任何东西
-//    val currentBettingRecordBeanLD: LiveData<Pair<BettingRecordBean, MoneyOKView>> by lazy { UnPeekLiveData() }
-//    var currentBettingRecordBean: Pair<BettingRecordBean, MoneyOKView>?
-//        set(value) {
-//            (currentBettingRecordBeanLD as UnPeekLiveData).value = value
-//        }
-//        get() = currentBettingRecordBeanLD.value
-    //var tempBetRecordMap:MutableMap<Int, MutablePair<BettingRecordBean, WeakReference<MoneyOKView>>> = mutableMapOf()
-
     //    val historyResultBeans: MutableList<HistoryResultBean> by lazy { mutableListOf() }
     val userLotteryResultLiveData :UnPeekLiveData<ArrayList<Betting>> =UnPeekLiveData()
 
@@ -74,6 +59,7 @@ class Fast3ViewModel : BaseViewModel() {
         }
     }
 
+
     /**
      * 是否显示骰子的结果组合
      */
@@ -102,7 +88,15 @@ class Fast3ViewModel : BaseViewModel() {
             val selectedPosition = noteList.indexOfFirst { it.select }
             return noteList[selectedPosition].money
         }
-
+    var countDown:Long
+        get(){
+            Log.d(TAG,"countDown get ${GameManager.instance.countDown}")
+            return GameManager.instance.countDown
+        }
+        set(value) {
+            Log.d(TAG,"countDown set $value")
+            GameManager.instance.countDown = value
+        }
     /**
      * 每次点击扣钱，但是不显示出来，确定后才把这个金额显示在真实钱上
      */
@@ -125,7 +119,6 @@ class Fast3ViewModel : BaseViewModel() {
 
     //========================================== Method =========================================//
     override fun onInit() {
-
         GameManager.instance.setLiveStatusListener("home", object : IGameListener {
 
             override fun onCountdown(time: Long) {
@@ -166,11 +159,16 @@ class Fast3ViewModel : BaseViewModel() {
         noteList.add(SelectAnnotationBean(money = 100000))
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        Log.d(TAG,"~~~~~~~~~OnCleared")
+    }
+
     fun startBetting() {
         GameManager.instance.startBetting()
     }
 
-    fun startCountDown(time: Int) {
+    fun startCountDown(time: Long) {
         GameManager.instance.startCountDownTimer(time)
     }
 

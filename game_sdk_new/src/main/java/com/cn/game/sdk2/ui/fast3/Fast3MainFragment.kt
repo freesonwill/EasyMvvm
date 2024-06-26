@@ -20,6 +20,7 @@ import android.widget.RelativeLayout
 import androidx.core.animation.addListener
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -58,6 +59,7 @@ import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
 import com.xcjh.base_lib.base.fragment.BaseVmDbFragment
 import com.xcjh.base_lib.utils.dp2px
+import com.xcjh.base_lib.utils.getVmClazz
 import com.xcjh.base_lib.utils.view.clickNoRepeat
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -174,9 +176,9 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 ToastUtil.showToastNormal(getString(R.string.g_home_setting_begin), 1000)
 
                 mDatabind.txtHomeStatic.text = resources.getString(R.string.g_home_balance)
+                //隐藏筹码牌
                 suspendCoroutine { continuation ->
-                    val childAlphaAnimator =
-                        ObjectAnimator.ofFloat(mDatabind.llShowBetList, "alpha", 1f, 0f)
+                    val childAlphaAnimator = ObjectAnimator.ofFloat(mDatabind.llShowBetList, "alpha", 1f, 0f)
                     childAlphaAnimator.duration = 0 // 设置渐隐动画持续时间
                     val animatorSet = AnimatorSet()
                     animatorSet.play(childAlphaAnimator)
@@ -214,7 +216,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     ivBetSize.setImageResource(if (isBig) R.drawable.icon_home_result_big else R.drawable.icon_home_result_small)
                     ivBetOdd.setImageResource(if (isDouble) R.drawable.icon_home_result_double else R.drawable.icon_home_result_single)
                 }
-
+                //中奖动画
                 startWinLottieAnim(endCallBack = {
                     //开奖结果注区动画闪烁
                     mViewModel.userLotteryResultLiveData.value = gameAboutModel.lotteryResultList
@@ -222,8 +224,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     //中奖区域金额刷新
                     notifyMoneyOkView(gameAboutModel.userLotteryResult)
                 })
-
-//            mViewModel.startCountDown(gameAboutModel.countDown)
+                //mViewModel.startCountDown(gameAboutModel.countDown)
             }
         }
     }
@@ -297,9 +298,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         mViewModel.currentMoneyLD.observe(viewLifecycleOwner) { balance ->
             mDatabind.txtCurrentMoney.text = balance
         }
-        /*mViewModel.homeTimeColorLD.observe(viewLifecycleOwner){
-            mDatabind.txtHomeTime.setTextColor(it)
-        }*/
         mViewModel.homeTimeVisibility.observe(requireActivity()) {
             mDatabind.txtHomeTime.visibility = it
             mDatabind.txtHomeUnit.visibility = it
@@ -333,13 +331,14 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
         //游戏状态监听
         gameAboutModel.currentStage.observe(viewLifecycleOwner) { stage ->
+            mViewModel.countDown = gameAboutModel.countDown * 1L
             stage?.run {
                 mViewModel.isClickOperation = stage == GameAboutModel.Stage.NEW
                 gameAboutModel.currentAgainDoubleState.value.let {
                     //mDatabind.ivXuya.isVisible = it == GameAboutModel.AgainDoubleState.AGAIN
                     //mDatabind.ivMultiple2.isVisible = it == GameAboutModel.AgainDoubleState.DOUBLE
                 }
-                mViewModel.startCountDown(gameAboutModel.countDown)
+                mViewModel.startCountDown(mViewModel.countDown)
                 mViewModel.isClickOperation = stage == GameAboutModel.Stage.NEW
                 when (this) {
                     GameAboutModel.Stage.NEW -> {//下注

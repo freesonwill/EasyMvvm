@@ -1,11 +1,9 @@
 package com.cn.game.sdk2.manager
 
 import android.os.CountDownTimer
-import android.util.Log
 import com.cn.game.sdk2.data.bean.HistoryResultBean
 import com.cn.game.sdk2.data.enums.GameState
 import com.cn.game.sdk2.manager.listener.IGameListener
-import com.cn.game.sdk2.utils.ext.CommonExt.isMainThread
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlin.random.Random
@@ -18,10 +16,19 @@ import kotlin.random.Random
 class GameManager private constructor() : IGameManager {
     private var countDownTimer: CountDownTimer? = null
 
-    /**
-     * 倒计时的时间是毫秒1000
-     */
-    var countdownTime: Int = 10000
+    /**倒计时设置时间戳**/
+    private var _countDownSetTimeStamp:Long = 0L
+    /**倒计时的时间是毫秒1000*/
+    var countDown:Long = -1
+        get(){
+            if(field == -1L) throw IllegalStateException("countDown not set")
+            val elapsed = System.currentTimeMillis() -_countDownSetTimeStamp
+            return field - elapsed
+        }
+        set(value) {
+            field = value
+            _countDownSetTimeStamp = System.currentTimeMillis()
+        }
 
     companion object {
         val instance: GameManager by lazy { GameManager() }
@@ -40,12 +47,12 @@ class GameManager private constructor() : IGameManager {
     //================================ Method ===================================================//
 
     override fun startCountDownTimer(
-        countdownTime: Int,
-        countDownInterval: Int,
+        countdownTime: Long,
+        countDownInterval: Long,
         lis: IGameListener?
     ) {
         countDownTimer?.cancel()
-        countDownTimer = object : CountDownTimer(countdownTime.toLong(), countDownInterval.toLong()) {
+        countDownTimer = object : CountDownTimer(countdownTime, countDownInterval) {
                 override fun onTick(millisUntilFinished: Long) {
 //                    Log.d(TAG, "startCountDownTimer onTick run $isMainThread,$millisUntilFinished")
                     lis?.onCountdown(millisUntilFinished)

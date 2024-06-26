@@ -15,52 +15,24 @@ import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
 import com.cn.game.sdk2.ui.viewmodel.fast3.LeopardVm
 import com.cn.game.sdk2.utils.ext.ViewExt.locationOnScreen
+import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import kotlinx.coroutines.launch
 
 /**
  * 豹子
  */
-class LeopardFragment(fast3VM:Fast3ViewModel):BaseFast3Fragment<LeopardVm,FragmentLeopardBinding>(fast3VM) {
+class LeopardFragment(fast3VM: Fast3ViewModel) :
+    BaseFast3Fragment<LeopardVm, FragmentLeopardBinding>(fast3VM) {
 
-    override fun initView(savedInstanceState: Bundle?) {
+    override fun initAreaViewList() {
         mDatabind.model = mViewModel
         mDatabind.apply {
-            gavLeopardOne.areaInfo = mViewModel.bettingArray[1]
-            gavLeopardTwo.areaInfo =  mViewModel.bettingArray[2]
-            gavLeopardThree.areaInfo =  mViewModel.bettingArray[3]
-            gavLeopardFour.areaInfo =  mViewModel.bettingArray[3]
-            gavLeopardFive.areaInfo =  mViewModel.bettingArray[4]
-            gavLeopardSix.areaInfo =  mViewModel.bettingArray[5]
-
-            areaViewList.add(gavLeopardOne)
-            areaViewList.add(gavLeopardTwo)
-            areaViewList.add(gavLeopardThree)
-            areaViewList.add(gavLeopardFour)
-            areaViewList.add(gavLeopardFive)
-            areaViewList.add(gavLeopardSix)
-
-            for (areaView in areaViewList) {
-                areaView.moneyView.setMoneyOKClickListener(object :
-                    MoneyOKView.OnMoneyOKClickListener {
-                    override fun onConfirm() {
-                        fast3VM.betOkClick.value = true;
-                    }
-
-                    override fun onDelete() {
-                        fast3VM.betDeleteClick.value = true;
-                    }
-                })
-
-                areaView.setOnLocationClickListener(object : GameAreaView.LocationClickListener {
-                    override fun onLocationClick(x: Float, y: Float, rawX: Float, rawY: Float) {
-                        if (!areaView.moneyView.isAdd()) {
-                            addMoneyOkView(areaView)
-                        } else {
-                            emitMoneyAnim(areaView, areaView.moneyView)
-                        }
-                    }
-                })
-            }
+            areaViewList.add(gavLeopardOne.also { it.flickerView = ivLeopardOne })
+            areaViewList.add(gavLeopardTwo.also { it.flickerView = ivLeopardTwo })
+            areaViewList.add(gavLeopardThree.also { it.flickerView = ivLeopardThree })
+            areaViewList.add(gavLeopardFour.also { it.flickerView = ivLeopardFour })
+            areaViewList.add(gavLeopardFive.also { it.flickerView = ivLeopardFive })
+            areaViewList.add(gavLeopardSix.also { it.flickerView = ivLeopardSix })
         }
     }
 
@@ -74,24 +46,16 @@ class LeopardFragment(fast3VM:Fast3ViewModel):BaseFast3Fragment<LeopardVm,Fragme
 //        fast3VM.userLotteryResultLiveData.observe(viewLifecycleOwner) { resultList ->
 //            setLotteryResult(resultList, areaViewList, fast3VM.prizeAnimTime / 5, 5)
 //        }
-//        fast3VM.historyResultBeanLD.observe(viewLifecycleOwner) { bean ->
-//            lifecycleScope.launch {
-//                val views = mutableListOf<View>().also {
-//                    when (bean.resultLeopard) {
-//                        1 -> it.add(mDatabind.ivLeopardOne)
-//                        2 -> it.add(mDatabind.ivLeopardTwo)
-//                        3 -> it.add(mDatabind.ivLeopardThree)
-//                        4 -> it.add(mDatabind.ivLeopardFour)
-//                        5 -> it.add(mDatabind.ivLeopardFive)
-//                        6 -> it.add(mDatabind.ivLeopardSix)
-//                    }
-//                }
-//                playAlphaAnimTogether(views, fast3VM.prizeAnimTime / 5, 5)
-//            }
-//        }
     }
 
-    private fun addMoneyOkView(areaView: GameAreaView) {
+    override fun addMoneyOkView(
+        recordBean: BettingRecordBean,
+        areaView: GameAreaView,
+        x: Float,
+        y: Float,
+        rawY: Float,
+        emitAnimCallBack: () -> Unit
+    ) {
         areaView.moneyView.let {
             val viewTreeObserver = it.viewTreeObserver
             viewTreeObserver.addOnGlobalLayoutListener(object :
@@ -99,7 +63,10 @@ class LeopardFragment(fast3VM:Fast3ViewModel):BaseFast3Fragment<LeopardVm,Fragme
                 override fun onGlobalLayout() {
                     // 确保只监听一次
                     it.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                    emitMoneyAnim(areaView, it, isNewAdd = true)
+
+                    recordBean.viewXYTemporary[0] = it.translationX
+                    recordBean.viewXYTemporary[1] = it.translationY
+                    emitAnimCallBack.invoke()
                 }
             })
 
@@ -111,26 +78,5 @@ class LeopardFragment(fast3VM:Fast3ViewModel):BaseFast3Fragment<LeopardVm,Fragme
             params.gravity = Gravity.CENTER
             areaView.addView(it, params)
         }
-    }
-
-    private fun emitMoneyAnim(
-        areaView: GameAreaView,
-        moneyOKView: MoneyOKView,
-        isNewAdd: Boolean = false
-    ) {
-        val location = moneyOKView.locationOnScreen
-        val rax = location[0].toFloat()
-        val ray = location[1].toFloat() + moneyOKView.measuredHeight / 2
-        if (isNewAdd) {
-            moneyOKView.isVisible = false
-        }
-        fast3VM.emitMoneyAnim(rax, ray, areaView = areaView, endCallBack = {
-            moneyOKView.isVisible = true
-//            显示点击在Fragment的位置用于动画结束后显示
-//            val location1 = IntArray(2)
-//            moneyOKView.getLocationInWindow(location1)
-//            moneyOKView.viewXYTemporary[0] = moneyOKView.left
-//            moneyOKView.viewXYTemporary[1] = moneyOKView.top
-        })
     }
 }

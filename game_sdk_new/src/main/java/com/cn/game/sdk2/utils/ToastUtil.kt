@@ -16,6 +16,7 @@ import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getColor
 import com.cn.game.sdk2.R
+import com.cn.game.sdk2.utils.tool.dp2px
 import com.xcjh.base_lib.ModuleInitializer
 
 object ToastUtil {
@@ -95,7 +96,7 @@ object ToastUtil {
             currentToast.view!!.tag = task
             currentToast.view!!.postDelayed(task, duration.toLong())
         }
-        currentToast.setGravity(gravity, 0, 0)
+        currentToast.setGravity(gravity, 0, context.dp2px(175))
         return currentToast
     }
 

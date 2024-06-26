@@ -6,7 +6,7 @@ interface IGameForApp {
 
     fun loadGame()
 
-    fun loginGameWithAgentName(agentName: String, token: String, callback: SDKLoginCallbackListener)
+    fun loginGameWithAgentName(agentName: String, token: String,nickName:String, callback: SDKLoginCallbackListener)
 
     fun enterLive(liveId: String, gameIds: List<Int>, data: String,callback: SDKEnterLiveCallbackListener)
 
