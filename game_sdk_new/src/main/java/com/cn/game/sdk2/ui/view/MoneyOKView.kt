@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
@@ -26,6 +27,8 @@ class MoneyOKView @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : LinearLayout(context, attrs, defStyleAttr) {
+    //总和没有添加到gameAreaView中，保存下被添加的父Layout用于续压
+    var parentView: ViewGroup? = null
     /**
      * 是否显示取消或者确定
      */

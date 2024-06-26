@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.FrameLayout
+import android.widget.ImageView
 import androidx.core.animation.addListener
 import androidx.core.view.isVisible
 import androidx.databinding.ViewDataBinding
@@ -172,10 +173,12 @@ abstract class BaseFast3Fragment<VM : BaseViewModel, VB : ViewDataBinding>(var f
         moneyOKView: MoneyOKView,
         isNewAdd: Boolean = false
     ) {
-        val location = moneyOKView.locationOnScreen
+        val betteView = moneyOKView.findViewById<ImageView>(R.id.ivShowBg)
+        val location = betteView.locationOnScreen
         val rax = location[0].toFloat()
-        val ray = location[1].toFloat() + moneyOKView.measuredHeight / 2
+        val ray = location[1].toFloat()
         if (isNewAdd) {
+            moneyOKView.parentView = moneyOKView.parent as ViewGroup
             moneyOKView.isVisible = false
         }
         fast3VM.emitMoneyAnim(rax, ray, areaView = areaView, endCallBack = {

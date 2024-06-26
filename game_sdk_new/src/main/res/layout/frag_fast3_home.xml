@@ -352,7 +352,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="5dp"
                     android:layout_marginBottom="45dp"
-                    android:visibility="visible"
+                    android:visibility="gone"
+                    tools:visibility="visible"
                     app:layout_constraintBottom_toBottomOf="@+id/llShowBetList"
                     app:layout_constraintEnd_toEndOf="@+id/llShowBetList"
                     app:srcCompat="@drawable/icon_xuya_sel" />
@@ -365,7 +366,8 @@
                     android:layout_marginBottom="5dp"
                     android:clickable="true"
                     android:focusable="true"
-                    android:visibility="visible"
+                    tools:visibility="visible"
+                    android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="@+id/llShowBetList"
                     app:layout_constraintEnd_toEndOf="@+id/llShowBetList"
                     app:srcCompat="@drawable/icon_multiple2_sel" />
