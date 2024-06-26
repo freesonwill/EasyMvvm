@@ -44,18 +44,18 @@ import kotlinx.coroutines.withContext
 /**
  * 提供ui层调用的统一对象
  */
-open class GameServiceImp(private val client: GameSocketClient) : GameService,
+abstract class GameServiceImp(private val client: GameSocketClient) : GameService,
     GameServerMessageConvertFactory {
 
     /**
      * 临时最后点击
      */
-    private var tempLastBetting: Betting? = null
+    protected open var tempLastBetting: Betting? = null
 
     /**
      * 加倍时需要的
      */
-    protected var doubleMoney: Int = 0
+    protected open var doubleMoney: Int = 0
 
     /**
      * 当前临时总下注金额
@@ -63,13 +63,13 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
      * - 提交 清零
      * - 新的一局开始 清零
      */
-    protected var tempMoney = 0
+    protected open var tempMoney = 0
 
     /**
      * 当前确认总下注金额 已下注部分无法取消
      * - 新的一局开始 清零
      */
-    protected var confirmMoney = 0
+    protected open var confirmMoney = 0
 
     /**
      * 临时保存提交的钱
@@ -77,31 +77,32 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
      * 提交成功 清零 并加入 currentConfirmCountMoney
      * 提交失败 清零 并加入 currentTempCountMoney
      */
-    protected var confirmTempMoney = 0
+    protected open var confirmTempMoney = 0
 
     /**
      * 临时下注列表
      */
-    protected val bettingListTemp: MutableMap<Betting, BettingRecordBean> = mutableMapOf()
+    protected open val bettingListTemp: MutableMap<Betting, BettingRecordBean> = mutableMapOf()
 
     /**
      * 临时确认下注列表
      */
-    protected var bettingListTempConfirmed: MutableMap<Betting, BettingRecordBean> = mutableMapOf()
+    protected open var bettingListTempConfirmed: MutableMap<Betting, BettingRecordBean> =
+        mutableMapOf()
 
     /**
      * 已确认下注列表;
      *  - 仅当前局有效，当前局结算后会被清空
      */
-    protected val bettingListConfirmed: MutableMap<Betting, BettingRecordBean> = mutableMapOf()
+    protected open val bettingListConfirmed: MutableMap<Betting, BettingRecordBean> = mutableMapOf()
 
     /**
      * 续压下注列表;
      *  - 会保存到下一局结算时被下一句数据覆盖
      */
-    protected var againBettingList: MutableMap<Betting, BettingRecordBean> = mutableMapOf()
+    protected open var againBettingList: MutableMap<Betting, BettingRecordBean> = mutableMapOf()
 
-    protected var againCountMoney = 0
+    protected open var againCountMoney = 0
 
     private val tag = GameServiceImp::class.java.name
 
@@ -277,6 +278,7 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
      *  将临时确认下注的重新加临时集合里 便于取消和二次确认
      */
     private fun returnTemp() {
+        "returnTemp".loge("returnTemp")
         bettingListTemp.isNotEmpty { temp ->
             bettingListTempConfirmed.forEach {
                 if (temp.containsKey(it.key)) {
@@ -297,6 +299,7 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
         previousSuccess = true
         //result = 0 成功 1 余额不住 3超时
         result.toString().loge("miniGameBetResult")
+        result.betResultInfoListList[0].result.toString().loge("miniGameBetResult-result")
         when (result.betResultInfoListList[0].result) {
             0 -> {
                 gameAboutModel.lastBetting = tempLastBetting
@@ -306,14 +309,19 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
                 confirmMoney += confirmTempMoney
 
                 //跟新again和double
-                gameAboutModel.setOnceCountMoney(confirmMoney)
+                gameAboutModel.setOnceCountMoney(getPanelAllMoney())
                 previousSuccess = true
+                bettingListTempConfirmed.toString()
+                    .loge("miniGameBetResult-bettingListTempConfirmed")
                 bettingListTempConfirmed.forEach { (betting, temBean) ->
+                    temBean.toString().loge()
                     if (bettingListConfirmed.containsKey(betting)) {
                         temBean.money += bettingListConfirmed[betting]?.money!!
                     }
+                    temBean.toString().loge()
                     bettingListConfirmed[betting] = temBean
                 }
+                bettingListConfirmed.toString().loge("miniGameBetResult")
                 bettingListTempConfirmed.clear()
                 confirmTempMoney = 0
             }
