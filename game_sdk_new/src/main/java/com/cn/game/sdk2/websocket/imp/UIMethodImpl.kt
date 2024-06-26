@@ -81,11 +81,10 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
             currentMoney + tempMoney + confirmedMoney + tempConfirmedMoney //本次下注后页面上应该显示的总金额
         //跟新again和double
         gameAboutModel.setOnceCountMoney(countMoney)
-        val unconfirmedMoney: Int = currentMoney + tempMoney + tempConfirmedMoney
         recordBean.money = currentMoney + tempMoney
         bettingListTemp[recordBean.bettingArea] = recordBean
         recordBean.money = countMoney
-        block(balance >= unconfirmedMoney, recordBean)
+        block(isMoneyEnough(), recordBean)
     }
 
     /**
@@ -95,8 +94,6 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
      *  @param block 取消下注后返回已确认的下注
      */
     fun cancelBetting(block: (result: List<BettingRecordBean>?) -> Unit) {
-        //重置当前局总下注金额为已提交的金额
-        currentCountMoney = confirmMoney
 
         //----清空临时数据
         tempMoney = 0
@@ -104,7 +101,7 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
         //----
 
         //跟新again和double
-        gameAboutModel.setOnceCountMoney(currentCountMoney)
+        gameAboutModel.setOnceCountMoney(getPanelAllMoney())
         //返回已确认的集合
         bettingListConfirmed.isNotEmpty {
             val confirmedList = ArrayList<BettingRecordBean>()
@@ -148,13 +145,11 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
     /**
      * 续压
      * 1，上一句的总额就是这一句临时额度 currentTempCountMoney
-     * 2，牌面上无下注时才能续压，所以续压的总金额就是当前页面的总金额
      */
     fun againBetting(): Map<Betting, BettingRecordBean> {
         //1
         tempMoney = againCountMoney
-        //2
-        currentCountMoney = againCountMoney
+
         bettingListTemp.putAll(againBettingList)
         return againBettingList
     }
@@ -165,37 +160,35 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
      *    currentTempCountMoney * 2 + currentConfirmCountMoney
      */
     fun doubleBetting(block: (isMoneyEnough: Boolean, result: Map<Betting, BettingRecordBean>?) -> Unit) {
-        //先判断是否足够加倍
         if (doubleMoney < balance) {
+            bettingListTemp.mapValues {
+                it.value.money *= 2
+            }
             val uiMap = HashMap<Betting, BettingRecordBean>()
-            bettingListTemp.isNotEmpty { map ->
-                map.mapValues {
-                    val uiMoney: Int
-                    if (bettingListConfirmed.containsKey(it.key)) {
-                        it.value.money += 2 * bettingListConfirmed[it.key]?.money!!
-                        uiMoney = it.value.money * 2 + bettingListConfirmed[it.key]?.money!! * 2
-                    } else {
-                        uiMoney = it.value.money * 2
-                        it.value.money *= 2
-                    }
-                    val uiBean = it.value
-                    uiBean.money = uiMoney
-                    uiMap[it.key] = uiBean
-                    it.value
-                }
-            }.isEmpty {
-                bettingListConfirmed.isNotEmpty { map ->
-                    val mapValues = map.mapValues {
-                        val uiMoney: Int = it.value.money * 2
-                        val uiBean = it.value
-                        uiBean.money = uiMoney
-                        uiMap[it.key] = uiBean
-                        it.value
-                    }
-                    bettingListTemp.putAll(mapValues)
+            uiMap.putAll(bettingListTemp)
+            bettingListConfirmed.forEach {
+                if (bettingListTemp.containsKey(it.key)) {
+                    uiMap[it.key]!!.money += it.value.money * 2 //页面
+                    it.value.money += bettingListTemp[it.key]!!.money
+                    bettingListTemp[it.key] = it.value
+                } else {
+                    uiMap[it.key] = it.value
+                    uiMap[it.key]!!.money *= 2
+                    bettingListTemp[it.key] = it.value
                 }
             }
-            tempMoney = doubleMoney
+            bettingListTempConfirmed.forEach {
+                if (bettingListTemp.containsKey(it.key)) {
+                    uiMap[it.key]!!.money += it.value.money * 2 //页面
+                    it.value.money += bettingListTemp[it.key]!!.money
+                    bettingListTemp[it.key] = it.value
+                } else {
+                    uiMap[it.key] = it.value
+                    uiMap[it.key]!!.money *= 2
+                    bettingListTemp[it.key] = it.value
+                }
+            }
+            tempMoney = confirmTempMoney + confirmMoney + tempMoney * 2
             block(true, uiMap)
         } else {
             block(false, null)

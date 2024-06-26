@@ -74,12 +74,7 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
      * 提交成功 清零 并加入 currentConfirmCountMoney
      * 提交失败 清零 并加入 currentTempCountMoney
      */
-    protected var confirmTempMoney =  0
-
-    /**
-     * 当前总下注金额 界面需要显示
-     */
-    protected var currentCountMoney = 0
+    protected var confirmTempMoney = 0
 
     /**
      * 临时下注列表
@@ -130,7 +125,7 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
         send(500, GameReqCode.C2S_LEAVE_GROUP.toShort(), ByteArray(0))
     }
 
-    override fun enterGame(req: GameReq.EnterMiniGame) {
+    override fun enterGame(req: EnterMiniGame) {
         send(500, GameReqCode.C2S_ENTER_MINI_GAME.toShort(), req.toByteArray())
     }
 
@@ -277,7 +272,7 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
                 if (temp.containsKey(it.key)) {
                     temp[it.key]!!.money += it.value.money
                     bettingListTemp[it.key] = temp[it.key]!!
-                }else{
+                } else {
                     bettingListTemp[it.key] = it.value
                 }
             }
@@ -298,9 +293,8 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
                 gameAboutModel.setBettingSuccess(true)
                 //下注成功后 保存当前下注总额为已确认下注金额；并将当前下注总额清空
                 //currentCountMoney包含之前确认的和现在临时的，所以可以直接覆盖已提交的
-                confirmMoney = confirmTempMoney
-                //提交成功后临时总和清空
-                currentCountMoney = 0
+                confirmMoney += confirmTempMoney
+
                 //跟新again和double
                 gameAboutModel.setOnceCountMoney(confirmMoney)
                 previousSuccess = true
@@ -359,11 +353,15 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
         resetPanel()
     }
 
+    /**
+     * 新的一局开始
+     */
     private fun resetPanel() {
         //重置上一局的所有钱
-        currentCountMoney = 0
         confirmMoney = 0
         tempMoney = 0
+        confirmTempMoney = 0
+        bettingListTempConfirmed.clear()
         bettingListConfirmed.clear()
         bettingListTemp.clear()
     }
@@ -480,11 +478,19 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
 
     private fun checkDouble() {
         //不满足续压 计算加倍
-        doubleMoney = tempMoney * 2 + confirmMoney
+        doubleMoney = tempMoney * 2 + confirmMoney +confirmTempMoney
         if (doubleMoney < balance) gameAboutModel.changeAgainDoubleState(GameAboutModel.AgainDoubleState.DOUBLE)
         else
         //既不满足续压 钱也不够加倍
             gameAboutModel.changeAgainDoubleState(GameAboutModel.AgainDoubleState.NUll)
+    }
+
+    protected fun getPanelAllMoney(): Int {
+        return tempMoney + confirmTempMoney + confirmMoney
+    }
+
+    protected fun isMoneyEnough(): Boolean {
+        return tempMoney + confirmTempMoney <= balance
     }
 
 }
