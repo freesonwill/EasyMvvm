@@ -2,6 +2,8 @@ package com.cn.game.sdk2.websocket.bean
 
 import java.io.Serializable
 
+data class SendDataBean(var mid: Short, var sid: Short, var data: ByteArray)
+
 data class RoundInfoBean(
     var roundId: String,
     var performs: List<Int>,

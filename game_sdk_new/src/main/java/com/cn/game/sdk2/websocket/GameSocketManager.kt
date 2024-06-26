@@ -90,6 +90,12 @@ class GameSocketManager private constructor() : OnMessageListener {
             }
             onMessage(mid, sid, str)
         }
+
+        messageViewModel?.sendData?.observeForever {
+            "send()->mid:${it.mid}-sid:${it.sid}".loge(tag)
+            val newPack = client?.newPack(it.mid, it.sid, it.data, it.data.size)
+            client?.send(newPack)
+        }
     }
 
     /**
@@ -127,6 +133,10 @@ class GameSocketManager private constructor() : OnMessageListener {
 
     override fun onMessage(mid: Int?, sid: Int?, byteArray: ByteArray) {
         convertMessage(mid, sid, byteArray)
+//        if (mid == 65535) {
+//            client?.reset()
+//            client?.reconnect()
+//        }
     }
 
     /**
