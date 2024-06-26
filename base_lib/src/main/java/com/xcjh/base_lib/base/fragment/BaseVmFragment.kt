@@ -61,6 +61,7 @@ abstract class BaseVmFragment<VM : BaseViewModel> : Fragment() {
         isFirst = true
         mViewModel = createViewModel().also { it.onInit() }
         initView(savedInstanceState)
+        initListener()
         createObserver()
         registorDefUIChange()
         initData()
@@ -82,6 +83,11 @@ abstract class BaseVmFragment<VM : BaseViewModel> : Fragment() {
      * 初始化view
      */
     abstract fun initView(savedInstanceState: Bundle?)
+
+    /**
+     * 初始化监听器
+     */
+    open fun initListener(){}
 
     /**
      * 懒加载

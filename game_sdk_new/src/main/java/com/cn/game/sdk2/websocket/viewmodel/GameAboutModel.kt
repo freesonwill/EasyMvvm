@@ -1,5 +1,6 @@
 package com.cn.game.sdk2.websocket.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,9 +9,9 @@ import com.cn.game.sdk2.websocket.bean.Betting
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import com.cn.game.sdk2.websocket.bean.RoundInfoBean
 import com.kunminx.architecture.ui.callback.UnPeekLiveData
+import com.xcjh.base_lib.base.BaseViewModel
 
-class GameAboutModel : ViewModel() {
-
+class GameAboutModel : BaseViewModel() {
     enum class Stage {
         NEW, DEAL, SETTLE
     }
@@ -235,6 +236,18 @@ class GameAboutModel : ViewModel() {
 
     var miniGameId: Int = 0
     var countDown: Int = 0 //阶段倒计时
+        set(value) {
+            field = value
+            Log.d(TAG,"countDown set:${field}")
+            _countDownSetStampTime = System.currentTimeMillis()
+        }
+        get() {
+            val elapsed = System.currentTimeMillis() - _countDownSetStampTime
+            Log.d(TAG,"countDown elapsed:${elapsed}")
+            return (field -elapsed).toInt()
+        }
+    private var _countDownSetStampTime:Long = 0L
+    val isCountDownStart get() = (System.currentTimeMillis() - _countDownSetStampTime) < 50
     var roundId: String = "" //期号
     var loginErrorMessage = ""
     var lastBetting: Betting? = null

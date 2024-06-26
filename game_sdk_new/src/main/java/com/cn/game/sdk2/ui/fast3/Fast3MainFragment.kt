@@ -20,7 +20,6 @@ import android.widget.RelativeLayout
 import androidx.core.animation.addListener
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -48,7 +47,6 @@ import com.cn.game.sdk2.websocket.GameSocketManager
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import com.cn.game.sdk2.websocket.bean.RoundInfoBean
 import com.cn.game.sdk2.websocket.gameAboutModel
-import com.cn.game.sdk2.websocket.imp.GameServiceImp
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 import com.drake.brv.annotaion.DividerOrientation
 import com.drake.brv.utils.bindingAdapter
@@ -59,7 +57,6 @@ import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
 import com.xcjh.base_lib.base.fragment.BaseVmDbFragment
 import com.xcjh.base_lib.utils.dp2px
-import com.xcjh.base_lib.utils.getVmClazz
 import com.xcjh.base_lib.utils.view.clickNoRepeat
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -130,54 +127,80 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     override fun initData() {
         //获取当前余额
         mDatabind.txtCurrentMoney.text = mViewModel.currentMoney
-        mDatabind.txtHomeTime.text = "" + mViewModel.homeTime.value
+        mDatabind.txtHomeTime.text = mViewModel.homeTime.value.toString()
         lifecycleScope.launchWhenResumed {
             //开始下注
             Log.d(TAG, "initData startBetting")
-            mViewModel.startBetting()
+            delay(200)
+            updateGameStage()
+            //mViewModel.startBetting()
+        }
+    }
+
+    /**
+     * 刷新游戏状态
+     */
+    private fun updateGameStage(){
+        gameAboutModel.currentStage.value?.let {
+            when(it){
+                GameAboutModel.Stage.NEW->{
+                    onStartBetting()
+                }
+                GameAboutModel.Stage.DEAL->{
+                    onStartDrawing()
+                }
+                GameAboutModel.Stage.SETTLE->{
+                    onStartSetting()
+                }
+            }
+            //if(!mViewModel.isCountDownInit) mViewModel.countDown = gameAboutModel.countDown * 1L
+            Log.d(TAG,"updateGameStage-->${it},countDown:${mViewModel.countDown}")
+            mViewModel.startCountDown(mViewModel.countDown)
         }
     }
 
     private fun onStartBetting() {
         lifecycleScope.launch {
-            ToastUtil.showToastNormal(getString(R.string.g_home_betting_begin), 2000)
             //开始语音
-            PromptSoundPlay.startGameTip(requireContext())
             mDatabind.txtHomeStatic.text = resources.getString(R.string.g_home_txt_please)
-            //下注闪动动画
-            suspendCoroutine { continuation ->
-                val childAlphaAnimator =
-                    ObjectAnimator.ofFloat(mDatabind.llShowBetList, "alpha", 0f, 1f)
-                childAlphaAnimator.duration = 200 // 设置渐隐动画持续时间
-                val animatorSet = AnimatorSet()
-                animatorSet.play(childAlphaAnimator)
-                animatorSet.addListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator) {
-                        super.onAnimationEnd(animation)
-                        //注区
-                        mDatabind.llShowBetList.visibility = View.VISIBLE
-                        //显示开奖结果
-                        mDatabind.rlShowResult.visibility = View.GONE
-                        mDatabind.ivHomeBg.visibility = View.GONE
-                        mDatabind.ivHomeBgCenter.visibility = View.GONE
-                        //hiddenView(true)
-                        continuation.resume(Unit)
-                    }
-                })
-                animatorSet.start()
+            if(mViewModel.isCountDownStart) {
+                ToastUtil.showToastNormal(getString(R.string.g_home_betting_begin), 2000)
+                PromptSoundPlay.startGameTip(requireContext())
+                //下注闪动动画
+                suspendCoroutine { continuation ->
+                    val childAlphaAnimator = ObjectAnimator.ofFloat(mDatabind.llShowBetList, "alpha", 0f, 1f)
+                    childAlphaAnimator.duration = 200 // 设置渐隐动画持续时间
+                    val animatorSet = AnimatorSet()
+                    animatorSet.play(childAlphaAnimator)
+                    animatorSet.addListener(object : AnimatorListenerAdapter() {
+                        override fun onAnimationEnd(animation: Animator) {
+                            super.onAnimationEnd(animation)
+
+                            continuation.resume(Unit)
+                        }
+                    })
+                    animatorSet.start()
+                }
             }
+            //注区
+            mDatabind.llShowBetList.visibility = View.VISIBLE
+            //显示开奖结果
+            mDatabind.rlShowResult.visibility = View.GONE
+            mDatabind.ivHomeBg.visibility = View.GONE
+            mDatabind.ivHomeBgCenter.visibility = View.GONE
+            //hiddenView(true)
             //重置注区筹码
             notifyMoneyOkView(null)
             //倒计时
-            //mViewModel.startCountDown(gameAboutModel.countDown)
+            //mViewModel.startCountDown(mViewModel.countDown)
         }
     }
 
-    private fun onStartSetting(roundInfo: RoundInfoBean?) { //开始结算
+    private fun onStartSetting() { //开始结算
+        val roundInfo: RoundInfoBean? = gameAboutModel.currentSettleResult
         lifecycleScope.launch {
             mDatabind.apply {
                 ToastUtil.showToastNormal(getString(R.string.g_home_setting_begin), 1000)
-
                 mDatabind.txtHomeStatic.text = resources.getString(R.string.g_home_balance)
                 //隐藏筹码牌
                 suspendCoroutine { continuation ->
@@ -237,8 +260,10 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
      */
     private fun onStartDrawing() {
         lifecycleScope.launch {//关闭
-            PromptSoundPlay.endGameTip(requireContext())
-            ToastUtil.showToastNormal(getString(R.string.g_home_drawing_begin), 1000)
+            if(mViewModel.isCountDownStart) {
+                PromptSoundPlay.endGameTip(requireContext())
+                ToastUtil.showToastNormal(getString(R.string.g_home_drawing_begin), 1000)
+            }
             cancelTemBetting()
             //开奖时取消临时下注的
             mDatabind.apply {
@@ -284,7 +309,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         lifecycleScope.launch {
             delay(mViewModel.prizeAnimTime + 2000)
             //播放开奖动画
-            mViewModel.startBetting()
+            //mViewModel.startBetting()
         }
     }
 
@@ -334,27 +359,25 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
         //游戏状态监听
         gameAboutModel.currentStage.observe(viewLifecycleOwner) { stage ->
-            mViewModel.countDown = gameAboutModel.countDown * 1L
+            //mViewModel.countDown = gameAboutModel.countDown * 1L
             stage?.run {
                 mViewModel.startCountDown(mViewModel.countDown)
                 mViewModel.isClickOperation = stage == GameAboutModel.Stage.NEW
                 when (this) {
                     GameAboutModel.Stage.NEW -> {//下注
-                        Log.e(TAG, "游戏状态监听->New")
                         onStartBetting()
                     }
 
                     GameAboutModel.Stage.DEAL -> {//开奖
-                        Log.e(TAG, "游戏状态监听->DEAL ")
                         onStartDrawing()
                     }
 
                     GameAboutModel.Stage.SETTLE -> {//结算
-                        Log.e(TAG, "游戏状态监听->SETTLE ")
                         Log.e(TAG, "${gameAboutModel.userLotteryResult}")
-                        onStartSetting(gameAboutModel.currentSettleResult)
+                        onStartSetting()
                     }
                 }
+                mViewModel.startCountDown(mViewModel.countDown)
             }
         }
 
