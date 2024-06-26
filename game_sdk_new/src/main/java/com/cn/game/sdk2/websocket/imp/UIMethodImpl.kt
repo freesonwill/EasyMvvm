@@ -133,6 +133,7 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
     }
 
     fun commitBetting() {
+        previousSuccess = true
         if (previousSuccess) {
             //等有返回结果后 再赋值成true
             previousSuccess = false

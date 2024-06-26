@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
             //MyGameManager.showFastView(this)
             //92:ZyBmhNCJ   87:MHxIHlYM
             GameSDK.loginGameWithAgentName(
-                "wali-internal", "87:MHxIHlYM", object : SDKLoginCallbackListener {
+                "wali-internal", "87:MHxIHlYM","Gregg Denesik", object : SDKLoginCallbackListener {
                     override fun callback(code: Int, message: String?) {
                         "login:code-${code},message-${message}".loge()
                     }
