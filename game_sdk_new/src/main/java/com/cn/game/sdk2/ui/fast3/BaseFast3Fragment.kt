@@ -4,11 +4,8 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
-import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.core.animation.addListener
 import androidx.core.view.isVisible
@@ -26,11 +23,11 @@ import com.cn.game.sdk2.utils.FlowBus
 import com.cn.game.sdk2.utils.ToastUtil
 import com.cn.game.sdk2.utils.ext.ViewExt.locationOnScreen
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
-import com.cn.game.sdk2.websocket.GameSocketManager
 import com.cn.game.sdk2.websocket.bean.Betting
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import com.cn.game.sdk2.websocket.gameMassageManager
 import com.xcjh.base_lib.base.BaseViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -59,11 +56,11 @@ abstract class BaseFast3Fragment<VM : BaseViewModel, VB : ViewDataBinding>(var f
             .post(fast3VM.viewModelScope, areaViewList)
 
         fast3VM.userLotteryResultLiveData.observe(viewLifecycleOwner) { resultList ->
-            setLotteryResult(resultList, fast3VM.prizeAnimTime / 5, 5)
+            setLotteryResult(resultList, fast3VM.prizeAnimTime, fast3VM.prizeAnimCount)
         }
     }
 
-    protected fun setLotteryResult(
+    private fun setLotteryResult(
         resultList: ArrayList<Betting>,
         duration: Long,
         count: Int
@@ -84,8 +81,10 @@ abstract class BaseFast3Fragment<VM : BaseViewModel, VB : ViewDataBinding>(var f
     /**
      * 播放透明度动画
      */
-    protected suspend fun playAlphaAnimTogether(dic: List<View>, duration: Long, count: Int) {
+    private suspend fun playAlphaAnimTogether(dic: List<View>, duration: Long, count: Int) {
+        delay(100)
         suspendCoroutine { continuation ->
+            fast3VM.playAlphaAnimationLD.value = true
             val animatorSet = AnimatorSet()
             val animators = dic.map { maskView ->
                 val animator = ObjectAnimator.ofFloat(maskView, "alpha", 1f, 0f, 1f).apply {
@@ -110,6 +109,7 @@ abstract class BaseFast3Fragment<VM : BaseViewModel, VB : ViewDataBinding>(var f
                     Log.d(TAG, "maskView-->${it} visible false")
                 }
                 continuation.resume("")
+                fast3VM.playAlphaAnimationLD.value = false
             })
             animatorSet.start()
         }

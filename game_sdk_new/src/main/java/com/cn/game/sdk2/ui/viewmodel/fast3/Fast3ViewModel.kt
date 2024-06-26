@@ -101,16 +101,20 @@ class Fast3ViewModel : BaseViewModel() {
             return gameAboutModel.countDown.toLong()
         }
     val isCountDownStart:Boolean get() = gameAboutModel.isCountDownStart
+    val playAlphaAnimationLD by lazy { UnPeekLiveData(false) }
 
     /**
      * 每次点击扣钱，但是不显示出来，确定后才把这个金额显示在真实钱上
      */
     var temporaryCurrentMoney: Int = 500000
 
+    /** 开奖动画次数 **/
+    val prizeAnimCount = 5
+
     /**
      * 开奖动画时间(ms)
      */
-    val prizeAnimTime = 800L * 5
+    val prizeAnimTime = 800L
 
     /**
      * 下注倒计时(ms)
@@ -182,13 +186,6 @@ class Fast3ViewModel : BaseViewModel() {
 //        currentBettingRecordBean = null
     }
 
-    fun startSettling() {
-        GameManager.instance.startSettling()
-    }
-
-    suspend fun startDrawing() {
-        GameManager.instance.startDrawing()
-    }
 
     fun emitMoneyAnim(
         x: Float,

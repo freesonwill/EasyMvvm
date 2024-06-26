@@ -231,7 +231,7 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
         val roundInfoListList = miniGameBasicInfo.trend.roundInfoListList
         val roundHistoryList = ArrayList<RoundInfoBean>()
         roundInfoListList.forEach {
-            val elements = it.performsList[0].performResultList
+            val elements = it.performsList[0].elementsList
             roundHistoryList.add(
                 RoundInfoBean(
                     it.roundId, elements, elements.sum(), elements.isBig(), elements.isDouble()

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="model"
             type="com.cn.game.sdk2.ui.viewmodel.fast3.SingleDiceVm" />
@@ -25,8 +26,8 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:areaInfo="@{model.bettingArray[1]}"
-            app:layout_constraintBottom_toTopOf="@id/gavDiceFour"
-            app:layout_constraintEnd_toStartOf="@id/gavDiceTwo"
+            app:layout_constraintBottom_toTopOf="@id/gavDiceSix"
+            app:layout_constraintEnd_toStartOf="@id/gavDiceFour"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -50,12 +51,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_6"
                     android:text="@{model.multiplierStr(1)}"
-                    tools:text="x2"
                     android:textColor="@color/g_f8e0c4"
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivDiceOne" />
+                    app:layout_constraintTop_toBottomOf="@id/ivDiceOne"
+                    tools:text="x2" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -74,8 +75,8 @@
             android:layout_height="0dp"
             app:areaInfo="@{model.bettingArray[2]}"
             app:layout_constraintBottom_toBottomOf="@id/gavDiceOne"
-            app:layout_constraintEnd_toStartOf="@id/gavDiceThree"
-            app:layout_constraintStart_toEndOf="@id/gavDiceOne"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/gavDiceFour"
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -98,12 +99,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_6"
                     android:text="@{model.multiplierStr(2)}"
-                    tools:text="x2"
                     android:textColor="@color/g_f8e0c4"
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivDiceTwo" />
+                    app:layout_constraintTop_toBottomOf="@id/ivDiceTwo"
+                    tools:text="x2" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -121,10 +122,10 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:areaInfo="@{model.bettingArray[3]}"
-            app:layout_constraintBottom_toBottomOf="@id/gavDiceOne"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/gavDiceTwo"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/gavDiceFive"
+            app:layout_constraintStart_toEndOf="@id/gavDiceSix"
+            app:layout_constraintTop_toTopOf="@id/gavDiceSix">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="wrap_content"
@@ -146,12 +147,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_6"
                     android:text="@{model.multiplierStr(3)}"
-                    tools:text="x2"
                     android:textColor="@color/g_f8e0c4"
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivDiceThree" />
+                    app:layout_constraintTop_toBottomOf="@id/ivDiceThree"
+                    tools:text="x2" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -170,10 +171,10 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:areaInfo="@{model.bettingArray[4]}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/gavDiceFive"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/gavDiceOne">
+            app:layout_constraintBottom_toBottomOf="@id/gavDiceOne"
+            app:layout_constraintEnd_toStartOf="@id/gavDiceTwo"
+            app:layout_constraintStart_toEndOf="@id/gavDiceOne"
+            app:layout_constraintTop_toTopOf="@id/gavDiceOne">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="wrap_content"
@@ -195,12 +196,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_6"
                     android:text="@{model.multiplierStr(4)}"
-                    tools:text="x2"
                     android:textColor="@color/g_f8e0c4"
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivDiceFour" />
+                    app:layout_constraintTop_toBottomOf="@id/ivDiceFour"
+                    tools:text="x2" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -219,9 +220,9 @@
             android:layout_height="0dp"
             app:areaInfo="@{model.bettingArray[5]}"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/gavDiceSix"
-            app:layout_constraintStart_toEndOf="@id/gavDiceFour"
-            app:layout_constraintTop_toTopOf="@id/gavDiceFour">
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/gavDiceThree"
+            app:layout_constraintTop_toTopOf="@id/gavDiceSix">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="wrap_content"
@@ -243,12 +244,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_6"
                     android:text="@{model.multiplierStr(5)}"
-                    tools:text="x2"
                     android:textColor="@color/g_f8e0c4"
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivDiceFive" />
+                    app:layout_constraintTop_toBottomOf="@id/ivDiceFive"
+                    tools:text="x2" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -268,9 +269,9 @@
             android:layout_height="0dp"
             app:areaInfo="@{model.bettingArray[6]}"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/gavDiceFive"
-            app:layout_constraintTop_toTopOf="@id/gavDiceFour">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/gavDiceThree"
+            app:layout_constraintTop_toBottomOf="@id/gavDiceOne">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="wrap_content"
@@ -292,12 +293,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_6"
                     android:text="@{model.multiplierStr(6)}"
-                    tools:text="x2"
                     android:textColor="@color/g_f8e0c4"
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivDiceSix" />
+                    app:layout_constraintTop_toBottomOf="@id/ivDiceSix"
+                    tools:text="x2" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.appcompat.widget.AppCompatImageView

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="model"
             type="com.cn.game.sdk2.ui.viewmodel.fast3.PairsDiceVm" />
@@ -25,8 +26,8 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:areaInfo="@{model.bettingArray[1]}"
-            app:layout_constraintBottom_toTopOf="@id/gavPairsFour"
-            app:layout_constraintEnd_toStartOf="@id/gavPairsTwo"
+            app:layout_constraintBottom_toTopOf="@id/gavPairsSix"
+            app:layout_constraintEnd_toStartOf="@id/gavPairsFour"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -58,12 +59,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_6"
                     android:text="@{model.multiplierStr(1)}"
-                    tools:text="x2"
                     android:textColor="@color/g_f8e0c4"
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivPairsOneLeft" />
+                    app:layout_constraintTop_toBottomOf="@id/ivPairsOneLeft"
+                    tools:text="x2" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -81,8 +82,8 @@
             android:layout_height="0dp"
             app:areaInfo="@{model.bettingArray[2]}"
             app:layout_constraintBottom_toBottomOf="@id/gavPairsOne"
-            app:layout_constraintEnd_toStartOf="@id/gavPairsThree"
-            app:layout_constraintStart_toEndOf="@id/gavPairsOne"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/gavPairsFour"
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -113,12 +114,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_6"
                     android:text="@{model.multiplierStr(2)}"
-                    tools:text="x2"
                     android:textColor="@color/g_f8e0c4"
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivPairsTwoLeft" />
+                    app:layout_constraintTop_toBottomOf="@id/ivPairsTwoLeft"
+                    tools:text="x2" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -135,10 +136,10 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:areaInfo="@{model.bettingArray[3]}"
-            app:layout_constraintBottom_toBottomOf="@id/gavPairsOne"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/gavPairsTwo"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintBottom_toBottomOf="@id/gavPairsSix"
+            app:layout_constraintEnd_toStartOf="@id/gavPairsFive"
+            app:layout_constraintStart_toEndOf="@id/gavPairsSix"
+            app:layout_constraintTop_toTopOf="@id/gavPairsSix">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="wrap_content"
@@ -168,12 +169,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_6"
                     android:text="@{model.multiplierStr(3)}"
-                    tools:text="x2"
                     android:textColor="@color/g_f8e0c4"
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivPairsThreeLeft" />
+                    app:layout_constraintTop_toBottomOf="@id/ivPairsThreeLeft"
+                    tools:text="x2" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -191,10 +192,10 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:areaInfo="@{model.bettingArray[4]}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/gavPairsFive"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/gavPairsOne">
+            app:layout_constraintBottom_toBottomOf="@id/gavPairsOne"
+            app:layout_constraintEnd_toStartOf="@id/gavPairsTwo"
+            app:layout_constraintTop_toTopOf="@id/gavPairsOne"
+            app:layout_constraintStart_toEndOf="@id/gavPairsOne">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="wrap_content"
@@ -224,12 +225,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_6"
                     android:text="@{model.multiplierStr(4)}"
-                    tools:text="x2"
                     android:textColor="@color/g_f8e0c4"
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivPairsFourLeft" />
+                    app:layout_constraintTop_toBottomOf="@id/ivPairsFourLeft"
+                    tools:text="x2" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -247,9 +248,9 @@
             android:layout_height="0dp"
             app:areaInfo="@{model.bettingArray[5]}"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/gavPairsSix"
-            app:layout_constraintStart_toEndOf="@id/gavPairsFour"
-            app:layout_constraintTop_toTopOf="@id/gavPairsFour">
+            app:layout_constraintStart_toEndOf="@id/gavPairsThree"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/gavPairsSix">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="wrap_content"
@@ -279,12 +280,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_6"
                     android:text="@{model.multiplierStr(5)}"
-                    tools:text="x2"
                     android:textColor="@color/g_f8e0c4"
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivPairsFiveLeft" />
+                    app:layout_constraintTop_toBottomOf="@id/ivPairsFiveLeft"
+                    tools:text="x2" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -302,9 +303,9 @@
             android:layout_height="0dp"
             app:areaInfo="@{model.bettingArray[6]}"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/gavPairsFive"
-            app:layout_constraintTop_toTopOf="@id/gavPairsFour">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/gavPairsOne"
+            app:layout_constraintEnd_toStartOf="@id/gavPairsThree">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="wrap_content"
@@ -334,12 +335,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_6"
                     android:text="@{model.multiplierStr(6)}"
-                    tools:text="x2"
                     android:textColor="@color/g_f8e0c4"
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivPairsSixLeft" />
+                    app:layout_constraintTop_toBottomOf="@id/ivPairsSixLeft"
+                    tools:text="x2" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.appcompat.widget.AppCompatImageView
