@@ -52,7 +52,7 @@ object GameSDK : IGameForApp {
      */
     //platform= 6 ,requestId = 0,version = "1"
     override fun loginGameWithAgentName(
-        agentName: String, token: String, callback: SDKLoginCallbackListener
+        agentName: String, token: String, nickName:String ,callback: SDKLoginCallbackListener
     ) {
         mLoginCallback = callback
         val req = ClientReq.LoginReq.newBuilder().setPlatform(6).setRequestId(0).setVersion("1")
