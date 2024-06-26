@@ -62,6 +62,23 @@ object CacheUtil {
     }
 
 
+    /**
+     * 保存唯一标识UUID
+     */
+    fun setUUID(uuid:String){
+        val kv = MMKV.mmkvWithID("app")
+        uuid?.let {
+            kv.encode("uuid", uuid)
+        }
+    }
+
+    /**
+     * 保存登录成功返回的token
+     */
+    fun getUUIDString(): String {
+        val kv = MMKV.mmkvWithID("app")
+        return kv.decodeString("uuid") ?: ""
+    }
 
 
     /**

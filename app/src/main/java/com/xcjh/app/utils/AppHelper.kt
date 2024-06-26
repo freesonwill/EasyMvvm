@@ -10,6 +10,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Looper
+import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -66,6 +67,7 @@ import com.xcjh.base_lib.utils.layoutInflater
 import com.xcjh.base_lib.utils.setLm
 import com.xcjh.base_lib.utils.startNewActivity
 import java.text.DecimalFormat
+import java.util.UUID
 
 
 //顶层方法类 全是静态方法 并存在在HelperKt类中
@@ -964,4 +966,23 @@ fun getDomain():String{
         }
     }
     return domain
+}
+
+
+@SuppressLint("HardwareIds", "SuspiciousIndentation")
+fun getUUID(): String{
+    var androidID = Settings.Secure.getString(appContext.contentResolver, Settings.Secure.ANDROID_ID)
+    //不为空
+    return if(androidID!=null&&androidID.isNotEmpty()){
+        androidID
+    }else{
+        var uuid= CacheUtil.getUUIDString()
+        if(uuid.isNotEmpty()){
+            uuid
+        }else{
+            var setUUID= UUID.randomUUID().toString()
+            CacheUtil.setUUID(setUUID)
+            setUUID
+        }
+    }
 }

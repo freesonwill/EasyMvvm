@@ -1,6 +1,7 @@
 package com.xcjh.app.websocket.bean
 
-import com.xcjh.base_lib.utils.getUUID
+import com.xcjh.app.utils.getUUID
+
 
 /**
  * 发出的数据

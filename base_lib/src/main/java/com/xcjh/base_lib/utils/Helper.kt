@@ -182,11 +182,11 @@ fun loadCircleImage(
 //5bcf148dcbd6cd46
 //3e5ca2f776766455
 @SuppressLint("HardwareIds")
-fun getUUID(): String? {
-    val androidID = Settings.Secure.getString(appContext.contentResolver, Settings.Secure.ANDROID_ID)
-    //"uuid=$androidID".loge("=====")
-    return androidID
-}
+//fun getUUID(): String? {
+//    var androidID = Settings.Secure.getString(appContext.contentResolver, Settings.Secure.ANDROID_ID)
+//
+//    return androidID
+//}
 
 /**
  * 分享bitmap

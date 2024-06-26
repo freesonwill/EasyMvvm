@@ -8,7 +8,6 @@ import com.xcjh.app.websocket.bean.SendCommonWsBean
 import com.xcjh.app.websocket.listener.LoginOrOutListener
 import com.xcjh.base_lib.App
 import com.xcjh.base_lib.appContext
-import com.xcjh.base_lib.utils.getUUID
 
 
 /**

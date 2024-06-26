@@ -18,13 +18,13 @@ import com.xcjh.app.bean.PostLoaginBean
 import com.xcjh.app.bean.WordCaptchaGetIt
 import com.xcjh.app.net.apiService
 import com.xcjh.app.utils.CacheUtil
+import com.xcjh.app.utils.getUUID
 import com.xcjh.app.view.slider.AESUtil
 import com.xcjh.app.view.slider.CaptchaCheckOt
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.base.BaseViewModel
 import com.xcjh.base_lib.bean.ListDataUiState
-import com.xcjh.base_lib.utils.getUUID
 import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.request
 import com.xcjh.base_lib.utils.requestNoCheck

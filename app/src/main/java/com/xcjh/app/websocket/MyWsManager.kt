@@ -545,11 +545,11 @@ class MyWsManager private constructor(private val mContext: Context) {
             "onReceive====------------  $msg".loge()
 
             try {
-//                parsingServiceLogin(msg)
+                parsingServiceLogin(msg)
             } catch (e: Exception) {
                 "======onReceive===webSocket解析异常------------  ${e.message}".loge()
             }
-            parsingServiceLogin(msg)
+//            parsingServiceLogin(msg)
         }
     }
     /**

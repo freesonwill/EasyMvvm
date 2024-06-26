@@ -10,9 +10,9 @@ import com.xcjh.app.bean.Input
 import com.xcjh.app.bean.LoginSend
 import com.xcjh.app.bean.WordCaptchaGetIt
 import com.xcjh.app.net.apiService
+import com.xcjh.app.utils.getUUID
 import com.xcjh.app.view.slider.CaptchaCheckOt
 import com.xcjh.base_lib.base.BaseViewModel
-import com.xcjh.base_lib.utils.getUUID
 import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.request
 import com.xcjh.base_lib.utils.requestNoCheck

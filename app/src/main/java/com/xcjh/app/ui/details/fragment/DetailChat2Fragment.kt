@@ -50,7 +50,6 @@ import com.xcjh.app.websocket.listener.LiveRoomListener
 import com.xcjh.base_lib.App
 import com.xcjh.base_lib.utils.dip2px
 import com.xcjh.base_lib.utils.dp2px
-import com.xcjh.base_lib.utils.getUUID
 import com.xcjh.base_lib.utils.loge
 import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.toHtml
