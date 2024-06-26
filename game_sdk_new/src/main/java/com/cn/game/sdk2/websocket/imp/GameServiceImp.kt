@@ -36,6 +36,10 @@ import game.common.proto.ClientRes
 import game.mod.proc.yf.proto.req.GameReq
 import game.mod.proc.yf.proto.req.GameReq.EnterMiniGame
 import game.mod.proc.yf.proto.res.GameRes
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * 提供ui层调用的统一对象
@@ -147,13 +151,15 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
 
     private fun send(mid: Short, sid: Short, data: ByteArray) {
         //messageViewModel?.setSendData(SendDataBean(mid, sid, data))
-        client.handler.post{
-            "send()->mid:$mid-sid:$sid".loge(tag)
-            try {
-                val msg = client.newPack(mid, sid, data, data.size)
-                client.send(msg)
-            } catch (e: Exception) {
-                e.printStackTrace()
+        GlobalScope.launch {
+            withContext(Dispatchers.Main) {
+                "send()->mid:$mid-sid:$sid".loge(tag)
+                try {
+                    val msg = client.newPack(mid, sid, data, data.size)
+                    client.send(msg)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
         }
     }
