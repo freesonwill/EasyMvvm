@@ -4,6 +4,7 @@
     xmlns:tool="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="model"
             type="com.cn.game.sdk2.ui.viewmodel.fast3.LeopardVm" />
@@ -25,8 +26,8 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:areaInfo="@{model.bettingArray[1]}"
-            app:layout_constraintBottom_toTopOf="@id/gavLeopardFour"
-            app:layout_constraintEnd_toStartOf="@id/gavLeopardTwo"
+            app:layout_constraintBottom_toTopOf="@id/gavLeopardSix"
+            app:layout_constraintEnd_toStartOf="@id/gavLeopardFour"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -91,8 +92,8 @@
             android:layout_height="0dp"
             app:areaInfo="@{model.bettingArray[2]}"
             app:layout_constraintBottom_toBottomOf="@id/gavLeopardOne"
-            app:layout_constraintEnd_toStartOf="@id/gavLeopardThree"
-            app:layout_constraintStart_toEndOf="@id/gavLeopardOne"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/gavLeopardFour"
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -153,10 +154,10 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:areaInfo="@{model.bettingArray[3]}"
-            app:layout_constraintBottom_toBottomOf="@id/gavLeopardOne"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/gavLeopardTwo"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintBottom_toBottomOf="@id/gavLeopardSix"
+            app:layout_constraintEnd_toStartOf="@id/gavLeopardFive"
+            app:layout_constraintStart_toEndOf="@id/gavLeopardSix"
+            app:layout_constraintTop_toTopOf="@id/gavLeopardSix">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="wrap_content"
@@ -216,10 +217,10 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:areaInfo="@{model.bettingArray[4]}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/gavLeopardFive"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/gavLeopardOne">
+            app:layout_constraintBottom_toBottomOf="@id/gavLeopardOne"
+            app:layout_constraintEnd_toStartOf="@id/gavLeopardTwo"
+            app:layout_constraintStart_toEndOf="@id/gavLeopardOne"
+            app:layout_constraintTop_toTopOf="@id/gavLeopardOne">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="wrap_content"
@@ -251,6 +252,7 @@
                     app:layout_constraintStart_toEndOf="@id/ivLeopardFourLeft"
                     app:layout_constraintTop_toTopOf="@id/ivLeopardFourLeft"
                     app:srcCompat="@drawable/icon_dice_si" />
+
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txtLeopardOddsFour"
                     android:layout_width="wrap_content"
@@ -279,9 +281,9 @@
             android:layout_height="0dp"
             app:areaInfo="@{model.bettingArray[5]}"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/gavLeopardSix"
-            app:layout_constraintStart_toEndOf="@id/gavLeopardFour"
-            app:layout_constraintTop_toTopOf="@id/gavLeopardFour">
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/gavLeopardThree"
+            app:layout_constraintTop_toTopOf="@id/gavLeopardSix">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="wrap_content"
@@ -342,9 +344,9 @@
             android:layout_height="0dp"
             app:areaInfo="@{model.bettingArray[6]}"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/gavLeopardFive"
-            app:layout_constraintTop_toTopOf="@id/gavLeopardFour">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/gavLeopardThree"
+            app:layout_constraintTop_toBottomOf="@id/gavLeopardOne">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="wrap_content"
