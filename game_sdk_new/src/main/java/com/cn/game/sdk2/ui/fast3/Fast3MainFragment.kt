@@ -528,7 +528,10 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         mDatabind.llShowBetList.itemAnimator = null
         mDatabind.llShowBetList.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        mDatabind.llShowBetList.setup {
+        mDatabind.llShowBetList.dividerSpace(
+            requireContext().dp2px(10),
+            DividerOrientation.HORIZONTAL
+        ).setup {
             addType<SelectAnnotationBean>(R.layout.item_annotation_list)
             onBind {
                 when (itemViewType) {

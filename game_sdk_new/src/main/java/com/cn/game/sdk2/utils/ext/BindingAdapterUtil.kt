@@ -1,10 +1,17 @@
 package com.cn.game.sdk2.utils.ext
 
+import android.graphics.drawable.Drawable
 import androidx.databinding.BindingAdapter
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.cn.game.sdk2.ui.view.MoneyOKView
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.view.game.GameAreaView.LocationClickListener
 import com.cn.game.sdk2.websocket.bean.Betting
+import com.drake.brv.annotaion.DividerOrientation
+import com.drake.brv.utils.dividerSpace
 
 /**
  * Description:
@@ -29,5 +36,18 @@ object BindingAdapterUtil {
     @JvmStatic
     fun setOnLocationClickListener(view: GameAreaView, listener: LocationClickListener) {
         view.setOnLocationClickListener(listener)
+    }
+
+
+    @JvmStatic
+    @BindingAdapter(value = ["listDivider", "listDividerOrientation"], requireAll = false)
+    fun listDivider(recyclerView: RecyclerView, space: Int, orientation: Int?) {
+        val or = when (orientation) {
+            0 -> DividerOrientation.HORIZONTAL
+            1 -> DividerOrientation.VERTICAL
+            3 -> DividerOrientation.GRID
+            else -> DividerOrientation.HORIZONTAL
+        }
+        recyclerView.dividerSpace(space, or)
     }
 }
