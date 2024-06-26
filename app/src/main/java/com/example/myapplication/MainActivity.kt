@@ -11,8 +11,11 @@ import androidx.fragment.app.Fragment
 import com.cn.game.sdk2.ui.helper.ViewHelper
 import com.cn.game.sdk2.ui.view.FastLogoView
 import com.cn.game.sdk2.utils.MyGameManager
+import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.imp.GameSDK
+import com.cn.game.sdk2.websocket.interfaces.SDKEnterLiveCallbackListener
 import com.cn.game.sdk2.websocket.interfaces.SDKLoginCallbackListener
+import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 import com.xcjh.base_lib.utils.loge
 
 class MainActivity : AppCompatActivity() {
@@ -30,16 +33,35 @@ class MainActivity : AppCompatActivity() {
         btnOpen.setOnClickListener {
             ViewHelper.showFastView(this)
             //MyGameManager.showFastView(this)
-            //92:ZyBmhNCJ   87:MHxIHlYM
-            GameSDK.loginGameWithAgentName(
-                "wali-internal", "87:MHxIHlYM","Gregg Denesik", object : SDKLoginCallbackListener {
+            if(gameAboutModel.isLoginSuccess.value == true){
+                GameSDK.enterLive("1213", listOf(1), "", object : SDKEnterLiveCallbackListener {
                     override fun callback(code: Int, message: String?) {
-                        "login:code-${code},message-${message}".loge()
+                        "enterLive:code-$code,message$message".loge()
                     }
+                })
+            }else{
+                //92:ZyBmhNCJ   87:MHxIHlYM
+                GameSDK.loginGameWithAgentName(
+                    "wali-internal", "87:MHxIHlYM","Gregg Denesik", object : SDKLoginCallbackListener {
+                        override fun callback(code: Int, message: String?) {
+                            "login:code-${code},message-${message}".loge()
+                        }
 
-                }
-            )
+                    }
+                )
+            }
         }
+        gameAboutModel.isLoginSuccess.observe(this){result->
+            if(result){
+                btnOpen.text = "进入直播间"
+            }
+        }
+        gameAboutModel.isEnterGroup.observe(this){result->
+            if(result){
+                btnOpen.text = "已进入直播间"
+            }
+        }
+
         btnXiu.setOnClickListener {
 //            MyWsManager.getInstance(this)?.onTest()
             MyGameManager.setToast(this)

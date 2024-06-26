@@ -1,6 +1,8 @@
 package com.cn.game.sdk2.websocket
 
 import android.util.Log
+import com.cn.game.sdk2.websocket.imp.GameSDK
+import com.cn.game.sdk2.websocket.interfaces.SDKLoginCallbackListener
 import com.xcjh.base_lib.utils.loge
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -41,13 +43,10 @@ class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
         onMessageListener = listener
     }
 
+    var isReconnecting = false
     fun re() {
-        /* GlobalScope.launch {
-            withContext(Dispatchers.Main) {
-                reset()
-            }
-        }*/
         "---尝试重连---".loge()
+        isReconnecting = true
         reconnect()
     }
 
@@ -59,13 +58,28 @@ class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
 //        }
         Log.i(_tag, "GameSocketClient-连接成功！")
         reset()
+        if(isReconnecting){
+            isReconnecting = false
+            if(isLogin) {
+                GameSDK.loginGameWithAgentName(
+                    "wali-internal",
+                    "87:MHxIHlYM",
+                    "Gregg Denesik",
+                    object : SDKLoginCallbackListener {
+                        override fun callback(code: Int, message: String?) {
+                            "login:code-${code},message-${message}".loge()
+                        }
 
+                    }
+                )
+            }
+        }
     }
 
     override fun onMessage(message: String?) {
         Log.i(_tag, "GameSocketMessage-$message")
     }
-val jobs = ArrayList<Job>()
+    val jobs = ArrayList<Job>()
     override fun onMessage(bytes: ByteBuffer?) {
         if (!bytes!!.hasRemaining()) {
             return

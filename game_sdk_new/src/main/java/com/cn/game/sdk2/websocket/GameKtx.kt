@@ -59,6 +59,11 @@ import com.cn.game.sdk2.websocket.viewmodel.MessageViewModel
 var WEB_SOCKET_URL = "wss://ws.qxe68.com:7001/api/game/5702" ///test
 
 /**
+ * 仅记录用户当前状态，用于重连服务器处理
+ */
+var isLogin: Boolean = false
+var isEnterRoom = false;
+/**
  * data层使用，view不管
  */
 var balance: Int = 2000000

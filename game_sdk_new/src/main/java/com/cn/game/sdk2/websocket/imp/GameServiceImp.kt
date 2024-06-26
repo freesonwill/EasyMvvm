@@ -19,6 +19,8 @@ import com.cn.game.sdk2.websocket.isBig
 import com.cn.game.sdk2.websocket.isCanBetting
 import com.cn.game.sdk2.websocket.isDouble
 import com.cn.game.sdk2.websocket.isEmpty
+import com.cn.game.sdk2.websocket.isEnterRoom
+import com.cn.game.sdk2.websocket.isLogin
 import com.cn.game.sdk2.websocket.isNotEmpty
 import com.cn.game.sdk2.websocket.mEnterLiveCallback
 import com.cn.game.sdk2.websocket.mLeaveLiveCallback
@@ -166,6 +168,7 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
     }
 
     override fun loginSuccess(afterLoginSuccess: ClientRes.InfoAfterLoginSuccess) {
+        isLogin = true
         "loginSuccess：${afterLoginSuccess}".loge()
         gameAboutModel.setLoginResult(true)
         //初始化step2:登录成功后坐下
@@ -174,6 +177,7 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
     }
 
     override fun loginError(errorMessage: ClientRes.ErrorMessage) {
+        isLogin = false
         mLoginCallback?.callback(errorMessage.code, errorMessage.desc)
         gameAboutModel.loginErrorMessage = errorMessage.desc
         gameAboutModel.setLoginResult(false)
@@ -206,22 +210,24 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
             }
         }
     }
-
+    //进入房间坐下成功，待进入直播间
     override fun enterInfo(enterInfo: GameRes.EnterInfo) {
         enterInfo.toString().loge("enterInfo")
         gameAboutModel.isSitDown(true)
         balance = enterInfo.self.score.toInt()
         gameAboutModel.changeBalance(enterInfo.self.score.toInt())
-        //初始化step3:进入直播间
-        "enterInfo Success: enterLive".loge()
-        GameSDK.enterLive("1213", listOf(1), "", object : SDKEnterLiveCallbackListener {
-            override fun callback(code: Int, message: String?) {
-                "enterLive:code-$code,message$message".loge()
-            }
-        })
+        if(isEnterRoom){
+            GameSDK.enterLive("1213", listOf(1), "", object : SDKEnterLiveCallbackListener {
+                override fun callback(code: Int, message: String?) {
+                    "enterLive:code-$code,message$message".loge()
+                }
+            })
+        }
     }
 
+    //进入直播间成功，待进入游戏
     override fun groupInfo(groupInfo: GameRes.GroupInfo) {
+        isEnterRoom = true
         groupInfo.toString().loge("groupInfo")
         mEnterLiveCallback?.callback(1)
         gameAboutModel.isEnterGroup(true)
@@ -253,7 +259,9 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
         enterGame(miniGame)
     }
 
+    //离开直播间成功
     override fun leaveGroup(leave: GameRes.LeaveGroup) {
+        isEnterRoom = false
         gameAboutModel.isLeaveGroup(true)
         mLeaveLiveCallback?.callback(1)
     }
