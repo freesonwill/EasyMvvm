@@ -1,5 +1,6 @@
 package com.cn.game.sdk2.websocket.imp
 
+import androidx.lifecycle.LifecycleOwner
 import com.cn.game.sdk2.websocket.GameSocketClient
 import com.cn.game.sdk2.websocket.GameSocketManager
 import com.cn.game.sdk2.websocket.appListener
@@ -218,6 +219,28 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
      */
     fun pushCustomerServiceAction() {
         appListener?.customerServiceAction()
+    }
+
+    /**
+     * step1: 判断是不是新的一局
+     * step2: 判断能不能again (代表上一局有数据，并且余额足够)
+     * step3: 判断牌面上是否有下注
+     *  step1 = false 无法续压
+     *
+     */
+     fun observeAgainDoubleState(owner: LifecycleOwner) {
+        gameAboutModel.currentStage.observe(owner) {
+            curStage = it
+            checkAgain()
+        }
+        gameAboutModel.onceCountMoney.observe(owner) {
+            onceCountMoney = it
+            checkAgain()
+        }
+        gameAboutModel.isMeetAgain.observe(owner) {
+            isMeetAgain = it
+            checkAgain()
+        }
     }
 
 }

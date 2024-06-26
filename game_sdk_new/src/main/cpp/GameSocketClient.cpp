@@ -83,6 +83,7 @@ Java_com_cn_game_sdk2_websocket_GameSocketClient_newPack(JNIEnv *env,
     if (cipher == nullptr) {
         return nullptr;
     }
+    LOGD(">.>%s: mid=%u,sid=%u", __FUNCTION__, mid, sid);
     jbyte *dataBytes = env->GetByteArrayElements(data, nullptr);
     if (dataBytes == nullptr) {
         return nullptr;

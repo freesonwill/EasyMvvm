@@ -155,7 +155,7 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
     }
 
     override fun loginSuccess(afterLoginSuccess: ClientRes.InfoAfterLoginSuccess) {
-        "loginSuccess：${afterLoginSuccess.isInitialized}".loge()
+        "loginSuccess：${afterLoginSuccess}".loge()
         gameAboutModel.setLoginResult(true)
         //初始化step2:登录成功后坐下
         enterInfo()
@@ -166,7 +166,7 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
         mLoginCallback?.callback(errorMessage.code, errorMessage.desc)
         gameAboutModel.loginErrorMessage = errorMessage.desc
         gameAboutModel.setLoginResult(false)
-        "loginError：${errorMessage.desc}".loge(tag)
+        "loginError：$errorMessage".loge(tag)
         when (errorMessage.code) {
             1000 -> {//其他服有正在进行的游戏，应跳转过去
 //          desc = 您当前还在其他游戏中，是否立刻回到该游戏？ // 713
@@ -197,6 +197,7 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
     }
 
     override fun enterInfo(enterInfo: GameRes.EnterInfo) {
+        enterInfo.toString().loge("enterInfo")
         gameAboutModel.isSitDown(true)
         balance = enterInfo.self.score.toInt()
         gameAboutModel.changeBalance(enterInfo.self.score.toInt())
@@ -210,6 +211,7 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
     }
 
     override fun groupInfo(groupInfo: GameRes.GroupInfo) {
+        groupInfo.toString().loge("groupInfo")
         mEnterLiveCallback?.callback(1)
         gameAboutModel.isEnterGroup(true)
 
@@ -246,17 +248,18 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
     }
 
     override fun leaveMiniGameInfo(miniGame: GameRes.LeaveMiniGames) {
-
+        miniGame.toString().loge("leaveMiniGameInfo")
     }
 
     override fun enterMiniGameInfo(miniGame: GameRes.EnterMiniGameInfo) {
         miniGameId = miniGame.miniGameId
+        miniGame.toString().loge("enterMiniGameInfo")
     }
 
     override fun miniGameBetResult(result: GameRes.MyMiniGameBetResult) {
         previousSuccess = true
         //result = 0 成功 1 余额不住 3超时
-        result.toString().loge("ssssss")
+        result.toString().loge("miniGameBetResult")
         when (result.betResultInfoListList[0].result) {
             0 -> {
                 gameAboutModel.lastBetting = tempLastBetting
@@ -319,11 +322,16 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
         }.isEmpty {
             gameAboutModel.changeMeetAgain(false)
         }
+        resetPanel()
+    }
+
+    private fun resetPanel() {
         //重置上一局的所有钱
         currentCountMoney = 0
         currentConfirmCountMoney = 0
         currentTempCountMoney = 0
-
+        bettingListConfirmed.clear()
+        bettingListTemp.clear()
     }
 
     override fun beginDeal(round: GameRes.BeginDeal) {
@@ -369,7 +377,7 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
         //清空本局已下注数据，并复制到续压集合里
         againBettingList = bettingListConfirmed
         againCountMoney = currentConfirmCountMoney
-        bettingListConfirmed.clear()
+
     }
 
     override fun syncAreaBetInfoBack(syncAreaBetInfo: GameRes.SyncAreaBetInfo) {
@@ -405,33 +413,11 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
 
     }
 
-    private var curStage: GameAboutModel.Stage = GameAboutModel.Stage.NEW
-    private var onceCountMoney = 0
-    private var isMeetAgain = true
+    protected var curStage: GameAboutModel.Stage = GameAboutModel.Stage.NEW
+    protected var onceCountMoney = 0
+    protected var isMeetAgain = true
 
-    /**
-     * step1: 判断是不是新的一局
-     * step2: 判断能不能again (代表上一局有数据，并且余额足够)
-     * step3: 判断牌面上是否有下注
-     *  step1 = false 无法续压
-     *
-     */
-    private fun observeAgainDoubleState(owner: LifecycleOwner) {
-        gameAboutModel.currentStage.observe(owner) {
-            curStage = it
-            checkAgain()
-        }
-        gameAboutModel.onceCountMoney.observe(owner) {
-            onceCountMoney = it
-            checkAgain()
-        }
-        gameAboutModel.isMeetAgain.observe(owner) {
-            isMeetAgain = it
-            checkAgain()
-        }
-    }
-
-    private fun checkAgain() {
+    protected fun checkAgain() {
         if (curStage == GameAboutModel.Stage.NEW) {
             if (isMeetAgain) {
                 //满足基本需要要求

@@ -52,12 +52,14 @@ class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
     }
 
     override fun onOpen(handshakedata: ServerHandshake?) {
-         GlobalScope.launch {
-            withContext(Dispatchers.Main) {
-                reset()
-            }
-        }
+//         GlobalScope.launch {
+//            withContext(Dispatchers.Main) {
+//                reset()
+//            }
+//        }
         Log.i(_tag, "GameSocketClient-连接成功！")
+        reset()
+
     }
 
     override fun onMessage(message: String?) {
