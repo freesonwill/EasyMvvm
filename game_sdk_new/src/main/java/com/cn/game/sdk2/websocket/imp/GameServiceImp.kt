@@ -10,6 +10,7 @@ import com.cn.game.sdk2.websocket.appListener
 import com.cn.game.sdk2.websocket.balance
 import com.cn.game.sdk2.websocket.bean.AreaBetBean
 import com.cn.game.sdk2.websocket.bean.RoundInfoBean
+import com.cn.game.sdk2.websocket.bean.SendDataBean
 import com.cn.game.sdk2.websocket.calculateArea
 import com.cn.game.sdk2.websocket.calculateUserLotteryResult
 import com.cn.game.sdk2.websocket.convertBetting
@@ -24,6 +25,7 @@ import com.cn.game.sdk2.websocket.isNotEmpty
 import com.cn.game.sdk2.websocket.mEnterLiveCallback
 import com.cn.game.sdk2.websocket.mLeaveLiveCallback
 import com.cn.game.sdk2.websocket.mLoginCallback
+import com.cn.game.sdk2.websocket.messageViewModel
 import com.cn.game.sdk2.websocket.miniGameId
 import com.cn.game.sdk2.websocket.previousSuccess
 import com.cn.game.sdk2.websocket.sum
@@ -138,7 +140,7 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
     }
 
     private fun send(mid: Short, sid: Short, data: ByteArray) {
-
+        //messageViewModel?.setSendData(SendDataBean(mid, sid, data))
         GlobalScope.launch {
             withContext(Dispatchers.Main) {
                 "send()->mid:$mid-sid:$sid".loge(tag)

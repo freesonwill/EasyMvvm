@@ -4,6 +4,7 @@ import android.util.Log
 import com.xcjh.base_lib.utils.loge
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.java_websocket.client.WebSocketClient
@@ -62,31 +63,38 @@ class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
     override fun onMessage(message: String?) {
         Log.i(_tag, "GameSocketMessage-$message")
     }
-
+val jobs = ArrayList<Job>()
     override fun onMessage(bytes: ByteBuffer?) {
         if (!bytes!!.hasRemaining()) {
             return
         }
-        messageViewModel?.setData(bytes.array())
-//        val messageJob = GlobalScope.launch {
-//            withContext(Dispatchers.Main) {
-//                Log.i(_tag, "GameSocketMessage-onMessage")
-//                if (!bytes!!.hasRemaining()) {
-//                    return@withContext
-//                }
-//                messageViewModel?.setData(bytes.array())
-//                val resps = newUnpack(bytes.array())
-//                val mid = resps!![0] as Int?
-//                val sid = resps[1] as Int?
-//                var str = bytes.array()
-//                if (resps.size > 2) {
-//                    str = (resps[2] as ByteArray?)!!
-//                }
-//                Log.i(_tag, "GameSocketMessage-onMessage:mid-$mid sid-$sid")
-//                onMessageListener?.onMessage(mid, sid, str)
-//            }
-//        }
-//        messageJob.cancel()
+        //messageViewModel?.setData(bytes.array())
+        val messageJob = GlobalScope.launch {
+            withContext(Dispatchers.Main) {
+                Log.i(_tag, "GameSocketMessage-onMessage")
+                if (!bytes!!.hasRemaining()) {
+                    return@withContext
+                }
+                //messageViewModel?.setData(bytes.array())
+                val resps = newUnpack(bytes.array())
+                val mid = resps!![0] as Int?
+                val sid = resps[1] as Int?
+                var str = bytes.array()
+                if (resps.size > 2) {
+                    str = (resps[2] as ByteArray?)!!
+                }
+                Log.i(_tag, "GameSocketMessage-onMessage:mid-$mid sid-$sid")
+                onMessageListener?.onMessage(mid, sid, str)
+            }
+        }
+        jobs.add(messageJob)
+        //messageJob.cancel()
+        jobs.forEach {
+            if (!it.isActive){
+                it.cancel()
+//                jobs.remove(it)
+            }
+        }
     }
 
     override fun onClose(code: Int, reason: String?, remote: Boolean) {
