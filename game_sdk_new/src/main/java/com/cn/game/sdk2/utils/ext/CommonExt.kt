@@ -26,7 +26,7 @@ object CommonExt {
     //赔率string化
     @JvmStatic
     @JvmOverloads
-    fun multiplierStr(betting: Betting,format:String): String {
+    fun multiplierStr(betting: Betting, format: String): String {
         betting.apply {
             val decimalFormat = DecimalFormat(format)
             if (multipliers.isNotEmpty()) {
@@ -36,5 +36,9 @@ object CommonExt {
             }
             return decimalFormat.format(multiplier)
         }
+    }
+
+    fun Int.formatRealMoney(): String {
+        return DecimalFormat("#.##").format(this.toFloat() / 100).toString()
     }
 }

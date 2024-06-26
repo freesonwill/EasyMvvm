@@ -40,6 +40,7 @@ import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
 import com.cn.game.sdk2.utils.FlowBus
 import com.cn.game.sdk2.utils.ToastUtil
+import com.cn.game.sdk2.utils.ext.CommonExt.formatRealMoney
 import com.cn.game.sdk2.utils.ext.CommonExt.toPinyin
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.utils.tool.measureView
@@ -119,7 +120,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     }
 
     override fun lazyLoadData() {
-
     }
 
     override fun initData() {
@@ -247,9 +247,13 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     @SuppressLint("SetTextI18n")
     private fun startWinLottieAnim(endCallBack: (() -> Unit)?) {
         mDatabind.apply {
+            val winMoney = gameAboutModel.netIncome
+            if (winMoney <= 0) {
+                endCallBack?.invoke()
+                return
+            }
             groupWinLottie.isVisible = true
-//            txtWinMoney.text = "$${gameAboutModel.netIncome}"
-            txtWinMoney.text = "$100000001"
+            txtWinMoney.text = "$${winMoney.formatRealMoney()}"
             lottieAnimView.addAnimatorListener(object : Animator.AnimatorListener {
                 override fun onAnimationStart(animation: Animator) {
                 }
@@ -409,16 +413,26 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             }
             moneyOkViewMap.clear()
         } else {
-            list.forEach { bettingBean ->
-                moneyOkViewMap.forEach {
-                    if (bettingBean.bettingArea.number == it.key) {
-                        it.value.setShowMoney(bettingBean.money)
-                    } else {
-                        if (it.value.isAdd()) {
-                            val parent = it.value.parent as ViewGroup
-                            parent.removeView(it.value)
+            val iterator = moneyOkViewMap.iterator()
+            var hasFlag: Boolean
+            while (iterator.hasNext()) {
+                hasFlag = false
+                val entry = iterator.next()
+                run beanEach@{
+                    list.forEach { bettingRecordBean ->
+                        if (bettingRecordBean.bettingArea.number == entry.key) {
+                            entry.value.setShowMoney(bettingRecordBean.money)
+                            hasFlag = true
+                            return@beanEach
                         }
                     }
+                }
+                if (!hasFlag) {
+                    if (entry.value.isAdd()) {
+                        val parent = entry.value.parent as ViewGroup
+                        parent.removeView(entry.value)
+                    }
+                    iterator.remove()
                 }
             }
         }
