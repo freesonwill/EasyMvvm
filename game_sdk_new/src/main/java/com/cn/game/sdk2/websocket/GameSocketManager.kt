@@ -71,7 +71,7 @@ class GameSocketManager private constructor() : OnMessageListener {
                             if (it.readyState == ReadyState.OPEN) {
                                 gameMassageManager?.ping()
                             }//正常发送心跳
-                            if (it.isClosed) it.re()
+                            if (it.isClosed && isCanReconnect) it.re()
                         }
                     } else {
                         client?.let {

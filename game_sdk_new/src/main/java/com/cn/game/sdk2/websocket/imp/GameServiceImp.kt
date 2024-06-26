@@ -17,6 +17,7 @@ import com.cn.game.sdk2.websocket.interfaces.GameService
 import com.cn.game.sdk2.websocket.interfaces.SDKEnterLiveCallbackListener
 import com.cn.game.sdk2.websocket.isBig
 import com.cn.game.sdk2.websocket.isCanBetting
+import com.cn.game.sdk2.websocket.isCanReconnect
 import com.cn.game.sdk2.websocket.isDouble
 import com.cn.game.sdk2.websocket.isEmpty
 import com.cn.game.sdk2.websocket.isEnterRoom
@@ -203,13 +204,14 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
             }
         }
     }
+
     //进入房间坐下成功，待进入直播间
     override fun enterInfo(enterInfo: GameRes.EnterInfo) {
         enterInfo.toString().loge("enterInfo")
         gameAboutModel.isSitDown(true)
         balance = enterInfo.self.score.toInt()
         gameAboutModel.changeBalance(enterInfo.self.score.toInt())
-        if(isEnterRoom){
+        if (isEnterRoom) {
             GameSDK.enterLive("1213", listOf(1), "", object : SDKEnterLiveCallbackListener {
                 override fun callback(code: Int, message: String?) {
                     "enterLive:code-$code,message$message".loge()
@@ -326,6 +328,14 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
                 gameAboutModel.setBettingSuccess(false)
             }
 
+            4 -> {
+                isCanReconnect = false
+            }
+
+            5 -> {
+                isCanReconnect = false
+            }
+
             else -> {
                 returnTemp()
                 gameAboutModel.bettingMessage = "超时"
@@ -370,6 +380,7 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
         bettingListTempConfirmed.clear()
         bettingListConfirmed.clear()
         bettingListTemp.clear()
+        gameAboutModel.netIncome = 0
     }
 
     override fun beginDeal(round: GameRes.BeginDeal) {
@@ -443,11 +454,12 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
      * token失效通知app
      */
     override fun tokenLoseEffectiveness() {
+        isCanReconnect = false
         appListener?.getTokenLoseEffectiveness()
     }
 
     override fun roomTimeout() {
-
+        isCanReconnect = false
     }
 
     override fun serverMaintenance() {
@@ -484,7 +496,7 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
 
     private fun checkDouble() {
         //不满足续压 计算加倍
-        doubleMoney = tempMoney * 2 + confirmMoney +confirmTempMoney
+        doubleMoney = tempMoney * 2 + confirmMoney + confirmTempMoney
         if (doubleMoney < balance) gameAboutModel.changeAgainDoubleState(GameAboutModel.AgainDoubleState.DOUBLE)
         else
         //既不满足续压 钱也不够加倍

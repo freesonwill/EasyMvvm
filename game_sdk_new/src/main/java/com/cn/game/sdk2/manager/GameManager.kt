@@ -1,6 +1,7 @@
 package com.cn.game.sdk2.manager
 
 import android.os.CountDownTimer
+import android.util.Log
 import com.cn.game.sdk2.data.bean.HistoryResultBean
 import com.cn.game.sdk2.data.enums.GameState
 import com.cn.game.sdk2.manager.listener.IGameListener
@@ -15,20 +16,6 @@ import kotlin.random.Random
  **/
 class GameManager private constructor() : IGameManager {
     private var countDownTimer: CountDownTimer? = null
-
-    /**倒计时设置时间戳**/
-    private var _countDownSetTimeStamp:Long = 0L
-    /**倒计时的时间是毫秒1000*/
-    var countDown:Long = -1
-        get(){
-            if(field == -1L) throw IllegalStateException("countDown not set")
-            val elapsed = System.currentTimeMillis() -_countDownSetTimeStamp
-            return field - elapsed
-        }
-        set(value) {
-            field = value
-            _countDownSetTimeStamp = System.currentTimeMillis()
-        }
 
     companion object {
         val instance: GameManager by lazy { GameManager() }
