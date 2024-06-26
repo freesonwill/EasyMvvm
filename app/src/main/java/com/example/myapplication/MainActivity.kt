@@ -31,7 +31,6 @@ class MainActivity : AppCompatActivity() {
         var btnXiu = findViewById<Button>(R.id.btnXiu)
 
         btnOpen.setOnClickListener {
-            ViewHelper.showFastView(this)
             //MyGameManager.showFastView(this)
             if(gameAboutModel.isLoginSuccess.value == true){
                 GameSDK.enterLive("1213", listOf(1), "", object : SDKEnterLiveCallbackListener {
@@ -39,6 +38,7 @@ class MainActivity : AppCompatActivity() {
                         "enterLive:code-$code,message$message".loge()
                     }
                 })
+                ViewHelper.showFastView(this)
             }else{
                 //92:ZyBmhNCJ   87:MHxIHlYM
                 GameSDK.loginGameWithAgentName(

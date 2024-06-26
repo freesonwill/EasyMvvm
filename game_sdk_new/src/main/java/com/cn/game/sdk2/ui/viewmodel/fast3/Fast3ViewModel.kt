@@ -152,18 +152,18 @@ class Fast3ViewModel : BaseViewModel() {
                 GameManager.instance.removeLiveStatusListener("home")
             }
         }
-        noteList.add(SelectAnnotationBean(money = 10, select = true))
-        noteList.add(SelectAnnotationBean(money = 50))
-        noteList.add(SelectAnnotationBean(money = 100))
-        noteList.add(SelectAnnotationBean(money = 200))
-        noteList.add(SelectAnnotationBean(money = 500))
-        noteList.add(SelectAnnotationBean(money = 1000))
-        noteList.add(SelectAnnotationBean(money = 2000))
+        noteList.add(SelectAnnotationBean(money = 1000, select = true))
         noteList.add(SelectAnnotationBean(money = 5000))
         noteList.add(SelectAnnotationBean(money = 10000))
         noteList.add(SelectAnnotationBean(money = 20000))
         noteList.add(SelectAnnotationBean(money = 50000))
         noteList.add(SelectAnnotationBean(money = 100000))
+        noteList.add(SelectAnnotationBean(money = 200000))
+        noteList.add(SelectAnnotationBean(money = 500000))
+        noteList.add(SelectAnnotationBean(money = 1000000))
+        noteList.add(SelectAnnotationBean(money = 2000000))
+        noteList.add(SelectAnnotationBean(money = 5000000))
+        noteList.add(SelectAnnotationBean(money = 10000000))
     }
 
     fun startBetting() {
