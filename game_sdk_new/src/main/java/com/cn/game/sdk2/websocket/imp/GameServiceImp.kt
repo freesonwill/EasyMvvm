@@ -1,6 +1,5 @@
 package com.cn.game.sdk2.websocket.imp
 
-import androidx.lifecycle.LifecycleOwner
 import com.cn.game.sdk2.network.code.GameReqCode
 import com.cn.game.sdk2.websocket.bean.Betting
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
@@ -10,7 +9,6 @@ import com.cn.game.sdk2.websocket.appListener
 import com.cn.game.sdk2.websocket.balance
 import com.cn.game.sdk2.websocket.bean.AreaBetBean
 import com.cn.game.sdk2.websocket.bean.RoundInfoBean
-import com.cn.game.sdk2.websocket.bean.SendDataBean
 import com.cn.game.sdk2.websocket.calculateArea
 import com.cn.game.sdk2.websocket.calculateUserLotteryResult
 import com.cn.game.sdk2.websocket.convertBetting
@@ -25,7 +23,6 @@ import com.cn.game.sdk2.websocket.isNotEmpty
 import com.cn.game.sdk2.websocket.mEnterLiveCallback
 import com.cn.game.sdk2.websocket.mLeaveLiveCallback
 import com.cn.game.sdk2.websocket.mLoginCallback
-import com.cn.game.sdk2.websocket.messageViewModel
 import com.cn.game.sdk2.websocket.miniGameId
 import com.cn.game.sdk2.websocket.previousSuccess
 import com.cn.game.sdk2.websocket.sum
@@ -50,7 +47,7 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
     /**
      * 临时最后点击
      */
-    protected var tempLastBetting: Betting? = null
+    private var tempLastBetting: Betting? = null
 
     /**
      * 加倍时需要的
@@ -60,15 +57,24 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
     /**
      * 当前临时总下注金额
      * - 取消下注 清零
+     * - 提交 清零
      * - 新的一局开始 清零
      */
-    protected var currentTempCountMoney = 0
+    protected var tempMoney = 0
 
     /**
      * 当前确认总下注金额 已下注部分无法取消
      * - 新的一局开始 清零
      */
-    protected var currentConfirmCountMoney = 0
+    protected var confirmMoney = 0
+
+    /**
+     * 临时保存提交的钱
+     * 提交时   赋值
+     * 提交成功 清零 并加入 currentConfirmCountMoney
+     * 提交失败 清零 并加入 currentTempCountMoney
+     */
+    protected var confirmTempMoney =  0
 
     /**
      * 当前总下注金额 界面需要显示
@@ -79,6 +85,11 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
      * 临时下注列表
      */
     protected val bettingListTemp: MutableMap<Betting, BettingRecordBean> = mutableMapOf()
+
+    /**
+     * 临时确认下注列表
+     */
+    protected var bettingListTempConfirmed: MutableMap<Betting, BettingRecordBean> = mutableMapOf()
 
     /**
      * 已确认下注列表;
@@ -256,6 +267,27 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
         miniGame.toString().loge("enterMiniGameInfo")
     }
 
+    /**
+     * 下注返回失败
+     *  将临时确认下注的重新加临时集合里 便于取消和二次确认
+     */
+    private fun returnTemp() {
+        bettingListTemp.isNotEmpty { temp ->
+            bettingListTempConfirmed.forEach {
+                if (temp.containsKey(it.key)) {
+                    temp[it.key]!!.money += it.value.money
+                    bettingListTemp[it.key] = temp[it.key]!!
+                }else{
+                    bettingListTemp[it.key] = it.value
+                }
+            }
+        }.isEmpty {
+            bettingListTemp.putAll(bettingListTempConfirmed)
+        }
+        tempMoney += confirmTempMoney
+        bettingListTempConfirmed.clear()
+    }
+
     override fun miniGameBetResult(result: GameRes.MyMiniGameBetResult) {
         previousSuccess = true
         //result = 0 成功 1 余额不住 3超时
@@ -266,38 +298,40 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
                 gameAboutModel.setBettingSuccess(true)
                 //下注成功后 保存当前下注总额为已确认下注金额；并将当前下注总额清空
                 //currentCountMoney包含之前确认的和现在临时的，所以可以直接覆盖已提交的
-                currentConfirmCountMoney = currentCountMoney
+                confirmMoney = confirmTempMoney
                 //提交成功后临时总和清空
                 currentCountMoney = 0
                 //跟新again和double
-                gameAboutModel.setOnceCountMoney(currentConfirmCountMoney)
+                gameAboutModel.setOnceCountMoney(confirmMoney)
                 previousSuccess = true
-                bettingListTemp.forEach { (betting, temBean) ->
+                bettingListTempConfirmed.forEach { (betting, temBean) ->
                     if (bettingListConfirmed.containsKey(betting)) {
                         temBean.money += bettingListConfirmed[betting]?.money!!
                     }
                     bettingListConfirmed[betting] = temBean
                 }
-                bettingListTemp.clear()
+                bettingListTempConfirmed.clear()
+                confirmTempMoney = 0
             }
 
             1 -> {
+                returnTemp()
                 gameAboutModel.bettingMessage = "余额不住"
                 gameAboutModel.setBettingSuccess(false)
             }
 
             2 -> {
+                returnTemp()
                 gameAboutModel.bettingMessage = "押注超时"
                 gameAboutModel.setBettingSuccess(false)
             }
 
             else -> {
+                returnTemp()
                 gameAboutModel.bettingMessage = "超时"
                 gameAboutModel.setBettingSuccess(false)
-
             }
         }
-
     }
 
     override fun refreshUserProperties(userScore: GameRes.RefreshUserScore) {
@@ -328,8 +362,8 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
     private fun resetPanel() {
         //重置上一局的所有钱
         currentCountMoney = 0
-        currentConfirmCountMoney = 0
-        currentTempCountMoney = 0
+        confirmMoney = 0
+        tempMoney = 0
         bettingListConfirmed.clear()
         bettingListTemp.clear()
     }
@@ -349,10 +383,10 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
         gameAboutModel.countDown = settle.countDown //当前阶段剩余时间倒计时
         if (settle.winScore > 0) {
             //如果中奖 就计算净收入
-            gameAboutModel.netIncome = settle.winScore - (currentConfirmCountMoney * 100)
+            gameAboutModel.netIncome = settle.winScore - confirmMoney
         }
         //结束时更新余额
-        balance = balance + settle.winScore - (currentConfirmCountMoney * 100)
+        balance = balance + settle.winScore - confirmMoney
         //开奖号码
         val lotteryNumbers = settle.roundInfo.performsList[0].elementsList
         //中奖注区
@@ -375,9 +409,12 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
         //跟新阶段
         gameAboutModel.changeStage(GameAboutModel.Stage.SETTLE)
         //清空本局已下注数据，并复制到续压集合里
-        againBettingList = bettingListConfirmed
-        againCountMoney = currentConfirmCountMoney
-
+        bettingListConfirmed.isNotEmpty {
+            againBettingList = bettingListConfirmed
+        }
+        if (confirmMoney > 0) {
+            againCountMoney = confirmMoney
+        }
     }
 
     override fun syncAreaBetInfoBack(syncAreaBetInfo: GameRes.SyncAreaBetInfo) {
@@ -443,7 +480,7 @@ open class GameServiceImp(private val client: GameSocketClient) : GameService,
 
     private fun checkDouble() {
         //不满足续压 计算加倍
-        doubleMoney = currentTempCountMoney * 2 + currentConfirmCountMoney
+        doubleMoney = tempMoney * 2 + confirmMoney
         if (doubleMoney < balance) gameAboutModel.changeAgainDoubleState(GameAboutModel.AgainDoubleState.DOUBLE)
         else
         //既不满足续压 钱也不够加倍
