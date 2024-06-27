@@ -11,6 +11,7 @@ import com.cn.game.sdk2.websocket.interfaces.SDKEnterLiveCallbackListener
 import com.cn.game.sdk2.websocket.interfaces.SDKLeaveLiveCallbackListener
 import com.cn.game.sdk2.websocket.interfaces.SDKLoginCallbackListener
 import com.cn.game.sdk2.websocket.isAllowedBet
+import com.cn.game.sdk2.websocket.isNeedReconnect
 import com.cn.game.sdk2.websocket.isShowGame
 import com.cn.game.sdk2.websocket.mCancelGameCallback
 import com.cn.game.sdk2.websocket.mEnterLiveCallback
@@ -96,6 +97,7 @@ object GameSDK : IGameForApp {
      */
     override fun cancelGame(callback: SDKCancelGameCallbackListener) {
         mCancelGameCallback = callback
+        isNeedReconnect = false
         GameSocketManager.getInstance()?.stopService()
     }
 
