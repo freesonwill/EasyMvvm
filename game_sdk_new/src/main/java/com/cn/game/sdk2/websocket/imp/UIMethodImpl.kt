@@ -61,7 +61,16 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
         block: (isMoneyEnough: Boolean, result: BettingRecordBean?) -> Unit
     ) {
         tempMoney += recordBean.money
-
+        var xy:FloatArray? = null
+        if (bettingListTemp.containsKey(recordBean.bettingArea)) {
+            val viewXYTemporary = bettingListTemp[recordBean.bettingArea]?.viewXYTemporary
+            val all = viewXYTemporary?.all { it > 0 }
+            all?.let {
+                if (it){
+                    xy = viewXYTemporary
+                }
+            }
+        }
 
         val currentMoney = recordBean.money
         val tempMoney = if (bettingListTemp.containsKey(recordBean.bettingArea)) {
@@ -85,6 +94,9 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
         gameAboutModel.setOnceCountMoney(getPanelAllMoney())
 
         recordBean.money = currentMoney + tempMoney
+        xy?.let {
+            recordBean.viewXYTemporary = it
+        }
         bettingListTemp[recordBean.bettingArea] = recordBean
         val uiBean = recordBean.copy()
         uiBean.money = countMoney
@@ -166,13 +178,13 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
      */
     fun doubleBetting(block: (isMoneyEnough: Boolean, result: Map<Betting, BettingRecordBean>?) -> Unit) {
         if (doubleMoney < balance) {
-            val tempCopy = bettingListTemp.copy()
-            val confirmCopy = bettingListConfirmed.copy()
-            val tempConfirmCopy = bettingListTempConfirmed.copy()
+            val tempCopy = bettingListTemp.copy(1)
+            val confirmCopy = bettingListConfirmed.copy(2)
+            val tempConfirmCopy = bettingListTempConfirmed.copy(3)
             tempCopy.mapValues {
                 it.value.money *= 2
             }
-            val uiMap = tempCopy.copy()
+            val uiMap = tempCopy.copy(4)
             confirmCopy.forEach {
                 val confirmMoney = it.value.money
                 if (tempCopy.containsKey(it.key)) {
@@ -180,16 +192,20 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
                     val uiBean = uiMap[it.key]!!.copy()
                     uiBean.money += confirmMoney * 2
                     uiMap[it.key] = uiBean //页面
+                    uiMap.toString().loge("5")
 
                     val dataBean = tempCopy[it.key]!!.copy()
                     dataBean.money += confirmMoney
                     tempCopy[it.key] = dataBean
+                    tempCopy.toString().loge("6")
                 } else {
                     val uiBean = it.value.copy()
-                    uiBean.money += confirmMoney * 2
+                    uiBean.money = confirmMoney * 2
                     uiMap[it.key] = uiBean //页面
+                    uiMap.toString().loge("7")
 
                     tempCopy[it.key] = it.value.copy()
+                    tempCopy.toString().loge("8")
                 }
             }
             tempConfirmCopy.forEach {
@@ -205,7 +221,7 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
                     tempCopy[it.key] = dataBean
                 } else {
                     val uiBean = it.value.copy()
-                    uiBean.money += confirmMoney * 2
+                    uiBean.money = confirmMoney * 2
                     uiMap[it.key] = uiBean //页面
 
                     tempCopy[it.key] = it.value.copy()
@@ -255,5 +271,6 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
             checkAgain()
         }
     }
+
 
 }

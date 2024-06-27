@@ -51,6 +51,7 @@ import com.cn.game.sdk2.websocket.interfaces.SDKLeaveLiveCallbackListener
 import com.cn.game.sdk2.websocket.interfaces.SDKLoginCallbackListener
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 import com.cn.game.sdk2.websocket.viewmodel.MessageViewModel
+import com.xcjh.base_lib.utils.loge
 
 /**
  * socket-url
@@ -75,6 +76,7 @@ var isTokenValid = true
  * token失效后，socket连接关闭，停止重连
  */
 var isNeedReconnect = true
+
 /**
  * data层使用，view不管
  */
@@ -400,11 +402,12 @@ fun Int.convertBetting(): Betting? {
     }
 }
 
-fun <K> Map<K, BettingRecordBean>.copy(): MutableMap<K, BettingRecordBean> {
+fun <K> Map<K, BettingRecordBean>.copy(index: Int = 0): MutableMap<K, BettingRecordBean> {
     val newMap = mutableMapOf<K, BettingRecordBean>()
     forEach {
         newMap[it.key] = it.value.copy()
     }
+    this.toString().loge("$index")
     return newMap
 }
 
