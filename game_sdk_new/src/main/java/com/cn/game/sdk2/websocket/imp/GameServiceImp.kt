@@ -15,6 +15,7 @@ import com.cn.game.sdk2.websocket.convertBetting
 import com.cn.game.sdk2.websocket.copy
 import com.cn.game.sdk2.websocket.copyFrom
 import com.cn.game.sdk2.websocket.gameAboutModel
+import com.cn.game.sdk2.websocket.gameList
 import com.cn.game.sdk2.websocket.interfaces.GameService
 import com.cn.game.sdk2.websocket.interfaces.SDKEnterLiveCallbackListener
 import com.cn.game.sdk2.websocket.isBig
@@ -235,9 +236,9 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
         groupInfo.toString().loge("groupInfo")
         mEnterLiveCallback?.callback(1)
         gameAboutModel.isEnterGroup(true)
-
-        val miniGameBasicInfo = groupInfo.miniGameBasicInfoListList[0]
-        miniGameId = miniGameBasicInfo.miniGameId
+        gameList = groupInfo.miniGameBasicInfoListList
+        val miniGameBasicInfo = gameList?.get(0)
+        miniGameId = miniGameBasicInfo?.miniGameId!!
         gameAboutModel.miniGameId = miniGameId
         gameAboutModel.countDown = miniGameBasicInfo.countDown
         val roundInfoListList = miniGameBasicInfo.trend.roundInfoListList

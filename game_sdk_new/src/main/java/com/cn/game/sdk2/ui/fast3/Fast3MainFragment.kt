@@ -59,6 +59,7 @@ import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
 import com.xcjh.base_lib.base.fragment.BaseVmDbFragment
 import com.xcjh.base_lib.utils.dp2px
+import com.xcjh.base_lib.utils.loge
 import com.xcjh.base_lib.utils.view.clickNoRepeat
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -481,6 +482,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 run beanEach@{
                     list.forEach { bettingRecordBean ->
                         if (bettingRecordBean.bettingArea.number == entry.key) {
+                            bettingRecordBean.money.toString().loge("money")
                             entry.value.setShowMoney(bettingRecordBean.money)
                             hasFlag = true
                             return@beanEach
@@ -706,6 +708,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             //续压
             ivXuya.clickNoRepeat {
                 val map = GameSocketManager.getInstance()?.getGameService()?.againBetting()
+                map.toString().loge("again3")
                 if (!map.isNullOrEmpty()) {
                     map.forEach {
                         allGameAreaMap[it.key.number]?.let { areaView ->
