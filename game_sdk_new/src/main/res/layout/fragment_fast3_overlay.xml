@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-<com.cn.game.sdk2.ui.view.Fast3OverlayWindow xmlns:android="http://schemas.android.com/apk/res/android"
+<com.cn.game.sdk2.ui.view.DragFast3Overlay xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="106dp"
@@ -68,4 +68,4 @@
             app:srcCompat="@drawable/icon_dice_san" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
-</com.cn.game.sdk2.ui.view.Fast3OverlayWindow>
+</com.cn.game.sdk2.ui.view.DragFast3Overlay>

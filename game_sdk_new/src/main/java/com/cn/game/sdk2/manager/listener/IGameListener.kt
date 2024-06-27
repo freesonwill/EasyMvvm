@@ -14,20 +14,20 @@ interface IGameListener {
     /**
      * 返回倒计时
      */
-    @UiThread fun onCountdown(time: Long)
+    @UiThread fun onCountdown(time: Long){}
 
     /**
      * 计时结束
      */
-    @UiThread fun onCountDownFinish(state: GameState)
+    @UiThread fun onCountDownFinish(state: GameState){}
 
     /**
      *游戏状态变化
      */
-    @UiThread fun onGameStateChanged(oldValue: GameState, newValue: GameState)
+    @UiThread fun onGameStateChanged(oldValue: GameState, newValue: GameState){}
 
     /**
      * 开奖结果
      */
-    @UiThread fun onDrawingResult(result: HistoryResultBean)
+    @UiThread fun onDrawingResult(result: HistoryResultBean){}
 }

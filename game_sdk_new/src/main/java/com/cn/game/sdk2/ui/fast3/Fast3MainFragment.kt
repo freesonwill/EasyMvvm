@@ -9,7 +9,6 @@ import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.graphics.Path
 import android.graphics.PathMeasure
-import android.nfc.Tag
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -132,7 +131,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     override fun initData() {
         //获取当前余额
         mDatabind.txtCurrentMoney.text = "¥ ${mViewModel.currentMoney}"
-        mDatabind.txtHomeTime.text = mViewModel.homeTime.value.toString()
+        mDatabind.txtHomeTime.text = mViewModel.homeTimeSeconds.value.toString()
         lifecycleScope.launchWhenResumed {
             //开始下注
             Log.d(TAG, "initData startBetting")
@@ -162,7 +161,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             }
             //if(!mViewModel.isCountDownInit) mViewModel.countDown = gameAboutModel.countDown * 1L
             Log.d(TAG, "updateGameStage-->${it},countDown:${mViewModel.countDown}")
-            mViewModel.startCountDown(mViewModel.countDown)
         }
     }
 
@@ -344,7 +342,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             mDatabind.txtHomeTime.visibility = it
             mDatabind.txtHomeUnit.visibility = it
         }
-        mViewModel.homeTime.observe(viewLifecycleOwner) { seconds ->
+        mViewModel.homeTimeSeconds.observe(viewLifecycleOwner) { seconds ->
             mDatabind.txtHomeTime.text = seconds.toString()
             if (mViewModel.gameState == GameState.Betting && seconds in 1..5) {
                 PromptSoundPlay.countdownGameTip(requireContext())
@@ -374,7 +372,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         gameAboutModel.currentStage.observe(viewLifecycleOwner) { stage ->
             //mViewModel.countDown = gameAboutModel.countDown * 1L
             stage?.run {
-                mViewModel.startCountDown(mViewModel.countDown)
                 mViewModel.isClickOperation = stage == GameAboutModel.Stage.NEW
                 when (this) {
                     GameAboutModel.Stage.NEW -> {//下注

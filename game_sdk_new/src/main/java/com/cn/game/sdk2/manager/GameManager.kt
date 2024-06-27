@@ -33,36 +33,22 @@ class GameManager private constructor() : IGameManager {
     private val mGameListener = linkedMapOf<String, IGameListener>()
     //================================ Method ===================================================//
 
-    override fun startCountDownTimer(
-        countdownTime: Long,
-        countDownInterval: Long,
-        lis: IGameListener?
-    ) {
+    override fun startCountDownTimer(countdownTime: Long, countDownInterval: Long, lis: IGameListener?) {
         countDownTimer?.cancel()
         countDownTimer = object : CountDownTimer(countdownTime, countDownInterval) {
-                override fun onTick(millisUntilFinished: Long) {
-//                    Log.d(TAG, "startCountDownTimer onTick run $isMainThread,$millisUntilFinished")
-                    lis?.onCountdown(millisUntilFinished)
-                    mGameListener.forEach { it.value.onCountdown(millisUntilFinished) }
-                }
-
-                override fun onFinish() {
-//                    Log.d(TAG,"startCountDownTimer onFinish run $isMainThread")
-//                    when (gameState) {
-//                        GameState.Betting -> gameState = GameState.Settling
-//                        GameState.Settling -> {
-//                            startDrawing()
-//                        }
-//                        else -> throw IllegalStateException("error game state:${gameState}")
-//                    }
-//                    lis?.onCountDownFinish(gameState)
-//                    mGameListener.forEach { it.value.onCountDownFinish(gameState) }
-//                    countDownTimer = null
-                }
+            override fun onTick(millisUntilFinished: Long) {
+                lis?.onCountdown(millisUntilFinished)
+                mGameListener.forEach { it.value.onCountdown(millisUntilFinished) }
             }
+
+            override fun onFinish() {
+
+            }
+        }
         countDownTimer?.start()
     }
-    fun stopCountDown(){
+
+    fun stopCountDown() {
         countDownTimer?.cancel()
     }
 
@@ -71,32 +57,10 @@ class GameManager private constructor() : IGameManager {
             return this.gameState == GameState.Betting
         }
 
-    fun startBetting() {
-        gameState = GameState.Betting
-    }
-    fun reset(){
+    fun reset() {
         gameState = GameState.Init
     }
-    fun startSettling() {
-        gameState = GameState.Settling
-    }
 
-    fun startDrawing() {
-        runBlocking {
-            gameState = GameState.Drawing
-            val bean = HistoryResultBean(
-                isShow = false,
-                result = listOf(
-                    Random.nextInt(1, 7),
-                    Random.nextInt(1, 7),
-                    Random.nextInt(1, 7)
-                )
-            )
-            mGameListener.forEach { it.value.onDrawingResult(bean) }
-            delay(200)
-            gameState = GameState.DrawFinish
-        }
-    }
 
     fun setLiveStatusListener(tag: String, listener: IGameListener) {
         mGameListener[tag] = listener

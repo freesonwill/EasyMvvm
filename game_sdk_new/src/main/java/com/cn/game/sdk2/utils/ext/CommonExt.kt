@@ -16,6 +16,7 @@ import java.text.DecimalFormat
  **/
 object CommonExt {
 
+
     inline val Int.dp2px get()  = run {
         val context  = ModuleInitializer.application
         val scale = context.resources.displayMetrics.density

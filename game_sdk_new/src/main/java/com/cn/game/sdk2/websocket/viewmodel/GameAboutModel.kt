@@ -3,7 +3,8 @@ package com.cn.game.sdk2.websocket.viewmodel
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import com.cn.game.sdk2.manager.GameManager
+import com.cn.game.sdk2.manager.listener.IGameListener
 import com.cn.game.sdk2.websocket.bean.AreaBetBean
 import com.cn.game.sdk2.websocket.bean.Betting
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
@@ -240,12 +241,20 @@ class GameAboutModel : BaseViewModel() {
             field = value
             Log.d(TAG,"countDown set:${field}")
             _countDownSetStampTime = System.currentTimeMillis()
+            GameManager.instance.startCountDownTimer(value.toLong(), lis = object :IGameListener{
+                override fun onCountdown(time: Long) {
+                    super.onCountdown(time)
+                    _countDownSecondsLD.value = (time/1000).toInt()
+                }
+            })
         }
         get() {
             val elapsed = System.currentTimeMillis() - _countDownSetStampTime
             Log.d(TAG,"countDown elapsed:${elapsed}")
             return (field -elapsed).toInt()
         }
+    private val _countDownSecondsLD:UnPeekLiveData<Int> = UnPeekLiveData(0)
+    val countDownSecondsLD:LiveData<Int> = _countDownSecondsLD
     private var _countDownSetStampTime:Long = 0L
     val isCountDownStart get() = (System.currentTimeMillis() - _countDownSetStampTime) < 50
     var roundId: String = "" //期号

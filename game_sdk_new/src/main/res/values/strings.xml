@@ -17,6 +17,8 @@
     <string name="g_home_tab_leopard">豹子</string>
     <string name="g_home_tab_sum">总和</string>
     <string name="g_home_balance">结算中</string>
+    <string name="g_f3_dealing">开牌中</string>
+    <string name="g_f3_setting">结算中</string>
     <string name="g_home_betting_begin">开始下注</string>
     <string name="g_home_betting_end">下注结束</string>
     <string name="g_home_setting_begin">开始结算</string>

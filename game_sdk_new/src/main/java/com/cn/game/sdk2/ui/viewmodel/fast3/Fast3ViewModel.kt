@@ -20,7 +20,6 @@ import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel.Stage
 import com.kunminx.architecture.ui.callback.UnPeekLiveData
 import com.xcjh.base_lib.base.BaseViewModel
 import com.xcjh.base_lib.utils.getColor
-import java.util.Locale
 import kotlin.math.roundToInt
 
 class Fast3ViewModel : BaseViewModel() {
@@ -33,8 +32,8 @@ class Fast3ViewModel : BaseViewModel() {
     val userLotteryResultLiveData :UnPeekLiveData<ArrayList<Betting>> =UnPeekLiveData()
 
     val historyResultBeanLD: LiveData<HistoryResultBean> by lazy { UnPeekLiveData() }
-    val homeTime: LiveData<Int> by lazy { UnPeekLiveData(bettingCountDownTime/1000) }
-    val homeTimeColorLD:LiveData<Int> by lazy { Transformations.map(this.homeTime){
+    val homeTimeSeconds: LiveData<Int> by lazy { gameAboutModel.countDownSecondsLD }
+    val homeTimeColorLD:LiveData<Int> by lazy { Transformations.map(this.homeTimeSeconds){
         if(it <= 5) return@map getColor(R.color.c_F34D41)
         if(it <= 10) return@map getColor(R.color.c_FFCB15)
         return@map getColor(R.color.c_62DF57)
@@ -133,11 +132,11 @@ class Fast3ViewModel : BaseViewModel() {
 
             override fun onCountdown(time: Long) {
                 val seconds = (time.toFloat() / 1000).roundToInt()
-                (homeTime as UnPeekLiveData).value = seconds
+                (homeTimeSeconds as UnPeekLiveData).value = seconds
             }
 
             override fun onCountDownFinish(state: GameState) {
-                (homeTime as UnPeekLiveData).value = 0
+                (homeTimeSeconds as UnPeekLiveData).value = 0
             }
 
             override fun onGameStateChanged(oldValue: GameState, newValue: GameState) {
@@ -173,18 +172,8 @@ class Fast3ViewModel : BaseViewModel() {
         Log.d(TAG,"~~~~~~~~~OnCleared")
     }
 
-    fun startBetting() {
-        GameManager.instance.startBetting()
-    }
-
-    fun startCountDown(time: Long) {
-        GameManager.instance.startCountDownTimer(time)
-    }
-
     fun clear() {
-        GameManager.instance.stopCountDown()
-        GameManager.instance.reset()
-//        currentBettingRecordBean = null
+
     }
 
 
