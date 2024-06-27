@@ -66,10 +66,11 @@ var token = "93:Ufx3Dy8y"
 var isLogin: Boolean = false
 var isEnterRoom = false
 var isCanReconnect = true
+
 /**
  * data层使用，view不管
  */
-var balance: Int = 2000000
+var balance: Long = 2000000
 
 /**
  * 小游戏id
@@ -371,11 +372,11 @@ fun List<Betting>.calculateUserLotteryResult(userBettingMap: Map<Betting, Bettin
     val userLotteryResult = ArrayList<BettingRecordBean>()
     forEach {
         if (userBettingMap.containsKey(it)) {
-            val betting = userBettingMap[it]
-            betting?.money = if (it is SINGLE) {
-                (betting?.money!! * it.multipliers[it.count] * 100).toInt()
+            val betting = userBettingMap[it]!!.copy()
+            betting.money = if (it is SINGLE) {
+                (betting.money * it.multipliers[it.count]).toInt()
             } else {
-                (betting?.money!! * it.multiplier * 100).toInt()
+                (betting.money * it.multiplier).toInt()
             }
             userLotteryResult.add(betting)
         }
@@ -388,5 +389,19 @@ fun Int.convertBetting(): Betting? {
         areaMap[this]
     } else {
         null
+    }
+}
+
+fun <K> Map<K, BettingRecordBean>.copy(): MutableMap<K, BettingRecordBean> {
+    val newMap = mutableMapOf<K, BettingRecordBean>()
+    forEach {
+        newMap[it.key] = it.value.copy()
+    }
+    return newMap
+}
+
+infix fun <K> MutableMap<K, BettingRecordBean>.copyFrom(other: MutableMap<K, BettingRecordBean>) {
+    other.forEach {
+        this[it.key] = it.value.copy()
     }
 }

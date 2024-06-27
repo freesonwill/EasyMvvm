@@ -19,7 +19,7 @@ data class RoundInfoBean(
 data class AreaBetBean(
     var areaCode: Betting, var betScore: Int, var userCount: Int
 )
-
+interface DataClass
 /**
  * 每次点击下注就传入该对象
  */
@@ -43,7 +43,7 @@ data class BettingRecordBean(
     var money: Int = 0,
 
 
-    ) : Serializable {
+    ) : Serializable ,DataClass{
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

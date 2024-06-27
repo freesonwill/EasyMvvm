@@ -7,6 +7,8 @@ import com.cn.game.sdk2.websocket.appListener
 import com.cn.game.sdk2.websocket.balance
 import com.cn.game.sdk2.websocket.bean.Betting
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
+import com.cn.game.sdk2.websocket.copy
+import com.cn.game.sdk2.websocket.copyFrom
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.isEmpty
 import com.cn.game.sdk2.websocket.isNotEmpty
@@ -81,10 +83,12 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
             currentMoney + tempMoney + confirmedMoney + tempConfirmedMoney //本次下注后页面上应该显示的总金额
         //跟新again和double
         gameAboutModel.setOnceCountMoney(getPanelAllMoney())
+
         recordBean.money = currentMoney + tempMoney
         bettingListTemp[recordBean.bettingArea] = recordBean
-        recordBean.money = countMoney
-        block(isMoneyEnough(), recordBean)
+        val uiBean = recordBean.copy()
+        uiBean.money = countMoney
+        block(isMoneyEnough(), uiBean)
     }
 
     /**
@@ -99,7 +103,6 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
         tempMoney = 0
         bettingListTemp.clear()
         //----
-
         //跟新again和double
         gameAboutModel.setOnceCountMoney(getPanelAllMoney())
         //返回已确认的集合
@@ -129,10 +132,8 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
             }
 
             //--- 保存临时数据到中间态 清空临时数据
-            bettingListTempConfirmed.toString().loge("commitBetting-1")
-            bettingListTemp.toString().loge("commitBetting-2")
-            bettingListTempConfirmed = bettingListTemp
-            bettingListTempConfirmed.toString().loge("commitBetting-3")
+            bettingListTempConfirmed.clear()
+            bettingListTempConfirmed copyFrom bettingListTemp.copy()
             confirmTempMoney = tempMoney
             tempMoney = 0
             bettingListTemp.clear()
@@ -140,8 +141,6 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
 
             val build = betReq.build()
             bet(build)
-
-
         } else {
             "下注228：上次下注还未返回".loge("addBetting")
             gameAboutModel.setBettingSuccess(false)
@@ -156,7 +155,7 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
         //1
         tempMoney = againCountMoney
 
-        bettingListTemp.putAll(againBettingList)
+        bettingListTemp copyFrom againBettingList
         return againBettingList
     }
 
@@ -167,33 +166,53 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
      */
     fun doubleBetting(block: (isMoneyEnough: Boolean, result: Map<Betting, BettingRecordBean>?) -> Unit) {
         if (doubleMoney < balance) {
-            bettingListTemp.mapValues {
+            val tempCopy = bettingListTemp.copy()
+            val confirmCopy = bettingListConfirmed.copy()
+            val tempConfirmCopy = bettingListTempConfirmed.copy()
+            tempCopy.mapValues {
                 it.value.money *= 2
             }
-            val uiMap = HashMap<Betting, BettingRecordBean>()
-            uiMap.putAll(bettingListTemp)
-            bettingListConfirmed.forEach {
-                if (bettingListTemp.containsKey(it.key)) {
-                    uiMap[it.key]!!.money += it.value.money * 2 //页面
-                    it.value.money += bettingListTemp[it.key]!!.money
-                    bettingListTemp[it.key] = it.value
+            val uiMap = tempCopy.copy()
+            confirmCopy.forEach {
+                val confirmMoney = it.value.money
+                if (tempCopy.containsKey(it.key)) {
+
+                    val uiBean = uiMap[it.key]!!.copy()
+                    uiBean.money += confirmMoney * 2
+                    uiMap[it.key] = uiBean //页面
+
+                    val dataBean = tempCopy[it.key]!!.copy()
+                    dataBean.money += confirmMoney
+                    tempCopy[it.key] = dataBean
                 } else {
-                    uiMap[it.key] = it.value
-                    uiMap[it.key]!!.money *= 2
-                    bettingListTemp[it.key] = it.value
+                    val uiBean = uiMap[it.key]!!.copy()
+                    uiBean.money += confirmMoney * 2
+                    uiMap[it.key] = uiBean //页面
+
+                    tempCopy[it.key] = it.value.copy()
                 }
             }
-            bettingListTempConfirmed.forEach {
-                if (bettingListTemp.containsKey(it.key)) {
-                    uiMap[it.key]!!.money += it.value.money * 2 //页面
-                    it.value.money += bettingListTemp[it.key]!!.money
-                    bettingListTemp[it.key] = it.value
+            tempConfirmCopy.forEach {
+                val confirmMoney = it.value.money
+                if (tempCopy.containsKey(it.key)) {
+
+                    val uiBean = uiMap[it.key]!!.copy()
+                    uiBean.money += confirmMoney * 2
+                    uiMap[it.key] = uiBean //页面
+
+                    val dataBean = tempCopy[it.key]!!.copy()
+                    dataBean.money += confirmMoney
+                    tempCopy[it.key] = dataBean
                 } else {
-                    uiMap[it.key] = it.value
-                    uiMap[it.key]!!.money *= 2
-                    bettingListTemp[it.key] = it.value
+                    val uiBean = uiMap[it.key]!!.copy()
+                    uiBean.money += confirmMoney * 2
+                    uiMap[it.key] = uiBean //页面
+
+                    tempCopy[it.key] = it.value.copy()
                 }
             }
+            bettingListTemp.clear()
+            bettingListTemp copyFrom tempCopy
             tempMoney = confirmTempMoney + confirmMoney + tempMoney * 2
             block(true, uiMap)
         } else {

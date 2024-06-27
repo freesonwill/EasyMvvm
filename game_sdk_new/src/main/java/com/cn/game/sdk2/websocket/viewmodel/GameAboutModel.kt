@@ -22,7 +22,7 @@ class GameAboutModel : BaseViewModel() {
 
     private val _currentStage = UnPeekLiveData<Stage>()
     private val _currentAgainDoubleState = MutableLiveData<AgainDoubleState>()
-    private val _balance = MutableLiveData<Int>()
+    private val _balance = MutableLiveData<Long>()
     private val _syncAreaBetInfo = MutableLiveData<List<AreaBetBean>>()
     private val _clearTrendsIds = MutableLiveData<List<Int>>()
     private val _historyRounds = MutableLiveData<List<RoundInfoBean>>()
@@ -126,7 +126,7 @@ class GameAboutModel : BaseViewModel() {
      * 实现balance的observe，监听余额变化
      * 该值需要缩小100倍，保留两位小数用于展示
      */
-    val balance: LiveData<Int>
+    val balance: LiveData<Long>
         get() = _balance
 
     /**
@@ -174,7 +174,7 @@ class GameAboutModel : BaseViewModel() {
         _isMeetAgain.value = canAgain
     }
 
-    fun changeBalance(b: Int) {
+    fun changeBalance(b: Long) {
         _balance.value = b
     }
 

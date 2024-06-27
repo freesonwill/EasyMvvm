@@ -12,6 +12,8 @@ import com.cn.game.sdk2.websocket.bean.RoundInfoBean
 import com.cn.game.sdk2.websocket.calculateArea
 import com.cn.game.sdk2.websocket.calculateUserLotteryResult
 import com.cn.game.sdk2.websocket.convertBetting
+import com.cn.game.sdk2.websocket.copy
+import com.cn.game.sdk2.websocket.copyFrom
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.interfaces.GameService
 import com.cn.game.sdk2.websocket.interfaces.SDKEnterLiveCallbackListener
@@ -36,6 +38,7 @@ import game.common.proto.ClientRes
 import game.mod.proc.yf.proto.req.GameReq
 import game.mod.proc.yf.proto.req.GameReq.EnterMiniGame
 import game.mod.proc.yf.proto.res.GameRes
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * 提供ui层调用的统一对象
@@ -78,25 +81,28 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
     /**
      * 临时下注列表
      */
-    protected open val bettingListTemp: MutableMap<Betting, BettingRecordBean> = mutableMapOf()
+    protected open val bettingListTemp: ConcurrentHashMap<Betting, BettingRecordBean> =
+        ConcurrentHashMap()
 
     /**
      * 临时确认下注列表
      */
     protected open var bettingListTempConfirmed: MutableMap<Betting, BettingRecordBean> =
-        mutableMapOf()
+        ConcurrentHashMap()
 
     /**
      * 已确认下注列表;
      *  - 仅当前局有效，当前局结算后会被清空
      */
-    protected open val bettingListConfirmed: MutableMap<Betting, BettingRecordBean> = mutableMapOf()
+    protected open val bettingListConfirmed: ConcurrentHashMap<Betting, BettingRecordBean> =
+        ConcurrentHashMap()
 
     /**
      * 续压下注列表;
      *  - 会保存到下一局结算时被下一句数据覆盖
      */
-    protected open var againBettingList: MutableMap<Betting, BettingRecordBean> = mutableMapOf()
+    protected open var againBettingList: MutableMap<Betting, BettingRecordBean> =
+        ConcurrentHashMap()
 
     protected open var againCountMoney = 0
 
@@ -147,7 +153,7 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
 
     private fun send(mid: Short, sid: Short, data: ByteArray) {
         //messageViewModel?.setSendData(SendDataBean(mid, sid, data))
-        client.handler.post{
+        client.handler.post {
             "send()->mid:$mid-sid:$sid".loge(tag)
             try {
                 val msg = client.newPack(mid, sid, data, data.size)
@@ -206,8 +212,8 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
     override fun enterInfo(enterInfo: GameRes.EnterInfo) {
         enterInfo.toString().loge("enterInfo")
         gameAboutModel.isSitDown(true)
-        balance = enterInfo.self.score.toInt()
-        gameAboutModel.changeBalance(enterInfo.self.score.toInt())
+        balance = enterInfo.self.score
+        gameAboutModel.changeBalance(enterInfo.self.score)
         if (isEnterRoom) {
             GameSDK.enterLive("1213", listOf(1), "", object : SDKEnterLiveCallbackListener {
                 override fun callback(code: Int, message: String?) {
@@ -274,7 +280,7 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
     private fun returnTemp() {
         "returnTemp".loge("returnTemp")
         bettingListTemp.isNotEmpty { temp ->
-            bettingListTempConfirmed.forEach {
+            bettingListTempConfirmed.toMutableMap().forEach {
                 if (temp.containsKey(it.key)) {
                     temp[it.key]!!.money += it.value.money
                     bettingListTemp[it.key] = temp[it.key]!!
@@ -292,8 +298,6 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
     override fun miniGameBetResult(result: GameRes.MyMiniGameBetResult) {
         previousSuccess = true
         //result = 0 成功 1 余额不住 3超时
-        result.toString().loge("miniGameBetResult")
-        result.betResultInfoListList[0].result.toString().loge("miniGameBetResult-result")
         when (result.betResultInfoListList[0].result) {
             0 -> {
                 gameAboutModel.lastBetting = tempLastBetting
@@ -305,17 +309,12 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
                 //跟新again和double
                 gameAboutModel.setOnceCountMoney(getPanelAllMoney())
                 previousSuccess = true
-                bettingListTempConfirmed.toString()
-                    .loge("miniGameBetResult-bettingListTempConfirmed")
                 bettingListTempConfirmed.forEach { (betting, temBean) ->
-                    temBean.toString().loge()
                     if (bettingListConfirmed.containsKey(betting)) {
                         temBean.money += bettingListConfirmed[betting]?.money!!
                     }
-                    temBean.toString().loge()
-                    bettingListConfirmed[betting] = temBean
                 }
-                bettingListConfirmed.toString().loge("miniGameBetResult")
+                bettingListConfirmed copyFrom bettingListTempConfirmed
                 bettingListTempConfirmed.clear()
                 confirmTempMoney = 0
             }
@@ -349,7 +348,8 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
     }
 
     override fun refreshUserProperties(userScore: GameRes.RefreshUserScore) {
-        balance = userScore.score.toInt()
+        userScore.toString().loge("refreshUserProperties")
+        balance = userScore.score
         gameAboutModel.changeBalance(balance)
     }
 
@@ -424,12 +424,12 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
         gameAboutModel.lotteryResultList = lotteryResultList
         //计算用户中奖注区及金额
         gameAboutModel.userLotteryResult =
-            lotteryResultList.calculateUserLotteryResult(bettingListConfirmed)
+            lotteryResultList.calculateUserLotteryResult(bettingListConfirmed.copy())
         //跟新阶段
         gameAboutModel.changeStage(GameAboutModel.Stage.SETTLE)
         //清空本局已下注数据，并复制到续压集合里
         bettingListConfirmed.isNotEmpty {
-            againBettingList = bettingListConfirmed
+            againBettingList copyFrom bettingListConfirmed
         }
         if (confirmMoney > 0) {
             againCountMoney = confirmMoney
@@ -451,7 +451,7 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
 
     override fun errorMessage(errorMessage: ClientRes.ErrorMessage) {
         val desc = errorMessage.desc
-        "code = ${errorMessage.code},msg = ${errorMessage.desc}".loge()
+        "code = ${errorMessage.code},msg = ${errorMessage.desc}".loge("errorMessage")
         gameAboutModel.setToastErrorMessage(desc)
     }
 

@@ -256,7 +256,7 @@
                             android:id="@+id/txtCurrentMoney"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="20000"
+                            tools:text="20000"
                             android:textColor="@color/g_f7cf41"
                             android:textSize="13sp" />
 
