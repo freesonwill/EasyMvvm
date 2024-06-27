@@ -40,8 +40,8 @@ object BindingAdapterUtil {
 
 
     @JvmStatic
-    @BindingAdapter(value = ["listDivider", "listDividerOrientation"], requireAll = false)
-    fun listDivider(recyclerView: RecyclerView, space: Int, orientation: Int?) {
+    @BindingAdapter(value = ["dividerSpace", "dividerOrientation"], requireAll = false)
+    fun dividerSpace(recyclerView: RecyclerView, space: Int, orientation: Int?) {
         val or = when (orientation) {
             0 -> DividerOrientation.HORIZONTAL
             1 -> DividerOrientation.VERTICAL

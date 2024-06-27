@@ -5,6 +5,7 @@ import com.cn.game.sdk2.utils.PinyinUtils
 import com.cn.game.sdk2.websocket.bean.Betting
 import java.math.BigDecimal
 import java.math.RoundingMode
+import com.xcjh.base_lib.ModuleInitializer
 import java.text.DecimalFormat
 
 
@@ -14,10 +15,37 @@ import java.text.DecimalFormat
  * createTime   : 2024/6/17 16:52
  **/
 object CommonExt {
+
+    inline val Int.dp2px get()  = run {
+        val context  = ModuleInitializer.application
+        val scale = context.resources.displayMetrics.density
+        val dp = this
+        (dp * scale + 0.5f).toInt()
+    }
+
+    inline val Int.px2dp get()  = run {
+        val context  = ModuleInitializer.application
+        val scale = context.resources.displayMetrics.density
+        val dp = this
+        (dp * scale + 0.5f).toInt()
+    }
+    inline val Float.dp2px get()  = run {
+        val context  = ModuleInitializer.application
+        val scale = context.resources.displayMetrics.density
+        val dp = this
+        (dp * scale + 0.5f).toInt()
+    }
+
+    inline val Float.px2dp get()  = run {
+        val context  = ModuleInitializer.application
+        val scale = context.resources.displayMetrics.density
+        val dp = this
+        (dp * scale + 0.5f).toInt()
+    }
+
     fun Int.toPinyin(): String {
         return PinyinUtils.toPinyin(this)
     }
-
     //是否是主线程
     @JvmStatic
     inline val isMainThread: Boolean
