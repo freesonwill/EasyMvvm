@@ -147,11 +147,11 @@ abstract class BaseFast3Fragment<VM : BaseViewModel, VB : ViewDataBinding>(var f
                             if (result != null) {
                                 areaView.moneyView.setShowMoney(result.money)
                                 if (!areaView.moneyView.isAdd()) {
-                                    addMoneyOkView(result, areaView, x, y, rawY) {
-                                        emitMoneyAnim(areaView, areaView.moneyView, isNewAdd = true)
+                                    addMoneyOkView( areaView, x, y, rawY) {
+                                        emitMoneyAnim(result,areaView, areaView.moneyView, isNewAdd = true)
                                     }
                                 } else {
-                                    emitMoneyAnim(areaView, areaView.moneyView)
+                                    emitMoneyAnim(result,areaView, areaView.moneyView)
                                 }
                             }
                         } else {
@@ -164,7 +164,6 @@ abstract class BaseFast3Fragment<VM : BaseViewModel, VB : ViewDataBinding>(var f
     }
 
     abstract fun addMoneyOkView(
-        recordBean: BettingRecordBean,
         areaView: GameAreaView,
         x: Float,
         y: Float,
@@ -173,10 +172,14 @@ abstract class BaseFast3Fragment<VM : BaseViewModel, VB : ViewDataBinding>(var f
     )
 
     private fun emitMoneyAnim(
+        recordBean: BettingRecordBean,
         areaView: GameAreaView,
         moneyOKView: MoneyOKView,
         isNewAdd: Boolean = false
     ) {
+        recordBean.viewXYTemporary[0] = moneyOKView.translationX
+        recordBean.viewXYTemporary[1] = moneyOKView.translationY
+        Log.e(Fast3MainFragment.TAG, "坐标信息--->${moneyOKView.translationX} ${moneyOKView.translationY}")
         val betteView = moneyOKView.findViewById<ImageView>(R.id.ivShowBg)
         val location = betteView.locationOnScreen
         val rax = location[0].toFloat()

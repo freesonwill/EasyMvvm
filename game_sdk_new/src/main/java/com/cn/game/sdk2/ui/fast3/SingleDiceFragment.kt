@@ -50,7 +50,6 @@ class SingleDiceFragment(fast3VM: Fast3ViewModel) :
     }
 
     override fun addMoneyOkView(
-        recordBean: BettingRecordBean,
         areaView: GameAreaView,
         x: Float,
         y: Float,
@@ -64,9 +63,6 @@ class SingleDiceFragment(fast3VM: Fast3ViewModel) :
                 override fun onGlobalLayout() {
                     // 确保只监听一次
                     it.viewTreeObserver.removeOnGlobalLayoutListener(this)
-
-                    recordBean.viewXYTemporary[0] = it.translationX
-                    recordBean.viewXYTemporary[1] = it.translationY
                     emitAnimCallBack.invoke()
                 }
             })

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="model"
             type="com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel" />
@@ -251,21 +252,21 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="4dp"
-                            tools:text="¥ 20000"
                             android:includeFontPadding="false"
                             android:textColor="@color/g_f7cf41"
                             android:textSize="13sp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"/>
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:text="¥ 20000" />
 
                         <androidx.appcompat.widget.AppCompatImageView
                             android:layout_width="5dp"
-                            app:layout_constraintTop_toTopOf="@id/txtCurrentMoney"
                             android:layout_height="8dp"
+                            android:layout_marginLeft="@dimen/dp_4"
                             app:layout_constraintBottom_toBottomOf="@id/txtCurrentMoney"
                             app:layout_constraintStart_toEndOf="@id/txtCurrentMoney"
-                            android:layout_marginLeft="@dimen/dp_4"
+                            app:layout_constraintTop_toTopOf="@id/txtCurrentMoney"
                             app:srcCompat="@drawable/icon_right" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -275,11 +276,11 @@
                     android:id="@+id/viewPagerNew"
                     android:layout_width="match_parent"
                     android:layout_height="180dp"
-                    android:paddingStart="0dp"
-                    android:paddingEnd="0dp"
                     android:layout_marginBottom="5dp"
                     android:clipChildren="false"
                     android:clipToPadding="false"
+                    android:paddingStart="0dp"
+                    android:paddingEnd="0dp"
                     app:layout_constraintBottom_toTopOf="@id/llShowBetList" />
 
                 <LinearLayout
@@ -344,39 +345,49 @@
                     android:id="@+id/llShowBetList"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="20dp"
                     android:background="@color/g_141624"
                     android:orientation="horizontal"
                     android:paddingBottom="5dp"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/viewPagerNew"
+                    app:layout_constraintStart_toStartOf="parent"
                     tools:itemCount="11"
                     tools:listitem="@layout/item_annotation_list" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivBetEndFg"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:layout_marginBottom="5dp"
+                    android:src="@drawable/again_bg"
+                    app:layout_constraintBottom_toBottomOf="@id/llShowBetList"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/llShowBetList" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/ivXuya"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginBottom="45dp"
                     android:visibility="visible"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@id/llShowBetList"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:srcCompat="@drawable/icon_xuya_sel" />
+                    android:layout_marginBottom="5dp"
+                    app:layout_constraintTop_toTopOf="@id/llShowBetList"
+                    app:srcCompat="@drawable/icon_xuya_gray"
+                    tools:visibility="visible" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/ivMultiple2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginBottom="5dp"
                     android:clickable="true"
                     android:focusable="true"
-                    android:visibility="visible"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:visibility="gone"
+                    android:layout_marginBottom="5dp"
+                    app:layout_constraintBottom_toBottomOf="@id/llShowBetList"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/llShowBetList"
                     app:srcCompat="@drawable/icon_multiple2_sel" />
 
                 <androidx.appcompat.widget.AppCompatImageView

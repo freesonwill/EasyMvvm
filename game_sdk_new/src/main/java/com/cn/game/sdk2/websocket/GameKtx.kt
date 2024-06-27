@@ -1,7 +1,9 @@
 package com.cn.game.sdk2.websocket
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.view.View
+import com.cn.game.sdk2.ui.fast3.Fast3MainFragment
 import com.cn.game.sdk2.websocket.bean.BOOM_1
 import com.cn.game.sdk2.websocket.bean.BOOM_2
 import com.cn.game.sdk2.websocket.bean.BOOM_3
@@ -63,7 +65,7 @@ var WEB_SOCKET_URL = "wss://ws.qxe68.com:7001/api/game/5702" ///test
  * 仅记录用户当前状态，用于重连服务器处理
  */
 //92:ZyBmhNCJ   87:MHxIHlYM  93:Ufx3Dy8y 94:0aPEwiYK
-var token = "93:Ufx3Dy8y"
+var token = "94:0aPEwiYK"
 var isLogin = false
 var isEnterRoom = false
 
@@ -379,6 +381,7 @@ fun List<Int>.countSingle(): HashMap<Int, Int> {
 }
 
 fun List<Betting>.calculateUserLotteryResult(userBettingMap: Map<Betting, BettingRecordBean>): ArrayList<BettingRecordBean> {
+    Log.e(Fast3MainFragment.TAG, userBettingMap.toString())
     val userLotteryResult = ArrayList<BettingRecordBean>()
     forEach {
         if (userBettingMap.containsKey(it)) {

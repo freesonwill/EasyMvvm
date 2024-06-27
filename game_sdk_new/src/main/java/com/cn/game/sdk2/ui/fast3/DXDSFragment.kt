@@ -151,7 +151,6 @@ class DXDSFragment(fast3VM: Fast3ViewModel) : BaseFast3Fragment<DXDSVm, FragDxds
      * 添加moneyView 计算偏移
      */
     override fun addMoneyOkView(
-        recordBean: BettingRecordBean,
         areaView: GameAreaView,
         x: Float,
         y: Float,
@@ -238,11 +237,6 @@ class DXDSFragment(fast3VM: Fast3ViewModel) : BaseFast3Fragment<DXDSVm, FragDxds
                             }
                         }
                     }
-
-
-                    recordBean.viewXYTemporary[0] = it.translationX
-                    recordBean.viewXYTemporary[1] = it.translationY
-                    Log.e(Fast3MainFragment.TAG, "坐标信息--->${it.translationX} ${it.translationY}")
                     emitAnimCallBack.invoke()
                 }
             })
