@@ -488,6 +488,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 run beanEach@{
                     list.forEach { bettingRecordBean ->
                         if (bettingRecordBean.bettingArea.number == entry.key) {
+                            bettingRecordBean.money.toString().loge("money")
                             entry.value.setShowMoney(bettingRecordBean.money)
                             hasFlag = true
                             return@beanEach
@@ -731,6 +732,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             ivXuya.clickNoRepeat {
                 //todo 判断续压状态
                 val map = GameSocketManager.getInstance()?.getGameService()?.againBetting()
+                map.toString().loge("again3")
                 if (!map.isNullOrEmpty()) {
                     map.forEach {
                         allGameAreaMap[it.key.number]?.let { areaView ->

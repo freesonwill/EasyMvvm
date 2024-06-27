@@ -54,6 +54,7 @@ import com.cn.game.sdk2.websocket.interfaces.SDKLoginCallbackListener
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 import com.cn.game.sdk2.websocket.viewmodel.MessageViewModel
 import com.xcjh.base_lib.utils.loge
+import game.mod.proc.yf.proto.res.GameRes
 
 /**
  * socket-url
@@ -83,6 +84,8 @@ var isNeedReconnect = true
  * data层使用，view不管
  */
 var balance: Long = 2000000
+
+var gameList: MutableList<GameRes.MiniGameBasicInfo>? = null
 
 /**
  * 小游戏id
