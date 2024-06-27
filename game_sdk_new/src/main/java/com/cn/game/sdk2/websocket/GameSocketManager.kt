@@ -1,11 +1,8 @@
 package com.cn.game.sdk2.websocket
 
 import android.annotation.SuppressLint
-import android.os.Handler
-import android.os.Looper
 import com.cn.game.sdk2.network.code.GameResCode
 import com.cn.game.sdk2.websocket.imp.UIMethodImpl
-import com.cn.game.sdk2.websocket.viewmodel.MessageViewModel
 import com.xcjh.base_lib.utils.loge
 import game.common.proto.ClientRes
 import game.mod.proc.yf.proto.res.GameRes
@@ -56,23 +53,23 @@ class GameSocketManager private constructor() : OnMessageListener {
         val uri = URI.create(WEB_SOCKET_URL)
         GlobalScope.launch {
             withContext(Dispatchers.IO) {
-                //client?.reset()
-//                client?.setOnMessageListener(this@GameSocketManager)
-//                gameMassageManager = UIMethodImpl.generate(client!!) //获得接口对象
+                isNeedReconnect = true
+                HAS_HEART = true
                 client = GameSocketClient(uri) //获得client对象
+                client?.reset()
                 client?.setOnMessageListener(this@GameSocketManager)
                 gameMassageManager = UIMethodImpl.generate(client!!) //获得接口对象
                 client?.connectionLostTimeout = 0
                 client!!.connectBlocking() //连接socket
                 //心跳发送
-                while (true) {
+                while (isNeedReconnect) {
                     delay(HEART_BEAT_RATE)
                     if (HAS_HEART) {
                         client?.let {
                             if (it.readyState == ReadyState.OPEN) {
                                 gameMassageManager?.ping()
                             }//正常发送心跳
-                            if (it.isClosed && isCanReconnect) it.re()
+                            if (it.isClosed) it.re()
                         }
                     } else {
                         client?.let {
@@ -99,6 +96,11 @@ class GameSocketManager private constructor() : OnMessageListener {
 //            val newPack = client?.newPack(it.mid, it.sid, it.data, it.data.size)
 //            client?.send(newPack)
 //        }
+    }
+
+    private fun resetUserState(){
+        isLogin = false
+        isEnterRoom = false
     }
 
     /**
@@ -230,7 +232,10 @@ class GameSocketManager private constructor() : OnMessageListener {
     }
 
     override fun onClose(code: Int, reason: String?, remote: Boolean) {
-//        client?.re()
+        if(remote && (code == 1000 || code == 1001) && !isTokenValid){
+            isNeedReconnect = false
+            resetUserState()
+        }
     }
 
 }

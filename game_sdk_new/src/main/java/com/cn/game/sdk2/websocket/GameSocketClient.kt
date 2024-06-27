@@ -6,6 +6,11 @@ import android.util.Log
 import com.cn.game.sdk2.websocket.imp.GameSDK
 import com.cn.game.sdk2.websocket.interfaces.SDKLoginCallbackListener
 import com.xcjh.base_lib.utils.loge
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.java_websocket.client.WebSocketClient
 import org.java_websocket.handshake.ServerHandshake
 import java.net.URI
@@ -35,7 +40,7 @@ class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
     private var mNativePtr: Long = 0
     private var _tag = "GameSocketClient"
     private var onMessageListener: OnMessageListener? = null
-    var handler:Handler = Handler(Looper.getMainLooper())
+    //var handler:Handler = Handler(Looper.getMainLooper())
 
     fun setOnMessageListener(listener: OnMessageListener) {
         onMessageListener = listener
@@ -44,34 +49,32 @@ class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
     var isReconnecting = false
     fun re() {
         "---尝试重连---".loge()
-        isReconnecting = true
-        reconnect()
+        if(!isReconnecting && isNeedReconnect) {
+            isReconnecting = true
+            reset()
+            reconnect()
+        }
     }
 
     override fun onOpen(handshakedata: ServerHandshake?) {
-//         GlobalScope.launch {
-//            withContext(Dispatchers.Main) {
-//                reset()
-//            }
-//        }
         Log.i(_tag, "GameSocketClient-连接成功！")
-        if(isReconnecting){
-            isReconnecting = false
-        }
-        handler.post{
-            reset()
-            if(isLogin) {
-                GameSDK.loginGameWithAgentName(
-                    "wali-internal",
-                    token,
-                    "Gregg Denesik",
-                    object : SDKLoginCallbackListener {
-                        override fun callback(code: Int, message: String?) {
-                            "login:code-${code},message-${message}".loge()
-                        }
+        isReconnecting = false
+         GlobalScope.launch {
+            withContext(Dispatchers.Main) {
+                isTokenValid = true
+                if(isLogin) {
+                    GameSDK.loginGameWithAgentName(
+                        "wali-internal",
+                        token,
+                        "Gregg Denesik",
+                        object : SDKLoginCallbackListener {
+                            override fun callback(code: Int, message: String?) {
+                                "login:code-${code},message-${message}".loge()
+                            }
 
-                    }
-                )
+                        }
+                    )
+                }
             }
         }
     }
@@ -80,26 +83,37 @@ class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
         Log.i(_tag, "GameSocketMessage-$message")
     }
 
+    val jobs = ArrayList<Job>()
     override fun onMessage(bytes: ByteBuffer?) {
         if (!bytes!!.hasRemaining()) {
             return
         }
         //messageViewModel?.setData(bytes.array())
-        handler.post{
-            Log.i(_tag, "GameSocketMessage-onMessage")
-            if (!bytes!!.hasRemaining()) {
-                return@post
+        val messageJob = GlobalScope.launch {
+            withContext(Dispatchers.Main) {
+                Log.i(_tag, "GameSocketMessage-onMessage")
+                if (!bytes!!.hasRemaining()) {
+                    return@withContext
+                }
+                //messageViewModel?.setData(bytes.array())
+                val resps = newUnpack(bytes.array())
+                val mid = resps!![0] as Int?
+                val sid = resps[1] as Int?
+                var str = bytes.array()
+                if (resps.size > 2) {
+                    str = (resps[2] as ByteArray?)!!
+                }
+                Log.i(_tag, "GameSocketMessage-onMessage:mid-$mid sid-$sid")
+                onMessageListener?.onMessage(mid, sid, str)
             }
-            //messageViewModel?.setData(bytes.array())
-            val resps = newUnpack(bytes.array())
-            val mid = resps!![0] as Int?
-            val sid = resps[1] as Int?
-            var str = bytes.array()
-            if (resps.size > 2) {
-                str = (resps[2] as ByteArray?)!!
+        }
+        jobs.add(messageJob)
+        //messageJob.cancel()
+        jobs.forEach {
+            if (!it.isActive){
+                it.cancel()
+//                jobs.remove(it)
             }
-            Log.i(_tag, "GameSocketMessage-onMessage:mid-$mid sid-$sid")
-            onMessageListener?.onMessage(mid, sid, str)
         }
     }
 

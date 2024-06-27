@@ -128,7 +128,7 @@
                 android:layout_height="match_parent"
                 android:scaleType="fitXY"
                 android:visibility="gone"
-                app:srcCompat="@drawable/flash_centre" />
+                app:srcCompat="@drawable/flash_right_top" />
         </com.cn.game.sdk2.ui.view.game.GameAreaView>
 
         <com.cn.game.sdk2.ui.view.game.GameAreaView
@@ -184,7 +184,7 @@
                 android:layout_height="match_parent"
                 android:scaleType="fitXY"
                 android:visibility="gone"
-                app:srcCompat="@drawable/flash_right_top" />
+                app:srcCompat="@drawable/flash_centre" />
         </com.cn.game.sdk2.ui.view.game.GameAreaView>
 
         <com.cn.game.sdk2.ui.view.game.GameAreaView
@@ -239,7 +239,7 @@
                 android:layout_height="match_parent"
                 android:scaleType="fitXY"
                 android:visibility="gone"
-                app:srcCompat="@drawable/flash_left_be" />
+                app:srcCompat="@drawable/flash_centre" />
         </com.cn.game.sdk2.ui.view.game.GameAreaView>
 
         <com.cn.game.sdk2.ui.view.game.GameAreaView
@@ -294,7 +294,7 @@
                 android:layout_height="match_parent"
                 android:scaleType="fitXY"
                 android:visibility="gone"
-                app:srcCompat="@drawable/flash_centre" />
+                app:srcCompat="@drawable/flash_right_be" />
         </com.cn.game.sdk2.ui.view.game.GameAreaView>
 
         <com.cn.game.sdk2.ui.view.game.GameAreaView
@@ -349,7 +349,7 @@
                 android:layout_height="match_parent"
                 android:scaleType="fitXY"
                 android:visibility="gone"
-                app:srcCompat="@drawable/flash_right_be" />
+                app:srcCompat="@drawable/flash_left_be" />
         </com.cn.game.sdk2.ui.view.game.GameAreaView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 

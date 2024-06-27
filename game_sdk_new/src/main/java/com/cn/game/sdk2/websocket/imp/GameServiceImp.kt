@@ -19,7 +19,7 @@ import com.cn.game.sdk2.websocket.interfaces.GameService
 import com.cn.game.sdk2.websocket.interfaces.SDKEnterLiveCallbackListener
 import com.cn.game.sdk2.websocket.isBig
 import com.cn.game.sdk2.websocket.isCanBetting
-import com.cn.game.sdk2.websocket.isCanReconnect
+import com.cn.game.sdk2.websocket.isTokenValid
 import com.cn.game.sdk2.websocket.isDouble
 import com.cn.game.sdk2.websocket.isEmpty
 import com.cn.game.sdk2.websocket.isEnterRoom
@@ -153,13 +153,15 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
 
     private fun send(mid: Short, sid: Short, data: ByteArray) {
         //messageViewModel?.setSendData(SendDataBean(mid, sid, data))
-        client.handler.post {
-            "send()->mid:$mid-sid:$sid".loge(tag)
-            try {
-                val msg = client.newPack(mid, sid, data, data.size)
-                client.send(msg)
-            } catch (e: Exception) {
-                e.printStackTrace()
+        GlobalScope.launch {
+            withContext(Dispatchers.Main) {
+                "send()->mid:$mid-sid:$sid".loge(tag)
+                try {
+                    val msg = client.newPack(mid, sid, data, data.size)
+                    client.send(msg)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
         }
     }
@@ -280,7 +282,7 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
     private fun returnTemp() {
         "returnTemp".loge("returnTemp")
         bettingListTemp.isNotEmpty { temp ->
-            bettingListTempConfirmed.toMutableMap().forEach {
+            bettingListTempConfirmed.forEach {
                 if (temp.containsKey(it.key)) {
                     temp[it.key]!!.money += it.value.money
                     bettingListTemp[it.key] = temp[it.key]!!
@@ -322,26 +324,35 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
             1 -> {
                 returnTemp()
                 gameAboutModel.bettingMessage = "余额不住"
+                gameAboutModel.setToastErrorMessage(gameAboutModel.bettingMessage)
                 gameAboutModel.setBettingSuccess(false)
             }
 
             2 -> {
                 returnTemp()
                 gameAboutModel.bettingMessage = "押注超时"
+                gameAboutModel.setToastErrorMessage(gameAboutModel.bettingMessage)
                 gameAboutModel.setBettingSuccess(false)
             }
 
             4 -> {
-                isCanReconnect = false
+                isTokenValid = false
+                gameAboutModel.bettingMessage = "网络连接超时"
+                gameAboutModel.setToastErrorMessage(gameAboutModel.bettingMessage)
+                appListener?.getTokenLoseEffectiveness()
             }
 
             5 -> {
-                isCanReconnect = false
+                isTokenValid = false
+                gameAboutModel.bettingMessage = "账号在其他设备登录，您已下线"
+                gameAboutModel.setToastErrorMessage(gameAboutModel.bettingMessage)
+                appListener?.getTokenLoseEffectiveness()
             }
 
             else -> {
                 returnTemp()
-                gameAboutModel.bettingMessage = "超时"
+                gameAboutModel.bettingMessage = "网络连接超时"
+                gameAboutModel.setToastErrorMessage(gameAboutModel.bettingMessage)
                 gameAboutModel.setBettingSuccess(false)
             }
         }
@@ -459,16 +470,21 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
      * token失效通知app
      */
     override fun tokenLoseEffectiveness() {
-        isCanReconnect = false
+        isTokenValid = false
+        gameAboutModel.setToastErrorMessage("账号在其他设备登录，您已下线")
         appListener?.getTokenLoseEffectiveness()
     }
 
     override fun roomTimeout() {
-        isCanReconnect = false
+        isTokenValid = false
+        gameAboutModel.setToastErrorMessage("登录房间超时")
+        appListener?.getTokenLoseEffectiveness()
     }
 
     override fun serverMaintenance() {
-
+        isTokenValid = false
+        gameAboutModel.setToastErrorMessage("服务器维护中")
+        appListener?.getTokenLoseEffectiveness()
     }
 
     protected var curStage: GameAboutModel.Stage = GameAboutModel.Stage.NEW

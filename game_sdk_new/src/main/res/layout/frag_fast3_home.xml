@@ -144,9 +144,9 @@
                             android:layout_width="18dp"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            tools:text="30"
                             android:textColor="@{model.homeTimeColorLD,default=@color/c_62DF57}"
-                            android:textSize="15sp" />
+                            android:textSize="15sp"
+                            tools:text="30" />
 
                         <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/txtHomeUnit"
@@ -216,7 +216,7 @@
                     android:id="@+id/vvvvvv"
                     android:layout_width="match_parent"
                     android:layout_height="21dp"
-                    android:layout_marginBottom="5dp"
+                    android:layout_marginBottom="8dp"
                     android:clipChildren="false"
                     android:clipToPadding="false"
                     android:orientation="vertical"
@@ -234,45 +234,48 @@
                         app:layout_constraintStart_toStartOf="parent"
                         tools:ignore="MissingConstraints" />
 
-                    <LinearLayout
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/frrl"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_alignParentRight="true"
-                        android:layout_marginRight="12dp"
-                        android:gravity="center"
-                        android:orientation="horizontal"
+                        android:layout_marginRight="10dp"
+                        android:background="@drawable/shape_3_111130"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="3dp"
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toTopOf="parent">
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="$"
-                            android:textColor="@color/g_f7cf41"
-                            android:textSize="13sp" />
 
                         <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/txtCurrentMoney"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            tools:text="20000"
+                            android:layout_marginStart="4dp"
+                            tools:text="¥ 20000"
+                            android:includeFontPadding="false"
                             android:textColor="@color/g_f7cf41"
-                            android:textSize="13sp" />
+                            android:textSize="13sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"/>
 
                         <androidx.appcompat.widget.AppCompatImageView
                             android:layout_width="5dp"
+                            app:layout_constraintTop_toTopOf="@id/txtCurrentMoney"
                             android:layout_height="8dp"
-                            android:layout_marginLeft="@dimen/dp_5"
+                            app:layout_constraintBottom_toBottomOf="@id/txtCurrentMoney"
+                            app:layout_constraintStart_toEndOf="@id/txtCurrentMoney"
+                            android:layout_marginLeft="@dimen/dp_4"
                             app:srcCompat="@drawable/icon_right" />
 
-                    </LinearLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
                 </RelativeLayout>
 
                 <androidx.viewpager.widget.ViewPager
                     android:id="@+id/viewPagerNew"
                     android:layout_width="match_parent"
                     android:layout_height="180dp"
+                    android:layout_marginStart="7dp"
                     android:layout_marginBottom="5dp"
                     android:clipChildren="false"
                     android:clipToPadding="false"
@@ -338,12 +341,17 @@
                 <!--            选择投注-->
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/llShowBetList"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="20dp"
                     android:background="@color/g_141624"
+                    android:orientation="horizontal"
                     android:paddingBottom="5dp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    tools:itemCount="1"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/viewPagerNew"
+                    tools:itemCount="11"
                     tools:listitem="@layout/item_annotation_list" />
 
                 <androidx.appcompat.widget.AppCompatImageView
@@ -353,8 +361,8 @@
                     android:layout_marginEnd="5dp"
                     android:layout_marginBottom="45dp"
                     android:visibility="visible"
-                    app:layout_constraintBottom_toBottomOf="@+id/llShowBetList"
-                    app:layout_constraintEnd_toEndOf="@+id/llShowBetList"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:srcCompat="@drawable/icon_xuya_sel" />
 
                 <androidx.appcompat.widget.AppCompatImageView
@@ -366,8 +374,8 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:visibility="visible"
-                    app:layout_constraintBottom_toBottomOf="@+id/llShowBetList"
-                    app:layout_constraintEnd_toEndOf="@+id/llShowBetList"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:srcCompat="@drawable/icon_multiple2_sel" />
 
                 <androidx.appcompat.widget.AppCompatImageView
@@ -415,24 +423,24 @@
                         android:id="@+id/txtWinMoney"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        tools:text="$5011111"
                         android:gravity="center"
-                        app:autoSizeTextType="uniform"
+                        android:maxWidth="75dp"
                         android:maxLines="1"
                         android:textColor="#FFE3CA"
-                        android:maxWidth="75dp"
                         android:textSize="30sp"
+                        app:autoSizeTextType="uniform"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/txtWinMoneyLabel" />
+                        app:layout_constraintTop_toBottomOf="@id/txtWinMoneyLabel"
+                        tools:text="$5011111" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.Group
                     android:id="@+id/groupWinLottie"
                     android:layout_width="wrap_content"
-                    android:visibility="gone"
                     android:layout_height="wrap_content"
+                    android:visibility="gone"
                     app:constraint_referenced_ids="ivResultBg,lottieLayout" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>

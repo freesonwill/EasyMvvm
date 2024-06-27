@@ -63,10 +63,18 @@ var WEB_SOCKET_URL = "wss://ws.qxe68.com:7001/api/game/5702" ///test
  */
 //92:ZyBmhNCJ   87:MHxIHlYM  93:Ufx3Dy8y 94:0aPEwiYK
 var token = "93:Ufx3Dy8y"
-var isLogin: Boolean = false
+var isLogin = false
 var isEnterRoom = false
-var isCanReconnect = true
 
+/**
+ * 多用户登录token失效
+ */
+var isTokenValid = true
+
+/**
+ * token失效后，socket连接关闭，停止重连
+ */
+var isNeedReconnect = true
 /**
  * data层使用，view不管
  */

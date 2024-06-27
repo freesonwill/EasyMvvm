@@ -156,37 +156,97 @@ data class SINGLE_1(
     override var number: Int = 19,
     override var multipliers: List<Float> = listOf(2f, 3f, 4f),
     override var count: Int = 0
-) : SINGLE()
+) : SINGLE(){
+    override fun equals(other: Any?): Boolean {
+        return other is SINGLE && other.number ==this.number
+    }
+
+    override fun hashCode(): Int {
+        var result = super.hashCode()
+        result = 31 * result + number
+        return result
+    }
+}
 
 data class SINGLE_2(
     override var number: Int = 20,
     override var multipliers: List<Float> = listOf(2f, 3f, 4f),
     override var count: Int = 0
-) : SINGLE()
+) : SINGLE(){
+    override fun equals(other: Any?): Boolean {
+        return other is SINGLE && other.number ==this.number
+    }
+
+    override fun hashCode(): Int {
+        var result = super.hashCode()
+        result = 31 * result + number
+        return result
+    }
+}
 
 data class SINGLE_3(
     override var number: Int = 22,
     override var multipliers: List<Float> = listOf(2f, 3f, 4f),
     override var count: Int = 0
-) : SINGLE()
+) : SINGLE(){
+    override fun equals(other: Any?): Boolean {
+        return other is SINGLE && other.number ==this.number
+    }
+
+    override fun hashCode(): Int {
+        var result = super.hashCode()
+        result = 31 * result + number
+        return result
+    }
+}
 
 data class SINGLE_4(
     override var number: Int = 22,
     override var multipliers: List<Float> = listOf(2f, 3f, 4f),
     override var count: Int = 0
-) : SINGLE()
+) : SINGLE(){
+    override fun equals(other: Any?): Boolean {
+        return other is SINGLE && other.number ==this.number
+    }
+
+    override fun hashCode(): Int {
+        var result = super.hashCode()
+        result = 31 * result + number
+        return result
+    }
+}
 
 data class SINGLE_5(
     override var number: Int = 23,
     override var multipliers: List<Float> = listOf(2f, 3f, 4f),
     override var count: Int = 0
-) : SINGLE()
+) : SINGLE(){
+    override fun equals(other: Any?): Boolean {
+        return other is SINGLE && other.number ==this.number
+    }
+
+    override fun hashCode(): Int {
+        var result = super.hashCode()
+        result = 31 * result + number
+        return result
+    }
+}
 
 data class SINGLE_6(
     override var number: Int = 24,
     override var multipliers: List<Float> = listOf(2f, 3f, 4f),
     override var count: Int = 0
-) : SINGLE()
+) : SINGLE(){
+    override fun equals(other: Any?): Boolean {
+        return other is SINGLE && other.number ==this.number
+    }
+
+    override fun hashCode(): Int {
+        var result = super.hashCode()
+        result = 31 * result + number
+        return result
+    }
+}
 
 data class DOUBLE_1(
     override var number: Int = 25, override var multiplier: Float = 12f

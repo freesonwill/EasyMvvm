@@ -3,6 +3,8 @@ package com.cn.game.sdk2.utils.ext
 import android.os.Looper
 import com.cn.game.sdk2.utils.PinyinUtils
 import com.cn.game.sdk2.websocket.bean.Betting
+import java.math.BigDecimal
+import java.math.RoundingMode
 import java.text.DecimalFormat
 
 
@@ -39,6 +41,8 @@ object CommonExt {
     }
 
     fun Int.formatRealMoney(): String {
-        return DecimalFormat("#.##").format(this.toFloat() / 100).toString()
+        val b1 = BigDecimal(this.toString())
+        val b2 = BigDecimal("100")
+        return b1.divide(b2,2,RoundingMode.DOWN).stripTrailingZeros().toPlainString()
     }
 }
