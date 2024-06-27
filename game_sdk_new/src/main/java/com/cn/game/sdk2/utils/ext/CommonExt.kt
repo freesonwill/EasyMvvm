@@ -40,7 +40,7 @@ object CommonExt {
         }
     }
 
-    fun Int.formatRealMoney(): String {
+    fun Any.formatRealMoney(): String {
         val b1 = BigDecimal(this.toString())
         val b2 = BigDecimal("100")
         return b1.divide(b2,2,RoundingMode.DOWN).stripTrailingZeros().toPlainString()
