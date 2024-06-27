@@ -13,9 +13,9 @@ import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.data.enums.GAME_ID_ENUM
-import com.cn.game.sdk2.utils.tool.indicator.CommonPagerIndicator
 import com.cn.game.sdk2.ui.HomeXPopupDialog
-import com.cn.game.sdk2.utils.ToastUtil
+import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
+import com.cn.game.sdk2.utils.tool.indicator.CommonPagerIndicator
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
 import com.lxj.xpopup.enums.PopupAnimation
@@ -41,7 +41,6 @@ object ViewHelper {
     private var homeXPopupDialog: HomeXPopupDialog? = null
 
     fun showFastView(context: Context) {
-        //ToastUtil.showToastNormal(context,"开始押注", gravity = Gravity.BOTTOM)
         EasyFloat.with(context).setSidePattern(SidePattern.DEFAULT)
             .setImmersionStatusBar(true)
             .setTag(TAG_FASTVIEW)
@@ -68,7 +67,7 @@ object ViewHelper {
                         .isDestroyOnDismiss(false) //对于只使用一次的弹窗，推荐设置这个
                         .isThreeDrag(false) //是否开启三阶拖拽，如果设置enableDrag(false)则无效
                         .enableDrag(false)
-                        .asCustom(HomeXPopupDialog(context,GAME_ID_ENUM.GAME_FAST3.num).apply {
+                        .asCustom(HomeXPopupDialog(context, GAME_ID_ENUM.GAME_FAST3.num).apply {
                             homeXPopupDialog = this
                         })
                         .show()
@@ -76,6 +75,19 @@ object ViewHelper {
                 }
             }.show()
     }
+
+    /**
+     * 快三悬浮窗
+     */
+    fun showFastViewOverlay(context: Context) {
+        EasyFloat.with(context).setSidePattern(SidePattern.DEFAULT)
+            .setImmersionStatusBar(true)
+            .setTag("FastViewOverlay")
+            .setGravity(Gravity.START, 6.dp2px, 122.dp2px)
+            .setLayout(R.layout.fragment_fast3_overlay)
+            .show()
+    }
+
 
     fun ViewPager.initGameViewPager(
         fragmentManager: FragmentManager,
@@ -136,8 +148,6 @@ object ViewHelper {
     }
 
 
-
-
     /*
      * ViewPager + MagicIndicator 指示器
      */
@@ -191,8 +201,6 @@ object ViewHelper {
                     }
 
 
-
-
                 }
             }
 
@@ -211,10 +219,6 @@ object ViewHelper {
     }
 
 
-
-
-
-
     /**
      * 文字加粗无效的时候，如： textView.setTypeface(null, Typeface.BOLD) 或者 textView.typeface = Typeface.DEFAULT_BOLD
      */
@@ -228,7 +232,7 @@ object ViewHelper {
         }
     }
 
-    fun View.isAdd():Boolean{
+    fun View.isAdd(): Boolean {
         return parent != null
     }
 

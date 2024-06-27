@@ -33,6 +33,7 @@ class MainActivity : AppCompatActivity() {
 
         btnOpen.setOnClickListener {
             //MyGameManager.showFastView(this)
+            //ViewHelper.showFastView(this)
             if(gameAboutModel.isLoginSuccess.value == true){
                 GameSDK.enterLive("1213", listOf(1), "", object : SDKEnterLiveCallbackListener {
                     override fun callback(code: Int, message: String?) {
@@ -40,6 +41,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 })
                 ViewHelper.showFastView(this)
+                ViewHelper.showFastViewOverlay(this)
             }else{
                 //92:ZyBmhNCJ   87:MHxIHlYM
                 GameSDK.loginGameWithAgentName(

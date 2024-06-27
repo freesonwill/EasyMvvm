@@ -69,7 +69,7 @@
                         <androidx.appcompat.widget.AppCompatImageView
                             android:layout_width="8dp"
                             android:layout_height="8dp"
-                            app:srcCompat="@drawable/icon_money"/>
+                            app:srcCompat="@drawable/icon_money_new"/>
                         <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/txtSmallMoney"
                             android:layout_width="wrap_content"
@@ -170,7 +170,7 @@
                         <androidx.appcompat.widget.AppCompatImageView
                             android:layout_width="8dp"
                             android:layout_height="8dp"
-                            app:srcCompat="@drawable/icon_money"/>
+                            app:srcCompat="@drawable/icon_money_new"/>
                         <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/txtBigMoney"
                             android:layout_width="wrap_content"
@@ -272,7 +272,7 @@
                         <androidx.appcompat.widget.AppCompatImageView
                             android:layout_width="8dp"
                             android:layout_height="8dp"
-                            app:srcCompat="@drawable/icon_money"/>
+                            app:srcCompat="@drawable/icon_money_new"/>
                         <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/txtSingleMoney"
                             android:layout_width="wrap_content"
@@ -375,7 +375,7 @@
                         <androidx.appcompat.widget.AppCompatImageView
                             android:layout_width="8dp"
                             android:layout_height="8dp"
-                            app:srcCompat="@drawable/icon_money"/>
+                            app:srcCompat="@drawable/icon_money_new"/>
                         <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/txtDoubleMoney"
                             android:layout_width="wrap_content"
