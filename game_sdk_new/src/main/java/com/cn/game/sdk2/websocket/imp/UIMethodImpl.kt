@@ -185,7 +185,7 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
                     dataBean.money += confirmMoney
                     tempCopy[it.key] = dataBean
                 } else {
-                    val uiBean = uiMap[it.key]!!.copy()
+                    val uiBean = it.value.copy()
                     uiBean.money += confirmMoney * 2
                     uiMap[it.key] = uiBean //页面
 
@@ -204,7 +204,7 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
                     dataBean.money += confirmMoney
                     tempCopy[it.key] = dataBean
                 } else {
-                    val uiBean = uiMap[it.key]!!.copy()
+                    val uiBean = it.value.copy()
                     uiBean.money += confirmMoney * 2
                     uiMap[it.key] = uiBean //页面
 
