@@ -65,6 +65,7 @@ import kotlinx.coroutines.launch
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
+@SuppressLint("SetTextI18n")
 class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>() {
     companion object{
         const val TAG = "Fast3MainFragment"
@@ -127,7 +128,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
     override fun initData() {
         //获取当前余额
-        mDatabind.txtCurrentMoney.text = mViewModel.currentMoney
+        mDatabind.txtCurrentMoney.text = "¥ ${mViewModel.currentMoney}"
         mDatabind.txtHomeTime.text = mViewModel.homeTime.value.toString()
         lifecycleScope.launchWhenResumed {
             //开始下注
@@ -327,7 +328,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
         mViewModel.currentMoneyLD.observe(viewLifecycleOwner) { balance ->
             Log.e(TAG,"收到的总余额：${balance}")
-            mDatabind.txtCurrentMoney.text = balance
+            mDatabind.txtCurrentMoney.text = "¥ $balance"
         }
         mViewModel.homeTimeVisibility.observe(viewLifecycleOwner) {
             mDatabind.txtHomeTime.visibility = it
