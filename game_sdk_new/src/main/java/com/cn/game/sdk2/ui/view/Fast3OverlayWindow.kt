@@ -3,7 +3,9 @@ package com.cn.game.sdk2.ui.view
 import android.content.Context
 import android.util.AttributeSet
 import android.util.Log
+import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.isVisible
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.cn.game.sdk2.databinding.FragmentFast3OverlayBinding
@@ -35,28 +37,11 @@ class Fast3OverlayWindow @JvmOverloads constructor(
         binding = FragmentFast3OverlayBinding.bind(this)
 
         gameAboutModel.historyRounds.observeForever(object : Observer<List<*>> {
-            init{
+            init {
                 gcFunc.add { gameAboutModel.historyRounds.removeObserver(this) }
             }
-
-            override fun onChanged(t: List<*>?) {
-                val roundInfo: RoundInfoBean? = gameAboutModel.currentSettleResult
-                binding.apply {
-                    roundInfo?.run {
-                        performs.forEachIndexed { index, item ->
-                            val id = resources.getIdentifier(
-                                "icon_dice_" + item.toPinyin(),
-                                "drawable",
-                                context.packageName
-                            )
-                            when (index) {
-                                0 -> ivDrawYi.setImageResource(id)
-                                1 -> ivDrawEr.setImageResource(id)
-                                2 -> ivDrawSan.setImageResource(id)
-                            }
-                        }
-                    }
-                }
+            override fun onChanged(t: List<*>?){
+                update()
             }
         })
 
@@ -64,14 +49,37 @@ class Fast3OverlayWindow @JvmOverloads constructor(
             init {
                 gcFunc.add { gameAboutModel.currentStage.removeObserver(this) }
             }
+
             override fun onChanged(t: Stage?) {
                 binding.tvEdition.text = gameAboutModel.roundId
             }
         })
-        test()
+        //test()
     }
 
-    private fun test() {
+    private fun update() {
+        val roundInfo: RoundInfoBean? = gameAboutModel.currentSettleResult
+        binding.apply {
+            lltResult.visibility = if(roundInfo != null) View.VISIBLE else View.INVISIBLE
+            roundInfo?.run {
+                performs.forEachIndexed { index, item ->
+                    val id = resources.getIdentifier(
+                        "icon_dice_" + item.toPinyin(),
+                        "drawable",
+                        context.packageName
+                    )
+                    when (index) {
+                        0 -> ivDrawYi.setImageResource(id)
+                        1 -> ivDrawEr.setImageResource(id)
+                        2 -> ivDrawSan.setImageResource(id)
+                    }
+                }
+            }
+        }
+        binding.tvEdition.text = gameAboutModel.roundId
+    }
+
+    /*private fun test() {
         setOnClickListener {
             gameAboutModel.currentSettleResult = RoundInfoBean(
                 "1",
@@ -80,11 +88,10 @@ class Fast3OverlayWindow @JvmOverloads constructor(
                 isDouble = true
             )
             ((gameAboutModel.historyRounds) as MutableLiveData).value = null
-
-            gameAboutModel.roundId="12123"
+            gameAboutModel.roundId = "12123"
             (gameAboutModel.currentStage as UnPeekLiveData).value = Stage.NEW
         }
-    }
+    }*/
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
