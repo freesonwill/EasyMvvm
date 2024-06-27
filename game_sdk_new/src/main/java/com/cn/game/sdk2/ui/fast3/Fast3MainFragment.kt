@@ -349,7 +349,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         }
         mViewModel.betOkClick.observe(this) {
             hiddenAnchorTop()
-            //todo:bet失败处理
             GameSocketManager.getInstance()?.getGameService()?.commitBetting()
         }
 
@@ -437,6 +436,11 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 }
             }
         })
+
+        //error
+        gameAboutModel.toastErrorMessage.observe(viewLifecycleOwner){msg->
+            ToastUtil.showToastNormal(msg)
+        }
     }
 
     /**

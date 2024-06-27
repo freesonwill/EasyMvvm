@@ -49,18 +49,19 @@ class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
     var isReconnecting = false
     fun re() {
         "---尝试重连---".loge()
-        isReconnecting = true
-        reconnect()
+        if(!isReconnecting && isNeedReconnect) {
+            isReconnecting = true
+            reset()
+            reconnect()
+        }
     }
 
     override fun onOpen(handshakedata: ServerHandshake?) {
         Log.i(_tag, "GameSocketClient-连接成功！")
+        isReconnecting = false
          GlobalScope.launch {
             withContext(Dispatchers.Main) {
-                if(isReconnecting){
-                    isReconnecting = false
-                }
-                reset()
+                isTokenValid = true
                 if(isLogin) {
                     GameSDK.loginGameWithAgentName(
                         "wali-internal",
