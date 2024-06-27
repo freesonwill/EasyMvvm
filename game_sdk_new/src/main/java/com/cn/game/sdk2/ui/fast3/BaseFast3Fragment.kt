@@ -46,7 +46,6 @@ abstract class BaseFast3Fragment<VM : BaseViewModel, VB : ViewDataBinding>(var f
         for (areaView in areaViewList) {
             setMoneyOKClickListener(areaView)
         }
-
     }
 
     abstract fun initAreaViewList()

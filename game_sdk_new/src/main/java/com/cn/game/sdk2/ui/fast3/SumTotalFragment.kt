@@ -44,6 +44,10 @@ class SumTotalFragment(fast3VM: Fast3ViewModel) :
                 gavSumSeventeen.also { it.flickerView = ivSumFlashSeventeen },
             )
         }
+
+        for (i in areaViewList.indices){
+            areaViewList[i].areaInfo = mViewModel.bettingArray[i+1]
+        }
     }
 
     override fun createObserver() {

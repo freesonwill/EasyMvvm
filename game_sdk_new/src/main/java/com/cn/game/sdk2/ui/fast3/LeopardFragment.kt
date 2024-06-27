@@ -34,6 +34,10 @@ class LeopardFragment(fast3VM: Fast3ViewModel) :
             areaViewList.add(gavLeopardFive.also { it.flickerView = ivLeopardFive })
             areaViewList.add(gavLeopardSix.also { it.flickerView = ivLeopardSix })
         }
+
+        for (i in areaViewList.indices){
+            areaViewList[i].areaInfo = mViewModel.bettingArray[i+1]
+        }
     }
 
     override fun initData() {
@@ -75,7 +79,7 @@ class LeopardFragment(fast3VM: Fast3ViewModel) :
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
-            params.gravity = Gravity.CENTER
+            params.gravity = areaView.okViewGravity
             areaView.addView(it, params)
         }
     }

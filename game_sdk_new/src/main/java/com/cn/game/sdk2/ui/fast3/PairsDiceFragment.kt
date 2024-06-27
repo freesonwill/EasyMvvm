@@ -32,6 +32,10 @@ class PairsDiceFragment(fast3VM: Fast3ViewModel) :
                 gavPairsFive.also { it.flickerView = ivPairsFive },
                 gavPairsSix.also { it.flickerView = ivPairsSix },
             )
+
+            for (i in areaViewList.indices){
+                areaViewList[i].areaInfo = mViewModel.bettingArray[i+1]
+            }
         }
     }
 
@@ -66,7 +70,7 @@ class PairsDiceFragment(fast3VM: Fast3ViewModel) :
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
-            params.gravity = Gravity.CENTER
+            params.gravity = areaView.okViewGravity
             areaView.addView(it, params)
         }
     }

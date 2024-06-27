@@ -21,6 +21,7 @@ import com.cn.game.sdk2.utils.ToastUtil
 import com.cn.game.sdk2.utils.ext.ViewExt.locationOnScreen
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
+import com.cn.game.sdk2.websocket.bean.areaMap
 import com.cn.game.sdk2.websocket.gameMassageManager
 import kotlinx.coroutines.launch
 
@@ -42,6 +43,10 @@ class SingleDiceFragment(fast3VM: Fast3ViewModel) :
                 gavDiceFive.also { it.flickerView = ivSingleFive },
                 gavDiceSix.also { it.flickerView = ivSingleSix },
             )
+
+            for (i in areaViewList.indices){
+                areaViewList[i].areaInfo = mViewModel.bettingArray[i+1]
+            }
         }
     }
 
@@ -76,7 +81,7 @@ class SingleDiceFragment(fast3VM: Fast3ViewModel) :
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
-            params.gravity = Gravity.CENTER
+            params.gravity = areaView.okViewGravity
             areaView.addView(it, params)
         }
     }
