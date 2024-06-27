@@ -376,6 +376,7 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
         gameAboutModel.roundId = round.roundId //期号
         gameAboutModel.countDown = round.countDown //当前阶段剩余时间倒计时
         gameAboutModel.changeStage(GameAboutModel.Stage.NEW)
+        gameAboutModel.setOnceCountMoney(0)
         againBettingList.isNotEmpty {
             //新的一局开始，并且上一局有数据，并且余额足够
             if (againCountMoney <= balance) {
