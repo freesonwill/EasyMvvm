@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.cn.game.sdk2.ui.fast3.Fast3MainFragment
 import com.cn.game.sdk2.websocket.bean.AreaBetBean
 import com.cn.game.sdk2.websocket.bean.Betting
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
@@ -175,6 +176,7 @@ class GameAboutModel : BaseViewModel() {
     }
 
     fun changeBalance(b: Int) {
+        Log.e(Fast3MainFragment.TAG,"总余额：${b}")
         _balance.value = b
     }
 

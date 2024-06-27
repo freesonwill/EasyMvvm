@@ -9,6 +9,7 @@ import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.graphics.Path
 import android.graphics.PathMeasure
+import android.nfc.Tag
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -64,6 +65,7 @@ import kotlinx.coroutines.launch
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
+@SuppressLint("SetTextI18n")
 class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>() {
     companion object{
         const val TAG = "Fast3MainFragment"
@@ -126,7 +128,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
     override fun initData() {
         //获取当前余额
-        mDatabind.txtCurrentMoney.text = mViewModel.currentMoney
+        mDatabind.txtCurrentMoney.text = "¥ ${mViewModel.currentMoney}"
         mDatabind.txtHomeTime.text = mViewModel.homeTime.value.toString()
         lifecycleScope.launchWhenResumed {
             //开始下注
@@ -245,12 +247,13 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 //中奖动画
                 startWinLottieAnim(endCallBack = {
                     //开奖结果注区动画闪烁
+                    Log.e(TAG,"中奖注区结果监听--->${gameAboutModel.lotteryResultList}")
                     mViewModel.userLotteryResultLiveData.value = gameAboutModel.lotteryResultList
 
                     //中奖区域金额刷新
+                    Log.e(TAG,"中奖注区筹码监听--->${gameAboutModel.userLotteryResult}")
                     notifyMoneyOkView(gameAboutModel.userLotteryResult)
                 })
-                //mViewModel.startCountDown(gameAboutModel.countDown)
             }
         }
     }
@@ -324,7 +327,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         GameSocketManager.getInstance()?.getGameService()?.observeAgainDoubleState(this)
 
         mViewModel.currentMoneyLD.observe(viewLifecycleOwner) { balance ->
-            mDatabind.txtCurrentMoney.text = balance
+            Log.e(TAG,"收到的总余额：${balance}")
+            mDatabind.txtCurrentMoney.text = "¥ $balance"
         }
         mViewModel.homeTimeVisibility.observe(viewLifecycleOwner) {
             mDatabind.txtHomeTime.visibility = it
@@ -372,23 +376,22 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     }
 
                     GameAboutModel.Stage.SETTLE -> {//结算
-                        Log.e(TAG, "${gameAboutModel.userLotteryResult}")
                         onStartSetting()
                     }
                 }
-                mViewModel.startCountDown(mViewModel.countDown)
             }
         }
 
         //续压、加倍状态监听
         gameAboutModel.currentAgainDoubleState.observe(viewLifecycleOwner){
+            Log.e(TAG,"续压加倍状态监听--->${it}")
             //mDatabind.ivXuya.isVisible = it == GameAboutModel.AgainDoubleState.AGAIN
             //mDatabind.ivMultiple2.isVisible = it == GameAboutModel.AgainDoubleState.DOUBLE
         }
 
         //开奖历史记录
         gameAboutModel.historyRounds.observe(viewLifecycleOwner) {
-            Log.e(TAG, "开奖历史结果->$it")
+            Log.e(TAG, "开奖历史结果--->$it")
             lifecycleScope.launch {
                 val adapter = mDatabind.rvHomeHistory.bindingAdapter
                 adapter.models = it
@@ -406,6 +409,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
         //下注结果
         gameAboutModel.isBettingSuccess.observe(viewLifecycleOwner) { isSuccess ->
+            Log.e(TAG,"下注结果监听--->${isSuccess}")
             if (!isSuccess) {
                 //失败时显示delete ok按钮
                 ToastUtil.showToastNormal("网络连接失败")

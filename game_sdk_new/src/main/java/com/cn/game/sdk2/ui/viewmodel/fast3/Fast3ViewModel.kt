@@ -12,6 +12,7 @@ import com.cn.game.sdk2.data.enums.GameState
 import com.cn.game.sdk2.manager.GameManager
 import com.cn.game.sdk2.manager.listener.IGameListener
 import com.cn.game.sdk2.ui.view.game.GameAreaView
+import com.cn.game.sdk2.utils.ext.CommonExt.formatRealMoney
 import com.cn.game.sdk2.utils.ext.CommonExt.isMainThread
 import com.cn.game.sdk2.websocket.bean.Betting
 import com.cn.game.sdk2.websocket.gameAboutModel
@@ -76,7 +77,7 @@ class Fast3ViewModel : BaseViewModel() {
      */
     val currentMoneyLD: LiveData<String> = Transformations.map(gameAboutModel.balance) {
         if (it == null) return@map "--"
-        return@map String.format(Locale.ROOT, "%.2f", it / 100f)
+        return@map it.formatRealMoney()
     }
     val currentMoney: String get() = currentMoneyLD.value ?: "--"
 

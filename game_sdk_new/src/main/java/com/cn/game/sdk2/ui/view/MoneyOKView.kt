@@ -160,14 +160,14 @@ class MoneyOKView @JvmOverloads constructor(
         } else if (money < 10000 * 100) {
             if ((money % 100000) == 0) {
                 val resultNoDecimal = (money / 100000f).round(0)
-                return resultNoDecimal.toString() + "k"
+                return resultNoDecimal + "k"
 
             } else if ((money % 10000) == 0) {
                 val resultNoDecimal = (money / 100000f).round(1)
-                return resultNoDecimal.toString() + "k"
+                return resultNoDecimal + "k"
             } else {
                 val resultNoDecimal = (money / 100000f).round(2)
-                return resultNoDecimal.toString() + "k"
+                return resultNoDecimal + "k"
             }
         } else {
             val tenThousand = money / 1000000
@@ -212,10 +212,10 @@ class MoneyOKView @JvmOverloads constructor(
     /**
      * 保留几位小数并且是截取
      */
-    private fun Float.round(decimalPlaces: Int): Float {
+    private fun Float.round(decimalPlaces: Int): String {
         if (decimalPlaces < 0) throw IllegalArgumentException()
 
         val bigDecimal = BigDecimal(this.toString())
-        return bigDecimal.setScale(decimalPlaces, RoundingMode.DOWN).toFloat()
+        return bigDecimal.setScale(decimalPlaces, RoundingMode.DOWN).stripTrailingZeros().toPlainString()
     }
 }
