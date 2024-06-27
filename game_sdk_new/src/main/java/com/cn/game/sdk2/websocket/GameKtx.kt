@@ -384,7 +384,8 @@ fun List<Betting>.calculateUserLotteryResult(userBettingMap: Map<Betting, Bettin
         if (userBettingMap.containsKey(it)) {
             val betting = userBettingMap[it]!!.copy()
             betting.money = if (it is SINGLE) {
-                (betting.money * it.multipliers[it.count]).toInt()
+                if (it.count >= 0) (betting.money * it.multipliers[it.count - 1]).toInt()
+                else 0
             } else {
                 (betting.money * it.multiplier).toInt()
             }
@@ -402,12 +403,11 @@ fun Int.convertBetting(): Betting? {
     }
 }
 
-fun <K> Map<K, BettingRecordBean>.copy(index: Int = 0): MutableMap<K, BettingRecordBean> {
+fun <K> Map<K, BettingRecordBean>.copy(): MutableMap<K, BettingRecordBean> {
     val newMap = mutableMapOf<K, BettingRecordBean>()
     forEach {
         newMap[it.key] = it.value.copy()
     }
-    this.toString().loge("$index")
     return newMap
 }
 

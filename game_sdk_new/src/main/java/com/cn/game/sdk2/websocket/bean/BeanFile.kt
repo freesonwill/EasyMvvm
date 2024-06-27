@@ -185,7 +185,7 @@ data class SINGLE_2(
 }
 
 data class SINGLE_3(
-    override var number: Int = 22,
+    override var number: Int = 21,
     override var multipliers: List<Float> = listOf(2f, 3f, 4f),
     override var count: Int = 0
 ) : SINGLE(){

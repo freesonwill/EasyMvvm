@@ -61,6 +61,7 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
         block: (isMoneyEnough: Boolean, result: BettingRecordBean?) -> Unit
     ) {
         tempMoney += recordBean.money
+        tempLastBetting = recordBean.bettingArea
         var xy:FloatArray? = null
         if (bettingListTemp.containsKey(recordBean.bettingArea)) {
             val viewXYTemporary = bettingListTemp[recordBean.bettingArea]?.viewXYTemporary
@@ -178,13 +179,13 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
      */
     fun doubleBetting(block: (isMoneyEnough: Boolean, result: Map<Betting, BettingRecordBean>?) -> Unit) {
         if (doubleMoney < balance) {
-            val tempCopy = bettingListTemp.copy(1)
-            val confirmCopy = bettingListConfirmed.copy(2)
-            val tempConfirmCopy = bettingListTempConfirmed.copy(3)
+            val tempCopy = bettingListTemp.copy()
+            val confirmCopy = bettingListConfirmed.copy()
+            val tempConfirmCopy = bettingListTempConfirmed.copy()
             tempCopy.mapValues {
                 it.value.money *= 2
             }
-            val uiMap = tempCopy.copy(4)
+            val uiMap = tempCopy.copy()
             confirmCopy.forEach {
                 val confirmMoney = it.value.money
                 if (tempCopy.containsKey(it.key)) {
@@ -192,20 +193,16 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
                     val uiBean = uiMap[it.key]!!.copy()
                     uiBean.money += confirmMoney * 2
                     uiMap[it.key] = uiBean //页面
-                    uiMap.toString().loge("5")
 
                     val dataBean = tempCopy[it.key]!!.copy()
                     dataBean.money += confirmMoney
                     tempCopy[it.key] = dataBean
-                    tempCopy.toString().loge("6")
                 } else {
                     val uiBean = it.value.copy()
                     uiBean.money = confirmMoney * 2
                     uiMap[it.key] = uiBean //页面
-                    uiMap.toString().loge("7")
 
                     tempCopy[it.key] = it.value.copy()
-                    tempCopy.toString().loge("8")
                 }
             }
             tempConfirmCopy.forEach {

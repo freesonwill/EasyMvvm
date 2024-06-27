@@ -370,6 +370,7 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
 
     override fun beginRound(round: GameRes.BeginNewRound) {
         isCanBetting = true
+        previousSuccess = true
         gameAboutModel.miniGameId = round.miniGameId
         gameAboutModel.roundId = round.roundId //期号
         gameAboutModel.countDown = round.countDown //当前阶段剩余时间倒计时
