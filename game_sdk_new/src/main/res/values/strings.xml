@@ -5,6 +5,7 @@
     <string name="g_home_txt_default">默认</string>
     <string name="g_home_txt_small">小</string>
     <string name="g_home_txt_big">大</string>
+    <string name="g_home_txt_leopard">围</string>
     <string name="g_home_txt_single">单</string>
     <string name="g_home_txt_double">双</string>
     <string name="g_home_txt_open">一分快三</string>
@@ -16,7 +17,6 @@
     <string name="g_home_tab_double">对子</string>
     <string name="g_home_tab_leopard">豹子</string>
     <string name="g_home_tab_sum">总和</string>
-    <string name="g_home_balance">结算中</string>
     <string name="g_f3_dealing">开牌中</string>
     <string name="g_f3_setting">结算中</string>
     <string name="g_home_betting_begin">开始下注</string>
