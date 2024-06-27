@@ -46,18 +46,22 @@ abstract class BaseFast3Fragment<VM : BaseViewModel, VB : ViewDataBinding>(var f
         for (areaView in areaViewList) {
             setMoneyOKClickListener(areaView)
         }
+
     }
 
     abstract fun initAreaViewList()
 
     override fun createObserver() {
         super.createObserver()
-        FlowBus.with<List<GameAreaView>>(EventConst.UPDATE_ALL_AREA_VIEW)
-            .post(fast3VM.viewModelScope, areaViewList)
-
         fast3VM.userLotteryResultLiveData.observe(viewLifecycleOwner) { resultList ->
             setLotteryResult(resultList, fast3VM.prizeAnimTime, fast3VM.prizeAnimCount)
         }
+    }
+
+    override fun lazyLoadData() {
+        super.lazyLoadData()
+        FlowBus.with<List<GameAreaView>>(EventConst.UPDATE_ALL_AREA_VIEW)
+            .post(fast3VM.viewModelScope, areaViewList)
     }
 
     private fun setLotteryResult(

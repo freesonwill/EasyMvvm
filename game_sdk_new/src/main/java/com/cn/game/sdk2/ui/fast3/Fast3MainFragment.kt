@@ -385,8 +385,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         //续压、加倍状态监听
         gameAboutModel.currentAgainDoubleState.observe(viewLifecycleOwner){
             Log.e(TAG,"续压加倍状态监听--->${it}")
-            //mDatabind.ivXuya.isVisible = it == GameAboutModel.AgainDoubleState.AGAIN
-            //mDatabind.ivMultiple2.isVisible = it == GameAboutModel.AgainDoubleState.DOUBLE
+            mDatabind.ivXuya.isVisible = it == GameAboutModel.AgainDoubleState.AGAIN
+            mDatabind.ivMultiple2.isVisible = it == GameAboutModel.AgainDoubleState.DOUBLE
         }
 
         //开奖历史记录
@@ -696,9 +696,10 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                         }
                                     }
                                 }
-                            } else {
-                                //余额不足
+                                anchorMoneyView?.showTop()
                             }
+                        } else {
+                            //余额不足
                         }
                     }
             }
