@@ -19,7 +19,7 @@ class GameAreaView : FrameLayout {
     lateinit var gameCallback: IGameView
     lateinit var moneyView: MoneyOKView
     lateinit var flickerView: View
-    var okViewGravity: Int = Gravity.BOTTOM
+    var okViewGravity: Int = Gravity.CENTER
     var areaInfo: Betting? = null
     val areaCode: Int get() = areaInfo?.number ?: 0
 

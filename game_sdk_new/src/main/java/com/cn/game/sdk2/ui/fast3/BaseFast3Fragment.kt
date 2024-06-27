@@ -27,6 +27,7 @@ import com.cn.game.sdk2.websocket.bean.Betting
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import com.cn.game.sdk2.websocket.gameMassageManager
 import com.xcjh.base_lib.base.BaseViewModel
+import com.xcjh.base_lib.utils.loge
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.coroutines.resume
@@ -54,7 +55,6 @@ abstract class BaseFast3Fragment<VM : BaseViewModel, VB : ViewDataBinding>(var f
         super.createObserver()
         FlowBus.with<List<GameAreaView>>(EventConst.UPDATE_ALL_AREA_VIEW)
             .post(fast3VM.viewModelScope, areaViewList)
-
         fast3VM.userLotteryResultLiveData.observe(viewLifecycleOwner) { resultList ->
             setLotteryResult(resultList, fast3VM.prizeAnimTime, fast3VM.prizeAnimCount)
         }

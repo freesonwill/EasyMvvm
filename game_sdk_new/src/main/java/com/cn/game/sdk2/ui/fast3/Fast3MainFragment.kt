@@ -59,6 +59,7 @@ import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
 import com.xcjh.base_lib.base.fragment.BaseVmDbFragment
 import com.xcjh.base_lib.utils.dp2px
+import com.xcjh.base_lib.utils.loge
 import com.xcjh.base_lib.utils.view.clickNoRepeat
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -322,6 +323,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             .register(viewLifecycleOwner) { list ->
                 list.forEach {
                     allGameAreaMap[it.areaCode] = it
+                    "add code=${it.areaCode},${it.id}".loge("UPDATE_ALL_AREA_VIEW")
                 }
             }
         GameSocketManager.getInstance()?.getGameService()?.observeAgainDoubleState(this)
@@ -696,6 +698,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                         }
                                     }
                                 }
+                                "anchorView = $anchorMoneyView".loge()
+                                showAnchorTop()
                             } else {
                                 //余额不足
                             }
@@ -722,10 +726,14 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                     moneyView.setShowMoney(it.value.money)
                                 }
                             }
+                            if(areaView.areaCode == gameAboutModel.lastBetting?.number){
+                                "lastbettting = ${gameAboutModel.lastBetting?.number}".loge()
+                                "lastbettting areaCode = ${areaView.areaCode}".loge()
+                                updateAnchorView(areaView)
+                            }
                         }
                     }
-                    //updateanchor
-                    showAnchorTop()
+                    "lastbettting = ${gameAboutModel.lastBetting}".loge()
                 }
             }
         }

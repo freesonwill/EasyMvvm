@@ -46,12 +46,18 @@ class DXDSFragment(fast3VM: Fast3ViewModel) : BaseFast3Fragment<DXDSVm, FragDxds
     override fun initAreaViewList() {
         mDatabind.model = mViewModel
         mDatabind.apply {
-            bigView.areaInfo = mViewModel.bettingArray[1]
-            smallView.areaInfo = mViewModel.bettingArray[2]
-            singleView.areaInfo = mViewModel.bettingArray[3]
-            doubleView.areaInfo = mViewModel.bettingArray[4]
-            leopardView.areaInfo = mViewModel.bettingArray[5]
-            leopardView.okViewGravity = Gravity.CENTER
+            areaViewList.add(bigView)
+            areaViewList.add(smallView)
+            areaViewList.add(singleView)
+            areaViewList.add(doubleView)
+            areaViewList.add(leopardView)
+
+            for (i in areaViewList.indices){
+                areaViewList[i].areaInfo = mViewModel.bettingArray[i+1]
+                if(areaViewList[i] !== leopardView){
+                    areaViewList[i].okViewGravity = Gravity.BOTTOM
+                }
+            }
             moneyViewList[mViewModel.bettingArray[1].number] = txtBigMoney to txtBigNum
             moneyViewList[mViewModel.bettingArray[2].number] = txtSmallMoney to txtSmallNum
             moneyViewList[mViewModel.bettingArray[3].number] = txtSingleMoney to txtSingleNum
@@ -63,11 +69,6 @@ class DXDSFragment(fast3VM: Fast3ViewModel) : BaseFast3Fragment<DXDSVm, FragDxds
             singleView.flickerView = ivFlickerLeftBelow
             leopardView.flickerView = ivFlickerCenter
 
-            areaViewList.add(bigView)
-            areaViewList.add(smallView)
-            areaViewList.add(singleView)
-            areaViewList.add(doubleView)
-            areaViewList.add(leopardView)
         }
     }
 
