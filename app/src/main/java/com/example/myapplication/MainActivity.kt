@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment
 
 import com.cn.game.sdk2.ui.helper.ViewHelper
 import com.cn.game.sdk2.ui.view.FastLogoView
-import com.cn.game.sdk2.utils.MyGameManager
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.imp.GameSDK
 import com.cn.game.sdk2.websocket.interfaces.SDKEnterLiveCallbackListener
@@ -67,7 +66,7 @@ class MainActivity : AppCompatActivity() {
 
         btnXiu.setOnClickListener {
 //            MyWsManager.getInstance(this)?.onTest()
-            MyGameManager.setToast(this)
+            //MyGameManager.setToast(this)
 
         }
         //appGameViewModel.ceshEvent.postValue(true)

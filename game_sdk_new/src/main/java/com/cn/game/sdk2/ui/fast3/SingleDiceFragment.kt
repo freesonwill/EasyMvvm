@@ -21,6 +21,7 @@ import com.cn.game.sdk2.utils.ToastUtil
 import com.cn.game.sdk2.utils.ext.ViewExt.locationOnScreen
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
+import com.cn.game.sdk2.websocket.bean.areaMap
 import com.cn.game.sdk2.websocket.gameMassageManager
 import kotlinx.coroutines.launch
 
@@ -42,6 +43,10 @@ class SingleDiceFragment(fast3VM: Fast3ViewModel) :
                 gavDiceFive.also { it.flickerView = ivSingleFive },
                 gavDiceSix.also { it.flickerView = ivSingleSix },
             )
+
+            for (i in areaViewList.indices){
+                areaViewList[i].areaInfo = mViewModel.bettingArray[i+1]
+            }
         }
     }
 
@@ -50,7 +55,6 @@ class SingleDiceFragment(fast3VM: Fast3ViewModel) :
     }
 
     override fun addMoneyOkView(
-        recordBean: BettingRecordBean,
         areaView: GameAreaView,
         x: Float,
         y: Float,
@@ -64,9 +68,6 @@ class SingleDiceFragment(fast3VM: Fast3ViewModel) :
                 override fun onGlobalLayout() {
                     // 确保只监听一次
                     it.viewTreeObserver.removeOnGlobalLayoutListener(this)
-
-                    recordBean.viewXYTemporary[0] = it.translationX
-                    recordBean.viewXYTemporary[1] = it.translationY
                     emitAnimCallBack.invoke()
                 }
             })
@@ -76,7 +77,7 @@ class SingleDiceFragment(fast3VM: Fast3ViewModel) :
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
-            params.gravity = Gravity.CENTER
+            params.gravity = areaView.okViewGravity
             areaView.addView(it, params)
         }
     }

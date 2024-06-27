@@ -1,7 +1,9 @@
 package com.cn.game.sdk2.websocket
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.view.View
+import com.cn.game.sdk2.ui.fast3.Fast3MainFragment
 import com.cn.game.sdk2.websocket.bean.BOOM_1
 import com.cn.game.sdk2.websocket.bean.BOOM_2
 import com.cn.game.sdk2.websocket.bean.BOOM_3
@@ -382,6 +384,7 @@ fun List<Int>.countSingle(): HashMap<Int, Int> {
 }
 
 fun List<Betting>.calculateUserLotteryResult(userBettingMap: Map<Betting, BettingRecordBean>): ArrayList<BettingRecordBean> {
+    Log.e(Fast3MainFragment.TAG, userBettingMap.toString())
     val userLotteryResult = ArrayList<BettingRecordBean>()
     forEach {
         if (userBettingMap.containsKey(it)) {

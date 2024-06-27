@@ -73,7 +73,8 @@ object ViewHelper {
                         .show()
                     EasyFloat.hide(TAG_FASTVIEW)
                 }
-            }.show()
+            }
+            .show()
     }
 
     /**

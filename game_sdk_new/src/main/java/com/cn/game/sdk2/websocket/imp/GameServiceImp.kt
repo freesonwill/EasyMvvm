@@ -470,6 +470,7 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
         val desc = errorMessage.desc
         "code = ${errorMessage.code},msg = ${errorMessage.desc}".loge("errorMessage")
         gameAboutModel.setToastErrorMessage(desc)
+        //todo:code =600
     }
 
     /**

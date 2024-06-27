@@ -5,30 +5,24 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.isVisible
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.cn.game.sdk2.databinding.FragmentFast3OverlayBinding
 import com.cn.game.sdk2.utils.ext.CommonExt.toPinyin
 import com.cn.game.sdk2.websocket.bean.RoundInfoBean
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel.Stage
-import com.kunminx.architecture.ui.callback.UnPeekLiveData
 
 /**
  * Description:
  * author       : zhangsan
  * createTime   : 2024/6/27 13:54
  **/
-class Fast3OverlayWindow @JvmOverloads constructor(
+class DragFast3Overlay @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
-    companion object {
-        const val TAG = "Fast3OverlayWindow"
-    }
-
+    private val TAG = javaClass.simpleName
     private val gcFunc = mutableListOf<() -> Unit>()
     private lateinit var binding: FragmentFast3OverlayBinding
 
@@ -36,28 +30,30 @@ class Fast3OverlayWindow @JvmOverloads constructor(
         Log.d(TAG, "onInit~~~~~~~~~~")
         binding = FragmentFast3OverlayBinding.bind(this)
 
-        gameAboutModel.historyRounds.observeForever(object : Observer<List<*>> {
-            init {
-                gcFunc.add { gameAboutModel.historyRounds.removeObserver(this) }
-            }
-            override fun onChanged(t: List<*>?){
-                update()
-            }
-        })
+        gameAboutModel.historyRounds.apply {
+            observeForever(object : Observer<List<*>> {
+                init { gcFunc.add { removeObserver(this) } }
+                override fun onChanged(t: List<*>?){
+                    updateUI()
+                }
+            })
+        }
+        gameAboutModel.currentStage.apply {
+            observeForever(object : Observer<Stage> {
+                init {
+                    gcFunc.add { removeObserver(this) }
+                }
 
-        gameAboutModel.currentStage.observeForever(object : Observer<Stage> {
-            init {
-                gcFunc.add { gameAboutModel.currentStage.removeObserver(this) }
-            }
-
-            override fun onChanged(t: Stage?) {
-                binding.tvEdition.text = gameAboutModel.roundId
-            }
-        })
+                override fun onChanged(t: Stage?) {
+                    binding.tvEdition.text = gameAboutModel.roundId
+                }
+            })
+        }
+        updateUI()
         //test()
     }
 
-    private fun update() {
+    private fun updateUI() {
         val roundInfo: RoundInfoBean? = gameAboutModel.currentSettleResult
         binding.apply {
             lltResult.visibility = if(roundInfo != null) View.VISIBLE else View.INVISIBLE

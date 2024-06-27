@@ -44,6 +44,10 @@ class SumTotalFragment(fast3VM: Fast3ViewModel) :
                 gavSumSeventeen.also { it.flickerView = ivSumFlashSeventeen },
             )
         }
+
+        for (i in areaViewList.indices){
+            areaViewList[i].areaInfo = mViewModel.bettingArray[i+1]
+        }
     }
 
     override fun createObserver() {
@@ -51,7 +55,6 @@ class SumTotalFragment(fast3VM: Fast3ViewModel) :
     }
 
     override fun addMoneyOkView(
-        recordBean: BettingRecordBean,
         areaView: GameAreaView,
         x: Float,
         y: Float,
@@ -75,11 +78,6 @@ class SumTotalFragment(fast3VM: Fast3ViewModel) :
                     val moneyY = moneyViewLocation[1] + it.measuredHeight
                     it.translationY = areaY - moneyY.toFloat()
 
-//                    it.translationX =50f
-//                    it.translationY = -50f
-
-                    recordBean.viewXYTemporary[0] = it.translationX
-                    recordBean.viewXYTemporary[1] = it.translationY
                     emitAnimCallBack.invoke()
                 }
             })

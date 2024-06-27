@@ -34,6 +34,10 @@ class LeopardFragment(fast3VM: Fast3ViewModel) :
             areaViewList.add(gavLeopardFive.also { it.flickerView = ivLeopardFive })
             areaViewList.add(gavLeopardSix.also { it.flickerView = ivLeopardSix })
         }
+
+        for (i in areaViewList.indices){
+            areaViewList[i].areaInfo = mViewModel.bettingArray[i+1]
+        }
     }
 
     override fun initData() {
@@ -49,7 +53,6 @@ class LeopardFragment(fast3VM: Fast3ViewModel) :
     }
 
     override fun addMoneyOkView(
-        recordBean: BettingRecordBean,
         areaView: GameAreaView,
         x: Float,
         y: Float,
@@ -63,9 +66,6 @@ class LeopardFragment(fast3VM: Fast3ViewModel) :
                 override fun onGlobalLayout() {
                     // 确保只监听一次
                     it.viewTreeObserver.removeOnGlobalLayoutListener(this)
-
-                    recordBean.viewXYTemporary[0] = it.translationX
-                    recordBean.viewXYTemporary[1] = it.translationY
                     emitAnimCallBack.invoke()
                 }
             })
@@ -75,7 +75,7 @@ class LeopardFragment(fast3VM: Fast3ViewModel) :
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
-            params.gravity = Gravity.CENTER
+            params.gravity = areaView.okViewGravity
             areaView.addView(it, params)
         }
     }

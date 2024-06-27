@@ -32,6 +32,10 @@ class PairsDiceFragment(fast3VM: Fast3ViewModel) :
                 gavPairsFive.also { it.flickerView = ivPairsFive },
                 gavPairsSix.also { it.flickerView = ivPairsSix },
             )
+
+            for (i in areaViewList.indices){
+                areaViewList[i].areaInfo = mViewModel.bettingArray[i+1]
+            }
         }
     }
 
@@ -40,7 +44,6 @@ class PairsDiceFragment(fast3VM: Fast3ViewModel) :
     }
 
     override fun addMoneyOkView(
-        recordBean: BettingRecordBean,
         areaView: GameAreaView,
         x: Float,
         y: Float,
@@ -54,9 +57,6 @@ class PairsDiceFragment(fast3VM: Fast3ViewModel) :
                 override fun onGlobalLayout() {
                     // 确保只监听一次
                     it.viewTreeObserver.removeOnGlobalLayoutListener(this)
-
-                    recordBean.viewXYTemporary[0] = it.translationX
-                    recordBean.viewXYTemporary[1] = it.translationY
                     emitAnimCallBack.invoke()
                 }
             })
@@ -66,7 +66,7 @@ class PairsDiceFragment(fast3VM: Fast3ViewModel) :
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
-            params.gravity = Gravity.CENTER
+            params.gravity = areaView.okViewGravity
             areaView.addView(it, params)
         }
     }
