@@ -27,8 +27,6 @@ class Fast3ViewModel : BaseViewModel() {
     var betDeleteClick: UnPeekLiveData<Boolean> = UnPeekLiveData()
 
     var moneyAnimCallback: MoneyAnimCallback? = null
-    var updateAreaViewMap : UnPeekLiveData<Int> = UnPeekLiveData()
-    //    val historyResultBeans: MutableList<HistoryResultBean> by lazy { mutableListOf() }
     val userLotteryResultLiveData :UnPeekLiveData<ArrayList<Betting>> =UnPeekLiveData()
 
     val historyResultBeanLD: LiveData<HistoryResultBean> by lazy { UnPeekLiveData() }

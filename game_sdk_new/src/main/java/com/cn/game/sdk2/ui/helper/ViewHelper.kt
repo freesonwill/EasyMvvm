@@ -15,6 +15,7 @@ import com.cn.game.sdk2.R
 import com.cn.game.sdk2.data.enums.GAME_ID_ENUM
 import com.cn.game.sdk2.ui.HomeXPopupDialog
 import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
+import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.utils.tool.indicator.CommonPagerIndicator
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
@@ -37,27 +38,30 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.ColorT
  * createTime   : 2024/6/13 17:43
  **/
 object ViewHelper {
-    private const val TAG_FASTVIEW = "FastView"
+    private const val TAG_FASTVIEW = "TAG_FASTVIEW"
+    private const val TAG_FASTVIEW_OVERLAY = "TAG_FASTVIEW_OVERLAY"
     private var homeXPopupDialog: HomeXPopupDialog? = null
 
-    fun showFastView(context: Context) {
+    fun showFastView(context: Context,isShow:Boolean=true) {
+        if(!isShow) EasyFloat.hide(TAG_FASTVIEW)
+
         EasyFloat.with(context).setSidePattern(SidePattern.DEFAULT)
             .setImmersionStatusBar(true)
             .setTag(TAG_FASTVIEW)
-            .setGravity(Gravity.END, 0, 300)
+            .setGravity(Gravity.END, 0, 300.dp2px)
             .setLayout(R.layout.drag_fast_easy) {
                 val llFastClick = it.findViewById<LinearLayout>(R.id.llFastClick)
                 llFastClick.setOnClickListener {
                     XPopup.Builder(context)
                         .hasShadowBg(false)
                         .setPopupCallback(object : SimpleCallback() {
-                            override fun onCreated(popupView: BasePopupView?) {
-                                super.onCreated(popupView)
+                            override fun onShow(popupView: BasePopupView?) {
+                                super.onShow(popupView)
+                                showFastViewOverlay(context,false)
                             }
-
                             override fun onDismiss(popupView: BasePopupView?) {
                                 super.onDismiss(popupView)
-                                EasyFloat.show(TAG_FASTVIEW)
+                                showFastViewOverlay(context,true)
                                 homeXPopupDialog = null
                             }
                         })
@@ -71,7 +75,7 @@ object ViewHelper {
                             homeXPopupDialog = this
                         })
                         .show()
-                    EasyFloat.hide(TAG_FASTVIEW)
+                    //EasyFloat.hide(TAG_FASTVIEW)
                 }
             }
             .show()
@@ -80,10 +84,14 @@ object ViewHelper {
     /**
      * 快三悬浮窗
      */
-    fun showFastViewOverlay(context: Context) {
+    fun showFastViewOverlay(context: Context,show:Boolean=true) {
+        if(!show){
+            EasyFloat.hide(TAG_FASTVIEW_OVERLAY)
+            return
+        }
         EasyFloat.with(context).setSidePattern(SidePattern.DEFAULT)
             .setImmersionStatusBar(true)
-            .setTag("FastViewOverlay")
+            .setTag(TAG_FASTVIEW_OVERLAY)
             .setGravity(Gravity.START, 6.dp2px, 122.dp2px)
             .setLayout(R.layout.fragment_fast3_overlay)
             .show()
