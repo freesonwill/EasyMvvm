@@ -43,7 +43,7 @@ object ExceptionHandle {
                     ex = AppException(Error.TIMEOUT_ERROR,e)
                     return ex
                 }
-                is java.net.UnknownHostException -> {
+                is java.net.UnknownHostException -> {//域名被封：如果接口的域名被封，DNS解析可能会失败，从而引发
                     ex = AppException(Error.TIMEOUT_ERROR,e)
                     return ex
                 }

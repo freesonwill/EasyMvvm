@@ -3,6 +3,7 @@ package com.xcjh.app.vm
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.google.gson.Gson
 import com.kunminx.architecture.ui.callback.UnPeekLiveData
 import com.xcjh.app.appViewModel
 import com.xcjh.app.bean.*
@@ -122,7 +123,7 @@ class MainVm : BaseViewModel() {
                 update.value = it
 
             }, {
-
+            Log.i("GSGSGSG",Gson().toJson(it))
             }
         )
     }

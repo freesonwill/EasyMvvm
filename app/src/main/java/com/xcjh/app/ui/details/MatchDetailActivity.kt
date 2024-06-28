@@ -928,9 +928,20 @@ class MatchDetailActivity :
         } else {
            "#/roomDetail?id=${matchId}&type=${matchType}&pureFlow=true"
         }
+//        val url = if (isHasAnchor) {
+//            if (CacheUtil.isLogin()) {
+//                mViewModel.addLiveShare(anchor?.liveId)
+//            }
+//            ApiComService.SHARE_IP + "#/roomDetail?id=${matchId}&liveId=${anchor?.liveId}&type=${matchType}&userId=${anchor?.userId}"
+//
+//        } else {
+//            ApiComService.SHARE_IP + "#/roomDetail?id=${matchId}&type=${matchType}&pureFlow=true"
+//
+//        }
         /*  copyToClipboard(url)
           myToast(getString(R.string.copy_success))*/
 //        shareText(this, url)
+        //新本分享
         shareUrl(this, url)
     }
 

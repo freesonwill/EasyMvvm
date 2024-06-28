@@ -17,17 +17,21 @@ interface ApiComService {
 
     companion object {
         //dev      http://192.168.101.15:6003/apis/    "ws://192.168.101.15:6006/ws-sports-chat
-//        const val SERVER_URL = "http://192.168.101.15:6003/apis/"//app通用 开发
-//        const val WEB_SOCKET_URL = "ws://192.168.101.15:6006/ws-sports-chat" ///new dev
-        //test 发布1
-//        const val SERVER_URL = "https://app.wyjxx.cn/apis/"//app通用 测试
-//        const val WEB_SOCKET_URL = "wss://app.wyjxx.cn/ws-sports-chat" ///test
+        var SERVER_URL = "http://192.168.101.15:6003/apis/"//app通用 开发
+        var SHARE_IP = "http://192.168.101.180:1820/"//比赛分享链接
+        var WEB_SOCKET_URL = "ws://192.168.101.15:6006/ws-sports-chat" ///new dev
+        //test 发布1 生产环境  app.hyh86.cn    旧的 app.wyjxx.cn
+//          var SERVER_URL = "https://app.hyh86.cn/apis/"//app通用 测试
+//          var SHARE_IP = "https://app.hyh86.cn/"//比赛分享链接
+//          var WEB_SOCKET_URL = "wss://app.hyh86.cn/ws-sports-chat" ///test
         //test 发布2 最新
-//        const val SERVER_URL = "https://app.gdhsbp.cn/apis/"//app通用 测试
-//        const val WEB_SOCKET_URL = "wss://app.gdhsbp.cn/ws-sports-chat" ///test
+//        var SERVER_URL = "https://app.gdhsbp.cn/apis/"//app通用 测试
+//        var SHARE_IP = "https://app.gdhsbp.cn/"//比赛分享链接
+//        var WEB_SOCKET_URL = "wss://app.gdhsbp.cn/ws-sports-chat" ///test
 //        预发布
-        const val SERVER_URL = "https://app.cbd246.com/apis/"//app通用 测试
-        const val WEB_SOCKET_URL = "wss://app.cbd246.com/ws-sports-chat" ///test
+//        var SERVER_URL = "https://app.cbd246.com/apis/"//app通用 测试
+//        var SHARE_IP = "https://app.cbd246.com/"//比赛分享链接
+//        var WEB_SOCKET_URL = "wss://app.cbd246.com/ws-sports-chat" ///test
 
 
     }

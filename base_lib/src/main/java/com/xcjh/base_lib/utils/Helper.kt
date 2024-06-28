@@ -201,7 +201,6 @@ fun shareImage(bitmap: Bitmap) {
     KtxActivityManger.currentActivity?.startActivity(intent)
 }
 fun shareText(context: Context, shareText: String?) {
-
     val intent = Intent(Intent.ACTION_SEND)
     intent.type = "text/plain"
     intent.putExtra(Intent.EXTRA_TEXT, shareText)

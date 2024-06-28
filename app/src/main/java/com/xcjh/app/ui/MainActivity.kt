@@ -134,6 +134,27 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
 
         mDatabind.reDateShow.clickNoRepeat {}
         currentPage=0
+        CacheUtil.setFirst(false)
+
+        //语言 0是中文  1是繁体  2是英文
+        val locale = MultiLanguages.getAppLanguage(this)
+        if(LocaleContract.getSimplifiedChineseLocale().equals(locale)|| LocaleContract.getChineseLocale().equals(locale)||locale.toString().equals("zh_CN_#Hans")){
+            Constants.languageType=0
+        }else if(LocaleContract.getTraditionalChineseLocale().equals(locale)){
+            Constants.languageType=1
+        }else{
+            Constants.languageType=2
+        }
+        if(CacheUtil.isLogin()){
+            mViewModel.setLanquage()
+        }
+        mDatabind.vLogoAnim.setAnimation("qidongye.json")
+        lifecycleScope.launch {
+            delay(500) // 延迟 10 秒
+            mDatabind.vLogoAnim.playAnimation()
+        }
+
+
 //        getApiService(ApiComService.SERVER_URL)
         //实时cpu
 //     var   performanceMonitor = PerformanceMonitor(this)
@@ -156,10 +177,6 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
 //                .show()
 //        }
 
-
-
-
-
         //全部比赛 0全部 1 是足球   2是篮球    3是赛果
         TimeConstantsDat.options1ItemsAll = ArrayList<JsonBean>()
         TimeConstantsDat.options2ItemsAll =  ArrayList<ArrayList<String>>()
@@ -179,36 +196,15 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
 
         //收到通知其他地方登录
         appViewModel.quitTipsEvent.observeForever {
-
             if(CacheUtil.isLogin()){
                 CacheUtil.setIsLogin(false, LoginInfo("","", ""))
-//                if(isActivityRunning(this, WebActivity::class.java)){
-//                    appViewModel.webEvent.postValue(true)
-//                }else{
-//                    placeLoginDialogNew()
-//                }
-//                com.xcjh.app.placeLoginDialog(this)
                 GlobalScope.launch(Dispatchers.Main) { // 使用主线程的调度器
                     delay(500L) // 延迟1秒（1000毫秒）
                     placeLoginDialog(this@MainActivity)
-//
                 }
 
             }
 
-        }
-
-        //语言 0是中文  1是繁体  2是英文
-        val locale = MultiLanguages.getAppLanguage(this)
-        if(LocaleContract.getSimplifiedChineseLocale().equals(locale)|| LocaleContract.getChineseLocale().equals(locale)||locale.toString().equals("zh_CN_#Hans")){
-            Constants.languageType=0
-        }else if(LocaleContract.getTraditionalChineseLocale().equals(locale)){
-            Constants.languageType=1
-        }else{
-            Constants.languageType=2
-        }
-        if(CacheUtil.isLogin()){
-            mViewModel.setLanquage()
         }
 
 
@@ -216,22 +212,15 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
              //延迟2.5秒
              !mViewModel.mockDataLoading()
          }*/
-        mDatabind.vLogoAnim.setAnimation("qidongye.json")
-        lifecycleScope.launch {
-            delay(500) // 延迟 10 秒
-            mDatabind.vLogoAnim.playAnimation()
-        }
-
 
         Constants.isLoading = true
         onIntent(intent)
-        CacheUtil.setFirst(false)
         initUI()
         initTime()
         initWs()
         //极光推送绑定用户
         val registrationId: String = MTCorePrivatesApi.getRegistrationId(this)
-        Log.i("============","======"+registrationId)
+
 
 
     }

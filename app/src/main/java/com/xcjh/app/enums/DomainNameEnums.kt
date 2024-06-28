@@ -4,7 +4,7 @@ enum class DomainNameEnums(var type : String) {
     /**
      * 生产环境域名
      */
-     DomainName("app.wyjxx.cn"),
+     DomainName("app.hyh86.cn"),
 
     /**
      * 新域名

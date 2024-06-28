@@ -33,6 +33,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.java_websocket.client.WebSocketClient
+import org.java_websocket.exceptions.WebsocketNotConnectedException
 import org.java_websocket.handshake.ServerHandshake
 import java.net.URI
 import java.nio.ByteBuffer
@@ -715,6 +716,10 @@ class MyWsManager private constructor(private val mContext: Context) {
                 client?.send(Gson().toJson(SendCommonWsBean(cmd = 13, loginType = null)))
                 //client?.sendPing()
             }
+        }catch (e :WebsocketNotConnectedException){
+            "-----------sendPing-----${e.message}".loge("22wsService===")
+            //关闭
+            stopService()
         } catch (e: Exception) {
             "-----------sendPing-----${e.message}".loge("wsService===")
         }

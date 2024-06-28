@@ -931,8 +931,8 @@ fun shareUrl(context: Context, shareText: String?) {
             "https://app.cbd246.com/?m=HageRQ/$shareText"
         }
 
-        "https://app.wyjxx.cn/apis/"->{
-            "https://appuser.wyjxx.cn/$shareText"
+        "https://app.hyh86.cn/apis/"->{
+            "https://appuser.hyh86.cn/$shareText"
         }
 
         else ->{
@@ -940,6 +940,7 @@ fun shareUrl(context: Context, shareText: String?) {
         }
 
     }
+
     val intent = Intent(Intent.ACTION_SEND)
     intent.type = "text/plain"
     intent.putExtra(Intent.EXTRA_TEXT, url)
@@ -957,10 +958,9 @@ fun getDomain():String{
             DomainNameEnums.PreDomainName.type
         }
 
-        "https://app.wyjxx.cn/apis/"->{
+        "https://app.hyh86.cn/apis/"->{
             DomainNameEnums.DomainName.type
         }
-
         else ->{
             DomainNameEnums.NewDomainName.type
         }

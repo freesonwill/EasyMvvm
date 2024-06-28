@@ -317,10 +317,10 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
         //邀请好友
         mDatabind.rlMyClickInvite.clickNoRepeat {
             SoundManager.playMedia()
-//            shareText(requireContext(), "#/home")
+//            shareText(requireContext(), ApiComService.SHARE_IP + "#/home")
             shareUrl(requireContext(), "#/home")
 //          requireContext().copyToClipboard(ApiComService.SHARE_IP)
-//            myToast(resources.getString(R.string.my_txt_copy_link))
+
 //
         }
         //广告
