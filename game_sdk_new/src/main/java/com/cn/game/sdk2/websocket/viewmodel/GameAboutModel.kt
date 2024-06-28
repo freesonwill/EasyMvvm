@@ -196,10 +196,12 @@ class GameAboutModel : BaseViewModel() {
     }
 
     fun addHistoryRounds(history: List<RoundInfoBean>) {
+        currentSettleResult = history.let { if(it.isEmpty()) null else it[it.size-1]  }
         _historyRounds.value = history
     }
 
     fun addHistoryRound(item: RoundInfoBean) {
+        currentSettleResult = item
         val history = _historyRounds.value ?: listOf()
         _historyRounds.value = history + item
     }
