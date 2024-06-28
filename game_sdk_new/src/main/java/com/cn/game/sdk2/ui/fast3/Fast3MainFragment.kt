@@ -300,10 +300,10 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     /**
      * 播放中奖lottie动画
      */
-    @SuppressLint("SetTextI18n")
     private fun startWinLottieAnim(endCallBack: (() -> Unit)?) {
         mDatabind.apply {
             val winMoney = gameAboutModel.netIncome
+            Log.e(TAG, "本轮赢钱了--->$winMoney")
             if (winMoney <= 0) {
                 endCallBack?.invoke()
                 return
@@ -537,7 +537,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             val endHeight =
                 if (isShowResult) resultRvHeight else resultRvHeight - resultAnimMoveHeight
             resultAnim = ValueAnimator.ofFloat(startHeight, endHeight.toFloat()).apply {
-                duration = 400
+                duration = 300
                 addUpdateListener {
                     val value = (it.animatedValue as Float).toInt()
                     val params = flRvHistory.layoutParams
@@ -755,7 +755,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                     ViewGroup.LayoutParams.WRAP_CONTENT,
                                     ViewGroup.LayoutParams.WRAP_CONTENT
                                 )
-                                params.gravity = areaView.okViewGravity
                                 areaView.moneyView.let { moneyView ->
                                     moneyView.parentView?.addView(moneyView, params)
                                     moneyView.translationX = it.value.viewXYTemporary[0]
@@ -942,7 +941,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
     private fun reLocatePage(){
         anchorMoneyView?.let {
-            val index = (it.parentView as GameAreaView).pageIndex
+            val index = it.pageIndex
             if(mDatabind.viewPagerNew.currentItem != index){
                 mDatabind.viewPagerNew.currentItem = index
             }

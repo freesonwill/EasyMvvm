@@ -6,12 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.FrameLayout
+import android.widget.ImageView
 import androidx.lifecycle.lifecycleScope
+import com.cn.game.sdk2.R
 import com.cn.game.sdk2.base.BaseGameFragment
 import com.cn.game.sdk2.databinding.FragmentPairsDiceBinding
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
 import com.cn.game.sdk2.ui.viewmodel.fast3.PairsDiceVm
+import com.cn.game.sdk2.utils.ext.ViewExt.locationOnScreen
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import kotlinx.coroutines.launch
 
@@ -33,9 +36,9 @@ class PairsDiceFragment(fast3VM: Fast3ViewModel) :
                 gavPairsSix.also { it.flickerView = ivPairsSix },
             )
 
-            for (i in areaViewList.indices){
-                areaViewList[i].areaInfo = mViewModel.bettingArray[i+1]
-                areaViewList[i].pageIndex = 3
+            for (i in areaViewList.indices) {
+                areaViewList[i].areaInfo = mViewModel.bettingArray[i + 1]
+                areaViewList[i].moneyView.pageIndex = 3
             }
         }
     }
@@ -48,6 +51,7 @@ class PairsDiceFragment(fast3VM: Fast3ViewModel) :
         areaView: GameAreaView,
         x: Float,
         y: Float,
+        rawX: Float,
         rawY: Float,
         emitAnimCallBack: () -> Unit
     ) {
@@ -58,6 +62,7 @@ class PairsDiceFragment(fast3VM: Fast3ViewModel) :
                 override fun onGlobalLayout() {
                     // 确保只监听一次
                     it.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    handleViewTranslation(it, areaView, rawX, rawY)
                     emitAnimCallBack.invoke()
                 }
             })
@@ -67,8 +72,9 @@ class PairsDiceFragment(fast3VM: Fast3ViewModel) :
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
-            params.gravity = areaView.okViewGravity
-            areaView.addView(it, params)
+            it.translationY = 0f
+            it.translationX = 0f
+            mDatabind.rlHomeRoot.addView(it, params)
         }
     }
 }

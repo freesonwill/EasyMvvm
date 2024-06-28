@@ -7,7 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.FrameLayout
+import android.widget.ImageView
 import androidx.lifecycle.lifecycleScope
+import com.cn.game.sdk2.R
 import com.cn.game.sdk2.base.BaseGameFragment
 import com.cn.game.sdk2.databinding.FragmentSumTotalBinding
 import com.cn.game.sdk2.ui.view.game.GameAreaView
@@ -45,9 +47,9 @@ class SumTotalFragment(fast3VM: Fast3ViewModel) :
             )
         }
 
-        for (i in areaViewList.indices){
-            areaViewList[i].areaInfo = mViewModel.bettingArray[i+1]
-            areaViewList[i].pageIndex = 2
+        for (i in areaViewList.indices) {
+            areaViewList[i].areaInfo = mViewModel.bettingArray[i + 1]
+            areaViewList[i].moneyView.pageIndex = 2
         }
     }
 
@@ -59,6 +61,7 @@ class SumTotalFragment(fast3VM: Fast3ViewModel) :
         areaView: GameAreaView,
         x: Float,
         y: Float,
+        rawX: Float,
         rawY: Float,
         emitAnimCallBack: () -> Unit
     ) {
@@ -69,16 +72,7 @@ class SumTotalFragment(fast3VM: Fast3ViewModel) :
                 override fun onGlobalLayout() {
                     // 确保只监听一次
                     it.viewTreeObserver.removeOnGlobalLayoutListener(this)
-
-                    val areaViewLocation = areaView.locationOnScreen
-                    val moneyViewLocation = it.locationOnScreen
-//                    //x轴偏移至中心点
-                    it.translationX = areaViewLocation[0] + (areaView.width - it.measuredWidth) / 2f
-//                    //y轴偏移至底部
-                    val areaY = areaViewLocation[1] + areaView.measuredHeight
-                    val moneyY = moneyViewLocation[1] + it.measuredHeight
-                    it.translationY = areaY - moneyY.toFloat()
-
+                    handleViewTranslation(it, areaView, rawX, rawY)
                     emitAnimCallBack.invoke()
                 }
             })
@@ -88,9 +82,9 @@ class SumTotalFragment(fast3VM: Fast3ViewModel) :
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
-            mDatabind.rlHomeRoot.addView(it, params)
             it.translationY = 0f
             it.translationX = 0f
+            mDatabind.rlHomeRoot.addView(it, params)
         }
     }
 }

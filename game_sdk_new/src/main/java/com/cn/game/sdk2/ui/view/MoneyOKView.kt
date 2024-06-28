@@ -29,6 +29,7 @@ class MoneyOKView @JvmOverloads constructor(
 ) : LinearLayout(context, attrs, defStyleAttr) {
     //总和没有添加到gameAreaView中，保存下被添加的父Layout用于续压
     var parentView: ViewGroup? = null
+    var pageIndex :Int = 0
     /**
      * 是否显示取消或者确定
      */
