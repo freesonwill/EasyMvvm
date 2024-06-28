@@ -398,12 +398,14 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                         ivXuya.isVisible = true
                         ivXuya.setImageResource(R.drawable.icon_xuya_gray)
                         ivMultiple2.isVisible = false
+                        ivXuya.isClickable = false
                     }
 
                     GameAboutModel.AgainDoubleState.AGAIN -> {
                         ivXuya.isVisible = true
                         ivXuya.setImageResource(R.drawable.icon_xuya)
                         ivMultiple2.isVisible = false
+                        ivXuya.isClickable = true
                     }
 
                     //todo x2不可用的状态
@@ -439,7 +441,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             if (!isSuccess) {
                 //失败时显示delete ok按钮
                 ToastUtil.showToastNormal("网络连接失败")
-                anchorMoneyView?.showTop()
+                showAnchorTop()
             }
         }
         mViewModel.playAlphaAnimationLD.observe(viewLifecycleOwner, object : Observer<Boolean> {
@@ -923,6 +925,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         anchorMoneyView = areaView.moneyView
         moneyOkViewMap[areaView.areaCode] = areaView.moneyView
         mDatabind.tempTouch.setAnchorMoneyView(areaView.moneyView)
+        reLocatePage()
     }
 
     private fun hiddenAnchorTop() {
@@ -931,6 +934,16 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
     private fun showAnchorTop() {
         anchorMoneyView?.showTop()
+        reLocatePage()
+    }
+
+    private fun reLocatePage(){
+        anchorMoneyView?.let {
+            val index = (it.parentView as GameAreaView).pageIndex
+            if(mDatabind.viewPagerNew.currentItem != index){
+                mDatabind.viewPagerNew.currentItem = index
+            }
+        }
     }
 
     private fun scrollToItemAndPerformAction(

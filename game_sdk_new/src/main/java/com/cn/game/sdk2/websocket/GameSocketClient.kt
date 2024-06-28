@@ -46,11 +46,9 @@ class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
         onMessageListener = listener
     }
 
-    var isReconnecting = false
     fun re() {
         "---尝试重连---".loge()
-        if(!isReconnecting && isNeedReconnect) {
-            isReconnecting = true
+        if(isNeedReconnect) {
             reset()
             reconnect()
         }
@@ -58,7 +56,6 @@ class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
 
     override fun onOpen(handshakedata: ServerHandshake?) {
         Log.i(_tag, "GameSocketClient-连接成功！")
-        isReconnecting = false
          GlobalScope.launch {
             withContext(Dispatchers.Main) {
                 isTokenValid = true

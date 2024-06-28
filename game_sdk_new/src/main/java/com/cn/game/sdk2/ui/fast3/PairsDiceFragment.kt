@@ -35,6 +35,7 @@ class PairsDiceFragment(fast3VM: Fast3ViewModel) :
 
             for (i in areaViewList.indices){
                 areaViewList[i].areaInfo = mViewModel.bettingArray[i+1]
+                areaViewList[i].pageIndex = 3
             }
         }
     }

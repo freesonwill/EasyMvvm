@@ -16,10 +16,10 @@ import kotlin.math.abs
 
 class GameAreaView : FrameLayout {
     lateinit var content: View
-    lateinit var gameCallback: IGameView
     lateinit var moneyView: MoneyOKView
     lateinit var flickerView: View
     var okViewGravity: Int = Gravity.CENTER
+    var pageIndex :Int = 0
     var areaInfo: Betting? = null
     val areaCode: Int get() = areaInfo?.number ?: 0
 

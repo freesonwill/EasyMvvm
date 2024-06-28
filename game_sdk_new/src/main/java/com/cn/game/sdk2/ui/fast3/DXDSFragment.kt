@@ -54,6 +54,7 @@ class DXDSFragment(fast3VM: Fast3ViewModel) : BaseFast3Fragment<DXDSVm, FragDxds
 
             for (i in areaViewList.indices){
                 areaViewList[i].areaInfo = mViewModel.bettingArray[i+1]
+                areaViewList[i].pageIndex = 0
                 if(areaViewList[i] !== leopardView){
                     areaViewList[i].okViewGravity = Gravity.BOTTOM
                 }
