@@ -1,8 +1,15 @@
 package com.cn.game.sdk2.utils.ext
 
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.view.View
+import androidx.annotation.ColorInt
+import androidx.annotation.ColorRes
+import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
+import com.xcjh.base_lib.appContext
+import com.xcjh.base_lib.base.fragment.BaseVmFragment
 
 /**
  * Description:
@@ -34,6 +41,14 @@ object ViewExt {
         val rawXY = IntArray(2)
         getLocationOnScreen(rawXY)
         return rawX >= rawXY[0] && rawX <= (rawXY[0] + width) && rawY >= rawXY[1] && rawY <= (rawXY[1] + height)
+    }
+
+    fun BaseVmFragment<*>.getDrawable(@DrawableRes id:Int):Drawable{
+        return  ContextCompat.getDrawable(requireContext(),id)!!
+    }
+
+    @ColorInt fun BaseVmFragment<*>.getColor(@ColorRes id:Int): Int {
+        return  ContextCompat.getColor(requireContext(),id)
     }
 
 }

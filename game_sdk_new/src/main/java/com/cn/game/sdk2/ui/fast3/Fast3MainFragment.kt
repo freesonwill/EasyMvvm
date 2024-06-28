@@ -41,8 +41,10 @@ import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
 import com.cn.game.sdk2.utils.FlowBus
 import com.cn.game.sdk2.utils.ToastUtil
+import com.cn.game.sdk2.utils.ext.BizExt.isLeopard
 import com.cn.game.sdk2.utils.ext.CommonExt.formatRealMoney
 import com.cn.game.sdk2.utils.ext.CommonExt.toPinyin
+import com.cn.game.sdk2.utils.ext.ViewExt.getDrawable
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.utils.tool.measureView
 import com.cn.game.sdk2.websocket.GameSocketManager
@@ -146,6 +148,9 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
      */
     private fun updateGameStage() {
         gameAboutModel.currentStage.value?.let {
+            mViewModel.isClickOperation = it == GameAboutModel.Stage.NEW
+            mDatabind.txtHomeTime.isVisible = it == GameAboutModel.Stage.NEW
+            mDatabind.txtHomeUnit.isVisible = it == GameAboutModel.Stage.NEW
             when (it) {
                 GameAboutModel.Stage.NEW -> {
                     onStartBetting()
@@ -208,7 +213,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         lifecycleScope.launch {
             mDatabind.apply {
                 ToastUtil.showToastNormal(getString(R.string.g_home_setting_begin), 1000)
-                mDatabind.txtHomeStatic.text = resources.getString(R.string.g_home_balance)
+                mDatabind.txtHomeStatic.text = resources.getString(R.string.g_f3_setting)
                 //隐藏筹码牌
                 suspendCoroutine { continuation ->
                     val childAlphaAnimator =
@@ -277,7 +282,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             cancelTemBetting()
             //开奖时取消临时下注的
             mDatabind.apply {
-                txtHomeStatic.text = getString(R.string.g_home_drawing_being)
+                txtHomeStatic.text = getString(R.string.g_f3_dealing)
             }
         }
     }
@@ -312,14 +317,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             })
 
             lottieAnimView.playAnimation()
-        }
-    }
-
-    private fun onDrawFinish() {
-        lifecycleScope.launch {
-            delay(mViewModel.prizeAnimTime + 2000)
-            //播放开奖动画
-            //mViewModel.startBetting()
         }
     }
 
@@ -369,24 +366,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         }
 
         //游戏状态监听
-        gameAboutModel.currentStage.observe(viewLifecycleOwner) { stage ->
-            //mViewModel.countDown = gameAboutModel.countDown * 1L
-            stage?.run {
-                mViewModel.isClickOperation = stage == GameAboutModel.Stage.NEW
-                when (this) {
-                    GameAboutModel.Stage.NEW -> {//下注
-                        onStartBetting()
-                    }
-
-                    GameAboutModel.Stage.DEAL -> {//开奖
-                        onStartDrawing()
-                    }
-
-                    GameAboutModel.Stage.SETTLE -> {//结算
-                        onStartSetting()
-                    }
-                }
-            }
+        gameAboutModel.currentStage.observe(viewLifecycleOwner) { _ ->
+            updateGameStage()
         }
 
         //续压、加倍状态监听
@@ -664,15 +645,25 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                 child.setImageResource(id)
                             }
                             txtBetNum.text = mainTxtBean.sum.toString()
-                            txtBetSize.text =
-                                if (mainTxtBean.isBig) getString(R.string.g_home_txt_big) else getString(
-                                    R.string.g_home_txt_small
-                                )
-                            txtBetOdd.text =
-                                if (mainTxtBean.isDouble)
-                                    getString(R.string.g_home_txt_double)
-                                else
-                                    getString(R.string.g_home_txt_single)
+                            if(mainTxtBean.isLeopard) {
+                                txtBetSize.text =getString(R.string.g_home_txt_leopard)
+                                txtBetOdd.text =getString(R.string.g_home_txt_leopard)
+                                txtBetSize.background = getDrawable(R.drawable.shape_3_01933b)
+                                txtBetOdd.background = getDrawable(R.drawable.shape_3_01933b)
+
+                            } else {
+                                txtBetSize.background = getDrawable(R.drawable.shape_3_006ce4)
+                                txtBetOdd.background = getDrawable(R.drawable.shape_3_b83030)
+                                txtBetSize.text =
+                                    if (mainTxtBean.isBig) getString(R.string.g_home_txt_big) else getString(
+                                        R.string.g_home_txt_small
+                                    )
+                                txtBetOdd.text =
+                                    if (mainTxtBean.isDouble)
+                                        getString(R.string.g_home_txt_double)
+                                    else
+                                        getString(R.string.g_home_txt_single)
+                            }
                         }
                     }
                 }
