@@ -276,12 +276,11 @@
                     android:id="@+id/viewPagerNew"
                     android:layout_width="match_parent"
                     android:layout_height="180dp"
-                    android:layout_marginBottom="5dp"
                     android:clipChildren="false"
                     android:clipToPadding="false"
                     android:paddingStart="0dp"
                     android:paddingEnd="0dp"
-                    app:layout_constraintBottom_toTopOf="@id/llShowBetList" />
+                    app:layout_constraintBottom_toTopOf="@id/betteLayout" />
 
                 <LinearLayout
                     android:id="@+id/rlShowResult"
@@ -290,10 +289,10 @@
                     android:gravity="center"
                     android:orientation="horizontal"
                     android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="@id/llShowBetList"
+                    app:layout_constraintBottom_toBottomOf="@id/betteLayout"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/llShowBetList">
+                    app:layout_constraintTop_toTopOf="@id/betteLayout">
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/ivDrawYi"
@@ -340,55 +339,81 @@
                         app:srcCompat="@drawable/icon_home_result_double" />
                 </LinearLayout>
 
-                <!--            选择投注-->
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/llShowBetList"
-                    android:layout_width="0dp"
+
+                <FrameLayout
+                    android:id="@+id/betteLayout"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/g_141624"
-                    android:orientation="horizontal"
-                    android:paddingBottom="5dp"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    tools:itemCount="11"
-                    tools:listitem="@layout/item_annotation_list" />
+                    app:layout_constraintStart_toStartOf="parent">
 
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivBetEndFg"
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
-                    android:layout_marginBottom="5dp"
-                    android:src="@drawable/again_bg"
-                    app:layout_constraintBottom_toBottomOf="@id/llShowBetList"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/llShowBetList" />
+                    <!-- 多添加一层解决上层clipChildren为false
+                        导致下面筹码list向下偏移动画绘制超出布局 -->
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
 
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivXuya"
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/llShowBetList"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:clipChildren="false"
+                            android:clipToPadding="false"
+                            android:orientation="horizontal"
+                            android:paddingVertical="5dp"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                            tools:itemCount="11"
+                            tools:listitem="@layout/item_annotation_list" />
+
+                    </FrameLayout>
+                </FrameLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/betteAgainLayout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:visibility="visible"
-                    app:layout_constraintBottom_toBottomOf="@id/llShowBetList"
+                    app:layout_constraintBottom_toBottomOf="@id/betteLayout"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginBottom="5dp"
-                    app:layout_constraintTop_toTopOf="@id/llShowBetList"
-                    app:srcCompat="@drawable/icon_xuya_gray"
-                    tools:visibility="visible" />
+                    app:layout_constraintTop_toTopOf="@id/betteLayout">
 
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivMultiple2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:visibility="gone"
-                    android:layout_marginBottom="5dp"
-                    app:layout_constraintBottom_toBottomOf="@id/llShowBetList"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/llShowBetList"
-                    app:srcCompat="@drawable/icon_multiple2_sel" />
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ivBetEndFg"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:src="@drawable/again_bg"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ivXuya"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/icon_xuya_gray"
+                        tools:visibility="visible" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ivMultiple2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/icon_multiple2_sel" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/ivResultBg"

@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
 
         btnOpen.setOnClickListener {
             //MyGameManager.showFastView(this)
-            //ViewHelper.showFastView(this)
+            ViewHelper.showFastView(this)
             if(gameAboutModel.isLoginSuccess.value == true){
                 GameSDK.enterLive("1213", listOf(1), "", object : SDKEnterLiveCallbackListener {
                     override fun callback(code: Int, message: String?) {

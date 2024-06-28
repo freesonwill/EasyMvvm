@@ -14,10 +14,14 @@ import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.Animation
+import android.view.animation.AnimationSet
+import android.view.animation.TranslateAnimation
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.core.animation.addListener
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -176,35 +180,20 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             if (mViewModel.isCountDownStart) {
                 ToastUtil.showToastNormal(getString(R.string.g_home_betting_begin), 2000)
                 PromptSoundPlay.startGameTip(requireContext())
-                //下注闪动动画
-                suspendCoroutine { continuation ->
-                    val childAlphaAnimator =
-                        ObjectAnimator.ofFloat(mDatabind.llShowBetList, "alpha", 0f, 1f)
-                    childAlphaAnimator.duration = 0 // 设置渐隐动画持续时间
-                    val animatorSet = AnimatorSet()
-                    animatorSet.play(childAlphaAnimator)
-                    animatorSet.addListener(object : AnimatorListenerAdapter() {
-                        override fun onAnimationEnd(animation: Animator) {
-                            super.onAnimationEnd(animation)
+                //下注筹码向上升起动画
+                startBetteRecyclerShowOrHideAnim(isShow = true, onStart = {
+                    //筹码
+                    mDatabind.betteLayout.isVisible = true
+                    mDatabind.betteAgainLayout.isVisible = true
 
-                            continuation.resume(Unit)
-                        }
-                    })
-                    animatorSet.start()
-                }
+                    //开奖结果
+                    mDatabind.rlShowResult.isVisible = false
+                    mDatabind.ivHomeBg.isVisible = false
+                    mDatabind.ivHomeBgCenter.isVisible = false
+                })
             }
-            //注区
-            mDatabind.llShowBetList.visibility = View.VISIBLE
-            mDatabind.ivBetEndFg.isVisible = true
-            //显示开奖结果
-            mDatabind.rlShowResult.visibility = View.GONE
-            mDatabind.ivHomeBg.visibility = View.GONE
-            mDatabind.ivHomeBgCenter.visibility = View.GONE
-            //hiddenView(true)
             //重置注区筹码
             notifyMoneyOkView(null)
-            //倒计时
-            //mViewModel.startCountDown(mViewModel.countDown)
         }
     }
 
@@ -215,29 +204,16 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 ToastUtil.showToastNormal(getString(R.string.g_home_setting_begin), 1000)
                 mDatabind.txtHomeStatic.text = resources.getString(R.string.g_f3_setting)
                 //隐藏筹码牌
-                suspendCoroutine { continuation ->
-                    val childAlphaAnimator =
-                        ObjectAnimator.ofFloat(mDatabind.llShowBetList, "alpha", 1f, 0f)
-                    childAlphaAnimator.duration = 0 // 设置渐隐动画持续时间
-                    val animatorSet = AnimatorSet()
-                    animatorSet.play(childAlphaAnimator)
-                    animatorSet.addListener(object : AnimatorListenerAdapter() {
-                        override fun onAnimationEnd(animation: Animator) {
-                            super.onAnimationEnd(animation)
-                            //注区
-                            llShowBetList.visibility = View.INVISIBLE
-                            mDatabind.ivBetEndFg.isVisible = false
-                            //显示开奖结果
-                            rlShowResult.isVisible = true
-                            ivHomeBg.isVisible = true
-                            ivHomeBgCenter.isVisible = true
-                            //hiddenView()
-                            continuation.resume(Unit)
-                        }
-                    })
-                    animatorSet.start()
-                }
+                startBetteRecyclerShowOrHideAnim(isShow = false, onEnd = {
+                    //注区
+                    betteLayout.isInvisible = true
+                    betteAgainLayout.isVisible = false
 
+                    //开奖结果
+                    rlShowResult.isVisible = true
+                    ivHomeBg.isVisible = true
+                    ivHomeBgCenter.isVisible = true
+                })
                 Log.e(TAG, "结算item" + roundInfo.toString())
                 roundInfo?.run {
                     performs.forEachIndexed { index, item ->
@@ -586,11 +562,11 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                         binding.ivShowBg.setImageResource(id)
                         //Log.d(TAG, "onBind-->${layoutPosition},bean:${bean}")
                         if (bean.select) {
-                            binding.ivShowBg.scaleX = 1.1f
-                            binding.ivShowBg.scaleY = 1.1f
+                            if (binding.ivShowBg.translationY == 0f) {
+                                startBetteSelectAnim(binding.ivShowBg)
+                            }
                         } else {
-                            binding.ivShowBg.scaleX = 1f
-                            binding.ivShowBg.scaleY = 1f
+                            binding.ivShowBg.translationY = 0f
                         }
                     }
                 }
@@ -599,12 +575,14 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             onClick(R.id.ivShowBg) {
                 val bean = _data as SelectAnnotationBean
                 PromptSoundPlay.btnPlayMedia(requireContext())
+                val binding = getBinding<ItemAnnotationListBinding>()
                 if (bean.select) return@onClick
                 val models: List<SelectAnnotationBean> = models as List<SelectAnnotationBean>
                 for (data in models) {
                     data.select = bean == data
                 }
                 notifyItemRangeChanged(0, modelCount)
+                startBetteSelectAnim(binding.ivShowBg)
             }
         }.models = mViewModel.noteList
         //历史结果
@@ -645,9 +623,9 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                 child.setImageResource(id)
                             }
                             txtBetNum.text = mainTxtBean.sum.toString()
-                            if(mainTxtBean.isLeopard) {
-                                txtBetSize.text =getString(R.string.g_home_txt_leopard)
-                                txtBetOdd.text =getString(R.string.g_home_txt_leopard)
+                            if (mainTxtBean.isLeopard) {
+                                txtBetSize.text = getString(R.string.g_home_txt_leopard)
+                                txtBetOdd.text = getString(R.string.g_home_txt_leopard)
                                 txtBetSize.background = getDrawable(R.drawable.shape_3_01933b)
                                 txtBetOdd.background = getDrawable(R.drawable.shape_3_01933b)
 
@@ -674,6 +652,53 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 mDatabind.rvHomeHistory.scrollToPosition(mDatabind.rvHomeHistory.models!!.size - 1)
             }
             mDatabind.rlClickHide.isVisible = !mDatabind.rvHomeHistory.models.isNullOrEmpty()
+        }
+    }
+
+
+    /**
+     * 执行筹码选中向上平移动画
+     */
+    private fun startBetteSelectAnim(showView: View) {
+        val anim =
+            ObjectAnimator.ofFloat(showView, "translationY", -requireContext().dp2px(5).toFloat())
+        anim.duration = 100
+        anim.start()
+    }
+
+    /**
+     * 执行筹码列表view平移出现或关闭动画
+     */
+    private fun startBetteRecyclerShowOrHideAnim(
+        isShow: Boolean,
+        onStart: (() -> Unit)? = null,
+        onEnd: (() -> Unit)? = null,
+        duration: Long = 200L
+    ) {
+        mDatabind.apply {
+            val recyclerAnim = ObjectAnimator.ofFloat(
+                llShowBetList,
+                "translationY",
+                if (isShow) 0f else llShowBetList.measuredHeight.toFloat()
+            )
+            val againAnim = ObjectAnimator.ofFloat(
+                betteAgainLayout,
+                "translationX",
+                if (isShow) 0f else betteAgainLayout.measuredWidth.toFloat()
+            )
+            AnimatorSet().apply {
+                this.duration = duration
+                addListener(
+                    onStart = {
+                        onStart?.invoke()
+                    },
+                    onEnd = {
+                        onEnd?.invoke()
+                    }
+                )
+                playTogether(listOf(recyclerAnim, againAnim))
+                start()
+            }
         }
     }
 
@@ -751,7 +776,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                     moneyView.setShowMoney(it.value.money)
                                 }
                             }
-                            if(areaView.areaCode == gameAboutModel.lastBetting?.number){
+                            if (areaView.areaCode == gameAboutModel.lastBetting?.number) {
                                 "lastbettting = ${gameAboutModel.lastBetting?.number}".loge()
                                 "lastbettting areaCode = ${areaView.areaCode}".loge()
                                 updateAnchorView(areaView)
@@ -762,8 +787,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 }
             }
         }
-
     }
+
 
     override fun onDetach() {
         super.onDetach()
@@ -840,10 +865,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     ) {
         //贝塞尔曲线中间过程的点的坐标
         val mCurrentPosition = FloatArray(2)
-        val location = IntArray(2)
-        jettonView.getLocationInWindow(location)
-        val viewX = location[0] + jettonView.width / 2 - requireContext().dp2px(25)
-        val viewY = location[1]
 
         // (这个图片就是执行动画的图片，从开始位置出发，经过一个抛物线（贝塞尔曲线))
         val betImageView = ImageView(requireContext())
@@ -855,8 +876,11 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         mDatabind.rlRoot.addView(betImageView, params)
 
         //正式开始计算动画开始/结束的坐标
-        val startX: Float = viewX.toFloat() + requireContext().dp2px(12)
-        val startY: Float = viewY.toFloat() - requireContext().dp2px(24)
+        val location = IntArray(2)
+        jettonView.getLocationInWindow(location)
+        val startX: Float =
+            location[0].toFloat() + jettonView.measuredWidth / 2 - requireContext().dp2px(16)
+        val startY: Float = location[1].toFloat()
 
         val path = Path()
         path.moveTo(startX, startY)
@@ -927,10 +951,10 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         reLocatePage()
     }
 
-    private fun reLocatePage(){
+    private fun reLocatePage() {
         anchorMoneyView?.let {
             val index = it.pageIndex
-            if(mDatabind.viewPagerNew.currentItem != index){
+            if (mDatabind.viewPagerNew.currentItem != index) {
                 mDatabind.viewPagerNew.currentItem = index
             }
         }

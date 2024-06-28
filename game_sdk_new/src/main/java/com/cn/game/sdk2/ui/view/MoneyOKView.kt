@@ -153,6 +153,8 @@ class MoneyOKView @JvmOverloads constructor(
     fun showTop() {
         llShowTop.visibility = View.VISIBLE
         bringToFront()
+//        ivShowMoney.bringToFront()
+
     }
 
     private fun showMoneyFormat(money: Int): String {
