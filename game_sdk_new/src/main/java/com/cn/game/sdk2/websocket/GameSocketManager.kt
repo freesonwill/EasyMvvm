@@ -223,9 +223,11 @@ class GameSocketManager private constructor() : OnMessageListener {
 
                 GameResCode.S2C_MULTI_USER_LOGIN -> gameServerMessageConvertFactory?.tokenLoseEffectiveness()
 
-                GameResCode.S2C_SERVER_MAINTENANCE -> gameServerMessageConvertFactory?.serverMaintenance()
+                GameResCode.S2C_SERVER_MAINTENANCE -> gameServerMessageConvertFactory?.tokenLoseEffectiveness()
 
-                GameResCode.S2C_ROOM_TIMEOUT -> gameServerMessageConvertFactory?.roomTimeout()
+                GameResCode.S2C_ROOM_TIMEOUT -> gameServerMessageConvertFactory?.tokenLoseEffectiveness()
+
+                GameResCode.S2C_MULTI_TOKEN_VERIFY_FAIL -> gameServerMessageConvertFactory?.tokenLoseEffectiveness()
 
             }
         }

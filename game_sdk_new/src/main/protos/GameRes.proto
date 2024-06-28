@@ -9,6 +9,8 @@ message EnterInfo {
     UserData self = 2; // 暂时放置 EnterRoom，以后会再移走。
     // 玩家登入时间
     int64 userLoginTime = 3;
+    // 遊戲相關設定
+    repeated GameConfig gameConfigs = 4;
 }
 
     // 登入后给玩家资料
@@ -17,10 +19,23 @@ message EnterInfo {
         int64 score = 2; // 身上的钱
     }
 
+    message GameConfig {
+        int32 miniGameId = 1;
+        repeated BetAreaConfig betAreaConfigs = 2;
+    }
+
+        message BetAreaConfig {
+            int32 areaCode = 1;
+    //        string name = 2;
+    //        float odds = 3;
+            int32 minLimit = 4;
+            int32 maxLimit = 5;
+        }
+
 // 直播间资讯 (MDM_GAME-C2S_ENTER_GROUP => MDM_GAME-S2C_GROUP_INFO)
 message GroupInfo {
     // 小游戏资讯
-    repeated MiniGameBasicInfo miniGameBasicInfoList = 1;
+    repeated MiniGameBasicInfo miniGameBasicInfoList = 1; // 僅傳送直播主預設的遊戲
 }
 
     message MiniGameBasicInfo {
@@ -183,4 +198,8 @@ message ClearTrends {
 // 刷新玩家金錢
 message RefreshUserScore {
     optional int64 score = 1;
+}
+
+message RefreshGameConfig {
+    repeated GameConfig gameConfigs = 1;
 }

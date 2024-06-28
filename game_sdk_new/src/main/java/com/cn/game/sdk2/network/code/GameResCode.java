@@ -70,9 +70,9 @@ public interface GameResCode {
     int S2C_CLEAR_TRENDS = 1011;
 
     /**
-     * 多用户登录 16
+     * 700-703处理流程统一，token失效，退出登录
      */
-    int S2C_MULTI_USER_LOGIN = 702;
+
     /**
      * 服务器维护返回 17
      */
@@ -82,4 +82,14 @@ public interface GameResCode {
      * 房间超时踢出 18
      */
     int S2C_ROOM_TIMEOUT = 701;
+
+    /**
+     * 多用户登录 16
+     */
+    int S2C_MULTI_USER_LOGIN = 702;
+
+    /**
+     * token，account验证不通过
+     */
+    int S2C_MULTI_TOKEN_VERIFY_FAIL = 703;
 }

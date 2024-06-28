@@ -471,7 +471,6 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
         val desc = errorMessage.desc
         "code = ${errorMessage.code},msg = ${errorMessage.desc}".loge("errorMessage")
         gameAboutModel.setToastErrorMessage(desc)
-        //todo:code =600
     }
 
     /**
@@ -479,19 +478,7 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
      */
     override fun tokenLoseEffectiveness() {
         isTokenValid = false
-        gameAboutModel.setToastErrorMessage("账号在其他设备登录，您已下线")
-        appListener?.getTokenLoseEffectiveness()
-    }
-
-    override fun roomTimeout() {
-        isTokenValid = false
-        gameAboutModel.setToastErrorMessage("登录房间超时")
-        appListener?.getTokenLoseEffectiveness()
-    }
-
-    override fun serverMaintenance() {
-        isTokenValid = false
-        gameAboutModel.setToastErrorMessage("服务器维护中")
+        gameAboutModel.setToastErrorMessage("登录失效，请重新登录")
         appListener?.getTokenLoseEffectiveness()
     }
 
