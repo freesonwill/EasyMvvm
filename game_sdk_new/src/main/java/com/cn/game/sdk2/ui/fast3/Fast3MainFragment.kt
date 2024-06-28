@@ -20,6 +20,8 @@ import android.widget.RelativeLayout
 import androidx.core.animation.addListener
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -31,6 +33,7 @@ import com.cn.game.sdk2.data.enums.GameState
 import com.cn.game.sdk2.databinding.FragFast3HomeBinding
 import com.cn.game.sdk2.databinding.ItemAnnotationListBinding
 import com.cn.game.sdk2.databinding.ItemBetHistoryBinding
+import com.cn.game.sdk2.ui.helper.Fast3ToastHelper
 import com.cn.game.sdk2.ui.helper.ViewHelper.bindViewPagerNewGame
 import com.cn.game.sdk2.ui.helper.ViewHelper.initGameViewPager
 import com.cn.game.sdk2.ui.helper.ViewHelper.isAdd
@@ -40,7 +43,6 @@ import com.cn.game.sdk2.ui.view.MoneyOKView
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
 import com.cn.game.sdk2.utils.FlowBus
-import com.cn.game.sdk2.utils.ToastUtil
 import com.cn.game.sdk2.utils.ext.BizExt.isLeopard
 import com.cn.game.sdk2.utils.ext.CommonExt.formatRealMoney
 import com.cn.game.sdk2.utils.ext.CommonExt.toPinyin
@@ -73,7 +75,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     companion object {
         const val TAG = "Fast3MainFragment"
     }
-
     private var mFragList = ArrayList<Fragment>()
 
     //是否执行关闭动画
@@ -102,6 +103,14 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         mFragList.add(SumTotalFragment(mViewModel))
         mFragList.add(PairsDiceFragment(mViewModel))
         mFragList.add(LeopardFragment(mViewModel))
+        Fast3ToastHelper.init(requireContext(),mDatabind.centerLayout).let {
+            lifecycle.addObserver(object:DefaultLifecycleObserver{
+                override fun onDestroy(owner: LifecycleOwner) {
+                    super.onDestroy(owner)
+                    Fast3ToastHelper.destroy()
+                }
+            })
+        }
 
         mDatabind.viewPagerNew.initGameViewPager(
             childFragmentManager, mFragList, arrayListOf(
@@ -143,7 +152,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         }
     }
 
-    /**
+    /**Ï
      * 刷新游戏状态
      */
     private fun updateGameStage() {
@@ -169,12 +178,13 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         }
     }
 
+
     private fun onStartBetting() {
         lifecycleScope.launch {
             //开始语音
             mDatabind.txtHomeStatic.text = resources.getString(R.string.g_home_txt_please)
             if (mViewModel.isCountDownStart) {
-                ToastUtil.showToastNormal(getString(R.string.g_home_betting_begin), 2000)
+                Fast3ToastHelper.showToastNormal(getString(R.string.g_home_betting_begin), 2000)
                 PromptSoundPlay.startGameTip(requireContext())
                 //下注闪动动画
                 suspendCoroutine { continuation ->
@@ -212,7 +222,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         val roundInfo: RoundInfoBean? = gameAboutModel.currentSettleResult
         lifecycleScope.launch {
             mDatabind.apply {
-                ToastUtil.showToastNormal(getString(R.string.g_home_setting_begin), 1000)
+                Fast3ToastHelper.showToastNormal(getString(R.string.g_home_setting_begin), 1000)
                 mDatabind.txtHomeStatic.text = resources.getString(R.string.g_f3_setting)
                 //隐藏筹码牌
                 suspendCoroutine { continuation ->
@@ -277,7 +287,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         lifecycleScope.launch {//关闭
             if (mViewModel.isCountDownStart) {
                 PromptSoundPlay.endGameTip(requireContext())
-                ToastUtil.showToastNormal(getString(R.string.g_home_drawing_begin), 1000)
+                Fast3ToastHelper.showToastNormal(getString(R.string.g_home_drawing_begin), 1000)
             }
             cancelTemBetting()
             //开奖时取消临时下注的
@@ -422,7 +432,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             Log.e(TAG, "下注结果监听--->${isSuccess}")
             if (!isSuccess) {
                 //失败时显示delete ok按钮
-                ToastUtil.showToastNormal("网络连接失败")
+                Fast3ToastHelper.showToastNormal("网络连接失败")
                 showAnchorTop()
             }
         }
@@ -453,7 +463,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
         //error
         gameAboutModel.toastErrorMessage.observe(viewLifecycleOwner) { msg ->
-            ToastUtil.showToastNormal(msg)
+            Fast3ToastHelper.showToastNormal(msg)
         }
     }
 
@@ -687,6 +697,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
             //点击更多弹出框
             llHomeMore.clickNoRepeat(0) {
+                //Fast3ToastHelper.showToastNormal("asdfasdfasdf")
                 if (homeMorePop == null) {
                     val bubbleAttach = CustomBubbleAttachPopup(requireContext())
                     bubbleAttach.customBubbleAttachListener =
