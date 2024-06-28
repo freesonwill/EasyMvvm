@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.FrameLayout
+import android.widget.ImageView
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.cn.game.sdk2.R
@@ -44,9 +45,9 @@ class SingleDiceFragment(fast3VM: Fast3ViewModel) :
                 gavDiceSix.also { it.flickerView = ivSingleSix },
             )
 
-            for (i in areaViewList.indices){
-                areaViewList[i].areaInfo = mViewModel.bettingArray[i+1]
-                areaViewList[i].pageIndex = 1
+            for (i in areaViewList.indices) {
+                areaViewList[i].areaInfo = mViewModel.bettingArray[i + 1]
+                areaViewList[i].moneyView.pageIndex = 1
             }
         }
     }
@@ -59,6 +60,7 @@ class SingleDiceFragment(fast3VM: Fast3ViewModel) :
         areaView: GameAreaView,
         x: Float,
         y: Float,
+        rawX: Float,
         rawY: Float,
         emitAnimCallBack: () -> Unit
     ) {
@@ -69,6 +71,7 @@ class SingleDiceFragment(fast3VM: Fast3ViewModel) :
                 override fun onGlobalLayout() {
                     // 确保只监听一次
                     it.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    handleViewTranslation(it, areaView, rawX, rawY)
                     emitAnimCallBack.invoke()
                 }
             })
@@ -78,8 +81,9 @@ class SingleDiceFragment(fast3VM: Fast3ViewModel) :
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
-            params.gravity = areaView.okViewGravity
-            areaView.addView(it, params)
+            it.translationY = 0f
+            it.translationX = 0f
+            mDatabind.rlHomeRoot.addView(it, params)
         }
     }
 }

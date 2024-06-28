@@ -15,6 +15,7 @@ import androidx.lifecycle.viewModelScope
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.base.BaseGameFragment
 import com.cn.game.sdk2.data.EventConst
+import com.cn.game.sdk2.databinding.FragDxdsBinding
 import com.cn.game.sdk2.ui.helper.ViewHelper.isAdd
 import com.cn.game.sdk2.ui.view.MoneyOKView
 import com.cn.game.sdk2.ui.view.game.GameAreaView
@@ -146,11 +147,16 @@ abstract class BaseFast3Fragment<VM : BaseViewModel, VB : ViewDataBinding>(var f
                             if (result != null) {
                                 areaView.moneyView.setShowMoney(result.money)
                                 if (!areaView.moneyView.isAdd()) {
-                                    addMoneyOkView( areaView, x, y, rawY) {
-                                        emitMoneyAnim(result,areaView, areaView.moneyView, isNewAdd = true)
+                                    addMoneyOkView(areaView, x, y, rawX, rawY) {
+                                        emitMoneyAnim(
+                                            result,
+                                            areaView,
+                                            areaView.moneyView,
+                                            isNewAdd = true
+                                        )
                                     }
                                 } else {
-                                    emitMoneyAnim(result,areaView, areaView.moneyView)
+                                    emitMoneyAnim(result, areaView, areaView.moneyView)
                                 }
                             }
                         } else {
@@ -162,13 +168,133 @@ abstract class BaseFast3Fragment<VM : BaseViewModel, VB : ViewDataBinding>(var f
         })
     }
 
+
     abstract fun addMoneyOkView(
         areaView: GameAreaView,
         x: Float,
         y: Float,
+        rawX: Float,
         rawY: Float,
         emitAnimCallBack: () -> Unit
     )
+
+    protected fun handleViewTranslation(
+        it: MoneyOKView,
+        areaView: GameAreaView,
+        rawX: Float,
+        rawY: Float,
+    ) {
+        val betteView = it.findViewById<ImageView>(R.id.ivShowBg)
+        val betteLocation = betteView.locationOnScreen
+        val betteX = betteLocation[0]
+        val betteY = betteLocation[1]
+
+        val moneyLocation = it.locationOnScreen
+        val moneyX = moneyLocation[0]
+
+        val areaLocation = areaView.locationOnScreen
+        val areaX = areaLocation[0]
+        val areaY = areaLocation[1]
+
+        //筹码最终偏移的位置
+        val endX = rawX - betteView.measuredWidth / 2
+        val endY = rawY - betteView.measuredHeight / 2
+        //偏移距离
+        val dx = endX - betteX
+        val dy = endY - betteY
+
+        //是否左右边界
+        val isLeftStart = areaView.id == R.id.small_view
+                || areaView.id == R.id.single_view
+                || areaView.id == R.id.gavDiceOne
+                || areaView.id == R.id.gavDiceSix
+                || areaView.id == R.id.gavSumFour
+                || areaView.id == R.id.gavSumNine
+                || areaView.id == R.id.gavSumFourteen
+                || areaView.id == R.id.gavPairsOne
+                || areaView.id == R.id.gavPairsSix
+                || areaView.id == R.id.gavLeopardOne
+                || areaView.id == R.id.gavLeopardSix
+        val isRightEnd = areaView.id == R.id.big_view
+                || areaView.id == R.id.double_view
+                || areaView.id == R.id.gavDiceTwo
+                || areaView.id == R.id.gavDiceFive
+                || areaView.id == R.id.gavSumEight
+                || areaView.id == R.id.gavSumThirteen
+                || areaView.id == R.id.gavPairsTwo
+                || areaView.id == R.id.gavPairsFive
+                || areaView.id == R.id.gavLeopardTwo
+                || areaView.id == R.id.gavLeopardFive
+
+        val limitLeft = if (areaView.id == R.id.double_view) {
+            val leopardLocation = IntArray(2)
+            (mDatabind as FragDxdsBinding).leopardView.getLocationOnScreen(leopardLocation)
+            val leopardX = leopardLocation[0]
+            leopardX + (mDatabind as FragDxdsBinding).leopardView.measuredWidth
+        } else {
+            areaX
+        }
+        val limitRight = if (areaView.id == R.id.single_view) {
+            val leopardLocation = IntArray(2)
+            (mDatabind as FragDxdsBinding).leopardView.getLocationOnScreen(leopardLocation)
+            val leopardX = leopardLocation[0]
+            leopardX
+        } else {
+            areaX + areaView.measuredWidth
+        }
+        val limitBottom = when (areaView.id) {
+            R.id.small_view, R.id.big_view -> {
+                val smallLocation = IntArray(2)
+                (mDatabind as FragDxdsBinding).txtSmallMoney.getLocationOnScreen(smallLocation)
+                smallLocation[1]
+            }
+
+            R.id.single_view, R.id.double_view -> {
+                val smallLocation = IntArray(2)
+                (mDatabind as FragDxdsBinding).txtSingleMoney.getLocationOnScreen(smallLocation)
+                smallLocation[1]
+            }
+
+            else -> {
+                areaY + areaView.measuredHeight
+            }
+        }
+        val limitTop = areaY
+
+        it.translationX = when {
+            isLeftStart -> {
+                when {
+                    dx >= 0 && endX + betteView.measuredWidth <= limitRight -> dx
+                    endX + betteView.measuredWidth > limitRight -> dx + limitRight - endX - betteView.measuredWidth
+                    else -> 0f
+                }
+            }
+
+            isRightEnd -> {
+                when {
+                    endX >= limitLeft && moneyX + dx + it.measuredWidth <= limitRight -> dx
+                    endX < limitLeft -> dx + limitLeft - endX
+                    moneyX + dx + it.measuredWidth > limitRight -> (limitRight - moneyX - it.measuredWidth).toFloat()
+                    else -> 0f
+                }
+            }
+
+            else -> {
+                when {
+                    endX >= limitLeft && endX + betteView.measuredWidth <= limitRight -> dx
+                    endX < limitLeft -> dx + limitLeft - endX
+                    endX + betteView.measuredWidth > limitRight -> dx + limitRight - endX - betteView.measuredWidth
+                    else -> 0f
+                }
+            }
+        }
+
+        it.translationY = when {
+            endY + betteView.measuredHeight > limitBottom -> (limitBottom - betteY - betteView.measuredHeight).toFloat()
+            endY < limitTop -> (limitTop - betteY).toFloat()
+            else -> dy
+        }
+    }
 
     private fun emitMoneyAnim(
         recordBean: BettingRecordBean,
@@ -178,7 +304,10 @@ abstract class BaseFast3Fragment<VM : BaseViewModel, VB : ViewDataBinding>(var f
     ) {
         recordBean.viewXYTemporary[0] = moneyOKView.translationX
         recordBean.viewXYTemporary[1] = moneyOKView.translationY
-        Log.e(Fast3MainFragment.TAG, "坐标信息--->${moneyOKView.translationX} ${moneyOKView.translationY}")
+        Log.e(
+            Fast3MainFragment.TAG,
+            "坐标信息--->${moneyOKView.translationX} ${moneyOKView.translationY}"
+        )
         val betteView = moneyOKView.findViewById<ImageView>(R.id.ivShowBg)
         val location = betteView.locationOnScreen
         val rax = location[0].toFloat()
