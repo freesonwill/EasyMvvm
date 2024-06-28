@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 
 import com.cn.game.sdk2.ui.helper.ViewHelper
 import com.cn.game.sdk2.ui.view.FastLogoView
+import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.imp.GameSDK
 import com.cn.game.sdk2.websocket.interfaces.SDKEnterLiveCallbackListener
@@ -33,6 +34,7 @@ class MainActivity : AppCompatActivity() {
         btnOpen.setOnClickListener {
             //MyGameManager.showFastView(this)
             //ViewHelper.showFastView(this)
+
             if(gameAboutModel.isLoginSuccess.value == true){
                 GameSDK.enterLive("1213", listOf(1), "", object : SDKEnterLiveCallbackListener {
                     override fun callback(code: Int, message: String?) {

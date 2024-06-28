@@ -302,6 +302,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             txtWinMoney.text = "$${winMoney.formatRealMoney()}"
             lottieAnimView.addAnimatorListener(object : Animator.AnimatorListener {
                 override fun onAnimationStart(animation: Animator) {
+                    PromptSoundPlay.playWinEffect()
                 }
 
                 override fun onAnimationEnd(animation: Animator) {
@@ -679,13 +680,13 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
     private fun setClick() {
         mDatabind.apply {
-            rlClickHide.clickNoRepeat {
+            rlClickHide.clickNoRepeat(0) {
                 PromptSoundPlay.btnPlayMedia(requireContext())
                 resultAnimation(!mViewModel.isShowResult)
             }
 
             //点击更多弹出框
-            llHomeMore.clickNoRepeat {
+            llHomeMore.clickNoRepeat(0) {
                 if (homeMorePop == null) {
                     val bubbleAttach = CustomBubbleAttachPopup(requireContext())
                     bubbleAttach.customBubbleAttachListener =
