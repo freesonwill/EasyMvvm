@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.animation.addListener
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.lifecycleScope
@@ -17,6 +18,7 @@ import com.cn.game.sdk2.base.BaseGameFragment
 import com.cn.game.sdk2.data.EventConst
 import com.cn.game.sdk2.databinding.FragDxdsBinding
 import com.cn.game.sdk2.ui.helper.ViewHelper.isAdd
+import com.cn.game.sdk2.ui.view.BetteView
 import com.cn.game.sdk2.ui.view.MoneyOKView
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
@@ -152,11 +154,17 @@ abstract class BaseFast3Fragment<VM : BaseViewModel, VB : ViewDataBinding>(var f
                                             result,
                                             areaView,
                                             areaView.moneyView,
+                                            areaView.betteView,
                                             isNewAdd = true
                                         )
                                     }
                                 } else {
-                                    emitMoneyAnim(result, areaView, areaView.moneyView)
+                                    emitMoneyAnim(
+                                        result,
+                                        areaView,
+                                        areaView.moneyView,
+                                        areaView.betteView
+                                    )
                                 }
                             }
                         } else {
@@ -294,12 +302,16 @@ abstract class BaseFast3Fragment<VM : BaseViewModel, VB : ViewDataBinding>(var f
             endY < limitTop -> (limitTop - betteY).toFloat()
             else -> dy
         }
+
+        areaView.betteView.translationX = it.translationX
+        areaView.betteView.translationY = it.translationY
     }
 
     private fun emitMoneyAnim(
         recordBean: BettingRecordBean,
         areaView: GameAreaView,
         moneyOKView: MoneyOKView,
+        betteView: BetteView,
         isNewAdd: Boolean = false
     ) {
         recordBean.viewXYTemporary[0] = moneyOKView.translationX
@@ -308,16 +320,19 @@ abstract class BaseFast3Fragment<VM : BaseViewModel, VB : ViewDataBinding>(var f
             Fast3MainFragment.TAG,
             "坐标信息--->${moneyOKView.translationX} ${moneyOKView.translationY}"
         )
-        val betteView = moneyOKView.findViewById<ImageView>(R.id.ivShowBg)
-        val location = betteView.locationOnScreen
+        val location = moneyOKView.ivShowBg.locationOnScreen
         val rax = location[0].toFloat()
         val ray = location[1].toFloat()
         if (isNewAdd) {
+            moneyOKView.ivShowBg.isInvisible = true
             moneyOKView.parentView = moneyOKView.parent as ViewGroup
             moneyOKView.isVisible = false
+            betteView.parentView = betteView.parent as ViewGroup
+            betteView.isVisible = false
         }
         fast3VM.emitMoneyAnim(rax, ray, areaView = areaView, endCallBack = {
             moneyOKView.isVisible = true
+            betteView.isVisible = true
         })
     }
 }

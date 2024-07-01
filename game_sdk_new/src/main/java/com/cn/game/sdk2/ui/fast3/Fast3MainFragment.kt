@@ -97,7 +97,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     private var anchorMoneyView: MoneyOKView? = null
 
     //<areaCode,<money,View>>
-    private val moneyOkViewMap by lazy { mutableMapOf<Int, MoneyOKView>() }
+    private val currentBetteAreaMap by lazy { mutableMapOf<Int, GameAreaView>() }
     private val allGameAreaMap by lazy { mutableMapOf<Int, GameAreaView>() }
 
     //==================================== Method ===============================================//
@@ -250,7 +250,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                         startWinLottieAnim(endCallBack = {
                             //开奖结果注区动画闪烁
                             Log.e(TAG, "中奖注区结果监听--->${gameAboutModel.lotteryResultList}")
-                            mViewModel.userLotteryResultLiveData.value = gameAboutModel.lotteryResultList
+                            mViewModel.userLotteryResultLiveData.value =
+                                gameAboutModel.lotteryResultList
 
                             //中奖区域金额刷新
                             Log.e(TAG, "中奖注区筹码监听--->${gameAboutModel.userLotteryResult}")
@@ -462,17 +463,12 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
      */
     private fun notifyMoneyOkView(list: List<BettingRecordBean>?) {
         if (list.isNullOrEmpty()) {
-            moneyOkViewMap.forEach {
-                it.value.let { moneyView ->
-                    if (moneyView.isAdd()) {
-                        val parent = moneyView.parent as ViewGroup
-                        parent.removeView(moneyView)
-                    }
-                }
+            currentBetteAreaMap.forEach {
+                it.value.removeChildViewFromParent()
             }
-            moneyOkViewMap.clear()
+            currentBetteAreaMap.clear()
         } else {
-            val iterator = moneyOkViewMap.iterator()
+            val iterator = currentBetteAreaMap.iterator()
             var hasFlag: Boolean
             while (iterator.hasNext()) {
                 hasFlag = false
@@ -488,10 +484,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     }
                 }
                 if (!hasFlag) {
-                    if (entry.value.isAdd()) {
-                        val parent = entry.value.parent as ViewGroup
-                        parent.removeView(entry.value)
-                    }
+                    entry.value.removeChildViewFromParent()
                     iterator.remove()
                 }
             }
@@ -778,8 +771,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                             if (!map.isNullOrEmpty()) {
                                 map.forEach {
                                     it.value.let { record ->
-                                        if (moneyOkViewMap.containsKey(record.bettingArea.number)) {
-                                            moneyOkViewMap[record.bettingArea.number]?.setShowMoney(
+                                        if (currentBetteAreaMap.containsKey(record.bettingArea.number)) {
+                                            currentBetteAreaMap[record.bettingArea.number]?.setShowMoney(
                                                 record.money
                                             )
                                         } else {
@@ -812,10 +805,23 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                     moneyView.parentView?.addView(moneyView, params)
                                     moneyView.translationX = it.value.viewXYTemporary[0]
                                     moneyView.translationY = it.value.viewXYTemporary[1]
-                                    moneyOkViewMap[it.key.number] = moneyView
-                                    moneyView.setShowMoney(it.value.money)
                                 }
                             }
+                            if(!areaView.betteView.isAdd()){
+                                val params = FrameLayout.LayoutParams(
+                                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                                    ViewGroup.LayoutParams.WRAP_CONTENT
+                                )
+                                areaView.betteView.let { betteView ->
+                                    areaView.betteView.parentView?.addView(betteView, params)
+                                    betteView.translationX = it.value.viewXYTemporary[0]
+                                    betteView.translationY = it.value.viewXYTemporary[1]
+                                }
+                            }
+
+                            currentBetteAreaMap[it.key.number] = areaView
+                            areaView.setShowMoney(it.value.money)
+
                             if (areaView.areaCode == gameAboutModel.lastBetting?.number) {
                                 "lastbettting = ${gameAboutModel.lastBetting?.number}".loge()
                                 "lastbettting areaCode = ${areaView.areaCode}".loge()
@@ -977,7 +983,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         hiddenAnchorTop()
         areaView.moneyView.showTop()
         anchorMoneyView = areaView.moneyView
-        moneyOkViewMap[areaView.areaCode] = areaView.moneyView
+        currentBetteAreaMap[areaView.areaCode] = areaView
         mDatabind.tempTouch.setAnchorMoneyView(areaView.moneyView)
         reLocatePage()
     }

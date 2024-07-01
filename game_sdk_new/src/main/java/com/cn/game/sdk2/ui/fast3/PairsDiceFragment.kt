@@ -74,7 +74,17 @@ class PairsDiceFragment(fast3VM: Fast3ViewModel) :
             )
             it.translationY = 0f
             it.translationX = 0f
-            mDatabind.rlHomeRoot.addView(it, params)
+            mDatabind.flRoot.addView(it, params)
+        }
+
+        areaView.betteView.let {
+            val betteParams = FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            areaView.betteView.translationX = 0f
+            areaView.betteView.translationY = 0f
+            mDatabind.rlHomeRoot.addView(areaView.betteView, betteParams)
         }
     }
 }

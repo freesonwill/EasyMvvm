@@ -10,6 +10,11 @@
             type="com.cn.game.sdk2.ui.viewmodel.fast3.SingleDiceVm" />
     </data>
 
+    <FrameLayout
+        android:id="@+id/flRoot"
+        android:layout_width="match_parent"
+        android:layout_height="180dp">
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/rlHomeRoot"
         android:layout_width="match_parent"
@@ -310,4 +315,5 @@
                 app:srcCompat="@drawable/flash_left_be" />
         </com.cn.game.sdk2.ui.view.game.GameAreaView>
     </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
 </layout>

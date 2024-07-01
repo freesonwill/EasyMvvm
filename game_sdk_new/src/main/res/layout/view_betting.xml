@@ -21,7 +21,8 @@
             android:id="@+id/llShowTop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="invisible">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/ivOff"
@@ -50,6 +51,7 @@
             android:textColor="@color/g_f8e0c4"
             android:textSize="13sp"
             android:textStyle="bold"
+            android:visibility="invisible"
             tools:text="1999.0" />
 
         <androidx.appcompat.widget.AppCompatImageView

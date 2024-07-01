@@ -10,16 +10,21 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.core.view.get
 import com.cn.game.sdk2.data.bean.LocationClickPoint
+import com.cn.game.sdk2.ui.helper.ViewHelper.isAdd
+import com.cn.game.sdk2.ui.view.BetteView
 import com.cn.game.sdk2.ui.view.MoneyOKView
 import com.cn.game.sdk2.websocket.bean.Betting
+import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import kotlin.math.abs
 
 class GameAreaView : FrameLayout {
     lateinit var content: View
-    lateinit var moneyView: MoneyOKView
+    lateinit var moneyViewPair: Pair<MoneyOKView, BetteView>
     lateinit var flickerView: View
     var areaInfo: Betting? = null
     val areaCode: Int get() = areaInfo?.number ?: 0
+    val moneyView: MoneyOKView get() = moneyViewPair.first
+    val betteView: BetteView get() = moneyViewPair.second
 
     private var oldX = 0f
     private var oldY = 0f
@@ -40,7 +45,7 @@ class GameAreaView : FrameLayout {
 
     private fun initView() {
         content = getChildAt(0)
-        moneyView = MoneyOKView(context)
+        moneyViewPair = Pair(MoneyOKView(context), BetteView(context))
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
@@ -61,6 +66,23 @@ class GameAreaView : FrameLayout {
         }
         return true
     }
+
+    fun setShowMoney(money: Int) {
+        moneyViewPair.first.setShowMoney(money)
+        moneyViewPair.second.updateBetteIcon(money)
+    }
+
+    fun removeChildViewFromParent() {
+        if (moneyView.isAdd()) {
+            val parent = moneyView.parent as ViewGroup
+            parent.removeView(moneyView)
+        }
+        if (betteView.isAdd()) {
+            val parent = betteView.parent as ViewGroup
+            parent.removeView(betteView)
+        }
+    }
+
 
     /**
      * 触摸点击事件，返回点击的坐标信息

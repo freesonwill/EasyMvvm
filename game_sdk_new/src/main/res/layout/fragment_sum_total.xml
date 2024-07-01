@@ -10,747 +10,752 @@
             type="com.cn.game.sdk2.ui.viewmodel.fast3.SumTotalVm" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/rlHomeRoot"
+    <FrameLayout
+        android:id="@+id/flRoot"
         android:layout_width="match_parent"
         android:layout_height="180dp"
         android:clipChildren="false">
 
-        <com.cn.game.sdk2.ui.view.game.GameAreaView
-            android:id="@+id/gavSumFour"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:areaInfo="@{model.bettingArray[4]}"
-            app:layout_constraintBottom_toTopOf="@id/gavSumNine"
-            app:layout_constraintEnd_toStartOf="@id/gavSumFive"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/rlHomeRoot"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipChildren="false">
 
-
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="fitXY"
-                app:srcCompat="@drawable/icon_sum_bg" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center">
+            <com.cn.game.sdk2.ui.view.game.GameAreaView
+                android:id="@+id/gavSumFour"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:areaInfo="@{model.bettingArray[4]}"
+                app:layout_constraintBottom_toTopOf="@id/gavSumNine"
+                app:layout_constraintEnd_toStartOf="@id/gavSumFive"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivSumFour"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/icon_sum_si" />
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    app:srcCompat="@drawable/icon_sum_bg" />
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/txtSumFour"
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{model.multiplierStr(4)}"
-                    android:textColor="@color/g_f8e0c4"
-                    android:textSize="14sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivSumFour"
-                    tools:text="x61" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    android:layout_gravity="center">
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/ivSumFlashFour"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="fitXY"
-                android:visibility="gone"
-                app:srcCompat="@drawable/flash_centre" />
-        </com.cn.game.sdk2.ui.view.game.GameAreaView>
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ivSumFour"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/icon_sum_si" />
 
-        <com.cn.game.sdk2.ui.view.game.GameAreaView
-            android:id="@+id/gavSumFive"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:areaInfo="@{model.bettingArray[5]}"
-            app:layout_constraintBottom_toBottomOf="@id/gavSumFour"
-            app:layout_constraintEnd_toStartOf="@id/gavSumSix"
-            app:layout_constraintStart_toEndOf="@id/gavSumFour"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="fitXY"
-                app:srcCompat="@drawable/icon_sum_bg" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center">
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/txtSumFour"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{model.multiplierStr(4)}"
+                        android:textColor="@color/g_f8e0c4"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/ivSumFour"
+                        tools:text="x61" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivSumFive"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/icon_sum_wu" />
+                    android:id="@+id/ivSumFlashFour"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/flash_centre" />
+            </com.cn.game.sdk2.ui.view.game.GameAreaView>
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/txtSumFive"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@{model.multiplierStr(5)}"
-                    android:textColor="@color/g_f8e0c4"
-                    android:textSize="14sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivSumFive"
-                    tools:text="x31" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/ivSumFlashFive"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="fitXY"
-                android:visibility="gone"
-                app:srcCompat="@drawable/flash_centre" />
-
-        </com.cn.game.sdk2.ui.view.game.GameAreaView>
-
-        <com.cn.game.sdk2.ui.view.game.GameAreaView
-            android:id="@+id/gavSumSix"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:areaInfo="@{model.bettingArray[6]}"
-            app:layout_constraintBottom_toBottomOf="@id/gavSumFour"
-            app:layout_constraintEnd_toStartOf="@id/gavSumSeven"
-            app:layout_constraintStart_toEndOf="@id/gavSumFive"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="fitXY"
-                app:srcCompat="@drawable/icon_sum_bg" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center">
+            <com.cn.game.sdk2.ui.view.game.GameAreaView
+                android:id="@+id/gavSumFive"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:areaInfo="@{model.bettingArray[5]}"
+                app:layout_constraintBottom_toBottomOf="@id/gavSumFour"
+                app:layout_constraintEnd_toStartOf="@id/gavSumSix"
+                app:layout_constraintStart_toEndOf="@id/gavSumFour"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivSumSix"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/icon_sum_liu" />
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    app:srcCompat="@drawable/icon_sum_bg" />
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/txtSumSix"
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{model.multiplierStr(6)}"
-                    android:textColor="@color/g_f8e0c4"
-                    android:textSize="14sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivSumSix"
-                    tools:text="x19" />
+                    android:layout_gravity="center">
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ivSumFive"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/icon_sum_wu" />
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/ivSumFlashSix"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="fitXY"
-                android:visibility="gone"
-                app:srcCompat="@drawable/flash_centre" />
-        </com.cn.game.sdk2.ui.view.game.GameAreaView>
-
-        <com.cn.game.sdk2.ui.view.game.GameAreaView
-            android:id="@+id/gavSumSeven"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:areaInfo="@{model.bettingArray[7]}"
-            app:layout_constraintBottom_toBottomOf="@id/gavSumFour"
-            app:layout_constraintEnd_toStartOf="@id/gavSumEight"
-            app:layout_constraintStart_toEndOf="@id/gavSumSix"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="fitXY"
-                app:srcCompat="@drawable/icon_sum_bg" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center">
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/txtSumFive"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{model.multiplierStr(5)}"
+                        android:textColor="@color/g_f8e0c4"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/ivSumFive"
+                        tools:text="x31" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivSumSeven"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/icon_sum_qi" />
+                    android:id="@+id/ivSumFlashFive"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/flash_centre" />
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/txtSumSeven"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@{model.multiplierStr(7)}"
-                    android:textColor="@color/g_f8e0c4"
-                    android:textSize="14sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivSumSeven"
-                    tools:text="x13" />
+            </com.cn.game.sdk2.ui.view.game.GameAreaView>
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/ivSumFlashSeven"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="fitXY"
-                android:visibility="gone"
-                app:srcCompat="@drawable/flash_centre" />
-        </com.cn.game.sdk2.ui.view.game.GameAreaView>
-
-        <com.cn.game.sdk2.ui.view.game.GameAreaView
-            android:id="@+id/gavSumEight"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:areaInfo="@{model.bettingArray[8]}"
-            app:layout_constraintBottom_toBottomOf="@id/gavSumFour"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/gavSumSeven"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="fitXY"
-                app:srcCompat="@drawable/icon_sum_bg" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center">
+            <com.cn.game.sdk2.ui.view.game.GameAreaView
+                android:id="@+id/gavSumSix"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:areaInfo="@{model.bettingArray[6]}"
+                app:layout_constraintBottom_toBottomOf="@id/gavSumFour"
+                app:layout_constraintEnd_toStartOf="@id/gavSumSeven"
+                app:layout_constraintStart_toEndOf="@id/gavSumFive"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivSumEight"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/icon_sum_ba" />
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    app:srcCompat="@drawable/icon_sum_bg" />
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/txtSumEight"
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{model.multiplierStr(8)}"
-                    android:textColor="@color/g_f8e0c4"
-                    android:textSize="14sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivSumEight"
-                    tools:text="x9" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    android:layout_gravity="center">
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/ivSumFlashEight"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="fitXY"
-                android:visibility="gone"
-                app:srcCompat="@drawable/flash_centre" />
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ivSumSix"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/icon_sum_liu" />
 
-        </com.cn.game.sdk2.ui.view.game.GameAreaView>
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/txtSumSix"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{model.multiplierStr(6)}"
+                        android:textColor="@color/g_f8e0c4"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/ivSumSix"
+                        tools:text="x19" />
 
-        <com.cn.game.sdk2.ui.view.game.GameAreaView
-            android:id="@+id/gavSumNine"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:areaInfo="@{model.bettingArray[9]}"
-            app:layout_constraintBottom_toTopOf="@id/gavSumFourteen"
-            app:layout_constraintEnd_toStartOf="@id/gavSumTen"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/gavSumFour">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="fitXY"
-                app:srcCompat="@drawable/icon_sum_bg" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center">
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivSumNine"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/icon_sum_jiu" />
+                    android:id="@+id/ivSumFlashSix"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/flash_centre" />
+            </com.cn.game.sdk2.ui.view.game.GameAreaView>
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/txtSumNine"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@{model.multiplierStr(9)}"
-                    android:textColor="@color/g_f8e0c4"
-                    android:textSize="14sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivSumNine"
-                    tools:text="x7" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/ivSumFlashNine"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="fitXY"
-                android:visibility="gone"
-                app:srcCompat="@drawable/flash_centre" />
-        </com.cn.game.sdk2.ui.view.game.GameAreaView>
-
-        <com.cn.game.sdk2.ui.view.game.GameAreaView
-            android:id="@+id/gavSumTen"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:areaInfo="@{model.bettingArray[10]}"
-            app:layout_constraintBottom_toBottomOf="@id/gavSumNine"
-            app:layout_constraintEnd_toStartOf="@id/gavSumEleven"
-            app:layout_constraintStart_toEndOf="@id/gavSumNine"
-            app:layout_constraintTop_toTopOf="@id/gavSumNine">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="fitXY"
-                app:srcCompat="@drawable/icon_sum_bg" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center">
+            <com.cn.game.sdk2.ui.view.game.GameAreaView
+                android:id="@+id/gavSumSeven"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:areaInfo="@{model.bettingArray[7]}"
+                app:layout_constraintBottom_toBottomOf="@id/gavSumFour"
+                app:layout_constraintEnd_toStartOf="@id/gavSumEight"
+                app:layout_constraintStart_toEndOf="@id/gavSumSix"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivSumTen"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/icon_sum_shi" />
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    app:srcCompat="@drawable/icon_sum_bg" />
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/txtSumTen"
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{model.multiplierStr(10)}"
-                    android:textColor="@color/g_f8e0c4"
-                    android:textSize="14sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivSumTen"
-                    tools:text="x7" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    android:layout_gravity="center">
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/ivSumFlashTen"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="fitXY"
-                android:visibility="gone"
-                app:srcCompat="@drawable/flash_centre" />
-        </com.cn.game.sdk2.ui.view.game.GameAreaView>
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ivSumSeven"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/icon_sum_qi" />
 
-        <com.cn.game.sdk2.ui.view.game.GameAreaView
-            android:id="@+id/gavSumEleven"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:areaInfo="@{model.bettingArray[11]}"
-            app:layout_constraintBottom_toBottomOf="@id/gavSumNine"
-            app:layout_constraintEnd_toStartOf="@id/gavSumTwelve"
-            app:layout_constraintStart_toEndOf="@id/gavSumTen"
-            app:layout_constraintTop_toTopOf="@id/gavSumNine">
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/txtSumSeven"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{model.multiplierStr(7)}"
+                        android:textColor="@color/g_f8e0c4"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/ivSumSeven"
+                        tools:text="x13" />
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="fitXY"
-                app:srcCompat="@drawable/icon_sum_bg" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center">
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivSumEleven"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/icon_sum_shiyi" />
+                    android:id="@+id/ivSumFlashSeven"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/flash_centre" />
+            </com.cn.game.sdk2.ui.view.game.GameAreaView>
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/txtSumEleven"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@{model.multiplierStr(14)}"
-                    android:textColor="@color/g_f8e0c4"
-                    android:textSize="14sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivSumEleven"
-                    tools:text="x7" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/ivSumFlashEleven"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="fitXY"
-                android:visibility="gone"
-                app:srcCompat="@drawable/flash_centre" />
-        </com.cn.game.sdk2.ui.view.game.GameAreaView>
-
-        <com.cn.game.sdk2.ui.view.game.GameAreaView
-            android:id="@+id/gavSumTwelve"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:areaInfo="@{model.bettingArray[12]}"
-            app:layout_constraintBottom_toBottomOf="@id/gavSumNine"
-            app:layout_constraintEnd_toStartOf="@id/gavSumThirteen"
-            app:layout_constraintStart_toEndOf="@id/gavSumEleven"
-            app:layout_constraintTop_toTopOf="@id/gavSumNine">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="fitXY"
-                app:srcCompat="@drawable/icon_sum_bg" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center">
+            <com.cn.game.sdk2.ui.view.game.GameAreaView
+                android:id="@+id/gavSumEight"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:areaInfo="@{model.bettingArray[8]}"
+                app:layout_constraintBottom_toBottomOf="@id/gavSumFour"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/gavSumSeven"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivSumTwelve"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/icon_sum_shier" />
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    app:srcCompat="@drawable/icon_sum_bg" />
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/txtSumTwelve"
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{model.multiplierStr(12)}"
-                    android:textColor="@color/g_f8e0c4"
-                    android:textSize="14sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivSumTwelve"
-                    tools:text="x7" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    android:layout_gravity="center">
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/ivSumFlashTwelve"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="fitXY"
-                android:visibility="gone"
-                app:srcCompat="@drawable/flash_centre" />
-        </com.cn.game.sdk2.ui.view.game.GameAreaView>
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ivSumEight"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/icon_sum_ba" />
 
-        <com.cn.game.sdk2.ui.view.game.GameAreaView
-            android:id="@+id/gavSumThirteen"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:areaInfo="@{model.bettingArray[13]}"
-            app:layout_constraintBottom_toBottomOf="@id/gavSumNine"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/gavSumTwelve"
-            app:layout_constraintTop_toTopOf="@id/gavSumNine">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="fitXY"
-                app:srcCompat="@drawable/icon_sum_bg" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center">
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/txtSumEight"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{model.multiplierStr(8)}"
+                        android:textColor="@color/g_f8e0c4"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/ivSumEight"
+                        tools:text="x9" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivSumThirteen"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/icon_sum_shisan" />
+                    android:id="@+id/ivSumFlashEight"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/flash_centre" />
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/txtSumThirteen"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@{model.multiplierStr(13)}"
-                    android:textColor="@color/g_f8e0c4"
-                    android:textSize="14sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivSumThirteen"
-                    tools:text="x9" />
+            </com.cn.game.sdk2.ui.view.game.GameAreaView>
 
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/ivSumFlashThirteen"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="fitXY"
-                android:visibility="gone"
-                app:srcCompat="@drawable/flash_centre" />
-        </com.cn.game.sdk2.ui.view.game.GameAreaView>
-
-        <com.cn.game.sdk2.ui.view.game.GameAreaView
-            android:id="@+id/gavSumFourteen"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:areaInfo="@{model.bettingArray[14]}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/gavSumFifteen"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/gavSumNine">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="fitXY"
-                app:srcCompat="@drawable/icon_sum_bg" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center">
+            <com.cn.game.sdk2.ui.view.game.GameAreaView
+                android:id="@+id/gavSumNine"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:areaInfo="@{model.bettingArray[9]}"
+                app:layout_constraintBottom_toTopOf="@id/gavSumFourteen"
+                app:layout_constraintEnd_toStartOf="@id/gavSumTen"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/gavSumFour">
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivSumFourTeen"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/icon_sum_shisi" />
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    app:srcCompat="@drawable/icon_sum_bg" />
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/txtSumFourteen"
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{model.multiplierStr(14)}"
-                    android:textColor="@color/g_f8e0c4"
-                    android:textSize="14sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivSumFourTeen"
-                    tools:text="x13" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    android:layout_gravity="center">
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/ivSumFlashFourteen"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="fitXY"
-                android:visibility="gone"
-                app:srcCompat="@drawable/flash_centre" />
-        </com.cn.game.sdk2.ui.view.game.GameAreaView>
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ivSumNine"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/icon_sum_jiu" />
 
-        <com.cn.game.sdk2.ui.view.game.GameAreaView
-            android:id="@+id/gavSumFifteen"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:areaInfo="@{model.bettingArray[15]}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/gavSumSixteen"
-            app:layout_constraintStart_toEndOf="@id/gavSumFourteen"
-            app:layout_constraintTop_toTopOf="@id/gavSumFourteen">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="fitXY"
-                app:srcCompat="@drawable/icon_sum_bg" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center">
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/txtSumNine"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{model.multiplierStr(9)}"
+                        android:textColor="@color/g_f8e0c4"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/ivSumNine"
+                        tools:text="x7" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivSumFifteen"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/icon_sum_shiwu" />
+                    android:id="@+id/ivSumFlashNine"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/flash_centre" />
+            </com.cn.game.sdk2.ui.view.game.GameAreaView>
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/txtSumFifteen"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@{model.multiplierStr(15)}"
-                    android:textColor="@color/g_f8e0c4"
-                    android:textSize="14sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivSumFifteen"
-                    tools:text="x19" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/ivSumFlashFifteen"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="fitXY"
-                android:visibility="gone"
-                app:srcCompat="@drawable/flash_centre" />
-        </com.cn.game.sdk2.ui.view.game.GameAreaView>
-
-        <com.cn.game.sdk2.ui.view.game.GameAreaView
-            android:id="@+id/gavSumSixteen"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:areaInfo="@{model.bettingArray[16]}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/gavSumSeventeen"
-            app:layout_constraintStart_toEndOf="@id/gavSumFifteen"
-            app:layout_constraintTop_toTopOf="@id/gavSumFourteen">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="fitXY"
-                app:srcCompat="@drawable/icon_sum_bg" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center">
+            <com.cn.game.sdk2.ui.view.game.GameAreaView
+                android:id="@+id/gavSumTen"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:areaInfo="@{model.bettingArray[10]}"
+                app:layout_constraintBottom_toBottomOf="@id/gavSumNine"
+                app:layout_constraintEnd_toStartOf="@id/gavSumEleven"
+                app:layout_constraintStart_toEndOf="@id/gavSumNine"
+                app:layout_constraintTop_toTopOf="@id/gavSumNine">
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivSumSixteen"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/icon_sum_shiliu" />
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    app:srcCompat="@drawable/icon_sum_bg" />
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/txtSumSixteen"
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{model.multiplierStr(16)}"
-                    android:textColor="@color/g_f8e0c4"
-                    android:textSize="14sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivSumSixteen"
-                    tools:text="x31" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    android:layout_gravity="center">
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/ivSumFlashSixteen"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="fitXY"
-                android:visibility="gone"
-                app:srcCompat="@drawable/flash_centre" />
-        </com.cn.game.sdk2.ui.view.game.GameAreaView>
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ivSumTen"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/icon_sum_shi" />
 
-        <com.cn.game.sdk2.ui.view.game.GameAreaView
-            android:id="@+id/gavSumSeventeen"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:areaInfo="@{model.bettingArray[17]}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@id/gavSumTwelve"
-            app:layout_constraintStart_toEndOf="@id/gavSumSixteen"
-            app:layout_constraintTop_toTopOf="@id/gavSumFourteen">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="fitXY"
-                app:srcCompat="@drawable/icon_sum_bg" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center">
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/txtSumTen"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{model.multiplierStr(10)}"
+                        android:textColor="@color/g_f8e0c4"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/ivSumTen"
+                        tools:text="x7" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivSumSeventeen"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/icon_sum_shiqi" />
+                    android:id="@+id/ivSumFlashTen"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/flash_centre" />
+            </com.cn.game.sdk2.ui.view.game.GameAreaView>
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/txtSumSeventeen"
+            <com.cn.game.sdk2.ui.view.game.GameAreaView
+                android:id="@+id/gavSumEleven"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:areaInfo="@{model.bettingArray[11]}"
+                app:layout_constraintBottom_toBottomOf="@id/gavSumNine"
+                app:layout_constraintEnd_toStartOf="@id/gavSumTwelve"
+                app:layout_constraintStart_toEndOf="@id/gavSumTen"
+                app:layout_constraintTop_toTopOf="@id/gavSumNine">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    app:srcCompat="@drawable/icon_sum_bg" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{model.multiplierStr(17)}"
-                    android:textColor="@color/g_f8e0c4"
-                    android:textSize="14sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivSumSeventeen"
-                    tools:text="x61" />
+                    android:layout_gravity="center">
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ivSumEleven"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/icon_sum_shiyi" />
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/ivSumFlashSeventeen"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="fitXY"
-                android:visibility="gone"
-                app:srcCompat="@drawable/flash_centre" />
-        </com.cn.game.sdk2.ui.view.game.GameAreaView>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/txtSumEleven"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{model.multiplierStr(14)}"
+                        android:textColor="@color/g_f8e0c4"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/ivSumEleven"
+                        tools:text="x7" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivSumFlashEleven"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/flash_centre" />
+            </com.cn.game.sdk2.ui.view.game.GameAreaView>
+
+            <com.cn.game.sdk2.ui.view.game.GameAreaView
+                android:id="@+id/gavSumTwelve"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:areaInfo="@{model.bettingArray[12]}"
+                app:layout_constraintBottom_toBottomOf="@id/gavSumNine"
+                app:layout_constraintEnd_toStartOf="@id/gavSumThirteen"
+                app:layout_constraintStart_toEndOf="@id/gavSumEleven"
+                app:layout_constraintTop_toTopOf="@id/gavSumNine">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    app:srcCompat="@drawable/icon_sum_bg" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ivSumTwelve"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/icon_sum_shier" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/txtSumTwelve"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{model.multiplierStr(12)}"
+                        android:textColor="@color/g_f8e0c4"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/ivSumTwelve"
+                        tools:text="x7" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivSumFlashTwelve"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/flash_centre" />
+            </com.cn.game.sdk2.ui.view.game.GameAreaView>
+
+            <com.cn.game.sdk2.ui.view.game.GameAreaView
+                android:id="@+id/gavSumThirteen"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:areaInfo="@{model.bettingArray[13]}"
+                app:layout_constraintBottom_toBottomOf="@id/gavSumNine"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/gavSumTwelve"
+                app:layout_constraintTop_toTopOf="@id/gavSumNine">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    app:srcCompat="@drawable/icon_sum_bg" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ivSumThirteen"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/icon_sum_shisan" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/txtSumThirteen"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{model.multiplierStr(13)}"
+                        android:textColor="@color/g_f8e0c4"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/ivSumThirteen"
+                        tools:text="x9" />
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivSumFlashThirteen"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/flash_centre" />
+            </com.cn.game.sdk2.ui.view.game.GameAreaView>
+
+            <com.cn.game.sdk2.ui.view.game.GameAreaView
+                android:id="@+id/gavSumFourteen"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:areaInfo="@{model.bettingArray[14]}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/gavSumFifteen"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/gavSumNine">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    app:srcCompat="@drawable/icon_sum_bg" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ivSumFourTeen"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/icon_sum_shisi" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/txtSumFourteen"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{model.multiplierStr(14)}"
+                        android:textColor="@color/g_f8e0c4"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/ivSumFourTeen"
+                        tools:text="x13" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivSumFlashFourteen"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/flash_centre" />
+            </com.cn.game.sdk2.ui.view.game.GameAreaView>
+
+            <com.cn.game.sdk2.ui.view.game.GameAreaView
+                android:id="@+id/gavSumFifteen"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:areaInfo="@{model.bettingArray[15]}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/gavSumSixteen"
+                app:layout_constraintStart_toEndOf="@id/gavSumFourteen"
+                app:layout_constraintTop_toTopOf="@id/gavSumFourteen">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    app:srcCompat="@drawable/icon_sum_bg" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ivSumFifteen"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/icon_sum_shiwu" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/txtSumFifteen"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{model.multiplierStr(15)}"
+                        android:textColor="@color/g_f8e0c4"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/ivSumFifteen"
+                        tools:text="x19" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivSumFlashFifteen"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/flash_centre" />
+            </com.cn.game.sdk2.ui.view.game.GameAreaView>
+
+            <com.cn.game.sdk2.ui.view.game.GameAreaView
+                android:id="@+id/gavSumSixteen"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:areaInfo="@{model.bettingArray[16]}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/gavSumSeventeen"
+                app:layout_constraintStart_toEndOf="@id/gavSumFifteen"
+                app:layout_constraintTop_toTopOf="@id/gavSumFourteen">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    app:srcCompat="@drawable/icon_sum_bg" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ivSumSixteen"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/icon_sum_shiliu" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/txtSumSixteen"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{model.multiplierStr(16)}"
+                        android:textColor="@color/g_f8e0c4"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/ivSumSixteen"
+                        tools:text="x31" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivSumFlashSixteen"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/flash_centre" />
+            </com.cn.game.sdk2.ui.view.game.GameAreaView>
+
+            <com.cn.game.sdk2.ui.view.game.GameAreaView
+                android:id="@+id/gavSumSeventeen"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:areaInfo="@{model.bettingArray[17]}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@id/gavSumTwelve"
+                app:layout_constraintStart_toEndOf="@id/gavSumSixteen"
+                app:layout_constraintTop_toTopOf="@id/gavSumFourteen">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    app:srcCompat="@drawable/icon_sum_bg" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ivSumSeventeen"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/icon_sum_shiqi" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/txtSumSeventeen"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{model.multiplierStr(17)}"
+                        android:textColor="@color/g_f8e0c4"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/ivSumSeventeen"
+                        tools:text="x61" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivSumFlashSeventeen"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/flash_centre" />
+            </com.cn.game.sdk2.ui.view.game.GameAreaView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
 </layout>

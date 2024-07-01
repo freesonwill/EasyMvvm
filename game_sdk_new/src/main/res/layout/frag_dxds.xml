@@ -2,471 +2,525 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+
     <data>
+
         <variable
             name="model"
             type="com.cn.game.sdk2.ui.viewmodel.fast3.DXDSVm" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/rlHomeRoot"
-        android:clipChildren="false"
+    <FrameLayout
+        android:id="@+id/flRoot"
         android:layout_width="match_parent"
-        android:layout_height="180dp" >
-        <!-- 左上角-->
-        <com.cn.game.sdk2.ui.view.game.GameAreaView
-            android:id="@+id/small_view"
-            app:areaInfo="@{model.bettingArray[2]}"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/big_view"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/single_view"
-            android:layout_width="0dp"
-            android:layout_height="0dp">
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivLeftTopshow"
+        android:layout_height="180dp"
+        android:clipChildren="false">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/rlHomeRoot"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <!-- 左上角-->
+            <com.cn.game.sdk2.ui.view.game.GameAreaView
+                android:id="@+id/small_view"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:areaInfo="@{model.bettingArray[2]}"
+                app:layout_constraintBottom_toTopOf="@id/single_view"
+                app:layout_constraintEnd_toStartOf="@id/big_view"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="fitXY"
-                    app:srcCompat="@drawable/home_left_top"/>
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:gravity="center"
-                    android:orientation="vertical">
+                    android:layout_height="match_parent">
+
                     <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="29dp"
-                        android:layout_height="29dp"
-                        app:srcCompat="@drawable/icon_txt_small"/>
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/txtOddsSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="14sp"
-                        android:text="@{model.multiplierStr(1)}"
-                        tools:text="1:0.96"
-                        android:textColor="@color/g_f8e0c4"/>
+                        android:id="@+id/ivLeftTopshow"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="fitXY"
+                        app:srcCompat="@drawable/home_left_top" />
 
-                </LinearLayout>
-                <!-- 显示买小的人数和投注多少-->
-                <LinearLayout
-                    android:id="@+id/llBetSmalShow"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginLeft="@dimen/dp_10"
-                    android:layout_marginBottom="@dimen/dp_10"
-                    android:orientation="vertical">
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
                         android:gravity="center"
-                        android:orientation="horizontal">
+                        android:orientation="vertical">
+
                         <androidx.appcompat.widget.AppCompatImageView
-                            android:layout_width="8dp"
-                            android:layout_height="8dp"
-                            app:srcCompat="@drawable/icon_money_new"/>
+                            android:layout_width="29dp"
+                            android:layout_height="29dp"
+                            app:srcCompat="@drawable/icon_txt_small" />
+
                         <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/txtSmallMoney"
+                            android:id="@+id/txtOddsSmall"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="10sp"
-                            tools:text="9899"
-                            android:layout_marginLeft="2dp"
-                            android:textColor="@color/g_f8e0c4"/>
+                            android:text="@{model.multiplierStr(1)}"
+                            android:textColor="@color/g_f8e0c4"
+                            android:textSize="14sp"
+                            tools:text="1:0.96" />
 
                     </LinearLayout>
+                    <!-- 显示买小的人数和投注多少-->
                     <LinearLayout
+                        android:id="@+id/llBetSmalShow"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="horizontal">
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:layout_width="8dp"
-                            android:layout_height="8dp"
-                            app:srcCompat="@drawable/icon_people_num"/>
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/txtSmallNum"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginLeft="@dimen/dp_10"
+                        android:layout_marginBottom="@dimen/dp_10"
+                        android:orientation="vertical">
+
+                        <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="10sp"
-                            tools:text="978"
-                            android:layout_marginLeft="2dp"
-                            android:textColor="@color/g_f8e0c4"/>
+                            android:gravity="center"
+                            android:orientation="horizontal">
 
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:layout_width="8dp"
+                                android:layout_height="8dp"
+                                app:srcCompat="@drawable/icon_money_new" />
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/txtSmallMoney"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="2dp"
+                                android:textColor="@color/g_f8e0c4"
+                                android:textSize="10sp"
+                                tools:text="9899" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:orientation="horizontal">
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:layout_width="8dp"
+                                android:layout_height="8dp"
+                                app:srcCompat="@drawable/icon_people_num" />
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/txtSmallNum"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="2dp"
+                                android:textColor="@color/g_f8e0c4"
+                                android:textSize="10sp"
+                                tools:text="978" />
+
+                        </LinearLayout>
                     </LinearLayout>
-                </LinearLayout>
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivFlickerLeftTop"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="fitXY"
-                    android:visibility="gone"
-                    app:tint="@color/c_ffffff"
-                    app:srcCompat="@drawable/icon_lucency_left_top"/>
-            </RelativeLayout>
-        </com.cn.game.sdk2.ui.view.game.GameAreaView>
-        <!--  右上角-->
-        <com.cn.game.sdk2.ui.view.game.GameAreaView
-            android:id="@+id/big_view"
-            app:areaInfo="@{model.bettingArray[1]}"
-            app:layout_constraintStart_toEndOf="@id/small_view"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/double_view"
-            android:layout_width="0dp"
-            android:layout_height="0dp">
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/rlClickIamge"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="fitXY"
-                    app:srcCompat="@drawable/home_right_top"/>
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:gravity="center"
-                    android:orientation="vertical">
                     <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="29dp"
-                        android:layout_height="29dp"
-                        app:srcCompat="@drawable/icon_txt_big"/>
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/txtOddsBig"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="14sp"
-                        android:text="@{model.multiplierStr(2)}"
-                        tools:text="1:0.96"
-                        android:textColor="@color/g_f8e0c4"/>
+                        android:id="@+id/ivFlickerLeftTop"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="fitXY"
+                        android:visibility="gone"
+                        app:srcCompat="@drawable/icon_lucency_left_top"
+                        app:tint="@color/c_ffffff" />
+                </RelativeLayout>
+            </com.cn.game.sdk2.ui.view.game.GameAreaView>
+            <!--  右上角-->
+            <com.cn.game.sdk2.ui.view.game.GameAreaView
+                android:id="@+id/big_view"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:areaInfo="@{model.bettingArray[1]}"
+                app:layout_constraintBottom_toTopOf="@id/double_view"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/small_view"
+                app:layout_constraintTop_toTopOf="parent">
 
-                </LinearLayout>
-
-                <!-- 显示买大的人数和投注多少-->
-                <LinearLayout
-                    android:id="@+id/llBetBigShow"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="@dimen/dp_10"
-                    android:layout_marginBottom="@dimen/dp_10"
-                    android:orientation="vertical">
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:layout_gravity="right"
-                        android:orientation="horizontal">
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:layout_width="8dp"
-                            android:layout_height="8dp"
-                            app:srcCompat="@drawable/icon_money_new"/>
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/txtBigMoney"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="10sp"
-                            tools:text="9899"
-                            android:layout_marginLeft="2dp"
-                            android:textColor="@color/g_f8e0c4"/>
-
-                    </LinearLayout>
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:layout_gravity="right"
-                        android:orientation="horizontal">
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:layout_width="8dp"
-                            android:layout_height="8dp"
-                            app:srcCompat="@drawable/icon_people_num"/>
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/txtBigNum"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="10sp"
-                            tools:text="978"
-                            android:layout_marginLeft="2dp"
-                            android:textColor="@color/g_f8e0c4"/>
-
-                    </LinearLayout>
-                </LinearLayout>
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivFlickerRightTop"
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="fitXY"
-                    app:tint="@color/c_ffffff"
-                    android:visibility="gone"
-                    app:srcCompat="@drawable/iocn_lucency_right_top"/>
-            </RelativeLayout>
-        </com.cn.game.sdk2.ui.view.game.GameAreaView>
-        <!--左下角-->
-        <com.cn.game.sdk2.ui.view.game.GameAreaView
-            android:id="@+id/single_view"
-            app:areaInfo="@{model.bettingArray[3]}"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/double_view"
-            app:layout_constraintTop_toBottomOf="@id/small_view"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_width="0dp"
-            android:layout_height="0dp">
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/rlClickLeftBelowImage"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="fitXY"
-                    app:srcCompat="@drawable/home_left_below"/>
+                    android:layout_height="match_parent">
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:gravity="center"
-                    android:orientation="vertical">
                     <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="29dp"
-                        android:layout_height="29dp"
-                        app:srcCompat="@drawable/icon_txt_single"/>
+                        android:id="@+id/rlClickIamge"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="fitXY"
+                        app:srcCompat="@drawable/home_right_top" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/txtOddsSingle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/g_f8e0c4"
-                        android:text="@{model.multiplierStr(1)}"
-                        android:textSize="14sp"
-                        tools:text="1:0.96" />
-
-                </LinearLayout>
-
-                <!-- 显示买单的人数和投注多少-->
-                <LinearLayout
-                    android:id="@+id/llBetSingleShow"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginBottom="20dp"
-                    android:orientation="vertical">
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
                         android:gravity="center"
-                        android:orientation="horizontal">
+                        android:orientation="vertical">
+
                         <androidx.appcompat.widget.AppCompatImageView
-                            android:layout_width="8dp"
-                            android:layout_height="8dp"
-                            app:srcCompat="@drawable/icon_money_new"/>
+                            android:layout_width="29dp"
+                            android:layout_height="29dp"
+                            app:srcCompat="@drawable/icon_txt_big" />
+
                         <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/txtSingleMoney"
+                            android:id="@+id/txtOddsBig"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="10sp"
-                            tools:text="9899"
-                            android:layout_marginLeft="2dp"
-                            android:textColor="@color/g_f8e0c4"/>
+                            android:text="@{model.multiplierStr(2)}"
+                            android:textColor="@color/g_f8e0c4"
+                            android:textSize="14sp"
+                            tools:text="1:0.96" />
 
                     </LinearLayout>
+
+                    <!-- 显示买大的人数和投注多少-->
                     <LinearLayout
+                        android:id="@+id/llBetBigShow"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="horizontal">
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:layout_width="8dp"
-                            android:layout_height="8dp"
-                            app:srcCompat="@drawable/icon_people_num"/>
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/txtSingleNum"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginRight="@dimen/dp_10"
+                        android:layout_marginBottom="@dimen/dp_10"
+                        android:orientation="vertical">
+
+                        <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="10sp"
-                            tools:text="978"
-                            android:layout_marginLeft="2dp"
-                            android:textColor="@color/g_f8e0c4"/>
+                            android:layout_gravity="right"
+                            android:gravity="center"
+                            android:orientation="horizontal">
 
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:layout_width="8dp"
+                                android:layout_height="8dp"
+                                app:srcCompat="@drawable/icon_money_new" />
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/txtBigMoney"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="2dp"
+                                android:textColor="@color/g_f8e0c4"
+                                android:textSize="10sp"
+                                tools:text="9899" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="right"
+                            android:gravity="center"
+                            android:orientation="horizontal">
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:layout_width="8dp"
+                                android:layout_height="8dp"
+                                app:srcCompat="@drawable/icon_people_num" />
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/txtBigNum"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="2dp"
+                                android:textColor="@color/g_f8e0c4"
+                                android:textSize="10sp"
+                                tools:text="978" />
+
+                        </LinearLayout>
                     </LinearLayout>
-                </LinearLayout>
 
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivFlickerLeftBelow"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="fitXY"
-                    app:tint="@color/c_ffffff"
-                    android:visibility="gone"
-                    app:srcCompat="@drawable/icon_lucency_left_below"/>
-            </RelativeLayout>
-        </com.cn.game.sdk2.ui.view.game.GameAreaView>
-        <!-- 右下角-->
-        <com.cn.game.sdk2.ui.view.game.GameAreaView
-            android:id="@+id/double_view"
-            app:areaInfo="@{model.bettingArray[4]}"
-            app:layout_constraintStart_toEndOf="@id/single_view"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/big_view"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_width="0dp"
-            android:layout_height="0dp">
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/rlClickRightBelowImage"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="fitXY"
-                    app:srcCompat="@drawable/home_right_below"/>
-
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:gravity="center"
-                    android:orientation="vertical">
                     <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="29dp"
-                        android:layout_height="29dp"
-                        app:srcCompat="@drawable/icon_txt_double"/>
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/txtOddsDouble"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@{model.multiplierStr(4)}"
-                        android:textSize="14sp"
-                        tools:text="1:0.96"
-                        android:textColor="@color/g_f8e0c4"/>
+                        android:id="@+id/ivFlickerRightTop"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="fitXY"
+                        android:visibility="gone"
+                        app:srcCompat="@drawable/iocn_lucency_right_top"
+                        app:tint="@color/c_ffffff" />
+                </RelativeLayout>
+            </com.cn.game.sdk2.ui.view.game.GameAreaView>
+            <!--左下角-->
+            <com.cn.game.sdk2.ui.view.game.GameAreaView
+                android:id="@+id/single_view"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:areaInfo="@{model.bettingArray[3]}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/double_view"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/small_view">
 
-                </LinearLayout>
-
-                <!-- 显示买单的人数和投注多少-->
-                <LinearLayout
-                    android:id="@+id/llBetDoubleShow"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginBottom="20dp"
-                    android:gravity="end"
-                    android:orientation="vertical">
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="horizontal">
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:layout_width="8dp"
-                            android:layout_height="8dp"
-                            app:srcCompat="@drawable/icon_money_new"/>
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/txtDoubleMoney"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="10sp"
-                            tools:text="9899"
-                            android:layout_marginLeft="2dp"
-                            android:textColor="@color/g_f8e0c4"/>
-
-                    </LinearLayout>
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="horizontal">
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:layout_width="8dp"
-                            android:layout_height="8dp"
-                            app:srcCompat="@drawable/icon_people_num"/>
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/txtDoubleNum"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="10sp"
-                            tools:text="978"
-                            android:layout_marginLeft="2dp"
-                            android:textColor="@color/g_f8e0c4"/>
-
-                    </LinearLayout>
-                </LinearLayout>
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivFlickerRightBelow"
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="fitXY"
-                    android:visibility="gone"
-                    app:tint="@color/c_ffffff"
-                    app:srcCompat="@drawable/icon_lucency_right_below"/>
-            </RelativeLayout>
-        </com.cn.game.sdk2.ui.view.game.GameAreaView>
-        <!--中间-->
-        <com.cn.game.sdk2.ui.view.game.GameAreaView
-            android:id="@+id/leopard_view"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:areaInfo="@{model.bettingArray[5]}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <RelativeLayout
-                android:layout_width="105dp"
-                android:layout_height="85dp"
-                android:layout_centerInParent="true">
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="fitXY"
-                    app:srcCompat="@drawable/home_centre"/>
+                    android:layout_height="match_parent">
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:gravity="center"
-                    android:orientation="vertical">
                     <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="40dp"
-                        android:layout_height="20dp"
-                        app:srcCompat="@drawable/icon_txt_leopard"/>
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/txtOddsLeopard"
+                        android:id="@+id/rlClickLeftBelowImage"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="fitXY"
+                        app:srcCompat="@drawable/home_left_below" />
+
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@{`1:`+model.multiplierStr(5,`#.##`)}"
-                        android:textSize="14sp"
-                        tools:text="1:0.96"
-                        android:textColor="@color/g_f8e0c4"/>
+                        android:layout_centerInParent="true"
+                        android:gravity="center"
+                        android:orientation="vertical">
 
-                </LinearLayout>
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivFlickerCenter"
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:layout_width="29dp"
+                            android:layout_height="29dp"
+                            app:srcCompat="@drawable/icon_txt_single" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/txtOddsSingle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@{model.multiplierStr(1)}"
+                            android:textColor="@color/g_f8e0c4"
+                            android:textSize="14sp"
+                            tools:text="1:0.96" />
+
+                    </LinearLayout>
+
+                    <!-- 显示买单的人数和投注多少-->
+                    <LinearLayout
+                        android:id="@+id/llBetSingleShow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginBottom="20dp"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:orientation="horizontal">
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:layout_width="8dp"
+                                android:layout_height="8dp"
+                                app:srcCompat="@drawable/icon_money_new" />
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/txtSingleMoney"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="2dp"
+                                android:textColor="@color/g_f8e0c4"
+                                android:textSize="10sp"
+                                tools:text="9899" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:orientation="horizontal">
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:layout_width="8dp"
+                                android:layout_height="8dp"
+                                app:srcCompat="@drawable/icon_people_num" />
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/txtSingleNum"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="2dp"
+                                android:textColor="@color/g_f8e0c4"
+                                android:textSize="10sp"
+                                tools:text="978" />
+
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ivFlickerLeftBelow"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="fitXY"
+                        android:visibility="gone"
+                        app:srcCompat="@drawable/icon_lucency_left_below"
+                        app:tint="@color/c_ffffff" />
+                </RelativeLayout>
+            </com.cn.game.sdk2.ui.view.game.GameAreaView>
+            <!-- 右下角-->
+            <com.cn.game.sdk2.ui.view.game.GameAreaView
+                android:id="@+id/double_view"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:areaInfo="@{model.bettingArray[4]}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/single_view"
+                app:layout_constraintTop_toBottomOf="@id/big_view">
+
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="fitXY"
-                    android:visibility="gone"
-                    app:tint="@color/c_ffffff"
-                    app:srcCompat="@drawable/icon_lucency_centre"/>
-            </RelativeLayout>
-        </com.cn.game.sdk2.ui.view.game.GameAreaView>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                    android:layout_height="match_parent">
 
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/rlClickRightBelowImage"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="fitXY"
+                        app:srcCompat="@drawable/home_right_below" />
+
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:layout_width="29dp"
+                            android:layout_height="29dp"
+                            app:srcCompat="@drawable/icon_txt_double" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/txtOddsDouble"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@{model.multiplierStr(4)}"
+                            android:textColor="@color/g_f8e0c4"
+                            android:textSize="14sp"
+                            tools:text="1:0.96" />
+
+                    </LinearLayout>
+
+                    <!-- 显示买单的人数和投注多少-->
+                    <LinearLayout
+                        android:id="@+id/llBetDoubleShow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginBottom="20dp"
+                        android:gravity="end"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:orientation="horizontal">
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:layout_width="8dp"
+                                android:layout_height="8dp"
+                                app:srcCompat="@drawable/icon_money_new" />
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/txtDoubleMoney"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="2dp"
+                                android:textColor="@color/g_f8e0c4"
+                                android:textSize="10sp"
+                                tools:text="9899" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:orientation="horizontal">
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:layout_width="8dp"
+                                android:layout_height="8dp"
+                                app:srcCompat="@drawable/icon_people_num" />
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/txtDoubleNum"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="2dp"
+                                android:textColor="@color/g_f8e0c4"
+                                android:textSize="10sp"
+                                tools:text="978" />
+
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ivFlickerRightBelow"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="fitXY"
+                        android:visibility="gone"
+                        app:srcCompat="@drawable/icon_lucency_right_below"
+                        app:tint="@color/c_ffffff" />
+                </RelativeLayout>
+            </com.cn.game.sdk2.ui.view.game.GameAreaView>
+            <!--中间-->
+            <com.cn.game.sdk2.ui.view.game.GameAreaView
+                android:id="@+id/leopard_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:areaInfo="@{model.bettingArray[5]}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <RelativeLayout
+                    android:layout_width="105dp"
+                    android:layout_height="85dp"
+                    android:layout_centerInParent="true">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="fitXY"
+                        app:srcCompat="@drawable/home_centre" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:layout_width="40dp"
+                            android:layout_height="20dp"
+                            app:srcCompat="@drawable/icon_txt_leopard" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/txtOddsLeopard"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@{`1:`+model.multiplierStr(5,`#.##`)}"
+                            android:textColor="@color/g_f8e0c4"
+                            android:textSize="14sp"
+                            tools:text="1:0.96" />
+
+                    </LinearLayout>
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ivFlickerCenter"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="fitXY"
+                        android:visibility="gone"
+                        app:srcCompat="@drawable/icon_lucency_centre"
+                        app:tint="@color/c_ffffff" />
+                </RelativeLayout>
+            </com.cn.game.sdk2.ui.view.game.GameAreaView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
 </layout>
