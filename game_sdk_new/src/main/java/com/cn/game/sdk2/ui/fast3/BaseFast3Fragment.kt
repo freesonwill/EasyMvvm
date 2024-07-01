@@ -147,7 +147,7 @@ abstract class BaseFast3Fragment<VM : BaseViewModel, VB : ViewDataBinding>(var f
                     { isMoneyEnough, result ->
                         if (isMoneyEnough) {
                             if (result != null) {
-                                areaView.moneyView.setShowMoney(result.money)
+                                areaView.setShowMoney(result.money)
                                 if (!areaView.moneyView.isAdd()) {
                                     addMoneyOkView(areaView, x, y, rawX, rawY) {
                                         emitMoneyAnim(

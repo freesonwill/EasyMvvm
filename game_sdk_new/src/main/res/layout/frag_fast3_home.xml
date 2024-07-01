@@ -65,15 +65,16 @@
 
             <RelativeLayout
                 android:id="@+id/rlClickHide"
-                android:layout_width="23dp"
-                android:layout_height="39dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginEnd="4dp"
+                android:paddingVertical="1dp"
                 app:layout_constraintBottom_toBottomOf="@id/rvHomeHistory"
                 app:layout_constraintEnd_toEndOf="parent">
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_width="23dp"
+                    android:layout_height="39dp"
                     android:scaleType="fitXY"
                     app:srcCompat="@drawable/icon_bg_btn" />
 
@@ -88,6 +89,13 @@
 
             </RelativeLayout>
 
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="top"
+                app:constraint_referenced_ids="rlClickHide,flRvHistory" />
+
             <!--            开奖结果-->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/centerLayout"
@@ -96,7 +104,7 @@
                 android:background="@color/g_141624"
                 android:clipChildren="false"
                 android:clipToPadding="false"
-                app:layout_constraintBottom_toTopOf="@id/flRvHistory"
+                app:layout_constraintBottom_toTopOf="@id/barrier"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.appcompat.widget.AppCompatImageView
@@ -286,19 +294,19 @@
                     android:id="@+id/rlShowResult"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:visibility="gone"
                     android:gravity="center"
                     android:orientation="horizontal"
+                    android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="@id/betteLayout"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@id/betteLayout">
 
                     <LinearLayout
-                        android:gravity="center"
                         android:id="@+id/llResultLeft"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:gravity="center">
 
                         <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/ivDrawYi"
@@ -324,9 +332,9 @@
 
                     <LinearLayout
                         android:id="@+id/llResultRight"
-                        android:gravity="center"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:gravity="center">
 
                         <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/txtHomeTotal"
@@ -377,7 +385,7 @@
                             android:clipChildren="false"
                             android:clipToPadding="false"
                             android:orientation="horizontal"
-                            android:paddingVertical="5dp"
+                            android:paddingTop="5dp"
                             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                             tools:itemCount="11"
                             tools:listitem="@layout/item_annotation_list" />

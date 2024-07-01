@@ -65,6 +65,7 @@ import com.drake.brv.utils.dividerSpace
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.lxj.xpopup.XPopup
+import com.lxj.xpopup.animator.EmptyAnimator
 import com.lxj.xpopup.core.BasePopupView
 import com.xcjh.base_lib.base.fragment.BaseVmDbFragment
 import com.xcjh.base_lib.utils.dp2px
@@ -399,7 +400,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             lifecycleScope.launch {
                 val adapter = mDatabind.rvHomeHistory.bindingAdapter
                 adapter.models = it
-                mDatabind.rlClickHide.isVisible = adapter.models!!.isNotEmpty()
                 if (it.isEmpty()) {
                     //重置result动画高度
                     resultAnimMoveHeight = -1
@@ -660,7 +660,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             if (!mDatabind.rvHomeHistory.models.isNullOrEmpty()) {
                 mDatabind.rvHomeHistory.scrollToPosition(mDatabind.rvHomeHistory.models!!.size - 1)
             }
-            mDatabind.rlClickHide.isVisible = !mDatabind.rvHomeHistory.models.isNullOrEmpty()
         }
     }
 
@@ -745,13 +744,13 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
     private fun setClick() {
         mDatabind.apply {
-            rlClickHide.clickNoRepeat(0) {
+            rlClickHide.setOnClickListener {
                 PromptSoundPlay.btnPlayMedia(requireContext())
                 resultAnimation(!mViewModel.isShowResult)
             }
 
             //点击更多弹出框
-            llHomeMore.clickNoRepeat(0) {
+            llHomeMore.setOnClickListener {
                 //Fast3ToastHelper.showToastNormal("asdfasdfasdf")
                 if (homeMorePop == null) {
                     val bubbleAttach = CustomBubbleAttachPopup(requireContext())
@@ -764,6 +763,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     homeMorePop = XPopup.Builder(requireContext())
                         .hasShadowBg(false)
                         .isTouchThrough(true)
+//                        .customAnimator(EmptyAnimator(bubbleAttach,0))
                         .atView(mDatabind.llHomeMore)
                         .hasShadowBg(false) // 去掉半透明背景
                         .asCustom(bubbleAttach)
