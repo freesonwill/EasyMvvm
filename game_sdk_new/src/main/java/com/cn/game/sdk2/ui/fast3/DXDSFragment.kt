@@ -93,7 +93,7 @@ class DXDSFragment(fast3VM: Fast3ViewModel) : BaseFast3Fragment<DXDSVm, FragDxds
         }
         numAnimators.clear()
         list.forEach { item ->
-            moneyViewList.get(item.areaCode.number).apply {
+            moneyViewList.get(item.areaCode.number)?.apply {
                 second.text = item.userCount.toString()
                 numAnimators.add(
                     doNumberAnim(
