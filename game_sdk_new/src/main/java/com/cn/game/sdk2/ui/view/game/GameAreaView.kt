@@ -83,6 +83,32 @@ class GameAreaView : FrameLayout {
         }
     }
 
+    fun againAdd(it: Map.Entry<Betting, BettingRecordBean>) {
+        if (!moneyView.isAdd()) {
+            val params = LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            moneyView.let { moneyView ->
+                moneyView.parentView?.addView(moneyView, params)
+                moneyView.translationX = it.value.viewXYTemporary[0]
+                moneyView.translationY = it.value.viewXYTemporary[1]
+                moneyView.bringToFront()
+            }
+        }
+        if (!betteView.isAdd()) {
+            val params = LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            betteView.let { betteView ->
+                betteView.parentView?.addView(betteView, params)
+                betteView.translationX = it.value.viewXYTemporary[0]
+                betteView.translationY = it.value.viewXYTemporary[1]
+            }
+        }
+    }
+
 
     /**
      * 触摸点击事件，返回点击的坐标信息
