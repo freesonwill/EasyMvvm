@@ -54,16 +54,6 @@ class Fast3ViewModel : BaseViewModel() {
             (isClickOperationLD as UnPeekLiveData).value = value
         }
 
-    val homeTimeVisibility by lazy {
-        Transformations.map(gameAboutModel.currentStage) {
-            return@map when (it) {
-                Stage.SETTLE -> View.GONE
-                else -> View.VISIBLE
-            }
-        }
-    }
-
-
     /**
      * 是否显示骰子的结果组合
      */
