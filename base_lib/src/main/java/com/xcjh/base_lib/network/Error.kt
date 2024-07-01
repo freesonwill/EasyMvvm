@@ -31,7 +31,12 @@ enum class Error(private val code: Int, private val err: String) {
     /**
      * 连接超时
      */
-    TIMEOUT_ERROR(1006, appContext.getString(R.string.TIMEOUT_ERROR));
+    TIMEOUT_ERROR(1006, appContext.getString(R.string.TIMEOUT_ERROR)),
+
+    /**
+     * 域名被封：如果接口的域名被封，DNS解析可能会失败，从而引发
+     */
+    ANALYZE_ERROR(1007, appContext.getString(R.string.TIMEOUT_ERROR));
 
     fun getValue(): String {
         return err

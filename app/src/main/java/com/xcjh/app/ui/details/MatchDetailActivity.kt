@@ -263,7 +263,6 @@ class MatchDetailActivity :
             .navigationBarColor(R.color.c_181819)
             .navigationBarDarkIcon(false)
             .titleBarMarginTop(mDatabind.rltTop).init()
-        Log.i("BDBDBDBDB","=========="+this.toString())
         mDatabind.ivBack.clickNoRepeat {
             SoundManager.playMedia()
             finish()
@@ -1732,11 +1731,13 @@ class MatchDetailActivity :
 //                it.hotValue
 //            }
 
-            // 是否找到流  true就是找到了主播  false是只有纯净流
+            /**
+             * 是否找到流  true就是找到了主播  false是只有纯净流,没有获取到要的主播
+             */
             var findAnchor = false
             if (isHasAnchor) {
                 for ((i, item) in list.withIndex()) {
-                    if (anchorId == item.userId) {
+                    if (anchorId == item.userId){
                         isShowVideo = true
                         item.isSelect = true
                         anchor = item
@@ -1746,6 +1747,8 @@ class MatchDetailActivity :
                     }
                 }
             }
+
+
             //主要用于赛程进来，赛程进来的话是不知道有没有主播~~~判断是不是只有纯净流
             if(isNew&&!pureFlow){
                 if(!findAnchor){
@@ -1768,6 +1771,7 @@ class MatchDetailActivity :
                     }
 
                 }else{
+                    //如果要修改登录后循环查看是否被主播拉黑的线路
                     item = list[0]
                     item.isSelect = true
                     anchor = item

@@ -77,7 +77,6 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
 
 
     override fun initView(savedInstanceState: Bundle?) {
-
         mDatabind.state.apply {
             StateConfig.setRetryIds(R.id.lltContent, R.id.stateLoadingImg)
             onEmpty {
@@ -558,7 +557,6 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
 
            lifecycleScope.launch {
                             delay(1000) // 延迟 1秒
-//               mDatabind.smartCommon.autoRefresh()
                mViewModel.getBannerList()
            }
 //        mViewModel.getBannerList()
@@ -581,6 +579,11 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
 
     }
 
+
+    override fun onResume() {
+        super.onResume()
+
+    }
 
 
 
@@ -1180,6 +1183,7 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
                             R.id.llcClickRecommended.onClick {
                                 SoundManager.playMedia()
                                 val bean=_data as MatchBean
+//                                MatchDetailActivity.open(matchType =bean.matchType, matchId = bean.matchId,matchName = "${bean.homeName}VS${bean.awayName}",pureFlow = true )
                                 if(bean.anchorList!=null&&bean.anchorList.size>=1){
                                     MatchDetailActivity.open(matchType =bean.matchType, matchId = bean.matchId,matchName = "${bean.homeName}VS${bean.awayName}", anchorId = bean.anchorList[0].userId )
                                 }else{
