@@ -805,6 +805,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                     moneyView.parentView?.addView(moneyView, params)
                                     moneyView.translationX = it.value.viewXYTemporary[0]
                                     moneyView.translationY = it.value.viewXYTemporary[1]
+                                    moneyView.bringToFront()
                                 }
                             }
                             if(!areaView.betteView.isAdd()){
