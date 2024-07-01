@@ -796,41 +796,19 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 if (!map.isNullOrEmpty()) {
                     map.forEach {
                         allGameAreaMap[it.key.number]?.let { areaView ->
-                            if (!areaView.moneyView.isAdd()) {
-                                val params = FrameLayout.LayoutParams(
-                                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                                    ViewGroup.LayoutParams.WRAP_CONTENT
-                                )
-                                areaView.moneyView.let { moneyView ->
-                                    moneyView.parentView?.addView(moneyView, params)
-                                    moneyView.translationX = it.value.viewXYTemporary[0]
-                                    moneyView.translationY = it.value.viewXYTemporary[1]
-                                    moneyView.bringToFront()
-                                }
-                            }
-                            if(!areaView.betteView.isAdd()){
-                                val params = FrameLayout.LayoutParams(
-                                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                                    ViewGroup.LayoutParams.WRAP_CONTENT
-                                )
-                                areaView.betteView.let { betteView ->
-                                    areaView.betteView.parentView?.addView(betteView, params)
-                                    betteView.translationX = it.value.viewXYTemporary[0]
-                                    betteView.translationY = it.value.viewXYTemporary[1]
-                                }
-                            }
+                            areaView.againAdd(it)
 
                             currentBetteAreaMap[it.key.number] = areaView
                             areaView.setShowMoney(it.value.money)
-
-                            if (areaView.areaCode == gameAboutModel.lastBetting?.number) {
-                                "lastbettting = ${gameAboutModel.lastBetting?.number}".loge()
-                                "lastbettting areaCode = ${areaView.areaCode}".loge()
-                                updateAnchorView(areaView)
-                            }
                         }
                     }
-                    "lastbettting = ${gameAboutModel.lastBetting}".loge()
+                    if (currentBetteAreaMap.containsKey(gameAboutModel.lastBetting?.number)) {
+                        currentBetteAreaMap[gameAboutModel.lastBetting?.number]?.let {
+                            "lastbettting = ${gameAboutModel.lastBetting?.number}".loge()
+                            "lastbettting areaCode = ${it.areaCode}".loge()
+                            updateAnchorView(it)
+                        }
+                    }
                 }
             }
         }
