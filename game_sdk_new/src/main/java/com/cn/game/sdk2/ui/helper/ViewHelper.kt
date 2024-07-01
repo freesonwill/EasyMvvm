@@ -18,6 +18,7 @@ import com.cn.game.sdk2.ui.HomeXPopupDialog
 import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
 import com.cn.game.sdk2.utils.tool.indicator.CommonPagerIndicator
 import com.lxj.xpopup.XPopup
+import com.lxj.xpopup.animator.EmptyAnimator
 import com.lxj.xpopup.core.BasePopupView
 import com.lxj.xpopup.enums.PopupAnimation
 import com.lxj.xpopup.interfaces.SimpleCallback
@@ -58,6 +59,7 @@ object ViewHelper {
                     }
                     XPopup.Builder(context)
                         .hasShadowBg(false)
+                        .animationDuration(0)
                         .setPopupCallback(object : SimpleCallback() {
                             override fun onShow(popupView: BasePopupView?) {
                                 super.onShow(popupView)

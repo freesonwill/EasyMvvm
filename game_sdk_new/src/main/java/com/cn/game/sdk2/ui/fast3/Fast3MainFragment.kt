@@ -34,6 +34,7 @@ import com.cn.game.sdk2.databinding.ItemBetHistoryBinding
 import com.cn.game.sdk2.ui.helper.Fast3ToastHelper
 import com.cn.game.sdk2.ui.helper.ViewHelper.bindViewPagerNewGame
 import com.cn.game.sdk2.ui.helper.ViewHelper.initGameViewPager
+import com.cn.game.sdk2.ui.helper.ViewHelper.isAdd
 import com.cn.game.sdk2.ui.view.CommonLinearLayoutItemDecoration
 import com.cn.game.sdk2.ui.view.CustomBubbleAttachPopup
 import com.cn.game.sdk2.ui.view.MoneyOKView
@@ -45,6 +46,7 @@ import com.cn.game.sdk2.utils.ext.BizExt.isLeopard
 import com.cn.game.sdk2.utils.ext.CommonExt.formatRealMoney
 import com.cn.game.sdk2.utils.ext.CommonExt.px2dp
 import com.cn.game.sdk2.utils.ext.CommonExt.toPinyin
+import com.cn.game.sdk2.utils.ext.ViewExt.getColor
 import com.cn.game.sdk2.utils.ext.ViewExt.getDrawable
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.utils.tool.measureView
@@ -59,7 +61,10 @@ import com.drake.brv.utils.dividerSpace
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.lxj.xpopup.XPopup
+import com.lxj.xpopup.animator.EmptyAnimator
 import com.lxj.xpopup.core.BasePopupView
+import com.lxj.xpopup.interfaces.SimpleCallback
+import com.lxj.xpopup.interfaces.XPopupCallback
 import com.xcjh.base_lib.base.fragment.BaseVmDbFragment
 import com.xcjh.base_lib.utils.dp2px
 import com.xcjh.base_lib.utils.loge
@@ -97,8 +102,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     override fun initView(savedInstanceState: Bundle?) {
         mDatabind.model = mViewModel
         CommonUtils.getNavigationBarHeight(mDatabind.root).let {
-            mViewModel.navigationBarHeight.value = it.px2dp
-            //Log.d(TAG,"getNavigationBarHeight $it,-->${it.px2dp}")
+            mViewModel.navigationBarHeight.value = it
+            Log.d(TAG,"getNavigationBarHeight $it,-->${it.px2dp}")
         }
 
         //viewpager
@@ -749,28 +754,35 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
             //点击更多弹出框
             llHomeMore.setOnClickListener {
-                //Fast3ToastHelper.showToastNormal("asdfasdfasdf")
+                PromptSoundPlay.btnPlayMedia(requireContext())
                 if (homeMorePop == null) {
                     val bubbleAttach = CustomBubbleAttachPopup(requireContext())
-                    bubbleAttach.customBubbleAttachListener =
-                        object : CustomBubbleAttachPopup.CustomBubbleAttachListener {
+                    bubbleAttach.customBubbleAttachListener = object : CustomBubbleAttachPopup.CustomBubbleAttachListener {
                             override fun switchGame() {
                                 homeMorePop!!.dismiss()
                             }
                         }
                     homeMorePop = XPopup.Builder(requireContext())
                         .isTouchThrough(true)
-//                        .customAnimator(EmptyAnimator(bubbleAttach,0))
+                        .setPopupCallback(object : SimpleCallback(){
+                            override fun onDismiss(popupView: BasePopupView?) {
+                                super.onDismiss(popupView)
+                                homeMorePop = null
+                            }
+                        })
+                        .customAnimator(EmptyAnimator(bubbleAttach,0))
                         .atView(mDatabind.llHomeMore)
+                        .navigationBarColor(android.R.color.transparent)
                         .hasShadowBg(false) // 去掉半透明背景
                         .asCustom(bubbleAttach)
+                    homeMorePop?.show()
+                }else {
+                    homeMorePop?.dismiss()
                 }
-                PromptSoundPlay.btnPlayMedia(requireContext())
-                if(homeMorePop!!.isShow) homeMorePop!!.dismiss()
-                else homeMorePop!!.show()
             }
             //加倍
             ivMultiple2.clickNoRepeat {
+                PromptSoundPlay.btnPlayMedia()
                 //todo 判断加倍状态
                 GameSocketManager.getInstance()?.getGameService()
                     ?.doubleBetting { isMoneyEnough, map ->
@@ -797,6 +809,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             }
             //续压
             ivXuya.clickNoRepeat {
+                PromptSoundPlay.btnPlayMedia()
                 //todo 判断续压状态
                 val map = GameSocketManager.getInstance()?.getGameService()?.againBetting()
                 map.toString().loge("again3")

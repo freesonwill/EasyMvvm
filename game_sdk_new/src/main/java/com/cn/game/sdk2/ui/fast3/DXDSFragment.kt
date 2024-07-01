@@ -86,7 +86,7 @@ class DXDSFragment(fast3VM: Fast3ViewModel) : BaseFast3Fragment<DXDSVm, FragDxds
 
     private fun updateAreaBetInfo(list: List<AreaBetBean>?) {
         if (list == null) return
-        Log.d(TAG, "updateAreaBetInfo--->" + list)
+        Log.d(TAG, "updateAreaBetInfo--->$list")
         if (numAnimSet.isRunning) {
             Log.d(TAG, "updateAreaBetInfo--->running")
             return

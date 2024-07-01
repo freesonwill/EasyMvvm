@@ -103,17 +103,6 @@ class Fast3ViewModel : BaseViewModel() {
      * 开奖动画时间(ms)
      */
     val prizeAnimTime = 800L
-
-    /**
-     * 下注倒计时(ms)
-     */
-    val bettingCountDownTime = 11_000
-
-    /**
-     * 结算倒计时(ms)
-     */
-    val settingCountDownTime = 3_000
-
     //========================================== Method =========================================//
     override fun onInit() {
         GameManager.instance.setLiveStatusListener("home", object : IGameListener {

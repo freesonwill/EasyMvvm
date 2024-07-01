@@ -32,8 +32,8 @@ object CommonUtils {
         if (insets != null) {
             val top = insets.getInsets(WindowInsetsCompat.Type.systemBars()).top
             val bottom = insets.getInsets(WindowInsetsCompat.Type.systemBars()).bottom
-            val height = bottom - top
-            //Log.d(TAG,"getNavigationBarHeight-->top:$top,bottom:$bottom")
+            val height = bottom
+            Log.d(TAG,"getNavigationBarHeight-->top:$top,bottom:$bottom")
             return  height
         }
         return 0

@@ -1,9 +1,12 @@
 package com.cn.game.sdk2.ui.view
 
+import android.app.VoiceInteractor.Prompt
 import android.content.Context
 import android.widget.RelativeLayout
 import androidx.core.content.ContextCompat
 import com.cn.game.sdk2.R
+import com.cn.game.sdk2.databinding.PopupCustomBubbleAttachBinding
+import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.lxj.xpopup.core.BubbleAttachPopupView
 import com.lxj.xpopup.util.XPopupUtils
 import com.xcjh.base_lib.utils.view.clickNoRepeat
@@ -21,15 +24,24 @@ class CustomBubbleAttachPopup(content: Context) : BubbleAttachPopupView(content)
         setBubbleBgColor(ContextCompat.getColor(context,R.color.c_ffffff))
         setBubbleShadowSize(2)
         setArrowWidth(XPopupUtils.dp2px(context, 8f))
-        setArrowHeight(XPopupUtils.dp2px(context, 8f))
-                                        .setBubbleRadius(10)
+        setArrowHeight(XPopupUtils.dp2px(context, 8f)).setBubbleRadius(10)
         setArrowRadius(XPopupUtils.dp2px(context, 2f))
+        PopupCustomBubbleAttachBinding.bind(popupImplView).apply {
+            rlPopClickRecords.clickNoRepeat(0) {
+                PromptSoundPlay.btnPlayMedia()
+            }
+            rlPopClickService.clickNoRepeat(0) {
+                PromptSoundPlay.btnPlayMedia()
+            }
 
-        var rlPopClickToggle=findViewById<RelativeLayout>(R.id.rlPopClickToggle)
-        rlPopClickToggle.clickNoRepeat {
-            customBubbleAttachListener?.switchGame()
+            rlPopClickToggle.clickNoRepeat(0) {
+                PromptSoundPlay.btnPlayMedia()
+                customBubbleAttachListener?.switchGame()
+            }
+            rlPopClickAssist.clickNoRepeat(0) {
+                PromptSoundPlay.btnPlayMedia()
+            }
         }
-
     }
     var customBubbleAttachListener: CustomBubbleAttachListener?=null
 
