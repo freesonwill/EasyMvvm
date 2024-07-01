@@ -329,10 +329,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             Log.e(TAG, "收到的总余额：${balance}")
             mDatabind.txtCurrentMoney.text = "¥ $balance"
         }
-        mViewModel.homeTimeVisibility.observe(viewLifecycleOwner) {
-            mDatabind.txtHomeTime.visibility = it
-            mDatabind.txtHomeUnit.visibility = it
-        }
         mViewModel.homeTimeSeconds.observe(viewLifecycleOwner) { seconds ->
             mDatabind.txtHomeTime.text = seconds.toString()
             if (mViewModel.gameState == GameState.Betting && seconds in 1..5) {
