@@ -21,6 +21,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.core.animation.addListener
+import androidx.core.animation.doOnEnd
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -79,6 +80,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     companion object {
         const val TAG = "Fast3MainFragment"
     }
+
     private var mFragList = ArrayList<Fragment>()
 
     //是否执行关闭动画
@@ -107,8 +109,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         mFragList.add(SumTotalFragment(mViewModel))
         mFragList.add(PairsDiceFragment(mViewModel))
         mFragList.add(LeopardFragment(mViewModel))
-        Fast3ToastHelper.init(requireContext(),mDatabind.centerLayout).let {
-            lifecycle.addObserver(object:DefaultLifecycleObserver{
+        Fast3ToastHelper.init(requireContext(), mDatabind.centerLayout).let {
+            lifecycle.addObserver(object : DefaultLifecycleObserver {
                 override fun onDestroy(owner: LifecycleOwner) {
                     super.onDestroy(owner)
                     Fast3ToastHelper.destroy()
@@ -212,18 +214,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         lifecycleScope.launch {
             mDatabind.apply {
                 Fast3ToastHelper.showToastNormal(getString(R.string.g_home_setting_begin), 1000)
-                mDatabind.txtHomeStatic.text = resources.getString(R.string.g_f3_setting)
-                //隐藏筹码牌
-                startBetteRecyclerShowOrHideAnim(isShow = false, onEnd = {
-                    //注区
-                    betteLayout.isInvisible = true
-                    betteAgainLayout.isVisible = false
-
-                    //开奖结果
-                    rlShowResult.isVisible = true
-                    ivHomeBg.isVisible = true
-                    ivHomeBgCenter.isVisible = true
-                })
+                txtHomeStatic.text = resources.getString(R.string.g_f3_setting)
                 Log.e(TAG, "结算item" + roundInfo.toString())
                 roundInfo?.run {
                     performs.forEachIndexed { index, item ->
@@ -242,16 +233,32 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     ivBetSize.setImageResource(if (isBig) R.drawable.icon_home_result_big else R.drawable.icon_home_result_small)
                     ivBetOdd.setImageResource(if (isDouble) R.drawable.icon_home_result_double else R.drawable.icon_home_result_single)
                 }
-                //中奖动画
-                startWinLottieAnim(endCallBack = {
-                    //开奖结果注区动画闪烁
-                    Log.e(TAG, "中奖注区结果监听--->${gameAboutModel.lotteryResultList}")
-                    mViewModel.userLotteryResultLiveData.value = gameAboutModel.lotteryResultList
+                //隐藏筹码牌动画
+                startBetteRecyclerShowOrHideAnim(isShow = false, onEnd = {
+                    //注区
+                    betteLayout.isInvisible = true
+                    betteAgainLayout.isVisible = false
 
-                    //中奖区域金额刷新
-                    Log.e(TAG, "中奖注区筹码监听--->${gameAboutModel.userLotteryResult}")
-                    notifyMoneyOkView(gameAboutModel.userLotteryResult)
+                    //开奖结果
+                    rlShowResult.isVisible = true
+                    ivHomeBg.isVisible = true
+                    ivHomeBgCenter.isVisible = true
+
+                    //开奖结果显示动画
+                    startGameResultShowAnim {
+                        //中奖动画
+                        startWinLottieAnim(endCallBack = {
+                            //开奖结果注区动画闪烁
+                            Log.e(TAG, "中奖注区结果监听--->${gameAboutModel.lotteryResultList}")
+                            mViewModel.userLotteryResultLiveData.value = gameAboutModel.lotteryResultList
+
+                            //中奖区域金额刷新
+                            Log.e(TAG, "中奖注区筹码监听--->${gameAboutModel.userLotteryResult}")
+                            notifyMoneyOkView(gameAboutModel.userLotteryResult)
+                        })
+                    }
                 })
+
             }
         }
     }
@@ -285,7 +292,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 return
             }
             groupWinLottie.isVisible = true
-            txtWinMoney.text = "$${winMoney.formatRealMoney()}"
+            txtWinMoney.text = "¥ ${winMoney.formatRealMoney()}"
             lottieAnimView.addAnimatorListener(object : Animator.AnimatorListener {
                 override fun onAnimationStart(animation: Animator) {
                     PromptSoundPlay.playWinEffect()
@@ -582,14 +589,12 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             onClick(R.id.ivShowBg) {
                 val bean = _data as SelectAnnotationBean
                 PromptSoundPlay.btnPlayMedia(requireContext())
-                val binding = getBinding<ItemAnnotationListBinding>()
                 if (bean.select) return@onClick
                 val models: List<SelectAnnotationBean> = models as List<SelectAnnotationBean>
                 for (data in models) {
                     data.select = bean == data
                 }
                 notifyItemRangeChanged(0, modelCount)
-                startBetteSelectAnim(binding.ivShowBg)
             }
         }.models = mViewModel.noteList
         //历史结果
@@ -666,10 +671,10 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     /**
      * 执行筹码选中向上平移动画
      */
-    private fun startBetteSelectAnim(showView: View) {
+    private fun startBetteSelectAnim(showView: View, duration: Long = 100L) {
         val anim =
             ObjectAnimator.ofFloat(showView, "translationY", -requireContext().dp2px(5).toFloat())
-        anim.duration = 100
+        anim.duration = duration
         anim.start()
     }
 
@@ -704,6 +709,33 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     }
                 )
                 playTogether(listOf(recyclerAnim, againAnim))
+                start()
+            }
+        }
+    }
+
+    /**
+     * 执行游戏结果点数显示动画
+     */
+    private fun startGameResultShowAnim(duration: Long = 200L, doEnd: () -> Unit) {
+        mDatabind.apply {
+            val leftAnimX = ObjectAnimator.ofFloat(llResultLeft, "scaleX", 0f, 1f).apply {
+                this.duration = duration
+            }
+            val leftAnimY = ObjectAnimator.ofFloat(llResultLeft, "scaleY", 0f, 1f).apply {
+                this.duration = duration
+            }
+            val rightAnimX = ObjectAnimator.ofFloat(llResultRight, "scaleX", 0f, 1f).apply {
+                this.duration = duration
+                startDelay = 500
+            }
+            val rightAnimY = ObjectAnimator.ofFloat(llResultRight, "scaleY", 0f, 1f).apply {
+                this.duration = duration
+                startDelay = 500
+            }
+            AnimatorSet().apply {
+                play(leftAnimX).with(leftAnimY).before(rightAnimX).with(rightAnimY)
+                addListener(doOnEnd { doEnd.invoke() })
                 start()
             }
         }

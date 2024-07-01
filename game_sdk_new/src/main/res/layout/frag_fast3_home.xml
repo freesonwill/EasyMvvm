@@ -286,57 +286,72 @@
                     android:id="@+id/rlShowResult"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
+                    android:visibility="gone"
                     android:gravity="center"
                     android:orientation="horizontal"
-                    android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="@id/betteLayout"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@id/betteLayout">
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/ivDrawYi"
-                        android:layout_width="34dp"
-                        android:layout_height="34dp"
-                        app:srcCompat="@drawable/icon_dice_yi" />
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/ivDrawEr"
-                        android:layout_width="34dp"
-                        android:layout_height="34dp"
-                        android:layout_marginLeft="15dp"
-                        app:srcCompat="@drawable/icon_dice_er" />
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/ivDrawSan"
-                        android:layout_width="34dp"
-                        android:layout_height="34dp"
-                        android:layout_marginLeft="15dp"
-                        app:srcCompat="@drawable/icon_dice_san" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/txtHomeTotal"
+                    <LinearLayout
+                        android:gravity="center"
+                        android:id="@+id/llResultLeft"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
-                        android:text="9"
-                        android:textColor="@color/c_ffffff"
-                        android:textSize="25sp"
-                        android:textStyle="bold" />
+                        android:layout_height="wrap_content">
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/ivBetSize"
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
-                        android:layout_marginLeft="16dp"
-                        app:srcCompat="@drawable/icon_home_result_small" />
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/ivDrawYi"
+                            android:layout_width="34dp"
+                            android:layout_height="34dp"
+                            app:srcCompat="@drawable/icon_dice_yi" />
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/ivBetOdd"
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
-                        android:layout_marginLeft="16dp"
-                        app:srcCompat="@drawable/icon_home_result_double" />
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/ivDrawEr"
+                            android:layout_width="34dp"
+                            android:layout_height="34dp"
+                            android:layout_marginLeft="15dp"
+                            app:srcCompat="@drawable/icon_dice_er" />
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/ivDrawSan"
+                            android:layout_width="34dp"
+                            android:layout_height="34dp"
+                            android:layout_marginLeft="15dp"
+                            app:srcCompat="@drawable/icon_dice_san" />
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:id="@+id/llResultRight"
+                        android:gravity="center"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/txtHomeTotal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:text="9"
+                            android:textColor="@color/c_ffffff"
+                            android:textSize="25sp"
+                            android:textStyle="bold" />
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/ivBetSize"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:layout_marginLeft="16dp"
+                            app:srcCompat="@drawable/icon_home_result_small" />
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/ivBetOdd"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:layout_marginLeft="16dp"
+                            app:srcCompat="@drawable/icon_home_result_double" />
+                    </LinearLayout>
                 </LinearLayout>
 
 

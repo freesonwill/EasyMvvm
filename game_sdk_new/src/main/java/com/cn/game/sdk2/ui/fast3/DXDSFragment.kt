@@ -26,6 +26,7 @@ import com.cn.game.sdk2.websocket.bean.DEFAULT_SINGLE
 import com.cn.game.sdk2.websocket.bean.DEFAULT_SMALL
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.w3c.dom.Text
 
 
 /**
@@ -33,8 +34,9 @@ import kotlinx.coroutines.launch
  */
 class DXDSFragment(fast3VM: Fast3ViewModel) : BaseFast3Fragment<DXDSVm, FragDxdsBinding>(fast3VM) {
     private var moneyViewList: SparseArray<Pair<TextView, TextView>> = SparseArray()
-    private val numAnimators by lazy { mutableListOf<Animator>() }
+    private val numAnimators by lazy { mutableListOf<Animator?>() }
     private val numAnimSet by lazy { AnimatorSet() }
+    private val txtValueAnimMap by lazy { mutableMapOf<TextView, ValueAnimator>() }
 
     override fun initAreaViewList() {
         mDatabind.model = mViewModel
@@ -85,22 +87,25 @@ class DXDSFragment(fast3VM: Fast3ViewModel) : BaseFast3Fragment<DXDSVm, FragDxds
     private fun updateAreaBetInfo(list: List<AreaBetBean>?) {
         if (list == null) return
         Log.d(TAG, "updateAreaBetInfo--->" + list)
-        numAnimators.clear()
-        list.forEach { item ->
-            val pair = moneyViewList.get(item.areaCode.number)
-            if (pair != null) {
-                pair.second.text = item.userCount.toString()
-                val startNum = pair.first.text.toString().toFloatOrNull() ?: 0f
-                val endNumber = item.betScore / 100f
-                numAnimators.add(doNumberAnim(pair.first, startNum, endNumber))
-            }
-        }
         if (numAnimSet.isRunning) {
             Log.d(TAG, "updateAreaBetInfo--->running")
-        } else {
-            numAnimSet.playTogether(numAnimators)
-            numAnimSet.start()
+            return
         }
+        numAnimators.clear()
+        list.forEach { item ->
+            moneyViewList.get(item.areaCode.number).apply {
+                second.text = item.userCount.toString()
+                numAnimators.add(
+                    doNumberAnim(
+                        first,
+                        startNum = first.text.toString().toFloatOrNull() ?: 0f,
+                        endNumber = item.betScore / 100f
+                    )
+                )
+            }
+        }
+        numAnimSet.playTogether(numAnimators)
+        numAnimSet.start()
     }
 
     /**
@@ -110,16 +115,18 @@ class DXDSFragment(fast3VM: Fast3ViewModel) : BaseFast3Fragment<DXDSVm, FragDxds
         targetView: TextView,
         startNum: Float,
         endNumber: Float,
-    ): ValueAnimator {
-        return ValueAnimator.ofFloat(startNum, endNumber).apply {
-            addUpdateListener {
-                duration = 500
-                targetView.text = (it.animatedValue as Float).toInt().toString()
-
+    ): ValueAnimator? {
+        if (txtValueAnimMap.containsKey(targetView)) {
+            return txtValueAnimMap[targetView]?.apply { setFloatValues(startNum, endNumber) }
+        } else {
+            val anim = ValueAnimator.ofFloat(startNum, endNumber).apply {
+                addUpdateListener {
+                    duration = 500
+                    targetView.text = (it.animatedValue as Float).toInt().toString()
+                }
             }
-//            addListener(doOnEnd {
-//                targetView.text = DecimalFormat("#.##").format(endNumber).toString()
-//            })
+            txtValueAnimMap[targetView] = anim
+            return anim
         }
     }
 
