@@ -716,6 +716,11 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
      */
     private fun startGameResultShowAnim(duration: Long = 200L, doEnd: () -> Unit) {
         mDatabind.apply {
+            llResultLeft.scaleX = 0f
+            llResultLeft.scaleY = 0f
+            llResultRight.scaleX = 0f
+            llResultRight.scaleY = 0f
+
             val leftAnimX = ObjectAnimator.ofFloat(llResultLeft, "scaleX", 0f, 1f).apply {
                 this.duration = duration
             }
@@ -731,7 +736,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 startDelay = 500
             }
             AnimatorSet().apply {
-                play(leftAnimX).with(leftAnimY).before(rightAnimX).with(rightAnimY)
+                play(leftAnimX).with(leftAnimY).with(rightAnimX).with(rightAnimY)
                 addListener(doOnEnd { doEnd.invoke() })
                 start()
             }
