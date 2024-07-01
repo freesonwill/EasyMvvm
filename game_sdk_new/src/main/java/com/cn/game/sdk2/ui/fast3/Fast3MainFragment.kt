@@ -134,7 +134,11 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 requireContext().getString(R.string.g_home_tab_sum),
                 requireContext().getString(R.string.g_home_tab_double),
                 requireContext().getString(R.string.g_home_tab_leopard)
-            ), scrollEnable = true
+            ),
+            scrollEnable = true,
+            action = {
+              PromptSoundPlay.btnPlayMedia()
+            }
         )
         mDatabind.viewPagerNew.offscreenPageLimit = mFragList.size
 
@@ -191,7 +195,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             mDatabind.txtHomeStatic.text = resources.getString(R.string.g_home_txt_please)
             if (mViewModel.isCountDownStart) {
                 Fast3ToastHelper.showToastNormal(getString(R.string.g_home_betting_begin), 2000)
-                PromptSoundPlay.startGameTip(requireContext())
+                //PromptSoundPlay.startGameTip(requireContext())
                 //下注筹码向上升起动画
                 startBetteRecyclerShowOrHideAnim(isShow = true, onStart = {
                     //筹码
@@ -270,7 +274,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     private fun onStartDrawing() {
         lifecycleScope.launch {//关闭
             if (mViewModel.isCountDownStart) {
-                PromptSoundPlay.endGameTip(requireContext())
+                //PromptSoundPlay.endGameTip(requireContext())
                 Fast3ToastHelper.showToastNormal(getString(R.string.g_home_drawing_begin), 1000)
             }
             cancelTemBetting()

@@ -76,7 +76,7 @@ object PromptSoundPlay {
     /**
      * 金币提示音~~可以一直提示
      */
-    fun playAudio(context: Context) {
+    fun playAudio(context: Context = ModuleInitializer.application) {
         if(!isPhoneSilent(context)){
             val newMediaPlayer = MediaPlayer()
             try {
@@ -158,7 +158,7 @@ object PromptSoundPlay {
     /**
      * 按钮提示音
      */
-    fun btnPlayMedia(context: Context) {
+    fun btnPlayMedia(context: Context=ModuleInitializer.application) {
         if (btnMediaPlayer == null) {
             btnMediaPlayer = MediaPlayer.create(context, R.raw.btn_ying_click)
         }
