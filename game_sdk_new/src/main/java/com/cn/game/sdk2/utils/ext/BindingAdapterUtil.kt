@@ -1,10 +1,12 @@
 package com.cn.game.sdk2.utils.ext
 
-import android.graphics.drawable.Drawable
+import android.widget.RelativeLayout
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.view.marginBottom
 import androidx.databinding.BindingAdapter
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.cn.game.sdk2.ui.view.MoneyOKView
 import com.cn.game.sdk2.ui.view.game.GameAreaView
@@ -12,6 +14,7 @@ import com.cn.game.sdk2.ui.view.game.GameAreaView.LocationClickListener
 import com.cn.game.sdk2.websocket.bean.Betting
 import com.drake.brv.annotaion.DividerOrientation
 import com.drake.brv.utils.dividerSpace
+
 
 /**
  * Description:
@@ -49,5 +52,13 @@ object BindingAdapterUtil {
             else -> DividerOrientation.HORIZONTAL
         }
         recyclerView.dividerSpace(space, or)
+    }
+
+    @JvmStatic
+    @BindingAdapter("layout_marginBottom")
+    fun setLayoutMarginBottom(view: ConstraintLayout, margin: Int) {
+        val lp = view.layoutParams as  RelativeLayout.LayoutParams
+        lp.bottomMargin = margin
+        view.layoutParams = lp
     }
 }

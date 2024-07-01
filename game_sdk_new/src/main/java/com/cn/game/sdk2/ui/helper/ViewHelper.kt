@@ -2,6 +2,7 @@ package com.cn.game.sdk2.ui.helper
 
 import android.content.Context
 import android.graphics.Paint
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
@@ -15,7 +16,6 @@ import com.cn.game.sdk2.R
 import com.cn.game.sdk2.data.enums.GAME_ID_ENUM
 import com.cn.game.sdk2.ui.HomeXPopupDialog
 import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
-import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.utils.tool.indicator.CommonPagerIndicator
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
@@ -38,13 +38,13 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.ColorT
  * createTime   : 2024/6/13 17:43
  **/
 object ViewHelper {
+    private const val TAG: String = "ViewHelper"
     private const val TAG_FASTVIEW = "TAG_FASTVIEW"
     private const val TAG_FASTVIEW_OVERLAY = "TAG_FASTVIEW_OVERLAY"
     private var homeXPopupDialog: HomeXPopupDialog? = null
 
     fun showFastView(context: Context,isShow:Boolean=true) {
         if(!isShow) EasyFloat.hide(TAG_FASTVIEW)
-
         EasyFloat.with(context).setSidePattern(SidePattern.DEFAULT)
             .setImmersionStatusBar(true)
             .setTag(TAG_FASTVIEW)
@@ -52,6 +52,10 @@ object ViewHelper {
             .setLayout(R.layout.drag_fast_easy) {
                 val llFastClick = it.findViewById<LinearLayout>(R.id.llFastClick)
                 llFastClick.setOnClickListener {
+                    if(homeXPopupDialog != null) {
+                        Log.d(TAG,"homeXPopupDialog exists, no need to create it.")
+                        return@setOnClickListener
+                    }
                     XPopup.Builder(context)
                         .hasShadowBg(false)
                         .setPopupCallback(object : SimpleCallback() {

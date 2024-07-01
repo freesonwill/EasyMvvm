@@ -1,7 +1,6 @@
 package com.cn.game.sdk2.ui.fast3
 
 import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
@@ -12,16 +11,10 @@ import android.graphics.PathMeasure
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
-import android.view.animation.Animation
-import android.view.animation.AnimationSet
-import android.view.animation.TranslateAnimation
-import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.core.animation.addListener
-import androidx.core.animation.doOnEnd
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -41,15 +34,16 @@ import com.cn.game.sdk2.databinding.ItemBetHistoryBinding
 import com.cn.game.sdk2.ui.helper.Fast3ToastHelper
 import com.cn.game.sdk2.ui.helper.ViewHelper.bindViewPagerNewGame
 import com.cn.game.sdk2.ui.helper.ViewHelper.initGameViewPager
-import com.cn.game.sdk2.ui.helper.ViewHelper.isAdd
 import com.cn.game.sdk2.ui.view.CommonLinearLayoutItemDecoration
 import com.cn.game.sdk2.ui.view.CustomBubbleAttachPopup
 import com.cn.game.sdk2.ui.view.MoneyOKView
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
+import com.cn.game.sdk2.utils.CommonUtils
 import com.cn.game.sdk2.utils.FlowBus
 import com.cn.game.sdk2.utils.ext.BizExt.isLeopard
 import com.cn.game.sdk2.utils.ext.CommonExt.formatRealMoney
+import com.cn.game.sdk2.utils.ext.CommonExt.px2dp
 import com.cn.game.sdk2.utils.ext.CommonExt.toPinyin
 import com.cn.game.sdk2.utils.ext.ViewExt.getDrawable
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
@@ -65,7 +59,6 @@ import com.drake.brv.utils.dividerSpace
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.lxj.xpopup.XPopup
-import com.lxj.xpopup.animator.EmptyAnimator
 import com.lxj.xpopup.core.BasePopupView
 import com.xcjh.base_lib.base.fragment.BaseVmDbFragment
 import com.xcjh.base_lib.utils.dp2px
@@ -73,8 +66,7 @@ import com.xcjh.base_lib.utils.loge
 import com.xcjh.base_lib.utils.view.clickNoRepeat
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
+
 
 @SuppressLint("SetTextI18n")
 class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>() {
@@ -104,6 +96,11 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     //==================================== Method ===============================================//
     override fun initView(savedInstanceState: Bundle?) {
         mDatabind.model = mViewModel
+        CommonUtils.getNavigationBarHeight(mDatabind.root).let {
+            mViewModel.navigationBarHeight.value = it.px2dp
+            //Log.d(TAG,"getNavigationBarHeight $it,-->${it.px2dp}")
+        }
+
         //viewpager
         mFragList.add(DXDSFragment(mViewModel))
         mFragList.add(SingleDiceFragment(mViewModel))
@@ -715,11 +712,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
      */
     private fun startGameResultShowAnim(duration: Long = 200L, doEnd: () -> Unit) {
         mDatabind.apply {
-            llResultLeft.scaleX = 0f
-            llResultLeft.scaleY = 0f
-            llResultRight.scaleX = 0f
-            llResultRight.scaleY = 0f
-
             val leftAnimX = ObjectAnimator.ofFloat(llResultLeft, "scaleX", 0f, 1f).apply {
                 this.duration = duration
             }
@@ -736,7 +728,13 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             }
             AnimatorSet().apply {
                 play(leftAnimX).with(leftAnimY).with(rightAnimX).with(rightAnimY)
-                addListener(doOnEnd { doEnd.invoke() })
+                addListener(onStart = {
+                        llResultLeft.scaleX = 0f
+                        llResultLeft.scaleY = 0f
+                        llResultRight.scaleX = 0f
+                        llResultRight.scaleY = 0f
+                    },
+                    onEnd =  {doEnd.invoke()} )
                 start()
             }
         }
@@ -761,7 +759,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                             }
                         }
                     homeMorePop = XPopup.Builder(requireContext())
-                        .hasShadowBg(false)
                         .isTouchThrough(true)
 //                        .customAnimator(EmptyAnimator(bubbleAttach,0))
                         .atView(mDatabind.llHomeMore)
@@ -769,7 +766,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                         .asCustom(bubbleAttach)
                 }
                 PromptSoundPlay.btnPlayMedia(requireContext())
-                homeMorePop!!.show()
+                if(homeMorePop!!.isShow) homeMorePop!!.dismiss()
+                else homeMorePop!!.show()
             }
             //加倍
             ivMultiple2.clickNoRepeat {

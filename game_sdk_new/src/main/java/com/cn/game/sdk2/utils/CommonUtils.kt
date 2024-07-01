@@ -1,6 +1,13 @@
 package com.cn.game.sdk2.utils
 
+import android.util.Log
+import android.view.View
+import android.view.WindowInsets
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import com.xcjh.base_lib.utils.TAG
 import java.util.Locale
+
 
 /**
  * Description:
@@ -17,4 +24,18 @@ object CommonUtils {
         return String.format(Locale.ROOT, format, minutes, seconds)
     }
 
+    /**
+     * 获取导航栏高度
+     */
+    fun getNavigationBarHeight(view:View): Int {
+        val insets = ViewCompat.getRootWindowInsets(view)
+        if (insets != null) {
+            val top = insets.getInsets(WindowInsetsCompat.Type.systemBars()).top
+            val bottom = insets.getInsets(WindowInsetsCompat.Type.systemBars()).bottom
+            val height = bottom - top
+            //Log.d(TAG,"getNavigationBarHeight-->top:$top,bottom:$bottom")
+            return  height
+        }
+        return 0
+    }
 }

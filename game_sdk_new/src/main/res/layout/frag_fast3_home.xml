@@ -28,7 +28,7 @@
             android:clipChildren="false"
             android:clipToPadding="false"
             android:orientation="vertical"
-            android:paddingBottom="34dp">
+            android:paddingBottom="@{model.navigationBarHeight}">
 
 
             <androidx.appcompat.widget.AppCompatImageView
