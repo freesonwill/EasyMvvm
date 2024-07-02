@@ -1,16 +1,22 @@
 package com.cn.game.sdk2.ui.view
 
+import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.content.Context
+import android.view.animation.AccelerateDecelerateInterpolator
+import android.widget.LinearLayout
+import androidx.core.animation.addListener
+import androidx.core.view.isVisible
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.databinding.FragmentFast3HelpBinding
 import com.cn.game.sdk2.ui.helper.ViewHelper
 import com.cn.game.sdk2.utils.ext.BindingAdapterUtil.bindRecycleView
+import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.drake.brv.annotaion.DividerOrientation
 import com.drake.brv.utils.dividerSpace
 import com.drake.brv.utils.setup
 import com.lxj.xpopup.core.BottomPopupView
-import com.lxj.xpopup.core.BubbleAttachPopupView
 import com.xcjh.base_lib.utils.dp2px
 import com.xcjh.base_lib.utils.view.clickNoRepeat
 
@@ -18,7 +24,6 @@ import com.xcjh.base_lib.utils.view.clickNoRepeat
  * 首页的弹出框
  */
 class Fast3HelpPopup(content: Context) : BottomPopupView(content) {
-    private var rootHeight: Int = 0
     private lateinit var mViewBind: FragmentFast3HelpBinding
 
     override fun getImplLayoutId(): Int {
@@ -45,7 +50,9 @@ class Fast3HelpPopup(content: Context) : BottomPopupView(content) {
                         2 -> R.layout.item_fast3_help_3
                         3 -> R.layout.item_fast3_help_4
                         4 -> R.layout.item_fast3_help_5
-                        else ->{ throw  IllegalStateException("error pos:$pos")}
+                        else -> {
+                            throw IllegalStateException("error pos:$pos")
+                        }
                     }
                 }
             }.models = listOf(1, 2, 3, 4, 5)
@@ -66,14 +73,38 @@ class Fast3HelpPopup(content: Context) : BottomPopupView(content) {
         )
 
         mViewBind.ivCollapse.clickNoRepeat {
-            if (rootHeight == 0) rootHeight = mViewBind.root.height
-            val isExpand = rootHeight != mViewBind.root.height
-            val height = if (!isExpand) rootHeight / 2 else rootHeight
-            mViewBind.root.layoutParams.height = height
-            //mViewBind.root.requestLayout()
-            mViewBind.ivCollapse.setImageResource(if(isExpand) R.drawable.ic_expand else R.drawable.ic_collapse)
+            PromptSoundPlay.btnPlayMedia()
+            val toExpand = mViewBind.space.isVisible
+            val topPadding = if (toExpand) 48.dp2px else 0
+            val bottomPadding = 48.dp2px
+            mViewBind.root.setPadding(0, topPadding, 0, bottomPadding)
+            mViewBind.space.isVisible = !toExpand
+            mViewBind.ivCollapse.setImageResource(if (toExpand) R.drawable.ic_expand else R.drawable.ic_collapse)
+            val start = if (toExpand) 0f else 1f
+            val end = if (!toExpand) 0f else 1f
+            ValueAnimator.ofFloat(start, end).apply {
+                duration = 300
+                addUpdateListener { animation ->
+                    val value = animation.animatedValue as Float
+                    val lp = mViewBind.space.layoutParams as LinearLayout.LayoutParams
+                    lp.weight = value
+                }
+                addListener(
+                    onStart = {
+                        val lp = mViewBind.space.layoutParams as LinearLayout.LayoutParams
+                        lp.weight = start
+                    },
+                    onEnd = {
+                        //动画结束
+                        val lp = mViewBind.space.layoutParams as LinearLayout.LayoutParams
+                        lp.weight = end
+                    })
+                start()
+            }
+
         }
         mViewBind.close.clickNoRepeat {
+            PromptSoundPlay.btnPlayMedia()
             ViewHelper.showHelpDialog(context, false)
         }
     }
