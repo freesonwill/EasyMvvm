@@ -2,7 +2,6 @@ package com.cn.game.sdk2.websocket
 
 import android.util.Log
 import com.cn.game.sdk2.websocket.imp.GameApp
-import com.cn.game.sdk2.websocket.interfaces.SDKLoginCallbackListener
 import com.xcjh.base_lib.utils.loge
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -37,15 +36,8 @@ class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
                 isTokenValid = true
                 if (isLogin) {
                     GameApp.login(
-                        "wali-internal",
-                        token,
-                        "Gregg Denesik",
-                        object : SDKLoginCallbackListener {
-                            override fun callback(code: Int, message: String?) {
-                                "login:code-${code},message-${message}".loge()
-                            }
-
-                        })
+                        token, "wali-internal", true
+                    )
                 }
             }
         }

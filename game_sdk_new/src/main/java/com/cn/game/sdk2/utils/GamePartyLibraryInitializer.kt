@@ -1,10 +1,8 @@
 package com.cn.game.sdk2.utils
 
 import android.app.Application
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
-import com.cn.game.sdk2.websocket.GameSocketManager
-import com.cn.game.sdk2.websocket.imp.GameSDK
+import com.cn.game.sdk2.websocket.imp.GameApp
 import com.xcjh.base_lib.utils.loge
 
 /**
@@ -18,7 +16,7 @@ object GamePartyLibraryInitializer {
         // appGameViewModelInstance= ViewModelProvider(context)[AppGameViewModel::class.java]
         mAppContext = mApp
         "初始化step1:loadGame".loge("GamePartyLibraryInitializer")
-        GameSDK.loadGame()
+//        GameApp.loadGame()
 
         //初始化获取到快三结果的View
 //        MyGameManager.getOpenResultView(mAppContext!!)
