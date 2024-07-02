@@ -24,7 +24,7 @@ class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
     fun re() {
         "---尝试重连---".loge()
         if (isNeedReconnect) {
-            nativeLib.reset()
+            //nativeLib.reset()
             reconnect()
         }
     }

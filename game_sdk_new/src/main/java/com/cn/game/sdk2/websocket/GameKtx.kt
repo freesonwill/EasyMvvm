@@ -55,7 +55,7 @@ import game.mod.proc.yf.proto.res.GameRes
 
 
 var appContext: Context? = null
-var appLifecycleEnable: Boolean = false
+var appLifecycleEnable:Boolean = false
 
 /**
  * socket-url
@@ -67,7 +67,7 @@ var WEB_SOCKET_URL = "wss://ws.qxe68.com:7001/api/game/5702" ///test
  * 仅记录用户当前状态，用于重连服务器处理
  */
 //92:ZyBmhNCJ   87:MHxIHlYM  93:Ufx3Dy8y 94:0aPEwiYK
-var token = "87:MHxIHlYM"
+var token = "92:ZyBmhNCJ"
 var isLogin = false
 var isEnterRoom = false
 

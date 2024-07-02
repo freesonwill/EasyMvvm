@@ -504,7 +504,7 @@
                             android:id="@+id/txtOddsLeopard"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@{`1:`+model.multiplierStr(5,`#.##`)}"
+                            android:text="@{model.multiplierStr(5)}"
                             android:textColor="@color/g_f8e0c4"
                             android:textSize="14sp"
                             tools:text="1:0.96" />

@@ -5,6 +5,7 @@ import com.cn.game.sdk2.R
 import com.cn.game.sdk2.ui.helper.Fast3ToastHelper
 import com.cn.game.sdk2.utils.PinyinUtils
 import com.cn.game.sdk2.utils.ToastUtil
+import com.cn.game.sdk2.websocket.bean.AreaBetConfigBean
 import com.cn.game.sdk2.websocket.bean.Betting
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 import java.math.BigDecimal
@@ -84,7 +85,7 @@ object CommonExt {
         return b1.divide(b2, 2, RoundingMode.DOWN).stripTrailingZeros().toPlainString()
     }
 
-    fun GameAboutModel.BettingState.isCanGoOn(goOnAction: () -> Unit) {
+    fun GameAboutModel.BettingState.isCanGoOn(areaLimit: AreaBetConfigBean?, goOnAction: () -> Unit) {
         when (this) {
             GameAboutModel.BettingState.GO_ON -> {
                 goOnAction.invoke()
@@ -95,7 +96,7 @@ object CommonExt {
             }
 
             GameAboutModel.BettingState.OFFSET_MIN -> {
-                Fast3ToastHelper.showToastNormal(ModuleInitializer.application.getString(R.string.money_min_error))
+                Fast3ToastHelper.showToastNormal(ModuleInitializer.application.getString(R.string.money_min_error,))
             }
 
             GameAboutModel.BettingState.OFFSET_MAX -> {

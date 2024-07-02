@@ -144,8 +144,8 @@ abstract class BaseFast3Fragment<VM : BaseViewModel, VB : ViewDataBinding>(var f
         //先判断余额是否够这次 并且扣取钱
         if (fast3VM.isClickOperation && PromptSoundPlay.handleClick()) {
             val bettingBean = BettingRecordBean(areaView.areaInfo!!, money = fast3VM.betMoney)
-            gameMassageManager?.addBetting(bettingBean) { bettingState, result ->
-                bettingState.isCanGoOn {
+            gameMassageManager?.addBetting(bettingBean) { bettingState, result,areaLimit ->
+                bettingState.isCanGoOn(areaLimit){
                     result?.let {
                         areaView.setShowMoney(result.money)
                         if (!areaView.moneyView.isAdd()) {

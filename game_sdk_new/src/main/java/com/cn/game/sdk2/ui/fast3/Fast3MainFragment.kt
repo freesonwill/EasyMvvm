@@ -111,6 +111,9 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         context?.assets?.let {
             mDatabind.tvAnimWin.typeface = Typeface.createFromAsset(it, "fonts/alibabapuhuiti.otf");
         }
+        mDatabind.llHomeVideo.setOnClickListener{
+            Fast3ToastHelper.showToastNormal(getString(R.string.g_home_betting_begin), 2000)
+        }
         CommonUtils.getNavigationBarHeight(mDatabind.root).let {
             mViewModel.navigationBarHeight.value = it
             Log.d(TAG, "getNavigationBarHeight $it,-->${it.px2dp}")
@@ -394,7 +397,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         mViewModel.betOkClick.observe(this) {
             hiddenAnchorTop()
             GameSocketManager.getInstance()?.getGameService()?.commitBetting { bettingState, bean ->
-                bettingState.isCanGoOn {}
+                bettingState.isCanGoOn(null) {}
             }
         }
 
@@ -833,7 +836,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 //todo 判断加倍状态
                 GameSocketManager.getInstance()?.getGameService()
                     ?.doubleBetting { bettingState, map ->
-                        bettingState.isCanGoOn {
+                        bettingState.isCanGoOn(null) {
                             if (!map.isNullOrEmpty()) {
                                 map.forEach {
                                     it.value.let { record ->
