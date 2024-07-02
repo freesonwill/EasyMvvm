@@ -6,6 +6,7 @@ import game.mod.proc.yf.proto.res.GameRes
 import game.mod.proc.yf.proto.res.GameRes.BeginSettle
 import game.mod.proc.yf.proto.res.GameRes.ClearTrends
 import game.mod.proc.yf.proto.res.GameRes.EnterInfo
+import game.mod.proc.yf.proto.res.GameRes.RefreshGameConfig
 import game.mod.proc.yf.proto.res.GameRes.RefreshUserScore
 
 interface GameServerMessageConvertFactory {
@@ -83,4 +84,6 @@ interface GameServerMessageConvertFactory {
     fun errorMessage(errorMessage: ClientRes.ErrorMessage)
 
     fun tokenLoseEffectiveness()
+
+    fun refreshGameConfig(configs: RefreshGameConfig)
 }

@@ -419,7 +419,7 @@ infix fun <K> MutableMap<K, BettingRecordBean>.copyFrom(other: MutableMap<K, Bet
     }
 }
 
-fun ArrayList<AreaBetConfigBean>.getBeanById(betting: Betting): AreaBetConfigBean? {
+fun List<AreaBetConfigBean>.getBeanById(betting: Betting): AreaBetConfigBean? {
     forEach {
         if (it.areaCode.number == betting.number) {
             return it

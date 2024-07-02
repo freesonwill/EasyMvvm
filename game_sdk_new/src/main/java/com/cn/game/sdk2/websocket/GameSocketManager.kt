@@ -229,6 +229,8 @@ class GameSocketManager private constructor() : OnMessageListener {
 
                 GameResCode.S2C_MULTI_TOKEN_VERIFY_FAIL -> gameServerMessageConvertFactory?.tokenLoseEffectiveness()
 
+                GameResCode.S2C_REFRESH_GAME_CONFIG -> gameServerMessageConvertFactory?.refreshGameConfig(GameRes.RefreshGameConfig.parseFrom(byteArray))
+
             }
         }
     }

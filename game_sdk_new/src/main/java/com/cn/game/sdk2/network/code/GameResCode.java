@@ -92,4 +92,6 @@ public interface GameResCode {
      * token，account验证不通过
      */
     int S2C_MULTI_TOKEN_VERIFY_FAIL = 703;
+
+    int S2C_REFRESH_GAME_CONFIG = 1012;
 }
