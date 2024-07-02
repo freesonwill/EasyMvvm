@@ -10,18 +10,21 @@ import android.content.res.AssetManager
 import android.graphics.Path
 import android.graphics.PathMeasure
 import android.graphics.Typeface
+import android.icu.text.DecimalFormat
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.ImageView
 import android.widget.RelativeLayout
+import android.widget.TextView
 import androidx.core.animation.addListener
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -72,6 +75,7 @@ import com.xcjh.base_lib.utils.loge
 import com.xcjh.base_lib.utils.view.clickNoRepeat
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.random.Random
 
 
 @SuppressLint("SetTextI18n")
@@ -158,6 +162,25 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     override fun lazyLoadData() {
     }
 
+
+    private fun doNumberAnim(targetView: TextView, startNum: Float, endNumber: Float) {
+        if(targetView.tag != null) {
+            (targetView.tag as ValueAnimator).end()
+        }
+        ValueAnimator.ofFloat(startNum, endNumber).apply {
+            duration = 500
+            val f = java.text.DecimalFormat("0.##")
+            addUpdateListener {
+                targetView.text = "¥ ${f.format(it.animatedValue)}"
+            }
+            addListener(
+                onStart = { targetView.text = "¥ $startNum" },
+                onEnd = { targetView.text = "¥ $endNumber" }
+            )
+            start()
+            targetView.tag  = this
+        }
+    }
     override fun initData() {
         //获取当前余额
         mDatabind.txtCurrentMoney.text = "¥ ${mViewModel.currentMoney}"
@@ -342,8 +365,14 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         GameSocketManager.getInstance()?.getGameService()?.observeAgainDoubleState(this)
 
         mViewModel.currentMoneyLD.observe(viewLifecycleOwner) { balance ->
-            Log.e(TAG, "收到的总余额：${balance}")
-            mDatabind.txtCurrentMoney.text = "¥ $balance"
+            //mDatabind.txtCurrentMoney.text = "¥ $balance"
+            val start = mDatabind.txtCurrentMoney.text.let {
+                if(it == "¥ --") 0f
+                else it.split(" ")[1].toFloat()
+            }
+            val end = balance.toFloat()
+            Log.e(TAG, "收到的总余额：${balance},old:$start, new:$end")
+            this.doNumberAnim(mDatabind.txtCurrentMoney,start,end)
         }
         mViewModel.homeTimeSeconds.observe(viewLifecycleOwner) { seconds ->
             mDatabind.txtHomeTime.text = seconds.toString()
@@ -761,6 +790,12 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             rlClickHide.setOnClickListener {
                 PromptSoundPlay.btnPlayMedia(requireContext())
                 resultAnimation(!mViewModel.isShowResult)
+                /*val v = (gameAboutModel.balance as MutableLiveData).value
+                if(v == null){
+                    (gameAboutModel.balance as MutableLiveData).value = 100L + Random.nextLong(100,10000)
+                } else {
+                    (gameAboutModel.balance as MutableLiveData).value = v +  Random.nextLong(100_00,1000_00)
+                }*/
             }
 
             //点击更多弹出框

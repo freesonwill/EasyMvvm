@@ -107,6 +107,7 @@ object BindingAdapterUtil {
                     //点击事件
                     setOnClickListener {
                         action.invoke(index)
+                        recyclerView.stopScroll()
                         (recyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(index,0)
                     }
                 }

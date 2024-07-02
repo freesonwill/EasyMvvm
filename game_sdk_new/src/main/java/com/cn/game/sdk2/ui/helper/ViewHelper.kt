@@ -78,6 +78,7 @@ object ViewHelper {
             .isViewMode(true)
             .hasStatusBar(false)
             .hasNavigationBar(false)
+            .enableDrag(false)
             .asCustom(Fast3HelpPopup(context))
         helpXPopupDialog?.show()
     }
