@@ -4,6 +4,7 @@ package com.xcjh.app.ui
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ActivityManager
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -15,7 +16,9 @@ import android.view.Choreographer
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.ProgressBar
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.AppCompatImageView
@@ -39,6 +42,8 @@ import com.lxj.xpopup.core.BasePopupView
 import com.lxj.xpopup.enums.PopupAnimation
 import com.lzf.easyfloat.EasyFloat
 import com.lzf.easyfloat.enums.ShowPattern
+import com.lzf.easyfloat.interfaces.OnPermissionResult
+import com.lzf.easyfloat.permission.PermissionUtils
 import com.xcjh.app.BuildConfig
 import com.xcjh.app.R
 import com.xcjh.app.adapter.PushCardPopup
@@ -49,8 +54,10 @@ import com.xcjh.app.bean.JsonBean
 import com.xcjh.app.bean.LoginInfo
 import com.xcjh.app.bean.TimeConstantsDat
 import com.xcjh.app.databinding.ActivityHomeBinding
+import com.xcjh.app.event.AppViewModel
 import com.xcjh.app.net.ApiComService
-import com.xcjh.app.net.ChangeHostUtil
+import com.xcjh.app.net.NetworkApi
+import com.xcjh.app.net.apiService
 import com.xcjh.app.placeLoginDialog
 import com.xcjh.app.ui.details.MatchDetailActivity
 import com.xcjh.app.ui.home.home.HomeFragment
@@ -58,13 +65,16 @@ import com.xcjh.app.ui.home.msg.MsgFragment
 import com.xcjh.app.ui.home.my.MyUserFragment
 import com.xcjh.app.ui.home.schedule.ScheduleFragment
 import com.xcjh.app.utils.CacheUtil
+import com.xcjh.app.utils.PerformanceMonitor
 import com.xcjh.app.utils.SoundManager
+import com.xcjh.app.utils.getVerCode
 import com.xcjh.app.utils.getVerName
 import com.xcjh.app.utils.judgeLogin
 import com.xcjh.app.vm.MainVm
 import com.xcjh.app.websocket.MyWsManager
 import com.xcjh.app.websocket.listener.NoReadMsgPushListener
 import com.xcjh.app.websocket.listener.OtherPushListener
+import com.xcjh.base_lib.App
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.utils.initActivity
@@ -75,6 +85,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.util.Timer
 import java.util.TimerTask
@@ -94,10 +105,8 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
     private var currentPage: Int = 0
     private var popup: BasePopupView? = null
     private var exitTime: Long = 0
-
     //当首页获取到数据就是true
-    private var isHomeDate: Boolean = false
-
+    private var isHomeDate:Boolean=false
     //是否显示卡片
     private var isShowPush: Boolean = true
 
@@ -119,26 +128,24 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         showStatusBar()
 
 
+
         //初始化提示音类
         SoundManager.initialize(appContext)
 
         mDatabind.reDateShow.clickNoRepeat {}
-        currentPage = 0
+        currentPage=0
         CacheUtil.setFirst(false)
 
         //语言 0是中文  1是繁体  2是英文
         val locale = MultiLanguages.getAppLanguage(this)
-        if (LocaleContract.getSimplifiedChineseLocale()
-                .equals(locale) || LocaleContract.getChineseLocale()
-                .equals(locale) || locale.toString().equals("zh_CN_#Hans")
-        ) {
-            Constants.languageType = 0
-        } else if (LocaleContract.getTraditionalChineseLocale().equals(locale)) {
-            Constants.languageType = 1
-        } else {
-            Constants.languageType = 2
+        if(LocaleContract.getSimplifiedChineseLocale().equals(locale)|| LocaleContract.getChineseLocale().equals(locale)||locale.toString().equals("zh_CN_#Hans")){
+            Constants.languageType=0
+        }else if(LocaleContract.getTraditionalChineseLocale().equals(locale)){
+            Constants.languageType=1
+        }else{
+            Constants.languageType=2
         }
-        if (CacheUtil.isLogin()) {
+        if(CacheUtil.isLogin()){
             mViewModel.setLanquage()
         }
         mDatabind.vLogoAnim.setAnimation("qidongye.json")
@@ -172,25 +179,25 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
 
         //全部比赛 0全部 1 是足球   2是篮球    3是赛果
         TimeConstantsDat.options1ItemsAll = ArrayList<JsonBean>()
-        TimeConstantsDat.options2ItemsAll = ArrayList<ArrayList<String>>()
-        TimeConstantsDat.options3ItemsAll = ArrayList<ArrayList<ArrayList<String>>>()
+        TimeConstantsDat.options2ItemsAll =  ArrayList<ArrayList<String>>()
+        TimeConstantsDat.options3ItemsAll = ArrayList< ArrayList<ArrayList<String>>>()
         //足球比赛
         TimeConstantsDat.options1ItemsFootball = ArrayList<JsonBean>()
-        TimeConstantsDat.options2ItemsFootball = ArrayList<ArrayList<String>>()
-        TimeConstantsDat.options3ItemsFootball = ArrayList<ArrayList<ArrayList<String>>>()
+        TimeConstantsDat.options2ItemsFootball =  ArrayList<ArrayList<String>>()
+        TimeConstantsDat.options3ItemsFootball = ArrayList< ArrayList<ArrayList<String>>>()
         //篮球比赛
         TimeConstantsDat.options1ItemsBasketball = ArrayList<JsonBean>()
-        TimeConstantsDat.options2ItemsBasketball = ArrayList<ArrayList<String>>()
-        TimeConstantsDat.options3ItemsBasketball = ArrayList<ArrayList<ArrayList<String>>>()
+        TimeConstantsDat.options2ItemsBasketball =  ArrayList<ArrayList<String>>()
+        TimeConstantsDat.options3ItemsBasketball = ArrayList< ArrayList<ArrayList<String>>>()
         //赛果
-        TimeConstantsDat.options1ItemsSaiguo = ArrayList<JsonBean>()
-        TimeConstantsDat.options2ItemsSaiguo = ArrayList<ArrayList<String>>()
-        TimeConstantsDat.options3ItemsSaiguo = ArrayList<ArrayList<ArrayList<String>>>()
+        TimeConstantsDat.options1ItemsSaiguo  = ArrayList<JsonBean>()
+        TimeConstantsDat.options2ItemsSaiguo =  ArrayList<ArrayList<String>>()
+        TimeConstantsDat.options3ItemsSaiguo = ArrayList< ArrayList<ArrayList<String>>>()
 
         //收到通知其他地方登录
         appViewModel.quitTipsEvent.observeForever {
-            if (CacheUtil.isLogin()) {
-                CacheUtil.setIsLogin(false, LoginInfo("", "", ""))
+            if(CacheUtil.isLogin()){
+                CacheUtil.setIsLogin(false, LoginInfo("","", ""))
                 GlobalScope.launch(Dispatchers.Main) { // 使用主线程的调度器
                     delay(500L) // 延迟1秒（1000毫秒）
                     placeLoginDialog(this@MainActivity)
@@ -205,22 +212,17 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
              //延迟2.5秒
              !mViewModel.mockDataLoading()
          }*/
-        ChangeHostUtil().getHostList {
-            it?.let {
-                ApiComService.SERVER_URL = it
-            }
-            runOnUiThread {
-                Constants.isLoading = true
-                onIntent(intent)
-                initUI()
-                initTime()
-                initWs()
-            }
-        }
 
 
+
+        Constants.isLoading = true
+        onIntent(intent)
+        initUI()
+        initTime()
+        initWs()
         //极光推送绑定用户
         val registrationId: String = MTCorePrivatesApi.getRegistrationId(this)
+
 
 
     }
@@ -229,6 +231,7 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         super.onNewIntent(intent)
         onIntent(intent)
     }
+
 
 
     private fun onIntent(intent: Intent?) {
@@ -251,7 +254,9 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
                 val anchorId = getString("anchorId", null)
                 if (!matchId.isNullOrEmpty()) {
                     MatchDetailActivity.open(
-                        matchType = matchType, matchId = matchId, anchorId = anchorId
+                        matchType = matchType,
+                        matchId = matchId,
+                        anchorId = anchorId
                     )
                 }
             }
@@ -273,11 +278,8 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
 
 
         setOnclickNoRepeat(
-            mDatabind.llHomeSelectMain,
-            mDatabind.llHomeSelectSchedule,
-            mDatabind.llHomeSelectMsg,
-            mDatabind.llHomeSelectMine,
-            interval = 200
+            mDatabind.llHomeSelectMain, mDatabind.llHomeSelectSchedule,
+            mDatabind.llHomeSelectMsg, mDatabind.llHomeSelectMine, interval = 200
         ) {
             when (it.id) {
                 R.id.llHomeSelectMain -> {
@@ -319,19 +321,12 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
                 }
             }
         })
-        mDatabind.ivHomeCourse.setImageDrawable(
-            ContextCompat.getDrawable(
-                this, R.drawable.tab_saicheng_no
-            )
-        )
-        mDatabind.ivHomeMsg.setImageDrawable(
-            ContextCompat.getDrawable(
-                this, R.drawable.tab_xiaoxi_no
-            )
-        )
-        mDatabind.ivHomeMy.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.tab_wode_no))
+        mDatabind.ivHomeCourse.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_saicheng_no))
+        mDatabind.ivHomeMsg.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_xiaoxi_no))
+        mDatabind.ivHomeMy.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_wode_no))
 
     }
+
 
 
     private fun initTime() {
@@ -356,37 +351,36 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
 
     private fun initWs() {
         MyWsManager.getInstance(this)?.initService()
-        MyWsManager.getInstance(this)
-            ?.setNoReadMsgListener(javaClass.name, object : NoReadMsgPushListener {
-                override fun onNoReadMsgNums(nums: String) {
-                    super.onNoReadMsgNums(nums)
-                    //  initMsgNums(nums)
-                }
-            })
+        MyWsManager.getInstance(this)?.setNoReadMsgListener(javaClass.name, object :
+            NoReadMsgPushListener {
+            override fun onNoReadMsgNums(nums: String) {
+                super.onNoReadMsgNums(nums)
+                //  initMsgNums(nums)
+            }
+        })
         //获取到要推送的比赛
-        MyWsManager.getInstance(this)
-            ?.setOtherPushListener(javaClass.name, object : OtherPushListener {
-                override fun onAnchorStartLevel(beingLiveBean: BeingLiveBean) {
-                    super.onAnchorStartLevel(beingLiveBean)
-                    if (currentPage != 3 && CacheUtil.isLogin() && isHomeDate) {
-                        Log.i("BBBB", "==" + Gson().toJson(beingLiveBean))
-                        showDialog(beingLiveBean)
-                    }
+        MyWsManager.getInstance(this)?.setOtherPushListener(javaClass.name, object :
+            OtherPushListener {
+            override fun onAnchorStartLevel(beingLiveBean: BeingLiveBean) {
+                super.onAnchorStartLevel(beingLiveBean)
+                if (currentPage != 3 && CacheUtil.isLogin()&&isHomeDate) {
+                    Log.i("BBBB","=="+Gson().toJson(beingLiveBean))
+                    showDialog(beingLiveBean)
                 }
+            }
 
 
-            })
+        })
 
         //被挤下线
-        MyWsManager.getInstance(this)
-            ?.setNoReadMsgListener(javaClass.name, object : NoReadMsgPushListener {
-                override fun onUserIsKicked() {
-                    super.onUserIsKicked()
-                    if (CacheUtil.isLogin()) {
-                        appViewModel.quitTipsEvent.postValue(true)
-                    }
+        MyWsManager.getInstance(this)?.setNoReadMsgListener(javaClass.name, object :NoReadMsgPushListener{
+            override fun onUserIsKicked() {
+                super.onUserIsKicked()
+             if(CacheUtil.isLogin()){
+                    appViewModel.quitTipsEvent.postValue(true)
                 }
-            })
+            }
+        })
 
     }
 
@@ -394,16 +388,16 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         super.createObserver()
         appViewModel.mainDateShowEvent.observeForever {
             mDatabind.vLogoAnim.cancelAnimation()
-            mDatabind.reDateShow.visibility = View.GONE
-            isHomeDate = true
+            mDatabind.reDateShow.visibility=View.GONE
+            isHomeDate=true
             //如果登录了就查询一下用户信息
             if (CacheUtil.isLogin()) {
                 //判断打开app的时候是否获取到了数据
-                if (!mViewModel.isGetUserDate) {
+                if(!mViewModel.isGetUserDate){
                     mViewModel.getUserInfo()
                 }
-                if (!mViewModel.isPushDate) {
-                    Log.i("SSSSSSs", "=========" + MTCorePrivatesApi.getRegistrationId(this))
+                if(!mViewModel.isPushDate){
+                    Log.i("SSSSSSs","========="+MTCorePrivatesApi.getRegistrationId(this))
                     mViewModel.jPushBind(MTCorePrivatesApi.getRegistrationId(this))
                 }
 
@@ -421,14 +415,14 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
          */
         mViewModel.update.observe(this) {
 //            var code= getVerCode(this).toString()
-            var code = getVerName(this).toString()
+            var code= getVerName(this).toString()
 //            appUpdate(it.remarks,false,"")
-            if (!it.version.equals(code)) {
+            if(!it.version.equals(code)){
                 // 是否强制更新：0 ：不强制 1：强制
-                if (it.forcedUpdate.equals("0")) {
-                    appUpdate(it.remarks, true, it.sourceUrl)
-                } else {
-                    appUpdate(it.remarks, false, it.sourceUrl)
+                if(it.forcedUpdate.equals("0")){
+                    appUpdate(it.remarks,true,it.sourceUrl)
+                }else{
+                    appUpdate(it.remarks,false,it.sourceUrl)
                 }
 
 
@@ -482,23 +476,26 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         }
         txtUpdateCommit.clickNoRepeat {
 //            mAppUpdater!!=AppUpdater.
-            txtUpdateCommit.visibility = View.GONE
-            llShow.visibility = View.VISIBLE
-            //   .setUrl("https://gitlab.com/jenly1314/AppUpdater/-/raw/master/app/release/app-release.apk") .setUrl(url)
-            mAppUpdater =
-                AppUpdater.Builder(this).setUrl(url).setNotificationIcon(R.drawable.app_logo)
-                    .setVersionCode(BuildConfig.VERSION_CODE.toLong()).setFilename("AppUpdater.apk")
-                    .setVibrate(true).build()
+            txtUpdateCommit.visibility=View.GONE
+            llShow.visibility=View.VISIBLE
+     //   .setUrl("https://gitlab.com/jenly1314/AppUpdater/-/raw/master/app/release/app-release.apk") .setUrl(url)
+            mAppUpdater = AppUpdater.Builder(this)
+                .setUrl(url)
+                .setNotificationIcon(R.drawable.app_logo)
+                .setVersionCode(BuildConfig.VERSION_CODE.toLong())
+                .setFilename("AppUpdater.apk")
+                .setVibrate(true)
+                .build()
             //                        .setApkMD5("3df5b1c1d2bbd01b4a7ddb3f2722ccca")// 支持MD5校验，如果缓存APK的MD5与此MD5相同，则直接取本地缓存安装，推荐使用MD5校验的方式
             mAppUpdater!!.setHttpManager(OkHttpManager.getInstance())
-                .setUpdateCallback(object : UpdateCallback {
+                .setUpdateCallback(object :UpdateCallback{
                     override fun onDownloading(isDownloading: Boolean) {
 
                     }
 
                     override fun onStart(url: String?) {
                         pbUpdate.progress = 0
-                        txtUpdateNum.text = "0%"
+                        txtUpdateNum.text= "0%"
                     }
 
                     override fun onProgress(progress: Long, total: Long, isChanged: Boolean) {
@@ -508,25 +505,25 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
                             }
                             if (progress > 0) {
                                 val currProgress = (progress * 1.0f / total * 100.0f).toInt()
-                                txtUpdateNum.text = (currProgress.toString() + "%")
+                                txtUpdateNum.text=(currProgress.toString() + "%")
                                 pbUpdate.progress = currProgress
                             } else {
-                                txtUpdateNum.text = "0%"
+                                txtUpdateNum.text= "0%"
                             }
 
                         }
                     }
 
                     override fun onFinish(file: File?) {
-                        //下载完成
-                        txtUpdateCommit.visibility = View.VISIBLE
-                        llShow.visibility = View.GONE
+                            //下载完成
+                        txtUpdateCommit.visibility=View.VISIBLE
+                        llShow.visibility=View.GONE
                     }
 
                     override fun onError(e: Exception?) {
                         //下载失败
-                        txtUpdateCommit.visibility = View.VISIBLE
-                        llShow.visibility = View.GONE
+                        txtUpdateCommit.visibility=View.VISIBLE
+                        llShow.visibility=View.GONE
 
                     }
 
@@ -580,88 +577,40 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
             SoundManager.playMedia()
         }
 
-        if (pos == 0 && currentPage != pos) {
+        if (pos == 0&&currentPage != pos){
             mDatabind.ivHomeMain.setAnimation("tab_shouye_icon.json")
             mDatabind.ivHomeMain.playAnimation()
-            mDatabind.ivHomeCourse.setImageDrawable(
-                ContextCompat.getDrawable(
-                    this, R.drawable.tab_saicheng_no
-                )
-            )
-            mDatabind.ivHomeMsg.setImageDrawable(
-                ContextCompat.getDrawable(
-                    this, R.drawable.tab_xiaoxi_no
-                )
-            )
-            mDatabind.ivHomeMy.setImageDrawable(
-                ContextCompat.getDrawable(
-                    this, R.drawable.tab_wode_no
-                )
-            )
+            mDatabind.ivHomeCourse.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_saicheng_no))
+            mDatabind.ivHomeMsg.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_xiaoxi_no))
+            mDatabind.ivHomeMy.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_wode_no))
             mDatabind.ivHomeCourse.cancelAnimation()
             mDatabind.ivHomeMsg.cancelAnimation()
             mDatabind.ivHomeMy.cancelAnimation()
-        } else if (pos == 1 && currentPage != pos) {
+        }else if (pos == 1&&currentPage != pos){
             mDatabind.ivHomeCourse.setAnimation("tab_saicheng_icon.json")
             mDatabind.ivHomeCourse.playAnimation()
-            mDatabind.ivHomeMain.setImageDrawable(
-                ContextCompat.getDrawable(
-                    this, R.drawable.tab_main_no
-                )
-            )
-            mDatabind.ivHomeMsg.setImageDrawable(
-                ContextCompat.getDrawable(
-                    this, R.drawable.tab_xiaoxi_no
-                )
-            )
-            mDatabind.ivHomeMy.setImageDrawable(
-                ContextCompat.getDrawable(
-                    this, R.drawable.tab_wode_no
-                )
-            )
+            mDatabind.ivHomeMain.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_main_no))
+            mDatabind.ivHomeMsg.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_xiaoxi_no))
+            mDatabind.ivHomeMy.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_wode_no))
 
             mDatabind.ivHomeMain.cancelAnimation()
             mDatabind.ivHomeMsg.cancelAnimation()
             mDatabind.ivHomeMy.cancelAnimation()
-        } else if (pos == 2 && currentPage != pos) {
+        }else if (pos == 2&&currentPage != pos){
             mDatabind.ivHomeMsg.setAnimation("tab_xiaoxi_icon.json")
             mDatabind.ivHomeMsg.playAnimation()
-            mDatabind.ivHomeMain.setImageDrawable(
-                ContextCompat.getDrawable(
-                    this, R.drawable.tab_main_no
-                )
-            )
-            mDatabind.ivHomeCourse.setImageDrawable(
-                ContextCompat.getDrawable(
-                    this, R.drawable.tab_saicheng_no
-                )
-            )
-            mDatabind.ivHomeMy.setImageDrawable(
-                ContextCompat.getDrawable(
-                    this, R.drawable.tab_wode_no
-                )
-            )
+            mDatabind.ivHomeMain.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_main_no))
+            mDatabind.ivHomeCourse.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_saicheng_no))
+            mDatabind.ivHomeMy.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_wode_no))
             mDatabind.ivHomeMain.cancelAnimation()
             mDatabind.ivHomeCourse.cancelAnimation()
             mDatabind.ivHomeMy.cancelAnimation()
-        } else if (pos == 3 && currentPage != pos) {
+        }else if (pos == 3&&currentPage != pos){
             mDatabind.ivHomeMy.setAnimation("tab_wode_icon.json")
             mDatabind.ivHomeMy.playAnimation()
-            mDatabind.ivHomeMain.setImageDrawable(
-                ContextCompat.getDrawable(
-                    this, R.drawable.tab_main_no
-                )
-            )
-            mDatabind.ivHomeCourse.setImageDrawable(
-                ContextCompat.getDrawable(
-                    this, R.drawable.tab_saicheng_no
-                )
-            )
-            mDatabind.ivHomeMsg.setImageDrawable(
-                ContextCompat.getDrawable(
-                    this, R.drawable.tab_xiaoxi_no
-                )
-            )
+            mDatabind.ivHomeMain.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_main_no))
+            mDatabind.ivHomeCourse.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_saicheng_no))
+            mDatabind.ivHomeMsg.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.tab_xiaoxi_no))
             mDatabind.ivHomeMain.cancelAnimation()
             mDatabind.ivHomeCourse.cancelAnimation()
             mDatabind.ivHomeMsg.cancelAnimation()
@@ -670,22 +619,26 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
 
         mDatabind.txtHome.setTextColor(
             ContextCompat.getColor(
-                this, if (pos == 0) R.color.c_37373d else R.color.c_aeb4ba
+                this,
+                if (pos == 0) R.color.c_37373d else R.color.c_aeb4ba
             )
         )
         mDatabind.txtHomeSchedule.setTextColor(
             ContextCompat.getColor(
-                this, if (pos == 1) R.color.c_37373d else R.color.c_aeb4ba
+                this,
+                if (pos == 1) R.color.c_37373d else R.color.c_aeb4ba
             )
         )
         mDatabind.txtHomeMsg.setTextColor(
             ContextCompat.getColor(
-                this, if (pos == 2) R.color.c_37373d else R.color.c_aeb4ba
+                this,
+                if (pos == 2) R.color.c_37373d else R.color.c_aeb4ba
             )
         )
         mDatabind.txtHomeMine.setTextColor(
             ContextCompat.getColor(
-                this, if (pos == 3) R.color.c_37373d else R.color.c_aeb4ba
+                this,
+                if (pos == 3) R.color.c_37373d else R.color.c_aeb4ba
             )
         )
 
@@ -711,6 +664,9 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
 //        )
 
 
+
+
+
         currentPage = pos
         mDatabind.viewPager.setCurrentItem(pos, false)
 
@@ -732,10 +688,16 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
             vibrate(this)
         }
 
-        popup = XPopup.Builder(this).isDestroyOnDismiss(true)
-            .popupAnimation(PopupAnimation.TranslateFromTop).offsetY(90).hasShadowBg(false)
-            .isTouchThrough(true).isLightStatusBar(true).dismissOnTouchOutside(false)
-            .asCustom(pushCardPopup).show()
+        popup = XPopup.Builder(this)
+            .isDestroyOnDismiss(true)
+            .popupAnimation(PopupAnimation.TranslateFromTop)
+            .offsetY(90)
+            .hasShadowBg(false)
+            .isTouchThrough(true)
+            .isLightStatusBar(true)
+            .dismissOnTouchOutside(false)
+            .asCustom(pushCardPopup)
+            .show()
         pushCardPopup.pushCardPopupListener = object : PushCardPopup.PushCardPopupListener {
             override fun clicktClose() {
                 popup!!.dismiss()
@@ -744,8 +706,7 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
             override fun selectGoto(beingLiveBean: BeingLiveBean) {
                 popup!!.dismiss()
                 MatchDetailActivity.open(
-                    matchType = beingLiveBean.matchType,
-                    matchId = beingLiveBean.matchId,
+                    matchType = beingLiveBean.matchType, matchId = beingLiveBean.matchId,
                     matchName = "${beingLiveBean.homeTeamName}VS${beingLiveBean.awayTeamName}",
                     anchorId = beingLiveBean.userId
                 )
@@ -792,7 +753,7 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         super.onResume()
         isShowPush = true
 
-    }
+     }
 
     override fun onStop() {
         super.onStop()
@@ -815,6 +776,7 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         MTPushPrivatesApi.setNotificationBadge(this, 0)
         super.onDestroy()
     }
+
 
 
     fun isActivityRunning(context: Context, activityClass: Class<out Activity>): Boolean {
@@ -878,8 +840,12 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
      * 显示cpu
      */
     private fun showAppFloat2(tag: String) {
-        EasyFloat.with(this.applicationContext).setTag(tag).setShowPattern(ShowPattern.FOREGROUND)
-            .setLocation(100, 100).setAnimator(null).setLayout(R.layout.float_app_scale) {
+        EasyFloat.with(this.applicationContext)
+            .setTag(tag)
+            .setShowPattern(ShowPattern.FOREGROUND)
+            .setLocation(100, 100)
+            .setAnimator(null)
+            .setLayout(R.layout.float_app_scale) {
                 val txtCpu = it.findViewById<TextView>(R.id.txtCpu)
                 val txtNpc = it.findViewById<TextView>(R.id.txtNpc)
                 val txtFPS = it.findViewById<TextView>(R.id.txtFPS)
@@ -887,16 +853,16 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
                     EasyFloat.dismiss(tag)
                 }
                 appViewModel.cpuEvent.observeForever {
-                    if (txtCpu != null) {
-                        txtCpu.text = "CPU：" + it.cpu
-                        txtNpc.text = "内存：" + it.memory
+                    if(txtCpu!=null){
+                        txtCpu.text="CPU："+it.cpu
+                        txtNpc.text="内存："+it.memory
                     }
 
                 }
 
                 appViewModel.fpsEvent.observeForever {
-                    if (txtFPS != null) {
-                        txtFPS.text = "FPS：" + it
+                    if(txtFPS!=null){
+                        txtFPS.text="FPS："+it
                     }
 
                 }
@@ -904,7 +870,6 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
             }.show()
 
     }
-
     private var lastFrameTimeNanos: Long = 0
     private var frameCount = 0
     private val FRAME_RATE_INTERVAL = TimeUnit.SECONDS.toNanos(1) // 输出帧率的时间间隔为1秒
@@ -937,6 +902,8 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
             Choreographer.getInstance().postFrameCallback(this)
         }
     }
+
+
 
 
 }

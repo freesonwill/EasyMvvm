@@ -123,12 +123,13 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 
             LogUtils.d("本页面tabname=$tabName")
             strTime = TimeUtil.gettimenowYear().toString()
+//            if ((mCurrentOneTabIndex != 3 && mCurrentTwoTabIndex == 0) ||
+//                (mCurrentOneTabIndex == 3 && (mCurrentTwoTabIndex == 0 || mCurrentTwoTabIndex == 1))
+//            ) {//只取一天
 
-            if ((mCurrentOneTabIndex != 3 && mCurrentTwoTabIndex == 0) ||
-                (mCurrentOneTabIndex == 3 && (mCurrentTwoTabIndex == 0 || mCurrentTwoTabIndex == 1))
+
+            if ((mCurrentOneTabIndex == 3 && (mCurrentTwoTabIndex == 0 || mCurrentTwoTabIndex == 1))
             ) {//只取一天
-
-
                 if (calendarTime.isNotEmpty()) {
                     strTime = calendarTime
                     endTime = calendarTime
@@ -155,7 +156,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                 endTime = calendarTime
             }else{
                 strTime = strTimeRuslt
-                endTime = strTimeRuslt
+                endTime = TimeUtil.addDayEgls(strTime, 2).toString()
             }
             //隐藏只要一天的
 //            return
@@ -177,7 +178,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                 if (calendarTime.isNotEmpty()) {
                     strTime = calendarTime
                     endTime = TimeUtil.addDayEgls(calendarTime, 2).toString()
-                    Log.i("SSSSss","=====")
+
                 }
             }
         } catch (e: Exception) {
@@ -1004,7 +1005,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                     //点击全部
                     binding.conroot.setOnClickListener {
                         SoundManager.playMedia()
-
+                        MatchDetailActivity.open(matchType =item.matchType, matchId = item.matchId,matchName = "${item.homeName}VS${item.awayName}", isToggle = true)
 
 //                        MatchDetailActivity.open(
 //                            matchType = item.matchType,
@@ -1015,12 +1016,12 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
 //
 //                        )
 
-                        MatchDetailActivity.open(
-                            matchType = item.matchType,
-                            matchId = item.matchId,
-                            matchName = "${item.homeName}VS${item.awayName}",
-                            pureFlow = true
-                        )
+//                        MatchDetailActivity.open(
+//                            matchType = item.matchType,
+//                            matchId = item.matchId,
+//                            matchName = "${item.homeName}VS${item.awayName}",
+//                            pureFlow = true
+//                        )
 
                     }
 
@@ -1063,6 +1064,7 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                 }
             }
             appViewModel.updateSchedulePosition.observeForever {
+
 
                 if (isAdded) {
                     mCurrentOneTabIndex = it.currtOne

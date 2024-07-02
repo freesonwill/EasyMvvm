@@ -19,8 +19,9 @@
         android:end="@dimen/dp_60"
         android:start="@dimen/dp_60">
         <bitmap
+            android:scaleType="center"
             android:gravity="bottom|center_horizontal"
-            android:src="@drawable/ic_launch_bottom" />
+            android:src="@drawable/ic_bottom_di_v" />
     </item>
 
 </layer-list>

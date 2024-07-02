@@ -233,12 +233,17 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
                         (mDatabind.rcvRecommend.mutable[type] as MainTxtBean).list=list
 
                     }
-
+                    //没有被拉黑的的主播
                     var liveList=ArrayList<BeingLiveBean>()
+                    //被拉黑的主播
+                    var tickOutList=ArrayList<BeingLiveBean>()
+
                     //纯净流
                     var pureList=ArrayList<BeingLiveBean>()
                     //热门纯净流
                     var popularList=ArrayList<BeingLiveBean>()
+
+
                     var dataList=(mDatabind.rcvRecommend.mutable[type] as MainTxtBean).list
                     dataList.forEach {
                         if(it.pureFlow){
@@ -251,17 +256,25 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
                             }
 
                         }else{
-                            liveList.add(it)
+                            if(it.tickOut){
+                                tickOutList.add(it)
+                            }else{
+                                liveList.add(it)
+                            }
+
                         }
                     }
                     //主播开播比赛 倒序
                     var newLive=liveList.sortedWith(compareByDescending<BeingLiveBean>{ it.hotValue }.thenByDescending { it.id.toLong() })
+
+                    var newTickOut=tickOutList.sortedWith(compareByDescending<BeingLiveBean>{ it.hotValue }.thenByDescending { it.id.toLong() })
                     //热门纯净流 升序
                     var newPopular=popularList.sortedWith(compareBy<BeingLiveBean>{it.matchTime.toLong()}.thenBy { it.matchId.toLong() })
                     //纯净流比赛升序
                     var newPure=pureList.sortedWith(compareBy<BeingLiveBean>{it.matchTime.toLong()}.thenBy { it.matchId.toLong() })
                     (mDatabind.rcvRecommend.mutable[type] as MainTxtBean).list.clear()
                     (mDatabind.rcvRecommend.mutable[type] as MainTxtBean).list.addAll(newLive)
+                    (mDatabind.rcvRecommend.mutable[type] as MainTxtBean).list.addAll(newTickOut)
                     (mDatabind.rcvRecommend.mutable[type] as MainTxtBean).list.addAll(newPopular)
                     (mDatabind.rcvRecommend.mutable[type] as MainTxtBean).list.addAll(newPure)
                     mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
@@ -372,6 +385,8 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
 
 
                     var liveList=ArrayList<BeingLiveBean>()
+                    //被拉黑的主播
+                    var tickOutList=ArrayList<BeingLiveBean>()
                     //纯净流
                     var pureList=ArrayList<BeingLiveBean>()
                     //热门纯净流
@@ -388,11 +403,16 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
                             }
 
                         }else{
-                            liveList.add(it)
+                            if(it.tickOut){
+                                tickOutList.add(it)
+                            }else{
+                                liveList.add(it)
+                            }
                         }
                     }
                     //主播开播比赛 倒序
                     var newLive=liveList.sortedWith(compareByDescending<BeingLiveBean>{it.hotValue}.thenByDescending { it.id.toLong() })
+                    var newTickOut=tickOutList.sortedWith(compareByDescending<BeingLiveBean>{ it.hotValue }.thenByDescending { it.id.toLong() })
                     //热门纯净流 升序
                     var newPopular=popularList.sortedWith(compareBy<BeingLiveBean>{it.matchTime.toLong()}.thenBy { it.matchId.toLong() })
 
@@ -405,6 +425,7 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
 
                     (mDatabind.rcvRecommend.mutable[type] as MainTxtBean).list.clear()
                     (mDatabind.rcvRecommend.mutable[type] as MainTxtBean).list.addAll(newLive)
+                    (mDatabind.rcvRecommend.mutable[type] as MainTxtBean).list.addAll(newTickOut)
                     (mDatabind.rcvRecommend.mutable[type] as MainTxtBean).list.addAll(newPopular)
                     (mDatabind.rcvRecommend.mutable[type] as MainTxtBean).list.addAll(newPure)
                     mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
@@ -1183,13 +1204,15 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
                             R.id.llcClickRecommended.onClick {
                                 SoundManager.playMedia()
                                 val bean=_data as MatchBean
-//                                MatchDetailActivity.open(matchType =bean.matchType, matchId = bean.matchId,matchName = "${bean.homeName}VS${bean.awayName}",pureFlow = true )
-                                if(bean.anchorList!=null&&bean.anchorList.size>=1){
-                                    MatchDetailActivity.open(matchType =bean.matchType, matchId = bean.matchId,matchName = "${bean.homeName}VS${bean.awayName}", anchorId = bean.anchorList[0].userId )
-                                }else{
-                                    MatchDetailActivity.open(matchType =bean.matchType, matchId = bean.matchId,matchName = "${bean.homeName}VS${bean.awayName}",pureFlow = true )
 
-                                }
+                                MatchDetailActivity.open(matchType =bean.matchType, matchId = bean.matchId,matchName = "${bean.homeName}VS${bean.awayName}", isToggle = true)
+
+//                                 if(bean.anchorList!=null&&bean.anchorList.size>=1){
+//                                    MatchDetailActivity.open(matchType =bean.matchType, matchId = bean.matchId,matchName = "${bean.homeName}VS${bean.awayName}", anchorId = bean.anchorList[0].userId )
+//                                }else{
+//                                    MatchDetailActivity.open(matchType =bean.matchType, matchId = bean.matchId,matchName = "${bean.homeName}VS${bean.awayName}",pureFlow = true )
+//
+//                                }
 
                             }
                         }

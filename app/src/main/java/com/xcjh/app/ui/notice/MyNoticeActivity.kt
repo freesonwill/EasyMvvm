@@ -878,13 +878,14 @@ class MyNoticeActivity : BaseActivity<MyNoticeVm, ActivityMynoticeBinding>() {
                     }
                     binding.conroot.setOnClickListener {
                         SoundManager.playMedia()
-                        MatchDetailActivity.open(
-                            matchType = item.matchType,
-                            matchId = item.matchId,
-                            matchName = "${item.homeName}VS${item.awayName}",
-                            anchorId = "",
-                            videoUrl = ""
-                        )
+//                        MatchDetailActivity.open(
+//                            matchType = item.matchType,
+//                            matchId = item.matchId,
+//                            matchName = "${item.homeName}VS${item.awayName}",
+//                            anchorId = "",
+//                            videoUrl = ""
+//                        )
+                        MatchDetailActivity.open(matchType =item.matchType, matchId = item.matchId,matchName = "${item.homeName}VS${item.awayName}", isToggle = true)
 
                     }
 

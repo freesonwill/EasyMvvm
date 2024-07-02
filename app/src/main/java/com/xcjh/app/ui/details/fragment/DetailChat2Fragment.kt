@@ -81,6 +81,13 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
     private var mNoticeWeb: WebView? = null
     private var isEnterRoom = false//是否已经进入房间
     private var isInitNoticeH = true//是否需要初始化公告高度
+
+//    /**
+//     *  是否切换了直播间
+//     */
+//    private var isToggleLive=false
+
+
     private val noticeBean by lazy {
         NoticeBean(
             //notice = getString(R.string.anchor_notice),
@@ -483,7 +490,7 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
         mAgentWeb?.webLifeCycle?.onResume()
 
         if(isAdded){
-            if (CacheUtil.isLogin()&&(userId!=null&&!userId.equals("")) ) {
+            if (CacheUtil.isLogin()&&(userId!=null&&!userId.equals(""))) {
                 mViewModel.getAnchorControlUserInfo(userId!!)
             }
         }
@@ -672,7 +679,10 @@ class DetailChat2Fragment(var liveId: String, var userId: String?, override val 
 
         if(this.userId!=null){
             if (CacheUtil.isLogin()&&(userId!=null&&!userId.equals("")) ) {
+                //发布取消
+//                isToggleLive=true
                 mViewModel.getAnchorControlUserInfo(userId!!)
+
             }else{
                 setProhibition(false)
             }

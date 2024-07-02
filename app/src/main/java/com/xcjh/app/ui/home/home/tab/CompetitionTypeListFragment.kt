@@ -183,9 +183,9 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
                         list.add(being)
                     }
 
-
-
                         var liveList=ArrayList<BeingLiveBean>()
+                          //被拉黑的主播
+                          var tickOutList=ArrayList<BeingLiveBean>()
                         //纯净流
                         var pureList=ArrayList<BeingLiveBean>()
                         //热门纯净流
@@ -202,13 +202,19 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
                                 }
 
                             }else{
-                                liveList.add(it)
+                                if(it.tickOut){
+                                    tickOutList.add(it)
+                                }else{
+                                    liveList.add(it)
+                                }
                             }
                         }
 
 
                         //主播开播比赛 倒序
                         var newLive=liveList.sortedWith(compareByDescending<BeingLiveBean>{it.hotValue}.thenByDescending { it.id.toLong() })
+
+                         var newTickOut=tickOutList.sortedWith(compareByDescending<BeingLiveBean>{it.hotValue}.thenByDescending { it.id.toLong() })
                         //热门纯净流 升序
                         var newPopular=popularList.sortedWith(compareBy<BeingLiveBean>{it.matchTime.toLong()}.thenBy { it.matchId.toLong() })
                         //纯净流比赛升序
@@ -220,6 +226,7 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
                     }
 
                         mDatabind.rcvRecommend.addModels(newLive)
+                        mDatabind.rcvRecommend.addModels(newTickOut)
                         mDatabind.rcvRecommend.addModels(newPopular)
                         mDatabind.rcvRecommend.addModels(newPure)
                         if(mDatabind.rcvRecommend.models!=null&& mDatabind.rcvRecommend.models!!.isNotEmpty()){
@@ -296,6 +303,8 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
                     dataList.add(being)
 
                         var liveList=ArrayList<BeingLiveBean>()
+                          //被拉黑的主播
+                      var tickOutList=ArrayList<BeingLiveBean>()
                         //纯净流
                         var pureList=ArrayList<BeingLiveBean>()
                         //热门纯净流
@@ -312,12 +321,17 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
                                 }
 
                             }else{
-                                liveList.add(it)
+                                if(it.tickOut){
+                                    tickOutList.add(it)
+                                }else{
+                                    liveList.add(it)
+                                }
                             }
                         }
 
                         //主播开播比赛 倒序
                         var newLive=liveList.sortedWith(compareByDescending<BeingLiveBean>{it.hotValue}.thenByDescending { it.id.toLong() })
+                         var newTickOut=tickOutList.sortedWith(compareByDescending<BeingLiveBean>{it.hotValue}.thenByDescending { it.id.toLong() })
                         //热门纯净流 升序
                         var newPopular=popularList.sortedWith(compareBy<BeingLiveBean>{it.matchTime.toLong()}.thenBy { it.matchId.toLong() })
                         //纯净流比赛升序
@@ -327,6 +341,7 @@ class CompetitionTypeListFragment() : BaseFragment<CompetitionTypeListVm, Fragme
                         }
 
                         mDatabind.rcvRecommend.addModels(newLive)
+                    mDatabind.rcvRecommend.addModels(newTickOut)
                         mDatabind.rcvRecommend.addModels(newPopular)
                         mDatabind.rcvRecommend.addModels(newPure)
                     if(mDatabind.rcvRecommend.models!=null&& mDatabind.rcvRecommend.models!!.isNotEmpty()){
