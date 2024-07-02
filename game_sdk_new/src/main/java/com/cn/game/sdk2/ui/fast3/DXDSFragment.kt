@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
@@ -24,6 +25,7 @@ import com.cn.game.sdk2.websocket.bean.DEFAULT_BIG
 import com.cn.game.sdk2.websocket.bean.DEFAULT_DOUBLE
 import com.cn.game.sdk2.websocket.bean.DEFAULT_SINGLE
 import com.cn.game.sdk2.websocket.bean.DEFAULT_SMALL
+import com.xcjh.base_lib.utils.dp2px
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.w3c.dom.Text
@@ -151,8 +153,6 @@ class DXDSFragment(fast3VM: Fast3ViewModel) : BaseFast3Fragment<DXDSVm, FragDxds
      */
     override fun addMoneyOkView(
         areaView: GameAreaView,
-        x: Float,
-        y: Float,
         rawX: Float,
         rawY: Float,
         emitAnimCallBack: () -> Unit
@@ -188,5 +188,6 @@ class DXDSFragment(fast3VM: Fast3ViewModel) : BaseFast3Fragment<DXDSVm, FragDxds
             areaView.betteView.translationY = 0f
             mDatabind.rlHomeRoot.addView(areaView.betteView, betteParams)
         }
+
     }
 }

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="PuHuiTi">
+        <item name="android:fontFamily">@font/alibabapuhuiti</item>
+    </style>
+    <style name="Droid">
+        <item name="android:fontFamily">@font/droidsansmono</item>
+    </style>
+</resources>

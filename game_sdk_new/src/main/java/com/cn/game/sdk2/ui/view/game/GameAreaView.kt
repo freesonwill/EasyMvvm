@@ -7,6 +7,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.get
 import com.cn.game.sdk2.data.bean.LocationClickPoint
@@ -60,7 +61,7 @@ class GameAreaView : FrameLayout {
                 val newY = event.y
                 if (abs(oldX - newX) < 5 && abs(oldY - newY) < 5) {
                     //处理点击事件
-                    onLocationClickListener?.onLocationClick(newX, newY, event.rawX, event.rawY)
+                    onLocationClickListener?.onLocationClick(event.rawX, event.rawY)
                 }
             }
         }
@@ -118,7 +119,7 @@ class GameAreaView : FrameLayout {
     }
 
     interface LocationClickListener {
-        fun onLocationClick(x: Float, y: Float, rawX: Float, rawY: Float)
+        fun onLocationClick(rawX: Float, rawY: Float)
     }
 
 }

@@ -6,8 +6,10 @@ import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
+import android.content.res.AssetManager
 import android.graphics.Path
 import android.graphics.PathMeasure
+import android.graphics.Typeface
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -34,7 +36,6 @@ import com.cn.game.sdk2.databinding.ItemBetHistoryBinding
 import com.cn.game.sdk2.ui.helper.Fast3ToastHelper
 import com.cn.game.sdk2.ui.helper.ViewHelper.bindViewPagerNewGame
 import com.cn.game.sdk2.ui.helper.ViewHelper.initGameViewPager
-import com.cn.game.sdk2.ui.helper.ViewHelper.isAdd
 import com.cn.game.sdk2.ui.view.CommonLinearLayoutItemDecoration
 import com.cn.game.sdk2.ui.view.CustomBubbleAttachPopup
 import com.cn.game.sdk2.ui.view.MoneyOKView
@@ -44,9 +45,9 @@ import com.cn.game.sdk2.utils.CommonUtils
 import com.cn.game.sdk2.utils.FlowBus
 import com.cn.game.sdk2.utils.ext.BizExt.isLeopard
 import com.cn.game.sdk2.utils.ext.CommonExt.formatRealMoney
+import com.cn.game.sdk2.utils.ext.CommonExt.isCanGoOn
 import com.cn.game.sdk2.utils.ext.CommonExt.px2dp
 import com.cn.game.sdk2.utils.ext.CommonExt.toPinyin
-import com.cn.game.sdk2.utils.ext.ViewExt.getColor
 import com.cn.game.sdk2.utils.ext.ViewExt.getDrawable
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.utils.tool.measureView
@@ -64,7 +65,7 @@ import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.animator.EmptyAnimator
 import com.lxj.xpopup.core.BasePopupView
 import com.lxj.xpopup.interfaces.SimpleCallback
-import com.lxj.xpopup.interfaces.XPopupCallback
+import com.robinhood.ticker.TickerUtils
 import com.xcjh.base_lib.base.fragment.BaseVmDbFragment
 import com.xcjh.base_lib.utils.dp2px
 import com.xcjh.base_lib.utils.loge
@@ -102,6 +103,10 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     //==================================== Method ===============================================//
     override fun initView(savedInstanceState: Bundle?) {
         mDatabind.model = mViewModel
+        mDatabind.tvAnimWin.setCharacterLists(TickerUtils.provideNumberList())
+        context?.assets?.let {
+            mDatabind.tvAnimWin.typeface = Typeface.createFromAsset(it, "fonts/alibabapuhuiti.otf");
+        }
         CommonUtils.getNavigationBarHeight(mDatabind.root).let {
             mViewModel.navigationBarHeight.value = it
             Log.d(TAG, "getNavigationBarHeight $it,-->${it.px2dp}")
@@ -301,7 +306,9 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 return
             }
             groupWinLottie.isVisible = true
-            txtWinMoney.text = "¥ ${winMoney.formatRealMoney()}"
+            val originTxt ="$"+winMoney.formatRealMoney()
+            mDatabind.tvAnimWin.setText(originTxt.replace(Regex("[0-9]"),"0"),false)
+            tvAnimWin.setText("$${winMoney.formatRealMoney()}",true)
             lottieAnimView.addAnimatorListener(object : Animator.AnimatorListener {
                 override fun onAnimationStart(animation: Animator) {
                     PromptSoundPlay.playWinEffect()
@@ -357,7 +364,9 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         }
         mViewModel.betOkClick.observe(this) {
             hiddenAnchorTop()
-            GameSocketManager.getInstance()?.getGameService()?.commitBetting()
+            GameSocketManager.getInstance()?.getGameService()?.commitBetting { bettingState, bean ->
+                bettingState.isCanGoOn {}
+            }
         }
 
         mViewModel.betDeleteClick.observe(this) {
@@ -378,14 +387,12 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                         ivXuya.isVisible = true
                         ivXuya.setImageResource(R.drawable.icon_xuya_gray)
                         ivMultiple2.isVisible = false
-                        ivXuya.isClickable = false
                     }
 
                     GameAboutModel.AgainDoubleState.AGAIN -> {
                         ivXuya.isVisible = true
                         ivXuya.setImageResource(R.drawable.icon_xuya)
                         ivMultiple2.isVisible = false
-                        ivXuya.isClickable = true
                     }
 
                     //todo x2不可用的状态
@@ -791,8 +798,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 PromptSoundPlay.btnPlayMedia()
                 //todo 判断加倍状态
                 GameSocketManager.getInstance()?.getGameService()
-                    ?.doubleBetting { isMoneyEnough, map ->
-                        if (isMoneyEnough) {
+                    ?.doubleBetting { bettingState, map ->
+                        bettingState.isCanGoOn {
                             if (!map.isNullOrEmpty()) {
                                 map.forEach {
                                     it.value.let { record ->
@@ -815,8 +822,10 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             }
             //续压
             ivXuya.clickNoRepeat {
+                if (gameAboutModel.currentAgainDoubleState.value != GameAboutModel.AgainDoubleState.AGAIN) {
+                    return@clickNoRepeat
+                }
                 PromptSoundPlay.btnPlayMedia()
-                //todo 判断续压状态
                 val map = GameSocketManager.getInstance()?.getGameService()?.againBetting()
                 map.toString().loge("again3")
                 if (!map.isNullOrEmpty()) {
@@ -936,6 +945,13 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         val path = Path()
         path.moveTo(startX, startY)
         path.lineTo(x, y)
+
+//        val path = Path()
+//        移动到起始点（贝塞尔曲线的起点）
+//        path.moveTo(startX, startY)
+//        使用二次萨贝尔曲线：注意第一个起始坐标越大，贝塞尔曲线的横向距离就会越大，一般按照下面的式子取即可
+//        path.quadTo((startX + x) / 2, startY, x, y)
+//
         val mPathMeasure = PathMeasure(path, false)
 
         //★★★属性动画实现（从0到贝塞尔曲线的长度之间进行插值计算，获取中间过程的距离值）
@@ -958,7 +974,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 // 把移动的图片imageview从父布局里移除
                 mDatabind.rlRoot.removeView(betImageView)
                 val animator = ObjectAnimator.ofPropertyValuesHolder(
-                    areaView.moneyView.ivShowBg,
+                    areaView.betteView.ivShowBg,
                     SCALE_X,
                     SCALE_Y
                 )
@@ -976,21 +992,12 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         valueAnimator.start()
     }
 
-//    private fun addTempMoney(areaView: GameAreaView) {
-//        mViewModel.currentBettingRecordBean?.let {
-//            if (areaView.areaCode == it.first.bettingArea.number) {
-//                areaView.moneyView.setShowMoney(it.first.money)
-//            }
-//        }
-//    }
-
     private fun updateAnchorView(areaView: GameAreaView) {
         hiddenAnchorTop()
-        areaView.moneyView.showTop()
         anchorMoneyView = areaView.moneyView
         currentBetteAreaMap[areaView.areaCode] = areaView
         mDatabind.tempTouch.setAnchorMoneyView(areaView.moneyView)
-        reLocatePage()
+        showAnchorTop()
     }
 
     private fun hiddenAnchorTop() {

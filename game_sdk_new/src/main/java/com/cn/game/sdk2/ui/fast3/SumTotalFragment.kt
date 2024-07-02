@@ -59,8 +59,6 @@ class SumTotalFragment(fast3VM: Fast3ViewModel) :
 
     override fun addMoneyOkView(
         areaView: GameAreaView,
-        x: Float,
-        y: Float,
         rawX: Float,
         rawY: Float,
         emitAnimCallBack: () -> Unit
@@ -92,8 +90,8 @@ class SumTotalFragment(fast3VM: Fast3ViewModel) :
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
-            areaView.betteView.translationX = 0f
-            areaView.betteView.translationY = 0f
+            it.translationX = 0f
+            it.translationY = 0f
             mDatabind.rlHomeRoot.addView(areaView.betteView, betteParams)
         }
     }
