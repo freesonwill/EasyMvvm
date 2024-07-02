@@ -83,6 +83,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
     //是否执行关闭动画
     var isExecuteClose: Boolean = true
+    private var isBetteUpAnimFirst = true
 
     // 定义属性动画常量
     private val SCALE_X = PropertyValuesHolder.ofFloat(View.SCALE_X, 1.0f, 1.4f, 1.0f)
@@ -103,7 +104,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         mDatabind.model = mViewModel
         CommonUtils.getNavigationBarHeight(mDatabind.root).let {
             mViewModel.navigationBarHeight.value = it
-            Log.d(TAG,"getNavigationBarHeight $it,-->${it.px2dp}")
+            Log.d(TAG, "getNavigationBarHeight $it,-->${it.px2dp}")
         }
 
         //viewpager
@@ -140,7 +141,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             ),
             scrollEnable = true,
             action = {
-              PromptSoundPlay.btnPlayMedia()
+                PromptSoundPlay.btnPlayMedia()
             }
         )
         mDatabind.viewPagerNew.offscreenPageLimit = mFragList.size
@@ -576,7 +577,10 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                         //Log.d(TAG, "onBind-->${layoutPosition},bean:${bean}")
                         if (bean.select) {
                             if (binding.ivShowBg.translationY == 0f) {
-                                startBetteSelectAnim(binding.ivShowBg)
+                                startBetteSelectAnim(
+                                    binding.ivShowBg,
+                                    if (isBetteUpAnimFirst) 0 else 100
+                                )
                             }
                         } else {
                             binding.ivShowBg.translationY = 0f
@@ -670,6 +674,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
      * 执行筹码选中向上平移动画
      */
     private fun startBetteSelectAnim(showView: View, duration: Long = 100L) {
+        if (duration == 0L) isBetteUpAnimFirst = false
         val anim =
             ObjectAnimator.ofFloat(showView, "translationY", -requireContext().dp2px(5).toFloat())
         anim.duration = duration
@@ -734,12 +739,12 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             AnimatorSet().apply {
                 play(leftAnimX).with(leftAnimY).with(rightAnimX).with(rightAnimY)
                 addListener(onStart = {
-                        llResultLeft.scaleX = 0f
-                        llResultLeft.scaleY = 0f
-                        llResultRight.scaleX = 0f
-                        llResultRight.scaleY = 0f
-                    },
-                    onEnd =  {doEnd.invoke()} )
+                    llResultLeft.scaleX = 0f
+                    llResultLeft.scaleY = 0f
+                    llResultRight.scaleX = 0f
+                    llResultRight.scaleY = 0f
+                },
+                    onEnd = { doEnd.invoke() })
                 start()
             }
         }
@@ -757,26 +762,27 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 PromptSoundPlay.btnPlayMedia(requireContext())
                 if (homeMorePop == null) {
                     val bubbleAttach = CustomBubbleAttachPopup(requireContext())
-                    bubbleAttach.customBubbleAttachListener = object : CustomBubbleAttachPopup.CustomBubbleAttachListener {
+                    bubbleAttach.customBubbleAttachListener =
+                        object : CustomBubbleAttachPopup.CustomBubbleAttachListener {
                             override fun switchGame() {
                                 homeMorePop!!.dismiss()
                             }
                         }
                     homeMorePop = XPopup.Builder(requireContext())
                         .isTouchThrough(true)
-                        .setPopupCallback(object : SimpleCallback(){
+                        .setPopupCallback(object : SimpleCallback() {
                             override fun onDismiss(popupView: BasePopupView?) {
                                 super.onDismiss(popupView)
                                 homeMorePop = null
                             }
                         })
-                        .customAnimator(EmptyAnimator(bubbleAttach,0))
+                        .customAnimator(EmptyAnimator(bubbleAttach, 0))
                         .atView(mDatabind.llHomeMore)
                         .navigationBarColor(android.R.color.transparent)
                         .hasShadowBg(false) // 去掉半透明背景
                         .asCustom(bubbleAttach)
                     homeMorePop?.show()
-                }else {
+                } else {
                     homeMorePop?.dismiss()
                 }
             }
