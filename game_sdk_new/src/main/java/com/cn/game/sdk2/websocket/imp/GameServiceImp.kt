@@ -111,7 +111,7 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
     protected open var againBettingList: MutableMap<Betting, BettingRecordBean> =
         ConcurrentHashMap()
 
-    protected open val limitMap : MutableMap<Betting, Int> = ConcurrentHashMap()
+    protected open val limitMap: MutableMap<Betting, Int> = ConcurrentHashMap()
 
     protected open var againCountMoney = 0
 
@@ -517,20 +517,25 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
                 //满足基本需要要求
                 if (onceCountMoney == 0) {
                     //牌面上没有下注才能 需要
+                    "checkAgain()->AGAIN".loge("GameServiceImpl")
                     gameAboutModel.changeAgainDoubleState(GameAboutModel.AgainDoubleState.AGAIN)
                 } else {
                     //牌面上已有下注
+                    "checkAgain()->牌面上已有下注->checkDouble()".loge("GameServiceImpl")
                     checkDouble()
                 }
             } else {
                 if (onceCountMoney > 0) {
+                    "checkAgain()->无法Again->checkDouble()".loge("GameServiceImpl")
                     checkDouble()
                 } else {
                     //不满足续压 牌面为空
+                    "checkAgain()->不满足续压 牌面为空->NUll".loge("GameServiceImpl")
                     gameAboutModel.changeAgainDoubleState(GameAboutModel.AgainDoubleState.NUll)
                 }
             }
         } else {
+            "checkAgain()->不是新阶段->NUll".loge("GameServiceImpl")
             gameAboutModel.changeAgainDoubleState(GameAboutModel.AgainDoubleState.NUll)
         }
     }
@@ -538,10 +543,14 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
     private fun checkDouble() {
         //不满足续压 计算加倍
         doubleMoney = tempMoney * 2 + confirmMoney + confirmTempMoney
-        if (doubleMoney < balance) gameAboutModel.changeAgainDoubleState(GameAboutModel.AgainDoubleState.DOUBLE)
-        else
-        //既不满足续压 钱也不够加倍
+        if (doubleMoney < balance) {
+            "checkDouble()->DOUBLE".loge("GameServiceImpl")
+            gameAboutModel.changeAgainDoubleState(GameAboutModel.AgainDoubleState.DOUBLE)
+        } else {
+            //既不满足续压 钱也不够加倍
+            "checkDouble()->NUll".loge("GameServiceImpl")
             gameAboutModel.changeAgainDoubleState(GameAboutModel.AgainDoubleState.NUll)
+        }
     }
 
     protected fun getPanelAllMoney(): Int {
