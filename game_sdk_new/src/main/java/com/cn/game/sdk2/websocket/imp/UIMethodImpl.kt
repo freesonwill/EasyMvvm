@@ -5,6 +5,7 @@ import com.cn.game.sdk2.websocket.GameSocketClient
 import com.cn.game.sdk2.websocket.GameSocketManager
 import com.cn.game.sdk2.websocket.appListener
 import com.cn.game.sdk2.websocket.balance
+import com.cn.game.sdk2.websocket.bean.AreaBetConfigBean
 import com.cn.game.sdk2.websocket.bean.Betting
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import com.cn.game.sdk2.websocket.copy
@@ -60,7 +61,7 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
      */
     fun addBetting(
         recordBean: BettingRecordBean,
-        block: (isMoneyEnough: GameAboutModel.BettingState, result: BettingRecordBean?) -> Unit
+        block: (isMoneyEnough: GameAboutModel.BettingState, result: BettingRecordBean?, areaLimit: AreaBetConfigBean?) -> Unit
     ) {
         tempMoney += recordBean.money
         tempLastBetting = recordBean.bettingArea
@@ -114,7 +115,7 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
             bettingState = GameAboutModel.BettingState.NO_MONEY
         }
         limitMap[recordBean.bettingArea] = countMoney
-        block(bettingState, uiBean)
+        block(bettingState, uiBean, currentConfig?.getBeanById(recordBean.bettingArea))
     }
 
     /**

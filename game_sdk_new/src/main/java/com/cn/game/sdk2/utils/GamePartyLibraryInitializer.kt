@@ -55,5 +55,9 @@ object GamePartyLibraryInitializer {
 
     }
 
+    override fun toString(): String {
+        return "GamePartyLibraryInitializer(mAppContext=$mAppContext)"
+    }
+
 
 }
