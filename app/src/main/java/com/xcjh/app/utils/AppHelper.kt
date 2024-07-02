@@ -931,12 +931,8 @@ fun shareUrl(context: Context, shareText: String?) {
             "https://app.cbd246.com/?m=HageRQ/$shareText"
         }
 
-        "https://app.hyh86.cn/apis/"->{
-            "https://appuser.hyh86.cn/$shareText"
-        }
-
         else ->{
-            "https://app.gdhsbp.cn/$shareText"
+            "${ApiComService.SERVER_URL}$shareText"
         }
 
     }
@@ -958,11 +954,8 @@ fun getDomain():String{
             DomainNameEnums.PreDomainName.type
         }
 
-        "https://app.hyh86.cn/apis/"->{
-            DomainNameEnums.DomainName.type
-        }
         else ->{
-            DomainNameEnums.NewDomainName.type
+            ApiComService.SERVER_URL
         }
     }
     return domain

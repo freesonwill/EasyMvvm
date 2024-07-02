@@ -433,6 +433,7 @@ data class BeingLiveBean(
     var pureFlow:Boolean=false,//是否是纯净流
     var homeScore:String="0",//主队比分
     var awayScore:String="0",//客队比分
+    var tickOut:Boolean=false,//如果登录了，就需要查看是否拉黑
     //篮球状态:0 比赛异常，说明：暂未判断具体原因的异常比赛，可能但不限于：腰斩、取消等等，建议隐藏处理;
     // 1 未开赛;2 第一节;3 第一节完;4 第二节;5 第二节完;6 第三节;7 第三节完;8 第四节;9 加时;10 完场;11 中断;12 取消;13 延期;14 腰斩;15 待定;
     // 足球状态码:0 比赛异常，说明：暂未判断具体原因的异常比赛，可能但不限于：腰斩、取消等等，建议隐藏处理;1 未开赛;2 上半场;3 中场;4 下半场;5 加时赛;6 加时赛(弃用);7 点球决战;8 完场;9 推迟;10 中断;11 腰斩;12 取消;13 待定
@@ -657,6 +658,7 @@ data class AnchorListBean(
     var userLogo: String = "",
     var hotValue: String = "",//热度
     var playUrl: String? = null,//播放地址
+    var tickOut:Boolean=false,//是否被拉合默认没有
     var isSelect: Boolean = false,
 ) : Serializable/*, Comparable<PlayerBean> {
     override fun compareTo(other: PlayerBean): Int {

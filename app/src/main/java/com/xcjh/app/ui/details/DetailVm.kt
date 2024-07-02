@@ -86,7 +86,7 @@ class DetailVm : BaseViewModel() {
 
     //获取比赛详情
     fun getMatchDetail(matchId: String, matchType: String?, showD: Boolean = false) {
-        Log.i("FFFFFf","matchId====="+matchId+"===="+matchType)
+
 
         request(
             {

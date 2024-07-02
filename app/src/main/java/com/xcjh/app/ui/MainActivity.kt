@@ -213,6 +213,8 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
              !mViewModel.mockDataLoading()
          }*/
 
+
+
         Constants.isLoading = true
         onIntent(intent)
         initUI()

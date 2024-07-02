@@ -114,8 +114,7 @@ class MatchDetailActivity :
      * 当前是否播放视频
      */
     private var isShowVideo: Boolean = false
-    //保存异常状态
-    private var errStatic:Int=0
+
 
     // private var playUrl: String? = "rtmp://liteavapp.qcloud.com/live/liteavdemoplayerstreamid"
     // private var playUrl: String? = "https://sf1-hscdn-tos.pstatp.com/obj/media-fe/xgplayer_doc_video/flv/xgplayer-demo-720p.flv"
@@ -142,6 +141,11 @@ class MatchDetailActivity :
      */
     private var pureFlow:Boolean=false
 
+    /**
+     * 是否是首页热门比赛或者赛程大的点击过来的，如果是的话就要切换到不是拉黑的流
+     */
+    private var isToggle:Boolean=false
+
 
     companion object {
         fun open(
@@ -151,6 +155,7 @@ class MatchDetailActivity :
             anchorId: String? = null,
             videoUrl: String? = null,
             pureFlow: Boolean? = false,
+            isToggle: Boolean? = false,
         ) {
             startNewActivity<MatchDetailActivity> {
                 putExtra("matchType", matchType)
@@ -159,6 +164,7 @@ class MatchDetailActivity :
                 putExtra("anchorId", anchorId)
                 putExtra("videoUrl", videoUrl)
                 putExtra("pureFlow", pureFlow)
+                putExtra("isToggle", isToggle)
             }
         }
     }
@@ -350,9 +356,11 @@ class MatchDetailActivity :
             matchName = getString("matchName", "")
             anchorId = getString("anchorId", null)
             pureFlow=getBoolean("pureFlow")
+            isToggle=getBoolean("isToggle")
             //  playUrl = getString("videoUrl", null)
             //以前纯净流的时候就不能要
             isHasAnchor = !anchorId.isNullOrEmpty()
+
             setData()
             /* FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
                  if (!task.isSuccessful) {
@@ -1727,28 +1735,56 @@ class MatchDetailActivity :
             list.addAll(live)
             list.addAll(pureFlowList)
 
-//            list.sortByDescending {
-//                it.hotValue
-//            }
+
 
             /**
              * 是否找到流  true就是找到了主播  false是只有纯净流,没有获取到要的主播
              */
             var findAnchor = false
-            if (isHasAnchor) {
-                for ((i, item) in list.withIndex()) {
-                    if (anchorId == item.userId){
-                        isShowVideo = true
-                        item.isSelect = true
-                        anchor = item
-                        action.invoke(item.playUrl)
-                        findAnchor = true
-                        break
+            if (isHasAnchor||isToggle) {
+                //如果登录了并且是赛程或者首页热门比赛进来的就要查询是否被主播拉黑
+                if (CacheUtil.isLogin()&&isToggle) {
+                    //先是查看当前主播是否拉黑
+                    for ((i, item) in list.withIndex()) {
+                        if (anchorId == item.userId&&!item.tickOut&&!item.pureFlow){
+                            isShowVideo = true
+                            item.isSelect = true
+                            anchor = item
+                            action.invoke(item.playUrl)
+                            findAnchor = true
+                            break
+                        }
                     }
+                    //当前主播被拉黑了，在循环查询其他主播是否拉黑
+                    if(!findAnchor){
+                        for ((i, item) in list.withIndex()) {
+                            if (!item.tickOut&&!item.pureFlow){
+                                isShowVideo = true
+                                item.isSelect = true
+                                anchor = item
+                                action.invoke(item.playUrl)
+                                findAnchor = true
+                                break
+                            }
+                        }
+                    }
+
+                }else{
+                    for ((i, item) in list.withIndex()) {
+                        if (anchorId == item.userId){
+                            isShowVideo = true
+                            item.isSelect = true
+                            anchor = item
+                            action.invoke(item.playUrl)
+                            findAnchor = true
+                            break
+                        }
+                    }
+
                 }
+
+
             }
-
-
             //主要用于赛程进来，赛程进来的话是不知道有没有主播~~~判断是不是只有纯净流
             if(isNew&&!pureFlow){
                 if(!findAnchor){
@@ -1771,14 +1807,11 @@ class MatchDetailActivity :
                     }
 
                 }else{
-                    //如果要修改登录后循环查看是否被主播拉黑的线路
                     item = list[0]
                     item.isSelect = true
                     anchor = item
                 }
-//                item = list[0]
-//                item.isSelect = true
-//                anchor = item
+
 
                 if (item.pureFlow) {//纯净流 无主播
                     isHasAnchor = false
