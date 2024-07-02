@@ -1,30 +1,22 @@
 package com.cn.game.sdk2.websocket.imp
 
+import android.content.Context
 import android.view.View
 import com.cn.game.sdk2.websocket.GameSocketManager
+import com.cn.game.sdk2.websocket.appContext
 import com.cn.game.sdk2.websocket.appListener
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.gameMassageManager
-import com.cn.game.sdk2.websocket.interfaces.IAppForGame
+import com.cn.game.sdk2.websocket.interfaces.GameApp
 import com.cn.game.sdk2.websocket.interfaces.IGameForApp
-import com.cn.game.sdk2.websocket.interfaces.SDKCancelGameCallbackListener
-import com.cn.game.sdk2.websocket.interfaces.SDKEnterLiveCallbackListener
-import com.cn.game.sdk2.websocket.interfaces.SDKLeaveLiveCallbackListener
-import com.cn.game.sdk2.websocket.interfaces.SDKLoginCallbackListener
-import com.cn.game.sdk2.websocket.isAllowedBet
 import com.cn.game.sdk2.websocket.isNeedReconnect
-import com.cn.game.sdk2.websocket.isShowGame
-import com.cn.game.sdk2.websocket.mCancelGameCallback
-import com.cn.game.sdk2.websocket.mEnterLiveCallback
-import com.cn.game.sdk2.websocket.mLeaveLiveCallback
-import com.cn.game.sdk2.websocket.mLoginCallback
 import game.common.proto.ClientReq
 import game.mod.proc.yf.proto.req.GameReq
 
 /**
  * 提供给app调用的方法
  */
-object GameSDK : IGameForApp {
+object GameApp : IGameForApp {
 
     /**
      * app需要实现IAppForGame接口
@@ -33,16 +25,20 @@ object GameSDK : IGameForApp {
      *  - 联系客服
      *  - token失效
      */
-    fun setOnMessageForAppListener(listener: IAppForGame) {
-        appListener = listener
-    }
 
     /**
      * 加載SDK
      * app集成sdk 先调用此方法初始化websocket
      */
-    override fun loadGame() {
+    override fun loadGame(
+        context: Context,
+        lifecycleEnable: Boolean,
+        onSdkListener: GameApp.OnSdkListener
+    ) {
+        appContext = context
+        appListener = onSdkListener
         GameSocketManager.getInstance()?.initSocketClient()
+
     }
 
     /** 登录
@@ -53,12 +49,9 @@ object GameSDK : IGameForApp {
      * - ——>3)App进入直播间:GameServiceImp.groupInfo() ——>4)进入小游戏:GameServiceImp.gameInfo()
      */
     //platform= 6 ,requestId = 0,version = "1"
-    override fun loginGameWithAgentName(
-        agentName: String, token: String, nickName:String ,callback: SDKLoginCallbackListener
-    ) {
-        mLoginCallback = callback
+    override fun login(token: String, agentName: String, isAnchor: Boolean) {
         val req = ClientReq.LoginReq.newBuilder().setPlatform(6).setRequestId(0).setVersion("1")
-            .setNickname("Gregg Denesik").setAgentName(agentName).setToken(token).build()
+            .setNickname("").setAgentName(agentName).setToken(token).build()
         gameMassageManager?.login(req)
     }
 
@@ -69,10 +62,7 @@ object GameSDK : IGameForApp {
      * - type ==1 成功 随便
      */
     //1213,3
-    override fun enterLive(
-        liveId: String, gameIds: List<Int>, data: String, callback: SDKEnterLiveCallbackListener
-    ) {
-        mEnterLiveCallback = callback
+    override fun enterLive(liveId: String, gameIds: List<Int>, data: String) {
         val req = GameReq.EnterGroup.newBuilder()
         gameIds.forEach {
             req.addMiniGameIds(it)
@@ -88,16 +78,14 @@ object GameSDK : IGameForApp {
     /** 离开直播間
      * - Parameter liveId: 直播間id
      */
-    override fun leaveLive(liveId: String, callback: SDKLeaveLiveCallbackListener) {
-        mLeaveLiveCallback = callback
+    override fun leaveLive() {
         gameMassageManager?.levelGroup()
     }
 
     /**
      * 注销游戏
      */
-    override fun cancelGame(callback: SDKCancelGameCallbackListener) {
-        mCancelGameCallback = callback
+    override fun cancelGame() {
         isNeedReconnect = false
         GameSocketManager.getInstance()?.stopService()
     }
@@ -120,16 +108,35 @@ object GameSDK : IGameForApp {
     /**
      * 入口漂浮窗視圖
      */
-    override fun floatingView(): View? {
+    override fun createFloatEnterView(context:Context): View? {
         return com.cn.game.sdk2.websocket.floatingView
     }
 
     /**
      * 结果视图
      */
-    override fun resultView(): View? {
+    override fun createFloatResultView(context:Context): View? {
         return com.cn.game.sdk2.websocket.resultView
     }
 
+    override fun dismissFloatingController() {
+        gameAboutModel.isShowGame(false)
+    }
+
+    override fun refreshScore() {
+        gameMassageManager?.refreshScore()
+    }
+
+    fun onResume(){
+
+    }
+
+    fun onPause(){
+
+    }
+
+    fun onStop(){
+
+    }
 
 }

@@ -190,7 +190,7 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
     fun againBetting(): Map<Betting, BettingRecordBean> {
         //1
         tempMoney = againCountMoney
-
+        gameAboutModel.setOnceCountMoney(getPanelAllMoney())
         bettingListTemp copyFrom againBettingList
         return againBettingList
     }

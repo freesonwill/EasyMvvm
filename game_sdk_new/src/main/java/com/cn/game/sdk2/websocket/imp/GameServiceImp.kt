@@ -19,7 +19,6 @@ import com.cn.game.sdk2.websocket.copyFrom
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.gameList
 import com.cn.game.sdk2.websocket.interfaces.GameService
-import com.cn.game.sdk2.websocket.interfaces.SDKEnterLiveCallbackListener
 import com.cn.game.sdk2.websocket.isBig
 import com.cn.game.sdk2.websocket.isCanBetting
 import com.cn.game.sdk2.websocket.isTokenValid
@@ -28,12 +27,8 @@ import com.cn.game.sdk2.websocket.isEmpty
 import com.cn.game.sdk2.websocket.isEnterRoom
 import com.cn.game.sdk2.websocket.isLogin
 import com.cn.game.sdk2.websocket.isNotEmpty
-import com.cn.game.sdk2.websocket.mEnterLiveCallback
-import com.cn.game.sdk2.websocket.mLeaveLiveCallback
-import com.cn.game.sdk2.websocket.mLoginCallback
 import com.cn.game.sdk2.websocket.miniGameId
 import com.cn.game.sdk2.websocket.nativeLib
-//import com.cn.game.sdk2.websocket.nativeLib
 import com.cn.game.sdk2.websocket.previousSuccess
 import com.cn.game.sdk2.websocket.sum
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
@@ -169,17 +164,6 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
         } catch (e: Exception) {
             e.printStackTrace()
         }
-//        GlobalScope.launch {
-//            withContext(Dispatchers.Main) {
-//                "send()->mid:$mid-sid:$sid".loge(tag)
-//                try {
-//                    val msg = client.newPack(mid, sid, data, data.size)
-//                    client.send(msg)
-//                } catch (e: Exception) {
-//                    e.printStackTrace()
-//                }
-//            }
-//        }
     }
 
     override fun loginSuccess(afterLoginSuccess: ClientRes.InfoAfterLoginSuccess) {
@@ -188,12 +172,12 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
         gameAboutModel.setLoginResult(true)
         //初始化step2:登录成功后坐下
         enterInfo()
-        mLoginCallback?.callback(1)
+        appListener?.onLoginGame(1,"")
     }
 
     override fun loginError(errorMessage: ClientRes.ErrorMessage) {
         isLogin = false
-        mLoginCallback?.callback(errorMessage.code, errorMessage.desc)
+        appListener?.onLoginGame(errorMessage.code, errorMessage.desc)
         gameAboutModel.loginErrorMessage = errorMessage.desc
         gameAboutModel.setLoginResult(false)
 
@@ -244,11 +228,7 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
 
 
         if (isEnterRoom) {
-            GameSDK.enterLive("1213", listOf(1), "", object : SDKEnterLiveCallbackListener {
-                override fun callback(code: Int, message: String?) {
-                    "enterLive:code-$code,message$message".loge()
-                }
-            })
+            GameApp.enterLive("1213", listOf(1), "")
         }
     }
 
@@ -256,7 +236,7 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
     override fun groupInfo(groupInfo: GameRes.GroupInfo) {
         isEnterRoom = true
         groupInfo.toString().loge("groupInfo")
-        mEnterLiveCallback?.callback(1)
+       appListener?.onEnterLive(1,"")
         gameAboutModel.isEnterGroup(true)
 
         gameList = groupInfo.miniGameBasicInfoListList
@@ -293,7 +273,7 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
     override fun leaveGroup(leave: GameRes.LeaveGroup) {
         isEnterRoom = false
         gameAboutModel.isLeaveGroup(true)
-        mLeaveLiveCallback?.callback(1)
+        appListener?.onLeaveLive(1,"")
     }
 
     override fun leaveMiniGameInfo(miniGame: GameRes.LeaveMiniGames) {
@@ -303,6 +283,7 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
     override fun enterMiniGameInfo(miniGame: GameRes.EnterMiniGameInfo) {
         miniGameId = miniGame.miniGameId
         miniGame.toString().loge("enterMiniGameInfo")
+        appListener?.onEnterGame()
     }
 
     /**
@@ -369,14 +350,14 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
                 isTokenValid = false
                 gameAboutModel.bettingMessage = "网络连接超时"
                 gameAboutModel.setToastErrorMessage(gameAboutModel.bettingMessage)
-                appListener?.getTokenLoseEffectiveness()
+                appListener?.onTokenLoseEffectiveness()
             }
 
             5 -> {
                 isTokenValid = false
                 gameAboutModel.bettingMessage = "账号在其他设备登录，您已下线"
                 gameAboutModel.setToastErrorMessage(gameAboutModel.bettingMessage)
-                appListener?.getTokenLoseEffectiveness()
+                appListener?.onTokenLoseEffectiveness()
             }
 
             else -> {
@@ -504,7 +485,7 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
     override fun tokenLoseEffectiveness() {
         isTokenValid = false
         gameAboutModel.setToastErrorMessage("登录失效，请重新登录")
-        appListener?.getTokenLoseEffectiveness()
+        appListener?.onTokenLoseEffectiveness()
     }
 
     protected var curStage: GameAboutModel.Stage = GameAboutModel.Stage.NEW

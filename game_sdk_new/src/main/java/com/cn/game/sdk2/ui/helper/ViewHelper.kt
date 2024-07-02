@@ -17,6 +17,7 @@ import com.cn.game.sdk2.data.enums.GAME_ID_ENUM
 import com.cn.game.sdk2.ui.HomeXPopupDialog
 import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
 import com.cn.game.sdk2.utils.tool.indicator.CommonPagerIndicator
+import com.cn.game.sdk2.websocket.appListener
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.animator.EmptyAnimator
 import com.lxj.xpopup.core.BasePopupView
@@ -64,11 +65,13 @@ object ViewHelper {
                             override fun onShow(popupView: BasePopupView?) {
                                 super.onShow(popupView)
                                 showFastViewOverlay(context,false)
+                                appListener?.onGameFloatingDetailViewStatus(true)
                             }
                             override fun onDismiss(popupView: BasePopupView?) {
                                 super.onDismiss(popupView)
                                 showFastViewOverlay(context,true)
                                 homeXPopupDialog = null
+                                appListener?.onGameFloatingDetailViewStatus(false)
                             }
                         })
                         .popupAnimation(PopupAnimation.TranslateFromBottom)

@@ -98,61 +98,61 @@ object PromptSoundPlay {
      * 开始游戏声音
      */
     fun startGameTip(context: Context) {
-        if(!isPhoneSilent(context)){
-            val startMediaPlayer = MediaPlayer()
-            try {
-                startMediaPlayer.setDataSource(context, getResourceUri(context, R.raw.sx_common_start))
-                startMediaPlayer.setOnCompletionListener(OnCompletionListener { mp ->
-                    mp.release() // 在播放完成后释放MediaPlayer
-                })
-                startMediaPlayer.setOnPreparedListener { mp -> mp.start() }
-                startMediaPlayer.prepareAsync()
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-
-
-        }
+//        if(!isPhoneSilent(context)){
+//            val startMediaPlayer = MediaPlayer()
+//            try {
+//                startMediaPlayer.setDataSource(context, getResourceUri(context, R.raw.sx_common_start))
+//                startMediaPlayer.setOnCompletionListener(OnCompletionListener { mp ->
+//                    mp.release() // 在播放完成后释放MediaPlayer
+//                })
+//                startMediaPlayer.setOnPreparedListener { mp -> mp.start() }
+//                startMediaPlayer.prepareAsync()
+//            } catch (e: IOException) {
+//                e.printStackTrace()
+//            }
+//
+//
+//        }
     }
 
     /**
      * 还有五秒快要结束的时候
      */
     fun countdownGameTip(context: Context) {
-        if(!isPhoneSilent(context)){
-            val endMediaPlayer = MediaPlayer()
-            try {
-                endMediaPlayer.setDataSource(context, getResourceUri(context, R.raw.sx_common_countdown))
-                endMediaPlayer.setOnCompletionListener(OnCompletionListener { mp ->
-                    mp.release() // 在播放完成后释放MediaPlayer
-                })
-                endMediaPlayer.setOnPreparedListener { mp -> mp.start() }
-                endMediaPlayer.prepareAsync()
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-        }
+//        if(!isPhoneSilent(context)){
+//            val endMediaPlayer = MediaPlayer()
+//            try {
+//                endMediaPlayer.setDataSource(context, getResourceUri(context, R.raw.sx_common_countdown))
+//                endMediaPlayer.setOnCompletionListener(OnCompletionListener { mp ->
+//                    mp.release() // 在播放完成后释放MediaPlayer
+//                })
+//                endMediaPlayer.setOnPreparedListener { mp -> mp.start() }
+//                endMediaPlayer.prepareAsync()
+//            } catch (e: IOException) {
+//                e.printStackTrace()
+//            }
+//        }
     }
 
     /**
      * 结束语音
      */
     fun endGameTip(context: Context) {
-        if(!isPhoneSilent(context)){
-            val endMediaPlayer = MediaPlayer()
-            try {
-                endMediaPlayer.setDataSource(context, getResourceUri(context, R.raw.sx_common_stop))
-                endMediaPlayer.setOnCompletionListener(OnCompletionListener { mp ->
-                    mp.release() // 在播放完成后释放MediaPlayer
-                })
-                endMediaPlayer.setOnPreparedListener { mp -> mp.start() }
-                endMediaPlayer.prepareAsync()
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-
-
-        }
+//        if(!isPhoneSilent(context)){
+//            val endMediaPlayer = MediaPlayer()
+//            try {
+//                endMediaPlayer.setDataSource(context, getResourceUri(context, R.raw.sx_common_stop))
+//                endMediaPlayer.setOnCompletionListener(OnCompletionListener { mp ->
+//                    mp.release() // 在播放完成后释放MediaPlayer
+//                })
+//                endMediaPlayer.setOnPreparedListener { mp -> mp.start() }
+//                endMediaPlayer.prepareAsync()
+//            } catch (e: IOException) {
+//                e.printStackTrace()
+//            }
+//
+//
+//        }
     }
 
     /**

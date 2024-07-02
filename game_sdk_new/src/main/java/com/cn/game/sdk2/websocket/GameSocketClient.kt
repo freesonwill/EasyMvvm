@@ -1,14 +1,11 @@
 package com.cn.game.sdk2.websocket
 
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
-import com.cn.game.sdk2.websocket.imp.GameSDK
+import com.cn.game.sdk2.websocket.imp.GameApp
 import com.cn.game.sdk2.websocket.interfaces.SDKLoginCallbackListener
 import com.xcjh.base_lib.utils.loge
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.java_websocket.client.WebSocketClient
@@ -39,7 +36,7 @@ class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
             withContext(Dispatchers.Main) {
                 isTokenValid = true
                 if (isLogin) {
-                    GameSDK.loginGameWithAgentName(
+                    GameApp.login(
                         "wali-internal",
                         token,
                         "Gregg Denesik",

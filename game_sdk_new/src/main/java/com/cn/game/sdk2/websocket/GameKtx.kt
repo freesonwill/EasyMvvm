@@ -1,6 +1,7 @@
 package com.cn.game.sdk2.websocket
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.util.Log
 import android.view.View
 import com.cn.game.sdk2.ui.fast3.Fast3MainFragment
@@ -47,15 +48,13 @@ import com.cn.game.sdk2.websocket.bean.SUM_8
 import com.cn.game.sdk2.websocket.bean.SUM_9
 import com.cn.game.sdk2.websocket.bean.areaMap
 import com.cn.game.sdk2.websocket.imp.UIMethodImpl
-import com.cn.game.sdk2.websocket.interfaces.IAppForGame
-import com.cn.game.sdk2.websocket.interfaces.SDKCancelGameCallbackListener
-import com.cn.game.sdk2.websocket.interfaces.SDKEnterLiveCallbackListener
-import com.cn.game.sdk2.websocket.interfaces.SDKLeaveLiveCallbackListener
-import com.cn.game.sdk2.websocket.interfaces.SDKLoginCallbackListener
+import com.cn.game.sdk2.websocket.interfaces.GameApp
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 import com.cn.game.sdk2.websocket.viewmodel.MessageViewModel
-import com.xcjh.base_lib.utils.loge
 import game.mod.proc.yf.proto.res.GameRes
+
+
+var appContext: Context? = null
 
 /**
  * socket-url
@@ -146,20 +145,13 @@ var isShowGame = true
  *  - 客服按钮被点击
  *  - token失效
  */
-var appListener: IAppForGame? = null
+var appListener: GameApp.OnSdkListener? = null
 
 /**
  *
  */
 var gameMassageManager: UIMethodImpl? = null
 
-/**
- * app调用时的返回方法
- */
-var mLoginCallback: SDKLoginCallbackListener? = null
-var mEnterLiveCallback: SDKEnterLiveCallbackListener? = null
-var mLeaveLiveCallback: SDKLeaveLiveCallbackListener? = null
-var mCancelGameCallback: SDKCancelGameCallbackListener? = null
 
 fun <T> List<T>.isNotEmpty(block: (List<T>) -> Unit): Boolean {
     if (this.isNotEmpty()) {
