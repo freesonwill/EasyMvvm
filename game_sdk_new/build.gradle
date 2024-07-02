@@ -114,4 +114,5 @@ dependencies {
     //implementation project(':game_sdk')
     //https://github.com/airbnb/lottie-android
     implementation 'com.airbnb.android:lottie:6.4.0'
+    implementation 'com.robinhood.ticker:ticker:2.0.4'
 }

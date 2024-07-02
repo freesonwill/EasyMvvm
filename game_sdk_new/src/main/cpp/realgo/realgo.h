@@ -4,13 +4,17 @@
 
 #include <stdint.h>
 
-#define REALGO_VERSION 3
-#define SOCKET_BUFFER       8192 * 3
+#define REALGO_VERSION      5
+#define SOCKET_BUFFER       8192
 typedef unsigned char       BYTE;
 typedef unsigned int        UINT32;
 typedef unsigned short      WORD;
 typedef unsigned int        DWORD;
 
+#define CCPayloadCipher _x_d
+#define CCPayloadCipher_p _x_p
+
+class CCPayloadCipher_p;
 class CCPayloadCipher
 {
 public:
@@ -68,4 +72,6 @@ public:
                unsigned char **pDataBuffer,
                unsigned int *dataBufferSize
                );
+private:
+    CCPayloadCipher_p *_p;
 };
