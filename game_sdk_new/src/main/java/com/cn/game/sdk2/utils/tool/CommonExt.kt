@@ -203,12 +203,12 @@ fun getImageNetwork(imageUrl: String?): Drawable? {
 
 fun View.measureView() {
     val params = layoutParams
-    val width = if (params.width > 0) {
+    val width = if ((params?.width ?: 0) > 0) {
         View.MeasureSpec.makeMeasureSpec(params.width, View.MeasureSpec.EXACTLY)
     } else {
         View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
     }
-    val height = if (params.height > 0) {
+    val height = if ((params?.height ?: 0) > 0) {
         View.MeasureSpec.makeMeasureSpec(params.height, View.MeasureSpec.EXACTLY)
     } else {
         View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)

@@ -28,73 +28,79 @@
             android:clipChildren="false"
             android:clipToPadding="false"
             android:orientation="vertical"
-            android:paddingBottom="@{model.navigationBarHeight+20}">
+            android:paddingBottom="@{model.navigationBarHeight}">
 
+            <FrameLayout
+                android:id="@+id/bottomLayout"
+                android:layout_width="match_parent"
+                android:layout_height="34dp"
+                android:background="#1E2237"
+                app:layout_constraintBottom_toBottomOf="parent" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/ivHomeBg"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:scaleType="fitXY"
                 android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:scaleType="fitXY"
+                app:layout_constraintBottom_toTopOf="@id/bottomLayout"
                 app:layout_constraintTop_toTopOf="@id/centerLayout"
                 app:srcCompat="@drawable/icon_home_bg" />
-
-            <!--             历史记录-->
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvHomeHistory"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_5"
-                android:layout_marginEnd="4dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/rlClickHide"
-                app:layout_constraintStart_toStartOf="parent"
-                tools:itemCount="1"
-                tools:listitem="@layout/item_bet_history" />
 
             <FrameLayout
                 android:id="@+id/flRvHistory"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:background="#66273153"
                 app:layout_constrainedHeight="true"
-                app:layout_constraintBottom_toBottomOf="@id/rvHomeHistory"
-                app:layout_constraintTop_toTopOf="@id/rvHomeHistory"
+                app:layout_constraintBottom_toBottomOf="@id/bottomHistoryLayout"
+                app:layout_constraintTop_toTopOf="@id/bottomHistoryLayout"
                 app:layout_constraintVertical_bias="1" />
 
-            <RelativeLayout
-                android:id="@+id/rlClickHide"
-                android:layout_width="wrap_content"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/bottomHistoryLayout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:paddingVertical="1dp"
-                app:layout_constraintBottom_toBottomOf="@id/rvHomeHistory"
-                app:layout_constraintEnd_toEndOf="parent">
+                app:layout_constraintBottom_toTopOf="@id/bottomLayout">
 
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:layout_width="23dp"
-                    android:layout_height="39dp"
-                    android:scaleType="fitXY"
-                    app:srcCompat="@drawable/icon_bg_btn" />
+                <!--             历史记录-->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvHomeHistory"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="4dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/rlClickHide"
+                    app:layout_constraintStart_toStartOf="parent"
+                    tools:itemCount="1"
+                    tools:listitem="@layout/item_bet_history" />
 
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivHomeRotation"
-                    android:layout_width="7dp"
-                    android:layout_height="13dp"
-                    android:layout_centerInParent="true"
-                    android:rotation="180"
-                    android:scaleType="fitXY"
-                    app:srcCompat="@drawable/icon_arrow_top" />
+                <RelativeLayout
+                    android:id="@+id/rlClickHide"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="4dp"
+                    app:layout_constraintBottom_toBottomOf="@id/rvHomeHistory"
+                    app:layout_constraintEnd_toEndOf="parent">
 
-            </RelativeLayout>
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="23dp"
+                        android:layout_height="39dp"
+                        android:scaleType="fitXY"
+                        app:srcCompat="@drawable/icon_bg_btn" />
 
-            <androidx.constraintlayout.widget.Barrier
-                android:id="@+id/barrier"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:barrierDirection="top"
-                app:constraint_referenced_ids="rlClickHide,flRvHistory" />
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ivHomeRotation"
+                        android:layout_width="7dp"
+                        android:layout_height="13dp"
+                        android:layout_centerInParent="true"
+                        android:rotation="180"
+                        android:scaleType="fitXY"
+                        app:srcCompat="@drawable/icon_arrow_top" />
+
+                </RelativeLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
 
             <!--            开奖结果-->
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -104,7 +110,7 @@
                 android:background="@color/g_141624"
                 android:clipChildren="false"
                 android:clipToPadding="false"
-                app:layout_constraintBottom_toTopOf="@id/barrier"
+                app:layout_constraintBottom_toTopOf="@id/flRvHistory"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.appcompat.widget.AppCompatImageView
@@ -180,8 +186,8 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:visibility="visible"
-                            android:orientation="vertical">
+                            android:orientation="vertical"
+                            android:visibility="visible">
 
                             <androidx.appcompat.widget.AppCompatImageView
                                 android:layout_width="22dp"
@@ -469,35 +475,36 @@
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/txtWinMoneyLabel"
+                        style="@style/PuHuiTi"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="你赢了"
                         android:textColor="#FFE3CA"
-                        style="@style/PuHuiTi"
                         android:textSize="14sp"
                         app:layout_constraintBottom_toTopOf="@id/tvAnimWin"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintVertical_chainStyle="packed" />
+
                     <com.robinhood.ticker.TickerView
                         android:id="@+id/tvAnimWin"
-                        app:ticker_animationDuration="800"
-                        app:ticker_defaultPreferredScrollingDirection="any"
+                        style="@style/PuHuiTi"
                         android:layout_width="wrap_content"
                         android:layout_height="32dp"
                         android:layout_marginBottom="10dp"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:textColor="#FFE3CA"
+                        android:textSize="30sp"
+                        android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/txtWinMoneyLabel"
-                        tools:text="$1000000000000"
-                        android:gravity="center"
-                        android:maxLines="1"
-                        android:textColor="#FFE3CA"
-                        style="@style/PuHuiTi"
-                        android:textStyle="bold"
-                        android:textSize="30sp"/>
+                        app:ticker_animationDuration="800"
+                        app:ticker_defaultPreferredScrollingDirection="any"
+                        tools:text="$1000000000000" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.Group

@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
             }else{
                 //92:ZyBmhNCJ   87:MHxIHlYM
                 GameApp.login(
-                    "wali-internal", token, true
+                    token, "wali-internal", true
                 )
             }
         }

@@ -310,12 +310,10 @@ abstract class BaseFast3Fragment<VM : BaseViewModel, VB : ViewDataBinding>(var f
         if (isNewAdd) {
             moneyOKView.ivShowBg.isInvisible = true
             moneyOKView.parentView = moneyOKView.parent as ViewGroup
-            moneyOKView.isVisible = false
             betteView.parentView = betteView.parent as ViewGroup
             betteView.isVisible = false
         }
         fast3VM.emitMoneyAnim(rax, ray, areaView = areaView, endCallBack = {
-            moneyOKView.isVisible = true
             betteView.isVisible = true
         })
     }
