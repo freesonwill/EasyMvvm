@@ -13,9 +13,11 @@ import android.graphics.Typeface
 import android.icu.text.DecimalFormat
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.core.animation.addListener
@@ -39,6 +41,7 @@ import com.cn.game.sdk2.databinding.ItemBetHistoryBinding
 import com.cn.game.sdk2.ui.helper.Fast3ToastHelper
 import com.cn.game.sdk2.ui.helper.ViewHelper.bindViewPagerNewGame
 import com.cn.game.sdk2.ui.helper.ViewHelper.initGameViewPager
+import com.cn.game.sdk2.ui.view.CenterLayoutManager
 import com.cn.game.sdk2.ui.view.CommonLinearLayoutItemDecoration
 import com.cn.game.sdk2.ui.view.CustomBubbleAttachPopup
 import com.cn.game.sdk2.ui.view.MoneyOKView
@@ -99,6 +102,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     private var resultRvHeight = -1
     private var resultAnimMoveHeight = -1
     private var anchorMoneyView: MoneyOKView? = null
+    private var historyResultView: View? = null
 
     //<areaCode,<money,View>>
     private val currentBetteAreaMap by lazy { mutableMapOf<Int, GameAreaView>() }
@@ -157,9 +161,9 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             }
         )
         mDatabind.viewPagerNew.offscreenPageLimit = mFragList.size
-
         setBetAdapter()
         setClick()
+        measureHistoryRvHeight()
     }
 
     override fun lazyLoadData() {
@@ -168,7 +172,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
     private fun doNumberAnim(targetView: TextView, startNum: Float, endNumber: Float) {
         if(targetView.tag != null) {
-            (targetView.tag as ValueAnimator).end()
+            (targetView.tag as ValueAnimator).cancel()
         }
         ValueAnimator.ofFloat(startNum, endNumber).apply {
             duration = 500
@@ -178,7 +182,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             }
             addListener(
                 onStart = { targetView.text = "¥ $startNum" },
-                onEnd = { targetView.text = "¥ $endNumber" }
+                onEnd = { targetView.text = "¥ ${endNumber.formatRealMoney()}" }
             )
             start()
             targetView.tag  = this
@@ -194,6 +198,22 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             delay(200)
             updateGameStage()
             //mViewModel.startBetting()
+        }
+    }
+
+    private fun measureHistoryRvHeight() {
+        LayoutInflater.from(context).inflate(R.layout.item_bet_history, null).apply {
+            measureView()
+            Log.e(TAG, "historyRvHeight->$measuredHeight")
+            resultRvHeight = this.measuredHeight
+            findViewById<LinearLayout>(R.id.llShowDice).apply {
+                this.measureView()
+                Log.e(TAG, "historyMoveHeight->$measuredHeight")
+                resultAnimMoveHeight = this.measuredHeight
+            }
+            val params = mDatabind.flRvHistory.layoutParams
+            params?.height = resultRvHeight - resultAnimMoveHeight
+            mDatabind.flRvHistory.layoutParams = params
         }
     }
 
@@ -272,33 +292,22 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     ivBetSize.setImageResource(if (isBig) R.drawable.icon_home_result_big else R.drawable.icon_home_result_small)
                     ivBetOdd.setImageResource(if (isDouble) R.drawable.icon_home_result_double else R.drawable.icon_home_result_single)
                 }
-                //隐藏筹码牌动画
-                startBetteRecyclerShowOrHideAnim(isShow = false, onEnd = {
-                    //注区
-                    betteLayout.isInvisible = true
-                    betteAgainLayout.isVisible = false
 
-                    //开奖结果
-                    rlShowResult.isVisible = true
-                    ivHomeBg.isVisible = true
-                    ivHomeBgCenter.isVisible = true
 
-                    //开奖结果显示动画
-                    startGameResultShowAnim {
-                        //中奖动画
-                        startWinLottieAnim(endCallBack = {
-                            //开奖结果注区动画闪烁
-                            Log.e(TAG, "中奖注区结果监听--->${gameAboutModel.lotteryResultList}")
-                            mViewModel.userLotteryResultLiveData.value =
-                                gameAboutModel.lotteryResultList
+                //开奖结果显示动画
+                startGameResultShowAnim {
+                    //中奖动画
+                    startWinLottieAnim(endCallBack = {
+                        //开奖结果注区动画闪烁
+                        Log.e(TAG, "中奖注区结果监听--->${gameAboutModel.lotteryResultList}")
+                        mViewModel.userLotteryResultLiveData.value =
+                            gameAboutModel.lotteryResultList
 
-                            //中奖区域金额刷新
-                            Log.e(TAG, "中奖注区筹码监听--->${gameAboutModel.userLotteryResult}")
-                            notifyMoneyOkView(gameAboutModel.userLotteryResult)
-                        })
-                    }
-                })
-
+                        //中奖区域金额刷新
+                        Log.e(TAG, "中奖注区筹码监听--->${gameAboutModel.userLotteryResult}")
+                        notifyMoneyOkView(gameAboutModel.userLotteryResult)
+                    })
+                }
             }
         }
     }
@@ -316,6 +325,17 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             //开奖时取消临时下注的
             mDatabind.apply {
                 txtHomeStatic.text = getString(R.string.g_f3_dealing)
+                //隐藏筹码牌动画
+                startBetteRecyclerShowOrHideAnim(isShow = false, onEnd = {
+                    //注区
+                    betteLayout.isInvisible = true
+                    betteAgainLayout.isVisible = false
+
+                    //开奖结果
+                    ivHomeBg.isVisible = true
+                    ivHomeBgCenter.isVisible = true
+
+                })
             }
         }
     }
@@ -332,9 +352,9 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 return
             }
             groupWinLottie.isVisible = true
-            val originTxt ="$"+winMoney.formatRealMoney()
-            mDatabind.tvAnimWin.setText(originTxt.replace(Regex("[0-9]"),"0"),false)
-            tvAnimWin.setText("$${winMoney.formatRealMoney()}",true)
+            val originTxt = "$" + winMoney.formatRealMoney()
+            mDatabind.tvAnimWin.setText(originTxt.replace(Regex("[0-9]"), "0"), false)
+            tvAnimWin.setText("$${winMoney.formatRealMoney()}", true)
             lottieAnimView.addAnimatorListener(object : Animator.AnimatorListener {
                 override fun onAnimationStart(animation: Animator) {
                     PromptSoundPlay.playWinEffect()
@@ -376,6 +396,10 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             val end = balance.toFloat()
             Log.e(TAG, "收到的总余额：${balance},old:$start, new:$end")
             this.doNumberAnim(mDatabind.txtCurrentMoney,start,end)
+            mDatabind.llShowBetList.adapter?.notifyItemRangeChanged(
+                0,
+                mDatabind.llShowBetList.adapter?.itemCount ?: 0
+            )
         }
         mViewModel.homeTimeSeconds.observe(viewLifecycleOwner) { seconds ->
             mDatabind.txtHomeTime.text = seconds.toString()
@@ -442,14 +466,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             lifecycleScope.launch {
                 val adapter = mDatabind.rvHomeHistory.bindingAdapter
                 adapter.models = it
-                if (it.isEmpty()) {
-                    //重置result动画高度
-                    resultAnimMoveHeight = -1
-                    mDatabind.ivHomeRotation.rotation = 180f
-                    val params = mDatabind.flRvHistory.layoutParams
-                    params?.height = 0
-                    mDatabind.flRvHistory.layoutParams = params
-                }
             }
         }
 
@@ -542,20 +558,14 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
      */
     private fun resultAnimation(isShowResult: Boolean) {
         mDatabind.apply {
-            if (rvHomeHistory.models.isNullOrEmpty()) return@apply
             resultAnim?.cancel()
             mViewModel.isShowResult = isShowResult
-            if (resultRvHeight == -1) {
-                rvHomeHistory.measureView()
-                resultRvHeight = rvHomeHistory.measuredHeight
-                Log.d(TAG, "resultRvHeight_rvHomeHistory: $resultRvHeight")
-            }
             ivHomeRotation.rotation = if (isShowResult) 0f else 180f
             val startHeight = flRvHistory.height.toFloat()
             val endHeight =
                 if (isShowResult) resultRvHeight else resultRvHeight - resultAnimMoveHeight
             resultAnim = ValueAnimator.ofFloat(startHeight, endHeight.toFloat()).apply {
-                duration = 300
+                duration = 150
                 addUpdateListener {
                     val value = (it.animatedValue as Float).toInt()
                     val params = flRvHistory.layoutParams
@@ -573,13 +583,14 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
      */
     private fun setBetAdapter() {
         mDatabind.llShowBetList.itemAnimator = null
-        mDatabind.llShowBetList.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        mDatabind.llShowBetList.layoutManager =
+            CenterLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         if (mDatabind.llShowBetList.itemDecorationCount == 0) {
             mDatabind.llShowBetList.addItemDecoration(
                 CommonLinearLayoutItemDecoration(
                     spacingV = requireContext().dp2px(10),
                     start = requireContext().dp2px(8),
-                    end = requireContext().dp2px(20)
+                    end = requireContext().dp2px(40)
                 )
             )
         }
@@ -619,6 +630,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                     binding.ivShowBg,
                                     if (isBetteUpAnimFirst) 0 else 100
                                 )
+//                                scrollBetteItemToCenter(layoutPosition)
                             }
                         } else {
                             binding.ivShowBg.translationY = 0f
@@ -635,7 +647,13 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 for (data in models) {
                     data.select = bean == data
                 }
+                (mDatabind.llShowBetList.layoutManager as CenterLayoutManager).smoothScrollToPosition(
+                    mDatabind.llShowBetList,
+                    RecyclerView.State(),
+                    layoutPosition
+                )
                 notifyItemRangeChanged(0, modelCount)
+
             }
         }.models = mViewModel.noteList
         //历史结果
@@ -653,18 +671,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 when (itemViewType) {
                     R.layout.item_bet_history -> {
                         getBinding<ItemBetHistoryBinding>().apply {
-                            if (resultAnimMoveHeight == -1) {
-                                llShowDice.measureView()
-                                resultAnimMoveHeight = llShowDice.measuredHeight
-                                llBetResult.measureView()
-                                resultRvHeight = resultAnimMoveHeight + llBetResult.measuredHeight
-                                Log.d(TAG, "resultAnimMoveHeight: $resultAnimMoveHeight")
-                                Log.d(TAG, "llBetResult: ${resultRvHeight}}")
-                                val params = mDatabind.flRvHistory.layoutParams
-                                params?.height = llBetResult.measuredHeight
-                                mDatabind.flRvHistory.layoutParams = params
-                            }
-
                             val mainTxtBean = _data as RoundInfoBean
                             mainTxtBean.performs.forEachIndexed { index, item ->
                                 val child = llShowDice.getChildAt(index) as ImageView
@@ -777,6 +783,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             AnimatorSet().apply {
                 play(leftAnimX).with(leftAnimY).with(rightAnimX).with(rightAnimY)
                 addListener(onStart = {
+                    rlShowResult.isVisible = true
                     llResultLeft.scaleX = 0f
                     llResultLeft.scaleY = 0f
                     llResultRight.scaleX = 0f

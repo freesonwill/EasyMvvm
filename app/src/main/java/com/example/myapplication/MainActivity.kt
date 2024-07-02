@@ -22,45 +22,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        GameApp.loadGame(this,true,object :
-            com.cn.game.sdk2.websocket.interfaces.GameApp.OnSdkListener{
-            override fun customerServiceAction() {
-
-            }
-
-            override fun historyOfBetAction() {
-
-            }
-
-            override fun onEnterGame() {
-
-            }
-
-            override fun onEnterLive(type: Int, msg: String) {
-
-            }
-
-            override fun onLeaveLive(type: Int, str: String?) {
-
-            }
-
-            override fun onLoginGame(i: Int, str: String?) {
-
-            }
-
-            override fun onTokenLoseEffectiveness() {
-
-            }
-
-            override fun onGameFloatingDetailViewStatus(isShowUp: Boolean) {
-
-            }
-
-            override fun onInsufficientBalance() {
-
-            }
-
-        })
         var btnOpen = findViewById<TextView>(R.id.btnOpen)
         var llshow = findViewById<LinearLayout>(R.id.llshow)
         var btnXiu = findViewById<Button>(R.id.btnXiu)
@@ -76,7 +37,7 @@ class MainActivity : AppCompatActivity() {
             }else{
                 //92:ZyBmhNCJ   87:MHxIHlYM
                 GameApp.login(
-                    token,"wali-internal", true
+                    token, "wali-internal", true
                 )
             }
         }

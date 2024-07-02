@@ -180,14 +180,16 @@ class MoneyOKView @JvmOverloads constructor(
             if (thousand > 0) { // 千位有值
                 return if (hundred > 0) { // 百位有值
                     if (ten > 0) { // 十位有值
-                        ("${tenThousand}.${thousand}${hundred}W+")
+//                        ("${tenThousand}.${thousand}${hundred}W+")
+                        ("${tenThousand}.${thousand}${hundred}W")
                     } else { // 十位没有值
                         ("${tenThousand}.${thousand}${hundred}W")
                     }
 
                 } else { // 百位没有值
                     if (ten > 0) { // 十位有值
-                        ("${tenThousand}.${thousand}W+")
+                        ("${tenThousand}.${thousand}W")
+//                        ("${tenThousand}.${thousand}W+")
                     } else { // 十位没有值
                         ("${tenThousand}.${thousand}W")
                     }
@@ -196,14 +198,16 @@ class MoneyOKView @JvmOverloads constructor(
             } else { // 千位没有值
                 return if (hundred > 0) { // 百位有值
                     if (ten > 0) { // 十位有值
-                        ("${tenThousand}.0${hundred}W+")
+                        ("${tenThousand}.0${hundred}W")
+//                        ("${tenThousand}.0${hundred}W+")
                     } else { // 十位没有值
                         ("${tenThousand}.0${hundred}W")
                     }
 
                 } else { // 百位没有值
                     if (ten > 0) { // 十位有值
-                        ("${tenThousand}W+")
+                        ("${tenThousand}W")
+//                        ("${tenThousand}W+")
                     } else { // 十位没有值
                         ("${tenThousand}W")
                     }
