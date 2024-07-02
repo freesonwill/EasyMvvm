@@ -488,6 +488,7 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
     }
 
     override fun refreshGameConfig(configs: GameRes.RefreshGameConfig) {
+        val newConfigMap: MutableMap<Int, List<AreaBetConfigBean>> = mutableMapOf()
        configs.gameConfigsList?.forEach {
             val areaBetConfigBeans = ArrayList<AreaBetConfigBean>()
             it.betAreaConfigsList.forEach { bean ->
@@ -497,8 +498,10 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
                     )
                 )
             }
-            configMap[it.miniGameId] = areaBetConfigBeans
+           newConfigMap[it.miniGameId] = areaBetConfigBeans
         }
+        configMap.clear()
+        configMap copyFrom newConfigMap
     }
 
     /**

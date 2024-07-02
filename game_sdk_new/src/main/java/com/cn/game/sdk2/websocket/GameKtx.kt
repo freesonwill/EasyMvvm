@@ -55,7 +55,7 @@ import game.mod.proc.yf.proto.res.GameRes
 
 
 var appContext: Context? = null
-var appLifecycleEnable:Boolean = false
+var appLifecycleEnable: Boolean = false
 
 /**
  * socket-url
@@ -416,6 +416,17 @@ fun <K> Map<K, BettingRecordBean>.copy(): MutableMap<K, BettingRecordBean> {
 infix fun <K> MutableMap<K, BettingRecordBean>.copyFrom(other: MutableMap<K, BettingRecordBean>) {
     other.forEach {
         this[it.key] = it.value.copy()
+    }
+}
+
+infix fun <K> MutableMap<K, List<AreaBetConfigBean>>.copyFrom(other: MutableMap<K, List<AreaBetConfigBean>>) {
+    other.forEach {
+        val copy = it.value
+        val copyList = ArrayList<AreaBetConfigBean>()
+        copy.forEach { bean ->
+            copyList.add(bean.copy())
+        }
+        this[it.key] = copyList
     }
 }
 
