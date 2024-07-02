@@ -10,14 +10,9 @@ import androidx.fragment.app.Fragment
 
 import com.cn.game.sdk2.ui.helper.ViewHelper
 import com.cn.game.sdk2.ui.view.FastLogoView
-import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.websocket.gameAboutModel
-import com.cn.game.sdk2.websocket.imp.GameSDK
-import com.cn.game.sdk2.websocket.interfaces.SDKEnterLiveCallbackListener
-import com.cn.game.sdk2.websocket.interfaces.SDKLoginCallbackListener
+import com.cn.game.sdk2.websocket.imp.GameApp
 import com.cn.game.sdk2.websocket.token
-import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
-import com.xcjh.base_lib.utils.loge
 
 class MainActivity : AppCompatActivity() {
     var views: FastLogoView? = null
@@ -36,22 +31,13 @@ class MainActivity : AppCompatActivity() {
             //ViewHelper.showFastView(this)
 
             if(gameAboutModel.isLoginSuccess.value == true){
-                GameSDK.enterLive("1213", listOf(1), "", object : SDKEnterLiveCallbackListener {
-                    override fun callback(code: Int, message: String?) {
-                        "enterLive:code-$code,message$message".loge()
-                    }
-                })
+                GameApp.enterLive("1213", listOf(1), "")
                 ViewHelper.showFastView(this)
                 ViewHelper.showFastViewOverlay(this)
             }else{
                 //92:ZyBmhNCJ   87:MHxIHlYM
-                GameSDK.loginGameWithAgentName(
-                    "wali-internal", token,"Gregg Denesik", object : SDKLoginCallbackListener {
-                        override fun callback(code: Int, message: String?) {
-                            "login:code-${code},message-${message}".loge()
-                        }
-
-                    }
+                GameApp.login(
+                    "wali-internal", token, true
                 )
             }
         }

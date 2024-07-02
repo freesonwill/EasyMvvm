@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.View
 import com.cn.game.sdk2.websocket.GameSocketManager
 import com.cn.game.sdk2.websocket.appContext
+import com.cn.game.sdk2.websocket.appLifecycleEnable
 import com.cn.game.sdk2.websocket.appListener
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.gameMassageManager
@@ -36,6 +37,7 @@ object GameApp : IGameForApp {
         onSdkListener: GameApp.OnSdkListener
     ) {
         appContext = context
+        appLifecycleEnable = lifecycleEnable
         appListener = onSdkListener
         GameSocketManager.getInstance()?.initSocketClient()
 

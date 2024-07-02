@@ -55,6 +55,7 @@ import game.mod.proc.yf.proto.res.GameRes
 
 
 var appContext: Context? = null
+var appLifecycleEnable:Boolean = false
 
 /**
  * socket-url
