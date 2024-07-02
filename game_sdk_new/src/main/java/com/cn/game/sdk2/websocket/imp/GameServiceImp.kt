@@ -46,7 +46,9 @@ import java.util.concurrent.ConcurrentHashMap
 abstract class GameServiceImp(private val client: GameSocketClient) : GameService,
     GameServerMessageConvertFactory {
 
-    protected open var areaBetConfigBeans: ArrayList<AreaBetConfigBean> = ArrayList()
+    protected open var configMap: MutableMap<Int, List<AreaBetConfigBean>> = mutableMapOf()
+
+    protected open var currentConfig: List<AreaBetConfigBean>? = null
 
     /**
      * 临时最后点击
@@ -172,7 +174,7 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
         gameAboutModel.setLoginResult(true)
         //初始化step2:登录成功后坐下
         enterInfo()
-        appListener?.onLoginGame(1,"")
+        appListener?.onLoginGame(1, "")
     }
 
     override fun loginError(errorMessage: ClientRes.ErrorMessage) {
@@ -217,15 +219,20 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
         gameAboutModel.isSitDown(true)
         balance = enterInfo.self.score
         gameAboutModel.changeBalance(enterInfo.self.score)
-        val betAreaConfigs = enterInfo.gameConfigsList[0].betAreaConfigsList
+        val betAreaConfigs = enterInfo.gameConfigsList
         betAreaConfigs.forEach {
-            areaBetConfigBeans.add(
-                AreaBetConfigBean(
-                    it.areaCode.convertBetting()!!, it.minLimit, it.maxLimit
+            val areaBetConfigBeans = ArrayList<AreaBetConfigBean>()
+            it.betAreaConfigsList.forEach { bean ->
+                areaBetConfigBeans.add(
+                    AreaBetConfigBean(
+                        bean.areaCode.convertBetting()!!, bean.minLimit, bean.maxLimit
+                    )
                 )
-            )
+            }
+            configMap[it.miniGameId] = areaBetConfigBeans
         }
 
+        currentConfig = configMap[miniGameId]
 
         if (isEnterRoom) {
             GameApp.enterLive("1213", listOf(1), "")
@@ -236,7 +243,7 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
     override fun groupInfo(groupInfo: GameRes.GroupInfo) {
         isEnterRoom = true
         groupInfo.toString().loge("groupInfo")
-       appListener?.onEnterLive(1,"")
+        appListener?.onEnterLive(1, "")
         gameAboutModel.isEnterGroup(true)
 
         gameList = groupInfo.miniGameBasicInfoListList
@@ -273,7 +280,7 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
     override fun leaveGroup(leave: GameRes.LeaveGroup) {
         isEnterRoom = false
         gameAboutModel.isLeaveGroup(true)
-        appListener?.onLeaveLive(1,"")
+        appListener?.onLeaveLive(1, "")
     }
 
     override fun leaveMiniGameInfo(miniGame: GameRes.LeaveMiniGames) {
@@ -395,6 +402,7 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
             gameAboutModel.changeMeetAgain(false)
         }
         resetPanel()
+        currentConfig = configMap[miniGameId]
     }
 
     /**
@@ -477,6 +485,23 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
         val desc = errorMessage.desc
         "code = ${errorMessage.code},msg = ${errorMessage.desc}".loge("errorMessage")
         gameAboutModel.setToastErrorMessage(desc)
+    }
+
+    override fun refreshGameConfig(configs: GameRes.RefreshGameConfig) {
+        val newConfigMap: MutableMap<Int, List<AreaBetConfigBean>> = mutableMapOf()
+       configs.gameConfigsList?.forEach {
+            val areaBetConfigBeans = ArrayList<AreaBetConfigBean>()
+            it.betAreaConfigsList.forEach { bean ->
+                areaBetConfigBeans.add(
+                    AreaBetConfigBean(
+                        bean.areaCode.convertBetting()!!, bean.minLimit, bean.maxLimit
+                    )
+                )
+            }
+           newConfigMap[it.miniGameId] = areaBetConfigBeans
+        }
+        configMap.clear()
+        configMap copyFrom newConfigMap
     }
 
     /**

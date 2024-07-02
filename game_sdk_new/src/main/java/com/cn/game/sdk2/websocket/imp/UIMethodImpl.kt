@@ -96,7 +96,7 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
             currentMoney + tempMoney + confirmedMoney + tempConfirmedMoney //本次下注后页面上应该显示的总金额
         //跟新again和double
         gameAboutModel.setOnceCountMoney(getPanelAllMoney())
-        areaBetConfigBeans.getBeanById(recordBean.bettingArea)?.let {
+        currentConfig?.getBeanById(recordBean.bettingArea)?.let {
             if (countMoney > it.maxLimit) {
                 bettingState = GameAboutModel.BettingState.OFFSET_MAX
             }
@@ -148,7 +148,7 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
         if (previousSuccess) {
             //只有第一次才判断
             limitMap.forEach {
-                areaBetConfigBeans.getBeanById(it.key)?.let { config ->
+                currentConfig?.getBeanById(it.key)?.let { config ->
                     if (it.value < config.minLimit) {
                         block(GameAboutModel.BettingState.OFFSET_MIN, config.areaCode)
                         return
@@ -251,7 +251,7 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
             bettingListTemp copyFrom tempCopy
             tempMoney = confirmTempMoney + confirmMoney + tempMoney * 2
             uiMap.forEach {
-                areaBetConfigBeans.getBeanById(it.key)?.let { config ->
+                currentConfig?.getBeanById(it.key)?.let { config ->
                     if (config.maxLimit < it.value.money) {
                         block(GameAboutModel.BettingState.OFFSET_MAX, uiMap)
                         return
