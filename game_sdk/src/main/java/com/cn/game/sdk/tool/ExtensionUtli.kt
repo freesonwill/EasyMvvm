@@ -114,16 +114,6 @@ fun MagicIndicator.bindViewPagerNewGame(
             requestDisallowInterceptTouchEvent(true)
           
             return ColorTransitionPagerTitleView(context).apply {
-//                setOnTouchListener(View.OnTouchListener { v, event ->
-//                    if (v is CombinationOkView) {
-//                    Log.i("VVVVVVVVV","1111111111111")
-//
-//                    }else{
-//                        Log.i("VVVVVVVVV","22222222222222")
-//                    }
-//
-//                    return@OnTouchListener false
-//                })
                 //设置文本
                 text = mStringList[index].toHtml()
                 //字体大小
@@ -149,7 +139,6 @@ fun MagicIndicator.bindViewPagerNewGame(
         override fun getIndicator(context: Context): IPagerIndicator {
             return CommonPagerIndicator(context).apply {
                 mode = 0
-                // indicatorDrawable = ContextCompat.getDrawable(context, R.drawable.ic_select)
             }
         }
 

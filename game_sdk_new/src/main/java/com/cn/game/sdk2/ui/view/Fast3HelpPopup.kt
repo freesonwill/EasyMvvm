@@ -44,19 +44,22 @@ class Fast3HelpPopup(content: Context) : BottomPopupView(content) {
                         1 -> R.layout.item_fast3_help_2
                         2 -> R.layout.item_fast3_help_3
                         3 -> R.layout.item_fast3_help_4
-                        else -> R.layout.item_fast3_help_5
+                        4 -> R.layout.item_fast3_help_5
+                        else ->{ throw  IllegalStateException("error pos:$pos")}
                     }
                 }
             }.models = listOf(1, 2, 3, 4, 5)
         mViewBind.indicator.bindRecycleView(
-            mViewBind.rvContent, arrayListOf(
-                context.getString(R.string.g_home_txt_default),
-                context.getString(R.string.g_home_tab_single),
-                context.getString(R.string.g_home_tab_sum),
-                context.getString(R.string.g_home_tab_double),
-                context.getString(R.string.g_home_tab_double),
+            mViewBind.rvContent,
+            //Todo 放到array.xml中
+            arrayListOf(
+                "基础规则",
+                "游戏规则",
+                "注区",
+                "赔率",
+                "路单",
             ),
-            scrollEnable = true,
+            scrollEnable = false,
             action = {
                 PromptSoundPlay.btnPlayMedia()
             }
@@ -64,9 +67,11 @@ class Fast3HelpPopup(content: Context) : BottomPopupView(content) {
 
         mViewBind.ivCollapse.clickNoRepeat {
             if (rootHeight == 0) rootHeight = mViewBind.root.height
-            val height = if (rootHeight == mViewBind.root.height) rootHeight / 2 else rootHeight
+            val isExpand = rootHeight != mViewBind.root.height
+            val height = if (!isExpand) rootHeight / 2 else rootHeight
             mViewBind.root.layoutParams.height = height
-            mViewBind.root.requestLayout()
+            //mViewBind.root.requestLayout()
+            mViewBind.ivCollapse.setImageResource(if(isExpand) R.drawable.ic_expand else R.drawable.ic_collapse)
         }
         mViewBind.close.clickNoRepeat {
             ViewHelper.showHelpDialog(context, false)
