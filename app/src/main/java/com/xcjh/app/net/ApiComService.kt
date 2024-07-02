@@ -17,9 +17,9 @@ interface ApiComService {
 
     companion object {
         //dev      http://192.168.101.15:6003/apis/    "ws://192.168.101.15:6006/ws-sports-chat
-//        var SERVER_URL = "http://192.168.101.15:6003/apis/"//app通用 开发
-//        var WEB_SOCKET_URL = "ws://192.168.101.15:6006/ws-sports-chat" ///new dev
-//        var SHARE_URL="192.168.101.180"
+        var SERVER_URL = "http://192.168.101.15:6003/apis/"//app通用 开发
+        var WEB_SOCKET_URL = "ws://192.168.101.15:6006/ws-sports-chat" ///new dev
+        var SHARE_URL="192.168.101.180"
         //test 发布1 生产环境  app.hyh86.cn    旧的 app.wyjxx.cn
 //          var SERVER_URL = "https://app.hyh86.cn/apis/"//app通用 测试
 //          var WEB_SOCKET_URL = "wss://app.hyh86.cn/ws-sports-chat" ///test
@@ -29,9 +29,9 @@ interface ApiComService {
 //        var WEB_SOCKET_URL = "wss://app.gdhsbp.cn/ws-sports-chat" ///test
        //  var SHARE_URL="app.gdhsbp.cn"
 //        预发布   测试
-        var SERVER_URL = "https://app.cbd246.com/apis/"//app通用 测试
-        var WEB_SOCKET_URL = "wss://app.cbd246.com/ws-sports-chat" ///test
-        var SHARE_URL="app.cbd246.com"
+//        var SERVER_URL = "https://app.cbd246.com/apis/"//app通用 测试
+//        var WEB_SOCKET_URL = "wss://app.cbd246.com/ws-sports-chat" ///test
+//        var SHARE_URL="app.cbd246.com"
 
 
     }
