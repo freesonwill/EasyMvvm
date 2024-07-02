@@ -6,6 +6,7 @@ import android.widget.RelativeLayout
 import androidx.core.content.ContextCompat
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.databinding.PopupCustomBubbleAttachBinding
+import com.cn.game.sdk2.ui.helper.ViewHelper
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.lxj.xpopup.core.BubbleAttachPopupView
 import com.lxj.xpopup.util.XPopupUtils
@@ -15,6 +16,7 @@ import com.xcjh.base_lib.utils.view.clickNoRepeat
  * 首页的弹出框
  */
 class CustomBubbleAttachPopup(content: Context) : BubbleAttachPopupView(content){
+
     override fun getImplLayoutId(): Int {
         return R.layout.popup_custom_bubble_attach
     }
@@ -29,17 +31,22 @@ class CustomBubbleAttachPopup(content: Context) : BubbleAttachPopupView(content)
         PopupCustomBubbleAttachBinding.bind(popupImplView).apply {
             rlPopClickRecords.clickNoRepeat(0) {
                 PromptSoundPlay.btnPlayMedia()
+                dismiss()
             }
             rlPopClickService.clickNoRepeat(0) {
                 PromptSoundPlay.btnPlayMedia()
+                dismiss()
             }
 
             rlPopClickToggle.clickNoRepeat(0) {
                 PromptSoundPlay.btnPlayMedia()
+                dismiss()
                 customBubbleAttachListener?.switchGame()
             }
             rlPopClickAssist.clickNoRepeat(0) {
                 PromptSoundPlay.btnPlayMedia()
+                dismiss()
+                ViewHelper.showHelpDialog(context,true)
             }
         }
     }

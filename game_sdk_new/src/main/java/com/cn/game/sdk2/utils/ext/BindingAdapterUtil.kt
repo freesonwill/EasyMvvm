@@ -1,19 +1,28 @@
 package com.cn.game.sdk2.utils.ext
 
+import android.content.Context
 import android.widget.RelativeLayout
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
-import androidx.core.view.marginBottom
+import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.cn.game.sdk2.R
+import com.cn.game.sdk2.ui.helper.ViewHelper.setTextBold
 import com.cn.game.sdk2.ui.view.MoneyOKView
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.view.game.GameAreaView.LocationClickListener
+import com.cn.game.sdk2.utils.tool.indicator.CommonPagerIndicator
 import com.cn.game.sdk2.websocket.bean.Betting
 import com.drake.brv.annotaion.DividerOrientation
 import com.drake.brv.utils.dividerSpace
+import com.xcjh.base_lib.utils.toHtml
+import net.lucode.hackware.magicindicator.MagicIndicator
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigator
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapter
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerIndicator
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerTitleView
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.ColorTransitionPagerTitleView
 
 
 /**
@@ -60,5 +69,70 @@ object BindingAdapterUtil {
         val lp = view.layoutParams as  RelativeLayout.LayoutParams
         lp.bottomMargin = margin
         view.layoutParams = lp
+    }
+
+    fun MagicIndicator.bindRecycleView(
+        recyclerView: RecyclerView,
+        mStringList: List<String> = arrayListOf(),
+        scrollEnable: Boolean = false,
+        action: (index: Int) -> Unit = {}
+    ) {
+        // viewPager.offscreenPageLimit = mStringList.size
+        val commonNavigator = CommonNavigator(context)
+        if (scrollEnable) {
+            commonNavigator.isSkimOver = true
+        } else {
+            commonNavigator.isAdjustMode = true
+        }
+        commonNavigator.adapter = object : CommonNavigatorAdapter() {
+
+            override fun getCount(): Int {
+                return mStringList.size
+            }
+
+            override fun getTitleView(context: Context, index: Int): IPagerTitleView {
+                requestDisallowInterceptTouchEvent(true)
+
+                return ColorTransitionPagerTitleView(context).apply {
+                    //设置文本
+                    text = mStringList[index].toHtml()
+                    //字体大小
+                    textSize = 14f
+                    setTextBold(this, true)
+                    // setBackgroundColor(ContextCompat.getColor(appContext, R.color.red_F7736D))
+                    //未选中颜色
+                    normalColor = ContextCompat.getColor(context, R.color.g_9696b8)
+                    //选中颜色
+                    selectedColor = ContextCompat.getColor(context, R.color.g_f7cf41)
+                    //点击事件
+                    setOnClickListener {
+                        action.invoke(index)
+                        (recyclerView.layoutManager as LinearLayoutManager).scrollToPosition(index)
+                    }
+                }
+            }
+
+            override fun getIndicator(context: Context): IPagerIndicator {
+                return CommonPagerIndicator(context).apply {
+                    mode = 0
+                    // indicatorDrawable = ContextCompat.getDrawable(context, R.drawable.ic_select)
+                }
+            }
+        }
+        this.navigator = commonNavigator
+
+        //viewPager 绑定 navigator
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                val position: Int = layoutManager.findFirstVisibleItemPosition()
+                commonNavigator.onPageSelected(position)
+            }
+
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+            }
+        })
     }
 }

@@ -9,12 +9,17 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.data.enums.GAME_ID_ENUM
 import com.cn.game.sdk2.ui.HomeXPopupDialog
+import com.cn.game.sdk2.ui.fast3.Fast3HelpFragment
+import com.cn.game.sdk2.ui.fast3.Fast3MainFragment
+import com.cn.game.sdk2.ui.view.CustomBubbleAttachPopup
+import com.cn.game.sdk2.ui.view.Fast3HelpPopup
 import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
 import com.cn.game.sdk2.utils.tool.indicator.CommonPagerIndicator
 import com.cn.game.sdk2.websocket.appListener
@@ -43,10 +48,45 @@ object ViewHelper {
     private const val TAG: String = "ViewHelper"
     private const val TAG_FASTVIEW = "TAG_FASTVIEW"
     private const val TAG_FASTVIEW_OVERLAY = "TAG_FASTVIEW_OVERLAY"
-    private var homeXPopupDialog: HomeXPopupDialog? = null
+    private var homeXPopupDialog: BasePopupView? = null
+    private var helpXPopupDialog: BasePopupView? = null
 
-    fun showFastView(context: Context,isShow:Boolean=true) {
-        if(!isShow) EasyFloat.hide(TAG_FASTVIEW)
+    /**
+     * 显示帮助文档
+     */
+    fun showHelpDialog(context: Context, isShow: Boolean = true) {
+        if (helpXPopupDialog != null) {
+            when {
+                isShow && !helpXPopupDialog!!.isShow -> {
+                    helpXPopupDialog!!.show()
+                }
+
+                !isShow && helpXPopupDialog!!.isShow -> {
+                    helpXPopupDialog!!.dismiss()
+                }
+            }
+            return
+        }
+        helpXPopupDialog = XPopup.Builder(context)
+            .isTouchThrough(true)
+            .setPopupCallback(object : SimpleCallback() {
+                override fun onDismiss(popupView: BasePopupView?) {
+                    super.onDismiss(popupView)
+                    helpXPopupDialog = null
+                }
+            })
+             //.customAnimator(EmptyAnimator(bubbleAttach, 0))
+            .navigationBarColor(android.R.color.transparent)
+            .hasShadowBg(false) // 去掉半透明背景
+            .isViewMode(true)
+            .hasStatusBar(false)
+            .hasNavigationBar(false)
+            .asCustom(Fast3HelpPopup(context))
+        helpXPopupDialog?.show()
+    }
+
+    fun showFastView(context: Context, isShow: Boolean = true) {
+        if (!isShow) EasyFloat.hide(TAG_FASTVIEW)
         EasyFloat.with(context).setSidePattern(SidePattern.DEFAULT)
             .setImmersionStatusBar(true)
             .setTag(TAG_FASTVIEW)
@@ -54,8 +94,8 @@ object ViewHelper {
             .setLayout(R.layout.drag_fast_easy) {
                 val llFastClick = it.findViewById<LinearLayout>(R.id.llFastClick)
                 llFastClick.setOnClickListener {
-                    if(homeXPopupDialog != null) {
-                        Log.d(TAG,"homeXPopupDialog exists, no need to create it.")
+                    if (homeXPopupDialog != null) {
+                        Log.d(TAG, "homeXPopupDialog exists, no need to create it.")
                         return@setOnClickListener
                     }
                     XPopup.Builder(context)
@@ -64,12 +104,13 @@ object ViewHelper {
                         .setPopupCallback(object : SimpleCallback() {
                             override fun onShow(popupView: BasePopupView?) {
                                 super.onShow(popupView)
-                                showFastViewOverlay(context,false)
+                                showFastViewOverlay(context, false)
                                 appListener?.onGameFloatingDetailViewStatus(true)
                             }
+
                             override fun onDismiss(popupView: BasePopupView?) {
                                 super.onDismiss(popupView)
-                                showFastViewOverlay(context,true)
+                                showFastViewOverlay(context, true)
                                 homeXPopupDialog = null
                                 appListener?.onGameFloatingDetailViewStatus(false)
                             }
@@ -80,7 +121,7 @@ object ViewHelper {
                         .isDestroyOnDismiss(false) //对于只使用一次的弹窗，推荐设置这个
                         .isThreeDrag(false) //是否开启三阶拖拽，如果设置enableDrag(false)则无效
                         .enableDrag(false)
-                        .asCustom(HomeXPopupDialog(context, GAME_ID_ENUM.GAME_FAST3.num).apply {
+                        .asCustom(HomeXPopupDialog(context, Fast3MainFragment(),GAME_ID_ENUM.GAME_FAST3.num).apply {
                             homeXPopupDialog = this
                         })
                         .show()
@@ -93,8 +134,8 @@ object ViewHelper {
     /**
      * 快三悬浮窗
      */
-    fun showFastViewOverlay(context: Context,show:Boolean=true) {
-        if(!show){
+    fun showFastViewOverlay(context: Context, show: Boolean = true) {
+        if (!show) {
             EasyFloat.hide(TAG_FASTVIEW_OVERLAY)
             return
         }
