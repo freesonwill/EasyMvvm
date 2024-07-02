@@ -18,29 +18,8 @@ import java.nio.ByteBuffer
 
 class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
 
-    companion object {
-        init {
-            System.loadLibrary("util")
-        }
-    }
-
-    init {
-        createChiper()
-    }
-
-    external fun pack(mid: Short, sid: Short, data: String?, dataSize: Int): ByteArray?
-    external fun newPack(mid: Short, sid: Short, data: ByteArray?, dataSize: Int): ByteArray?
-    external fun unpack(data: ByteArray?): Array<Any?>?
-    external fun newUnpack(data: ByteArray?): Array<Any?>?
-    external fun nativeCreateChiper(): Long
-    external fun nativeFinalizer(ptr: Long)
-    external fun reset()
-
-
-    private var mNativePtr: Long = 0
     private var _tag = "GameSocketClient"
     private var onMessageListener: OnMessageListener? = null
-    //var handler:Handler = Handler(Looper.getMainLooper())
 
     fun setOnMessageListener(listener: OnMessageListener) {
         onMessageListener = listener
@@ -48,18 +27,18 @@ class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
 
     fun re() {
         "---尝试重连---".loge()
-        if(isNeedReconnect) {
-            reset()
+        if (isNeedReconnect) {
+            nativeLib.reset()
             reconnect()
         }
     }
 
     override fun onOpen(handshakedata: ServerHandshake?) {
         Log.i(_tag, "GameSocketClient-连接成功！")
-         GlobalScope.launch {
+        GlobalScope.launch {
             withContext(Dispatchers.Main) {
                 isTokenValid = true
-                if(isLogin) {
+                if (isLogin) {
                     GameSDK.loginGameWithAgentName(
                         "wali-internal",
                         token,
@@ -69,8 +48,7 @@ class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
                                 "login:code-${code},message-${message}".loge()
                             }
 
-                        }
-                    )
+                        })
                 }
             }
         }
@@ -80,42 +58,27 @@ class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
         Log.i(_tag, "GameSocketMessage-$message")
     }
 
-    val jobs = ArrayList<Job>()
     override fun onMessage(bytes: ByteBuffer?) {
         if (!bytes!!.hasRemaining()) {
             return
         }
-        //messageViewModel?.setData(bytes.array())
-        val messageJob = GlobalScope.launch {
-            withContext(Dispatchers.Main) {
-                Log.i(_tag, "GameSocketMessage-onMessage")
-                if (!bytes!!.hasRemaining()) {
-                    return@withContext
-                }
-                //messageViewModel?.setData(bytes.array())
-                val resps = newUnpack(bytes.array())
-                val mid = resps!![0] as Int?
-                val sid = resps[1] as Int?
-                var str = bytes.array()
-                if (resps.size > 2) {
-                    str = (resps[2] as ByteArray?)!!
-                }
-                Log.i(_tag, "GameSocketMessage-onMessage:mid-$mid sid-$sid")
-                onMessageListener?.onMessage(mid, sid, str)
+        Log.i(_tag, "GameSocketMessage-onMessage")
+        val resp: Array<Any?>? = nativeLib.newUnpack(bytes.array())
+        resp?.let {
+            val mid = it[0] as Int?
+            val sid = it[1] as Int?
+            var str = bytes.array()
+            if (it.size > 2) {
+                str = (it[2] as ByteArray?)!!
             }
-        }
-        jobs.add(messageJob)
-        //messageJob.cancel()
-        jobs.forEach {
-            if (!it.isActive){
-                it.cancel()
-//                jobs.remove(it)
-            }
+            Log.i(_tag, "GameSocketMessage-onMessage:mid-$mid sid-$sid")
+            onMessageListener?.onMessage(mid, sid, str)
         }
     }
 
     override fun onClose(code: Int, reason: String?, remote: Boolean) {
         "socket-onClose-->code:${code}-reason:$reason-remote:$remote".loge(_tag)
+        nativeLib.reset()
         onMessageListener?.onClose(code, reason, remote)
     }
 
@@ -123,19 +86,4 @@ class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
         ex?.printStackTrace()
         ex?.message?.loge(_tag)
     }
-
-    private fun createChiper() {
-        mNativePtr = 0
-        Log.d(_tag, "createChiper1:$mNativePtr")
-        mNativePtr = nativeCreateChiper()
-        Log.d(_tag, "createChiper2:$mNativePtr")
-    }
-
-    protected fun finalize() {
-        kotlin.runCatching {
-            nativeFinalizer(mNativePtr)
-        }
-    }
-
-
 }

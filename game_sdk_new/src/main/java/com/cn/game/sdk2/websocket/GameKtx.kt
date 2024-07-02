@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.util.Log
 import android.view.View
 import com.cn.game.sdk2.ui.fast3.Fast3MainFragment
+import com.cn.game.sdk2.websocket.bean.AreaBetConfigBean
 import com.cn.game.sdk2.websocket.bean.BOOM_1
 import com.cn.game.sdk2.websocket.bean.BOOM_2
 import com.cn.game.sdk2.websocket.bean.BOOM_3
@@ -69,6 +70,8 @@ var WEB_SOCKET_URL = "wss://ws.qxe68.com:7001/api/game/5702" ///test
 var token = "93:Ufx3Dy8y"
 var isLogin = false
 var isEnterRoom = false
+
+var nativeLib = NativeLib()
 
 /**
  * 多用户登录token失效
@@ -421,4 +424,13 @@ infix fun <K> MutableMap<K, BettingRecordBean>.copyFrom(other: MutableMap<K, Bet
     other.forEach {
         this[it.key] = it.value.copy()
     }
+}
+
+fun ArrayList<AreaBetConfigBean>.getBeanById(betting: Betting): AreaBetConfigBean? {
+    forEach {
+        if (it.areaCode.number == betting.number) {
+            return it
+        }
+    }
+    return null
 }

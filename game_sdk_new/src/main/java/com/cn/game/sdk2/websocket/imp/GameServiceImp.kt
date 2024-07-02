@@ -5,9 +5,11 @@ import com.cn.game.sdk2.websocket.bean.Betting
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import com.cn.game.sdk2.websocket.GameServerMessageConvertFactory
 import com.cn.game.sdk2.websocket.GameSocketClient
+import com.cn.game.sdk2.websocket.NativeLib
 import com.cn.game.sdk2.websocket.appListener
 import com.cn.game.sdk2.websocket.balance
 import com.cn.game.sdk2.websocket.bean.AreaBetBean
+import com.cn.game.sdk2.websocket.bean.AreaBetConfigBean
 import com.cn.game.sdk2.websocket.bean.RoundInfoBean
 import com.cn.game.sdk2.websocket.calculateArea
 import com.cn.game.sdk2.websocket.calculateUserLotteryResult
@@ -30,6 +32,8 @@ import com.cn.game.sdk2.websocket.mEnterLiveCallback
 import com.cn.game.sdk2.websocket.mLeaveLiveCallback
 import com.cn.game.sdk2.websocket.mLoginCallback
 import com.cn.game.sdk2.websocket.miniGameId
+import com.cn.game.sdk2.websocket.nativeLib
+//import com.cn.game.sdk2.websocket.nativeLib
 import com.cn.game.sdk2.websocket.previousSuccess
 import com.cn.game.sdk2.websocket.sum
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
@@ -39,10 +43,6 @@ import game.common.proto.ClientRes
 import game.mod.proc.yf.proto.req.GameReq
 import game.mod.proc.yf.proto.req.GameReq.EnterMiniGame
 import game.mod.proc.yf.proto.res.GameRes
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -50,6 +50,8 @@ import java.util.concurrent.ConcurrentHashMap
  */
 abstract class GameServiceImp(private val client: GameSocketClient) : GameService,
     GameServerMessageConvertFactory {
+
+    protected open var areaBetConfigBeans: ArrayList<AreaBetConfigBean> = ArrayList()
 
     /**
      * 临时最后点击
@@ -109,6 +111,8 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
     protected open var againBettingList: MutableMap<Betting, BettingRecordBean> =
         ConcurrentHashMap()
 
+    protected open val limitMap : MutableMap<Betting, Int> = ConcurrentHashMap()
+
     protected open var againCountMoney = 0
 
     private val tag = GameServiceImp::class.java.name
@@ -158,17 +162,24 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
 
     private fun send(mid: Short, sid: Short, data: ByteArray) {
         //messageViewModel?.setSendData(SendDataBean(mid, sid, data))
-        GlobalScope.launch {
-            withContext(Dispatchers.Main) {
-                "send()->mid:$mid-sid:$sid".loge(tag)
-                try {
-                    val msg = client.newPack(mid, sid, data, data.size)
-                    client.send(msg)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
+        "send()->mid:$mid-sid:$sid".loge(tag)
+        try {
+            val msg = nativeLib.newPack(mid, sid, data, data.size)
+            client.send(msg)
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
+//        GlobalScope.launch {
+//            withContext(Dispatchers.Main) {
+//                "send()->mid:$mid-sid:$sid".loge(tag)
+//                try {
+//                    val msg = client.newPack(mid, sid, data, data.size)
+//                    client.send(msg)
+//                } catch (e: Exception) {
+//                    e.printStackTrace()
+//                }
+//            }
+//        }
     }
 
     override fun loginSuccess(afterLoginSuccess: ClientRes.InfoAfterLoginSuccess) {
@@ -185,6 +196,7 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
         mLoginCallback?.callback(errorMessage.code, errorMessage.desc)
         gameAboutModel.loginErrorMessage = errorMessage.desc
         gameAboutModel.setLoginResult(false)
+
         "loginError：$errorMessage".loge(tag)
         when (errorMessage.code) {
             1000 -> {//其他服有正在进行的游戏，应跳转过去
@@ -221,6 +233,16 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
         gameAboutModel.isSitDown(true)
         balance = enterInfo.self.score
         gameAboutModel.changeBalance(enterInfo.self.score)
+        val betAreaConfigs = enterInfo.gameConfigsList[0].betAreaConfigsList
+        betAreaConfigs.forEach {
+            areaBetConfigBeans.add(
+                AreaBetConfigBean(
+                    it.areaCode.convertBetting()!!, it.minLimit, it.maxLimit
+                )
+            )
+        }
+
+
         if (isEnterRoom) {
             GameSDK.enterLive("1213", listOf(1), "", object : SDKEnterLiveCallbackListener {
                 override fun callback(code: Int, message: String?) {
@@ -236,6 +258,7 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
         groupInfo.toString().loge("groupInfo")
         mEnterLiveCallback?.callback(1)
         gameAboutModel.isEnterGroup(true)
+
         gameList = groupInfo.miniGameBasicInfoListList
         val miniGameBasicInfo = gameList?.get(0)
         miniGameId = miniGameBasicInfo?.miniGameId!!
@@ -260,6 +283,8 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
 
             3 -> gameAboutModel.changeStage(GameAboutModel.Stage.SETTLE)
         }
+
+
         val miniGame: EnterMiniGame = EnterMiniGame.newBuilder().setMiniGameId(3).build()
         enterGame(miniGame)
     }
@@ -396,6 +421,7 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
      */
     private fun resetPanel() {
         //重置上一局的所有钱
+        limitMap.clear()
         confirmMoney = 0
         tempMoney = 0
         confirmTempMoney = 0

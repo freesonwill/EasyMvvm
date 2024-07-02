@@ -56,7 +56,7 @@ class GameSocketManager private constructor() : OnMessageListener {
                 isNeedReconnect = true
                 HAS_HEART = true
                 client = GameSocketClient(uri) //获得client对象
-                client?.reset()
+//                client?.reset()
                 client?.setOnMessageListener(this@GameSocketManager)
                 gameMassageManager = UIMethodImpl.generate(client!!) //获得接口对象
                 client?.connectionLostTimeout = 0

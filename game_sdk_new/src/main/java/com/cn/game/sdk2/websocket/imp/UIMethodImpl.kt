@@ -10,10 +10,12 @@ import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import com.cn.game.sdk2.websocket.copy
 import com.cn.game.sdk2.websocket.copyFrom
 import com.cn.game.sdk2.websocket.gameAboutModel
+import com.cn.game.sdk2.websocket.getBeanById
 import com.cn.game.sdk2.websocket.isEmpty
 import com.cn.game.sdk2.websocket.isNotEmpty
 import com.cn.game.sdk2.websocket.miniGameId
 import com.cn.game.sdk2.websocket.previousSuccess
+import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 import com.xcjh.base_lib.utils.loge
 import game.mod.proc.yf.proto.req.GameReq
 
@@ -58,21 +60,22 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
      */
     fun addBetting(
         recordBean: BettingRecordBean,
-        block: (isMoneyEnough: Boolean, result: BettingRecordBean?) -> Unit
+        block: (isMoneyEnough: GameAboutModel.BettingState, result: BettingRecordBean?) -> Unit
     ) {
         tempMoney += recordBean.money
         tempLastBetting = recordBean.bettingArea
-        var xy:FloatArray? = null
+        var xy: FloatArray? = null
         if (bettingListTemp.containsKey(recordBean.bettingArea)) {
             val viewXYTemporary = bettingListTemp[recordBean.bettingArea]?.viewXYTemporary
             val all = viewXYTemporary?.all { it > 0 }
             all?.let {
-                if (it){
+                if (it) {
                     xy = viewXYTemporary
                 }
             }
         }
 
+        var bettingState = GameAboutModel.BettingState.GO_ON
         val currentMoney = recordBean.money
         val tempMoney = if (bettingListTemp.containsKey(recordBean.bettingArea)) {
             bettingListTemp[recordBean.bettingArea]?.money!!  //同注区已有临时下注
@@ -93,6 +96,12 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
             currentMoney + tempMoney + confirmedMoney + tempConfirmedMoney //本次下注后页面上应该显示的总金额
         //跟新again和double
         gameAboutModel.setOnceCountMoney(getPanelAllMoney())
+        areaBetConfigBeans.getBeanById(recordBean.bettingArea)?.let {
+            if (countMoney > it.maxLimit) {
+                bettingState = GameAboutModel.BettingState.OFFSET_MAX
+            }
+        }
+
 
         recordBean.money = currentMoney + tempMoney
         xy?.let {
@@ -101,7 +110,11 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
         bettingListTemp[recordBean.bettingArea] = recordBean
         val uiBean = recordBean.copy()
         uiBean.money = countMoney
-        block(isMoneyEnough(), uiBean)
+        if (!isMoneyEnough()) {
+            bettingState = GameAboutModel.BettingState.NO_MONEY
+        }
+        limitMap[recordBean.bettingArea] = countMoney
+        block(bettingState, uiBean)
     }
 
     /**
@@ -131,10 +144,20 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
         }
     }
 
-    fun commitBetting() {
+    fun commitBetting(block: (isMoneyEnough: GameAboutModel.BettingState, result: Betting) -> Unit) {
         if (previousSuccess) {
+            //只有第一次才判断
+            limitMap.forEach {
+                areaBetConfigBeans.getBeanById(it.key)?.let { config ->
+                    if (it.value < config.minLimit) {
+                        block(GameAboutModel.BettingState.OFFSET_MIN, config.areaCode)
+                        return
+                    }
+                }
+            }
             //等有返回结果后 再赋值成true
             previousSuccess = false
+
             val betReq = GameReq.BetReq.newBuilder()
             betReq.setMiniGameId(miniGameId)
             bettingListTemp.forEach { (betting, bettingRecordBean) ->
@@ -177,7 +200,7 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
      * 加倍后的总金额算法：@doubleMoney 只是用于传入接口的金额
      *    currentTempCountMoney * 2 + currentConfirmCountMoney
      */
-    fun doubleBetting(block: (isMoneyEnough: Boolean, result: Map<Betting, BettingRecordBean>?) -> Unit) {
+    fun doubleBetting(block: (isMoneyEnough: GameAboutModel.BettingState, result: Map<Betting, BettingRecordBean>?) -> Unit) {
         if (doubleMoney < balance) {
             val tempCopy = bettingListTemp.copy()
             val confirmCopy = bettingListConfirmed.copy()
@@ -227,9 +250,18 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
             bettingListTemp.clear()
             bettingListTemp copyFrom tempCopy
             tempMoney = confirmTempMoney + confirmMoney + tempMoney * 2
-            block(true, uiMap)
+            uiMap.forEach {
+                areaBetConfigBeans.getBeanById(it.key)?.let { config ->
+                    if (config.maxLimit < it.value.money) {
+                        block(GameAboutModel.BettingState.OFFSET_MAX, uiMap)
+                        return
+                    }
+
+                }
+            }
+            block(GameAboutModel.BettingState.GO_ON, uiMap)
         } else {
-            block(false, null)
+            block(GameAboutModel.BettingState.NO_MONEY, null)
         }
     }
 

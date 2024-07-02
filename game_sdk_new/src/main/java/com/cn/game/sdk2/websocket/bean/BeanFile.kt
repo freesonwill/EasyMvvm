@@ -19,6 +19,14 @@ data class RoundInfoBean(
 data class AreaBetBean(
     var areaCode: Betting, var betScore: Int, var userCount: Int
 )
+
+/**
+ * 注区最大最小值限制
+ */
+data class AreaBetConfigBean(
+    var areaCode: Betting, var minLimit: Int, var maxLimit: Int
+)
+
 interface DataClass
 /**
  * 每次点击下注就传入该对象

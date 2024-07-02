@@ -3,6 +3,7 @@ package com.cn.game.sdk2.websocket.imp
 import android.view.View
 import com.cn.game.sdk2.websocket.GameSocketManager
 import com.cn.game.sdk2.websocket.appListener
+import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.gameMassageManager
 import com.cn.game.sdk2.websocket.interfaces.IAppForGame
 import com.cn.game.sdk2.websocket.interfaces.IGameForApp
@@ -105,7 +106,7 @@ object GameSDK : IGameForApp {
      * 是否彈出遊戲框
      */
     override fun gameFloatingDetailViewStatusWithBlock(isShow: Boolean) {
-        isShowGame = isShow
+        gameAboutModel.isShowGame(isShow)
     }
 
     /**
@@ -113,7 +114,7 @@ object GameSDK : IGameForApp {
      * - Parameter isAllow: 默認true
      */
     override fun allowedBet(isAllow: Boolean) {
-        isAllowedBet = isAllow
+        gameAboutModel.isAllowedBet(isAllowedBet = isAllow)
     }
 
     /**

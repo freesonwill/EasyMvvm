@@ -1,5 +1,7 @@
 package com.cn.game.sdk2.websocket.viewmodel
 
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -11,6 +13,7 @@ import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import com.cn.game.sdk2.websocket.bean.RoundInfoBean
 import com.kunminx.architecture.ui.callback.UnPeekLiveData
 import com.xcjh.base_lib.base.BaseViewModel
+import kotlinx.coroutines.*
 
 class GameAboutModel : BaseViewModel() {
     enum class Stage {
@@ -19,6 +22,10 @@ class GameAboutModel : BaseViewModel() {
 
     enum class AgainDoubleState {
         NUll, AGAIN, DOUBLE
+    }
+
+    enum class BettingState {
+        GO_ON, NO_MONEY, OFFSET_MIN, OFFSET_MAX
     }
 
     private val _currentStage = UnPeekLiveData<Stage>()
@@ -36,6 +43,8 @@ class GameAboutModel : BaseViewModel() {
 
     private val _isBettingSuccess = MutableLiveData<Boolean>()
     private val _toastErrorMessage = MutableLiveData<String>()
+    private val  _isShowGame = MutableLiveData<Boolean>()
+    private val  _isAllowedBet = MutableLiveData<Boolean>()
 
     /** 需要监听的字段
      * @see currentAgainDoubleState 续压和加倍监听
@@ -85,6 +94,11 @@ class GameAboutModel : BaseViewModel() {
 
     val isSitDown: LiveData<Boolean>
         get() = _isSitDown
+
+    val isisAllowedBet: LiveData<Boolean>
+        get() = _isAllowedBet
+    val isShowGame: LiveData<Boolean>
+        get() = _isShowGame
 
     val isEnterGroup: LiveData<Boolean>
         get() = _isEnterGroup
@@ -152,62 +166,70 @@ class GameAboutModel : BaseViewModel() {
         get() = _isMeetAgain
 
     fun setBettingSuccess(isSuccess: Boolean) {
-        _isBettingSuccess.value = isSuccess
+        _isBettingSuccess.postValue(isSuccess)
     }
 
     fun setLoginResult(isSuccess: Boolean) {
-        _isLoginSuccess.value = isSuccess
+        _isLoginSuccess.postValue(isSuccess)
     }
 
     fun isSitDown(sitDown: Boolean) {
-        _isSitDown.value = sitDown
+        _isSitDown.postValue(sitDown)
+    }
+
+    fun isShowGame(showGame: Boolean) {
+        _isShowGame.postValue(showGame)
+    }
+
+    fun isAllowedBet(isAllowedBet: Boolean) {
+        _isAllowedBet.postValue(isAllowedBet)
     }
 
     fun isEnterGroup(enter: Boolean) {
-        _isEnterGroup.value = enter
+        _isEnterGroup.postValue(enter)
     }
 
     fun isLeaveGroup(leave: Boolean) {
-        _isLeaveGroup.value = leave
+        _isLeaveGroup.postValue(leave)
     }
 
     fun changeMeetAgain(canAgain: Boolean) {
-        _isMeetAgain.value = canAgain
+        _isMeetAgain.postValue(canAgain)
     }
 
     fun changeBalance(b: Long) {
-        _balance.value = b
+        _balance.postValue(b)
     }
 
     fun changeStage(stage: Stage) {
-        _currentStage.value = stage
+        _currentStage.postValue(stage)
     }
 
     fun changeAgainDoubleState(state: AgainDoubleState) {
-        _currentAgainDoubleState.value = state
+        _currentAgainDoubleState.postValue(state)
     }
 
     fun changeAreaBetInfo(info: List<AreaBetBean>) {
-        _syncAreaBetInfo.value = info
+        _syncAreaBetInfo.postValue(info)
     }
 
     fun clearTrends(ids: List<Int>) {
-        _clearTrendsIds.value = ids
+        _clearTrendsIds.postValue(ids)
     }
 
     fun addHistoryRounds(history: List<RoundInfoBean>) {
-        currentSettleResult = history.let { if(it.isEmpty()) null else it[it.size-1]  }
-        _historyRounds.value = history
+        currentSettleResult = history.let { if (it.isEmpty()) null else it[it.size - 1] }
+        _historyRounds.postValue(history)
     }
 
     fun addHistoryRound(item: RoundInfoBean) {
         currentSettleResult = item
         val history = _historyRounds.value ?: listOf()
-        _historyRounds.value = history + item
+        _historyRounds.postValue(history + item)
     }
 
     fun setToastErrorMessage(msg: String) {
-        _toastErrorMessage.value = msg
+        _toastErrorMessage.postValue(msg)
     }
 
     /**
@@ -233,31 +255,37 @@ class GameAboutModel : BaseViewModel() {
     val onceCountMoney: LiveData<Int>
         get() = _onceCountMoney
 
+
     fun setOnceCountMoney(money: Int) {
-        _onceCountMoney.value = money
+        _onceCountMoney.postValue(money)
     }
 
     var miniGameId: Int = 0
     var countDown: Int = 0 //阶段倒计时
         set(value) {
             field = value
-            Log.d(TAG,"countDown set:${field}")
-            _countDownSetStampTime = System.currentTimeMillis()
-            GameManager.instance.startCountDownTimer(value.toLong(), lis = object :IGameListener{
-                override fun onCountdown(time: Long) {
-                    super.onCountdown(time)
-                    _countDownSecondsLD.value = (time/1000).toInt()
-                }
-            })
+            Handler(Looper.getMainLooper()).post {
+
+                Log.d(TAG, "countDown set:${field}")
+                _countDownSetStampTime = System.currentTimeMillis()
+                GameManager.instance.startCountDownTimer(
+                    value.toLong(),
+                    lis = object : IGameListener {
+                        override fun onCountdown(time: Long) {
+                            super.onCountdown(time)
+                            _countDownSecondsLD.postValue((time / 1000).toInt())
+                        }
+                    })
+            }
         }
         get() {
             val elapsed = System.currentTimeMillis() - _countDownSetStampTime
-            Log.d(TAG,"countDown elapsed:${elapsed}")
-            return (field -elapsed).toInt()
+            Log.d(TAG, "countDown elapsed:${elapsed}")
+            return (field - elapsed).toInt()
         }
-    private val _countDownSecondsLD:UnPeekLiveData<Int> = UnPeekLiveData(0)
-    val countDownSecondsLD:LiveData<Int> = _countDownSecondsLD
-    private var _countDownSetStampTime:Long = 0L
+    private val _countDownSecondsLD: UnPeekLiveData<Int> = UnPeekLiveData(0)
+    val countDownSecondsLD: LiveData<Int> = _countDownSecondsLD
+    private var _countDownSetStampTime: Long = 0L
     val isCountDownStart get() = (System.currentTimeMillis() - _countDownSetStampTime) < 50
     var roundId: String = "" //期号
     var loginErrorMessage = ""
