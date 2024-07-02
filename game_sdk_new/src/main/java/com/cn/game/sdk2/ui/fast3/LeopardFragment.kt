@@ -57,8 +57,6 @@ class LeopardFragment(fast3VM: Fast3ViewModel) :
 
     override fun addMoneyOkView(
         areaView: GameAreaView,
-        x: Float,
-        y: Float,
         rawX:Float,
         rawY: Float,
         emitAnimCallBack: () -> Unit

@@ -1,8 +1,12 @@
 package com.cn.game.sdk2.utils.ext
 
 import android.os.Looper
+import com.cn.game.sdk2.R
+import com.cn.game.sdk2.ui.helper.Fast3ToastHelper
 import com.cn.game.sdk2.utils.PinyinUtils
+import com.cn.game.sdk2.utils.ToastUtil
 import com.cn.game.sdk2.websocket.bean.Betting
+import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 import java.math.BigDecimal
 import java.math.RoundingMode
 import com.xcjh.base_lib.ModuleInitializer
@@ -17,36 +21,41 @@ import java.text.DecimalFormat
 object CommonExt {
 
 
-    inline val Int.dp2px get()  = run {
-        val context  = ModuleInitializer.application
-        val scale = context.resources.displayMetrics.density
-        val dp = this
-        (dp * scale + 0.5f).toInt()
-    }
+    inline val Int.dp2px
+        get() = run {
+            val context = ModuleInitializer.application
+            val scale = context.resources.displayMetrics.density
+            val dp = this
+            (dp * scale + 0.5f).toInt()
+        }
 
-    inline val Int.px2dp get()  = run {
-        val context  = ModuleInitializer.application
-        val scale = context.resources.displayMetrics.density
-        val dp = this
-        (dp * scale + 0.5f).toInt()
-    }
-    inline val Float.dp2px get()  = run {
-        val context  = ModuleInitializer.application
-        val scale = context.resources.displayMetrics.density
-        val dp = this
-        (dp * scale + 0.5f).toInt()
-    }
+    inline val Int.px2dp
+        get() = run {
+            val context = ModuleInitializer.application
+            val scale = context.resources.displayMetrics.density
+            val dp = this
+            (dp * scale + 0.5f).toInt()
+        }
+    inline val Float.dp2px
+        get() = run {
+            val context = ModuleInitializer.application
+            val scale = context.resources.displayMetrics.density
+            val dp = this
+            (dp * scale + 0.5f).toInt()
+        }
 
-    inline val Float.px2dp get()  = run {
-        val context  = ModuleInitializer.application
-        val scale = context.resources.displayMetrics.density
-        val dp = this
-        (dp * scale + 0.5f).toInt()
-    }
+    inline val Float.px2dp
+        get() = run {
+            val context = ModuleInitializer.application
+            val scale = context.resources.displayMetrics.density
+            val dp = this
+            (dp * scale + 0.5f).toInt()
+        }
 
     fun Int.toPinyin(): String {
         return PinyinUtils.toPinyin(this)
     }
+
     //是否是主线程
     @JvmStatic
     inline val isMainThread: Boolean
@@ -72,6 +81,26 @@ object CommonExt {
     fun Any.formatRealMoney(): String {
         val b1 = BigDecimal(this.toString())
         val b2 = BigDecimal("100")
-        return b1.divide(b2,2,RoundingMode.DOWN).stripTrailingZeros().toPlainString()
+        return b1.divide(b2, 2, RoundingMode.DOWN).stripTrailingZeros().toPlainString()
+    }
+
+    fun GameAboutModel.BettingState.isCanGoOn(goOnAction: () -> Unit) {
+        when (this) {
+            GameAboutModel.BettingState.GO_ON -> {
+                goOnAction.invoke()
+            }
+
+            GameAboutModel.BettingState.NO_MONEY -> {
+                Fast3ToastHelper.showToastNormal(ModuleInitializer.application.getString(R.string.money_insufficient))
+            }
+
+            GameAboutModel.BettingState.OFFSET_MIN -> {
+                Fast3ToastHelper.showToastNormal(ModuleInitializer.application.getString(R.string.money_min_error))
+            }
+
+            GameAboutModel.BettingState.OFFSET_MAX -> {
+                Fast3ToastHelper.showToastNormal(ModuleInitializer.application.getString(R.string.money_max_error))
+            }
+        }
     }
 }

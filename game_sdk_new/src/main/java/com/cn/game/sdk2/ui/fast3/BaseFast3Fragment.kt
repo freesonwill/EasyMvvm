@@ -24,6 +24,7 @@ import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
 import com.cn.game.sdk2.utils.FlowBus
 import com.cn.game.sdk2.utils.ToastUtil
+import com.cn.game.sdk2.utils.ext.CommonExt.isCanGoOn
 import com.cn.game.sdk2.utils.ext.ViewExt.locationOnScreen
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.websocket.bean.Betting
@@ -133,54 +134,36 @@ abstract class BaseFast3Fragment<VM : BaseViewModel, VB : ViewDataBinding>(var f
         })
 
         areaView.setOnLocationClickListener(object : GameAreaView.LocationClickListener {
-            override fun onLocationClick(x: Float, y: Float, rawX: Float, rawY: Float) {
-                //处理点击事件
-                //先判断余额是否够这次 并且扣取钱
-                //if( homeXPopupDialog.isCanBetting()&&MyGameManager.isClickOperation&&PromptSoundPlay.handleClick()){
-                if (fast3VM.isClickOperation && PromptSoundPlay.handleClick()) {
-                    gameMassageManager?.addBetting(
-                        BettingRecordBean(
-                            areaView.areaInfo!!,
-                            money = fast3VM.betMoney
-                        )
-                    )
-                    { isMoneyEnough, result ->
-                        if (isMoneyEnough) {
-                            if (result != null) {
-                                areaView.setShowMoney(result.money)
-                                if (!areaView.moneyView.isAdd()) {
-                                    addMoneyOkView(areaView, x, y, rawX, rawY) {
-                                        emitMoneyAnim(
-                                            result,
-                                            areaView,
-                                            areaView.moneyView,
-                                            areaView.betteView,
-                                            isNewAdd = true
-                                        )
-                                    }
-                                } else {
-                                    emitMoneyAnim(
-                                        result,
-                                        areaView,
-                                        areaView.moneyView,
-                                        areaView.betteView
-                                    )
-                                }
+            override fun onLocationClick(rawX: Float, rawY: Float) {
+                addBetting(areaView, rawX, rawY)
+            }
+        })
+    }
+
+    private fun addBetting(areaView: GameAreaView, rawX: Float, rawY: Float) {
+        //先判断余额是否够这次 并且扣取钱
+        if (fast3VM.isClickOperation && PromptSoundPlay.handleClick()) {
+            val bettingBean = BettingRecordBean(areaView.areaInfo!!, money = fast3VM.betMoney)
+            gameMassageManager?.addBetting(bettingBean) { bettingState, result ->
+                bettingState.isCanGoOn {
+                    result?.let {
+                        areaView.setShowMoney(result.money)
+                        if (!areaView.moneyView.isAdd()) {
+                            addMoneyOkView(areaView, rawX, rawY) {
+                                emitMoneyAnim(result, areaView, isNewAdd = true)
                             }
                         } else {
-                            ToastUtil.showToastWarning(getString(R.string.money_insufficient))
+                            emitMoneyAnim(result, areaView)
                         }
                     }
                 }
             }
-        })
+        }
     }
 
 
     abstract fun addMoneyOkView(
         areaView: GameAreaView,
-        x: Float,
-        y: Float,
         rawX: Float,
         rawY: Float,
         emitAnimCallBack: () -> Unit
@@ -310,10 +293,11 @@ abstract class BaseFast3Fragment<VM : BaseViewModel, VB : ViewDataBinding>(var f
     private fun emitMoneyAnim(
         recordBean: BettingRecordBean,
         areaView: GameAreaView,
-        moneyOKView: MoneyOKView,
-        betteView: BetteView,
         isNewAdd: Boolean = false
     ) {
+        val moneyOKView = areaView.moneyView
+        val betteView = areaView.betteView
+
         recordBean.viewXYTemporary[0] = moneyOKView.translationX
         recordBean.viewXYTemporary[1] = moneyOKView.translationY
         Log.e(

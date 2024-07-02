@@ -44,6 +44,7 @@ import com.cn.game.sdk2.utils.CommonUtils
 import com.cn.game.sdk2.utils.FlowBus
 import com.cn.game.sdk2.utils.ext.BizExt.isLeopard
 import com.cn.game.sdk2.utils.ext.CommonExt.formatRealMoney
+import com.cn.game.sdk2.utils.ext.CommonExt.isCanGoOn
 import com.cn.game.sdk2.utils.ext.CommonExt.px2dp
 import com.cn.game.sdk2.utils.ext.CommonExt.toPinyin
 import com.cn.game.sdk2.utils.ext.ViewExt.getColor
@@ -357,7 +358,9 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         }
         mViewModel.betOkClick.observe(this) {
             hiddenAnchorTop()
-            GameSocketManager.getInstance()?.getGameService()?.commitBetting()
+            GameSocketManager.getInstance()?.getGameService()?.commitBetting { bettingState, bean ->
+                bettingState.isCanGoOn {}
+            }
         }
 
         mViewModel.betDeleteClick.observe(this) {
@@ -378,14 +381,12 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                         ivXuya.isVisible = true
                         ivXuya.setImageResource(R.drawable.icon_xuya_gray)
                         ivMultiple2.isVisible = false
-                        ivXuya.isClickable = false
                     }
 
                     GameAboutModel.AgainDoubleState.AGAIN -> {
                         ivXuya.isVisible = true
                         ivXuya.setImageResource(R.drawable.icon_xuya)
                         ivMultiple2.isVisible = false
-                        ivXuya.isClickable = true
                     }
 
                     //todo x2不可用的状态
@@ -791,8 +792,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 PromptSoundPlay.btnPlayMedia()
                 //todo 判断加倍状态
                 GameSocketManager.getInstance()?.getGameService()
-                    ?.doubleBetting { isMoneyEnough, map ->
-                        if (isMoneyEnough) {
+                    ?.doubleBetting { bettingState, map ->
+                        bettingState.isCanGoOn {
                             if (!map.isNullOrEmpty()) {
                                 map.forEach {
                                     it.value.let { record ->
@@ -815,8 +816,10 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             }
             //续压
             ivXuya.clickNoRepeat {
+                if (gameAboutModel.currentAgainDoubleState.value != GameAboutModel.AgainDoubleState.AGAIN) {
+                    return@clickNoRepeat
+                }
                 PromptSoundPlay.btnPlayMedia()
-                //todo 判断续压状态
                 val map = GameSocketManager.getInstance()?.getGameService()?.againBetting()
                 map.toString().loge("again3")
                 if (!map.isNullOrEmpty()) {
@@ -936,6 +939,13 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         val path = Path()
         path.moveTo(startX, startY)
         path.lineTo(x, y)
+
+//        val path = Path()
+//        移动到起始点（贝塞尔曲线的起点）
+//        path.moveTo(startX, startY)
+//        使用二次萨贝尔曲线：注意第一个起始坐标越大，贝塞尔曲线的横向距离就会越大，一般按照下面的式子取即可
+//        path.quadTo((startX + x) / 2, startY, x, y)
+//
         val mPathMeasure = PathMeasure(path, false)
 
         //★★★属性动画实现（从0到贝塞尔曲线的长度之间进行插值计算，获取中间过程的距离值）
@@ -958,7 +968,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 // 把移动的图片imageview从父布局里移除
                 mDatabind.rlRoot.removeView(betImageView)
                 val animator = ObjectAnimator.ofPropertyValuesHolder(
-                    areaView.moneyView.ivShowBg,
+                    areaView.betteView.ivShowBg,
                     SCALE_X,
                     SCALE_Y
                 )
@@ -976,21 +986,12 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         valueAnimator.start()
     }
 
-//    private fun addTempMoney(areaView: GameAreaView) {
-//        mViewModel.currentBettingRecordBean?.let {
-//            if (areaView.areaCode == it.first.bettingArea.number) {
-//                areaView.moneyView.setShowMoney(it.first.money)
-//            }
-//        }
-//    }
-
     private fun updateAnchorView(areaView: GameAreaView) {
         hiddenAnchorTop()
-        areaView.moneyView.showTop()
         anchorMoneyView = areaView.moneyView
         currentBetteAreaMap[areaView.areaCode] = areaView
         mDatabind.tempTouch.setAnchorMoneyView(areaView.moneyView)
-        reLocatePage()
+        showAnchorTop()
     }
 
     private fun hiddenAnchorTop() {
