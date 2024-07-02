@@ -6,8 +6,10 @@ import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
+import android.content.res.AssetManager
 import android.graphics.Path
 import android.graphics.PathMeasure
+import android.graphics.Typeface
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -34,7 +36,6 @@ import com.cn.game.sdk2.databinding.ItemBetHistoryBinding
 import com.cn.game.sdk2.ui.helper.Fast3ToastHelper
 import com.cn.game.sdk2.ui.helper.ViewHelper.bindViewPagerNewGame
 import com.cn.game.sdk2.ui.helper.ViewHelper.initGameViewPager
-import com.cn.game.sdk2.ui.helper.ViewHelper.isAdd
 import com.cn.game.sdk2.ui.view.CommonLinearLayoutItemDecoration
 import com.cn.game.sdk2.ui.view.CustomBubbleAttachPopup
 import com.cn.game.sdk2.ui.view.MoneyOKView
@@ -46,7 +47,6 @@ import com.cn.game.sdk2.utils.ext.BizExt.isLeopard
 import com.cn.game.sdk2.utils.ext.CommonExt.formatRealMoney
 import com.cn.game.sdk2.utils.ext.CommonExt.px2dp
 import com.cn.game.sdk2.utils.ext.CommonExt.toPinyin
-import com.cn.game.sdk2.utils.ext.ViewExt.getColor
 import com.cn.game.sdk2.utils.ext.ViewExt.getDrawable
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.utils.tool.measureView
@@ -64,7 +64,7 @@ import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.animator.EmptyAnimator
 import com.lxj.xpopup.core.BasePopupView
 import com.lxj.xpopup.interfaces.SimpleCallback
-import com.lxj.xpopup.interfaces.XPopupCallback
+import com.robinhood.ticker.TickerUtils
 import com.xcjh.base_lib.base.fragment.BaseVmDbFragment
 import com.xcjh.base_lib.utils.dp2px
 import com.xcjh.base_lib.utils.loge
@@ -102,6 +102,10 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     //==================================== Method ===============================================//
     override fun initView(savedInstanceState: Bundle?) {
         mDatabind.model = mViewModel
+        mDatabind.tvAnimWin.setCharacterLists(TickerUtils.provideNumberList())
+        context?.assets?.let {
+            mDatabind.tvAnimWin.typeface = Typeface.createFromAsset(it, "fonts/alibabapuhuiti.otf");
+        }
         CommonUtils.getNavigationBarHeight(mDatabind.root).let {
             mViewModel.navigationBarHeight.value = it
             Log.d(TAG, "getNavigationBarHeight $it,-->${it.px2dp}")
@@ -301,7 +305,9 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 return
             }
             groupWinLottie.isVisible = true
-            txtWinMoney.text = "¥ ${winMoney.formatRealMoney()}"
+            val originTxt ="$"+winMoney.formatRealMoney()
+            mDatabind.tvAnimWin.setText(originTxt.replace(Regex("[0-9]"),"0"),false)
+            tvAnimWin.setText("$${winMoney.formatRealMoney()}",true)
             lottieAnimView.addAnimatorListener(object : Animator.AnimatorListener {
                 override fun onAnimationStart(animation: Animator) {
                     PromptSoundPlay.playWinEffect()
