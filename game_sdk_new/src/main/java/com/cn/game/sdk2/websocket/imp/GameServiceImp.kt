@@ -5,7 +5,6 @@ import com.cn.game.sdk2.websocket.bean.Betting
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import com.cn.game.sdk2.websocket.GameServerMessageConvertFactory
 import com.cn.game.sdk2.websocket.GameSocketClient
-import com.cn.game.sdk2.websocket.NativeLib
 import com.cn.game.sdk2.websocket.appListener
 import com.cn.game.sdk2.websocket.balance
 import com.cn.game.sdk2.websocket.bean.AreaBetBean

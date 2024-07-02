@@ -2,6 +2,7 @@ package com.cn.game.sdk2.websocket.interfaces
 
 import android.content.Context
 import android.view.View
+import com.cn.game.sdk2.websocket.imp.GameApp
 
 interface IGameForApp {
 

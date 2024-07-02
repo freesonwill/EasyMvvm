@@ -8,7 +8,6 @@ import com.cn.game.sdk2.websocket.appLifecycleEnable
 import com.cn.game.sdk2.websocket.appListener
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.gameMassageManager
-import com.cn.game.sdk2.websocket.interfaces.GameApp
 import com.cn.game.sdk2.websocket.interfaces.IGameForApp
 import com.cn.game.sdk2.websocket.isNeedReconnect
 import game.common.proto.ClientReq
@@ -34,7 +33,7 @@ object GameApp : IGameForApp {
     override fun loadGame(
         context: Context,
         lifecycleEnable: Boolean,
-        onSdkListener: GameApp.OnSdkListener
+        onSdkListener: OnSdkListener
     ) {
         appContext = context
         appLifecycleEnable = lifecycleEnable
@@ -139,6 +138,30 @@ object GameApp : IGameForApp {
 
     fun onStop(){
 
+    }
+
+    interface OnSdkListener {
+        fun customerServiceAction()
+
+        fun historyOfBetAction()
+
+        fun onEnterGame()
+
+        fun onEnterLive(type: Int, msg: String)
+
+        fun onLeaveLive(type: Int, str: String?)
+
+        fun onLoginGame(i: Int, str: String?)
+
+        fun onTokenLoseEffectiveness()
+
+        /**
+         * 游戏主界面切换的回调
+         * isShowUp: true为打开，false为关闭
+         */
+        fun onGameFloatingDetailViewStatus(isShowUp: Boolean)
+
+        fun onInsufficientBalance()
     }
 
 }
