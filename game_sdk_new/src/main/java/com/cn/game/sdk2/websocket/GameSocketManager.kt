@@ -101,6 +101,7 @@ class GameSocketManager private constructor() : OnMessageListener {
     private fun resetUserState(){
         isLogin = false
         isEnterRoom = false
+        gameAboutModel.setLoginResult(false)
     }
 
     /**

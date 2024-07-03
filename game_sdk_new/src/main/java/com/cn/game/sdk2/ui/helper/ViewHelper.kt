@@ -124,12 +124,14 @@ object ViewHelper {
                             }
                         })
                         .popupAnimation(PopupAnimation.TranslateFromBottom)
+                        .animationDuration(500)
                         .moveUpToKeyboard(false) //如果不加这个，评论弹窗会移动到软键盘上面
                         .isViewMode(true)
                         .isTouchThrough(true)
                         .isDestroyOnDismiss(false) //对于只使用一次的弹窗，推荐设置这个
                         .isThreeDrag(false) //是否开启三阶拖拽，如果设置enableDrag(false)则无效
-                        .enableDrag(false)
+                        .enableDrag(true)
+                        .dismissOnTouchOutside(true)
                         .asCustom(HomeXPopupDialog(context, Fast3MainFragment(),GAME_ID_ENUM.GAME_FAST3.num).apply {
                             homeXPopupDialog = this
                         })

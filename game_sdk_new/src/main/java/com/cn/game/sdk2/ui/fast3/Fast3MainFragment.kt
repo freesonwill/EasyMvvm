@@ -21,6 +21,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.addListener
 import androidx.core.animation.doOnEnd
 import androidx.core.view.isInvisible
@@ -1001,7 +1002,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 if (gameAboutModel.currentAgainDoubleState.value != GameAboutModel.AgainDoubleState.DOUBLE) {
                     return@setOnClickListener
                 }
-                PromptSoundPlay.btnPlayMedia()
+                PromptSoundPlay.playAudio()
                 GameSocketManager.getInstance()?.getGameService()
                     ?.doubleBetting { bettingState, map, areaLimit ->
                         bettingState.isCanGoOn(areaLimit) {
@@ -1030,7 +1031,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 if (gameAboutModel.currentAgainDoubleState.value != GameAboutModel.AgainDoubleState.AGAIN) {
                     return@setOnClickListener
                 }
-                PromptSoundPlay.btnPlayMedia()
+                PromptSoundPlay.playAudio()
                 val map = GameSocketManager.getInstance()?.getGameService()?.againBetting()
                 map.toString().loge("again3")
                 if (!map.isNullOrEmpty()) {
@@ -1137,7 +1138,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         // (这个图片就是执行动画的图片，从开始位置出发，经过一个抛物线（贝塞尔曲线))
         val betImageView = ImageView(requireContext())
         betImageView.setImageDrawable(jettonView.findViewById<ImageView>(R.id.ivShowBg).drawable)
-        val params = RelativeLayout.LayoutParams(
+        val params = ConstraintLayout.LayoutParams(
             requireContext().dp2px(32),
             requireContext().dp2px(32)
         )

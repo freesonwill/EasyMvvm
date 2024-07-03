@@ -10,10 +10,10 @@
             type="com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel" />
     </data>
 
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/rlRoot"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:clipChildren="false"
         android:clipToPadding="false"
         android:orientation="vertical"
@@ -21,9 +21,10 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/llShowSection"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
             android:background="@color/g_141624"
             android:clipChildren="false"
             android:clipToPadding="false"
@@ -521,9 +522,12 @@
         <com.cn.game.sdk2.ui.view.DoTouchFrameLayout
             android:visibility="visible"
             android:id="@+id/tempTouch"
+            app:layout_constraintTop_toTopOf="@id/llShowSection"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/llShowSection"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </RelativeLayout>
+            android:layout_height="0dp" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </layout>

@@ -63,15 +63,18 @@ var appLifecycleEnable:Boolean = false
 //var WEB_SOCKET_URL = "wss://ws.qxe68.com:7001/api/game/5702" ///test
 var WEB_SOCKET_URL = "wss://ws.qxe68.com:7001/api/game/5702" ///test
 
+var isEnableSound = true
+
 /**
  * 仅记录用户当前状态，用于重连服务器处理
  */
-//92:ZyBmhNCJ   87:MHxIHlYM  93:Ufx3Dy8y 94:0aPEwiYK
-var token = "93:Ufx3Dy8y"
+//92:ZyBmhNCJ   87:MHxIHlYM  93:Ufx3Dy8y 94:0aPEwiYK   金额少：97:QwM8xr0x
+var token = "97:QwM8xr0x"
 var isLogin = false
 var isEnterRoom = false
 
 var nativeLib = NativeLib()
+var socketStatesCallback: GameApp.SocketStatesCallback ?= null
 
 /**
  * 多用户登录token失效

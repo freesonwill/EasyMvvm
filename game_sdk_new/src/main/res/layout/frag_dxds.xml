@@ -239,7 +239,7 @@
                         android:layout_height="match_parent"
                         android:scaleType="fitXY"
                         android:visibility="gone"
-                        app:srcCompat="@drawable/iocn_lucency_right_top"
+                        app:srcCompat="@drawable/icon_lucency_right_top"
                         app:tint="@color/c_ffffff" />
                 </RelativeLayout>
             </com.cn.game.sdk2.ui.view.game.GameAreaView>

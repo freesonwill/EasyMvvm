@@ -10,8 +10,10 @@ import androidx.fragment.app.Fragment
 
 import com.cn.game.sdk2.ui.helper.ViewHelper
 import com.cn.game.sdk2.ui.view.FastLogoView
+import com.cn.game.sdk2.websocket.GameSocketManager
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.imp.GameApp
+import com.cn.game.sdk2.websocket.isTokenValid
 import com.cn.game.sdk2.websocket.token
 
 class MainActivity : AppCompatActivity() {
@@ -26,29 +28,58 @@ class MainActivity : AppCompatActivity() {
         var llshow = findViewById<LinearLayout>(R.id.llshow)
         var btnXiu = findViewById<Button>(R.id.btnXiu)
 
+        GameApp.setSocketStatesCallback(object : GameApp.SocketStatesCallback{
+            override fun onOpen() {
+                btnOpen.post{
+                    btnOpen.text = "服务器连接成功,点击登录"
+                    btnOpen.isClickable = true
+                }
+            }
+
+            override fun onClose(isNeedReconnect: Boolean) {
+                btnOpen.post{
+                    if(isNeedReconnect){
+                        btnOpen.text = "正在重新连接服务器"
+                    }else{
+                        btnOpen.text = "token失效,点击重新登录"
+                        btnOpen.isClickable = true
+                    }
+                }
+            }
+        })
         btnOpen.setOnClickListener {
             //MyGameManager.showFastView(this)
             //ViewHelper.showFastView(this)
-
+            btnOpen.isClickable = false;
             if(gameAboutModel.isLoginSuccess.value == true){
-                GameApp.enterLive("1213", listOf(1), "")
-                ViewHelper.showFastView(this)
-                ViewHelper.showFastViewOverlay(this)
+
             }else{
                 //92:ZyBmhNCJ   87:MHxIHlYM
-                GameApp.login(
-                    token, "wali-internal", true
-                )
+                if(!isTokenValid){
+                    btnOpen.text = "正在重新连接服务器"
+                    GameSocketManager.getInstance()?.initSocketClient()
+                }else{
+                    GameApp.login(
+                        token, "wali-internal", true
+                    )
+                    btnOpen.text = "正在登录"
+                }
             }
         }
         gameAboutModel.isLoginSuccess.observe(this){result->
             if(result){
                 btnOpen.text = "进入直播间"
+            }else{
+                btnOpen.isClickable = true
+                btnOpen.text = "登录失败"
             }
         }
         gameAboutModel.isEnterGroup.observe(this){result->
             if(result){
                 btnOpen.text = "已进入直播间"
+                //GameApp.enterLive("1213", listOf(1), "")
+                ViewHelper.showFastView(this)
+                ViewHelper.showFastViewOverlay(this)
             }
         }
 
