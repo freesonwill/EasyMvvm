@@ -5,6 +5,7 @@ import android.graphics.Paint
 import android.util.Log
 import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -12,11 +13,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.lifecycle.LifecycleOwner
+import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.data.enums.GAME_ID_ENUM
 import com.cn.game.sdk2.ui.HomeXPopupDialog
+import com.cn.game.sdk2.ui.fast3.Fast3GameHallFragment
 import com.cn.game.sdk2.ui.fast3.Fast3MainFragment
 import com.cn.game.sdk2.ui.view.Fast3HelpPopup
 import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
@@ -137,6 +140,9 @@ object ViewHelper {
             .show()
     }
 
+    fun dismissHomeXPopDialog(){
+        homeXPopupDialog?.dismiss()
+    }
     /**
      * 快三悬浮窗
      */
@@ -154,16 +160,37 @@ object ViewHelper {
     }
 
 
+    fun ViewPager.initGameViewPager2(views: ArrayList<View>): ViewPager {
+        //设置适配器
+        adapter = object : PagerAdapter(){
+            override fun getCount(): Int {
+                return views.count()
+            }
+
+            override fun isViewFromObject(view: View, obj: Any): Boolean {
+                return  view == obj
+            }
+
+            override fun instantiateItem(container: ViewGroup, position: Int): Any {
+                val view = views[position]
+                container.addView(view)
+                return view
+            }
+
+            override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
+                container.removeView(`object` as View)
+            }
+        }
+        return this
+    }
+
     fun ViewPager.initGameViewPager(
         fragmentManager: FragmentManager,
         fragments: ArrayList<Fragment>,
         titles: ArrayList<String>? = null
     ): ViewPager {
         //设置适配器
-        adapter = object : FragmentStatePagerAdapter(
-            fragmentManager,
-            BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
-        ) {
+        adapter = object : FragmentStatePagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
             override fun getCount(): Int {
                 return fragments.size
             }

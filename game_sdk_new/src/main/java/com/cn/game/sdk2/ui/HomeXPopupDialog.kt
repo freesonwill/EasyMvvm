@@ -29,7 +29,7 @@ class HomeXPopupDialog(context: Context, private val fragment: Fragment, private
         super.onCreate()
         binding = DialogHomeXpopupContainerBinding.bind(popupImplView)
         val transaction = fragmentManager.beginTransaction();
-        transaction.add(R.id.fl_container, fragment).commit()
+        transaction.add(R.id.fl_container, fragment,"HomeXPopupDialog").commit()
         Log.d(TAG, "onCreate")
     }
 

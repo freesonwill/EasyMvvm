@@ -2,41 +2,45 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="64dp"
     android:layout_height="wrap_content"
-    tools:background="@color/black"
-    >
+    tools:background="@color/black">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/ivGame"
-        android:layout_width="34dp"
-        android:layout_height="34dp"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
         app:layout_constraintEnd_toEndOf="parent"
+        android:scaleType="centerCrop"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/icon_dice_yi" />
+        app:srcCompat="@drawable/icon_kuai_logo" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvName"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="18dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="2dp"
         android:textColor="@color/white"
-        android:textSize="25sp"
+        android:textSize="13sp"
+        android:text="快三"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ivGame"
-        tools:text="9999" />
+        />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvOnline"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/white"
-        android:textSize="25sp"
+        android:layout_height="17dp"
+        android:textColor="@color/c_8f9095"
+        android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        android:text="3389在线"
         app:layout_constraintTop_toBottomOf="@+id/tvName"
-        tools:text="999999" />
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

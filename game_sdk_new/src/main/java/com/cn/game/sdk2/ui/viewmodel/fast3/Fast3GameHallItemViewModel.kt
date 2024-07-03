@@ -12,7 +12,7 @@ class Fast3GameHallItemViewModel : BaseViewModel() {
     override fun onInit() {
         val list = mutableListOf<GameHallItem>()
         for (i in 0..10) {
-            list.add(GameHallItem("a", "a", "b"))
+            list.add(GameHallItem("a", "快三", "3389在线"))
         }
         _hallItems.value = list
     }

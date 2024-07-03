@@ -3,9 +3,11 @@ package com.cn.game.sdk2.ui.view
 import android.content.Context
 import android.content.ContextWrapper
 import android.util.Log
+import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.replace
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.databinding.DialogHomeXpopupContainerBinding
 import com.cn.game.sdk2.databinding.PopupCustomBubbleAttachBinding
@@ -54,7 +56,7 @@ class CustomBubbleAttachPopup(content: Context) : AttachPopupView(content){
                 PromptSoundPlay.btnPlayMedia()
                 delayDismiss(100)
                 customBubbleAttachListener?.switchGame()
-                switchGame()
+//                switchGame()
             }
             rlPopClickAssist.clickNoRepeat() {
                 PromptSoundPlay.btnPlayMedia()
@@ -71,13 +73,39 @@ class CustomBubbleAttachPopup(content: Context) : AttachPopupView(content){
 
             var binding: DialogHomeXpopupContainerBinding? = null
             val fragment = Fast3GameHallFragment()
+            var oldFragment:Fragment? = null
 
             override fun onCreate() {
                 super.onCreate()
                 binding = DialogHomeXpopupContainerBinding.bind(popupImplView)
+                oldFragment = fragmentManager.findFragmentByTag("HomeXPopupDialog")
                 val transaction = fragmentManager.beginTransaction();
-                transaction.add(R.id.fl_container, fragment).commit()
+                if(oldFragment != null )transaction.hide(oldFragment!!)
+                transaction.add(R.id.fl_container, fragment,"switchGame").commit()
                 Log.d(TAG, "onCreate")
+            }
+
+         /*   private fun showFragment(fragment: Fragment?, tag: String) {
+                if (fragment === mCurrentFragment) {
+                    return
+                }
+                val transaction = supportFragmentManager.beginTransaction()
+                if (mCurrentFragment != null) transaction.hide(mCurrentFragment!!)
+                if (!fragment!!.isAdded) {
+                    transaction.add(R.id.fragment, fragment, tag)
+                } else {
+                    transaction.show(fragment)
+                }
+                mCurrentFragment = fragment
+                transaction.commit()
+            }*/
+
+            override fun onDismiss() {
+                super.onDismiss()
+                binding = DialogHomeXpopupContainerBinding.bind(popupImplView)
+                val transaction = fragmentManager.beginTransaction()
+                if(oldFragment != null) transaction.show(oldFragment!!)
+                transaction.remove(fragment).commit()
             }
 
             private val fragmentManager
@@ -90,8 +118,9 @@ class CustomBubbleAttachPopup(content: Context) : AttachPopupView(content){
                 }
 
         }
+
         XPopup.Builder(context)
-        .isTouchThrough(true)
+        //.isTouchThrough(true)
         .setPopupCallback(object : SimpleCallback() {
             override fun onCreated(popupView: BasePopupView?) {
                 super.onCreated(popupView)
@@ -102,9 +131,9 @@ class CustomBubbleAttachPopup(content: Context) : AttachPopupView(content){
         })
         .popupAnimation(PopupAnimation.TranslateFromBottom)
         .navigationBarColor(android.R.color.transparent)
-        //.isViewMode(true)
+        .isViewMode(true)
         .hasShadowBg(false) // 去掉半透明背景
-        .enableDrag(false)
+        .enableDrag(true)
         .dismissOnTouchOutside(false)
         .asCustom(popupView)
         .show()
@@ -118,5 +147,7 @@ class CustomBubbleAttachPopup(content: Context) : AttachPopupView(content){
          */
         fun  switchGame()
     }
+
+
 
 }

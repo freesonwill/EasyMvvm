@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.recyclerview.widget.RecyclerView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rvContent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:orientation="vertical"
-    android:background="@color/red"
-    >
+    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    tools:itemCount="11"
+    tools:listitem="@layout/item_gamehall_page_item">
 
 </androidx.recyclerview.widget.RecyclerView>

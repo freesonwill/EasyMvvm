@@ -9,6 +9,7 @@ import com.cn.game.sdk2.ui.helper.ViewHelper.initGameViewPager
 import com.cn.game.sdk2.ui.viewmodel.EmptyViewModel
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.xcjh.base_lib.base.fragment.BaseVmDbFragment
+import com.xcjh.base_lib.utils.view.clickNoRepeat
 
 class Fast3GameHallFragment:BaseVmDbFragment<EmptyViewModel,FragmentGamehallBinding>() {
     private var mFragList = ArrayList<Fragment>()
@@ -38,10 +39,13 @@ class Fast3GameHallFragment:BaseVmDbFragment<EmptyViewModel,FragmentGamehallBind
                 requireContext().getString(R.string.g_home_tab_leopard)
             ),
             scrollEnable = true,
-            action = {
-                PromptSoundPlay.btnPlayMedia()
-            }
+            action = { PromptSoundPlay.btnPlayMedia() }
         )
+        mDatabind.viewPagerNew.offscreenPageLimit = mFragList.size
+
+        mDatabind.close.clickNoRepeat {
+            requireActivity().onBackPressedDispatcher.onBackPressed()
+        }
     }
 
 

@@ -301,4 +301,6 @@ class GameAboutModel : BaseViewModel() {
     var lastBetting: Betting? = null
     //控制隐藏Fast3MainView
     val fast3MainFloatVisible:UnPeekLiveData<Boolean>  = UnPeekLiveData<Boolean>()
+    //期号悬浮窗显影
+    val fast3EditionFloatVisible:UnPeekLiveData<Boolean>  = UnPeekLiveData<Boolean>()
 }

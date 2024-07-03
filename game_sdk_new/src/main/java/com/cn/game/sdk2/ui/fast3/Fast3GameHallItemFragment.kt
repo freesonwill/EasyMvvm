@@ -1,6 +1,7 @@
 package com.cn.game.sdk2.ui.fast3
 
 import android.os.Bundle
+import androidx.recyclerview.widget.GridLayoutManager
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.data.bean.GameHallItem
 import com.cn.game.sdk2.databinding.ItemGamehallPageBinding
@@ -16,18 +17,15 @@ import com.drake.engine.databinding.bind
 import com.xcjh.base_lib.base.fragment.BaseVmVbFragment
 import com.xcjh.base_lib.utils.dp2px
 
-class Fast3GameHallItemFragment(category: String) :
-    BaseVmVbFragment<Fast3GameHallItemViewModel, ItemGamehallPageBinding>() {
+class Fast3GameHallItemFragment(private val category: String) : BaseVmVbFragment<Fast3GameHallItemViewModel, ItemGamehallPageBinding>() {
 
     override fun initView(savedInstanceState: Bundle?) {
-        val list = mutableListOf<GameHallItem>()
-        for (i in 0..10) {
-            list.add(GameHallItem("a", "a", "b"))
-        }
+        mViewBind.rvContent.itemAnimator = null
         mViewBind.rvContent.dividerSpace(
             requireContext().dp2px(20),
-            DividerOrientation.VERTICAL
+            DividerOrientation.HORIZONTAL
         ).setup {
+            it.layoutManager = GridLayoutManager(context,4)
             addType<GameHallItem>(R.layout.item_gamehall_page_item)
             onBind {
                 when (itemViewType) {
@@ -40,7 +38,8 @@ class Fast3GameHallItemFragment(category: String) :
                     }
                 }
             }
-        }.models = list
+        }.models = mViewModel.hallItems.value
+
 
     }
 
