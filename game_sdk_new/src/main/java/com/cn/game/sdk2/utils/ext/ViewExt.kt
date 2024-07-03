@@ -3,6 +3,7 @@ package com.cn.game.sdk2.utils.ext
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Build
+import android.util.Log
 import android.view.View
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
@@ -30,6 +31,7 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.ColorT
  * createTime   : 2024/6/20 10:59
  **/
 object ViewExt {
+    const val TAG = "ViewExt"
 
     inline val View.locationOnScreen:IntArray get(){
         val pos = IntArray(2)
@@ -119,8 +121,9 @@ object ViewExt {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-                val position: Int = layoutManager.findFirstVisibleItemPosition()
-                //Log.d(TAG,"position-->$position,dx:$dx,dy:$dy")
+                val position2: Int = layoutManager.findFirstVisibleItemPosition()
+                val position: Int = layoutManager.findLastVisibleItemPosition()
+                //Log.d(TAG,"position-->$position --> $position2,dx:$dx,dy:$dy")
                 indicator.onPageSelected(position)
                 indicator.onPageScrolled(position,0f,0)
             }
