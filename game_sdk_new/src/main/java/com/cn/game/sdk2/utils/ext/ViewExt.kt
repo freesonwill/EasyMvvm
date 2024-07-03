@@ -129,7 +129,7 @@ object ViewExt {
                 val layoutManager = recyclerView.layoutManager as LinearLayoutManager
                 val firstPos: Int = layoutManager.findFirstVisibleItemPosition()
                 val lastPos: Int = layoutManager.findLastVisibleItemPosition()
-                val position = if(lastPos == 0) firstPos else lastPos
+                val position = if(lastPos != mStringList.size-1) firstPos else lastPos
                 //Log.d(TAG,"position-->$firstPos --> $lastPos,dx:$dx,dy:$dy")
                 indicator.onPageSelected(position)
                 indicator.onPageScrolled(position,0f,0)
