@@ -87,7 +87,7 @@
                 android:paddingLeft="12dp"
                 android:paddingRight="12dp"
                 android:background="@drawable/ripple_item"
-                android:id="@+id/rlPopClickToggle"
+                android:id="@+id/rl_pop_click_switch_game"
                 android:layout_width="match_parent"
                 android:layout_height="38dp">
                 <LinearLayout

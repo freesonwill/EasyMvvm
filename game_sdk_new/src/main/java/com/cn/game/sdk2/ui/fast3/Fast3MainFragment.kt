@@ -395,6 +395,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             } else {
                 mDatabind.txtCurrentMoney.text = "¥ ${it.formatRealMoney()}"
             }
+            mViewModel.currentMoney = it
 
             mDatabind.llShowBetList.adapter?.notifyItemRangeChanged(
                 0,
@@ -454,7 +455,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                         ivMultiple2.isVisible = false
                     }
 
-                    //todo x2不可用的状态
                     GameAboutModel.AgainDoubleState.DOUBLE -> {
                         ivXuya.isVisible = false
                         ivMultiple2.isVisible = true
@@ -601,8 +601,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
      */
     private fun setBetAdapter() {
         mDatabind.llShowBetList.itemAnimator = null
-        mDatabind.llShowBetList.layoutManager =
-            CenterLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        mDatabind.llShowBetList.layoutManager = CenterLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         if (mDatabind.llShowBetList.itemDecorationCount == 0) {
             mDatabind.llShowBetList.addItemDecoration(
                 CommonLinearLayoutItemDecoration(
@@ -855,9 +854,9 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 }
             }
             //加倍
-            ivMultiple2.clickNoRepeat {
+            ivMultiple2.setOnClickListener {
                 if (gameAboutModel.currentAgainDoubleState.value != GameAboutModel.AgainDoubleState.DOUBLE) {
-                    return@clickNoRepeat
+                    return@setOnClickListener
                 }
                 PromptSoundPlay.btnPlayMedia()
                 GameSocketManager.getInstance()?.getGameService()
@@ -884,9 +883,9 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     }
             }
             //续压
-            ivXuya.clickNoRepeat {
+            ivXuya.setOnClickListener {
                 if (gameAboutModel.currentAgainDoubleState.value != GameAboutModel.AgainDoubleState.AGAIN) {
-                    return@clickNoRepeat
+                    return@setOnClickListener
                 }
                 PromptSoundPlay.btnPlayMedia()
                 val map = GameSocketManager.getInstance()?.getGameService()?.againBetting()

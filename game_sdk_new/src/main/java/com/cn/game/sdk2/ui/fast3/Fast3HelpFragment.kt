@@ -1,10 +1,17 @@
 package com.cn.game.sdk2.ui.fast3
 
+import android.animation.ValueAnimator
 import android.os.Bundle
+import android.util.Log
+import android.widget.LinearLayout
+import androidx.core.animation.addListener
+import androidx.core.animation.doOnEnd
+import androidx.core.view.isVisible
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.databinding.FragmentFast3HelpBinding
 import com.cn.game.sdk2.ui.helper.ViewHelper
 import com.cn.game.sdk2.ui.viewmodel.EmptyViewModel
+import com.cn.game.sdk2.utils.ext.CommonExt.formatRealMoney
 import com.cn.game.sdk2.utils.ext.ViewExt.bindRecycleView
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.drake.brv.annotaion.DividerOrientation
@@ -16,7 +23,9 @@ import com.xcjh.base_lib.utils.view.clickNoRepeat
 
 class Fast3HelpFragment : BaseVmVbFragment<EmptyViewModel, FragmentFast3HelpBinding>() {
     private var rootHeight:Int = 0
-
+    companion object {
+        const val TAG = "Fast3HelpFragment"
+    }
     override fun initView(savedInstanceState: Bundle?) {
         mViewBind.rvContent
             .dividerSpace(
@@ -48,11 +57,35 @@ class Fast3HelpFragment : BaseVmVbFragment<EmptyViewModel, FragmentFast3HelpBind
             }
         )
 
-        mViewBind.ivCollapse.clickNoRepeat {
-            if(rootHeight == 0) rootHeight = mViewBind.root.height
-            val height = if (rootHeight == mViewBind.root.height) rootHeight/2 else rootHeight
-            mViewBind.root.layoutParams.height = height
-            mViewBind.root.requestLayout()
+        mViewBind.ivCollapse.clickNoRepeat(500) {
+            val lp = mViewBind.space.layoutParams as LinearLayout.LayoutParams
+            val isExpand = lp.weight != 0f
+            val start = if(isExpand) 0f else 1f
+            val end = if(!isExpand) 0f else 1f
+            /*lp.weight = end
+            mViewBind.space.layoutParams = lp*/
+            ValueAnimator.ofFloat(start, end).apply {
+                duration = 10000
+                addUpdateListener {
+                    lp.weight = it.animatedValue as Float
+                    Log.d(TAG,"addUpdateListener----->${lp.weight}")
+                    mViewBind.space.layoutParams = lp
+                }
+                addListener(
+                    onStart = {
+                        lp.weight = start
+                        mViewBind.space.layoutParams = lp
+                    },
+                    onEnd = {
+                        lp.weight = end
+                        mViewBind.space.layoutParams = lp
+                        val icon =  if(!isExpand) R.drawable.ic_expand else R.drawable.ic_collapse
+                        mViewBind.ivCollapse.setImageResource(icon)
+                    }
+                )
+                start()
+            }
+
         }
         mViewBind.close.clickNoRepeat {
             ViewHelper.showHelpDialog(requireContext(),false)
