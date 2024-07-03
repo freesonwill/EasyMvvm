@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 
 import com.cn.game.sdk2.ui.helper.ViewHelper
 import com.cn.game.sdk2.ui.view.FastLogoView
+import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
 import com.cn.game.sdk2.websocket.GameSocketManager
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.imp.GameApp
@@ -82,12 +83,19 @@ class MainActivity : AppCompatActivity() {
                 //GameApp.enterLive("1213", listOf(1), "")
                 /*ViewHelper.showFastView(this)
                 ViewHelper.showFastViewOverlay(this)*/
-                val v = GameApp.createFloatEnterView(this@MainActivity)
-                val v1 = GameApp.createFloatResultView(this@MainActivity)
-                findViewById<LinearLayout>(R.id.llshow).apply {
-                    addView(v)
-                    addView(v1)
+                GameApp.createFloatEnterView(this@MainActivity).apply {
+                    val lp = LinearLayout.LayoutParams(layoutParams.width,layoutParams.height)
+                    lp.topMargin = 100.dp2px
+                    lp.marginStart = 100.dp2px
+                    llshow.addView(this,lp)
                 }
+                GameApp.createFloatResultView(this@MainActivity).apply {
+                    val lp = LinearLayout.LayoutParams(layoutParams.width,layoutParams.height)
+                    lp.topMargin = 100.dp2px
+                    lp.marginStart = 100.dp2px
+                    llshow.addView(this,lp)
+                }
+
             }
         }
 

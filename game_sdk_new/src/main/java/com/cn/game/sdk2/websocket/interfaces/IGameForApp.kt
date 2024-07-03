@@ -20,9 +20,9 @@ interface IGameForApp {
 
     fun allowedBet(isAllow: Boolean)
 
-    fun createFloatEnterView(context:Context): View?
+    fun createFloatEnterView(context:Context): View
 
-    fun createFloatResultView(context:Context): View?
+    fun createFloatResultView(context:Context): View
 
     fun dismissFloatingController()
 

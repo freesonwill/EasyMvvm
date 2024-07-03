@@ -19,7 +19,6 @@ import com.cn.game.sdk2.websocket.interfaces.IGameForApp
 import com.cn.game.sdk2.websocket.isEnableSound
 import com.cn.game.sdk2.websocket.isNeedReconnect
 import com.cn.game.sdk2.websocket.socketStatesCallback
-import com.xcjh.base_lib.ModuleInitializer
 import game.common.proto.ClientReq
 import game.mod.proc.yf.proto.req.GameReq
 
@@ -119,7 +118,7 @@ object GameApp : IGameForApp {
     /**
      * 入口漂浮窗視圖
      */
-    override fun createFloatEnterView(context:Context): View? {
+    override fun createFloatEnterView(context:Context): View {
         if(appLifecycleEnable && context is Activity){
             (context as LifecycleOwner).lifecycle.addObserver(object :LifecycleEventObserver{
                 override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
@@ -147,7 +146,7 @@ object GameApp : IGameForApp {
     /**
      * 结果视图
      */
-    override fun createFloatResultView(context:Context): View? {
+    override fun createFloatResultView(context:Context): View {
         return ViewHelper.getFastViewOverlay(context)
     }
 
