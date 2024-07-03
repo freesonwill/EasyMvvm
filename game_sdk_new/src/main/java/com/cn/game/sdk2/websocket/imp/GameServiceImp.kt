@@ -321,6 +321,7 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
 
     override fun miniGameBetResult(result: GameRes.MyMiniGameBetResult) {
         previousSuccess = true
+        "服务器下注结果：$result".loge()
         //result = 0 成功 1 余额不住 3超时
         when (result.betResultInfoListList[0].result) {
             0 -> {
@@ -541,7 +542,7 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
                 } else {
                     //不满足续压 牌面为空
                     "checkAgain()->不满足续压 牌面为空->NUll".loge("GameServiceImpl")
-                    gameAboutModel.changeAgainDoubleState(GameAboutModel.AgainDoubleState.DOUBLE_CAN_NOT)
+                    gameAboutModel.changeAgainDoubleState(GameAboutModel.AgainDoubleState.NUll)
                 }
             }
         } else {
@@ -554,8 +555,14 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
         //不满足续压 计算加倍
         doubleMoney = tempMoney * 2 + confirmMoney + confirmTempMoney
         if (doubleMoney < balance) {
-            "checkDouble()->DOUBLE".loge("GameServiceImpl")
-            gameAboutModel.changeAgainDoubleState(GameAboutModel.AgainDoubleState.DOUBLE)
+            val doubleCanOn = doubleCanOn()
+            doubleCanOn?.let {
+                "checkDouble()->${it.areaCode}号注区超限->DOUBLE_CAN_NOT".loge("GameServiceImpl")
+                gameAboutModel.changeAgainDoubleState(GameAboutModel.AgainDoubleState.DOUBLE_CAN_NOT)
+            } ?: run {
+                "checkDouble()->DOUBLE".loge("GameServiceImpl")
+                gameAboutModel.changeAgainDoubleState(GameAboutModel.AgainDoubleState.DOUBLE)
+            }
         } else {
             //既不满足续压 钱也不够加倍
             "checkDouble()->NUll".loge("GameServiceImpl")
@@ -575,7 +582,7 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
         if (isMoneyEnough()) {
             currentConfig?.getBeanById(bean.bettingArea)?.let {
                 limitMap[bean.bettingArea]?.let { money ->
-                    if (money > it.maxLimit) {
+                    if (money + bean.money > it.maxLimit) {
                         return "限高"
                     }
                 }
