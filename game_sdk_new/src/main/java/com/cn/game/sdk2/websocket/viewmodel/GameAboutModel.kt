@@ -10,6 +10,7 @@ import com.cn.game.sdk2.manager.listener.IGameListener
 import com.cn.game.sdk2.websocket.bean.AreaBetBean
 import com.cn.game.sdk2.websocket.bean.Betting
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
+import com.cn.game.sdk2.websocket.bean.BettingResponsesBean
 import com.cn.game.sdk2.websocket.bean.RoundInfoBean
 import com.kunminx.architecture.ui.callback.UnPeekLiveData
 import com.xcjh.base_lib.base.BaseViewModel
@@ -21,7 +22,7 @@ class GameAboutModel : BaseViewModel() {
     }
 
     enum class AgainDoubleState {
-        NUll, AGAIN, DOUBLE
+        NUll, AGAIN, DOUBLE,DOUBLE_CAN_NOT
     }
 
     enum class BettingState {
@@ -41,7 +42,7 @@ class GameAboutModel : BaseViewModel() {
     private val _isEnterGroup = MutableLiveData<Boolean>()
     private val _isLeaveGroup = MutableLiveData<Boolean>()
 
-    private val _isBettingSuccess = MutableLiveData<Boolean>()
+    private val _isBettingSuccess = MutableLiveData<BettingResponsesBean>()
     private val _toastErrorMessage = MutableLiveData<String>()
     private val  _isShowGame = MutableLiveData<Boolean>()
     private val  _isAllowedBet = MutableLiveData<Boolean>()
@@ -116,7 +117,7 @@ class GameAboutModel : BaseViewModel() {
      * 下注是否成功
      * 绑定使用 bettingMessage
      */
-    val isBettingSuccess: LiveData<Boolean>
+    val isBettingSuccess: LiveData<BettingResponsesBean>
         get() = _isBettingSuccess
 
     var bettingMessage: String = ""
@@ -165,7 +166,7 @@ class GameAboutModel : BaseViewModel() {
     val isMeetAgain: LiveData<Boolean>
         get() = _isMeetAgain
 
-    fun setBettingSuccess(isSuccess: Boolean) {
+    fun setBettingSuccess(isSuccess: BettingResponsesBean) {
         _isBettingSuccess.postValue(isSuccess)
     }
 

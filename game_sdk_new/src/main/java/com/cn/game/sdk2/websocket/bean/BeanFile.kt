@@ -27,6 +27,10 @@ data class AreaBetConfigBean(
     var areaCode: Betting, var minLimit: Int, var maxLimit: Int
 )
 
+/**
+ * 下注：服务器返回时通知ui
+ */
+data class BettingResponsesBean(val isSuccess:Boolean,var money: Int)
 interface DataClass
 /**
  * 每次点击下注就传入该对象

@@ -9,6 +9,7 @@ import com.cn.game.sdk2.websocket.appListener
 import com.cn.game.sdk2.websocket.balance
 import com.cn.game.sdk2.websocket.bean.AreaBetBean
 import com.cn.game.sdk2.websocket.bean.AreaBetConfigBean
+import com.cn.game.sdk2.websocket.bean.BettingResponsesBean
 import com.cn.game.sdk2.websocket.bean.RoundInfoBean
 import com.cn.game.sdk2.websocket.calculateArea
 import com.cn.game.sdk2.websocket.calculateUserLotteryResult
@@ -17,6 +18,7 @@ import com.cn.game.sdk2.websocket.copy
 import com.cn.game.sdk2.websocket.copyFrom
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.gameList
+import com.cn.game.sdk2.websocket.getBeanById
 import com.cn.game.sdk2.websocket.interfaces.GameService
 import com.cn.game.sdk2.websocket.isBig
 import com.cn.game.sdk2.websocket.isCanBetting
@@ -107,6 +109,9 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
     protected open var againBettingList: MutableMap<Betting, BettingRecordBean> =
         ConcurrentHashMap()
 
+    /**
+     * 保存每个注区的当局金额
+     */
     protected open val limitMap: MutableMap<Betting, Int> = ConcurrentHashMap()
 
     protected open var againCountMoney = 0
@@ -320,7 +325,7 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
         when (result.betResultInfoListList[0].result) {
             0 -> {
                 gameAboutModel.lastBetting = tempLastBetting
-                gameAboutModel.setBettingSuccess(true)
+                gameAboutModel.setBettingSuccess(BettingResponsesBean(true, confirmTempMoney))
                 //下注成功后 保存当前下注总额为已确认下注金额；并将当前下注总额清空
                 //currentCountMoney包含之前确认的和现在临时的，所以可以直接覆盖已提交的
                 confirmMoney += confirmTempMoney
@@ -342,14 +347,14 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
                 returnTemp()
                 gameAboutModel.bettingMessage = "余额不住"
                 gameAboutModel.setToastErrorMessage(gameAboutModel.bettingMessage)
-                gameAboutModel.setBettingSuccess(false)
+                gameAboutModel.setBettingSuccess(BettingResponsesBean(false, confirmTempMoney))
             }
 
             2 -> {
                 returnTemp()
                 gameAboutModel.bettingMessage = "押注超时"
                 gameAboutModel.setToastErrorMessage(gameAboutModel.bettingMessage)
-                gameAboutModel.setBettingSuccess(false)
+                gameAboutModel.setBettingSuccess(BettingResponsesBean(false, confirmTempMoney))
             }
 
             4 -> {
@@ -370,7 +375,7 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
                 returnTemp()
                 gameAboutModel.bettingMessage = "网络连接超时"
                 gameAboutModel.setToastErrorMessage(gameAboutModel.bettingMessage)
-                gameAboutModel.setBettingSuccess(false)
+                gameAboutModel.setBettingSuccess(BettingResponsesBean(false, confirmTempMoney))
             }
         }
     }
@@ -488,7 +493,7 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
 
     override fun refreshGameConfig(configs: GameRes.RefreshGameConfig) {
         val newConfigMap: MutableMap<Int, List<AreaBetConfigBean>> = mutableMapOf()
-       configs.gameConfigsList?.forEach {
+        configs.gameConfigsList?.forEach {
             val areaBetConfigBeans = ArrayList<AreaBetConfigBean>()
             it.betAreaConfigsList.forEach { bean ->
                 areaBetConfigBeans.add(
@@ -497,7 +502,7 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
                     )
                 )
             }
-           newConfigMap[it.miniGameId] = areaBetConfigBeans
+            newConfigMap[it.miniGameId] = areaBetConfigBeans
         }
         configMap.clear()
         configMap copyFrom newConfigMap
@@ -536,7 +541,7 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
                 } else {
                     //不满足续压 牌面为空
                     "checkAgain()->不满足续压 牌面为空->NUll".loge("GameServiceImpl")
-                    gameAboutModel.changeAgainDoubleState(GameAboutModel.AgainDoubleState.NUll)
+                    gameAboutModel.changeAgainDoubleState(GameAboutModel.AgainDoubleState.DOUBLE_CAN_NOT)
                 }
             }
         } else {
@@ -554,7 +559,7 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
         } else {
             //既不满足续压 钱也不够加倍
             "checkDouble()->NUll".loge("GameServiceImpl")
-            gameAboutModel.changeAgainDoubleState(GameAboutModel.AgainDoubleState.NUll)
+            gameAboutModel.changeAgainDoubleState(GameAboutModel.AgainDoubleState.DOUBLE_CAN_NOT)
         }
     }
 
@@ -562,8 +567,35 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
         return tempMoney + confirmTempMoney + confirmMoney
     }
 
-    protected fun isMoneyEnough(): Boolean {
-        return tempMoney + confirmTempMoney <= balance
+    private fun isMoneyEnough(): Boolean {
+        return tempMoney + confirmTempMoney + confirmMoney <= balance
+    }
+
+    protected fun addCanGoOn(bean: BettingRecordBean): String {
+        if (isMoneyEnough()) {
+            currentConfig?.getBeanById(bean.bettingArea)?.let {
+                val countMoney = limitMap[bean.bettingArea]!!
+                if (countMoney > it.maxLimit) {
+                    return "限高"
+                }
+            }
+        } else {
+            return "余额不足"
+        }
+        return "继续"
+    }
+
+    protected fun doubleCanOn() :AreaBetConfigBean?{
+        limitMap.forEach {
+            val limitMoney = currentConfig?.getBeanById(it.key)?.maxLimit
+            val doubleMoney = it.value * 2
+            limitMoney?.let { limit ->
+                if (doubleMoney > limit) {
+                    return currentConfig?.getBeanById(it.key)
+                }
+            }
+        }
+        return null
     }
 
 }
