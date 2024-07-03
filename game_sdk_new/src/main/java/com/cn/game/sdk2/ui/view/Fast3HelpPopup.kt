@@ -2,11 +2,13 @@ package com.cn.game.sdk2.ui.view
 
 import android.animation.ValueAnimator
 import android.content.Context
+import android.util.Log
 import android.widget.LinearLayout
 import androidx.core.animation.addListener
 import androidx.core.view.isVisible
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.databinding.FragmentFast3HelpBinding
+import com.cn.game.sdk2.ui.fast3.Fast3HelpFragment.Companion.TAG
 import com.cn.game.sdk2.ui.helper.ViewHelper
 import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
 import com.cn.game.sdk2.utils.ext.ViewExt.bindRecycleView
@@ -63,32 +65,35 @@ class Fast3HelpPopup(content: Context) : BottomPopupView(content) {
             action = { PromptSoundPlay.btnPlayMedia() }
         )
 
-        mViewBind.ivCollapse.clickNoRepeat {
+        mViewBind.ivCollapse.clickNoRepeat(300) {
             PromptSoundPlay.btnPlayMedia()
-            val toExpand = mViewBind.space.isVisible
-            val topPadding = if (toExpand) 48.dp2px else 0
+            val lp = mViewBind.space.layoutParams as LinearLayout.LayoutParams
+            val toExpand = lp.weight == 1f
+            val topPadding = if (toExpand) 40.dp2px else 0
             val bottomPadding = 48.dp2px
-            mViewBind.root.setPadding(0, topPadding, 0, bottomPadding)
-            mViewBind.space.isVisible = !toExpand
-            mViewBind.ivCollapse.setImageResource(if (toExpand) R.drawable.ic_expand else R.drawable.ic_collapse)
-            val start = if (toExpand) 0f else 1f
-            val end = if (!toExpand) 0f else 1f
+            mViewBind.ivCollapse.setImageResource(if (!toExpand) R.drawable.ic_expand else R.drawable.ic_collapse)
+            val start = if (!toExpand) 0f else 1f
+            val end = if (toExpand) 0f else 1f
+            Log.d(TAG,"addUpdateListener----->$start-->$end,toExpand:$toExpand")
             ValueAnimator.ofFloat(start, end).apply {
-                duration = 300
+                duration = 200
                 addUpdateListener { animation ->
                     val value = animation.animatedValue as Float
-                    val lp = mViewBind.space.layoutParams as LinearLayout.LayoutParams
                     lp.weight = value
+                    mViewBind.space.layoutParams = lp
+
+                    Log.d(TAG,"addUpdateListener----->${lp.weight}")
                 }
                 addListener(
                     onStart = {
-                        val lp = mViewBind.space.layoutParams as LinearLayout.LayoutParams
                         lp.weight = start
+                        mViewBind.space.layoutParams = lp
                     },
                     onEnd = {
                         //动画结束
-                        val lp = mViewBind.space.layoutParams as LinearLayout.LayoutParams
                         lp.weight = end
+                        mViewBind.root.setPadding(0, topPadding, 0, bottomPadding)
+                        mViewBind.space.layoutParams = lp
                     })
                 start()
             }
