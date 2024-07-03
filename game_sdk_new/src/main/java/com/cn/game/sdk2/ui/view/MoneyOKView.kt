@@ -106,38 +106,6 @@ class MoneyOKView @JvmOverloads constructor(
      */
     fun setShowMoney(money: Int) {
         ivShowMoney.text = showMoneyFormat(money)
-        ivShowBg.setImageDrawable(
-            when {
-                money < 5000 -> ContextCompat.getDrawable(context, R.drawable.icon_ok_shi)
-                money in 5000..9999 -> ContextCompat.getDrawable(context, R.drawable.icon_ok_wushi)
-                money in 10000..19999 -> ContextCompat.getDrawable(context, R.drawable.icon_ok_yibai)
-                money in 20000..49999 -> ContextCompat.getDrawable(context, R.drawable.icon_ok_liangbai)
-                money in 50000..99999 -> ContextCompat.getDrawable(context, R.drawable.icon_ok_wubai)
-                money in 100000..199999 -> ContextCompat.getDrawable(context, R.drawable.icon_ok_qian)
-                money in 200000..499999 -> ContextCompat.getDrawable(
-                    context,
-                    R.drawable.icon_ok_liangqian
-                )
-
-                money in 500000..999999 -> ContextCompat.getDrawable(context, R.drawable.icon_ok_wuqian)
-                money in 1000000..1999999 -> ContextCompat.getDrawable(
-                    context,
-                    R.drawable.icon_ok_yiwan
-                )
-
-                money in 2000000..4999999 -> ContextCompat.getDrawable(
-                    context,
-                    R.drawable.icon_ok_liangwan
-                )
-
-                money in 5000000..9999999 -> ContextCompat.getDrawable(
-                    context,
-                    R.drawable.icon_ok_wuwan
-                )
-
-                else -> ContextCompat.getDrawable(context, R.drawable.icon_ok_shiwan)
-            }
-        )
     }
 
     /**

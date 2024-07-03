@@ -25,14 +25,16 @@
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/ivOff"
-                android:layout_width="35dp"
-                android:layout_height="28dp"
+                android:layout_width="37dp"
+                android:layout_height="30dp"
+                android:scaleType="fitXY"
                 app:srcCompat="@drawable/icon_hong_off" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/ivOk"
-                android:layout_width="35dp"
-                android:layout_height="28dp"
+                android:layout_width="37dp"
+                android:layout_height="30dp"
+                android:scaleType="fitXY"
                 app:srcCompat="@drawable/icon_lv_ok" />
 
         </LinearLayout>
@@ -41,7 +43,7 @@
             android:id="@+id/ivShowMoney"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
+            android:layout_marginTop="2dp"
             android:background="@drawable/icon_money_show"
             android:gravity="center"
             android:paddingLeft="@dimen/dp_6"

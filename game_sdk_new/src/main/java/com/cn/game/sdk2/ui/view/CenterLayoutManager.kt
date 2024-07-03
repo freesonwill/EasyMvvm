@@ -47,7 +47,7 @@ class CenterLayoutManager : LinearLayoutManager {
         }
 
         override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics): Float {
-            return 150f / displayMetrics.densityDpi
+            return 200f / displayMetrics.densityDpi
         }
     }
 }
