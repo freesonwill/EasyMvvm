@@ -395,6 +395,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             } else {
                 mDatabind.txtCurrentMoney.text = "¥ ${it.formatRealMoney()}"
             }
+            mViewModel.currentMoney = it
 
             mDatabind.llShowBetList.adapter?.notifyItemRangeChanged(
                 0,
@@ -454,7 +455,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                         ivMultiple2.isVisible = false
                     }
 
-                    //todo x2不可用的状态
                     GameAboutModel.AgainDoubleState.DOUBLE -> {
                         ivXuya.isVisible = false
                         ivMultiple2.isVisible = true
