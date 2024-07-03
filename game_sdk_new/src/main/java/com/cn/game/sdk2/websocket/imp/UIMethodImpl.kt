@@ -106,7 +106,7 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
                 bettingListTemp[recordBean.bettingArea] = recordBean
                 val uiBean = recordBean.copy()
                 val countMoney: Int =
-                    currentMoney + tempMoney + confirmedMoney + tempConfirmedMoney //本次下注后页面上应该显示的总金额
+                    currentMoney + areaTempMoney + confirmedMoney + tempConfirmedMoney //本次下注后页面上应该显示的总金额
                 uiBean.money = countMoney
                 limitMap[recordBean.bettingArea] = countMoney
                 block(GameAboutModel.BettingState.GO_ON, uiBean, null)
