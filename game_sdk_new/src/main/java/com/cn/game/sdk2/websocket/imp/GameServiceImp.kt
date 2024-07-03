@@ -574,10 +574,12 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
     protected fun addCanGoOn(bean: BettingRecordBean): String {
         if (isMoneyEnough()) {
             currentConfig?.getBeanById(bean.bettingArea)?.let {
-                val countMoney = limitMap[bean.bettingArea]!!
-                if (countMoney > it.maxLimit) {
-                    return "限高"
+                limitMap[bean.bettingArea]?.let { money ->
+                    if (money > it.maxLimit) {
+                        return "限高"
+                    }
                 }
+
             }
         } else {
             return "余额不足"
@@ -585,7 +587,7 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
         return "继续"
     }
 
-    protected fun doubleCanOn() :AreaBetConfigBean?{
+    protected fun doubleCanOn(): AreaBetConfigBean? {
         limitMap.forEach {
             val limitMoney = currentConfig?.getBeanById(it.key)?.maxLimit
             val doubleMoney = it.value * 2
