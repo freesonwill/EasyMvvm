@@ -82,7 +82,8 @@ class Fast3ViewModel : BaseViewModel() {
     var noteList = ArrayList<SelectAnnotationBean>()
     val betMoney: Int
         get() {
-            val selectedPosition = noteList.indexOfFirst { it.select }
+            var selectedPosition = noteList.indexOfFirst { it.select }
+            if (selectedPosition < 0) selectedPosition = 0
             return noteList[selectedPosition].money
         }
     val countDown: Long

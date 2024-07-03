@@ -6,6 +6,7 @@ import android.util.DisplayMetrics
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
+import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
 
 class CenterLayoutManager : LinearLayoutManager {
     constructor(context: Context?) : super(context)
@@ -43,7 +44,7 @@ class CenterLayoutManager : LinearLayoutManager {
             boxEnd: Int,
             snapPreference: Int
         ): Int {
-            return (boxStart + (boxEnd - boxStart) / 2) - (viewStart + (viewEnd - viewStart) / 2)
+            return (boxStart + (boxEnd - boxStart) / 2) - (viewStart + (viewEnd - viewStart) / 2) - 4.dp2px
         }
 
         override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics): Float {
