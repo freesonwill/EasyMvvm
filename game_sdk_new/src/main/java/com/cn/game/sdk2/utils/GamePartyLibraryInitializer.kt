@@ -16,7 +16,7 @@ object GamePartyLibraryInitializer {
         // appGameViewModelInstance= ViewModelProvider(context)[AppGameViewModel::class.java]
         mAppContext = mApp
         "初始化step1:loadGame".loge("GamePartyLibraryInitializer")
-        GameApp.loadGame(mApp.applicationContext,true,object :com.cn.game.sdk2.websocket.interfaces.GameApp.OnSdkListener{
+        GameApp.loadGame(mApp.applicationContext,true,object :GameApp.OnSdkListener{
             override fun customerServiceAction() {
             }
 

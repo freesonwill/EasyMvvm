@@ -33,6 +33,7 @@
     <string name="money_max_error">超过注区下注金额上限</string>
     <string name="money_min_error">%s最小下注金额%s</string>
     <string name="fast3_tittle">一分快三</string>
+    <string name="bet_success_prompt">下注成功¥%1$d</string>
 
 
 </resources>

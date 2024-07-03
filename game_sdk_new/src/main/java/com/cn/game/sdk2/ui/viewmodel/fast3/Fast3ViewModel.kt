@@ -27,24 +27,27 @@ class Fast3ViewModel : BaseViewModel() {
     var betDeleteClick: UnPeekLiveData<Boolean> = UnPeekLiveData()
 
     var moneyAnimCallback: MoneyAnimCallback? = null
-    val userLotteryResultLiveData :UnPeekLiveData<ArrayList<Betting>> =UnPeekLiveData()
+    val userLotteryResultLiveData: UnPeekLiveData<ArrayList<Betting>> = UnPeekLiveData()
 
     val historyResultBeanLD: LiveData<HistoryResultBean> by lazy { UnPeekLiveData() }
     val homeTimeSeconds: LiveData<Int> by lazy { gameAboutModel.countDownSecondsLD }
-    val homeTimeColorLD:LiveData<Int> by lazy { Transformations.map(this.homeTimeSeconds){
-        if(it <= 5) return@map getColor(R.color.c_F34D41)
-        if(it <= 10) return@map getColor(R.color.c_FFCB15)
-        return@map getColor(R.color.c_62DF57)
-    } }
+    val homeTimeColorLD: LiveData<Int> by lazy {
+        Transformations.map(this.homeTimeSeconds) {
+            if (it <= 5) return@map getColor(R.color.c_F34D41)
+            if (it <= 10) return@map getColor(R.color.c_FFCB15)
+            return@map getColor(R.color.c_62DF57)
+        }
+    }
 
     //游戏状态
 
-    val gameState: GameState get() = when(gameAboutModel.currentStage.value){
-        Stage.NEW -> GameState.Betting
-        Stage.DEAL -> GameState.Settling
-        Stage.SETTLE -> GameState.Drawing
-        else ->GameState.Init
-    }
+    val gameState: GameState
+        get() = when (gameAboutModel.currentStage.value) {
+            Stage.NEW -> GameState.Betting
+            Stage.DEAL -> GameState.Settling
+            Stage.SETTLE -> GameState.Drawing
+            else -> GameState.Init
+        }
 
     //是否可点击
     val isClickOperationLD: LiveData<Boolean> by lazy { UnPeekLiveData(true) }
@@ -66,7 +69,7 @@ class Fast3ViewModel : BaseViewModel() {
         if (it == null) return@map "--"
         return@map it.formatRealMoney()
     }
-    val currentMoney: String get() = currentMoneyLD.value ?: "--"
+    var currentMoney: Long = gameAboutModel.balance.value ?: 0L
 
     /**
      *
@@ -82,15 +85,16 @@ class Fast3ViewModel : BaseViewModel() {
             val selectedPosition = noteList.indexOfFirst { it.select }
             return noteList[selectedPosition].money
         }
-    val countDown:Long
-        get(){
-            Log.d(TAG,"countDown get ${gameAboutModel.countDown}")
+    val countDown: Long
+        get() {
+            Log.d(TAG, "countDown get ${gameAboutModel.countDown}")
             //return GameManager.instance.countDown
             return gameAboutModel.countDown.toLong()
         }
-    val isCountDownStart:Boolean get() = gameAboutModel.isCountDownStart
+    val isCountDownStart: Boolean get() = gameAboutModel.isCountDownStart
     val playAlphaAnimationLD by lazy { UnPeekLiveData(false) }
     val navigationBarHeight by lazy { UnPeekLiveData(0) }
+
     /**
      * 每次点击扣钱，但是不显示出来，确定后才把这个金额显示在真实钱上
      */
@@ -103,6 +107,7 @@ class Fast3ViewModel : BaseViewModel() {
      * 开奖动画时间(ms)
      */
     val prizeAnimTime = 500L
+
     //========================================== Method =========================================//
     override fun onInit() {
         GameManager.instance.setLiveStatusListener("home", object : IGameListener {
@@ -146,7 +151,7 @@ class Fast3ViewModel : BaseViewModel() {
 
     override fun onCleared() {
         super.onCleared()
-        Log.d(TAG,"~~~~~~~~~OnCleared")
+        Log.d(TAG, "~~~~~~~~~OnCleared")
     }
 
     fun clear() {

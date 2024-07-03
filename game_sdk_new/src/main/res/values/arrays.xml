@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="help_tabs">
+        <item>"基础规则"</item>
+        <item>"游戏规则"</item>
+        <item>"注区"</item>
+        <item>"赔率"</item>
+        <item>"路单"</item>
+    </string-array>
+</resources>

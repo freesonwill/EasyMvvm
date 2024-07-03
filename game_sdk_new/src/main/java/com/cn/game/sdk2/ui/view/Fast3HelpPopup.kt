@@ -1,17 +1,15 @@
 package com.cn.game.sdk2.ui.view
 
-import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.content.Context
-import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.LinearLayout
 import androidx.core.animation.addListener
 import androidx.core.view.isVisible
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.databinding.FragmentFast3HelpBinding
 import com.cn.game.sdk2.ui.helper.ViewHelper
-import com.cn.game.sdk2.utils.ext.BindingAdapterUtil.bindRecycleView
 import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
+import com.cn.game.sdk2.utils.ext.ViewExt.bindRecycleView
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.drake.brv.annotaion.DividerOrientation
 import com.drake.brv.utils.dividerSpace
@@ -19,6 +17,7 @@ import com.drake.brv.utils.setup
 import com.lxj.xpopup.core.BottomPopupView
 import com.xcjh.base_lib.utils.dp2px
 import com.xcjh.base_lib.utils.view.clickNoRepeat
+import com.xcjh.base_lib.utils.view.getStringArray
 
 /**
  * 首页的弹出框
@@ -56,20 +55,12 @@ class Fast3HelpPopup(content: Context) : BottomPopupView(content) {
                     }
                 }
             }.models = listOf(1, 2, 3, 4, 5)
+
         mViewBind.indicator.bindRecycleView(
             mViewBind.rvContent,
-            //Todo 放到array.xml中
-            arrayListOf(
-                "基础规则",
-                "游戏规则",
-                "注区",
-                "赔率",
-                "路单",
-            ),
+            getStringArray(R.array.help_tabs),
             scrollEnable = false,
-            action = {
-                PromptSoundPlay.btnPlayMedia()
-            }
+            action = { PromptSoundPlay.btnPlayMedia() }
         )
 
         mViewBind.ivCollapse.clickNoRepeat {
@@ -108,4 +99,6 @@ class Fast3HelpPopup(content: Context) : BottomPopupView(content) {
             ViewHelper.showHelpDialog(context, false)
         }
     }
+
+
 }
