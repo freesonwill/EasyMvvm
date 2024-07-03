@@ -5,6 +5,7 @@ import android.content.Context
 import android.util.Log
 import android.view.View
 import com.cn.game.sdk2.ui.fast3.Fast3MainFragment
+import com.cn.game.sdk2.ui.helper.ViewHelper
 import com.cn.game.sdk2.websocket.bean.AreaBetConfigBean
 import com.cn.game.sdk2.websocket.bean.BOOM_1
 import com.cn.game.sdk2.websocket.bean.BOOM_2
@@ -51,6 +52,7 @@ import com.cn.game.sdk2.websocket.imp.GameApp
 import com.cn.game.sdk2.websocket.imp.UIMethodImpl
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 import com.cn.game.sdk2.websocket.viewmodel.MessageViewModel
+import com.xcjh.base_lib.ModuleInitializer
 import game.mod.proc.yf.proto.res.GameRes
 
 
@@ -69,7 +71,7 @@ var isEnableSound = true
  * 仅记录用户当前状态，用于重连服务器处理
  */
 //92:ZyBmhNCJ   87:MHxIHlYM  93:Ufx3Dy8y 94:0aPEwiYK   金额少：97:QwM8xr0x
-var token = "97:QwM8xr0x"
+var token = "87:MHxIHlYM"
 var isLogin = false
 var isEnterRoom = false
 
@@ -116,20 +118,6 @@ var isCanBetting: Boolean = true
  * 上一次的下注结果
  */
 var previousSuccess: Boolean = true
-
-/**
- * UI将左上角结果视图赋值给该变量
- * 返回给app使用
- */
-@SuppressLint("StaticFieldLeak")
-var resultView: View? = null
-
-/**
- * 同理 @see resultView
- * 返回给app使用
- */
-@SuppressLint("StaticFieldLeak")
-var floatingView: View? = null
 
 /**
  * 主播可以设置直播间是否允许下注

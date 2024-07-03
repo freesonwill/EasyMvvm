@@ -8,6 +8,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
+import com.cn.game.sdk2.ui.helper.ViewHelper
 import com.cn.game.sdk2.websocket.GameSocketManager
 import com.cn.game.sdk2.websocket.appContext
 import com.cn.game.sdk2.websocket.appLifecycleEnable
@@ -18,6 +19,7 @@ import com.cn.game.sdk2.websocket.interfaces.IGameForApp
 import com.cn.game.sdk2.websocket.isEnableSound
 import com.cn.game.sdk2.websocket.isNeedReconnect
 import com.cn.game.sdk2.websocket.socketStatesCallback
+import com.xcjh.base_lib.ModuleInitializer
 import game.common.proto.ClientReq
 import game.mod.proc.yf.proto.req.GameReq
 
@@ -139,14 +141,14 @@ object GameApp : IGameForApp {
 
             })
         }
-        return com.cn.game.sdk2.websocket.floatingView
+        return ViewHelper.getFastView(context)
     }
 
     /**
      * 结果视图
      */
     override fun createFloatResultView(context:Context): View? {
-        return com.cn.game.sdk2.websocket.resultView
+        return ViewHelper.getFastViewOverlay(context)
     }
 
     override fun dismissFloatingController() {

@@ -27,7 +27,9 @@ class MainActivity : AppCompatActivity() {
         var btnOpen = findViewById<TextView>(R.id.btnOpen)
         var llshow = findViewById<LinearLayout>(R.id.llshow)
         var btnXiu = findViewById<Button>(R.id.btnXiu)
-
+        /*ViewHelper.showHelpDialog(this)
+        ViewHelper.showFastView(this)
+        return@setOnClickListener*/
         GameApp.setSocketStatesCallback(object : GameApp.SocketStatesCallback{
             override fun onOpen() {
                 btnOpen.post{
@@ -78,8 +80,14 @@ class MainActivity : AppCompatActivity() {
             if(result){
                 btnOpen.text = "已进入直播间"
                 //GameApp.enterLive("1213", listOf(1), "")
-                ViewHelper.showFastView(this)
-                ViewHelper.showFastViewOverlay(this)
+                /*ViewHelper.showFastView(this)
+                ViewHelper.showFastViewOverlay(this)*/
+                val v = GameApp.createFloatEnterView(this@MainActivity)
+                val v1 = GameApp.createFloatResultView(this@MainActivity)
+                findViewById<LinearLayout>(R.id.llshow).apply {
+                    addView(v)
+                    addView(v1)
+                }
             }
         }
 

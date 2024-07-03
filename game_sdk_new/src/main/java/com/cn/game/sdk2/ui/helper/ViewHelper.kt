@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Paint
 import android.util.Log
 import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -87,6 +88,53 @@ object ViewHelper {
             .enableDrag(false)
             .asCustom(Fast3HelpPopup(context))
         helpXPopupDialog?.show()
+    }
+
+    fun getFastView(context: Context):View{
+        return LayoutInflater.from(context).inflate(R.layout.drag_fast_easy,null,false).also {
+            val llFastClick = it.findViewById<LinearLayout>(R.id.llFastClick)
+            llFastClick.setOnClickListener {
+                if (homeXPopupDialog != null) {
+                    Log.d(TAG, "homeXPopupDialog exists, no need to create it.")
+                    return@setOnClickListener
+                }
+                XPopup.Builder(context)
+                    .hasShadowBg(false)
+                    //.animationDuration(0)
+                    .setPopupCallback(object : SimpleCallback() {
+                        override fun onShow(popupView: BasePopupView?) {
+                            super.onShow(popupView)
+                            showFastViewOverlay(context, false)
+                            appListener?.onGameFloatingDetailViewStatus(true)
+                        }
+
+                        override fun onDismiss(popupView: BasePopupView?) {
+                            super.onDismiss(popupView)
+                            showFastViewOverlay(context, true)
+                            homeXPopupDialog = null
+                            appListener?.onGameFloatingDetailViewStatus(false)
+                        }
+                    })
+                    .popupAnimation(PopupAnimation.TranslateFromBottom)
+                    .animationDuration(500)
+                    .moveUpToKeyboard(false) //如果不加这个，评论弹窗会移动到软键盘上面
+                    .isViewMode(true)
+                    .isTouchThrough(true)
+                    .isDestroyOnDismiss(false) //对于只使用一次的弹窗，推荐设置这个
+                    .isThreeDrag(false) //是否开启三阶拖拽，如果设置enableDrag(false)则无效
+                    .enableDrag(true)
+                    .dismissOnTouchOutside(true)
+                    .asCustom(HomeXPopupDialog(context, Fast3MainFragment(),GAME_ID_ENUM.GAME_FAST3.num).apply {
+                        homeXPopupDialog = this
+                    })
+                    .show()
+                //EasyFloat.hide(TAG_FASTVIEW)
+            }
+        }
+    }
+
+    fun getFastViewOverlay(context: Context):View{
+        return LayoutInflater.from(context).inflate(R.layout.fragment_fast3_overlay,null,false)
     }
 
     fun showFastView(context: Context, isShow: Boolean = true) {
