@@ -396,11 +396,12 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 mDatabind.txtCurrentMoney.text = "¥ ${it.formatRealMoney()}"
             }
             mViewModel.currentMoney = it
+        }
 
-            mDatabind.llShowBetList.adapter?.notifyItemRangeChanged(
-                0,
-                mDatabind.llShowBetList.adapter?.itemCount ?: 0
-            )
+        //临时金额变化，用于刷新筹码可用
+        gameAboutModel.tempBalance.observe(viewLifecycleOwner) {
+            Log.e(TAG, "收到当前可用金额：${it}")
+            notifyBetteBean(it)
         }
 
         mViewModel.homeTimeSeconds.observe(viewLifecycleOwner) { seconds ->
@@ -460,6 +461,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                         ivMultiple2.isVisible = true
                         ivMultiple2.setImageResource(R.drawable.icon_multiple2)
                     }
+
                     GameAboutModel.AgainDoubleState.DOUBLE_CAN_NOT -> {
                         ivXuya.isVisible = false
                         ivMultiple2.isVisible = true
@@ -486,7 +488,12 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 Fast3ToastHelper.showToastNormal("网络连接失败")
                 showAnchorTop()
             } else {
-                Fast3ToastHelper.showToastNormal(getString(R.string.bet_success_prompt,response.money.formatRealMoney()))
+                Fast3ToastHelper.showToastNormal(
+                    getString(
+                        R.string.bet_success_prompt,
+                        response.money.formatRealMoney()
+                    )
+                )
             }
         }
         mViewModel.playAlphaAnimationLD.observe(viewLifecycleOwner, object : Observer<Boolean> {
@@ -601,7 +608,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
      */
     private fun setBetAdapter() {
         mDatabind.llShowBetList.itemAnimator = null
-        mDatabind.llShowBetList.layoutManager = CenterLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        mDatabind.llShowBetList.layoutManager =
+            CenterLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         if (mDatabind.llShowBetList.itemDecorationCount == 0) {
             mDatabind.llShowBetList.addItemDecoration(
                 CommonLinearLayoutItemDecoration(
@@ -618,7 +626,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     R.layout.item_annotation_list -> {
                         val binding = getBinding<ItemAnnotationListBinding>()
                         val bean = _data as SelectAnnotationBean
-                        val id = if ((gameAboutModel.balance.value ?: 0) < bean.money) {
+                        val id = if ((gameAboutModel.tempBalance.value ?: 0) < bean.money) {
                             resources.getIdentifier(
                                 "icon_shortage_" + bean.moneyPinyin,
                                 "drawable",
@@ -658,8 +666,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             }
             onClick(R.id.ivShowBg) {
                 val bean = _data as SelectAnnotationBean
+                if (bean.select || bean.money > (gameAboutModel.tempBalance.value ?: 0)) return@onClick
                 PromptSoundPlay.btnPlayMedia(requireContext())
-                if (bean.select) return@onClick
                 val models: List<SelectAnnotationBean> = models as List<SelectAnnotationBean>
                 for (data in models) {
                     data.select = bean == data
@@ -727,6 +735,38 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             if (!mDatabind.rvHomeHistory.models.isNullOrEmpty()) {
                 mDatabind.rvHomeHistory.scrollToPosition(mDatabind.rvHomeHistory.models!!.size - 1)
             }
+        }
+    }
+
+    private fun notifyBetteBean(money: Long) {
+        mDatabind.apply {
+            val selectBean = mViewModel.noteList.firstOrNull { it.select }
+            if (selectBean != null) {
+                if (selectBean.money > money) { //当前筹码不足
+                    var selectedIndex = -1
+                    for (i in mViewModel.noteList.size - 1 downTo 0) {
+                        mViewModel.noteList[i].select = false
+                        if (selectedIndex == -1) {
+                            if (mViewModel.noteList[i].money <= money) {
+                                selectedIndex = i
+                                mViewModel.noteList[i].select = true
+                            }
+                        }
+                    }
+                    if (selectedIndex >= 0) {
+                        (llShowBetList.layoutManager as CenterLayoutManager).smoothScrollToPosition(
+                            mDatabind.llShowBetList,
+                            RecyclerView.State(),
+                            selectedIndex
+                        )
+                    }
+                }
+            } else {
+                if (mViewModel.noteList[0].money <= money) {
+                    mViewModel.noteList[0].select = true
+                }
+            }
+            llShowBetList.bindingAdapter.notifyItemRangeChanged(0, mViewModel.noteList.count())
         }
     }
 
@@ -860,7 +900,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 }
                 PromptSoundPlay.btnPlayMedia()
                 GameSocketManager.getInstance()?.getGameService()
-                    ?.doubleBetting { bettingState, map,areaLimit ->
+                    ?.doubleBetting { bettingState, map, areaLimit ->
                         bettingState.isCanGoOn(areaLimit) {
                             if (!map.isNullOrEmpty()) {
                                 map.forEach {
