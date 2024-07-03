@@ -109,13 +109,18 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
                     currentMoney + areaTempMoney + confirmedMoney + tempConfirmedMoney //本次下注后页面上应该显示的总金额
                 uiBean.money = countMoney
                 limitMap[recordBean.bettingArea] = countMoney
+                gameAboutModel.changeTempBalance(balance - getPanelAllMoney())
                 block(GameAboutModel.BettingState.GO_ON, uiBean, null)
             }
 
-            "限高" ->{
+            "限高" -> {
                 val uiBean = recordBean.copy()
                 uiBean.money = areaTempMoney + confirmedMoney + tempConfirmedMoney
-                block(GameAboutModel.BettingState.OFFSET_MAX, uiBean, currentConfig?.getBeanById(recordBean.bettingArea))
+                block(
+                    GameAboutModel.BettingState.OFFSET_MAX,
+                    uiBean,
+                    currentConfig?.getBeanById(recordBean.bettingArea)
+                )
             }
 
             "余额不足" -> {
@@ -140,6 +145,7 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
         tempMoney = 0
         bettingListTemp.clear()
         limitMap.clear()
+        gameAboutModel.changeTempBalance(balance - getPanelAllMoney())
         //----
         //跟新again和double
         gameAboutModel.setOnceCountMoney(getPanelAllMoney())
@@ -149,7 +155,6 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
             it.forEach { (_, bettingRecordBean) ->
                 val money = bettingRecordBean.money
                 confirmedList.add(bettingRecordBean)
-
                 limitMap[bettingRecordBean.bettingArea] = money
             }
             block(confirmedList)
@@ -193,7 +198,7 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
             bet(build)
         } else {
             "下注228：上次下注还未返回".loge("addBetting")
-            gameAboutModel.setBettingSuccess(BettingResponsesBean(false,confirmTempMoney))
+            gameAboutModel.setBettingSuccess(BettingResponsesBean(false, confirmTempMoney))
         }
     }
 
@@ -209,6 +214,7 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
         againBettingList.forEach {
             limitMap[it.key] = it.value.money
         }
+        gameAboutModel.changeTempBalance(balance - getPanelAllMoney())
         return againBettingList
     }
 
@@ -221,10 +227,8 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
         if (doubleMoney < balance) {
             val doubleCanOnBean = doubleCanOn()
             doubleCanOnBean?.let {
-                it.toString().loge("doubleBetting")
-                block(GameAboutModel.BettingState.OFFSET_MAX,null,it)
-            }?:kotlin.run {
-                "224".loge("doubleBetting")
+                block(GameAboutModel.BettingState.OFFSET_MAX, null, it)
+            } ?: kotlin.run {
                 val tempCopy = bettingListTemp.copy()
                 val confirmCopy = bettingListConfirmed.copy()
                 val tempConfirmCopy = bettingListTempConfirmed.copy()
@@ -277,10 +281,11 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
                     limitMap[it.key] = it.value.money
                 }
                 gameAboutModel.setOnceCountMoney(getPanelAllMoney())
-                block(GameAboutModel.BettingState.GO_ON, uiMap,null)
+                gameAboutModel.changeTempBalance(balance - getPanelAllMoney())
+                block(GameAboutModel.BettingState.GO_ON, uiMap, null)
             }
         } else {
-            block(GameAboutModel.BettingState.NO_MONEY, null,null)
+            block(GameAboutModel.BettingState.NO_MONEY, null, null)
         }
     }
 

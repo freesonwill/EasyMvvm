@@ -330,7 +330,7 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
                 //下注成功后 保存当前下注总额为已确认下注金额；并将当前下注总额清空
                 //currentCountMoney包含之前确认的和现在临时的，所以可以直接覆盖已提交的
                 confirmMoney += confirmTempMoney
-
+                balance -= confirmMoney
                 //跟新again和double
                 gameAboutModel.setOnceCountMoney(getPanelAllMoney())
                 previousSuccess = true
@@ -466,6 +466,7 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
         gameAboutModel.changeStage(GameAboutModel.Stage.SETTLE)
         //清空本局已下注数据，并复制到续压集合里
         bettingListConfirmed.isNotEmpty {
+            againBettingList.clear()
             againBettingList copyFrom bettingListConfirmed
         }
         if (confirmMoney > 0) {

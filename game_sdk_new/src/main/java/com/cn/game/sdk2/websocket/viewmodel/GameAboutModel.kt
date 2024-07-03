@@ -32,6 +32,7 @@ class GameAboutModel : BaseViewModel() {
     private val _currentStage = UnPeekLiveData<Stage>()
     private val _currentAgainDoubleState = MutableLiveData<AgainDoubleState>()
     private val _balance = MutableLiveData<Long>()
+    private val _tempBalance = MutableLiveData<Long>()
     private val _syncAreaBetInfo = MutableLiveData<List<AreaBetBean>>()
     private val _clearTrendsIds = MutableLiveData<List<Int>>()
     private val _historyRounds = MutableLiveData<List<RoundInfoBean>>()
@@ -145,6 +146,9 @@ class GameAboutModel : BaseViewModel() {
     val balance: LiveData<Long>
         get() = _balance
 
+    val tempBalance: LiveData<Long>
+        get() = _tempBalance
+
     /**
      * 实现syncAreaBetInfo的observe，监听default牌面的人数变化
      */
@@ -200,6 +204,10 @@ class GameAboutModel : BaseViewModel() {
 
     fun changeBalance(b: Long) {
         _balance.postValue(b)
+    }
+
+    fun changeTempBalance(balance: Long) {
+        _tempBalance.postValue(balance)
     }
 
     fun changeStage(stage: Stage) {
