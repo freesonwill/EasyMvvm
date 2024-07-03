@@ -856,10 +856,10 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             }
             //加倍
             ivMultiple2.clickNoRepeat {
-                PromptSoundPlay.btnPlayMedia()
                 if (gameAboutModel.currentAgainDoubleState.value != GameAboutModel.AgainDoubleState.DOUBLE) {
                     return@clickNoRepeat
                 }
+                PromptSoundPlay.btnPlayMedia()
                 GameSocketManager.getInstance()?.getGameService()
                     ?.doubleBetting { bettingState, map,areaLimit ->
                         bettingState.isCanGoOn(areaLimit) {
