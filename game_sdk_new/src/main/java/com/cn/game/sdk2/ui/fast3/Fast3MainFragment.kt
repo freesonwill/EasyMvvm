@@ -425,12 +425,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             }
         }
 
-        gameAboutModel.isBettingSuccess.observe(this){
-            //Todo 获取真实下注成功的money
-            val money = gameAboutModel.lastBetting?.count
-            Fast3ToastHelper.showToastNormal(getString(R.string.bet_success_prompt, money))
-        }
-
         mViewModel.betDeleteClick.observe(this) {
             cancelBetteFlyAnim()
             cancelTemBetting()
@@ -445,6 +439,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         gameAboutModel.currentAgainDoubleState.observe(viewLifecycleOwner) {
             Log.e(TAG, "续压加倍状态监听--->${it}")
             mDatabind.apply {
+
                 when (it) {
                     GameAboutModel.AgainDoubleState.NUll -> {
                         ivXuya.isVisible = true
@@ -462,6 +457,12 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     GameAboutModel.AgainDoubleState.DOUBLE -> {
                         ivXuya.isVisible = false
                         ivMultiple2.isVisible = true
+                        ivMultiple2.setImageResource(R.drawable.icon_multiple2)
+                    }
+                    GameAboutModel.AgainDoubleState.DOUBLE_CAN_NOT -> {
+                        ivXuya.isVisible = false
+                        ivMultiple2.isVisible = true
+                        ivMultiple2.setImageResource(R.drawable.icon_multiple2_gray)
                     }
                 }
             }
@@ -477,12 +478,14 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         }
 
         //下注结果
-        gameAboutModel.isBettingSuccess.observe(viewLifecycleOwner) { isSuccess ->
-            Log.e(TAG, "下注结果监听--->${isSuccess}")
-            if (!isSuccess) {
+        gameAboutModel.isBettingSuccess.observe(viewLifecycleOwner) { response ->
+            Log.e(TAG, "下注结果监听--->${response}")
+            if (!response.isSuccess) {
                 //失败时显示delete ok按钮
                 Fast3ToastHelper.showToastNormal("网络连接失败")
                 showAnchorTop()
+            } else {
+                Fast3ToastHelper.showToastNormal(getString(R.string.bet_success_prompt,response.money.formatRealMoney()))
             }
         }
         mViewModel.playAlphaAnimationLD.observe(viewLifecycleOwner, object : Observer<Boolean> {
@@ -854,10 +857,12 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             //加倍
             ivMultiple2.clickNoRepeat {
                 PromptSoundPlay.btnPlayMedia()
-                //todo 判断加倍状态
+                if (gameAboutModel.currentAgainDoubleState.value != GameAboutModel.AgainDoubleState.DOUBLE) {
+                    return@clickNoRepeat
+                }
                 GameSocketManager.getInstance()?.getGameService()
-                    ?.doubleBetting { bettingState, map ->
-                        bettingState.isCanGoOn(null) {
+                    ?.doubleBetting { bettingState, map,areaLimit ->
+                        bettingState.isCanGoOn(areaLimit) {
                             if (!map.isNullOrEmpty()) {
                                 map.forEach {
                                     it.value.let { record ->
