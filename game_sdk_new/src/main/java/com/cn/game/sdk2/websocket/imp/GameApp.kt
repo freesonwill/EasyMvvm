@@ -1,7 +1,13 @@
 package com.cn.game.sdk2.websocket.imp
 
+import android.app.Activity
 import android.content.Context
 import android.view.View
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.OnLifecycleEvent
 import com.cn.game.sdk2.websocket.GameSocketManager
 import com.cn.game.sdk2.websocket.appContext
 import com.cn.game.sdk2.websocket.appLifecycleEnable
@@ -9,10 +15,12 @@ import com.cn.game.sdk2.websocket.appListener
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.gameMassageManager
 import com.cn.game.sdk2.websocket.interfaces.IGameForApp
+import com.cn.game.sdk2.websocket.isEnableSound
 import com.cn.game.sdk2.websocket.isNeedReconnect
 import com.cn.game.sdk2.websocket.socketStatesCallback
 import game.common.proto.ClientReq
 import game.mod.proc.yf.proto.req.GameReq
+
 
 /**
  * 提供给app调用的方法
@@ -40,7 +48,6 @@ object GameApp : IGameForApp {
         appLifecycleEnable = lifecycleEnable
         appListener = onSdkListener
         GameSocketManager.getInstance()?.initSocketClient()
-
     }
 
     /** 登录
@@ -111,6 +118,27 @@ object GameApp : IGameForApp {
      * 入口漂浮窗視圖
      */
     override fun createFloatEnterView(context:Context): View? {
+        if(appLifecycleEnable && context is Activity){
+            (context as LifecycleOwner).lifecycle.addObserver(object :LifecycleEventObserver{
+                override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+                    when(event){
+                        Lifecycle.Event.ON_RESUME->{
+                            isEnableSound = true
+                        }
+                        Lifecycle.Event.ON_PAUSE->{
+                            isEnableSound = false
+                        }
+                        Lifecycle.Event.ON_STOP->{
+                            isEnableSound = false
+                        }
+                        else->{
+
+                        }
+                    }
+                }
+
+            })
+        }
         return com.cn.game.sdk2.websocket.floatingView
     }
 
@@ -130,15 +158,15 @@ object GameApp : IGameForApp {
     }
 
     fun onResume(){
-
+        isEnableSound = true
     }
 
     fun onPause(){
-
+        isEnableSound = false
     }
 
     fun onStop(){
-
+        isEnableSound = false
     }
 
     interface OnSdkListener {

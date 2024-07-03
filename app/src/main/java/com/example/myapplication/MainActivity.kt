@@ -10,8 +10,10 @@ import androidx.fragment.app.Fragment
 
 import com.cn.game.sdk2.ui.helper.ViewHelper
 import com.cn.game.sdk2.ui.view.FastLogoView
+import com.cn.game.sdk2.websocket.GameSocketManager
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.imp.GameApp
+import com.cn.game.sdk2.websocket.isTokenValid
 import com.cn.game.sdk2.websocket.token
 
 class MainActivity : AppCompatActivity() {
@@ -30,6 +32,7 @@ class MainActivity : AppCompatActivity() {
             override fun onOpen() {
                 btnOpen.post{
                     btnOpen.text = "服务器连接成功,点击登录"
+                    btnOpen.isClickable = true
                 }
             }
 
@@ -38,7 +41,7 @@ class MainActivity : AppCompatActivity() {
                     if(isNeedReconnect){
                         btnOpen.text = "正在重新连接服务器"
                     }else{
-                        btnOpen.text = "token失效"
+                        btnOpen.text = "token失效,点击重新登录"
                         btnOpen.isClickable = true
                     }
                 }
@@ -52,10 +55,15 @@ class MainActivity : AppCompatActivity() {
 
             }else{
                 //92:ZyBmhNCJ   87:MHxIHlYM
-                GameApp.login(
-                    token, "wali-internal", true
-                )
-                btnOpen.text = "正在登录"
+                if(!isTokenValid){
+                    btnOpen.text = "正在重新连接服务器"
+                    GameSocketManager.getInstance()?.initSocketClient()
+                }else{
+                    GameApp.login(
+                        token, "wali-internal", true
+                    )
+                    btnOpen.text = "正在登录"
+                }
             }
         }
         gameAboutModel.isLoginSuccess.observe(this){result->

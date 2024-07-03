@@ -12,6 +12,7 @@ import android.os.Looper
 import android.util.Log
 import android.util.SparseArray
 import com.cn.game.sdk2.R
+import com.cn.game.sdk2.websocket.isEnableSound
 import com.xcjh.base_lib.ModuleInitializer
 import com.xcjh.base_lib.utils.TAG
 import java.io.IOException
@@ -195,33 +196,35 @@ object PromptSoundPlay {
      * 播放胜利音效
      */
     fun playWinEffect(){
-        val context = ModuleInitializer.application
-        var soundId1 = soundPoolIds[R.raw.sx_common_win_bet]
-        var soundId2 = soundPoolIds[R.raw.sx_common_win_game]
-        val(volume,maxVolume,percent) = systemVolume
-        if(soundId1 != null && soundId2 != null){
-            soundPool.stop(soundId1)
-            soundPool.stop(soundId2)
-            soundPool.play(soundId1,percent,percent,0,0,1f)
-            soundPool.play(soundId2,percent,percent,0,0,1f)
-            return
-        }
-        soundId1 = R.raw.sx_common_win_bet.let {
-            val id = soundPool.load(context,it,1)
-            soundPoolIds[it] = it
-            id
-        }
-        soundId2 = R.raw.sx_common_win_game.let {
-            val id = soundPool.load(context,it,1)
-            soundPoolIds[it] = id
-            id
-        }
-        Log.d(TAG,"playWinEffect:$soundId1,$soundId2,$percent,$volume,$maxVolume")
-        soundPool.setOnLoadCompleteListener {_,_,_->
-            //soundPool.release()
-            Log.d(TAG,"playWinEffect:setOnLoadCompleteListener")
-            soundPool.play(soundId1,percent,percent,0,0,1f)
-            soundPool.play(soundId2,percent,percent,0,0,1f)
+        if(isEnableSound) {
+            val context = ModuleInitializer.application
+            var soundId1 = soundPoolIds[R.raw.sx_common_win_bet]
+            var soundId2 = soundPoolIds[R.raw.sx_common_win_game]
+            val (volume, maxVolume, percent) = systemVolume
+            if (soundId1 != null && soundId2 != null) {
+                soundPool.stop(soundId1)
+                soundPool.stop(soundId2)
+                soundPool.play(soundId1, percent, percent, 0, 0, 1f)
+                soundPool.play(soundId2, percent, percent, 0, 0, 1f)
+                return
+            }
+            soundId1 = R.raw.sx_common_win_bet.let {
+                val id = soundPool.load(context, it, 1)
+                soundPoolIds[it] = it
+                id
+            }
+            soundId2 = R.raw.sx_common_win_game.let {
+                val id = soundPool.load(context, it, 1)
+                soundPoolIds[it] = id
+                id
+            }
+            Log.d(TAG, "playWinEffect:$soundId1,$soundId2,$percent,$volume,$maxVolume")
+            soundPool.setOnLoadCompleteListener { _, _, _ ->
+                //soundPool.release()
+                Log.d(TAG, "playWinEffect:setOnLoadCompleteListener")
+                soundPool.play(soundId1, percent, percent, 0, 0, 1f)
+                soundPool.play(soundId2, percent, percent, 0, 0, 1f)
+            }
         }
     }
 

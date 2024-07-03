@@ -10,6 +10,7 @@ import com.cn.game.sdk2.R
 import com.cn.game.sdk2.databinding.DialogHomeXpopupContainerBinding
 import com.cn.game.sdk2.ui.fast3.Fast3HelpFragment
 import com.cn.game.sdk2.ui.fast3.Fast3MainFragment
+import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
 import com.lxj.xpopup.core.BottomPopupView
 
 /**
@@ -57,4 +58,5 @@ class HomeXPopupDialog(context: Context, private val fragment: Fragment, private
     override fun getImplLayoutId(): Int {
         return R.layout.dialog_home_xpopup_container
     }
+
 }
