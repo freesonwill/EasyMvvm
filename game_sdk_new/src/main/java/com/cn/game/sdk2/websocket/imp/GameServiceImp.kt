@@ -223,6 +223,7 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
         gameAboutModel.isSitDown(true)
         balance = enterInfo.self.score
         gameAboutModel.changeBalance(enterInfo.self.score)
+        gameAboutModel.changeTempBalance(balance)
         val betAreaConfigs = enterInfo.gameConfigsList
         betAreaConfigs.forEach {
             val areaBetConfigBeans = ArrayList<AreaBetConfigBean>()
