@@ -33,7 +33,7 @@ object GamePartyLibraryInitializer {
             }
 
             override fun onLoginGame(i: Int, str: String?) {
-                GameApp.enterLive("1213", listOf(1), "")
+
             }
 
             override fun onTokenLoseEffectiveness() {

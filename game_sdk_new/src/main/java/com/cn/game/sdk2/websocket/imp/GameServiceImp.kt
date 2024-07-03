@@ -18,6 +18,7 @@ import com.cn.game.sdk2.websocket.copy
 import com.cn.game.sdk2.websocket.copyFrom
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.gameList
+import com.cn.game.sdk2.websocket.gameMassageManager
 import com.cn.game.sdk2.websocket.getBeanById
 import com.cn.game.sdk2.websocket.interfaces.GameService
 import com.cn.game.sdk2.websocket.isBig
@@ -238,10 +239,11 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
         }
 
         currentConfig = configMap[miniGameId]
-
-        if (isEnterRoom) {
+        //todo：测试直接使用
+        GameApp.enterLive("1213", listOf(1), "")
+        /*if (isEnterRoom) {
             GameApp.enterLive("1213", listOf(1), "")
-        }
+        }*/
     }
 
     //进入直播间成功，待进入游戏
@@ -276,9 +278,8 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
             3 -> gameAboutModel.changeStage(GameAboutModel.Stage.SETTLE)
         }
 
-
-        val miniGame: EnterMiniGame = EnterMiniGame.newBuilder().setMiniGameId(3).build()
-        enterGame(miniGame)
+        enterGame(EnterMiniGame.newBuilder().setMiniGameId(miniGameId).build()
+        )
     }
 
     //离开直播间成功

@@ -222,6 +222,7 @@
                             <androidx.appcompat.widget.AppCompatTextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:drawableTop="@drawable/icon_more"
                                 android:text="@string/g_home_txt_more"
                                 android:textColor="@color/g_f3f3f3"
                                 android:textSize="9sp" />

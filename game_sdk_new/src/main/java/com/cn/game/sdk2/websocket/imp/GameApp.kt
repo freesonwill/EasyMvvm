@@ -10,6 +10,7 @@ import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.gameMassageManager
 import com.cn.game.sdk2.websocket.interfaces.IGameForApp
 import com.cn.game.sdk2.websocket.isNeedReconnect
+import com.cn.game.sdk2.websocket.socketStatesCallback
 import game.common.proto.ClientReq
 import game.mod.proc.yf.proto.req.GameReq
 
@@ -162,6 +163,15 @@ object GameApp : IGameForApp {
         fun onGameFloatingDetailViewStatus(isShowUp: Boolean)
 
         fun onInsufficientBalance()
+    }
+
+    interface SocketStatesCallback{
+        fun onOpen()
+        fun onClose(isNeedReconnect: Boolean)
+    }
+
+    fun setSocketStatesCallback(callback: SocketStatesCallback){
+        socketStatesCallback = callback;
     }
 
 }

@@ -41,6 +41,7 @@ class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
                 }
             }
         }
+        socketStatesCallback?.onOpen()
     }
 
     override fun onMessage(message: String?) {
@@ -69,6 +70,7 @@ class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
         "socket-onClose-->code:${code}-reason:$reason-remote:$remote".loge(_tag)
         nativeLib.reset()
         onMessageListener?.onClose(code, reason, remote)
+        socketStatesCallback?.onClose(isNeedReconnect)
     }
 
     override fun onError(ex: Exception?) {

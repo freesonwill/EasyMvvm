@@ -72,6 +72,7 @@ var isLogin = false
 var isEnterRoom = false
 
 var nativeLib = NativeLib()
+var socketStatesCallback: GameApp.SocketStatesCallback ?= null
 
 /**
  * 多用户登录token失效
