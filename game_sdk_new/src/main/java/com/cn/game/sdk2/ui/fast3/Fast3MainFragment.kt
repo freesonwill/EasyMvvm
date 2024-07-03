@@ -69,6 +69,7 @@ import com.cn.game.sdk2.utils.ext.CommonExt.isCanGoOn
 import com.cn.game.sdk2.utils.ext.CommonExt.px2dp
 import com.cn.game.sdk2.utils.ext.CommonExt.toPinyin
 import com.cn.game.sdk2.utils.ext.ViewExt.getDrawable
+import com.cn.game.sdk2.utils.ext.ViewExt.locationOnScreen
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.utils.tool.measureView
 import com.cn.game.sdk2.websocket.GameSocketManager
@@ -1133,6 +1134,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         updateAnchorView(areaView)
 
         //贝塞尔曲线中间过程的点的坐标
+        val rootLocation = mDatabind.rlRoot.locationOnScreen
         val mCurrentPosition = FloatArray(2)
 
         // (这个图片就是执行动画的图片，从开始位置出发，经过一个抛物线（贝塞尔曲线))
@@ -1146,7 +1148,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
         //正式开始计算动画开始/结束的坐标
         val location = IntArray(2)
-        jettonView.getLocationInWindow(location)
+        jettonView.getLocationOnScreen(location)
         val startX: Float =
             location[0].toFloat() + jettonView.measuredWidth / 2 - requireContext().dp2px(16)
         val startY: Float = location[1].toFloat()
@@ -1174,7 +1176,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
                 // 筹码图片偏移
                 betImageView.translationX = mCurrentPosition[0]
-                betImageView.translationY = mCurrentPosition[1]
+                betImageView.translationY = mCurrentPosition[1] - rootLocation[1]
             }
 
             addListener(onEnd = {
