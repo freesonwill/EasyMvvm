@@ -6,6 +6,18 @@ import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.view.View
 import android.widget.ImageView
+import androidx.annotation.ArrayRes
+import androidx.annotation.StringRes
+import com.xcjh.base_lib.ModuleInitializer
+
+
+fun View.getString(@StringRes resId:Int):String{
+    return context.resources.getString(resId)
+}
+
+fun View.getStringArray(@ArrayRes resId:Int):Array<String>{
+    return context.resources.getStringArray(resId)
+}
 
 /**
  * 设置view显示

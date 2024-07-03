@@ -2,24 +2,17 @@ package com.cn.game.sdk2.ui.fast3
 
 import android.os.Bundle
 import com.cn.game.sdk2.R
-import com.cn.game.sdk2.data.bean.SelectAnnotationBean
-
 import com.cn.game.sdk2.databinding.FragmentFast3HelpBinding
-import com.cn.game.sdk2.databinding.ItemAnnotationListBinding
 import com.cn.game.sdk2.ui.helper.ViewHelper
-import com.cn.game.sdk2.ui.helper.ViewHelper.bindViewPagerNewGame
 import com.cn.game.sdk2.ui.viewmodel.EmptyViewModel
-import com.cn.game.sdk2.utils.ext.BindingAdapterUtil.bindRecycleView
+import com.cn.game.sdk2.utils.ext.ViewExt.bindRecycleView
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
-import com.cn.game.sdk2.websocket.gameAboutModel
 import com.drake.brv.annotaion.DividerOrientation
-import com.drake.brv.utils.divider
 import com.drake.brv.utils.dividerSpace
 import com.drake.brv.utils.setup
 import com.xcjh.base_lib.base.fragment.BaseVmVbFragment
 import com.xcjh.base_lib.utils.dp2px
 import com.xcjh.base_lib.utils.view.clickNoRepeat
-import kotlin.properties.Delegates
 
 class Fast3HelpFragment : BaseVmVbFragment<EmptyViewModel, FragmentFast3HelpBinding>() {
     private var rootHeight:Int = 0
@@ -42,7 +35,7 @@ class Fast3HelpFragment : BaseVmVbFragment<EmptyViewModel, FragmentFast3HelpBind
                 }
             }.models = listOf(1, 2, 3, 4, 5)
         mViewBind.indicator.bindRecycleView(
-            mViewBind.rvContent, arrayListOf(
+            mViewBind.rvContent, arrayOf(
                 getString(R.string.g_home_txt_default),
                 getString(R.string.g_home_tab_single),
                 getString(R.string.g_home_tab_sum),

@@ -1,6 +1,7 @@
 package com.xcjh.base_lib.utils
 
 import android.graphics.drawable.Drawable
+import androidx.annotation.ArrayRes
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -313,6 +314,9 @@ fun BaseViewModel.getString(@StringRes resId: Int): String {
     return ModuleInitializer.application.getString(resId)
 }
 
+fun BaseViewModel.getStringArray(@ArrayRes resId: Int): Array<String> {
+    return ModuleInitializer.application.resources.getStringArray(resId)
+}
 
 fun BaseViewModel.getDrawable(@DrawableRes resId: Int): Drawable? {
     return ContextCompat.getDrawable(ModuleInitializer.application,resId)
