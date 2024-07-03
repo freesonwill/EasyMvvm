@@ -559,7 +559,7 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
             doubleCanOn?.let {
                 "checkDouble()->${it.areaCode}号注区超限->DOUBLE_CAN_NOT".loge("GameServiceImpl")
                 gameAboutModel.changeAgainDoubleState(GameAboutModel.AgainDoubleState.DOUBLE_CAN_NOT)
-            }?:run {
+            } ?: run {
                 "checkDouble()->DOUBLE".loge("GameServiceImpl")
                 gameAboutModel.changeAgainDoubleState(GameAboutModel.AgainDoubleState.DOUBLE)
             }
@@ -582,7 +582,7 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
         if (isMoneyEnough()) {
             currentConfig?.getBeanById(bean.bettingArea)?.let {
                 limitMap[bean.bettingArea]?.let { money ->
-                    if (money > it.maxLimit) {
+                    if (money + bean.money > it.maxLimit) {
                         return "限高"
                     }
                 }
