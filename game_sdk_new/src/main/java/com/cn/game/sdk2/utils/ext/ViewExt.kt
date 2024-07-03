@@ -14,6 +14,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.ui.helper.ViewHelper.setTextBold
+import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
+import com.cn.game.sdk2.utils.ext.CommonExt.px2dp
 import com.cn.game.sdk2.utils.tool.indicator.CommonPagerIndicator
 import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.base.fragment.BaseVmFragment
@@ -23,6 +25,7 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigat
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapter
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerIndicator
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerTitleView
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.ColorTransitionPagerTitleView
 
 /**
@@ -93,11 +96,14 @@ object ViewExt {
                     text = mStringList[index].toHtml()
                     //字体大小
                     textSize = 14f
-                    setTextBold(this, true)
+                    setPadding(15.dp2px,0,15.dp2px,0)
+
+                    setTextBold(this, false)
                     //未选中颜色
                     normalColor = ContextCompat.getColor(context, R.color.c_8F9095)
                     //选中颜色
                     selectedColor = ContextCompat.getColor(context, R.color.c_3994F9)
+
                     //点击事件
                     setOnClickListener {
                         action.invoke(index)
@@ -109,7 +115,7 @@ object ViewExt {
 
             override fun getIndicator(context: Context): IPagerIndicator {
                 return CommonPagerIndicator(context).apply {
-                    mode = CommonPagerIndicator.MODE_MATCH_EDGE
+                    mode = CommonPagerIndicator.MODE_WRAP_CONTENT
                 }
             }
         }
@@ -121,9 +127,10 @@ object ViewExt {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-                val position2: Int = layoutManager.findFirstVisibleItemPosition()
-                val position: Int = layoutManager.findLastVisibleItemPosition()
-                //Log.d(TAG,"position-->$position --> $position2,dx:$dx,dy:$dy")
+                val firstPos: Int = layoutManager.findFirstVisibleItemPosition()
+                val lastPos: Int = layoutManager.findLastVisibleItemPosition()
+                val position = if(lastPos == 0) firstPos else lastPos
+                //Log.d(TAG,"position-->$firstPos --> $lastPos,dx:$dx,dy:$dy")
                 indicator.onPageSelected(position)
                 indicator.onPageScrolled(position,0f,0)
             }

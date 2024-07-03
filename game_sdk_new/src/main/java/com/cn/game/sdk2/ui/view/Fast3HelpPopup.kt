@@ -5,7 +5,6 @@ import android.content.Context
 import android.util.Log
 import android.widget.LinearLayout
 import androidx.core.animation.addListener
-import androidx.core.view.isVisible
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.databinding.FragmentFast3HelpBinding
 import com.cn.game.sdk2.ui.fast3.Fast3HelpFragment.Companion.TAG
@@ -13,6 +12,7 @@ import com.cn.game.sdk2.ui.helper.ViewHelper
 import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
 import com.cn.game.sdk2.utils.ext.ViewExt.bindRecycleView
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
+import com.cn.game.sdk2.websocket.gameAboutModel
 import com.drake.brv.annotaion.DividerOrientation
 import com.drake.brv.utils.dividerSpace
 import com.drake.brv.utils.setup
@@ -35,6 +35,12 @@ class Fast3HelpPopup(content: Context) : BottomPopupView(content) {
         super.onCreate()
         mViewBind = FragmentFast3HelpBinding.bind(popupImplView)
         this.initView()
+        gameAboutModel.fast3MainFloatVisible.value = false
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        gameAboutModel.fast3MainFloatVisible.value = true
     }
 
     private fun initView() {
@@ -61,7 +67,7 @@ class Fast3HelpPopup(content: Context) : BottomPopupView(content) {
         mViewBind.indicator.bindRecycleView(
             mViewBind.rvContent,
             getStringArray(R.array.help_tabs),
-            scrollEnable = false,
+            scrollEnable = true,
             action = { PromptSoundPlay.btnPlayMedia() }
         )
 
