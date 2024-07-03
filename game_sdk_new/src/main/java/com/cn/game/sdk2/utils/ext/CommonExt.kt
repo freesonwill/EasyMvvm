@@ -11,6 +11,7 @@ import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 import java.math.BigDecimal
 import java.math.RoundingMode
 import com.xcjh.base_lib.ModuleInitializer
+import game.mod.proc.yf.proto.res.GameRes.AreaInfo
 import java.text.DecimalFormat
 
 
@@ -87,6 +88,7 @@ object CommonExt {
 
     fun GameAboutModel.BettingState.isCanGoOn(
         areaLimit: AreaBetConfigBean?,
+        areaInfo: Betting? = null,
         goOnAction: () -> Unit
     ) {
         when (this) {
@@ -99,11 +101,33 @@ object CommonExt {
             }
 
             GameAboutModel.BettingState.OFFSET_MIN -> {
-                Fast3ToastHelper.showToastNormal(ModuleInitializer.application.getString(R.string.money_min_error))
+                if (areaInfo == null) {
+                    Fast3ToastHelper.showToastNormal(ModuleInitializer.application.getString(R.string.money_min_error))
+                } else {
+                    Fast3ToastHelper.showToastNormal(
+                        ModuleInitializer.application.getString(
+                            R.string.money_min_error_with_area,
+                            areaInfo.toastStr,
+                            "¥${areaLimit?.minLimit?.formatRealMoney()}"
+                        )
+                    )
+                }
             }
 
             GameAboutModel.BettingState.OFFSET_MAX -> {
-                Fast3ToastHelper.showToastNormal(ModuleInitializer.application.getString(R.string.money_max_error))
+                if (areaInfo == null) {
+                    Fast3ToastHelper.showToastNormal(
+                        ModuleInitializer.application.getString(R.string.money_max_error)
+                    )
+                } else {
+                    Fast3ToastHelper.showToastNormal(
+                        ModuleInitializer.application.getString(
+                            R.string.money_max_error_with_area,
+                            areaInfo.toastStr,
+                            "¥${areaLimit?.maxLimit?.formatRealMoney()}"
+                        )
+                    )
+                }
             }
         }
     }
