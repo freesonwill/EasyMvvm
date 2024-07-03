@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
+import androidx.lifecycle.LifecycleOwner
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.cn.game.sdk2.R
@@ -21,6 +22,7 @@ import com.cn.game.sdk2.ui.view.Fast3HelpPopup
 import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
 import com.cn.game.sdk2.utils.tool.indicator.CommonPagerIndicator
 import com.cn.game.sdk2.websocket.appListener
+import com.cn.game.sdk2.websocket.gameAboutModel
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
 import com.lxj.xpopup.enums.PopupAnimation
@@ -52,6 +54,7 @@ object ViewHelper {
      * 显示帮助文档
      */
     fun showHelpDialog(context: Context, isShow: Boolean = true) {
+
         if (helpXPopupDialog != null) {
             when {
                 isShow && !helpXPopupDialog!!.isShow -> {
@@ -85,6 +88,10 @@ object ViewHelper {
 
     fun showFastView(context: Context, isShow: Boolean = true) {
         if (!isShow) EasyFloat.hide(TAG_FASTVIEW)
+        gameAboutModel.fast3MainFloatVisible.observeForever {
+            Log.d(TAG,"fast3MainFloatVisible -->$it")
+            showFastView(context,it)
+        }
         EasyFloat.with(context).setSidePattern(SidePattern.DEFAULT)
             .setImmersionStatusBar(true)
             .setTag(TAG_FASTVIEW)

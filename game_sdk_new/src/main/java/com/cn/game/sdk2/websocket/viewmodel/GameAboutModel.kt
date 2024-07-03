@@ -299,4 +299,6 @@ class GameAboutModel : BaseViewModel() {
     var roundId: String = "" //期号
     var loginErrorMessage = ""
     var lastBetting: Betting? = null
+    //控制隐藏Fast3MainView
+    val fast3MainFloatVisible:UnPeekLiveData<Boolean>  = UnPeekLiveData<Boolean>()
 }
