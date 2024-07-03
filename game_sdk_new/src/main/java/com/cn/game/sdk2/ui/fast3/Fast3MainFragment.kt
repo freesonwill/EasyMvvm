@@ -854,9 +854,9 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 }
             }
             //加倍
-            ivMultiple2.clickNoRepeat {
+            ivMultiple2.setOnClickListener {
                 if (gameAboutModel.currentAgainDoubleState.value != GameAboutModel.AgainDoubleState.DOUBLE) {
-                    return@clickNoRepeat
+                    return@setOnClickListener
                 }
                 PromptSoundPlay.btnPlayMedia()
                 GameSocketManager.getInstance()?.getGameService()
@@ -883,9 +883,9 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     }
             }
             //续压
-            ivXuya.clickNoRepeat {
+            ivXuya.setOnClickListener {
                 if (gameAboutModel.currentAgainDoubleState.value != GameAboutModel.AgainDoubleState.AGAIN) {
-                    return@clickNoRepeat
+                    return@setOnClickListener
                 }
                 PromptSoundPlay.btnPlayMedia()
                 val map = GameSocketManager.getInstance()?.getGameService()?.againBetting()
