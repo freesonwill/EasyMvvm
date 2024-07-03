@@ -98,7 +98,7 @@ object ViewHelper {
                     }
                     XPopup.Builder(context)
                         .hasShadowBg(false)
-                        .animationDuration(0)
+                        //.animationDuration(0)
                         .setPopupCallback(object : SimpleCallback() {
                             override fun onShow(popupView: BasePopupView?) {
                                 super.onShow(popupView)

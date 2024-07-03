@@ -8,6 +8,7 @@ import com.cn.game.sdk2.R
 import com.cn.game.sdk2.databinding.PopupCustomBubbleAttachBinding
 import com.cn.game.sdk2.ui.helper.ViewHelper
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
+import com.lxj.xpopup.core.AttachPopupView
 import com.lxj.xpopup.core.BubbleAttachPopupView
 import com.lxj.xpopup.util.XPopupUtils
 import com.xcjh.base_lib.utils.view.clickNoRepeat
@@ -15,7 +16,7 @@ import com.xcjh.base_lib.utils.view.clickNoRepeat
 /**
  * 首页的弹出框
  */
-class CustomBubbleAttachPopup(content: Context) : BubbleAttachPopupView(content){
+class CustomBubbleAttachPopup(content: Context) : AttachPopupView(content){
 
     override fun getImplLayoutId(): Int {
         return R.layout.popup_custom_bubble_attach
@@ -23,29 +24,29 @@ class CustomBubbleAttachPopup(content: Context) : BubbleAttachPopupView(content)
 
     override fun onCreate() {
         super.onCreate()
-        setBubbleBgColor(ContextCompat.getColor(context,R.color.c_ffffff))
+     /*   setBubbleBgColor(ContextCompat.getColor(context,R.color.c_ffffff))
         setBubbleShadowSize(2)
         setArrowWidth(XPopupUtils.dp2px(context, 8f))
         setArrowHeight(XPopupUtils.dp2px(context, 8f)).setBubbleRadius(10)
-        setArrowRadius(XPopupUtils.dp2px(context, 2f))
+        setArrowRadius(XPopupUtils.dp2px(context, 2f))*/
         PopupCustomBubbleAttachBinding.bind(popupImplView).apply {
-            rlPopClickRecords.clickNoRepeat(0) {
+            rlPopClickRecords.clickNoRepeat() {
                 PromptSoundPlay.btnPlayMedia()
-                dismiss()
+                delayDismiss(100)
             }
-            rlPopClickService.clickNoRepeat(0) {
+            rlPopClickService.clickNoRepeat() {
                 PromptSoundPlay.btnPlayMedia()
-                dismiss()
+                delayDismiss(100)
             }
 
-            rlPopClickToggle.clickNoRepeat(0) {
+            rlPopClickToggle.clickNoRepeat() {
                 PromptSoundPlay.btnPlayMedia()
-                dismiss()
+                delayDismiss(100)
                 customBubbleAttachListener?.switchGame()
             }
-            rlPopClickAssist.clickNoRepeat(0) {
+            rlPopClickAssist.clickNoRepeat() {
                 PromptSoundPlay.btnPlayMedia()
-                dismiss()
+                delayDismiss(100)
                 ViewHelper.showHelpDialog(context,true)
             }
         }
