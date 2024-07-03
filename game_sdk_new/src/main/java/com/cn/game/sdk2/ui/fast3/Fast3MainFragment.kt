@@ -601,8 +601,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
      */
     private fun setBetAdapter() {
         mDatabind.llShowBetList.itemAnimator = null
-        mDatabind.llShowBetList.layoutManager =
-            CenterLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        mDatabind.llShowBetList.layoutManager = CenterLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         if (mDatabind.llShowBetList.itemDecorationCount == 0) {
             mDatabind.llShowBetList.addItemDecoration(
                 CommonLinearLayoutItemDecoration(
