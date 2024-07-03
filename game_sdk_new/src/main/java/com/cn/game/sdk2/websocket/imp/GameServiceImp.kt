@@ -574,19 +574,19 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
         return tempMoney + confirmTempMoney + confirmMoney
     }
 
-    private fun isMoneyEnough(): Boolean {
-        return tempMoney + confirmTempMoney + confirmMoney <= balance
+    private fun isMoneyEnough(current: Int): Boolean {
+        return current + tempMoney + confirmTempMoney + confirmMoney <= balance
     }
 
     protected fun addCanGoOn(bean: BettingRecordBean): String {
-        if (isMoneyEnough()) {
+        if (isMoneyEnough(bean.money)) {
             currentConfig?.getBeanById(bean.bettingArea)?.let {
                 limitMap[bean.bettingArea]?.let { money ->
                     val allMoney = money + bean.money
                     if (allMoney > it.maxLimit) {
                         return "限高"
                     }
-                }?:kotlin.run {
+                } ?: kotlin.run {
                     if (bean.money > it.maxLimit) {
                         return "限高"
                     }
@@ -603,7 +603,7 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
         limitMap.forEach {
             val limitMoney = currentConfig?.getBeanById(it.key)?.maxLimit
             val doubleMoney = it.value * 2
-           "limitMoney:$limitMoney~~doubleMoney:$doubleMoney".loge("doubleCanOn")
+            "limitMoney:$limitMoney~~doubleMoney:$doubleMoney".loge("doubleCanOn")
             limitMoney?.let { limit ->
                 if (doubleMoney > limit) {
                     "doubleMoney > limit".loge("doubleCanOn")
