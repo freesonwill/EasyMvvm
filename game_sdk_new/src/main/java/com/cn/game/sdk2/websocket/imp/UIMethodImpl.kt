@@ -139,6 +139,7 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
         //----清空临时数据
         tempMoney = 0
         bettingListTemp.clear()
+        limitMap.clear()
         //----
         //跟新again和double
         gameAboutModel.setOnceCountMoney(getPanelAllMoney())
@@ -148,7 +149,7 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
             it.forEach { (_, bettingRecordBean) ->
                 val money = bettingRecordBean.money
                 confirmedList.add(bettingRecordBean)
-                limitMap.clear()
+
                 limitMap[bettingRecordBean.bettingArea] = money
             }
             block(confirmedList)
@@ -205,6 +206,9 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
         tempMoney = againCountMoney
         gameAboutModel.setOnceCountMoney(getPanelAllMoney())
         bettingListTemp copyFrom againBettingList
+        againBettingList.forEach {
+            limitMap[it.key] = it.value.money
+        }
         return againBettingList
     }
 
@@ -217,8 +221,10 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
         if (doubleMoney < balance) {
             val doubleCanOnBean = doubleCanOn()
             doubleCanOnBean?.let {
+                it.toString().loge("doubleBetting")
                 block(GameAboutModel.BettingState.OFFSET_MAX,null,it)
-            }?:run {
+            }?:kotlin.run {
+                "224".loge("doubleBetting")
                 val tempCopy = bettingListTemp.copy()
                 val confirmCopy = bettingListConfirmed.copy()
                 val tempConfirmCopy = bettingListTempConfirmed.copy()
@@ -267,6 +273,9 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
                 bettingListTemp.clear()
                 bettingListTemp copyFrom tempCopy
                 tempMoney = confirmTempMoney + confirmMoney + tempMoney * 2
+                uiMap.forEach {
+                    limitMap[it.key] = it.value.money
+                }
                 gameAboutModel.setOnceCountMoney(getPanelAllMoney())
                 block(GameAboutModel.BettingState.GO_ON, uiMap,null)
             }
