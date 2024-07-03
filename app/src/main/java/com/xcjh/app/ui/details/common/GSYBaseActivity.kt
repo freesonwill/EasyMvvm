@@ -98,7 +98,7 @@ abstract class GSYBaseActivity<VM : BaseViewModel, DB : ViewDataBinding,T : GSYB
         if(isLandscape){
             orientationUtils!!.isEnable = screen
         }
-
+//        orientationUtils!!.isEnable = screen
     }
 
     fun  setisLandscape(static:Boolean){

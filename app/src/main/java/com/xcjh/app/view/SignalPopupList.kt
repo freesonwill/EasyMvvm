@@ -65,9 +65,17 @@ class SignalPopupList (context: Context, var  anchorList: List<AnchorListBean>) 
         mDatabind.rcvSignal.scrollToPosition(pos)
 
     }
+
+    override fun dismiss() {
+        signalPopupListListener?.onDisappear()
+        super.dismiss()
+    }
     var signalPopupListListener: SignalPopupListListener?=null
     interface  SignalPopupListListener{
 
         fun onSelect(anchor :AnchorListBean, poe: Int)
+
+        //整个关闭的回调
+        fun  onDisappear()
     }
 }

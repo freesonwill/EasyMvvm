@@ -932,7 +932,7 @@ fun shareUrl(context: Context, shareText: String?) {
         }
 
         else ->{
-            "${ApiComService.SERVER_URL}$shareText"
+            "${ApiComService.SHARE_URL}/$shareText"
         }
 
     }
@@ -955,7 +955,7 @@ fun getDomain():String{
         }
 
         else ->{
-            ApiComService.SERVER_URL
+            ApiComService.SHARE_URL
         }
     }
     return domain

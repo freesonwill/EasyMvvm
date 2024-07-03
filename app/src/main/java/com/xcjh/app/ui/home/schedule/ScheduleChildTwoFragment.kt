@@ -50,7 +50,9 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-
+/**
+ * 列表
+ */
 class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>() {
     var strTimeZu: MutableList<String> = ArrayList<String>()
     val animatorSet = AnimatorSet()
@@ -1005,8 +1007,15 @@ class ScheduleChildTwoFragment : BaseFragment<ScheduleVm, FrScheduletwoBinding>(
                     //点击全部
                     binding.conroot.setOnClickListener {
                         SoundManager.playMedia()
-                        MatchDetailActivity.open(matchType =item.matchType, matchId = item.matchId,matchName = "${item.homeName}VS${item.awayName}", isToggle = true)
-
+//                        MatchDetailActivity.open(matchType =item.matchType, matchId = item.matchId,matchName = "${item.homeName}VS${item.awayName}", isToggle = true)
+                        MatchDetailActivity.open(
+                            matchType = item.matchType,
+                            matchId = item.matchId,
+                            matchName = "${item.homeName}VS${item.awayName}",
+                            anchorId = "",
+                            videoUrl = "",
+                            isToggle = true
+                        )
 //                        MatchDetailActivity.open(
 //                            matchType = item.matchType,
 //                            matchId = item.matchId,
