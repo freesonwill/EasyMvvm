@@ -21,6 +21,7 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.core.animation.addListener
+import androidx.core.animation.doOnEnd
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -106,6 +107,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     //<areaCode,<money,View>>
     private val currentBetteAreaMap by lazy { mutableMapOf<Int, GameAreaView>() }
     private val allGameAreaMap by lazy { mutableMapOf<Int, GameAreaView>() }
+    private val betteFlyAnimList by lazy { mutableListOf<ValueAnimator>() }
 
     //==================================== Method ===============================================//
     override fun initView(savedInstanceState: Bundle?) {
@@ -114,7 +116,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         context?.assets?.let {
             mDatabind.tvAnimWin.typeface = Typeface.createFromAsset(it, "fonts/alibabapuhuiti.otf");
         }
-        mDatabind.llHomeVideo.setOnClickListener{
+        mDatabind.llHomeVideo.setOnClickListener {
             Fast3ToastHelper.showToastNormal(getString(R.string.g_home_betting_begin), 2000)
         }
         CommonUtils.getNavigationBarHeight(mDatabind.root).let {
@@ -169,27 +171,20 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     }
 
 
-    private fun doNumberAnim(targetView: TextView, startNum: Float, endNumber: Float) {
-        if(targetView.tag != null) {
-            (targetView.tag as ValueAnimator).cancel()
-        }
-        ValueAnimator.ofFloat(startNum, endNumber).apply {
+    private fun doNumberAnim(targetView: TextView, startNum: Long, endNumber: Long) {
+        ValueAnimator.ofFloat(startNum.toFloat(), endNumber.toFloat()).apply {
             duration = 500
-            val f = java.text.DecimalFormat("0.##")
             addUpdateListener {
-                targetView.text = "¥ ${f.format(it.animatedValue)}"
+                targetView.text = "¥ ${(it.animatedValue as Float).formatRealMoney()}"
             }
-            addListener(
-                onStart = { targetView.text = "¥ $startNum" },
-                onEnd = { targetView.text = "¥ ${endNumber.formatRealMoney()}" }
-            )
+            doOnEnd { targetView.text = "¥ ${endNumber.formatRealMoney()}" }
             start()
-            targetView.tag  = this
         }
     }
+
     override fun initData() {
         //获取当前余额
-        mDatabind.txtCurrentMoney.text = "¥ ${mViewModel.currentMoney}"
+        mDatabind.txtCurrentMoney.text = "¥ ${mViewModel.currentMoney.formatRealMoney()}"
         mDatabind.txtHomeTime.text = mViewModel.homeTimeSeconds.value.toString()
         lifecycleScope.launchWhenResumed {
             //开始下注
@@ -320,6 +315,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 //PromptSoundPlay.endGameTip(requireContext())
                 Fast3ToastHelper.showToastNormal(getString(R.string.g_home_drawing_begin), 1000)
             }
+            cancelBetteFlyAnim()
             cancelTemBetting()
             //开奖时取消临时下注的
             mDatabind.apply {
@@ -386,20 +382,25 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             }
         GameSocketManager.getInstance()?.getGameService()?.observeAgainDoubleState(this)
 
-        mViewModel.currentMoneyLD.observe(viewLifecycleOwner) { balance ->
-            //mDatabind.txtCurrentMoney.text = "¥ $balance"
-            val start = mDatabind.txtCurrentMoney.text.let {
-                if(it == "¥ --") 0f
-                else it.split(" ")[1].toFloat()
+        //总余额监听
+        gameAboutModel.balance.observe(viewLifecycleOwner) {
+            Log.e(TAG, "收到的总余额：${it},old:${mViewModel.currentMoney}, new:$it")
+            if (it > mViewModel.currentMoney) {
+                doNumberAnim(
+                    mDatabind.txtCurrentMoney,
+                    startNum = mViewModel.currentMoney,
+                    endNumber = it
+                )
+            } else {
+                mDatabind.txtCurrentMoney.text = "¥ ${it.formatRealMoney()}"
             }
-            val end = balance.toFloat()
-            Log.e(TAG, "收到的总余额：${balance},old:$start, new:$end")
-            this.doNumberAnim(mDatabind.txtCurrentMoney,start,end)
+
             mDatabind.llShowBetList.adapter?.notifyItemRangeChanged(
                 0,
                 mDatabind.llShowBetList.adapter?.itemCount ?: 0
             )
         }
+
         mViewModel.homeTimeSeconds.observe(viewLifecycleOwner) { seconds ->
             mDatabind.txtHomeTime.text = seconds.toString()
             if (mViewModel.gameState == GameState.Betting && seconds in 1..5) {
@@ -431,6 +432,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         }
 
         mViewModel.betDeleteClick.observe(this) {
+            cancelBetteFlyAnim()
             cancelTemBetting()
         }
 
@@ -522,6 +524,13 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         GameSocketManager.getInstance()?.getGameService()?.cancelBetting { result ->
             notifyMoneyOkView(result)
         }
+    }
+
+    private fun cancelBetteFlyAnim() {
+        betteFlyAnimList.forEach {
+            it.cancel()
+        }
+        betteFlyAnimList.clear()
     }
 
     /**
@@ -942,9 +951,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         //PromptSoundPlay.goldPlayMedia(this)
         //PromptSoundPlay.goldPlayMediaNew(this)
         PromptSoundPlay.playAudio(requireContext())
-        if (areaView.moneyView != anchorMoneyView) {
-            hiddenAnchorTop()
-        }
         //获取选中的筹码所在的position
         val betList = mDatabind.llShowBetList.models as List<SelectAnnotationBean>
         val selectedPosition = betList.indexOfFirst { it.select }
@@ -964,6 +970,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         }
     }
 
+
     private fun startMoneyAnimation(
         x: Float,
         y: Float,
@@ -972,6 +979,11 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         jettonView: View,
         endCallBack: (() -> Unit)?
     ) {
+        if (anchorMoneyView != null && areaView.moneyView != anchorMoneyView) {
+            hiddenAnchorTop()
+        }
+        updateAnchorView(areaView)
+
         //贝塞尔曲线中间过程的点的坐标
         val mCurrentPosition = FloatArray(2)
 
@@ -1031,13 +1043,13 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 animator.start()
 
                 //筹码栈处理
-                updateAnchorView(areaView)
 //                addTempMoney(areaView)
             })
         }
 
         valueAnimator.duration = speed
         valueAnimator.interpolator = AccelerateDecelerateInterpolator()
+        betteFlyAnimList.add(valueAnimator)
         valueAnimator.start()
     }
 
