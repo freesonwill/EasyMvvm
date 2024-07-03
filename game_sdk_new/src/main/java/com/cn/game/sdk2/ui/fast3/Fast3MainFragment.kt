@@ -71,6 +71,7 @@ import com.drake.brv.utils.setup
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.animator.EmptyAnimator
 import com.lxj.xpopup.core.BasePopupView
+import com.lxj.xpopup.enums.PopupAnimation
 import com.lxj.xpopup.interfaces.SimpleCallback
 import com.robinhood.ticker.TickerUtils
 import com.xcjh.base_lib.base.fragment.BaseVmDbFragment
@@ -394,6 +395,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             } else {
                 mDatabind.txtCurrentMoney.text = "¥ ${it.formatRealMoney()}"
             }
+            mViewModel.currentMoney = it
 
             mDatabind.llShowBetList.adapter?.notifyItemRangeChanged(
                 0,
@@ -453,7 +455,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                         ivMultiple2.isVisible = false
                     }
 
-                    //todo x2不可用的状态
                     GameAboutModel.AgainDoubleState.DOUBLE -> {
                         ivXuya.isVisible = false
                         ivMultiple2.isVisible = true
@@ -832,7 +833,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     bubbleAttach.customBubbleAttachListener =
                         object : CustomBubbleAttachPopup.CustomBubbleAttachListener {
                             override fun switchGame() {
-                                homeMorePop!!.dismiss()
                             }
                         }
                     homeMorePop = XPopup.Builder(requireContext())
@@ -843,9 +843,9 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                 homeMorePop = null
                             }
                         })
-                        .customAnimator(EmptyAnimator(bubbleAttach, 0))
+                        //.customAnimator(EmptyAnimator(bubbleAttach, 0))
                         .atView(mDatabind.llHomeMore)
-                        .navigationBarColor(android.R.color.transparent)
+                        //.navigationBarColor(android.R.color.transparent)
                         .hasShadowBg(false) // 去掉半透明背景
                         .asCustom(bubbleAttach)
                     homeMorePop?.show()
@@ -855,11 +855,12 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             }
             //加倍
             ivMultiple2.clickNoRepeat {
-                PromptSoundPlay.btnPlayMedia()
                 if (gameAboutModel.currentAgainDoubleState.value != GameAboutModel.AgainDoubleState.DOUBLE) {
                     return@clickNoRepeat
                 }
-                GameSocketManager.getInstance()?.getGameService()?.doubleBetting { bettingState, map,areaLimit ->
+                PromptSoundPlay.btnPlayMedia()
+                GameSocketManager.getInstance()?.getGameService()
+                    ?.doubleBetting { bettingState, map,areaLimit ->
                         bettingState.isCanGoOn(areaLimit) {
                             if (!map.isNullOrEmpty()) {
                                 map.forEach {
