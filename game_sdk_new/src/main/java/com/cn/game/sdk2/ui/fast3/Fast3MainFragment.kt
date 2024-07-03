@@ -600,8 +600,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
      */
     private fun setBetAdapter() {
         mDatabind.llShowBetList.itemAnimator = null
-        mDatabind.llShowBetList.layoutManager =
-            CenterLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        mDatabind.llShowBetList.layoutManager = CenterLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         if (mDatabind.llShowBetList.itemDecorationCount == 0) {
             mDatabind.llShowBetList.addItemDecoration(
                 CommonLinearLayoutItemDecoration(
@@ -860,8 +859,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 if (gameAboutModel.currentAgainDoubleState.value != GameAboutModel.AgainDoubleState.DOUBLE) {
                     return@clickNoRepeat
                 }
-                GameSocketManager.getInstance()?.getGameService()
-                    ?.doubleBetting { bettingState, map,areaLimit ->
+                GameSocketManager.getInstance()?.getGameService()?.doubleBetting { bettingState, map,areaLimit ->
                         bettingState.isCanGoOn(areaLimit) {
                             if (!map.isNullOrEmpty()) {
                                 map.forEach {

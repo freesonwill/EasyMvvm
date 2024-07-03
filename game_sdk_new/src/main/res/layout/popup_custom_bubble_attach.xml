@@ -69,7 +69,7 @@
             android:background="@color/g_e8e8e9"/>
     </RelativeLayout>
     <RelativeLayout
-        android:id="@+id/rlPopClickToggle"
+        android:id="@+id/rl_pop_click_switch_game"
         android:layout_width="match_parent"
         android:layout_height="38dp">
         <LinearLayout
