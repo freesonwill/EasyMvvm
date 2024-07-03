@@ -102,7 +102,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     private var resultRvHeight = -1
     private var resultAnimMoveHeight = -1
     private var anchorMoneyView: MoneyOKView? = null
-    private var historyResultView: View? = null
 
     //<areaCode,<money,View>>
     private val currentBetteAreaMap by lazy { mutableMapOf<Int, GameAreaView>() }
@@ -423,6 +422,12 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             GameSocketManager.getInstance()?.getGameService()?.commitBetting { bettingState, bean ->
                 bettingState.isCanGoOn(null) {}
             }
+        }
+
+        gameAboutModel.isBettingSuccess.observe(this){
+            //Todo 获取真实下注成功的money
+            val money = gameAboutModel.lastBetting?.count
+            Fast3ToastHelper.showToastNormal(getString(R.string.bet_success_prompt, money))
         }
 
         mViewModel.betDeleteClick.observe(this) {
