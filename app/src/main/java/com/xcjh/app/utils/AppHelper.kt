@@ -932,7 +932,7 @@ fun shareUrl(context: Context, shareText: String?) {
         }
 
         else ->{
-            "${ApiComService.SHARE_URL}/$shareText"
+            "https://${ApiComService.SHARE_URL}/$shareText"
         }
 
     }
