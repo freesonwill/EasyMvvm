@@ -66,7 +66,6 @@ object ViewHelper {
      * 显示帮助文档
      */
     fun showHelpDialog(context: Context, isShow: Boolean = true) {
-
         if (helpXPopupDialog != null) {
             when {
                 isShow && !helpXPopupDialog!!.isShow -> {
@@ -98,6 +97,51 @@ object ViewHelper {
         helpXPopupDialog?.show()
     }
 
+
+    fun showFastViewPop(context: Context,isShow: Boolean){
+        if(!isShow){
+            homeXPopupDialog?.dismiss()
+            return
+        }
+        if(homeXPopupDialog != null) {
+            homeXPopupDialog!!.show()
+            return
+        }
+        XPopup.Builder(context)
+            .hasShadowBg(false)
+            .setPopupCallback(object : SimpleCallback() {
+                override fun onShow(popupView: BasePopupView?) {
+                    super.onShow(popupView)
+                    fastViewOverlay?.isVisible = false
+                    fastView?.isVisible = false
+                    appListener?.onGameFloatingDetailViewStatus(true)
+                }
+
+                override fun onDismiss(popupView: BasePopupView?) {
+                    super.onDismiss(popupView)
+                    fastViewOverlay?.isVisible = true
+                    fastView?.isVisible = true
+                    homeXPopupDialog = null
+                    appListener?.onGameFloatingDetailViewStatus(false)
+                }
+            })
+            .popupAnimation(PopupAnimation.TranslateFromBottom)
+            .animationDuration(500)
+            .moveUpToKeyboard(false) //如果不加这个，评论弹窗会移动到软键盘上面
+            .isViewMode(true)
+            .isTouchThrough(true)
+            .isDestroyOnDismiss(false) //对于只使用一次的弹窗，推荐设置这个
+            .isThreeDrag(false) //是否开启三阶拖拽，如果设置enableDrag(false)则无效
+            .enableDrag(true)
+            .dismissOnTouchOutside(true)
+            .asCustom(
+                HomeXPopupDialog(context, Fast3MainFragment(),GAME_ID_ENUM.GAME_FAST3.num).apply {
+                    homeXPopupDialog = this
+                }
+            )
+            .show()
+    }
+
     fun getFastView(context: Context):View{
         if(fastView != null) return fastView!!
         return LayoutInflater.from(context).inflate(R.layout.drag_fast_easy,null,false).also {
@@ -112,7 +156,8 @@ object ViewHelper {
                     Log.d(TAG, "homeXPopupDialog exists, no need to create it.")
                     return@setOnClickListener
                 }
-                XPopup.Builder(context)
+                showFastViewPop(context,true)
+                /*XPopup.Builder(context)
                     .hasShadowBg(false)
                     //.animationDuration(0)
                     .setPopupCallback(object : SimpleCallback() {
@@ -143,7 +188,7 @@ object ViewHelper {
                     .asCustom(HomeXPopupDialog(context, Fast3MainFragment(),GAME_ID_ENUM.GAME_FAST3.num).apply {
                         homeXPopupDialog = this
                     })
-                    .show()
+                    .show()*/
                 //EasyFloat.hide(TAG_FASTVIEW)
             }
         }

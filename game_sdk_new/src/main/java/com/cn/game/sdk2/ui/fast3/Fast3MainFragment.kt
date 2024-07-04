@@ -6,20 +6,17 @@ import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
-import android.content.ContextWrapper
-import android.content.res.AssetManager
 import android.graphics.Path
 import android.graphics.PathMeasure
 import android.graphics.Typeface
-import android.icu.text.DecimalFormat
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.addListener
@@ -27,10 +24,8 @@ import androidx.core.animation.doOnEnd
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -41,15 +36,12 @@ import com.cn.game.sdk2.data.EventConst
 import com.cn.game.sdk2.data.bean.GameHallItem
 import com.cn.game.sdk2.data.bean.SelectAnnotationBean
 import com.cn.game.sdk2.data.enums.GameState
-import com.cn.game.sdk2.databinding.DialogHomeXpopupContainerBinding
 import com.cn.game.sdk2.databinding.FragFast3HomeBinding
 import com.cn.game.sdk2.databinding.FragmentGamehallBinding
 import com.cn.game.sdk2.databinding.ItemAnnotationListBinding
 import com.cn.game.sdk2.databinding.ItemBetHistoryBinding
 import com.cn.game.sdk2.databinding.ItemGamehallPageBinding
 import com.cn.game.sdk2.databinding.ItemGamehallPageItemBinding
-import com.cn.game.sdk2.ui.HomeXPopupDialog
-import com.cn.game.sdk2.ui.HomeXPopupDialog.Companion
 import com.cn.game.sdk2.ui.helper.Fast3ToastHelper
 import com.cn.game.sdk2.ui.helper.ViewHelper
 import com.cn.game.sdk2.ui.helper.ViewHelper.bindViewPagerNewGame
@@ -83,7 +75,6 @@ import com.drake.brv.utils.dividerSpace
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.lxj.xpopup.XPopup
-import com.lxj.xpopup.animator.EmptyAnimator
 import com.lxj.xpopup.core.BasePopupView
 import com.lxj.xpopup.core.BottomPopupView
 import com.lxj.xpopup.enums.PopupAnimation
@@ -93,9 +84,11 @@ import com.xcjh.base_lib.base.fragment.BaseVmDbFragment
 import com.xcjh.base_lib.utils.dp2px
 import com.xcjh.base_lib.utils.loge
 import com.xcjh.base_lib.utils.view.clickNoRepeat
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.random.Random
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 
 @SuppressLint("SetTextI18n")
@@ -382,7 +375,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 override fun onAnimationRepeat(animation: Animator) {
                 }
             })
-
             lottieAnimView.playAnimation()
         }
     }
@@ -887,30 +879,43 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 PromptSoundPlay.btnPlayMedia(requireContext())
                 if (homeMorePop == null) {
                     val bubbleAttach = CustomBubbleAttachPopup(requireContext())
-                    bubbleAttach.customBubbleAttachListener =
-                        object : CustomBubbleAttachPopup.CustomBubbleAttachListener {
+                    bubbleAttach.customBubbleAttachListener = object : CustomBubbleAttachPopup.CustomBubbleAttachListener {
+                            private var gameHall: BasePopupView? = null
+                            private var rootHeight:Int  = 0
+                            init {
+                                rootHeight = mDatabind.root.height
+                            }
+                            fun backMainGame() {
+                                if(gameHall == null) return
+                                lifecycleScope.launch {
+                                    if(!gameHall!!.isDismiss) gameHall?.dismiss()
+                                    //delay(100)
+                                    ViewHelper.showFastViewPop(requireContext(),true)
+                                }
+                            }
+
                             override fun switchGame() {
                                 lifecycleScope.launch {
+                                    mDatabind.root.scaleY = 1f
+                                    ViewHelper.showFastViewPop(requireContext(),false)
+                                    delay(100)
                                     val context = requireContext()
                                     val popupView = object : BottomPopupView(context) {
                                         override fun getImplLayoutId(): Int = R.layout.fragment_gamehall
-
-                                        lateinit var mDatabind: FragmentGamehallBinding
-
+                                        lateinit var binding: FragmentGamehallBinding
                                         override fun onCreate() {
                                             super.onCreate()
-                                            mDatabind = FragmentGamehallBinding.bind(popupImplView)
+                                            binding = FragmentGamehallBinding.bind(popupImplView)
+                                            binding.lltRoot.layoutParams.also {
+                                                it.height = mDatabind.root.height
+                                                binding.lltRoot.layoutParams = it
+                                            }
                                             initView()
-                                            this@Fast3MainFragment.mDatabind.root.isVisible = false
                                         }
 
-                                        override fun onDismiss() {
-                                            super.onDismiss()
-                                            this@Fast3MainFragment.mDatabind.root.isVisible = true
-                                        }
                                         fun initView() {
                                             val views = ArrayList<View>()
-                                            repeat(1){ index ->
+                                            repeat(1){
                                                 val list = mutableListOf<GameHallItem>()
                                                 for (i in 1..1) {
                                                     list.add(GameHallItem("a", "快三", "3389在线"))
@@ -930,6 +935,11 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                                                     val bean = _data as GameHallItem
                                                                     tvName.text = bean.name
                                                                     tvOnline.text = bean.onlineA
+                                                                    if(bean.name == "快三") {
+                                                                        root.clickNoRepeat {
+                                                                            backMainGame()
+                                                                        }
+                                                                    }
                                                                 }
                                                             }
                                                         }
@@ -938,9 +948,9 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                                 views.add(mViewBind.root)
                                             }
 
-                                            mDatabind.viewPagerNew.initGameViewPager2(views)
-                                            mDatabind.magicIndicator.bindViewPagerNewGame(
-                                                mDatabind.viewPagerNew, arrayListOf(
+                                            binding.viewPagerNew.initGameViewPager2(views)
+                                            binding.magicIndicator.bindViewPagerNewGame(
+                                                binding.viewPagerNew, arrayListOf(
                                                    "热门",
                                                    /*"棋牌",
                                                    "视讯",
@@ -951,30 +961,32 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                                 scrollEnable = true,
                                                 action = { PromptSoundPlay.btnPlayMedia() }
                                             )
-                                            mDatabind.viewPagerNew.offscreenPageLimit = mFragList.size
-                                            mDatabind.close.clickNoRepeat {
-                                                dismiss()
+                                            binding.viewPagerNew.offscreenPageLimit = mFragList.size
+                                            binding.close.clickNoRepeat {
+                                                backMainGame()
                                             }
                                         }
-
                                     }
                                     XPopup.Builder(context)
                                         .isTouchThrough(false)
                                         .setPopupCallback(object : SimpleCallback() {
                                             override fun onCreated(popupView: BasePopupView?) {
                                                 super.onCreated(popupView)
+                                                gameHall = popupView
                                             }
 
                                             override fun onDismiss(popupView: BasePopupView?) {
                                                 super.onDismiss(popupView)
+                                                backMainGame()
+                                                gameHall = null
                                             }
                                         })
                                         .popupAnimation(PopupAnimation.TranslateFromBottom)
                                         .navigationBarColor(android.R.color.transparent)
                                         .isViewMode(false)
                                         .hasShadowBg(false) // 去掉半透明背景
-                                        .enableDrag(false)
-                                        //.dismissOnTouchOutside(false)
+                                        .enableDrag(true)
+                                        .dismissOnTouchOutside(true)
                                         .asCustom(popupView)
                                         .show()
                                 }
