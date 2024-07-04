@@ -1,7 +1,5 @@
 package com.cn.game.sdk2.websocket.viewmodel
 
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -93,7 +91,7 @@ class GameAboutModel : BaseViewModel() {
     > - bettingMessage 下注失败的message
      */
 
-    val isLoginSuccess: LiveData<Boolean>
+    val isLoginSuccess
         get() = _isLoginSuccess
 
     val isSitDown: LiveData<Boolean>

@@ -349,7 +349,7 @@ data class BOOM_6(
 
 data class BOOM_ALL(
     override var number: Int = 37, override var multiplier: Float = 32f,
-    override var toastStr: String = "豹子1"
+    override var toastStr: String = "全豹"
 ) : BOOM()
 
 val areaMap = mutableMapOf<Int, Betting>(

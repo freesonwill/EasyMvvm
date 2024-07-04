@@ -1,11 +1,8 @@
 package com.cn.game.sdk2.websocket
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
-import android.view.View
 import com.cn.game.sdk2.ui.fast3.Fast3MainFragment
-import com.cn.game.sdk2.ui.helper.ViewHelper
 import com.cn.game.sdk2.websocket.bean.AreaBetConfigBean
 import com.cn.game.sdk2.websocket.bean.BOOM_1
 import com.cn.game.sdk2.websocket.bean.BOOM_2
@@ -51,8 +48,6 @@ import com.cn.game.sdk2.websocket.bean.areaMap
 import com.cn.game.sdk2.websocket.imp.GameApp
 import com.cn.game.sdk2.websocket.imp.UIMethodImpl
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
-import com.cn.game.sdk2.websocket.viewmodel.MessageViewModel
-import com.xcjh.base_lib.ModuleInitializer
 import game.mod.proc.yf.proto.res.GameRes
 
 
@@ -103,8 +98,6 @@ var miniGameId: Int = 0
 
 var gameAboutModel = GameAboutModel()
 
-var messageViewModel: MessageViewModel? = null
-
 /**
  * 是否能下注
  * 判断依据：
@@ -114,22 +107,14 @@ var isCanBetting: Boolean = true
     get() {
         return true
     }
+    set(value) {
+        field = value
+    }
 
 /**
  * 上一次的下注结果
  */
 var previousSuccess: Boolean = true
-
-/**
- * 主播可以设置直播间是否允许下注
- * 默认 true
- */
-var isAllowedBet = true
-
-/**
- * 是否显示游戏
- */
-var isShowGame = true
 
 /**
  * app实现的接口
