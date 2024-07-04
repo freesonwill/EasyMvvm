@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tool="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    >
 
     <data>
 
@@ -70,15 +71,13 @@
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/txtLeopardOddsOne"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp_4"
                         android:text="@{model.multiplierStr(1)}"
-                        android:textColor="@color/g_f8e0c4"
-                        android:textSize="14sp"
+                        style="@style/text_single_dice"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/ivLeopardOneLeft" />
+                        app:layout_constraintTop_toBottomOf="@id/ivLeopardOneLeft"
+                        tools:text="x180"
+                        />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -134,12 +133,9 @@
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/txtLeopardOddsTwo"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp_4"
                         android:text="@{model.multiplierStr(2)}"
-                        android:textColor="@color/g_f8e0c4"
-                        android:textSize="14sp"
+                        style="@style/text_single_dice"
+                        tools:text="x180"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/ivLeopardTwoLeft" />
@@ -197,12 +193,9 @@
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/txtLeopardOddsThree"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp_4"
                         android:text="@{model.multiplierStr(3)}"
-                        android:textColor="@color/g_f8e0c4"
-                        android:textSize="14sp"
+                        style="@style/text_single_dice"
+                        tools:text="x180"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/ivLeopardThreeLeft" />
@@ -260,12 +253,9 @@
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/txtLeopardOddsFour"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp_4"
                         android:text="@{model.multiplierStr(3)}"
-                        android:textColor="@color/g_f8e0c4"
-                        android:textSize="14sp"
+                        style="@style/text_single_dice"
+                        tools:text="x180"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/ivLeopardFourLeft" />
@@ -323,12 +313,9 @@
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/txtLeopardOddsFive"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp_4"
                         android:text="@{model.multiplierStr(5)}"
-                        android:textColor="@color/g_f8e0c4"
-                        android:textSize="14sp"
+                        style="@style/text_single_dice"
+                        tools:text="x180"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/ivLeopardFiveLeft" />
@@ -386,12 +373,9 @@
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/txtPairsOddsSix"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp_4"
                         android:text="@{model.multiplierStr(6)}"
-                        android:textColor="@color/g_f8e0c4"
-                        android:textSize="14sp"
+                        style="@style/text_single_dice"
+                        tools:text="x180"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/ivLeopardSixLeft" />
