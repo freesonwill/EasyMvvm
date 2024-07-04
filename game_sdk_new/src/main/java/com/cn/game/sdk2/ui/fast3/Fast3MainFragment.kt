@@ -122,7 +122,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         mDatabind.model = mViewModel
         mDatabind.tvAnimWin.setCharacterLists(TickerUtils.provideNumberList())
         mDatabind.bottomLayout.setOnTouchListener { _, _ -> true }
-        mDatabind.centerLayout.setOnClickListener { } //屏蔽底部recycler点击
+        mDatabind.resultClickView.setOnClickListener { } //屏蔽底部recycler点击
         context?.assets?.let {
             mDatabind.tvAnimWin.typeface = Typeface.createFromAsset(it, "fonts/alibabapuhuiti.otf");
         }
