@@ -218,13 +218,16 @@
                                 android:layout_width="22dp"
                                 android:layout_height="18dp"
                                 android:scaleType="fitXY"
+                                android:tint="@drawable/selector_ll_home_more_btn_bg"
+                                android:duplicateParentState="true"
                                 app:srcCompat="@drawable/icon_more" />
 
                             <androidx.appcompat.widget.AppCompatTextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/g_home_txt_more"
-                                android:textColor="@color/g_f3f3f3"
+                                android:duplicateParentState="true"
+                                android:textColor="@drawable/selector_ll_home_more_btn_bg"
                                 android:textSize="9sp" />
                         </LinearLayout>
                     </LinearLayout>
