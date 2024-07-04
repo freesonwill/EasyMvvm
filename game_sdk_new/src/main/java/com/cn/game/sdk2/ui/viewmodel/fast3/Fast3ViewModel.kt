@@ -80,11 +80,11 @@ class Fast3ViewModel : BaseViewModel() {
      * 投注的钱
      */
     var noteList = ArrayList<SelectAnnotationBean>()
-    val betMoney: Int
+    val betteBean: SelectAnnotationBean
         get() {
             var selectedPosition = noteList.indexOfFirst { it.select }
             if (selectedPosition < 0) selectedPosition = 0
-            return noteList[selectedPosition].money
+            return noteList[selectedPosition]
         }
     val countDown: Long
         get() {
@@ -165,10 +165,11 @@ class Fast3ViewModel : BaseViewModel() {
         y: Float,
         speed: Long = 300,
         areaView: GameAreaView,
+        betteBean:SelectAnnotationBean,
         endCallBack: (() -> Unit)? = null
     ) {
         moneyAnimCallback?.apply {
-            startAnim(x, y, speed, areaView, endCallBack)
+            startAnim(x, y, speed, areaView, betteBean,endCallBack)
         }
     }
 
@@ -178,6 +179,7 @@ class Fast3ViewModel : BaseViewModel() {
             y: Float,
             speed: Long = 300,
             areaView: GameAreaView,
+            betteBean: SelectAnnotationBean,
             endCallBack: (() -> Unit)?
         )
     }

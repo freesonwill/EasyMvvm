@@ -16,6 +16,7 @@ import androidx.lifecycle.viewModelScope
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.base.BaseGameFragment
 import com.cn.game.sdk2.data.EventConst
+import com.cn.game.sdk2.data.bean.SelectAnnotationBean
 import com.cn.game.sdk2.databinding.FragDxdsBinding
 import com.cn.game.sdk2.ui.helper.ViewHelper.isAdd
 import com.cn.game.sdk2.ui.view.MoneyOKView
@@ -149,17 +150,18 @@ abstract class BaseFast3Fragment<VM : BaseViewModel, VB : ViewDataBinding>(var f
     private fun addBetting(areaView: GameAreaView, rawX: Float, rawY: Float) {
         //先判断余额是否够这次 并且扣取钱
         if (fast3VM.isClickOperation && PromptSoundPlay.handleClick()) {
-            val bettingBean = BettingRecordBean(areaView.areaInfo!!, money = fast3VM.betMoney)
-            gameMassageManager?.addBetting(bettingBean) { bettingState, result,areaLimit ->
-                bettingState.isCanGoOn(areaLimit,areaView.areaInfo){
+            val betteBean = fast3VM.betteBean
+            val bettingBean = BettingRecordBean(areaView.areaInfo!!, money = betteBean.money)
+            gameMassageManager?.addBetting(bettingBean) { bettingState, result, areaLimit ->
+                bettingState.isCanGoOn(areaLimit, areaView.areaInfo) {
                     result?.let {
                         areaView.setShowMoney(result.money)
                         if (!areaView.moneyView.isAdd()) {
                             addMoneyOkView(areaView, rawX, rawY) {
-                                emitMoneyAnim(result, areaView, isNewAdd = true)
+                                emitMoneyAnim(result, areaView, betteBean, isNewAdd = true)
                             }
                         } else {
-                            emitMoneyAnim(result, areaView)
+                            emitMoneyAnim(result, areaView, betteBean)
                         }
                     }
                 }
@@ -299,6 +301,7 @@ abstract class BaseFast3Fragment<VM : BaseViewModel, VB : ViewDataBinding>(var f
     private fun emitMoneyAnim(
         recordBean: BettingRecordBean,
         areaView: GameAreaView,
+        betteBean: SelectAnnotationBean,
         isNewAdd: Boolean = false
     ) {
         val moneyOKView = areaView.moneyView
@@ -319,7 +322,7 @@ abstract class BaseFast3Fragment<VM : BaseViewModel, VB : ViewDataBinding>(var f
             betteView.parentView = betteView.parent as ViewGroup
             betteView.isVisible = false
         }
-        fast3VM.emitMoneyAnim(rax, ray, areaView = areaView, endCallBack = {
+        fast3VM.emitMoneyAnim(rax, ray, areaView = areaView, betteBean = betteBean, endCallBack = {
             betteView.isVisible = true
         })
     }
