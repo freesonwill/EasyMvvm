@@ -387,6 +387,7 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
         userScore.toString().loge("refreshUserProperties")
         balance = userScore.score
         gameAboutModel.changeBalance(balance)
+        gameAboutModel.changeTempBalance(balance)
     }
 
     override fun beginRound(round: GameRes.BeginNewRound) {
