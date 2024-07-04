@@ -71,8 +71,8 @@ var isEnableSound = true
  * 仅记录用户当前状态，用于重连服务器处理
  */
 //测试打包专用 99:mFGB4ljy
-//92:ZyBmhNCJ   87:MHxIHlYM  93:Ufx3Dy8y 94:0aPEwiYK   金额少：97:QwM8xr0x
-var token = "99:mFGB4ljy"
+//92:ZyBmhNCJ   87:MHxIHlYM  93:Ufx3Dy8y 94:0aPEwiYK   金额少：97:nMz8aSsZ
+var token = "97:nMz8aSsZ"
 var isLogin = false
 var isEnterRoom = false
 
