@@ -119,9 +119,11 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     private val betteFlyAnimList by lazy { mutableListOf<ValueAnimator>() }
 
     //==================================== Method ===============================================//
+    @SuppressLint("ClickableViewAccessibility")
     override fun initView(savedInstanceState: Bundle?) {
         mDatabind.model = mViewModel
         mDatabind.tvAnimWin.setCharacterLists(TickerUtils.provideNumberList())
+        mDatabind.bottomLayout.setOnTouchListener { _, _ -> true }
         context?.assets?.let {
             mDatabind.tvAnimWin.typeface = Typeface.createFromAsset(it, "fonts/alibabapuhuiti.otf");
         }
@@ -593,17 +595,21 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             resultAnim?.cancel()
             mViewModel.isShowResult = isShowResult
             ivHomeRotation.rotation = if (isShowResult) 0f else 180f
-            val startHeight = flRvHistory.height.toFloat()
+            val startHeight = flRvHistory.height
             val endHeight =
                 if (isShowResult) resultRvHeight else resultRvHeight - resultAnimMoveHeight
-            resultAnim = ValueAnimator.ofFloat(startHeight, endHeight.toFloat()).apply {
-                duration = 150
-                addUpdateListener {
-                    val value = (it.animatedValue as Float).toInt()
-                    val params = flRvHistory.layoutParams
-                    params?.height = value
-                    flRvHistory.layoutParams = params
+            if (resultAnim == null) {
+                resultAnim = ValueAnimator.ofInt(startHeight, endHeight).apply {
+                    duration = 150
+                    addUpdateListener {
+                        val value = it.animatedValue as Int
+                        val params = flRvHistory.layoutParams
+                        params?.height = value
+                        flRvHistory.layoutParams = params
+                    }
                 }
+            } else {
+                resultAnim!!.setIntValues(startHeight, endHeight)
             }
             resultAnim?.start()
         }
@@ -879,29 +885,34 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 PromptSoundPlay.btnPlayMedia(requireContext())
                 if (homeMorePop == null) {
                     val bubbleAttach = CustomBubbleAttachPopup(requireContext())
-                    bubbleAttach.customBubbleAttachListener = object : CustomBubbleAttachPopup.CustomBubbleAttachListener {
+                    bubbleAttach.customBubbleAttachListener =
+                        object : CustomBubbleAttachPopup.CustomBubbleAttachListener {
                             private var gameHall: BasePopupView? = null
-                            private var rootHeight:Int  = 0
+                            private var rootHeight: Int = 0
+
                             init {
                                 rootHeight = mDatabind.root.height
                             }
+
                             fun backMainGame() {
-                                if(gameHall == null) return
+                                if (gameHall == null) return
                                 lifecycleScope.launch {
-                                    if(!gameHall!!.isDismiss) gameHall?.dismiss()
+                                    if (!gameHall!!.isDismiss) gameHall?.dismiss()
                                     //delay(100)
-                                    ViewHelper.showFastViewPop(requireContext(),true)
+                                    ViewHelper.showFastViewPop(requireContext(), true)
                                 }
                             }
 
                             override fun switchGame() {
                                 lifecycleScope.launch {
                                     mDatabind.root.scaleY = 1f
-                                    ViewHelper.showFastViewPop(requireContext(),false)
+                                    ViewHelper.showFastViewPop(requireContext(), false)
                                     delay(100)
                                     val context = requireContext()
                                     val popupView = object : BottomPopupView(context) {
-                                        override fun getImplLayoutId(): Int = R.layout.fragment_gamehall
+                                        override fun getImplLayoutId(): Int =
+                                            R.layout.fragment_gamehall
+
                                         lateinit var binding: FragmentGamehallBinding
                                         override fun onCreate() {
                                             super.onCreate()
@@ -915,18 +926,22 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
                                         fun initView() {
                                             val views = ArrayList<View>()
-                                            repeat(1){
+                                            repeat(1) {
                                                 val list = mutableListOf<GameHallItem>()
                                                 for (i in 1..1) {
                                                     list.add(GameHallItem("a", "快三", "3389在线"))
                                                 }
-                                                val mViewBind = ItemGamehallPageBinding.inflate(layoutInflater,null,false)
+                                                val mViewBind = ItemGamehallPageBinding.inflate(
+                                                    layoutInflater,
+                                                    null,
+                                                    false
+                                                )
                                                 mViewBind.rvContent.itemAnimator = null
                                                 mViewBind.rvContent.dividerSpace(
                                                     requireContext().dp2px(20),
                                                     DividerOrientation.HORIZONTAL
                                                 ).setup {
-                                                    it.layoutManager = GridLayoutManager(context,4)
+                                                    it.layoutManager = GridLayoutManager(context, 4)
                                                     addType<GameHallItem>(R.layout.item_gamehall_page_item)
                                                     onBind {
                                                         when (itemViewType) {
@@ -935,7 +950,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                                                     val bean = _data as GameHallItem
                                                                     tvName.text = bean.name
                                                                     tvOnline.text = bean.onlineA
-                                                                    if(bean.name == "快三") {
+                                                                    if (bean.name == "快三") {
                                                                         root.clickNoRepeat {
                                                                             backMainGame()
                                                                         }
@@ -951,12 +966,12 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                             binding.viewPagerNew.initGameViewPager2(views)
                                             binding.magicIndicator.bindViewPagerNewGame(
                                                 binding.viewPagerNew, arrayListOf(
-                                                   "热门",
-                                                   /*"棋牌",
-                                                   "视讯",
-                                                   "捕鱼",
-                                                   "体育",
-                                                   "电子",*/
+                                                    "热门",
+                                                    /*"棋牌",
+                                                    "视讯",
+                                                    "捕鱼",
+                                                    "体育",
+                                                    "电子",*/
                                                 ),
                                                 scrollEnable = true,
                                                 action = { PromptSoundPlay.btnPlayMedia() }
