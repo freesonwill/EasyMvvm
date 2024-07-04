@@ -1,6 +1,6 @@
 package com.cn.game.sdk2.ui.view
 
-import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.content.Context
 import android.util.Log
 import androidx.core.animation.addListener
@@ -11,31 +11,37 @@ import com.cn.game.sdk2.ui.helper.ViewHelper
 import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
 import com.cn.game.sdk2.utils.ext.ViewExt.bindRecycleView
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
+import com.cn.game.sdk2.utils.tool.screenHeight
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.drake.brv.annotaion.DividerOrientation
 import com.drake.brv.utils.dividerSpace
 import com.drake.brv.utils.setup
+import com.gyf.immersionbar.ktx.statusBarHeight
 import com.lxj.xpopup.core.BottomPopupView
 import com.xcjh.base_lib.utils.dp2px
 import com.xcjh.base_lib.utils.view.clickNoRepeat
 import com.xcjh.base_lib.utils.view.getStringArray
 
+
 /**
  * 首页的弹出框
  */
-class Fast3HelpPopup(context: Context,private val offsetY:Int) : BottomPopupView(context) {
+class Fast3HelpPopup(context: Context, private val offsetY: Int, private val height: Int) :
+    BottomPopupView(context) {
     private lateinit var mViewBind: FragmentFast3HelpBinding
+    private var fullHeight: Int = context.screenHeight + context.statusBarHeight
     override fun getImplLayoutId(): Int {
         return R.layout.fragment_fast3_help
     }
-
     override fun onCreate() {
         super.onCreate()
         mViewBind = FragmentFast3HelpBinding.bind(popupImplView)
-        mViewBind.content.translationY = offsetY.toFloat()
         this.initView()
         gameAboutModel.fast3MainFloatVisible.value = false
-
+        mViewBind.root.layoutParams.let { lp ->
+            lp.height = height
+            mViewBind.content.layoutParams = lp
+        }
     }
 
     override fun onDestroy() {
@@ -71,14 +77,33 @@ class Fast3HelpPopup(context: Context,private val offsetY:Int) : BottomPopupView
             action = { PromptSoundPlay.btnPlayMedia() }
         )
 
-        mViewBind.ivCollapse.clickNoRepeat(300) {
+        mViewBind.lltCollapse.clickNoRepeat(300) {
             PromptSoundPlay.btnPlayMedia()
-            val toExpand = mViewBind.content.translationY != 0f
+            val toExpand = mViewBind.content.height != fullHeight
             val topPadding = if (toExpand) 40.dp2px else 0
             val bottomPadding = 48.dp2px
-            val start = if (toExpand) offsetY else 0
-            val end = if (!toExpand) offsetY else 0
-            ObjectAnimator.ofFloat(mViewBind.content, "translationY", start.toFloat(), end.toFloat()).apply {
+            val start = if (toExpand) height else fullHeight
+            val end = if (!toExpand) height else fullHeight
+            ValueAnimator.ofInt(start, end).apply {
+                duration = 200
+                addUpdateListener {
+                    val value = it.animatedValue as Int
+                    mViewBind.content.layoutParams.let { lp->
+                        lp.height = value
+                        mViewBind.content.layoutParams = lp
+                    }
+                }
+                addListener(
+                    onStart = {
+                        mViewBind.content.setPadding(0, topPadding, 0, bottomPadding)
+                    },
+                    onEnd = {
+                        //动画结束
+                        mViewBind.ivCollapse.setImageResource(if (!toExpand) R.drawable.ic_expand else R.drawable.ic_collapse)
+                    })
+                start()
+            }
+            /*ObjectAnimator.ofFloat(mViewBind.content, "height", start.toFloat(), end.toFloat()).apply {
                 duration = 200
                 addListener(
                     onStart = {
@@ -90,8 +115,8 @@ class Fast3HelpPopup(context: Context,private val offsetY:Int) : BottomPopupView
                         mViewBind.ivCollapse.setImageResource(if (!toExpand) R.drawable.ic_expand else R.drawable.ic_collapse)
                     })
                 start()
-            }
-            Log.d(TAG,"addUpdateListener----->$start-->$end,toExpand:$toExpand")
+            }*/
+            Log.d(TAG, "addUpdateListener----->$start-->$end,toExpand:$toExpand")
         }
         mViewBind.close.clickNoRepeat {
             PromptSoundPlay.btnPlayMedia()

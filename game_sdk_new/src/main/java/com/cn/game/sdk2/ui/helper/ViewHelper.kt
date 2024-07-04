@@ -74,9 +74,11 @@ object ViewHelper {
             }
             return
         }
-        val offsetY = homeXPopupDialog!!.findViewById<View>(R.id.rlRoot).locationInWindow[1]
+        val (offsetY,height) = homeXPopupDialog!!.findViewById<View>(R.id.rlRoot).let {
+            arrayOf(it.locationInWindow[1],it.height)
+        }
         helpXPopupDialog = XPopup.Builder(context)
-            .isTouchThrough(true)
+            .isTouchThrough(false)
             .setPopupCallback(object : SimpleCallback() {
                 override fun onDismiss(popupView: BasePopupView?) {
                     super.onDismiss(popupView)
@@ -90,7 +92,8 @@ object ViewHelper {
             .hasStatusBar(false)
             .hasNavigationBar(false)
             .enableDrag(true)
-            .asCustom(Fast3HelpPopup(context, offsetY))
+            .dismissOnTouchOutside(true)
+            .asCustom(Fast3HelpPopup(context, offsetY,height))
         helpXPopupDialog?.show()
     }
 
