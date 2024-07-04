@@ -1,6 +1,7 @@
 package com.cn.game.sdk2.ui.fast3
 
 import android.animation.Animator
+import android.animation.Animator.AnimatorListener
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
@@ -42,6 +43,7 @@ import com.cn.game.sdk2.databinding.ItemAnnotationListBinding
 import com.cn.game.sdk2.databinding.ItemBetHistoryBinding
 import com.cn.game.sdk2.databinding.ItemGamehallPageBinding
 import com.cn.game.sdk2.databinding.ItemGamehallPageItemBinding
+import com.cn.game.sdk2.ui.helper.AnimHelper
 import com.cn.game.sdk2.ui.helper.Fast3ToastHelper
 import com.cn.game.sdk2.ui.helper.ViewHelper
 import com.cn.game.sdk2.ui.helper.ViewHelper.bindViewPagerNewGame
@@ -126,7 +128,13 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             mDatabind.tvAnimWin.typeface = Typeface.createFromAsset(it, "fonts/alibabapuhuiti.otf");
         }
         mDatabind.llHomeVideo.setOnClickListener {
-            Fast3ToastHelper.showToastNormal(getString(R.string.g_home_betting_begin), 2000)
+           /* mDatabind.groupWinLottie.isVisible = true
+            AnimHelper.doNumberAnim(mDatabind.tvAnimWin2,0, 987654399,600)
+            showLottie {  }*/
+            /*AnimHelper.doNumberAnim(
+                mDatabind.txtCurrentMoney,
+                7865458958,5
+            )*/
         }
         CommonUtils.getNavigationBarHeight(mDatabind.root).let {
             mViewModel.navigationBarHeight.value = it
@@ -177,18 +185,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     }
 
     override fun lazyLoadData() {
-    }
-
-
-    private fun doNumberAnim(targetView: TextView, startNum: Long, endNumber: Long) {
-        ValueAnimator.ofFloat(startNum.toFloat(), endNumber.toFloat()).apply {
-            duration = 500
-            addUpdateListener {
-                targetView.text = "¥ ${(it.animatedValue as Float).formatRealMoney()}"
-            }
-            doOnEnd { targetView.text = "¥ ${endNumber.formatRealMoney()}" }
-            start()
-        }
     }
 
     override fun initData() {
@@ -276,7 +272,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         val roundInfo: RoundInfoBean? = gameAboutModel.currentSettleResult
         lifecycleScope.launch {
             mDatabind.apply {
-                Fast3ToastHelper.showToastNormal(getString(R.string.g_home_setting_begin), 1000)
+                //Fast3ToastHelper.showToastNormal(getString(R.string.g_home_setting_begin), 1000)
                 txtHomeStatic.text = resources.getString(R.string.g_f3_setting)
                 Log.e(TAG, "结算item" + roundInfo.toString())
                 roundInfo?.run {
@@ -348,6 +344,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     /**
      * 播放中奖lottie动画
      */
+    private var lottieListener: AnimatorListener ?= null
     private fun startWinLottieAnim(endCallBack: (() -> Unit)?) {
         mDatabind.apply {
             val winMoney = gameAboutModel.netIncome
@@ -356,26 +353,36 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 endCallBack?.invoke()
                 return
             }
-            groupWinLottie.isVisible = true
-            val originTxt = "$" + winMoney.formatRealMoney()
+            AnimHelper.doNumberAnim(mDatabind.tvAnimWin2,0, (winMoney).toLong(),600)
+            /*val originTxt = "¥" + winMoney.formatRealMoney()
             mDatabind.tvAnimWin.setText(originTxt.replace(Regex("[0-9]"), "0"), false)
-            tvAnimWin.setText("$${winMoney.formatRealMoney()}", true)
-            lottieAnimView.addAnimatorListener(object : Animator.AnimatorListener {
-                override fun onAnimationStart(animation: Animator) {
-                    PromptSoundPlay.playWinEffect()
-                }
+            tvAnimWin.setText("¥${winMoney.formatRealMoney()}", true)*/
+            showLottie(endCallBack)
+        }
+    }
 
-                override fun onAnimationEnd(animation: Animator) {
-                    endCallBack?.invoke()
-                    groupWinLottie.isVisible = false
-                }
+    private fun showLottie(endCallBack: (() -> Unit)?){
+        mDatabind.apply {
+            groupWinLottie.isVisible = true
+            if(null == lottieListener){
+                lottieListener = object : AnimatorListener {
+                    override fun onAnimationStart(animation: Animator) {
+                        PromptSoundPlay.playWinEffect()
+                    }
 
-                override fun onAnimationCancel(animation: Animator) {
-                }
+                    override fun onAnimationEnd(animation: Animator) {
+                        endCallBack?.invoke()
+                        groupWinLottie.isVisible = false
+                    }
 
-                override fun onAnimationRepeat(animation: Animator) {
+                    override fun onAnimationCancel(animation: Animator) {
+                    }
+
+                    override fun onAnimationRepeat(animation: Animator) {
+                    }
                 }
-            })
+                lottieAnimView.addAnimatorListener(lottieListener)
+            }
             lottieAnimView.playAnimation()
         }
     }
@@ -395,7 +402,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         gameAboutModel.balance.observe(viewLifecycleOwner) {
             Log.e(TAG, "收到的总余额：${it},old:${mViewModel.currentMoney}, new:$it")
             if (it > mViewModel.currentMoney) {
-                doNumberAnim(
+                AnimHelper.doNumberAnim(
                     mDatabind.txtCurrentMoney,
                     startNum = mViewModel.currentMoney,
                     endNumber = it

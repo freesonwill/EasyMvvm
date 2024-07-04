@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 
 import com.cn.game.sdk2.ui.helper.ViewHelper
+import com.cn.game.sdk2.ui.helper.ViewHelper.isAdd
 import com.cn.game.sdk2.ui.view.FastLogoView
 import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
 import com.cn.game.sdk2.websocket.GameSocketManager
@@ -87,18 +88,24 @@ class MainActivity : AppCompatActivity() {
                 /*ViewHelper.showFastView(this)
                 ViewHelper.showFastViewOverlay(this)*/
                 GameApp.createFloatEnterView(this@MainActivity).apply {
-                    val lp = RelativeLayout.LayoutParams(layoutParams.width,layoutParams.height)
-                    lp.topMargin = 200.dp2px
-                    lp.marginEnd = 0.dp2px
-                    lp.addRule(RelativeLayout.ALIGN_PARENT_END)
-                    llshow.addView(this,lp)
+                    if(!this.isAdd()) {
+                        val lp =
+                            RelativeLayout.LayoutParams(layoutParams.width, layoutParams.height)
+                        lp.topMargin = 200.dp2px
+                        lp.marginEnd = 0.dp2px
+                        lp.addRule(RelativeLayout.ALIGN_PARENT_END)
+                        llshow.addView(this, lp)
+                    }
                 }
                 GameApp.createFloatResultView(this@MainActivity).apply {
-                    val lp = RelativeLayout.LayoutParams(layoutParams.width,layoutParams.height)
-                    lp.topMargin = 50.dp2px
-                    lp.marginEnd = 0.dp2px
-                    lp.addRule(RelativeLayout.ALIGN_PARENT_END)
-                    llshow.addView(this,lp)
+                    if(!this.isAdd()) {
+                        val lp =
+                            RelativeLayout.LayoutParams(layoutParams.width, layoutParams.height)
+                        lp.topMargin = 50.dp2px
+                        lp.marginEnd = 0.dp2px
+                        lp.addRule(RelativeLayout.ALIGN_PARENT_END)
+                        llshow.addView(this, lp)
+                    }
                 }
 
             }
