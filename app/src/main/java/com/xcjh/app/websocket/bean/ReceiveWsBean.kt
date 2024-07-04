@@ -113,6 +113,8 @@ data class LiveStatus(
     var competitionNameZht: String = "",//	赛事英文繁体
     var pureFlow: Boolean = false,//	是否是纯净流
     var hotCompetition:Boolean=false,  //热门字段默认 不是热门比赛
+    var tickOut:Boolean=false,  //是否拉黑
+
 )
 
 /**

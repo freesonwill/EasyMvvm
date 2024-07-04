@@ -41,7 +41,6 @@ import com.xcjh.app.R
 import com.xcjh.app.adapter.ViewPager2Adapter
 import com.xcjh.app.appViewModel
 import com.xcjh.app.bean.AnchorListBean
-import com.xcjh.app.bean.MainTxtBean
 import com.xcjh.app.bean.MatchBean
 import com.xcjh.app.bean.MatchDetailBean
 import com.xcjh.app.databinding.ActivityMatchDetailBinding
@@ -307,9 +306,7 @@ class MatchDetailActivity :
                         // 在这里执行协程操作
                         setShareDate()
                     }
-//                    GlobalScope.launch(Dispatchers.Main) { // 使用主线程的调度器
-//                        setShareDate()
-//                    }
+
                 } else if (it == 2) {//
                     lifecycleScope.launch {
                         // 在这里执行协程操作
@@ -317,11 +314,7 @@ class MatchDetailActivity :
                         ClingDLNAManager.getInstant().searchDevices()
                         dataPopup()
                     }
-//                    GlobalScope.launch(Dispatchers.Main) { // 使用主线程的调度器
-//                        delay(1000L) // 延迟1秒（1000毫秒）
-//                        ClingDLNAManager.getInstant().searchDevices()
-//                        dataPopup()
-//                    }
+
 
                 } else if (it == 3) {
                     showSignal()
@@ -578,12 +571,55 @@ class MatchDetailActivity :
                                 nickName = bean.nickName ?: ""
                                 playUrl = bean.playUrl ?: ""
                             }
+
+
+                            var isSelect:Boolean=false
                             matchDetail.anchorList?.forEach {
                                 if (it.userId == bean.anchorId) {
                                     it.isOpen = true
                                     it.playUrl = bean.playUrl
+                                    isSelect=true
                                 }
                             }
+                            //新加逻辑
+                            if(!isSelect){
+                                var anchor=AnchorListBean()
+                                anchor.isOpen=true
+                                anchor.isSelect=true
+                                anchor.playUrl=bean.playUrl
+                                anchor.userId=bean.anchorId
+                                anchor.nickName=bean.nickName
+                                anchor.userLogo=bean.userLogo
+                                anchor.hotValue=bean.hotValue.toString()
+                                matchDetail.anchorList?.add(anchor)
+
+                                var list= matchDetail.anchorList
+                                var live=ArrayList<AnchorListBean>()
+                                var pureFlowList=ArrayList<AnchorListBean>()
+                                list!!.forEach {
+                                    if(it.pureFlow){
+                                        pureFlowList.add(it)
+                                    }else{
+                                        live.add(it)
+                                    }
+                                }
+                                if(live.size>0){
+                                    live.sortByDescending{
+                                        it.hotValue
+                                    }
+                                }
+                                var newLive=ArrayList<AnchorListBean>()
+
+                                newLive.addAll(live)
+                                newLive.addAll(pureFlowList)
+                                matchDetail.anchorList?.clear()
+                                matchDetail.anchorList?.addAll(newLive)
+
+
+                            }
+
+
+
                             if (isTopActivity(this@MatchDetailActivity) && !isPause) {
                                  if(finisShow!=null&&finisShow!!.isShow){
                                      finisShow!!.dismiss()
@@ -591,12 +627,15 @@ class MatchDetailActivity :
                                 startVideo(bean.playUrl)
                             }
                         } else {
-                            //是否只有一个纯净流
-                            var isPure=false
+                            //是否只有一个纯净流 true是只有一个
+                            var isPure=true
                             if(matchDetail.anchorList!=null){
-                                if(matchDetail.anchorList!!.size==1){
-                                    isPure=true
+                                matchDetail.anchorList!!.forEach {
+                                    if(!it.pureFlow){
+                                        isPure=false
+                                    }
                                 }
+
                             }
 
                             //增加主播
@@ -983,71 +1022,77 @@ class MatchDetailActivity :
      */
     private fun showSignal() {
         if (matchDetail.anchorList?.isNotEmpty() == true) {
-            //  showSignalDialog   showSignalPopup
-            showSignalPopup(this,matchDetail.anchorList) { anchor, pos ->
-                matchDetail.anchorList?.forEach {
+            //  showSignalDialog   showSignalPopup    //选择投屏的时候不允许横屏
+            //        this.setIsLandscape(false)
+            this.setIsLandscape(false)
+            showSignalPopup(this,matchDetail.anchorList,
+                { anchor, pos ->
+                    matchDetail.anchorList?.forEach {
                         if(it.pureFlow){
                             it.isSelect = it.nickName.equals(anchor.nickName)
                         }else{
                             it.isSelect = it.userId == anchor.userId
                         }
 
-                }
-                if (!anchor.pureFlow&&  this.anchor?.userId == anchor.userId) {
-                    //无改变
-                    return@showSignalPopup
-                }
-                //当前选择的是纯净流并且和判断选择的是不是正在播放的纯净流
-                if(anchor.pureFlow&&this.anchor?.nickName!!.equals(anchor.nickName)){
-                    //无改变
-                    return@showSignalPopup
-                }
+                    }
+                    if (!anchor.pureFlow&&  this.anchor?.userId == anchor.userId) {
+                        //无改变
+                        return@showSignalPopup
+                    }
+                    //当前选择的是纯净流并且和判断选择的是不是正在播放的纯净流
+                    if(anchor.pureFlow&&this.anchor?.nickName!!.equals(anchor.nickName)){
+                        //无改变
+                        return@showSignalPopup
+                    }
 
-                //如果选择了有改变就不是纯净流了
-                pureFlow=false
-                val iterator = matchDetail.anchorList?.iterator()
-                //如果已经关闭了后就删除
-                if (iterator != null) {
-                    for (tab in iterator) {
-                        if (!tab.isOpen) {
-                            iterator.remove()
+                    //如果选择了有改变就不是纯净流了
+                    pureFlow=false
+                    val iterator = matchDetail.anchorList?.iterator()
+                    //如果已经关闭了后就删除
+                    if (iterator != null) {
+                        for (tab in iterator) {
+                            if (!tab.isOpen) {
+                                iterator.remove()
+                            }
                         }
                     }
-                }
-                //切换主播
-                this.anchor = anchor
-                //是纯净流
-                if (anchor.pureFlow) {
-                    mDatabind.ivMatchVideo.visibility = View.GONE
-                    this.setIsLandscape(false)
-                    isHasAnchor = false
+                    //切换主播
+                    this.anchor = anchor
+                    //是纯净流
+                    if (anchor.pureFlow) {
+                        mDatabind.ivMatchVideo.visibility = View.GONE
+                        this.setIsLandscape(false)
+                        isHasAnchor = false
 
-                    if (anchor.playUrl.isNullOrEmpty()) {
-                        isShowVideo = false
+                        if (anchor.playUrl.isNullOrEmpty()) {
+                            isShowVideo = false
+                        } else {
+                            isShowVideo = true
+
+                        }
+                        if (mDatabind.videoPlayer.isIfCurrentIsFullscreen) {
+                            exitFullScreen()
+                        }
+
                     } else {
-                        isShowVideo = true
-
-                    }
-                    if (mDatabind.videoPlayer.isIfCurrentIsFullscreen) {
-                        exitFullScreen()
-                    }
-
-                } else {
-                    mDatabind.ivMatchVideo.visibility = View.VISIBLE
+                        mDatabind.ivMatchVideo.visibility = View.VISIBLE
 //                    this.setIsLandscape(true)
-                    isHasAnchor = true
-                    isShowVideo = true
-                }
+                        isHasAnchor = true
+                        isShowVideo = true
+                    }
 
-                mDatabind.tvToShare.visibleOrGone(true)
-                if (isShowVideo) {
-                    startVideo(anchor.playUrl)
-                } else {
-                    mDatabind.videoPlayer.release()
-                }
-                changeUI()
+                    mDatabind.tvToShare.visibleOrGone(true)
+                    if (isShowVideo) {
+                        startVideo(anchor.playUrl)
+                    } else {
+                        mDatabind.videoPlayer.release()
+                    }
+                    changeUI()
 
-            }
+                },{
+                    this.setIsLandscape(true)
+                })
+
         } else {
             myToast("no data", isDeep = true)
         }
@@ -1720,6 +1765,7 @@ class MatchDetailActivity :
             var live=ArrayList<AnchorListBean>()
             var pureFlowList=ArrayList<AnchorListBean>()
             list.forEach {
+
                 if(it.pureFlow){
                     pureFlowList.add(it)
                 }else{

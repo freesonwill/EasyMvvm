@@ -167,6 +167,7 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
                     being.homeTeamLogo=bean.homeTeamLogo
                     being.awayTeamLogo=bean.awayTeamLogo
                     being.pureFlow=false
+                    being.tickOut=bean.tickOut
 
                     //语言 0是中文  1是繁体  2是英文
                     if(Constants.languageType==0){
@@ -236,7 +237,7 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
                     //没有被拉黑的的主播
                     var liveList=ArrayList<BeingLiveBean>()
                     //被拉黑的主播
-                    var tickOutList=ArrayList<BeingLiveBean>()
+//                    var tickOutList=ArrayList<BeingLiveBean>()
 
                     //纯净流
                     var pureList=ArrayList<BeingLiveBean>()
@@ -256,25 +257,25 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
                             }
 
                         }else{
-                            if(it.tickOut){
-                                tickOutList.add(it)
-                            }else{
-                                liveList.add(it)
-                            }
-
+//                            if(it.tickOut){
+//                                tickOutList.add(it)
+//                            }else{
+//                                liveList.add(it)
+//                            }
+                            liveList.add(it)
                         }
                     }
                     //主播开播比赛 倒序
                     var newLive=liveList.sortedWith(compareByDescending<BeingLiveBean>{ it.hotValue }.thenByDescending { it.id.toLong() })
 
-                    var newTickOut=tickOutList.sortedWith(compareByDescending<BeingLiveBean>{ it.hotValue }.thenByDescending { it.id.toLong() })
+//                    var newTickOut=tickOutList.sortedWith(compareByDescending<BeingLiveBean>{ it.hotValue }.thenByDescending { it.id.toLong() })
                     //热门纯净流 升序
                     var newPopular=popularList.sortedWith(compareBy<BeingLiveBean>{it.matchTime.toLong()}.thenBy { it.matchId.toLong() })
                     //纯净流比赛升序
                     var newPure=pureList.sortedWith(compareBy<BeingLiveBean>{it.matchTime.toLong()}.thenBy { it.matchId.toLong() })
                     (mDatabind.rcvRecommend.mutable[type] as MainTxtBean).list.clear()
                     (mDatabind.rcvRecommend.mutable[type] as MainTxtBean).list.addAll(newLive)
-                    (mDatabind.rcvRecommend.mutable[type] as MainTxtBean).list.addAll(newTickOut)
+//                    (mDatabind.rcvRecommend.mutable[type] as MainTxtBean).list.addAll(newTickOut)
                     (mDatabind.rcvRecommend.mutable[type] as MainTxtBean).list.addAll(newPopular)
                     (mDatabind.rcvRecommend.mutable[type] as MainTxtBean).list.addAll(newPure)
                     mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()
@@ -386,7 +387,7 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
 
                     var liveList=ArrayList<BeingLiveBean>()
                     //被拉黑的主播
-                    var tickOutList=ArrayList<BeingLiveBean>()
+//                    var tickOutList=ArrayList<BeingLiveBean>()
                     //纯净流
                     var pureList=ArrayList<BeingLiveBean>()
                     //热门纯净流
@@ -403,16 +404,17 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
                             }
 
                         }else{
-                            if(it.tickOut){
-                                tickOutList.add(it)
-                            }else{
-                                liveList.add(it)
-                            }
+//                            if(it.tickOut){
+//                                tickOutList.add(it)
+//                            }else{
+//                                liveList.add(it)
+//                            }
+                            liveList.add(it)
                         }
                     }
                     //主播开播比赛 倒序
                     var newLive=liveList.sortedWith(compareByDescending<BeingLiveBean>{it.hotValue}.thenByDescending { it.id.toLong() })
-                    var newTickOut=tickOutList.sortedWith(compareByDescending<BeingLiveBean>{ it.hotValue }.thenByDescending { it.id.toLong() })
+//                    var newTickOut=tickOutList.sortedWith(compareByDescending<BeingLiveBean>{ it.hotValue }.thenByDescending { it.id.toLong() })
                     //热门纯净流 升序
                     var newPopular=popularList.sortedWith(compareBy<BeingLiveBean>{it.matchTime.toLong()}.thenBy { it.matchId.toLong() })
 
@@ -425,7 +427,7 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
 
                     (mDatabind.rcvRecommend.mutable[type] as MainTxtBean).list.clear()
                     (mDatabind.rcvRecommend.mutable[type] as MainTxtBean).list.addAll(newLive)
-                    (mDatabind.rcvRecommend.mutable[type] as MainTxtBean).list.addAll(newTickOut)
+//                    (mDatabind.rcvRecommend.mutable[type] as MainTxtBean).list.addAll(newTickOut)
                     (mDatabind.rcvRecommend.mutable[type] as MainTxtBean).list.addAll(newPopular)
                     (mDatabind.rcvRecommend.mutable[type] as MainTxtBean).list.addAll(newPure)
                     mDatabind.rcvRecommend.bindingAdapter.notifyDataSetChanged()

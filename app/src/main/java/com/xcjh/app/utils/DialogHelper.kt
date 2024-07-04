@@ -386,8 +386,9 @@ var bottomDoalog: BottomDialog?=null
 
   var popup: SignalPopupList? = null
 
-fun showSignalPopup(context: Context, anchorList: List<AnchorListBean>?,
-                   action: (AnchorListBean, Int) -> Unit,){
+fun showSignalPopup(
+    context: Context, anchorList: List<AnchorListBean>?,
+    action: (AnchorListBean, Int) -> Unit, clickDismiss: () -> Unit){
     popup = SignalPopupList(context,anchorList!!)
     var popwindow = XPopup.Builder(context)
         .hasShadowBg(true)
@@ -400,7 +401,14 @@ fun showSignalPopup(context: Context, anchorList: List<AnchorListBean>?,
             action.invoke(anchor, poe)
         }
 
+        override fun onDisappear() {
+            clickDismiss.invoke()
+        }
+
+
     }
+
+
     if(!popwindow.isShow){
         popwindow.show()
      }
