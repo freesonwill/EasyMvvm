@@ -17,10 +17,8 @@ import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.addListener
-import androidx.core.animation.doOnEnd
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.core.view.size
@@ -124,13 +122,14 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         mDatabind.model = mViewModel
         mDatabind.tvAnimWin.setCharacterLists(TickerUtils.provideNumberList())
         mDatabind.bottomLayout.setOnTouchListener { _, _ -> true }
+        mDatabind.resultClickView.setOnClickListener { } //屏蔽底部recycler点击
         context?.assets?.let {
             mDatabind.tvAnimWin.typeface = Typeface.createFromAsset(it, "fonts/alibabapuhuiti.otf");
         }
         mDatabind.llHomeVideo.setOnClickListener {
-           /* mDatabind.groupWinLottie.isVisible = true
-            AnimHelper.doNumberAnim(mDatabind.tvAnimWin2,0, 987654399,600)
-            showLottie {  }*/
+            /* mDatabind.groupWinLottie.isVisible = true
+             AnimHelper.doNumberAnim(mDatabind.tvAnimWin2,0, 987654399,600)
+             showLottie {  }*/
             /*AnimHelper.doNumberAnim(
                 mDatabind.txtCurrentMoney,
                 7865458958,5
@@ -272,7 +271,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         val roundInfo: RoundInfoBean? = gameAboutModel.currentSettleResult
         lifecycleScope.launch {
             mDatabind.apply {
-                Fast3ToastHelper.showToastNormal(getString(R.string.g_home_setting_begin), 1000)
+                //Fast3ToastHelper.showToastNormal(getString(R.string.g_home_setting_begin), 1000)
                 txtHomeStatic.text = resources.getString(R.string.g_f3_setting)
                 Log.e(TAG, "结算item" + roundInfo.toString())
                 roundInfo?.run {
@@ -321,6 +320,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 //PromptSoundPlay.endGameTip(requireContext())
                 //Fast3ToastHelper.showToastNormal(getString(R.string.g_home_drawing_begin), 1000)
             }
+            Fast3ToastHelper.showToastNormal(getString(R.string.g_home_betting_end))
             cancelBetteFlyAnim()
             cancelTemBetting()
             //开奖时取消临时下注的
@@ -344,7 +344,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     /**
      * 播放中奖lottie动画
      */
-    private var lottieListener: AnimatorListener ?= null
+    private var lottieListener: AnimatorListener? = null
     private fun startWinLottieAnim(endCallBack: (() -> Unit)?) {
         mDatabind.apply {
             val winMoney = gameAboutModel.netIncome
@@ -353,7 +353,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 endCallBack?.invoke()
                 return
             }
-            AnimHelper.doNumberAnim(mDatabind.tvAnimWin2,0, (winMoney).toLong(),600)
+            AnimHelper.doNumberAnim(mDatabind.tvAnimWin2, 0, (winMoney).toLong(), 600)
             /*val originTxt = "¥" + winMoney.formatRealMoney()
             mDatabind.tvAnimWin.setText(originTxt.replace(Regex("[0-9]"), "0"), false)
             tvAnimWin.setText("¥${winMoney.formatRealMoney()}", true)*/
@@ -361,10 +361,10 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         }
     }
 
-    private fun showLottie(endCallBack: (() -> Unit)?){
+    private fun showLottie(endCallBack: (() -> Unit)?) {
         mDatabind.apply {
             groupWinLottie.isVisible = true
-            if(null == lottieListener){
+            if (null == lottieListener) {
                 lottieListener = object : AnimatorListener {
                     override fun onAnimationStart(animation: Animator) {
                         PromptSoundPlay.playWinEffect()
@@ -425,7 +425,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             }
             if (seconds == 0) {
                 if (mViewModel.gameState == GameState.Betting) {
-                    Fast3ToastHelper.showToastNormal(getString(R.string.g_home_betting_end))
                     mDatabind.txtHomeStatic.text = getString(R.string.g_f3_dealing)
                     mDatabind.txtHomeTime.isVisible = false
                     mDatabind.txtHomeUnit.isVisible = false
@@ -533,8 +532,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 if (play) {
                     animator = ObjectAnimator.ofFloat(view, "alpha", 1f, 0f, 1f).apply {
                         duration = mViewModel.prizeAnimTime // 设置动画持续时间
-                        repeatCount =
-                            if (mDatabind.rvHomeHistory.size == 1) 3 else mViewModel.prizeAnimCount
+                        repeatCount = 2
+                            //if (mDatabind.rvHomeHistory.size == 1) 3 else mViewModel.prizeAnimCount
                         repeatMode = ObjectAnimator.REVERSE // 设置反向循环以实现渐隐渐显效果
                     }
                     Log.d(TAG, "receive playAlphaAnimationLD:${animator}")
@@ -921,28 +920,35 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 PromptSoundPlay.btnPlayMedia(requireContext())
                 if (homeMorePop == null) {
                     val bubbleAttach = CustomBubbleAttachPopup(requireContext())
-                    bubbleAttach.customBubbleAttachListener =
-                        object : CustomBubbleAttachPopup.CustomBubbleAttachListener {
+                    bubbleAttach.customBubbleAttachListener = object : CustomBubbleAttachPopup.CustomBubbleAttachListener {
                             private var gameHall: BasePopupView? = null
-                            private var rootHeight: Int = 0
-
-                            init {
-                                rootHeight = mDatabind.root.height
+                            private var rootHeight: Int = mDatabind.rlRoot.height
+                            private var isDismissing = false
+                            fun backMainGame() {
+                                if (gameHall == null || isDismissing) return
+                                isDismissing = true
+                                lifecycleScope.launch {
+                                    gameHall?.dismiss()
+                                    //delay(100)
+                                    showMainGame(true)
+                                }
                             }
 
-                            fun backMainGame() {
-                                if (gameHall == null) return
-                                lifecycleScope.launch {
-                                    if (!gameHall!!.isDismiss) gameHall?.dismiss()
-                                    //delay(100)
-                                    ViewHelper.showFastViewPop(requireContext(), true)
-                                }
+                            fun showMainGame(show:Boolean){
+                                ViewHelper.showFastViewPop(requireContext(), show)
+                                /*val view = mDatabind.rlRoot
+                                val start = if(show) rootHeight.toFloat() else 0f
+                                val end = if(!show) rootHeight.toFloat() else 0f
+                                Log.d(TAG,"showMainGame $start-->$end")
+                                ObjectAnimator.ofFloat(view, "translationY", start, end).apply {
+                                    duration = 300
+                                    start()
+                                }*/
                             }
 
                             override fun switchGame() {
                                 lifecycleScope.launch {
-                                    mDatabind.root.scaleY = 1f
-                                    ViewHelper.showFastViewPop(requireContext(), false)
+                                    showMainGame(false)
                                     delay(100)
                                     val context = requireContext()
                                     val popupView = object : BottomPopupView(context) {
@@ -1024,17 +1030,19 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                             override fun onCreated(popupView: BasePopupView?) {
                                                 super.onCreated(popupView)
                                                 gameHall = popupView
+                                                ViewHelper.isShowOtherPop = true
                                             }
 
                                             override fun onDismiss(popupView: BasePopupView?) {
                                                 super.onDismiss(popupView)
                                                 backMainGame()
                                                 gameHall = null
+                                                ViewHelper.isShowOtherPop = false
                                             }
                                         })
                                         .popupAnimation(PopupAnimation.TranslateFromBottom)
                                         .navigationBarColor(android.R.color.transparent)
-                                        .isViewMode(false)
+                                        .isViewMode(true)
                                         .hasShadowBg(false) // 去掉半透明背景
                                         .enableDrag(true)
                                         .dismissOnTouchOutside(true)
@@ -1067,32 +1075,33 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     Fast3ToastHelper.showToastNormal(getString(R.string.money_insufficient_50))
                     return@setOnClickListener
                 }
-                if (gameAboutModel.currentAgainDoubleState.value != GameAboutModel.AgainDoubleState.DOUBLE) {
-                    return@setOnClickListener
-                }
-                PromptSoundPlay.playAudio()
-                GameSocketManager.getInstance()?.getGameService()
-                    ?.doubleBetting { bettingState, map, areaLimit ->
-                        bettingState.isCanGoOn(areaLimit) {
-                            if (!map.isNullOrEmpty()) {
-                                map.forEach {
-                                    it.value.let { record ->
-                                        if (currentBetteAreaMap.containsKey(record.bettingArea.number)) {
-                                            currentBetteAreaMap[record.bettingArea.number]?.setShowMoney(
-                                                record.money
-                                            )
-                                        } else {
-                                            //addview
+                if (gameAboutModel.currentAgainDoubleState.value == GameAboutModel.AgainDoubleState.DOUBLE
+                    || gameAboutModel.currentAgainDoubleState.value == GameAboutModel.AgainDoubleState.DOUBLE_CAN_NOT
+                ) {
+                    PromptSoundPlay.playAudio()
+                    GameSocketManager.getInstance()?.getGameService()
+                        ?.doubleBetting { bettingState, map, areaLimit ->
+                            bettingState.isCanGoOn(areaLimit) {
+                                if (!map.isNullOrEmpty()) {
+                                    map.forEach {
+                                        it.value.let { record ->
+                                            if (currentBetteAreaMap.containsKey(record.bettingArea.number)) {
+                                                currentBetteAreaMap[record.bettingArea.number]?.setShowMoney(
+                                                    record.money
+                                                )
+                                            } else {
+                                                //addview
+                                            }
                                         }
                                     }
+                                    "anchorView = $anchorMoneyView".loge()
+                                    showAnchorTop()
+                                } else {
+                                    //余额不足
                                 }
-                                "anchorView = $anchorMoneyView".loge()
-                                showAnchorTop()
-                            } else {
-                                //余额不足
                             }
                         }
-                    }
+                }
             }
             //续压
             ivXuya.setOnClickListener {

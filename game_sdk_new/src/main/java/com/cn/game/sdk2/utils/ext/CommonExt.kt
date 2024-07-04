@@ -6,6 +6,7 @@ import com.cn.game.sdk2.ui.helper.Fast3ToastHelper
 import com.cn.game.sdk2.utils.PinyinUtils
 import com.cn.game.sdk2.websocket.bean.AreaBetConfigBean
 import com.cn.game.sdk2.websocket.bean.Betting
+import com.cn.game.sdk2.websocket.bean.areaMap
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -86,7 +87,6 @@ object CommonExt {
 
     fun GameAboutModel.BettingState.isCanGoOn(
         areaLimit: AreaBetConfigBean?,
-        areaInfo: Betting? = null,
         goOnAction: () -> Unit
     ) {
         when (this) {
@@ -94,7 +94,7 @@ object CommonExt {
                 goOnAction.invoke()
             }
 
-            GameAboutModel.BettingState.NO_MONEY_50 ->{
+            GameAboutModel.BettingState.NO_MONEY_50 -> {
                 Fast3ToastHelper.showToastNormal(ModuleInitializer.application.getString(R.string.money_insufficient_50))
             }
 
@@ -103,33 +103,23 @@ object CommonExt {
             }
 
             GameAboutModel.BettingState.OFFSET_MIN -> {
-                if (areaInfo == null) {
-                    Fast3ToastHelper.showToastNormal(ModuleInitializer.application.getString(R.string.money_min_error))
-                } else {
-                    Fast3ToastHelper.showToastNormal(
-                        ModuleInitializer.application.getString(
-                            R.string.money_min_error_with_area,
-                            areaInfo.toastStr,
-                            "¥${areaLimit?.minLimit?.formatRealMoney()}"
-                        )
+                Fast3ToastHelper.showToastNormal(
+                    ModuleInitializer.application.getString(
+                        R.string.money_min_error_with_area,
+                        areaLimit?.areaCode?.toastStr,
+                        "¥${areaLimit?.minLimit?.formatRealMoney()}"
                     )
-                }
+                )
             }
 
             GameAboutModel.BettingState.OFFSET_MAX -> {
-                if (areaInfo == null) {
-                    Fast3ToastHelper.showToastNormal(
-                        ModuleInitializer.application.getString(R.string.money_max_error)
+                Fast3ToastHelper.showToastNormal(
+                    ModuleInitializer.application.getString(
+                        R.string.money_max_error_with_area,
+                        areaLimit?.areaCode?.toastStr,
+                        "¥${areaLimit?.maxLimit?.formatRealMoney()}"
                     )
-                } else {
-                    Fast3ToastHelper.showToastNormal(
-                        ModuleInitializer.application.getString(
-                            R.string.money_max_error_with_area,
-                            areaInfo.toastStr,
-                            "¥${areaLimit?.maxLimit?.formatRealMoney()}"
-                        )
-                    )
-                }
+                )
             }
         }
     }

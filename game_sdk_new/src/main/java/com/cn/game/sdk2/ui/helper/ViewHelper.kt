@@ -1,7 +1,6 @@
 package com.cn.game.sdk2.ui.helper
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
 import android.graphics.Paint
 import android.util.Log
@@ -16,17 +15,16 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
-import androidx.lifecycle.LifecycleOwner
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
-import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.data.enums.GAME_ID_ENUM
 import com.cn.game.sdk2.ui.HomeXPopupDialog
-import com.cn.game.sdk2.ui.fast3.Fast3GameHallFragment
 import com.cn.game.sdk2.ui.fast3.Fast3MainFragment
 import com.cn.game.sdk2.ui.view.Fast3HelpPopup
+import com.cn.game.sdk2.utils.ThreadUtils
 import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
+import com.cn.game.sdk2.utils.ext.ViewExt.locationInWindow
 import com.cn.game.sdk2.utils.tool.indicator.CommonPagerIndicator
 import com.cn.game.sdk2.websocket.appListener
 import com.cn.game.sdk2.websocket.gameAboutModel
@@ -36,7 +34,6 @@ import com.lxj.xpopup.enums.PopupAnimation
 import com.lxj.xpopup.interfaces.SimpleCallback
 import com.lzf.easyfloat.EasyFloat
 import com.lzf.easyfloat.enums.SidePattern
-import com.xcjh.base_lib.ModuleInitializer
 import com.xcjh.base_lib.utils.toHtml
 import net.lucode.hackware.magicindicator.MagicIndicator
 import net.lucode.hackware.magicindicator.ViewPagerHelper
@@ -61,7 +58,7 @@ object ViewHelper {
 
     private var fastView:View? = null
     private var  fastViewOverlay:View? = null
-
+    var isShowOtherPop:Boolean = false
     /**
      * 显示帮助文档
      */
@@ -78,8 +75,11 @@ object ViewHelper {
             }
             return
         }
+        val (offsetY,height) = homeXPopupDialog!!.findViewById<View>(R.id.rlRoot).let {
+            arrayOf(it.locationInWindow[1],it.height)
+        }
         helpXPopupDialog = XPopup.Builder(context)
-            .isTouchThrough(true)
+            .isTouchThrough(false)
             .setPopupCallback(object : SimpleCallback() {
                 override fun onDismiss(popupView: BasePopupView?) {
                     super.onDismiss(popupView)
@@ -92,8 +92,9 @@ object ViewHelper {
             .isViewMode(true)
             .hasStatusBar(false)
             .hasNavigationBar(false)
-            .enableDrag(false)
-            .asCustom(Fast3HelpPopup(context))
+            .enableDrag(true)
+            .dismissOnTouchOutside(true)
+            .asCustom(Fast3HelpPopup(context, offsetY,height))
         helpXPopupDialog?.show()
     }
 
@@ -122,10 +123,12 @@ object ViewHelper {
 
                 override fun onDismiss(popupView: BasePopupView?) {
                     super.onDismiss(popupView)
-                    fastViewOverlay?.isVisible = true
-                    fastView?.isVisible = true
-                    //homeXPopupDialog = null
-                    appListener?.onGameFloatingDetailViewStatus(false)
+                    if(!isShowOtherPop) {
+                        fastViewOverlay?.isVisible = true
+                        fastView?.isVisible = true
+                        appListener?.onGameFloatingDetailViewStatus(false)
+                        //homeXPopupDialog = null
+                    }
                 }
             })
             .popupAnimation(PopupAnimation.TranslateFromBottom)

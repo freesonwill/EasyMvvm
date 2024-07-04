@@ -67,7 +67,7 @@ var isEnableSound = true
  */
 //测试打包专用 99:mFGB4ljy
 //92:ZyBmhNCJ   87:MHxIHlYM  93:Ufx3Dy8y 94:0aPEwiYK   金额少：97:nMz8aSsZ  98:gCrUd5Gz
-var token = "92:ZyBmhNCJ"
+var token = "94:0aPEwiYK"
 var isLogin = false
 var isEnterRoom = false
 

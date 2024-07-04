@@ -3,7 +3,6 @@ package com.cn.game.sdk2.ui.view
 import android.animation.ValueAnimator
 import android.content.Context
 import android.util.Log
-import android.widget.LinearLayout
 import androidx.core.animation.addListener
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.databinding.FragmentFast3HelpBinding
@@ -12,30 +11,37 @@ import com.cn.game.sdk2.ui.helper.ViewHelper
 import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
 import com.cn.game.sdk2.utils.ext.ViewExt.bindRecycleView
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
+import com.cn.game.sdk2.utils.tool.screenHeight
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.drake.brv.annotaion.DividerOrientation
 import com.drake.brv.utils.dividerSpace
 import com.drake.brv.utils.setup
+import com.gyf.immersionbar.ktx.statusBarHeight
 import com.lxj.xpopup.core.BottomPopupView
 import com.xcjh.base_lib.utils.dp2px
 import com.xcjh.base_lib.utils.view.clickNoRepeat
 import com.xcjh.base_lib.utils.view.getStringArray
 
+
 /**
  * 首页的弹出框
  */
-class Fast3HelpPopup(content: Context) : BottomPopupView(content) {
+class Fast3HelpPopup(context: Context, private val offsetY: Int, private val height: Int) :
+    BottomPopupView(context) {
     private lateinit var mViewBind: FragmentFast3HelpBinding
-
+    private var fullHeight: Int = context.screenHeight + context.statusBarHeight
     override fun getImplLayoutId(): Int {
         return R.layout.fragment_fast3_help
     }
-
     override fun onCreate() {
         super.onCreate()
         mViewBind = FragmentFast3HelpBinding.bind(popupImplView)
         this.initView()
         gameAboutModel.fast3MainFloatVisible.value = false
+        mViewBind.root.layoutParams.let { lp ->
+            lp.height = height
+            mViewBind.content.layoutParams = lp
+        }
     }
 
     override fun onDestroy() {
@@ -71,39 +77,46 @@ class Fast3HelpPopup(content: Context) : BottomPopupView(content) {
             action = { PromptSoundPlay.btnPlayMedia() }
         )
 
-        mViewBind.ivCollapse.clickNoRepeat(300) {
+        mViewBind.lltCollapse.clickNoRepeat(300) {
             PromptSoundPlay.btnPlayMedia()
-            val lp = mViewBind.space.layoutParams as LinearLayout.LayoutParams
-            val toExpand = lp.weight == 1f
+            val toExpand = mViewBind.content.height != fullHeight
             val topPadding = if (toExpand) 40.dp2px else 0
             val bottomPadding = 48.dp2px
-            mViewBind.ivCollapse.setImageResource(if (!toExpand) R.drawable.ic_expand else R.drawable.ic_collapse)
-            val start = if (!toExpand) 0f else 1f
-            val end = if (toExpand) 0f else 1f
-            Log.d(TAG,"addUpdateListener----->$start-->$end,toExpand:$toExpand")
-            ValueAnimator.ofFloat(start, end).apply {
+            val start = if (toExpand) height else fullHeight
+            val end = if (!toExpand) height else fullHeight
+            ValueAnimator.ofInt(start, end).apply {
                 duration = 200
-                addUpdateListener { animation ->
-                    val value = animation.animatedValue as Float
-                    lp.weight = value
-                    mViewBind.space.layoutParams = lp
-
-                    Log.d(TAG,"addUpdateListener----->${lp.weight}")
+                addUpdateListener {
+                    val value = it.animatedValue as Int
+                    mViewBind.content.layoutParams.let { lp->
+                        lp.height = value
+                        mViewBind.content.layoutParams = lp
+                    }
                 }
                 addListener(
                     onStart = {
-                        lp.weight = start
-                        mViewBind.space.layoutParams = lp
+                        mViewBind.content.setPadding(0, topPadding, 0, bottomPadding)
                     },
                     onEnd = {
                         //动画结束
-                        lp.weight = end
-                        mViewBind.root.setPadding(0, topPadding, 0, bottomPadding)
-                        mViewBind.space.layoutParams = lp
+                        mViewBind.ivCollapse.setImageResource(if (!toExpand) R.drawable.ic_expand else R.drawable.ic_collapse)
                     })
                 start()
             }
-
+            /*ObjectAnimator.ofFloat(mViewBind.content, "height", start.toFloat(), end.toFloat()).apply {
+                duration = 200
+                addListener(
+                    onStart = {
+                        mViewBind.content.translationY = start.toFloat()
+                        mViewBind.content.setPadding(0, topPadding, 0, bottomPadding)
+                    },
+                    onEnd = {
+                        //动画结束
+                        mViewBind.ivCollapse.setImageResource(if (!toExpand) R.drawable.ic_expand else R.drawable.ic_collapse)
+                    })
+                start()
+            }*/
+            Log.d(TAG, "addUpdateListener----->$start-->$end,toExpand:$toExpand")
         }
         mViewBind.close.clickNoRepeat {
             PromptSoundPlay.btnPlayMedia()

@@ -13,8 +13,8 @@
 
     <FrameLayout
         android:id="@+id/flRoot"
-        android:layout_width="match_parent"
-        android:layout_height="180dp">
+        style="@style/viewpager_f3_style"
+        >
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/rlHomeRoot"

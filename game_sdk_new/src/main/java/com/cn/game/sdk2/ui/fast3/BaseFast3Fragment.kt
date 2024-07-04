@@ -154,7 +154,7 @@ abstract class BaseFast3Fragment<VM : BaseViewModel, VB : ViewDataBinding>(var f
             val betteBean = fast3VM.betteBean
             val bettingBean = BettingRecordBean(areaView.areaInfo!!, money = betteBean.money)
             gameMassageManager?.addBetting(bettingBean) { bettingState, result, areaLimit ->
-                bettingState.isCanGoOn(areaLimit, areaView.areaInfo) {
+                bettingState.isCanGoOn(areaLimit) {
                     result?.let {
                         areaView.setShowMoney(result.money)
                         if (!areaView.moneyView.isAdd()) {
