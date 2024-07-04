@@ -18,17 +18,19 @@ import com.cn.game.sdk2.base.BaseGameFragment
 import com.cn.game.sdk2.data.EventConst
 import com.cn.game.sdk2.databinding.FragDxdsBinding
 import com.cn.game.sdk2.ui.helper.ViewHelper.isAdd
-import com.cn.game.sdk2.ui.view.BetteView
 import com.cn.game.sdk2.ui.view.MoneyOKView
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
 import com.cn.game.sdk2.utils.FlowBus
-import com.cn.game.sdk2.utils.ToastUtil
+import com.cn.game.sdk2.utils.ext.BizExt.isLeopard
 import com.cn.game.sdk2.utils.ext.CommonExt.isCanGoOn
 import com.cn.game.sdk2.utils.ext.ViewExt.locationOnScreen
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.websocket.bean.Betting
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
+import com.cn.game.sdk2.websocket.bean.DEFAULT
+import com.cn.game.sdk2.websocket.bean.SUM
+import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.gameMassageManager
 import com.xcjh.base_lib.base.BaseViewModel
 import kotlinx.coroutines.delay
@@ -74,8 +76,12 @@ abstract class BaseFast3Fragment<VM : BaseViewModel, VB : ViewDataBinding>(var f
     ) {
         lifecycleScope.launch {
             val views = mutableListOf<View>()
+            val isLeopard = gameAboutModel.currentSettleResult!!.isLeopard
             for (areaView in areaViewList) {
+                if(isLeopard && areaView.areaInfo  is DEFAULT) continue
+                if(isLeopard && areaView.areaInfo  is SUM) continue
                 if (resultList.contains(areaView.areaInfo)) {
+                    //结果中是全豹，大小单双不显示，总和不显示
                     views.add(areaView.flickerView)
                 }
             }
