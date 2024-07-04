@@ -279,9 +279,10 @@ class GameAboutModel : BaseViewModel() {
                 GameManager.instance.startCountDownTimer(value.toLong(), lis = object : IGameListener {
                     override fun onCountdown(time: Long) {
                         super.onCountdown(time)
-                        //Log.d(TAG, "countDown,isMainThread:${isMainThread}")
+                        val t = (time / 1000f).toInt()
+                        //Log.d(TAG, "countDown,isMainThread:${isMainThread},time:$t")
                         //onCountDown跟调用同一线程,这里不用post
-                        _countDownSecondsLD.postValue(((time / 1000).toInt()))
+                        _countDownSecondsLD.value = t
                     }
                 })
             }

@@ -55,6 +55,7 @@ class DragFast3Overlay @JvmOverloads constructor(
 
     private fun updateUI() {
         val roundInfo: RoundInfoBean? = gameAboutModel.currentSettleResult
+        Log.d(TAG,"updateUI: roundInfo:${roundInfo}")
         binding.apply {
             lltResult.visibility = if(roundInfo != null) View.VISIBLE else View.INVISIBLE
             roundInfo?.run {
@@ -72,7 +73,7 @@ class DragFast3Overlay @JvmOverloads constructor(
                 }
             }
         }
-        binding.tvEdition.text = gameAboutModel.roundId
+        binding.tvEdition.text = roundInfo?.roundId
     }
 
     /*private fun test() {

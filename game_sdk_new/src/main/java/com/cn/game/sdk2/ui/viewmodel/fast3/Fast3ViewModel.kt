@@ -3,6 +3,7 @@ package com.cn.game.sdk2.ui.viewmodel.fast3
 import android.util.Log
 import android.view.View
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.data.bean.HistoryResultBean
@@ -29,8 +30,7 @@ class Fast3ViewModel : BaseViewModel() {
     var moneyAnimCallback: MoneyAnimCallback? = null
     val userLotteryResultLiveData: UnPeekLiveData<ArrayList<Betting>> = UnPeekLiveData()
 
-    val historyResultBeanLD: LiveData<HistoryResultBean> by lazy { UnPeekLiveData() }
-    val homeTimeSeconds: LiveData<Int> by lazy { gameAboutModel.countDownSecondsLD }
+    val homeTimeSeconds: LiveData<Int> = gameAboutModel.countDownSecondsLD
     val homeTimeColorLD: LiveData<Int> by lazy {
         Transformations.map(this.homeTimeSeconds) {
             if (it <= 5) return@map getColor(R.color.c_F34D41)
@@ -111,31 +111,6 @@ class Fast3ViewModel : BaseViewModel() {
 
     //========================================== Method =========================================//
     override fun onInit() {
-        GameManager.instance.setLiveStatusListener("home", object : IGameListener {
-
-            override fun onCountdown(time: Long) {
-                val seconds = (time.toFloat() / 1000).roundToInt()
-                (homeTimeSeconds as UnPeekLiveData).value = seconds
-            }
-
-            override fun onCountDownFinish(state: GameState) {
-                (homeTimeSeconds as UnPeekLiveData).value = 0
-            }
-
-            override fun onGameStateChanged(oldValue: GameState, newValue: GameState) {
-                Log.d(TAG, "onGameStateChanged run on $isMainThread $oldValue-->$newValue")
-            }
-
-            override fun onDrawingResult(result: HistoryResultBean) {
-                Log.d(TAG, "onDrawingResult run on $isMainThread result:$result")
-                (historyResultBeanLD as UnPeekLiveData<HistoryResultBean>).value = result
-            }
-        }).let {
-            registerAutoGC {
-                Log.d(TAG, "removeLiveStatusListener home")
-                GameManager.instance.removeLiveStatusListener("home")
-            }
-        }
         noteList.add(SelectAnnotationBean(money = 1000, select = true))
         noteList.add(SelectAnnotationBean(money = 5000))
         noteList.add(SelectAnnotationBean(money = 10000))
