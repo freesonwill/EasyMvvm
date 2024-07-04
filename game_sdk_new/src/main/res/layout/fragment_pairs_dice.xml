@@ -60,16 +60,12 @@
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/txtPairsOddsOne"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp_6"
                         android:text="@{model.multiplierStr(1)}"
-                        android:textColor="@color/g_f8e0c4"
-                        android:textSize="14sp"
+                        style="@style/text_single_dice"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/ivPairsOneLeft"
-                        tools:text="x2" />
+                        tools:text="x12" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.appcompat.widget.AppCompatImageView
@@ -115,12 +111,8 @@
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/txtPairsOddsTwo"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp_6"
                         android:text="@{model.multiplierStr(2)}"
-                        android:textColor="@color/g_f8e0c4"
-                        android:textSize="14sp"
+                        style="@style/text_single_dice"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/ivPairsTwoLeft"
@@ -170,12 +162,8 @@
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/txtPairsOddsThree"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp_6"
                         android:text="@{model.multiplierStr(3)}"
-                        android:textColor="@color/g_f8e0c4"
-                        android:textSize="14sp"
+                        style="@style/text_single_dice"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/ivPairsThreeLeft"
@@ -226,12 +214,8 @@
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/txtPairsOddsFour"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp_6"
                         android:text="@{model.multiplierStr(4)}"
-                        android:textColor="@color/g_f8e0c4"
-                        android:textSize="14sp"
+                        style="@style/text_single_dice"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/ivPairsFourLeft"
@@ -281,12 +265,8 @@
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/txtPairsOddsFive"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp_6"
                         android:text="@{model.multiplierStr(5)}"
-                        android:textColor="@color/g_f8e0c4"
-                        android:textSize="14sp"
+                        style="@style/text_single_dice"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/ivPairsFiveLeft"
@@ -336,12 +316,8 @@
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/txtPairsOddsSix"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp_6"
                         android:text="@{model.multiplierStr(6)}"
-                        android:textColor="@color/g_f8e0c4"
-                        android:textSize="14sp"
+                        style="@style/text_single_dice"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/ivPairsSixLeft"
