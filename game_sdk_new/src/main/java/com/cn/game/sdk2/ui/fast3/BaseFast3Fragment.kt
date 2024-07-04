@@ -24,6 +24,7 @@ import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
 import com.cn.game.sdk2.utils.FlowBus
 import com.cn.game.sdk2.utils.ext.BizExt.isLeopard
+import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
 import com.cn.game.sdk2.utils.ext.CommonExt.isCanGoOn
 import com.cn.game.sdk2.utils.ext.ViewExt.locationOnScreen
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
@@ -79,8 +80,8 @@ abstract class BaseFast3Fragment<VM : BaseViewModel, VB : ViewDataBinding>(var f
             val views = mutableListOf<View>()
             val isLeopard = gameAboutModel.currentSettleResult!!.isLeopard
             for (areaView in areaViewList) {
-                if(isLeopard && areaView.areaInfo  is DEFAULT) continue
-                if(isLeopard && areaView.areaInfo  is SUM) continue
+                if (isLeopard && areaView.areaInfo is DEFAULT) continue
+                if (isLeopard && areaView.areaInfo is SUM) continue
                 if (resultList.contains(areaView.areaInfo)) {
                     //结果中是全豹，大小单双不显示，总和不显示
                     views.add(areaView.flickerView)
@@ -231,7 +232,7 @@ abstract class BaseFast3Fragment<VM : BaseViewModel, VB : ViewDataBinding>(var f
             val leopardX = leopardLocation[0]
             leopardX + (mDatabind as FragDxdsBinding).leopardView.measuredWidth
         } else {
-            areaX
+            areaX + 4.dp2px
         }
         val limitRight = if (areaView.id == R.id.single_view) {
             val leopardLocation = IntArray(2)
@@ -242,23 +243,45 @@ abstract class BaseFast3Fragment<VM : BaseViewModel, VB : ViewDataBinding>(var f
             areaX + areaView.measuredWidth
         }
         val limitBottom = when (areaView.id) {
-            R.id.small_view, R.id.big_view -> {
+            R.id.big_view -> {
                 val smallLocation = IntArray(2)
-                (mDatabind as FragDxdsBinding).txtSmallMoney.getLocationOnScreen(smallLocation)
-                smallLocation[1]
+                (mDatabind as FragDxdsBinding).ivSmall.getLocationOnScreen(smallLocation)
+
+                val leopardLocation = (mDatabind as FragDxdsBinding).leopardView.locationOnScreen
+                if (endX + betteView.measuredWidth <= leopardLocation[0] + (mDatabind as FragDxdsBinding).leopardView.measuredWidth) {
+                    leopardLocation[1]
+                } else {
+                    smallLocation[1]
+                }
+            }
+
+            R.id.small_view -> {
+                val smallLocation = IntArray(2)
+                (mDatabind as FragDxdsBinding).ivSmall.getLocationOnScreen(smallLocation)
+
+                val leopardLocation = (mDatabind as FragDxdsBinding).leopardView.locationOnScreen
+                if (endX + betteView.measuredWidth >= leopardLocation[0]) {
+                    leopardLocation[1]
+                } else {
+                    smallLocation[1]
+                }
             }
 
             R.id.single_view, R.id.double_view -> {
                 val smallLocation = IntArray(2)
-                (mDatabind as FragDxdsBinding).txtSingleMoney.getLocationOnScreen(smallLocation)
+                (mDatabind as FragDxdsBinding).ivSingle.getLocationOnScreen(smallLocation)
                 smallLocation[1]
             }
 
+            R.id.leopard_view -> {
+                areaY + areaView.measuredHeight - 27.dp2px
+            }
+
             else -> {
-                areaY + areaView.measuredHeight
+                areaY + areaView.measuredHeight - 4.dp2px
             }
         }
-        val limitTop = areaY
+        val limitTop = areaY + 4.dp2px
 
         it.translationX = when {
             isLeftStart -> {
@@ -289,7 +312,8 @@ abstract class BaseFast3Fragment<VM : BaseViewModel, VB : ViewDataBinding>(var f
         }
 
         it.translationY = when {
-            endY + betteView.measuredHeight > limitBottom -> (limitBottom - betteY - betteView.measuredHeight).toFloat()
+//            endY + betteView.measuredHeight > limitBottom -> (limitBottom - betteY - betteView.measuredHeight).toFloat()
+            endY + betteView.measuredHeight > limitBottom -> dy - (endY + betteView.measuredHeight - limitBottom)
             endY < limitTop -> (limitTop - betteY).toFloat()
             else -> dy
         }
