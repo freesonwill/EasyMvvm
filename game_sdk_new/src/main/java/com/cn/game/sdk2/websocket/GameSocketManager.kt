@@ -139,10 +139,6 @@ class GameSocketManager private constructor() : OnMessageListener {
 
     override fun onMessage(mid: Int?, sid: Int?, byteArray: ByteArray) {
         convertMessage(mid, sid, byteArray)
-//        if (mid == 65535) {
-//            client?.reset()
-//            client?.reconnect()
-//        }
     }
 
     /**
@@ -248,9 +244,5 @@ class GameSocketManager private constructor() : OnMessageListener {
 interface OnMessageListener {
     fun onMessage(mid: Int?, sid: Int?, byteArray: ByteArray)
 
-    fun onClose(code: Int, reason: String?, remote: Boolean) {
-        "GameSocketClose-code:$code".loge()
-        "GameSocketClose-reason:$reason".loge()
-        "GameSocketClose-remote:$remote".loge()
-    }
+    fun onClose(code: Int, reason: String?, remote: Boolean)
 }
