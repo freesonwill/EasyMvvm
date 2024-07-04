@@ -88,15 +88,15 @@ class MainActivity : AppCompatActivity() {
                 ViewHelper.showFastViewOverlay(this)*/
                 GameApp.createFloatEnterView(this@MainActivity).apply {
                     val lp = RelativeLayout.LayoutParams(layoutParams.width,layoutParams.height)
-                    lp.topMargin = 50.dp2px
-                    lp.marginEnd = 30.dp2px
+                    lp.topMargin = 200.dp2px
+                    lp.marginEnd = 0.dp2px
                     lp.addRule(RelativeLayout.ALIGN_PARENT_END)
                     llshow.addView(this,lp)
                 }
                 GameApp.createFloatResultView(this@MainActivity).apply {
                     val lp = RelativeLayout.LayoutParams(layoutParams.width,layoutParams.height)
-                    lp.topMargin = 300.dp2px
-                    lp.marginEnd = 30.dp2px
+                    lp.topMargin = 50.dp2px
+                    lp.marginEnd = 0.dp2px
                     lp.addRule(RelativeLayout.ALIGN_PARENT_END)
                     llshow.addView(this,lp)
                 }
