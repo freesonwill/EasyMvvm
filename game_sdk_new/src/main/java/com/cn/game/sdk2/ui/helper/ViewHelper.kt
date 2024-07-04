@@ -107,6 +107,9 @@ object ViewHelper {
             homeXPopupDialog!!.show()
             return
         }
+        val pop = HomeXPopupDialog(context, Fast3MainFragment(),GAME_ID_ENUM.GAME_FAST3.num).apply {
+            homeXPopupDialog = this
+        }
         XPopup.Builder(context)
             .hasShadowBg(false)
             .setPopupCallback(object : SimpleCallback() {
@@ -121,7 +124,7 @@ object ViewHelper {
                     super.onDismiss(popupView)
                     fastViewOverlay?.isVisible = true
                     fastView?.isVisible = true
-                    homeXPopupDialog = null
+                    //homeXPopupDialog = null
                     appListener?.onGameFloatingDetailViewStatus(false)
                 }
             })
@@ -134,11 +137,7 @@ object ViewHelper {
             .isThreeDrag(false) //是否开启三阶拖拽，如果设置enableDrag(false)则无效
             .enableDrag(true)
             .dismissOnTouchOutside(true)
-            .asCustom(
-                HomeXPopupDialog(context, Fast3MainFragment(),GAME_ID_ENUM.GAME_FAST3.num).apply {
-                    homeXPopupDialog = this
-                }
-            )
+            .asCustom(pop)
             .show()
     }
 
