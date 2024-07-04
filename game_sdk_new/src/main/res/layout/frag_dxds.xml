@@ -82,6 +82,7 @@
                             android:orientation="horizontal">
 
                             <androidx.appcompat.widget.AppCompatImageView
+                                android:id="@+id/ivSmall"
                                 android:layout_width="8dp"
                                 android:layout_height="8dp"
                                 app:srcCompat="@drawable/icon_money_new" />
@@ -305,6 +306,7 @@
                             android:orientation="horizontal">
 
                             <androidx.appcompat.widget.AppCompatImageView
+                                android:id="@+id/ivSingle"
                                 android:layout_width="8dp"
                                 android:layout_height="8dp"
                                 app:srcCompat="@drawable/icon_money_new" />
