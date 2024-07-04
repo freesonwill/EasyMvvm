@@ -93,7 +93,7 @@ class GameAboutModel : BaseViewModel() {
     > - bettingMessage 下注失败的message
      */
 
-    val isLoginSuccess: LiveData<Boolean>
+    val isLoginSuccess
         get() = _isLoginSuccess
 
     val isSitDown: LiveData<Boolean>
