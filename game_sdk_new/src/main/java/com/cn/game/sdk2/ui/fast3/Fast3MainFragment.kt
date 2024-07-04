@@ -462,7 +462,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             mDatabind.apply {
 
                 when (it) {
-                    GameAboutModel.AgainDoubleState.NUll -> {
+                    GameAboutModel.AgainDoubleState.NUll, GameAboutModel.AgainDoubleState.AGAIN_CAN_NOT_50 -> {
                         ivXuya.isVisible = true
                         ivXuya.setImageResource(R.drawable.icon_xuya_gray)
                         ivMultiple2.isVisible = false
@@ -480,7 +480,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                         ivMultiple2.setImageResource(R.drawable.icon_multiple2)
                     }
 
-                    GameAboutModel.AgainDoubleState.DOUBLE_CAN_NOT -> {
+                    GameAboutModel.AgainDoubleState.DOUBLE_CAN_NOT, GameAboutModel.AgainDoubleState.DOUBLE_CAN_NOT_50 -> {
                         ivXuya.isVisible = false
                         ivMultiple2.isVisible = true
                         ivMultiple2.setImageResource(R.drawable.icon_multiple2_gray)
@@ -526,7 +526,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 if (play) {
                     animator = ObjectAnimator.ofFloat(view, "alpha", 1f, 0f, 1f).apply {
                         duration = mViewModel.prizeAnimTime // 设置动画持续时间
-                        repeatCount = if(mDatabind.rvHomeHistory.size == 1) 3 else mViewModel.prizeAnimCount
+                        repeatCount =
+                            if (mDatabind.rvHomeHistory.size == 1) 3 else mViewModel.prizeAnimCount
                         repeatMode = ObjectAnimator.REVERSE // 设置反向循环以实现渐隐渐显效果
                     }
                     Log.d(TAG, "receive playAlphaAnimationLD:${animator}")
@@ -1055,6 +1056,10 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             }
             //加倍
             ivMultiple2.setOnClickListener {
+                if (gameAboutModel.currentAgainDoubleState.value == GameAboutModel.AgainDoubleState.DOUBLE_CAN_NOT_50) {
+                    Fast3ToastHelper.showToastNormal(getString(R.string.money_insufficient_50))
+                    return@setOnClickListener
+                }
                 if (gameAboutModel.currentAgainDoubleState.value != GameAboutModel.AgainDoubleState.DOUBLE) {
                     return@setOnClickListener
                 }
@@ -1084,6 +1089,10 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             }
             //续压
             ivXuya.setOnClickListener {
+                if (gameAboutModel.currentAgainDoubleState.value == GameAboutModel.AgainDoubleState.AGAIN_CAN_NOT_50) {
+                    Fast3ToastHelper.showToastNormal(getString(R.string.money_insufficient_50))
+                    return@setOnClickListener
+                }
                 if (gameAboutModel.currentAgainDoubleState.value != GameAboutModel.AgainDoubleState.AGAIN) {
                     return@setOnClickListener
                 }
