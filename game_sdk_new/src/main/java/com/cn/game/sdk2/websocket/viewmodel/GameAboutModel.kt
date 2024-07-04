@@ -22,11 +22,11 @@ class GameAboutModel : BaseViewModel() {
     }
 
     enum class AgainDoubleState {
-        NUll, AGAIN, DOUBLE,DOUBLE_CAN_NOT
+        NUll, AGAIN, AGAIN_CAN_NOT_50, DOUBLE, DOUBLE_CAN_NOT, DOUBLE_CAN_NOT_50
     }
 
     enum class BettingState {
-        GO_ON, NO_MONEY, OFFSET_MIN, OFFSET_MAX
+        GO_ON, NO_MONEY, OFFSET_MIN, OFFSET_MAX, NO_MONEY_50
     }
 
     private val _currentStage = UnPeekLiveData<Stage>()
@@ -45,8 +45,8 @@ class GameAboutModel : BaseViewModel() {
 
     private val _isBettingSuccess = MutableLiveData<BettingResponsesBean>()
     private val _toastErrorMessage = MutableLiveData<String>()
-    private val  _isShowGame = MutableLiveData<Boolean>()
-    private val  _isAllowedBet = MutableLiveData<Boolean>()
+    private val _isShowGame = MutableLiveData<Boolean>()
+    private val _isAllowedBet = MutableLiveData<Boolean>()
 
     /** 需要监听的字段
      * @see currentAgainDoubleState 续压和加倍监听
@@ -299,8 +299,10 @@ class GameAboutModel : BaseViewModel() {
     var roundId: String = "" //期号
     var loginErrorMessage = ""
     var lastBetting: Betting? = null
+
     //控制隐藏Fast3MainView
-    val fast3MainFloatVisible:UnPeekLiveData<Boolean>  = UnPeekLiveData<Boolean>()
+    val fast3MainFloatVisible: UnPeekLiveData<Boolean> = UnPeekLiveData<Boolean>()
+
     //期号悬浮窗显影
-    val fast3EditionFloatVisible:UnPeekLiveData<Boolean>  = UnPeekLiveData<Boolean>()
+    val fast3EditionFloatVisible: UnPeekLiveData<Boolean> = UnPeekLiveData<Boolean>()
 }
