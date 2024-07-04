@@ -124,13 +124,14 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         mDatabind.model = mViewModel
         mDatabind.tvAnimWin.setCharacterLists(TickerUtils.provideNumberList())
         mDatabind.bottomLayout.setOnTouchListener { _, _ -> true }
+        mDatabind.centerLayout.setOnClickListener { } //屏蔽底部recycler点击
         context?.assets?.let {
             mDatabind.tvAnimWin.typeface = Typeface.createFromAsset(it, "fonts/alibabapuhuiti.otf");
         }
         mDatabind.llHomeVideo.setOnClickListener {
-           /* mDatabind.groupWinLottie.isVisible = true
-            AnimHelper.doNumberAnim(mDatabind.tvAnimWin2,0, 987654399,600)
-            showLottie {  }*/
+            /* mDatabind.groupWinLottie.isVisible = true
+             AnimHelper.doNumberAnim(mDatabind.tvAnimWin2,0, 987654399,600)
+             showLottie {  }*/
             /*AnimHelper.doNumberAnim(
                 mDatabind.txtCurrentMoney,
                 7865458958,5
@@ -344,7 +345,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     /**
      * 播放中奖lottie动画
      */
-    private var lottieListener: AnimatorListener ?= null
+    private var lottieListener: AnimatorListener? = null
     private fun startWinLottieAnim(endCallBack: (() -> Unit)?) {
         mDatabind.apply {
             val winMoney = gameAboutModel.netIncome
@@ -353,7 +354,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 endCallBack?.invoke()
                 return
             }
-            AnimHelper.doNumberAnim(mDatabind.tvAnimWin2,0, (winMoney).toLong(),600)
+            AnimHelper.doNumberAnim(mDatabind.tvAnimWin2, 0, (winMoney).toLong(), 600)
             /*val originTxt = "¥" + winMoney.formatRealMoney()
             mDatabind.tvAnimWin.setText(originTxt.replace(Regex("[0-9]"), "0"), false)
             tvAnimWin.setText("¥${winMoney.formatRealMoney()}", true)*/
@@ -361,10 +362,10 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         }
     }
 
-    private fun showLottie(endCallBack: (() -> Unit)?){
+    private fun showLottie(endCallBack: (() -> Unit)?) {
         mDatabind.apply {
             groupWinLottie.isVisible = true
-            if(null == lottieListener){
+            if (null == lottieListener) {
                 lottieListener = object : AnimatorListener {
                     override fun onAnimationStart(animation: Animator) {
                         PromptSoundPlay.playWinEffect()
