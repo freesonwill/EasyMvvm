@@ -272,7 +272,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         val roundInfo: RoundInfoBean? = gameAboutModel.currentSettleResult
         lifecycleScope.launch {
             mDatabind.apply {
-                Fast3ToastHelper.showToastNormal(getString(R.string.g_home_setting_begin), 1000)
+                //Fast3ToastHelper.showToastNormal(getString(R.string.g_home_setting_begin), 1000)
                 txtHomeStatic.text = resources.getString(R.string.g_f3_setting)
                 Log.e(TAG, "结算item" + roundInfo.toString())
                 roundInfo?.run {
