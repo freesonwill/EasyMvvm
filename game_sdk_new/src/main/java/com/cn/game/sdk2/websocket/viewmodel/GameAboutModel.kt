@@ -7,6 +7,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.cn.game.sdk2.manager.GameManager
 import com.cn.game.sdk2.manager.listener.IGameListener
+import com.cn.game.sdk2.utils.ThreadUtils
+import com.cn.game.sdk2.utils.ext.CommonExt.isMainThread
 import com.cn.game.sdk2.websocket.bean.AreaBetBean
 import com.cn.game.sdk2.websocket.bean.Betting
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
@@ -272,19 +274,18 @@ class GameAboutModel : BaseViewModel() {
     var miniGameId: Int = 0
     var countDown: Int = 0 //阶段倒计时
         set(value) {
+            Log.d(TAG, "countDown set:${field},isMainThread:${isMainThread}")
             field = value
-            Handler(Looper.getMainLooper()).post {
-
-                Log.d(TAG, "countDown set:${field}")
-                _countDownSetStampTime = System.currentTimeMillis()
-                GameManager.instance.startCountDownTimer(
-                    value.toLong(),
-                    lis = object : IGameListener {
-                        override fun onCountdown(time: Long) {
-                            super.onCountdown(time)
-                            _countDownSecondsLD.postValue((time / 1000).toInt())
-                        }
-                    })
+            _countDownSetStampTime = System.currentTimeMillis()
+            ThreadUtils.runOnUiThread {
+                GameManager.instance.startCountDownTimer(value.toLong(), lis = object : IGameListener {
+                    override fun onCountdown(time: Long) {
+                        super.onCountdown(time)
+                        //Log.d(TAG, "countDown,isMainThread:${isMainThread}")
+                        //onCountDown跟调用同一线程,这里不用post
+                        _countDownSecondsLD.value = ((time / 1000).toInt())
+                    }
+                })
             }
         }
         get() {

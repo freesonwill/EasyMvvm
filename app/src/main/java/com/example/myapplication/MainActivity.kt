@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.widget.Button
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -26,11 +27,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         var btnOpen = findViewById<TextView>(R.id.btnOpen)
-        var llshow = findViewById<LinearLayout>(R.id.llshow)
+        var llshow = findViewById<RelativeLayout>(R.id.llshow)
         var btnXiu = findViewById<Button>(R.id.btnXiu)
         /*ViewHelper.showHelpDialog(this)
         ViewHelper.showFastView(this)
         return@setOnClickListener*/
+
+
         GameApp.setSocketStatesCallback(object : GameApp.SocketStatesCallback{
             override fun onOpen() {
                 btnOpen.post{
@@ -84,15 +87,17 @@ class MainActivity : AppCompatActivity() {
                 /*ViewHelper.showFastView(this)
                 ViewHelper.showFastViewOverlay(this)*/
                 GameApp.createFloatEnterView(this@MainActivity).apply {
-                    val lp = LinearLayout.LayoutParams(layoutParams.width,layoutParams.height)
-                    lp.topMargin = 100.dp2px
-                    lp.marginStart = 100.dp2px
+                    val lp = RelativeLayout.LayoutParams(layoutParams.width,layoutParams.height)
+                    lp.topMargin = 200.dp2px
+                    lp.marginEnd = 0.dp2px
+                    lp.addRule(RelativeLayout.ALIGN_PARENT_END)
                     llshow.addView(this,lp)
                 }
                 GameApp.createFloatResultView(this@MainActivity).apply {
-                    val lp = LinearLayout.LayoutParams(layoutParams.width,layoutParams.height)
-                    lp.topMargin = 100.dp2px
-                    lp.marginStart = 100.dp2px
+                    val lp = RelativeLayout.LayoutParams(layoutParams.width,layoutParams.height)
+                    lp.topMargin = 50.dp2px
+                    lp.marginEnd = 0.dp2px
+                    lp.addRule(RelativeLayout.ALIGN_PARENT_END)
                     llshow.addView(this,lp)
                 }
 
