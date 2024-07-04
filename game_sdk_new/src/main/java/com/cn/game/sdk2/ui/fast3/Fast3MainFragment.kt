@@ -923,9 +923,10 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     bubbleAttach.customBubbleAttachListener = object : CustomBubbleAttachPopup.CustomBubbleAttachListener {
                             private var gameHall: BasePopupView? = null
                             private var rootHeight: Int = mDatabind.rlRoot.height
-
+                            private var isDismissing = false
                             fun backMainGame() {
-                                if (gameHall == null || gameHall?.isDismiss == true) return
+                                if (gameHall == null || isDismissing) return
+                                isDismissing = true
                                 lifecycleScope.launch {
                                     gameHall?.dismiss()
                                     //delay(100)
