@@ -274,7 +274,7 @@ class GameAboutModel : BaseViewModel() {
     var miniGameId: Int = 0
     var countDown: Int = 0 //阶段倒计时
         set(value) {
-            Log.d(TAG, "countDown set:${field},isMainThread:${isMainThread}")
+            Log.d(TAG, "countDown set:${value},isMainThread:${isMainThread}")
             field = value
             _countDownSetStampTime = System.currentTimeMillis()
             ThreadUtils.runOnUiThread {
@@ -283,7 +283,7 @@ class GameAboutModel : BaseViewModel() {
                         super.onCountdown(time)
                         //Log.d(TAG, "countDown,isMainThread:${isMainThread}")
                         //onCountDown跟调用同一线程,这里不用post
-                        _countDownSecondsLD.value = ((time / 1000).toInt())
+                        _countDownSecondsLD.postValue(((time / 1000).toInt()))
                     }
                 })
             }
