@@ -153,42 +153,10 @@ object ViewHelper {
             llFastClick.setOnClickListener {
                 if (homeXPopupDialog != null) {
                     Log.d(TAG, "homeXPopupDialog exists, no need to create it.")
+                    homeXPopupDialog!!.show()
                     return@setOnClickListener
                 }
                 showFastViewPop(context,true)
-                /*XPopup.Builder(context)
-                    .hasShadowBg(false)
-                    //.animationDuration(0)
-                    .setPopupCallback(object : SimpleCallback() {
-                        override fun onShow(popupView: BasePopupView?) {
-                            super.onShow(popupView)
-                            fastViewOverlay?.isVisible = false
-                            fastView?.isVisible = false
-                            appListener?.onGameFloatingDetailViewStatus(true)
-                        }
-
-                        override fun onDismiss(popupView: BasePopupView?) {
-                            super.onDismiss(popupView)
-                            fastViewOverlay?.isVisible = true
-                            fastView?.isVisible = true
-                            homeXPopupDialog = null
-                            appListener?.onGameFloatingDetailViewStatus(false)
-                        }
-                    })
-                    .popupAnimation(PopupAnimation.TranslateFromBottom)
-                    .animationDuration(500)
-                    .moveUpToKeyboard(false) //如果不加这个，评论弹窗会移动到软键盘上面
-                    .isViewMode(true)
-                    .isTouchThrough(true)
-                    .isDestroyOnDismiss(false) //对于只使用一次的弹窗，推荐设置这个
-                    .isThreeDrag(false) //是否开启三阶拖拽，如果设置enableDrag(false)则无效
-                    .enableDrag(true)
-                    .dismissOnTouchOutside(true)
-                    .asCustom(HomeXPopupDialog(context, Fast3MainFragment(),GAME_ID_ENUM.GAME_FAST3.num).apply {
-                        homeXPopupDialog = this
-                    })
-                    .show()*/
-                //EasyFloat.hide(TAG_FASTVIEW)
             }
         }
     }
