@@ -250,7 +250,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         lifecycleScope.launch {
             //开始语音
             mDatabind.txtHomeStatic.text = resources.getString(R.string.g_home_txt_please)
-            Log.d(TAG,"onStartBetting, isCountDownStart:${mViewModel.isCountDownStart}")
+            Log.d(TAG, "onStartBetting, isCountDownStart:${mViewModel.isCountDownStart}")
             if (mViewModel.isCountDownStart) {
                 Fast3ToastHelper.showToastNormal(getString(R.string.g_home_betting_begin), 2000)
                 //PromptSoundPlay.startGameTip(requireContext())
@@ -415,8 +415,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             if (mViewModel.gameState == GameState.Betting && seconds in 1..5) {
                 PromptSoundPlay.countdownGameTip(requireContext())
             }
-            if(seconds == 0) {
-                if(mViewModel.gameState == GameState.Betting){
+            if (seconds == 0) {
+                if (mViewModel.gameState == GameState.Betting) {
                     Fast3ToastHelper.showToastNormal(getString(R.string.g_home_betting_end))
                     mDatabind.txtHomeStatic.text = getString(R.string.g_f3_dealing)
                     mDatabind.txtHomeTime.isVisible = false
@@ -432,9 +432,10 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 y: Float,
                 speed: Long,
                 areaView: GameAreaView,
+                betteBean: SelectAnnotationBean,
                 endCallBack: (() -> Unit)?
             ) {
-                tryMoneyAnimation(x, y, speed, areaView, endCallBack)
+                tryMoneyAnimation(x, y, speed, areaView, betteBean, endCallBack)
             }
         }
         mViewModel.betOkClick.observe(this) {
@@ -565,6 +566,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
      * 取消下注、结算时刷新中奖区域金额
      */
     private fun notifyMoneyOkView(list: List<BettingRecordBean>?) {
+        anchorMoneyView = null
         if (list.isNullOrEmpty()) {
             currentBetteAreaMap.forEach {
                 it.value.removeChildViewFromParent()
@@ -786,6 +788,11 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             } else {
                 if (mViewModel.noteList[0].money <= money) {
                     mViewModel.noteList[0].select = true
+                    (llShowBetList.layoutManager as CenterLayoutManager).smoothScrollToPosition(
+                        mDatabind.llShowBetList,
+                        RecyclerView.State(),
+                        0
+                    )
                 }
             }
             llShowBetList.bindingAdapter.notifyItemRangeChanged(0, mViewModel.noteList.count())
@@ -876,7 +883,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
     private fun setClick() {
         mDatabind.apply {
-            rvHomeHistory.setOnRecycleClickListener(object : ClickRecyclerView.RecyclerClickListener{
+            rvHomeHistory.setOnRecycleClickListener(object :
+                ClickRecyclerView.RecyclerClickListener {
                 override fun onRecyclerClick() {
                     PromptSoundPlay.btnPlayMedia(requireContext())
                     resultAnimation(!mViewModel.isShowResult)
@@ -891,12 +899,12 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 //            bottomHistoryLayout.setOnClickListener {
 //                PromptSoundPlay.btnPlayMedia(requireContext())
 //                resultAnimation(!mViewModel.isShowResult)
-                /*val v = (gameAboutModel.balance as MutableLiveData).value
-                if(v == null){
-                    (gameAboutModel.balance as MutableLiveData).value = 100L + Random.nextLong(100,10000)
-                } else {
-                    (gameAboutModel.balance as MutableLiveData).value = v +  Random.nextLong(100_00,1000_00)
-                }*/
+            /*val v = (gameAboutModel.balance as MutableLiveData).value
+            if(v == null){
+                (gameAboutModel.balance as MutableLiveData).value = 100L + Random.nextLong(100,10000)
+            } else {
+                (gameAboutModel.balance as MutableLiveData).value = v +  Random.nextLong(100_00,1000_00)
+            }*/
 //            }
 
             //点击更多弹出框
@@ -1141,6 +1149,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         y: Float,
         speed: Long = 300,
         areaView: GameAreaView,
+        betteBean: SelectAnnotationBean,
         endCallBack: (() -> Unit)? = null
     ) {
         //PromptSoundPlay.goldPlayMedia(this)
@@ -1148,7 +1157,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         PromptSoundPlay.playAudio(requireContext())
         //获取选中的筹码所在的position
         val betList = mDatabind.llShowBetList.models as List<SelectAnnotationBean>
-        val selectedPosition = betList.indexOfFirst { it.select }
+        val selectedPosition = betList.indexOf(betteBean)
         val layoutManager = mDatabind.llShowBetList.layoutManager as LinearLayoutManager
         var finallyView = layoutManager.findViewByPosition(selectedPosition)
 
