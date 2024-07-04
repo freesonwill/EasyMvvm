@@ -18,6 +18,8 @@ import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.imp.GameApp
 import com.cn.game.sdk2.websocket.isTokenValid
 import com.cn.game.sdk2.websocket.token
+import com.cn.game.sdk2.websocket.tokenArray
+import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
     var views: FastLogoView? = null
@@ -67,7 +69,7 @@ class MainActivity : AppCompatActivity() {
                     GameSocketManager.getInstance()?.initSocketClient()
                 }else{
                     GameApp.login(
-                        token, "wali-internal", true
+                        tokenArray[Random.nextInt(tokenArray.size)], "wali-internal", true
                     )
                     btnOpen.text = "正在登录"
                 }

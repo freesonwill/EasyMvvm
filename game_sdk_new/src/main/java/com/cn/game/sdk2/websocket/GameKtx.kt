@@ -49,6 +49,7 @@ import com.cn.game.sdk2.websocket.imp.GameApp
 import com.cn.game.sdk2.websocket.imp.UIMethodImpl
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 import game.mod.proc.yf.proto.res.GameRes
+import kotlin.random.Random
 
 
 var appContext: Context? = null
@@ -67,7 +68,17 @@ var isEnableSound = true
  */
 //测试打包专用 99:mFGB4ljy
 //92:ZyBmhNCJ   87:MHxIHlYM  93:Ufx3Dy8y 94:0aPEwiYK   金额少：97:nMz8aSsZ  98:gCrUd5Gz
-var token = "94:0aPEwiYK"
+val tokenArray = listOf<String>("101:PcI4jEcP","99:mFGB4ljy","42:aRYvqlC5",
+    "33:ZtG5WhUh",
+    "29:zNbNe45L",
+    "37:QyJbGSGR",
+    "24:zQQBFVFI",
+    "69:9Ea9mGPl",
+    "50:OtdAVXdd",
+    "74:4wNIFMMi",
+    "51:Ja9L1rG6",
+    "35:BIyxvrqa",)
+var token = tokenArray[Random.nextInt(tokenArray.size)]
 var isLogin = false
 var isEnterRoom = false
 

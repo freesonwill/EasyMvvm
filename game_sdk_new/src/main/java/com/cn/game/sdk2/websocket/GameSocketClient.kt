@@ -11,6 +11,7 @@ import org.java_websocket.client.WebSocketClient
 import org.java_websocket.handshake.ServerHandshake
 import java.net.URI
 import java.nio.ByteBuffer
+import kotlin.random.Random
 
 class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
 
@@ -36,7 +37,7 @@ class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
                 isTokenValid = true
                 if (isLogin) {
                     GameApp.login(
-                        token, "wali-internal", true
+                        tokenArray[Random.nextInt(tokenArray.size)], "wali-internal", true
                     )
                 }
             }
