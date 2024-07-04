@@ -209,10 +209,14 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
 
         ChangeHostUtil().getHostList { appHost ->
             appHost?.let { host ->
-                host.shareUrl?.let { ApiComService.SHARE_URL = it }
+                host.shareUrl?.let {
+                    ApiComService.SHARE_URL = it
+                }
                 host.domainUrl?.let { bean ->
                     ApiComService.SERVER_URL = "${ApiComService.HTTP_HEAD}${bean}/apis/"
+                    ApiComService.WEB_SOCKET_URL= "ws://${bean}/ws-sports-chat"
                 }
+
             }
             runOnUiThread {
                 Constants.isLoading = true
