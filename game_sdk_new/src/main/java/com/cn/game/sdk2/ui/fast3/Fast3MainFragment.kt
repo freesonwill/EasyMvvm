@@ -1042,7 +1042,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                         })
                                         .popupAnimation(PopupAnimation.TranslateFromBottom)
                                         .navigationBarColor(android.R.color.transparent)
-                                        .isViewMode(false)
+                                        .isViewMode(true)
                                         .hasShadowBg(false) // 去掉半透明背景
                                         .enableDrag(true)
                                         .dismissOnTouchOutside(true)
