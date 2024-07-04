@@ -1060,32 +1060,33 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     Fast3ToastHelper.showToastNormal(getString(R.string.money_insufficient_50))
                     return@setOnClickListener
                 }
-                if (gameAboutModel.currentAgainDoubleState.value != GameAboutModel.AgainDoubleState.DOUBLE) {
-                    return@setOnClickListener
-                }
-                PromptSoundPlay.playAudio()
-                GameSocketManager.getInstance()?.getGameService()
-                    ?.doubleBetting { bettingState, map, areaLimit ->
-                        bettingState.isCanGoOn(areaLimit) {
-                            if (!map.isNullOrEmpty()) {
-                                map.forEach {
-                                    it.value.let { record ->
-                                        if (currentBetteAreaMap.containsKey(record.bettingArea.number)) {
-                                            currentBetteAreaMap[record.bettingArea.number]?.setShowMoney(
-                                                record.money
-                                            )
-                                        } else {
-                                            //addview
+                if (gameAboutModel.currentAgainDoubleState.value == GameAboutModel.AgainDoubleState.DOUBLE
+                    || gameAboutModel.currentAgainDoubleState.value == GameAboutModel.AgainDoubleState.DOUBLE_CAN_NOT
+                ) {
+                    PromptSoundPlay.playAudio()
+                    GameSocketManager.getInstance()?.getGameService()
+                        ?.doubleBetting { bettingState, map, areaLimit ->
+                            bettingState.isCanGoOn(areaLimit) {
+                                if (!map.isNullOrEmpty()) {
+                                    map.forEach {
+                                        it.value.let { record ->
+                                            if (currentBetteAreaMap.containsKey(record.bettingArea.number)) {
+                                                currentBetteAreaMap[record.bettingArea.number]?.setShowMoney(
+                                                    record.money
+                                                )
+                                            } else {
+                                                //addview
+                                            }
                                         }
                                     }
+                                    "anchorView = $anchorMoneyView".loge()
+                                    showAnchorTop()
+                                } else {
+                                    //余额不足
                                 }
-                                "anchorView = $anchorMoneyView".loge()
-                                showAnchorTop()
-                            } else {
-                                //余额不足
                             }
                         }
-                    }
+                }
             }
             //续压
             ivXuya.setOnClickListener {
