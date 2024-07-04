@@ -320,6 +320,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 //PromptSoundPlay.endGameTip(requireContext())
                 //Fast3ToastHelper.showToastNormal(getString(R.string.g_home_drawing_begin), 1000)
             }
+            Fast3ToastHelper.showToastNormal(getString(R.string.g_home_betting_end))
             cancelBetteFlyAnim()
             cancelTemBetting()
             //开奖时取消临时下注的
@@ -424,7 +425,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             }
             if (seconds == 0) {
                 if (mViewModel.gameState == GameState.Betting) {
-                    Fast3ToastHelper.showToastNormal(getString(R.string.g_home_betting_end))
                     mDatabind.txtHomeStatic.text = getString(R.string.g_f3_dealing)
                     mDatabind.txtHomeTime.isVisible = false
                     mDatabind.txtHomeUnit.isVisible = false
@@ -532,8 +532,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 if (play) {
                     animator = ObjectAnimator.ofFloat(view, "alpha", 1f, 0f, 1f).apply {
                         duration = mViewModel.prizeAnimTime // 设置动画持续时间
-                        repeatCount =
-                            if (mDatabind.rvHomeHistory.size == 1) 3 else mViewModel.prizeAnimCount
+                        repeatCount = 2
+                            //if (mDatabind.rvHomeHistory.size == 1) 3 else mViewModel.prizeAnimCount
                         repeatMode = ObjectAnimator.REVERSE // 设置反向循环以实现渐隐渐显效果
                     }
                     Log.d(TAG, "receive playAlphaAnimationLD:${animator}")
