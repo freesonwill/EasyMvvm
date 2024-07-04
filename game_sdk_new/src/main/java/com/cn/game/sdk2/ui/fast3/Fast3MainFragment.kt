@@ -17,10 +17,8 @@ import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.addListener
-import androidx.core.animation.doOnEnd
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.core.view.size
@@ -922,8 +920,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 PromptSoundPlay.btnPlayMedia(requireContext())
                 if (homeMorePop == null) {
                     val bubbleAttach = CustomBubbleAttachPopup(requireContext())
-                    bubbleAttach.customBubbleAttachListener =
-                        object : CustomBubbleAttachPopup.CustomBubbleAttachListener {
+                    bubbleAttach.customBubbleAttachListener = object : CustomBubbleAttachPopup.CustomBubbleAttachListener {
                             private var gameHall: BasePopupView? = null
                             private var rootHeight: Int = 0
 
@@ -936,14 +933,25 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                 lifecycleScope.launch {
                                     if (!gameHall!!.isDismiss) gameHall?.dismiss()
                                     //delay(100)
-                                    ViewHelper.showFastViewPop(requireContext(), true)
+                                    showMainGame(true)
                                 }
+                            }
+
+                            fun showMainGame(show:Boolean){
+                                ViewHelper.showFastViewPop(requireContext(), show)
+                                /*val view = mDatabind.root
+                                val start = if(show) rootHeight.toFloat() else 0f
+                                val end = if(!show) rootHeight.toFloat() else 0f
+                                ObjectAnimator.ofFloat(view, "translationY", start, end).apply {
+                                    duration = 500
+                                    start()
+                                }*/
                             }
 
                             override fun switchGame() {
                                 lifecycleScope.launch {
-                                    mDatabind.root.scaleY = 1f
-                                    ViewHelper.showFastViewPop(requireContext(), false)
+                                    ViewHelper.isShowOtherPop = true
+                                    showMainGame(false)
                                     delay(100)
                                     val context = requireContext()
                                     val popupView = object : BottomPopupView(context) {
@@ -1025,12 +1033,14 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                             override fun onCreated(popupView: BasePopupView?) {
                                                 super.onCreated(popupView)
                                                 gameHall = popupView
+                                                ViewHelper.isShowOtherPop = true
                                             }
 
                                             override fun onDismiss(popupView: BasePopupView?) {
                                                 super.onDismiss(popupView)
                                                 backMainGame()
                                                 gameHall = null
+                                                ViewHelper.isShowOtherPop = false
                                             }
                                         })
                                         .popupAnimation(PopupAnimation.TranslateFromBottom)

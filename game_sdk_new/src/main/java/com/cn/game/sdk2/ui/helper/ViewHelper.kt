@@ -22,6 +22,7 @@ import com.cn.game.sdk2.data.enums.GAME_ID_ENUM
 import com.cn.game.sdk2.ui.HomeXPopupDialog
 import com.cn.game.sdk2.ui.fast3.Fast3MainFragment
 import com.cn.game.sdk2.ui.view.Fast3HelpPopup
+import com.cn.game.sdk2.utils.ThreadUtils
 import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
 import com.cn.game.sdk2.utils.ext.ViewExt.locationInWindow
 import com.cn.game.sdk2.utils.tool.indicator.CommonPagerIndicator
@@ -57,7 +58,7 @@ object ViewHelper {
 
     private var fastView:View? = null
     private var  fastViewOverlay:View? = null
-
+    var isShowOtherPop:Boolean = false
     /**
      * 显示帮助文档
      */
@@ -122,10 +123,12 @@ object ViewHelper {
 
                 override fun onDismiss(popupView: BasePopupView?) {
                     super.onDismiss(popupView)
-                    fastViewOverlay?.isVisible = true
-                    fastView?.isVisible = true
-                    //homeXPopupDialog = null
-                    appListener?.onGameFloatingDetailViewStatus(false)
+                    if(!isShowOtherPop) {
+                        fastViewOverlay?.isVisible = true
+                        fastView?.isVisible = true
+                        appListener?.onGameFloatingDetailViewStatus(false)
+                        //homeXPopupDialog = null
+                    }
                 }
             })
             .popupAnimation(PopupAnimation.TranslateFromBottom)
