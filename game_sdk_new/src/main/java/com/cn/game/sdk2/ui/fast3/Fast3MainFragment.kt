@@ -10,7 +10,6 @@ import android.graphics.Path
 import android.graphics.PathMeasure
 import android.graphics.Typeface
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -51,6 +50,7 @@ import com.cn.game.sdk2.ui.view.CenterLayoutManager
 import com.cn.game.sdk2.ui.view.CommonLinearLayoutItemDecoration
 import com.cn.game.sdk2.ui.view.CustomBubbleAttachPopup
 import com.cn.game.sdk2.ui.view.MoneyOKView
+import com.cn.game.sdk2.ui.view.ClickRecyclerView
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
 import com.cn.game.sdk2.utils.CommonUtils
@@ -84,11 +84,8 @@ import com.xcjh.base_lib.base.fragment.BaseVmDbFragment
 import com.xcjh.base_lib.utils.dp2px
 import com.xcjh.base_lib.utils.loge
 import com.xcjh.base_lib.utils.view.clickNoRepeat
-import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 
 @SuppressLint("SetTextI18n")
@@ -879,16 +876,28 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
     private fun setClick() {
         mDatabind.apply {
-            rlClickHide.setOnClickListener {
+            rvHomeHistory.setOnRecycleClickListener(object : ClickRecyclerView.RecyclerClickListener{
+                override fun onRecyclerClick() {
+                    PromptSoundPlay.btnPlayMedia(requireContext())
+                    resultAnimation(!mViewModel.isShowResult)
+                }
+            })
+
+            flRvHistory.setOnClickListener {
                 PromptSoundPlay.btnPlayMedia(requireContext())
                 resultAnimation(!mViewModel.isShowResult)
+            }
+
+//            bottomHistoryLayout.setOnClickListener {
+//                PromptSoundPlay.btnPlayMedia(requireContext())
+//                resultAnimation(!mViewModel.isShowResult)
                 /*val v = (gameAboutModel.balance as MutableLiveData).value
                 if(v == null){
                     (gameAboutModel.balance as MutableLiveData).value = 100L + Random.nextLong(100,10000)
                 } else {
                     (gameAboutModel.balance as MutableLiveData).value = v +  Random.nextLong(100_00,1000_00)
                 }*/
-            }
+//            }
 
             //点击更多弹出框
             llHomeMore.setOnClickListener {
