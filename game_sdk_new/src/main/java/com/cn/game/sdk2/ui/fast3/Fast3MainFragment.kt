@@ -922,16 +922,12 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     val bubbleAttach = CustomBubbleAttachPopup(requireContext())
                     bubbleAttach.customBubbleAttachListener = object : CustomBubbleAttachPopup.CustomBubbleAttachListener {
                             private var gameHall: BasePopupView? = null
-                            private var rootHeight: Int = 0
-
-                            init {
-                                rootHeight = mDatabind.root.height
-                            }
+                            private var rootHeight: Int = mDatabind.rlRoot.height
 
                             fun backMainGame() {
-                                if (gameHall == null) return
+                                if (gameHall == null || gameHall?.isDismiss == true) return
                                 lifecycleScope.launch {
-                                    if (!gameHall!!.isDismiss) gameHall?.dismiss()
+                                    gameHall?.dismiss()
                                     //delay(100)
                                     showMainGame(true)
                                 }
@@ -939,18 +935,18 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
                             fun showMainGame(show:Boolean){
                                 ViewHelper.showFastViewPop(requireContext(), show)
-                                /*val view = mDatabind.root
+                                /*val view = mDatabind.rlRoot
                                 val start = if(show) rootHeight.toFloat() else 0f
                                 val end = if(!show) rootHeight.toFloat() else 0f
+                                Log.d(TAG,"showMainGame $start-->$end")
                                 ObjectAnimator.ofFloat(view, "translationY", start, end).apply {
-                                    duration = 500
+                                    duration = 300
                                     start()
                                 }*/
                             }
 
                             override fun switchGame() {
                                 lifecycleScope.launch {
-                                    ViewHelper.isShowOtherPop = true
                                     showMainGame(false)
                                     delay(100)
                                     val context = requireContext()
