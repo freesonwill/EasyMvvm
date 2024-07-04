@@ -11,7 +11,6 @@ import android.graphics.Path
 import android.graphics.PathMeasure
 import android.graphics.Typeface
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -24,6 +23,7 @@ import androidx.core.animation.addListener
 import androidx.core.animation.doOnEnd
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
+import androidx.core.view.size
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
@@ -53,6 +53,7 @@ import com.cn.game.sdk2.ui.view.CenterLayoutManager
 import com.cn.game.sdk2.ui.view.CommonLinearLayoutItemDecoration
 import com.cn.game.sdk2.ui.view.CustomBubbleAttachPopup
 import com.cn.game.sdk2.ui.view.MoneyOKView
+import com.cn.game.sdk2.ui.view.ClickRecyclerView
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
 import com.cn.game.sdk2.utils.CommonUtils
@@ -86,11 +87,8 @@ import com.xcjh.base_lib.base.fragment.BaseVmDbFragment
 import com.xcjh.base_lib.utils.dp2px
 import com.xcjh.base_lib.utils.loge
 import com.xcjh.base_lib.utils.view.clickNoRepeat
-import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 
 @SuppressLint("SetTextI18n")
@@ -249,7 +247,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         lifecycleScope.launch {
             //开始语音
             mDatabind.txtHomeStatic.text = resources.getString(R.string.g_home_txt_please)
-            Log.d(TAG,"onStartBetting, isCountDownStart:${mViewModel.isCountDownStart}")
+            Log.d(TAG, "onStartBetting, isCountDownStart:${mViewModel.isCountDownStart}")
             if (mViewModel.isCountDownStart) {
                 Fast3ToastHelper.showToastNormal(getString(R.string.g_home_betting_begin), 2000)
                 //PromptSoundPlay.startGameTip(requireContext())
@@ -425,8 +423,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             if (mViewModel.gameState == GameState.Betting && seconds in 1..5) {
                 PromptSoundPlay.countdownGameTip(requireContext())
             }
-            if(seconds == 0) {
-                if(mViewModel.gameState == GameState.Betting){
+            if (seconds == 0) {
+                if (mViewModel.gameState == GameState.Betting) {
                     Fast3ToastHelper.showToastNormal(getString(R.string.g_home_betting_end))
                     mDatabind.txtHomeStatic.text = getString(R.string.g_f3_dealing)
                     mDatabind.txtHomeTime.isVisible = false
@@ -442,9 +440,10 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 y: Float,
                 speed: Long,
                 areaView: GameAreaView,
+                betteBean: SelectAnnotationBean,
                 endCallBack: (() -> Unit)?
             ) {
-                tryMoneyAnimation(x, y, speed, areaView, endCallBack)
+                tryMoneyAnimation(x, y, speed, areaView, betteBean, endCallBack)
             }
         }
         mViewModel.betOkClick.observe(this) {
@@ -470,7 +469,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             mDatabind.apply {
 
                 when (it) {
-                    GameAboutModel.AgainDoubleState.NUll -> {
+                    GameAboutModel.AgainDoubleState.NUll, GameAboutModel.AgainDoubleState.AGAIN_CAN_NOT_50 -> {
                         ivXuya.isVisible = true
                         ivXuya.setImageResource(R.drawable.icon_xuya_gray)
                         ivMultiple2.isVisible = false
@@ -488,7 +487,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                         ivMultiple2.setImageResource(R.drawable.icon_multiple2)
                     }
 
-                    GameAboutModel.AgainDoubleState.DOUBLE_CAN_NOT -> {
+                    GameAboutModel.AgainDoubleState.DOUBLE_CAN_NOT, GameAboutModel.AgainDoubleState.DOUBLE_CAN_NOT_50 -> {
                         ivXuya.isVisible = false
                         ivMultiple2.isVisible = true
                         ivMultiple2.setImageResource(R.drawable.icon_multiple2_gray)
@@ -534,7 +533,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 if (play) {
                     animator = ObjectAnimator.ofFloat(view, "alpha", 1f, 0f, 1f).apply {
                         duration = mViewModel.prizeAnimTime // 设置动画持续时间
-                        repeatCount = mViewModel.prizeAnimCount // 设置无限循环
+                        repeatCount =
+                            if (mDatabind.rvHomeHistory.size == 1) 3 else mViewModel.prizeAnimCount
                         repeatMode = ObjectAnimator.REVERSE // 设置反向循环以实现渐隐渐显效果
                     }
                     Log.d(TAG, "receive playAlphaAnimationLD:${animator}")
@@ -575,6 +575,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
      * 取消下注、结算时刷新中奖区域金额
      */
     private fun notifyMoneyOkView(list: List<BettingRecordBean>?) {
+        anchorMoneyView = null
         if (list.isNullOrEmpty()) {
             currentBetteAreaMap.forEach {
                 it.value.removeChildViewFromParent()
@@ -796,6 +797,11 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             } else {
                 if (mViewModel.noteList[0].money <= money) {
                     mViewModel.noteList[0].select = true
+                    (llShowBetList.layoutManager as CenterLayoutManager).smoothScrollToPosition(
+                        mDatabind.llShowBetList,
+                        RecyclerView.State(),
+                        0
+                    )
                 }
             }
             llShowBetList.bindingAdapter.notifyItemRangeChanged(0, mViewModel.noteList.count())
@@ -886,16 +892,29 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
     private fun setClick() {
         mDatabind.apply {
-            rlClickHide.setOnClickListener {
+            rvHomeHistory.setOnRecycleClickListener(object :
+                ClickRecyclerView.RecyclerClickListener {
+                override fun onRecyclerClick() {
+                    PromptSoundPlay.btnPlayMedia(requireContext())
+                    resultAnimation(!mViewModel.isShowResult)
+                }
+            })
+
+            flRvHistory.setOnClickListener {
                 PromptSoundPlay.btnPlayMedia(requireContext())
                 resultAnimation(!mViewModel.isShowResult)
-                /*val v = (gameAboutModel.balance as MutableLiveData).value
-                if(v == null){
-                    (gameAboutModel.balance as MutableLiveData).value = 100L + Random.nextLong(100,10000)
-                } else {
-                    (gameAboutModel.balance as MutableLiveData).value = v +  Random.nextLong(100_00,1000_00)
-                }*/
             }
+
+//            bottomHistoryLayout.setOnClickListener {
+//                PromptSoundPlay.btnPlayMedia(requireContext())
+//                resultAnimation(!mViewModel.isShowResult)
+            /*val v = (gameAboutModel.balance as MutableLiveData).value
+            if(v == null){
+                (gameAboutModel.balance as MutableLiveData).value = 100L + Random.nextLong(100,10000)
+            } else {
+                (gameAboutModel.balance as MutableLiveData).value = v +  Random.nextLong(100_00,1000_00)
+            }*/
+//            }
 
             //点击更多弹出框
             llHomeMore.setOnClickListener {
@@ -1044,6 +1063,10 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             }
             //加倍
             ivMultiple2.setOnClickListener {
+                if (gameAboutModel.currentAgainDoubleState.value == GameAboutModel.AgainDoubleState.DOUBLE_CAN_NOT_50) {
+                    Fast3ToastHelper.showToastNormal(getString(R.string.money_insufficient_50))
+                    return@setOnClickListener
+                }
                 if (gameAboutModel.currentAgainDoubleState.value != GameAboutModel.AgainDoubleState.DOUBLE) {
                     return@setOnClickListener
                 }
@@ -1073,6 +1096,10 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             }
             //续压
             ivXuya.setOnClickListener {
+                if (gameAboutModel.currentAgainDoubleState.value == GameAboutModel.AgainDoubleState.AGAIN_CAN_NOT_50) {
+                    Fast3ToastHelper.showToastNormal(getString(R.string.money_insufficient_50))
+                    return@setOnClickListener
+                }
                 if (gameAboutModel.currentAgainDoubleState.value != GameAboutModel.AgainDoubleState.AGAIN) {
                     return@setOnClickListener
                 }
@@ -1139,6 +1166,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         y: Float,
         speed: Long = 300,
         areaView: GameAreaView,
+        betteBean: SelectAnnotationBean,
         endCallBack: (() -> Unit)? = null
     ) {
         //PromptSoundPlay.goldPlayMedia(this)
@@ -1146,7 +1174,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         PromptSoundPlay.playAudio(requireContext())
         //获取选中的筹码所在的position
         val betList = mDatabind.llShowBetList.models as List<SelectAnnotationBean>
-        val selectedPosition = betList.indexOfFirst { it.select }
+        val selectedPosition = betList.indexOf(betteBean)
         val layoutManager = mDatabind.llShowBetList.layoutManager as LinearLayoutManager
         var finallyView = layoutManager.findViewByPosition(selectedPosition)
 

@@ -128,6 +128,13 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
                 uiBean.money = areaTempMoney + confirmedMoney + tempConfirmedMoney
                 block(GameAboutModel.BettingState.NO_MONEY, uiBean, null)
             }
+
+            "余额不足50" ->{
+                val uiBean = recordBean.copy()
+                uiBean.money = areaTempMoney + confirmedMoney + tempConfirmedMoney
+                block(GameAboutModel.BettingState.NO_MONEY_50, uiBean, null)
+                appListener?.onInsufficientBalance()
+            }
         }
 
 

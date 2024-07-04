@@ -240,8 +240,7 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
 
         currentConfig = configMap[miniGameId]
         //todo：测试直接使用
-        GameApp.enterLive("1213", listOf(1), "")
-        /*if (isEnterRoom) {
+        GameApp.enterLive("1213", listOf(1), "")/*if (isEnterRoom) {
             GameApp.enterLive("1213", listOf(1), "")
         }*/
     }
@@ -278,7 +277,8 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
             3 -> gameAboutModel.changeStage(GameAboutModel.Stage.SETTLE)
         }
 
-        enterGame(EnterMiniGame.newBuilder().setMiniGameId(miniGameId).build()
+        enterGame(
+            EnterMiniGame.newBuilder().setMiniGameId(miniGameId).build()
         )
     }
 
@@ -533,8 +533,13 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
                 //满足基本需要要求
                 if (onceCountMoney == 0) {
                     //牌面上没有下注才能 需要
-                    "checkAgain()->AGAIN".loge("GameServiceImpl")
-                    gameAboutModel.changeAgainDoubleState(GameAboutModel.AgainDoubleState.AGAIN)
+                    if (balance - againCountMoney < 50) {
+                        "checkAgain()->CAN AGAIN,BUT BALANCE < 50".loge("GameServiceImpl")
+                        gameAboutModel.changeAgainDoubleState(GameAboutModel.AgainDoubleState.AGAIN_CAN_NOT_50)
+                    } else {
+                        "checkAgain()->AGAIN".loge("GameServiceImpl")
+                        gameAboutModel.changeAgainDoubleState(GameAboutModel.AgainDoubleState.AGAIN)
+                    }
                 } else {
                     //牌面上已有下注
                     "checkAgain()->牌面上已有下注->checkDouble()".loge("GameServiceImpl")
@@ -565,8 +570,13 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
                 "checkDouble()->${it.areaCode}号注区超限->DOUBLE_CAN_NOT".loge("GameServiceImpl")
                 gameAboutModel.changeAgainDoubleState(GameAboutModel.AgainDoubleState.DOUBLE_CAN_NOT)
             } ?: run {
-                "checkDouble()->DOUBLE".loge("GameServiceImpl")
-                gameAboutModel.changeAgainDoubleState(GameAboutModel.AgainDoubleState.DOUBLE)
+                if (gameAboutModel.tempBalance.value!! - tempMoney.toLong() < 50) {
+                    "checkDouble()->CAN DOUBLE,BUT BALANCE < 50".loge("GameServiceImpl")
+                    gameAboutModel.changeAgainDoubleState(GameAboutModel.AgainDoubleState.DOUBLE_CAN_NOT_50)
+                } else {
+                    "checkDouble()->DOUBLE".loge("GameServiceImpl")
+                    gameAboutModel.changeAgainDoubleState(GameAboutModel.AgainDoubleState.DOUBLE)
+                }
             }
         } else {
             //既不满足续压 钱也不够加倍
@@ -585,18 +595,22 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
 
     protected fun addCanGoOn(bean: BettingRecordBean): String {
         if (isMoneyEnough(bean.money)) {
-            currentConfig?.getBeanById(bean.bettingArea)?.let {
-                limitMap[bean.bettingArea]?.let { money ->
-                    val allMoney = money + bean.money
-                    if (allMoney > it.maxLimit) {
-                        return "限高"
+            if (balance - getPanelAllMoney() < 50) {
+                return "余额不足50"
+            } else {
+                currentConfig?.getBeanById(bean.bettingArea)?.let {
+                    limitMap[bean.bettingArea]?.let { money ->
+                        val allMoney = money + bean.money
+                        if (allMoney > it.maxLimit) {
+                            return "限高"
+                        }
+                    } ?: kotlin.run {
+                        if (bean.money > it.maxLimit) {
+                            return "限高"
+                        }
                     }
-                } ?: kotlin.run {
-                    if (bean.money > it.maxLimit) {
-                        return "限高"
-                    }
-                }
 
+                }
             }
         } else {
             return "余额不足"

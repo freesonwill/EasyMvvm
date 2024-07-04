@@ -94,6 +94,10 @@ object CommonExt {
                 goOnAction.invoke()
             }
 
+            GameAboutModel.BettingState.NO_MONEY_50 ->{
+                Fast3ToastHelper.showToastNormal(ModuleInitializer.application.getString(R.string.money_insufficient_50))
+            }
+
             GameAboutModel.BettingState.NO_MONEY -> {
                 Fast3ToastHelper.showToastNormal(ModuleInitializer.application.getString(R.string.money_insufficient))
             }

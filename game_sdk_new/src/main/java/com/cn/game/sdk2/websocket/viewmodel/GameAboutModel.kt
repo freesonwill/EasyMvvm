@@ -7,6 +7,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.cn.game.sdk2.manager.GameManager
 import com.cn.game.sdk2.manager.listener.IGameListener
+import com.cn.game.sdk2.utils.ThreadUtils
+import com.cn.game.sdk2.utils.ext.CommonExt.isMainThread
 import com.cn.game.sdk2.websocket.bean.AreaBetBean
 import com.cn.game.sdk2.websocket.bean.Betting
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
@@ -22,11 +24,11 @@ class GameAboutModel : BaseViewModel() {
     }
 
     enum class AgainDoubleState {
-        NUll, AGAIN, DOUBLE,DOUBLE_CAN_NOT
+        NUll, AGAIN, AGAIN_CAN_NOT_50, DOUBLE, DOUBLE_CAN_NOT, DOUBLE_CAN_NOT_50
     }
 
     enum class BettingState {
-        GO_ON, NO_MONEY, OFFSET_MIN, OFFSET_MAX
+        GO_ON, NO_MONEY, OFFSET_MIN, OFFSET_MAX, NO_MONEY_50
     }
 
     private val _currentStage = UnPeekLiveData<Stage>()
@@ -45,8 +47,8 @@ class GameAboutModel : BaseViewModel() {
 
     private val _isBettingSuccess = MutableLiveData<BettingResponsesBean>()
     private val _toastErrorMessage = MutableLiveData<String>()
-    private val  _isShowGame = MutableLiveData<Boolean>()
-    private val  _isAllowedBet = MutableLiveData<Boolean>()
+    private val _isShowGame = MutableLiveData<Boolean>()
+    private val _isAllowedBet = MutableLiveData<Boolean>()
 
     /** 需要监听的字段
      * @see currentAgainDoubleState 续压和加倍监听
@@ -272,19 +274,18 @@ class GameAboutModel : BaseViewModel() {
     var miniGameId: Int = 0
     var countDown: Int = 0 //阶段倒计时
         set(value) {
+            Log.d(TAG, "countDown set:${field},isMainThread:${isMainThread}")
             field = value
-            Handler(Looper.getMainLooper()).post {
-
-                Log.d(TAG, "countDown set:${field}")
-                _countDownSetStampTime = System.currentTimeMillis()
-                GameManager.instance.startCountDownTimer(
-                    value.toLong(),
-                    lis = object : IGameListener {
-                        override fun onCountdown(time: Long) {
-                            super.onCountdown(time)
-                            _countDownSecondsLD.postValue((time / 1000).toInt())
-                        }
-                    })
+            _countDownSetStampTime = System.currentTimeMillis()
+            ThreadUtils.runOnUiThread {
+                GameManager.instance.startCountDownTimer(value.toLong(), lis = object : IGameListener {
+                    override fun onCountdown(time: Long) {
+                        super.onCountdown(time)
+                        //Log.d(TAG, "countDown,isMainThread:${isMainThread}")
+                        //onCountDown跟调用同一线程,这里不用post
+                        _countDownSecondsLD.value = ((time / 1000).toInt())
+                    }
+                })
             }
         }
         get() {
@@ -299,8 +300,10 @@ class GameAboutModel : BaseViewModel() {
     var roundId: String = "" //期号
     var loginErrorMessage = ""
     var lastBetting: Betting? = null
+
     //控制隐藏Fast3MainView
-    val fast3MainFloatVisible:UnPeekLiveData<Boolean>  = UnPeekLiveData<Boolean>()
+    val fast3MainFloatVisible: UnPeekLiveData<Boolean> = UnPeekLiveData<Boolean>()
+
     //期号悬浮窗显影
-    val fast3EditionFloatVisible:UnPeekLiveData<Boolean>  = UnPeekLiveData<Boolean>()
+    val fast3EditionFloatVisible: UnPeekLiveData<Boolean> = UnPeekLiveData<Boolean>()
 }

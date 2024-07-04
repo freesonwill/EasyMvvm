@@ -65,7 +65,7 @@
                 app:layout_constraintBottom_toTopOf="@id/bottomLayout">
 
                 <!--             历史记录-->
-                <androidx.recyclerview.widget.RecyclerView
+                <com.cn.game.sdk2.ui.view.ClickRecyclerView
                     android:id="@+id/rvHomeHistory"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
