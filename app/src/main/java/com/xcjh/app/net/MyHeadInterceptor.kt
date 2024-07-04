@@ -30,7 +30,7 @@ class MyHeadInterceptor : Interceptor {
         if (CacheUtil.isLogin()){
             //登录用户
             builder.addHeader("sportstoken", CacheUtil.getToken())
-            Log.i("SSSSSSSS","====="+CacheUtil.getToken())
+//            Log.i("SSSSSSSS","====="+CacheUtil.getToken())
         }else{
             //游客
 //            builder.addHeader("tourist", getUUID().toString())

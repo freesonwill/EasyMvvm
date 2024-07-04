@@ -306,9 +306,7 @@ class MatchDetailActivity :
                         // 在这里执行协程操作
                         setShareDate()
                     }
-//                    GlobalScope.launch(Dispatchers.Main) { // 使用主线程的调度器
-//                        setShareDate()
-//                    }
+
                 } else if (it == 2) {//
                     lifecycleScope.launch {
                         // 在这里执行协程操作
@@ -316,11 +314,7 @@ class MatchDetailActivity :
                         ClingDLNAManager.getInstant().searchDevices()
                         dataPopup()
                     }
-//                    GlobalScope.launch(Dispatchers.Main) { // 使用主线程的调度器
-//                        delay(1000L) // 延迟1秒（1000毫秒）
-//                        ClingDLNAManager.getInstant().searchDevices()
-//                        dataPopup()
-//                    }
+
 
                 } else if (it == 3) {
                     showSignal()
@@ -577,12 +571,55 @@ class MatchDetailActivity :
                                 nickName = bean.nickName ?: ""
                                 playUrl = bean.playUrl ?: ""
                             }
+
+
+                            var isSelect:Boolean=false
                             matchDetail.anchorList?.forEach {
                                 if (it.userId == bean.anchorId) {
                                     it.isOpen = true
                                     it.playUrl = bean.playUrl
+                                    isSelect=true
                                 }
                             }
+                            //新加逻辑
+                            if(!isSelect){
+                                var anchor=AnchorListBean()
+                                anchor.isOpen=true
+                                anchor.isSelect=true
+                                anchor.playUrl=bean.playUrl
+                                anchor.userId=bean.anchorId
+                                anchor.nickName=bean.nickName
+                                anchor.userLogo=bean.userLogo
+                                anchor.hotValue=bean.hotValue.toString()
+                                matchDetail.anchorList?.add(anchor)
+
+                                var list= matchDetail.anchorList
+                                var live=ArrayList<AnchorListBean>()
+                                var pureFlowList=ArrayList<AnchorListBean>()
+                                list!!.forEach {
+                                    if(it.pureFlow){
+                                        pureFlowList.add(it)
+                                    }else{
+                                        live.add(it)
+                                    }
+                                }
+                                if(live.size>0){
+                                    live.sortByDescending{
+                                        it.hotValue
+                                    }
+                                }
+                                var newLive=ArrayList<AnchorListBean>()
+
+                                newLive.addAll(live)
+                                newLive.addAll(pureFlowList)
+                                matchDetail.anchorList?.clear()
+                                matchDetail.anchorList?.addAll(newLive)
+
+
+                            }
+
+
+
                             if (isTopActivity(this@MatchDetailActivity) && !isPause) {
                                  if(finisShow!=null&&finisShow!!.isShow){
                                      finisShow!!.dismiss()
@@ -1728,6 +1765,7 @@ class MatchDetailActivity :
             var live=ArrayList<AnchorListBean>()
             var pureFlowList=ArrayList<AnchorListBean>()
             list.forEach {
+
                 if(it.pureFlow){
                     pureFlowList.add(it)
                 }else{
