@@ -1,9 +1,8 @@
 package com.cn.game.sdk2.ui.view
 
-import android.animation.ValueAnimator
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.util.Log
-import android.widget.LinearLayout
 import androidx.core.animation.addListener
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.databinding.FragmentFast3HelpBinding
@@ -24,9 +23,8 @@ import com.xcjh.base_lib.utils.view.getStringArray
 /**
  * 首页的弹出框
  */
-class Fast3HelpPopup(content: Context) : BottomPopupView(content) {
+class Fast3HelpPopup(context: Context,private val offsetY:Int) : BottomPopupView(context) {
     private lateinit var mViewBind: FragmentFast3HelpBinding
-
     override fun getImplLayoutId(): Int {
         return R.layout.fragment_fast3_help
     }
@@ -34,8 +32,10 @@ class Fast3HelpPopup(content: Context) : BottomPopupView(content) {
     override fun onCreate() {
         super.onCreate()
         mViewBind = FragmentFast3HelpBinding.bind(popupImplView)
+        mViewBind.content.translationY = offsetY.toFloat()
         this.initView()
         gameAboutModel.fast3MainFloatVisible.value = false
+
     }
 
     override fun onDestroy() {
@@ -73,37 +73,25 @@ class Fast3HelpPopup(content: Context) : BottomPopupView(content) {
 
         mViewBind.ivCollapse.clickNoRepeat(300) {
             PromptSoundPlay.btnPlayMedia()
-            val lp = mViewBind.space.layoutParams as LinearLayout.LayoutParams
-            val toExpand = lp.weight == 1f
+            val toExpand = mViewBind.content.translationY != 0f
             val topPadding = if (toExpand) 40.dp2px else 0
             val bottomPadding = 48.dp2px
-            mViewBind.ivCollapse.setImageResource(if (!toExpand) R.drawable.ic_expand else R.drawable.ic_collapse)
-            val start = if (!toExpand) 0f else 1f
-            val end = if (toExpand) 0f else 1f
-            Log.d(TAG,"addUpdateListener----->$start-->$end,toExpand:$toExpand")
-            ValueAnimator.ofFloat(start, end).apply {
+            val start = if (toExpand) offsetY else 0
+            val end = if (!toExpand) offsetY else 0
+            ObjectAnimator.ofFloat(mViewBind.content, "translationY", start.toFloat(), end.toFloat()).apply {
                 duration = 200
-                addUpdateListener { animation ->
-                    val value = animation.animatedValue as Float
-                    lp.weight = value
-                    mViewBind.space.layoutParams = lp
-
-                    Log.d(TAG,"addUpdateListener----->${lp.weight}")
-                }
                 addListener(
                     onStart = {
-                        lp.weight = start
-                        mViewBind.space.layoutParams = lp
+                        mViewBind.content.translationY = start.toFloat()
+                        mViewBind.content.setPadding(0, topPadding, 0, bottomPadding)
                     },
                     onEnd = {
                         //动画结束
-                        lp.weight = end
-                        mViewBind.root.setPadding(0, topPadding, 0, bottomPadding)
-                        mViewBind.space.layoutParams = lp
+                        mViewBind.ivCollapse.setImageResource(if (!toExpand) R.drawable.ic_expand else R.drawable.ic_collapse)
                     })
                 start()
             }
-
+            Log.d(TAG,"addUpdateListener----->$start-->$end,toExpand:$toExpand")
         }
         mViewBind.close.clickNoRepeat {
             PromptSoundPlay.btnPlayMedia()

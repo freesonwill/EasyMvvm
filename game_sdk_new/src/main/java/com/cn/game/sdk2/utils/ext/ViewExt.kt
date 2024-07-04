@@ -3,7 +3,6 @@ package com.cn.game.sdk2.utils.ext
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Build
-import android.util.Log
 import android.view.View
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
@@ -15,9 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.ui.helper.ViewHelper.setTextBold
 import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
-import com.cn.game.sdk2.utils.ext.CommonExt.px2dp
 import com.cn.game.sdk2.utils.tool.indicator.CommonPagerIndicator
-import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.base.fragment.BaseVmFragment
 import com.xcjh.base_lib.utils.toHtml
 import net.lucode.hackware.magicindicator.MagicIndicator
@@ -25,7 +22,6 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigat
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapter
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerIndicator
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerTitleView
-import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.ColorTransitionPagerTitleView
 
 /**

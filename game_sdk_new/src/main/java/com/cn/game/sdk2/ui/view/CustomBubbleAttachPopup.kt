@@ -56,7 +56,7 @@ class CustomBubbleAttachPopup(content: Context) : AttachPopupView(content){
                 PromptSoundPlay.btnPlayMedia()
                 delayDismiss(100)
                 customBubbleAttachListener?.switchGame()
-//                switchGame()
+                //switchGame()
             }
             rlPopClickAssist.clickNoRepeat() {
                 PromptSoundPlay.btnPlayMedia()
