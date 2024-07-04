@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
@@ -8,36 +8,48 @@
     android:clipToPadding="false"
     android:orientation="vertical">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/topLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:clipChildren="false"
         android:clipToPadding="false"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
-            android:id="@+id/llShowTop"
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivOff"
+            android:layout_width="37dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:scaleType="fitXY"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/icon_hong_off" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivOk"
+            android:layout_width="37dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
+            android:scaleType="fitXY"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/ivOff"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/icon_lv_ok" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/ivOff"
-                android:layout_width="37dp"
-                android:layout_height="30dp"
-                android:scaleType="fitXY"
-                app:srcCompat="@drawable/icon_hong_off" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/ivOk"
-                android:layout_width="37dp"
-                android:layout_height="30dp"
-                android:scaleType="fitXY"
-                app:srcCompat="@drawable/icon_lv_ok" />
-
-        </LinearLayout>
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="ivOff,ivOff" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/ivShowMoney"
@@ -52,12 +64,61 @@
             android:textColor="@color/g_f8e0c4"
             android:textSize="13sp"
             android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/barrier"
             tools:text="1999.0" />
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/ivShowBg"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            app:srcCompat="@drawable/icon_ok_wushi" />
-    </LinearLayout>
-</LinearLayout>
+        <FrameLayout
+            android:id="@+id/offLayout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="@id/ivShowMoney"
+            app:layout_constraintEnd_toEndOf="@id/ivOff"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <FrameLayout
+            android:id="@+id/okLayout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="@id/ivShowMoney"
+            app:layout_constraintEnd_toEndOf="@id/ivOk"
+            app:layout_constraintStart_toStartOf="@id/ivOk"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <FrameLayout
+            android:id="@+id/offLeftLayout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="@id/ivOff"
+            app:layout_constraintEnd_toStartOf="@id/ivOff"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/ivOff" />
+
+        <FrameLayout
+            android:id="@+id/okRightLayout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="@id/ivOk"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/ivOk"
+            app:layout_constraintTop_toTopOf="@id/ivOk" />
+
+        <!--        <androidx.constraintlayout.widget.Group-->
+        <!--            android:id="@+id/groupOkTopView"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            app:constraint_referenced_ids="ivOk,ivOff,offLayout,okLayout,offLeftLayout,okRightLayout" />-->
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivShowBg"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/topLayout"
+        app:srcCompat="@drawable/icon_ok_wushi" />
+</androidx.constraintlayout.widget.ConstraintLayout>
