@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 
 import com.cn.game.sdk2.ui.helper.ViewHelper
 import com.cn.game.sdk2.ui.view.FastLogoView
+import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
 import com.cn.game.sdk2.websocket.GameSocketManager
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.imp.GameApp
@@ -27,7 +28,9 @@ class MainActivity : AppCompatActivity() {
         var btnOpen = findViewById<TextView>(R.id.btnOpen)
         var llshow = findViewById<LinearLayout>(R.id.llshow)
         var btnXiu = findViewById<Button>(R.id.btnXiu)
-
+        /*ViewHelper.showHelpDialog(this)
+        ViewHelper.showFastView(this)
+        return@setOnClickListener*/
         GameApp.setSocketStatesCallback(object : GameApp.SocketStatesCallback{
             override fun onOpen() {
                 btnOpen.post{
@@ -78,8 +81,21 @@ class MainActivity : AppCompatActivity() {
             if(result){
                 btnOpen.text = "已进入直播间"
                 //GameApp.enterLive("1213", listOf(1), "")
-                ViewHelper.showFastView(this)
-                ViewHelper.showFastViewOverlay(this)
+                /*ViewHelper.showFastView(this)
+                ViewHelper.showFastViewOverlay(this)*/
+                GameApp.createFloatEnterView(this@MainActivity).apply {
+                    val lp = LinearLayout.LayoutParams(layoutParams.width,layoutParams.height)
+                    lp.topMargin = 100.dp2px
+                    lp.marginStart = 100.dp2px
+                    llshow.addView(this,lp)
+                }
+                GameApp.createFloatResultView(this@MainActivity).apply {
+                    val lp = LinearLayout.LayoutParams(layoutParams.width,layoutParams.height)
+                    lp.topMargin = 100.dp2px
+                    lp.marginStart = 100.dp2px
+                    llshow.addView(this,lp)
+                }
+
             }
         }
 

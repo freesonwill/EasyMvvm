@@ -4,14 +4,12 @@ import android.os.Looper
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.ui.helper.Fast3ToastHelper
 import com.cn.game.sdk2.utils.PinyinUtils
-import com.cn.game.sdk2.utils.ToastUtil
 import com.cn.game.sdk2.websocket.bean.AreaBetConfigBean
 import com.cn.game.sdk2.websocket.bean.Betting
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 import java.math.BigDecimal
 import java.math.RoundingMode
 import com.xcjh.base_lib.ModuleInitializer
-import game.mod.proc.yf.proto.res.GameRes.AreaInfo
 import java.text.DecimalFormat
 
 
@@ -35,8 +33,8 @@ object CommonExt {
         get() = run {
             val context = ModuleInitializer.application
             val scale = context.resources.displayMetrics.density
-            val dp = this
-            (dp * scale + 0.5f).toInt()
+            val v = this
+            (v / scale + 0.5f).toInt()
         }
     inline val Float.dp2px
         get() = run {
@@ -50,8 +48,8 @@ object CommonExt {
         get() = run {
             val context = ModuleInitializer.application
             val scale = context.resources.displayMetrics.density
-            val dp = this
-            (dp * scale + 0.5f).toInt()
+            val v = this
+            (v / scale + 0.5f).toInt()
         }
 
     fun Int.toPinyin(): String {

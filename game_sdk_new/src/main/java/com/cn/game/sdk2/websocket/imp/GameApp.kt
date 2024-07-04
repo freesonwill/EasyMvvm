@@ -8,6 +8,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
+import com.cn.game.sdk2.ui.helper.ViewHelper
 import com.cn.game.sdk2.websocket.GameSocketManager
 import com.cn.game.sdk2.websocket.appContext
 import com.cn.game.sdk2.websocket.appLifecycleEnable
@@ -117,7 +118,7 @@ object GameApp : IGameForApp {
     /**
      * 入口漂浮窗視圖
      */
-    override fun createFloatEnterView(context:Context): View? {
+    override fun createFloatEnterView(context:Context): View {
         if(appLifecycleEnable && context is Activity){
             (context as LifecycleOwner).lifecycle.addObserver(object :LifecycleEventObserver{
                 override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
@@ -139,14 +140,14 @@ object GameApp : IGameForApp {
 
             })
         }
-        return com.cn.game.sdk2.websocket.floatingView
+        return ViewHelper.getFastView(context)
     }
 
     /**
      * 结果视图
      */
-    override fun createFloatResultView(context:Context): View? {
-        return com.cn.game.sdk2.websocket.resultView
+    override fun createFloatResultView(context:Context): View {
+        return ViewHelper.getFastViewOverlay(context)
     }
 
     override fun dismissFloatingController() {

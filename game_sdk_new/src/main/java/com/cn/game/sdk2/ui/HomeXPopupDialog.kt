@@ -46,13 +46,13 @@ class HomeXPopupDialog(context: Context, private val fragment: Fragment, private
     override fun onDismiss() {
         super.onDismiss()
         Log.d(TAG, "onDismiss")
-        val f = fragmentManager.findFragmentById(R.id.fl_container) ?: return
-        fragmentManager.beginTransaction().remove(f).commit()
     }
 
     override fun onDestroy() {
         super.onDestroy()
         Log.d(TAG, "onDestroy")
+        /*val f = fragmentManager.findFragmentById(R.id.fl_container) ?: return
+        fragmentManager.beginTransaction().remove(f).commit()*/
     }
 
     override fun getImplLayoutId(): Int {

@@ -1,14 +1,18 @@
 package com.cn.game.sdk2.ui.helper
 
+import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.graphics.Paint
 import android.util.Log
 import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
@@ -32,6 +36,7 @@ import com.lxj.xpopup.enums.PopupAnimation
 import com.lxj.xpopup.interfaces.SimpleCallback
 import com.lzf.easyfloat.EasyFloat
 import com.lzf.easyfloat.enums.SidePattern
+import com.xcjh.base_lib.ModuleInitializer
 import com.xcjh.base_lib.utils.toHtml
 import net.lucode.hackware.magicindicator.MagicIndicator
 import net.lucode.hackware.magicindicator.ViewPagerHelper
@@ -46,6 +51,7 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.ColorT
  * author       : zhangsan
  * createTime   : 2024/6/13 17:43
  **/
+@SuppressLint("StaticFieldLeak")
 object ViewHelper {
     private const val TAG: String = "ViewHelper"
     private const val TAG_FASTVIEW = "TAG_FASTVIEW"
@@ -53,11 +59,13 @@ object ViewHelper {
     private var homeXPopupDialog: BasePopupView? = null
     private var helpXPopupDialog: BasePopupView? = null
 
+    private var fastView:View? = null
+    private var  fastViewOverlay:View? = null
+
     /**
      * 显示帮助文档
      */
     fun showHelpDialog(context: Context, isShow: Boolean = true) {
-
         if (helpXPopupDialog != null) {
             when {
                 isShow && !helpXPopupDialog!!.isShow -> {
@@ -89,7 +97,82 @@ object ViewHelper {
         helpXPopupDialog?.show()
     }
 
-    fun showFastView(context: Context, isShow: Boolean = true) {
+
+    fun showFastViewPop(context: Context,isShow: Boolean){
+        if(!isShow){
+            homeXPopupDialog?.dismiss()
+            return
+        }
+        if(homeXPopupDialog != null) {
+            homeXPopupDialog!!.show()
+            return
+        }
+        val pop = HomeXPopupDialog(context, Fast3MainFragment(),GAME_ID_ENUM.GAME_FAST3.num).apply {
+            homeXPopupDialog = this
+        }
+        XPopup.Builder(context)
+            .hasShadowBg(false)
+            .setPopupCallback(object : SimpleCallback() {
+                override fun onShow(popupView: BasePopupView?) {
+                    super.onShow(popupView)
+                    fastViewOverlay?.isVisible = false
+                    fastView?.isVisible = false
+                    appListener?.onGameFloatingDetailViewStatus(true)
+                }
+
+                override fun onDismiss(popupView: BasePopupView?) {
+                    super.onDismiss(popupView)
+                    fastViewOverlay?.isVisible = true
+                    fastView?.isVisible = true
+                    //homeXPopupDialog = null
+                    appListener?.onGameFloatingDetailViewStatus(false)
+                }
+            })
+            .popupAnimation(PopupAnimation.TranslateFromBottom)
+            .animationDuration(500)
+            .moveUpToKeyboard(false) //如果不加这个，评论弹窗会移动到软键盘上面
+            .isViewMode(true)
+            .isTouchThrough(true)
+            .isDestroyOnDismiss(false) //对于只使用一次的弹窗，推荐设置这个
+            .isThreeDrag(false) //是否开启三阶拖拽，如果设置enableDrag(false)则无效
+            .enableDrag(true)
+            .dismissOnTouchOutside(true)
+            .asCustom(pop)
+            .show()
+    }
+
+    fun getFastView(context: Context):View{
+        if(fastView != null) return fastView!!
+        return LayoutInflater.from(context).inflate(R.layout.drag_fast_easy,null,false).also {
+            fastView = it
+            val lp = ViewGroup.LayoutParams(0,0)
+            lp.width = 58.dp2px
+            lp.height = ViewGroup.LayoutParams.WRAP_CONTENT
+            it.layoutParams = lp
+            val llFastClick = it.findViewById<LinearLayout>(R.id.llFastClick)
+            llFastClick.setOnClickListener {
+                if (homeXPopupDialog != null) {
+                    Log.d(TAG, "homeXPopupDialog exists, no need to create it.")
+                    homeXPopupDialog!!.show()
+                    return@setOnClickListener
+                }
+                showFastViewPop(context,true)
+            }
+        }
+    }
+
+    fun getFastViewOverlay(context: Context):View{
+        if(fastViewOverlay != null) return fastViewOverlay!!
+        return LayoutInflater.from(context).inflate(R.layout.fragment_fast3_overlay,null,false).also {
+            val lp = ViewGroup.LayoutParams(0,0)
+            lp.width = 106.dp2px
+            lp.height = ViewGroup.LayoutParams.WRAP_CONTENT
+            it.layoutParams = lp
+            fastViewOverlay = it
+        }
+    }
+
+    private fun showFastView(context: Context, isShow: Boolean = true) {
         if (!isShow) EasyFloat.hide(TAG_FASTVIEW)
         gameAboutModel.fast3MainFloatVisible.observeForever {
             Log.d(TAG,"fast3MainFloatVisible -->$it")
@@ -142,13 +225,10 @@ object ViewHelper {
             .show()
     }
 
-    fun dismissHomeXPopDialog(){
-        homeXPopupDialog?.dismiss()
-    }
     /**
      * 快三悬浮窗
      */
-    fun showFastViewOverlay(context: Context, show: Boolean = true) {
+    private fun showFastViewOverlay(context: Context, show: Boolean = true) {
         if (!show) {
             EasyFloat.hide(TAG_FASTVIEW_OVERLAY)
             return
