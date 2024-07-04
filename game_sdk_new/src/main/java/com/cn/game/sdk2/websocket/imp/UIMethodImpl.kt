@@ -82,6 +82,10 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
             0
         }
 
+        "currentMoney:${currentMoney}---areaTempMoney:$areaTempMoney----confirmedMoney:$confirmedMoney---tempConfirmedMoney:$tempConfirmedMoney".loge("test")
+        "balance:$balance".loge("test")
+        "tempBalance:${gameAboutModel.tempBalance.value}".loge("test")
+
         val addFuture = addCanGoOn(recordBean)
         when (addFuture) {
             "继续" -> {

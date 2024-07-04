@@ -533,7 +533,7 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
                 //满足基本需要要求
                 if (onceCountMoney == 0) {
                     //牌面上没有下注才能 需要
-                    if (balance - againCountMoney < 50) {
+                    if (balance < 5000) {
                         "checkAgain()->CAN AGAIN,BUT BALANCE < 50".loge("GameServiceImpl")
                         gameAboutModel.changeAgainDoubleState(GameAboutModel.AgainDoubleState.AGAIN_CAN_NOT_50)
                     } else {
@@ -570,7 +570,7 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
                 "checkDouble()->${it.areaCode}号注区超限->DOUBLE_CAN_NOT".loge("GameServiceImpl")
                 gameAboutModel.changeAgainDoubleState(GameAboutModel.AgainDoubleState.DOUBLE_CAN_NOT)
             } ?: run {
-                if (gameAboutModel.tempBalance.value!! - tempMoney.toLong() < 50) {
+                if ((gameAboutModel.tempBalance.value ?: 0) < 5000) {
                     "checkDouble()->CAN DOUBLE,BUT BALANCE < 50".loge("GameServiceImpl")
                     gameAboutModel.changeAgainDoubleState(GameAboutModel.AgainDoubleState.DOUBLE_CAN_NOT_50)
                 } else {
@@ -590,12 +590,13 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
     }
 
     private fun isMoneyEnough(current: Int): Boolean {
-        return current + tempMoney + confirmTempMoney + confirmMoney <= balance
+
+        return current  <= balance - tempMoney  - confirmTempMoney
     }
 
     protected fun addCanGoOn(bean: BettingRecordBean): String {
         if (isMoneyEnough(bean.money)) {
-            if (balance - getPanelAllMoney() < 50) {
+            if ((gameAboutModel.tempBalance.value ?: 0) < 5000) {
                 return "余额不足50"
             } else {
                 currentConfig?.getBeanById(bean.bettingArea)?.let {
