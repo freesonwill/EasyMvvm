@@ -7,6 +7,7 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Observer
 import com.cn.game.sdk2.databinding.FragmentFast3OverlayBinding
+import com.cn.game.sdk2.utils.ThreadUtils
 import com.cn.game.sdk2.utils.ext.CommonExt.toPinyin
 import com.cn.game.sdk2.websocket.bean.RoundInfoBean
 import com.cn.game.sdk2.websocket.gameAboutModel
@@ -45,7 +46,7 @@ class DragFast3Overlay @JvmOverloads constructor(
                 }
 
                 override fun onChanged(t: Stage?) {
-                    binding.tvEdition.text = gameAboutModel.roundId
+                    updateUI()
                 }
             })
         }
@@ -71,9 +72,9 @@ class DragFast3Overlay @JvmOverloads constructor(
                         2 -> ivDrawSan.setImageResource(id)
                     }
                 }
+                tvEdition.text = roundId
             }
         }
-        binding.tvEdition.text = roundInfo?.roundId
     }
 
     /*private fun test() {
