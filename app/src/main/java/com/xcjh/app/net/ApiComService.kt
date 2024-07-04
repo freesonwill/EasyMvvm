@@ -1,13 +1,9 @@
 package com.xcjh.app.net
 
 import com.xcjh.app.bean.*
-import com.xcjh.app.bean.MsgBeanData
-import com.xcjh.app.bean.MsgListNewData
 import com.xcjh.app.view.slider.CaptchaCheckOt
 import com.xcjh.base_lib.bean.ApiResponse
-import kotlinx.coroutines.Deferred
 import okhttp3.MultipartBody
-import retrofit2.Response
 import retrofit2.http.*
 
 /**
@@ -16,18 +12,23 @@ import retrofit2.http.*
 interface ApiComService {
 
     companion object {
+        /**
+         * 测试环境用http,正式环境用https
+         */
+        val HTTP_HEAD = "http://"
+
         //dev      http://192.168.101.15:6003/apis/    "ws://192.168.101.15:6006/ws-sports-chat
         var SERVER_URL = "http://192.168.101.15:6003/apis/"//app通用 开发
         var WEB_SOCKET_URL = "ws://192.168.101.15:6006/ws-sports-chat" ///new dev
-        var SHARE_URL="192.168.101.180"
+        var SHARE_URL = "192.168.101.180"
         //test 发布1 生产环境  app.hyh86.cn    旧的 app.wyjxx.cn
 //          var SERVER_URL = "https://app.hyh86.cn/apis/"//app通用 测试
 //          var WEB_SOCKET_URL = "wss://app.hyh86.cn/ws-sports-chat" ///test
-                //  var SHARE_URL="app.hyh86.cn"
+        //  var SHARE_URL="app.hyh86.cn"
         //test 发布2 最新
 //        var SERVER_URL = "https://app.gdhsbp.cn/apis/"//app通用 测试
 //        var WEB_SOCKET_URL = "wss://app.gdhsbp.cn/ws-sports-chat" ///test
-       //  var SHARE_URL="app.gdhsbp.cn"
+        //  var SHARE_URL="app.gdhsbp.cn"
 //        预发布   测试
 //        var SERVER_URL = "https://app.cbd246.com/apis/"//app通用 测试
 //        var WEB_SOCKET_URL = "wss://app.cbd246.com/ws-sports-chat" ///test
@@ -361,8 +362,9 @@ interface ApiComService {
      * 	渠道：1：安卓 2：IOS
      */
     @POST("app/version/getLatestVersion/{channel}/{domain}")
-    suspend fun getLatestVersion(@Path("channel") channel: String = "2",
-                                 @Path("domain") domain: String): ApiResponse<AppUpdateBean>
+    suspend fun getLatestVersion(
+        @Path("channel") channel: String = "2", @Path("domain") domain: String
+    ): ApiResponse<AppUpdateBean>
 
     /**
      * 个人中心广告
@@ -468,13 +470,11 @@ interface ApiComService {
     suspend fun getWordCaptchaAsync(@Body req: CaptchaVOReq): Input<WordCaptchaGetIt>
 
 
-
     /**
      * 查询主播对当前用户禁言和踢出直播间信息
      */
     @GET("app/user/getAnchorControlUserInfo/{anchorId}")
     suspend fun getAnchorControlUserInfo(@Path("anchorId") anchorId: String): ApiResponse<ProhibitionBean>
-
 
 
     /**
@@ -503,7 +503,6 @@ interface ApiComService {
      */
     @POST("app/common/setLanguage")
     suspend fun setLanguage(@Query("sports_language") sports_language: String): ApiResponse<*>
-
 
 
     /**
