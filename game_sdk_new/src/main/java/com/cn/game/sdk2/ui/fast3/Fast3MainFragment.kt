@@ -419,7 +419,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             notifyBetteBean(it)
         }
 
-        mViewModel.homeTimeSeconds.observe(viewLifecycleOwner) { seconds ->
+        gameAboutModel.countDownSecondsLD.observe(viewLifecycleOwner) { seconds ->
+            //Log.d(TAG,"countdown: seconds:$seconds")
             if (mViewModel.gameState == GameState.Betting && seconds in 1..5) {
                 PromptSoundPlay.countdownGameTip(requireContext())
             }
