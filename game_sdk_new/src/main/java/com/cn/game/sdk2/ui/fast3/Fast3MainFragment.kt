@@ -251,6 +251,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         lifecycleScope.launch {
             //开始语音
             mDatabind.txtHomeStatic.text = resources.getString(R.string.g_home_txt_please)
+            Log.d(TAG,"onStartBetting, isCountDownStart:${mViewModel.isCountDownStart}")
             if (mViewModel.isCountDownStart) {
                 Fast3ToastHelper.showToastNormal(getString(R.string.g_home_betting_begin), 2000)
                 //PromptSoundPlay.startGameTip(requireContext())
@@ -322,7 +323,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         lifecycleScope.launch {//关闭
             if (mViewModel.isCountDownStart) {
                 //PromptSoundPlay.endGameTip(requireContext())
-                Fast3ToastHelper.showToastNormal(getString(R.string.g_home_drawing_begin), 1000)
+                //Fast3ToastHelper.showToastNormal(getString(R.string.g_home_drawing_begin), 1000)
             }
             cancelBetteFlyAnim()
             cancelTemBetting()
@@ -412,9 +413,18 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         }
 
         mViewModel.homeTimeSeconds.observe(viewLifecycleOwner) { seconds ->
-            mDatabind.txtHomeTime.text = seconds.toString()
             if (mViewModel.gameState == GameState.Betting && seconds in 1..5) {
                 PromptSoundPlay.countdownGameTip(requireContext())
+            }
+            if(seconds == 0) {
+                if(mViewModel.gameState == GameState.Betting){
+                    Fast3ToastHelper.showToastNormal(getString(R.string.g_home_betting_end))
+                    mDatabind.txtHomeStatic.text = getString(R.string.g_f3_dealing)
+                    mDatabind.txtHomeTime.isVisible = false
+                    mDatabind.txtHomeUnit.isVisible = false
+                }
+            } else {
+                mDatabind.txtHomeTime.text = seconds.toString()
             }
         }
         mViewModel.moneyAnimCallback = object : Fast3ViewModel.MoneyAnimCallback {
