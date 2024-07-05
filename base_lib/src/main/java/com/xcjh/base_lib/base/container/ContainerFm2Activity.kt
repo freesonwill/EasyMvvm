@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import com.gyf.immersionbar.ImmersionBar
 import com.xcjh.base_lib.R
 import com.xcjh.base_lib.base.activity.BaseActivity
-import com.xcjh.base_lib.utils.dismissLoadingExt
 
 /**
  *
@@ -56,7 +55,6 @@ class ContainerFm2Activity : BaseActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        dismissLoadingExt()
     }
 
     @Deprecated("Deprecated in Java")

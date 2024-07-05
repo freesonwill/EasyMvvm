@@ -53,7 +53,7 @@ dependencies {
 
     /*==============================三方工具库==========================*/
     //模块启动初始化Application
-    implementation Libs.androidx_startup
+    //implementation Libs.androidx_startup
     //glide图片加载库
     //  api rootProject.ext.dependencies["glide"]
     api 'com.github.bumptech.glide:glide:4.16.0'
@@ -61,7 +61,7 @@ dependencies {
     kapt 'com.github.bumptech.glide:compiler:4.15.1'
 
     //阴影控件
-    api "com.github.lihangleo2:ShadowLayout:3.3.2"
+    //api "com.github.lihangleo2:ShadowLayout:3.3.2"
     //适配
     api "me.jessyan:autosize:1.2.1"
     //沉浸式
@@ -71,20 +71,20 @@ dependencies {
     api "io.github.cymchad:BaseRecyclerViewAdapterHelper:3.0.14"
 
     //******==================网络=================
-    api "com.squareup.retrofit2:converter-gson:2.9.0"
+    //api "com.squareup.retrofit2:converter-gson:2.9.0"
 //    api "com.github.Justson.AgentWeb:agentweb-core:v5.0.0-alpha.1-androidx"
-    api 'io.github.justson:agentweb-core:v5.1.1-androidx'
+    //api 'io.github.justson:agentweb-core:v5.1.1-androidx'
     //动态替换BaseUrl库 使用可参考 https://github.com/JessYanCoding/RetrofitUrlManager
     api 'me.jessyan:retrofit-url-manager:1.4.0'
     // Gson 解析容错：https://github.com/getActivity/GsonFactory
 //    api 'com.github.getActivity:GsonFactory:6.3'
-    api 'com.github.getActivity:GsonFactory:9.6'
+    //api 'com.github.getActivity:GsonFactory:9.6'
     // Json 解析框架：https://github.com/google/gson
     api 'com.google.code.gson:gson:2.10.1'
     api 'com.kunminx.arch:unpeek-livedata:7.8.0'
     //ws
     api "org.java-websocket:Java-WebSocket:1.5.3"
-    api 'com.github.getActivity:XXPermissions:18.63'
+    //api 'com.github.getActivity:XXPermissions:18.63'
     //指示器库
     api 'com.github.hackware1993:MagicIndicator:1.7.0'
     api 'com.github.liangjingkanji:BRV:1.5.8'

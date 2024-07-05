@@ -8,8 +8,7 @@ import android.view.View
 import androidx.databinding.ViewDataBinding
 import com.xcjh.base_lib.base.BaseViewModel
 import com.xcjh.base_lib.base.activity.BaseVmDbActivity
-import com.xcjh.base_lib.utils.dismissLoadingExt
-import com.xcjh.base_lib.utils.showLoadingExt
+
 
 abstract class BaseGameActivity <  VM : BaseViewModel, DB : ViewDataBinding> : BaseVmDbActivity<VM, DB>() {
 
@@ -40,20 +39,6 @@ abstract class BaseGameActivity <  VM : BaseViewModel, DB : ViewDataBinding> : B
      * 创建liveData观察者
      */
     override fun createObserver() {}
-
-    /**
-     * 打开等待框
-     */
-    override fun showLoading(message: String) {
-        showLoadingExt(message)
-    }
-
-    /**
-     * 关闭等待框
-     */
-    override fun dismissLoading() {
-        dismissLoadingExt()
-    }
 
     open fun finishTopClick(view: View?) {
         finish()

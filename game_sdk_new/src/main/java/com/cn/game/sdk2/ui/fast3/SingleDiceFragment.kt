@@ -1,30 +1,12 @@
 package com.cn.game.sdk2.ui.fast3
 
-import android.os.Bundle
-import android.view.Gravity
-import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.FrameLayout
-import android.widget.ImageView
-import androidx.core.view.isVisible
-import androidx.lifecycle.lifecycleScope
-import com.cn.game.sdk2.R
-import com.cn.game.sdk2.base.BaseGameFragment
-import com.cn.game.sdk2.data.enums.NOTES_ENUM
 import com.cn.game.sdk2.databinding.FragmentSingleDiceBinding
-import com.cn.game.sdk2.ui.helper.ViewHelper.isAdd
-import com.cn.game.sdk2.ui.view.MoneyOKView
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
 import com.cn.game.sdk2.ui.viewmodel.fast3.SingleDiceVm
-import com.cn.game.sdk2.utils.ToastUtil
-import com.cn.game.sdk2.utils.ext.ViewExt.locationOnScreen
-import com.cn.game.sdk2.utils.tool.PromptSoundPlay
-import com.cn.game.sdk2.websocket.bean.BettingRecordBean
-import com.cn.game.sdk2.websocket.bean.areaMap
-import com.cn.game.sdk2.websocket.gameMassageManager
-import kotlinx.coroutines.launch
 
 
 /**

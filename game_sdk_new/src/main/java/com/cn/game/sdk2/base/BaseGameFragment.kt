@@ -11,10 +11,7 @@ import androidx.core.view.isVisible
 import androidx.databinding.ViewDataBinding
 import com.xcjh.base_lib.base.BaseViewModel
 import com.xcjh.base_lib.base.fragment.BaseVmDbFragment
-import com.xcjh.base_lib.utils.dismissLoadingExt
-import com.xcjh.base_lib.utils.showLoadingExt
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
+
 
 abstract class BaseGameFragment <VM : BaseViewModel, VB : ViewDataBinding> : BaseVmDbFragment<VM, VB>() {
     protected val TAG = this::class.java.simpleName
@@ -36,20 +33,6 @@ abstract class BaseGameFragment <VM : BaseViewModel, VB : ViewDataBinding> : Bas
      */
     override fun initData() {
 
-    }
-
-    /**
-     * 打开等待框
-     */
-    override fun showLoading(message: String) {
-        showLoadingExt(message)
-    }
-
-    /**
-     * 关闭等待框
-     */
-    override fun dismissLoading() {
-        dismissLoadingExt()
     }
 
     fun finishFragClick() {

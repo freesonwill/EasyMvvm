@@ -20,9 +20,6 @@ import android.widget.Button;
 import com.example.myapplication.R;
 import com.example.myapplication.util.GLImageHandler;
 import com.example.myapplication.util.OpenGlUtils;
-import com.hjq.permissions.OnPermissionCallback;
-import com.hjq.permissions.Permission;
-import com.hjq.permissions.XXPermissions;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -80,17 +77,6 @@ public class GLShowImageActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                XXPermissions.with(GLShowImageActivity.this)
-                        .permission(Permission.READ_MEDIA_IMAGES)
-                        .permission(Permission.ACCESS_MEDIA_LOCATION)
-                                .request(new OnPermissionCallback() {
-                                    @Override
-                                    public void onGranted(List<String> permissions, boolean allGranted) {
-                                        // 启动相册
-                                        Intent pickIntent =new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                                        startActivityForResult(pickIntent, 10002);
-                                    }
-                                });
 
             }
         });

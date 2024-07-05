@@ -13,99 +13,20 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
 import android.provider.Settings
-import android.renderscript.Allocation
-import android.renderscript.Element
-import android.renderscript.RenderScript
-import android.renderscript.ScriptIntrinsicBlur
 import android.util.DisplayMetrics
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.resource.bitmap.CircleCrop
-import com.bumptech.glide.request.RequestOptions
-import com.hjq.permissions.OnPermissionCallback
-import com.hjq.permissions.Permission
-import com.hjq.permissions.XXPermissions
 import com.xcjh.base_lib.R
 import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.manager.KtxActivityManger
-import java.io.File
-import java.io.FileOutputStream
 import java.util.*
-
-
-/**
- * 任务完成提示
- * isDeep是否是深色模式，默认是浅色，当isDeep=true的时候是深色界面使用
- */
-@SuppressLint("WrongConstant", "MissingInflatedId")
-fun myToast(whiteStr: String?, yellowStr: String? = null,isDeep:Boolean=false,gravity:Int=Gravity.CENTER) {
-    Handler(Looper.getMainLooper()).post {
-        val view: View = LayoutInflater.from(appContext).inflate(R.layout.view_toast_my_task, null)
-        val tvMsg = view.findViewById<View>(R.id.tvToast) as TextView
-        val llToastBe = view.findViewById<View>(R.id.llToastBe) as LinearLayout
-        var txtColor=ContextCompat.getColor(tvMsg.context, R.color.white)
-        if(isDeep){
-            txtColor=ContextCompat.getColor(tvMsg.context, R.color.white)
-            llToastBe.background=ContextCompat.getDrawable(llToastBe.context,R.drawable.shape_4_ffffff)
-        }
-        SpanUtil.create()
-            .addForeColorSection(whiteStr, txtColor)
-            .addForeColorSection(
-                yellowStr ?: "",
-                ContextCompat.getColor(tvMsg.context, R.color.successColor)
-            )
-            .showIn(tvMsg) //显示到控件TextView中
-        val toast = Toast(appContext)
-        // toast.setGravity(Gravity.BOTTOM or Gravity.CENTER, 0, DisplayUtils.dp2px(50f))
-        toast.setGravity( gravity, 0,200)
-        toast.duration = 5000
-        toast.view = view
-        toast.show()
-    }
-    /* val view: View = LayoutInflater.from(appContext).inflate(R.layout.view_toast_my_task, null)
-     val tvMsg = view.findViewById<View>(R.id.tvToast) as TextView
-     SpanUtil.create()
-         .addForeColorSection(whiteStr, ContextCompat.getColor(tvMsg.context, R.color.white))
-         .addForeColorSection(
-             yellowStr ?: "",
-             ContextCompat.getColor(tvMsg.context, R.color.successColor)
-         )
-         .showIn(tvMsg) //显示到控件TextView中
-     val toast = Toast(appContext)
-     // toast.setGravity(Gravity.BOTTOM or Gravity.CENTER, 0, DisplayUtils.dp2px(50f))
-     toast.setGravity( Gravity.CENTER, 0,0)
-     toast.duration = Toast.LENGTH_LONG
-     toast.view = view
-     toast.show()*/
-}
-
-
-   /* val view: View = LayoutInflater.from(appContext).inflate(R.layout.view_toast_my_task, null)
-    val tvMsg = view.findViewById<View>(R.id.tvToast) as TextView
-    SpanUtil.create()
-        .addForeColorSection(whiteStr, ContextCompat.getColor(tvMsg.context, R.color.white))
-        .addForeColorSection(
-            yellowStr ?: "",
-            ContextCompat.getColor(tvMsg.context, R.color.successColor)
-        )
-        .showIn(tvMsg) //显示到控件TextView中
-    val toast = Toast(appContext)
-    // toast.setGravity(Gravity.BOTTOM or Gravity.CENTER, 0, DisplayUtils.dp2px(50f))
-    toast.setGravity( Gravity.CENTER, 0,0)
-    toast.duration = Toast.LENGTH_LONG
-    toast.view = view
-    toast.show()*/
-
 
 
 //5bcf148dcbd6cd46
@@ -191,75 +112,6 @@ fun getBitmapByView(scrollView: ScrollView): Bitmap {
     scrollView.draw(canvas)
     return bitmap
 }
-
-fun getXXPermissions(activity: Activity,action: () -> Unit = {}){
-    XXPermissions.with(activity)
-        .permission(Permission.READ_MEDIA_IMAGES)
-        .permission(Permission.ACCESS_MEDIA_LOCATION)
-       // .permission(Permission.READ_EXTERNAL_STORAGE)
-      //  .permission(Permission.WRITE_EXTERNAL_STORAGE)
-        .request(object : OnPermissionCallback {
-            override fun onGranted(permissions: MutableList<String>, all: Boolean) {
-                if (all) {
-                    action.invoke()
-                }else{
-                    XXPermissions.startPermissionActivity(activity, permissions);
-                }
-            }
-
-            override fun onDenied(permissions: MutableList<String>, never: Boolean) {
-                super.onDenied(permissions, never)
-                // gotoAppDetailIntent(this@LoginActivity)
-                XXPermissions.startPermissionActivity(activity, permissions);
-            }
-        })
-}
-
-/**
- * 是否获取推送权限
- */
-fun getXXPermissionsPush(activity: Activity,action: () -> Unit = {}){
-    XXPermissions.with(activity)
-        .permission(Permission.POST_NOTIFICATIONS)
-        .request(object : OnPermissionCallback {
-            override fun onGranted(permissions: MutableList<String>, all: Boolean) {
-                if (all) {
-                    action.invoke()
-                }else{
-                    XXPermissions.startPermissionActivity(activity, permissions)
-                }
-            }
-
-            override fun onDenied(permissions: MutableList<String>, never: Boolean) {
-                super.onDenied(permissions, never)
-                // gotoAppDetailIntent(this@LoginActivity)
-                XXPermissions.startPermissionActivity(activity, permissions)
-            }
-        })
-}
-/**
- * 是否获取电池优化
- */
-fun getXXPermissionsBattery(activity: Activity,action: () -> Unit = {}){
-    XXPermissions.with(activity)
-        .permission(Permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
-        .request(object : OnPermissionCallback {
-            override fun onGranted(permissions: MutableList<String>, all: Boolean) {
-                if (all) {
-                    action.invoke()
-                }else{
-                    XXPermissions.startPermissionActivity(activity, permissions)
-                }
-            }
-
-            override fun onDenied(permissions: MutableList<String>, never: Boolean) {
-                super.onDenied(permissions, never)
-                // gotoAppDetailIntent(this@LoginActivity)
-                XXPermissions.startPermissionActivity(activity, permissions)
-            }
-        })
-}
-
 
 /**
  * view转bitmap

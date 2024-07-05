@@ -13,13 +13,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.xcjh.base_lib.base.BaseViewModel
-import com.xcjh.base_lib.network.manager.NetState
-import com.xcjh.base_lib.network.manager.NetworkStateManager
-import com.xcjh.base_lib.utils.dismissLoadingExt
+
 import com.xcjh.base_lib.utils.getVmClazz
-import com.xcjh.base_lib.utils.showLoadingExt
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+
 
 /**
  * 作者　:
@@ -63,14 +59,8 @@ abstract class BaseVmFragment<VM : BaseViewModel> : Fragment() {
         initView(savedInstanceState)
         initListener()
         createObserver()
-        registorDefUIChange()
         initData()
     }
-
-    /**
-     * 网络变化监听 子类重写
-     */
-    open fun onNetworkStateChanged(netState: NetState) {}
 
     /**
      * 创建viewModel
@@ -113,12 +103,6 @@ abstract class BaseVmFragment<VM : BaseViewModel> : Fragment() {
             handler.postDelayed( {
                 lazyLoadData()
                 //在Fragment中，只有懒加载过了才能开启网络变化监听
-                NetworkStateManager.instance.mNetworkStateCallback.observe(this) {
-                    //不是首次订阅时调用方法，防止数据第一次监听错误
-                    if (!isFirst) {
-                        onNetworkStateChanged(it)
-                    }
-                }
                 isFirst = false
             },lazyLoadTime())
         }
@@ -128,49 +112,6 @@ abstract class BaseVmFragment<VM : BaseViewModel> : Fragment() {
      * Fragment执行onCreate后触发的方法
      */
     open fun initData() {}
-
-    open fun showLoading(message: String = "请求网络中..."){
-        showLoadingExt(message)
-    }
-
-    open fun dismissLoading() {
-        dismissLoadingExt()
-    }
-
-    open suspend fun showLoading(message: String = "请求网络中...",dismissMills:Long){
-        showLoadingExt(message)
-        delay(dismissMills)
-        dismissLoading()
-    }
-
-    /**
-     * 注册 UI 事件
-     */
-    private fun registorDefUIChange() {
-        mViewModel.loadingChange.showDialog.observe(viewLifecycleOwner) {
-            showLoading(it)
-        }
-        mViewModel.loadingChange.dismissDialog.observe(viewLifecycleOwner) {
-            dismissLoading()
-        }
-    }
-
-    /**
-     * 将非该Fragment绑定的ViewModel添加 loading回调 防止出现请求时不显示 loading 弹窗bug
-     * @param viewModels Array<out BaseViewModel>
-     */
-    protected fun addLoadingObserve(vararg viewModels: BaseViewModel) {
-        viewModels.forEach { viewModel ->
-            //显示弹窗
-            viewModel.loadingChange.showDialog.observe(this) {
-                showLoading(it)
-            }
-            //关闭弹窗
-            viewModel.loadingChange.dismissDialog.observe(this) {
-                dismissLoading()
-            }
-        }
-    }
 
     /**
      * 延迟加载 防止 切换动画还没执行完毕时数据就已经加载好了，这时页面会有渲染卡顿  bug
