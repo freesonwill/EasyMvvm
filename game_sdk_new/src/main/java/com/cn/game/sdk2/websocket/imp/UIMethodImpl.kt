@@ -156,7 +156,7 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
         tempMoney = 0
         bettingListTemp.clear()
         limitMap.clear()
-        gameAboutModel.changeTempBalance(balance - getPanelAllMoney())
+        gameAboutModel.changeTempBalance(balance)
         //----
         //跟新again和double
         gameAboutModel.setOnceCountMoney(getPanelAllMoney())

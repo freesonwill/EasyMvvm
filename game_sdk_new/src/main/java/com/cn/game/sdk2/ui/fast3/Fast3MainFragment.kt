@@ -532,7 +532,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     animator = ObjectAnimator.ofFloat(view, "alpha", 1f, 0f, 1f).apply {
                         duration = mViewModel.prizeAnimTime // 设置动画持续时间
                         repeatCount = 2
-                            //if (mDatabind.rvHomeHistory.size == 1) 3 else mViewModel.prizeAnimCount
+                        //if (mDatabind.rvHomeHistory.size == 1) 3 else mViewModel.prizeAnimCount
                         repeatMode = ObjectAnimator.REVERSE // 设置反向循环以实现渐隐渐显效果
                     }
                     Log.d(TAG, "receive playAlphaAnimationLD:${animator}")
@@ -703,6 +703,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 for (data in models) {
                     data.select = bean == data
                 }
+                mViewModel.userLastSelectBetteBean = bean
                 (mDatabind.llShowBetList.layoutManager as CenterLayoutManager).smoothScrollToPosition(
                     mDatabind.llShowBetList,
                     RecyclerView.State(),
@@ -775,7 +776,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             if (selectBean != null) {
                 if (selectBean.money > money) { //当前筹码不足
                     var selectedIndex = -1
-                    for (i in mViewModel.noteList.size - 1 downTo 0) {
+                    for (i in mViewModel.noteList.lastIndex downTo 0) {
                         mViewModel.noteList[i].select = false
                         if (selectedIndex == -1) {
                             if (mViewModel.noteList[i].money <= money) {
@@ -791,19 +792,47 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                             selectedIndex
                         )
                     }
+                } else {
+                    backUserLastSelectBette(selectBean)
                 }
             } else {
-                if (mViewModel.noteList[0].money <= money) {
-                    mViewModel.noteList[0].select = true
-                    (llShowBetList.layoutManager as CenterLayoutManager).smoothScrollToPosition(
-                        mDatabind.llShowBetList,
-                        RecyclerView.State(),
-                        0
-                    )
+                if ((mViewModel.userLastSelectBetteBean?.money ?: 0) <= money) {
+                    backUserLastSelectBette(null)
+                } else {
+                    if (mViewModel.noteList[0].money <= money) {
+                        mViewModel.noteList[0].select = true
+                        mViewModel.userLastSelectBetteBean = mViewModel.noteList[0]
+                        (llShowBetList.layoutManager as CenterLayoutManager).smoothScrollToPosition(
+                            mDatabind.llShowBetList,
+                            RecyclerView.State(),
+                            0
+                        )
+                    }
                 }
             }
             llShowBetList.bindingAdapter.notifyItemRangeChanged(0, mViewModel.noteList.count())
         }
+    }
+
+    /**
+     * 取消下注筹码判断是否需要选中用户最近一次手选筹码
+     */
+    private fun backUserLastSelectBette(betteBean: SelectAnnotationBean?) {
+        if (betteBean == mViewModel.userLastSelectBetteBean) return
+        var index = 0
+        for (i in 0..mViewModel.noteList.lastIndex) {
+            if (mViewModel.noteList[i] == mViewModel.userLastSelectBetteBean) {
+                mViewModel.noteList[i].select = true
+                index = i
+            } else {
+                mViewModel.noteList[i].select = false
+            }
+        }
+        (mDatabind.llShowBetList.layoutManager as CenterLayoutManager).smoothScrollToPosition(
+            mDatabind.llShowBetList,
+            RecyclerView.State(),
+            index
+        )
     }
 
 
@@ -919,7 +948,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 PromptSoundPlay.btnPlayMedia(requireContext())
                 if (homeMorePop == null) {
                     val bubbleAttach = CustomBubbleAttachPopup(requireContext())
-                    bubbleAttach.customBubbleAttachListener = object : CustomBubbleAttachPopup.CustomBubbleAttachListener {
+                    bubbleAttach.customBubbleAttachListener =
+                        object : CustomBubbleAttachPopup.CustomBubbleAttachListener {
                             private var gameHall: BasePopupView? = null
                             private var rootHeight: Int = mDatabind.rlRoot.height
                             private var isDismissing = false
@@ -933,7 +963,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                 }
                             }
 
-                            fun showMainGame(show:Boolean){
+                            fun showMainGame(show: Boolean) {
                                 ViewHelper.showFastViewPop(requireContext(), show)
                                 /*val view = mDatabind.rlRoot
                                 val start = if(show) rootHeight.toFloat() else 0f

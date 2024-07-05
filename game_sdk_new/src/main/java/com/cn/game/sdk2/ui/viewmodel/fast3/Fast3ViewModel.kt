@@ -86,6 +86,7 @@ class Fast3ViewModel : BaseViewModel() {
             if (selectedPosition < 0) selectedPosition = 0
             return noteList[selectedPosition]
         }
+    var userLastSelectBetteBean: SelectAnnotationBean? = null
     val countDown: Long
         get() {
             Log.d(TAG, "countDown get ${gameAboutModel.countDown}")
@@ -123,6 +124,8 @@ class Fast3ViewModel : BaseViewModel() {
         noteList.add(SelectAnnotationBean(money = 2000000))
         noteList.add(SelectAnnotationBean(money = 5000000))
         noteList.add(SelectAnnotationBean(money = 10000000))
+
+        userLastSelectBetteBean = noteList[0]
     }
 
     override fun onCleared() {
@@ -140,11 +143,11 @@ class Fast3ViewModel : BaseViewModel() {
         y: Float,
         speed: Long = 300,
         areaView: GameAreaView,
-        betteBean:SelectAnnotationBean,
+        betteBean: SelectAnnotationBean,
         endCallBack: (() -> Unit)? = null
     ) {
         moneyAnimCallback?.apply {
-            startAnim(x, y, speed, areaView, betteBean,endCallBack)
+            startAnim(x, y, speed, areaView, betteBean, endCallBack)
         }
     }
 

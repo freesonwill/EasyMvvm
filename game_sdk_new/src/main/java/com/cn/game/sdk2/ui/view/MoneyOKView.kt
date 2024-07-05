@@ -185,6 +185,10 @@ class MoneyOKView @JvmOverloads constructor(
 
             MotionEvent.ACTION_UP -> {
                 // 抬起或取消时放大
+                if (targetView != currentView) {
+                    resetAnim()
+                    return
+                }
                 startAnim(targetView, true)
                 currentView = targetView
 
