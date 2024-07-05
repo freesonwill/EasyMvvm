@@ -37,7 +37,7 @@ class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
                 isTokenValid = true
                 if (isLogin) {
                     GameApp.login(
-                        tokenArray[Random.nextInt(tokenArray.size)], "wali-internal", true
+                        token, "wali-internal", true
                     )
                 }
             }

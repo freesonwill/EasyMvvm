@@ -68,7 +68,7 @@ var isEnableSound = true
  */
 //测试打包专用 99:mFGB4ljy
 //92:ZyBmhNCJ   87:MHxIHlYM  93:Ufx3Dy8y 94:0aPEwiYK   金额少：97:nMz8aSsZ  98:gCrUd5Gz
-val tokenArray = listOf<String>("101:PcI4jEcP","99:mFGB4ljy","42:aRYvqlC5",
+val tokenArray = listOf("101:PcI4jEcP","99:mFGB4ljy","42:aRYvqlC5",
     "33:ZtG5WhUh",
     "29:zNbNe45L",
     "37:QyJbGSGR",
@@ -78,7 +78,11 @@ val tokenArray = listOf<String>("101:PcI4jEcP","99:mFGB4ljy","42:aRYvqlC5",
     "74:4wNIFMMi",
     "51:Ja9L1rG6",
     "35:BIyxvrqa",)
-var token = tokenArray[Random.nextInt(tokenArray.size)]
+var token = "92:ZyBmhNCJ"
+    get() {
+        return field
+        //return tokenArray[Random.nextInt(tokenArray.size)]
+    }
 var isLogin = false
 var isEnterRoom = false
 
