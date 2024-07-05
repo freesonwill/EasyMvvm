@@ -98,27 +98,9 @@ class MainVm : BaseViewModel() {
      * 获取app是否更新
      */
     fun appUpdate() {
-        var domain:String=""
-        domain = when (ApiComService.SERVER_URL) {
-            "http://192.168.101.15:6003/apis/"->{
-                DomainNameEnums.TestDomainName.type
-            }
 
-            "https://app.cbd246.com/apis/"->{
-                DomainNameEnums.PreDomainName.type
-            }
-
-            "https://app.wyjxx.cn/apis/"->{
-                DomainNameEnums.DomainName.type
-            }
-
-            else ->{
-                DomainNameEnums.NewDomainName.type
-            }
-        }
-//        domain =DomainNameEnums.NewDomainName.type
             request(
-            { apiService.getLatestVersion(domain=domain) },
+            { apiService.getLatestVersion(domain=ApiComService.SHARE_URL) },
             {
                 update.value = it
 
