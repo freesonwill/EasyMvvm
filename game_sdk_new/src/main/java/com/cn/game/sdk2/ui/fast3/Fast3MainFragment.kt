@@ -15,6 +15,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.LinearInterpolator
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -1280,7 +1281,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         }
 
         valueAnimator.duration = speed
-        valueAnimator.interpolator = AccelerateDecelerateInterpolator()
+        valueAnimator.interpolator = LinearInterpolator()
         betteFlyAnimList.add(valueAnimator)
         valueAnimator.start()
     }
