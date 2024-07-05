@@ -207,25 +207,32 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
          }*/
 
 
-        ChangeHostUtil().getHostList { appHost ->
-            appHost?.let { host ->
-                host.shareUrl?.let {
-                    ApiComService.SHARE_URL = it
-                }
-                host.domainUrl?.let { bean ->
-                    ApiComService.SERVER_URL = "${ApiComService.HTTP_HEAD}${bean}/apis/"
-                    ApiComService.WEB_SOCKET_URL= "ws://${bean}/ws-sports-chat"
-                }
+//        ChangeHostUtil().getHostList { appHost ->
+//            appHost?.let { host ->
+//                host.shareUrl?.let {
+//                    ApiComService.SHARE_URL = it
+//                }
+//                host.domainUrl?.let { bean ->
+//                    ApiComService.SERVER_URL = "${ApiComService.HTTP_HEAD}${bean}/apis/"
+//                    ApiComService.WEB_SOCKET_URL= "ws://${bean}/ws-sports-chat"
+//                }
+//
+//            }
+//            runOnUiThread {
+//                Constants.isLoading = true
+//                onIntent(intent)
+//                initUI()
+//                initTime()
+//                initWs()
+//            }
+//        }
+     
 
-            }
-            runOnUiThread {
-                Constants.isLoading = true
-                onIntent(intent)
-                initUI()
-                initTime()
-                initWs()
-            }
-        }
+        Constants.isLoading = true
+        onIntent(intent)
+        initUI()
+        initTime()
+        initWs()
 
         //极光推送绑定用户
         val registrationId: String = MTCorePrivatesApi.getRegistrationId(this)

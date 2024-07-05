@@ -1090,7 +1090,8 @@ class MatchDetailActivity :
                     changeUI()
 
                 },{
-                    this.setIsLandscape(true)
+                    this.setIsLandscape( orientationUtils!!.isEnable)
+
                 })
 
         } else {
@@ -1805,6 +1806,8 @@ class MatchDetailActivity :
                     if(!findAnchor){
                         for ((i, item) in list.withIndex()) {
                             if (!item.tickOut&&!item.pureFlow){
+                                anchorId = item.userId
+                                isHasAnchor=true
                                 isShowVideo = true
                                 item.isSelect = true
                                 anchor = item
@@ -1825,6 +1828,23 @@ class MatchDetailActivity :
                             findAnchor = true
                             break
                         }
+                    }
+                    //当前主播被拉黑了，在循环查询其他主播是否拉黑
+                    if(!findAnchor){
+                        for ((i, item) in list.withIndex()) {
+                            if (!item.pureFlow){
+                                anchorId = item.userId
+                                isHasAnchor=true
+                                isShowVideo = true
+                                item.isSelect = true
+                                anchor = item
+                                action.invoke(item.playUrl)
+                                findAnchor = true
+                                break
+                            }
+                        }
+
+
                     }
 
                 }
