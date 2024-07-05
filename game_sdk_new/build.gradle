@@ -104,6 +104,7 @@ dependencies {
     implementation Libs.material
     implementation Libs.lifecyleScope
     implementation Libs.viewModelScope
+    implementation Libs.androidx_startup
     //implementation(Libs.blankj)
 
     //组件依赖基础库
