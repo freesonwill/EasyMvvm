@@ -8,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
-import com.xcjh.base_lib.R
+import com.cn.game.sdk2.R
 import kotlin.math.max
 
 /**

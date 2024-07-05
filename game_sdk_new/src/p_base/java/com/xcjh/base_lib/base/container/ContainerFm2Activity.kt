@@ -6,8 +6,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
+import com.cn.game.sdk2.R
 import com.gyf.immersionbar.ImmersionBar
-import com.xcjh.base_lib.R
 import com.xcjh.base_lib.base.activity.BaseActivity
 
 /**

@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Paint
 import android.util.Log
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,18 +21,14 @@ import com.cn.game.sdk2.data.enums.GAME_ID_ENUM
 import com.cn.game.sdk2.ui.HomeXPopupDialog
 import com.cn.game.sdk2.ui.fast3.Fast3MainFragment
 import com.cn.game.sdk2.ui.view.Fast3HelpPopup
-import com.cn.game.sdk2.utils.ThreadUtils
 import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
 import com.cn.game.sdk2.utils.ext.ViewExt.locationInWindow
 import com.cn.game.sdk2.utils.tool.indicator.CommonPagerIndicator
 import com.cn.game.sdk2.websocket.appListener
-import com.cn.game.sdk2.websocket.gameAboutModel
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
 import com.lxj.xpopup.enums.PopupAnimation
 import com.lxj.xpopup.interfaces.SimpleCallback
-import com.lzf.easyfloat.EasyFloat
-import com.lzf.easyfloat.enums.SidePattern
 import com.xcjh.base_lib.utils.toHtml
 import net.lucode.hackware.magicindicator.MagicIndicator
 import net.lucode.hackware.magicindicator.ViewPagerHelper
@@ -174,76 +169,6 @@ object ViewHelper {
             fastViewOverlay = it
         }
     }
-
-    private fun showFastView(context: Context, isShow: Boolean = true) {
-        if (!isShow) EasyFloat.hide(TAG_FASTVIEW)
-        gameAboutModel.fast3MainFloatVisible.observeForever {
-            Log.d(TAG,"fast3MainFloatVisible -->$it")
-            showFastView(context,it)
-        }
-        EasyFloat.with(context).setSidePattern(SidePattern.DEFAULT)
-            .setImmersionStatusBar(true)
-            .setTag(TAG_FASTVIEW)
-            .setGravity(Gravity.END, 0, 300.dp2px)
-            .setLayout(R.layout.drag_fast_easy) {
-                val llFastClick = it.findViewById<LinearLayout>(R.id.llFastClick)
-                llFastClick.setOnClickListener {
-                    if (homeXPopupDialog != null) {
-                        Log.d(TAG, "homeXPopupDialog exists, no need to create it.")
-                        return@setOnClickListener
-                    }
-                    XPopup.Builder(context)
-                        .hasShadowBg(false)
-                        //.animationDuration(0)
-                        .setPopupCallback(object : SimpleCallback() {
-                            override fun onShow(popupView: BasePopupView?) {
-                                super.onShow(popupView)
-                                showFastViewOverlay(context, false)
-                                appListener?.onGameFloatingDetailViewStatus(true)
-                            }
-
-                            override fun onDismiss(popupView: BasePopupView?) {
-                                super.onDismiss(popupView)
-                                showFastViewOverlay(context, true)
-                                homeXPopupDialog = null
-                                appListener?.onGameFloatingDetailViewStatus(false)
-                            }
-                        })
-                        .popupAnimation(PopupAnimation.TranslateFromBottom)
-                        .animationDuration(500)
-                        .moveUpToKeyboard(false) //如果不加这个，评论弹窗会移动到软键盘上面
-                        .isViewMode(true)
-                        .isTouchThrough(true)
-                        .isDestroyOnDismiss(false) //对于只使用一次的弹窗，推荐设置这个
-                        .isThreeDrag(false) //是否开启三阶拖拽，如果设置enableDrag(false)则无效
-                        .enableDrag(true)
-                        .dismissOnTouchOutside(true)
-                        .asCustom(HomeXPopupDialog(context, Fast3MainFragment(),GAME_ID_ENUM.GAME_FAST3.num).apply {
-                            homeXPopupDialog = this
-                        })
-                        .show()
-                    //EasyFloat.hide(TAG_FASTVIEW)
-                }
-            }
-            .show()
-    }
-
-    /**
-     * 快三悬浮窗
-     */
-    private fun showFastViewOverlay(context: Context, show: Boolean = true) {
-        if (!show) {
-            EasyFloat.hide(TAG_FASTVIEW_OVERLAY)
-            return
-        }
-        EasyFloat.with(context).setSidePattern(SidePattern.DEFAULT)
-            .setImmersionStatusBar(true)
-            .setTag(TAG_FASTVIEW_OVERLAY)
-            .setGravity(Gravity.START, 6.dp2px, 122.dp2px)
-            .setLayout(R.layout.fragment_fast3_overlay)
-            .show()
-    }
-
 
     fun ViewPager.initGameViewPager2(views: ArrayList<View>): ViewPager {
         //设置适配器

@@ -1,0 +1,51 @@
+import java.util.function.Function
+import java.util.function.Predicate
+import java.util.stream.Collectors
+
+android {
+    /***
+     * pinsModule
+     */
+    def src_dir = new File(projectDir, 'src')
+    // 扫描当前模块下的Pins模块，并生成List
+    def p_module_names = src_dir
+            .list()
+            .toList()
+            .stream()
+            .filter(new Predicate<String>() {
+                @Override
+                boolean test(String name) {
+                    return name == 'main' || (name.startsWith('p_') && new File(src_dir, name).isDirectory())
+                }
+            })
+            .collect(Collectors.toList())
+    // 把生成的List合成为srcDir格式
+    def p_src_dirs = p_module_names
+            .stream()
+            .map(new Function() {
+                @Override
+                Object apply(Object module) {
+                    return ['src', module, 'java'].join('/')
+                }
+            })
+            .collect(Collectors.toList())
+
+    def p_res_dirs = p_module_names
+            .stream()
+            .map(new Function() {
+                @Override
+                Object apply(Object module) {
+                    return ['src', module, 'res'].join('/')
+                }
+            })
+            .collect(Collectors.toList())
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+            manifest.srcFile "src/main/AndroidManifest.xml"
+            java.srcDirs = p_src_dirs
+            res.srcDirs = p_res_dirs
+        }
+    }
+}

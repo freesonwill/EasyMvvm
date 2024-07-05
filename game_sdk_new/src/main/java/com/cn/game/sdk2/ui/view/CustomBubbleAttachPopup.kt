@@ -3,11 +3,8 @@ package com.cn.game.sdk2.ui.view
 import android.content.Context
 import android.content.ContextWrapper
 import android.util.Log
-import android.view.View
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.replace
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.databinding.DialogHomeXpopupContainerBinding
 import com.cn.game.sdk2.databinding.PopupCustomBubbleAttachBinding
@@ -15,15 +12,12 @@ import com.cn.game.sdk2.ui.HomeXPopupDialog.Companion.TAG
 import com.cn.game.sdk2.ui.fast3.Fast3GameHallFragment
 import com.cn.game.sdk2.ui.helper.ViewHelper
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
-import com.lxj.xpopup.core.AttachPopupView
 import com.lxj.xpopup.XPopup
-import com.lxj.xpopup.animator.EmptyAnimator
+import com.lxj.xpopup.core.AttachPopupView
 import com.lxj.xpopup.core.BasePopupView
 import com.lxj.xpopup.core.BottomPopupView
-import com.lxj.xpopup.core.BubbleAttachPopupView
 import com.lxj.xpopup.enums.PopupAnimation
 import com.lxj.xpopup.interfaces.SimpleCallback
-import com.lxj.xpopup.util.XPopupUtils
 import com.xcjh.base_lib.utils.view.clickNoRepeat
 
 /**

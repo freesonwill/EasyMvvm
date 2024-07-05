@@ -5,6 +5,7 @@ plugins {
     id 'com.google.protobuf'
     id("kotlin-kapt")
 }
+apply from: "${rootDir.path}/gradle/pin.gradle"
 
 android {
     namespace 'com.cn.game.sdk2'
@@ -101,10 +102,12 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
     implementation Libs.appcompat
     implementation Libs.material
+    implementation Libs.lifecyleScope
+    implementation Libs.viewModelScope
     //implementation(Libs.blankj)
 
     //组件依赖基础库
-    implementation project(':base_lib')
+    //implementation project(':base_lib')
     implementation 'com.github.liangjingkanji:Engine:0.0.74' // 快速开发基础库
     implementation 'com.google.protobuf:protobuf-java:3.19.1'
     implementation('com.github.li-xiaojun:XPopup:2.10.0') {
@@ -112,9 +115,30 @@ dependencies {
     }
     implementation 'io.github.h07000223:flycoTabLayout:3.0.0'
     //拖动的
-    implementation 'com.github.kongxiaojun:EasyFloat:3.0.1'
+    //implementation 'com.github.kongxiaojun:EasyFloat:3.0.1'
     //implementation project(':game_sdk')
     //https://github.com/airbnb/lottie-android
     implementation 'com.airbnb.android:lottie:6.4.0'
-    implementation 'com.robinhood.ticker:ticker:2.0.4'
+    //implementation 'com.robinhood.ticker:ticker:2.0.4'
+
+
+    //base lib
+    api 'com.github.bumptech.glide:glide:4.16.0'
+    //引入Glide的注解处理器（Annotation Processor）的。Glide的注解处理器用于在编译时生成GlideApp类
+    kapt 'com.github.bumptech.glide:compiler:4.15.1'
+    //适配
+    api "me.jessyan:autosize:1.2.1"
+    //沉浸式
+    api "com.geyifeng.immersionbar:immersionbar:3.2.2"
+    api "com.geyifeng.immersionbar:immersionbar-ktx:3.2.2"
+    //BaseRecyclerViewAdapterHelper
+    api "io.github.cymchad:BaseRecyclerViewAdapterHelper:3.0.14"
+    api 'me.jessyan:retrofit-url-manager:1.4.0'
+    api 'com.google.code.gson:gson:2.10.1'
+    api 'com.kunminx.arch:unpeek-livedata:7.8.0'
+    //ws
+    api "org.java-websocket:Java-WebSocket:1.5.3"
+    //指示器库
+    api 'com.github.hackware1993:MagicIndicator:1.7.0'
+    api 'com.github.liangjingkanji:BRV:1.5.8'
 }

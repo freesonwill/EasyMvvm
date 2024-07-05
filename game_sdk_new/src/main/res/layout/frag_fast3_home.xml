@@ -503,7 +503,7 @@
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintVertical_chainStyle="packed" />
 
-                    <com.robinhood.ticker.TickerView
+                   <!-- <com.robinhood.ticker.TickerView
                         android:id="@+id/tvAnimWin"
                         style="@style/PuHuiTi"
                         android:layout_width="wrap_content"
@@ -521,7 +521,7 @@
                         app:layout_constraintTop_toBottomOf="@id/txtWinMoneyLabel"
                         app:ticker_animationDuration="1500"
                         app:ticker_defaultPreferredScrollingDirection="down"
-                        tools:text="$1000000000000" />
+                        tools:text="$1000000000000" />-->
 
                     <TextView
                         android:id="@+id/tvAnimWin2"
