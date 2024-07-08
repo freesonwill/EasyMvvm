@@ -27,8 +27,8 @@ class GameAreaView : FrameLayout {
     val moneyView: MoneyOKView get() = moneyViewPair.first
     val betteView: BetteView get() = moneyViewPair.second
 
-    private var oldX = 0f
-    private var oldY = 0f
+//    private var oldX = 0f
+//    private var oldY = 0f
     private var onLocationClickListener: LocationClickListener? = null
 
     constructor(context: Context) : this(context, null)
@@ -52,17 +52,17 @@ class GameAreaView : FrameLayout {
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         when (event?.action) {
             MotionEvent.ACTION_DOWN -> {
-                oldX = event.x
-                oldY = event.y
+//                oldX = event.x
+//                oldY = event.y
             }
 
             MotionEvent.ACTION_UP -> {
-                val newX = event.x
-                val newY = event.y
-                if (abs(oldX - newX) < 20 && abs(oldY - newY) < 20) {
+//                val newX = event.x
+//                val newY = event.y
+//                if (abs(oldX - newX) < 20 && abs(oldY - newY) < 20) {
                     //处理点击事件
                     onLocationClickListener?.onLocationClick(event.rawX, event.rawY)
-                }
+//                }
             }
         }
         return true
