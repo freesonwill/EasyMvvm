@@ -28,7 +28,8 @@
             android:background="@color/g_141624"
             android:clipChildren="false"
             android:clipToPadding="false"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingBottom="@{model.navigationBarHeight}">
 
             <FrameLayout
                 android:id="@+id/bottomLayout"
