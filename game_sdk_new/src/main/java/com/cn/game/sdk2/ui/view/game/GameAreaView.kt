@@ -59,7 +59,7 @@ class GameAreaView : FrameLayout {
             MotionEvent.ACTION_UP -> {
                 val newX = event.x
                 val newY = event.y
-                if (abs(oldX - newX) < 5 && abs(oldY - newY) < 5) {
+                if (abs(oldX - newX) < 20 && abs(oldY - newY) < 20) {
                     //处理点击事件
                     onLocationClickListener?.onLocationClick(event.rawX, event.rawY)
                 }
