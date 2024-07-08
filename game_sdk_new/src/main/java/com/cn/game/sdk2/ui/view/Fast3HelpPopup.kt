@@ -16,6 +16,8 @@ import com.cn.game.sdk2.websocket.gameAboutModel
 import com.drake.brv.annotaion.DividerOrientation
 import com.drake.brv.utils.dividerSpace
 import com.drake.brv.utils.setup
+import com.gyf.immersionbar.ktx.hasNavigationBar
+import com.gyf.immersionbar.ktx.navigationBarHeight
 import com.gyf.immersionbar.ktx.statusBarHeight
 import com.lxj.xpopup.core.BottomPopupView
 import com.xcjh.base_lib.utils.dp2px
@@ -26,10 +28,9 @@ import com.xcjh.base_lib.utils.view.getStringArray
 /**
  * 首页的弹出框
  */
-class Fast3HelpPopup(context: Context, private val offsetY: Int, private val height: Int) :
-    BottomPopupView(context) {
+class Fast3HelpPopup(context: Context, private val offsetY: Int, private val height: Int) : BottomPopupView(context) {
     private lateinit var mViewBind: FragmentFast3HelpBinding
-    private var fullHeight: Int = context.screenHeight + context.statusBarHeight
+    private var fullHeight: Int = context.screenHeight + context.statusBarHeight+context.navigationBarHeight
     override fun getImplLayoutId(): Int {
         return R.layout.fragment_fast3_help
     }
@@ -80,14 +81,18 @@ class Fast3HelpPopup(context: Context, private val offsetY: Int, private val hei
         mViewBind.lltCollapse.clickNoRepeat(300) {
             PromptSoundPlay.btnPlayMedia()
             val toExpand = mViewBind.content.height != fullHeight
-            val topPadding = if (toExpand) 40.dp2px else 0
-            val bottomPadding = 48.dp2px
+            val topPadding = if (toExpand) context.statusBarHeight else 0
+            val topPaddingFrom = if (!toExpand) context.statusBarHeight else 0
+            val bottomPadding = if(context.hasNavigationBar) context.navigationBarHeight else 0
             val start = if (toExpand) height else fullHeight
             val end = if (!toExpand) height else fullHeight
             ValueAnimator.ofInt(start, end).apply {
                 duration = 200
                 addUpdateListener {
                     val value = it.animatedValue as Int
+                    val p = (value-start)*1f/(end-start)
+                    val tPadding = (topPaddingFrom+(topPadding-topPaddingFrom)*p).toInt()
+                    mViewBind.content.setPadding(0, tPadding, 0, bottomPadding)
                     mViewBind.content.layoutParams.let { lp->
                         lp.height = value
                         mViewBind.content.layoutParams = lp
@@ -103,19 +108,6 @@ class Fast3HelpPopup(context: Context, private val offsetY: Int, private val hei
                     })
                 start()
             }
-            /*ObjectAnimator.ofFloat(mViewBind.content, "height", start.toFloat(), end.toFloat()).apply {
-                duration = 200
-                addListener(
-                    onStart = {
-                        mViewBind.content.translationY = start.toFloat()
-                        mViewBind.content.setPadding(0, topPadding, 0, bottomPadding)
-                    },
-                    onEnd = {
-                        //动画结束
-                        mViewBind.ivCollapse.setImageResource(if (!toExpand) R.drawable.ic_expand else R.drawable.ic_collapse)
-                    })
-                start()
-            }*/
             Log.d(TAG, "addUpdateListener----->$start-->$end,toExpand:$toExpand")
         }
         mViewBind.close.clickNoRepeat {
