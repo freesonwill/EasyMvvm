@@ -10,6 +10,7 @@ import android.annotation.SuppressLint
 import android.graphics.Path
 import android.graphics.PathMeasure
 import android.os.Bundle
+import android.os.Looper
 import android.text.method.Touch
 import android.util.Log
 import android.view.LayoutInflater
@@ -75,6 +76,7 @@ import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.dividerSpace
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
+import com.gyf.immersionbar.ktx.navigationBarHeight
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.animator.EmptyAnimator
 import com.lxj.xpopup.core.BasePopupView
@@ -86,6 +88,8 @@ import com.xcjh.base_lib.utils.LogUtils
 import com.xcjh.base_lib.utils.dp2px
 import com.xcjh.base_lib.utils.loge
 import com.xcjh.base_lib.utils.view.clickNoRepeat
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -123,10 +127,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         mDatabind.model = mViewModel
         mDatabind.bottomLayout.setOnTouchListener { _, _ -> true }
         mDatabind.resultClickView.setOnClickListener { } //屏蔽底部recycler点击
-        /*mDatabind.tvAnimWin.setCharacterLists(TickerUtils.provideNumberList())
-        context?.assets?.let {
-            mDatabind.tvAnimWin.typeface = Typeface.createFromAsset(it, "fonts/alibabapuhuiti.otf");
-        }*/
         mDatabind.llHomeVideo.setOnClickListener {
             /* mDatabind.groupWinLottie.isVisible = true
              AnimHelper.doNumberAnim(mDatabind.tvAnimWin2,0, 987654399,600)
@@ -136,19 +136,22 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 7865458958,5
             )*/
         }
-        CommonUtils.getNavigationBarHeight(mDatabind.root).let {
-            mViewModel.navigationBarHeight.value = it
-            Log.d(TAG, "getNavigationBarHeight $it,-->${it.px2dp}")
-        }
+        mViewModel.navigationBarHeight.value = requireContext().navigationBarHeight
 
-        //viewpager
-        mFragList.add(DXDSFragment(mViewModel))
-        mFragList.add(SingleDiceFragment(mViewModel))
-        mFragList.add(SumTotalFragment(mViewModel))
-        mFragList.add(PairsDiceFragment(mViewModel))
-        mFragList.add(LeopardFragment(mViewModel))
+
+
         Fast3ToastHelper.init(requireContext(), mDatabind.centerLayout).let {
             lifecycle.addObserver(object : DefaultLifecycleObserver {
+                var startTime:Long = 0
+                override fun onCreate(owner: LifecycleOwner) {
+                    super.onCreate(owner)
+                    startTime = System.currentTimeMillis()
+                }
+
+                override fun onResume(owner: LifecycleOwner) {
+                    super.onResume(owner)
+                    (System.currentTimeMillis() - startTime).let{ LogUtils.d(TAG,"Fast3MainFragment load costMills:$it") }
+                }
                 override fun onDestroy(owner: LifecycleOwner) {
                     super.onDestroy(owner)
                     Fast3ToastHelper.destroy()
@@ -156,29 +159,42 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             })
         }
 
-        mDatabind.viewPagerNew.initGameViewPager(
-            childFragmentManager, mFragList, arrayListOf(
-                requireContext().getString(R.string.g_home_txt_default),
-                requireContext().getString(R.string.g_home_tab_single),
-                requireContext().getString(R.string.g_home_tab_sum),
-                requireContext().getString(R.string.g_home_tab_double),
-                requireContext().getString(R.string.g_home_tab_leopard)
+        lifecycleScope.launchWhenResumed {
+            val startTime = System.currentTimeMillis()
+            //viewpager
+            mFragList.add(DXDSFragment(mViewModel))
+            mFragList.add(SingleDiceFragment(mViewModel))
+            mFragList.add(SumTotalFragment(mViewModel))
+            mFragList.add(PairsDiceFragment(mViewModel))
+            mFragList.add(LeopardFragment(mViewModel))
+            (System.currentTimeMillis() - startTime).let{ LogUtils.d(TAG,"Fast3MainFragment load costMills1:$it") }
+            mDatabind.viewPagerNew.initGameViewPager(
+                childFragmentManager, mFragList, arrayListOf(
+                    requireContext().getString(R.string.g_home_txt_default),
+                    requireContext().getString(R.string.g_home_tab_single),
+                    requireContext().getString(R.string.g_home_tab_sum),
+                    requireContext().getString(R.string.g_home_tab_double),
+                    requireContext().getString(R.string.g_home_tab_leopard)
+                )
             )
-        )
-        mDatabind.magicIndicator.bindViewPagerNewGame(
-            mDatabind.viewPagerNew, arrayListOf(
-                requireContext().getString(R.string.g_home_txt_default),
-                requireContext().getString(R.string.g_home_tab_single),
-                requireContext().getString(R.string.g_home_tab_sum),
-                requireContext().getString(R.string.g_home_tab_double),
-                requireContext().getString(R.string.g_home_tab_leopard)
-            ),
-            scrollEnable = true,
-            action = {
-                PromptSoundPlay.btnPlayMedia()
+            (System.currentTimeMillis() - startTime).let{ LogUtils.d(TAG,"Fast3MainFragment load costMills2:$it") }
+            mDatabind.magicIndicator.bindViewPagerNewGame(
+                mDatabind.viewPagerNew, arrayListOf(
+                    requireContext().getString(R.string.g_home_txt_default),
+                    requireContext().getString(R.string.g_home_tab_single),
+                    requireContext().getString(R.string.g_home_tab_sum),
+                    requireContext().getString(R.string.g_home_tab_double),
+                    requireContext().getString(R.string.g_home_tab_leopard)
+                ),
+                scrollEnable = true,
+                action = { PromptSoundPlay.btnPlayMedia() }
+            )
+            async { //mDatabind.viewPagerNew.offscreenPageLimit会引起卡顿，延迟设置
+                delay(1000)
+                mDatabind.viewPagerNew.offscreenPageLimit = mFragList.size
             }
-        )
-        mDatabind.viewPagerNew.offscreenPageLimit = mFragList.size
+            (System.currentTimeMillis() - startTime).let{ LogUtils.d(TAG,"Fast3MainFragment load costMills3:$it") }
+        }
         setBetAdapter()
         setClick()
         measureHistoryRvHeight()
@@ -196,23 +212,25 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             Log.d(TAG, "initData startBetting")
             delay(200)
             updateGameStage()
-            //mViewModel.startBetting()
         }
     }
 
+    //测量耗时操作可放到IO线程
     private fun measureHistoryRvHeight() {
-        LayoutInflater.from(context).inflate(R.layout.item_bet_history, null).apply {
-            measureView()
-            Log.e(TAG, "historyRvHeight->$measuredHeight")
-            resultRvHeight = this.measuredHeight
-            findViewById<LinearLayout>(R.id.llShowDice).apply {
-                this.measureView()
-                Log.e(TAG, "historyMoveHeight->$measuredHeight")
-                resultAnimMoveHeight = this.measuredHeight
+        lifecycleScope.launch(Dispatchers.IO) {
+            LayoutInflater.from(context).inflate(R.layout.item_bet_history, null).apply {
+                measureView()
+                LogUtils.d(TAG, "historyRvHeight->$measuredHeight")
+                resultRvHeight = this.measuredHeight
+                findViewById<LinearLayout>(R.id.llShowDice).apply {
+                    this.measureView()
+                    LogUtils.d(TAG, "historyMoveHeight->$measuredHeight")
+                    resultAnimMoveHeight = this.measuredHeight
+                }
+                val params = mDatabind.flRvHistory.layoutParams
+                params?.height = resultRvHeight - resultAnimMoveHeight
+                mDatabind.flRvHistory.layoutParams = params
             }
-            val params = mDatabind.flRvHistory.layoutParams
-            params?.height = resultRvHeight - resultAnimMoveHeight
-            mDatabind.flRvHistory.layoutParams = params
         }
     }
 
@@ -639,136 +657,133 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
      * 投注的适配器
      */
     private fun setBetAdapter() {
-        mDatabind.llShowBetList.itemAnimator = null
-        mDatabind.llShowBetList.layoutManager =
-            CenterLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        if (mDatabind.llShowBetList.itemDecorationCount == 0) {
-            mDatabind.llShowBetList.addItemDecoration(
-                CommonLinearLayoutItemDecoration(
-                    spacingV = requireContext().dp2px(10),
-                    start = requireContext().dp2px(8),
-                    end = requireContext().dp2px(40)
+        mDatabind.llShowBetList.apply {
+            itemAnimator = null
+            layoutManager = CenterLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            if (itemDecorationCount == 0) {
+                addItemDecoration(
+                    CommonLinearLayoutItemDecoration(
+                        spacingV = requireContext().dp2px(10),
+                        start = requireContext().dp2px(8),
+                        end = requireContext().dp2px(40)
+                    )
                 )
-            )
-        }
-        mDatabind.llShowBetList.setup {
-            addType<SelectAnnotationBean>(R.layout.item_annotation_list)
-            onBind {
-                when (itemViewType) {
-                    R.layout.item_annotation_list -> {
-                        val binding = getBinding<ItemAnnotationListBinding>()
-                        val bean = _data as SelectAnnotationBean
-                        val id = if ((gameAboutModel.tempBalance.value ?: 0) < bean.money) {
-                            resources.getIdentifier(
-                                "icon_shortage_" + bean.moneyPinyin,
-                                "drawable",
-                                requireContext().packageName
-                            )
-                        } else {
-                            if (bean.select) {
+            }
+            setup {
+                addType<SelectAnnotationBean>(R.layout.item_annotation_list)
+                onBind {
+                    when (itemViewType) {
+                        R.layout.item_annotation_list -> {
+                            val binding = getBinding<ItemAnnotationListBinding>()
+                            val bean = _data as SelectAnnotationBean
+                            val id = if ((gameAboutModel.tempBalance.value ?: 0) < bean.money) {
                                 resources.getIdentifier(
-                                    "icon_select_" + bean.moneyPinyin,
+                                    "icon_shortage_" + bean.moneyPinyin,
                                     "drawable",
                                     requireContext().packageName
                                 )
                             } else {
-                                resources.getIdentifier(
-                                    "icon_no_" + bean.moneyPinyin,
-                                    "drawable",
-                                    requireContext().packageName
-                                )
-                            }
-                        }
-                        binding.ivShowBg.setImageResource(id)
-                        //Log.d(TAG, "onBind-->${layoutPosition},bean:${bean}")
-                        if (bean.select) {
-                            if (binding.ivShowBg.translationY == 0f) {
-                                startBetteSelectAnim(
-                                    binding.ivShowBg,
-                                    if (isBetteUpAnimFirst) 0 else 100
-                                )
-//                                scrollBetteItemToCenter(layoutPosition)
-                            }
-                        } else {
-                            binding.ivShowBg.translationY = 0f
-                        }
-                    }
-                }
-
-            }
-            onClick(R.id.ivShowBg) {
-                val bean = _data as SelectAnnotationBean
-                if (bean.select || bean.money > (gameAboutModel.tempBalance.value
-                        ?: 0)
-                ) return@onClick
-                PromptSoundPlay.btnPlayMedia(requireContext())
-                val models: List<SelectAnnotationBean> = models as List<SelectAnnotationBean>
-                for (data in models) {
-                    data.select = bean == data
-                }
-                mViewModel.userLastSelectBetteBean = bean
-                (mDatabind.llShowBetList.layoutManager as CenterLayoutManager).smoothScrollToPosition(
-                    mDatabind.llShowBetList,
-                    RecyclerView.State(),
-                    layoutPosition
-                )
-                notifyItemRangeChanged(0, modelCount)
-
-            }
-        }.models = mViewModel.noteList
-        //历史结果
-        mDatabind.rvHomeHistory.itemAnimator = null
-        mDatabind.rvHomeHistory.layoutManager = LinearLayoutManager(
-            requireContext(),
-            LinearLayoutManager.HORIZONTAL, false
-        )
-        mDatabind.rvHomeHistory.dividerSpace(
-            requireContext().dp2px(2),
-            DividerOrientation.HORIZONTAL
-        ).setup {
-            addType<RoundInfoBean>(R.layout.item_bet_history)
-            onBind {
-                when (itemViewType) {
-                    R.layout.item_bet_history -> {
-                        getBinding<ItemBetHistoryBinding>().apply {
-                            val mainTxtBean = _data as RoundInfoBean
-                            mainTxtBean.performs.forEachIndexed { index, item ->
-                                val child = llShowDice.getChildAt(index) as ImageView
-                                val id = resources.getIdentifier(
-                                    "icon_dice_" + item.toPinyin(),
-                                    "drawable",
-                                    requireContext().packageName
-                                )
-                                child.setImageResource(id)
-                            }
-                            txtBetNum.text = mainTxtBean.sum.toString()
-                            if (mainTxtBean.isLeopard) {
-                                txtBetSize.text = getString(R.string.g_home_txt_leopard)
-                                txtBetOdd.text = getString(R.string.g_home_txt_leopard)
-                                txtBetSize.background = getDrawable(R.drawable.shape_3_01933b)
-                                txtBetOdd.background = getDrawable(R.drawable.shape_3_01933b)
-
-                            } else {
-                                txtBetSize.background = getDrawable(R.drawable.shape_3_006ce4)
-                                txtBetOdd.background = getDrawable(R.drawable.shape_3_b83030)
-                                txtBetSize.text =
-                                    if (mainTxtBean.isBig) getString(R.string.g_home_txt_big) else getString(
-                                        R.string.g_home_txt_small
+                                if (bean.select) {
+                                    resources.getIdentifier(
+                                        "icon_select_" + bean.moneyPinyin,
+                                        "drawable",
+                                        requireContext().packageName
                                     )
-                                txtBetOdd.text =
-                                    if (mainTxtBean.isDouble)
-                                        getString(R.string.g_home_txt_double)
-                                    else
-                                        getString(R.string.g_home_txt_single)
+                                } else {
+                                    resources.getIdentifier(
+                                        "icon_no_" + bean.moneyPinyin,
+                                        "drawable",
+                                        requireContext().packageName
+                                    )
+                                }
+                            }
+                            binding.ivShowBg.setImageResource(id)
+                            //Log.d(TAG, "onBind-->${layoutPosition},bean:${bean}")
+                            if (bean.select) {
+                                if (binding.ivShowBg.translationY == 0f) {
+                                    startBetteSelectAnim(
+                                        binding.ivShowBg,
+                                        if (isBetteUpAnimFirst) 0 else 100
+                                    )
+                                    //scrollBetteItemToCenter(layoutPosition)
+                                }
+                            } else {
+                                binding.ivShowBg.translationY = 0f
+                            }
+                        }
+                    }
+
+                }
+                onClick(R.id.ivShowBg) {
+                    val bean = _data as SelectAnnotationBean
+                    if (bean.select || bean.money > (gameAboutModel.tempBalance.value ?: 0)) return@onClick
+                    PromptSoundPlay.btnPlayMedia(requireContext())
+                    val models: List<SelectAnnotationBean> = models as List<SelectAnnotationBean>
+                    for (data in models) {
+                        data.select = bean == data
+                    }
+                    mViewModel.userLastSelectBetteBean = bean
+                    (mDatabind.llShowBetList.layoutManager as CenterLayoutManager).smoothScrollToPosition(
+                        mDatabind.llShowBetList,
+                        RecyclerView.State(),
+                        layoutPosition
+                    )
+                    notifyItemRangeChanged(0, modelCount)
+
+                }
+            }.models = mViewModel.noteList
+        }
+
+        //历史结果
+        mDatabind.rvHomeHistory.apply {
+            itemAnimator = null
+            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            dividerSpace(requireContext().dp2px(2), DividerOrientation.HORIZONTAL)
+            setup {
+                addType<RoundInfoBean>(R.layout.item_bet_history)
+                onBind {
+                    when (itemViewType) {
+                        R.layout.item_bet_history -> {
+                            getBinding<ItemBetHistoryBinding>().apply {
+                                val mainTxtBean = _data as RoundInfoBean
+                                mainTxtBean.performs.forEachIndexed { index, item ->
+                                    val child = llShowDice.getChildAt(index) as ImageView
+                                    val id = resources.getIdentifier(
+                                        "icon_dice_" + item.toPinyin(),
+                                        "drawable",
+                                        requireContext().packageName
+                                    )
+                                    child.setImageResource(id)
+                                }
+                                txtBetNum.text = mainTxtBean.sum.toString()
+                                if (mainTxtBean.isLeopard) {
+                                    txtBetSize.text = getString(R.string.g_home_txt_leopard)
+                                    txtBetOdd.text = getString(R.string.g_home_txt_leopard)
+                                    txtBetSize.background = getDrawable(R.drawable.shape_3_01933b)
+                                    txtBetOdd.background = getDrawable(R.drawable.shape_3_01933b)
+
+                                } else {
+                                    txtBetSize.background = getDrawable(R.drawable.shape_3_006ce4)
+                                    txtBetOdd.background = getDrawable(R.drawable.shape_3_b83030)
+                                    txtBetSize.text =
+                                        if (mainTxtBean.isBig) getString(R.string.g_home_txt_big) else getString(
+                                            R.string.g_home_txt_small
+                                        )
+                                    txtBetOdd.text =
+                                        if (mainTxtBean.isDouble)
+                                            getString(R.string.g_home_txt_double)
+                                        else
+                                            getString(R.string.g_home_txt_single)
+                                }
                             }
                         }
                     }
                 }
-            }
-        }.models = gameAboutModel.historyRounds.value
-        lifecycleScope.launchWhenResumed {
-            if (!mDatabind.rvHomeHistory.models.isNullOrEmpty()) {
-                mDatabind.rvHomeHistory.scrollToPosition(mDatabind.rvHomeHistory.models!!.size - 1)
+            }.models = gameAboutModel.historyRounds.value
+            lifecycleScope.launchWhenResumed {
+                if (!mDatabind.rvHomeHistory.models.isNullOrEmpty()) {
+                    mDatabind.rvHomeHistory.scrollToPosition(mDatabind.rvHomeHistory.models!!.size - 1)
+                }
             }
         }
     }

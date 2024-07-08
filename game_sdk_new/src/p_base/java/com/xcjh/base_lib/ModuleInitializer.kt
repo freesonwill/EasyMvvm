@@ -4,6 +4,8 @@ import android.app.Application
 import android.content.Context
 import android.util.Log
 import androidx.startup.Initializer
+import com.cn.game.sdk2.BuildConfig
+import com.xcjh.base_lib.utils.LogUtils
 
 /**
  * @Description:   模块初始化
@@ -19,6 +21,7 @@ class ModuleInitializer : Initializer<String> {
     override fun create(context: Context): String {
         Log.d(TAG, "ModuleInitializer--->create")
         application = context as Application
+        LogUtils.getConfig().setLogSwitch(BuildConfig.DEBUG)
         return TAG
     }
 
