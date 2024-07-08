@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
 import com.xcjh.base_lib.manager.KtxActivityManger
+import com.xcjh.base_lib.utils.LogUtils
 import com.xcjh.base_lib.utils.loge
 import me.jessyan.autosize.utils.AutoSizeLog
 import me.jessyan.autosize.utils.AutoSizeLog.isDebug
@@ -16,13 +17,13 @@ open class App : Application(), Application.ActivityLifecycleCallbacks, ViewMode
     private var mFactory: ViewModelProvider.Factory? = null
 
     companion object {
-        lateinit var appGame : Application
+        @JvmField
+        val appGame : Application = ModuleInitializer.application
     }
 
 
     override fun onCreate() {
         super.onCreate()
-        appGame = this
 //        if (isDebug()) {
 //            // 这两行必须写在init之前，否则这些配置在init过程中将无效
 //            ARouter.openLog() // 打印日志
