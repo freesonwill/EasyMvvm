@@ -117,7 +117,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     //<areaCode,<money,View>>
     private val currentBetteAreaMap by lazy { mutableMapOf<Int, GameAreaView>() }
     private val allGameAreaMap by lazy { mutableMapOf<Int, GameAreaView>() }
-    private val betteFlyAnimList by lazy { mutableListOf<ValueAnimator>() }
+    private val betteFlyAnimList by lazy { mutableMapOf<GameAreaView, MutableList<ValueAnimator>>() }
 
     //==================================== Method ===============================================//
     @SuppressLint("ClickableViewAccessibility")
@@ -481,7 +481,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         mViewModel.addMoneyOkViewLiveData.observe(viewLifecycleOwner) {
             val areaView = it.first
             betteViewGroup = it.second
-            areaView.moneyView.let {moneyOkView->
+            areaView.moneyView.let { moneyOkView ->
                 val params = FrameLayout.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT
@@ -492,14 +492,14 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 moneyOkView.translationZ = 2f
             }
 
-            areaView.betteView.let {betteView->
+            areaView.betteView.let { betteView ->
                 val params = FrameLayout.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT
                 )
                 betteView.translationX = 0f
                 betteView.translationY = 0f
-                betteView.translationZ = 1f
+//                betteView.translationZ = 1f
                 betteViewGroup?.addView(betteView, params)
             }
         }
@@ -623,7 +623,9 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
     private fun cancelBetteFlyAnim() {
         betteFlyAnimList.forEach {
-            it.cancel()
+            it.value.forEach {
+                it.cancel()
+            }
         }
         betteFlyAnimList.clear()
     }
@@ -1307,6 +1309,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             requireContext().dp2px(32),
             requireContext().dp2px(32)
         )
+        betImageView.translationZ = 3f
         betteViewGroup?.addView(betImageView, params)
 
         //正式开始计算动画开始/结束的坐标
@@ -1342,29 +1345,48 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 betImageView.translationY = mCurrentPosition[1] - viewPagerLocation[1]
             }
 
-            addListener(onEnd = {
-                //动画结束
-                endCallBack?.invoke()
-                // 把移动的图片imageview从父布局里移除
-                if (betImageView.isAdd()) {
-                    (betImageView.parent as ViewGroup).removeView(betImageView)
-                }
-                val animator = ObjectAnimator.ofPropertyValuesHolder(
-                    areaView.betteView.ivShowBg,
-                    SCALE_X,
-                    SCALE_Y
-                )
-                animator.duration = 200
-                animator.start()
+            addListener(
+                onStart = {
+                    if (areaView.betteView.translationZ == 0f) {
+                        areaView.betteView.translationZ = 4f
+                    }
+                },
+                onEnd = {
+                    //动画结束
+                    endCallBack?.invoke()
+                    // 把移动的图片imageview从父布局里移除
+                    if (betImageView.isAdd()) {
+                        (betImageView.parent as ViewGroup).removeView(betImageView)
+                    }
 
-                //筹码栈处理
+                    if (betteFlyAnimList.containsKey(areaView)) {
+                        if (!betteFlyAnimList[areaView]!!.last().isRunning) {
+                            areaView.betteView.translationZ = 0f
+                        }
+                    } else {
+                        areaView.betteView.translationZ = 0f
+                    }
+
+                    val animator = ObjectAnimator.ofPropertyValuesHolder(
+                        areaView.betteView.ivShowBg,
+                        SCALE_X,
+                        SCALE_Y
+                    )
+                    animator.duration = 200
+                    animator.start()
+
+                    //筹码栈处理
 //                addTempMoney(areaView)
-            })
+                })
         }
 
         valueAnimator.duration = speed
         valueAnimator.interpolator = LinearInterpolator()
-        betteFlyAnimList.add(valueAnimator)
+        if (betteFlyAnimList.containsKey(areaView)) {
+            betteFlyAnimList[areaView]?.add(valueAnimator)
+        } else {
+            betteFlyAnimList[areaView] = mutableListOf(valueAnimator)
+        }
         valueAnimator.start()
     }
 
