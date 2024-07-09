@@ -6,7 +6,6 @@ import com.cn.game.sdk2.ui.helper.Fast3ToastHelper
 import com.cn.game.sdk2.utils.PinyinUtils
 import com.cn.game.sdk2.websocket.bean.AreaBetConfigBean
 import com.cn.game.sdk2.websocket.bean.Betting
-import com.cn.game.sdk2.websocket.bean.areaMap
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 import java.math.BigDecimal
 import java.math.RoundingMode

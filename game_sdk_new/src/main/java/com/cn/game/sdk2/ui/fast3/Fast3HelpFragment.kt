@@ -1,17 +1,10 @@
 package com.cn.game.sdk2.ui.fast3
 
-import android.animation.ValueAnimator
 import android.os.Bundle
-import android.util.Log
-import android.widget.LinearLayout
-import androidx.core.animation.addListener
-import androidx.core.animation.doOnEnd
-import androidx.core.view.isVisible
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.databinding.FragmentFast3HelpBinding
 import com.cn.game.sdk2.ui.helper.ViewHelper
 import com.cn.game.sdk2.ui.viewmodel.EmptyViewModel
-import com.cn.game.sdk2.utils.ext.CommonExt.formatRealMoney
 import com.cn.game.sdk2.utils.ext.ViewExt.bindRecycleView
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.drake.brv.annotaion.DividerOrientation

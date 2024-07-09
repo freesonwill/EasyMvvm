@@ -1,7 +1,6 @@
 package com.cn.game.sdk2.utils.tool
 
 import android.content.Context
-import android.media.AudioAttributes
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.media.MediaPlayer.OnCompletionListener

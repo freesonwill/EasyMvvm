@@ -18,7 +18,6 @@ import com.cn.game.sdk2.websocket.copy
 import com.cn.game.sdk2.websocket.copyFrom
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.gameList
-import com.cn.game.sdk2.websocket.gameMassageManager
 import com.cn.game.sdk2.websocket.getBeanById
 import com.cn.game.sdk2.websocket.interfaces.GameService
 import com.cn.game.sdk2.websocket.isBig

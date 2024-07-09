@@ -7,13 +7,10 @@ import com.cn.game.sdk2.data.bean.GameHallItem
 import com.cn.game.sdk2.databinding.ItemGamehallPageBinding
 import com.cn.game.sdk2.databinding.ItemGamehallPageItemBinding
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3GameHallItemViewModel
-import com.cn.game.sdk2.websocket.gameAboutModel
 import com.drake.brv.annotaion.DividerOrientation
 import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.dividerSpace
-import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
-import com.drake.engine.databinding.bind
 import com.xcjh.base_lib.base.fragment.BaseVmVbFragment
 import com.xcjh.base_lib.utils.dp2px
 

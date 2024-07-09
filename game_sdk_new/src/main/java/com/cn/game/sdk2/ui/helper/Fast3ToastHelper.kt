@@ -1,6 +1,6 @@
 package com.cn.game.sdk2.ui.helper
 
-import android.content.Context
+import android.view.ViewTreeObserver.OnWindowAttachListener
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.cn.game.sdk2.ui.view.Fast3Toast
 import com.xcjh.base_lib.ModuleInitializer
@@ -20,6 +20,14 @@ object Fast3ToastHelper {
         assert(::anchorView.isInitialized)
         val context = ModuleInitializer.application
         _instance = Fast3Toast(context, anchorView)
+        this.anchorView.viewTreeObserver.addOnWindowAttachListener(object :OnWindowAttachListener {
+            override fun onWindowAttached() {
+            }
+            override fun onWindowDetached() {
+                anchorView.viewTreeObserver.removeOnWindowAttachListener(this)
+                this@Fast3ToastHelper.destroy()
+            }
+        })
     }
 
     fun showToastNormal(msg: CharSequence, duration: Long = 2_000) {

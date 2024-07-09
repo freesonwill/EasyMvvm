@@ -15,12 +15,12 @@
     <application>
         <!--Fragment路由地址容器-->
         <activity
-            android:name=".base.container.ContainerFmActivity"
+            android:name="com.xcjh.base_lib.base.container.ContainerFmActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
             android:screenOrientation="portrait" />
         <!--Fragment直接容器-->
         <activity
-            android:name=".base.container.ContainerFm2Activity"
+            android:name="com.xcjh.base_lib.base.container.ContainerFm2Activity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
             android:screenOrientation="portrait" />
         <uses-library
@@ -56,6 +56,9 @@
             -->
             <meta-data
                 android:name="com.xcjh.base_lib.ModuleInitializer"
+                android:value="androidx.startup" />
+            <meta-data
+                android:name="com.cn.game.sdk2.ModuleInitializer"
                 android:value="androidx.startup" />
         </provider>
     </application>

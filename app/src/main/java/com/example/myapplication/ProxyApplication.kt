@@ -8,16 +8,8 @@ import androidx.lifecycle.ViewModelStoreOwner
 import com.cn.game.sdk2.utils.GamePartyLibraryInitializer
 
 
-class ProxyApplication : Application()  , ViewModelStoreOwner{
-    private lateinit var mAppViewModelStore: ViewModelStore
+class ProxyApplication : Application() {
     override fun onCreate() {
         super.onCreate()
-        mAppViewModelStore = ViewModelStore()
-        val ddd= GamePartyLibraryInitializer
-        ddd.initialize(this,this)
     }
-    override fun getViewModelStore(): ViewModelStore {
-        return  mAppViewModelStore
-    }
-
 }

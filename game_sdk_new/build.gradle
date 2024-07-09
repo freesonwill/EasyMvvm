@@ -6,6 +6,10 @@ plugins {
     id("kotlin-kapt")
 }
 apply from: "${rootDir.path}/gradle/pin.gradle"
+//apply plugin: 'com.kezong.fat-aar'
+//apply from: 'https://raw.githubusercontent.com/adwiv/android-fat-aar/master/fat-aar.gradle'
+
+//apply plugin: 'com.kezong.fat-aar'
 
 android {
     namespace 'com.cn.game.sdk2'
@@ -79,6 +83,10 @@ android {
             proto {
                 srcDir 'src/main/protos'
             }
+            /*java {
+                srcDir 'src/main/java'
+            }
+            res.srcDirs = ['src/main/res']*/
         }
     }
     protobuf {
@@ -99,16 +107,14 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
-    implementation Libs.appcompat
-    implementation Libs.material
-    implementation Libs.lifecyleScope
-    implementation Libs.viewModelScope
-    implementation Libs.androidx_startup
-    //implementation(Libs.blankj)
-
+    //implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
+    implementation "androidx.appcompat:appcompat:1.6.1"
+    implementation "com.google.android.material:material:1.5.0"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.5.1"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1"
+    implementation "androidx.startup:startup-runtime:1.1.1"
+    //implementation 'com.github.kezong:fat-aar:1.3.8'
     //组件依赖基础库
-    //implementation project(':base_lib')
     implementation 'com.github.liangjingkanji:Engine:0.0.74' // 快速开发基础库
     implementation 'com.google.protobuf:protobuf-java:3.19.1'
     implementation('com.github.li-xiaojun:XPopup:2.10.0') {
@@ -116,11 +122,7 @@ dependencies {
     }
     implementation 'io.github.h07000223:flycoTabLayout:3.0.0'
     //拖动的
-    //implementation 'com.github.kongxiaojun:EasyFloat:3.0.1'
-    //implementation project(':game_sdk')
-    //https://github.com/airbnb/lottie-android
     implementation 'com.airbnb.android:lottie:6.4.0'
-    //implementation 'com.robinhood.ticker:ticker:2.0.4'
 
 
     //base lib
@@ -142,4 +144,73 @@ dependencies {
     //指示器库
     api 'com.github.hackware1993:MagicIndicator:1.7.0'
     api 'com.github.liangjingkanji:BRV:1.5.8'
+
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 }
+/****************** publish *************************/
+return
+def GroupId = 'com.cn.game.sdk2'
+def ArtifactId = 'game'
+def Version = "1.0.0-SNAPSHOT"
+
+def userName = "admin"
+def passWord = "tsenf@888!"
+
+
+
+def releasesRepoUrl = "file:///${System.getenv("HOME")}//.m2/repository"
+//def releasesRepoUrl = "http://172.16.10.13/repository/maven-snapshots/"
+tasks.register('generateSourcesJar', Jar) {
+    from android.sourceSets.main.java.srcDirs
+    archiveClassifier.set("sources")
+}
+afterEvaluate {
+    publishing {
+        //发布的 arr 包配置
+        publications {
+            //名字可以自己指定，如果有多渠道，整段多复制一个
+            release(MavenPublication) {
+                groupId = GroupId//公司域名
+                artifactId = ArtifactId//该aar包的名称
+                version = Version//版本号
+
+
+                // 必须有这个 否则不会上传AAR包
+                afterEvaluate { artifact(tasks.getByName("bundleReleaseAar")) }
+                // 多渠道，可以自行指定aar路径
+                // def projectName = project.getName()
+                // artifact "build/outputs/aar/${projectName}-release.aar"
+                // 上传source，这样使用方可以看到方法注释
+                artifact generateSourcesJar
+                //依赖关系
+                pom.withXml {
+                    def dependenciesNode = asNode().appendNode("dependencies")
+                    configurations.implementation.allDependencies.forEach() { Dependency dependency ->
+                        if (dependency.version != "unspecified" && dependency.name != "unspecified") {
+                            def dependencyNode = dependenciesNode.appendNode('dependency')
+                            dependencyNode.appendNode('groupId', dependency.group)
+                            dependencyNode.appendNode('artifactId', dependency.name)
+                            dependencyNode.appendNode('version', dependency.version)
+                        }
+                    }
+                }
+            }
+        }
+
+        //仓库地址配置
+        repositories {
+            maven {
+                //允许使用 http
+                //allowInsecureProtocol = true
+                url = releasesRepoUrl
+                /*credentials {
+                    username = userName
+                    password = passWord
+                }*/
+            }
+        }
+    }
+}
+

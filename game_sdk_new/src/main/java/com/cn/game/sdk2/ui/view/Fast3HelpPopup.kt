@@ -8,7 +8,6 @@ import com.cn.game.sdk2.R
 import com.cn.game.sdk2.databinding.FragmentFast3HelpBinding
 import com.cn.game.sdk2.ui.fast3.Fast3HelpFragment.Companion.TAG
 import com.cn.game.sdk2.ui.helper.ViewHelper
-import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
 import com.cn.game.sdk2.utils.ext.ViewExt.bindRecycleView
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.utils.tool.screenHeight

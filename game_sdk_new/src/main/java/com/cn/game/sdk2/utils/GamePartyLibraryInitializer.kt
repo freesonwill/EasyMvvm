@@ -12,7 +12,7 @@ object GamePartyLibraryInitializer {
     var mAppContext: Application? = null
 
 
-    fun initialize(context: ViewModelStoreOwner, mApp: Application) {
+    fun initialize(storeOwner: ViewModelStoreOwner, mApp: Application) {
         // appGameViewModelInstance= ViewModelProvider(context)[AppGameViewModel::class.java]
         mAppContext = mApp
         "初始化step1:loadGame".loge("GamePartyLibraryInitializer")

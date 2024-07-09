@@ -2,7 +2,6 @@ package com.cn.game.sdk2.utils
 
 import android.util.Log
 import android.view.View
-import android.view.WindowInsets
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.xcjh.base_lib.utils.TAG

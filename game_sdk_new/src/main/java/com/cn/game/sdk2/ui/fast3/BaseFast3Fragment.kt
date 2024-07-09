@@ -11,8 +11,6 @@ import androidx.core.animation.addListener
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.databinding.ViewDataBinding
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import com.cn.game.sdk2.R
@@ -37,7 +35,6 @@ import com.cn.game.sdk2.websocket.bean.SUM
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.gameMassageManager
 import com.xcjh.base_lib.base.BaseViewModel
-import com.xcjh.base_lib.utils.LogUtils
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.coroutines.resume

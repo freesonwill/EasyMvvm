@@ -1,7 +1,6 @@
 package com.cn.game.sdk2.utils.tool
 
 import android.content.ClipData
-import android.content.ClipboardManager
 import android.content.Context
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
@@ -13,7 +12,6 @@ import android.text.Html.ImageGetter
 import android.text.Spanned
 import android.text.TextUtils
 import android.view.View
-import androidx.core.content.ContextCompat
 import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.utils.clipboardManager
 import com.xcjh.base_lib.utils.view.clickNoRepeat

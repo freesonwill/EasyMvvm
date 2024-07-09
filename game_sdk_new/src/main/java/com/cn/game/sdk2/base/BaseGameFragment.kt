@@ -1,13 +1,8 @@
 package com.cn.game.sdk2.base
 
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import androidx.core.animation.addListener
-import androidx.core.view.isVisible
 import androidx.databinding.ViewDataBinding
 import com.xcjh.base_lib.base.BaseViewModel
 import com.xcjh.base_lib.base.fragment.BaseVmDbFragment

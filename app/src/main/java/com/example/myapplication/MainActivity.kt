@@ -29,13 +29,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        var btnOpen = findViewById<TextView>(R.id.btnOpen)
-        var llshow = findViewById<RelativeLayout>(R.id.llshow)
-        var btnXiu = findViewById<Button>(R.id.btnXiu)
-        /*ViewHelper.showHelpDialog(this)
-        ViewHelper.showFastView(this)
-        return@setOnClickListener*/
-
+        val btnOpen = findViewById<TextView>(R.id.btnOpen)
+        val llshow = findViewById<RelativeLayout>(R.id.llshow)
+        val btnXiu = findViewById<Button>(R.id.btnXiu)
 
         GameApp.setSocketStatesCallback(object : GameApp.SocketStatesCallback{
             override fun onOpen() {
@@ -83,6 +79,26 @@ class MainActivity : AppCompatActivity() {
                 btnOpen.text = "登录失败"
             }
         }
+        /*GameApp.createFloatEnterView(this@MainActivity).apply {
+            if(!this.isAdd()) {
+                val lp =
+                    RelativeLayout.LayoutParams(layoutParams.width, layoutParams.height)
+                lp.topMargin = 200.dp2px
+                lp.marginEnd = 0.dp2px
+                lp.addRule(RelativeLayout.ALIGN_PARENT_END)
+                llshow.addView(this, lp)
+            }
+        }
+        GameApp.createFloatResultView(this@MainActivity).apply {
+            if(!this.isAdd()) {
+                val lp =
+                    RelativeLayout.LayoutParams(layoutParams.width, layoutParams.height)
+                lp.topMargin = 50.dp2px
+                lp.marginEnd = 0.dp2px
+                lp.addRule(RelativeLayout.ALIGN_PARENT_END)
+                llshow.addView(this, lp)
+            }
+        }*/
         gameAboutModel.isEnterGroup.observe(this){result->
             if(result){
                 btnOpen.text = "已进入直播间"
@@ -91,8 +107,7 @@ class MainActivity : AppCompatActivity() {
                 ViewHelper.showFastViewOverlay(this)*/
                 GameApp.createFloatEnterView(this@MainActivity).apply {
                     if(!this.isAdd()) {
-                        val lp =
-                            RelativeLayout.LayoutParams(layoutParams.width, layoutParams.height)
+                        val lp = RelativeLayout.LayoutParams(layoutParams.width, layoutParams.height)
                         lp.topMargin = 200.dp2px
                         lp.marginEnd = 0.dp2px
                         lp.addRule(RelativeLayout.ALIGN_PARENT_END)

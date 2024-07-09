@@ -1,29 +1,22 @@
 package com.cn.game.sdk2.ui.viewmodel.fast3
 
 import android.util.Log
-import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.cn.game.sdk2.R
-import com.cn.game.sdk2.data.bean.HistoryResultBean
 import com.cn.game.sdk2.data.bean.LocationClickPoint
 import com.cn.game.sdk2.data.bean.SelectAnnotationBean
 import com.cn.game.sdk2.data.enums.GameState
-import com.cn.game.sdk2.manager.GameManager
-import com.cn.game.sdk2.manager.listener.IGameListener
-import com.cn.game.sdk2.ui.view.MoneyOKView
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.utils.ext.CommonExt.formatRealMoney
-import com.cn.game.sdk2.utils.ext.CommonExt.isMainThread
 import com.cn.game.sdk2.websocket.bean.Betting
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel.Stage
 import com.kunminx.architecture.ui.callback.UnPeekLiveData
 import com.xcjh.base_lib.base.BaseViewModel
 import com.xcjh.base_lib.utils.getColor
-import kotlin.math.roundToInt
 
 class Fast3ViewModel : BaseViewModel() {
     var betOkClick: UnPeekLiveData<Boolean> = UnPeekLiveData()

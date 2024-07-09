@@ -9,24 +9,18 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
-import android.view.animation.Animation.AnimationListener
 import android.view.animation.ScaleAnimation
 import android.widget.ImageView
-import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Group
-import androidx.core.content.ContextCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.databinding.ViewBettingOkBinding
 import com.cn.game.sdk2.utils.ext.CommonExt.formatRealMoney
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
-import com.xcjh.base_lib.utils.StringFormatUtil
-import com.xcjh.base_lib.utils.view.clickNoRepeat
 import java.math.BigDecimal
 import java.math.RoundingMode
 
