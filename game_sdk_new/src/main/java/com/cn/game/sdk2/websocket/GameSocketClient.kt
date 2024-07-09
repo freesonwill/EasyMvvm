@@ -2,7 +2,7 @@ package com.cn.game.sdk2.websocket
 
 import android.util.Log
 import com.cn.game.sdk2.websocket.imp.GameApp
-import com.xcjh.base_lib.utils.loge
+import com.xcjh.base_lib2.utils.loge
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope

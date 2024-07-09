@@ -13,7 +13,7 @@ import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import com.cn.game.sdk2.websocket.bean.BettingResponsesBean
 import com.cn.game.sdk2.websocket.bean.RoundInfoBean
 import com.kunminx.architecture.ui.callback.UnPeekLiveData
-import com.xcjh.base_lib.base.BaseViewModel
+import com.xcjh.base_lib2.base.BaseViewModel
 import kotlinx.coroutines.*
 
 class GameAboutModel : BaseViewModel() {

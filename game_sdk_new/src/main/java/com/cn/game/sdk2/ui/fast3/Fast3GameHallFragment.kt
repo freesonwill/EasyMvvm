@@ -8,8 +8,8 @@ import com.cn.game.sdk2.ui.helper.ViewHelper.bindViewPagerNewGame
 import com.cn.game.sdk2.ui.helper.ViewHelper.initGameViewPager
 import com.cn.game.sdk2.ui.viewmodel.EmptyViewModel
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
-import com.xcjh.base_lib.base.fragment.BaseVmDbFragment
-import com.xcjh.base_lib.utils.view.clickNoRepeat
+import com.xcjh.base_lib2.base.fragment.BaseVmDbFragment
+import com.xcjh.base_lib2.utils.view.clickNoRepeat
 
 class Fast3GameHallFragment:BaseVmDbFragment<EmptyViewModel,FragmentGamehallBinding>() {
     private var mFragList = ArrayList<Fragment>()

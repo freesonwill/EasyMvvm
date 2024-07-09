@@ -12,8 +12,8 @@ import android.util.Log
 import android.util.SparseArray
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.websocket.isEnableSound
-import com.xcjh.base_lib.ModuleInitializer
-import com.xcjh.base_lib.utils.TAG
+import com.xcjh.base_lib2.ModuleInitializer
+import com.xcjh.base_lib2.utils.TAG
 import java.io.IOException
 
 

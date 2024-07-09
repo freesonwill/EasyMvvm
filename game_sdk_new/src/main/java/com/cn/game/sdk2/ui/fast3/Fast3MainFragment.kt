@@ -82,11 +82,11 @@ import com.lxj.xpopup.core.BasePopupView
 import com.lxj.xpopup.core.BottomPopupView
 import com.lxj.xpopup.enums.PopupAnimation
 import com.lxj.xpopup.interfaces.SimpleCallback
-import com.xcjh.base_lib.base.fragment.BaseVmDbFragment
-import com.xcjh.base_lib.utils.LogUtils
-import com.xcjh.base_lib.utils.dp2px
-import com.xcjh.base_lib.utils.loge
-import com.xcjh.base_lib.utils.view.clickNoRepeat
+import com.xcjh.base_lib2.base.fragment.BaseVmDbFragment
+import com.xcjh.base_lib2.utils.LogUtils
+import com.xcjh.base_lib2.utils.dp2px
+import com.xcjh.base_lib2.utils.loge
+import com.xcjh.base_lib2.utils.view.clickNoRepeat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

@@ -15,8 +15,8 @@ import com.cn.game.sdk2.websocket.bean.Betting
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel.Stage
 import com.kunminx.architecture.ui.callback.UnPeekLiveData
-import com.xcjh.base_lib.base.BaseViewModel
-import com.xcjh.base_lib.utils.getColor
+import com.xcjh.base_lib2.base.BaseViewModel
+import com.xcjh.base_lib2.utils.getColor
 
 class Fast3ViewModel : BaseViewModel() {
     var betOkClick: UnPeekLiveData<Boolean> = UnPeekLiveData()

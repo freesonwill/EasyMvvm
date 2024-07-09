@@ -9,7 +9,7 @@ import com.cn.game.sdk2.websocket.bean.Betting
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 import java.math.BigDecimal
 import java.math.RoundingMode
-import com.xcjh.base_lib.ModuleInitializer
+import com.xcjh.base_lib2.ModuleInitializer
 import java.text.DecimalFormat
 
 

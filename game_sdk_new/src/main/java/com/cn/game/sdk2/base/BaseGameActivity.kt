@@ -6,8 +6,8 @@ import android.content.res.Resources
 import android.os.Bundle
 import android.view.View
 import androidx.databinding.ViewDataBinding
-import com.xcjh.base_lib.base.BaseViewModel
-import com.xcjh.base_lib.base.activity.BaseVmDbActivity
+import com.xcjh.base_lib2.base.BaseViewModel
+import com.xcjh.base_lib2.base.activity.BaseVmDbActivity
 
 
 abstract class BaseGameActivity <  VM : BaseViewModel, DB : ViewDataBinding> : BaseVmDbActivity<VM, DB>() {

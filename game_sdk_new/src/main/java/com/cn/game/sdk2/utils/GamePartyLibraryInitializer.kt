@@ -3,7 +3,7 @@ package com.cn.game.sdk2.utils
 import android.app.Application
 import androidx.lifecycle.ViewModelStoreOwner
 import com.cn.game.sdk2.websocket.imp.GameApp
-import com.xcjh.base_lib.utils.loge
+import com.xcjh.base_lib2.utils.loge
 
 /**
  * 初始化

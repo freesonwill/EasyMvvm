@@ -3,23 +3,12 @@ package com.cn.game.sdk2.ui.view
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.appcompat.widget.AppCompatTextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.databinding.ViewBettingBinding
-import com.cn.game.sdk2.databinding.ViewBettingOkBinding
-import com.cn.game.sdk2.utils.ext.CommonExt.formatRealMoney
-import com.cn.game.sdk2.utils.tool.PromptSoundPlay
-import com.xcjh.base_lib.utils.StringFormatUtil
-import com.xcjh.base_lib.utils.view.clickNoRepeat
-import java.math.BigDecimal
-import java.math.RoundingMode
 
 class BetteView @JvmOverloads constructor(
     context: Context,

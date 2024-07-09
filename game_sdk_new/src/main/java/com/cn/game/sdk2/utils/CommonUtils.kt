@@ -4,7 +4,7 @@ import android.util.Log
 import android.view.View
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.xcjh.base_lib.utils.TAG
+import com.xcjh.base_lib2.utils.TAG
 import java.util.Locale
 
 

@@ -1,29 +1,15 @@
 package com.cn.game.sdk2.utils.ext
 
-import android.content.Context
-import android.util.Log
 import android.widget.RelativeLayout
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.cn.game.sdk2.R
-import com.cn.game.sdk2.ui.helper.ViewHelper.setTextBold
 import com.cn.game.sdk2.ui.view.MoneyOKView
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.view.game.GameAreaView.LocationClickListener
-import com.cn.game.sdk2.utils.tool.indicator.CommonPagerIndicator
 import com.cn.game.sdk2.websocket.bean.Betting
 import com.drake.brv.annotaion.DividerOrientation
 import com.drake.brv.utils.dividerSpace
-import com.xcjh.base_lib.utils.toHtml
-import net.lucode.hackware.magicindicator.MagicIndicator
-import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigator
-import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapter
-import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerIndicator
-import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerTitleView
-import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.ColorTransitionPagerTitleView
 
 
 /**

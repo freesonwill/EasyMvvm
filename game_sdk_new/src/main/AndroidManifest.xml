@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.xcjh.base_lib">
+    package="com.xcjh.base_lib2">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -15,12 +15,12 @@
     <application>
         <!--Fragment路由地址容器-->
         <activity
-            android:name="com.xcjh.base_lib.base.container.ContainerFmActivity"
+            android:name="com.xcjh.base_lib2.base.container.ContainerFmActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
             android:screenOrientation="portrait" />
         <!--Fragment直接容器-->
         <activity
-            android:name="com.xcjh.base_lib.base.container.ContainerFm2Activity"
+            android:name="com.xcjh.base_lib2.base.container.ContainerFm2Activity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
             android:screenOrientation="portrait" />
         <uses-library
@@ -55,7 +55,7 @@
                  2.  value 为固定的 androidx.startup，用于提取 CustomInitializer 的路径
             -->
             <meta-data
-                android:name="com.xcjh.base_lib.ModuleInitializer"
+                android:name="com.xcjh.base_lib2.ModuleInitializer"
                 android:value="androidx.startup" />
             <meta-data
                 android:name="com.cn.game.sdk2.ModuleInitializer"

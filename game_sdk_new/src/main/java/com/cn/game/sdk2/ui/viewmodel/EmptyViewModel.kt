@@ -1,6 +1,6 @@
 package com.cn.game.sdk2.ui.viewmodel
 
-import com.xcjh.base_lib.base.BaseViewModel
+import com.xcjh.base_lib2.base.BaseViewModel
 
 /**
  * Description: ViewModel空实现

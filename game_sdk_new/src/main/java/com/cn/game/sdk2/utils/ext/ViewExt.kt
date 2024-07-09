@@ -15,8 +15,8 @@ import com.cn.game.sdk2.R
 import com.cn.game.sdk2.ui.helper.ViewHelper.setTextBold
 import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
 import com.cn.game.sdk2.utils.tool.indicator.CommonPagerIndicator
-import com.xcjh.base_lib.base.fragment.BaseVmFragment
-import com.xcjh.base_lib.utils.toHtml
+import com.xcjh.base_lib2.base.fragment.BaseVmFragment
+import com.xcjh.base_lib2.utils.toHtml
 import net.lucode.hackware.magicindicator.MagicIndicator
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigator
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapter

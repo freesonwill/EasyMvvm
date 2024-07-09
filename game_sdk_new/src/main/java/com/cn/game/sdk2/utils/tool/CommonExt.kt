@@ -12,9 +12,9 @@ import android.text.Html.ImageGetter
 import android.text.Spanned
 import android.text.TextUtils
 import android.view.View
-import com.xcjh.base_lib.appContext
-import com.xcjh.base_lib.utils.clipboardManager
-import com.xcjh.base_lib.utils.view.clickNoRepeat
+import com.xcjh.base_lib2.appContext
+import com.xcjh.base_lib2.utils.clipboardManager
+import com.xcjh.base_lib2.utils.view.clickNoRepeat
 import java.net.HttpURLConnection
 import java.net.URL
 

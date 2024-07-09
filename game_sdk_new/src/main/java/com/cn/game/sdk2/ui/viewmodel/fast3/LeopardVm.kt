@@ -9,8 +9,7 @@ import com.cn.game.sdk2.websocket.bean.BOOM_4
 import com.cn.game.sdk2.websocket.bean.BOOM_5
 import com.cn.game.sdk2.websocket.bean.BOOM_6
 import com.cn.game.sdk2.websocket.bean.Betting
-import com.xcjh.base_lib.base.BaseViewModel
-import java.text.DecimalFormat
+import com.xcjh.base_lib2.base.BaseViewModel
 
 class LeopardVm : BaseViewModel() {
 

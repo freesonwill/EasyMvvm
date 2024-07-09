@@ -3,7 +3,7 @@ package com.cn.game.sdk2.websocket
 import android.annotation.SuppressLint
 import com.cn.game.sdk2.network.code.GameResCode
 import com.cn.game.sdk2.websocket.imp.UIMethodImpl
-import com.xcjh.base_lib.utils.loge
+import com.xcjh.base_lib2.utils.loge
 import game.common.proto.ClientRes
 import game.mod.proc.yf.proto.res.GameRes
 import kotlinx.coroutines.DelicateCoroutinesApi

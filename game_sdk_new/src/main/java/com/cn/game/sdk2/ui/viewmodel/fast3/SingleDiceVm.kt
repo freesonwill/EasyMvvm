@@ -9,7 +9,7 @@ import com.cn.game.sdk2.websocket.bean.SINGLE_3
 import com.cn.game.sdk2.websocket.bean.SINGLE_4
 import com.cn.game.sdk2.websocket.bean.SINGLE_5
 import com.cn.game.sdk2.websocket.bean.SINGLE_6
-import com.xcjh.base_lib.base.BaseViewModel
+import com.xcjh.base_lib2.base.BaseViewModel
 
 class SingleDiceVm : BaseViewModel() {
 

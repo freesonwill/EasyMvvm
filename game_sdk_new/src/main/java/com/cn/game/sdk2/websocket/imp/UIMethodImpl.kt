@@ -18,7 +18,7 @@ import com.cn.game.sdk2.websocket.isNotEmpty
 import com.cn.game.sdk2.websocket.miniGameId
 import com.cn.game.sdk2.websocket.previousSuccess
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
-import com.xcjh.base_lib.utils.loge
+import com.xcjh.base_lib2.utils.loge
 import game.mod.proc.yf.proto.req.GameReq
 
 class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceImp(client) {

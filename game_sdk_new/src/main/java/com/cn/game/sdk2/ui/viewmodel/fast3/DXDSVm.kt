@@ -9,7 +9,7 @@ import com.cn.game.sdk2.websocket.bean.DEFAULT_DOUBLE
 import com.cn.game.sdk2.websocket.bean.DEFAULT_SINGLE
 import com.cn.game.sdk2.websocket.bean.DEFAULT_SMALL
 import com.cn.game.sdk2.websocket.gameAboutModel
-import com.xcjh.base_lib.base.BaseViewModel
+import com.xcjh.base_lib2.base.BaseViewModel
 
 class DXDSVm : BaseViewModel() {
     val bettingArray by lazy {

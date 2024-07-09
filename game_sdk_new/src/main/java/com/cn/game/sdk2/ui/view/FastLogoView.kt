@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatTextView
 import com.cn.game.sdk2.R
-import com.xcjh.base_lib.utils.view.clickNoRepeat
+import com.xcjh.base_lib2.utils.view.clickNoRepeat
 
 /**
  * 快三开奖logoView

@@ -3,7 +3,7 @@ package com.cn.game.sdk2.ui.helper
 import android.view.ViewTreeObserver.OnWindowAttachListener
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.cn.game.sdk2.ui.view.Fast3Toast
-import com.xcjh.base_lib.ModuleInitializer
+import com.xcjh.base_lib2.ModuleInitializer
 
 /**
  * 快3Toast辅助类

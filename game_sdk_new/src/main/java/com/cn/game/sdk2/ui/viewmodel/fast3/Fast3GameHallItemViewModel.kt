@@ -2,8 +2,8 @@ package com.cn.game.sdk2.ui.viewmodel.fast3
 
 import androidx.lifecycle.LiveData
 import com.cn.game.sdk2.data.bean.GameHallItem
-import com.xcjh.base_lib.base.BaseViewModel
-import com.xcjh.base_lib.callback.livedata.UnPeekLiveData
+import com.xcjh.base_lib2.base.BaseViewModel
+import com.xcjh.base_lib2.callback.livedata.UnPeekLiveData
 
 class Fast3GameHallItemViewModel : BaseViewModel() {
     private val _hallItems = UnPeekLiveData<List<GameHallItem>>()

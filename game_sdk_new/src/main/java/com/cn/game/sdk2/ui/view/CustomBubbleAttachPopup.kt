@@ -18,7 +18,7 @@ import com.lxj.xpopup.core.BasePopupView
 import com.lxj.xpopup.core.BottomPopupView
 import com.lxj.xpopup.enums.PopupAnimation
 import com.lxj.xpopup.interfaces.SimpleCallback
-import com.xcjh.base_lib.utils.view.clickNoRepeat
+import com.xcjh.base_lib2.utils.view.clickNoRepeat
 
 /**
  * 首页的弹出框

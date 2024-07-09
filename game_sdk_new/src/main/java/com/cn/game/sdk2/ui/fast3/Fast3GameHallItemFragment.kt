@@ -11,8 +11,8 @@ import com.drake.brv.annotaion.DividerOrientation
 import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.dividerSpace
 import com.drake.brv.utils.setup
-import com.xcjh.base_lib.base.fragment.BaseVmVbFragment
-import com.xcjh.base_lib.utils.dp2px
+import com.xcjh.base_lib2.base.fragment.BaseVmVbFragment
+import com.xcjh.base_lib2.utils.dp2px
 
 class Fast3GameHallItemFragment(private val category: String) : BaseVmVbFragment<Fast3GameHallItemViewModel, ItemGamehallPageBinding>() {
 

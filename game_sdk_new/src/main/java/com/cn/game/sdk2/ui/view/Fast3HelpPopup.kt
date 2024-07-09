@@ -19,9 +19,9 @@ import com.gyf.immersionbar.ktx.hasNavigationBar
 import com.gyf.immersionbar.ktx.navigationBarHeight
 import com.gyf.immersionbar.ktx.statusBarHeight
 import com.lxj.xpopup.core.BottomPopupView
-import com.xcjh.base_lib.utils.dp2px
-import com.xcjh.base_lib.utils.view.clickNoRepeat
-import com.xcjh.base_lib.utils.view.getStringArray
+import com.xcjh.base_lib2.utils.dp2px
+import com.xcjh.base_lib2.utils.view.clickNoRepeat
+import com.xcjh.base_lib2.utils.view.getStringArray
 
 
 /**

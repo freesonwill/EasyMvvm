@@ -9,7 +9,7 @@ import com.cn.game.sdk2.websocket.bean.DOUBLE_3
 import com.cn.game.sdk2.websocket.bean.DOUBLE_4
 import com.cn.game.sdk2.websocket.bean.DOUBLE_5
 import com.cn.game.sdk2.websocket.bean.DOUBLE_6
-import com.xcjh.base_lib.base.BaseViewModel
+import com.xcjh.base_lib2.base.BaseViewModel
 
 class PairsDiceVm : BaseViewModel() {
 

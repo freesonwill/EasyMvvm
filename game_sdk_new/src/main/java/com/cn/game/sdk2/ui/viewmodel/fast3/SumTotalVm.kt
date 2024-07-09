@@ -17,7 +17,7 @@ import com.cn.game.sdk2.websocket.bean.SUM_6
 import com.cn.game.sdk2.websocket.bean.SUM_7
 import com.cn.game.sdk2.websocket.bean.SUM_8
 import com.cn.game.sdk2.websocket.bean.SUM_9
-import com.xcjh.base_lib.base.BaseViewModel
+import com.xcjh.base_lib2.base.BaseViewModel
 
 class SumTotalVm  : BaseViewModel() {
     val bettingArray by lazy {

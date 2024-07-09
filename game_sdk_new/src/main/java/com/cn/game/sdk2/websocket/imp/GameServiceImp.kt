@@ -33,7 +33,7 @@ import com.cn.game.sdk2.websocket.nativeLib
 import com.cn.game.sdk2.websocket.previousSuccess
 import com.cn.game.sdk2.websocket.sum
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
-import com.xcjh.base_lib.utils.loge
+import com.xcjh.base_lib2.utils.loge
 import game.common.proto.ClientReq
 import game.common.proto.ClientRes
 import game.mod.proc.yf.proto.req.GameReq

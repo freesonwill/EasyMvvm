@@ -4,8 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.databinding.ViewDataBinding
-import com.xcjh.base_lib.base.BaseViewModel
-import com.xcjh.base_lib.base.fragment.BaseVmDbFragment
+import com.xcjh.base_lib2.base.BaseViewModel
+import com.xcjh.base_lib2.base.fragment.BaseVmDbFragment
 
 
 abstract class BaseGameFragment <VM : BaseViewModel, VB : ViewDataBinding> : BaseVmDbFragment<VM, VB>() {
