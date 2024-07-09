@@ -5,31 +5,23 @@ import android.animation.AnimatorSet
 import android.animation.ValueAnimator
 import android.util.Log
 import android.util.SparseArray
-import android.view.Gravity
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
-import com.cn.game.sdk2.R
 import com.cn.game.sdk2.databinding.FragDxdsBinding
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.viewmodel.fast3.DXDSVm
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
-import com.cn.game.sdk2.utils.ext.ViewExt.locationOnScreen
 import com.cn.game.sdk2.websocket.bean.AreaBetBean
 import com.cn.game.sdk2.websocket.bean.DEFAULT_BIG
 import com.cn.game.sdk2.websocket.bean.DEFAULT_DOUBLE
 import com.cn.game.sdk2.websocket.bean.DEFAULT_SINGLE
 import com.cn.game.sdk2.websocket.bean.DEFAULT_SMALL
-import com.xcjh.base_lib.utils.dp2px
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.w3c.dom.Text
-
 
 /**
  * 默认

@@ -10,12 +10,9 @@ import android.annotation.SuppressLint
 import android.graphics.Path
 import android.graphics.PathMeasure
 import android.os.Bundle
-import android.os.Looper
-import android.text.method.Touch
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.LinearInterpolator
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -55,12 +52,10 @@ import com.cn.game.sdk2.ui.view.CustomBubbleAttachPopup
 import com.cn.game.sdk2.ui.view.MoneyOKView
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
-import com.cn.game.sdk2.utils.CommonUtils
 import com.cn.game.sdk2.utils.FlowBus
 import com.cn.game.sdk2.utils.ext.BizExt.isLeopard
 import com.cn.game.sdk2.utils.ext.CommonExt.formatRealMoney
 import com.cn.game.sdk2.utils.ext.CommonExt.isCanGoOn
-import com.cn.game.sdk2.utils.ext.CommonExt.px2dp
 import com.cn.game.sdk2.utils.ext.CommonExt.toPinyin
 import com.cn.game.sdk2.utils.ext.ViewExt.getDrawable
 import com.cn.game.sdk2.utils.ext.ViewExt.locationOnScreen
@@ -89,7 +84,6 @@ import com.xcjh.base_lib.utils.dp2px
 import com.xcjh.base_lib.utils.loge
 import com.xcjh.base_lib.utils.view.clickNoRepeat
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -170,29 +164,25 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             (System.currentTimeMillis() - startTime).let{ LogUtils.d(TAG,"Fast3MainFragment load costMills1:$it") }
             mDatabind.viewPagerNew.initGameViewPager(
                 childFragmentManager, mFragList, arrayListOf(
-                    requireContext().getString(R.string.g_home_txt_default),
-                    requireContext().getString(R.string.g_home_tab_single),
-                    requireContext().getString(R.string.g_home_tab_sum),
-                    requireContext().getString(R.string.g_home_tab_double),
-                    requireContext().getString(R.string.g_home_tab_leopard)
+                    getString(R.string.g_home_txt_default),
+                    getString(R.string.g_home_tab_single),
+                    getString(R.string.g_home_tab_sum),
+                    getString(R.string.g_home_tab_double),
+                    getString(R.string.g_home_tab_leopard)
                 )
             )
             (System.currentTimeMillis() - startTime).let{ LogUtils.d(TAG,"Fast3MainFragment load costMills2:$it") }
             mDatabind.magicIndicator.bindViewPagerNewGame(
                 mDatabind.viewPagerNew, arrayListOf(
-                    requireContext().getString(R.string.g_home_txt_default),
-                    requireContext().getString(R.string.g_home_tab_single),
-                    requireContext().getString(R.string.g_home_tab_sum),
-                    requireContext().getString(R.string.g_home_tab_double),
-                    requireContext().getString(R.string.g_home_tab_leopard)
+                    getString(R.string.g_home_txt_default),
+                    getString(R.string.g_home_tab_single),
+                    getString(R.string.g_home_tab_sum),
+                    getString(R.string.g_home_tab_double),
+                    getString(R.string.g_home_tab_leopard)
                 ),
                 scrollEnable = true,
                 action = { PromptSoundPlay.btnPlayMedia() }
             )
-            async { //mDatabind.viewPagerNew.offscreenPageLimit会引起卡顿，延迟设置
-                delay(1000)
-                mDatabind.viewPagerNew.offscreenPageLimit = mFragList.size
-            }
             (System.currentTimeMillis() - startTime).let{ LogUtils.d(TAG,"Fast3MainFragment load costMills3:$it") }
         }
         setBetAdapter()
