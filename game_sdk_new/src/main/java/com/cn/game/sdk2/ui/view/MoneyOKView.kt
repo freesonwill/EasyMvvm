@@ -46,7 +46,7 @@ class MoneyOKView @JvmOverloads constructor(
     /**
      * 是否显示取消或者确定
      */
-//    var llShowTop: Group
+    var llShowTop: Group
 
     /**
      * 取消
@@ -96,7 +96,7 @@ class MoneyOKView @JvmOverloads constructor(
     init {
         LayoutInflater.from(context).inflate(R.layout.view_betting_ok, this).apply {
             binding = ViewBettingOkBinding.bind(this)
-//            llShowTop = binding!!.groupOkTopView
+            llShowTop = binding!!.groupOkTopView
             ivShowMoney = binding!!.ivShowMoney
             ivShowBg = binding!!.ivShowBg
             ivOff = binding!!.ivOff
@@ -229,14 +229,15 @@ class MoneyOKView @JvmOverloads constructor(
      * 隐藏头部的缺点和删除
      */
     fun hiddenTop() {
-        ivOk.isInvisible = true
-        ivOff.isInvisible = true
-        binding?.apply {
-            okLayout.isInvisible = true
-            offLayout.isInvisible = true
-            okRightLayout.isInvisible = true
-            offLeftLayout.isInvisible = true
-        }
+        llShowTop.isInvisible = true
+//        ivOk.isInvisible = true
+//        ivOff.isInvisible = true
+//        binding?.apply {
+//            okLayout.isInvisible = true
+//            offLayout.isInvisible = true
+//            okRightLayout.isInvisible = true
+//            offLeftLayout.isInvisible = true
+//        }
 //        binding!!.groupOkTopView.isInvisible = true
 //        llShowTop.visibility = View.INVISIBLE
     }
@@ -245,14 +246,15 @@ class MoneyOKView @JvmOverloads constructor(
      * 显示头部的确定和删除
      */
     fun showTop() {
-        ivOk.isVisible = true
-        ivOff.isVisible = true
-        binding?.apply {
-            okLayout.isVisible = true
-            offLayout.isVisible = true
-            okRightLayout.isVisible = true
-            offLeftLayout.isVisible = true
-        }
+        llShowTop.isVisible = true
+//        ivOk.isVisible = true
+//        ivOff.isVisible = true
+//        binding?.apply {
+//            okLayout.isVisible = true
+//            offLayout.isVisible = true
+//            okRightLayout.isVisible = true
+//            offLeftLayout.isVisible = true
+//        }
 //        binding!!.groupOkTopView.isVisible = true
 //        llShowTop.visibility = View.VISIBLE
         bringToFront()

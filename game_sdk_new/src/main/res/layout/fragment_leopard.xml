@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    >
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -11,384 +10,376 @@
             type="com.cn.game.sdk2.ui.viewmodel.fast3.LeopardVm" />
     </data>
 
-    <FrameLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/flRoot"
-        style="@style/viewpager_f3_style"
-        >
+        style="@style/viewpager_f3_style">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/rlHomeRoot"
+        <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            app:srcCompat="@drawable/icon_single_bg" />
+
+        <com.cn.game.sdk2.ui.view.game.GameAreaView
+            android:id="@+id/gavLeopardOne"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:areaInfo="@{model.bettingArray[1]}"
+            app:layout_constraintBottom_toTopOf="@id/gavLeopardSix"
+            app:layout_constraintEnd_toStartOf="@id/gavLeopardFour"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivLeopardOneTop"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/icon_dice_yi" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivLeopardOneLeft"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_marginTop="@dimen/dp_4"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ivLeopardOneTop"
+                    app:srcCompat="@drawable/icon_dice_yi" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivLeopardOneRight"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_marginStart="@dimen/dp_4"
+                    app:layout_constraintStart_toEndOf="@id/ivLeopardOneLeft"
+                    app:layout_constraintTop_toTopOf="@id/ivLeopardOneLeft"
+                    app:srcCompat="@drawable/icon_dice_yi" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/txtLeopardOddsOne"
+                    style="@style/text_single_dice"
+                    android:text="@{model.multiplierStr(1)}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ivLeopardOneLeft"
+                    tools:text="x180" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivLeopardOne"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="fitXY"
-                app:srcCompat="@drawable/icon_single_bg" />
+                android:visibility="gone"
+                app:srcCompat="@drawable/flash_left_top" />
+        </com.cn.game.sdk2.ui.view.game.GameAreaView>
 
-            <com.cn.game.sdk2.ui.view.game.GameAreaView
-                android:id="@+id/gavLeopardOne"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:areaInfo="@{model.bettingArray[1]}"
-                app:layout_constraintBottom_toTopOf="@id/gavLeopardSix"
-                app:layout_constraintEnd_toStartOf="@id/gavLeopardFour"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+        <com.cn.game.sdk2.ui.view.game.GameAreaView
+            android:id="@+id/gavLeopardTwo"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:areaInfo="@{model.bettingArray[2]}"
+            app:layout_constraintBottom_toBottomOf="@id/gavLeopardOne"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/gavLeopardFour"
+            app:layout_constraintTop_toTopOf="parent">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center">
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/ivLeopardOneTop"
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/icon_dice_yi" />
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/ivLeopardOneLeft"
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
-                        android:layout_marginTop="@dimen/dp_4"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/ivLeopardOneTop"
-                        app:srcCompat="@drawable/icon_dice_yi" />
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/ivLeopardOneRight"
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
-                        android:layout_marginStart="@dimen/dp_4"
-                        app:layout_constraintStart_toEndOf="@id/ivLeopardOneLeft"
-                        app:layout_constraintTop_toTopOf="@id/ivLeopardOneLeft"
-                        app:srcCompat="@drawable/icon_dice_yi" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/txtLeopardOddsOne"
-                        android:text="@{model.multiplierStr(1)}"
-                        style="@style/text_single_dice"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/ivLeopardOneLeft"
-                        tools:text="x180"
-                        />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivLeopardOne"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="fitXY"
-                    android:visibility="gone"
-                    app:srcCompat="@drawable/flash_left_top" />
-            </com.cn.game.sdk2.ui.view.game.GameAreaView>
-
-            <com.cn.game.sdk2.ui.view.game.GameAreaView
-                android:id="@+id/gavLeopardTwo"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:areaInfo="@{model.bettingArray[2]}"
-                app:layout_constraintBottom_toBottomOf="@id/gavLeopardOne"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/gavLeopardFour"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center">
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/ivLeopardTwoTop"
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/icon_dice_er" />
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/ivLeopardTwoLeft"
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
-                        android:layout_marginTop="@dimen/dp_4"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/ivLeopardTwoTop"
-                        app:srcCompat="@drawable/icon_dice_er" />
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
-                        android:layout_marginStart="@dimen/dp_4"
-                        app:layout_constraintStart_toEndOf="@id/ivLeopardTwoLeft"
-                        app:layout_constraintTop_toTopOf="@id/ivLeopardTwoLeft"
-                        app:srcCompat="@drawable/icon_dice_er" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/txtLeopardOddsTwo"
-                        android:text="@{model.multiplierStr(2)}"
-                        style="@style/text_single_dice"
-                        tools:text="x180"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/ivLeopardTwoLeft" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                    android:id="@+id/ivLeopardTwoTop"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/icon_dice_er" />
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivLeopardTwo"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="fitXY"
-                    android:visibility="gone"
-                    app:srcCompat="@drawable/flash_right_top" />
-            </com.cn.game.sdk2.ui.view.game.GameAreaView>
-
-            <com.cn.game.sdk2.ui.view.game.GameAreaView
-                android:id="@+id/gavLeopardThree"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:areaInfo="@{model.bettingArray[3]}"
-                app:layout_constraintBottom_toBottomOf="@id/gavLeopardSix"
-                app:layout_constraintEnd_toStartOf="@id/gavLeopardFive"
-                app:layout_constraintStart_toEndOf="@id/gavLeopardSix"
-                app:layout_constraintTop_toTopOf="@id/gavLeopardSix">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center">
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/ivLeopardThreeTop"
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/icon_dice_san" />
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/ivLeopardThreeLeft"
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
-                        android:layout_marginTop="@dimen/dp_4"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/ivLeopardThreeTop"
-                        app:srcCompat="@drawable/icon_dice_san" />
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
-                        android:layout_marginStart="@dimen/dp_4"
-                        app:layout_constraintStart_toEndOf="@id/ivLeopardThreeLeft"
-                        app:layout_constraintTop_toTopOf="@id/ivLeopardThreeLeft"
-                        app:srcCompat="@drawable/icon_dice_san" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/txtLeopardOddsThree"
-                        android:text="@{model.multiplierStr(3)}"
-                        style="@style/text_single_dice"
-                        tools:text="x180"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/ivLeopardThreeLeft" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                    android:id="@+id/ivLeopardTwoLeft"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_marginTop="@dimen/dp_4"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ivLeopardTwoTop"
+                    app:srcCompat="@drawable/icon_dice_er" />
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivLeopardThree"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="fitXY"
-                    android:visibility="gone"
-                    app:srcCompat="@drawable/flash_centre" />
-            </com.cn.game.sdk2.ui.view.game.GameAreaView>
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_marginStart="@dimen/dp_4"
+                    app:layout_constraintStart_toEndOf="@id/ivLeopardTwoLeft"
+                    app:layout_constraintTop_toTopOf="@id/ivLeopardTwoLeft"
+                    app:srcCompat="@drawable/icon_dice_er" />
 
-            <com.cn.game.sdk2.ui.view.game.GameAreaView
-                android:id="@+id/gavLeopardFour"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:areaInfo="@{model.bettingArray[4]}"
-                app:layout_constraintBottom_toBottomOf="@id/gavLeopardOne"
-                app:layout_constraintEnd_toStartOf="@id/gavLeopardTwo"
-                app:layout_constraintStart_toEndOf="@id/gavLeopardOne"
-                app:layout_constraintTop_toTopOf="@id/gavLeopardOne">
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/txtLeopardOddsTwo"
+                    style="@style/text_single_dice"
+                    android:text="@{model.multiplierStr(2)}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ivLeopardTwoLeft"
+                    tools:text="x180" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center">
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivLeopardTwo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitXY"
+                android:visibility="gone"
+                app:srcCompat="@drawable/flash_right_top" />
+        </com.cn.game.sdk2.ui.view.game.GameAreaView>
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/ivLeopardFourTop"
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/icon_dice_si" />
+        <com.cn.game.sdk2.ui.view.game.GameAreaView
+            android:id="@+id/gavLeopardThree"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:areaInfo="@{model.bettingArray[3]}"
+            app:layout_constraintBottom_toBottomOf="@id/gavLeopardSix"
+            app:layout_constraintEnd_toStartOf="@id/gavLeopardFive"
+            app:layout_constraintStart_toEndOf="@id/gavLeopardSix"
+            app:layout_constraintTop_toTopOf="@id/gavLeopardSix">
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/ivLeopardFourLeft"
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
-                        android:layout_marginTop="@dimen/dp_4"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/ivLeopardFourTop"
-                        app:srcCompat="@drawable/icon_dice_si" />
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
-                        android:layout_marginStart="@dimen/dp_4"
-                        app:layout_constraintStart_toEndOf="@id/ivLeopardFourLeft"
-                        app:layout_constraintTop_toTopOf="@id/ivLeopardFourLeft"
-                        app:srcCompat="@drawable/icon_dice_si" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/txtLeopardOddsFour"
-                        android:text="@{model.multiplierStr(3)}"
-                        style="@style/text_single_dice"
-                        tools:text="x180"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/ivLeopardFourLeft" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivLeopardFour"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="fitXY"
-                    android:visibility="gone"
-                    app:srcCompat="@drawable/flash_centre" />
-            </com.cn.game.sdk2.ui.view.game.GameAreaView>
-
-            <com.cn.game.sdk2.ui.view.game.GameAreaView
-                android:id="@+id/gavLeopardFive"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:areaInfo="@{model.bettingArray[5]}"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/gavLeopardThree"
-                app:layout_constraintTop_toTopOf="@id/gavLeopardSix">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center">
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/ivLeopardFiveTop"
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/icon_dice_wu" />
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/ivLeopardFiveLeft"
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
-                        android:layout_marginTop="@dimen/dp_4"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/ivLeopardFiveTop"
-                        app:srcCompat="@drawable/icon_dice_wu" />
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
-                        android:layout_marginStart="@dimen/dp_4"
-                        app:layout_constraintStart_toEndOf="@id/ivLeopardFiveLeft"
-                        app:layout_constraintTop_toTopOf="@id/ivLeopardFiveLeft"
-                        app:srcCompat="@drawable/icon_dice_wu" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/txtLeopardOddsFive"
-                        android:text="@{model.multiplierStr(5)}"
-                        style="@style/text_single_dice"
-                        tools:text="x180"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/ivLeopardFiveLeft" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                    android:id="@+id/ivLeopardThreeTop"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/icon_dice_san" />
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivLeopardFive"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="fitXY"
-                    android:visibility="gone"
-                    app:srcCompat="@drawable/flash_right_be" />
-            </com.cn.game.sdk2.ui.view.game.GameAreaView>
-
-            <com.cn.game.sdk2.ui.view.game.GameAreaView
-                android:id="@+id/gavLeopardSix"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:areaInfo="@{model.bettingArray[6]}"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/gavLeopardThree"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/gavLeopardOne">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center">
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/ivLeopardSixTop"
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/icon_dice_liu" />
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/ivLeopardSixLeft"
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
-                        android:layout_marginTop="@dimen/dp_4"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/ivLeopardSixTop"
-                        app:srcCompat="@drawable/icon_dice_liu" />
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
-                        android:layout_marginStart="@dimen/dp_4"
-                        app:layout_constraintStart_toEndOf="@id/ivLeopardSixLeft"
-                        app:layout_constraintTop_toTopOf="@id/ivLeopardSixLeft"
-                        app:srcCompat="@drawable/icon_dice_liu" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/txtPairsOddsSix"
-                        android:text="@{model.multiplierStr(6)}"
-                        style="@style/text_single_dice"
-                        tools:text="x180"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/ivLeopardSixLeft" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                    android:id="@+id/ivLeopardThreeLeft"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_marginTop="@dimen/dp_4"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ivLeopardThreeTop"
+                    app:srcCompat="@drawable/icon_dice_san" />
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivLeopardSix"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="fitXY"
-                    android:visibility="gone"
-                    app:srcCompat="@drawable/flash_left_be" />
-            </com.cn.game.sdk2.ui.view.game.GameAreaView>
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </FrameLayout>
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_marginStart="@dimen/dp_4"
+                    app:layout_constraintStart_toEndOf="@id/ivLeopardThreeLeft"
+                    app:layout_constraintTop_toTopOf="@id/ivLeopardThreeLeft"
+                    app:srcCompat="@drawable/icon_dice_san" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/txtLeopardOddsThree"
+                    style="@style/text_single_dice"
+                    android:text="@{model.multiplierStr(3)}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ivLeopardThreeLeft"
+                    tools:text="x180" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivLeopardThree"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitXY"
+                android:visibility="gone"
+                app:srcCompat="@drawable/flash_centre" />
+        </com.cn.game.sdk2.ui.view.game.GameAreaView>
+
+        <com.cn.game.sdk2.ui.view.game.GameAreaView
+            android:id="@+id/gavLeopardFour"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:areaInfo="@{model.bettingArray[4]}"
+            app:layout_constraintBottom_toBottomOf="@id/gavLeopardOne"
+            app:layout_constraintEnd_toStartOf="@id/gavLeopardTwo"
+            app:layout_constraintStart_toEndOf="@id/gavLeopardOne"
+            app:layout_constraintTop_toTopOf="@id/gavLeopardOne">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivLeopardFourTop"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/icon_dice_si" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivLeopardFourLeft"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_marginTop="@dimen/dp_4"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ivLeopardFourTop"
+                    app:srcCompat="@drawable/icon_dice_si" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_marginStart="@dimen/dp_4"
+                    app:layout_constraintStart_toEndOf="@id/ivLeopardFourLeft"
+                    app:layout_constraintTop_toTopOf="@id/ivLeopardFourLeft"
+                    app:srcCompat="@drawable/icon_dice_si" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/txtLeopardOddsFour"
+                    style="@style/text_single_dice"
+                    android:text="@{model.multiplierStr(3)}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ivLeopardFourLeft"
+                    tools:text="x180" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivLeopardFour"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitXY"
+                android:visibility="gone"
+                app:srcCompat="@drawable/flash_centre" />
+        </com.cn.game.sdk2.ui.view.game.GameAreaView>
+
+        <com.cn.game.sdk2.ui.view.game.GameAreaView
+            android:id="@+id/gavLeopardFive"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:areaInfo="@{model.bettingArray[5]}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/gavLeopardThree"
+            app:layout_constraintTop_toTopOf="@id/gavLeopardSix">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivLeopardFiveTop"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/icon_dice_wu" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivLeopardFiveLeft"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_marginTop="@dimen/dp_4"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ivLeopardFiveTop"
+                    app:srcCompat="@drawable/icon_dice_wu" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_marginStart="@dimen/dp_4"
+                    app:layout_constraintStart_toEndOf="@id/ivLeopardFiveLeft"
+                    app:layout_constraintTop_toTopOf="@id/ivLeopardFiveLeft"
+                    app:srcCompat="@drawable/icon_dice_wu" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/txtLeopardOddsFive"
+                    style="@style/text_single_dice"
+                    android:text="@{model.multiplierStr(5)}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ivLeopardFiveLeft"
+                    tools:text="x180" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivLeopardFive"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitXY"
+                android:visibility="gone"
+                app:srcCompat="@drawable/flash_right_be" />
+        </com.cn.game.sdk2.ui.view.game.GameAreaView>
+
+        <com.cn.game.sdk2.ui.view.game.GameAreaView
+            android:id="@+id/gavLeopardSix"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:areaInfo="@{model.bettingArray[6]}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/gavLeopardThree"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/gavLeopardOne">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivLeopardSixTop"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/icon_dice_liu" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivLeopardSixLeft"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_marginTop="@dimen/dp_4"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ivLeopardSixTop"
+                    app:srcCompat="@drawable/icon_dice_liu" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_marginStart="@dimen/dp_4"
+                    app:layout_constraintStart_toEndOf="@id/ivLeopardSixLeft"
+                    app:layout_constraintTop_toTopOf="@id/ivLeopardSixLeft"
+                    app:srcCompat="@drawable/icon_dice_liu" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/txtPairsOddsSix"
+                    style="@style/text_single_dice"
+                    android:text="@{model.multiplierStr(6)}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ivLeopardSixLeft"
+                    tools:text="x180" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivLeopardSix"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitXY"
+                android:visibility="gone"
+                app:srcCompat="@drawable/flash_left_be" />
+        </com.cn.game.sdk2.ui.view.game.GameAreaView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

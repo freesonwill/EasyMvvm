@@ -2,6 +2,7 @@ package com.cn.game.sdk2.ui.viewmodel.fast3
 
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
@@ -12,6 +13,7 @@ import com.cn.game.sdk2.data.bean.SelectAnnotationBean
 import com.cn.game.sdk2.data.enums.GameState
 import com.cn.game.sdk2.manager.GameManager
 import com.cn.game.sdk2.manager.listener.IGameListener
+import com.cn.game.sdk2.ui.view.MoneyOKView
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.utils.ext.CommonExt.formatRealMoney
 import com.cn.game.sdk2.utils.ext.CommonExt.isMainThread
@@ -29,6 +31,7 @@ class Fast3ViewModel : BaseViewModel() {
 
     var moneyAnimCallback: MoneyAnimCallback? = null
     val userLotteryResultLiveData: UnPeekLiveData<ArrayList<Betting>> = UnPeekLiveData()
+    val addMoneyOkViewLiveData: MutableLiveData<Pair<GameAreaView, ViewGroup>> = MutableLiveData()
 
     val homeTimeSeconds: LiveData<Int> = gameAboutModel.countDownSecondsLD
     val homeTimeColorLD: LiveData<Int> by lazy {

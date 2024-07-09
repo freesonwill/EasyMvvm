@@ -74,24 +74,7 @@ class LeopardFragment(fast3VM: Fast3ViewModel) :
                 }
             })
 
-            //先添加view再计算位置执行动画
-            val params = FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
-            it.translationY = 0f
-            it.translationX = 0f
-            mDatabind.flRoot.addView(it, params)
-        }
-
-        areaView.betteView.let {
-            val betteParams = FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
-            areaView.betteView.translationX = 0f
-            areaView.betteView.translationY = 0f
-            mDatabind.rlHomeRoot.addView(areaView.betteView, betteParams)
+            fast3VM.addMoneyOkViewLiveData.value =Pair(areaView,mDatabind.flRoot)
         }
     }
 }

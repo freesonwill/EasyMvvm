@@ -70,7 +70,7 @@ object ViewHelper {
             }
             return
         }
-        val (offsetY,height) = homeXPopupDialog!!.findViewById<View>(R.id.rlRoot).let {
+        val (offsetY,height) = homeXPopupDialog!!.findViewById<View>(R.id.topLayout).let {
             arrayOf(it.locationInWindow[1],it.height)
         }
         helpXPopupDialog = XPopup.Builder(context)

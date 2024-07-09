@@ -11,25 +11,24 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/rlRoot"
+        android:id="@+id/topLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clipChildren="false"
         android:clipToPadding="false"
-        android:orientation="vertical"
-        android:tag="root">
+        android:orientation="vertical">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/llShowSection"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/g_141624"
             android:clipChildren="false"
             android:clipToPadding="false"
             android:orientation="vertical"
-            android:paddingBottom="@{model.navigationBarHeight}">
+            android:paddingBottom="@{model.navigationBarHeight}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
             <FrameLayout
                 android:id="@+id/bottomLayout"
@@ -42,8 +41,8 @@
                 android:id="@+id/ivHomeBg"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:visibility="gone"
                 android:scaleType="fitXY"
+                android:visibility="gone"
                 app:layout_constraintBottom_toTopOf="@id/bottomLayout"
                 app:layout_constraintTop_toTopOf="@id/centerLayout"
                 app:srcCompat="@drawable/icon_home_bg" />
@@ -125,7 +124,7 @@
                     app:srcCompat="@drawable/icon_home_bg" />
 
                 <RelativeLayout
-                    android:id="@+id/topLayout"
+                    android:id="@+id/titleLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
@@ -210,24 +209,24 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_marginLeft="5dp"
-                            android:paddingStart="10dp"
-                            android:paddingEnd="10dp"
                             android:gravity="center"
-                            android:orientation="vertical">
+                            android:orientation="vertical"
+                            android:paddingStart="10dp"
+                            android:paddingEnd="10dp">
 
                             <androidx.appcompat.widget.AppCompatImageView
                                 android:layout_width="22dp"
                                 android:layout_height="18dp"
+                                android:duplicateParentState="true"
                                 android:scaleType="fitXY"
                                 android:tint="@drawable/selector_ll_home_more_btn_bg"
-                                android:duplicateParentState="true"
                                 app:srcCompat="@drawable/icon_more" />
 
                             <androidx.appcompat.widget.AppCompatTextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/g_home_txt_more"
                                 android:duplicateParentState="true"
+                                android:text="@string/g_home_txt_more"
                                 android:textColor="@drawable/selector_ll_home_more_btn_bg"
                                 android:textSize="9sp" />
                         </LinearLayout>
@@ -293,15 +292,6 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </RelativeLayout>
 
-                <androidx.viewpager.widget.ViewPager
-                    android:id="@+id/viewPagerNew"
-                    android:layout_width="match_parent"
-                    android:layout_height="180dp"
-                    android:clipChildren="false"
-                    android:clipToPadding="false"
-                    android:paddingStart="0dp"
-                    android:paddingEnd="0dp"
-                    app:layout_constraintBottom_toTopOf="@id/betteLayout" />
 
                 <LinearLayout
                     android:id="@+id/rlShowResult"
@@ -382,7 +372,7 @@
                     app:layout_constraintBottom_toBottomOf="@id/betteLayout"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/betteLayout"/>
+                    app:layout_constraintTop_toTopOf="@id/betteLayout" />
 
                 <FrameLayout
                     android:id="@+id/betteLayout"
@@ -458,6 +448,15 @@
                         app:srcCompat="@drawable/icon_multiple2_sel" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
+                <androidx.viewpager.widget.ViewPager
+                    android:id="@+id/viewPagerNew"
+                    android:layout_width="match_parent"
+                    android:layout_height="180dp"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:paddingStart="0dp"
+                    android:paddingEnd="0dp"
+                    app:layout_constraintBottom_toTopOf="@id/betteLayout" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/ivResultBg"
@@ -485,17 +484,17 @@
                         android:id="@+id/lottieAnimView"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        tools:lottie_progress = "0.1"
-                        app:lottie_fileName="redcircle.json" />
+                        app:lottie_fileName="redcircle.json"
+                        tools:lottie_progress="0.1" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/txtWinMoneyLabel"
                         style="@style/PuHuiTi"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
                         android:text="你赢了"
                         android:textColor="#FFE3CA"
-                        android:layout_marginTop="8dp"
                         android:textSize="13sp"
                         app:layout_constraintBottom_toTopOf="@id/tvAnimWin2"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -503,25 +502,25 @@
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintVertical_chainStyle="packed" />
 
-                   <!-- <com.robinhood.ticker.TickerView
-                        android:id="@+id/tvAnimWin"
-                        style="@style/PuHuiTi"
-                        android:layout_width="wrap_content"
-                        android:layout_height="32dp"
-                        android:layout_marginBottom="10dp"
-                        android:gravity="center"
-                        android:maxLines="1"
-                        android:textColor="#FFE3CA"
-                        android:textSize="26sp"
-                        android:textStyle="bold"
-                        android:visibility="gone"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/txtWinMoneyLabel"
-                        app:ticker_animationDuration="1500"
-                        app:ticker_defaultPreferredScrollingDirection="down"
-                        tools:text="$1000000000000" />-->
+                    <!-- <com.robinhood.ticker.TickerView
+                         android:id="@+id/tvAnimWin"
+                         style="@style/PuHuiTi"
+                         android:layout_width="wrap_content"
+                         android:layout_height="32dp"
+                         android:layout_marginBottom="10dp"
+                         android:gravity="center"
+                         android:maxLines="1"
+                         android:textColor="#FFE3CA"
+                         android:textSize="26sp"
+                         android:textStyle="bold"
+                         android:visibility="gone"
+                         app:layout_constraintBottom_toBottomOf="parent"
+                         app:layout_constraintEnd_toEndOf="parent"
+                         app:layout_constraintStart_toStartOf="parent"
+                         app:layout_constraintTop_toBottomOf="@id/txtWinMoneyLabel"
+                         app:ticker_animationDuration="1500"
+                         app:ticker_defaultPreferredScrollingDirection="down"
+                         tools:text="$1000000000000" />-->
 
                     <TextView
                         android:id="@+id/tvAnimWin2"
@@ -551,16 +550,13 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-
         <com.cn.game.sdk2.ui.view.DoTouchFrameLayout
-            android:visibility="visible"
             android:id="@+id/tempTouch"
-            app:layout_constraintTop_toTopOf="@id/llShowSection"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="@id/llShowSection"
             android:layout_width="match_parent"
-            android:layout_height="0dp" />
+            android:layout_height="0dp"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@id/topLayout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/topLayout" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
 </layout>

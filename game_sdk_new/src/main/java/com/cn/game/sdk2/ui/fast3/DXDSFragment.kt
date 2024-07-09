@@ -161,25 +161,7 @@ class DXDSFragment(fast3VM: Fast3ViewModel) : BaseFast3Fragment<DXDSVm, FragDxds
                 }
             })
 
-            //先添加view再计算位置执行动画
-            val params = FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
-            it.translationX = 0f
-            it.translationY = 0f
-            mDatabind.flRoot.addView(it, params)
+            fast3VM.addMoneyOkViewLiveData.value = Pair(areaView,mDatabind.flRoot)
         }
-
-        areaView.betteView.let {
-            val betteParams = FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
-            areaView.betteView.translationX = 0f
-            areaView.betteView.translationY = 0f
-            mDatabind.rlHomeRoot.addView(areaView.betteView, betteParams)
-        }
-
     }
 }

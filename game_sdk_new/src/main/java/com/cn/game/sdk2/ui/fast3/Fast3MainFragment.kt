@@ -13,7 +13,9 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -45,6 +47,7 @@ import com.cn.game.sdk2.ui.helper.ViewHelper
 import com.cn.game.sdk2.ui.helper.ViewHelper.bindViewPagerNewGame
 import com.cn.game.sdk2.ui.helper.ViewHelper.initGameViewPager
 import com.cn.game.sdk2.ui.helper.ViewHelper.initGameViewPager2
+import com.cn.game.sdk2.ui.helper.ViewHelper.isAdd
 import com.cn.game.sdk2.ui.view.CenterLayoutManager
 import com.cn.game.sdk2.ui.view.ClickRecyclerView
 import com.cn.game.sdk2.ui.view.CommonLinearLayoutItemDecoration
@@ -54,6 +57,7 @@ import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
 import com.cn.game.sdk2.utils.FlowBus
 import com.cn.game.sdk2.utils.ext.BizExt.isLeopard
+import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
 import com.cn.game.sdk2.utils.ext.CommonExt.formatRealMoney
 import com.cn.game.sdk2.utils.ext.CommonExt.isCanGoOn
 import com.cn.game.sdk2.utils.ext.CommonExt.toPinyin
@@ -101,8 +105,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     private var isBetteUpAnimFirst = true
 
     // 定义属性动画常量
-    private val SCALE_X = PropertyValuesHolder.ofFloat(View.SCALE_X, 1.0f, 1.4f, 1.0f)
-    private val SCALE_Y = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.0f, 1.4f, 1.0f)
+    private val SCALE_X = PropertyValuesHolder.ofFloat(View.SCALE_X, 1.0f, 1.3f, 1.0f)
+    private val SCALE_Y = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.0f, 1.3f, 1.0f)
 
     private var homeMorePop: BasePopupView? = null
     private var resultAnim: ValueAnimator? = null
@@ -156,7 +160,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 }
             })
         }
-        FlowBus.with<Boolean>(EventKey.LOAD_FRAGMENT).register(viewLifecycleOwner){
+        FlowBus.with<Boolean>(EventKey.LOAD_FRAGMENT).register(viewLifecycleOwner) {
             val startTime = System.currentTimeMillis()
             //viewpager
             mFragList.add(DXDSFragment(mViewModel))
@@ -473,6 +477,33 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 tryMoneyAnimation(x, y, speed, areaView, betteBean, endCallBack)
             }
         }
+
+        mViewModel.addMoneyOkViewLiveData.observe(viewLifecycleOwner) {
+            val areaView = it.first
+            betteViewGroup = it.second
+            areaView.moneyView.let {moneyOkView->
+                val params = FrameLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                )
+                betteViewGroup?.addView(moneyOkView, params)
+                moneyOkView.translationX = 0f
+                moneyOkView.translationY = 0f
+                moneyOkView.translationZ = 2f
+            }
+
+            areaView.betteView.let {betteView->
+                val params = FrameLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                )
+                betteView.translationX = 0f
+                betteView.translationY = 0f
+                betteView.translationZ = 1f
+                betteViewGroup?.addView(betteView, params)
+            }
+        }
+
         mViewModel.betOkClick.observe(this) {
             hiddenAnchorTop()
             GameSocketManager.getInstance()?.getGameService()?.commitBetting { bettingState, bean ->
@@ -1223,7 +1254,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     fun tryMoneyAnimation(
         x: Float,
         y: Float,
-        speed: Long ,
+        speed: Long,
         areaView: GameAreaView,
         betteBean: SelectAnnotationBean,
         endCallBack: (() -> Unit)? = null
@@ -1250,6 +1281,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         }
     }
 
+    private var betteViewGroup: ViewGroup? = null
 
     private fun startMoneyAnimation(
         x: Float,
@@ -1265,7 +1297,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         updateAnchorView(areaView)
 
         //贝塞尔曲线中间过程的点的坐标
-        val rootLocation = mDatabind.rlRoot.locationOnScreen
+        val viewPagerLocation = mDatabind.viewPagerNew.locationOnScreen
         val mCurrentPosition = FloatArray(2)
 
         // (这个图片就是执行动画的图片，从开始位置出发，经过一个抛物线（贝塞尔曲线))
@@ -1275,14 +1307,14 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             requireContext().dp2px(32),
             requireContext().dp2px(32)
         )
-        mDatabind.rlRoot.addView(betImageView, params)
+        betteViewGroup?.addView(betImageView, params)
 
         //正式开始计算动画开始/结束的坐标
         val location = IntArray(2)
         jettonView.getLocationOnScreen(location)
         val startX: Float =
-            location[0].toFloat() + jettonView.measuredWidth / 2 - requireContext().dp2px(16)
-        val startY: Float = location[1].toFloat()
+            location[0].toFloat() + jettonView.measuredWidth / 2 - 16.dp2px - 2.dp2px
+        val startY: Float = location[1].toFloat() + jettonView.measuredHeight / 2 - 21.dp2px
 
         val path = Path()
         path.moveTo(startX, startY)
@@ -1307,14 +1339,16 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
                 // 筹码图片偏移
                 betImageView.translationX = mCurrentPosition[0]
-                betImageView.translationY = mCurrentPosition[1] - rootLocation[1]
+                betImageView.translationY = mCurrentPosition[1] - viewPagerLocation[1]
             }
 
             addListener(onEnd = {
                 //动画结束
                 endCallBack?.invoke()
                 // 把移动的图片imageview从父布局里移除
-                mDatabind.rlRoot.removeView(betImageView)
+                if (betImageView.isAdd()) {
+                    (betImageView.parent as ViewGroup).removeView(betImageView)
+                }
                 val animator = ObjectAnimator.ofPropertyValuesHolder(
                     areaView.betteView.ivShowBg,
                     SCALE_X,

@@ -37,25 +37,25 @@ class DoTouchFrameLayout : FrameLayout {
                 anchorMoneyView?.let {
                     val x = event.rawX
                     val y = event.rawY
-//                    if (it.llShowTop.isVisible) {
-                    return if (it.binding!!.okLayout.isInArea(x, y)) {
-                        it.binding!!.okLayout.dispatchTouchEvent(event)
-                        true
-                    } else if (it.binding!!.offLayout.isInArea(x, y)) {
-                        it.binding!!.offLayout.dispatchTouchEvent(event)
-                        true
-                    } else if (it.binding!!.offLeftLayout.isInArea(x, y)) {
-                        it.binding!!.offLeftLayout.dispatchTouchEvent(event)
-                        true
-                    } else if (it.binding!!.okRightLayout.isInArea(x, y)) {
-                        it.binding!!.okRightLayout.dispatchTouchEvent(event)
-                        true
-                    } else {
-                        it?.resetAnim()
-                        false
+                    if (it.llShowTop.isVisible) {
+                        return if (it.binding!!.okLayout.isInArea(x, y)) {
+                            it.binding!!.okLayout.dispatchTouchEvent(event)
+                            true
+                        } else if (it.binding!!.offLayout.isInArea(x, y)) {
+                            it.binding!!.offLayout.dispatchTouchEvent(event)
+                            true
+                        } else if (it.binding!!.offLeftLayout.isInArea(x, y)) {
+                            it.binding!!.offLeftLayout.dispatchTouchEvent(event)
+                            true
+                        } else if (it.binding!!.okRightLayout.isInArea(x, y)) {
+                            it.binding!!.okRightLayout.dispatchTouchEvent(event)
+                            true
+                        } else {
+                            it?.resetAnim()
+                            false
+                        }
                     }
                 }
-//                }
             }
 
             MotionEvent.ACTION_CANCEL -> {

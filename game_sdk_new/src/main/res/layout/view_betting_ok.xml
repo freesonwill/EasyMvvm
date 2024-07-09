@@ -105,11 +105,11 @@
             app:layout_constraintStart_toEndOf="@id/ivOk"
             app:layout_constraintTop_toTopOf="@id/ivOk" />
 
-        <!--        <androidx.constraintlayout.widget.Group-->
-        <!--            android:id="@+id/groupOkTopView"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            app:constraint_referenced_ids="ivOk,ivOff,offLayout,okLayout,offLeftLayout,okRightLayout" />-->
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/groupOkTopView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="ivOk,ivOff,offLayout,okLayout,offLeftLayout,okRightLayout" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
