@@ -26,7 +26,6 @@ class GameSocketManager private constructor() : OnMessageListener {
          * 每隔10秒进行一次对长连接的心跳检测
          */
         private const val HEART_BEAT_RATE = (10 * 1000).toLong()
-        private var reconnectCount = 0
         private var HAS_HEART = true
         private var client: GameSocketClient? = null
         private var gameServerMessageConvertFactory: GameServerMessageConvertFactory? = null
@@ -146,6 +145,7 @@ class GameSocketManager private constructor() : OnMessageListener {
      * @see [client-res.proto]
      */
     private fun convertMessage(mid: Int?, sid: Int?, byteArray: ByteArray) {
+        mid?.toString()?.loge()
         sid?.apply {
             when (this) {
                 GameResCode.S2C_ENTER_INFO -> gameServerMessageConvertFactory?.enterInfo(

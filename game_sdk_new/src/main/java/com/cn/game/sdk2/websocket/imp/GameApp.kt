@@ -16,6 +16,7 @@ import com.cn.game.sdk2.websocket.appListener
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.gameMassageManager
 import com.cn.game.sdk2.websocket.interfaces.IGameForApp
+import com.cn.game.sdk2.websocket.isAnchor
 import com.cn.game.sdk2.websocket.isEnableSound
 import com.cn.game.sdk2.websocket.isNeedReconnect
 import com.cn.game.sdk2.websocket.socketStatesCallback
@@ -59,7 +60,8 @@ object GameApp : IGameForApp {
      * - ——>3)App进入直播间:GameServiceImp.groupInfo() ——>4)进入小游戏:GameServiceImp.gameInfo()
      */
     //platform= 6 ,requestId = 0,version = "1"
-    override fun login(token: String, agentName: String, isAnchor: Boolean) {
+    override fun login(token: String, agentName: String, anchor: Boolean) {
+        isAnchor = anchor
         val req = ClientReq.LoginReq.newBuilder().setPlatform(6).setRequestId(0).setVersion("1")
             .setNickname("").setAgentName(agentName).setToken(token).build()
         gameMassageManager?.login(req)

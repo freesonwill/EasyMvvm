@@ -18,7 +18,7 @@ interface GameServerMessageConvertFactory {
     /**
      * 登陆出错
      */
-    fun loginError(errorMessage: ClientRes.ErrorMessage)
+    fun loginError(errorMessage: ErrorMessage)
 
     /**
      * 进入房间
@@ -81,7 +81,7 @@ interface GameServerMessageConvertFactory {
     fun clearTrendsBackBlock(clearTrends: ClearTrends)
 
 
-    fun errorMessage(errorMessage: ClientRes.ErrorMessage)
+    fun errorMessage(errorMessage: ErrorMessage)
 
     fun tokenLoseEffectiveness()
 

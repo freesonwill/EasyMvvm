@@ -53,7 +53,13 @@ import kotlin.random.Random
 
 
 var appContext: Context? = null
-var appLifecycleEnable:Boolean = false
+var appLifecycleEnable: Boolean = false
+
+//主播端只能看到"热门"游戏分类，"热门"分类中以后只会放sdk游戏，在大厅弹窗处，主播端看不到其他的tab和瓦力游戏。
+var isAnchor: Boolean = false
+
+//如果不需要显示(isShowHistoryAndCustomer = false)，则主播端的更多只显示切换游戏和帮助。
+var isShowHistoryAndCustomer: Boolean = true
 
 /**
  * socket-url
@@ -68,7 +74,8 @@ var isEnableSound = true
  */
 //测试打包专用 99:mFGB4ljy
 //92:ZyBmhNCJ   87:MHxIHlYM  93:Ufx3Dy8y 94:0aPEwiYK   金额少：97:nMz8aSsZ  98:gCrUd5Gz
-val tokenArray = listOf("101:PcI4jEcP","99:mFGB4ljy","42:aRYvqlC5",
+val tokenArray = listOf(
+    "101:PcI4jEcP", "99:mFGB4ljy", "42:aRYvqlC5",
     "33:ZtG5WhUh",
     "29:zNbNe45L",
     "37:QyJbGSGR",
@@ -77,8 +84,9 @@ val tokenArray = listOf("101:PcI4jEcP","99:mFGB4ljy","42:aRYvqlC5",
     "50:OtdAVXdd",
     "74:4wNIFMMi",
     "51:Ja9L1rG6",
-    "35:BIyxvrqa",)
-var token = "92:ZyBmhNCJ"
+    "35:BIyxvrqa",
+)
+var token = "93:Ufx3Dy8y"
     get() {
         return field
         //return tokenArray[Random.nextInt(tokenArray.size)]
@@ -87,7 +95,7 @@ var isLogin = false
 var isEnterRoom = false
 
 var nativeLib = NativeLib()
-var socketStatesCallback: GameApp.SocketStatesCallback ?= null
+var socketStatesCallback: GameApp.SocketStatesCallback? = null
 
 /**
  * 多用户登录token失效
@@ -145,14 +153,6 @@ var appListener: GameApp.OnSdkListener? = null
  */
 var gameMassageManager: UIMethodImpl? = null
 
-
-fun <T> List<T>.isNotEmpty(block: (List<T>) -> Unit): Boolean {
-    if (this.isNotEmpty()) {
-        block(this)
-        return true
-    }
-    return false
-}
 
 fun <K, V> Map<K, V>.isNotEmpty(block: (Map<K, V>) -> Unit): Boolean {
     if (this.isNotEmpty()) {
@@ -404,12 +404,14 @@ fun <K> Map<K, BettingRecordBean>.copy(): MutableMap<K, BettingRecordBean> {
     }
     return newMap
 }
+
 @JvmName("copyFromBettingRecord")
 infix fun <K> MutableMap<K, BettingRecordBean>.copyFrom(other: MutableMap<K, BettingRecordBean>) {
     other.forEach {
         this[it.key] = it.value.copy()
     }
 }
+
 @JvmName("copyFromAreaBetConfig")
 infix fun <K> MutableMap<K, List<AreaBetConfigBean>>.copyFrom(other: MutableMap<K, List<AreaBetConfigBean>>) {
     other.forEach {
