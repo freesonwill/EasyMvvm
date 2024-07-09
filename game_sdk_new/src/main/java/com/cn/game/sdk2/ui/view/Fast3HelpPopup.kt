@@ -86,7 +86,7 @@ class Fast3HelpPopup(context: Context, private val offsetY: Int, private val hei
             val start = if (toExpand) height else fullHeight
             val end = if (!toExpand) height else fullHeight
             ValueAnimator.ofInt(start, end).apply {
-                duration = 200
+                duration = 100
                 addUpdateListener {
                     val value = it.animatedValue as Int
                     val p = (value-start)*1f/(end-start)

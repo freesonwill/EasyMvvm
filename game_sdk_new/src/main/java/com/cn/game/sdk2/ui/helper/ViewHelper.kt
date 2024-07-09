@@ -85,6 +85,7 @@ object ViewHelper {
             .navigationBarColor(android.R.color.transparent)
             .hasShadowBg(false) // 去掉半透明背景
             .isViewMode(true)
+            .animationDuration(100)
             .hasStatusBar(false)
             .hasNavigationBar(false)
             .enableDrag(true)
