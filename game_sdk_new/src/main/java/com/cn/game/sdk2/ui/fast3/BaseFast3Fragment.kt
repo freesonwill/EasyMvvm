@@ -11,11 +11,13 @@ import androidx.core.animation.addListener
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.databinding.ViewDataBinding
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.base.BaseGameFragment
-import com.cn.game.sdk2.data.EventConst
+import com.cn.game.sdk2.data.EventKey
 import com.cn.game.sdk2.data.bean.SelectAnnotationBean
 import com.cn.game.sdk2.databinding.FragDxdsBinding
 import com.cn.game.sdk2.ui.helper.ViewHelper.isAdd
@@ -35,6 +37,7 @@ import com.cn.game.sdk2.websocket.bean.SUM
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.gameMassageManager
 import com.xcjh.base_lib.base.BaseViewModel
+import com.xcjh.base_lib.utils.LogUtils
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.coroutines.resume
@@ -50,6 +53,17 @@ abstract class BaseFast3Fragment<VM : BaseViewModel, VB : ViewDataBinding>(var f
     protected var areaViewList: MutableList<GameAreaView> = mutableListOf()
 
     override fun initView(savedInstanceState: Bundle?) {
+        /*lifecycle.addObserver(object : DefaultLifecycleObserver {
+            var startTime:Long = 0
+            override fun onCreate(owner: LifecycleOwner) {
+                super.onCreate(owner)
+                startTime = System.currentTimeMillis()
+            }
+            override fun onStart(owner: LifecycleOwner) {
+                super.onResume(owner)
+                (System.currentTimeMillis() - startTime).let{ LogUtils.d(TAG,"${this@BaseFast3Fragment.javaClass.simpleName} load costMills:$it") }
+            }
+        })*/
         initAreaViewList()
         for (areaView in areaViewList) {
             setMoneyOKClickListener(areaView)
@@ -67,7 +81,7 @@ abstract class BaseFast3Fragment<VM : BaseViewModel, VB : ViewDataBinding>(var f
 
     override fun lazyLoadData() {
         super.lazyLoadData()
-        FlowBus.with<List<GameAreaView>>(EventConst.UPDATE_ALL_AREA_VIEW)
+        FlowBus.with<List<GameAreaView>>(EventKey.UPDATE_ALL_AREA_VIEW)
             .post(fast3VM.viewModelScope, areaViewList)
     }
 

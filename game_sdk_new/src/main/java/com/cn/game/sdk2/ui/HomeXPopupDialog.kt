@@ -6,8 +6,11 @@ import android.content.ContextWrapper
 import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.lifecycleScope
 import com.cn.game.sdk2.R
+import com.cn.game.sdk2.data.EventKey
 import com.cn.game.sdk2.databinding.DialogHomeXpopupContainerBinding
+import com.cn.game.sdk2.utils.FlowBus
 import com.lxj.xpopup.core.BottomPopupView
 
 /**
@@ -20,15 +23,25 @@ class HomeXPopupDialog(context: Context, private val fragment: Fragment, private
     companion object {
         const val TAG = "HomeXPopupDialog"
     }
-
     var binding: DialogHomeXpopupContainerBinding? = null
+    private var isLoadFragment = false
 
     override fun onCreate() {
         super.onCreate()
-        binding = DialogHomeXpopupContainerBinding.bind(popupImplView)
-        val transaction = fragmentManager.beginTransaction();
-        transaction.add(R.id.fl_container, fragment,"HomeXPopupDialog").commit()
         Log.d(TAG, "onCreate")
+        binding = DialogHomeXpopupContainerBinding.bind(popupImplView)
+        if(!fragment.isAdded){
+            val transaction = fragmentManager.beginTransaction();
+            transaction.add(R.id.fl_container, fragment,"HomeXPopupDialog").commit()
+        }
+    }
+
+    override fun doShowAnimation() {
+        super.doShowAnimation()
+        if(!isLoadFragment){
+            isLoadFragment = true
+            FlowBus.with<Boolean>(EventKey.LOAD_FRAGMENT).post(lifecycleScope,true)
+        }
     }
 
     private val fragmentManager

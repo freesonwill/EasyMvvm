@@ -2,6 +2,7 @@ package com.cn.game.sdk2.utils
 
 import android.util.Log
 import androidx.lifecycle.*
+import com.cn.game.sdk2.data.EventKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -16,8 +17,10 @@ object FlowBus {
     private val busMap = mutableMapOf<String, EventBus<*>>()
     private val busStickMap = mutableMapOf<String, StickEventBus<*>>()
 
+    /** 使用枚举代替String，防止滥用 **/
     @Synchronized
-    fun <T> with(key: String): EventBus<T> {
+    fun <T> with(k: EventKey): EventBus<T> {
+        val key = k.v
         var eventBus = busMap[key]
         if (eventBus == null) {
             eventBus = EventBus<T>(key)
@@ -27,7 +30,8 @@ object FlowBus {
     }
 
     @Synchronized
-    fun <T> withStick(key: String): StickEventBus<T> {
+    fun <T> withStick(k: EventKey): StickEventBus<T> {
+        val key = k.v
         var eventBus = busStickMap[key]
         if (eventBus == null) {
             eventBus = StickEventBus<T>(key)

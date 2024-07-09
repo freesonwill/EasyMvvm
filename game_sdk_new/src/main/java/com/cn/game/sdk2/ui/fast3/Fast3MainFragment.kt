@@ -29,7 +29,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cn.game.sdk2.R
-import com.cn.game.sdk2.data.EventConst
+import com.cn.game.sdk2.data.EventKey
 import com.cn.game.sdk2.data.bean.GameHallItem
 import com.cn.game.sdk2.data.bean.SelectAnnotationBean
 import com.cn.game.sdk2.data.enums.GameState
@@ -132,9 +132,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         }
         mViewModel.navigationBarHeight.value = requireContext().navigationBarHeight
 
-
-
-        Fast3ToastHelper.init(requireContext(), mDatabind.centerLayout).let {
+        Fast3ToastHelper.init(mDatabind.centerLayout).let {
             lifecycle.addObserver(object : DefaultLifecycleObserver {
                 var startTime: Long = 0
                 override fun onCreate(owner: LifecycleOwner) {
@@ -158,8 +156,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 }
             })
         }
-
-        lifecycleScope.launchWhenResumed {
+        FlowBus.with<Boolean>(EventKey.LOAD_FRAGMENT).register(viewLifecycleOwner){
             val startTime = System.currentTimeMillis()
             //viewpager
             mFragList.add(DXDSFragment(mViewModel))
@@ -419,7 +416,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
     override fun createObserver() {
         Log.i(TAG, "createObserver------------>")
-        FlowBus.with<List<GameAreaView>>(EventConst.UPDATE_ALL_AREA_VIEW)
+        FlowBus.with<List<GameAreaView>>(EventKey.UPDATE_ALL_AREA_VIEW)
             .register(viewLifecycleOwner) { list ->
                 list.forEach {
                     allGameAreaMap[it.areaCode] = it
