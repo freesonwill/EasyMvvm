@@ -141,7 +141,7 @@ class Fast3ViewModel : BaseViewModel() {
     fun emitMoneyAnim(
         x: Float,
         y: Float,
-        speed: Long = 300,
+        speed: Long = 250,
         areaView: GameAreaView,
         betteBean: SelectAnnotationBean,
         endCallBack: (() -> Unit)? = null
@@ -155,7 +155,7 @@ class Fast3ViewModel : BaseViewModel() {
         fun startAnim(
             x: Float,
             y: Float,
-            speed: Long = 300,
+            speed: Long,
             areaView: GameAreaView,
             betteBean: SelectAnnotationBean,
             endCallBack: (() -> Unit)?

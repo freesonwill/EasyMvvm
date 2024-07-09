@@ -136,7 +136,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
         Fast3ToastHelper.init(requireContext(), mDatabind.centerLayout).let {
             lifecycle.addObserver(object : DefaultLifecycleObserver {
-                var startTime:Long = 0
+                var startTime: Long = 0
                 override fun onCreate(owner: LifecycleOwner) {
                     super.onCreate(owner)
                     startTime = System.currentTimeMillis()
@@ -144,8 +144,14 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
                 override fun onResume(owner: LifecycleOwner) {
                     super.onResume(owner)
-                    (System.currentTimeMillis() - startTime).let{ LogUtils.d(TAG,"Fast3MainFragment load costMills:$it") }
+                    (System.currentTimeMillis() - startTime).let {
+                        LogUtils.d(
+                            TAG,
+                            "Fast3MainFragment load costMills:$it"
+                        )
+                    }
                 }
+
                 override fun onDestroy(owner: LifecycleOwner) {
                     super.onDestroy(owner)
                     Fast3ToastHelper.destroy()
@@ -161,7 +167,12 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             mFragList.add(SumTotalFragment(mViewModel))
             mFragList.add(PairsDiceFragment(mViewModel))
             mFragList.add(LeopardFragment(mViewModel))
-            (System.currentTimeMillis() - startTime).let{ LogUtils.d(TAG,"Fast3MainFragment load costMills1:$it") }
+            (System.currentTimeMillis() - startTime).let {
+                LogUtils.d(
+                    TAG,
+                    "Fast3MainFragment load costMills1:$it"
+                )
+            }
             mDatabind.viewPagerNew.initGameViewPager(
                 childFragmentManager, mFragList, arrayListOf(
                     getString(R.string.g_home_txt_default),
@@ -171,7 +182,12 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     getString(R.string.g_home_tab_leopard)
                 )
             )
-            (System.currentTimeMillis() - startTime).let{ LogUtils.d(TAG,"Fast3MainFragment load costMills2:$it") }
+            (System.currentTimeMillis() - startTime).let {
+                LogUtils.d(
+                    TAG,
+                    "Fast3MainFragment load costMills2:$it"
+                )
+            }
             mDatabind.magicIndicator.bindViewPagerNewGame(
                 mDatabind.viewPagerNew, arrayListOf(
                     getString(R.string.g_home_txt_default),
@@ -183,7 +199,12 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 scrollEnable = true,
                 action = { PromptSoundPlay.btnPlayMedia() }
             )
-            (System.currentTimeMillis() - startTime).let{ LogUtils.d(TAG,"Fast3MainFragment load costMills3:$it") }
+            (System.currentTimeMillis() - startTime).let {
+                LogUtils.d(
+                    TAG,
+                    "Fast3MainFragment load costMills3:$it"
+                )
+            }
         }
         setBetAdapter()
         setClick()
@@ -649,7 +670,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     private fun setBetAdapter() {
         mDatabind.llShowBetList.apply {
             itemAnimator = null
-            layoutManager = CenterLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            layoutManager =
+                CenterLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             if (itemDecorationCount == 0) {
                 addItemDecoration(
                     CommonLinearLayoutItemDecoration(
@@ -706,7 +728,9 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 }
                 onClick(R.id.ivShowBg) {
                     val bean = _data as SelectAnnotationBean
-                    if (bean.select || bean.money > (gameAboutModel.tempBalance.value ?: 0)) return@onClick
+                    if (bean.select || bean.money > (gameAboutModel.tempBalance.value
+                            ?: 0)
+                    ) return@onClick
                     PromptSoundPlay.btnPlayMedia(requireContext())
                     val models: List<SelectAnnotationBean> = models as List<SelectAnnotationBean>
                     for (data in models) {
@@ -727,7 +751,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         //历史结果
         mDatabind.rvHomeHistory.apply {
             itemAnimator = null
-            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             dividerSpace(requireContext().dp2px(2), DividerOrientation.HORIZONTAL)
             setup {
                 addType<RoundInfoBean>(R.layout.item_bet_history)
@@ -956,7 +981,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 PromptSoundPlay.btnPlayMedia(requireContext())
                 if (homeMorePop == null) {
                     val bubbleAttach = CustomBubbleAttachPopup(requireContext())
-                    bubbleAttach.customBubbleAttachListener = object : CustomBubbleAttachPopup.CustomBubbleAttachListener {
+                    bubbleAttach.customBubbleAttachListener =
+                        object : CustomBubbleAttachPopup.CustomBubbleAttachListener {
                             private var gameHall: BasePopupView? = null
                             private var isDismissing = false
                             fun backMainGame() {
@@ -978,7 +1004,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                     delay(100)
                                     val context = requireContext()
                                     val popupView = object : BottomPopupView(context) {
-                                        override fun getImplLayoutId(): Int = R.layout.fragment_gamehall
+                                        override fun getImplLayoutId(): Int =
+                                            R.layout.fragment_gamehall
 
                                         lateinit var binding: FragmentGamehallBinding
                                         override fun onCreate() {
@@ -1199,7 +1226,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     fun tryMoneyAnimation(
         x: Float,
         y: Float,
-        speed: Long = 300,
+        speed: Long ,
         areaView: GameAreaView,
         betteBean: SelectAnnotationBean,
         endCallBack: (() -> Unit)? = null
@@ -1230,7 +1257,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     private fun startMoneyAnimation(
         x: Float,
         y: Float,
-        speed: Long = 300,
+        speed: Long,
         areaView: GameAreaView,
         jettonView: View,
         endCallBack: (() -> Unit)?
