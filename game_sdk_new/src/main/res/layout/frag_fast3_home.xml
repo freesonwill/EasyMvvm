@@ -374,7 +374,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@id/betteLayout" />
 
-                <FrameLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/betteLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -387,7 +387,10 @@
                         导致下面筹码list向下偏移动画绘制超出布局 -->
                     <FrameLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent">
 
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/llShowBetList"
@@ -402,12 +405,22 @@
                             tools:listitem="@layout/item_annotation_list" />
 
                     </FrameLayout>
-                </FrameLayout>
+
+                    <View
+                        android:layout_width="15dp"
+                        android:layout_height="0dp"
+                        android:background="@drawable/shape_0_141624"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+                    </View>
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/betteAgainLayout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:visibility="invisible"
                     app:layout_constraintBottom_toBottomOf="@id/betteLayout"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@id/betteLayout">

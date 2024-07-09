@@ -357,6 +357,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             //开奖时取消临时下注的
             mDatabind.apply {
                 txtHomeStatic.text = getString(R.string.g_f3_dealing)
+                return@apply
                 //隐藏筹码牌动画
                 startBetteRecyclerShowOrHideAnim(isShow = false, onEnd = {
                     //注区
@@ -777,7 +778,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 }
             }.models = mViewModel.noteList
         }
-
         //历史结果
         mDatabind.rvHomeHistory.apply {
             itemAnimator = null
