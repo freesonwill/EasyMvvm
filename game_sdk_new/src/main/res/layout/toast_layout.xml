@@ -46,16 +46,6 @@
                         android:gravity="center"
                         android:orientation="horizontal">
 
-                        <ProgressBar
-                            android:id="@+id/progress_circular"
-                            android:layout_width="@dimen/dp_20"
-                            android:layout_height="@dimen/dp_20"
-                            android:layout_marginRight="@dimen/dp_8"
-                            android:indeterminateDrawable="@anim/rogressrotate"
-                            android:indeterminateDuration="540"
-                            android:visibility="gone"
-                            tools:visibility="gone" />
-
                         <ImageView
                             android:id="@+id/toast_icon"
                             android:layout_width="@dimen/dp_20"

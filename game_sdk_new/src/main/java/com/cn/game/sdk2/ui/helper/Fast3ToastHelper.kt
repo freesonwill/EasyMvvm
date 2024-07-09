@@ -3,18 +3,27 @@ package com.cn.game.sdk2.ui.helper
 import android.content.Context
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.cn.game.sdk2.ui.view.Fast3Toast
+import com.xcjh.base_lib.ModuleInitializer
 
 /**
  * 快3Toast辅助类
  */
 object Fast3ToastHelper {
     private var _instance:Fast3Toast? = null
+    private lateinit var anchorView:ConstraintLayout
 
-    fun init(context:Context,anchorView:ConstraintLayout){
-        _instance = Fast3Toast(context,anchorView)
+    fun init(anchorView:ConstraintLayout){
+        this.anchorView = anchorView
+    }
+
+    private fun init(){
+        assert(::anchorView.isInitialized)
+        val context = ModuleInitializer.application
+        _instance = Fast3Toast(context, anchorView)
     }
 
     fun showToastNormal(msg: CharSequence, duration: Long = 2_000) {
+        if(_instance == null) init()
         _instance?.showToastNormal(msg,duration)
     }
 

@@ -21,7 +21,8 @@ class ModuleInitializer : Initializer<String> {
     override fun create(context: Context): String {
         Log.d(TAG, "ModuleInitializer--->create")
         application = context as Application
-        LogUtils.getConfig().setLogSwitch(BuildConfig.DEBUG)
+        LogUtils.getConfig()
+            .setLogSwitch(BuildConfig.DEBUG)
         return TAG
     }
 
