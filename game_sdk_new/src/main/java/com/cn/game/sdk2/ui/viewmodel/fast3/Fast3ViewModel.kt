@@ -254,4 +254,8 @@ class Fast3ViewModel : BaseViewModel() {
     @JvmOverloads
     fun multiplierStr(betting: Betting, format: String = "x#.##"): String =
         CommonExt.multiplierStr(betting, format)
+
+    @JvmOverloads
+    fun multiplierSingStr(betting: Betting, format: String = "#.##"): String =
+        CommonExt.multiplierStr(betting, format)
 }

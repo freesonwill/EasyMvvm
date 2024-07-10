@@ -45,7 +45,7 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txtDiceOddsOne"
-                    android:text="@{model.multiplierStr(model.singleDiceBettingArray[1])}"
+                    android:text="@{model.multiplierSingStr(model.singleDiceBettingArray[1])}"
                     style="@style/text_single_dice"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/ivDiceOne"
@@ -87,7 +87,7 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txtDiceOddsTwo"
-                    android:text="@{model.multiplierStr(model.singleDiceBettingArray[2])}"
+                    android:text="@{model.multiplierSingStr(model.singleDiceBettingArray[2])}"
                     style="@style/text_single_dice"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -130,7 +130,7 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txtDiceOddsThree"
-                    android:text="@{model.multiplierStr(model.singleDiceBettingArray[3])}"
+                    android:text="@{model.multiplierSingStr(model.singleDiceBettingArray[3])}"
                     style="@style/text_single_dice"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -174,7 +174,7 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txtDiceOddsFour"
-                    android:text="@{model.multiplierStr(model.singleDiceBettingArray[4])}"
+                    android:text="@{model.multiplierSingStr(model.singleDiceBettingArray[4])}"
                     style="@style/text_single_dice"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -217,7 +217,7 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txtDiceOddsFive"
-                    android:text="@{model.multiplierStr(model.singleDiceBettingArray[5])}"
+                    android:text="@{model.multiplierSingStr(model.singleDiceBettingArray[5])}"
                     style="@style/text_single_dice"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -261,7 +261,7 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txtDiceOddsSix"
-                    android:text="@{model.multiplierStr(model.singleDiceBettingArray[6])}"
+                    android:text="@{model.multiplierSingStr(model.singleDiceBettingArray[6])}"
                     style="@style/text_single_dice"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
