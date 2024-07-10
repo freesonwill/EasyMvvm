@@ -4,11 +4,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="110dp"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    >
     <androidx.cardview.widget.CardView
         android:layout_marginTop="7dp"
         app:cardCornerRadius="5dp"
         app:cardElevation="0dp"
+        app:cardBackgroundColor="@color/white"
         android:layout_width="110dp"
         android:layout_height="wrap_content">
         <LinearLayout
