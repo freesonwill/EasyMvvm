@@ -31,7 +31,7 @@ class SumTotalFragment() : BaseFast3Fragment<Fast3ViewModel,FragmentSumTotalBind
         }
 
         for (i in areaViewList.indices) {
-            areaViewList[i].areaInfo = mViewModel.sumTotalBettingArray[i + 1]
+            areaViewList[i].areaInfo = mViewModel.sumTotalBettingArray[i + 4]
             areaViewList[i].moneyView.pageIndex = 2
         }
     }
