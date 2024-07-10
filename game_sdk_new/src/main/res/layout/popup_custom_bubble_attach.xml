@@ -20,7 +20,7 @@
             <RelativeLayout
                 android:paddingLeft="12dp"
                 android:paddingRight="12dp"
-                android:background="?android:attr/selectableItemBackground"
+                android:background="@drawable/ripple"
                 android:id="@+id/rlPopClickRecords"
                 android:layout_width="match_parent"
                 android:layout_height="38dp">
@@ -54,7 +54,7 @@
             <RelativeLayout
                 android:paddingLeft="12dp"
                 android:paddingRight="12dp"
-                android:background="?android:attr/selectableItemBackground"
+                android:background="@drawable/ripple"
                 android:id="@+id/rlPopClickService"
                 android:layout_width="match_parent"
                 android:layout_height="38dp">
@@ -88,7 +88,7 @@
             <RelativeLayout
                 android:paddingLeft="12dp"
                 android:paddingRight="12dp"
-                android:background="?android:attr/selectableItemBackground"
+                android:background="@drawable/ripple"
                 android:id="@+id/rl_pop_click_switch_game"
                 android:layout_width="match_parent"
                 android:layout_height="38dp">
