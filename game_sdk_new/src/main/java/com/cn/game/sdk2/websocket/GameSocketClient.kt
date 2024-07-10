@@ -43,6 +43,7 @@ class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
                 }
             }
         }
+        gameMassageManager?.refreshScore()
         socketStatesCallback?.onOpen()
     }
 

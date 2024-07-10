@@ -145,7 +145,6 @@ class GameSocketManager private constructor() : OnMessageListener {
      * @see [client-res.proto]
      */
     private fun convertMessage(mid: Int?, sid: Int?, byteArray: ByteArray) {
-        mid?.toString()?.loge()
         sid?.apply {
             when (this) {
                 GameResCode.S2C_ENTER_INFO -> gameServerMessageConvertFactory?.enterInfo(
