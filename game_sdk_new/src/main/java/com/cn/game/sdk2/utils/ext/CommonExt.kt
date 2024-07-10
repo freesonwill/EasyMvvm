@@ -120,6 +120,10 @@ object CommonExt {
                     )
                 )
             }
+
+            GameAboutModel.BettingState.NO_NETWORK -> {
+                Fast3ToastHelper.showToastNormal(ModuleInitializer.application.getString(R.string.money_no_network))
+            }
         }
     }
 }

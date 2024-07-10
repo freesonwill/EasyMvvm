@@ -506,9 +506,10 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         }
 
         mViewModel.betOkClick.observe(this) {
-            hiddenAnchorTop()
-            GameSocketManager.getInstance()?.getGameService()?.commitBetting { bettingState, bean ->
-                bettingState.isCanGoOn(null) {}
+            GameSocketManager.getInstance()?.getGameService()?.commitBetting { bettingState, areaLimit ->
+                bettingState.isCanGoOn(areaLimit) {
+                    hiddenAnchorTop()
+                }
             }
         }
 

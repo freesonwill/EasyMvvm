@@ -33,6 +33,7 @@ class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
     @OptIn(DelicateCoroutinesApi::class)
     override fun onOpen(handshakedata: ServerHandshake?) {
         Log.i(_tag, "GameSocketClient-连接成功！")
+        gameAboutModel.isOpen = true
         GlobalScope.launch {
             withContext(Dispatchers.Main) {
                 isTokenValid = true
@@ -71,6 +72,7 @@ class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
 
     override fun onClose(code: Int, reason: String?, remote: Boolean) {
         "socket-onClose-->code:${code}-reason:$reason-remote:$remote".loge(_tag)
+        gameAboutModel.isOpen = false
         nativeLib.reset()
         onMessageListener?.onClose(code, reason, remote)
         socketStatesCallback?.onClose(isNeedReconnect)
