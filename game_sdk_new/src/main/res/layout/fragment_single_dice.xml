@@ -7,7 +7,7 @@
 
         <variable
             name="model"
-            type="com.cn.game.sdk2.ui.viewmodel.fast3.SingleDiceVm" />
+            type="com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -24,7 +24,6 @@
             android:id="@+id/gavDiceOne"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:areaInfo="@{model.bettingArray[1]}"
             app:layout_constraintBottom_toTopOf="@id/gavDiceSix"
             app:layout_constraintEnd_toStartOf="@id/gavDiceFour"
             app:layout_constraintStart_toStartOf="parent"
@@ -46,7 +45,7 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txtDiceOddsOne"
-                    android:text="@{model.multiplierStr(1)}"
+                    android:text="@{model.multiplierStr(model.singleDiceBettingArray[1])}"
                     style="@style/text_single_dice"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/ivDiceOne"
@@ -67,7 +66,6 @@
             android:id="@+id/gavDiceTwo"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:areaInfo="@{model.bettingArray[2]}"
             app:layout_constraintBottom_toBottomOf="@id/gavDiceOne"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/gavDiceFour"
@@ -89,7 +87,7 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txtDiceOddsTwo"
-                    android:text="@{model.multiplierStr(2)}"
+                    android:text="@{model.multiplierStr(model.singleDiceBettingArray[2])}"
                     style="@style/text_single_dice"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -111,7 +109,6 @@
             android:id="@+id/gavDiceThree"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:areaInfo="@{model.bettingArray[3]}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/gavDiceFive"
             app:layout_constraintStart_toEndOf="@id/gavDiceSix"
@@ -133,7 +130,7 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txtDiceOddsThree"
-                    android:text="@{model.multiplierStr(3)}"
+                    android:text="@{model.multiplierStr(model.singleDiceBettingArray[3])}"
                     style="@style/text_single_dice"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -156,7 +153,6 @@
             android:id="@+id/gavDiceFour"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:areaInfo="@{model.bettingArray[4]}"
             app:layout_constraintBottom_toBottomOf="@id/gavDiceOne"
             app:layout_constraintEnd_toStartOf="@id/gavDiceTwo"
             app:layout_constraintStart_toEndOf="@id/gavDiceOne"
@@ -178,7 +174,7 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txtDiceOddsFour"
-                    android:text="@{model.multiplierStr(4)}"
+                    android:text="@{model.multiplierStr(model.singleDiceBettingArray[4])}"
                     style="@style/text_single_dice"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -200,7 +196,6 @@
             android:id="@+id/gavDiceFive"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:areaInfo="@{model.bettingArray[5]}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/gavDiceThree"
@@ -222,7 +217,7 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txtDiceOddsFive"
-                    android:text="@{model.multiplierStr(5)}"
+                    android:text="@{model.multiplierStr(model.singleDiceBettingArray[5])}"
                     style="@style/text_single_dice"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -245,7 +240,6 @@
             android:id="@+id/gavDiceSix"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:areaInfo="@{model.bettingArray[6]}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/gavDiceThree"
@@ -267,7 +261,7 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txtDiceOddsSix"
-                    android:text="@{model.multiplierStr(6)}"
+                    android:text="@{model.multiplierStr(model.singleDiceBettingArray[6])}"
                     style="@style/text_single_dice"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

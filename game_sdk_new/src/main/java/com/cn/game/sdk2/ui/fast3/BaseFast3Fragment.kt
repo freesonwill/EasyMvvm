@@ -11,6 +11,7 @@ import androidx.core.animation.addListener
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.databinding.ViewDataBinding
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import com.cn.game.sdk2.R
@@ -44,7 +45,7 @@ import kotlin.coroutines.suspendCoroutine
  * author       : zhangsan
  * createTime   : 2024/6/21 18:14
  **/
-abstract class BaseFast3Fragment<VM : BaseViewModel, VB : ViewDataBinding>(var fast3VM: Fast3ViewModel) :
+abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding>() :
     BaseGameFragment<VM, VB>() {
     protected var areaViewList: MutableList<GameAreaView> = mutableListOf()
 
@@ -70,15 +71,15 @@ abstract class BaseFast3Fragment<VM : BaseViewModel, VB : ViewDataBinding>(var f
 
     override fun createObserver() {
         super.createObserver()
-        fast3VM.userLotteryResultLiveData.observe(viewLifecycleOwner) { resultList ->
-            setLotteryResult(resultList, fast3VM.prizeAnimTime, fast3VM.prizeAnimCount)
+        mViewModel.userLotteryResultLiveData.observe(viewLifecycleOwner) { resultList ->
+            setLotteryResult(resultList, mViewModel.prizeAnimTime, mViewModel.prizeAnimCount)
         }
     }
 
     override fun lazyLoadData() {
         super.lazyLoadData()
         FlowBus.with<List<GameAreaView>>(EventKey.UPDATE_ALL_AREA_VIEW)
-            .post(fast3VM.viewModelScope, areaViewList)
+            .post(mViewModel.viewModelScope, areaViewList)
     }
 
     private fun setLotteryResult(
@@ -109,7 +110,7 @@ abstract class BaseFast3Fragment<VM : BaseViewModel, VB : ViewDataBinding>(var f
     private suspend fun playAlphaAnimTogether(dic: List<View>, duration: Long, count: Int) {
         delay(100)
         suspendCoroutine { continuation ->
-            fast3VM.playAlphaAnimationLD.value = true
+            mViewModel.playAlphaAnimationLD.value = true
             val animatorSet = AnimatorSet()
             val animators = dic.map { maskView ->
                 val animator = ObjectAnimator.ofFloat(maskView, "alpha", 1f, 0f, 1f).apply {
@@ -134,7 +135,7 @@ abstract class BaseFast3Fragment<VM : BaseViewModel, VB : ViewDataBinding>(var f
                     Log.d(TAG, "maskView-->${it} visible false")
                 }
                 continuation.resume("")
-                fast3VM.playAlphaAnimationLD.value = false
+                mViewModel.playAlphaAnimationLD.value = false
             })
             animatorSet.start()
         }
@@ -143,11 +144,11 @@ abstract class BaseFast3Fragment<VM : BaseViewModel, VB : ViewDataBinding>(var f
     private fun setMoneyOKClickListener(areaView: GameAreaView) {
         areaView.moneyView.setMoneyOKClickListener(object : MoneyOKView.OnMoneyOKClickListener {
             override fun onConfirm() {
-                fast3VM.betOkClick.value = true;
+                mViewModel.betOkClick.value = true;
             }
 
             override fun onDelete() {
-                fast3VM.betDeleteClick.value = true;
+                mViewModel.betDeleteClick.value = true;
             }
         })
 
@@ -160,8 +161,8 @@ abstract class BaseFast3Fragment<VM : BaseViewModel, VB : ViewDataBinding>(var f
 
     private fun addBetting(areaView: GameAreaView, rawX: Float, rawY: Float) {
         //先判断余额是否够这次 并且扣取钱
-        if (fast3VM.isClickOperation) {
-            val betteBean = fast3VM.betteBean
+        if (mViewModel.isClickOperation) {
+            val betteBean = mViewModel.betteBean
             val bettingBean = BettingRecordBean(areaView.areaInfo!!, money = betteBean.money)
             gameMassageManager?.addBetting(bettingBean) { bettingState, result, areaLimit ->
                 bettingState.isCanGoOn(areaLimit) {
@@ -356,8 +357,13 @@ abstract class BaseFast3Fragment<VM : BaseViewModel, VB : ViewDataBinding>(var f
             betteView.parentView = betteView.parent as ViewGroup
             betteView.isVisible = false
         }
-        fast3VM.emitMoneyAnim(rax, ray, areaView = areaView, betteBean = betteBean, endCallBack = {
-            betteView.isVisible = true
-        })
+        mViewModel.emitMoneyAnim(
+            rax,
+            ray,
+            areaView = areaView,
+            betteBean = betteBean,
+            endCallBack = {
+                betteView.isVisible = true
+            })
     }
 }

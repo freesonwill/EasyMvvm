@@ -125,15 +125,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         mDatabind.model = mViewModel
         mDatabind.bottomLayout.setOnTouchListener { _, _ -> true }
         mDatabind.resultClickView.setOnClickListener { } //屏蔽底部recycler点击
-        mDatabind.llHomeVideo.setOnClickListener {
-            /* mDatabind.groupWinLottie.isVisible = true
-             AnimHelper.doNumberAnim(mDatabind.tvAnimWin2,0, 987654399,600)
-             showLottie {  }*/
-            /*AnimHelper.doNumberAnim(
-                mDatabind.txtCurrentMoney,
-                7865458958,5
-            )*/
-        }
         mViewModel.navigationBarHeight.value = requireContext().navigationBarHeight
 
         Fast3ToastHelper.init(mDatabind.centerLayout).let {
@@ -163,11 +154,11 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         FlowBus.with<Boolean>(EventKey.LOAD_FRAGMENT).register(viewLifecycleOwner) {
             val startTime = System.currentTimeMillis()
             //viewpager
-            mFragList.add(DXDSFragment(mViewModel))
-            mFragList.add(SingleDiceFragment(mViewModel))
-            mFragList.add(SumTotalFragment(mViewModel))
-            mFragList.add(PairsDiceFragment(mViewModel))
-            mFragList.add(LeopardFragment(mViewModel))
+            mFragList.add(DXDSFragment())
+            mFragList.add(SingleDiceFragment())
+            mFragList.add(SumTotalFragment())
+            mFragList.add(PairsDiceFragment())
+            mFragList.add(LeopardFragment())
             (System.currentTimeMillis() - startTime).let {
                 LogUtils.d(
                     TAG,

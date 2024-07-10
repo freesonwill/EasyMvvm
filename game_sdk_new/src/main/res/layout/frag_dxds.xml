@@ -7,7 +7,7 @@
 
         <variable
             name="model"
-            type="com.cn.game.sdk2.ui.viewmodel.fast3.DXDSVm" />
+            type="com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel" />
     </data>
 
     <FrameLayout
@@ -29,7 +29,6 @@
                     android:id="@+id/small_view"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    app:areaInfo="@{model.bettingArray[2]}"
                     app:layout_constraintBottom_toTopOf="@id/single_view"
                     app:layout_constraintEnd_toStartOf="@id/big_view"
                     app:layout_constraintStart_toStartOf="parent"
@@ -62,7 +61,7 @@
                                 android:id="@+id/txtOddsSmall"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@{model.multiplierStr(1)}"
+                                android:text="@{model.multiplierStr(model.dXDSBettingArray[1])}"
                                 android:textColor="@color/g_f8e0c4"
                                 android:textSize="14sp"
                                 tools:text="1:0.96" />
@@ -139,7 +138,6 @@
                     android:id="@+id/big_view"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    app:areaInfo="@{model.bettingArray[1]}"
                     app:layout_constraintBottom_toTopOf="@id/double_view"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/small_view"
@@ -172,7 +170,7 @@
                                 android:id="@+id/txtOddsBig"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@{model.multiplierStr(2)}"
+                                android:text="@{model.multiplierStr(model.dXDSBettingArray[2])}"
                                 android:textColor="@color/g_f8e0c4"
                                 android:textSize="14sp"
                                 tools:text="1:0.96" />
@@ -252,7 +250,6 @@
                     android:id="@+id/single_view"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    app:areaInfo="@{model.bettingArray[3]}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/double_view"
                     app:layout_constraintStart_toStartOf="parent"
@@ -285,7 +282,7 @@
                                 android:id="@+id/txtOddsSingle"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@{model.multiplierStr(1)}"
+                                android:text="@{model.multiplierStr(model.dXDSBettingArray[3])}"
                                 android:textColor="@color/g_f8e0c4"
                                 android:textSize="14sp"
                                 tools:text="1:0.96" />
@@ -363,7 +360,6 @@
                     android:id="@+id/double_view"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    app:areaInfo="@{model.bettingArray[4]}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/single_view"
@@ -397,7 +393,7 @@
                                 android:id="@+id/txtOddsDouble"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@{model.multiplierStr(4)}"
+                                android:text="@{model.multiplierStr(model.dXDSBettingArray[4])}"
                                 android:textColor="@color/g_f8e0c4"
                                 android:textSize="14sp"
                                 tools:text="1:0.96" />
@@ -476,7 +472,6 @@
                     android:id="@+id/leopard_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:areaInfo="@{model.bettingArray[5]}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -509,7 +504,7 @@
                                 android:id="@+id/txtOddsLeopard"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@{model.multiplierStr(5)}"
+                                android:text="@{model.multiplierStr(model.dXDSBettingArray[5])}"
                                 android:textColor="@color/g_f8e0c4"
                                 android:textSize="14sp"
                                 tools:text="1:0.96" />

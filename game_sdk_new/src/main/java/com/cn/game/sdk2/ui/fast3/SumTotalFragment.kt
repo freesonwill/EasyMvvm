@@ -1,31 +1,14 @@
 package com.cn.game.sdk2.ui.fast3
 
-import android.os.Bundle
-import android.util.Log
-import android.view.Gravity
-import android.view.View
-import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import android.widget.FrameLayout
-import android.widget.ImageView
-import androidx.lifecycle.lifecycleScope
-import com.cn.game.sdk2.R
-import com.cn.game.sdk2.base.BaseGameFragment
 import com.cn.game.sdk2.databinding.FragmentSumTotalBinding
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
-import com.cn.game.sdk2.ui.viewmodel.fast3.SumTotalVm
-import com.cn.game.sdk2.utils.ext.ViewExt.locationOnScreen
-import com.cn.game.sdk2.utils.tool.measureView
-import com.cn.game.sdk2.websocket.bean.BettingRecordBean
-import kotlinx.coroutines.launch
 
 /**
  * 总和
  */
-class SumTotalFragment(fast3VM: Fast3ViewModel) :
-    BaseFast3Fragment<SumTotalVm, FragmentSumTotalBinding>(fast3VM) {
-
+class SumTotalFragment() : BaseFast3Fragment<Fast3ViewModel,FragmentSumTotalBinding>() {
     override fun initAreaViewList() {
         mDatabind.model = mViewModel
         mDatabind.apply {
@@ -48,7 +31,7 @@ class SumTotalFragment(fast3VM: Fast3ViewModel) :
         }
 
         for (i in areaViewList.indices) {
-            areaViewList[i].areaInfo = mViewModel.bettingArray[i + 1]
+            areaViewList[i].areaInfo = mViewModel.sumTotalBettingArray[i + 1]
             areaViewList[i].moneyView.pageIndex = 2
         }
     }
@@ -74,7 +57,7 @@ class SumTotalFragment(fast3VM: Fast3ViewModel) :
                     emitAnimCallBack.invoke()
                 }
             })
-            fast3VM.addMoneyOkViewLiveData.value =Pair(areaView,mDatabind.flRoot)
+            mViewModel.addMoneyOkViewLiveData.value =Pair(areaView,mDatabind.flRoot)
         }
     }
 }
