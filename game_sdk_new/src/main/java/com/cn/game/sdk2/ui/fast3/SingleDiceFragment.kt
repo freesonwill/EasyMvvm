@@ -1,20 +1,16 @@
 package com.cn.game.sdk2.ui.fast3
 
-import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import android.widget.FrameLayout
 import com.cn.game.sdk2.databinding.FragmentSingleDiceBinding
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
-import com.cn.game.sdk2.ui.viewmodel.fast3.SingleDiceVm
 
 
 /**
  * 默认
  */
-class SingleDiceFragment(fast3VM: Fast3ViewModel) :
-    BaseFast3Fragment<SingleDiceVm, FragmentSingleDiceBinding>(fast3VM) {
-
+class SingleDiceFragment() :
+    BaseFast3Fragment<Fast3ViewModel, FragmentSingleDiceBinding>() {
     override fun initAreaViewList() {
         mDatabind.apply {
             model = mViewModel
@@ -28,7 +24,7 @@ class SingleDiceFragment(fast3VM: Fast3ViewModel) :
             )
 
             for (i in areaViewList.indices) {
-                areaViewList[i].areaInfo = mViewModel.bettingArray[i + 1]
+                areaViewList[i].areaInfo = mViewModel.singleDiceBettingArray[i + 1]
                 areaViewList[i].moneyView.pageIndex = 1
             }
         }
@@ -55,7 +51,7 @@ class SingleDiceFragment(fast3VM: Fast3ViewModel) :
                     emitAnimCallBack.invoke()
                 }
             })
-            fast3VM.addMoneyOkViewLiveData.value =Pair(areaView,mDatabind.flRoot)
+            mViewModel.addMoneyOkViewLiveData.value =Pair(areaView,mDatabind.flRoot)
         }
     }
 }

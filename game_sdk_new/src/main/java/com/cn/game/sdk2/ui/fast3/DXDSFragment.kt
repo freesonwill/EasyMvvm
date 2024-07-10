@@ -5,77 +5,47 @@ import android.animation.AnimatorSet
 import android.animation.ValueAnimator
 import android.util.Log
 import android.util.SparseArray
-import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import android.widget.FrameLayout
 import android.widget.TextView
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.lifecycleScope
 import com.cn.game.sdk2.databinding.FragDxdsBinding
 import com.cn.game.sdk2.ui.view.game.GameAreaView
-import com.cn.game.sdk2.ui.viewmodel.fast3.DXDSVm
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
 import com.cn.game.sdk2.websocket.bean.AreaBetBean
-import com.cn.game.sdk2.websocket.bean.DEFAULT_BIG
-import com.cn.game.sdk2.websocket.bean.DEFAULT_DOUBLE
-import com.cn.game.sdk2.websocket.bean.DEFAULT_SINGLE
-import com.cn.game.sdk2.websocket.bean.DEFAULT_SMALL
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import com.cn.game.sdk2.websocket.gameAboutModel
 
 /**
  * 默认
  */
-class DXDSFragment(fast3VM: Fast3ViewModel) : BaseFast3Fragment<DXDSVm, FragDxdsBinding>(fast3VM) {
+class DXDSFragment() : BaseFast3Fragment<Fast3ViewModel,FragDxdsBinding>() {
     private var moneyViewList: SparseArray<Pair<TextView, TextView>> = SparseArray()
     private val numAnimators by lazy { mutableListOf<Animator?>() }
     private val numAnimSet by lazy { AnimatorSet() }
     private val txtValueAnimMap by lazy { mutableMapOf<TextView, ValueAnimator>() }
 
     override fun initAreaViewList() {
-        mDatabind.model = mViewModel
+        mDatabind.model =mViewModel
         mDatabind.apply {
-            areaViewList.add(bigView)
-            areaViewList.add(smallView)
-            areaViewList.add(singleView)
-            areaViewList.add(doubleView)
-            areaViewList.add(leopardView)
+            areaViewList.add(bigView.also { it.flickerView = ivFlickerRightTop })
+            areaViewList.add(smallView.also { it.flickerView = ivFlickerLeftTop })
+            areaViewList.add(singleView.also { it.flickerView = ivFlickerLeftBelow })
+            areaViewList.add(doubleView.also { it.flickerView = ivFlickerRightBelow })
+            areaViewList.add(leopardView.also { it.flickerView = ivFlickerCenter })
 
             for (i in areaViewList.indices) {
-                areaViewList[i].areaInfo = mViewModel.bettingArray[i + 1]
+                areaViewList[i].areaInfo = mViewModel.dXDSBettingArray[i + 1]
                 areaViewList[i].moneyView.pageIndex = 0
             }
-            moneyViewList[mViewModel.bettingArray[1].number] = txtBigMoney to txtBigNum
-            moneyViewList[mViewModel.bettingArray[2].number] = txtSmallMoney to txtSmallNum
-            moneyViewList[mViewModel.bettingArray[3].number] = txtSingleMoney to txtSingleNum
-            moneyViewList[mViewModel.bettingArray[4].number] = txtDoubleMoney to txtDoubleNum
 
-            bigView.flickerView = ivFlickerRightTop
-            smallView.flickerView = ivFlickerLeftTop
-            doubleView.flickerView = ivFlickerRightBelow
-            singleView.flickerView = ivFlickerLeftBelow
-            leopardView.flickerView = ivFlickerCenter
-
+            moneyViewList[mViewModel.dXDSBettingArray[1].number] = txtBigMoney to txtBigNum
+            moneyViewList[mViewModel.dXDSBettingArray[2].number] = txtSmallMoney to txtSmallNum
+            moneyViewList[mViewModel.dXDSBettingArray[3].number] = txtSingleMoney to txtSingleNum
+            moneyViewList[mViewModel.dXDSBettingArray[4].number] = txtDoubleMoney to txtDoubleNum
         }
     }
 
     override fun initData() {
         super.initData()
-        updateAreaBetInfo(mViewModel.syncAreaBetInfoLD.value)
-        //testUpdateAareaBetInfo()
-    }
-
-    private fun testUpdateAareaBetInfo() {
-        lifecycleScope.launch {
-            delay(1000)
-            val ld = mViewModel.syncAreaBetInfoLD as MutableLiveData
-            ld.value = mutableListOf<AreaBetBean>().also {
-                it.add(AreaBetBean(DEFAULT_BIG(), 10090, 300))
-                it.add(AreaBetBean(DEFAULT_SMALL(), 20012, 200))
-                it.add(AreaBetBean(DEFAULT_SINGLE(), 30034, 100))
-                it.add(AreaBetBean(DEFAULT_DOUBLE(), 3320034, 100))
-            }
-        }
+        updateAreaBetInfo(gameAboutModel.syncAreaBetInfo.value)
     }
 
     private fun updateAreaBetInfo(list: List<AreaBetBean>?) {
@@ -126,17 +96,8 @@ class DXDSFragment(fast3VM: Fast3ViewModel) : BaseFast3Fragment<DXDSVm, FragDxds
 
     override fun createObserver() {
         super.createObserver()
-        mViewModel.syncAreaBetInfoLD.observe(viewLifecycleOwner) { list ->
+        gameAboutModel.syncAreaBetInfo.observe(viewLifecycleOwner) { list ->
             updateAreaBetInfo(list)
-        }
-        fast3VM.betOkClick.observe(viewLifecycleOwner) {
-
-        }
-        fast3VM.betDeleteClick.observe(viewLifecycleOwner) {
-
-        }
-        fast3VM.onGameAreaLocationClick.observe(viewLifecycleOwner) {
-
         }
     }
 
@@ -161,7 +122,7 @@ class DXDSFragment(fast3VM: Fast3ViewModel) : BaseFast3Fragment<DXDSVm, FragDxds
                 }
             })
 
-            fast3VM.addMoneyOkViewLiveData.value = Pair(areaView,mDatabind.flRoot)
+            mViewModel.addMoneyOkViewLiveData.value = Pair(areaView, mDatabind.flRoot)
         }
     }
 }

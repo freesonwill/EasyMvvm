@@ -7,7 +7,7 @@
 
         <variable
             name="model"
-            type="com.cn.game.sdk2.ui.viewmodel.fast3.LeopardVm" />
+            type="com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -24,7 +24,6 @@
             android:id="@+id/gavLeopardOne"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:areaInfo="@{model.bettingArray[1]}"
             app:layout_constraintBottom_toTopOf="@id/gavLeopardSix"
             app:layout_constraintEnd_toStartOf="@id/gavLeopardFour"
             app:layout_constraintStart_toStartOf="parent"
@@ -65,7 +64,7 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txtLeopardOddsOne"
                     style="@style/text_single_dice"
-                    android:text="@{model.multiplierStr(1)}"
+                    android:text="@{model.multiplierStr(model.leopardBettingArray[1])}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/ivLeopardOneLeft"
@@ -86,7 +85,6 @@
             android:id="@+id/gavLeopardTwo"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:areaInfo="@{model.bettingArray[2]}"
             app:layout_constraintBottom_toBottomOf="@id/gavLeopardOne"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/gavLeopardFour"
@@ -126,7 +124,7 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txtLeopardOddsTwo"
                     style="@style/text_single_dice"
-                    android:text="@{model.multiplierStr(2)}"
+                    android:text="@{model.multiplierStr(model.leopardBettingArray[2])}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/ivLeopardTwoLeft"
@@ -146,7 +144,6 @@
             android:id="@+id/gavLeopardThree"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:areaInfo="@{model.bettingArray[3]}"
             app:layout_constraintBottom_toBottomOf="@id/gavLeopardSix"
             app:layout_constraintEnd_toStartOf="@id/gavLeopardFive"
             app:layout_constraintStart_toEndOf="@id/gavLeopardSix"
@@ -186,7 +183,7 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txtLeopardOddsThree"
                     style="@style/text_single_dice"
-                    android:text="@{model.multiplierStr(3)}"
+                    android:text="@{model.multiplierStr(model.leopardBettingArray[3])}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/ivLeopardThreeLeft"
@@ -206,7 +203,6 @@
             android:id="@+id/gavLeopardFour"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:areaInfo="@{model.bettingArray[4]}"
             app:layout_constraintBottom_toBottomOf="@id/gavLeopardOne"
             app:layout_constraintEnd_toStartOf="@id/gavLeopardTwo"
             app:layout_constraintStart_toEndOf="@id/gavLeopardOne"
@@ -246,7 +242,7 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txtLeopardOddsFour"
                     style="@style/text_single_dice"
-                    android:text="@{model.multiplierStr(3)}"
+                    android:text="@{model.multiplierStr(model.leopardBettingArray[4])}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/ivLeopardFourLeft"
@@ -266,7 +262,6 @@
             android:id="@+id/gavLeopardFive"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:areaInfo="@{model.bettingArray[5]}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/gavLeopardThree"
@@ -306,7 +301,7 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txtLeopardOddsFive"
                     style="@style/text_single_dice"
-                    android:text="@{model.multiplierStr(5)}"
+                    android:text="@{model.multiplierStr(model.leopardBettingArray[5])}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/ivLeopardFiveLeft"
@@ -326,7 +321,6 @@
             android:id="@+id/gavLeopardSix"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:areaInfo="@{model.bettingArray[6]}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/gavLeopardThree"
             app:layout_constraintStart_toStartOf="parent"
@@ -366,7 +360,7 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txtPairsOddsSix"
                     style="@style/text_single_dice"
-                    android:text="@{model.multiplierStr(6)}"
+                    android:text="@{model.multiplierStr(model.leopardBettingArray[6])}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/ivLeopardSixLeft"

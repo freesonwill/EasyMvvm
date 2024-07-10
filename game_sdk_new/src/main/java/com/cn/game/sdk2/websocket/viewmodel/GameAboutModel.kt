@@ -272,11 +272,11 @@ class GameAboutModel : BaseViewModel() {
     var miniGameId: Int = 0
     var countDown: Int = 0 //阶段倒计时
         set(value) {
+            field = value - 500 //减去500ms延时
             Log.d(TAG, "countDown set:${value},isMainThread:${isMainThread}")
-            field = value
             _countDownSetStampTime = System.currentTimeMillis()
             ThreadUtils.runOnUiThread {
-                GameManager.instance.startCountDownTimer(value.toLong(), lis = object : IGameListener {
+                GameManager.instance.startCountDownTimer(field.toLong(), lis = object : IGameListener {
                     override fun onCountdown(time: Long) {
                         super.onCountdown(time)
                         val t = (time / 1000f).toInt()
@@ -302,7 +302,4 @@ class GameAboutModel : BaseViewModel() {
 
     //控制隐藏Fast3MainView
     val fast3MainFloatVisible: UnPeekLiveData<Boolean> = UnPeekLiveData<Boolean>()
-
-    //期号悬浮窗显影
-    val fast3EditionFloatVisible: UnPeekLiveData<Boolean> = UnPeekLiveData<Boolean>()
 }
