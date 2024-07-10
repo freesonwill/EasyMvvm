@@ -34,7 +34,6 @@ import com.cn.game.sdk2.R
 import com.cn.game.sdk2.data.EventKey
 import com.cn.game.sdk2.data.bean.GameHallItem
 import com.cn.game.sdk2.data.bean.SelectAnnotationBean
-import com.cn.game.sdk2.data.enums.GameState
 import com.cn.game.sdk2.databinding.FragFast3HomeBinding
 import com.cn.game.sdk2.databinding.FragmentGamehallBinding
 import com.cn.game.sdk2.databinding.ItemAnnotationListBinding
@@ -100,7 +99,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
     private var mFragList = ArrayList<Fragment>()
 
-    private var currentLocalStage: GameAboutModel.Stage? = null
+
 
     //是否执行关闭动画
     var isExecuteClose: Boolean = true
@@ -129,7 +128,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         mDatabind.resultClickView.setOnClickListener { } //屏蔽底部recycler点击
         mViewModel.navigationBarHeight.value = requireContext().navigationBarHeight
 
-        Fast3ToastHelper.init(mDatabind.centerLayout).let {
+        Fast3ToastHelper.attachToHost(mDatabind.centerLayout).let {
             lifecycle.addObserver(object : DefaultLifecycleObserver {
                 var startTime: Long = 0
                 override fun onCreate(owner: LifecycleOwner) {
@@ -244,38 +243,22 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
      */
     private fun updateGameStage() {
         gameAboutModel.currentStage.value?.let {
+            if(mViewModel.localGameStage == it) return@let
             mViewModel.isClickOperation = it == GameAboutModel.Stage.NEW
             mDatabind.txtHomeTime.isVisible = it == GameAboutModel.Stage.NEW
             mDatabind.txtHomeUnit.isVisible = it == GameAboutModel.Stage.NEW
+            mViewModel.localGameStage = it
             when (it) {
                 GameAboutModel.Stage.NEW -> {
-                    if (currentLocalStage == null) {
-                        currentLocalStage = it
-                        onStartBetting()
-                    }else if (currentLocalStage != it){
-                        onStartBetting()
-                        currentLocalStage = it
-                    }
+                    onStartBetting()
                 }
 
                 GameAboutModel.Stage.DEAL -> {
-                    if (currentLocalStage == null) {
-                        currentLocalStage = it
-                        onStartDrawing()
-                    }else if (currentLocalStage != it){
-                        onStartDrawing()
-                        currentLocalStage = it
-                    }
+                    onStartDrawing()
                 }
 
                 GameAboutModel.Stage.SETTLE -> {
-                    if (currentLocalStage == null) {
-                        currentLocalStage = it
-                        onStartSetting()
-                    }else if (currentLocalStage != it){
-                        onStartSetting()
-                        currentLocalStage = it
-                    }
+                    onStartSetting()
                 }
             }
             //if(!mViewModel.isCountDownInit) mViewModel.countDown = gameAboutModel.countDown * 1L
@@ -463,15 +446,21 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
         gameAboutModel.countDownSecondsLD.observe(viewLifecycleOwner) { seconds ->
             //Log.d(TAG,"countdown: seconds:$seconds")
-            if (mViewModel.gameState == GameState.Betting && seconds in 1..5) {
+            if (mViewModel.gameState == GameAboutModel.Stage.NEW && seconds in 1..5) {
                 PromptSoundPlay.countdownGameTip(requireContext())
             }
             if (seconds == 0) {
-                if (mViewModel.gameState == GameState.Betting) {
+                if (mViewModel.gameState == GameAboutModel.Stage.NEW) {
                     mDatabind.txtHomeStatic.text = getString(R.string.g_f3_dealing)
                     mDatabind.txtHomeTime.isVisible = false
                     mDatabind.txtHomeUnit.isVisible = false
                     mViewModel.isClickOperation = false
+                    //防止断网状态
+                    lifecycleScope.launch {
+                        delay(800)
+                        if(mViewModel.gameState != GameAboutModel.Stage.DEAL)
+                            gameAboutModel.changeStage(GameAboutModel.Stage.DEAL)
+                    }
                 }
             } else {
                 mDatabind.txtHomeTime.text = seconds.toString()

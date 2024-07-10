@@ -1,6 +1,5 @@
 package com.cn.game.sdk2.manager
 
-import com.cn.game.sdk2.data.enums.GameState
 import com.cn.game.sdk2.manager.listener.IGameListener
 
 /**
@@ -13,6 +12,4 @@ interface IGameManager {
     //开始倒计时
     fun startCountDownTimer(countdownTime:Long,countDownInterval:Long=1000L,lis: IGameListener? = null)
 
-    //是否可以点击
-    val isClickOperation: Boolean
 }

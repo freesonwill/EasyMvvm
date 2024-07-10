@@ -4,15 +4,11 @@ import android.util.Log
 import android.util.SparseArray
 import android.view.ViewGroup
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.cn.game.sdk2.R
-import com.cn.game.sdk2.data.bean.LocationClickPoint
 import com.cn.game.sdk2.data.bean.SelectAnnotationBean
-import com.cn.game.sdk2.data.enums.GameState
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.utils.ext.CommonExt
-import com.cn.game.sdk2.utils.ext.CommonExt.formatRealMoney
 import com.cn.game.sdk2.websocket.bean.BOOM_1
 import com.cn.game.sdk2.websocket.bean.BOOM_2
 import com.cn.game.sdk2.websocket.bean.BOOM_3
@@ -77,13 +73,9 @@ class Fast3ViewModel : BaseViewModel() {
     }
 
     //游戏状态
-    val gameState: GameState
-        get() = when (gameAboutModel.currentStage.value) {
-            Stage.NEW -> GameState.Betting
-            Stage.DEAL -> GameState.Settling
-            Stage.SETTLE -> GameState.Drawing
-            else -> GameState.Init
-        }
+    val gameState: Stage?  get() = gameAboutModel.currentStage.value
+    var localGameStage: Stage? = null
+
 
     //是否可点击
     val isClickOperationLD: LiveData<Boolean> by lazy { UnPeekLiveData(true) }

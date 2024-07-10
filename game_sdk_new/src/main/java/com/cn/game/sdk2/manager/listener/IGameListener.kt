@@ -2,7 +2,6 @@ package com.cn.game.sdk2.manager.listener
 
 import androidx.annotation.UiThread
 import com.cn.game.sdk2.data.bean.HistoryResultBean
-import com.cn.game.sdk2.data.enums.GameState
 
 /**
  * Description:
@@ -16,18 +15,4 @@ interface IGameListener {
      */
     @UiThread fun onCountdown(time: Long){}
 
-    /**
-     * 计时结束
-     */
-    @UiThread fun onCountDownFinish(state: GameState){}
-
-    /**
-     *游戏状态变化
-     */
-    @UiThread fun onGameStateChanged(oldValue: GameState, newValue: GameState){}
-
-    /**
-     * 开奖结果
-     */
-    @UiThread fun onDrawingResult(result: HistoryResultBean){}
 }

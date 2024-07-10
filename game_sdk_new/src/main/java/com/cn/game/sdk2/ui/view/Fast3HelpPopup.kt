@@ -4,6 +4,8 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.util.Log
 import androidx.core.animation.addListener
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.databinding.FragmentFast3HelpBinding
 import com.cn.game.sdk2.ui.fast3.Fast3HelpFragment.Companion.TAG
@@ -12,14 +14,10 @@ import com.cn.game.sdk2.utils.ext.ViewExt.bindRecycleView
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.utils.tool.screenHeight
 import com.cn.game.sdk2.websocket.gameAboutModel
-import com.drake.brv.annotaion.DividerOrientation
-import com.drake.brv.utils.dividerSpace
 import com.drake.brv.utils.setup
 import com.gyf.immersionbar.ktx.hasNavigationBar
 import com.gyf.immersionbar.ktx.navigationBarHeight
 import com.gyf.immersionbar.ktx.statusBarHeight
-import com.lxj.xpopup.core.BottomPopupView
-import com.xcjh.base_lib2.utils.dp2px
 import com.xcjh.base_lib2.utils.view.clickNoRepeat
 import com.xcjh.base_lib2.utils.view.getStringArray
 
@@ -27,12 +25,19 @@ import com.xcjh.base_lib2.utils.view.getStringArray
 /**
  * 首页的弹出框
  */
-class Fast3HelpPopup(context: Context, private val offsetY: Int, private val height: Int) : BottomPopupView(context) {
+class Fast3HelpPopup(context: Context, private val offsetY: Int, private val height: Int) : CustomBottomPopupView(context) {
     private lateinit var mViewBind: FragmentFast3HelpBinding
-    private var fullHeight: Int = context.screenHeight + context.statusBarHeight+context.navigationBarHeight
+
+    //全屏的高度
+    private var fullHeight: Int = context.run { screenHeight + statusBarHeight + navigationBarHeight }
+
+    //当前的高度
+    private val curHeight: Int get() = mViewBind.content.height
+
     override fun getImplLayoutId(): Int {
         return R.layout.fragment_fast3_help
     }
+
     override fun onCreate() {
         super.onCreate()
         mViewBind = FragmentFast3HelpBinding.bind(popupImplView)
@@ -50,11 +55,10 @@ class Fast3HelpPopup(context: Context, private val offsetY: Int, private val hei
     }
 
     private fun initView() {
+        mViewBind.rvContent.layoutManager = object : LinearLayoutManager(context,VERTICAL,false) {
+            override fun canScrollHorizontally() = false
+        }
         mViewBind.rvContent
-            .dividerSpace(
-                context.dp2px(20),
-                DividerOrientation.VERTICAL
-            )
             .setup {
                 addType<Int> { pos ->
                     when (pos) {
@@ -82,17 +86,17 @@ class Fast3HelpPopup(context: Context, private val offsetY: Int, private val hei
             val toExpand = mViewBind.content.height != fullHeight
             val topPadding = if (toExpand) context.statusBarHeight else 0
             val topPaddingFrom = if (!toExpand) context.statusBarHeight else 0
-            val bottomPadding = if(context.hasNavigationBar) context.navigationBarHeight else 0
+            val bottomPadding = if (context.hasNavigationBar) context.navigationBarHeight else 0
             val start = if (toExpand) height else fullHeight
             val end = if (!toExpand) height else fullHeight
             ValueAnimator.ofInt(start, end).apply {
                 duration = 100
                 addUpdateListener {
                     val value = it.animatedValue as Int
-                    val p = (value-start)*1f/(end-start)
-                    val tPadding = (topPaddingFrom+(topPadding-topPaddingFrom)*p).toInt()
+                    val p = (value - start) * 1f / (end - start)
+                    val tPadding = (topPaddingFrom + (topPadding - topPaddingFrom) * p).toInt()
                     mViewBind.content.setPadding(0, tPadding, 0, bottomPadding)
-                    mViewBind.content.layoutParams.let { lp->
+                    mViewBind.content.layoutParams.let { lp ->
                         lp.height = value
                         mViewBind.content.layoutParams = lp
                     }
@@ -114,6 +118,4 @@ class Fast3HelpPopup(context: Context, private val offsetY: Int, private val hei
             ViewHelper.showHelpDialog(context, false)
         }
     }
-
-
 }
