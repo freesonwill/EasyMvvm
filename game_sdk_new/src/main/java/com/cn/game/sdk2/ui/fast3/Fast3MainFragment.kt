@@ -460,6 +460,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     mDatabind.txtHomeStatic.text = getString(R.string.g_f3_dealing)
                     mDatabind.txtHomeTime.isVisible = false
                     mDatabind.txtHomeUnit.isVisible = false
+                    mViewModel.isClickOperation = false
                 }
             } else {
                 mDatabind.txtHomeTime.text = seconds.toString()
