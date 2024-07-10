@@ -45,8 +45,7 @@ import kotlin.coroutines.suspendCoroutine
  * author       : zhangsan
  * createTime   : 2024/6/21 18:14
  **/
-abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding>() :
-    BaseGameFragment<VM, VB>() {
+abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding>: BaseGameFragment<VM, VB>() {
     protected var areaViewList: MutableList<GameAreaView> = mutableListOf()
 
     override fun initView(savedInstanceState: Bundle?) {

@@ -8,7 +8,7 @@ import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
 /**
  * 总和
  */
-class SumTotalFragment() : BaseFast3Fragment<Fast3ViewModel,FragmentSumTotalBinding>() {
+class SumTotalFragment: BaseFast3Fragment<Fast3ViewModel,FragmentSumTotalBinding>() {
     override fun initAreaViewList() {
         mDatabind.model = mViewModel
         mDatabind.apply {

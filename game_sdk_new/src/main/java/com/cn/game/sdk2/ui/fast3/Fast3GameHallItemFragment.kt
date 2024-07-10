@@ -14,7 +14,7 @@ import com.drake.brv.utils.setup
 import com.xcjh.base_lib2.base.fragment.BaseVmVbFragment
 import com.xcjh.base_lib2.utils.dp2px
 
-class Fast3GameHallItemFragment(private val category: String) : BaseVmVbFragment<Fast3GameHallItemViewModel, ItemGamehallPageBinding>() {
+class Fast3GameHallItemFragment() : BaseVmVbFragment<Fast3GameHallItemViewModel, ItemGamehallPageBinding>() {
 
     override fun initView(savedInstanceState: Bundle?) {
         mViewBind.rvContent.itemAnimator = null

@@ -4,16 +4,17 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.util.Log
 import androidx.core.animation.addListener
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.databinding.FragmentFast3HelpBinding
 import com.cn.game.sdk2.ui.fast3.Fast3HelpFragment.Companion.TAG
 import com.cn.game.sdk2.ui.helper.ViewHelper
 import com.cn.game.sdk2.utils.ext.ViewExt.bindRecycleView
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
+import com.cn.game.sdk2.utils.tool.dp2px
 import com.cn.game.sdk2.utils.tool.screenHeight
 import com.cn.game.sdk2.websocket.gameAboutModel
+import com.drake.brv.annotaion.DividerOrientation
+import com.drake.brv.utils.dividerSpace
 import com.drake.brv.utils.setup
 import com.gyf.immersionbar.ktx.hasNavigationBar
 import com.gyf.immersionbar.ktx.navigationBarHeight
@@ -55,10 +56,11 @@ class Fast3HelpPopup(context: Context, private val offsetY: Int, private val hei
     }
 
     private fun initView() {
-        mViewBind.rvContent.layoutManager = object : LinearLayoutManager(context,VERTICAL,false) {
-            override fun canScrollHorizontally() = false
-        }
         mViewBind.rvContent
+            .dividerSpace(
+                context.dp2px(20),
+                DividerOrientation.VERTICAL
+            )
             .setup {
                 addType<Int> { pos ->
                     when (pos) {

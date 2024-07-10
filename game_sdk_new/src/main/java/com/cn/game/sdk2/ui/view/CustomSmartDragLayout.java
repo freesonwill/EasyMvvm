@@ -19,6 +19,7 @@ import androidx.core.view.NestedScrollingParent;
 import androidx.core.view.ViewCompat;
 import com.lxj.xpopup.enums.LayoutStatus;
 import com.lxj.xpopup.util.XPopupUtils;
+import com.xcjh.base_lib2.utils.LogUtils;
 
 public class CustomSmartDragLayout extends LinearLayout implements NestedScrollingParent {
     private View child;
@@ -91,9 +92,31 @@ public class CustomSmartDragLayout extends LinearLayout implements NestedScrolli
         }
 
     }
-
+    private float _touchX = 0f;
+    private float _touchY = 0f;
+    private boolean isTrigger = false;
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         this.isUserClose = true;
+        switch (ev.getAction()){
+            case MotionEvent.ACTION_DOWN:
+                _touchX = ev.getX();
+                _touchY = ev.getY();
+                isTrigger = false;
+                onTouchEvent(ev);
+                break;
+            case MotionEvent.ACTION_CANCEL:
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_MOVE:
+                float x  = ev.getX() - _touchX;
+                float y = ev.getY() - _touchY;
+                if (isTrigger || (Math.abs(x) > Math.abs(y) && Math.abs(x) > 5)) {
+                    isTrigger = true;
+                    _touchX = ev.getX();
+                    _touchY = ev.getY();
+                    return true;
+                }
+                break;
+        }
         return this.status != LayoutStatus.Closing && this.status != LayoutStatus.Opening && super.onInterceptTouchEvent(ev);
     }
 
@@ -105,7 +128,7 @@ public class CustomSmartDragLayout extends LinearLayout implements NestedScrolli
                 return true;
             } else {
                 switch (event.getAction()) {
-                    case 0:
+                    case MotionEvent.ACTION_DOWN:
                         if (this.enableDrag) {
                             if (this.tracker != null) {
                                 this.tracker.clear();
@@ -117,8 +140,8 @@ public class CustomSmartDragLayout extends LinearLayout implements NestedScrolli
                         this.touchX = event.getX();
                         this.touchY = event.getY();
                         break;
-                    case 1:
-                    case 3:
+                    case MotionEvent.ACTION_UP:
+                    case MotionEvent.ACTION_CANCEL:
                         Rect rect = new Rect();
                         this.child.getGlobalVisibleRect(rect);
                         float yVelocity;
@@ -140,13 +163,13 @@ public class CustomSmartDragLayout extends LinearLayout implements NestedScrolli
                             this.tracker = null;
                         }
                         break;
-                    case 2:
+                    case MotionEvent.ACTION_MOVE:
                         if (this.enableDrag && this.tracker != null) {
                             this.tracker.addMovement(event);
                             this.tracker.computeCurrentVelocity(1000);
                             int dy = (int)(event.getY() - this.touchY);
                             if(Math.abs(event.getX() - this.touchX) > Math.abs(event.getY() - this.touchY)) {
-                                dy = (int)((event.getX() - this.touchX) * -1);
+                                dy = (int)((event.getX() - this.touchX) * 1f);
                             }
                             this.scrollTo(this.getScrollX(), this.getScrollY() - dy);
                             this.touchX = event.getX();
@@ -177,9 +200,10 @@ public class CustomSmartDragLayout extends LinearLayout implements NestedScrolli
                     dy = this.minY - this.getScrollY();
                 }
             }
-
-            this.scroller.startScroll(this.getScrollX(), this.getScrollY(), 0, dy, this.duration);
-            ViewCompat.postInvalidateOnAnimation(this);
+            if(dy != 0) {
+                this.scroller.startScroll(this.getScrollX(), this.getScrollY(), 0, dy, this.duration);
+                ViewCompat.postInvalidateOnAnimation(this);
+            }
         }
 
     }
@@ -264,8 +288,11 @@ public class CustomSmartDragLayout extends LinearLayout implements NestedScrolli
         this.finishScroll();
     }
 
+    //子的滚动布局
     public void onNestedScroll(View target, int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed) {
-        this.scrollTo(this.getScrollX(), this.getScrollY() + dyUnconsumed);
+        LogUtils.d("dxConsumed:"+dxConsumed+",dyConsumed:"+dyConsumed+",dxUnconsumed:"+dxUnconsumed+",dyUnconsumed:"+dyUnconsumed);
+        if(dyUnconsumed != 0)
+            this.scrollTo(this.getScrollX(), this.getScrollY() + dyUnconsumed);
     }
 
     public void onNestedPreScroll(View target, int dx, int dy, int[] consumed) {

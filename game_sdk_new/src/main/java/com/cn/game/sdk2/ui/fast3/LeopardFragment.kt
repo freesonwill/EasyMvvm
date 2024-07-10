@@ -8,8 +8,7 @@ import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
 /**
  * 豹子
  */
-class LeopardFragment() :
-    BaseFast3Fragment<Fast3ViewModel, FragmentLeopardBinding>() {
+class LeopardFragment: BaseFast3Fragment<Fast3ViewModel, FragmentLeopardBinding>() {
 
     override fun initAreaViewList() {
         mDatabind.model = mViewModel

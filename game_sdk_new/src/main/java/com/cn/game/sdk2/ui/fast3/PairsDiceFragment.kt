@@ -8,7 +8,7 @@ import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
 /**
  * 对子
  */
-class PairsDiceFragment() : BaseFast3Fragment<Fast3ViewModel,FragmentPairsDiceBinding>() {
+class PairsDiceFragment: BaseFast3Fragment<Fast3ViewModel,FragmentPairsDiceBinding>() {
 
     override fun initAreaViewList() {
         mDatabind.model = mViewModel

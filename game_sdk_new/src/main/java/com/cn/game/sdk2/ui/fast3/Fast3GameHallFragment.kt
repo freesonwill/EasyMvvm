@@ -15,11 +15,11 @@ class Fast3GameHallFragment:BaseVmDbFragment<EmptyViewModel,FragmentGamehallBind
     private var mFragList = ArrayList<Fragment>()
 
     override fun initView(savedInstanceState: Bundle?) {
-        mFragList.add(Fast3GameHallItemFragment("a"))
-        mFragList.add(Fast3GameHallItemFragment("a"))
-        mFragList.add(Fast3GameHallItemFragment("a"))
-        mFragList.add(Fast3GameHallItemFragment("a"))
-        mFragList.add(Fast3GameHallItemFragment("a"))
+        mFragList.add(Fast3GameHallItemFragment())
+        mFragList.add(Fast3GameHallItemFragment())
+        mFragList.add(Fast3GameHallItemFragment())
+        mFragList.add(Fast3GameHallItemFragment())
+        mFragList.add(Fast3GameHallItemFragment())
 
         mDatabind.viewPagerNew.initGameViewPager(
             childFragmentManager, mFragList, arrayListOf(
