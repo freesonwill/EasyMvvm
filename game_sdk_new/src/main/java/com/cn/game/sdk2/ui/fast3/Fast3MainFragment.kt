@@ -100,7 +100,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     private var mFragList = ArrayList<Fragment>()
 
 
-
     //是否执行关闭动画
     var isExecuteClose: Boolean = true
     private var isBetteUpAnimFirst = true
@@ -243,7 +242,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
      */
     private fun updateGameStage() {
         gameAboutModel.currentStage.value?.let {
-            if(mViewModel.localGameStage == it) return@let
+            if (mViewModel.localGameStage == it) return@let
             mViewModel.isClickOperation = it == GameAboutModel.Stage.NEW
             mDatabind.txtHomeTime.isVisible = it == GameAboutModel.Stage.NEW
             mDatabind.txtHomeUnit.isVisible = it == GameAboutModel.Stage.NEW
@@ -458,7 +457,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     //防止断网状态
                     lifecycleScope.launch {
                         delay(800)
-                        if(mViewModel.gameState != GameAboutModel.Stage.DEAL)
+                        if (mViewModel.gameState != GameAboutModel.Stage.DEAL)
                             gameAboutModel.changeStage(GameAboutModel.Stage.DEAL)
                     }
                 }
@@ -506,11 +505,12 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         }
 
         mViewModel.betOkClick.observe(this) {
-            GameSocketManager.getInstance()?.getGameService()?.commitBetting { bettingState, areaLimit ->
-                bettingState.isCanGoOn(areaLimit) {
-                    hiddenAnchorTop()
+            GameSocketManager.getInstance()?.getGameService()
+                ?.commitBetting { bettingState, areaLimit ->
+                    bettingState.isCanGoOn(areaLimit) {
+                        hiddenAnchorTop()
+                    }
                 }
-            }
         }
 
         mViewModel.betDeleteClick.observe(this) {
@@ -1162,7 +1162,10 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 if (gameAboutModel.currentAgainDoubleState.value == GameAboutModel.AgainDoubleState.DOUBLE
                     || gameAboutModel.currentAgainDoubleState.value == GameAboutModel.AgainDoubleState.DOUBLE_CAN_NOT
                 ) {
-                    PromptSoundPlay.playAudio()
+                    if (gameAboutModel.currentAgainDoubleState.value == GameAboutModel.AgainDoubleState.DOUBLE) {
+                        PromptSoundPlay.playAudio()
+                        AnimHelper.doScaleAnim(ivMultiple2)
+                    }
                     GameSocketManager.getInstance()?.getGameService()
                         ?.doubleBetting { bettingState, map, areaLimit ->
                             bettingState.isCanGoOn(areaLimit) {
@@ -1219,7 +1222,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             }
         }
     }
-
 
     override fun onDetach() {
         super.onDetach()
