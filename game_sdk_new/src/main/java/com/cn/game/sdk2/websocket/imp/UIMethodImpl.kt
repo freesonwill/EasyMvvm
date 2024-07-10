@@ -82,7 +82,9 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
             0
         }
 
-        "currentMoney:${currentMoney}---areaTempMoney:$areaTempMoney----confirmedMoney:$confirmedMoney---tempConfirmedMoney:$tempConfirmedMoney".loge("test")
+        "currentMoney:${currentMoney}---areaTempMoney:$areaTempMoney----confirmedMoney:$confirmedMoney---tempConfirmedMoney:$tempConfirmedMoney".loge(
+            "test"
+        )
         "balance:$balance".loge("test")
         "tempBalance:${gameAboutModel.tempBalance.value}".loge("test")
 
@@ -133,7 +135,7 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
                 block(GameAboutModel.BettingState.NO_MONEY, uiBean, null)
             }
 
-            "余额不足50" ->{
+            "余额不足50" -> {
                 val uiBean = recordBean.copy()
                 uiBean.money = areaTempMoney + confirmedMoney + tempConfirmedMoney
                 block(GameAboutModel.BettingState.NO_MONEY_50, uiBean, null)
@@ -174,13 +176,17 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
         }
     }
 
-    fun commitBetting(block: (isMoneyEnough: GameAboutModel.BettingState, result: Betting) -> Unit) {
+    fun commitBetting(block: (isMoneyEnough: GameAboutModel.BettingState, result: AreaBetConfigBean?) -> Unit) {
+        if (!gameAboutModel.isOpen) {
+            block(GameAboutModel.BettingState.NO_NETWORK, null)
+            return
+        }
         if (previousSuccess) {
             //只有第一次才判断
             limitMap.forEach {
                 currentConfig?.getBeanById(it.key)?.let { config ->
                     if (it.value < config.minLimit) {
-                        block(GameAboutModel.BettingState.OFFSET_MIN, config.areaCode)
+                        block(GameAboutModel.BettingState.OFFSET_MIN, config)
                         return
                     }
                 }
@@ -207,6 +213,7 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
 
             val build = betReq.build()
             bet(build)
+            block(GameAboutModel.BettingState.GO_ON, null)
         } else {
             "下注228：上次下注还未返回".loge("addBetting")
             gameAboutModel.setBettingSuccess(BettingResponsesBean(false, confirmTempMoney))

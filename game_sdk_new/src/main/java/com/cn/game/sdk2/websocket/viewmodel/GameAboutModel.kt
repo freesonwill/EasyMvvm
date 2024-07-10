@@ -26,7 +26,7 @@ class GameAboutModel : BaseViewModel() {
     }
 
     enum class BettingState {
-        GO_ON, NO_MONEY, OFFSET_MIN, OFFSET_MAX, NO_MONEY_50
+        GO_ON, NO_MONEY, OFFSET_MIN, OFFSET_MAX, NO_MONEY_50,NO_NETWORK
     }
 
     private val _currentStage = UnPeekLiveData<Stage>()
@@ -47,6 +47,8 @@ class GameAboutModel : BaseViewModel() {
     private val _toastErrorMessage = MutableLiveData<String>()
     private val _isShowGame = MutableLiveData<Boolean>()
     private val _isAllowedBet = MutableLiveData<Boolean>()
+
+    var isOpen:Boolean = false
 
     /** 需要监听的字段
      * @see currentAgainDoubleState 续压和加倍监听
