@@ -268,12 +268,17 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
         }
         gameAboutModel.addHistoryRounds(roundHistoryList)
         when (miniGameBasicInfo.stage) {
-            1 -> gameAboutModel.changeStage(GameAboutModel.Stage.NEW)
+            1 -> {
+                gameAboutModel.changeStage(GameAboutModel.Stage.NEW)
+            }
+
             2 -> {
                 gameAboutModel.changeStage(GameAboutModel.Stage.DEAL)
             }
 
-            3 -> gameAboutModel.changeStage(GameAboutModel.Stage.SETTLE)
+            3 -> {
+                gameAboutModel.changeStage(GameAboutModel.Stage.SETTLE)
+            }
         }
 
         enterGame(
@@ -590,7 +595,7 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
 
     private fun isMoneyEnough(current: Int): Boolean {
 
-        return current  <= balance - tempMoney  - confirmTempMoney
+        return current <= balance - tempMoney - confirmTempMoney
     }
 
     protected fun addCanGoOn(bean: BettingRecordBean): String {

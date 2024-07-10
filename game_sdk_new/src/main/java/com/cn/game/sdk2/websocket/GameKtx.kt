@@ -49,7 +49,6 @@ import com.cn.game.sdk2.websocket.imp.GameApp
 import com.cn.game.sdk2.websocket.imp.UIMethodImpl
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 import game.mod.proc.yf.proto.res.GameRes
-import kotlin.random.Random
 
 
 var appContext: Context? = null
@@ -152,6 +151,8 @@ var appListener: GameApp.OnSdkListener? = null
  *
  */
 var gameMassageManager: UIMethodImpl? = null
+
+
 
 
 fun <K, V> Map<K, V>.isNotEmpty(block: (Map<K, V>) -> Unit): Boolean {

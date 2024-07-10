@@ -100,6 +100,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
     private var mFragList = ArrayList<Fragment>()
 
+    private var currentLocalStage: GameAboutModel.Stage? = null
+
     //是否执行关闭动画
     var isExecuteClose: Boolean = true
     private var isBetteUpAnimFirst = true
@@ -256,15 +258,33 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             mDatabind.txtHomeUnit.isVisible = it == GameAboutModel.Stage.NEW
             when (it) {
                 GameAboutModel.Stage.NEW -> {
-                    onStartBetting()
+                    if (currentLocalStage == null) {
+                        currentLocalStage = it
+                        onStartBetting()
+                    }else if (currentLocalStage != it){
+                        onStartBetting()
+                        currentLocalStage = it
+                    }
                 }
 
                 GameAboutModel.Stage.DEAL -> {
-                    onStartDrawing()
+                    if (currentLocalStage == null) {
+                        currentLocalStage = it
+                        onStartDrawing()
+                    }else if (currentLocalStage != it){
+                        onStartDrawing()
+                        currentLocalStage = it
+                    }
                 }
 
                 GameAboutModel.Stage.SETTLE -> {
-                    onStartSetting()
+                    if (currentLocalStage == null) {
+                        currentLocalStage = it
+                        onStartSetting()
+                    }else if (currentLocalStage != it){
+                        onStartSetting()
+                        currentLocalStage = it
+                    }
                 }
             }
             //if(!mViewModel.isCountDownInit) mViewModel.countDown = gameAboutModel.countDown * 1L

@@ -6,10 +6,6 @@ plugins {
     id("kotlin-kapt")
 }
 apply from: "${rootDir.path}/gradle/pin.gradle"
-//apply plugin: 'com.kezong.fat-aar'
-//apply from: 'https://raw.githubusercontent.com/adwiv/android-fat-aar/master/fat-aar.gradle'
-
-//apply plugin: 'com.kezong.fat-aar'
 
 android {
     namespace 'com.cn.game.sdk2'
@@ -83,10 +79,6 @@ android {
             proto {
                 srcDir 'src/main/protos'
             }
-            /*java {
-                srcDir 'src/main/java'
-            }
-            res.srcDirs = ['src/main/res']*/
         }
     }
     protobuf {
