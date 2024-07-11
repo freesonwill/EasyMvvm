@@ -7,6 +7,7 @@ import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
+import android.app.GameState
 import android.graphics.Path
 import android.graphics.PathMeasure
 import android.os.Bundle
@@ -242,6 +243,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             mViewModel.isClickOperation = it == GameAboutModel.Stage.NEW
             mDatabind.txtHomeTime.isVisible = it == GameAboutModel.Stage.NEW
             mDatabind.txtHomeUnit.isVisible = it == GameAboutModel.Stage.NEW
+
+
             mViewModel.localGameStage = it
             when (it) {
                 GameAboutModel.Stage.NEW -> {
@@ -293,6 +296,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             mDatabind.apply {
                 //Fast3ToastHelper.showToastNormal(getString(R.string.g_home_setting_begin), 1000)
                 txtHomeStatic.text = resources.getString(R.string.g_f3_setting)
+                mDatabind.betteLayout.isInvisible = true
+                mDatabind.betteAgainLayout.isVisible = false
                 updateCenterRoundInfoData()
                 //开奖结果显示动画
                 startCenterRoundInfoShowAnim {
@@ -467,11 +472,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     mViewModel.isClickOperation = false
                     Fast3ToastHelper.showToastNormal(getString(R.string.g_home_betting_end),canReplace = false)
                     //防止断网状态
-                    lifecycleScope.launch {
-                        delay(800)
-                        if (mViewModel.gameState != GameAboutModel.Stage.DEAL)
-                            gameAboutModel.changeStage(GameAboutModel.Stage.DEAL)
-                    }
+                    if (mViewModel.gameState != GameAboutModel.Stage.DEAL)
+                        gameAboutModel.changeStage(GameAboutModel.Stage.DEAL)
                 }
             } else {
                 mDatabind.txtHomeTime.text = seconds.toString()

@@ -283,7 +283,7 @@ class GameAboutModel : BaseViewModel() {
     var miniGameId: Int = 0
     var countDown: Int = 0 //阶段倒计时
         set(value) {
-            field = value - 500 //减去500ms延时
+            field = value - 0 //减去500ms延时
             Log.d(TAG, "countDown set:${value},isMainThread:${isMainThread}")
             _countDownSetStampTime = System.currentTimeMillis()
             ThreadUtils.runOnUiThread {
