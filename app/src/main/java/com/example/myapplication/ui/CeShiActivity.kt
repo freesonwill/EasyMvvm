@@ -12,7 +12,6 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.widget.Button
 import androidx.appcompat.widget.AppCompatImageView
-import com.bumptech.glide.Glide
 import com.example.myapplication.R
 
 class CeShiActivity : AppCompatActivity() {
@@ -46,7 +45,7 @@ class CeShiActivity : AppCompatActivity() {
             val selectedImageUri = data.data
 
             val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, data.data)
-            Glide.with(this).load(bitmap).into(imnageShow!!)
+//            Glide.with(this).load(bitmap).into(imnageShow!!)
 //            glShow!!.setRenderer(ImageRenderer(this,bitmap))
             loadTextureFromBitmap(bitmap)
 
