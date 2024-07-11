@@ -30,9 +30,9 @@ object Fast3ToastHelper {
         })
     }
 
-    fun showToastNormal(msg: CharSequence, duration: Long = 2_000) {
+    fun showToastNormal(msg: CharSequence, duration: Long = 2_000,canReplace:Boolean = true) {
         if(_instance == null) attachToHost()
-        _instance?.showToastNormal(msg,duration)
+        _instance?.showToastNormal(msg,duration,canReplace)
     }
 
     fun dismissToast() {

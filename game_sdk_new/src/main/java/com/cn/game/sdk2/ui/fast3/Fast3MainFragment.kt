@@ -344,7 +344,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 //PromptSoundPlay.endGameTip(requireContext())
                 //Fast3ToastHelper.showToastNormal(getString(R.string.g_home_drawing_begin), 1000)
             }
-            Fast3ToastHelper.showToastNormal(getString(R.string.g_home_betting_end))
             cancelBetteFlyAnim()
             cancelTemBetting()
             //开奖时取消临时下注的
@@ -454,6 +453,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     mDatabind.txtHomeTime.isVisible = false
                     mDatabind.txtHomeUnit.isVisible = false
                     mViewModel.isClickOperation = false
+                    Fast3ToastHelper.showToastNormal(getString(R.string.g_home_betting_end),canReplace = false)
                     //防止断网状态
                     lifecycleScope.launch {
                         delay(800)
