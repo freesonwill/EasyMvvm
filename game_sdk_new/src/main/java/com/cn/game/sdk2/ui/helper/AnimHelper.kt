@@ -43,17 +43,21 @@ object AnimHelper {
         }
     }
 
-
-    private val SCALE_X = PropertyValuesHolder.ofFloat(View.SCALE_X, 1.0f, 1.3f, 1.0f)
-    private val SCALE_Y = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.0f, 1.3f, 1.0f)
-
-    fun doScaleAnim(targetView: View) {
+    fun doScaleAnimRecovery(
+        targetView: View,
+        startScaleX: Float = 1.0f,
+        targetScaleX: Float = 1.3f,
+        startScaleY: Float = 1.0f,
+        targetScaleY: Float = 1.3f,
+        duration: Long = 200
+    ) {
         val animator = ObjectAnimator.ofPropertyValuesHolder(
             targetView,
-            SCALE_X,
-            SCALE_Y
+            PropertyValuesHolder.ofFloat(View.SCALE_X, startScaleX, targetScaleX, startScaleX),
+            PropertyValuesHolder.ofFloat(View.SCALE_Y, startScaleY, targetScaleY, startScaleY)
         )
-        animator.duration = 200
+        animator.duration = duration
         animator.start()
     }
+
 }
