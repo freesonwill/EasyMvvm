@@ -464,6 +464,13 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
             lotteryNumbers.isBig(),
             lotteryNumbers.isDouble()
         )
+        /*currentRound.apply {
+            roundId = "123"
+            performs = listOf(6,6,6)
+            sum = 18
+            isBig = true
+            isDouble = true
+        }*/
         gameAboutModel.addHistoryRound(currentRound)
 
         gameAboutModel.lotteryResultList = lotteryResultList

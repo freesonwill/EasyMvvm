@@ -3,6 +3,7 @@ package com.cn.game.sdk2.ui.view
 import android.content.Context
 import android.content.ContextWrapper
 import android.util.Log
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.cn.game.sdk2.R
@@ -12,6 +13,7 @@ import com.cn.game.sdk2.ui.HomeXPopupDialog.Companion.TAG
 import com.cn.game.sdk2.ui.fast3.Fast3GameHallFragment
 import com.cn.game.sdk2.ui.helper.ViewHelper
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
+import com.cn.game.sdk2.websocket.gameAboutModel
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.AttachPopupView
 import com.lxj.xpopup.core.BasePopupView
@@ -37,6 +39,8 @@ class CustomBubbleAttachPopup(content: Context) : AttachPopupView(content){
         setArrowHeight(XPopupUtils.dp2px(context, 8f)).setBubbleRadius(10)
         setArrowRadius(XPopupUtils.dp2px(context, 2f))*/
         PopupCustomBubbleAttachBinding.bind(popupImplView).apply {
+            rlPopClickRecords.isVisible = gameAboutModel.isShowHistoryAndCustomer
+            rlPopClickService.isVisible = gameAboutModel.isShowHistoryAndCustomer
             rlPopClickRecords.clickNoRepeat() {
                 PromptSoundPlay.btnPlayMedia()
                 delayDismiss(100)

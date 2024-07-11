@@ -101,7 +101,7 @@ class Fast3Toast @JvmOverloads constructor(
     }
 
     fun dismissToast() {
-        LogUtils.dTag(TAG,"dismissToast:${animator.hashCode()}")
+        //LogUtils.dTag(TAG,"dismissToast:${animator.hashCode()}")
         animator?.cancel()
         anchorView.removeView(this)
         if(dismissRunnable != null) H.removeCallbacks(dismissRunnable!!).let {  dismissRunnable = null }

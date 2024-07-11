@@ -5,9 +5,7 @@ import android.content.Context
 import android.view.View
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.OnLifecycleEvent
 import com.cn.game.sdk2.ui.helper.ViewHelper
 import com.cn.game.sdk2.websocket.GameSocketManager
 import com.cn.game.sdk2.websocket.appContext
@@ -16,7 +14,6 @@ import com.cn.game.sdk2.websocket.appListener
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.gameMassageManager
 import com.cn.game.sdk2.websocket.interfaces.IGameForApp
-import com.cn.game.sdk2.websocket.isAnchor
 import com.cn.game.sdk2.websocket.isEnableSound
 import com.cn.game.sdk2.websocket.isNeedReconnect
 import com.cn.game.sdk2.websocket.socketStatesCallback
@@ -61,7 +58,7 @@ object GameApp : IGameForApp {
      */
     //platform= 6 ,requestId = 0,version = "1"
     override fun login(token: String, agentName: String, anchor: Boolean) {
-        isAnchor = anchor
+        gameAboutModel.isAnchor = anchor
         val req = ClientReq.LoginReq.newBuilder().setPlatform(6).setRequestId(0).setVersion("1")
             .setNickname("").setAgentName(agentName).setToken(token).build()
         gameMassageManager?.login(req)
@@ -118,7 +115,7 @@ object GameApp : IGameForApp {
     }
 
     override fun isShowHistoryAndCustomer(show: Boolean) {
-        com.cn.game.sdk2.websocket.isShowHistoryAndCustomer = show
+        gameAboutModel.isShowHistoryAndCustomer = show
     }
 
     /**

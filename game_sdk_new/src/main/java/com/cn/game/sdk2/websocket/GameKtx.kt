@@ -49,16 +49,13 @@ import com.cn.game.sdk2.websocket.imp.GameApp
 import com.cn.game.sdk2.websocket.imp.UIMethodImpl
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 import game.mod.proc.yf.proto.res.GameRes
+import kotlin.random.Random
 
 
 var appContext: Context? = null
 var appLifecycleEnable: Boolean = false
 
-//主播端只能看到"热门"游戏分类，"热门"分类中以后只会放sdk游戏，在大厅弹窗处，主播端看不到其他的tab和瓦力游戏。
-var isAnchor: Boolean = false
 
-//如果不需要显示(isShowHistoryAndCustomer = false)，则主播端的更多只显示切换游戏和帮助。
-var isShowHistoryAndCustomer: Boolean = true
 
 /**
  * socket-url
