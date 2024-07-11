@@ -66,7 +66,7 @@ class MainActivity : AppCompatActivity() {
                     GameSocketManager.getInstance()?.initSocketClient()
                 }else{
                     GameApp.login(
-                        token, "wali-internal", true
+                        token, "wali-internal", false
                     )
                     btnOpen.text = "正在登录"
                 }
