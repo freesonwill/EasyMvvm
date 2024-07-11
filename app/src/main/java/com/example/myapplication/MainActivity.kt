@@ -3,13 +3,11 @@ package com.example.myapplication
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.widget.Button
-import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 
-import com.cn.game.sdk2.ui.helper.ViewHelper
 import com.cn.game.sdk2.ui.helper.ViewHelper.isAdd
 import com.cn.game.sdk2.ui.view.FastLogoView
 import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
@@ -18,9 +16,6 @@ import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.imp.GameApp
 import com.cn.game.sdk2.websocket.isTokenValid
 import com.cn.game.sdk2.websocket.token
-import com.cn.game.sdk2.websocket.tokenArray
-import com.xcjh.base_lib2.utils.LogUtils
-import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
     var views: FastLogoView? = null
@@ -33,6 +28,9 @@ class MainActivity : AppCompatActivity() {
         val btnOpen = findViewById<TextView>(R.id.btnOpen)
         val llshow = findViewById<RelativeLayout>(R.id.llshow)
         val btnXiu = findViewById<Button>(R.id.btnXiu)
+        findViewById<Button>(R.id.btnSetBetResult).setOnClickListener {
+            gameAboutModel.manualLeopard = true
+        }
 
         GameApp.setSocketStatesCallback(object : GameApp.SocketStatesCallback{
             override fun onOpen() {
