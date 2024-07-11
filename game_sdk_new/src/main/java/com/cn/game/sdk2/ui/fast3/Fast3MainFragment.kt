@@ -285,33 +285,13 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     }
 
     private fun onStartSetting() { //开始结算
-        val roundInfo: RoundInfoBean? = gameAboutModel.currentSettleResult
         lifecycleScope.launch {
             mDatabind.apply {
                 //Fast3ToastHelper.showToastNormal(getString(R.string.g_home_setting_begin), 1000)
                 txtHomeStatic.text = resources.getString(R.string.g_f3_setting)
-                Log.e(TAG, "结算item" + roundInfo.toString())
-                roundInfo?.run {
-                    performs.forEachIndexed { index, item ->
-                        val id = resources.getIdentifier(
-                            "icon_dice_" + item.toPinyin(),
-                            "drawable",
-                            requireContext().packageName
-                        )
-                        when (index) {
-                            0 -> ivDrawYi.setImageResource(id)
-                            1 -> ivDrawEr.setImageResource(id)
-                            2 -> ivDrawSan.setImageResource(id)
-                        }
-                    }
-                    txtHomeTotal.text = sum.toString()
-                    ivBetSize.setImageResource(if (isBig) R.drawable.icon_home_result_big else R.drawable.icon_home_result_small)
-                    ivBetOdd.setImageResource(if (isDouble) R.drawable.icon_home_result_double else R.drawable.icon_home_result_single)
-                }
-
-
+                updateCenterRoundInfoData()
                 //开奖结果显示动画
-                startGameResultShowAnim {
+                startCenterRoundInfoShowAnim {
                     //中奖动画
                     startWinLottieAnim(endCallBack = {
                         //开奖结果注区动画闪烁
@@ -353,6 +333,41 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     ivHomeBgCenter.isVisible = true
 
                 })
+            }
+        }
+    }
+
+    /**
+     * 更新当局游戏结果信息
+     */
+    private fun updateCenterRoundInfoData() {
+        val roundInfo: RoundInfoBean? = gameAboutModel.currentSettleResult
+        Log.e(TAG, "结算item" + roundInfo.toString())
+        mDatabind.apply {
+            roundInfo?.run {
+                performs.forEachIndexed { index, item ->
+                    val id = resources.getIdentifier(
+                        "icon_dice_" + item.toPinyin(),
+                        "drawable",
+                        requireContext().packageName
+                    )
+                    when (index) {
+                        0 -> ivDrawYi.setImageResource(id)
+                        1 -> ivDrawEr.setImageResource(id)
+                        2 -> ivDrawSan.setImageResource(id)
+                    }
+                }
+                txtHomeTotal.text = sum.toString()
+                //豹子只显示骰子和点数，不显示大小和单双
+                if (isLeopard) {
+                    ivBetSize.isVisible = false
+                    ivBetOdd.isVisible = false
+                } else {
+                    ivBetSize.isVisible = true
+                    ivBetOdd.isVisible = true
+                    ivBetSize.setImageResource(if (isBig) R.drawable.icon_home_result_big else R.drawable.icon_home_result_small)
+                    ivBetOdd.setImageResource(if (isDouble) R.drawable.icon_home_result_double else R.drawable.icon_home_result_single)
+                }
             }
         }
     }
@@ -943,7 +958,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     /**
      * 执行游戏结果点数显示动画
      */
-    private fun startGameResultShowAnim(duration: Long = 200L, doEnd: () -> Unit) {
+    private fun startCenterRoundInfoShowAnim(duration: Long = 200L, doEnd: () -> Unit) {
         mDatabind.apply {
             val leftAnimX = ObjectAnimator.ofFloat(llResultLeft, "scaleX", 0f, 1f).apply {
                 this.duration = duration
