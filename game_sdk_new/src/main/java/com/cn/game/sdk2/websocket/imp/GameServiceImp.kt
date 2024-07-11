@@ -453,7 +453,14 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
         //结束时更新余额
         balance = balance + settle.winScore - confirmMoney
         //开奖号码
-        val lotteryNumbers = settle.roundInfo.performsList[0].elementsList
+        //主动设置豹子
+        val lotteryNumbers = if (gameAboutModel.manualLeopard) {
+            gameAboutModel.manualLeopard = false
+            listOf(6, 6, 6)
+        } else {
+            settle.roundInfo.performsList[0].elementsList
+        }
+
         //中奖注区
         val lotteryResultList = lotteryNumbers.calculateArea()
         //添加历史记录
@@ -465,17 +472,6 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
             lotteryNumbers.isDouble()
         )
 
-        //主动设置豹子
-        if(gameAboutModel.manualLeopard){
-            gameAboutModel.manualLeopard = false
-            currentRound.apply {
-                roundId = "123"
-                performs = listOf(6,6,6)
-                sum = 18
-                isBig = true
-                isDouble = true
-            }
-        }
         gameAboutModel.addHistoryRound(currentRound)
 
         gameAboutModel.lotteryResultList = lotteryResultList
