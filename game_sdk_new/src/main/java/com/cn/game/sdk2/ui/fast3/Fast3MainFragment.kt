@@ -183,6 +183,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 scrollEnable = true,
                 action = { PromptSoundPlay.btnPlayMedia() }
             )
+//            mDatabind.viewPagerNew.offscreenPageLimit = mFragList.size
             (System.currentTimeMillis() - startTime).let {
                 LogUtils.d(
                     TAG,

@@ -1,7 +1,9 @@
 package com.cn.game.sdk2.ui.fast3
 
+import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -48,7 +50,7 @@ import kotlin.coroutines.suspendCoroutine
 abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
     BaseGameFragment<VM, VB>() {
     protected var areaViewList: MutableList<GameAreaView> = mutableListOf()
-    private val areaFlickAnimatorSet by lazy { AnimatorSet() }
+    private var areaFlickAnimatorSet: AnimatorSet? = null
 
     override fun initView(savedInstanceState: Bundle?) {
         /*lifecycle.addObserver(object : DefaultLifecycleObserver {
@@ -77,7 +79,7 @@ abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
         }
 
         mViewModel.cancelAreaFlickAnimLiveData.observe(viewLifecycleOwner) {
-            areaFlickAnimatorSet.cancel()
+            areaFlickAnimatorSet?.cancel()
         }
     }
 
@@ -108,8 +110,8 @@ abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
      */
     private fun playAlphaAnimTogether(dic: List<View>, duration: Long, count: Int) {
         mViewModel.playAlphaAnimationLD.value = true
-        areaFlickAnimatorSet.cancel()
-        val animators = dic.map { maskView ->
+        areaFlickAnimatorSet?.cancel()
+        val animators = (dic.map { maskView ->
             val animator = ObjectAnimator.ofFloat(maskView, "alpha", 1f, 0f, 1f).apply {
                 this.duration = duration // 设置动画持续时间
                 this.repeatCount = count // 设置无限循环
@@ -121,12 +123,14 @@ abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
                 })
             }
             animator
-        }
-        areaFlickAnimatorSet.playTogether(animators)
-        areaFlickAnimatorSet.addListener(onEnd = {
-            mViewModel.playAlphaAnimationLD.value = false
         })
-        areaFlickAnimatorSet.start()
+        areaFlickAnimatorSet = AnimatorSet().apply {
+            playTogether(animators)
+            addListener(onEnd = {
+                mViewModel.playAlphaAnimationLD.value = false
+            })
+            start()
+        }
     }
 
     private fun setMoneyOKClickListener(areaView: GameAreaView) {
