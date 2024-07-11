@@ -139,7 +139,7 @@ class Fast3ViewModel : BaseViewModel() {
     var temporaryCurrentMoney: Int = 500000
 
     /** 开奖动画次数 **/
-    val prizeAnimCount = 15
+    val prizeAnimCount = 5
 
     /**
      * 开奖动画时间(ms)
