@@ -106,7 +106,7 @@ abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
         val animators = (dic.map { maskView ->
             val animator = ObjectAnimator.ofFloat(maskView, "alpha", 1f, 0f, 1f).apply {
                 this.duration = duration // 设置动画持续时间
-                this.repeatCount = count // 设置无限循环
+                this.repeatCount = ValueAnimator.INFINITE // 设置无限循环
                 this.repeatMode = ObjectAnimator.REVERSE // 设置反向循环以实现渐隐渐显效果
                 this.addListener(onStart = {
                     maskView.isVisible = true
