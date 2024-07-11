@@ -93,12 +93,8 @@ abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
         count: Int
     ) {
         val views = mutableListOf<View>()
-        val isLeopard = gameAboutModel.currentSettleResult!!.isLeopard
         for (areaView in areaViewList) {
-            if (isLeopard && areaView.areaInfo is DEFAULT) continue
-            if (isLeopard && areaView.areaInfo is SUM) continue
             if (resultList.contains(areaView.areaInfo)) {
-                //结果中是全豹，大小单双不显示，总和不显示
                 views.add(areaView.flickerView)
             }
         }
