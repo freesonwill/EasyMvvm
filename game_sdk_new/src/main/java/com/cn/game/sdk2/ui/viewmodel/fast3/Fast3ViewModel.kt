@@ -61,6 +61,7 @@ class Fast3ViewModel : BaseViewModel() {
 
     var moneyAnimCallback: MoneyAnimCallback? = null
     val userLotteryResultLiveData: UnPeekLiveData<ArrayList<Betting>> = UnPeekLiveData()
+    val cancelAreaFlickAnimLiveData = UnPeekLiveData<Boolean>()
     val addMoneyOkViewLiveData: UnPeekLiveData<Pair<GameAreaView, ViewGroup>> = UnPeekLiveData()
 
     val homeTimeSeconds: LiveData<Int> = gameAboutModel.countDownSecondsLD
@@ -73,7 +74,7 @@ class Fast3ViewModel : BaseViewModel() {
     }
 
     //游戏状态
-    val gameState: Stage?  get() = gameAboutModel.currentStage.value
+    val gameState: Stage? get() = gameAboutModel.currentStage.value
     var localGameStage: Stage? = null
 
 

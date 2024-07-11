@@ -98,15 +98,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     }
 
     private var mFragList = ArrayList<Fragment>()
-
-
-    //是否执行关闭动画
-    var isExecuteClose: Boolean = true
     private var isBetteUpAnimFirst = true
-
-    // 定义属性动画常量
-    private val SCALE_X = PropertyValuesHolder.ofFloat(View.SCALE_X, 1.0f, 1.3f, 1.0f)
-    private val SCALE_Y = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.0f, 1.3f, 1.0f)
 
     private var homeMorePop: BasePopupView? = null
     private var resultAnim: ValueAnimator? = null
@@ -271,9 +263,12 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             //开始语音
             mDatabind.txtHomeStatic.text = resources.getString(R.string.g_home_txt_please)
             Log.d(TAG, "onStartBetting, isCountDownStart:${mViewModel.isCountDownStart}")
+            //取消注区闪烁
+            mViewModel.cancelAreaFlickAnimLiveData.value = true
+            //重置注区筹码
+            notifyMoneyOkView(null)
             if (mViewModel.isCountDownStart) {
                 Fast3ToastHelper.showToastNormal(getString(R.string.g_home_betting_begin), 2000)
-                //PromptSoundPlay.startGameTip(requireContext())
                 //下注筹码向上升起动画
                 startBetteRecyclerShowOrHideAnim(isShow = true, onStart = {
                     //筹码
@@ -286,8 +281,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     mDatabind.ivHomeBgCenter.isVisible = false
                 })
             }
-            //重置注区筹码
-            notifyMoneyOkView(null)
         }
     }
 
@@ -1164,7 +1157,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 ) {
                     if (gameAboutModel.currentAgainDoubleState.value == GameAboutModel.AgainDoubleState.DOUBLE) {
                         PromptSoundPlay.playAudio()
-                        AnimHelper.doScaleAnim(ivMultiple2)
+                        AnimHelper.doScaleAnimRecovery(ivMultiple2)
                     }
                     GameSocketManager.getInstance()?.getGameService()
                         ?.doubleBetting { bettingState, map, areaLimit ->
@@ -1370,16 +1363,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                         areaView.betteView.translationZ = 0f
                     }
 
-                    val animator = ObjectAnimator.ofPropertyValuesHolder(
-                        areaView.betteView.ivShowBg,
-                        SCALE_X,
-                        SCALE_Y
-                    )
-                    animator.duration = 200
-                    animator.start()
-
-                    //筹码栈处理
-//                addTempMoney(areaView)
+                    AnimHelper.doScaleAnimRecovery(areaView.betteView.ivShowBg)
                 })
         }
 

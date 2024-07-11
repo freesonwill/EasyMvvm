@@ -45,8 +45,10 @@ import kotlin.coroutines.suspendCoroutine
  * author       : zhangsan
  * createTime   : 2024/6/21 18:14
  **/
-abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding>: BaseGameFragment<VM, VB>() {
+abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
+    BaseGameFragment<VM, VB>() {
     protected var areaViewList: MutableList<GameAreaView> = mutableListOf()
+    private val areaFlickAnimatorSet by lazy { AnimatorSet() }
 
     override fun initView(savedInstanceState: Bundle?) {
         /*lifecycle.addObserver(object : DefaultLifecycleObserver {
@@ -73,6 +75,10 @@ abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding>: Bas
         mViewModel.userLotteryResultLiveData.observe(viewLifecycleOwner) { resultList ->
             setLotteryResult(resultList, mViewModel.prizeAnimTime, mViewModel.prizeAnimCount)
         }
+
+        mViewModel.cancelAreaFlickAnimLiveData.observe(viewLifecycleOwner) {
+            areaFlickAnimatorSet.cancel()
+        }
     }
 
     override fun lazyLoadData() {
@@ -86,58 +92,45 @@ abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding>: Bas
         duration: Long,
         count: Int
     ) {
-        lifecycleScope.launch {
-            val views = mutableListOf<View>()
-            val isLeopard = gameAboutModel.currentSettleResult!!.isLeopard
-            for (areaView in areaViewList) {
-                if (isLeopard && areaView.areaInfo is DEFAULT) continue
-                if (isLeopard && areaView.areaInfo is SUM) continue
-                if (resultList.contains(areaView.areaInfo)) {
-                    //结果中是全豹，大小单双不显示，总和不显示
-                    views.add(areaView.flickerView)
-                }
+        val views = mutableListOf<View>()
+        val isLeopard = gameAboutModel.currentSettleResult!!.isLeopard
+        for (areaView in areaViewList) {
+            if (isLeopard && areaView.areaInfo is DEFAULT) continue
+            if (isLeopard && areaView.areaInfo is SUM) continue
+            if (resultList.contains(areaView.areaInfo)) {
+                //结果中是全豹，大小单双不显示，总和不显示
+                views.add(areaView.flickerView)
             }
-            if (views.isNotEmpty()) {
-                playAlphaAnimTogether(views, duration, count)
-            }
+        }
+        if (views.isNotEmpty()) {
+            playAlphaAnimTogether(views, duration, count)
         }
     }
 
     /**
      * 播放透明度动画
      */
-    private suspend fun playAlphaAnimTogether(dic: List<View>, duration: Long, count: Int) {
-        delay(100)
-        suspendCoroutine { continuation ->
-            mViewModel.playAlphaAnimationLD.value = true
-            val animatorSet = AnimatorSet()
-            val animators = dic.map { maskView ->
-                val animator = ObjectAnimator.ofFloat(maskView, "alpha", 1f, 0f, 1f).apply {
-                    this.duration = duration // 设置动画持续时间
-                    this.repeatCount = count // 设置无限循环
-                    this.repeatMode = ObjectAnimator.REVERSE // 设置反向循环以实现渐隐渐显效果
-                    this.addListener(onStart = {
-                        maskView.isVisible = true
-                        Log.d(TAG, "maskView-->${maskView} visible true")
-                    }, onEnd = {
-                        it.cancel()
-                        maskView.isVisible = false
-                        Log.d(TAG, "maskView-->${maskView} visible false")
-                    })
-                }
-                animator
+    private fun playAlphaAnimTogether(dic: List<View>, duration: Long, count: Int) {
+        mViewModel.playAlphaAnimationLD.value = true
+        areaFlickAnimatorSet.cancel()
+        val animators = dic.map { maskView ->
+            val animator = ObjectAnimator.ofFloat(maskView, "alpha", 1f, 0f, 1f).apply {
+                this.duration = duration // 设置动画持续时间
+                this.repeatCount = count // 设置无限循环
+                this.repeatMode = ObjectAnimator.REVERSE // 设置反向循环以实现渐隐渐显效果
+                this.addListener(onStart = {
+                    maskView.isVisible = true
+                }, onEnd = {
+                    maskView.isVisible = false
+                })
             }
-            animatorSet.playTogether(animators)
-            animatorSet.addListener(onEnd = {
-                dic.forEach {
-                    it.isVisible = false
-                    Log.d(TAG, "maskView-->${it} visible false")
-                }
-                continuation.resume("")
-                mViewModel.playAlphaAnimationLD.value = false
-            })
-            animatorSet.start()
+            animator
         }
+        areaFlickAnimatorSet.playTogether(animators)
+        areaFlickAnimatorSet.addListener(onEnd = {
+            mViewModel.playAlphaAnimationLD.value = false
+        })
+        areaFlickAnimatorSet.start()
     }
 
     private fun setMoneyOKClickListener(areaView: GameAreaView) {
