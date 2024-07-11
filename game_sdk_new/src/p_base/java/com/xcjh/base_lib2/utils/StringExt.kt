@@ -1,6 +1,5 @@
 package com.xcjh.base_lib2.utils
 
-import com.google.gson.Gson
 import java.util.regex.Pattern
 
 /**
@@ -42,9 +41,5 @@ fun String?.isEmail(): Boolean {
     }
 }
 
-/**
- * 将对象转为JSON字符串
- */
-fun Any?.toJson():String{
-    return Gson().toJson(this)
-}
+
+

@@ -183,32 +183,26 @@ fun List<Int>.calculateArea(): ArrayList<Betting> {
         when (num1) {
             1 -> {
                 betAreaList.add(BOOM_1())
-                betAreaList.add(DOUBLE_1())
             }
 
             2 -> {
                 betAreaList.add(BOOM_2())
-                betAreaList.add(DOUBLE_2())
             }
 
             3 -> {
                 betAreaList.add(BOOM_3())
-                betAreaList.add(DOUBLE_3())
             }
 
             4 -> {
                 betAreaList.add(BOOM_4())
-                betAreaList.add(DOUBLE_4())
             }
 
             5 -> {
                 betAreaList.add(BOOM_5())
-                betAreaList.add(DOUBLE_5())
             }
 
             6 -> {
                 betAreaList.add(BOOM_6())
-                betAreaList.add(DOUBLE_6())
             }
         }
     }else{
