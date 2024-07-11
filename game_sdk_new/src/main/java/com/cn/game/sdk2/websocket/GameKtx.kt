@@ -176,21 +176,6 @@ fun List<Int>.calculateArea(): ArrayList<Betting> {
     val num3 = this[2]
     val sum = num1 + num2 + num3
     val betAreaList = ArrayList<Betting>()
-    //------默认------
-    //大小
-    val betArea1 = if (sum >= 11) {
-        DEFAULT_BIG()
-    } else {
-        DEFAULT_SMALL()
-    }
-    //单双
-    val betArea2 = if (sum % 2 == 0) {
-        DEFAULT_DOUBLE()
-    } else {
-        DEFAULT_SINGLE()
-    }
-    betAreaList.add(betArea1)
-    betAreaList.add(betArea2)
 
     //豹子
     if (isEquals()) {
@@ -226,6 +211,22 @@ fun List<Int>.calculateArea(): ArrayList<Betting> {
                 betAreaList.add(DOUBLE_6())
             }
         }
+    }else{
+        //------默认------
+        //大小
+        val betArea1 = if (sum >= 11) {
+            DEFAULT_BIG()
+        } else {
+            DEFAULT_SMALL()
+        }
+        //单双
+        val betArea2 = if (sum % 2 == 0) {
+            DEFAULT_DOUBLE()
+        } else {
+            DEFAULT_SINGLE()
+        }
+        betAreaList.add(betArea1)
+        betAreaList.add(betArea2)
     }
     //------总和------排除三个一样的 3 6 9 12 15 18
     when (sum) {
@@ -315,6 +316,7 @@ fun List<Int>.calculateArea(): ArrayList<Betting> {
             }
         }
     }
+
     return betAreaList
 }
 

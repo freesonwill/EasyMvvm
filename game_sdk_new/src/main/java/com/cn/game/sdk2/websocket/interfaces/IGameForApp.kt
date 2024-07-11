@@ -20,6 +20,8 @@ interface IGameForApp {
 
     fun allowedBet(isAllow: Boolean)
 
+    fun isShowHistoryAndCustomer(show: Boolean)
+
     fun createFloatEnterView(context:Context): View
 
     fun createFloatResultView(context:Context): View

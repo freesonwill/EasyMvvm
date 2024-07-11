@@ -117,6 +117,10 @@ object GameApp : IGameForApp {
         gameAboutModel.isAllowedBet(isAllowedBet = isAllow)
     }
 
+    override fun isShowHistoryAndCustomer(show: Boolean) {
+        com.cn.game.sdk2.websocket.isShowHistoryAndCustomer = show
+    }
+
     /**
      * 入口漂浮窗視圖
      */
@@ -194,6 +198,7 @@ object GameApp : IGameForApp {
         fun onGameFloatingDetailViewStatus(isShowUp: Boolean)
 
         fun onInsufficientBalance()
+
     }
 
     interface SocketStatesCallback{
