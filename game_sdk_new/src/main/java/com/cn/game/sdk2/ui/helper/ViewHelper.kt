@@ -1,6 +1,5 @@
 package com.cn.game.sdk2.ui.helper
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Paint
 import android.util.Log
@@ -14,6 +13,8 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.cn.game.sdk2.R
@@ -37,23 +38,41 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNav
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerIndicator
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerTitleView
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.ColorTransitionPagerTitleView
+import java.lang.ref.WeakReference
 
 /**
  * Description:
  * author       : zhangsan
  * createTime   : 2024/6/13 17:43
  **/
-@SuppressLint("StaticFieldLeak")
 object ViewHelper {
     private const val TAG: String = "ViewHelper"
-    private const val TAG_FASTVIEW = "TAG_FASTVIEW"
-    private const val TAG_FASTVIEW_OVERLAY = "TAG_FASTVIEW_OVERLAY"
-    private var homeXPopupDialog: BasePopupView? = null
-    private var helpXPopupDialog: BasePopupView? = null
+    enum class ViewFloatType {
+        FastView,FastViewOverlay,HomeXPopupDialog,HelpXPopupDialog
+    }
 
-    private var fastView:View? = null
-    private var  fastViewOverlay:View? = null
+    //弱引用防止view不能被回收
+    private var viewHolderMap = mutableMapOf<ViewFloatType,WeakReference<View>>()
+
+    private var homeXPopupDialog: BasePopupView?
+        get() = viewHolderMap[ViewFloatType.HomeXPopupDialog]?.get() as BasePopupView?
+        set(value) { viewHolderMap[ViewFloatType.HomeXPopupDialog] = WeakReference(value)}
+
+    private var helpXPopupDialog: BasePopupView?
+        get() = viewHolderMap[ViewFloatType.HelpXPopupDialog]?.get() as BasePopupView?
+        set(value) { viewHolderMap[ViewFloatType.HelpXPopupDialog] = WeakReference(value)}
+
+    private var fastView:View?
+        get() = viewHolderMap[ViewFloatType.FastView]?.get()
+        set(value) { viewHolderMap[ViewFloatType.FastView] = WeakReference(value)}
+
+    private var fastViewOverlay:View?
+        get() = viewHolderMap[ViewFloatType.FastViewOverlay]?.get()
+        set(value) { viewHolderMap[ViewFloatType.FastViewOverlay] = WeakReference(value)}
+
+    //是否显示其他pop
     var isShowOtherPop:Boolean = false
+
     /**
      * 显示帮助文档
      */
@@ -81,7 +100,7 @@ object ViewHelper {
                     helpXPopupDialog = null
                 }
             })
-             //.customAnimator(EmptyAnimator(bubbleAttach, 0))
+            //.customAnimator(EmptyAnimator(bubbleAttach, 0))
             .navigationBarColor(android.R.color.transparent)
             .hasShadowBg(false) // 去掉半透明背景
             .isViewMode(true)
@@ -91,7 +110,18 @@ object ViewHelper {
             .enableDrag(true)
             .dismissOnTouchOutside(true)
             .asCustom(Fast3HelpPopup(context, offsetY,height))
-        helpXPopupDialog?.show()
+            .apply {
+                if(context is LifecycleOwner) { //宿主销毁了，静态引用置null
+                    context.lifecycle.addObserver(object :DefaultLifecycleObserver{
+                        override fun onDestroy(owner: LifecycleOwner) {
+                            super.onDestroy(owner)
+                            dismiss()
+                            helpXPopupDialog = null
+                        }
+                    })
+                }
+            }
+            .show()
     }
 
 
@@ -137,6 +167,18 @@ object ViewHelper {
             .enableDrag(true)
             .dismissOnTouchOutside(true)
             .asCustom(pop)
+            .apply {
+                //宿主销毁了，
+                if(context is LifecycleOwner) {
+                    context.lifecycle.addObserver(object :DefaultLifecycleObserver{
+                        override fun onDestroy(owner: LifecycleOwner) {
+                            super.onDestroy(owner)
+                            dismiss()
+                            homeXPopupDialog = null
+                        }
+                    })
+                }
+            }
             .show()
     }
 
@@ -157,6 +199,15 @@ object ViewHelper {
                 }
                 showFastViewPop(context,true)
             }
+        }.apply {
+            if(context is LifecycleOwner) {
+                context.lifecycle.addObserver(object :DefaultLifecycleObserver{
+                    override fun onDestroy(owner: LifecycleOwner) {
+                        super.onDestroy(owner)
+                        fastView = null
+                    }
+                })
+            }
         }
     }
 
@@ -168,6 +219,15 @@ object ViewHelper {
             lp.height = ViewGroup.LayoutParams.WRAP_CONTENT
             it.layoutParams = lp
             fastViewOverlay = it
+        }.apply {
+            if(context is LifecycleOwner) {
+                context.lifecycle.addObserver(object :DefaultLifecycleObserver{
+                    override fun onDestroy(owner: LifecycleOwner) {
+                        super.onDestroy(owner)
+                        fastViewOverlay = null
+                    }
+                })
+            }
         }
     }
 

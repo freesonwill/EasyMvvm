@@ -19,6 +19,7 @@ import com.cn.game.sdk2.websocket.imp.GameApp
 import com.cn.game.sdk2.websocket.isTokenValid
 import com.cn.game.sdk2.websocket.token
 import com.cn.game.sdk2.websocket.tokenArray
+import com.xcjh.base_lib2.utils.LogUtils
 import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
@@ -102,9 +103,6 @@ class MainActivity : AppCompatActivity() {
         gameAboutModel.isEnterGroup.observe(this){result->
             if(result){
                 btnOpen.text = "已进入直播间"
-                //GameApp.enterLive("1213", listOf(1), "")
-                /*ViewHelper.showFastView(this)
-                ViewHelper.showFastViewOverlay(this)*/
                 GameApp.createFloatEnterView(this@MainActivity).apply {
                     if(!this.isAdd()) {
                         val lp = RelativeLayout.LayoutParams(layoutParams.width, layoutParams.height)
@@ -138,4 +136,6 @@ class MainActivity : AppCompatActivity() {
 //        MyWsManager.getInstance(this)?.initService()
 
     }
+
+
 }
