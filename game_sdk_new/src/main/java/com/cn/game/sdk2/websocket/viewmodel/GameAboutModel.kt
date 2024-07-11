@@ -49,6 +49,11 @@ class GameAboutModel : BaseViewModel() {
     private val _isAllowedBet = MutableLiveData<Boolean>()
 
     var isOpen:Boolean = false
+    //主播端只能看到"热门"游戏分类，"热门"分类中以后只会放sdk游戏，在大厅弹窗处，主播端看不到其他的tab和瓦力游戏。
+    var isAnchor: Boolean = false
+
+    //如果不需要显示(isShowHistoryAndCustomer = false)，则主播端的更多只显示切换游戏和帮助。
+    var isShowHistoryAndCustomer: Boolean = true
 
     /** 需要监听的字段
      * @see currentAgainDoubleState 续压和加倍监听
