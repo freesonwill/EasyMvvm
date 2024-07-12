@@ -11,7 +11,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.get
 import com.cn.game.sdk2.data.bean.LocationClickPoint
-import com.cn.game.sdk2.ui.helper.ViewHelper.isAdd
+import com.cn.game.sdk2.utils.ext.ViewExt.isAdd
 import com.cn.game.sdk2.ui.view.BetteView
 import com.cn.game.sdk2.ui.view.MoneyOKView
 import com.cn.game.sdk2.websocket.bean.Betting

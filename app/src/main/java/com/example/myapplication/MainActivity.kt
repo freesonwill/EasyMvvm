@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 
-import com.cn.game.sdk2.ui.helper.ViewHelper.isAdd
+import com.cn.game.sdk2.utils.ext.ViewExt.isAdd
 import com.cn.game.sdk2.ui.view.FastLogoView
 import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
 import com.cn.game.sdk2.websocket.GameSocketManager

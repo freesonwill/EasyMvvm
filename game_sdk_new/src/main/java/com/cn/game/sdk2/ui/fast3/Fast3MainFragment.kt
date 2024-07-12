@@ -47,7 +47,7 @@ import com.cn.game.sdk2.ui.helper.ViewHelper
 import com.cn.game.sdk2.ui.helper.ViewHelper.bindViewPagerNewGame
 import com.cn.game.sdk2.ui.helper.ViewHelper.initGameViewPager
 import com.cn.game.sdk2.ui.helper.ViewHelper.initGameViewPager2
-import com.cn.game.sdk2.ui.helper.ViewHelper.isAdd
+import com.cn.game.sdk2.utils.ext.ViewExt.isAdd
 import com.cn.game.sdk2.ui.view.CenterLayoutManager
 import com.cn.game.sdk2.ui.view.ClickRecyclerView
 import com.cn.game.sdk2.ui.view.CommonLinearLayoutItemDecoration

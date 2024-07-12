@@ -387,8 +387,6 @@ object ViewHelper {
         }
     }
 
-    fun View.isAdd(): Boolean {
-        return parent != null
-    }
+
 
 }

@@ -19,7 +19,7 @@ import com.cn.game.sdk2.base.BaseGameFragment
 import com.cn.game.sdk2.data.EventKey
 import com.cn.game.sdk2.data.bean.SelectAnnotationBean
 import com.cn.game.sdk2.databinding.FragDxdsBinding
-import com.cn.game.sdk2.ui.helper.ViewHelper.isAdd
+import com.cn.game.sdk2.utils.ext.ViewExt.isAdd
 import com.cn.game.sdk2.ui.view.MoneyOKView
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel

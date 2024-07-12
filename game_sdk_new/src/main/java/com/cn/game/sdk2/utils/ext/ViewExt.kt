@@ -141,4 +141,8 @@ object ViewExt {
             }
         })
     }
+
+    fun View.isAdd(): Boolean {
+        return parent != null
+    }
 }
