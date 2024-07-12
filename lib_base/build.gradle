@@ -46,6 +46,7 @@ android {
 dependencies {
     api Libs.blankj
     api Libs.immersionbar
+    implementation Libs.google_gson
     implementation Libs.viewModelScope
     //base dependencies
     implementation Libs.core_ktx
