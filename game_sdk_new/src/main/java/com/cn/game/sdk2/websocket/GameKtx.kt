@@ -2,6 +2,7 @@ package com.cn.game.sdk2.websocket
 
 import android.content.Context
 import android.util.Log
+import com.cn.game.sdk2.BuildConfig
 import com.cn.game.sdk2.ui.fast3.Fast3MainFragment
 import com.cn.game.sdk2.websocket.bean.AreaBetConfigBean
 import com.cn.game.sdk2.websocket.bean.BOOM_1
@@ -82,10 +83,16 @@ val tokenArray = listOf(
     "51:Ja9L1rG6",
     "35:BIyxvrqa",
 )
-var token = "93:Ufx3Dy8y"
+@Suppress("KotlinConstantConditions")
+val token:String
     get() {
-        return field
-        //return tokenArray[Random.nextInt(tokenArray.size)]
+        return when(BuildConfig.BUILD_TYPE) {
+            "debug" -> { "93:Ufx3Dy8y" }
+            "innerTest" ->{ "99:mFGB4ljy" }
+            "outerTest" ->{ tokenArray[Random.nextInt(tokenArray.size)] }
+            "release" -> { "87:MHxIHlYM" }
+            else -> throw IllegalStateException("wrong buildType:${BuildConfig.BUILD_TYPE}")
+        }
     }
 var isLogin = false
 var isEnterRoom = false

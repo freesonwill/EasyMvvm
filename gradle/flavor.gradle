@@ -1,0 +1,79 @@
+android {
+    signingConfigs {
+        debug {
+            storeFile rootProject.file("./signkey/luxury.jks")
+            storePassword 'U2FsdGVkX1+nsvNfay+HY+ZV7+PBCPQ/U4DxUcexcsRSTklt3ENBUI3bjnakU6r3MElrzVEE8tYRXqPY'
+            keyAlias 'luxury'
+            keyPassword 'U2FsdGVkX19yWd+2zN/duoR4/Ea+FFfoFayKdILoZv/+y6kcsGgnU0VveJeiq1ULKtMnpwrjIKDynp37'
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
+        outerTest {
+            storeFile rootProject.file("./signkey/luxury.jks")
+            storePassword 'U2FsdGVkX1+nsvNfay+HY+ZV7+PBCPQ/U4DxUcexcsRSTklt3ENBUI3bjnakU6r3MElrzVEE8tYRXqPY'
+            keyAlias 'luxury'
+            keyPassword 'U2FsdGVkX19yWd+2zN/duoR4/Ea+FFfoFayKdILoZv/+y6kcsGgnU0VveJeiq1ULKtMnpwrjIKDynp37'
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
+        innerTest {
+            storeFile rootProject.file("./signkey/luxury.jks")
+            storePassword 'U2FsdGVkX1+nsvNfay+HY+ZV7+PBCPQ/U4DxUcexcsRSTklt3ENBUI3bjnakU6r3MElrzVEE8tYRXqPY'
+            keyAlias 'luxury'
+            keyPassword 'U2FsdGVkX19yWd+2zN/duoR4/Ea+FFfoFayKdILoZv/+y6kcsGgnU0VveJeiq1ULKtMnpwrjIKDynp37'
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
+        release {
+            storeFile rootProject.file("./signkey/luxury.jks")
+            storePassword 'U2FsdGVkX1+nsvNfay+HY+ZV7+PBCPQ/U4DxUcexcsRSTklt3ENBUI3bjnakU6r3MElrzVEE8tYRXqPY'
+            keyAlias 'luxury'
+            keyPassword 'U2FsdGVkX19yWd+2zN/duoR4/Ea+FFfoFayKdILoZv/+y6kcsGgnU0VveJeiq1ULKtMnpwrjIKDynp37'
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
+    }
+
+    buildTypes {
+        debug {
+            zipAlignEnabled true
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            //buildConfigField "String", "token","\"87:MHxIHlYM\""
+            jniDebuggable true
+            signingConfig signingConfigs.debug
+        }
+
+
+        release {
+            zipAlignEnabled true
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            //buildConfigField "String", "token","\"random\""
+            signingConfig signingConfigs.release
+        }
+
+        //测试专用
+        innerTest {
+            zipAlignEnabled true
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            //buildConfigField "String", "token","\"99:mFGB4ljy\""
+            jniDebuggable true
+            signingConfig signingConfigs.innerTest
+        }
+
+        //随机token
+        outerTest {
+            zipAlignEnabled true
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            //buildConfigField "String", "token","\"random\""
+            jniDebuggable true
+            signingConfig signingConfigs.outerTest
+        }
+
+    }
+
+
+}
