@@ -1,31 +1,21 @@
 package com.xcjh.app.utils
 
-import ando.widget.pickerview.builder.OptionsPickerBuilder
 import android.content.Context
-import android.graphics.Color
 import android.os.Build
-import android.os.Handler
-import android.os.Looper
-import android.os.Message
-import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.FragmentActivity
 import com.github.gzuliyujiang.wheelpicker.entity.DateEntity
 import com.github.gzuliyujiang.wheelview.annotation.CurtainCorner
-import com.google.gson.Gson
 import com.lxj.xpopup.core.BottomPopupView
 import com.lxj.xpopup.util.XPopupUtils
 import com.xcjh.app.R
-import com.xcjh.app.bean.JsonBean
 import com.xcjh.app.listener.OnChooseDateListener
 import com.xcjh.app.view.MyDateWheelLayout
 //import com.xcjh.app.view.MyDateWheelLayout
 import com.xcjh.base_lib.utils.LogUtils
 import com.xcjh.base_lib.utils.TimeUtil
-import org.json.JSONArray
 
 /**
  * Description: 自定义带有ViewPager的Bottom弹窗

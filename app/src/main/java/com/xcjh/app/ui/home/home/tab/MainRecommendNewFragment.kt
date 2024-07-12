@@ -605,7 +605,7 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
 
     override fun onResume() {
         super.onResume()
-
+        mViewModel.getBannerList()
     }
 
 
@@ -620,6 +620,10 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
             mViewModel.getBannerList()
             mViewModel.getOngoingMatchList(HotReq())
             mViewModel.getNowLive(true)
+        }
+
+        appViewModel.homeBannerEvent.observe(this){
+            mViewModel.getBannerList()
         }
 
         //获取首页的热门比赛
@@ -1206,8 +1210,15 @@ class MainRecommendNewFragment : BaseFragment<MainRecommendNewVm, FragmentMainRe
                             R.id.llcClickRecommended.onClick {
                                 SoundManager.playMedia()
                                 val bean=_data as MatchBean
-
-                                MatchDetailActivity.open(matchType =bean.matchType, matchId = bean.matchId,matchName = "${bean.homeName}VS${bean.awayName}", isToggle = true)
+                                MatchDetailActivity.open(
+                                    matchType = bean.matchType,
+                                    matchId = bean.matchId,
+                                    matchName = "${bean.homeName}VS${bean.awayName}",
+                                    anchorId = "",
+                                    videoUrl = "",
+                                    isToggle = true
+                                )
+//                                MatchDetailActivity.open(matchType =bean.matchType, matchId = bean.matchId,matchName = "${bean.homeName}VS${bean.awayName}", isToggle = true)
 
 //                                 if(bean.anchorList!=null&&bean.anchorList.size>=1){
 //                                    MatchDetailActivity.open(matchType =bean.matchType, matchId = bean.matchId,matchName = "${bean.homeName}VS${bean.awayName}", anchorId = bean.anchorList[0].userId )

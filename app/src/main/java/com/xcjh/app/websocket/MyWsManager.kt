@@ -6,6 +6,8 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread
 import com.drake.engine.base.app
 import com.google.gson.Gson
 import com.xcjh.app.R
@@ -35,6 +37,7 @@ import kotlinx.coroutines.launch
 import org.java_websocket.client.WebSocketClient
 import org.java_websocket.exceptions.WebsocketNotConnectedException
 import org.java_websocket.handshake.ServerHandshake
+import org.junit.runner.RunWith
 import java.net.URI
 import java.nio.ByteBuffer
 import java.util.concurrent.ScheduledExecutorService
@@ -399,8 +402,8 @@ class MyWsManager private constructor(private val mContext: Context) {
         try {
             if (null != client && client?.isOpen == true) {
                 msg.loge("===sendMessage==")
-                client?.send(msg)
-
+               var dd= client?.send(msg)
+                Log.i("SDSDSDSDS","==========="+dd)
             }
         }catch (_:Exception){
 
@@ -554,7 +557,7 @@ class MyWsManager private constructor(private val mContext: Context) {
         }
     }
     /**
-     * 初始化websocket连接
+     * 初始化websocket连接   @OptIn(DelicateCoroutinesApi::class)
      */
     @OptIn(DelicateCoroutinesApi::class)
     private fun initSocketClient() {
@@ -591,10 +594,17 @@ class MyWsManager private constructor(private val mContext: Context) {
             override fun onOpen(handshakedata: ServerHandshake) {
                 "websocket连接成功wsStatus===${appViewModel.wsStatusOpen.value}".loge("MyWsClient===")
                 if (CacheUtil.isLogin()) {
-                    GlobalScope.launch {
-                        delay(2000)
+                    runOnUiThread {
+                        GlobalScope.launch {
+                            delay(2000)
                         onWsUserLogin() {}
+                        }
+
                     }
+//                    GlobalScope.launch {
+//                        delay(2000)
+//                        onWsUserLogin() {}
+//                    }
                 }
 
                 appViewModel.wsStatusOpen.postValue(true)
@@ -611,7 +621,7 @@ class MyWsManager private constructor(private val mContext: Context) {
             }
 
             override fun onError(ex: java.lang.Exception?) {
-
+                    Log.i("GEGEG","sdd===="+ex)
             }
         }
 
@@ -628,6 +638,7 @@ class MyWsManager private constructor(private val mContext: Context) {
                 try {
                     client?.connectionLostTimeout = 0
                     client?.addHeader("domain", getDomain())
+                    client?.addHeader("app-version", "app-Android")
                     //connectBlocking多出一个等待操作，会先连接再发送，否则未连接发送会报错
                     client!!.connectBlocking()
                     //client!!.connect()
@@ -686,7 +697,6 @@ class MyWsManager private constructor(private val mContext: Context) {
             client = null
         }
     }
-
     private val mHandler: Handler = Handler(Looper.myLooper()!!)
     private val heartBeatRunnable: Runnable = object : Runnable {
         override fun run() {

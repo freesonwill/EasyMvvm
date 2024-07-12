@@ -61,6 +61,9 @@ import com.xcjh.app.utils.CacheUtil
 import com.xcjh.app.utils.SoundManager
 import com.xcjh.app.utils.getVerName
 import com.xcjh.app.utils.judgeLogin
+import com.xcjh.app.utils.onWsUserLogin
+import com.xcjh.app.view.LiveOpenPopup
+import com.xcjh.app.view.PopupKickOut
 import com.xcjh.app.vm.MainVm
 import com.xcjh.app.websocket.MyWsManager
 import com.xcjh.app.websocket.listener.NoReadMsgPushListener
@@ -119,6 +122,21 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         showStatusBar()
 
 
+//        mDatabind.btnClick.clickNoRepeat {
+//
+//          var  showDialog= LiveOpenPopup(this)
+//          var  popwindow= XPopup.Builder(this)
+//                .hasShadowBg(true)
+//                .moveUpToKeyboard(false) //如果不加这个，评论弹窗会移动到软键盘上面
+//                .isViewMode(false)
+//                .isClickThrough(false)
+//                .dismissOnBackPressed(false)
+//                .dismissOnTouchOutside(false)
+//                .isDestroyOnDismiss(false) //对于只使用一次的弹窗，推荐设置这个
+//                //                        .isThreeDrag(true) //是否开启三阶拖拽，如果设置enableDrag(false)则无效
+//                .asCustom(showDialog)
+//            popwindow.show()
+//        }
         //初始化提示音类
         SoundManager.initialize(appContext)
 
@@ -207,35 +225,68 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
          }*/
 
 
-//        ChangeHostUtil().getHostList { appHost ->
-//            appHost?.let { host ->
-//                host.shareUrl?.let {
-//                    ApiComService.SHARE_URL = it
-//                }
-//                host.domainUrl?.let { bean ->
-//                    ApiComService.SERVER_URL = "${ApiComService.HTTP_HEAD}${bean}/apis/"
-//                    ApiComService.WEB_SOCKET_URL= "ws://${bean}/ws-sports-chat"
-//                }
-//
-//            }
-//            runOnUiThread {
-//                Constants.isLoading = true
-//                onIntent(intent)
-//                initUI()
-//                initTime()
-//                initWs()
-//            }
+        ChangeHostUtil().getHostList { appHost ->
+            appHost?.let { host ->
+                host.shareUrl?.let {
+                    ApiComService.SHARE_URL = it
+
+                    //
+                }
+                host.domainUrl?.let { bean ->
+                    ApiComService.DOMAIN_URL = bean
+                    ApiComService.SERVER_URL = "${bean}/apis/"
+                    var hppt=determineProtocol(bean)
+                    //判断是否是http或者https来拼接聊天的头部
+                    if(hppt.equals("HTTP")){
+                        //去掉了端口号
+                        var remove=removePortFromUrl(bean)
+                        //获取到需要去掉http 的纯域名
+                        ApiComService.DOMAIN_HEAD = remove.replaceFirst("^https?://".toRegex(), "")
+                        ApiComService.WEB_SOCKET_URL= "ws://${ApiComService.DOMAIN_HEAD}:6006/ws-sports-chat"
+                    }else{
+                        ApiComService.WEB_SOCKET_URL= "wss://${ApiComService.DOMAIN_HEAD}/ws-sports-chat"
+                    }
+
+
+
+                }
+
+            }
+            runOnUiThread {
+                Constants.isLoading = true
+                onIntent(intent)
+                initUI()
+                initTime()
+                initWs()
+            }
+        }
+
+//        runOnUiThread {
+//            Constants.isLoading = true
+//            onIntent(intent)
+//            initUI()
+//            initTime()
+//            initWs()
 //        }
-     
 
-        Constants.isLoading = true
-        onIntent(intent)
-        initUI()
-        initTime()
-        initWs()
 
+//        Constants.isLoading = true
+//        onIntent(intent)
+//        initUI()
+//        initTime()
+//        initWs()
         //极光推送绑定用户
         val registrationId: String = MTCorePrivatesApi.getRegistrationId(this)
+//        var newyi="http://www.baidu.com"
+//        var newer="https://www.baidu.com"
+//        var newSAn="httdfdfdps://www.baidu.com"
+//        Log.i("BDBBRBGFBGBGBG","====="+newyi.replaceFirst("^https?://".toRegex(), ""))
+//        Log.i("BDBBRBGFBGBGBG","====="+newer.replaceFirst("^https?://".toRegex(), ""))
+//        Log.i("BDBBRBGFBGBGBG","====="+newSAn.replaceFirst("^https?://".toRegex(), ""))
+
+
+
+
 
 
     }
@@ -354,6 +405,8 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         if (CacheUtil.isLogin()) {
             mViewModel.getUserInfo()
             mViewModel.jPushBind(MTCorePrivatesApi.getRegistrationId(this))
+        }else{
+            mViewModel.touristAdd()
         }
         // 创建 Timer 对象
         timer = Timer()
@@ -429,6 +482,8 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         appViewModel.updateLoginEvent.observeForever() {
             if (it) {
                 mViewModel.getUserInfo()
+            }else{
+                mViewModel.touristAdd()
             }
         }
         /**
@@ -596,6 +651,7 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         }
 
         if (pos == 0 && currentPage != pos) {
+            appViewModel.homeBannerEvent.postValue(true)
             mDatabind.ivHomeMain.setAnimation("tab_shouye_icon.json")
             mDatabind.ivHomeMain.playAnimation()
             mDatabind.ivHomeCourse.setImageDrawable(
@@ -953,5 +1009,33 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         }
     }
 
+    /**
+     * 判断是域名还是ip的
+     */
+    fun determineProtocol(url: String): String {
+        return when {
+            url.startsWith("https", ignoreCase = true) -> "HTTPS"
+            url.startsWith("http", ignoreCase = true) -> "HTTP"
+            else -> "Unknown"
+        }
+    }
+
+    /**
+     * 去掉端口号
+     */
+    fun removePortFromUrl(url: String): String {
+        // 找到端口号的位置
+        val portIndex = url.lastIndexOf(':')
+        if (portIndex != -1) {
+            // 找到第一个斜杠，以确定端口号结束位置
+            val slashIndex = url.indexOf('/', portIndex)
+            if (slashIndex != -1) {
+                // 去掉端口号部分
+                return url.substring(0, portIndex) + url.substring(slashIndex)
+            }
+        }
+        // 如果没有斜杠，直接去掉端口号
+        return url.substring(0, url.lastIndexOf(':'))
+    }
 
 }

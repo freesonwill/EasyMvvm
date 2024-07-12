@@ -18,6 +18,8 @@ import com.kongzue.dialogx.dialogs.CustomDialog
 import com.kongzue.dialogx.interfaces.BaseDialog
 import com.kongzue.dialogx.interfaces.OnBindView
 import com.lxj.xpopup.XPopup
+import com.lxj.xpopup.core.BasePopupView
+import com.lxj.xpopup.core.BottomPopupView
 import com.xcjh.app.R
 import com.xcjh.app.bean.AnchorListBean
 import com.xcjh.app.view.MyDateWheelLayout
@@ -385,12 +387,13 @@ fun delFriDilog(context: Context, block: (isSure: Boolean) -> Unit) {
 var bottomDoalog: BottomDialog?=null
 
   var popup: SignalPopupList? = null
+var signalPopup: BasePopupView?=null
 
 fun showSignalPopup(
     context: Context, anchorList: List<AnchorListBean>?,
     action: (AnchorListBean, Int) -> Unit, clickDismiss: () -> Unit){
     popup = SignalPopupList(context,anchorList!!)
-    var popwindow = XPopup.Builder(context)
+    signalPopup = XPopup.Builder(context)
         .hasShadowBg(true)
         .moveUpToKeyboard(false) //如果不加这个，评论弹窗会移动到软键盘上面
         .isViewMode(true)
@@ -409,10 +412,24 @@ fun showSignalPopup(
     }
 
 
-    if(!popwindow.isShow){
-        popwindow.show()
+    if(!signalPopup!!.isShow){
+        signalPopup!!.show()
      }
     }
+
+/**
+ * 关闭信号源弹窗
+ */
+fun closeSignalPopup(clickDismiss: () -> Unit){
+    if(signalPopup!=null){
+        if( signalPopup!!.isShow){
+            signalPopup!!.dismiss()
+
+        }
+    }
+    clickDismiss.invoke()
+
+}
 
 
 /**

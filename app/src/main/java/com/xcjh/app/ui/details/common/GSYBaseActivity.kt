@@ -37,7 +37,7 @@ abstract class GSYBaseActivity<VM : BaseViewModel, DB : ViewDataBinding,T : GSYB
     protected var isLock=false
     //是否全屏
     private  var isFullScreen=false
-    //是否横屏
+    //是否横屏是在聊天列表使用的聊天列表的视频不能横屏播放
     private  var isLandscape=true
     //是否正在播放
     private  var isResume=false

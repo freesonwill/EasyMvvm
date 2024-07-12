@@ -2,6 +2,8 @@ package com.xcjh.app.utils
 
 import android.text.TextUtils
 import android.util.Log
+import androidx.lifecycle.lifecycleScope
+import androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tencent.mmkv.MMKV
@@ -12,6 +14,10 @@ import com.xcjh.app.bean.MsgBeanData
 import com.xcjh.app.bean.UserInfo
 import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.network.cookie.CookieManger
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 object CacheUtil {
     /**
@@ -97,7 +103,12 @@ object CacheUtil {
         if (isLogin && login != null) {
 
             saveToken(login.tokenValue)
-            onWsUserLogin(){}
+
+            runOnUiThread {
+                onWsUserLogin(){}
+
+            }
+//            onWsUserLogin(){}
         } else {
             saveToken("")
             onWsUserLoginOut(){}

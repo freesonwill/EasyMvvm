@@ -51,6 +51,7 @@ import com.xcjh.app.ui.details.common.GSYBaseActivity
 import com.xcjh.app.ui.details.fragment.*
 import com.xcjh.app.utils.*
 import com.xcjh.app.utils.TimeUtil
+import com.xcjh.app.view.LiveOpenPopup
 import com.xcjh.app.view.PopupKickOut
 import com.xcjh.app.view.PopupSelectProjection
 import com.xcjh.app.view.balldetail.ControlShowListener
@@ -125,6 +126,12 @@ class MatchDetailActivity :
 
     //弹出搜索框
     private var popup: PopupSelectProjection? = null
+
+    /**
+     * 主播开播的时候弹出的弹出框
+     */
+    private var lveOpenPopup: LiveOpenPopup? = null
+    private var lveOpenWindow: BasePopupView? = null
 
     //投屏需要的对象
     private var control: DeviceControl? = null
@@ -258,12 +265,14 @@ class MatchDetailActivity :
 
 
 
-
-
-
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
+
+        mDatabind.btnClick.clickNoRepeat {
+            Log.i("CCCCCC","-======="+mDatabind.videoPlayer.isIfCurrentIsFullscreen)
+        }
+
         ImmersionBar.with(this).statusBarDarkFont(false)//白色
             .navigationBarColor(R.color.c_181819)
             .navigationBarDarkIcon(false)
@@ -272,7 +281,6 @@ class MatchDetailActivity :
             SoundManager.playMedia()
             finish()
         }
-
 
 //        //打开SDK
 //        try {
@@ -302,6 +310,7 @@ class MatchDetailActivity :
         appViewModel.landscapeShareEvent.observe(this) {
             if (topActivity) {
                 if (it == 1) {
+
                     lifecycleScope.launch {
                         // 在这里执行协程操作
                         setShareDate()
@@ -544,8 +553,9 @@ class MatchDetailActivity :
             override fun onUserIsKicked() {
                 super.onUserIsKicked()
                 if (mDatabind.videoPlayer.isIfCurrentIsFullscreen) {
-                    mDatabind.videoPlayer.exitFullScreen()
-                    mDatabind.videoPlayer.customPlayer!!.exitFullScreen()
+//                    mDatabind.videoPlayer.exitFullScreen()
+//                    mDatabind.videoPlayer.customPlayer!!.exitFullScreen()
+                    mDatabind.videoPlayer.currentPlayer.fullscreenButton.performClick()
                 }
 
 
@@ -553,6 +563,9 @@ class MatchDetailActivity :
         })
         MyWsManager.getInstance(App.app)
             ?.setLiveStatusListener(this.toString(), object : LiveStatusListener {
+                /**
+                 * 主播开播
+                 */
                 override fun onOpenLive(bean: LiveStatus) {
                     if (matchId == bean.matchId) {
                         if (anchor?.userId == bean.anchorId) {
@@ -627,7 +640,7 @@ class MatchDetailActivity :
                                 startVideo(bean.playUrl)
                             }
                         } else {
-                            //是否只有一个纯净流 true是只有一个
+                            //是否只有纯净流
                             var isPure=true
                             if(matchDetail.anchorList!=null){
                                 matchDetail.anchorList!!.forEach {
@@ -659,19 +672,25 @@ class MatchDetailActivity :
                                     )
                                 )
                             }
-                            //ss
+
                             if(isPure&&pureFlow){
                                 if (mDatabind.videoPlayer.isIfCurrentIsFullscreen) {
-                                    mDatabind.videoPlayer.exitFullScreen()
+//                                    mDatabind.videoPlayer.exitFullScreen()
+                                    mDatabind.videoPlayer.currentPlayer.fullscreenButton.performClick()
                                 }
 //                                GlobalScope.launch(Dispatchers.Main) { // 使用主线程的调度器
 //                                    delay(500L) // 延迟1秒（1000毫秒）
 //                                    showSignal()
 //                                }
-                                lifecycleScope.launch {
-                                    delay(500L) // 延迟1秒（1000毫秒）
-                                    showSignal()
+
+                                closeSignalPopup(){
+                                    lifecycleScope.launch {
+                                        delay(500L) // 延迟1秒（1000毫秒）
+                                        notificationLive(bean.nickName)
+//                                    showSignal()
+                                    }
                                 }
+
                             }
 
                             matchDetail.anchorList?.sortByDescending {
@@ -1024,6 +1043,8 @@ class MatchDetailActivity :
         if (matchDetail.anchorList?.isNotEmpty() == true) {
             //  showSignalDialog   showSignalPopup    //选择投屏的时候不允许横屏
             //        this.setIsLandscape(false)
+            var isEnable:Boolean=false
+            isEnable= orientationUtils?.isEnable!!
             this.setIsLandscape(false)
             showSignalPopup(this,matchDetail.anchorList,
                 { anchor, pos ->
@@ -1090,7 +1111,7 @@ class MatchDetailActivity :
                     changeUI()
 
                 },{
-                    this.setIsLandscape( orientationUtils!!.isEnable)
+                    this.setIsLandscape( isEnable)
 
                 })
 
@@ -1252,7 +1273,8 @@ class MatchDetailActivity :
                 if (mDatabind.videoPlayer.isIfCurrentIsFullscreen) {
 ////                    isShowVideo = false
 //                    showHideLive(true)
-                    mDatabind.videoPlayer.exitFullScreen()
+//                    mDatabind.videoPlayer.exitFullScreen()
+                    mDatabind.videoPlayer.currentPlayer.fullscreenButton.performClick()
 
                 }
 
@@ -1549,11 +1571,16 @@ class MatchDetailActivity :
         //固定广告
         mViewModel.showAd.observe(this) { ad ->
             ad.data.notNull({ bean ->
-                mDatabind.ivShowAd.visibleOrGone(true)
-                loadImage(this, ad.data?.imgUrl, mDatabind.ivShowAd, R.drawable.ic_ad_def)
-                mDatabind.ivShowAd.setOnClickListener {
-                    jumpOutUrl(bean.targetUrl)
+                if(bean.imgUrl!=null&&bean.imgUrl.isNotEmpty()){
+                    mDatabind.ivShowAd.visibleOrGone(true)
+                    loadImage(this, ad.data?.imgUrl, mDatabind.ivShowAd, R.drawable.ic_ad_def)
+                    mDatabind.ivShowAd.setOnClickListener {
+                        jumpOutUrl(bean.targetUrl)
+                    }
+                }else{
+                    mDatabind.ivShowAd.visibleOrGone(false)
                 }
+
             })
         }
         //主播详情接口返回监听处理
@@ -1612,17 +1639,7 @@ class MatchDetailActivity :
                     val random = (0..list.size).random() % list.size
 //                    mDatabind.marqueeView.text = list[random].name
                     mDatabind.marqueeView.setContent(list[random].name)
-//                    mDatabind.marqueeView.text = "sdsaads私发赛时间if集上u覅是季师傅寄宿费急速衣服is发送发送是否sdsaads私发赛时间if集上u覅是季师傅寄宿费急速衣服is发送发送是否"
 
-
-//                    mDatabind.marqueeView.setMarqueeText("福建省开福寺寄顺丰私发极速发思服饰易师傅寄宿费私发㕕付师傅随时覅111111")
-
-//                    GlobalScope.launch(Dispatchers.Main) { // 使用主线程的调度器
-//                        delay(2000L) // 延迟1秒（1000毫秒）
-//                        mDatabind.marqueeView.visibility=View.VISIBLE
-//
-//                    }
-                    /*+"                                                                                             "*/
                     mDatabind.marqueeView.setOnClickListener {
                         //点击视频广告
 //                        jumpOutUrl(list[random].targetUrl)
@@ -2266,6 +2283,59 @@ class MatchDetailActivity :
             popwindowFinish!!.show()
         }
     }
+    /**
+     * 通知主播开播弹框
+     */
+    fun  notificationLive(name:String){
+        var isEnable:Boolean=false
+        if(lveOpenPopup==null){
+            lveOpenPopup= LiveOpenPopup(this,name)
+            lveOpenWindow= XPopup.Builder(this).hasShadowBg(true)
+                .moveUpToKeyboard(false) //如果不加这个，评论弹窗会移动到软键盘上面
+                .isViewMode(false)
+                .isClickThrough(false)
+                .dismissOnBackPressed(false)
+                .dismissOnTouchOutside(false)
+                .isDestroyOnDismiss(false) //对于只使用一次的弹窗，推荐设置这个
+                .asCustom(lveOpenPopup)
+            lveOpenPopup!!.liveOpenListener=object :LiveOpenPopup.LiveOpenPopupListener{
+                override fun clickClose() {
+                    setIsLandscape( isEnable)
+                }
 
+                override fun continueLive() {
+                    pureFlow=false
+                }
+
+                override fun selectSignal() {
+
+                    lifecycleScope.launch {
+                        delay(500L) // 延迟1秒（1000毫秒）
+                        showSignal()
+                    }
+
+                }
+
+            }
+            if(!lveOpenWindow!!.isShow){
+                isEnable=  orientationUtils?.isEnable!!
+                this.setIsLandscape( false)
+                lveOpenWindow!!.show()
+
+            }
+
+        }else{
+            if(!lveOpenWindow!!.isShow){
+                isEnable=  orientationUtils?.isEnable!!
+                this.setIsLandscape( false)
+                lveOpenPopup!!.setName(name)
+                lveOpenWindow!!.show()
+
+            }
+        }
+
+
+
+    }
 
 }

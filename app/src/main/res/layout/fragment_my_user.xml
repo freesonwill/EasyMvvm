@@ -125,8 +125,15 @@
                 android:layout_marginBottom="20dp"
                 android:scaleType="centerCrop"
                 app:corner_radius="@dimen/dp_8"
+                android:visibility="gone"
                 app:srcCompat="@drawable/banner_my_icon" />
-
+<!--            <androidx.appcompat.widget.AppCompatImageView-->
+<!--                android:id="@+id/ivMyAdvertising"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="80dp"-->
+<!--                android:layout_marginBottom="20dp"-->
+<!--                android:scaleType="centerCrop"-->
+<!--                app:srcCompat="@drawable/banner_my_icon" />-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

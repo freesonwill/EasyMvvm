@@ -3,6 +3,7 @@ package com.xcjh.base_lib
 import android.app.Activity
 import android.app.Application
 import android.os.Bundle
+import android.util.Log
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
@@ -65,12 +66,20 @@ open class App : Application(), Application.ActivityLifecycleCallbacks, ViewMode
 
     }
 
+    /**
+     * 应用进入前台
+     */
     override fun onActivityResumed(activity: Activity) {
        // "onActivityResumed".loge(activity.componentName.toString()+"==="+activity.localClassName)
+//        Log.i("BRBRBRBRBRBR","======前台======"+activity.localClassName)
     }
 
+    /**
+     * 应用进入后台
+     */
     override fun onActivityPaused(activity: Activity) {
        // "onActivityPaused".loge(activity.componentName.toString()+"==="+activity.localClassName)
+//        Log.i("BRBRBRBRBRBR","======后台======"+activity.localClassName)
     }
 
     override fun onActivityStopped(activity: Activity) {}

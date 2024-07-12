@@ -12,6 +12,7 @@ import com.xcjh.app.event.AppViewModel
 import com.xcjh.app.net.ApiComService
 import com.xcjh.app.net.apiService
 import com.xcjh.app.utils.CacheUtil
+import com.xcjh.app.utils.getUUID
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.base.BaseViewModel
@@ -165,6 +166,25 @@ class MainVm : BaseViewModel() {
             }, {
 
             }, false
+        )
+    }
+
+
+    /**
+     * 游客模式下才调用
+     */
+    fun touristAdd() {
+        var tourist=TouristRecordRed()
+        tourist.userId= getUUID().toString()
+        request(
+            { apiService.touristAdd(tourist) },
+            {
+
+            }, {
+                //请求失败
+
+
+            }
         )
     }
 

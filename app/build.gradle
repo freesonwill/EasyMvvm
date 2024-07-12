@@ -14,6 +14,7 @@ def isApp = rootProject.ext.state.chatToApp
 //apply plugin: 'com.huawei.agconnect'
 android {
     androidClosure(it, isApp, rootProject.ext.appId.appId)
+
     //统一资源前缀，规范资源引用
     // resourcePrefix "chat_"
     applicationVariants.configureEach { variant ->

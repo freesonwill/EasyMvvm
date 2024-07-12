@@ -13,7 +13,9 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import androidx.core.content.ContextCompat
+import com.airbnb.lottie.model.content.RoundedCorners
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.gyf.immersionbar.ImmersionBar
 import com.hjq.language.LocaleContract
 import com.hjq.language.MultiLanguages
@@ -35,6 +37,7 @@ import com.xcjh.app.utils.SoundManager
 import com.xcjh.app.utils.judgeLogin
 import com.xcjh.app.utils.shareUrl
 import com.xcjh.base_lib.manager.KtxActivityManger
+import com.xcjh.base_lib.utils.dp2px
 import com.xcjh.base_lib.utils.shareText
 import com.xcjh.base_lib.utils.view.clickNoRepeat
 
@@ -534,11 +537,15 @@ class MyUserFragment : BaseFragment<MyUseVm, FragmentMyUserBinding>() {
         //获取个人中心广告
         mViewModel.advertisement.observe(this) {
 //            mDatabind.ivMyAdvertising.visibility = View.VISIBLE
-            Glide.with(requireContext())
-                .load(it.imgUrl) // 替换为您要加载的图片 URL
-                .error(R.drawable.banner_my_icon)
-                .placeholder(R.drawable.banner_my_icon)
-                .into(mDatabind.ivMyAdvertising)
+            if(it.imgUrl.isNotEmpty()){
+                mDatabind.ivMyAdvertising.visibility=View.VISIBLE
+                Glide.with(requireContext())
+                    .load(it.imgUrl) // 替换为您要加载的图片 URL
+                    .error(R.drawable.banner_my_icon)
+                    .placeholder(R.drawable.banner_my_icon)
+                    .into(mDatabind.ivMyAdvertising)
+            }
+
 
         }
         //获取广告失败

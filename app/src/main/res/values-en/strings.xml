@@ -435,4 +435,9 @@
     <string name="detail_txt_home">Home team</string>
     <string name="app_update_title">New Version Found</string>
     <string name="app_update_content">Update Content</string>
+
+    <string name="live_txt_continue_watching">No</string>
+    <string name="live_txt_time">%ssClose after</string>
+    <string name="live_txt_name">[%s]The live broadcast of the match has been opened\nDo you want to go to this studio to watch the match?</string>
+    <string name="live_txt_select">Yes</string>
 </resources>

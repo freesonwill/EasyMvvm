@@ -433,4 +433,8 @@
     <string name="detail_txt_home">主</string>
     <string name="app_update_title">发现新版本</string>
     <string name="app_update_content">更新内容</string>
+    <string name="live_txt_continue_watching">继续观看</string>
+    <string name="live_txt_time">%ss后关闭</string>
+    <string name="live_txt_name">[%s]已开启该场比赛直播\n是否前往该直播间观赛?</string>
+    <string name="live_txt_select">选择信号源</string>
 </resources>

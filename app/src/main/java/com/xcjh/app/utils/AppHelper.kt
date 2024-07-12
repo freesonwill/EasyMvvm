@@ -919,20 +919,21 @@ fun loadServiceInit(view: View, callback: () -> Unit): LoadService<Any> {
 }
 
 
-
+/**
+ * 用于分享
+ */
 fun shareUrl(context: Context, shareText: String?) {
     var url:String=""
-    url = when (ApiComService.SERVER_URL) {
-        "http://192.168.101.15:6003/apis/"->{
-            "http://192.168.101.180:1820/?m=Xe3wxn/$shareText"
+    url = when (ApiComService.SHARE_URL) {
+        "http://192.168.101.15:6003"->{
+            "http://192.168.101.15:1820/?m=Xe3wxn/$shareText"
         }
 
-        "https://app.cbd246.com/apis/"->{
+        "https://app.cbd246.com"->{
             "https://app.cbd246.com/?m=HageRQ/$shareText"
         }
-
         else ->{
-            "https://${ApiComService.SHARE_URL}/$shareText"
+            "${ApiComService.SHARE_URL}/$shareText"
         }
 
     }
@@ -943,21 +944,12 @@ fun shareUrl(context: Context, shareText: String?) {
     context.startActivity(Intent.createChooser(intent, "分享"))
 }
 
+/**
+ * 需要传到头的域名。
+ */
 fun getDomain():String{
     var domain:String=""
-    domain = when (ApiComService.SERVER_URL) {
-        "http://192.168.101.15:6003/apis/"->{
-            DomainNameEnums.TestDomainName.type
-        }
-
-        "https://app.cbd246.com/apis/"->{
-            DomainNameEnums.PreDomainName.type
-        }
-
-        else ->{
-            ApiComService.SHARE_URL
-        }
-    }
+    domain =  ApiComService.DOMAIN_HEAD
     return domain
 }
 

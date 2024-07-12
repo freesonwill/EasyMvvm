@@ -740,6 +740,11 @@
             android:fadeScrollbars="false"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@id/btnClick"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_100"
+        android:visibility="gone"
+        android:text="点击"/>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

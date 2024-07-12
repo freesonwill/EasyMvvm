@@ -10,7 +10,6 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -22,23 +21,18 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
-import com.lxj.xpopup.XPopup
 import com.xcjh.app.R
 import com.xcjh.app.appViewModel
 import com.xcjh.app.base.BaseFragment
 import com.xcjh.app.bean.CurrentIndex
 import com.xcjh.app.bean.HotMatchBean
-import com.xcjh.app.bean.JsonBean
 import com.xcjh.app.bean.TimeConstantsDat
 import com.xcjh.app.databinding.FrScheduleoneBinding
-import com.xcjh.app.listener.OnChooseDateListener
 import com.xcjh.app.utils.SoundManager
 import com.xcjh.app.utils.XPBottomPopu
 import com.xcjh.base_lib.utils.bindViewPager3
 import com.xcjh.base_lib.utils.initActivity
-import com.xcjh.base_lib.utils.myToast
 import com.xcjh.base_lib.utils.setOnclickNoRepeat
-import org.json.JSONArray
 
 class ScheduleChildOneFragment : BaseFragment<ScheduleVm, FrScheduleoneBinding>() {
     private val mFragments: ArrayList<Fragment> = ArrayList<Fragment>()

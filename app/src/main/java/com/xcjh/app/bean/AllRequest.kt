@@ -284,7 +284,16 @@ data class CPUReq(
 
 
 
+/**
+ *插入游客记录
+ */
+@Keep
+data class TouristRecordRed(
+    var userId: String="",// 设备号
 
+
+
+)
 
 
 
