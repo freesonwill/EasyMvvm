@@ -49,10 +49,10 @@ android {
         }
     }
     libraryVariants.all { variant ->
-        if (variant.buildType.name == 'release') {
-            variant.outputs.all { output ->
-                outputFileName = "game_sdk-release.aar"
-            }
+        variant.outputs.all { output ->
+            def date = String.format('%s', new Date().format('yyyyMMddHHmmss'))
+            def gitVersion = getGitVersion()
+            outputFileName = "gamesdk-${variant.name}-${date}-${gitVersion}.aar"
         }
     }
 

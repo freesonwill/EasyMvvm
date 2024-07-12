@@ -45,7 +45,16 @@ android {
         viewBinding true
         dataBinding true
     }
+
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            def date = String.format('%s', new Date().format('yyyyMMddHHmmss'))
+            def gitVersion = getGitVersion()
+            outputFileName = "gamesdk-${variant.name}-v${variant.versionName}-${variant.versionCode}-${date}-${gitVersion}.apk"
+        }
+    }
 }
+
 
 dependencies {
 

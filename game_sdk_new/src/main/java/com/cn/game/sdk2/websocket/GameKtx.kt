@@ -87,10 +87,10 @@ val tokenArray = listOf(
 val token:String
     get() {
         return when(BuildConfig.BUILD_TYPE) {
-            "debug" -> { "93:Ufx3Dy8y" }
+            "debug" -> { "93:Ufx3Dy8y" } //87:MHxIHlYM
             "innerTest" ->{ "99:mFGB4ljy" }
             "outerTest" ->{ tokenArray[Random.nextInt(tokenArray.size)] }
-            "release" -> { "87:MHxIHlYM" }
+            "release" -> { tokenArray[Random.nextInt(tokenArray.size)] }
             else -> throw IllegalStateException("wrong buildType:${BuildConfig.BUILD_TYPE}")
         }
     }

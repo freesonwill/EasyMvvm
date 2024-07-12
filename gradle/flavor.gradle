@@ -38,7 +38,6 @@ android {
         debug {
             zipAlignEnabled true
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             //buildConfigField "String", "token","\"87:MHxIHlYM\""
             jniDebuggable true
             signingConfig signingConfigs.debug
@@ -48,32 +47,32 @@ android {
         release {
             zipAlignEnabled true
             minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             //buildConfigField "String", "token","\"random\""
             signingConfig signingConfigs.release
         }
 
         //测试专用
         innerTest {
+            debuggable true
             zipAlignEnabled true
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             //buildConfigField "String", "token","\"99:mFGB4ljy\""
-            jniDebuggable true
             signingConfig signingConfigs.innerTest
         }
 
         //随机token
         outerTest {
+            debuggable true
             zipAlignEnabled true
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             //buildConfigField "String", "token","\"random\""
             jniDebuggable true
             signingConfig signingConfigs.outerTest
         }
 
     }
+}
 
-
+ext.getGitVersion = {->
+    return "git rev-parse --short HEAD".execute().text.trim()
 }
