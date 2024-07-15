@@ -14,16 +14,27 @@ import android.util.Log
 import android.view.Choreographer
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.ProgressBar
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
+import com.cn.game.sdk2.utils.ext.ViewExt.isAdd
+import com.cn.game.sdk2.websocket.GameSocketManager
+import com.cn.game.sdk2.websocket.gameAboutModel
+import com.cn.game.sdk2.websocket.imp.GameApp
+import com.cn.game.sdk2.websocket.isTokenValid
+import com.cn.game.sdk2.websocket.token
 import com.engagelab.privates.core.api.MTCorePrivatesApi
 import com.engagelab.privates.push.api.MTPushPrivatesApi
 import com.google.gson.Gson
@@ -61,9 +72,6 @@ import com.xcjh.app.utils.CacheUtil
 import com.xcjh.app.utils.SoundManager
 import com.xcjh.app.utils.getVerName
 import com.xcjh.app.utils.judgeLogin
-import com.xcjh.app.utils.onWsUserLogin
-import com.xcjh.app.view.LiveOpenPopup
-import com.xcjh.app.view.PopupKickOut
 import com.xcjh.app.vm.MainVm
 import com.xcjh.app.websocket.MyWsManager
 import com.xcjh.app.websocket.listener.NoReadMsgPushListener
@@ -114,11 +122,79 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         MyUserFragment(),
     )
 
+    private fun showGameSdk(container:RelativeLayout){
+        val context = this@MainActivity
+        val btnOpen = Button(context)
+        val lp = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,FrameLayout.LayoutParams.WRAP_CONTENT)
+        lp.topMargin = 250.dp2px
+        container.addView(btnOpen,lp)
+
+        GameApp.setSocketStatesCallback(object : GameApp.SocketStatesCallback{
+            override fun onOpen() {
+                btnOpen.post{
+                    btnOpen.text = "服务器连接成功,点击登录"
+                    btnOpen.isClickable = true
+                }
+            }
+            override fun onClose(isNeedReconnect: Boolean) {
+                btnOpen.post{
+                    if(isNeedReconnect){
+                        btnOpen.text = "正在重新连接服务器"
+                    }else{
+                        btnOpen.text = "token失效,点击重新登录"
+                        btnOpen.isClickable = true
+                    }
+                }
+            }
+        })
+        btnOpen.setOnClickListener {
+            btnOpen.isClickable = false;
+            if(gameAboutModel.isLoginSuccess.value == true){
+
+            }else{
+                //92:ZyBmhNCJ   87:MHxIHlYM
+                if(!isTokenValid){
+                    btnOpen.text = "正在重新连接服务器"
+                    GameSocketManager.getInstance()?.initSocketClient()
+                }else{
+                    GameApp.login(
+                        token, "wali-internal", true
+                    )
+                    btnOpen.text = "正在登录"
+                }
+            }
+        }
+        gameAboutModel.isEnterGroup.observe(this){ result->
+            if(result){
+                btnOpen.text = "已进入直播间"
+                GameApp.createFloatEnterView(this@MainActivity).apply {
+                    if(!this.isAdd()) {
+                        val lp = RelativeLayout.LayoutParams(layoutParams.width, layoutParams.height)
+                        lp.topMargin = 150.dp2px
+                        lp.marginEnd = 0.dp2px
+                        lp.addRule(RelativeLayout.ALIGN_PARENT_START)
+                        container.addView(this, lp)
+                    }
+                }
+                GameApp.createFloatResultView(this@MainActivity).apply {
+                    if(!this.isAdd()) {
+                        val lp = RelativeLayout.LayoutParams(layoutParams.width, layoutParams.height)
+                        lp.topMargin = 50.dp2px
+                        lp.marginEnd = 0.dp2px
+                        lp.addRule(RelativeLayout.ALIGN_PARENT_END)
+                        container.addView(this, lp)
+                    }
+                }
+
+            }
+        }
+    }
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         //MTPushPrivatesApi.clearNotification(this)
 //        placeLoginDialog()
+        this.showGameSdk(mDatabind.reSlot)
         showStatusBar()
 
 
@@ -463,6 +539,7 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         appViewModel.mainDateShowEvent.observeForever {
             mDatabind.vLogoAnim.cancelAnimation()
             mDatabind.reDateShow.visibility = View.GONE
+            mDatabind.reSlot.isVisible = true
             isHomeDate = true
             //如果登录了就查询一下用户信息
             if (CacheUtil.isLogin()) {

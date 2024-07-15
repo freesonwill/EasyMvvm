@@ -10,6 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:id="@+id/root"
         android:orientation="vertical">
 
         <androidx.viewpager2.widget.ViewPager2
@@ -286,6 +287,14 @@
         android:text="点击"
         android:visibility="gone"
         tools:ignore="MissingConstraints" />
+
+        <RelativeLayout
+            android:id="@+id/reSlot"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible"
+            />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

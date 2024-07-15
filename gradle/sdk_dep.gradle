@@ -1,0 +1,27 @@
+
+dependencies {
+    implementation "androidx.appcompat:appcompat:1.6.1"
+    implementation "com.google.android.material:material:1.5.0"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.5.1"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1"
+    implementation "androidx.startup:startup-runtime:1.1.1"
+
+    //组件依赖基础库
+    implementation 'com.google.protobuf:protobuf-java:3.19.1'
+    implementation('com.github.li-xiaojun:XPopup:2.10.0') {
+        exclude group: "com.davemorrissey.labs", module: "subsampling-scale-image-view-androidx"
+    }
+    implementation 'com.airbnb.android:lottie:6.4.0'
+    implementation "me.jessyan:autosize:1.2.1"
+    implementation "com.geyifeng.immersionbar:immersionbar:3.2.2"
+    implementation "com.geyifeng.immersionbar:immersionbar-ktx:3.2.2"
+    implementation 'com.kunminx.arch:unpeek-livedata:7.8.0'
+    implementation "org.java-websocket:Java-WebSocket:1.5.3"
+    implementation 'com.github.hackware1993:MagicIndicator:1.7.0'
+    implementation 'com.github.liangjingkanji:BRV:1.5.8'
+
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+
+}

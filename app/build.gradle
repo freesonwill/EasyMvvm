@@ -8,6 +8,9 @@ plugins {
     id 'kotlinx-serialization'
 }
 apply plugin: 'kotlin-android-extensions'
+apply from: rootProject.file("gradle/sdk_dep.gradle")
+//apply from: "${rootDir.path}/gradle/sdk_dep.gradle"
+
 def isApp = rootProject.ext.state.chatToApp
 //apply plugin: alternatePlugin(isApp)
 //apply plugin: 'com.google.gms.google-servicess'
@@ -47,7 +50,7 @@ dependencies {
 //    implementation files('libs/module_web.aar')
     //组件依赖基础库
     implementation project(':base_lib')
-    //implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
+    implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
     // Import the Firebase BoM
     implementation platform('com.google.firebase:firebase-bom:30.3.1')
     implementation 'com.google.firebase:firebase-common-ktx:20.3.1'
