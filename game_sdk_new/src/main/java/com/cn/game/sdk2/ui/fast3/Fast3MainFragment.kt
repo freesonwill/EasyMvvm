@@ -131,10 +131,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 override fun onResume(owner: LifecycleOwner) {
                     super.onResume(owner)
                     (System.currentTimeMillis() - startTime).let {
-                        LogUtils.d(
-                            TAG,
-                            "Fast3MainFragment load costMills:$it"
-                        )
+                        LogUtils.d(TAG, "Fast3MainFragment load costMills:$it")
                     }
                 }
 

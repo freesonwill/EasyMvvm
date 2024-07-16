@@ -55,7 +55,7 @@ abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
             }
         })*/
         initAreaViewList()
-        if(!gameAboutModel.isAnchor) {
+        if(gameAboutModel.isisAllowedBet.value == true) {
             for (areaView in areaViewList) {
                 setMoneyOKClickListener(areaView)
             }

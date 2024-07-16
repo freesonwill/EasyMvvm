@@ -117,9 +117,10 @@
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/ivHomeBgCenter"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="0dp"
                     android:scaleType="fitXY"
                     android:visibility="gone"
+                    app:layout_constraintTop_toTopOf="@id/titleLayout"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:srcCompat="@drawable/icon_home_bg" />
 
@@ -127,7 +128,7 @@
                     android:id="@+id/titleLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginStart="10dp"
                     android:clipChildren="false"
                     android:clipToPadding="false"
                     android:paddingVertical="@dimen/dp_8"
