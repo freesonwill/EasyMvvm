@@ -301,49 +301,49 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
          }*/
 
 
-        ChangeHostUtil().getHostList { appHost ->
-            appHost?.let { host ->
-                host.shareUrl?.let {
-                    ApiComService.SHARE_URL = it
-
-                    //
-                }
-                host.domainUrl?.let { bean ->
-                    ApiComService.DOMAIN_URL = bean
-                    ApiComService.SERVER_URL = "${bean}/apis/"
-                    var hppt=determineProtocol(bean)
-                    //判断是否是http或者https来拼接聊天的头部
-                    if(hppt.equals("HTTP")){
-                        //去掉了端口号
-                        var remove=removePortFromUrl(bean)
-                        //获取到需要去掉http 的纯域名
-                        ApiComService.DOMAIN_HEAD = remove.replaceFirst("^https?://".toRegex(), "")
-                        ApiComService.WEB_SOCKET_URL= "ws://${ApiComService.DOMAIN_HEAD}:6006/ws-sports-chat"
-                    }else{
-                        ApiComService.WEB_SOCKET_URL= "wss://${ApiComService.DOMAIN_HEAD}/ws-sports-chat"
-                    }
-
-
-
-                }
-
-            }
-            runOnUiThread {
-                Constants.isLoading = true
-                onIntent(intent)
-                initUI()
-                initTime()
-                initWs()
-            }
-        }
-
-//        runOnUiThread {
-//            Constants.isLoading = true
-//            onIntent(intent)
-//            initUI()
-//            initTime()
-//            initWs()
+//        ChangeHostUtil().getHostList { appHost ->
+//            appHost?.let { host ->
+//                host.shareUrl?.let {
+//                    ApiComService.SHARE_URL = it
+//
+//                    //
+//                }
+//                host.domainUrl?.let { bean ->
+//                    ApiComService.DOMAIN_URL = bean
+//                    ApiComService.SERVER_URL = "${bean}/apis/"
+//                    var hppt=determineProtocol(bean)
+//                    //判断是否是http或者https来拼接聊天的头部
+//                    if(hppt.equals("HTTP")){
+//                        //去掉了端口号
+//                        var remove=removePortFromUrl(bean)
+//                        //获取到需要去掉http 的纯域名
+//                        ApiComService.DOMAIN_HEAD = remove.replaceFirst("^https?://".toRegex(), "")
+//                        ApiComService.WEB_SOCKET_URL= "ws://${ApiComService.DOMAIN_HEAD}:6006/ws-sports-chat"
+//                    }else{
+//                        ApiComService.WEB_SOCKET_URL= "wss://${ApiComService.DOMAIN_HEAD}/ws-sports-chat"
+//                    }
+//
+//
+//
+//                }
+//
+//            }
+//            runOnUiThread {
+//                Constants.isLoading = true
+//                onIntent(intent)
+//                initUI()
+//                initTime()
+//                initWs()
+//            }
 //        }
+
+        runOnUiThread {
+            Constants.isLoading = true
+            onIntent(intent)
+            initUI()
+            initTime()
+            initWs()
+        }
 
 
 //        Constants.isLoading = true

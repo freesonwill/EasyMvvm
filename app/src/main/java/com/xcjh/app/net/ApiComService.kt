@@ -15,20 +15,20 @@ interface ApiComService {
 
 
         //=====dev      http://192.168.101.15:6003/apis/    "ws://192.168.101.15:6006/ws-sports-chat    //
-        var SERVER_URL = "http://192.168.101.15:6003/apis/"//app通用 开发
-        var WEB_SOCKET_URL = "ws://192.168.101.15:6006/ws-sports-chat" ///new dev
-        /**
-         * 分享需要的url  全路径
-         */
-        var SHARE_URL = "http://192.168.101.15:6003"
-        /**
-         * 这个是添加头的
-         */
-        var DOMAIN_HEAD="192.168.101.15"
-        /**
-         * 域名全路径
-         */
-        var DOMAIN_URL="http://192.168.101.15:6003"//获取到的域名
+//        var SERVER_URL = "http://192.168.101.15:6003/apis/"//app通用 开发
+//        var WEB_SOCKET_URL = "ws://192.168.101.15:6006/ws-sports-chat" ///new dev
+//        /**
+//         * 分享需要的url  全路径
+//         */
+//        var SHARE_URL = "http://192.168.101.15:6003"
+//        /**
+//         * 这个是添加头的
+//         */
+//        var DOMAIN_HEAD="192.168.101.15"
+//        /**
+//         * 域名全路径
+//         */
+//        var DOMAIN_URL="http://192.168.101.15:6003"//获取到的域名
 
 
         //======test 发布1 生产环境  app.hyh86.cn    旧的 app.wyjxx.cn
@@ -70,20 +70,20 @@ interface ApiComService {
 
 
         //=====预发布
-//        var SERVER_URL = "https://app.cbd246.com/apis/"//app通用 开发
-//        var WEB_SOCKET_URL = "wss://app.cbd246.com/ws-sports-chat" ///new dev
-//        /**
-//         * 分享需要的url  全路径
-//         */
-//        var SHARE_URL = "https://app.cbd246.com"
-//        /**
-//         * 这个是添加头的
-//         */
-//        var DOMAIN_HEAD="app.cbd246.com"
-//        /**
-//         * 域名全路径
-//         */
-//        var DOMAIN_URL="https://app.cbd246.com"//获取到的域名
+        var SERVER_URL = "https://app.cbd246.com/apis/"//app通用 开发
+        var WEB_SOCKET_URL = "wss://app.cbd246.com/ws-sports-chat" ///new dev
+        /**
+         * 分享需要的url  全路径
+         */
+        var SHARE_URL = "https://app.cbd246.com"
+        /**
+         * 这个是添加头的
+         */
+        var DOMAIN_HEAD="app.cbd246.com"
+        /**
+         * 域名全路径
+         */
+        var DOMAIN_URL="https://app.cbd246.com"//获取到的域名
 
 
     }
