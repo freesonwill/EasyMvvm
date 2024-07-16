@@ -60,8 +60,6 @@ import com.xcjh.app.bean.JsonBean
 import com.xcjh.app.bean.LoginInfo
 import com.xcjh.app.bean.TimeConstantsDat
 import com.xcjh.app.databinding.ActivityHomeBinding
-import com.xcjh.app.net.ApiComService
-import com.xcjh.app.net.ChangeHostUtil
 import com.xcjh.app.placeLoginDialog
 import com.xcjh.app.ui.details.MatchDetailActivity
 import com.xcjh.app.ui.home.home.HomeFragment
@@ -122,80 +120,14 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         MyUserFragment(),
     )
 
-    private fun showGameSdk(container:RelativeLayout){
-        val context = this@MainActivity
-        val btnOpen = Button(context)
-        val lp = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,FrameLayout.LayoutParams.WRAP_CONTENT)
-        lp.topMargin = 250.dp2px
-        container.addView(btnOpen,lp)
 
-        GameApp.setSocketStatesCallback(object : GameApp.SocketStatesCallback{
-            override fun onOpen() {
-                btnOpen.post{
-                    btnOpen.text = "服务器连接成功,点击登录"
-                    btnOpen.isClickable = true
-                }
-            }
-            override fun onClose(isNeedReconnect: Boolean) {
-                btnOpen.post{
-                    if(isNeedReconnect){
-                        btnOpen.text = "正在重新连接服务器"
-                    }else{
-                        btnOpen.text = "token失效,点击重新登录"
-                        btnOpen.isClickable = true
-                    }
-                }
-            }
-        })
-        btnOpen.setOnClickListener {
-            btnOpen.isClickable = false;
-            if(gameAboutModel.isLoginSuccess.value == true){
-
-            }else{
-                //92:ZyBmhNCJ   87:MHxIHlYM
-                if(!isTokenValid){
-                    btnOpen.text = "正在重新连接服务器"
-                    GameSocketManager.getInstance()?.initSocketClient()
-                }else{
-                    GameApp.login(
-                        token, "wali-internal", true
-                    )
-                    btnOpen.text = "正在登录"
-                }
-            }
-        }
-        gameAboutModel.isEnterGroup.observe(this){ result->
-            if(result){
-                btnOpen.text = "已进入直播间"
-                GameApp.createFloatEnterView(this@MainActivity).apply {
-                    if(!this.isAdd()) {
-                        val lp = RelativeLayout.LayoutParams(layoutParams.width, layoutParams.height)
-                        lp.topMargin = 150.dp2px
-                        lp.marginEnd = 0.dp2px
-                        lp.addRule(RelativeLayout.ALIGN_PARENT_START)
-                        container.addView(this, lp)
-                    }
-                }
-                GameApp.createFloatResultView(this@MainActivity).apply {
-                    if(!this.isAdd()) {
-                        val lp = RelativeLayout.LayoutParams(layoutParams.width, layoutParams.height)
-                        lp.topMargin = 50.dp2px
-                        lp.marginEnd = 0.dp2px
-                        lp.addRule(RelativeLayout.ALIGN_PARENT_END)
-                        container.addView(this, lp)
-                    }
-                }
-
-            }
-        }
-    }
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         //MTPushPrivatesApi.clearNotification(this)
 //        placeLoginDialog()
-        this.showGameSdk(mDatabind.reSlot)
-        showStatusBar()
+
+        showStatusBar() //showStatusBar
 
 
 //        mDatabind.btnClick.clickNoRepeat {
