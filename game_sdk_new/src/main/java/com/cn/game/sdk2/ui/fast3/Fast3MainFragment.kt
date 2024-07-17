@@ -400,9 +400,11 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     private fun showLottie(endCallBack: (() -> Unit)?) {
         mDatabind.apply {
             groupWinLottie.isVisible = true
+            var isAnimating = false
             val onAnimationEnd:()->Unit = {
                 endCallBack?.invoke()
                 groupWinLottie.isVisible = false
+                isAnimating = false
             }
             //groupWinLottie没在前台显示，不要做Lottie动画
             if(!groupWinLottie.isShown) {
@@ -410,7 +412,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 onAnimationEnd()
                 return
             }
-            var isAnimating = false
             if (null == lottieListener) {
                 lottieListener = object : AnimatorListener {
                     override fun onAnimationStart(animation: Animator) {
@@ -624,19 +625,30 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 val layoutManager = mDatabind.rvHomeHistory.layoutManager as LinearLayoutManager
                 val position = layoutManager.findLastVisibleItemPosition()
                 val view = layoutManager.findViewByPosition(position)
-                Log.d(TAG, "receive playAlphaAnimationLD:$play,view:$view")
+                LogUtils.dTag(TAG, "receive playAlphaAnimationLD:$play,view:$view")
                 if (view == null) return
                 if (play) {
+                    assert(animator == null)
                     animator = ObjectAnimator.ofFloat(view, "alpha", 1f, 0f, 1f).apply {
                         duration = mViewModel.prizeAnimTime // 设置动画持续时间
                         repeatCount = 2
                         //if (mDatabind.rvHomeHistory.size == 1) 3 else mViewModel.prizeAnimCount
                         repeatMode = ObjectAnimator.REVERSE // 设置反向循环以实现渐隐渐显效果
+                        addListener(
+                            onCancel = {
+                                //LogUtils.dTag(TAG,"receive playAlphaAnimationLD onCancel:animator:${animator.hashCode()}")
+                                animator = null
+                            },
+                            onEnd = {
+                                //LogUtils.dTag(TAG,"receive playAlphaAnimationLD onEnd:animator:${animator.hashCode()}")
+                                animator = null
+                            }
+                        )
                     }
-                    Log.d(TAG, "receive playAlphaAnimationLD:${animator}")
+                    Log.d(TAG, "receive playAlphaAnimationLD:animator:${animator.hashCode()}")
                     animator?.start()
                 } else {
-                    Log.d(TAG, "receive playAlphaAnimationLD:${animator}")
+                    Log.d(TAG, "receive playAlphaAnimationLD:animator:${animator.hashCode()},cancel")
                     animator?.cancel()
                     view.alpha = 1f
                 }

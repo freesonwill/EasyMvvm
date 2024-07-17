@@ -31,6 +31,7 @@ import com.cn.game.sdk2.websocket.bean.Betting
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.gameMassageManager
+import com.xcjh.base_lib2.utils.LogUtils
 
 /**
  * Description:
@@ -101,7 +102,8 @@ abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
      * 播放透明度动画
      */
     private fun playAlphaAnimTogether(dic: List<View>, duration: Long, count: Int) {
-        mViewModel.playAlphaAnimationLD.value = true
+        //LogUtils.d("playAlphaAnimTogether begin:${mViewModel.playAlphaAnimationLD.value},${javaClass.simpleName}")
+        if(mViewModel.playAlphaAnimationLD.value != true) mViewModel.playAlphaAnimationLD.value = true
         areaFlickAnimatorSet?.cancel()
         val animators = (dic.map { maskView ->
             val animator = ObjectAnimator.ofFloat(maskView, "alpha", 1f, 0f, 1f).apply {
@@ -119,7 +121,8 @@ abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
         areaFlickAnimatorSet = AnimatorSet().apply {
             playTogether(animators)
             addListener(onEnd = {
-                mViewModel.playAlphaAnimationLD.value = false
+                //LogUtils.d("playAlphaAnimTogether end:${mViewModel.playAlphaAnimationLD.value},${javaClass.simpleName}")
+                if(mViewModel.playAlphaAnimationLD.value != false) mViewModel.playAlphaAnimationLD.value = false
             })
             start()
         }
