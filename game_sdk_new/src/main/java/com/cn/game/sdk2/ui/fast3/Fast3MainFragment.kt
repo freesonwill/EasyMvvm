@@ -88,6 +88,8 @@ import com.xcjh.base_lib2.utils.dp2px
 import com.xcjh.base_lib2.utils.loge
 import com.xcjh.base_lib2.utils.view.clickNoRepeat
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -398,24 +400,50 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     private fun showLottie(endCallBack: (() -> Unit)?) {
         mDatabind.apply {
             groupWinLottie.isVisible = true
+            val onAnimationEnd:()->Unit = {
+                endCallBack?.invoke()
+                groupWinLottie.isVisible = false
+            }
+            //groupWinLottie没在前台显示，不要做Lottie动画
+            if(!groupWinLottie.isShown) {
+                LogUtils.w(TAG,"groupWinLottie is not shown at the front, ignore showLottie")
+                onAnimationEnd()
+                return
+            }
+            var isAnimating = false
             if (null == lottieListener) {
                 lottieListener = object : AnimatorListener {
                     override fun onAnimationStart(animation: Animator) {
+                        //LogUtils.d(TAG,"groupWinLottie onAnimationStart")
                         PromptSoundPlay.playWinEffect()
+                        isAnimating = true
                     }
 
                     override fun onAnimationEnd(animation: Animator) {
-                        endCallBack?.invoke()
-                        groupWinLottie.isVisible = false
+                        //LogUtils.d(TAG,"groupWinLottie onAnimationEnd")
+                        onAnimationEnd()
+                        isAnimating = false
                     }
 
                     override fun onAnimationCancel(animation: Animator) {
+                        //LogUtils.d(TAG,"groupWinLottie onAnimationCancel")
+                        isAnimating = false
                     }
 
                     override fun onAnimationRepeat(animation: Animator) {
                     }
                 }
                 lottieAnimView.addAnimatorListener(lottieListener)
+                lottieAnimView.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+                    override fun onViewAttachedToWindow(p0: View) { }
+                    override fun onViewDetachedFromWindow(p0: View) {
+                        //groupWinLottie播发动画一半被window移除了，lottieListener不会执行onAnimationEnd，在这里执行
+                        LogUtils.w(TAG,"groupWinLottie is detached from window，isAnimating:${isAnimating}")
+                        if(isAnimating){
+                            onAnimationEnd()
+                        }
+                    }
+                })
             }
             lottieAnimView.playAnimation()
         }
@@ -1039,107 +1067,111 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
                             override fun switchGame() {
                                 lifecycleScope.launch {
-                                    showMainGame(false)
-                                    delay(100)
-                                    val context = requireContext()
-                                    val popupView = object : BottomPopupView(context) {
-                                        override fun getImplLayoutId(): Int =
-                                            R.layout.fragment_gamehall
+                                    listOf(
+                                        async {  showMainGame(false)},
+                                        async {
+                                            delay(20)
+                                            val context = requireContext()
+                                            val popupView = object : BottomPopupView(context) {
+                                                override fun getImplLayoutId(): Int =
+                                                    R.layout.fragment_gamehall
 
-                                        lateinit var binding: FragmentGamehallBinding
-                                        override fun onCreate() {
-                                            super.onCreate()
-                                            binding = FragmentGamehallBinding.bind(popupImplView)
-                                            binding.lltRoot.layoutParams.also {
-                                                it.height = mDatabind.root.height
-                                                binding.lltRoot.layoutParams = it
-                                            }
-                                            initView()
-                                        }
-
-                                        fun initView() {
-                                            val views = ArrayList<View>()
-                                            repeat(1) {
-                                                val list = mutableListOf<GameHallItem>()
-                                                for (i in 1..1) {
-                                                    list.add(GameHallItem("a", "快三", "3389在线"))
+                                                lateinit var binding: FragmentGamehallBinding
+                                                override fun onCreate() {
+                                                    super.onCreate()
+                                                    binding = FragmentGamehallBinding.bind(popupImplView)
+                                                    binding.lltRoot.layoutParams.also {
+                                                        it.height = mDatabind.root.height
+                                                        binding.lltRoot.layoutParams = it
+                                                    }
+                                                    initView()
                                                 }
-                                                val mViewBind = ItemGamehallPageBinding.inflate(
-                                                    layoutInflater,
-                                                    null,
-                                                    false
-                                                )
-                                                mViewBind.rvContent.itemAnimator = null
-                                                mViewBind.rvContent.dividerSpace(
-                                                    requireContext().dp2px(20),
-                                                    DividerOrientation.HORIZONTAL
-                                                ).setup {
-                                                    it.layoutManager = GridLayoutManager(context, 4)
-                                                    addType<GameHallItem>(R.layout.item_gamehall_page_item)
-                                                    onBind {
-                                                        when (itemViewType) {
-                                                            R.layout.item_gamehall_page_item -> {
-                                                                getBinding<ItemGamehallPageItemBinding>().apply {
-                                                                    val bean = _data as GameHallItem
-                                                                    tvName.text = bean.name
-                                                                    tvOnline.text = bean.onlineA
-                                                                    if (bean.name == "快三") {
-                                                                        root.clickNoRepeat {
-                                                                            backMainGame()
+
+                                                fun initView() {
+                                                    val views = ArrayList<View>()
+                                                    repeat(1) {
+                                                        val list = mutableListOf<GameHallItem>()
+                                                        for (i in 1..1) {
+                                                            list.add(GameHallItem("a", "快三", "3389在线"))
+                                                        }
+                                                        val mViewBind = ItemGamehallPageBinding.inflate(
+                                                            layoutInflater,
+                                                            null,
+                                                            false
+                                                        )
+                                                        mViewBind.rvContent.itemAnimator = null
+                                                        mViewBind.rvContent.dividerSpace(
+                                                            requireContext().dp2px(20),
+                                                            DividerOrientation.HORIZONTAL
+                                                        ).setup {
+                                                            it.layoutManager = GridLayoutManager(context, 4)
+                                                            addType<GameHallItem>(R.layout.item_gamehall_page_item)
+                                                            onBind {
+                                                                when (itemViewType) {
+                                                                    R.layout.item_gamehall_page_item -> {
+                                                                        getBinding<ItemGamehallPageItemBinding>().apply {
+                                                                            val bean = _data as GameHallItem
+                                                                            tvName.text = bean.name
+                                                                            tvOnline.text = bean.onlineA
+                                                                            if (bean.name == "快三") {
+                                                                                root.clickNoRepeat {
+                                                                                    backMainGame()
+                                                                                }
+                                                                            }
                                                                         }
                                                                     }
                                                                 }
                                                             }
-                                                        }
+                                                        }.models = list
+                                                        views.add(mViewBind.root)
                                                     }
-                                                }.models = list
-                                                views.add(mViewBind.root)
-                                            }
 
-                                            binding.viewPagerNew.initGameViewPager2(views)
-                                            binding.magicIndicator.bindViewPagerNewGame(
-                                                binding.viewPagerNew, arrayListOf(
-                                                    "热门",
-                                                    /*"棋牌",
-                                                    "视讯",
-                                                    "捕鱼",
-                                                    "体育",
-                                                    "电子",*/
-                                                ),
-                                                scrollEnable = true,
-                                                action = { PromptSoundPlay.btnPlayMedia() }
-                                            )
-                                            binding.viewPagerNew.offscreenPageLimit = mFragList.size
-                                            binding.close.clickNoRepeat {
-                                                backMainGame()
+                                                    binding.viewPagerNew.initGameViewPager2(views)
+                                                    binding.magicIndicator.bindViewPagerNewGame(
+                                                        binding.viewPagerNew, arrayListOf(
+                                                            "热门",
+                                                            /*"棋牌",
+                                                            "视讯",
+                                                            "捕鱼",
+                                                            "体育",
+                                                            "电子",*/
+                                                        ),
+                                                        scrollEnable = true,
+                                                        action = { PromptSoundPlay.btnPlayMedia() }
+                                                    )
+                                                    binding.viewPagerNew.offscreenPageLimit = mFragList.size
+                                                    binding.close.clickNoRepeat {
+                                                        backMainGame()
+                                                    }
+                                                }
                                             }
+                                            XPopup.Builder(context)
+                                                .isTouchThrough(false)
+                                                .setPopupCallback(object : SimpleCallback() {
+                                                    override fun onCreated(popupView: BasePopupView?) {
+                                                        super.onCreated(popupView)
+                                                        gameHall = popupView
+                                                        ViewHelper.isShowOtherPop = true
+                                                    }
+
+                                                    override fun beforeDismiss(popupView: BasePopupView?) {
+                                                        super.onDismiss(popupView)
+                                                        backMainGame()
+                                                        gameHall = null
+                                                        ViewHelper.isShowOtherPop = false
+                                                    }
+                                                })
+                                                .popupAnimation(PopupAnimation.TranslateFromBottom)
+                                                .navigationBarColor(android.R.color.transparent)
+                                                .animationDuration(150)//默认300ms
+                                                .isViewMode(true)
+                                                .hasShadowBg(false) // 去掉半透明背景
+                                                .enableDrag(true)
+                                                .dismissOnTouchOutside(true)
+                                                .asCustom(popupView)
+                                                .show()
                                         }
-                                    }
-                                    XPopup.Builder(context)
-                                        .isTouchThrough(false)
-                                        .setPopupCallback(object : SimpleCallback() {
-                                            override fun onCreated(popupView: BasePopupView?) {
-                                                super.onCreated(popupView)
-                                                gameHall = popupView
-                                                ViewHelper.isShowOtherPop = true
-                                            }
-
-                                            override fun beforeDismiss(popupView: BasePopupView?) {
-                                                super.onDismiss(popupView)
-                                                backMainGame()
-                                                gameHall = null
-                                                ViewHelper.isShowOtherPop = false
-                                            }
-                                        })
-                                        .popupAnimation(PopupAnimation.TranslateFromBottom)
-                                        .navigationBarColor(android.R.color.transparent)
-                                        .animationDuration(150)//默认300ms
-                                        .isViewMode(true)
-                                        .hasShadowBg(false) // 去掉半透明背景
-                                        .enableDrag(true)
-                                        .dismissOnTouchOutside(true)
-                                        .asCustom(popupView)
-                                        .show()
+                                    ).awaitAll()
                                 }
                             }
                         }
