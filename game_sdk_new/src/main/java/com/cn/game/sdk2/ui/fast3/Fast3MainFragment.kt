@@ -222,7 +222,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 findViewById<LinearLayout>(R.id.llShowDice).apply {
                     this.measureView()
                     LogUtils.d(TAG, "historyMoveHeight->$measuredHeight")
-                    resultAnimMoveHeight = this.measuredHeight
+                    resultAnimMoveHeight = this.measuredHeight - 2.dp2px
                 }
                 val params = mDatabind.flRvHistory.layoutParams
                 params?.height = resultRvHeight - resultAnimMoveHeight

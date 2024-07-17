@@ -29,12 +29,12 @@ class ClickRecyclerView : RecyclerView {
             MotionEvent.ACTION_UP -> {
                 val newX = event.x
                 val newY = event.y
-                if (abs(oldX - newX) < 5 && abs(oldY - newY) < 5) {
+                if (abs(oldX - newX) < 10 && abs(oldY - newY) < 10) {
                     onRecyclerClickListener?.onRecyclerClick()
                 }
             }
         }
-        return true
+        return super.onTouchEvent(event)
     }
 
     private var onRecyclerClickListener: RecyclerClickListener? = null
