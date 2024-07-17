@@ -46,6 +46,7 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txtSumFour"
+                    style="@style/ChronicaW03Regular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{model.multiplierStr(model.sumTotalBettingArray[4])}"
@@ -97,6 +98,7 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txtSumFive"
+                    style="@style/ChronicaW03Regular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{model.multiplierStr(model.sumTotalBettingArray[5])}"
@@ -149,6 +151,7 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txtSumSix"
+                    style="@style/ChronicaW03Regular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{model.multiplierStr(model.sumTotalBettingArray[6])}"
@@ -201,6 +204,7 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txtSumSeven"
+                    style="@style/ChronicaW03Regular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{model.multiplierStr(model.sumTotalBettingArray[7])}"
@@ -253,6 +257,7 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txtSumEight"
+                    style="@style/ChronicaW03Regular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{model.multiplierStr(model.sumTotalBettingArray[8])}"
@@ -305,6 +310,7 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txtSumNine"
+                    style="@style/ChronicaW03Regular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{model.multiplierStr(model.sumTotalBettingArray[9])}"
@@ -356,6 +362,7 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txtSumTen"
+                    style="@style/ChronicaW03Regular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{model.multiplierStr(model.sumTotalBettingArray[10])}"
@@ -407,6 +414,7 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txtSumEleven"
+                    style="@style/ChronicaW03Regular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{model.multiplierStr(model.sumTotalBettingArray[11])}"
@@ -458,6 +466,7 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txtSumTwelve"
+                    style="@style/ChronicaW03Regular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{model.multiplierStr(model.sumTotalBettingArray[12])}"
@@ -509,6 +518,7 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txtSumThirteen"
+                    style="@style/ChronicaW03Regular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{model.multiplierStr(model.sumTotalBettingArray[13])}"
@@ -562,6 +572,7 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txtSumFourteen"
+                    style="@style/ChronicaW03Regular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{model.multiplierStr(model.sumTotalBettingArray[14])}"
@@ -613,6 +624,7 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txtSumFifteen"
+                    style="@style/ChronicaW03Regular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{model.multiplierStr(model.sumTotalBettingArray[15])}"
@@ -664,6 +676,7 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txtSumSixteen"
+                    style="@style/ChronicaW03Regular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{model.multiplierStr(model.sumTotalBettingArray[16])}"
@@ -715,6 +728,7 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txtSumSeventeen"
+                    style="@style/ChronicaW03Regular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{model.multiplierStr(model.sumTotalBettingArray[17])}"

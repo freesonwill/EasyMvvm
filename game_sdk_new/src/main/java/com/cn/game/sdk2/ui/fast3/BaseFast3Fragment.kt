@@ -272,7 +272,7 @@ abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
             }
 
             R.id.leopard_view -> {
-                areaY + areaView.measuredHeight - 27.dp2px
+                areaY + areaView.measuredHeight - 18.dp2px
             }
 
             else -> {

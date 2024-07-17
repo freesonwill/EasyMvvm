@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="PuHuiTi">
         <item name="android:fontFamily">@font/alibabapuhuiti</item>
     </style>
+
     <style name="Droid">
         <item name="android:fontFamily">@font/droidsansmono</item>
+    </style>
+
+    <style name="ChronicaW03Regular">
+        <item name="android:fontFamily">@font/chronica_w03_regular</item>
     </style>
 </resources>
