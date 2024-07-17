@@ -22,7 +22,7 @@
             android:id="@+id/llShowSection"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/g_141624"
+            android:background="@drawable/shape_9_141624"
             android:clipChildren="false"
             android:clipToPadding="false"
             android:orientation="vertical"
@@ -108,7 +108,7 @@
                 android:id="@+id/centerLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/g_141624"
+                android:background="@drawable/shape_9_141624"
                 android:clipChildren="false"
                 android:clipToPadding="false"
                 app:layout_constraintBottom_toTopOf="@id/flRvHistory"
@@ -153,7 +153,7 @@
                             android:layout_height="wrap_content"
                             android:text="@string/g_home_txt_please"
                             android:textColor="@color/g_e8e8e9"
-                            android:textSize="15sp" />
+                            android:textSize="14sp" />
 
                         <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/txtHomeTime"
@@ -170,7 +170,7 @@
                             android:layout_height="wrap_content"
                             android:text="S"
                             android:textColor="@color/g_e8e8e9"
-                            android:textSize="15sp" />
+                            android:textSize="14sp" />
 
                     </LinearLayout>
 

@@ -63,11 +63,14 @@ class GameSocketManager private constructor() : OnMessageListener {
                 //心跳发送
                 while (isNeedReconnect) {
                     delay(HEART_BEAT_RATE)
+                    "HAS_HEART = $HAS_HEART".loge()
                     if (HAS_HEART) {
                         client?.let {
+                            "it.readyState = ${it.readyState}".loge()
                             if (it.readyState == ReadyState.OPEN) {
                                 gameMassageManager?.ping()
                             }//正常发送心跳
+                            "it.isClosed = ${it.isClosed}".loge()
                             if (it.isClosed) it.re()
                         }
                     } else {
