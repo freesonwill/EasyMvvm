@@ -11,26 +11,34 @@ message EnterInfo {
     int64 userLoginTime = 3;
     // 遊戲相關設定
     repeated GameConfig gameConfigs = 4;
+    // 瓦力遊戲清單
+    repeated WaliGameConfig waligameConfigs = 5;
 }
 
-    // 登入后给玩家资料
-    message UserData {
-        int64 userId = 1; // 用户id
-        int64 score = 2; // 身上的钱
-    }
+// 登入后给玩家资料
+message UserData {
+    int64 userId = 1; // 用户id
+    int64 score = 2; // 身上的钱
+}
 
-    message GameConfig {
-        int32 miniGameId = 1;
-        repeated BetAreaConfig betAreaConfigs = 2;
-    }
+message GameConfig {
+    int32 miniGameId = 1;
+    repeated BetAreaConfig betAreaConfigs = 2;
+}
 
-        message BetAreaConfig {
-            int32 areaCode = 1;
+message BetAreaConfig {
+    int32 areaCode = 1;
     //        string name = 2;
     //        float odds = 3;
-            int32 minLimit = 4;
-            int32 maxLimit = 5;
-        }
+    int32 minLimit = 4;
+    int32 maxLimit = 5;
+}
+
+message WaliGameConfig{
+    int32 gametype=1;
+    string name=2;
+    string url=3;
+}
 
 // 直播间资讯 (MDM_GAME-C2S_ENTER_GROUP => MDM_GAME-S2C_GROUP_INFO)
 message GroupInfo {
@@ -38,84 +46,86 @@ message GroupInfo {
     repeated MiniGameBasicInfo miniGameBasicInfoList = 1; // 僅傳送直播主預設的遊戲
 }
 
-    message MiniGameBasicInfo {
-        // 小游戏 id
-        int32 miniGameId = 1;
-        // 当前所处阶段：1.下注 2.结算, 3.發牌中
-        int32 stage = 2;
-        // 当前阶段剩余时间倒计时(ms)
-        int32 countDown = 3;
-        // 小游戏名称
-        string name = 4;
-        // 开奖纪录(若进场时为结算阶段, 则包含此局结果)
-        Trend trend = 5;
-    }
+message MiniGameBasicInfo {
+    // 小游戏 id
+    int32 miniGameId = 1;
+    // 当前所处阶段：1.下注 2.结算, 3.發牌中
+    int32 stage = 2;
+    // 当前阶段剩余时间倒计时(ms)
+    int32 countDown = 3;
+    // 小游戏名称
+    string name = 4;
+    // 开奖纪录(若进场时为结算阶段, 则包含此局结果)
+    Trend trend = 5;
+    RoundInfo lastRoundInfo = 6; // 上一局的開獎結果, 服務器剛開時為空
+}
 
-        // 开奖历史
-        message Trend {
-            repeated RoundInfo roundInfoList = 1;
-        }
+// 开奖历史
+message Trend {
+    repeated RoundInfo roundInfoList = 1;
+}
 
-            // 开奖资讯（通用格式定义，能符合未来新游戏的扩充）
-            message RoundInfo {
-                // 期号
-                string roundId = 1;
-                // 牌面种类
-                int32 elementType = 2; // 1:扑克牌, 2:麻将牌, 3:天九牌, 4:骰子...
-                // 表演资讯
-                repeated ActorPerform performs = 3;
+// 开奖资讯（通用格式定义，能符合未来新游戏的扩充）
+message RoundInfo {
+    // 期号
+    string roundId = 1;
+    // 牌面种类
+    int32 elementType = 2; // 1:扑克牌, 2:麻将牌, 3:天九牌, 4:骰子...
+    // 表演资讯
+    repeated ActorPerform performs = 3;
 
-                // 2024.05.23 企劃說讓前端自己讀錶處理
-//                // 获胜注区列表：(内容数值定义：注区ID)
-//                repeated int32 winAreaCodes = 4;
-            }
+    // 2024.05.23 企劃說讓前端自己讀錶處理
+    //                // 获胜注区列表：(内容数值定义：注区ID)
+    //                repeated int32 winAreaCodes = 4;
+}
 
-                message ActorPerform {
-                    // 牌面
-                    repeated int32 elements = 1; // (根据elementType决定)
-                    // 牌型
-                    repeated int32 patterns = 2; // (根据miniGameId决定) 牛牛, 铁支
-                    // 结果
-                    repeated int32 performResult = 3; // (通用) 0:undefined, 1:胜, 2:败, 3:和
-                }
+message ActorPerform {
+    // 牌面
+    repeated int32 elements = 1; // (根据elementType决定)
+    // 牌型
+    repeated int32 patterns = 2; // (根据miniGameId决定) 牛牛, 铁支
+    // 结果
+    repeated int32 performResult = 3; // (通用) 0:undefined, 1:胜, 2:败, 3:和
+}
 
 // 小游戏资讯 (MDM_GAME-C2S_ENTER_MINI_GAME => MDM_GAME-S2C_ENTER_MINI_GAME_INFO)
 message EnterMiniGameInfo {
     // 小游戏 id
     int32 miniGameId = 1;
+    string roundId = 2;
     // 当前所处阶段：1.下注 2.结算
     int32 stage = 6;
     // 当前阶段剩余时间倒计时(ms)
     int32 countDown = 7;
 
     // 2024.05.23 企劃說讓前端自己讀錶處理
-//    repeated AreaType areaTypes = 2; // 注区分类表
-//    repeated AreaInfo areaInfoList = 3; // 每个注区的设定
+    //    repeated AreaType areaTypes = 2; // 注区分类表
+    //    repeated AreaInfo areaInfoList = 3; // 每个注区的设定
 
     repeated AreaBet areaBets = 4; // 全部注区的下注信息(含自己)
     repeated AreaBet myAreaBets = 5; // 我自己的下注信息
 }
 
-    message AreaType{
-        int32 type = 1;
-        string typeName = 2;
-    }
+message AreaType{
+    int32 type = 1;
+    string typeName = 2;
+}
 
-    // 注区资讯
-    message AreaInfo {
-        int32 areaCode = 1; // 注区ID
-        string name = 2; // 注区名称
-        repeated int32 types = 3; // 所属注区类别
-        float odds = 5; // 赔率
-        int32 minLimit = 6; // 投注下限
-        int32 maxLimit = 7; // 投注上限
-    }
+// 注区资讯
+message AreaInfo {
+    int32 areaCode = 1; // 注区ID
+    string name = 2; // 注区名称
+    repeated int32 types = 3; // 所属注区类别
+    float odds = 5; // 赔率
+    int32 minLimit = 6; // 投注下限
+    int32 maxLimit = 7; // 投注上限
+}
 
-    message AreaBet{
-        int32 areaCode = 1;
-        int32 betScore = 2;
-        int32 userCount = 3; // 下注的人数
-    }
+message AreaBet{
+    int32 areaCode = 1;
+    int32 betScore = 2;
+    int32 userCount = 3; // 下注的人数
+}
 
 // 开始新的一轮
 message BeginNewRound {
@@ -174,11 +184,11 @@ message BeginSettle {
     int32 winScore = 5; // 輸贏金額
 }
 
-    message SettleResult {
-        int32 areaCode = 1; // 注区ID
-        int32 betScore = 2; // 投注金額
-        int32 winScore = 3; // 輸贏金額(0不傳)
-    }
+message SettleResult {
+    int32 areaCode = 1; // 注区ID
+    int32 betScore = 2; // 投注金額
+    int32 winScore = 3; // 輸贏金額(0不傳)
+}
 
 // 离开group
 message LeaveGroup{
@@ -202,4 +212,8 @@ message RefreshUserScore {
 
 message RefreshGameConfig {
     repeated GameConfig gameConfigs = 1;
+}
+
+message RefreshWaliGameConfig{
+    repeated WaliGameConfig waligameConfigs = 1;
 }

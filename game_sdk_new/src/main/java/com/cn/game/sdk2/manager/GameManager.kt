@@ -1,12 +1,7 @@
 package com.cn.game.sdk2.manager
 
 import android.os.CountDownTimer
-import android.util.Log
-import com.cn.game.sdk2.data.bean.HistoryResultBean
 import com.cn.game.sdk2.manager.listener.IGameListener
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
-import kotlin.random.Random
 
 /**
  * Description: 游戏管理类
