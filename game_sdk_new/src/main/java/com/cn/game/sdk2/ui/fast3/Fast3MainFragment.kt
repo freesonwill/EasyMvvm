@@ -240,8 +240,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             mViewModel.isClickOperation = it == GameAboutModel.Stage.NEW
             mDatabind.txtHomeTime.isVisible = it == GameAboutModel.Stage.NEW
             mDatabind.txtHomeUnit.isVisible = it == GameAboutModel.Stage.NEW
-
-
             mViewModel.localGameStage = it
             when (it) {
                 GameAboutModel.Stage.NEW -> {
@@ -257,7 +255,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 }
             }
             //if(!mViewModel.isCountDownInit) mViewModel.countDown = gameAboutModel.countDown * 1L
-            Log.d(TAG, "updateGameStage-->${it},countDown:${mViewModel.countDown}")
+            Log.d(TAG, "updateGameStage-->${it},countDown:${mViewModel.countDown},isCountDownStart:${mViewModel.isCountDownStart}")
         }
     }
 
@@ -273,18 +271,18 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             notifyMoneyOkView(null)
             if (mViewModel.isCountDownStart) {
                 Fast3ToastHelper.showToastNormal(getString(R.string.g_home_betting_begin), 2000)
-                //下注筹码向上升起动画
-                startBetteRecyclerShowOrHideAnim(isShow = true, onStart = {
-                    //筹码
-                    mDatabind.betteLayout.isVisible = true
-                    mDatabind.betteAgainLayout.isVisible = true
-
-                    //开奖结果
-                    mDatabind.rlShowResult.isVisible = false
-                    mDatabind.ivHomeBg.isVisible = false
-                    mDatabind.ivHomeBgCenter.isVisible = false
-                })
             }
+            //下注筹码向上升起动画
+            startBetteRecyclerShowOrHideAnim(isShow = true, onStart = {
+                //筹码
+                mDatabind.betteLayout.isVisible = true
+                mDatabind.betteAgainLayout.isVisible = true
+
+                //开奖结果
+                mDatabind.rlShowResult.isVisible = false
+                mDatabind.ivHomeBg.isVisible = false
+                mDatabind.ivHomeBgCenter.isVisible = false
+            }, duration = if(mViewModel.isCountDownStart) 200 else 0)
         }
     }
 
@@ -302,8 +300,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     startWinLottieAnim(endCallBack = {
                         //开奖结果注区动画闪烁
                         Log.e(TAG, "中奖注区结果监听--->${gameAboutModel.lotteryResultList}")
-                        mViewModel.userLotteryResultLiveData.value =
-                            gameAboutModel.lotteryResultList
+                        mViewModel.userLotteryResultLiveData.value = gameAboutModel.lotteryResultList
 
                         //中奖区域金额刷新
                         Log.e(TAG, "中奖注区筹码监听--->${gameAboutModel.userLotteryResult}")
