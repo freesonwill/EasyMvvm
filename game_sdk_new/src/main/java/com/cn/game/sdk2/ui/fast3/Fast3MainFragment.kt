@@ -398,24 +398,51 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     private fun showLottie(endCallBack: (() -> Unit)?) {
         mDatabind.apply {
             groupWinLottie.isVisible = true
+            val onAnimationEnd:()->Unit = {
+                endCallBack?.invoke()
+                groupWinLottie.isVisible = false
+            }
+            //groupWinLottie没在前台显示，不要做Lottie动画
+            if(!groupWinLottie.isShown) {
+                LogUtils.w(TAG,"groupWinLottie is not shown at the front, ignore showLottie")
+                groupWinLottie.isVisible = false
+                onAnimationEnd()
+                return
+            }
+            var isAnimating = false
             if (null == lottieListener) {
                 lottieListener = object : AnimatorListener {
                     override fun onAnimationStart(animation: Animator) {
+                        //LogUtils.d(TAG,"groupWinLottie onAnimationStart")
                         PromptSoundPlay.playWinEffect()
+                        isAnimating = true
                     }
 
                     override fun onAnimationEnd(animation: Animator) {
-                        endCallBack?.invoke()
-                        groupWinLottie.isVisible = false
+                        //LogUtils.d(TAG,"groupWinLottie onAnimationEnd")
+                        onAnimationEnd()
+                        isAnimating = false
                     }
 
                     override fun onAnimationCancel(animation: Animator) {
+                        //LogUtils.d(TAG,"groupWinLottie onAnimationCancel")
+                        isAnimating = false
                     }
 
                     override fun onAnimationRepeat(animation: Animator) {
                     }
                 }
                 lottieAnimView.addAnimatorListener(lottieListener)
+                lottieAnimView.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+                    override fun onViewAttachedToWindow(p0: View) { }
+                    override fun onViewDetachedFromWindow(p0: View) {
+                        //groupWinLottie播发动画一半被window移除了，lottieListener不会执行onAnimationEnd，在这里执行
+                        LogUtils.w(TAG,"groupWinLottie is detached from window，isAnimating:${isAnimating}")
+                        if(isAnimating){
+                            onAnimationEnd()
+                        }
+                    }
+                })
             }
             lottieAnimView.playAnimation()
         }
