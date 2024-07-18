@@ -58,12 +58,18 @@ class DXDSFragment() : BaseFast3Fragment<Fast3ViewModel,FragDxdsBinding>() {
         numAnimators.clear()
         list.forEach { item ->
             moneyViewList.get(item.areaCode.number)?.apply {
-                second.text = item.userCount.toString()
                 numAnimators.add(
                     doNumberAnim(
                         first,
                         startNum = first.text.toString().toFloatOrNull() ?: 0f,
                         endNumber = item.betScore / 100f
+                    )
+                )
+                numAnimators.add(
+                    doNumberAnim(
+                        second,
+                        startNum = second.text.toString().toFloatOrNull() ?: 0f,
+                        endNumber = item.userCount.toFloat()
                     )
                 )
             }
