@@ -521,6 +521,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         gameAboutModel.countDownSecondsLD.observe(viewLifecycleOwner) { seconds ->
             //Log.d(TAG,"countdown: seconds:$seconds")
             if (mViewModel.gameState == GameAboutModel.Stage.NEW && seconds in 1..5) {
+                if(gameAboutModel.fast3MainFloatVisible.value == false)
                 PromptSoundPlay.countdownGameTip(requireContext())
             }
             if (seconds == 0) {
