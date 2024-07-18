@@ -15,7 +15,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AlphaAnimation
 import android.view.animation.LinearInterpolator
+import android.view.animation.ScaleAnimation
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -262,7 +264,12 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     private fun onStartBetting() {
         lifecycleScope.launch {
             //开始语音
-            mDatabind.txtHomeStatic.text = resources.getString(R.string.g_home_txt_please)
+            mDatabind.apply {
+                async {
+                    playAlphaAnimTogether(arrayOf(txtHomeStatic,txtHomeTime,txtHomeUnit), floatArrayOf(0f,1f))
+                    txtHomeStatic.text = resources.getString(R.string.g_home_txt_please)
+                }
+            }
             Log.d(TAG, "onStartBetting, isCountDownStart:${mViewModel.isCountDownStart}")
             //取消注区闪烁
             mViewModel.cancelAreaFlickAnimLiveData.value = true
@@ -290,7 +297,10 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         lifecycleScope.launch {
             mDatabind.apply {
                 //Fast3ToastHelper.showToastNormal(getString(R.string.g_home_setting_begin), 1000)
-                txtHomeStatic.text = resources.getString(R.string.g_f3_setting)
+                async {
+                    playAlphaAnimTogether(arrayOf(txtHomeStatic), floatArrayOf(0f,1f))
+                    txtHomeStatic.text = resources.getString(R.string.g_f3_setting)
+                }
                 mDatabind.betteLayout.isInvisible = true
                 mDatabind.betteAgainLayout.isVisible = false
                 updateCenterRoundInfoData()
@@ -313,6 +323,27 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     }
 
     /**
+     * 播放透明度动画
+     */
+    private fun playAlphaAnimTogether(views:Array<View>,alphas:FloatArray,d: Long = 200,){
+        val set = AnimatorSet()
+        val animators = views.map { v->
+            val animator = v.getTag(v.id) as Animator?
+            animator?.cancel()
+            ObjectAnimator.ofFloat(v, "alpha", *alphas).apply {
+                duration = d
+                v.setTag(v.id,this)
+                addListener(
+                    onStart = {v.alpha = alphas[0] },
+                    onEnd = { v.setTag(v.id,null) }
+                )
+            }
+        }
+        set.playTogether(animators)
+        set.start()
+    }
+
+    /**
      * 开奖中
      */
     private fun onStartDrawing() {
@@ -325,7 +356,10 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             cancelTemBetting()
             //开奖时取消临时下注的
             mDatabind.apply {
-                txtHomeStatic.text = getString(R.string.g_f3_dealing)
+                async {
+                    playAlphaAnimTogether(arrayOf(txtHomeStatic), floatArrayOf(0f,1f))
+                    txtHomeStatic.text = getString(R.string.g_f3_dealing)
+                }
                 //隐藏筹码牌动画
                 startBetteRecyclerShowOrHideAnim(isShow = false, onEnd = {
                     //注区
@@ -491,17 +525,20 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             }
             if (seconds == 0) {
                 if (mViewModel.gameState == GameAboutModel.Stage.NEW) {
-                    mDatabind.txtHomeStatic.text = getString(R.string.g_f3_dealing)
-                    mDatabind.txtHomeTime.isVisible = false
-                    mDatabind.txtHomeUnit.isVisible = false
-                    mViewModel.isClickOperation = false
-                    Fast3ToastHelper.showToastNormal(
-                        getString(R.string.g_home_betting_end),
-                        canReplace = false
-                    )
-                    //防止断网状态
-                    if (mViewModel.gameState != GameAboutModel.Stage.DEAL)
-                        gameAboutModel.changeStage(GameAboutModel.Stage.DEAL)
+                    lifecycleScope.launch {
+                        playAlphaAnimTogether(arrayOf(mDatabind.txtHomeStatic), floatArrayOf(0f,1f))
+                        mDatabind.txtHomeStatic.text = getString(R.string.g_f3_dealing)
+                        mDatabind.txtHomeTime.isVisible = false
+                        mDatabind.txtHomeUnit.isVisible = false
+                        mViewModel.isClickOperation = false
+                        Fast3ToastHelper.showToastNormal(
+                            getString(R.string.g_home_betting_end),
+                            canReplace = false
+                        )
+                        //防止断网状态
+                        if (mViewModel.gameState != GameAboutModel.Stage.DEAL)
+                            gameAboutModel.changeStage(GameAboutModel.Stage.DEAL)
+                    }
                 }
             } else {
                 mDatabind.txtHomeTime.text = seconds.toString()
