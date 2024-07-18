@@ -449,10 +449,11 @@ fun List<BettingRecordBean>.generateUiBean(betting: Betting): BettingRecordBean?
 }
 
 //取消下注
-fun MutableList<BettingRecordBean>.cancel(): List<BettingRecordBean?> {
+fun ObservableArrayList<BettingRecordBean>.cancel(): List<BettingRecordBean?> {
     val tempTotalMoney = filter { it.state == BettingStatus.TEMP }.sumOf { it.money }
     gameAboutModel.returnTempBalance(tempTotalMoney)
     removeBy(BettingStatus.TEMP)
+    modify()
     return groupBy { it.bettingArea }.map { it.value.generateUiBean(it.key) }
 }
 

@@ -28,4 +28,8 @@ class ObservableArrayList<T> : ArrayList<T>() {
         return result
     }
 
+    fun modify(){
+        callbacks?.change()
+    }
+
 }
