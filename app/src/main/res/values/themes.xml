@@ -15,7 +15,7 @@
         <!-- 设置底部导航栏半透明，默认false黑色，设置true半透明 -->
         <item name="android:windowTranslucentNavigation">true</item>
         <!-- Android 5.0+，设置状态栏全透明透明 -->
-        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:statusBarColor">@color/blue_ed</item>
     </style>
 
 <!--    <style name="activityAnim">-->

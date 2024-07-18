@@ -1,21 +1,26 @@
 package com.example.myapplication
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.ColorUtils
 import androidx.fragment.app.Fragment
-
-import com.cn.game.sdk2.utils.ext.ViewExt.isAdd
 import com.cn.game.sdk2.ui.view.FastLogoView
 import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
+import com.cn.game.sdk2.utils.ext.ViewExt.isAdd
 import com.cn.game.sdk2.websocket.GameSocketManager
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.imp.GameApp
 import com.cn.game.sdk2.websocket.isTokenValid
 import com.cn.game.sdk2.websocket.token
+import com.gyf.immersionbar.ImmersionBar
+
 
 class MainActivity : AppCompatActivity() {
     var views: FastLogoView? = null
@@ -25,6 +30,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        //ImmersionBar.with(this).statusBarColor(com.cn.game.sdk2.R.color.blue).init()
         val btnOpen = findViewById<TextView>(R.id.btnOpen)
         val llshow = findViewById<RelativeLayout>(R.id.llshow)
         val btnXiu = findViewById<Button>(R.id.btnXiu)
