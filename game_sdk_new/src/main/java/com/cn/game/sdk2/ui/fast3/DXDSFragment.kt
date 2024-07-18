@@ -112,6 +112,7 @@ class DXDSFragment() : BaseFast3Fragment<Fast3ViewModel, FragDxdsBinding>() {
                 //开局将下注人数置为0
                 GameAboutModel.Stage.NEW -> {
                     moneyViewList.forEach { _, v ->
+                        v.first.text = 0.toString()
                         v.second.text = 0.toString()
                     }
                 }

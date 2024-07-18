@@ -254,10 +254,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 }
             }
             //if(!mViewModel.isCountDownInit) mViewModel.countDown = gameAboutModel.countDown * 1L
-            Log.d(
-                TAG,
-                "updateGameStage-->${it},countDown:${mViewModel.countDown},isCountDownStart:${mViewModel.isCountDownStart}"
-            )
+            LogUtils.dTag(TAG, "updateGameStage-->${it},countDown:${mViewModel.countDown},isCountDownStart:${mViewModel.isCountDownStart}")
         }
     }
 

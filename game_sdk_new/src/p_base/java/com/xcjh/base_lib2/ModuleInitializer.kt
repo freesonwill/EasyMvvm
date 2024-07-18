@@ -19,10 +19,14 @@ class ModuleInitializer : Initializer<String> {
     }
 
     override fun create(context: Context): String {
-        Log.d(TAG, "ModuleInitializer--->create")
         application = context as Application
         LogUtils.getConfig()
             .setLogSwitch(BuildConfig.DEBUG)
+            .setBorderSwitch(false)
+            .setLogHeadSwitch(false)
+            .setSingleTagSwitch(false)
+            //.setGlobalTag("game_sdk")
+        LogUtils.dTag(TAG, "ModuleInitializer--->create")
         return TAG
     }
 
