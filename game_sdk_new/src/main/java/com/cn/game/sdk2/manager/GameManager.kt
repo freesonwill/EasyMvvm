@@ -26,7 +26,7 @@ class GameManager private constructor() : IGameManager {
             }
 
             override fun onFinish() {
-
+                lis?.onCountdown(0)
             }
         }
         countDownTimer?.start()
