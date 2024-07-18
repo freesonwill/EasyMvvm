@@ -158,9 +158,11 @@
 
                         <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/txtHomeTime"
-                            android:layout_width="18dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:gravity="center"
+                            android:layout_marginStart="3dp"
+                            android:layout_marginEnd="3dp"
                             android:textColor="@{model.homeTimeColorLD,default=@color/c_62DF57}"
                             android:textSize="15sp"
                             tools:text="30" />

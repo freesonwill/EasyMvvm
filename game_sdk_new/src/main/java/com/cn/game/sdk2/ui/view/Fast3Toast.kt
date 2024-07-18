@@ -69,6 +69,7 @@ class Fast3Toast @JvmOverloads constructor(
         job = ThreadUtils.mainScope.launch(exceptionHandler) {
             val d1 = async { playAnim(true) }
             val d2 = async {
+                d1.await()
                 delay(duration)
                 playAnim(false)
                 dismissToast()
