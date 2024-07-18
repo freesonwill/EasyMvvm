@@ -56,7 +56,7 @@ abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
             }
         })*/
         initAreaViewList()
-        if(gameAboutModel.isisAllowedBet.value == true) {
+        if (gameAboutModel.isisAllowedBet.value == true) {
             for (areaView in areaViewList) {
                 setMoneyOKClickListener(areaView)
             }
@@ -103,7 +103,8 @@ abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
      */
     private fun playAlphaAnimTogether(dic: List<View>, duration: Long, count: Int) {
         //LogUtils.d("playAlphaAnimTogether begin:${mViewModel.playAlphaAnimationLD.value},${javaClass.simpleName}")
-        if(mViewModel.playAlphaAnimationLD.value != true) mViewModel.playAlphaAnimationLD.value = true
+        if (mViewModel.playAlphaAnimationLD.value != true) mViewModel.playAlphaAnimationLD.value =
+            true
         areaFlickAnimatorSet?.cancel()
         val animators = (dic.map { maskView ->
             val animator = ObjectAnimator.ofFloat(maskView, "alpha", 1f, 0f, 1f).apply {
@@ -122,7 +123,8 @@ abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
             playTogether(animators)
             addListener(onEnd = {
                 //LogUtils.d("playAlphaAnimTogether end:${mViewModel.playAlphaAnimationLD.value},${javaClass.simpleName}")
-                if(mViewModel.playAlphaAnimationLD.value != false) mViewModel.playAlphaAnimationLD.value = false
+                if (mViewModel.playAlphaAnimationLD.value != false) mViewModel.playAlphaAnimationLD.value =
+                    false
             })
             start()
         }
@@ -154,7 +156,7 @@ abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
             gameMassageManager?.addBetting(bettingBean) { bettingState, result, areaLimit ->
                 bettingState.isCanGoOn(areaLimit) {
                     result?.let {
-                        areaView.setShowMoney(result.money)
+                        areaView.setShowMoney(result.money, false)
                         if (!areaView.moneyView.isAdd()) {
                             addMoneyOkView(areaView, rawX, rawY) {
                                 emitMoneyAnim(result, areaView, betteBean, isNewAdd = true)
@@ -351,6 +353,7 @@ abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
             betteBean = betteBean,
             endCallBack = {
                 betteView.isVisible = true
+                areaView.updateBetteIcon(recordBean.money)
             })
     }
 }

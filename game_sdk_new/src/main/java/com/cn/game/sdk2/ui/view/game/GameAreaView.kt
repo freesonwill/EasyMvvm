@@ -68,8 +68,14 @@ class GameAreaView : FrameLayout {
         return true
     }
 
-    fun setShowMoney(money: Int) {
+    fun setShowMoney(money: Int, updateBetteIcon: Boolean = true) {
         moneyViewPair.first.setShowMoney(money)
+        if (updateBetteIcon) {
+            moneyViewPair.second.updateBetteIcon(money)
+        }
+    }
+
+    fun updateBetteIcon(money: Int) {
         moneyViewPair.second.updateBetteIcon(money)
     }
 
