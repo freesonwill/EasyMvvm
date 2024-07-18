@@ -1327,7 +1327,11 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
         //判断选择的筹码是不是在屏幕外面
         if (finallyView != null) {
-            startMoneyAnimation(x, y, speed, areaView, finallyView, endCallBack)
+            val targetDistance = finallyView.left + finallyView.width / 2 - mDatabind.llShowBetList.width / 2
+            mDatabind.llShowBetList.smoothScrollBy(targetDistance, 0)
+            mDatabind.llShowBetList.post{
+                startMoneyAnimation(x, y, speed, areaView, finallyView!!, endCallBack)
+            }
         } else {
             scrollToItemAndPerformAction(mDatabind.llShowBetList, selectedPosition) {
                 finallyView = layoutManager.findViewByPosition(selectedPosition)
