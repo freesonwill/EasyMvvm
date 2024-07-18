@@ -224,6 +224,7 @@ class MoneyOKView @JvmOverloads constructor(
      */
     fun hiddenTop() {
         llShowTop.isInvisible = true
+        resetAnim()
 //        ivOk.isInvisible = true
 //        ivOff.isInvisible = true
 //        binding?.apply {
@@ -241,6 +242,7 @@ class MoneyOKView @JvmOverloads constructor(
      */
     fun showTop() {
         llShowTop.isVisible = true
+        resetAnim()
 //        ivOk.isVisible = true
 //        ivOff.isVisible = true
 //        binding?.apply {

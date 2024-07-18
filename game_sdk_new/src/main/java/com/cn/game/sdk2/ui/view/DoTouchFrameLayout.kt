@@ -51,7 +51,7 @@ class DoTouchFrameLayout : FrameLayout {
                             it.binding!!.okRightLayout.dispatchTouchEvent(event)
                             true
                         } else {
-                            it?.resetAnim()
+                            it.resetAnim()
                             false
                         }
                     }
