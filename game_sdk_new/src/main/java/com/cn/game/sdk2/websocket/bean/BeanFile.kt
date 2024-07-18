@@ -29,6 +29,8 @@ data class AreaBetConfigBean(
     var areaCode: Betting, var minLimit: Int, var maxLimit: Int
 )
 
+data class VerifyDoubleResultBean(var noMoney:Boolean,var limitBean:AreaBetConfigBean?)
+
 /**
  * 下注：服务器返回时通知ui
  */
