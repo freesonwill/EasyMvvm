@@ -110,7 +110,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     private var anchorMoneyView: MoneyOKView? = null
 
     //<areaCode,<money,View>>
-    private val currentBetteAreaMap by lazy { mutableMapOf<Int, GameAreaView>() }
+    private val currentBetteAreaMap by lazy { LinkedHashMap<Int, GameAreaView>() }
     private val allGameAreaMap by lazy { mutableMapOf<Int, GameAreaView>() }
     private val betteFlyAnimList by lazy { mutableMapOf<GameAreaView, MutableList<ValueAnimator>>() }
 
@@ -950,7 +950,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
      */
     private fun startBetteSelectAnim(showView: View, duration: Long = 100L) {
         if (duration == 0L) isBetteUpAnimFirst = false
-        val anim = ObjectAnimator.ofFloat(showView, "translationY", -requireContext().dp2px(5).toFloat())
+        val anim =
+            ObjectAnimator.ofFloat(showView, "translationY", -requireContext().dp2px(5).toFloat())
         anim.duration = duration
         anim.start()
     }
@@ -962,7 +963,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         isShow: Boolean,
         onStart: (() -> Unit)? = null,
         onEnd: (() -> Unit)? = null,
-        duration: Long = 200L
+        duration: Long = 250L
     ) {
         mDatabind.apply {
             val recyclerAnim = ObjectAnimator.ofFloat(
@@ -1244,7 +1245,13 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                         }
                                     }
                                     "anchorView = $anchorMoneyView".loge()
-                                    showAnchorTop()
+                                    if (anchorMoneyView == null) {
+                                        if(currentBetteAreaMap.values.isNotEmpty()){
+                                            updateAnchorView(currentBetteAreaMap.values.last())
+                                        }
+                                    } else {
+                                        showAnchorTop()
+                                    }
                                 } else {
                                     //余额不足
                                 }
