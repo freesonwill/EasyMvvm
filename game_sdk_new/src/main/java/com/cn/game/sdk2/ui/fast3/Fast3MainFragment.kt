@@ -857,14 +857,12 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                     txtBetOdd.background = getDrawable(R.drawable.shape_3_01933b)
 
                                 } else {
-                                    txtBetSize.background = getDrawable(R.drawable.shape_3_006ce4)
-                                    txtBetOdd.background = getDrawable(R.drawable.shape_3_b83030)
-                                    txtBetSize.text =
-                                        if (mainTxtBean.isBig) getString(R.string.g_home_txt_big) else getString(
+                                    txtBetSize.background = getDrawable(if (mainTxtBean.isBig) R.drawable.shape_3_b83030 else R.drawable.shape_3_006ce4 )
+                                    txtBetOdd.background = getDrawable(if (mainTxtBean.isDouble) R.drawable.shape_3_b83030 else R.drawable.shape_3_006ce4)
+                                    txtBetSize.text = if (mainTxtBean.isBig) getString(R.string.g_home_txt_big) else getString(
                                             R.string.g_home_txt_small
                                         )
-                                    txtBetOdd.text =
-                                        if (mainTxtBean.isDouble)
+                                    txtBetOdd.text = if (mainTxtBean.isDouble)
                                             getString(R.string.g_home_txt_double)
                                         else
                                             getString(R.string.g_home_txt_single)
