@@ -345,7 +345,7 @@ object ViewHelper {
                     text = mStringList[index].toHtml()
                     //字体大小
                     textSize = 14f
-                    setTextBold(this, true)
+                    setTextBold(this, false)
                     // setBackgroundColor(ContextCompat.getColor(appContext, R.color.red_F7736D))
                     //未选中颜色
                     normalColor = ContextCompat.getColor(context, R.color.g_9696b8)

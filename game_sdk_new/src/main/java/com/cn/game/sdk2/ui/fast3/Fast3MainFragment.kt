@@ -152,10 +152,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             mFragList.add(PairsDiceFragment())
             mFragList.add(LeopardFragment())
             (System.currentTimeMillis() - startTime).let {
-                LogUtils.d(
-                    TAG,
-                    "Fast3MainFragment load costMills1:$it"
-                )
+                LogUtils.d(TAG, "Fast3MainFragment load costMills1:$it")
             }
             mDatabind.viewPagerNew.initGameViewPager(
                 childFragmentManager, mFragList, arrayListOf(
@@ -547,7 +544,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 )
                 betteView.translationX = 0f
                 betteView.translationY = 0f
-//                betteView.translationZ = 1f
+                //betteView.translationZ = 1f
                 betteViewGroup?.addView(betteView, params)
             }
         }
@@ -952,8 +949,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
      */
     private fun startBetteSelectAnim(showView: View, duration: Long = 100L) {
         if (duration == 0L) isBetteUpAnimFirst = false
-        val anim =
-            ObjectAnimator.ofFloat(showView, "translationY", -requireContext().dp2px(5).toFloat())
+        val anim = ObjectAnimator.ofFloat(showView, "translationY", -requireContext().dp2px(5).toFloat())
         anim.duration = duration
         anim.start()
     }
@@ -1210,6 +1206,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                         .atView(mDatabind.llHomeMore)
                         .navigationBarColor(android.R.color.transparent)
                         .hasShadowBg(false) // 去掉半透明背景
+                        .offsetX((-8).dp2px)
+                        .offsetY((5).dp2px)
                         .asCustom(bubbleAttach)
                     homeMorePop?.show()
                 } else {
