@@ -500,6 +500,8 @@
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:visibility="gone"
+                    android:scaleX="1.3"
+                    android:scaleY="1.3"
                     app:layout_constraintBottom_toBottomOf="@id/viewPagerNew"
                     app:layout_constraintEnd_toEndOf="@id/viewPagerNew"
                     app:layout_constraintStart_toStartOf="@id/viewPagerNew"
@@ -584,5 +586,6 @@
             app:layout_constraintBottom_toBottomOf="@id/topLayout"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/topLayout" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
