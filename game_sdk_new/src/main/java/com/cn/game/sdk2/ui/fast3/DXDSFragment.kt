@@ -21,7 +21,7 @@ import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 class DXDSFragment() : BaseFast3Fragment<Fast3ViewModel, FragDxdsBinding>() {
     private var moneyViewList: SparseArray<Pair<TextView, TextView>> = SparseArray()
     private val numAnimators by lazy { mutableListOf<Animator?>() }
-    private val numAnimSet by lazy { AnimatorSet() }
+    private var numAnimSet: AnimatorSet? = null
     private val txtValueAnimMap by lazy { mutableMapOf<TextView, ValueAnimator>() }
 
     override fun initAreaViewList() {
@@ -53,7 +53,7 @@ class DXDSFragment() : BaseFast3Fragment<Fast3ViewModel, FragDxdsBinding>() {
     private fun updateAreaBetInfo(list: List<AreaBetBean>?) {
         if (list == null) return
         Log.d(TAG, "updateAreaBetInfo--->$list")
-        if (numAnimSet.isRunning) {
+        if (numAnimSet?.isRunning == true) {
             Log.d(TAG, "updateAreaBetInfo--->running")
             return
         }
@@ -76,8 +76,10 @@ class DXDSFragment() : BaseFast3Fragment<Fast3ViewModel, FragDxdsBinding>() {
                 )
             }
         }
-        numAnimSet.playTogether(numAnimators)
-        numAnimSet.start()
+        numAnimSet = AnimatorSet().apply {
+            playTogether(numAnimators)
+            start()
+        }
     }
 
     /**
@@ -116,6 +118,7 @@ class DXDSFragment() : BaseFast3Fragment<Fast3ViewModel, FragDxdsBinding>() {
                         v.second.text = 0.toString()
                     }
                 }
+
                 else -> {}
             }
         }

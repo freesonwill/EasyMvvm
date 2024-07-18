@@ -279,6 +279,7 @@
                             android:includeFontPadding="false"
                             android:textColor="@color/g_f7cf41"
                             android:textSize="13sp"
+                            style="@style/ChronicaW03Regular"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"

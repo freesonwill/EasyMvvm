@@ -50,18 +50,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
-            android:background="@drawable/icon_money_show"
+            android:background="@drawable/chips_amount"
             android:gravity="center"
-            android:paddingLeft="@dimen/dp_6"
-            android:paddingRight="@dimen/dp_6"
-            android:paddingBottom="@dimen/dp_4"
+            android:paddingStart="6dp"
+            android:paddingEnd="6dp"
             android:textColor="@color/g_f8e0c4"
             android:textSize="13sp"
-            android:textStyle="bold"
+            style="@style/ChronicaW03Bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ivOk"
-            tools:text="1999.0" />
+            tools:text="9111" />
+
         <!--        <androidx.constraintlayout.widget.Group-->
         <!--            android:id="@+id/groupOkTopView"-->
         <!--            android:layout_width="wrap_content"-->

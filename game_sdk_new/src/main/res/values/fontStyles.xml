@@ -12,4 +12,8 @@
     <style name="ChronicaW03Regular">
         <item name="android:fontFamily">@font/chronica_w03_regular</item>
     </style>
+
+    <style name="ChronicaW03Bold">
+        <item name="android:fontFamily">@font/chronica_w03_bold</item>
+    </style>
 </resources>
