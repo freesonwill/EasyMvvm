@@ -296,7 +296,7 @@ class GameAboutModel : BaseViewModel() {
                     lis = object : IGameListener {
                         override fun onCountdown(time: Long) {
                             super.onCountdown(time)
-                            val t = (time / 1000f).toInt()
+                            val t = Math.round(time / 1000f)
                             //Log.d(TAG, "countDown,isMainThread:${isMainThread},time:$t")
                             //onCountDown跟调用同一线程,这里不用post
                             _countDownSecondsLD.value = t
