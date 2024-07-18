@@ -614,12 +614,16 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
     private fun checkDoubleNew() {
         if (bettingStepList.doubleIfMoneyEnough()) {
             bettingStepList.verifyDouble(currentConfig)?.let {
-                "checkDouble()->${it.areaCode}号注区超限->DOUBLE_CAN_NOT".loge("checkAgainAndDouble")
-                gameAboutModel.changeAgainDoubleState(GameAboutModel.AgainDoubleState.DOUBLE_CAN_NOT)
+                if (it.noMoney) {
+                    "double 钱不够".loge("checkAgainAndDouble")
+                    gameAboutModel.changeAgainDoubleState(GameAboutModel.AgainDoubleState.NUll)
+                } else {
+                    "checkDouble()->${it.limitBean?.areaCode}号注区超限->DOUBLE_CAN_NOT".loge("checkAgainAndDouble")
+                    gameAboutModel.changeAgainDoubleState(GameAboutModel.AgainDoubleState.DOUBLE_CAN_NOT)
+                }
             } ?: run {
                 "满足double".loge("checkAgainAndDouble")
                 gameAboutModel.changeAgainDoubleState(GameAboutModel.AgainDoubleState.DOUBLE)
-
             }
         } else {
             "既不满足续压 钱也不够加倍".loge("GameServiceImpl")

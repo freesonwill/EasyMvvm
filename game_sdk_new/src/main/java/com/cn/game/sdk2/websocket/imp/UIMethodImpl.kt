@@ -333,7 +333,11 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
      */
     fun doubleBetting(block: (isMoneyEnough: GameAboutModel.BettingState, result: MutableMap<Betting, BettingRecordBean?>?, areaLimit: AreaBetConfigBean?) -> Unit) {
        bettingStepList.verifyDouble(currentConfig)?.let {
-           block(GameAboutModel.BettingState.OFFSET_MAX, null, it)
+           if (it.noMoney){
+               block(GameAboutModel.BettingState.NO_MONEY, null, null)
+           }else{
+               block(GameAboutModel.BettingState.OFFSET_MAX, null, it.limitBean)
+           }
        }?:run {
            val double = bettingStepList.double()
            gameAboutModel.deductTempBalance(bettingStepList.getMoneyByState(BettingStatus.TEMP))

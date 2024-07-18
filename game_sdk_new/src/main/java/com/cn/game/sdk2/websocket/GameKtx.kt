@@ -50,6 +50,7 @@ import com.cn.game.sdk2.websocket.bean.SUM_6
 import com.cn.game.sdk2.websocket.bean.SUM_7
 import com.cn.game.sdk2.websocket.bean.SUM_8
 import com.cn.game.sdk2.websocket.bean.SUM_9
+import com.cn.game.sdk2.websocket.bean.VerifyDoubleResultBean
 import com.cn.game.sdk2.websocket.bean.areaMap
 import com.cn.game.sdk2.websocket.imp.GameApp
 import com.cn.game.sdk2.websocket.imp.UIMethodImpl
@@ -86,7 +87,7 @@ val token: String
     get() {
         return when (BuildConfig.BUILD_TYPE) {
             "debug" -> {
-                "93:Ufx3Dy8y"
+                "97:nMz8aSsZ"
 //                "109:lW2OFWum"
             }
 
@@ -529,15 +530,17 @@ fun MutableList<BettingRecordBean>.doubleIfMoneyEnough(): Boolean {
     return sumOf { it.money } * 2 <= gameAboutModel.balance.value!!
 }
 
-fun MutableList<BettingRecordBean>.verifyDouble(configs: List<AreaBetConfigBean>?): AreaBetConfigBean? {
+fun MutableList<BettingRecordBean>.verifyDouble(configs: List<AreaBetConfigBean>?): VerifyDoubleResultBean? {
     configs?.let {
         groupBy { it.bettingArea }.forEach {
             val money = it.value.sumOf { bean ->
                 bean.money
             }
             val maxLimit = configs.getBeanById(it.key)!!.maxLimit
-            if (money * 2 > maxLimit) {
-                return configs.getBeanById(it.key)
+            if (money * 2 > gameAboutModel.balance.value!!) {
+                return VerifyDoubleResultBean(true, null)
+            } else if (money * 2 > maxLimit) {
+                return VerifyDoubleResultBean(false, configs.getBeanById(it.key))
             }
         }
     }
