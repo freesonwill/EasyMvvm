@@ -70,16 +70,18 @@ var WEB_SOCKET_URL = "wss://ws.qxe68.com:7001/api/game/5702" ///test
 //测试打包专用 99:mFGB4ljy
 //92:ZyBmhNCJ   87:MHxIHlYM  93:Ufx3Dy8y 94:0aPEwiYK   金额少：97:nMz8aSsZ  98:gCrUd5Gz
 val tokenArray = listOf(
-    "101:PcI4jEcP", "99:mFGB4ljy", "42:aRYvqlC5",
+    "101:PcI4jEcP",
+    "99:mFGB4ljy",
+    "42:aRYvqlC5",
     "33:ZtG5WhUh",
     "29:zNbNe45L",
     "37:QyJbGSGR",
     "24:zQQBFVFI",
-    "69:9Ea9mGPl",
     "50:OtdAVXdd",
     "74:4wNIFMMi",
     "51:Ja9L1rG6",
     "35:BIyxvrqa",
+    "69:cAjjzn2s",
 )
 
 @Suppress("KotlinConstantConditions")
@@ -88,8 +90,8 @@ val token: String
         return when (BuildConfig.BUILD_TYPE) {
             "debug" -> {
 //                "33:ZtG5WhUh"
-//                "35:BIyxvrqa"
-                "109:lW2OFWum"
+                "69:cAjjzn2s"
+//                "109:lW2OFWum"
             }
 
             "innerTest" -> {
@@ -457,6 +459,8 @@ fun List<BettingRecordBean>.generateUiBean(betting: Betting): BettingRecordBean?
 //取消下注
 fun ObservableArrayList<BettingRecordBean>.cancel(): List<BettingRecordBean?> {
     val tempTotalMoney = filter { it.state == BettingStatus.TEMP }.sumOf { it.money }
+    "tempTotalMoney:$tempTotalMoney".loge("tempTotalMoney")
+    "tempBalance:${gameAboutModel.tempBalance.value}".loge("tempTotalMoney")
     gameAboutModel.returnTempBalance(tempTotalMoney)
     removeBy(BettingStatus.TEMP)
     modify()
@@ -560,6 +564,8 @@ fun MutableList<BettingRecordBean>.double(): MutableMap<Betting, BettingRecordBe
         newList.add(copy)
     }
     addAll(newList)
+    val doubleMoney = newList.sumOf { it.money }
+    gameAboutModel.deductTempBalance(doubleMoney)
     val doubleMap: MutableMap<Betting, BettingRecordBean?> = mutableMapOf()
     groupBy(BettingRecordBean::bettingArea).map {
         doubleMap[it.key] = it.value.generateUiBean(it.key)

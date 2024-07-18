@@ -343,7 +343,7 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
            }
        }?:run {
            val double = bettingStepList.double()
-           gameAboutModel.deductTempBalance(bettingStepList.getMoneyByState(BettingStatus.TEMP))
+           bettingStepList.modify()
            block(GameAboutModel.BettingState.GO_ON, double, null)
        }
       /*  if (doubleMoney < balance) {
