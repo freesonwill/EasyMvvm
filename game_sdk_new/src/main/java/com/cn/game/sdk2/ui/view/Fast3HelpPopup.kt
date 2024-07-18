@@ -43,16 +43,10 @@ class Fast3HelpPopup(context: Context, private val offsetY: Int, private val hei
         super.onCreate()
         mViewBind = FragmentFast3HelpBinding.bind(popupImplView)
         this.initView()
-        gameAboutModel.fast3MainFloatVisible.value = false
         mViewBind.root.layoutParams.let { lp ->
             lp.height = height
             mViewBind.content.layoutParams = lp
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        gameAboutModel.fast3MainFloatVisible.value = true
     }
 
     private fun initView() {

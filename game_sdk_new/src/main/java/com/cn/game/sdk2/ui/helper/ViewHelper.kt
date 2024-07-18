@@ -26,6 +26,7 @@ import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
 import com.cn.game.sdk2.utils.ext.ViewExt.locationInWindow
 import com.cn.game.sdk2.utils.tool.indicator.CommonPagerIndicator
 import com.cn.game.sdk2.websocket.appListener
+import com.cn.game.sdk2.websocket.gameAboutModel
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
 import com.lxj.xpopup.enums.PopupAnimation
@@ -145,10 +146,12 @@ object ViewHelper {
                     fastViewOverlay?.isVisible = false
                     fastView?.isVisible = false
                     appListener?.onGameFloatingDetailViewStatus(true)
+                    gameAboutModel.fast3MainFloatVisible.value = false
                 }
 
                 override fun onDismiss(popupView: BasePopupView?) {
                     super.onDismiss(popupView)
+                    gameAboutModel.fast3MainFloatVisible.value = true
                     if(!isShowOtherPop) {
                         fastViewOverlay?.isVisible = true
                         fastView?.isVisible = true

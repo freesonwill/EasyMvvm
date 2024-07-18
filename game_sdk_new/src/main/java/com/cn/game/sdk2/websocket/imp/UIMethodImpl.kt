@@ -113,7 +113,7 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
             }
 
             GameAboutModel.BettingState.OFFSET_MAX -> {
-                bettingStepList.remove(recordBean)
+                bettingStepList.removeLast()
                 block(
                     GameAboutModel.BettingState.OFFSET_MAX,
                     bettingStepList.generateUiBean(recordBean.bettingArea),
@@ -122,7 +122,7 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
             }
 
             GameAboutModel.BettingState.NO_MONEY -> {
-                bettingStepList.remove(recordBean)
+                bettingStepList.removeLast()
                 block(
                     GameAboutModel.BettingState.NO_MONEY,
                     bettingStepList.generateUiBean(recordBean.bettingArea),
@@ -131,7 +131,7 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
             }
 
             GameAboutModel.BettingState.NO_MONEY_50 -> {
-                bettingStepList.remove(recordBean)
+                bettingStepList.removeLast()
                 block(
                     GameAboutModel.BettingState.NO_MONEY_50,
                     bettingStepList.generateUiBean(recordBean.bettingArea),

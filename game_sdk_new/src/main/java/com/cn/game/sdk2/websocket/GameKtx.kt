@@ -87,7 +87,7 @@ val token: String
     get() {
         return when (BuildConfig.BUILD_TYPE) {
             "debug" -> {
-                "97:nMz8aSsZ"
+                "33:ZtG5WhUh"
 //                "109:lW2OFWum"
             }
 
@@ -428,9 +428,13 @@ fun MutableList<BettingRecordBean>.convertMap(): MutableMap<Betting, BettingReco
 fun List<BettingRecordBean>.verifyAdd(
     record: BettingRecordBean, areaBetConfigBean: AreaBetConfigBean?
 ): GameAboutModel.BettingState {
+    toString().loge("verifyAdd")
     val currentBettingTotalMoney =
         filter { it.bettingArea.number == record.bettingArea.number }.sumOf { it.money }
-    val totalMoney = sumOf { it.money }
+    "currentBettingTotalMoney:$currentBettingTotalMoney".loge("verifyAdd")
+    val totalMoney = filter { it.state == BettingStatus.TEMP }.sumOf { it.money }
+    "totalMoney:$totalMoney".loge("verifyAdd")
+    "balance:${gameAboutModel.balance.value}".loge("verifyAdd")
     val moneyEnough = totalMoney < gameAboutModel.balance.value!!
     if (!moneyEnough) return GameAboutModel.BettingState.NO_MONEY
     if ((gameAboutModel.balance.value ?: 0) < 5000) return GameAboutModel.BettingState.NO_MONEY_50
