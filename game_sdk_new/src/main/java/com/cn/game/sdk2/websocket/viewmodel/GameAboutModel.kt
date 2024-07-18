@@ -14,6 +14,7 @@ import com.cn.game.sdk2.websocket.bean.BettingResponsesBean
 import com.cn.game.sdk2.websocket.bean.RoundInfoBean
 import com.kunminx.architecture.ui.callback.UnPeekLiveData
 import com.xcjh.base_lib2.base.BaseViewModel
+import game.mod.proc.yf.proto.res.GameRes
 import kotlinx.coroutines.*
 
 class GameAboutModel : BaseViewModel() {
@@ -26,7 +27,7 @@ class GameAboutModel : BaseViewModel() {
     }
 
     enum class BettingState {
-        GO_ON, NO_MONEY, OFFSET_MIN, OFFSET_MAX, NO_MONEY_50,NO_NETWORK
+        GO_ON, NO_MONEY, OFFSET_MIN, OFFSET_MAX, NO_MONEY_50, NO_NETWORK
     }
 
     private val _currentStage = UnPeekLiveData<Stage>()
@@ -46,12 +47,12 @@ class GameAboutModel : BaseViewModel() {
     private val _isBettingSuccess = MutableLiveData<BettingResponsesBean>()
     private val _toastErrorMessage = MutableLiveData<String>()
     private val _isShowGame = MutableLiveData<Boolean>()
-    private val _isAllowedBet = MutableLiveData<Boolean>(true )
+    private val _isAllowedBet = MutableLiveData<Boolean>(true)
 
-    var isOpen:Boolean = false
+    var isOpen: Boolean = false
 
     //设置人为豹子
-    var manualLeopard:Boolean = false
+    var manualLeopard: Boolean = false
 
     //是否是主播： 主播只能看到"热门"游戏分类，"热门"分类中以后只会放sdk游戏，在大厅弹窗处，主播端看不到其他的tab和瓦力游戏。
     var isAnchor: Boolean = false
@@ -102,6 +103,7 @@ class GameAboutModel : BaseViewModel() {
     > - bettingMessage 下注失败的message
      */
 
+    /*********开始玩之前的阶段的状态***********/
     val isLoginSuccess
         get() = _isLoginSuccess
 
@@ -119,61 +121,72 @@ class GameAboutModel : BaseViewModel() {
     val isLeaveGroup: LiveData<Boolean>
         get() = _isLeaveGroup
 
-    /**
-     * 接口返回错误信息 可能需要弹窗提示
-     */
+    /*********正在玩的阶段***********/
     val toastErrorMessage: LiveData<String>
         get() = _toastErrorMessage
 
-    /**
-     * 下注是否成功
-     * 绑定使用 bettingMessage
-     */
+    // 下注是否成功
+    // 绑定使用 bettingMessage
     val isBettingSuccess: LiveData<BettingResponsesBean>
         get() = _isBettingSuccess
 
     var bettingMessage: String = ""
 
-    /**
-     * 实现currentStage的observe，监听阶段变化
-     * 绑定使用
-     *  - 每个阶段
-     *   - roundId 期号
-     *   - countDown 倒计时
-     *  - 结算结果 currentSettleResult
-     */
+    // 实现currentStage的observe，监听阶段变化
+    // 绑定使用
+    //  - 每个阶段
+    //   - roundId 期号
+    //  - countDown 倒计时
+    //  - 结算结果 currentSettleResult
     val currentStage: LiveData<Stage>
         get() = _currentStage
 
+    // 监听续压和加倍的状态
     val currentAgainDoubleState: LiveData<AgainDoubleState>
         get() = _currentAgainDoubleState
 
+    // 当前的历史记录
     var currentSettleResult: RoundInfoBean? = null
 
-    /**
-     * 实现balance的observe，监听余额变化
-     * 该值需要缩小100倍，保留两位小数用于展示
-     */
+    // 实现balance的observe，监听余额变化
+    // 该值需要缩小100倍，保留两位小数 用于展示
     val balance: LiveData<Long>
         get() = _balance
 
+    //临时计算用的余额 用于显示砝码的状态
     val tempBalance: LiveData<Long>
         get() = _tempBalance
 
-    /**
-     * 实现syncAreaBetInfo的observe，监听default牌面的人数变化
-     */
+    // 实现syncAreaBetInfo的observe，监听default牌面的人数变化
     val syncAreaBetInfo: LiveData<List<AreaBetBean>>
         get() = _syncAreaBetInfo
 
-    /**
-     * 暂时无用
-     */
-    val clearTrendsIds: LiveData<List<Int>>
-        get() = _clearTrendsIds
-
+    //历史记录的列表
     val historyRounds: LiveData<List<RoundInfoBean>>
         get() = _historyRounds
+
+
+    /*********玩完一局的阶段***********/
+    // 结算阶段使用
+    // 开奖注区，用于展示注区的闪闪动画
+    var lotteryResultList: ArrayList<Betting>? = null //开奖注区
+
+    // 结算阶段使用
+    // 净收入，用于展示中奖动画；使用时需要缩小100倍
+    var netIncome: Int = 0
+
+    // 结算阶段使用
+    // 用户 中奖后 的面板砝码金额已经中奖注区
+    var userLotteryResult: ArrayList<BettingRecordBean>? = null
+
+    /*********其他阶段 或通用字段***********/
+    var roundId: String = "" //期号
+    var loginErrorMessage = ""
+    var lastBetting: Betting? = null
+    var gameList: MutableList<GameRes.MiniGameBasicInfo>? = null
+
+
+    /*********End***********/
 
     /**
      * 监听isMeetAgain
@@ -221,6 +234,16 @@ class GameAboutModel : BaseViewModel() {
         _tempBalance.postValue(balance)
     }
 
+    fun deductTempBalance(money: Int) {
+        val balance = _tempBalance.value!! - money
+        _tempBalance.postValue(balance)
+    }
+
+    fun returnTempBalance(money: Int) {
+        val balance = _tempBalance.value!! + money
+        _tempBalance.postValue(balance)
+    }
+
     fun changeStage(stage: Stage) {
         _currentStage.postValue(stage)
     }
@@ -238,7 +261,6 @@ class GameAboutModel : BaseViewModel() {
     }
 
     fun addHistoryRounds(history: List<RoundInfoBean>) {
-        currentSettleResult = history.let { if (it.isEmpty()) null else it[it.size - 1] }
         _historyRounds.postValue(history)
     }
 
@@ -252,23 +274,6 @@ class GameAboutModel : BaseViewModel() {
         _toastErrorMessage.postValue(msg)
     }
 
-    /**
-     * 结算阶段使用
-     * 开奖注区，用于展示注区的闪闪动画
-     */
-    var lotteryResultList: ArrayList<Betting>? = null //开奖注区
-
-    /**
-     * 结算阶段使用
-     * 净收入，用于展示中奖动画；使用时需要缩小100倍
-     */
-    var netIncome: Int = 0
-
-    /**
-     * 结算阶段使用
-     * 用户中间后的面板砝码金额已经中奖注区
-     */
-    var userLotteryResult: ArrayList<BettingRecordBean>? = null
 
     private val _onceCountMoney = MutableLiveData<Int>()
 
@@ -280,22 +285,23 @@ class GameAboutModel : BaseViewModel() {
         _onceCountMoney.postValue(money)
     }
 
-    var miniGameId: Int = 0
     var countDown: Int = 0 //阶段倒计时
         set(value) {
             field = value - 0 //减去500ms延时
             Log.d(TAG, "countDown set:${value},isMainThread:${isMainThread}")
             _countDownSetStampTime = System.currentTimeMillis()
             ThreadUtils.runOnUiThread {
-                GameManager.instance.startCountDownTimer(field.toLong(), lis = object : IGameListener {
-                    override fun onCountdown(time: Long) {
-                        super.onCountdown(time)
-                        val t = (time / 1000f).toInt()
-                        //Log.d(TAG, "countDown,isMainThread:${isMainThread},time:$t")
-                        //onCountDown跟调用同一线程,这里不用post
-                        _countDownSecondsLD.value = t
-                    }
-                })
+                GameManager.instance.startCountDownTimer(
+                    field.toLong(),
+                    lis = object : IGameListener {
+                        override fun onCountdown(time: Long) {
+                            super.onCountdown(time)
+                            val t = (time / 1000f).toInt()
+                            //Log.d(TAG, "countDown,isMainThread:${isMainThread},time:$t")
+                            //onCountDown跟调用同一线程,这里不用post
+                            _countDownSecondsLD.value = t
+                        }
+                    })
             }
         }
         get() {
@@ -307,9 +313,7 @@ class GameAboutModel : BaseViewModel() {
     val countDownSecondsLD: LiveData<Int> = _countDownSecondsLD
     private var _countDownSetStampTime: Long = 0L
     val isCountDownStart get() = (System.currentTimeMillis() - _countDownSetStampTime) < 50
-    var roundId: String = "" //期号
-    var loginErrorMessage = ""
-    var lastBetting: Betting? = null
+
 
     //控制隐藏Fast3MainView
     val fast3MainFloatVisible: UnPeekLiveData<Boolean> = UnPeekLiveData<Boolean>()

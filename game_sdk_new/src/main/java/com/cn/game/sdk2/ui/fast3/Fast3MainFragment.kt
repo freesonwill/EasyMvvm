@@ -696,7 +696,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
      * 刷新页面上注区里moneyView显示
      * 取消下注、结算时刷新中奖区域金额
      */
-    private fun notifyMoneyOkView(list: List<BettingRecordBean>?) {
+    private fun notifyMoneyOkView(list: List<BettingRecordBean?>?) {
         anchorMoneyView = null
         if (list.isNullOrEmpty()) {
             currentBetteAreaMap.forEach {
@@ -711,11 +711,13 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 val entry = iterator.next()
                 run beanEach@{
                     list.forEach { bettingRecordBean ->
-                        if (bettingRecordBean.bettingArea.number == entry.key) {
-                            bettingRecordBean.money.toString().loge("money")
-                            entry.value.setShowMoney(bettingRecordBean.money)
-                            hasFlag = true
-                            return@beanEach
+                        bettingRecordBean?.let {
+                            if (bettingRecordBean.bettingArea.number == entry.key) {
+                                bettingRecordBean.money.toString().loge("money")
+                                entry.value.setShowMoney(bettingRecordBean.money)
+                                hasFlag = true
+                                return@beanEach
+                            }
                         }
                     }
                 }
@@ -1235,12 +1237,14 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                 if (!map.isNullOrEmpty()) {
                                     map.forEach {
                                         it.value.let { record ->
-                                            if (currentBetteAreaMap.containsKey(record.bettingArea.number)) {
-                                                currentBetteAreaMap[record.bettingArea.number]?.setShowMoney(
-                                                    record.money
-                                                )
-                                            } else {
-                                                //addview
+                                            if (record != null) {
+                                                if (currentBetteAreaMap.containsKey(record.bettingArea.number)) {
+                                                    currentBetteAreaMap[record.bettingArea.number]?.setShowMoney(
+                                                        record.money
+                                                    )
+                                                } else {
+                                                    //addview
+                                                }
                                             }
                                         }
                                     }

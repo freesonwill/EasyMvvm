@@ -4,19 +4,22 @@ import androidx.lifecycle.LifecycleOwner
 import com.cn.game.sdk2.websocket.GameSocketClient
 import com.cn.game.sdk2.websocket.GameSocketManager
 import com.cn.game.sdk2.websocket.appListener
-import com.cn.game.sdk2.websocket.balance
 import com.cn.game.sdk2.websocket.bean.AreaBetConfigBean
 import com.cn.game.sdk2.websocket.bean.Betting
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import com.cn.game.sdk2.websocket.bean.BettingResponsesBean
-import com.cn.game.sdk2.websocket.copy
-import com.cn.game.sdk2.websocket.copyFrom
+import com.cn.game.sdk2.websocket.bean.BettingStatus
+import com.cn.game.sdk2.websocket.bean.ObservableArrayList
+import com.cn.game.sdk2.websocket.cancel
+import com.cn.game.sdk2.websocket.double
 import com.cn.game.sdk2.websocket.gameAboutModel
+import com.cn.game.sdk2.websocket.generateUiBean
 import com.cn.game.sdk2.websocket.getBeanById
-import com.cn.game.sdk2.websocket.isEmpty
-import com.cn.game.sdk2.websocket.isNotEmpty
-import com.cn.game.sdk2.websocket.miniGameId
-import com.cn.game.sdk2.websocket.previousSuccess
+import com.cn.game.sdk2.websocket.getMoneyByState
+import com.cn.game.sdk2.websocket.merge
+import com.cn.game.sdk2.websocket.verifyAdd
+import com.cn.game.sdk2.websocket.verifyCommit
+import com.cn.game.sdk2.websocket.verifyDouble
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 import com.xcjh.base_lib2.utils.loge
 import game.mod.proc.yf.proto.req.GameReq
@@ -32,6 +35,12 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
 
     init {
         GameSocketManager.getInstance()?.setGameServerMessageConvertFactory(this)
+        bettingStepList.addOnListChangedCallback(object :ObservableArrayList.OnListChangedCallback{
+
+            override fun change() {
+                checkAgainNew()
+            }
+        })
     }
 
     /**
@@ -65,83 +74,129 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
         block: (isMoneyEnough: GameAboutModel.BettingState, result: BettingRecordBean?, areaLimit: AreaBetConfigBean?) -> Unit
     ) {
 
-        val currentMoney = recordBean.money
-        val areaTempMoney = if (bettingListTemp.containsKey(recordBean.bettingArea)) {
-            bettingListTemp[recordBean.bettingArea]?.money!!  //同注区已有临时下注
-        } else {
-            0
-        }
-        val confirmedMoney = if (bettingListConfirmed.containsKey(recordBean.bettingArea)) {
-            bettingListConfirmed[recordBean.bettingArea]?.money!!  // 同注区已有确认下注
-        } else {
-            0
-        }
-        val tempConfirmedMoney = if (bettingListTempConfirmed.containsKey(recordBean.bettingArea)) {
-            bettingListTempConfirmed[recordBean.bettingArea]?.money!!// 同注区已有临时确认下注
-        } else {
-            0
-        }
+//        val currentMoney = recordBean.money
+//        val areaTempMoney = if (bettingListTemp.containsKey(recordBean.bettingArea)) {
+//            bettingListTemp[recordBean.bettingArea]?.money!!  //同注区已有临时下注
+//        } else {
+//            0
+//        }
+//        val confirmedMoney = if (bettingListConfirmed.containsKey(recordBean.bettingArea)) {
+//            bettingListConfirmed[recordBean.bettingArea]?.money!!  // 同注区已有确认下注
+//        } else {
+//            0
+//        }
+//        val tempConfirmedMoney = if (bettingListTempConfirmed.containsKey(recordBean.bettingArea)) {
+//            bettingListTempConfirmed[recordBean.bettingArea]?.money!!// 同注区已有临时确认下注
+//        } else {
+//            0
+//        }
+//
+//        "currentMoney:${currentMoney}---areaTempMoney:$areaTempMoney----confirmedMoney:$confirmedMoney---tempConfirmedMoney:$tempConfirmedMoney".loge(
+//            "test"
+//        )
+//        "balance:$balance".loge("test")
+//        "tempBalance:${gameAboutModel.tempBalance.value}".loge("test")
 
-        "currentMoney:${currentMoney}---areaTempMoney:$areaTempMoney----confirmedMoney:$confirmedMoney---tempConfirmedMoney:$tempConfirmedMoney".loge(
-            "test"
+        bettingStepList.add(recordBean)
+        val verifyResult = bettingStepList.verifyAdd(
+            recordBean, currentConfig?.getBeanById(recordBean.bettingArea)
         )
-        "balance:$balance".loge("test")
-        "tempBalance:${gameAboutModel.tempBalance.value}".loge("test")
-
-        val addFuture = addCanGoOn(recordBean)
-        when (addFuture) {
-            "继续" -> {
-                tempMoney += recordBean.money
+        when (verifyResult) {
+            GameAboutModel.BettingState.GO_ON -> {
                 tempLastBetting = recordBean.bettingArea
-                var xy: FloatArray? = null
-                if (bettingListTemp.containsKey(recordBean.bettingArea)) {
-                    val viewXYTemporary = bettingListTemp[recordBean.bettingArea]?.viewXYTemporary
-                    val all = viewXYTemporary?.all { it > 0 }
-                    all?.let {
-                        if (it) {
-                            xy = viewXYTemporary
-                        }
-                    }
-                }
-                recordBean.money = currentMoney + areaTempMoney
-                xy?.let {
-                    recordBean.viewXYTemporary = it
-                }
-                //跟新again和double
-                gameAboutModel.setOnceCountMoney(getPanelAllMoney())
-                bettingListTemp[recordBean.bettingArea] = recordBean
-                val uiBean = recordBean.copy()
-                val countMoney: Int =
-                    currentMoney + areaTempMoney + confirmedMoney + tempConfirmedMoney //本次下注后页面上应该显示的总金额
-                uiBean.money = countMoney
-                limitMap[recordBean.bettingArea] = countMoney
-                gameAboutModel.changeTempBalance(balance - getPanelAllMoney())
-                block(GameAboutModel.BettingState.GO_ON, uiBean, null)
+                gameAboutModel.deductTempBalance(recordBean.money)
+                block(
+                    GameAboutModel.BettingState.GO_ON,
+                    bettingStepList.generateUiBean(recordBean.bettingArea),
+                    null
+                )
             }
 
-            "限高" -> {
-                val uiBean = recordBean.copy()
-                uiBean.money = areaTempMoney + confirmedMoney + tempConfirmedMoney
+            GameAboutModel.BettingState.OFFSET_MAX -> {
+                bettingStepList.remove(recordBean)
                 block(
                     GameAboutModel.BettingState.OFFSET_MAX,
-                    uiBean,
+                    bettingStepList.generateUiBean(recordBean.bettingArea),
                     currentConfig?.getBeanById(recordBean.bettingArea)
                 )
             }
 
-            "余额不足" -> {
-                val uiBean = recordBean.copy()
-                uiBean.money = areaTempMoney + confirmedMoney + tempConfirmedMoney
-                block(GameAboutModel.BettingState.NO_MONEY, uiBean, null)
+            GameAboutModel.BettingState.NO_MONEY -> {
+                bettingStepList.remove(recordBean)
+                block(
+                    GameAboutModel.BettingState.NO_MONEY,
+                    bettingStepList.generateUiBean(recordBean.bettingArea),
+                    null
+                )
             }
 
-            "余额不足50" -> {
-                val uiBean = recordBean.copy()
-                uiBean.money = areaTempMoney + confirmedMoney + tempConfirmedMoney
-                block(GameAboutModel.BettingState.NO_MONEY_50, uiBean, null)
+            GameAboutModel.BettingState.NO_MONEY_50 -> {
+                bettingStepList.remove(recordBean)
+                block(
+                    GameAboutModel.BettingState.NO_MONEY_50,
+                    bettingStepList.generateUiBean(recordBean.bettingArea),
+                    null
+                )
                 appListener?.onInsufficientBalance()
             }
+
+            else -> {}
         }
+
+        /* val addFuture = addCanGoOn(recordBean)
+         when (addFuture) {
+             "继续" -> {
+                 tempMoney += recordBean.money
+                 tempLastBetting = recordBean.bettingArea
+                 var xy: FloatArray? = null
+                 if (bettingListTemp.containsKey(recordBean.bettingArea)) {
+                     val viewXYTemporary = bettingListTemp[recordBean.bettingArea]?.viewXYTemporary
+                     val all = viewXYTemporary?.all { it > 0 }
+                     all?.let {
+                         if (it) {
+                             xy = viewXYTemporary
+                         }
+                     }
+                 }
+                 recordBean.money = currentMoney + areaTempMoney
+                 xy?.let {
+                     recordBean.viewXYTemporary = it
+                 }
+                 //跟新again和double
+                 gameAboutModel.setOnceCountMoney(getPanelAllMoney())
+                 bettingListTemp[recordBean.bettingArea] = recordBean
+                 val uiBean = recordBean.copy()
+                 val countMoney: Int =
+                     currentMoney + areaTempMoney + confirmedMoney + tempConfirmedMoney //本次下注后页面上应该显示的总金额
+                 uiBean.money = countMoney
+                 limitMap[recordBean.bettingArea] = countMoney
+                 gameAboutModel.changeTempBalance(balance - getPanelAllMoney())
+                 block(GameAboutModel.BettingState.GO_ON, uiBean, null)
+             }
+
+             "限高" -> {
+                 val uiBean = recordBean.copy()
+                 uiBean.money = areaTempMoney + confirmedMoney + tempConfirmedMoney
+                 block(
+                     GameAboutModel.BettingState.OFFSET_MAX,
+                     uiBean,
+                     currentConfig?.getBeanById(recordBean.bettingArea)
+                 )
+             }
+
+             "余额不足" -> {
+                 val uiBean = recordBean.copy()
+                 uiBean.money = areaTempMoney + confirmedMoney + tempConfirmedMoney
+                 block(GameAboutModel.BettingState.NO_MONEY, uiBean, null)
+             }
+
+             "余额不足50" -> {
+                 val uiBean = recordBean.copy()
+                 uiBean.money = areaTempMoney + confirmedMoney + tempConfirmedMoney
+                 block(GameAboutModel.BettingState.NO_MONEY_50, uiBean, null)
+                 appListener?.onInsufficientBalance()
+             }
+         }*/
 
 
     }
@@ -152,28 +207,30 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
      *   - 返回已确认下注集合
      *  @param block 取消下注后返回已确认的下注
      */
-    fun cancelBetting(block: (result: List<BettingRecordBean>?) -> Unit) {
+    fun cancelBetting(block: (result: List<BettingRecordBean?>) -> Unit) {
+        val resultList = bettingStepList.cancel()
+        block(resultList)
 
-        //----清空临时数据
-        tempMoney = 0
-        bettingListTemp.clear()
-        limitMap.clear()
-        gameAboutModel.changeTempBalance(balance)
-        //----
-        //跟新again和double
-        gameAboutModel.setOnceCountMoney(getPanelAllMoney())
-        //返回已确认的集合
-        bettingListConfirmed.isNotEmpty {
-            val confirmedList = ArrayList<BettingRecordBean>()
-            it.forEach { (_, bettingRecordBean) ->
-                val money = bettingRecordBean.money
-                confirmedList.add(bettingRecordBean)
-                limitMap[bettingRecordBean.bettingArea] = money
-            }
-            block(confirmedList)
-        }.isEmpty {
-            block(null)
-        }
+//        //----清空临时数据
+//        tempMoney = 0
+//        bettingListTemp.clear()
+//        limitMap.clear()
+//        gameAboutModel.changeTempBalance(balance)
+//        //----
+//        //跟新again和double
+//        gameAboutModel.setOnceCountMoney(getPanelAllMoney())
+//        //返回已确认的集合
+//        bettingListConfirmed.isNotEmpty {
+//            val confirmedList = ArrayList<BettingRecordBean>()
+//            it.forEach { (_, bettingRecordBean) ->
+//                val money = bettingRecordBean.money
+//                confirmedList.add(bettingRecordBean)
+//                limitMap[bettingRecordBean.bettingArea] = money
+//            }
+//            block(confirmedList)
+//        }.isEmpty {
+//            block(null)
+//        }
     }
 
     fun commitBetting(block: (isMoneyEnough: GameAboutModel.BettingState, result: AreaBetConfigBean?) -> Unit) {
@@ -182,41 +239,72 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
             return
         }
         if (previousSuccess) {
-            //只有第一次才判断
-            limitMap.forEach {
-                currentConfig?.getBeanById(it.key)?.let { config ->
-                    if (it.value < config.minLimit) {
-                        block(GameAboutModel.BettingState.OFFSET_MIN, config)
-                        return
-                    }
-                }
+            val verifyCommitResult = bettingStepList.verifyCommit(currentConfig)
+            if (verifyCommitResult != null) {
+                block(GameAboutModel.BettingState.OFFSET_MIN, verifyCommitResult)
+                return
             }
             //等有返回结果后 再赋值成true
             previousSuccess = false
-
             val betReq = GameReq.BetReq.newBuilder()
             betReq.setMiniGameId(miniGameId)
-            bettingListTemp.forEach { (betting, bettingRecordBean) ->
-                "注区${betting.number},下注金额：${bettingRecordBean.money}".loge("GameService-确认下注")
-                val areaBetReq = GameReq.AreaBetReq.newBuilder().setAreaCode(betting.number)
-                    .setBetScore(bettingRecordBean.money).build()
-                betReq.addAreaBet(areaBetReq)
-            }
+            bettingStepList.filter { it.state == BettingStatus.TEMP }
+                .map {
+                    it.state = BettingStatus.COMMITTING
+                    it
+                }
+                .groupBy(BettingRecordBean::bettingArea)
+                .merge()
+                .forEach {
+                    "注区${it.bettingArea.toastStr},下注金额：${it.money}".loge("GameService-确认下注")
+                    val areaBetReq =
+                        GameReq.AreaBetReq.newBuilder().setAreaCode(it.bettingArea.number)
+                            .setBetScore(it.money).build()
+                    betReq.addAreaBet(areaBetReq)
 
-            //--- 保存临时数据到中间态 清空临时数据
-            bettingListTempConfirmed.clear()
-            bettingListTempConfirmed copyFrom bettingListTemp.copy()
-            confirmTempMoney = tempMoney
-            tempMoney = 0
-            bettingListTemp.clear()
-            //---
-
+                }
             val build = betReq.build()
             bet(build)
             block(GameAboutModel.BettingState.GO_ON, null)
-        } else {
+        }
+
+        /* if (previousSuccess) {
+             //只有第一次才判断
+             limitMap.forEach {
+                 currentConfig?.getBeanById(it.key)?.let { config ->
+                     if (it.value < config.minLimit) {
+                         block(GameAboutModel.BettingState.OFFSET_MIN, config)
+                         return
+                     }
+                 }
+             }
+             //等有返回结果后 再赋值成true
+             previousSuccess = false
+
+             val betReq = GameReq.BetReq.newBuilder()
+             betReq.setMiniGameId(miniGameId)
+             bettingListTemp.forEach { (betting, bettingRecordBean) ->
+                 "注区${betting.number},下注金额：${bettingRecordBean.money}".loge("GameService-确认下注")
+                 val areaBetReq = GameReq.AreaBetReq.newBuilder().setAreaCode(betting.number)
+                     .setBetScore(bettingRecordBean.money).build()
+                 betReq.addAreaBet(areaBetReq)
+             }
+
+             //--- 保存临时数据到中间态 清空临时数据
+             bettingListTempConfirmed.clear()
+             bettingListTempConfirmed copyFrom bettingListTemp.copy()
+             confirmTempMoney = tempMoney
+             tempMoney = 0
+             bettingListTemp.clear()
+             //---
+
+             val build = betReq.build()
+             bet(build)
+             block(GameAboutModel.BettingState.GO_ON, null)
+         } */
+        else {
             "下注228：上次下注还未返回".loge("addBetting")
-            gameAboutModel.setBettingSuccess(BettingResponsesBean(false, confirmTempMoney))
+            gameAboutModel.setBettingSuccess(BettingResponsesBean(false, 0))
         }
     }
 
@@ -226,14 +314,16 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
      */
     fun againBetting(): Map<Betting, BettingRecordBean> {
         //1
-        tempMoney = againCountMoney
-        gameAboutModel.setOnceCountMoney(getPanelAllMoney())
-        bettingListTemp copyFrom againBettingList
-        againBettingList.forEach {
-            limitMap[it.key] = it.value.money
+//        tempMoney = againCountMoney
+//        gameAboutModel.setOnceCountMoney(getPanelAllMoney())
+//        bettingListTemp copyFrom againBettingMap
+        againBettingMap.forEach {
+//            limitMap[it.key] = it.value.money
+            bettingStepList.add(it.value)
         }
-        gameAboutModel.changeTempBalance(balance - getPanelAllMoney())
-        return againBettingList
+//        gameAboutModel.changeTempBalance(balance - getPanelAllMoney())
+        gameAboutModel.deductTempBalance(bettingStepList.getMoneyByState(BettingStatus.TEMP))
+        return againBettingMap
     }
 
     /**
@@ -241,8 +331,15 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
      * 加倍后的总金额算法：@doubleMoney 只是用于传入接口的金额
      *    currentTempCountMoney * 2 + currentConfirmCountMoney
      */
-    fun doubleBetting(block: (isMoneyEnough: GameAboutModel.BettingState, result: Map<Betting, BettingRecordBean>?, areaLimit: AreaBetConfigBean?) -> Unit) {
-        if (doubleMoney < balance) {
+    fun doubleBetting(block: (isMoneyEnough: GameAboutModel.BettingState, result: MutableMap<Betting, BettingRecordBean?>?, areaLimit: AreaBetConfigBean?) -> Unit) {
+       bettingStepList.verifyDouble(currentConfig)?.let {
+           block(GameAboutModel.BettingState.OFFSET_MAX, null, it)
+       }?:run {
+           val double = bettingStepList.double()
+           gameAboutModel.deductTempBalance(bettingStepList.getMoneyByState(BettingStatus.TEMP))
+           block(GameAboutModel.BettingState.GO_ON, double, null)
+       }
+      /*  if (doubleMoney < balance) {
             val doubleCanOnBean = doubleCanOn()
             doubleCanOnBean?.let {
                 block(GameAboutModel.BettingState.OFFSET_MAX, null, it)
@@ -304,7 +401,7 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
             }
         } else {
             block(GameAboutModel.BettingState.NO_MONEY, null, null)
-        }
+        }*/
     }
 
     /**
@@ -329,18 +426,20 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
      *
      */
     fun observeAgainDoubleState(owner: LifecycleOwner) {
-        gameAboutModel.currentStage.observe(owner) {
-            curStage = it
-            checkAgain()
-        }
-        gameAboutModel.onceCountMoney.observe(owner) {
-            onceCountMoney = it
-            checkAgain()
-        }
-        gameAboutModel.isMeetAgain.observe(owner) {
-            isMeetAgain = it
-            checkAgain()
-        }
+//        gameAboutModel.currentStage.observe(owner) {
+//            curStage = it
+//            checkAgain()
+//        }
+//        gameAboutModel.onceCountMoney.observe(owner) {
+//            onceCountMoney = it
+//            checkAgain()
+//        }
+//        gameAboutModel.isMeetAgain.observe(owner) {
+//            isMeetAgain = it
+//            checkAgain()
+//        }
+
+
     }
 
 

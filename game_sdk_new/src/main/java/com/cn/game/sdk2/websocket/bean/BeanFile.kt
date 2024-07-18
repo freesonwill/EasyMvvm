@@ -2,6 +2,10 @@ package com.cn.game.sdk2.websocket.bean
 
 import java.io.Serializable
 
+enum class BettingStatus {
+    TEMP, COMMITTING, COMMITTED
+}
+
 data class RoundInfoBean(
     var roundId: String,
     var performs: List<Int>,
@@ -53,8 +57,9 @@ data class BettingRecordBean(
      */
     var money: Int = 0,
 
+    var state: BettingStatus = BettingStatus.TEMP
 
-    ) : Serializable, DataClass {
+) : Serializable, DataClass {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -350,7 +355,7 @@ data class BOOM_ALL(
     override var toastStr: String = "全豹"
 ) : BOOM()
 
-val areaMap = mutableMapOf<Int, Betting>(
+val areaMap = mutableMapOf(
     1 to DEFAULT_BIG(),
     2 to DEFAULT_SMALL(),
     3 to DEFAULT_SINGLE(),
