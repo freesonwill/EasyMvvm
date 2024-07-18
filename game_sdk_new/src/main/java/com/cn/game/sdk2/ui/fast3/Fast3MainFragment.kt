@@ -257,7 +257,10 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 }
             }
             //if(!mViewModel.isCountDownInit) mViewModel.countDown = gameAboutModel.countDown * 1L
-            Log.d(TAG, "updateGameStage-->${it},countDown:${mViewModel.countDown},isCountDownStart:${mViewModel.isCountDownStart}")
+            Log.d(
+                TAG,
+                "updateGameStage-->${it},countDown:${mViewModel.countDown},isCountDownStart:${mViewModel.isCountDownStart}"
+            )
         }
     }
 
@@ -284,7 +287,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 mDatabind.rlShowResult.isVisible = false
                 mDatabind.ivHomeBg.isVisible = false
                 mDatabind.ivHomeBgCenter.isVisible = false
-            }, duration = if(mViewModel.isCountDownStart) 200 else 0)
+            }, duration = if (mViewModel.isCountDownStart) 200 else 0)
         }
     }
 
@@ -302,7 +305,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     startWinLottieAnim(endCallBack = {
                         //开奖结果注区动画闪烁
                         Log.e(TAG, "中奖注区结果监听--->${gameAboutModel.lotteryResultList}")
-                        mViewModel.userLotteryResultLiveData.value = gameAboutModel.lotteryResultList
+                        mViewModel.userLotteryResultLiveData.value =
+                            gameAboutModel.lotteryResultList
 
                         //中奖区域金额刷新
                         Log.e(TAG, "中奖注区筹码监听--->${gameAboutModel.userLotteryResult}")
@@ -401,14 +405,14 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         mDatabind.apply {
             groupWinLottie.isVisible = true
             var isAnimating = false
-            val onAnimationEnd:()->Unit = {
+            val onAnimationEnd: () -> Unit = {
                 endCallBack?.invoke()
                 groupWinLottie.isVisible = false
                 isAnimating = false
             }
             //groupWinLottie没在前台显示，不要做Lottie动画
-            if(!groupWinLottie.isShown) {
-                LogUtils.w(TAG,"groupWinLottie is not shown at the front, ignore showLottie")
+            if (!groupWinLottie.isShown) {
+                LogUtils.w(TAG, "groupWinLottie is not shown at the front, ignore showLottie")
                 onAnimationEnd()
                 return
             }
@@ -435,12 +439,16 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     }
                 }
                 lottieAnimView.addAnimatorListener(lottieListener)
-                lottieAnimView.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
-                    override fun onViewAttachedToWindow(p0: View) { }
+                lottieAnimView.addOnAttachStateChangeListener(object :
+                    View.OnAttachStateChangeListener {
+                    override fun onViewAttachedToWindow(p0: View) {}
                     override fun onViewDetachedFromWindow(p0: View) {
                         //groupWinLottie播发动画一半被window移除了，lottieListener不会执行onAnimationEnd，在这里执行
-                        LogUtils.w(TAG,"groupWinLottie is detached from window，isAnimating:${isAnimating}")
-                        if(isAnimating){
+                        LogUtils.w(
+                            TAG,
+                            "groupWinLottie is detached from window，isAnimating:${isAnimating}"
+                        )
+                        if (isAnimating) {
                             onAnimationEnd()
                         }
                     }
@@ -493,7 +501,10 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     mDatabind.txtHomeTime.isVisible = false
                     mDatabind.txtHomeUnit.isVisible = false
                     mViewModel.isClickOperation = false
-                    Fast3ToastHelper.showToastNormal(getString(R.string.g_home_betting_end),canReplace = false)
+                    Fast3ToastHelper.showToastNormal(
+                        getString(R.string.g_home_betting_end),
+                        canReplace = false
+                    )
                     //防止断网状态
                     if (mViewModel.gameState != GameAboutModel.Stage.DEAL)
                         gameAboutModel.changeStage(GameAboutModel.Stage.DEAL)
@@ -648,7 +659,10 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     Log.d(TAG, "receive playAlphaAnimationLD:animator:${animator.hashCode()}")
                     animator?.start()
                 } else {
-                    Log.d(TAG, "receive playAlphaAnimationLD:animator:${animator.hashCode()},cancel")
+                    Log.d(
+                        TAG,
+                        "receive playAlphaAnimationLD:animator:${animator.hashCode()},cancel"
+                    )
                     animator?.cancel()
                     view.alpha = 1f
                 }
@@ -817,11 +831,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                         data.select = bean == data
                     }
                     mViewModel.userLastSelectBetteBean = bean
-                    (mDatabind.llShowBetList.layoutManager as CenterLayoutManager).smoothScrollToPosition(
-                        mDatabind.llShowBetList,
-                        RecyclerView.State(),
-                        layoutPosition
-                    )
+                    betteScrollToCenter(layoutPosition)
                     notifyItemRangeChanged(0, modelCount)
 
                 }
@@ -857,15 +867,18 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                     txtBetOdd.background = getDrawable(R.drawable.shape_3_01933b)
 
                                 } else {
-                                    txtBetSize.background = getDrawable(if (mainTxtBean.isBig) R.drawable.shape_3_b83030 else R.drawable.shape_3_006ce4 )
-                                    txtBetOdd.background = getDrawable(if (mainTxtBean.isDouble) R.drawable.shape_3_b83030 else R.drawable.shape_3_006ce4)
-                                    txtBetSize.text = if (mainTxtBean.isBig) getString(R.string.g_home_txt_big) else getString(
+                                    txtBetSize.background =
+                                        getDrawable(if (mainTxtBean.isBig) R.drawable.shape_3_b83030 else R.drawable.shape_3_006ce4)
+                                    txtBetOdd.background =
+                                        getDrawable(if (mainTxtBean.isDouble) R.drawable.shape_3_b83030 else R.drawable.shape_3_006ce4)
+                                    txtBetSize.text =
+                                        if (mainTxtBean.isBig) getString(R.string.g_home_txt_big) else getString(
                                             R.string.g_home_txt_small
                                         )
                                     txtBetOdd.text = if (mainTxtBean.isDouble)
-                                            getString(R.string.g_home_txt_double)
-                                        else
-                                            getString(R.string.g_home_txt_single)
+                                        getString(R.string.g_home_txt_double)
+                                    else
+                                        getString(R.string.g_home_txt_single)
                                 }
                             }
                         }
@@ -896,11 +909,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                         }
                     }
                     if (selectedIndex >= 0) {
-                        (llShowBetList.layoutManager as CenterLayoutManager).smoothScrollToPosition(
-                            mDatabind.llShowBetList,
-                            RecyclerView.State(),
-                            selectedIndex
-                        )
+                        betteScrollToCenter(selectedIndex)
                     }
                 } else {
                     backUserLastSelectBette(selectBean)
@@ -912,11 +921,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     if (mViewModel.noteList[0].money <= money) {
                         mViewModel.noteList[0].select = true
                         mViewModel.userLastSelectBetteBean = mViewModel.noteList[0]
-                        (llShowBetList.layoutManager as CenterLayoutManager).smoothScrollToPosition(
-                            mDatabind.llShowBetList,
-                            RecyclerView.State(),
-                            0
-                        )
+                        betteScrollToCenter(0)
                     }
                 }
             }
@@ -938,11 +943,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 mViewModel.noteList[i].select = false
             }
         }
-        (mDatabind.llShowBetList.layoutManager as CenterLayoutManager).smoothScrollToPosition(
-            mDatabind.llShowBetList,
-            RecyclerView.State(),
-            index
-        )
+        betteScrollToCenter(index)
     }
 
 
@@ -1078,7 +1079,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                             override fun switchGame() {
                                 lifecycleScope.launch {
                                     listOf(
-                                        async {  showMainGame(false)},
+                                        async { showMainGame(false) },
                                         async {
                                             delay(20)
                                             val context = requireContext()
@@ -1089,7 +1090,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                                 lateinit var binding: FragmentGamehallBinding
                                                 override fun onCreate() {
                                                     super.onCreate()
-                                                    binding = FragmentGamehallBinding.bind(popupImplView)
+                                                    binding =
+                                                        FragmentGamehallBinding.bind(popupImplView)
                                                     binding.lltRoot.layoutParams.also {
                                                         it.height = mDatabind.root.height
                                                         binding.lltRoot.layoutParams = it
@@ -1102,27 +1104,37 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                                     repeat(1) {
                                                         val list = mutableListOf<GameHallItem>()
                                                         for (i in 1..1) {
-                                                            list.add(GameHallItem("a", "快三", "3389在线"))
+                                                            list.add(
+                                                                GameHallItem(
+                                                                    "a",
+                                                                    "快三",
+                                                                    "3389在线"
+                                                                )
+                                                            )
                                                         }
-                                                        val mViewBind = ItemGamehallPageBinding.inflate(
-                                                            layoutInflater,
-                                                            null,
-                                                            false
-                                                        )
+                                                        val mViewBind =
+                                                            ItemGamehallPageBinding.inflate(
+                                                                layoutInflater,
+                                                                null,
+                                                                false
+                                                            )
                                                         mViewBind.rvContent.itemAnimator = null
                                                         mViewBind.rvContent.dividerSpace(
                                                             requireContext().dp2px(20),
                                                             DividerOrientation.HORIZONTAL
                                                         ).setup {
-                                                            it.layoutManager = GridLayoutManager(context, 4)
+                                                            it.layoutManager =
+                                                                GridLayoutManager(context, 4)
                                                             addType<GameHallItem>(R.layout.item_gamehall_page_item)
                                                             onBind {
                                                                 when (itemViewType) {
                                                                     R.layout.item_gamehall_page_item -> {
                                                                         getBinding<ItemGamehallPageItemBinding>().apply {
-                                                                            val bean = _data as GameHallItem
+                                                                            val bean =
+                                                                                _data as GameHallItem
                                                                             tvName.text = bean.name
-                                                                            tvOnline.text = bean.onlineA
+                                                                            tvOnline.text =
+                                                                                bean.onlineA
                                                                             if (bean.name == "快三") {
                                                                                 root.clickNoRepeat {
                                                                                     backMainGame()
@@ -1149,7 +1161,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                                         scrollEnable = true,
                                                         action = { PromptSoundPlay.btnPlayMedia() }
                                                     )
-                                                    binding.viewPagerNew.offscreenPageLimit = mFragList.size
+                                                    binding.viewPagerNew.offscreenPageLimit =
+                                                        mFragList.size
                                                     binding.close.clickNoRepeat {
                                                         backMainGame()
                                                     }
@@ -1322,14 +1335,10 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         val selectedPosition = betList.indexOf(betteBean)
         val layoutManager = mDatabind.llShowBetList.layoutManager as LinearLayoutManager
         var finallyView = layoutManager.findViewByPosition(selectedPosition)
-
-        //判断选择的筹码是不是在屏幕外面
+//        判断选择的筹码是不是在屏幕外面
         if (finallyView != null) {
-            val targetDistance = finallyView.left + finallyView.width / 2 - mDatabind.llShowBetList.width / 2
-            mDatabind.llShowBetList.smoothScrollBy(targetDistance, 0)
-            mDatabind.llShowBetList.post{
-                startMoneyAnimation(x, y, speed, areaView, finallyView!!, endCallBack)
-            }
+            betteScrollToCenter(selectedPosition)
+            startMoneyAnimation(x, y, speed, areaView, finallyView!!, endCallBack)
         } else {
             scrollToItemAndPerformAction(mDatabind.llShowBetList, selectedPosition) {
                 finallyView = layoutManager.findViewByPosition(selectedPosition)
@@ -1486,23 +1495,16 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 }
             }
         })
-        scrollToMiddleHorizontal(recyclerView, position)
+        betteScrollToCenter(position, RecyclerView.State())
     }
 
-
-    private fun scrollToMiddleHorizontal(recyclerView: RecyclerView, position: Int) {
-        val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-        val screenWidth = recyclerView.width
-        val itemWidth = layoutManager.findViewByPosition(position)?.width ?: 0
-        val scrollDistance = (screenWidth - itemWidth) / 2
-
-        layoutManager.scrollToPositionWithOffset(position, -scrollDistance)
-        recyclerView.post {
-            val targetView = layoutManager.findViewByPosition(position)
-            if (targetView != null) {
-                val targetDistance = targetView.left + targetView.width / 2 - screenWidth / 2
-                recyclerView.smoothScrollBy(targetDistance, 0)
-            }
+    private fun betteScrollToCenter(position: Int, state: RecyclerView.State? = null) {
+        mDatabind.apply {
+            (llShowBetList.layoutManager as CenterLayoutManager).smoothScrollToPosition(
+                llShowBetList,
+                state,
+                position
+            )
         }
     }
 }
