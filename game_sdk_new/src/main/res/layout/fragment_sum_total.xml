@@ -58,12 +58,13 @@
                     tools:text="x61" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/ivSumFlashFour"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="fitXY"
                 android:visibility="gone"
+                app:shapeAppearanceOverlay="@style/c_center_rounded"
                 app:srcCompat="@drawable/flash_centre" />
         </com.cn.game.sdk2.ui.view.game.GameAreaView>
 
@@ -111,14 +112,14 @@
                     tools:text="x31" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/ivSumFlashFive"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="fitXY"
                 android:visibility="gone"
+                app:shapeAppearanceOverlay="@style/c_center_rounded"
                 app:srcCompat="@drawable/flash_centre" />
-
         </com.cn.game.sdk2.ui.view.game.GameAreaView>
 
         <com.cn.game.sdk2.ui.view.game.GameAreaView
@@ -166,12 +167,13 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/ivSumFlashSix"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="fitXY"
                 android:visibility="gone"
+                app:shapeAppearanceOverlay="@style/c_center_rounded"
                 app:srcCompat="@drawable/flash_centre" />
         </com.cn.game.sdk2.ui.view.game.GameAreaView>
 
@@ -220,12 +222,13 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/ivSumFlashSeven"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="fitXY"
                 android:visibility="gone"
+                app:shapeAppearanceOverlay="@style/c_center_rounded"
                 app:srcCompat="@drawable/flash_centre" />
         </com.cn.game.sdk2.ui.view.game.GameAreaView>
 
@@ -273,12 +276,13 @@
                     tools:text="x9" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/ivSumFlashEight"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="fitXY"
                 android:visibility="gone"
+                app:shapeAppearanceOverlay="@style/c_center_rounded"
                 app:srcCompat="@drawable/flash_centre" />
 
         </com.cn.game.sdk2.ui.view.game.GameAreaView>
@@ -327,12 +331,13 @@
                     tools:text="x7" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/ivSumFlashNine"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="fitXY"
                 android:visibility="gone"
+                app:shapeAppearanceOverlay="@style/c_center_rounded"
                 app:srcCompat="@drawable/flash_centre" />
         </com.cn.game.sdk2.ui.view.game.GameAreaView>
 
@@ -381,12 +386,13 @@
                     tools:text="x7" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/ivSumFlashTen"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="fitXY"
                 android:visibility="gone"
+                app:shapeAppearanceOverlay="@style/c_center_rounded"
                 app:srcCompat="@drawable/flash_centre" />
         </com.cn.game.sdk2.ui.view.game.GameAreaView>
 
@@ -435,12 +441,13 @@
                     tools:text="x7" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/ivSumFlashEleven"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="fitXY"
                 android:visibility="gone"
+                app:shapeAppearanceOverlay="@style/c_center_rounded"
                 app:srcCompat="@drawable/flash_centre" />
         </com.cn.game.sdk2.ui.view.game.GameAreaView>
 
@@ -489,12 +496,13 @@
                     tools:text="x7" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/ivSumFlashTwelve"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="fitXY"
                 android:visibility="gone"
+                app:shapeAppearanceOverlay="@style/c_center_rounded"
                 app:srcCompat="@drawable/flash_centre" />
         </com.cn.game.sdk2.ui.view.game.GameAreaView>
 
@@ -545,12 +553,13 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/ivSumFlashThirteen"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="fitXY"
                 android:visibility="gone"
+                app:shapeAppearanceOverlay="@style/c_center_rounded"
                 app:srcCompat="@drawable/flash_centre" />
         </com.cn.game.sdk2.ui.view.game.GameAreaView>
 
@@ -598,12 +607,13 @@
                     tools:text="x13" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/ivSumFlashFourteen"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="fitXY"
                 android:visibility="gone"
+                app:shapeAppearanceOverlay="@style/c_center_rounded"
                 app:srcCompat="@drawable/flash_centre" />
         </com.cn.game.sdk2.ui.view.game.GameAreaView>
 
@@ -652,12 +662,13 @@
                     tools:text="x19" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/ivSumFlashFifteen"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="fitXY"
                 android:visibility="gone"
+                app:shapeAppearanceOverlay="@style/c_center_rounded"
                 app:srcCompat="@drawable/flash_centre" />
         </com.cn.game.sdk2.ui.view.game.GameAreaView>
 
@@ -706,12 +717,13 @@
                     tools:text="x31" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/ivSumFlashSixteen"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="fitXY"
                 android:visibility="gone"
+                app:shapeAppearanceOverlay="@style/c_center_rounded"
                 app:srcCompat="@drawable/flash_centre" />
         </com.cn.game.sdk2.ui.view.game.GameAreaView>
 
@@ -761,12 +773,13 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/ivSumFlashSeventeen"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="fitXY"
                 android:visibility="gone"
+                app:shapeAppearanceOverlay="@style/c_center_rounded"
                 app:srcCompat="@drawable/flash_centre" />
         </com.cn.game.sdk2.ui.view.game.GameAreaView>
     </androidx.constraintlayout.widget.ConstraintLayout>
