@@ -256,7 +256,10 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 }
             }
             //if(!mViewModel.isCountDownInit) mViewModel.countDown = gameAboutModel.countDown * 1L
-            LogUtils.dTag(TAG, "updateGameStage-->${it},countDown:${mViewModel.countDown},isCountDownStart:${mViewModel.isCountDownStart}")
+            LogUtils.dTag(
+                TAG,
+                "updateGameStage-->${it},countDown:${mViewModel.countDown},isCountDownStart:${mViewModel.isCountDownStart}"
+            )
         }
     }
 
@@ -266,7 +269,10 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             //开始语音
             mDatabind.apply {
                 async {
-                    playAlphaAnimTogether(arrayOf(txtHomeStatic,txtHomeTime,txtHomeUnit), floatArrayOf(0f,1f))
+                    playAlphaAnimTogether(
+                        arrayOf(txtHomeStatic, txtHomeTime, txtHomeUnit),
+                        floatArrayOf(0f, 1f)
+                    )
                     txtHomeStatic.text = resources.getString(R.string.g_home_txt_please)
                 }
             }
@@ -298,7 +304,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             mDatabind.apply {
                 //Fast3ToastHelper.showToastNormal(getString(R.string.g_home_setting_begin), 1000)
                 async {
-                    playAlphaAnimTogether(arrayOf(txtHomeStatic), floatArrayOf(0f,1f))
+                    playAlphaAnimTogether(arrayOf(txtHomeStatic), floatArrayOf(0f, 1f))
                     txtHomeStatic.text = resources.getString(R.string.g_f3_setting)
                 }
                 mDatabind.betteLayout.isInvisible = true
@@ -325,17 +331,17 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     /**
      * 播放透明度动画
      */
-    private fun playAlphaAnimTogether(views:Array<View>,alphas:FloatArray,d: Long = 200,){
+    private fun playAlphaAnimTogether(views: Array<View>, alphas: FloatArray, d: Long = 200) {
         val set = AnimatorSet()
-        val animators = views.map { v->
+        val animators = views.map { v ->
             val animator = v.getTag(v.id) as Animator?
             animator?.cancel()
             ObjectAnimator.ofFloat(v, "alpha", *alphas).apply {
                 duration = d
-                v.setTag(v.id,this)
+                v.setTag(v.id, this)
                 addListener(
-                    onStart = {v.alpha = alphas[0] },
-                    onEnd = { v.setTag(v.id,null) }
+                    onStart = { v.alpha = alphas[0] },
+                    onEnd = { v.setTag(v.id, null) }
                 )
             }
         }
@@ -357,7 +363,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             //开奖时取消临时下注的
             mDatabind.apply {
                 async {
-                    playAlphaAnimTogether(arrayOf(txtHomeStatic), floatArrayOf(0f,1f))
+                    playAlphaAnimTogether(arrayOf(txtHomeStatic), floatArrayOf(0f, 1f))
                     txtHomeStatic.text = getString(R.string.g_f3_dealing)
                 }
                 //隐藏筹码牌动画
@@ -521,13 +527,16 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         gameAboutModel.countDownSecondsLD.observe(viewLifecycleOwner) { seconds ->
             //Log.d(TAG,"countdown: seconds:$seconds")
             if (mViewModel.gameState == GameAboutModel.Stage.NEW && seconds in 1..5) {
-                if(gameAboutModel.fast3MainFloatVisible.value == false)
-                PromptSoundPlay.countdownGameTip(requireContext())
+                if (gameAboutModel.fast3MainFloatVisible.value == false)
+                    PromptSoundPlay.countdownGameTip(requireContext())
             }
             if (seconds == 0) {
                 if (mViewModel.gameState == GameAboutModel.Stage.NEW) {
                     lifecycleScope.launch {
-                        playAlphaAnimTogether(arrayOf(mDatabind.txtHomeStatic), floatArrayOf(0f,1f))
+                        playAlphaAnimTogether(
+                            arrayOf(mDatabind.txtHomeStatic),
+                            floatArrayOf(0f, 1f)
+                        )
                         mDatabind.txtHomeStatic.text = getString(R.string.g_f3_dealing)
                         mDatabind.txtHomeTime.isVisible = false
                         mDatabind.txtHomeUnit.isVisible = false
@@ -943,14 +952,16 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                         }
                     }
                     if (selectedIndex >= 0) {
-                        betteScrollToCenter(selectedIndex)
+                        llShowBetList.post {
+                            betteScrollToCenter(selectedIndex, RecyclerView.State())
+                        }
                     }
                 } else {
-                    backUserLastSelectBette(selectBean)
+                    backUserLastSelectBette(selectBean, money)
                 }
             } else {
                 if ((mViewModel.userLastSelectBetteBean?.money ?: 0) <= money) {
-                    backUserLastSelectBette(null)
+                    backUserLastSelectBette(null, money)
                 } else {
                     if (mViewModel.noteList[0].money <= money) {
                         mViewModel.noteList[0].select = true
@@ -966,8 +977,9 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     /**
      * 取消下注筹码判断是否需要选中用户最近一次手选筹码
      */
-    private fun backUserLastSelectBette(betteBean: SelectAnnotationBean?) {
+    private fun backUserLastSelectBette(betteBean: SelectAnnotationBean?, money: Long) {
         if (betteBean == mViewModel.userLastSelectBetteBean) return
+        if ((mViewModel.userLastSelectBetteBean?.money ?: 0) > money) return
         var index = 0
         for (i in 0..mViewModel.noteList.lastIndex) {
             if (mViewModel.noteList[i] == mViewModel.userLastSelectBetteBean) {
@@ -1284,7 +1296,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                     }
                                     "anchorView = $anchorMoneyView".loge()
                                     if (anchorMoneyView == null) {
-                                        if(currentBetteAreaMap.values.isNotEmpty()){
+                                        if (currentBetteAreaMap.values.isNotEmpty()) {
                                             updateAnchorView(currentBetteAreaMap.values.last())
                                         }
                                     } else {
