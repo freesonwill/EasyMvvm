@@ -392,9 +392,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 return
             }
             AnimHelper.doNumberAnim(mDatabind.tvAnimWin2, 0, (winMoney).toLong(), 600)
-            /*val originTxt = "¥" + winMoney.formatRealMoney()
-            mDatabind.tvAnimWin.setText(originTxt.replace(Regex("[0-9]"), "0"), false)
-            tvAnimWin.setText("¥${winMoney.formatRealMoney()}", true)*/
             showLottie(endCallBack)
         }
     }
@@ -453,6 +450,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 })
             }
             lottieAnimView.playAnimation()
+
         }
     }
 
@@ -474,7 +472,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 AnimHelper.doNumberAnim(
                     mDatabind.txtCurrentMoney,
                     startNum = mViewModel.currentMoney,
-                    endNumber = it
+                    endNumber = it,
+                    duration1 = mDatabind.lottieAnimView.duration
                 )
             } else {
                 mDatabind.txtCurrentMoney.text = "¥ ${it.formatRealMoney()}"
