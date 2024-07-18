@@ -35,8 +35,8 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
 
     init {
         GameSocketManager.getInstance()?.setGameServerMessageConvertFactory(this)
-        bettingStepList.addOnListChangedCallback(object :ObservableArrayList.OnListChangedCallback{
 
+        bettingStepList.addOnListChangedCallback(object :ObservableArrayList.OnListChangedCallback{
             override fun change() {
                 checkAgainNew()
             }
@@ -438,7 +438,6 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
 //            isMeetAgain = it
 //            checkAgain()
 //        }
-
 
     }
 
