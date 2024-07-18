@@ -17,7 +17,7 @@ object AnimHelper {
     fun doNumberAnim(targetView: TextView, startNum: Long, endNumber: Long, duration1: Long = 500) {
         if (endNumber % 100 == 0L) {
             val realNumber: Long = endNumber / 100L
-            ValueAnimator.ofFloat(startNum.toFloat(), realNumber.toFloat()).apply {
+            ValueAnimator.ofFloat(startNum / 100F, realNumber.toFloat()).apply {
                 duration = duration1
                 addUpdateListener {
                     targetView.text = "¥ ${(it.animatedValue as Float).toLong()}"
