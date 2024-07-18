@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
+import androidx.core.view.setPadding
 import androidx.fragment.app.Fragment
 import com.cn.game.sdk2.ui.view.FastLogoView
 import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
@@ -19,7 +20,9 @@ import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.imp.GameApp
 import com.cn.game.sdk2.websocket.isTokenValid
 import com.cn.game.sdk2.websocket.token
+import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 import com.gyf.immersionbar.ImmersionBar
+import org.w3c.dom.Text
 
 
 class MainActivity : AppCompatActivity() {
@@ -107,7 +110,8 @@ class MainActivity : AppCompatActivity() {
         gameAboutModel.isEnterGroup.observe(this){result->
             if(result){
                 btnOpen.text = "已进入直播间"
-                GameApp.createFloatEnterView(this@MainActivity).apply {
+                val context = this@MainActivity
+                GameApp.createFloatEnterView(context).apply {
                     if(!this.isAdd()) {
                         val lp = RelativeLayout.LayoutParams(layoutParams.width, layoutParams.height)
                         lp.topMargin = 200.dp2px
@@ -116,7 +120,7 @@ class MainActivity : AppCompatActivity() {
                         llshow.addView(this, lp)
                     }
                 }
-                GameApp.createFloatResultView(this@MainActivity).apply {
+                GameApp.createFloatResultView(context).apply {
                     if(!this.isAdd()) {
                         val lp =
                             RelativeLayout.LayoutParams(layoutParams.width, layoutParams.height)
@@ -125,6 +129,18 @@ class MainActivity : AppCompatActivity() {
                         lp.addRule(RelativeLayout.ALIGN_PARENT_END)
                         llshow.addView(this, lp)
                     }
+                }
+                TextView(context).apply {
+                    val lp = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
+                        RelativeLayout.LayoutParams.WRAP_CONTENT)
+                    lp.topMargin = 200.dp2px
+                    lp.marginEnd = 0.dp2px
+                    setTextColor(ContextCompat.getColor(context,R.color.white))
+                    background = ContextCompat.getDrawable(context,com.cn.game.sdk2.R.color.blue_ed)
+                    setPadding(10.dp2px)
+                    lp.addRule(RelativeLayout.ALIGN_PARENT_START)
+                    llshow.addView(this, lp)
+                    text = "token:$token"
                 }
 
             }
