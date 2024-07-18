@@ -287,6 +287,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 mDatabind.rlShowResult.isVisible = false
                 mDatabind.ivHomeBg.isVisible = false
                 mDatabind.ivHomeBgCenter.isVisible = false
+                mDatabind.resultBgTop.isVisible = false
             }, duration = if (mViewModel.isCountDownStart) 200 else 0)
         }
     }
@@ -340,7 +341,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     //开奖结果
                     ivHomeBg.isVisible = true
                     ivHomeBgCenter.isVisible = true
-
+                    resultBgTop.isVisible = true
                 })
             }
         }
