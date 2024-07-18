@@ -15,8 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clipChildren="false"
-        android:clipToPadding="false"
-        >
+        android:clipToPadding="false">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/llShowSection"
@@ -44,8 +43,8 @@
                 android:scaleType="fitXY"
                 android:visibility="gone"
                 app:layout_constraintBottom_toTopOf="@id/bottomLayout"
-                app:layout_constraintTop_toTopOf="@id/centerLayout"
-                app:srcCompat="@drawable/icon_home_bg" />
+                app:layout_constraintTop_toBottomOf="@id/centerLayout"
+                app:srcCompat="@drawable/result_bg_bottom" />
 
             <FrameLayout
                 android:id="@+id/flRvHistory"
@@ -120,9 +119,9 @@
                     android:layout_height="0dp"
                     android:scaleType="fitXY"
                     android:visibility="gone"
-                    app:layout_constraintTop_toTopOf="@id/titleLayout"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:srcCompat="@drawable/icon_home_bg" />
+                    app:layout_constraintTop_toBottomOf="@id/viewPagerNew"
+                    app:srcCompat="@drawable/result_bg_bottom" />
 
                 <RelativeLayout
                     android:id="@+id/titleLayout"
@@ -301,8 +300,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:gravity="center"
-                    android:visibility="gone"
                     android:orientation="horizontal"
+                    android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="@id/betteLayout"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -414,10 +413,9 @@
                         android:layout_width="15dp"
                         android:layout_height="0dp"
                         android:background="@drawable/shape_0_141624"
-                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
-                    </View>
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"></View>
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -475,12 +473,20 @@
                     app:layout_constraintBottom_toTopOf="@id/betteLayout" />
 
                 <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/resultBgTop"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:background="@drawable/result_bg_top"
+                    android:scaleType="fitXY"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@id/viewPagerNew" />
+
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/ivResultBg"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:scaleType="fitXY"
                     android:src="@drawable/result_bg"
-                    android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="@id/viewPagerNew"
                     app:layout_constraintEnd_toEndOf="@id/viewPagerNew"
                     app:layout_constraintStart_toStartOf="@id/viewPagerNew"
@@ -545,10 +551,10 @@
                         android:layout_height="32dp"
                         android:layout_marginBottom="10dp"
                         android:gravity="center"
+                        android:maxWidth="70dp"
                         android:maxLines="1"
                         android:textColor="#FFE3CA"
                         android:textSize="26sp"
-                        android:maxWidth="70dp"
                         android:textStyle="bold"
                         app:autoSizeTextType="uniform"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -561,8 +567,8 @@
                 <androidx.constraintlayout.widget.Group
                     android:id="@+id/groupWinLottie"
                     android:layout_width="wrap_content"
-                    android:visibility="gone"
                     android:layout_height="wrap_content"
+                    android:visibility="gone"
                     app:constraint_referenced_ids="ivResultBg,lottieLayout" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
