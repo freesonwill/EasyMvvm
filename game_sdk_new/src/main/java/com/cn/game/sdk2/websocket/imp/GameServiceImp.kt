@@ -265,6 +265,7 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
         gameAboutModel.gameList = groupInfo.miniGameBasicInfoListList
         val miniGameBasicInfo = gameAboutModel.gameList?.get(0)
         miniGameId = miniGameBasicInfo?.miniGameId!!
+        gameAboutModel.countDown = miniGameBasicInfo.countDown
         val roundInfoListList = miniGameBasicInfo.trend.roundInfoListList
         val roundHistoryList = ArrayList<RoundInfoBean>()
         roundInfoListList.forEach {
@@ -298,7 +299,6 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
         when (miniGameBasicInfo.stage) {
             1 -> {
                 gameAboutModel.changeStage(GameAboutModel.Stage.NEW)
-                gameAboutModel.countDown = miniGameBasicInfo.countDown
             }
 
             2 -> {
