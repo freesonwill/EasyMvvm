@@ -37,8 +37,7 @@
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/ivSumFour"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    style="@style/text_sum_total"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -49,6 +48,7 @@
                     style="@style/ChronicaW03Regular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
                     android:text="@{model.multiplierStr(model.sumTotalBettingArray[4])}"
                     android:textColor="@color/g_f8e0c4"
                     android:textSize="14sp"
@@ -90,8 +90,7 @@
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/ivSumFive"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    style="@style/text_sum_total"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -102,6 +101,7 @@
                     style="@style/ChronicaW03Regular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
                     android:text="@{model.multiplierStr(model.sumTotalBettingArray[5])}"
                     android:textColor="@color/g_f8e0c4"
                     android:textSize="14sp"
@@ -144,8 +144,7 @@
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/ivSumSix"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    style="@style/text_sum_total"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -156,6 +155,7 @@
                     style="@style/ChronicaW03Regular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
                     android:text="@{model.multiplierStr(model.sumTotalBettingArray[6])}"
                     android:textColor="@color/g_f8e0c4"
                     android:textSize="14sp"
@@ -198,8 +198,7 @@
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/ivSumSeven"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    style="@style/text_sum_total"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -210,6 +209,7 @@
                     style="@style/ChronicaW03Regular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
                     android:text="@{model.multiplierStr(model.sumTotalBettingArray[7])}"
                     android:textColor="@color/g_f8e0c4"
                     android:textSize="14sp"
@@ -252,8 +252,7 @@
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/ivSumEight"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    style="@style/text_sum_total"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -264,6 +263,7 @@
                     style="@style/ChronicaW03Regular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
                     android:text="@{model.multiplierStr(model.sumTotalBettingArray[8])}"
                     android:textColor="@color/g_f8e0c4"
                     android:textSize="14sp"
@@ -306,8 +306,7 @@
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/ivSumNine"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    style="@style/text_sum_total"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -318,6 +317,7 @@
                     style="@style/ChronicaW03Regular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
                     android:text="@{model.multiplierStr(model.sumTotalBettingArray[9])}"
                     android:textColor="@color/g_f8e0c4"
                     android:textSize="14sp"
@@ -360,8 +360,7 @@
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/ivSumTen"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    style="@style/text_sum_total"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -372,6 +371,7 @@
                     style="@style/ChronicaW03Regular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
                     android:text="@{model.multiplierStr(model.sumTotalBettingArray[10])}"
                     android:textColor="@color/g_f8e0c4"
                     android:textSize="14sp"
@@ -414,8 +414,7 @@
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/ivSumEleven"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    style="@style/text_sum_total"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -426,6 +425,7 @@
                     style="@style/ChronicaW03Regular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
                     android:text="@{model.multiplierStr(model.sumTotalBettingArray[11])}"
                     android:textColor="@color/g_f8e0c4"
                     android:textSize="14sp"
@@ -468,8 +468,7 @@
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/ivSumTwelve"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    style="@style/text_sum_total"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -480,6 +479,7 @@
                     style="@style/ChronicaW03Regular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
                     android:text="@{model.multiplierStr(model.sumTotalBettingArray[12])}"
                     android:textColor="@color/g_f8e0c4"
                     android:textSize="14sp"
@@ -522,8 +522,7 @@
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/ivSumThirteen"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    style="@style/text_sum_total"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -534,6 +533,7 @@
                     style="@style/ChronicaW03Regular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
                     android:text="@{model.multiplierStr(model.sumTotalBettingArray[13])}"
                     android:textColor="@color/g_f8e0c4"
                     android:textSize="14sp"
@@ -577,8 +577,7 @@
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/ivSumFourTeen"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    style="@style/text_sum_total"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -589,6 +588,7 @@
                     style="@style/ChronicaW03Regular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
                     android:text="@{model.multiplierStr(model.sumTotalBettingArray[14])}"
                     android:textColor="@color/g_f8e0c4"
                     android:textSize="14sp"
@@ -631,8 +631,7 @@
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/ivSumFifteen"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    style="@style/text_sum_total"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -643,6 +642,7 @@
                     style="@style/ChronicaW03Regular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
                     android:text="@{model.multiplierStr(model.sumTotalBettingArray[15])}"
                     android:textColor="@color/g_f8e0c4"
                     android:textSize="14sp"
@@ -685,8 +685,7 @@
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/ivSumSixteen"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    style="@style/text_sum_total"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -697,6 +696,7 @@
                     style="@style/ChronicaW03Regular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
                     android:text="@{model.multiplierStr(model.sumTotalBettingArray[16])}"
                     android:textColor="@color/g_f8e0c4"
                     android:textSize="14sp"
@@ -739,8 +739,7 @@
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/ivSumSeventeen"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    style="@style/text_sum_total"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -751,6 +750,7 @@
                     style="@style/ChronicaW03Regular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
                     android:text="@{model.multiplierStr(model.sumTotalBettingArray[17])}"
                     android:textColor="@color/g_f8e0c4"
                     android:textSize="14sp"
