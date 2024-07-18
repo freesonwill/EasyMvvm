@@ -7,23 +7,25 @@ import android.util.Log
 import android.util.SparseArray
 import android.view.ViewTreeObserver
 import android.widget.TextView
+import androidx.core.util.forEach
 import com.cn.game.sdk2.databinding.FragDxdsBinding
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
 import com.cn.game.sdk2.websocket.bean.AreaBetBean
 import com.cn.game.sdk2.websocket.gameAboutModel
+import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 
 /**
  * 默认
  */
-class DXDSFragment() : BaseFast3Fragment<Fast3ViewModel,FragDxdsBinding>() {
+class DXDSFragment() : BaseFast3Fragment<Fast3ViewModel, FragDxdsBinding>() {
     private var moneyViewList: SparseArray<Pair<TextView, TextView>> = SparseArray()
     private val numAnimators by lazy { mutableListOf<Animator?>() }
     private val numAnimSet by lazy { AnimatorSet() }
     private val txtValueAnimMap by lazy { mutableMapOf<TextView, ValueAnimator>() }
 
     override fun initAreaViewList() {
-        mDatabind.model =mViewModel
+        mDatabind.model = mViewModel
         mDatabind.apply {
             areaViewList.add(bigView.also { it.flickerView = ivFlickerRightTop })
             areaViewList.add(smallView.also { it.flickerView = ivFlickerLeftTop })
@@ -104,6 +106,17 @@ class DXDSFragment() : BaseFast3Fragment<Fast3ViewModel,FragDxdsBinding>() {
         super.createObserver()
         gameAboutModel.syncAreaBetInfo.observe(viewLifecycleOwner) { list ->
             updateAreaBetInfo(list)
+        }
+        gameAboutModel.currentStage.observe(viewLifecycleOwner) { stage ->
+            when (stage) {
+                //开局将下注人数置为0
+                GameAboutModel.Stage.NEW -> {
+                    moneyViewList.forEach { _, v ->
+                        v.second.text = 0.toString()
+                    }
+                }
+                else -> {}
+            }
         }
     }
 
