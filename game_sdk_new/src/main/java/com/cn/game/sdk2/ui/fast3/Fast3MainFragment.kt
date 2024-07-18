@@ -280,12 +280,12 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 mDatabind.betteLayout.isVisible = true
                 mDatabind.betteAgainLayout.isVisible = true
 
-                //开奖结果
+                //开奖结果x
                 mDatabind.rlShowResult.isVisible = false
                 mDatabind.ivHomeBg.isVisible = false
                 mDatabind.ivHomeBgCenter.isVisible = false
                 mDatabind.resultBgTop.isVisible = false
-            }, duration = if (mViewModel.isCountDownStart) 200 else 0)
+            }, duration = if (mViewModel.isCountDownStart) 250 else 0)
         }
     }
 
