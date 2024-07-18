@@ -87,8 +87,9 @@ val token: String
     get() {
         return when (BuildConfig.BUILD_TYPE) {
             "debug" -> {
-                "33:ZtG5WhUh"
-//                "109:lW2OFWum"
+//                "33:ZtG5WhUh"
+//                "35:BIyxvrqa"
+                "109:lW2OFWum"
             }
 
             "innerTest" -> {
@@ -435,9 +436,9 @@ fun List<BettingRecordBean>.verifyAdd(
     val totalMoney = filter { it.state == BettingStatus.TEMP }.sumOf { it.money }
     "totalMoney:$totalMoney".loge("verifyAdd")
     "balance:${gameAboutModel.balance.value}".loge("verifyAdd")
-    val moneyEnough = totalMoney < gameAboutModel.balance.value!!
+    val moneyEnough = totalMoney <= gameAboutModel.balance.value!!
     if (!moneyEnough) return GameAboutModel.BettingState.NO_MONEY
-    if ((gameAboutModel.balance.value ?: 0) < 5000) return GameAboutModel.BettingState.NO_MONEY_50
+    if ((gameAboutModel.balance.value ?: 0) <= 5000) return GameAboutModel.BettingState.NO_MONEY_50
     if (areaBetConfigBean != null) {
         if (currentBettingTotalMoney > areaBetConfigBean.maxLimit) return GameAboutModel.BettingState.OFFSET_MAX
     }

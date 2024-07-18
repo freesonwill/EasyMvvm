@@ -6,6 +6,7 @@ import com.cn.game.sdk2.ui.helper.Fast3ToastHelper
 import com.cn.game.sdk2.utils.PinyinUtils
 import com.cn.game.sdk2.websocket.bean.AreaBetConfigBean
 import com.cn.game.sdk2.websocket.bean.Betting
+import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -98,7 +99,11 @@ object CommonExt {
             }
 
             GameAboutModel.BettingState.NO_MONEY -> {
-                Fast3ToastHelper.showToastNormal(ModuleInitializer.application.getString(R.string.money_insufficient))
+                if ((gameAboutModel.balance.value ?: 0) < 50) {
+                    Fast3ToastHelper.showToastNormal(ModuleInitializer.application.getString(R.string.money_insufficient_50))
+                } else {
+                    Fast3ToastHelper.showToastNormal(ModuleInitializer.application.getString(R.string.money_insufficient))
+                }
             }
 
             GameAboutModel.BettingState.OFFSET_MIN -> {
