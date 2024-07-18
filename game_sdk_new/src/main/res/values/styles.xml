@@ -81,4 +81,9 @@
         <item name="android:clipChildren">false</item>
         <item name="android:clipToPadding">false</item>
     </style>
+
+    <style name="c_center_rounded">
+        <item name="cornerSize">8dp</item>
+        <item name="cornerFamily">rounded</item>
+    </style>
 </resources>
