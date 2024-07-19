@@ -71,6 +71,7 @@ import com.cn.game.sdk2.websocket.GameSocketManager
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import com.cn.game.sdk2.websocket.bean.RoundInfoBean
 import com.cn.game.sdk2.websocket.gameAboutModel
+import com.cn.game.sdk2.websocket.gameMassageManager
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 import com.drake.brv.annotaion.DividerOrientation
 import com.drake.brv.utils.bindingAdapter
@@ -500,7 +501,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     "add code=${it.areaCode},${it.id}".loge("UPDATE_ALL_AREA_VIEW")
                 }
             }
-        GameSocketManager.getInstance()?.getGameService()?.observeAgainDoubleState(this)
+        gameMassageManager?.observeAgainDoubleState(this)
 
         //总余额监听
         gameAboutModel.balance.observe(viewLifecycleOwner) {
@@ -594,7 +595,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         }
 
         mViewModel.betOkClick.observe(this) {
-            GameSocketManager.getInstance()?.getGameService()
+            gameMassageManager
                 ?.commitBetting { bettingState, areaLimit ->
                     bettingState.isCanGoOn(areaLimit) {
                         hiddenAnchorTop()
@@ -721,7 +722,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
      */
     private fun cancelTemBetting() {
         hiddenAnchorTop()
-        GameSocketManager.getInstance()?.getGameService()?.cancelBetting { result ->
+        gameMassageManager?.cancelBetting { result ->
             notifyMoneyOkView(result)
         }
     }
@@ -1277,7 +1278,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                         PromptSoundPlay.playAudio()
                         AnimHelper.doScaleAnimRecovery(ivMultiple2)
                     }
-                    GameSocketManager.getInstance()?.getGameService()
+                    gameMassageManager
                         ?.doubleBetting { bettingState, map, areaLimit ->
                             bettingState.isCanGoOn(areaLimit) {
                                 if (!map.isNullOrEmpty()) {
@@ -1319,7 +1320,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     return@setOnClickListener
                 }
                 PromptSoundPlay.playAudio()
-                val map = GameSocketManager.getInstance()?.getGameService()?.againBetting()
+                val map = gameMassageManager?.againBetting()
                 map.toString().loge("again3")
                 if (!map.isNullOrEmpty()) {
                     map.forEach {

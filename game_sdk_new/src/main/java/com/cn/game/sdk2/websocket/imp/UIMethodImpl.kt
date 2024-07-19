@@ -130,6 +130,7 @@ class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceIm
                     bettingStepList.generateUiBean(recordBean.bettingArea),
                     null
                 )
+                appListener?.onInsufficientBalance()
             }
 
             GameAboutModel.BettingState.NO_MONEY_50 -> {
