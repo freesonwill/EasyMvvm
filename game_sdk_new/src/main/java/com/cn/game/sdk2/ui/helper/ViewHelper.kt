@@ -164,7 +164,7 @@ object ViewHelper {
                 }
             })
             .popupAnimation(PopupAnimation.TranslateFromBottom)
-            .animationDuration(200)
+            .animationDuration(100)
             .moveUpToKeyboard(false) //如果不加这个，评论弹窗会移动到软键盘上面
             .isViewMode(true)
             .isTouchThrough(true)

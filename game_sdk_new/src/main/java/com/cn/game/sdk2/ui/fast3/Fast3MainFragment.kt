@@ -69,6 +69,7 @@ import com.cn.game.sdk2.websocket.GameSocketManager
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import com.cn.game.sdk2.websocket.bean.RoundInfoBean
 import com.cn.game.sdk2.websocket.gameAboutModel
+import com.cn.game.sdk2.websocket.gameMassageManager
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 import com.drake.brv.annotaion.DividerOrientation
 import com.drake.brv.utils.bindingAdapter
@@ -428,7 +429,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 endCallBack?.invoke()
                 return
             }
-            AnimHelper.doNumberAnim(mDatabind.tvAnimWin2, 0, (winMoney).toLong(), 600)
+            AnimHelper.doNumberAnim(mDatabind.tvAnimWin2, 0, (winMoney).toLong(), 1000)
             showLottie(endCallBack)
         }
     }
@@ -451,9 +452,26 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             if (null == lottieListener) {
                 lottieListener = object : AnimatorListener {
                     override fun onAnimationStart(animation: Animator) {
-                        //LogUtils.d(TAG,"groupWinLottie onAnimationStart")
+                        Log.e(TAG,"groupWinLottie onAnimationStart")
                         PromptSoundPlay.playWinEffect()
                         isAnimating = true
+                        mDatabind.tvAnimWin2.alpha = 1f
+                        txtWinMoneyLabel.alpha = 1f
+                        lottieLayout.postDelayed({
+                            AnimatorSet().apply {
+                                playTogether(
+                                    listOf(
+                                        ObjectAnimator.ofFloat(mDatabind.tvAnimWin2, "alpha", 1f, 0f).apply {
+                                            duration = 1000 // 设置动画持续时间
+                                        },
+                                        ObjectAnimator.ofFloat(txtWinMoneyLabel, "alpha", 1f, 0f).apply {
+                                            duration = 1000 // 设置动画持续时间
+                                        }
+                                    )
+                                )
+                                start()
+                            }
+                        },2500)
                     }
 
                     override fun onAnimationEnd(animation: Animator) {
@@ -487,9 +505,11 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 })
             }
             lottieAnimView.playAnimation()
+            lottieAnimView2.playAnimation()
 
         }
     }
+
 
     override fun createObserver() {
         Log.i(TAG, "createObserver------------>")
@@ -500,18 +520,23 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     "add code=${it.areaCode},${it.id}".loge("UPDATE_ALL_AREA_VIEW")
                 }
             }
-        GameSocketManager.getInstance()?.getGameService()?.observeAgainDoubleState(this)
+        gameMassageManager?.observeAgainDoubleState(this)
 
         //总余额监听
         gameAboutModel.balance.observe(viewLifecycleOwner) {
             Log.e(TAG, "收到的总余额：${it},old:${mViewModel.currentMoney}, new:$it")
             if (it > mViewModel.currentMoney) {
-                AnimHelper.doNumberAnim(
-                    mDatabind.txtCurrentMoney,
-                    startNum = mViewModel.currentMoney,
-                    endNumber = it,
-                    duration1 = mDatabind.lottieAnimView.duration
-                )
+                val start = mViewModel.currentMoney
+                val end = it
+                mDatabind.txtCurrentMoney.postDelayed({
+                    AnimHelper.doNumberAnim(
+                        mDatabind.txtCurrentMoney,
+                        startNum = start,
+                        endNumber = end,
+                        duration1 = 1000
+                        //duration1 = mDatabind.lottieAnimView.duration
+                    )
+                },600)
             } else {
                 mDatabind.txtCurrentMoney.text = "¥ ${it.formatRealMoney()}"
             }
@@ -594,7 +619,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         }
 
         mViewModel.betOkClick.observe(this) {
-            GameSocketManager.getInstance()?.getGameService()
+            gameMassageManager
                 ?.commitBetting { bettingState, areaLimit ->
                     bettingState.isCanGoOn(areaLimit) {
                         hiddenAnchorTop()
@@ -721,7 +746,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
      */
     private fun cancelTemBetting() {
         hiddenAnchorTop()
-        GameSocketManager.getInstance()?.getGameService()?.cancelBetting { result ->
+        gameMassageManager?.cancelBetting { result ->
             notifyMoneyOkView(result)
         }
     }
@@ -1127,7 +1152,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                     listOf(
                                         async { showMainGame(false) },
                                         async {
-                                            delay(20)
+                                            //delay(20)
                                             val context = requireContext()
                                             val popupView = object : BottomPopupView(context) {
                                                 override fun getImplLayoutId(): Int =
@@ -1232,7 +1257,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                                 })
                                                 .popupAnimation(PopupAnimation.TranslateFromBottom)
                                                 .navigationBarColor(android.R.color.transparent)
-                                                .animationDuration(150)//默认300ms
+                                                .animationDuration(100)//默认300ms
                                                 .isViewMode(true)
                                                 .hasShadowBg(false) // 去掉半透明背景
                                                 .enableDrag(true)
@@ -1252,7 +1277,9 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                 homeMorePop = null
                             }
                         })
-                        .customAnimator(AlphaPopupAnimator(bubbleAttach, 150, floatArrayOf(0f, 1f)))
+                        .customAnimator(AlphaPopupAnimator(bubbleAttach,100, floatArrayOf(0f,1f)))
+                        .animationDuration(100)
+                        .isDestroyOnDismiss(false)
                         .atView(mDatabind.llHomeMore)
                         .navigationBarColor(android.R.color.transparent)
                         .hasShadowBg(false) // 去掉半透明背景
@@ -1277,7 +1304,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                         PromptSoundPlay.playAudio()
                         AnimHelper.doScaleAnimRecovery(ivMultiple2)
                     }
-                    GameSocketManager.getInstance()?.getGameService()
+                    gameMassageManager
                         ?.doubleBetting { bettingState, map, areaLimit ->
                             bettingState.isCanGoOn(areaLimit) {
                                 if (!map.isNullOrEmpty()) {
@@ -1319,7 +1346,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     return@setOnClickListener
                 }
                 PromptSoundPlay.playAudio()
-                val map = GameSocketManager.getInstance()?.getGameService()?.againBetting()
+                val map = gameMassageManager?.againBetting()
                 map.toString().loge("again3")
                 if (!map.isNullOrEmpty()) {
                     map.forEach {

@@ -1,0 +1,5 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <size android:width="4dp" android:height="24dp"/> <!-- 固定宽度和高度 -->
+    <solid android:color="@color/gray"/> <!-- 滑块颜色 -->
+    <corners android:radius="4dp"/> <!-- 滑块圆角 -->
+</shape>

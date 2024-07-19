@@ -79,6 +79,19 @@ object CommonExt {
         }
     }
 
+    fun <T> Iterable<T>.some(predicate: (T) -> Boolean):Boolean{
+        return find(predicate) != null
+    }
+
+    fun <T> Iterable<T>.every(predicate: (T) -> Boolean):Boolean{
+        val it = iterator()
+        while(it.hasNext()){
+            val item = it.next()
+            if(!predicate(item)) return false
+        }
+        return true
+    }
+
     fun Any.formatRealMoney(): String {
         val b1 = BigDecimal(this.toString())
         val b2 = BigDecimal("100")

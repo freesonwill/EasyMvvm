@@ -10,11 +10,19 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.util.SparseArray
+import android.util.SparseIntArray
+import androidx.core.util.set
 import com.cn.game.sdk2.R
+import com.cn.game.sdk2.utils.ThreadUtils
+import com.cn.game.sdk2.utils.ext.CommonExt.every
 import com.cn.game.sdk2.websocket.isEnableSound
 import com.xcjh.base_lib2.ModuleInitializer
 import com.xcjh.base_lib2.utils.TAG
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.io.IOException
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 
 /**
@@ -196,33 +204,45 @@ object PromptSoundPlay {
      */
     fun playWinEffect(){
         if(isEnableSound) {
-            val context = ModuleInitializer.application
-            var soundId1 = soundPoolIds[R.raw.sx_common_win_bet]
-            var soundId2 = soundPoolIds[R.raw.sx_common_win_game]
-            val (volume, maxVolume, percent) = systemVolume
-            if (soundId1 != null && soundId2 != null) {
-                soundPool.stop(soundId1)
-                soundPool.stop(soundId2)
-                soundPool.play(soundId1, percent, percent, 0, 0, 1f)
-                soundPool.play(soundId2, percent, percent, 0, 0, 1f)
-                return
-            }
-            soundId1 = R.raw.sx_common_win_bet.let {
-                val id = soundPool.load(context, it, 1)
-                soundPoolIds[it] = it
-                id
-            }
-            soundId2 = R.raw.sx_common_win_game.let {
-                val id = soundPool.load(context, it, 1)
-                soundPoolIds[it] = id
-                id
-            }
-            Log.d(TAG, "playWinEffect:$soundId1,$soundId2,$percent,$volume,$maxVolume")
-            soundPool.setOnLoadCompleteListener { _, _, _ ->
-                //soundPool.release()
-                Log.d(TAG, "playWinEffect:setOnLoadCompleteListener")
-                soundPool.play(soundId1, percent, percent, 0, 0, 1f)
-                soundPool.play(soundId2, percent, percent, 0, 0, 1f)
+            ThreadUtils.mainScope.launch(Dispatchers.Main) {
+                val context = ModuleInitializer.application
+                val soundRaws = arrayOf(
+                    R.raw.sx_common_win_bet,
+                    R.raw.sx_common_win_game,
+                )
+                val soundIds = soundRaws.map { soundPoolIds[it] }.toMutableList()
+                val (volume, maxVolume, percent) = systemVolume
+                if(soundIds.every { it != null }) {
+                    soundIds.forEach {
+                        soundPool.stop(it)
+                        soundPool.play(it, percent, percent, 0, 0, 1f)
+                    }
+                    return@launch
+                }
+                //Todo load sounds to a single suspend method
+                suspendCoroutine {continuation->
+                    var count1 = 0;var count2 = 0;
+                    soundIds.forEachIndexed { index,item->
+                        if(item == null) {
+                            soundIds[index] = soundRaws[index].let {
+                                val id = soundPool.load(context, it, 1)
+                                soundPoolIds[it] = id
+                                count1++
+                                id
+                            }
+                        }
+                    }
+                    Log.d(TAG, "playWinEffect:$soundIds,$percent,$volume,$maxVolume")
+                    soundPool.setOnLoadCompleteListener { soundPool, sampleId, status ->
+                        count2++
+                        Log.d(TAG, "playWinEffect:setOnLoadCompleteListener,$sampleId,$status,count1:$count1,count2:$count2")
+                        if(count2 == count1) continuation.resume(1)
+                    }
+                }
+                //play sounds
+                soundIds.forEach {
+                    soundPool.play(it, percent, percent, 0, 0, 1f)
+                }
             }
         }
     }
@@ -274,7 +294,8 @@ object PromptSoundPlay {
     fun isPhoneSilent(context: Context): Boolean {
         val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
         return when (audioManager.ringerMode) {
-            AudioManager.RINGER_MODE_SILENT, AudioManager.RINGER_MODE_VIBRATE -> true // 静音或振动模式
+            AudioManager.RINGER_MODE_SILENT,
+            AudioManager.RINGER_MODE_VIBRATE -> true // 静音或振动模式
             else -> false // 声音模式
         }
     }

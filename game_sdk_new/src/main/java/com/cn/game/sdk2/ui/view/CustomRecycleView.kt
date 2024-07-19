@@ -2,57 +2,84 @@ package com.cn.game.sdk2.ui.view
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.GestureDetector
-import android.view.GestureDetector.SimpleOnGestureListener
-import android.view.MotionEvent
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlin.math.abs
+import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
+
 
 class CustomRecycleView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : RecyclerView(context, attrs, defStyleAttr) {
-    private var touchX = 0f
-    private var touchY = 0f
-    private var isHandle = false
-    private var isTrigger = false
-    private val gestureDetector: GestureDetector =
-        GestureDetector(context, object : SimpleOnGestureListener() {
+    private var mThumbHeight: Int = UNDEFINED
+    private var mTopCutoff:Float = UNDEFINED.toFloat()
 
-            override fun onFling(p0: MotionEvent, p1: MotionEvent, p2: Float, p3: Float): Boolean {
-                val x: Float = p1.x - p0.x
-                val y: Float = p1.y - p0.y
-                if (abs(x) > abs(y) && abs(x) > 100) return false
-                return true
-            }
+/*
+    *//**
+     * Retrieves the size of the scroll bar thumb in our arbitrary units.
+     *
+     * @return Scroll bar thumb height
+     *//*
+    override fun computeVerticalScrollExtent(): Int {
+        //return if ((mThumbHeight == UNDEFINED)) 0 else mThumbHeight
+        return 200.dp2px
+    }
 
-        })
+    *//**
+     * Compute the offset of the scroll bar thumb in our scroll bar range.
+     *
+     * @return Offset in scroll bar range.
+     *//*
+    override fun computeVerticalScrollOffset(): Int {
+        //return if ((mTopCutoff == UNDEFINED.toFloat())) 0 else ((getCutoff() - mTopCutoff) * ITEM_HEIGHT).toInt()
+        return (super.computeVerticalScrollOffset() / 23.5f).toInt();
+    }
 
-    override fun onTouchEvent(e: MotionEvent): Boolean {
-        /*when (e.action) {
-            MotionEvent.ACTION_DOWN -> {
-                touchX = e.x
-                touchY = e.y
-                isTrigger = false
-            }
+    *//**
+     * Computes the scroll bar range. It will simply be the number of items in the adapter
+     * multiplied by the given item height. The scroll extent size is also computed since it
+     * will not vary. Note: The RecyclerView must be positioned at the top or this method
+     * will throw an IllegalStateException.
+     *
+     * @return The scroll bar range
+     *//*
+    override fun computeVerticalScrollRange(): Int {
+        return 5000
+        *//*if (mThumbHeight == UNDEFINED) {
+            val lm = layoutManager as LinearLayoutManager
+            val firstCompletePosition = lm.findFirstCompletelyVisibleItemPosition()
 
-            MotionEvent.ACTION_UP,
-            MotionEvent.ACTION_CANCEL,
-            MotionEvent.ACTION_MOVE -> {
-                val x: Float = e.x - touchX
-                val y: Float = e.y - touchY
-                if ((!isTrigger && abs(x) > abs(y) && abs(x) > 10) || isTrigger) {
-                    isTrigger = true
-                    touchX = e.x
-                    touchY = e.y
-                    return false
+            if (firstCompletePosition != NO_POSITION) {
+                if (firstCompletePosition != 0) {
+                    throw (IllegalStateException(ERROR_NOT_AT_TOP_OF_RANGE))
+                } else {
+                    mTopCutoff = getCutoff()
+                    mThumbHeight = (mTopCutoff * ITEM_HEIGHT).toInt()
                 }
             }
-        }*/
-        return super.onTouchEvent(e)
+        }
+        return adapter!!.itemCount * ITEM_HEIGHT*//*
     }
-    /*override fun onTouchEvent(e: MotionEvent): Boolean {
-        return gestureDetector.onTouchEvent(e) || super.onTouchEvent(e)
+
+    private fun getCutoff(): Float {
+        val lm = layoutManager as LinearLayoutManager
+        val lastVisibleItemPosition = lm.findLastVisibleItemPosition()
+        if (lastVisibleItemPosition == NO_POSITION) {
+            return 0f
+        }
+        val view = lm.findViewByPosition(lastVisibleItemPosition)!!
+        val fractionOfView = if (view.bottom < height) { // last visible position is fully visible
+            0f
+        } else { // last view is cut off and partially displayed
+            (height - view.top).toFloat() / view.height.toFloat()
+        }
+        return lastVisibleItemPosition + fractionOfView
     }*/
+
+    companion object {
+        const val ITEM_HEIGHT: Int = 1000 // Arbitrary, make largish for smoother scrolling
+        const val UNDEFINED: Int = -1
+        const val ERROR_NOT_AT_TOP_OF_RANGE: String = "RecyclerView must be positioned at the top of its range."
+    }
 }
