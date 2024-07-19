@@ -359,12 +359,14 @@
                             android:layout_width="28dp"
                             android:layout_height="28dp"
                             android:layout_marginLeft="16dp"
+                            android:layout_marginTop="0.5dp"
                             app:srcCompat="@drawable/icon_home_result_small" />
 
                         <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/ivBetOdd"
                             android:layout_width="28dp"
                             android:layout_height="28dp"
+                            android:layout_marginTop="0.5dp"
                             android:layout_marginLeft="16dp"
                             app:srcCompat="@drawable/icon_home_result_double" />
                     </LinearLayout>
