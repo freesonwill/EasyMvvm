@@ -8,6 +8,7 @@ import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.graphics.Path
 import android.graphics.PathMeasure
+import android.nfc.Tag
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -29,6 +30,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.data.EventKey
 import com.cn.game.sdk2.data.bean.GameHallItem
@@ -68,12 +70,14 @@ import com.cn.game.sdk2.websocket.GameSocketManager
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import com.cn.game.sdk2.websocket.bean.RoundInfoBean
 import com.cn.game.sdk2.websocket.gameAboutModel
+import com.cn.game.sdk2.websocket.gameMassageManager
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 import com.drake.brv.annotaion.DividerOrientation
 import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.dividerSpace
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
+import com.gyf.immersionbar.ktx.hasNavigationBar
 import com.gyf.immersionbar.ktx.navigationBarHeight
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
@@ -192,6 +196,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         setBetAdapter()
         setClick()
         measureHistoryRvHeight()
+        setNavigationBar()
     }
 
     override fun lazyLoadData() {
@@ -206,6 +211,25 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             Log.d(TAG, "initData startBetting")
             delay(200)
             updateGameStage()
+        }
+    }
+
+    private fun setNavigationBar() {
+        mDatabind.apply {
+            val defaultHeight = 34.dp2px
+            val targetHeight = when {
+                requireContext().hasNavigationBar -> {
+                    val navigationBarHeight = navigationBarHeight
+                    if (navigationBarHeight > defaultHeight) navigationBarHeight else defaultHeight
+                }
+
+                else -> {
+                    defaultHeight
+                }
+            }
+            val layoutParams = bottomLayout.layoutParams
+            layoutParams.height = targetHeight
+            bottomLayout.layoutParams = layoutParams
         }
     }
 
@@ -427,7 +451,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 endCallBack?.invoke()
                 return
             }
-            AnimHelper.doNumberAnim(mDatabind.tvAnimWin2, 0, (winMoney).toLong(), 600)
+            AnimHelper.doNumberAnim(mDatabind.tvAnimWin2, 0, (winMoney).toLong(), 1000)
             showLottie(endCallBack)
         }
     }
@@ -450,9 +474,32 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             if (null == lottieListener) {
                 lottieListener = object : AnimatorListener {
                     override fun onAnimationStart(animation: Animator) {
-                        //LogUtils.d(TAG,"groupWinLottie onAnimationStart")
+                        Log.e(TAG, "groupWinLottie onAnimationStart")
                         PromptSoundPlay.playWinEffect()
                         isAnimating = true
+                        mDatabind.tvAnimWin2.alpha = 1f
+                        txtWinMoneyLabel.alpha = 1f
+                        lottieLayout.postDelayed({
+                            AnimatorSet().apply {
+                                playTogether(
+                                    listOf(
+                                        ObjectAnimator.ofFloat(
+                                            mDatabind.tvAnimWin2,
+                                            "alpha",
+                                            1f,
+                                            0f
+                                        ).apply {
+                                            duration = 1000 // 设置动画持续时间
+                                        },
+                                        ObjectAnimator.ofFloat(txtWinMoneyLabel, "alpha", 1f, 0f)
+                                            .apply {
+                                                duration = 1000 // 设置动画持续时间
+                                            }
+                                    )
+                                )
+                                start()
+                            }
+                        }, 2500)
                     }
 
                     override fun onAnimationEnd(animation: Animator) {
@@ -486,9 +533,11 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 })
             }
             lottieAnimView.playAnimation()
+            lottieAnimView2.playAnimation()
 
         }
     }
+
 
     override fun createObserver() {
         Log.i(TAG, "createObserver------------>")
@@ -499,18 +548,23 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     "add code=${it.areaCode},${it.id}".loge("UPDATE_ALL_AREA_VIEW")
                 }
             }
-        GameSocketManager.getInstance()?.getGameService()?.observeAgainDoubleState(this)
+        gameMassageManager?.observeAgainDoubleState(this)
 
         //总余额监听
         gameAboutModel.balance.observe(viewLifecycleOwner) {
             Log.e(TAG, "收到的总余额：${it},old:${mViewModel.currentMoney}, new:$it")
             if (it > mViewModel.currentMoney) {
-                AnimHelper.doNumberAnim(
-                    mDatabind.txtCurrentMoney,
-                    startNum = mViewModel.currentMoney,
-                    endNumber = it,
-                    duration1 = mDatabind.lottieAnimView.duration
-                )
+                val start = mViewModel.currentMoney
+                val end = it
+                mDatabind.txtCurrentMoney.postDelayed({
+                    AnimHelper.doNumberAnim(
+                        mDatabind.txtCurrentMoney,
+                        startNum = start,
+                        endNumber = end,
+                        duration1 = 1000
+                        //duration1 = mDatabind.lottieAnimView.duration
+                    )
+                }, 600)
             } else {
                 mDatabind.txtCurrentMoney.text = "¥ ${it.formatRealMoney()}"
             }
@@ -593,7 +647,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         }
 
         mViewModel.betOkClick.observe(this) {
-            GameSocketManager.getInstance()?.getGameService()
+            gameMassageManager
                 ?.commitBetting { bettingState, areaLimit ->
                     bettingState.isCanGoOn(areaLimit) {
                         hiddenAnchorTop()
@@ -720,7 +774,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
      */
     private fun cancelTemBetting() {
         hiddenAnchorTop()
-        GameSocketManager.getInstance()?.getGameService()?.cancelBetting { result ->
+        gameMassageManager?.cancelBetting { result ->
             notifyMoneyOkView(result)
         }
     }
@@ -873,7 +927,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                         data.select = bean == data
                     }
                     mViewModel.userLastSelectBetteBean = bean
-                    betteScrollToCenter(layoutPosition)
+                    betteScrollToCenter(layoutPosition, isScrollQuick = false)
                     notifyItemRangeChanged(0, modelCount)
 
                 }
@@ -952,7 +1006,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     }
                     if (selectedIndex >= 0) {
                         llShowBetList.post {
-                            betteScrollToCenter(selectedIndex, RecyclerView.State())
+                            betteScrollToCenter(selectedIndex)
                         }
                     }
                 } else {
@@ -1243,7 +1297,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                 }
                             }
                         }
-                        homeMorePop = XPopup.Builder(requireContext())
+                    homeMorePop = XPopup.Builder(requireContext())
                         .isTouchThrough(true)
                         .setPopupCallback(object : SimpleCallback() {
                             override fun onDismiss(popupView: BasePopupView?) {
@@ -1251,7 +1305,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                 homeMorePop = null
                             }
                         })
-                        .customAnimator(AlphaPopupAnimator(bubbleAttach,100, floatArrayOf(0f,1f)))
+                        .customAnimator(AlphaPopupAnimator(bubbleAttach, 100, floatArrayOf(0f, 1f)))
                         .animationDuration(100)
                         .isDestroyOnDismiss(false)
                         .atView(mDatabind.llHomeMore)
@@ -1278,7 +1332,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                         PromptSoundPlay.playAudio()
                         AnimHelper.doScaleAnimRecovery(ivMultiple2)
                     }
-                    GameSocketManager.getInstance()?.getGameService()
+                    gameMassageManager
                         ?.doubleBetting { bettingState, map, areaLimit ->
                             bettingState.isCanGoOn(areaLimit) {
                                 if (!map.isNullOrEmpty()) {
@@ -1320,7 +1374,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     return@setOnClickListener
                 }
                 PromptSoundPlay.playAudio()
-                val map = GameSocketManager.getInstance()?.getGameService()?.againBetting()
+                val map = gameMassageManager?.againBetting()
                 map.toString().loge("again3")
                 if (!map.isNullOrEmpty()) {
                     map.forEach {
@@ -1384,26 +1438,26 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         betteBean: SelectAnnotationBean,
         endCallBack: (() -> Unit)? = null
     ) {
-        //PromptSoundPlay.goldPlayMedia(this)
-        //PromptSoundPlay.goldPlayMediaNew(this)
         PromptSoundPlay.playAudio(requireContext())
-        //获取选中的筹码所在的position
+        if (anchorMoneyView != null && areaView.moneyView != anchorMoneyView) {
+            hiddenAnchorTop()
+        }
+        val isFirstAdd = !currentBetteAreaMap.containsKey(areaView.areaCode)
+        updateAnchorView(areaView)
         val betList = mDatabind.llShowBetList.models as List<SelectAnnotationBean>
         val selectedPosition = betList.indexOf(betteBean)
-        val layoutManager = mDatabind.llShowBetList.layoutManager as LinearLayoutManager
-        var finallyView = layoutManager.findViewByPosition(selectedPosition)
-//        判断选择的筹码是不是在屏幕外面
-        if (finallyView != null) {
-            betteScrollToCenter(selectedPosition)
-            startMoneyAnimation(x, y, speed, areaView, finallyView!!, endCallBack)
-        } else {
-            scrollToItemAndPerformAction(mDatabind.llShowBetList, selectedPosition) {
-                finallyView = layoutManager.findViewByPosition(selectedPosition)
-                finallyView?.let {
-                    startMoneyAnimation(x, y, speed, areaView, it, endCallBack)
-                }
-            }
-        }
+        betteScrollToCenter(selectedPosition, scrollEnd = { finallyView ->
+            startMoneyAnimation(
+                x,
+                y,
+                speed,
+                areaView,
+                finallyView,
+                betteBean,
+                isFirstAdd,
+                endCallBack
+            )
+        })
     }
 
     private var betteViewGroup: ViewGroup? = null
@@ -1414,21 +1468,24 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         speed: Long,
         areaView: GameAreaView,
         jettonView: View,
+        betteBean: SelectAnnotationBean,
+        isFirstAdd: Boolean,
         endCallBack: (() -> Unit)?
     ) {
-        if (anchorMoneyView != null && areaView.moneyView != anchorMoneyView) {
-            hiddenAnchorTop()
-        }
-        val isFirstAdd = !currentBetteAreaMap.containsKey(areaView.areaCode)
-        updateAnchorView(areaView)
-
         //贝塞尔曲线中间过程的点的坐标
         val viewPagerLocation = mDatabind.viewPagerNew.locationOnScreen
         val mCurrentPosition = FloatArray(2)
 
         // (这个图片就是执行动画的图片，从开始位置出发，经过一个抛物线（贝塞尔曲线))
         val betImageView = ImageView(requireContext())
-        betImageView.setImageDrawable(jettonView.findViewById<ImageView>(R.id.ivShowBg).drawable)
+        betImageView.setImageResource(
+            resources.getIdentifier(
+                "icon_select_" + betteBean.moneyPinyin,
+                "drawable",
+                requireContext().packageName
+            )
+        )
+//        betImageView.setImageDrawable(jettonView.findViewById<ImageView>(R.id.ivShowBg).drawable)
         val params = ConstraintLayout.LayoutParams(
             requireContext().dp2px(32),
             requireContext().dp2px(32)
@@ -1527,38 +1584,28 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         }
     }
 
-    private fun scrollToItemAndPerformAction(
-        recyclerView: RecyclerView,
+    private fun betteScrollToCenter(
         position: Int,
-        action: () -> Unit
+        scrollEnd: ((View) -> Unit)? = null,
+        isScrollQuick: Boolean = true
     ) {
+        mDatabind.apply {
+            val layoutManager = llShowBetList.layoutManager as CenterLayoutManager
+            val finallyView = layoutManager.findViewByPosition(position)
+            if (finallyView == null) {
+                llShowBetList.scrollToPosition(position)
+            }
+            llShowBetList.post {
+                layoutManager.smoothScrollToPosition(
+                    llShowBetList,
+                    if (isScrollQuick) null else RecyclerView.State(),
+                    position
+                )
 
-        val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-        // 添加滚动监听器
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                // 当滚动停止时执行操作
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    val visibleItem = layoutManager.findViewByPosition(position)
-                    if (visibleItem != null) {
-                        // 执行操作
-                        action.invoke()
-                        recyclerView.removeOnScrollListener(this)
-                    }
+                layoutManager.findViewByPosition(position)?.let {
+                    scrollEnd?.invoke(it)
                 }
             }
-        })
-        betteScrollToCenter(position, RecyclerView.State())
-    }
-
-    private fun betteScrollToCenter(position: Int, state: RecyclerView.State? = null) {
-        mDatabind.apply {
-            (llShowBetList.layoutManager as CenterLayoutManager).smoothScrollToPosition(
-                llShowBetList,
-                state,
-                position
-            )
         }
     }
 }
