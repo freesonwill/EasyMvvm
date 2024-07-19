@@ -1,5 +1,6 @@
 package com.cn.game.sdk2.websocket.imp
 
+import com.cn.game.sdk2.BuildConfig
 import com.cn.game.sdk2.network.code.GameReqCode
 import com.cn.game.sdk2.websocket.bean.Betting
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
@@ -482,6 +483,14 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
         gameAboutModel.roundId = settle.roundInfo.roundId //期号
         gameAboutModel.countDown = settle.countDown //当前阶段剩余时间倒计时
         val confirmMoney = bettingStepList.getMoneyByState(BettingStatus.COMMITTED)
+
+        if(BuildConfig.BUILD_TYPE == "debug"){
+            GameRes.BeginSettle::class.java.getDeclaredField("winScore_").apply {
+                isAccessible = true
+                set(settle,10000)
+            }
+        }
+
         if (settle.winScore > 0) {
             //如果中奖 就计算净收入
             gameAboutModel.netIncome = settle.winScore - confirmMoney

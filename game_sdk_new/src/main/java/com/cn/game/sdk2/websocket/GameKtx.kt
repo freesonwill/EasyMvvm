@@ -103,7 +103,7 @@ val token: String
             }
 
             "release" -> {
-                "87:MHxIHlYM"
+                tokenArray[Random.nextInt(tokenArray.size)]
             }
 
             else -> throw IllegalStateException("wrong buildType:${BuildConfig.BUILD_TYPE}")
