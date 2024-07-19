@@ -17,6 +17,7 @@ import com.cn.game.sdk2.utils.ThreadUtils
 import com.cn.game.sdk2.utils.ext.CommonExt.every
 import com.cn.game.sdk2.websocket.isEnableSound
 import com.xcjh.base_lib2.ModuleInitializer
+import com.xcjh.base_lib2.utils.LogUtils
 import com.xcjh.base_lib2.utils.TAG
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -232,10 +233,10 @@ object PromptSoundPlay {
                             }
                         }
                     }
-                    Log.d(TAG, "playWinEffect:$soundIds,$percent,$volume,$maxVolume")
+                    LogUtils.d(TAG, "playWinEffect:$soundIds,$percent,$volume,$maxVolume")
                     soundPool.setOnLoadCompleteListener { soundPool, sampleId, status ->
                         count2++
-                        Log.d(TAG, "playWinEffect:setOnLoadCompleteListener,$sampleId,$status,count1:$count1,count2:$count2")
+                        LogUtils.d(TAG, "playWinEffect:setOnLoadCompleteListener,$sampleId,$status,count1:$count1,count2:$count2")
                         if(count2 == count1) continuation.resume(1)
                     }
                 }
@@ -292,11 +293,12 @@ object PromptSoundPlay {
      * 是否是静音或者震动模式
      */
     fun isPhoneSilent(context: Context): Boolean {
-        val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+       /* val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
         return when (audioManager.ringerMode) {
             AudioManager.RINGER_MODE_SILENT,
             AudioManager.RINGER_MODE_VIBRATE -> true // 静音或振动模式
             else -> false // 声音模式
-        }
+        }*/
+        return false
     }
 }

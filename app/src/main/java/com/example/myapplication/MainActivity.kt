@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.setPadding
 import androidx.fragment.app.Fragment
+import com.cn.game.sdk2.BuildConfig
 import com.cn.game.sdk2.ui.view.FastLogoView
 import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
 import com.cn.game.sdk2.utils.ext.ViewExt.isAdd
@@ -87,26 +88,28 @@ class MainActivity : AppCompatActivity() {
                 btnOpen.text = "登录失败"
             }
         }
-        /*GameApp.createFloatEnterView(this@MainActivity).apply {
-            if(!this.isAdd()) {
-                val lp =
-                    RelativeLayout.LayoutParams(layoutParams.width, layoutParams.height)
-                lp.topMargin = 200.dp2px
-                lp.marginEnd = 0.dp2px
-                lp.addRule(RelativeLayout.ALIGN_PARENT_END)
-                llshow.addView(this, lp)
+        if(BuildConfig.BUILD_TYPE == "debug"){
+            GameApp.createFloatEnterView(this@MainActivity).apply {
+                if(!this.isAdd()) {
+                    val lp =
+                        RelativeLayout.LayoutParams(layoutParams.width, layoutParams.height)
+                    lp.topMargin = 200.dp2px
+                    lp.marginEnd = 0.dp2px
+                    lp.addRule(RelativeLayout.ALIGN_PARENT_END)
+                    llshow.addView(this, lp)
+                }
+            }
+            GameApp.createFloatResultView(this@MainActivity).apply {
+                if(!this.isAdd()) {
+                    val lp =
+                        RelativeLayout.LayoutParams(layoutParams.width, layoutParams.height)
+                    lp.topMargin = 50.dp2px
+                    lp.marginEnd = 0.dp2px
+                    lp.addRule(RelativeLayout.ALIGN_PARENT_END)
+                    llshow.addView(this, lp)
+                }
             }
         }
-        GameApp.createFloatResultView(this@MainActivity).apply {
-            if(!this.isAdd()) {
-                val lp =
-                    RelativeLayout.LayoutParams(layoutParams.width, layoutParams.height)
-                lp.topMargin = 50.dp2px
-                lp.marginEnd = 0.dp2px
-                lp.addRule(RelativeLayout.ALIGN_PARENT_END)
-                llshow.addView(this, lp)
-            }
-        }*/
         gameAboutModel.isEnterGroup.observe(this){result->
             if(result){
                 btnOpen.text = "已进入直播间"

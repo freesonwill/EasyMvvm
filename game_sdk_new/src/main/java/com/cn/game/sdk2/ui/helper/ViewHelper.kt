@@ -31,7 +31,9 @@ import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
 import com.lxj.xpopup.enums.PopupAnimation
 import com.lxj.xpopup.interfaces.SimpleCallback
+import com.xcjh.base_lib2.utils.LogUtils
 import com.xcjh.base_lib2.utils.toHtml
+import com.xcjh.base_lib2.utils.view.clickNoRepeat
 import net.lucode.hackware.magicindicator.MagicIndicator
 import net.lucode.hackware.magicindicator.ViewPagerHelper
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigator
@@ -135,7 +137,7 @@ object ViewHelper {
             homeXPopupDialog!!.show()
             return
         }
-        val pop = HomeXPopupDialog(context, Fast3MainFragment(),GAME_ID_ENUM.GAME_FAST3.num).apply {
+        val pop =  HomeXPopupDialog(context, Fast3MainFragment(),GAME_ID_ENUM.GAME_FAST3.num).apply {
             homeXPopupDialog = this
         }
         XPopup.Builder(context)
@@ -197,11 +199,11 @@ object ViewHelper {
             lp.height = ViewGroup.LayoutParams.WRAP_CONTENT
             it.layoutParams = lp
             val llFastClick = it.findViewById<LinearLayout>(R.id.llFastClick)
-            llFastClick.setOnClickListener {
+            llFastClick.clickNoRepeat(true) {
                 if (homeXPopupDialog != null) {
-                    Log.d(TAG, "homeXPopupDialog exists, no need to create it.")
+                    LogUtils.d(TAG, "homeXPopupDialog exists, no need to create it.")
                     homeXPopupDialog!!.show()
-                    return@setOnClickListener
+                    return@clickNoRepeat
                 }
                 showFastViewPop(context,true)
             }

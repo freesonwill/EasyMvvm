@@ -14,6 +14,7 @@ import com.cn.game.sdk2.websocket.bean.BettingResponsesBean
 import com.cn.game.sdk2.websocket.bean.RoundInfoBean
 import com.kunminx.architecture.ui.callback.UnPeekLiveData
 import com.xcjh.base_lib2.base.BaseViewModel
+import com.xcjh.base_lib2.utils.LogUtils
 import game.mod.proc.yf.proto.res.GameRes
 import kotlinx.coroutines.*
 
@@ -288,7 +289,7 @@ class GameAboutModel : BaseViewModel() {
     var countDown: Int = 0 //阶段倒计时
         set(value) {
             field = value - 0 //减去500ms延时
-            Log.d(TAG, "countDown set:${value},isMainThread:${isMainThread}")
+            LogUtils.d(TAG, "countDown set:${value},isMainThread:${isMainThread}")
             _countDownSetStampTime = System.currentTimeMillis()
             ThreadUtils.runOnUiThread {
                 GameManager.instance.startCountDownTimer(
@@ -306,7 +307,7 @@ class GameAboutModel : BaseViewModel() {
         }
         get() {
             val elapsed = System.currentTimeMillis() - _countDownSetStampTime
-            Log.d(TAG, "countDown elapsed:${elapsed}")
+            LogUtils.d(TAG, "countDown elapsed:${elapsed}")
             return (field - elapsed).toInt()
         }
     private val _countDownSecondsLD: UnPeekLiveData<Int> = UnPeekLiveData(0)

@@ -50,39 +50,8 @@ class Fast3HelpFragment : BaseVmVbFragment<EmptyViewModel, FragmentFast3HelpBind
             }
         )
 
-        mViewBind.ivCollapse.clickNoRepeat(500) {
-            /*val lp = mViewBind.space.layoutParams as LinearLayout.LayoutParams
-            val isExpand = lp.weight != 0f
-            val start = if(isExpand) 0f else 1f
-            val end = if(!isExpand) 0f else 1f
-            *//*lp.weight = end
-            mViewBind.space.layoutParams = lp*//*
-            ValueAnimator.ofFloat(start, end).apply {
-                duration = 10000
-                addUpdateListener {
-                    lp.weight = it.animatedValue as Float
-                    Log.d(TAG,"addUpdateListener----->${lp.weight}")
-                    mViewBind.space.layoutParams = lp
-                }
-                addListener(
-                    onStart = {
-                        lp.weight = start
-                        mViewBind.space.layoutParams = lp
-                    },
-                    onEnd = {
-                        lp.weight = end
-                        mViewBind.space.layoutParams = lp
-                        val icon =  if(!isExpand) R.drawable.ic_expand else R.drawable.ic_collapse
-                        mViewBind.ivCollapse.setImageResource(icon)
-                    }
-                )
-                start()
-            }*/
-
-        }
-        mViewBind.close.clickNoRepeat {
-            ViewHelper.showHelpDialog(requireContext(),false)
-        }
+        mViewBind.ivCollapse.clickNoRepeat(true,500) { }
+        mViewBind.close.clickNoRepeat(true) { ViewHelper.showHelpDialog(requireContext(),false) }
     }
 
 
