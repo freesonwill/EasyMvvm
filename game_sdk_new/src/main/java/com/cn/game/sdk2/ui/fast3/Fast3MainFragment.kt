@@ -4,10 +4,8 @@ import android.animation.Animator
 import android.animation.Animator.AnimatorListener
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
-import android.animation.PropertyValuesHolder
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
-import android.app.GameState
 import android.graphics.Path
 import android.graphics.PathMeasure
 import android.os.Bundle
@@ -15,9 +13,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AlphaAnimation
 import android.view.animation.LinearInterpolator
-import android.view.animation.ScaleAnimation
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -43,13 +39,13 @@ import com.cn.game.sdk2.databinding.ItemAnnotationListBinding
 import com.cn.game.sdk2.databinding.ItemBetHistoryBinding
 import com.cn.game.sdk2.databinding.ItemGamehallPageBinding
 import com.cn.game.sdk2.databinding.ItemGamehallPageItemBinding
+import com.cn.game.sdk2.ui.animator.AlphaPopupAnimator
 import com.cn.game.sdk2.ui.helper.AnimHelper
 import com.cn.game.sdk2.ui.helper.Fast3ToastHelper
 import com.cn.game.sdk2.ui.helper.ViewHelper
 import com.cn.game.sdk2.ui.helper.ViewHelper.bindViewPagerNewGame
 import com.cn.game.sdk2.ui.helper.ViewHelper.initGameViewPager
 import com.cn.game.sdk2.ui.helper.ViewHelper.initGameViewPager2
-import com.cn.game.sdk2.utils.ext.ViewExt.isAdd
 import com.cn.game.sdk2.ui.view.CenterLayoutManager
 import com.cn.game.sdk2.ui.view.ClickRecyclerView
 import com.cn.game.sdk2.ui.view.CommonLinearLayoutItemDecoration
@@ -64,6 +60,7 @@ import com.cn.game.sdk2.utils.ext.CommonExt.formatRealMoney
 import com.cn.game.sdk2.utils.ext.CommonExt.isCanGoOn
 import com.cn.game.sdk2.utils.ext.CommonExt.toPinyin
 import com.cn.game.sdk2.utils.ext.ViewExt.getDrawable
+import com.cn.game.sdk2.utils.ext.ViewExt.isAdd
 import com.cn.game.sdk2.utils.ext.ViewExt.locationOnScreen
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.utils.tool.measureView
@@ -79,7 +76,6 @@ import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.gyf.immersionbar.ktx.navigationBarHeight
 import com.lxj.xpopup.XPopup
-import com.lxj.xpopup.animator.EmptyAnimator
 import com.lxj.xpopup.core.BasePopupView
 import com.lxj.xpopup.core.BottomPopupView
 import com.lxj.xpopup.enums.PopupAnimation
@@ -267,6 +263,9 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     private fun onStartBetting() {
         lifecycleScope.launch {
             //开始语音
+            if (mViewModel.isCountDownStart) {
+                Fast3ToastHelper.showToastNormal(getString(R.string.g_home_betting_begin), 2000)
+            }
             mDatabind.apply {
                 async {
                     playAlphaAnimTogether(
@@ -1244,7 +1243,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                 }
                             }
                         }
-                    homeMorePop = XPopup.Builder(requireContext())
+                        homeMorePop = XPopup.Builder(requireContext())
                         .isTouchThrough(true)
                         .setPopupCallback(object : SimpleCallback() {
                             override fun onDismiss(popupView: BasePopupView?) {
@@ -1252,7 +1251,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                 homeMorePop = null
                             }
                         })
-                        .customAnimator(EmptyAnimator(bubbleAttach, 0))
+                        .customAnimator(AlphaPopupAnimator(bubbleAttach,150, floatArrayOf(0f,1f)))
                         .atView(mDatabind.llHomeMore)
                         .navigationBarColor(android.R.color.transparent)
                         .hasShadowBg(false) // 去掉半透明背景

@@ -22,6 +22,7 @@ import com.lxj.xpopup.enums.PopupAnimation
 import com.lxj.xpopup.interfaces.SimpleCallback
 import com.xcjh.base_lib2.utils.view.clickNoRepeat
 
+
 /**
  * 首页的弹出框
  */
@@ -33,11 +34,12 @@ class CustomBubbleAttachPopup(content: Context) : AttachPopupView(content){
 
     override fun onCreate() {
         super.onCreate()
-     /*   setBubbleBgColor(ContextCompat.getColor(context,R.color.c_ffffff))
+        /*setBubbleBgColor(ContextCompat.getColor(context,R.color.c_ffffff))
         setBubbleShadowSize(2)
         setArrowWidth(XPopupUtils.dp2px(context, 8f))
         setArrowHeight(XPopupUtils.dp2px(context, 8f)).setBubbleRadius(10)
         setArrowRadius(XPopupUtils.dp2px(context, 2f))*/
+
         PopupCustomBubbleAttachBinding.bind(popupImplView).apply {
             rlPopClickRecords.isVisible = gameAboutModel.isShowHistoryAndCustomer
             rlPopClickService.isVisible = gameAboutModel.isShowHistoryAndCustomer
