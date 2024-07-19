@@ -8,6 +8,7 @@ import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.graphics.Path
 import android.graphics.PathMeasure
+import android.nfc.Tag
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -76,6 +77,7 @@ import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.dividerSpace
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
+import com.gyf.immersionbar.ktx.hasNavigationBar
 import com.gyf.immersionbar.ktx.navigationBarHeight
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
@@ -194,6 +196,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         setBetAdapter()
         setClick()
         measureHistoryRvHeight()
+        setNavigationBar()
     }
 
     override fun lazyLoadData() {
@@ -208,6 +211,25 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             Log.d(TAG, "initData startBetting")
             delay(200)
             updateGameStage()
+        }
+    }
+
+    private fun setNavigationBar() {
+        mDatabind.apply {
+            val defaultHeight = 34.dp2px
+            val targetHeight = when {
+                requireContext().hasNavigationBar -> {
+                    val navigationBarHeight = navigationBarHeight
+                    if (navigationBarHeight > defaultHeight) navigationBarHeight else defaultHeight
+                }
+
+                else -> {
+                    defaultHeight
+                }
+            }
+            val layoutParams = bottomLayout.layoutParams
+            layoutParams.height = targetHeight
+            bottomLayout.layoutParams = layoutParams
         }
     }
 
@@ -452,7 +474,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             if (null == lottieListener) {
                 lottieListener = object : AnimatorListener {
                     override fun onAnimationStart(animation: Animator) {
-                        Log.e(TAG,"groupWinLottie onAnimationStart")
+                        Log.e(TAG, "groupWinLottie onAnimationStart")
                         PromptSoundPlay.playWinEffect()
                         isAnimating = true
                         mDatabind.tvAnimWin2.alpha = 1f
@@ -461,17 +483,23 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                             AnimatorSet().apply {
                                 playTogether(
                                     listOf(
-                                        ObjectAnimator.ofFloat(mDatabind.tvAnimWin2, "alpha", 1f, 0f).apply {
+                                        ObjectAnimator.ofFloat(
+                                            mDatabind.tvAnimWin2,
+                                            "alpha",
+                                            1f,
+                                            0f
+                                        ).apply {
                                             duration = 1000 // 设置动画持续时间
                                         },
-                                        ObjectAnimator.ofFloat(txtWinMoneyLabel, "alpha", 1f, 0f).apply {
-                                            duration = 1000 // 设置动画持续时间
-                                        }
+                                        ObjectAnimator.ofFloat(txtWinMoneyLabel, "alpha", 1f, 0f)
+                                            .apply {
+                                                duration = 1000 // 设置动画持续时间
+                                            }
                                     )
                                 )
                                 start()
                             }
-                        },2500)
+                        }, 2500)
                     }
 
                     override fun onAnimationEnd(animation: Animator) {
@@ -536,7 +564,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                         duration1 = 1000
                         //duration1 = mDatabind.lottieAnimView.duration
                     )
-                },600)
+                }, 600)
             } else {
                 mDatabind.txtCurrentMoney.text = "¥ ${it.formatRealMoney()}"
             }
@@ -1277,7 +1305,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                 homeMorePop = null
                             }
                         })
-                        .customAnimator(AlphaPopupAnimator(bubbleAttach,100, floatArrayOf(0f,1f)))
+                        .customAnimator(AlphaPopupAnimator(bubbleAttach, 100, floatArrayOf(0f, 1f)))
                         .animationDuration(100)
                         .isDestroyOnDismiss(false)
                         .atView(mDatabind.llHomeMore)
