@@ -231,7 +231,7 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
 
     //进入房间坐下成功，待进入直播间
     override fun enterInfo(enterInfo: GameRes.EnterInfo) {
-        "enterInfo：$enterInfo".loge(tag)
+        "enterInfo".loge(tag)
         gameAboutModel.isSitDown(true)
         val balance = enterInfo.self.score
         gameAboutModel.changeBalance(balance)
