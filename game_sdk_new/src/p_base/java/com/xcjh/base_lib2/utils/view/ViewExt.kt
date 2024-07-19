@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.ImageView
 import androidx.annotation.ArrayRes
 import androidx.annotation.StringRes
+import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 
 
 fun View.getString(@StringRes resId:Int):String{
@@ -111,17 +112,17 @@ fun createBitmapSafely(width: Int, height: Int, config: Bitmap.Config, retryCoun
  * @param action 执行方法
  */
 var lastClickTime = 0L
-fun View.clickNoRepeat(interval: Long = 500, action: (view: View) -> Unit) {
+fun View.clickNoRepeat(playSound:Boolean= false,interval: Long = 500, action: (view: View) -> Unit) {
     setOnClickListener {
         val currentTime = System.currentTimeMillis()
         if (lastClickTime != 0L && (currentTime - lastClickTime < interval)) {
             return@setOnClickListener
         }
         lastClickTime = currentTime
+        if(playSound) PromptSoundPlay.btnPlayMedia()
         action(it)
     }
 }
-
 
 fun Any?.notNull(notNullAction:(value:Any) ->Unit,nullAction1:() ->Unit){
     if(this!=null){

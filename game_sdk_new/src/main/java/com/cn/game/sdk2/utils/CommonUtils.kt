@@ -4,6 +4,7 @@ import android.util.Log
 import android.view.View
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.xcjh.base_lib2.utils.LogUtils
 import com.xcjh.base_lib2.utils.TAG
 import java.util.Locale
 
@@ -32,7 +33,7 @@ object CommonUtils {
             val top = insets.getInsets(WindowInsetsCompat.Type.systemBars()).top
             val bottom = insets.getInsets(WindowInsetsCompat.Type.systemBars()).bottom
             val height = bottom
-            Log.d(TAG,"getNavigationBarHeight-->top:$top,bottom:$bottom")
+            LogUtils.d(TAG,"getNavigationBarHeight-->top:$top,bottom:$bottom")
             return  height
         }
         return 0

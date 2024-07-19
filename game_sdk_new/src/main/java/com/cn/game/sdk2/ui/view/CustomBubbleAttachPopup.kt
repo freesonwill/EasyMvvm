@@ -20,6 +20,7 @@ import com.lxj.xpopup.core.BasePopupView
 import com.lxj.xpopup.core.BottomPopupView
 import com.lxj.xpopup.enums.PopupAnimation
 import com.lxj.xpopup.interfaces.SimpleCallback
+import com.xcjh.base_lib2.utils.LogUtils
 import com.xcjh.base_lib2.utils.view.clickNoRepeat
 
 
@@ -52,14 +53,12 @@ class CustomBubbleAttachPopup(content: Context) : AttachPopupView(content){
                 delayDismiss(100)
             }
 
-            rlPopClickSwitchGame.clickNoRepeat(0) {
-                PromptSoundPlay.btnPlayMedia()
+            rlPopClickSwitchGame.clickNoRepeat(true,0) {
                 delayDismiss(100)
                 customBubbleAttachListener?.switchGame()
                 //switchGame()
             }
-            rlPopClickAssist.clickNoRepeat() {
-                PromptSoundPlay.btnPlayMedia()
+            rlPopClickAssist.clickNoRepeat(true){
                 delayDismiss(100)
                 ViewHelper.showHelpDialog(context,true)
             }
@@ -82,7 +81,7 @@ class CustomBubbleAttachPopup(content: Context) : AttachPopupView(content){
                 val transaction = fragmentManager.beginTransaction();
                 if(oldFragment != null )transaction.hide(oldFragment!!)
                 transaction.add(R.id.fl_container, fragment,"switchGame").commit()
-                Log.d(TAG, "onCreate")
+                LogUtils.d(TAG, "onCreate")
             }
 
          /*   private fun showFragment(fragment: Fragment?, tag: String) {

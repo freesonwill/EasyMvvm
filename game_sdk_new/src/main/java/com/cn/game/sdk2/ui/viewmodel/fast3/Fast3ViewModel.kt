@@ -51,6 +51,7 @@ import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel.Stage
 import com.kunminx.architecture.ui.callback.UnPeekLiveData
 import com.xcjh.base_lib2.base.BaseViewModel
+import com.xcjh.base_lib2.utils.LogUtils
 import com.xcjh.base_lib2.utils.getColor
 
 class Fast3ViewModel : BaseViewModel() {
@@ -125,7 +126,7 @@ class Fast3ViewModel : BaseViewModel() {
         }
     val countDown: Long
         get() {
-            Log.d(TAG, "countDown get ${gameAboutModel.countDown}")
+            LogUtils.d(TAG, "countDown get ${gameAboutModel.countDown}")
             //return GameManager.instance.countDown
             return gameAboutModel.countDown.toLong()
         }
@@ -150,7 +151,7 @@ class Fast3ViewModel : BaseViewModel() {
 
     override fun onCleared() {
         super.onCleared()
-        Log.d(TAG, "~~~~~~~~~OnCleared")
+        LogUtils.d(TAG, "~~~~~~~~~OnCleared")
     }
 
     fun clear() {

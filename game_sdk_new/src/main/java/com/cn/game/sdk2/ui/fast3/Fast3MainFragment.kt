@@ -208,7 +208,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         mDatabind.txtHomeTime.text = mViewModel.homeTimeSeconds.value.toString()
         lifecycleScope.launchWhenResumed {
             //开始下注
-            Log.d(TAG, "initData startBetting")
+            LogUtils.d(TAG, "initData startBetting")
             delay(200)
             updateGameStage()
         }
@@ -299,7 +299,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     txtHomeStatic.text = resources.getString(R.string.g_home_txt_please)
                 }
             }
-            Log.d(TAG, "onStartBetting, isCountDownStart:${mViewModel.isCountDownStart}")
+            LogUtils.d(TAG, "onStartBetting, isCountDownStart:${mViewModel.isCountDownStart}")
             //取消注区闪烁
             mViewModel.cancelAreaFlickAnimLiveData.value = true
             //重置注区筹码
@@ -750,10 +750,10 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                             }
                         )
                     }
-                    Log.d(TAG, "receive playAlphaAnimationLD:animator:${animator.hashCode()}")
+                    LogUtils.d(TAG, "receive playAlphaAnimationLD:animator:${animator.hashCode()}")
                     animator?.start()
                 } else {
-                    Log.d(
+                    LogUtils.d(
                         TAG,
                         "receive playAlphaAnimationLD:animator:${animator.hashCode()},cancel"
                     )
@@ -1399,19 +1399,19 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
     override fun onDetach() {
         super.onDetach()
-        Log.d(TAG, "onDetach~~~~~~~~~~~~~~")
+        LogUtils.d(TAG, "onDetach~~~~~~~~~~~~~~")
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        Log.d(TAG, "onDestroyView~~~~~~~~~~~~~~")
+        LogUtils.d(TAG, "onDestroyView~~~~~~~~~~~~~~")
     }
 
     /**
      * 关闭页面
      */
     override fun onDestroy() {
-        Log.d(TAG, "onDestroy~~~~~~~~~~~~~~")
+        LogUtils.d(TAG, "onDestroy~~~~~~~~~~~~~~")
         //关闭的时候要把这个赋值为0选择
         mViewModel.noteList.forEach {
             it.select = false
