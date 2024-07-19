@@ -4,10 +4,8 @@ import android.animation.Animator
 import android.animation.Animator.AnimatorListener
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
-import android.animation.PropertyValuesHolder
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
-import android.app.GameState
 import android.graphics.Path
 import android.graphics.PathMeasure
 import android.os.Bundle
@@ -15,9 +13,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AlphaAnimation
 import android.view.animation.LinearInterpolator
-import android.view.animation.ScaleAnimation
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -43,13 +39,13 @@ import com.cn.game.sdk2.databinding.ItemAnnotationListBinding
 import com.cn.game.sdk2.databinding.ItemBetHistoryBinding
 import com.cn.game.sdk2.databinding.ItemGamehallPageBinding
 import com.cn.game.sdk2.databinding.ItemGamehallPageItemBinding
+import com.cn.game.sdk2.ui.animator.AlphaPopupAnimator
 import com.cn.game.sdk2.ui.helper.AnimHelper
 import com.cn.game.sdk2.ui.helper.Fast3ToastHelper
 import com.cn.game.sdk2.ui.helper.ViewHelper
 import com.cn.game.sdk2.ui.helper.ViewHelper.bindViewPagerNewGame
 import com.cn.game.sdk2.ui.helper.ViewHelper.initGameViewPager
 import com.cn.game.sdk2.ui.helper.ViewHelper.initGameViewPager2
-import com.cn.game.sdk2.utils.ext.ViewExt.isAdd
 import com.cn.game.sdk2.ui.view.CenterLayoutManager
 import com.cn.game.sdk2.ui.view.ClickRecyclerView
 import com.cn.game.sdk2.ui.view.CommonLinearLayoutItemDecoration
@@ -64,6 +60,7 @@ import com.cn.game.sdk2.utils.ext.CommonExt.formatRealMoney
 import com.cn.game.sdk2.utils.ext.CommonExt.isCanGoOn
 import com.cn.game.sdk2.utils.ext.CommonExt.toPinyin
 import com.cn.game.sdk2.utils.ext.ViewExt.getDrawable
+import com.cn.game.sdk2.utils.ext.ViewExt.isAdd
 import com.cn.game.sdk2.utils.ext.ViewExt.locationOnScreen
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.utils.tool.measureView
@@ -80,7 +77,6 @@ import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.gyf.immersionbar.ktx.navigationBarHeight
 import com.lxj.xpopup.XPopup
-import com.lxj.xpopup.animator.EmptyAnimator
 import com.lxj.xpopup.core.BasePopupView
 import com.lxj.xpopup.core.BottomPopupView
 import com.lxj.xpopup.enums.PopupAnimation
@@ -268,6 +264,9 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     private fun onStartBetting() {
         lifecycleScope.launch {
             //开始语音
+            if (mViewModel.isCountDownStart) {
+                Fast3ToastHelper.showToastNormal(getString(R.string.g_home_betting_begin), 2000)
+            }
             mDatabind.apply {
                 async {
                     playAlphaAnimTogether(
@@ -429,7 +428,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 endCallBack?.invoke()
                 return
             }
-            AnimHelper.doNumberAnim(mDatabind.tvAnimWin2, 0, (winMoney).toLong(), 600)
+            AnimHelper.doNumberAnim(mDatabind.tvAnimWin2, 0, (winMoney).toLong(), 1000)
             showLottie(endCallBack)
         }
     }
@@ -452,9 +451,26 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             if (null == lottieListener) {
                 lottieListener = object : AnimatorListener {
                     override fun onAnimationStart(animation: Animator) {
-                        //LogUtils.d(TAG,"groupWinLottie onAnimationStart")
+                        Log.e(TAG,"groupWinLottie onAnimationStart")
                         PromptSoundPlay.playWinEffect()
                         isAnimating = true
+                        mDatabind.tvAnimWin2.alpha = 1f
+                        txtWinMoneyLabel.alpha = 1f
+                        lottieLayout.postDelayed({
+                            AnimatorSet().apply {
+                                playTogether(
+                                    listOf(
+                                        ObjectAnimator.ofFloat(mDatabind.tvAnimWin2, "alpha", 1f, 0f).apply {
+                                            duration = 1000 // 设置动画持续时间
+                                        },
+                                        ObjectAnimator.ofFloat(txtWinMoneyLabel, "alpha", 1f, 0f).apply {
+                                            duration = 1000 // 设置动画持续时间
+                                        }
+                                    )
+                                )
+                                start()
+                            }
+                        },2500)
                     }
 
                     override fun onAnimationEnd(animation: Animator) {
@@ -488,9 +504,11 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 })
             }
             lottieAnimView.playAnimation()
+            lottieAnimView2.playAnimation()
 
         }
     }
+
 
     override fun createObserver() {
         Log.i(TAG, "createObserver------------>")
@@ -507,12 +525,15 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         gameAboutModel.balance.observe(viewLifecycleOwner) {
             Log.e(TAG, "收到的总余额：${it},old:${mViewModel.currentMoney}, new:$it")
             if (it > mViewModel.currentMoney) {
-                AnimHelper.doNumberAnim(
-                    mDatabind.txtCurrentMoney,
-                    startNum = mViewModel.currentMoney,
-                    endNumber = it,
-                    duration1 = mDatabind.lottieAnimView.duration
-                )
+                mDatabind.txtCurrentMoney.postDelayed({
+                    AnimHelper.doNumberAnim(
+                        mDatabind.txtCurrentMoney,
+                        startNum = mViewModel.currentMoney,
+                        endNumber = it,
+                        duration1 = 1000
+                        //duration1 = mDatabind.lottieAnimView.duration
+                    )
+                },600)
             } else {
                 mDatabind.txtCurrentMoney.text = "¥ ${it.formatRealMoney()}"
             }
@@ -1128,7 +1149,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                     listOf(
                                         async { showMainGame(false) },
                                         async {
-                                            delay(20)
+                                            //delay(20)
                                             val context = requireContext()
                                             val popupView = object : BottomPopupView(context) {
                                                 override fun getImplLayoutId(): Int =
@@ -1233,7 +1254,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                                 })
                                                 .popupAnimation(PopupAnimation.TranslateFromBottom)
                                                 .navigationBarColor(android.R.color.transparent)
-                                                .animationDuration(150)//默认300ms
+                                                .animationDuration(100)//默认300ms
                                                 .isViewMode(true)
                                                 .hasShadowBg(false) // 去掉半透明背景
                                                 .enableDrag(true)
@@ -1245,7 +1266,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                 }
                             }
                         }
-                    homeMorePop = XPopup.Builder(requireContext())
+                        homeMorePop = XPopup.Builder(requireContext())
                         .isTouchThrough(true)
                         .setPopupCallback(object : SimpleCallback() {
                             override fun onDismiss(popupView: BasePopupView?) {
@@ -1253,7 +1274,9 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                 homeMorePop = null
                             }
                         })
-                        .customAnimator(EmptyAnimator(bubbleAttach, 0))
+                        .customAnimator(AlphaPopupAnimator(bubbleAttach,100, floatArrayOf(0f,1f)))
+                        .animationDuration(100)
+                        .isDestroyOnDismiss(false)
                         .atView(mDatabind.llHomeMore)
                         .navigationBarColor(android.R.color.transparent)
                         .hasShadowBg(false) // 去掉半透明背景
@@ -1419,6 +1442,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         if (anchorMoneyView != null && areaView.moneyView != anchorMoneyView) {
             hiddenAnchorTop()
         }
+        val isFirstAdd = !currentBetteAreaMap.containsKey(areaView.areaCode)
         updateAnchorView(areaView)
 
         //贝塞尔曲线中间过程的点的坐标
@@ -1445,12 +1469,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         val path = Path()
         path.moveTo(startX, startY)
         path.lineTo(x, y)
-
-//        val path = Path()
-//        移动到起始点（贝塞尔曲线的起点）
-//        path.moveTo(startX, startY)
-//        使用二次萨贝尔曲线：注意第一个起始坐标越大，贝塞尔曲线的横向距离就会越大，一般按照下面的式子取即可
-//        path.quadTo((startX + x) / 2, startY, x, y)
 //
         val mPathMeasure = PathMeasure(path, false)
 
@@ -1490,7 +1508,9 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                         areaView.betteView.translationZ = 0f
                     }
 
-                    AnimHelper.doScaleAnimRecovery(areaView.betteView.ivShowBg)
+                    if (!isFirstAdd) {
+                        AnimHelper.doScaleAnimRecovery(areaView.betteView.ivShowBg, duration = 100)
+                    }
                 })
         }
 
