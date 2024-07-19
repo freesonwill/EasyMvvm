@@ -563,20 +563,19 @@
                         android:id="@+id/tvAnimWin2"
                         style="@style/PuHuiTi"
                         android:layout_width="wrap_content"
-                        android:layout_height="32dp"
-                        android:layout_marginBottom="10dp"
+                        android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:maxWidth="80dp"
+                        android:maxWidth="100dp"
                         android:maxLines="1"
                         android:textColor="#FFE3CA"
-                        android:textSize="26sp"
+                        android:textSize="31sp"
                         android:textStyle="bold"
                         app:autoSizeTextType="uniform"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/txtWinMoneyLabel"
-                        tools:text="¥88888" />
+                        tools:text="¥800000000000" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.Group
