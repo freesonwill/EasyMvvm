@@ -1,8 +1,12 @@
 package com.cn.game.sdk2.websocket
 
+import android.os.Handler
+import android.os.Looper
+import android.os.Message
 import android.util.Log
 import com.cn.game.sdk2.websocket.imp.GameApp
 import com.xcjh.base_lib2.utils.loge
+import com.xcjh.base_lib2.utils.logi
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -12,11 +16,15 @@ import org.java_websocket.client.WebSocketClient
 import org.java_websocket.handshake.ServerHandshake
 import java.net.URI
 import java.nio.ByteBuffer
+import java.util.Timer
+import java.util.TimerTask
 
 class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
 
     private var _tag = "GameSocketClient"
     private var onMessageListener: OnMessageListener? = null
+    private val reconnectInterval: Long = 1000
+    private var timer: Timer? = null
 
     fun setOnMessageListener(listener: OnMessageListener) {
         onMessageListener = listener
@@ -32,7 +40,7 @@ class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
 
     @OptIn(DelicateCoroutinesApi::class)
     override fun onOpen(handshakedata: ServerHandshake?) {
-        Log.i(_tag, "GameSocketClient-连接成功！")
+        "GameSocketClient-连接成功！".logi(_tag)
         gameAboutModel.isOpen = true
         GlobalScope.launch {
             withContext(Dispatchers.Main) {
@@ -44,6 +52,9 @@ class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
                 }
             }
         }
+        timer?.cancel()
+        timer = null
+        startHeartbeat()
         gameMassageManager?.refreshScore()
         socketStatesCallback?.onOpen()
     }
@@ -56,7 +67,7 @@ class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
         if (!bytes!!.hasRemaining()) {
             return
         }
-        Log.i(_tag, "GameSocketMessage-onMessage")
+        "GameSocketMessage-onMessage".logi(_tag)
         val resp: Array<Any?>? = nativeLib.newUnpack(bytes.array())
         resp?.let {
             val mid = it[0] as Int?
@@ -65,7 +76,7 @@ class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
             if (it.size > 2) {
                 str = (it[2] as ByteArray?)!!
             }
-            Log.i(_tag, "GameSocketMessage-onMessage:mid-$mid sid-$sid")
+            "GameSocketMessage-onMessage:mid-$mid sid-$sid".logi(_tag)
             onMessageListener?.onMessage(mid, sid, str)
         }
     }
@@ -74,12 +85,46 @@ class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
         "socket-onClose-->code:${code}-reason:$reason-remote:$remote".loge(_tag)
         gameAboutModel.isOpen = false
         nativeLib.reset()
+        reconnectHandle()
+        stopHeartbeat()
         onMessageListener?.onClose(code, reason, remote)
         socketStatesCallback?.onClose(isNeedReconnect)
     }
 
+
     override fun onError(ex: Exception?) {
-        ex?.printStackTrace()
-        ex?.message?.loge(_tag)
+        "onError:${ex?.message}".loge(_tag)
+        reconnectHandle()
+    }
+
+    private fun reconnectHandle() {
+        timer = Timer().apply {
+            schedule(object : TimerTask() {
+                override fun run() {
+                    "reconnectHandle".loge(_tag)
+                    reconnect()
+                }
+            }, reconnectInterval)
+        }
+    }
+
+    // 心跳实现
+    private var heartbeatTask: TimerTask? = null
+    private val heartbeatInterval: Long = 10000 //
+
+    private fun startHeartbeat() {
+        heartbeatTask = object : TimerTask() {
+            // 发送心跳消息
+            override fun run() {
+                "startHeartbeat".logi(_tag)
+                gameMassageManager?.ping()
+            }
+        }
+        Timer().scheduleAtFixedRate(heartbeatTask, heartbeatInterval, heartbeatInterval)
+    }
+
+    private fun stopHeartbeat() {
+        heartbeatTask?.cancel()
+        heartbeatTask = null
     }
 }

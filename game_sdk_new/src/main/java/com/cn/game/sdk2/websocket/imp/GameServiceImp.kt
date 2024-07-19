@@ -35,6 +35,7 @@ import com.cn.game.sdk2.websocket.setCommittedState
 import com.cn.game.sdk2.websocket.sum
 import com.cn.game.sdk2.websocket.verifyDouble
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
+import com.xcjh.base_lib2.utils.logd
 import com.xcjh.base_lib2.utils.loge
 import game.common.proto.ClientReq
 import game.common.proto.ClientRes
@@ -175,7 +176,7 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
 
     private fun send(mid: Short, sid: Short, data: ByteArray) {
         //messageViewModel?.setSendData(SendDataBean(mid, sid, data))
-        "send()->mid:$mid-sid:$sid".loge(tag)
+        "send()->mid:$mid-sid:$sid".logd(tag)
         try {
             val msg = nativeLib.newPack(mid, sid, data, data.size)
             client.send(msg)

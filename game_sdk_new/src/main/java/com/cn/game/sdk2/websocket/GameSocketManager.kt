@@ -25,7 +25,7 @@ class GameSocketManager private constructor() : OnMessageListener {
         /**
          * 每隔10秒进行一次对长连接的心跳检测
          */
-        private const val HEART_BEAT_RATE = (10 * 1000).toLong()
+        private  var HEART_BEAT_RATE = (5 * 1000).toLong()
         private var HAS_HEART = true
         private var client: GameSocketClient? = null
         private var gameServerMessageConvertFactory: GameServerMessageConvertFactory? = null
@@ -50,54 +50,49 @@ class GameSocketManager private constructor() : OnMessageListener {
     fun initSocketClient() {
         "initSocketClient".loge(tag)
         val uri = URI.create(WEB_SOCKET_URL)
-        GlobalScope.launch {
-            withContext(Dispatchers.IO) {
-                isNeedReconnect = true
-                HAS_HEART = true
-                client = GameSocketClient(uri) //获得client对象
+        isNeedReconnect = true
+        HAS_HEART = true
+        client = GameSocketClient(uri) //获得client对象
 //                client?.reset()
-                client?.setOnMessageListener(this@GameSocketManager)
-                gameMassageManager = UIMethodImpl.generate(client!!) //获得接口对象
-                client?.connectionLostTimeout = 0
-                client!!.connectBlocking() //连接socket
-                //心跳发送
-                while (isNeedReconnect) {
-                    delay(HEART_BEAT_RATE)
-                    if (HAS_HEART) {
-                        client?.let {
-                            if (it.readyState == ReadyState.OPEN) {
-                                gameMassageManager?.ping()
-                            }//正常发送心跳
-                            if (it.isClosed) it.re()
-                        }
-                    } else {
-                        client?.let {
-                            if (it.readyState == ReadyState.OPEN) HAS_HEART = true //socket恢复
-                        }
-                    }
-                }
-            }
-        }
-//        messageViewModel = MessageViewModel()
-//        messageViewModel?.data?.observeForever {
-//            val newUnpack = client?.newUnpack(it)
-//            val mid = newUnpack!![0] as Int?
-//            val sid = newUnpack[1] as Int?
-//            var str = ByteArray(0)
-//            if (it.size > 2) {
-//                str = (newUnpack[2] as ByteArray?)!!
+        client?.setOnMessageListener(this@GameSocketManager)
+        gameMassageManager = UIMethodImpl.generate(client!!) //获得接口对象
+        client?.connectionLostTimeout = 0
+        client!!.connect() //连接socket
+//        GlobalScope.launch {
+//            withContext(Dispatchers.IO) {
+//                isNeedReconnect = true
+//                HAS_HEART = true
+//                client = GameSocketClient(uri) //获得client对象
+////                client?.reset()
+//                client?.setOnMessageListener(this@GameSocketManager)
+//                gameMassageManager = UIMethodImpl.generate(client!!) //获得接口对象
+//                client?.connectionLostTimeout = 0
+//                client!!.connectBlocking() //连接socket
+//                //心跳发送
+//                while (isNeedReconnect) {
+//                    delay(HEART_BEAT_RATE)
+//                    if (HAS_HEART) {
+//                        client?.let {
+//                            if (it.readyState == ReadyState.OPEN) {
+//                                HEART_BEAT_RATE = (5 * 1000).toLong()
+//                                gameMassageManager?.ping()
+//                            }//正常发送心跳
+//                            if (it.isClosed) {
+//                                it.re()
+//                            }
+//                        }
+//                    } else {
+//                        client?.let {
+//                            if (it.readyState == ReadyState.OPEN) HAS_HEART = true //socket恢复
+//                        }
+//                    }
+//                }
 //            }
-//            onMessage(mid, sid, str)
 //        }
-//
-//        messageViewModel?.sendData?.observeForever {
-//            "send()->mid:${it.mid}-sid:${it.sid}".loge(tag)
-//            val newPack = client?.newPack(it.mid, it.sid, it.data, it.data.size)
-//            client?.send(newPack)
-//        }
+
     }
 
-    private fun resetUserState(){
+    private fun resetUserState() {
         isLogin = false
         isEnterRoom = false
         gameAboutModel.setLoginResult(false)
@@ -127,14 +122,9 @@ class GameSocketManager private constructor() : OnMessageListener {
         }
     }
 
-    fun getGameService(): UIMethodImpl? {
-        return gameMassageManager
-    }
-
     fun setGameServerMessageConvertFactory(factory: GameServerMessageConvertFactory) {
         gameServerMessageConvertFactory = factory
     }
-
 
     override fun onMessage(mid: Int?, sid: Int?, byteArray: ByteArray) {
         convertMessage(mid, sid, byteArray)
@@ -225,14 +215,16 @@ class GameSocketManager private constructor() : OnMessageListener {
 
                 GameResCode.S2C_MULTI_TOKEN_VERIFY_FAIL -> gameServerMessageConvertFactory?.tokenLoseEffectiveness()
 
-                GameResCode.S2C_REFRESH_GAME_CONFIG -> gameServerMessageConvertFactory?.refreshGameConfig(GameRes.RefreshGameConfig.parseFrom(byteArray))
+                GameResCode.S2C_REFRESH_GAME_CONFIG -> gameServerMessageConvertFactory?.refreshGameConfig(
+                    GameRes.RefreshGameConfig.parseFrom(byteArray)
+                )
 
             }
         }
     }
 
     override fun onClose(code: Int, reason: String?, remote: Boolean) {
-        if(remote && (code == 1000 || code == 1001) && !isTokenValid){
+        if (remote && (code == 1000 || code == 1001) && !isTokenValid) {
             isNeedReconnect = false
             resetUserState()
         }

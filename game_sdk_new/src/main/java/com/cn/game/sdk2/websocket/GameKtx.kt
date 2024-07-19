@@ -431,13 +431,9 @@ fun MutableList<BettingRecordBean>.convertMap(): MutableMap<Betting, BettingReco
 fun List<BettingRecordBean>.verifyAdd(
     record: BettingRecordBean, areaBetConfigBean: AreaBetConfigBean?
 ): GameAboutModel.BettingState {
-    toString().loge("verifyAdd")
     val currentBettingTotalMoney =
         filter { it.bettingArea.number == record.bettingArea.number }.sumOf { it.money }
-    "currentBettingTotalMoney:$currentBettingTotalMoney".loge("verifyAdd")
     val totalMoney = filter { it.state == BettingStatus.TEMP }.sumOf { it.money }
-    "totalMoney:$totalMoney".loge("verifyAdd")
-    "balance:${gameAboutModel.balance.value}".loge("verifyAdd")
     val moneyEnough = totalMoney <= gameAboutModel.balance.value!!
     if (!moneyEnough) return GameAboutModel.BettingState.NO_MONEY
     if ((gameAboutModel.balance.value ?: 0) <= 5000) return GameAboutModel.BettingState.NO_MONEY_50
@@ -459,8 +455,6 @@ fun List<BettingRecordBean>.generateUiBean(betting: Betting): BettingRecordBean?
 //取消下注
 fun ObservableArrayList<BettingRecordBean>.cancel(): List<BettingRecordBean?> {
     val tempTotalMoney = filter { it.state == BettingStatus.TEMP }.sumOf { it.money }
-    "tempTotalMoney:$tempTotalMoney".loge("tempTotalMoney")
-    "tempBalance:${gameAboutModel.tempBalance.value}".loge("tempTotalMoney")
     gameAboutModel.returnTempBalance(tempTotalMoney)
     removeBy(BettingStatus.TEMP)
     modify()
