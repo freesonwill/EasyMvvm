@@ -12,7 +12,6 @@ import com.cn.game.sdk2.utils.ext.ViewExt.bindRecycleView
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.utils.tool.dp2px
 import com.cn.game.sdk2.utils.tool.screenHeight
-import com.cn.game.sdk2.websocket.gameAboutModel
 import com.drake.brv.annotaion.DividerOrientation
 import com.drake.brv.utils.dividerSpace
 import com.drake.brv.utils.setup
@@ -42,6 +41,13 @@ class Fast3HelpPopup(context: Context, private val offsetY: Int, private val hei
     override fun onCreate() {
         super.onCreate()
         mViewBind = FragmentFast3HelpBinding.bind(popupImplView)
+        /*mViewBind.rvContent.setEdgeEffectFactory(object : EdgeEffectFactory() {
+            override fun createEdgeEffect(view: RecyclerView, direction: Int): EdgeEffect {
+                return BounceEdgeEffect(view.context, view)
+            }
+        })*/
+        // 设置过度滚动效果
+        //OverScrollDecoratorHelper.setUpOverScroll(mViewBind.rvContent, OverScrollDecoratorHelper.ORIENTATION_VERTICAL);
         this.initView()
         mViewBind.root.layoutParams.let { lp ->
             lp.height = height
