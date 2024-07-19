@@ -141,12 +141,15 @@ object ViewHelper {
         XPopup.Builder(context)
             .hasShadowBg(false)
             .setPopupCallback(object : SimpleCallback() {
-                override fun onShow(popupView: BasePopupView?) {
-                    super.onShow(popupView)
+                override fun beforeShow(popupView: BasePopupView?) {
+                    super.beforeShow(popupView)
                     fastViewOverlay?.isVisible = false
                     fastView?.isVisible = false
                     appListener?.onGameFloatingDetailViewStatus(true)
                     gameAboutModel.fast3MainFloatVisible.value = false
+                }
+                override fun onShow(popupView: BasePopupView?) {
+                    super.onShow(popupView)
                 }
 
                 override fun onDismiss(popupView: BasePopupView?) {
