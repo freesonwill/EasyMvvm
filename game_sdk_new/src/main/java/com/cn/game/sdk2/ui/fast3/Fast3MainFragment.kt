@@ -1418,6 +1418,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         if (anchorMoneyView != null && areaView.moneyView != anchorMoneyView) {
             hiddenAnchorTop()
         }
+        val isFirstAdd = !currentBetteAreaMap.containsKey(areaView.areaCode)
         updateAnchorView(areaView)
 
         //贝塞尔曲线中间过程的点的坐标
@@ -1444,12 +1445,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         val path = Path()
         path.moveTo(startX, startY)
         path.lineTo(x, y)
-
-//        val path = Path()
-//        移动到起始点（贝塞尔曲线的起点）
-//        path.moveTo(startX, startY)
-//        使用二次萨贝尔曲线：注意第一个起始坐标越大，贝塞尔曲线的横向距离就会越大，一般按照下面的式子取即可
-//        path.quadTo((startX + x) / 2, startY, x, y)
 //
         val mPathMeasure = PathMeasure(path, false)
 
@@ -1489,7 +1484,9 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                         areaView.betteView.translationZ = 0f
                     }
 
-                    AnimHelper.doScaleAnimRecovery(areaView.betteView.ivShowBg)
+                    if (!isFirstAdd) {
+                        AnimHelper.doScaleAnimRecovery(areaView.betteView.ivShowBg, duration = 100)
+                    }
                 })
         }
 
