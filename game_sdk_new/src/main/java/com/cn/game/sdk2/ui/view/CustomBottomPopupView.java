@@ -14,6 +14,7 @@ import com.lxj.xpopup.enums.PopupAnimation;
 import com.lxj.xpopup.enums.PopupStatus;
 import com.lxj.xpopup.util.KeyboardUtils;
 import com.lxj.xpopup.util.XPopupUtils;
+import com.lxj.xpopup.widget.SmartDragLayout;
 
 public class CustomBottomPopupView extends BasePopupView {
     protected CustomSmartDragLayout bottomPopupContainer;
@@ -53,7 +54,7 @@ public class CustomBottomPopupView extends BasePopupView {
         this.bottomPopupContainer.dismissOnTouchOutside(CustomBottomPopupView.this.popupInfo.isDismissOnTouchOutside);
         this.bottomPopupContainer.isThreeDrag(CustomBottomPopupView.this.popupInfo.isThreeDrag);
         XPopupUtils.applyPopupSize((ViewGroup)this.getPopupContentView(), this.getMaxWidth(), this.getMaxHeight(), this.getPopupWidth(), this.getPopupHeight(), (Runnable)null);
-        this.bottomPopupContainer.setOnCloseListener(new CustomSmartDragLayout.OnCloseListener() {
+        this.bottomPopupContainer.setOnCloseListener(new SmartDragLayout.OnCloseListener() {
             public void onClose() {
                 CustomBottomPopupView.this.beforeDismiss();
                 if (CustomBottomPopupView.this.popupInfo != null && CustomBottomPopupView.this.popupInfo.xPopupCallback != null) {
