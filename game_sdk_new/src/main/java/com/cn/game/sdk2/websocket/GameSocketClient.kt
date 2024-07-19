@@ -102,8 +102,7 @@ class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
             schedule(object : TimerTask() {
                 override fun run() {
                     "reconnectHandle".loge(_tag)
-                    if (!isOpen)
-                        reconnect()
+                    if (!isOpen && isNeedReconnect) reconnect()
                 }
             }, reconnectInterval)
         }
