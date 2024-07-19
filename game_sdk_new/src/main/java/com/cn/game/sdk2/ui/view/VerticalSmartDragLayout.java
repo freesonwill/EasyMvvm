@@ -106,7 +106,7 @@ public class VerticalSmartDragLayout extends LinearLayout implements NestedScrol
             case MotionEvent.ACTION_MOVE:
                 float x  = ev.getX() - _touchX;
                 float y = ev.getY() - _touchY;
-                if (isTrigger || (Math.abs(x) < Math.abs(y) && Math.abs(y) > 5)) {
+                if (isTrigger || (Math.abs(x) < Math.abs(y) && Math.abs(y) > 10)) {
                     isTrigger = true;
                     _touchX = ev.getX();
                     _touchY = ev.getY();
@@ -165,9 +165,6 @@ public class VerticalSmartDragLayout extends LinearLayout implements NestedScrol
                             this.tracker.addMovement(event);
                             this.tracker.computeCurrentVelocity(1000);
                             int dy = (int)(event.getY() - this.touchY);
-                            if(Math.abs(event.getX() - this.touchX) > Math.abs(event.getY() - this.touchY)) {
-                                dy = (int)((event.getX() - this.touchX));
-                            }
                             this.scrollTo(this.getScrollX(), this.getScrollY() - dy);
                             this.touchX = event.getX();
                             this.touchY = event.getY();

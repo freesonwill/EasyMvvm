@@ -12,6 +12,7 @@ import com.cn.game.sdk2.utils.ext.CommonExt.toPinyin
 import com.cn.game.sdk2.websocket.bean.RoundInfoBean
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel.Stage
+import com.xcjh.base_lib2.utils.LogUtils
 
 /**
  * Description:
@@ -28,7 +29,7 @@ class DragFast3Overlay @JvmOverloads constructor(
     private lateinit var binding: FragmentFast3OverlayBinding
 
     private fun onInit() {
-        Log.d(TAG, "onInit~~~~~~~~~~")
+        LogUtils.d(TAG, "onInit~~~~~~~~~~")
         binding = FragmentFast3OverlayBinding.bind(this)
 
         gameAboutModel.historyRounds.apply {
@@ -56,7 +57,7 @@ class DragFast3Overlay @JvmOverloads constructor(
 
     private fun updateUI() {
         val roundInfo: RoundInfoBean? = gameAboutModel.currentSettleResult
-        Log.d(TAG,"updateUI: roundInfo:${roundInfo}")
+        LogUtils.d(TAG,"updateUI: roundInfo:${roundInfo}")
         binding.apply {
             lltResult.visibility = if(roundInfo != null) View.VISIBLE else View.INVISIBLE
             roundInfo?.run {

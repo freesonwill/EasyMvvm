@@ -3,7 +3,9 @@ package com.cn.game.sdk2.ui.view
 import android.animation.ValueAnimator
 import android.content.Context
 import android.util.Log
+import android.widget.EdgeEffect
 import androidx.core.animation.addListener
+import androidx.recyclerview.widget.RecyclerView
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.databinding.FragmentFast3HelpBinding
 import com.cn.game.sdk2.ui.fast3.Fast3HelpFragment.Companion.TAG
@@ -18,8 +20,11 @@ import com.drake.brv.utils.setup
 import com.gyf.immersionbar.ktx.hasNavigationBar
 import com.gyf.immersionbar.ktx.navigationBarHeight
 import com.gyf.immersionbar.ktx.statusBarHeight
+import com.lxj.xpopup.core.BottomPopupView
+import com.xcjh.base_lib2.utils.LogUtils
 import com.xcjh.base_lib2.utils.view.clickNoRepeat
 import com.xcjh.base_lib2.utils.view.getStringArray
+import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 
 
 /**
@@ -41,13 +46,12 @@ class Fast3HelpPopup(context: Context, private val offsetY: Int, private val hei
     override fun onCreate() {
         super.onCreate()
         mViewBind = FragmentFast3HelpBinding.bind(popupImplView)
-        /*mViewBind.rvContent.setEdgeEffectFactory(object : EdgeEffectFactory() {
+        /*mViewBind.rvContent.setEdgeEffectFactory(object : RecyclerView.EdgeEffectFactory() {
             override fun createEdgeEffect(view: RecyclerView, direction: Int): EdgeEffect {
                 return BounceEdgeEffect(view.context, view)
             }
         })*/
         // 设置过度滚动效果
-        //OverScrollDecoratorHelper.setUpOverScroll(mViewBind.rvContent, OverScrollDecoratorHelper.ORIENTATION_VERTICAL);
         this.initView()
         mViewBind.root.layoutParams.let { lp ->
             lp.height = height
@@ -83,7 +87,7 @@ class Fast3HelpPopup(context: Context, private val offsetY: Int, private val hei
             action = { PromptSoundPlay.btnPlayMedia() }
         )
 
-        mViewBind.lltCollapse.clickNoRepeat(300) {
+        mViewBind.lltCollapse.clickNoRepeat(false,300) {
             PromptSoundPlay.btnPlayMedia()
             val toExpand = mViewBind.content.height != fullHeight
             val topPadding = if (toExpand) context.statusBarHeight else 0
@@ -113,7 +117,7 @@ class Fast3HelpPopup(context: Context, private val offsetY: Int, private val hei
                     })
                 start()
             }
-            Log.d(TAG, "addUpdateListener----->$start-->$end,toExpand:$toExpand")
+            LogUtils.d(TAG, "addUpdateListener----->$start-->$end,toExpand:$toExpand")
         }
         mViewBind.close.clickNoRepeat {
             PromptSoundPlay.btnPlayMedia()

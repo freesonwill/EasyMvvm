@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.startup.Initializer
 import com.cn.game.sdk2.utils.GamePartyLibraryInitializer
+import com.xcjh.base_lib2.utils.LogUtils
 
 /**
  * @Description:   模块初始化
@@ -19,7 +20,6 @@ class ModuleInitializer : Initializer<String> {
     }
 
     override fun create(context: Context): String {
-        Log.d(TAG, "ModuleInitializer--$TAG-->create")
         val application = context as Application
         initGameSdk( application )
         return TAG

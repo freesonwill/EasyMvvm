@@ -14,6 +14,7 @@ import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
 import com.cn.game.sdk2.websocket.bean.AreaBetBean
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
+import com.xcjh.base_lib2.utils.LogUtils
 
 /**
  * 默认
@@ -52,9 +53,9 @@ class DXDSFragment() : BaseFast3Fragment<Fast3ViewModel, FragDxdsBinding>() {
 
     private fun updateAreaBetInfo(list: List<AreaBetBean>?) {
         if (list == null) return
-        Log.d(TAG, "updateAreaBetInfo--->$list")
+        LogUtils.d(TAG, "updateAreaBetInfo--->$list")
         if (numAnimSet?.isRunning == true) {
-            Log.d(TAG, "updateAreaBetInfo--->running")
+            LogUtils.d(TAG, "updateAreaBetInfo--->running")
             return
         }
         numAnimators.clear()

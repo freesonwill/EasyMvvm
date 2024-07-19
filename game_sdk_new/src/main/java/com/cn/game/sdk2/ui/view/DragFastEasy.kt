@@ -10,6 +10,7 @@ import com.cn.game.sdk2.databinding.DragFastEasyBinding
 import com.cn.game.sdk2.utils.CommonUtils
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel.Stage
+import com.xcjh.base_lib2.utils.LogUtils
 
 /**
  * Description:
@@ -26,7 +27,7 @@ class DragFastEasy @JvmOverloads constructor(
     private lateinit var binding: DragFastEasyBinding
 
     private fun onInit() {
-        Log.d(TAG, "onInit~~~~~~~~~~")
+        LogUtils.d(TAG, "onInit~~~~~~~~~~")
         binding = DragFastEasyBinding.bind(this)
 
         gameAboutModel.countDownSecondsLD.apply {
