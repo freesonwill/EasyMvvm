@@ -10,6 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.data.EventKey
 import com.cn.game.sdk2.databinding.DialogHomeXpopupContainerBinding
+import com.cn.game.sdk2.ui.view.VerticalBottomPopupView
 import com.cn.game.sdk2.utils.FlowBus
 import com.lxj.xpopup.core.BottomPopupView
 
@@ -18,7 +19,7 @@ import com.lxj.xpopup.core.BottomPopupView
  * author       : zhangsan
  * createTime   : 2024/6/13 18:18
  **/
-class HomeXPopupDialog(context: Context, private val fragment: Fragment, private var miniGameId: Int) : BottomPopupView(context) {
+class HomeXPopupDialog(context: Context, private val fragment: Fragment, private var miniGameId: Int) : VerticalBottomPopupView(context) {
 
     companion object {
         const val TAG = "HomeXPopupDialog"
