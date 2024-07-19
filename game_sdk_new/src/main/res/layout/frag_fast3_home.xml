@@ -424,11 +424,11 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/betteAgainLayout"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="5dp"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="5dp"
+                    app:layout_constraintTop_toTopOf="@id/betteLayout"
                     app:layout_constraintBottom_toBottomOf="@id/betteLayout"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/betteLayout">
+                    app:layout_constraintEnd_toEndOf="parent">
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/ivBetEndFg"
@@ -447,8 +447,8 @@
                         android:visibility="visible"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
                         app:srcCompat="@drawable/icon_xuya_gray"
                         tools:visibility="visible" />
 
@@ -461,8 +461,8 @@
                         android:visibility="gone"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
                         app:srcCompat="@drawable/icon_multiple2_sel" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
