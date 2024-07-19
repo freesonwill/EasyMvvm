@@ -30,11 +30,15 @@ class CenterLayoutManager : LinearLayoutManager {
         position: Int
     ) {
         val smoothScroller: RecyclerView.SmoothScroller =
-            CenterSmoothScroller(recyclerView.context, if (state != null) 50f else 200f)
+            CenterSmoothScroller(recyclerView.context, if (state == null) 50f else 200f)
         smoothScroller.targetPosition = position
         startSmoothScroll(smoothScroller)
     }
 
+
+    override fun scrollToPosition(position: Int) {
+        super.scrollToPosition(position)
+    }
 
     class CenterSmoothScroller internal constructor(
         context: Context?,

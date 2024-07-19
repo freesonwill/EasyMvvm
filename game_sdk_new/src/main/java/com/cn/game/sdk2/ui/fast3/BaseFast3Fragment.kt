@@ -232,7 +232,7 @@ abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
             val leopardX = leopardLocation[0]
             leopardX + (mDatabind as FragDxdsBinding).leopardView.measuredWidth
         } else {
-            areaX + 4.dp2px
+            areaX + (if (isLeftStart) 0 else 4.dp2px)
         }
         val limitRight = if (areaView.id == R.id.single_view) {
             val leopardLocation = IntArray(2)
@@ -240,7 +240,7 @@ abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
             val leopardX = leopardLocation[0]
             leopardX
         } else {
-            areaX + areaView.measuredWidth
+            areaX + areaView.measuredWidth - (if (isRightEnd) 0 else 4.dp2px)
         }
         val limitBottom = when (areaView.id) {
             R.id.big_view -> {
@@ -249,7 +249,7 @@ abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
 
                 val leopardLocation = (mDatabind as FragDxdsBinding).leopardView.locationOnScreen
                 if (endX + betteView.measuredWidth <= leopardLocation[0] + (mDatabind as FragDxdsBinding).leopardView.measuredWidth) {
-                    leopardLocation[1]
+                    leopardLocation[1] - 4.dp2px
                 } else {
                     smallLocation[1]
                 }
@@ -261,7 +261,7 @@ abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
 
                 val leopardLocation = (mDatabind as FragDxdsBinding).leopardView.locationOnScreen
                 if (endX + betteView.measuredWidth >= leopardLocation[0]) {
-                    leopardLocation[1]
+                    leopardLocation[1] - 4.dp2px
                 } else {
                     smallLocation[1]
                 }
@@ -281,7 +281,7 @@ abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
                 areaY + areaView.measuredHeight - 4.dp2px
             }
         }
-        val limitTop = areaY + 4.dp2px
+        val limitTop = areaY + 6.dp2px
 
         it.translationX = when {
             isLeftStart -> {

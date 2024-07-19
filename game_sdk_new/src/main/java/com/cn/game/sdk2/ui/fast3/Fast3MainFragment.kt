@@ -29,6 +29,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.data.EventKey
 import com.cn.game.sdk2.data.bean.GameHallItem
@@ -873,7 +874,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                         data.select = bean == data
                     }
                     mViewModel.userLastSelectBetteBean = bean
-                    betteScrollToCenter(layoutPosition)
+                    betteScrollToCenter(layoutPosition, isScrollQuick = false)
                     notifyItemRangeChanged(0, modelCount)
 
                 }
@@ -952,7 +953,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     }
                     if (selectedIndex >= 0) {
                         llShowBetList.post {
-                            betteScrollToCenter(selectedIndex, RecyclerView.State())
+                            betteScrollToCenter(selectedIndex)
                         }
                     }
                 } else {
@@ -1243,7 +1244,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                 }
                             }
                         }
-                        homeMorePop = XPopup.Builder(requireContext())
+                    homeMorePop = XPopup.Builder(requireContext())
                         .isTouchThrough(true)
                         .setPopupCallback(object : SimpleCallback() {
                             override fun onDismiss(popupView: BasePopupView?) {
@@ -1251,7 +1252,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                 homeMorePop = null
                             }
                         })
-                        .customAnimator(AlphaPopupAnimator(bubbleAttach,150, floatArrayOf(0f,1f)))
+                        .customAnimator(AlphaPopupAnimator(bubbleAttach, 150, floatArrayOf(0f, 1f)))
                         .atView(mDatabind.llHomeMore)
                         .navigationBarColor(android.R.color.transparent)
                         .hasShadowBg(false) // 去掉半透明背景
@@ -1382,26 +1383,26 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         betteBean: SelectAnnotationBean,
         endCallBack: (() -> Unit)? = null
     ) {
-        //PromptSoundPlay.goldPlayMedia(this)
-        //PromptSoundPlay.goldPlayMediaNew(this)
         PromptSoundPlay.playAudio(requireContext())
-        //获取选中的筹码所在的position
+        if (anchorMoneyView != null && areaView.moneyView != anchorMoneyView) {
+            hiddenAnchorTop()
+        }
+        val isFirstAdd = !currentBetteAreaMap.containsKey(areaView.areaCode)
+        updateAnchorView(areaView)
         val betList = mDatabind.llShowBetList.models as List<SelectAnnotationBean>
         val selectedPosition = betList.indexOf(betteBean)
-        val layoutManager = mDatabind.llShowBetList.layoutManager as LinearLayoutManager
-        var finallyView = layoutManager.findViewByPosition(selectedPosition)
-//        判断选择的筹码是不是在屏幕外面
-        if (finallyView != null) {
-            betteScrollToCenter(selectedPosition)
-            startMoneyAnimation(x, y, speed, areaView, finallyView!!, endCallBack)
-        } else {
-            scrollToItemAndPerformAction(mDatabind.llShowBetList, selectedPosition) {
-                finallyView = layoutManager.findViewByPosition(selectedPosition)
-                finallyView?.let {
-                    startMoneyAnimation(x, y, speed, areaView, it, endCallBack)
-                }
-            }
-        }
+        betteScrollToCenter(selectedPosition, scrollEnd = { finallyView ->
+            startMoneyAnimation(
+                x,
+                y,
+                speed,
+                areaView,
+                finallyView,
+                betteBean,
+                isFirstAdd,
+                endCallBack
+            )
+        })
     }
 
     private var betteViewGroup: ViewGroup? = null
@@ -1412,21 +1413,24 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         speed: Long,
         areaView: GameAreaView,
         jettonView: View,
+        betteBean: SelectAnnotationBean,
+        isFirstAdd: Boolean,
         endCallBack: (() -> Unit)?
     ) {
-        if (anchorMoneyView != null && areaView.moneyView != anchorMoneyView) {
-            hiddenAnchorTop()
-        }
-        val isFirstAdd = !currentBetteAreaMap.containsKey(areaView.areaCode)
-        updateAnchorView(areaView)
-
         //贝塞尔曲线中间过程的点的坐标
         val viewPagerLocation = mDatabind.viewPagerNew.locationOnScreen
         val mCurrentPosition = FloatArray(2)
 
         // (这个图片就是执行动画的图片，从开始位置出发，经过一个抛物线（贝塞尔曲线))
         val betImageView = ImageView(requireContext())
-        betImageView.setImageDrawable(jettonView.findViewById<ImageView>(R.id.ivShowBg).drawable)
+        betImageView.setImageResource(
+            resources.getIdentifier(
+                "icon_select_" + betteBean.moneyPinyin,
+                "drawable",
+                requireContext().packageName
+            )
+        )
+//        betImageView.setImageDrawable(jettonView.findViewById<ImageView>(R.id.ivShowBg).drawable)
         val params = ConstraintLayout.LayoutParams(
             requireContext().dp2px(32),
             requireContext().dp2px(32)
@@ -1525,38 +1529,28 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         }
     }
 
-    private fun scrollToItemAndPerformAction(
-        recyclerView: RecyclerView,
+    private fun betteScrollToCenter(
         position: Int,
-        action: () -> Unit
+        scrollEnd: ((View) -> Unit)? = null,
+        isScrollQuick: Boolean = true
     ) {
+        mDatabind.apply {
+            val layoutManager = llShowBetList.layoutManager as CenterLayoutManager
+            val finallyView = layoutManager.findViewByPosition(position)
+            if (finallyView == null) {
+                llShowBetList.scrollToPosition(position)
+            }
+            llShowBetList.post {
+                layoutManager.smoothScrollToPosition(
+                    llShowBetList,
+                    if (isScrollQuick) null else RecyclerView.State(),
+                    position
+                )
 
-        val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-        // 添加滚动监听器
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                // 当滚动停止时执行操作
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    val visibleItem = layoutManager.findViewByPosition(position)
-                    if (visibleItem != null) {
-                        // 执行操作
-                        action.invoke()
-                        recyclerView.removeOnScrollListener(this)
-                    }
+                layoutManager.findViewByPosition(position)?.let {
+                    scrollEnd?.invoke(it)
                 }
             }
-        })
-        betteScrollToCenter(position, RecyclerView.State())
-    }
-
-    private fun betteScrollToCenter(position: Int, state: RecyclerView.State? = null) {
-        mDatabind.apply {
-            (llShowBetList.layoutManager as CenterLayoutManager).smoothScrollToPosition(
-                llShowBetList,
-                state,
-                position
-            )
         }
     }
 }
