@@ -70,6 +70,7 @@
                     android:id="@+id/rvHomeHistory"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:overScrollMode="never"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/rlClickHide"
                     app:layout_constraintStart_toStartOf="parent"
@@ -408,6 +409,7 @@
                             android:clipToPadding="false"
                             android:orientation="horizontal"
                             android:paddingTop="5dp"
+                            android:overScrollMode="never"
                             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                             tools:itemCount="11"
                             tools:listitem="@layout/item_annotation_list" />
@@ -476,6 +478,7 @@
                     android:clipToPadding="false"
                     android:paddingStart="0dp"
                     android:paddingEnd="0dp"
+                    android:overScrollMode="never"
                     app:layout_constraintBottom_toTopOf="@id/betteLayout" />
 
                 <androidx.appcompat.widget.AppCompatImageView
