@@ -1126,7 +1126,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                     listOf(
                                         async { showMainGame(false) },
                                         async {
-                                            delay(20)
+                                            //delay(20)
                                             val context = requireContext()
                                             val popupView = object : BottomPopupView(context) {
                                                 override fun getImplLayoutId(): Int =
@@ -1231,7 +1231,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                                 })
                                                 .popupAnimation(PopupAnimation.TranslateFromBottom)
                                                 .navigationBarColor(android.R.color.transparent)
-                                                .animationDuration(150)//默认300ms
+                                                .animationDuration(100)//默认300ms
                                                 .isViewMode(true)
                                                 .hasShadowBg(false) // 去掉半透明背景
                                                 .enableDrag(true)
@@ -1251,7 +1251,9 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                 homeMorePop = null
                             }
                         })
-                        .customAnimator(AlphaPopupAnimator(bubbleAttach,150, floatArrayOf(0f,1f)))
+                        .customAnimator(AlphaPopupAnimator(bubbleAttach,100, floatArrayOf(0f,1f)))
+                        .animationDuration(100)
+                        .isDestroyOnDismiss(false)
                         .atView(mDatabind.llHomeMore)
                         .navigationBarColor(android.R.color.transparent)
                         .hasShadowBg(false) // 去掉半透明背景
