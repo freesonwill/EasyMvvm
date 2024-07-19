@@ -1,7 +1,10 @@
 package com.cn.game.sdk2.websocket.imp
 
 import android.app.Activity
+import android.app.Application
+import android.app.Application.ActivityLifecycleCallbacks
 import android.content.Context
+import android.os.Bundle
 import android.view.View
 import androidx.annotation.Keep
 import androidx.lifecycle.Lifecycle
@@ -48,7 +51,37 @@ object GameApp : IGameForApp {
         appContext = context
         appLifecycleEnable = lifecycleEnable
         appListener = onSdkListener
-        GameSocketManager.getInstance()?.initSocketClient()
+        val initSocketClient = GameSocketManager.getInstance()?.initSocketClient()
+        (appContext as Application).registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks{
+            override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
+
+            }
+
+            override fun onActivityStarted(activity: Activity) {
+
+            }
+
+            override fun onActivityResumed(activity: Activity) {
+
+            }
+
+            override fun onActivityPaused(activity: Activity) {
+
+            }
+
+            override fun onActivityStopped(activity: Activity) {
+
+            }
+
+            override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
+
+            }
+
+            override fun onActivityDestroyed(activity: Activity) {
+
+            }
+
+        })
     }
 
     /** 登录
@@ -104,6 +137,7 @@ object GameApp : IGameForApp {
     /**
      * 是否彈出遊戲框
      */
+    @Deprecated("")
     override fun gameFloatingDetailViewStatusWithBlock(isShow: Boolean) {
         gameAboutModel.isShowGame(isShow)
     }
