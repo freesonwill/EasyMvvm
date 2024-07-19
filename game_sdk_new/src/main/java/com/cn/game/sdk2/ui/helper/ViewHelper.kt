@@ -362,6 +362,7 @@ object ViewHelper {
                         viewPager.currentItem = index
                         action.invoke(index)
                     }
+                    setPadding(32,0,32,0)
                 }
             }
 
