@@ -524,11 +524,13 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         gameAboutModel.balance.observe(viewLifecycleOwner) {
             Log.e(TAG, "收到的总余额：${it},old:${mViewModel.currentMoney}, new:$it")
             if (it > mViewModel.currentMoney) {
+                val start = mViewModel.currentMoney
+                val end = it
                 mDatabind.txtCurrentMoney.postDelayed({
                     AnimHelper.doNumberAnim(
                         mDatabind.txtCurrentMoney,
-                        startNum = mViewModel.currentMoney,
-                        endNumber = it,
+                        startNum = start,
+                        endNumber = end,
                         duration1 = 1000
                         //duration1 = mDatabind.lottieAnimView.duration
                     )
