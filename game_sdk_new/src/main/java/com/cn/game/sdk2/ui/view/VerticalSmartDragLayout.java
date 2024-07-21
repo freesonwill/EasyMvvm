@@ -35,6 +35,7 @@ public class VerticalSmartDragLayout extends LinearLayout implements NestedScrol
     float touchY;
     boolean isScrollUp;
     private SmartDragLayout.OnCloseListener listener;
+    private int scaledTouchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
 
     public VerticalSmartDragLayout(Context context) {
         this(context, (AttributeSet)null);
@@ -106,7 +107,7 @@ public class VerticalSmartDragLayout extends LinearLayout implements NestedScrol
             case MotionEvent.ACTION_MOVE:
                 float x  = ev.getX() - _touchX;
                 float y = ev.getY() - _touchY;
-                if (isTrigger || (Math.abs(x) < Math.abs(y) && Math.abs(y) > 10)) {
+                if (isTrigger || (Math.abs(x) < Math.abs(y) && Math.abs(y) > scaledTouchSlop)) {
                     isTrigger = true;
                     _touchX = ev.getX();
                     _touchY = ev.getY();
