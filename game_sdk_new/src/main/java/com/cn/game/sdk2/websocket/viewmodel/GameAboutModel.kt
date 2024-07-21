@@ -232,17 +232,29 @@ class GameAboutModel : BaseViewModel() {
     }
 
     fun changeTempBalance(balance: Long) {
-        _tempBalance.postValue(balance)
+        if (isMainThread) {
+            _tempBalance.value = balance
+        } else {
+            _tempBalance.postValue(balance)
+        }
     }
 
     fun deductTempBalance(money: Int) {
         val balance = _tempBalance.value!! - money
-        _tempBalance.postValue(balance)
+        if (isMainThread) {
+            _tempBalance.value = balance
+        } else {
+            _tempBalance.postValue(balance)
+        }
     }
 
     fun returnTempBalance(money: Int) {
         val balance = _tempBalance.value!! + money
-        _tempBalance.postValue(balance)
+        if (isMainThread) {
+            _tempBalance.value = balance
+        } else {
+            _tempBalance.postValue(balance)
+        }
     }
 
     fun changeStage(stage: Stage) {

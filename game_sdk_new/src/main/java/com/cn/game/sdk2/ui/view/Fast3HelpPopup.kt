@@ -24,7 +24,6 @@ import com.lxj.xpopup.core.BottomPopupView
 import com.xcjh.base_lib2.utils.LogUtils
 import com.xcjh.base_lib2.utils.view.clickNoRepeat
 import com.xcjh.base_lib2.utils.view.getStringArray
-import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 
 
 /**

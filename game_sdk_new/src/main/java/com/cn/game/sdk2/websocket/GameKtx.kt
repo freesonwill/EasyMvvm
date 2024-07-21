@@ -90,7 +90,7 @@ val token: String
         return when (BuildConfig.BUILD_TYPE) {
             "debug" -> {
 //                "33:ZtG5WhUh"
-                "69:cAjjzn2s"
+                "94:0aPEwiYK"
 //                "109:lW2OFWum"
             }
 
