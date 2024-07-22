@@ -36,9 +36,9 @@ open class BounceRecycleView @JvmOverloads constructor(
             val lm = layoutManager as LinearLayoutManager
             val firstCompletePosition = lm.findFirstVisibleItemPosition()
 
-            if (firstCompletePosition != NO_POSITION) {
+            if (firstCompletePosition != NO_POSITION || mTopCutoff == UNDEFINED) {
                 if (firstCompletePosition != 0) {
-                    throw (IllegalStateException(ERROR_NOT_AT_TOP_OF_RANGE))
+                    //throw (IllegalStateException(ERROR_NOT_AT_TOP_OF_RANGE))
                 } else {
                     mTopCutoff = getCutoff()
                     mThumbHeight = (mTopCutoff * ITEM_HEIGHT)

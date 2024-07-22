@@ -31,8 +31,10 @@ import com.xcjh.base_lib2.utils.view.getStringArray
 /**
  * 首页的弹出框
  */
-class Fast3HelpPopup(context: Context, private val offsetY: Int, private val height: Int) :
-    CustomBottomPopupView(context) {
+class Fast3HelpPopup(context: Context, private val offsetY: Int, private val height: Int) : CustomBottomPopupView(context) {
+    companion object {
+        const val TAG = "Fast3HelpPopup"
+    }
     private lateinit var mViewBind: FragmentFast3HelpBinding
 
     //全屏的高度
@@ -50,14 +52,14 @@ class Fast3HelpPopup(context: Context, private val offsetY: Int, private val hei
 
     override fun onCreate() {
         super.onCreate()
-        /*LogUtils.dTag(TAG,"screenHeight:${mActivity.screenHeight}," +
+        LogUtils.dTag(TAG,"screenHeight:${mActivity.screenHeight}," +
                 "statusBarHeight:${mActivity.statusBarHeight}," +
                 " notchHeight:${mActivity.notchHeight}" +
                 ",navigationBarHeight:${mActivity.navigationBarHeight}" +
                 ",actionBarHeight:${mActivity.actionBarHeight}" +
                 ",hasStatusBar:${mActivity.hasNavigationBar}"+
                 ",hasNotchScreen:${mActivity.hasNotchScreen}"+
-                "")*/
+                "")
         mViewBind = FragmentFast3HelpBinding.bind(popupImplView)
         mViewBind.content.setPadding(0, 0, 0, mNavigationHeight)
         // 设置过度滚动效果

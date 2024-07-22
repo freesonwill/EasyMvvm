@@ -5,11 +5,9 @@
     android:background="#141624"
     android:orientation="vertical">
 
-    <ImageView
+    <include
         android:layout_width="match_parent"
-        android:layout_height="2119dp"
-        android:src="@drawable/help_3"
+        android:layout_height="wrap_content"
+        layout="@layout/layout_fast3_help3"
         />
-
-
 </androidx.appcompat.widget.LinearLayoutCompat>
