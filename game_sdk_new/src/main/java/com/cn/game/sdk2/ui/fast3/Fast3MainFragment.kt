@@ -319,6 +319,12 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 mDatabind.ivHomeBgCenter.isVisible = false
                 mDatabind.resultBgTop.isVisible = false
             }, duration = if (mViewModel.isCountDownStart) 250 else 0)
+
+            //暂时解决筹码栏被隐藏问题
+            delay(500)
+            if (mViewModel.gameState == GameAboutModel.Stage.NEW && !mDatabind.betteLayout.isVisible) {
+                resetBetteRecyclerVisible()
+            }
         }
     }
 
@@ -1110,6 +1116,22 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         }
     }
 
+    private fun resetBetteRecyclerVisible() {
+        mDatabind.apply {
+            betteLayout.isVisible = true
+            mDatabind.betteAgainLayout.isVisible = true
+
+            //开奖结果x
+            rlShowResult.isVisible = false
+            ivHomeBg.isVisible = false
+            ivHomeBgCenter.isVisible = false
+            resultBgTop.isVisible = false
+
+            llShowBetList.translationY = 0f
+            betteAgainLayout.translationX = 0f
+        }
+    }
+
     /**
      * 执行游戏结果点数显示动画
      */
@@ -1463,7 +1485,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         updateAnchorView(areaView)
         val betList = mDatabind.llShowBetList.models as List<SelectAnnotationBean>
         val selectedPosition = betList.indexOf(betteBean)
-        scrollSelectPosition2Center(false){
+        scrollSelectPosition2Center(false) {
             notifyBetteBean()
             safeBetteFly(selectedPosition) { betteView ->
                 betteView?.let {
