@@ -2,18 +2,18 @@ package com.cn.game.sdk2.ui.fast3
 
 import android.animation.Animator
 import android.animation.Animator.AnimatorListener
+import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
-import android.graphics.Path
-import android.graphics.PathMeasure
+import android.graphics.Point
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.LinearInterpolator
+import android.view.ViewPropertyAnimator
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -30,6 +30,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cn.game.sdk2.R
+import com.cn.game.sdk2.data.BetteFlyData
 import com.cn.game.sdk2.data.EventKey
 import com.cn.game.sdk2.data.bean.GameHallItem
 import com.cn.game.sdk2.data.bean.SelectAnnotationBean
@@ -111,7 +112,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     //<areaCode,<money,View>>
     private val currentBetteAreaMap by lazy { LinkedHashMap<Int, GameAreaView>() }
     private val allGameAreaMap by lazy { mutableMapOf<Int, GameAreaView>() }
-    private val betteFlyAnimList by lazy { mutableMapOf<GameAreaView, MutableList<ValueAnimator>>() }
+    private val betteFlyAnimList by lazy { mutableMapOf<GameAreaView, MutableList<BetteFlyData>>() }
+    private var selectBetteView: View? = null
 
     //==================================== Method ===============================================//
     @SuppressLint("ClickableViewAccessibility")
@@ -304,6 +306,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             if (mViewModel.isCountDownStart) {
                 Fast3ToastHelper.showToastNormal(getString(R.string.g_home_betting_begin), 2000)
             }
+            notifyBetteBean()
             //下注筹码向上升起动画
             startBetteRecyclerShowOrHideAnim(isShow = true, onStart = {
                 //筹码
@@ -568,10 +571,10 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             mViewModel.currentMoney = it
         }
 
-        //临时金额变化，用于刷新筹码可用
+//        //临时金额变化，用于刷新筹码可用
         gameAboutModel.tempBalance.observe(viewLifecycleOwner) {
             Log.e(TAG, "收到当前可用金额：${it}")
-            notifyBetteBean(it)
+//            notifyBetteBean(it)
         }
 
         gameAboutModel.countDownSecondsLD.observe(viewLifecycleOwner) { seconds ->
@@ -772,6 +775,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     private fun cancelTemBetting() {
         hiddenAnchorTop()
         gameMassageManager?.cancelBetting { result ->
+            notifyBetteBean()
             notifyMoneyOkView(result)
         }
     }
@@ -779,7 +783,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     private fun cancelBetteFlyAnim() {
         betteFlyAnimList.forEach {
             it.value.forEach {
-                it.cancel()
+                it.animator.cancel()
+                it.isRunning = false
             }
         }
         betteFlyAnimList.clear()
@@ -899,6 +904,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                             binding.ivShowBg.setImageResource(id)
                             //Log.d(TAG, "onBind-->${layoutPosition},bean:${bean}")
                             if (bean.select) {
+                                selectBetteView = binding.ivShowBg
                                 if (binding.ivShowBg.translationY == 0f) {
                                     startBetteSelectAnim(
                                         binding.ivShowBg,
@@ -924,8 +930,9 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                         data.select = bean == data
                     }
                     mViewModel.userLastSelectBetteBean = bean
-                    betteScrollToCenter(layoutPosition, isScrollQuick = false)
                     notifyItemRangeChanged(0, modelCount)
+                    scrollSelectPosition2Center(true)
+//                    betteScrollToCenter(layoutPosition, isScrollQuick = false)
 
                 }
             }.models = mViewModel.noteList
@@ -986,51 +993,55 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         }
     }
 
-    private fun notifyBetteBean(money: Long) {
+    private fun notifyBetteBean() {
+        val money = gameAboutModel.tempBalance.value ?: 0
+        var scrollIndex = -1
         mDatabind.apply {
             val selectBean = mViewModel.noteList.firstOrNull { it.select }
             if (selectBean != null) {
                 if (selectBean.money > money) { //当前筹码不足
-                    var selectedIndex = -1
                     for (i in mViewModel.noteList.lastIndex downTo 0) {
                         mViewModel.noteList[i].select = false
-                        if (selectedIndex == -1) {
+                        if (scrollIndex == -1) {
                             if (mViewModel.noteList[i].money <= money) {
-                                selectedIndex = i
+                                scrollIndex = i
                                 mViewModel.noteList[i].select = true
                             }
                         }
                     }
-                    if (selectedIndex >= 0) {
-                        llShowBetList.post {
-                            betteScrollToCenter(selectedIndex)
-                        }
-                    }
                 } else {
-                    backUserLastSelectBette(selectBean, money)
+                    scrollIndex = backUserLastSelectBette(selectBean, money)
                 }
             } else {
                 if ((mViewModel.userLastSelectBetteBean?.money ?: 0) <= money) {
-                    backUserLastSelectBette(null, money)
+                    scrollIndex = backUserLastSelectBette(null, money)
                 } else {
                     if (mViewModel.noteList[0].money <= money) {
                         mViewModel.noteList[0].select = true
                         mViewModel.userLastSelectBetteBean = mViewModel.noteList[0]
-                        betteScrollToCenter(0)
+                        scrollIndex = 0
                     }
                 }
             }
-            llShowBetList.bindingAdapter.notifyItemRangeChanged(0, mViewModel.noteList.count())
+
+            notifyDataSetChangedSafe {
+                llShowBetList.bindingAdapter.notifyItemRangeChanged(
+                    0,
+                    mViewModel.noteList.count()
+                )
+                val selectIndex = mViewModel.noteList.indexOfFirst { it.select }
+                scrollSelectPosition2Center(true)
+            }
         }
     }
 
     /**
      * 取消下注筹码判断是否需要选中用户最近一次手选筹码
      */
-    private fun backUserLastSelectBette(betteBean: SelectAnnotationBean?, money: Long) {
-        if (betteBean == mViewModel.userLastSelectBetteBean) return
-        if ((mViewModel.userLastSelectBetteBean?.money ?: 0) > money) return
-        var index = 0
+    private fun backUserLastSelectBette(betteBean: SelectAnnotationBean?, money: Long): Int {
+        var index = -1
+        if (betteBean == mViewModel.userLastSelectBetteBean) return index
+        if ((mViewModel.userLastSelectBetteBean?.money ?: 0) > money) return index
         for (i in 0..mViewModel.noteList.lastIndex) {
             if (mViewModel.noteList[i] == mViewModel.userLastSelectBetteBean) {
                 mViewModel.noteList[i].select = true
@@ -1039,9 +1050,18 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 mViewModel.noteList[i].select = false
             }
         }
-        betteScrollToCenter(index)
+        return index
     }
 
+
+    private fun notifyDataSetChangedSafe(action: () -> Unit) {
+        if (mDatabind.llShowBetList.isComputingLayout) {
+            LogUtils.e("isComputingLayout")
+            mDatabind.llShowBetList.post(action)
+        } else {
+            action.invoke()
+        }
+    }
 
     /**
      * 执行筹码选中向上平移动画
@@ -1443,18 +1463,38 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         updateAnchorView(areaView)
         val betList = mDatabind.llShowBetList.models as List<SelectAnnotationBean>
         val selectedPosition = betList.indexOf(betteBean)
-        betteScrollToCenter(selectedPosition, scrollEnd = { finallyView ->
-            startMoneyAnimation(
-                x,
-                y,
-                speed,
-                areaView,
-                finallyView,
-                betteBean,
-                isFirstAdd,
-                endCallBack
-            )
-        })
+        scrollSelectPosition2Center(false)
+
+        notifyBetteBean()
+        safeBetteFly(selectedPosition) { betteView ->
+            betteView?.let {
+                startMoneyAnimation(
+                    x,
+                    y,
+                    speed,
+                    areaView,
+                    it,
+                    betteBean,
+                    isFirstAdd,
+                    endCallBack
+                )
+            }
+        }
+
+
+    }
+
+    private fun safeBetteFly(position: Int, action: (View?) -> Unit) {
+        var betteView = mDatabind.llShowBetList.layoutManager?.findViewByPosition(position)
+        if (betteView == null) {
+            mDatabind.llShowBetList.post {
+                betteView =
+                    mDatabind.llShowBetList.layoutManager?.findViewByPosition(position)
+                action.invoke(betteView)
+            }
+        } else {
+            action.invoke(betteView)
+        }
     }
 
     private var betteViewGroup: ViewGroup? = null
@@ -1471,88 +1511,126 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     ) {
         //贝塞尔曲线中间过程的点的坐标
         val viewPagerLocation = mDatabind.viewPagerNew.locationOnScreen
-        val mCurrentPosition = FloatArray(2)
+        val jettonViewLocation = jettonView.locationOnScreen
+        val targetLocation = areaView.betteView.ivShowBg.locationOnScreen
 
         // (这个图片就是执行动画的图片，从开始位置出发，经过一个抛物线（贝塞尔曲线))
-        val betImageView = ImageView(requireContext())
-        betImageView.setImageResource(
-            resources.getIdentifier(
-                "icon_select_" + betteBean.moneyPinyin,
-                "drawable",
-                requireContext().packageName
+        val betImageView = ImageView(requireContext()).apply {
+            setImageResource(
+                resources.getIdentifier(
+                    "icon_select_" + betteBean.moneyPinyin,
+                    "drawable",
+                    requireContext().packageName
+                )
             )
-        )
-//        betImageView.setImageDrawable(jettonView.findViewById<ImageView>(R.id.ivShowBg).drawable)
-        val params = ConstraintLayout.LayoutParams(
-            requireContext().dp2px(32),
-            requireContext().dp2px(32)
-        )
-        betImageView.translationZ = 3f
-        betteViewGroup?.addView(betImageView, params)
+            translationZ = 3f
+        }
+        val betteSize = jettonView.measuredWidth
+        val targetSize = 32.dp2px
+        val params = FrameLayout.LayoutParams(betteSize, betteSize)
+        params.topMargin = jettonViewLocation[1] - viewPagerLocation[1] - 5.dp2px
+        params.leftMargin = jettonViewLocation[0] - viewPagerLocation[0] - 2.dp2px
+        betImageView.layoutParams = params
+        betteViewGroup?.addView(betImageView)
 
-        //正式开始计算动画开始/结束的坐标
-        val location = IntArray(2)
-        jettonView.getLocationOnScreen(location)
-        val startX: Float =
-            location[0].toFloat() + jettonView.measuredWidth / 2 - 16.dp2px - 2.dp2px
-        val startY: Float = location[1].toFloat() + jettonView.measuredHeight / 2 - 21.dp2px
-
-        val path = Path()
-        path.moveTo(startX, startY)
-        path.lineTo(x, y)
-//
-        val mPathMeasure = PathMeasure(path, false)
-
-        //★★★属性动画实现（从0到贝塞尔曲线的长度之间进行插值计算，获取中间过程的距离值）
-        val valueAnimator = ValueAnimator.ofFloat(0f, mPathMeasure.length).apply {
-            addUpdateListener { animation ->
-                val value = animation.animatedValue as Float
-                // ★★★★★获取当前点坐标封装到mCurrentPosition
-                // 传入一个距离distance(0<=distance<=getLength())，然后会计算当前距
-                // 离的坐标点和切线，pos会自动填充上坐标，这个方法很重要。
-                mPathMeasure.getPosTan(value, mCurrentPosition, null)
-
-                // 筹码图片偏移
-                betImageView.translationX = mCurrentPosition[0]
-                betImageView.translationY = mCurrentPosition[1] - viewPagerLocation[1]
+        val scale = targetSize.toFloat() / betteSize.toFloat()
+        val offset = (betteSize - targetSize) / 2
+        val animator: ViewPropertyAnimator = betImageView.animate()
+            .scaleX(scale)
+            .scaleY(scale)
+            .translationX((targetLocation[0] - jettonViewLocation[0] - offset + 2.dp2px).toFloat())
+            .translationY((targetLocation[1] - jettonViewLocation[1] - offset + 5.dp2px).toFloat())
+            .setDuration(300)
+        animator.setListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationStart(animation: Animator) {
+                areaView.betteView.translationZ = 4f
+                if (betteFlyAnimList.containsKey(areaView)) {
+                    betteFlyAnimList[areaView]?.add(BetteFlyData(animator, true))
+                } else {
+                    betteFlyAnimList[areaView] = mutableListOf(BetteFlyData(animator, true))
+                }
             }
 
-            addListener(
-                onStart = {
-                    if (areaView.betteView.translationZ == 0f) {
-                        areaView.betteView.translationZ = 4f
-                    }
-                },
-                onEnd = {
-                    //动画结束
-                    endCallBack?.invoke()
-                    // 把移动的图片imageview从父布局里移除
-                    if (betImageView.isAdd()) {
-                        (betImageView.parent as ViewGroup).removeView(betImageView)
-                    }
-
-                    if (betteFlyAnimList.containsKey(areaView)) {
-                        if (!betteFlyAnimList[areaView]!!.last().isRunning) {
-                            areaView.betteView.translationZ = 0f
-                        }
-                    } else {
+            override fun onAnimationEnd(animation: Animator) {
+                //动画结束
+                endCallBack?.invoke()
+                // 把移动的图片imageview从父布局里移除
+                if (betImageView.isAdd()) {
+                    (betImageView.parent as ViewGroup).removeView(betImageView)
+                }
+                betteFlyAnimList[areaView]?.find { it.animator == animator }?.isRunning = false
+                if (betteFlyAnimList.containsKey(areaView)) {
+                    if (!betteFlyAnimList[areaView]!!.last().isRunning) {
                         areaView.betteView.translationZ = 0f
                     }
+                } else {
+                    areaView.betteView.translationZ = 0f
+                }
 
-                    if (!isFirstAdd) {
-                        AnimHelper.doScaleAnimRecovery(areaView.betteView.ivShowBg, duration = 100)
-                    }
-                })
-        }
 
-        valueAnimator.duration = speed
-        valueAnimator.interpolator = LinearInterpolator()
-        if (betteFlyAnimList.containsKey(areaView)) {
-            betteFlyAnimList[areaView]?.add(valueAnimator)
-        } else {
-            betteFlyAnimList[areaView] = mutableListOf(valueAnimator)
-        }
-        valueAnimator.start()
+                if (!isFirstAdd) {
+                    AnimHelper.doScaleAnimRecovery(areaView.betteView.ivShowBg, duration = 100)
+                }
+            }
+        })
+        animator.start()
+
+//        val path = Path()
+//        path.moveTo(startX, startY)
+//        path.lineTo(x, y)
+////
+//        val mPathMeasure = PathMeasure(path, false)
+//
+//        //★★★属性动画实现（从0到贝塞尔曲线的长度之间进行插值计算，获取中间过程的距离值）
+//        val valueAnimator = ValueAnimator.ofFloat(0f, mPathMeasure.length).apply {
+//            addUpdateListener { animation ->
+//                val value = animation.animatedValue as Float
+//                // ★★★★★获取当前点坐标封装到mCurrentPosition
+//                // 传入一个距离distance(0<=distance<=getLength())，然后会计算当前距
+//                // 离的坐标点和切线，pos会自动填充上坐标，这个方法很重要。
+//                mPathMeasure.getPosTan(value, mCurrentPosition, null)
+//
+//                // 筹码图片偏移
+//                betImageView.translationX = mCurrentPosition[0]
+//                betImageView.translationY = mCurrentPosition[1] - viewPagerLocation[1]
+//            }
+//
+//            addListener(
+//                onStart = {
+//                    if (areaView.betteView.translationZ == 0f) {
+//                        areaView.betteView.translationZ = 4f
+//                    }
+//                },
+//                onEnd = {
+//                    //动画结束
+//                    endCallBack?.invoke()
+//                    // 把移动的图片imageview从父布局里移除
+//                    if (betImageView.isAdd()) {
+//                        (betImageView.parent as ViewGroup).removeView(betImageView)
+//                    }
+//
+//                    if (betteFlyAnimList.containsKey(areaView)) {
+//                        if (!betteFlyAnimList[areaView]!!.last().isRunning) {
+//                            areaView.betteView.translationZ = 0f
+//                        }
+//                    } else {
+//                        areaView.betteView.translationZ = 0f
+//                    }
+//
+//                    if (!isFirstAdd) {
+//                        AnimHelper.doScaleAnimRecovery(areaView.betteView.ivShowBg, duration = 100)
+//                    }
+//                })
+//        }
+//
+//        valueAnimator.duration = speed
+//        valueAnimator.interpolator = LinearInterpolator()
+//        if (betteFlyAnimList.containsKey(areaView)) {
+//            betteFlyAnimList[areaView]?.add(valueAnimator)
+//        } else {
+//            betteFlyAnimList[areaView] = mutableListOf(valueAnimator)
+//        }
+//        valueAnimator.start()
     }
 
     private fun updateAnchorView(areaView: GameAreaView) {
@@ -1586,22 +1664,87 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         scrollEnd: ((View) -> Unit)? = null,
         isScrollQuick: Boolean = true
     ) {
-        mDatabind.apply {
-            val layoutManager = llShowBetList.layoutManager as CenterLayoutManager
-            val finallyView = layoutManager.findViewByPosition(position)
-            if (finallyView == null) {
-                llShowBetList.scrollToPosition(position)
-            }
-            llShowBetList.post {
-                layoutManager.smoothScrollToPosition(
-                    llShowBetList,
-                    if (isScrollQuick) null else RecyclerView.State(),
-                    position
-                )
+//        mDatabind.apply {
+//            val layoutManager = llShowBetList.layoutManager as CenterLayoutManager
+//            val finallyView = layoutManager.findViewByPosition(position)
+//            if (finallyView == null) {
+//                llShowBetList.scrollToPosition(position)
+//            }
+//            llShowBetList.post {
+//                layoutManager.smoothScrollToPosition(
+//                    llShowBetList,
+//                    if (isScrollQuick) null else RecyclerView.State(),
+//                    position
+//                )
+//
+//                layoutManager.findViewByPosition(position)?.let {
+//                    scrollEnd?.invoke(it)
+//                }
+//            }
+//        }
+//        scrollSelectPosition2Center(position)
+    }
 
-                layoutManager.findViewByPosition(position)?.let {
-                    scrollEnd?.invoke(it)
+    private fun scrollSelectPosition2Center(isSmooth: Boolean = true) {
+        mDatabind.apply {
+            val selectedIndex = mViewModel.noteList.indexOfFirst { it.select }
+            llShowBetList.scrollToPosition(selectedIndex)
+            llShowBetList.post {
+                selectBetteView?.let { selectedBetteView ->
+                    val chipsLocation = selectedBetteView.locationOnScreen
+                    val targetX: Int = selectedBetteView.getRootView().measuredWidth / 2
+                    val chipsX: Int = chipsLocation[0] + (selectedBetteView.width / 2)
+                    if (chipsX != targetX) {
+                        if (chipsX > targetX && !llShowBetList.canScrollHorizontally(1)) {
+                            return@post
+                        }
+                        if (chipsX < targetX && !llShowBetList.canScrollHorizontally(-1)) {
+                            return@post
+                        }
+                        if (isSmooth) {
+                            llShowBetList.smoothScrollBy(chipsX - targetX, 0)
+                        } else {
+                            llShowBetList.scrollBy(chipsX - targetX, 0)
+                        }
+                    }
                 }
+            }
+//            isNeedSmoothScroll(position) { targetView, smooth ->
+//                targetView?.let { selectedBetteView ->
+//                    val chipsLocation = selectedBetteView.locationOnScreen
+//                    val targetX: Int = selectedBetteView.getRootView().measuredWidth / 2
+//                    val chipsX: Int = chipsLocation[0] + (selectedBetteView.width / 2)
+//                    if (chipsX != targetX) {
+//                        if (chipsX > targetX && !llShowBetList.canScrollHorizontally(1)) {
+//                            return@isNeedSmoothScroll
+//                        }
+//                        if (chipsX < targetX && !llShowBetList.canScrollHorizontally(-1)) {
+//                            return@isNeedSmoothScroll
+//                        }
+//                        if (isSmooth) {
+//                            llShowBetList.smoothScrollBy(chipsX - targetX, 0)
+//                        } else {
+//                            llShowBetList.scrollBy(chipsX - targetX, 0)
+//                        }
+//                    }
+//                }
+//
+//            }
+        }
+    }
+
+    private fun isNeedSmoothScroll(position: Int, action: (View?, Boolean) -> Unit) {
+        mDatabind.apply {
+            val layoutManager = llShowBetList.layoutManager
+            var targetView = layoutManager?.findViewByPosition(position)
+            if (targetView == null) {
+                llShowBetList.scrollToPosition(position)
+                llShowBetList.post {
+                    targetView = layoutManager?.findViewByPosition(position)
+                    action.invoke(targetView, false)
+                }
+            } else {
+                action.invoke(targetView, true)
             }
         }
     }

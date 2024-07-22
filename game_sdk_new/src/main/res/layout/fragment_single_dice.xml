@@ -10,272 +10,277 @@
             type="com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <FrameLayout
         android:id="@+id/flRoot"
         style="@style/viewpager_f3_style">
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="fitXY"
-            app:srcCompat="@drawable/icon_single_bg" />
-
-        <com.cn.game.sdk2.ui.view.game.GameAreaView
-            android:id="@+id/gavDiceOne"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@id/gavDiceSix"
-            app:layout_constraintEnd_toStartOf="@id/gavDiceFour"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center">
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivDiceOne"
-                    android:layout_width="34dp"
-                    android:layout_height="34dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/icon_dice_yi" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/txtDiceOddsOne"
-                    android:text="@{model.multiplierSingStr(model.singleDiceBettingArray[1])}"
-                    style="@style/text_single_dice"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivDiceOne"
-                    tools:text="x[2,3,4]" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            android:layout_height="match_parent">
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/ivSingleOne"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="fitXY"
-                android:visibility="gone"
-                app:srcCompat="@drawable/flash_left_top" />
-        </com.cn.game.sdk2.ui.view.game.GameAreaView>
+                app:srcCompat="@drawable/icon_single_bg" />
 
-        <com.cn.game.sdk2.ui.view.game.GameAreaView
-            android:id="@+id/gavDiceTwo"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="@id/gavDiceOne"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/gavDiceFour"
-            app:layout_constraintTop_toTopOf="parent">
+            <com.cn.game.sdk2.ui.view.game.GameAreaView
+                android:id="@+id/gavDiceOne"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toTopOf="@id/gavDiceSix"
+                app:layout_constraintEnd_toStartOf="@id/gavDiceFour"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center">
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center">
 
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivDiceTwo"
-                    android:layout_width="34dp"
-                    android:layout_height="34dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/icon_dice_er" />
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ivDiceOne"
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/icon_dice_yi" />
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/txtDiceOddsTwo"
-                    android:text="@{model.multiplierSingStr(model.singleDiceBettingArray[2])}"
-                    style="@style/text_single_dice"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivDiceTwo"
-                    tools:text="x2" />
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/txtDiceOddsOne"
+                        style="@style/text_single_dice"
+                        android:text="@{model.multiplierSingStr(model.singleDiceBettingArray[1])}"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/ivDiceOne"
+                        tools:text="x[2,3,4]" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/ivSingleTwo"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="fitXY"
-                android:visibility="gone"
-                app:srcCompat="@drawable/flash_right_top" />
-        </com.cn.game.sdk2.ui.view.game.GameAreaView>
-
-        <com.cn.game.sdk2.ui.view.game.GameAreaView
-            android:id="@+id/gavDiceThree"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/gavDiceFive"
-            app:layout_constraintStart_toEndOf="@id/gavDiceSix"
-            app:layout_constraintTop_toTopOf="@id/gavDiceSix">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center">
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivDiceThree"
-                    android:layout_width="34dp"
-                    android:layout_height="34dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/icon_dice_san" />
+                    android:id="@+id/ivSingleOne"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/flash_left_top" />
+            </com.cn.game.sdk2.ui.view.game.GameAreaView>
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/txtDiceOddsThree"
-                    android:text="@{model.multiplierSingStr(model.singleDiceBettingArray[3])}"
-                    style="@style/text_single_dice"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivDiceThree"
-                    tools:text="x2" />
+            <com.cn.game.sdk2.ui.view.game.GameAreaView
+                android:id="@+id/gavDiceTwo"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="@id/gavDiceOne"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/gavDiceFour"
+                app:layout_constraintTop_toTopOf="parent">
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center">
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/ivSingleThree"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="fitXY"
-                android:visibility="gone"
-                app:srcCompat="@drawable/flash_centre" />
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ivDiceTwo"
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/icon_dice_er" />
 
-        </com.cn.game.sdk2.ui.view.game.GameAreaView>
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/txtDiceOddsTwo"
+                        style="@style/text_single_dice"
+                        android:text="@{model.multiplierSingStr(model.singleDiceBettingArray[2])}"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/ivDiceTwo"
+                        tools:text="x2" />
 
-        <com.cn.game.sdk2.ui.view.game.GameAreaView
-            android:id="@+id/gavDiceFour"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="@id/gavDiceOne"
-            app:layout_constraintEnd_toStartOf="@id/gavDiceTwo"
-            app:layout_constraintStart_toEndOf="@id/gavDiceOne"
-            app:layout_constraintTop_toTopOf="@id/gavDiceOne">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center">
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivDiceFour"
-                    android:layout_width="34dp"
-                    android:layout_height="34dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/icon_dice_si" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/txtDiceOddsFour"
-                    android:text="@{model.multiplierSingStr(model.singleDiceBettingArray[4])}"
-                    style="@style/text_single_dice"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivDiceFour"
-                    tools:text="x2" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/ivSingleFour"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="fitXY"
-                android:visibility="gone"
-                app:srcCompat="@drawable/flash_centre" />
-        </com.cn.game.sdk2.ui.view.game.GameAreaView>
-
-        <com.cn.game.sdk2.ui.view.game.GameAreaView
-            android:id="@+id/gavDiceFive"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/gavDiceThree"
-            app:layout_constraintTop_toTopOf="@id/gavDiceSix">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center">
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivDiceFive"
-                    android:layout_width="34dp"
-                    android:layout_height="34dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/icon_dice_wu" />
+                    android:id="@+id/ivSingleTwo"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/flash_right_top" />
+            </com.cn.game.sdk2.ui.view.game.GameAreaView>
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/txtDiceOddsFive"
-                    android:text="@{model.multiplierSingStr(model.singleDiceBettingArray[5])}"
-                    style="@style/text_single_dice"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivDiceFive"
-                    tools:text="x2" />
+            <com.cn.game.sdk2.ui.view.game.GameAreaView
+                android:id="@+id/gavDiceThree"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/gavDiceFive"
+                app:layout_constraintStart_toEndOf="@id/gavDiceSix"
+                app:layout_constraintTop_toTopOf="@id/gavDiceSix">
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center">
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/ivSingleFive"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="fitXY"
-                android:visibility="gone"
-                app:srcCompat="@drawable/flash_right_be" />
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ivDiceThree"
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/icon_dice_san" />
 
-        </com.cn.game.sdk2.ui.view.game.GameAreaView>
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/txtDiceOddsThree"
+                        style="@style/text_single_dice"
+                        android:text="@{model.multiplierSingStr(model.singleDiceBettingArray[3])}"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/ivDiceThree"
+                        tools:text="x2" />
 
-        <com.cn.game.sdk2.ui.view.game.GameAreaView
-            android:id="@+id/gavDiceSix"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/gavDiceThree"
-            app:layout_constraintTop_toBottomOf="@id/gavDiceOne">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center">
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivDiceSix"
-                    android:layout_width="34dp"
-                    android:layout_height="34dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/icon_dice_liu" />
+                    android:id="@+id/ivSingleThree"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/flash_centre" />
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/txtDiceOddsSix"
-                    android:text="@{model.multiplierSingStr(model.singleDiceBettingArray[6])}"
-                    style="@style/text_single_dice"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivDiceSix"
-                    tools:text="x2" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.cn.game.sdk2.ui.view.game.GameAreaView>
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/ivSingleSix"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="fitXY"
-                android:visibility="gone"
-                app:srcCompat="@drawable/flash_left_be" />
-        </com.cn.game.sdk2.ui.view.game.GameAreaView>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <com.cn.game.sdk2.ui.view.game.GameAreaView
+                android:id="@+id/gavDiceFour"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="@id/gavDiceOne"
+                app:layout_constraintEnd_toStartOf="@id/gavDiceTwo"
+                app:layout_constraintStart_toEndOf="@id/gavDiceOne"
+                app:layout_constraintTop_toTopOf="@id/gavDiceOne">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ivDiceFour"
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/icon_dice_si" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/txtDiceOddsFour"
+                        style="@style/text_single_dice"
+                        android:text="@{model.multiplierSingStr(model.singleDiceBettingArray[4])}"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/ivDiceFour"
+                        tools:text="x2" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivSingleFour"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/flash_centre" />
+            </com.cn.game.sdk2.ui.view.game.GameAreaView>
+
+            <com.cn.game.sdk2.ui.view.game.GameAreaView
+                android:id="@+id/gavDiceFive"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/gavDiceThree"
+                app:layout_constraintTop_toTopOf="@id/gavDiceSix">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ivDiceFive"
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/icon_dice_wu" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/txtDiceOddsFive"
+                        style="@style/text_single_dice"
+                        android:text="@{model.multiplierSingStr(model.singleDiceBettingArray[5])}"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/ivDiceFive"
+                        tools:text="x2" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivSingleFive"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/flash_right_be" />
+
+            </com.cn.game.sdk2.ui.view.game.GameAreaView>
+
+            <com.cn.game.sdk2.ui.view.game.GameAreaView
+                android:id="@+id/gavDiceSix"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/gavDiceThree"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/gavDiceOne">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ivDiceSix"
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/icon_dice_liu" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/txtDiceOddsSix"
+                        style="@style/text_single_dice"
+                        android:text="@{model.multiplierSingStr(model.singleDiceBettingArray[6])}"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/ivDiceSix"
+                        tools:text="x2" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivSingleSix"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/flash_left_be" />
+            </com.cn.game.sdk2.ui.view.game.GameAreaView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
 </layout>
