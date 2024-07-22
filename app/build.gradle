@@ -41,10 +41,6 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
-    buildFeatures {
-        viewBinding true
-        dataBinding true
-    }
 
     applicationVariants.all { variant ->
         variant.outputs.all {
@@ -70,5 +66,9 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     implementation project(path: ':game_sdk_new')
 //    implementation 'com.github.r21nomi:glrippleview:1.0.0'
+
+    outerTestImplementation 'com.squareup.leakcanary:leakcanary-android:2.14'
+    innerTestImplementation 'com.squareup.leakcanary:leakcanary-android:2.14'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.14'
 }
 

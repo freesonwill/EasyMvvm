@@ -245,4 +245,10 @@ object GameApp : IGameForApp {
         socketStatesCallback = callback;
     }
 
+
+    interface BackgroundWatcher{
+        fun OnSwitchToForeground()
+        fun OnSwitchToBackground()
+    }
+
 }

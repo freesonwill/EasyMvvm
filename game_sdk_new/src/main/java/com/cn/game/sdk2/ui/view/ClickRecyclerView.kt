@@ -6,7 +6,7 @@ import android.view.MotionEvent
 import androidx.recyclerview.widget.RecyclerView
 import kotlin.math.abs
 
-class ClickRecyclerView : RecyclerView {
+class ClickRecyclerView : BounceRecycleView {
 
     private var oldX = 0f
     private var oldY = 0f
