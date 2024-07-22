@@ -232,7 +232,7 @@ abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
             val leopardX = leopardLocation[0]
             leopardX + (mDatabind as FragDxdsBinding).leopardView.measuredWidth
         } else {
-            areaX + (if (isLeftStart) 0 else 4.dp2px)
+            areaX + (if (isLeftStart) 0 else if (areaView.id == R.id.big_view) 6.dp2px else 4.dp2px)
         }
         val limitRight = if (areaView.id == R.id.single_view) {
             val leopardLocation = IntArray(2)
