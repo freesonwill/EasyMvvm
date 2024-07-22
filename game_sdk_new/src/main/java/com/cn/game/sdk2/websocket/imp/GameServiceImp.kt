@@ -484,12 +484,12 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
         gameAboutModel.countDown = settle.countDown //当前阶段剩余时间倒计时
         val confirmMoney = bettingStepList.getMoneyByState(BettingStatus.COMMITTED)
 
-        if(BuildConfig.BUILD_TYPE == "debug"){
+        /*if(BuildConfig.BUILD_TYPE == "debug"){
             GameRes.BeginSettle::class.java.getDeclaredField("winScore_").apply {
                 isAccessible = true
                 set(settle,10000)
             }
-        }
+        }*/
 
         if (settle.winScore > 0) {
             //如果中奖 就计算净收入
