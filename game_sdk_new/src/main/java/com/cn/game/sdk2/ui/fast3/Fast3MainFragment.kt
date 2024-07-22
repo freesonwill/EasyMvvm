@@ -1463,36 +1463,36 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         updateAnchorView(areaView)
         val betList = mDatabind.llShowBetList.models as List<SelectAnnotationBean>
         val selectedPosition = betList.indexOf(betteBean)
-        scrollSelectPosition2Center(false)
-
-        notifyBetteBean()
-        safeBetteFly(selectedPosition) { betteView ->
-            betteView?.let {
-                startMoneyAnimation(
-                    x,
-                    y,
-                    speed,
-                    areaView,
-                    it,
-                    betteBean,
-                    isFirstAdd,
-                    endCallBack
-                )
+        scrollSelectPosition2Center(false){
+            notifyBetteBean()
+            safeBetteFly(selectedPosition) { betteView ->
+                betteView?.let {
+                    startMoneyAnimation(
+                        x,
+                        y,
+                        speed,
+                        areaView,
+                        it,
+                        betteBean,
+                        isFirstAdd,
+                        endCallBack
+                    )
+                }
             }
         }
-
 
     }
 
     private fun safeBetteFly(position: Int, action: (View?) -> Unit) {
-        var betteView = mDatabind.llShowBetList.layoutManager?.findViewByPosition(position)
-        if (betteView == null) {
+        if (!isBetteItemVisible(position)) {
             mDatabind.llShowBetList.post {
-                betteView =
+                val betteView =
                     mDatabind.llShowBetList.layoutManager?.findViewByPosition(position)
                 action.invoke(betteView)
             }
         } else {
+            val betteView = mDatabind.llShowBetList.layoutManager?.findViewByPosition(position)
+
             action.invoke(betteView)
         }
     }
@@ -1685,7 +1685,10 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 //        scrollSelectPosition2Center(position)
     }
 
-    private fun scrollSelectPosition2Center(isSmooth: Boolean = true) {
+    private fun scrollSelectPosition2Center(
+        isSmooth: Boolean = true,
+        action: (() -> Unit)? = null
+    ) {
         mDatabind.apply {
             val selectedIndex = mViewModel.noteList.indexOfFirst { it.select }
             llShowBetList.scrollToPosition(selectedIndex)
@@ -1696,17 +1699,21 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     val chipsX: Int = chipsLocation[0] + (selectedBetteView.width / 2)
                     if (chipsX != targetX) {
                         if (chipsX > targetX && !llShowBetList.canScrollHorizontally(1)) {
+                            action?.invoke()
                             return@post
                         }
                         if (chipsX < targetX && !llShowBetList.canScrollHorizontally(-1)) {
+                            action?.invoke()
                             return@post
                         }
                         if (isSmooth) {
                             llShowBetList.smoothScrollBy(chipsX - targetX, 0)
                         } else {
                             llShowBetList.scrollBy(chipsX - targetX, 0)
+
                         }
                     }
+                    action?.invoke()
                 }
             }
 //            isNeedSmoothScroll(position) { targetView, smooth ->
@@ -1746,6 +1753,13 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             } else {
                 action.invoke(targetView, true)
             }
+        }
+    }
+
+    private fun isBetteItemVisible(position: Int): Boolean {
+        mDatabind.apply {
+            val layoutManager = llShowBetList.layoutManager as LinearLayoutManager
+            return position in layoutManager.findFirstCompletelyVisibleItemPosition()..layoutManager.findLastCompletelyVisibleItemPosition()
         }
     }
 }
