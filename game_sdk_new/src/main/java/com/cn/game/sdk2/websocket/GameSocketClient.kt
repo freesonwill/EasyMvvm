@@ -13,6 +13,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.java_websocket.client.WebSocketClient
+import org.java_websocket.exceptions.WebsocketNotConnectedException
 import org.java_websocket.handshake.ServerHandshake
 import java.net.URI
 import java.nio.ByteBuffer
@@ -55,7 +56,6 @@ class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
         timer?.cancel()
         timer = null
         startHeartbeat()
-        gameMassageManager?.refreshScore()
         socketStatesCallback?.onOpen()
     }
 
@@ -94,7 +94,7 @@ class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
 
     override fun onError(ex: Exception?) {
         "onError:${ex?.message}".loge(_tag)
-        reconnectHandle()
+        if (ex is WebsocketNotConnectedException) reconnectHandle()
     }
 
     private fun reconnectHandle() {

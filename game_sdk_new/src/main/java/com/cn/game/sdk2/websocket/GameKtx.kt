@@ -78,11 +78,13 @@ val tokenArray = listOf(
     "37:QyJbGSGR",
     "24:zQQBFVFI",
     "50:OtdAVXdd",
-    "74:4wNIFMMi",
+//    "74:4wNIFMMi",//失效的token
     "51:Ja9L1rG6",
     "35:BIyxvrqa",
-    "69:cAjjzn2s",
+//    "69:cAjjzn2s",//失效的token
 )
+
+val tokenIndex = Random.nextInt(tokenArray.size)
 
 @Suppress("KotlinConstantConditions")
 val token: String
@@ -99,7 +101,7 @@ val token: String
             }
 
             "outerTest" -> {
-                tokenArray[Random.nextInt(tokenArray.size)]
+                tokenArray[tokenIndex]
             }
 
             "release" -> {
@@ -433,10 +435,10 @@ fun List<BettingRecordBean>.verifyAdd(
 ): GameAboutModel.BettingState {
     val currentBettingTotalMoney =
         filter { it.bettingArea.number == record.bettingArea.number }.sumOf { it.money }
+    if ((gameAboutModel.balance.value ?: 0) <= 5000) return GameAboutModel.BettingState.NO_MONEY_50
     val totalMoney = filter { it.state == BettingStatus.TEMP }.sumOf { it.money }
     val moneyEnough = totalMoney <= gameAboutModel.balance.value!!
     if (!moneyEnough) return GameAboutModel.BettingState.NO_MONEY
-    if ((gameAboutModel.balance.value ?: 0) <= 5000) return GameAboutModel.BettingState.NO_MONEY_50
     if (areaBetConfigBean != null) {
         if (currentBettingTotalMoney > areaBetConfigBean.maxLimit) return GameAboutModel.BettingState.OFFSET_MAX
     }
