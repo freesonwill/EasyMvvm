@@ -39,7 +39,11 @@ class Fast3HelpPopup(context: Context, private val offsetY: Int, private val hei
 
     //全屏的高度
     //private var fullHeight: Int = context.run { screenHeight + statusBarHeight + navigationBarHeight }
-    private var fullHeight: Int = mActivity.run { screenHeight +if(mActivity.hasNotchScreen) notchHeight else 0  }
+    private var fullHeight: Int = mActivity.run { screenHeight + when {
+            !hasNotchScreen -> 0 //Asus没有刘海屏，screenHeight就是全高
+            else -> if(hasNavigationBar) navigationBarHeight else 0   //有刘海屏，需要+navigationBarHeight
+        }
+    }
 
     //当前的高度
     private val curHeight: Int get() = mViewBind.content.height
@@ -57,11 +61,10 @@ class Fast3HelpPopup(context: Context, private val offsetY: Int, private val hei
                 " notchHeight:${mActivity.notchHeight}" +
                 ",navigationBarHeight:${mActivity.navigationBarHeight}" +
                 ",actionBarHeight:${mActivity.actionBarHeight}" +
-                ",hasStatusBar:${mActivity.hasNavigationBar}"+
+                ",hasNavigationBar:${mActivity.hasNavigationBar}"+
                 ",hasNotchScreen:${mActivity.hasNotchScreen}"+
                 "")
         mViewBind = FragmentFast3HelpBinding.bind(popupImplView)
-        mViewBind.content.setPadding(0, 0, 0, mNavigationHeight)
         // 设置过度滚动效果
         this.initView()
         mViewBind.root.layoutParams.let { lp ->
