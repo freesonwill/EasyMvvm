@@ -205,6 +205,7 @@ object PromptSoundPlay {
      */
     fun playWinEffect(){
         if(isEnableSound) {
+            if(isPhoneSilent(ModuleInitializer.application))return
             ThreadUtils.mainScope.launch(Dispatchers.Main) {
                 val context = ModuleInitializer.application
                 val soundRaws = arrayOf(
@@ -293,12 +294,11 @@ object PromptSoundPlay {
      * 是否是静音或者震动模式
      */
     fun isPhoneSilent(context: Context): Boolean {
-       /* val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
         return when (audioManager.ringerMode) {
             AudioManager.RINGER_MODE_SILENT,
             AudioManager.RINGER_MODE_VIBRATE -> true // 静音或振动模式
             else -> false // 声音模式
-        }*/
-        return false
+        }
     }
 }
