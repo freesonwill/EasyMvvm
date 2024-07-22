@@ -91,11 +91,11 @@ class Fast3HelpPopup(context: Context, private val offsetY: Int, private val hei
                         9 -> R.layout.item_fast3_help_4
                         10 -> R.layout.item_fast3_help_5
                         else -> {
-                            R.layout.item_fast3_help_3
+                            context.resources.getIdentifier("layout_fast3_help3_${pos-1}", "layout",context.packageName)
                         }
                     }
                 }
-            }.models = listOf(1, 2, 3, 4, 5,6,7,8,9,10,11)
+            }.models = List(11) { it }
 
         mViewBind.indicator.bindRecycleView(
             mViewBind.rvContent,

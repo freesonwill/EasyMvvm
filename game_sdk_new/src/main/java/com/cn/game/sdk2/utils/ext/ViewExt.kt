@@ -142,7 +142,7 @@ object ViewExt {
                 val layoutManager = recyclerView.layoutManager as LinearLayoutManager
                 val firstPos: Int = layoutManager.findFirstVisibleItemPosition()
                 val lastPos: Int = layoutManager.findLastVisibleItemPosition()
-                var position = if (lastPos != recyclerView.bindingAdapter.models!!.size-1) firstPos else lastPos
+                var position = if (lastPos != recyclerView.bindingAdapter.modelCount-1) firstPos else lastPos
                 LogUtils.dTag(TAG,"position-->$firstPos --> $lastPos,${position},dx:$dx,dy:$dy")
                 position = if (position < 2) position else if (position < 9) 2 else position - 6
                 indicator.onPageSelected(position)
