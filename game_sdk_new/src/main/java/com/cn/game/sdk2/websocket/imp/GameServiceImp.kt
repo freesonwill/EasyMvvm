@@ -21,6 +21,7 @@ import com.cn.game.sdk2.websocket.convertBetting
 import com.cn.game.sdk2.websocket.copyFrom
 import com.cn.game.sdk2.websocket.doubleIfMoneyEnough
 import com.cn.game.sdk2.websocket.gameAboutModel
+import com.cn.game.sdk2.websocket.gameMassageManager
 import com.cn.game.sdk2.websocket.getMoneyByState
 import com.cn.game.sdk2.websocket.interfaces.GameService
 import com.cn.game.sdk2.websocket.isBig
@@ -34,6 +35,7 @@ import com.cn.game.sdk2.websocket.nativeLib
 import com.cn.game.sdk2.websocket.returnTemp
 import com.cn.game.sdk2.websocket.setCommittedState
 import com.cn.game.sdk2.websocket.sum
+import com.cn.game.sdk2.websocket.token
 import com.cn.game.sdk2.websocket.verifyDouble
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 import com.xcjh.base_lib2.utils.logd
@@ -188,8 +190,10 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
 
     override fun loginSuccess(afterLoginSuccess: ClientRes.InfoAfterLoginSuccess) {
         isLogin = true
-        "loginSuccess：${afterLoginSuccess}".loge()
+        "loginSuccess：${afterLoginSuccess}".loge(tag)
+        "loginSuccess -> token：$token".loge(tag)
         gameAboutModel.setLoginResult(true)
+        refreshScore()
         //初始化step2:登录成功后坐下
         enterInfo()
         appListener?.onLoginGame(1, "")
@@ -201,7 +205,9 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
         gameAboutModel.loginErrorMessage = errorMessage.desc
         gameAboutModel.setLoginResult(false)
 
-        "loginError：$errorMessage".loge(tag)/*  when (errorMessage.code) {
+        "loginError：$errorMessage".loge(tag)
+        "loginError -> token：$token".loge(tag)
+        /*  when (errorMessage.code) {
               1000 -> {//其他服有正在进行的游戏，应跳转过去
   //          desc = 您当前还在其他游戏中，是否立刻回到该游戏？ // 713
               }
@@ -252,15 +258,16 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
 
         currentConfig = configMap[miniGameId]
         //todo：测试直接使用
-        GameApp.enterLive("1213", listOf(1), "")/*if (isEnterRoom) {
-            GameApp.enterLive("1213", listOf(1), "")
-        }*/
+        GameApp.enterLive("1213", listOf(1), "")
+//        /*if (isEnterRoom) {
+//            GameApp.enterLive("1213", listOf(1), "")
+//        }*/
     }
 
     //进入直播间成功，待进入游戏
     override fun groupInfo(groupInfo: GameRes.GroupInfo) {
         isEnterRoom = true
-        "groupInfo:$groupInfo".loge(tag)
+        "groupInfo".loge(tag)
         appListener?.onEnterLive(1, "")
         gameAboutModel.isEnterGroup(true)
 
@@ -330,7 +337,7 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
 
     override fun enterMiniGameInfo(miniGame: GameRes.EnterMiniGameInfo) {
         miniGameId = miniGame.miniGameId
-        "enterMiniGameInfo:$miniGame".loge(tag)
+        "enterMiniGameInfo:${miniGame.countDown}".loge(tag)
         appListener?.onEnterGame()
     }
 
