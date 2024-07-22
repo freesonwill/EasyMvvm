@@ -936,8 +936,9 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                         data.select = bean == data
                     }
                     mViewModel.userLastSelectBetteBean = bean
-                    notifyItemRangeChanged(0, modelCount)
-                    scrollSelectPosition2Center(true)
+                    notifyDataSetChangedSafe {
+                        scrollSelectPosition2Center(true)
+                    }
 //                    betteScrollToCenter(layoutPosition, isScrollQuick = false)
 
                 }
@@ -1031,11 +1032,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             }
 
             notifyDataSetChangedSafe {
-                llShowBetList.bindingAdapter.notifyItemRangeChanged(
-                    0,
-                    mViewModel.noteList.count()
-                )
-                val selectIndex = mViewModel.noteList.indexOfFirst { it.select }
                 scrollSelectPosition2Center(true)
             }
         }
@@ -1061,6 +1057,10 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
 
     private fun notifyDataSetChangedSafe(action: () -> Unit) {
+        mDatabind.llShowBetList.bindingAdapter.notifyItemRangeChanged(
+            0,
+            mViewModel.noteList.count()
+        )
         if (mDatabind.llShowBetList.isComputingLayout) {
             LogUtils.e("isComputingLayout")
             mDatabind.llShowBetList.post(action)
@@ -1713,7 +1713,9 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     ) {
         mDatabind.apply {
             val selectedIndex = mViewModel.noteList.indexOfFirst { it.select }
-            llShowBetList.scrollToPosition(selectedIndex)
+            if (!isBetteItemVisible(selectedIndex)) {
+                llShowBetList.scrollToPosition(selectedIndex)
+            }
             llShowBetList.post {
                 selectBetteView?.let { selectedBetteView ->
                     val chipsLocation = selectedBetteView.locationOnScreen
@@ -1729,9 +1731,14 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                             return@post
                         }
                         if (isSmooth) {
-                            llShowBetList.smoothScrollBy(chipsX - targetX, 0)
+                            (llShowBetList.layoutManager as CenterLayoutManager).smoothScrollToPosition(
+                                llShowBetList,
+                                null,
+                                selectedIndex
+                            )
+//                            llShowBetList.smoothScrollBy(chipsX - targetX, 0)
                         } else {
-                            llShowBetList.scrollBy(chipsX - targetX, 0)
+                            llShowBetList.scrollBy(chipsX - targetX - 1.dp2px, 0)
 
                         }
                     }
@@ -1759,22 +1766,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 //                }
 //
 //            }
-        }
-    }
-
-    private fun isNeedSmoothScroll(position: Int, action: (View?, Boolean) -> Unit) {
-        mDatabind.apply {
-            val layoutManager = llShowBetList.layoutManager
-            var targetView = layoutManager?.findViewByPosition(position)
-            if (targetView == null) {
-                llShowBetList.scrollToPosition(position)
-                llShowBetList.post {
-                    targetView = layoutManager?.findViewByPosition(position)
-                    action.invoke(targetView, false)
-                }
-            } else {
-                action.invoke(targetView, true)
-            }
         }
     }
 
