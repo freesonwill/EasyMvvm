@@ -2,10 +2,7 @@ package com.cn.game.sdk2.ui.view
 
 import android.animation.ValueAnimator
 import android.content.Context
-import android.util.Log
-import android.widget.EdgeEffect
 import androidx.core.animation.addListener
-import androidx.recyclerview.widget.RecyclerView
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.databinding.FragmentFast3HelpBinding
 import com.cn.game.sdk2.ui.fast3.Fast3HelpFragment.Companion.TAG
@@ -20,11 +17,9 @@ import com.drake.brv.utils.setup
 import com.gyf.immersionbar.ktx.hasNavigationBar
 import com.gyf.immersionbar.ktx.navigationBarHeight
 import com.gyf.immersionbar.ktx.statusBarHeight
-import com.lxj.xpopup.core.BottomPopupView
 import com.xcjh.base_lib2.utils.LogUtils
 import com.xcjh.base_lib2.utils.view.clickNoRepeat
 import com.xcjh.base_lib2.utils.view.getStringArray
-import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 
 
 /**

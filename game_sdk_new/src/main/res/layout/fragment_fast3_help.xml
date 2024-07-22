@@ -58,7 +58,7 @@
             app:srcCompat="@drawable/ic_expand" />
     </LinearLayout>
 
-    <com.cn.game.sdk2.ui.view.CustomRecycleView
+    <com.cn.game.sdk2.ui.view.BounceRecycleView
         android:id="@+id/rvContent"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -67,7 +67,6 @@
         android:orientation="vertical"
         android:paddingTop="5dp"
         android:scrollbars="vertical"
-        android:overScrollMode="never"
         android:scrollbarThumbVertical="@drawable/scrollbar_thumb"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@id/indicator"

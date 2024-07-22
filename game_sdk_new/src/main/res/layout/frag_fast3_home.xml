@@ -69,7 +69,6 @@
                     android:id="@+id/rvHomeHistory"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:overScrollMode="never"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/rlClickHide"
                     app:layout_constraintStart_toStartOf="parent"
@@ -400,7 +399,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent">
 
-                        <androidx.recyclerview.widget.RecyclerView
+                        <com.cn.game.sdk2.ui.view.BounceRecycleView
                             android:id="@+id/llShowBetList"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -408,7 +407,6 @@
                             android:clipToPadding="false"
                             android:orientation="horizontal"
                             android:paddingTop="5dp"
-                            android:overScrollMode="never"
                             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                             tools:itemCount="11"
                             tools:listitem="@layout/item_annotation_list" />
