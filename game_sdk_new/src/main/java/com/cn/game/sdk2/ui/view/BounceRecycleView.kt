@@ -15,6 +15,7 @@ open class BounceRecycleView @JvmOverloads constructor(
     init {
         edgeEffectFactory = BounceEdgeEffectFactory()
     }
+    /*
     private var mThumbHeight: Float = UNDEFINED
 
     // Where the RecyclerView cuts off the views when the RecyclerView is scrolled to top.
@@ -72,6 +73,6 @@ open class BounceRecycleView @JvmOverloads constructor(
             (height - view.top).toFloat() / view.height.toFloat()
         }
         return lastVisibleItemPosition + fractionOfView
-    }
+    }*/
 
 }
