@@ -13,7 +13,7 @@
     <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="match_parent"
         android:layout_height="292dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="10dp"
         app:srcCompat="@drawable/help_3_1" />
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -32,12 +32,12 @@
         android:layout_width="match_parent"
         android:layout_height="268dp"
         android:layout_marginTop="24dp"
-        app:srcCompat="@drawable/help_3_4" />
+        app:srcCompat="@drawable/help_3_5" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="match_parent"
         android:layout_height="268dp"
-        app:srcCompat="@drawable/help_3_5" />
+        app:srcCompat="@drawable/help_3_4" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="match_parent"

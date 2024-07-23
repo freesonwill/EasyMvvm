@@ -8,18 +8,16 @@ import android.media.SoundPool
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.util.SparseArray
-import android.util.SparseIntArray
-import androidx.core.util.set
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.utils.ThreadUtils
-import com.cn.game.sdk2.utils.ext.CommonExt.every
 import com.cn.game.sdk2.websocket.isEnableSound
 import com.xcjh.base_lib2.ModuleInitializer
 import com.xcjh.base_lib2.utils.LogUtils
 import com.xcjh.base_lib2.utils.TAG
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import java.io.IOException
 import kotlin.coroutines.resume
@@ -86,21 +84,7 @@ object PromptSoundPlay {
      * 金币提示音~~可以一直提示
      */
     fun playAudio(context: Context = ModuleInitializer.application) {
-        if(!isPhoneSilent(context)){
-            val newMediaPlayer = MediaPlayer()
-            try {
-                newMediaPlayer.setDataSource(context, getResourceUri(context, R.raw.jinbi_ying))
-                newMediaPlayer.setOnCompletionListener(OnCompletionListener { mp ->
-                    mp.release() // 在播放完成后释放MediaPlayer
-                })
-                newMediaPlayer.setOnPreparedListener { mp -> mp.start() }
-                newMediaPlayer.prepareAsync()
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-
-
-        }
+        playSound(R.raw.jinbi_ying)
     }
 
     /**
@@ -128,19 +112,7 @@ object PromptSoundPlay {
      * 还有五秒快要结束的时候
      */
     fun countdownGameTip(context: Context) {
-        if(!isPhoneSilent(context)){
-            val endMediaPlayer = MediaPlayer()
-            try {
-                endMediaPlayer.setDataSource(context, getResourceUri(context, R.raw.sx_common_countdown))
-                endMediaPlayer.setOnCompletionListener(OnCompletionListener { mp ->
-                    mp.release() // 在播放完成后释放MediaPlayer
-                })
-                endMediaPlayer.setOnPreparedListener { mp -> mp.start() }
-                endMediaPlayer.prepareAsync()
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-        }
+        playSound(R.raw.sx_common_countdown)
     }
 
     /**
@@ -204,49 +176,68 @@ object PromptSoundPlay {
      * 播放胜利音效
      */
     fun playWinEffect(){
-        if(isEnableSound) {
-            if(isPhoneSilent(ModuleInitializer.application))return
-            ThreadUtils.mainScope.launch(Dispatchers.Main) {
-                val context = ModuleInitializer.application
-                val soundRaws = arrayOf(
-                    R.raw.sx_common_win_bet,
-                    R.raw.sx_common_win_game,
-                )
-                val soundIds = soundRaws.map { soundPoolIds[it] }.toMutableList()
-                val (volume, maxVolume, percent) = systemVolume
-                if(soundIds.every { it != null }) {
-                    soundIds.forEach {
-                        soundPool.stop(it)
-                        soundPool.play(it, percent, percent, 0, 0, 1f)
-                    }
-                    return@launch
-                }
-                //Todo load sounds to a single suspend method
-                suspendCoroutine {continuation->
-                    var count1 = 0;var count2 = 0;
-                    soundIds.forEachIndexed { index,item->
-                        if(item == null) {
-                            soundIds[index] = soundRaws[index].let {
-                                val id = soundPool.load(context, it, 1)
-                                soundPoolIds[it] = id
-                                count1++
-                                id
-                            }
-                        }
-                    }
-                    LogUtils.d(TAG, "playWinEffect:$soundIds,$percent,$volume,$maxVolume")
-                    soundPool.setOnLoadCompleteListener { soundPool, sampleId, status ->
-                        count2++
-                        LogUtils.d(TAG, "playWinEffect:setOnLoadCompleteListener,$sampleId,$status,count1:$count1,count2:$count2")
-                        if(count2 == count1) continuation.resume(1)
-                    }
-                }
-                //play sounds
-                soundIds.forEach {
-                    soundPool.play(it, percent, percent, 0, 0, 1f)
+        playSound(R.raw.sx_common_win_bet,R.raw.sx_common_win_game)
+    }
+
+    /**
+     * 同时播放音效：soundIds
+     */
+    private fun playSound(vararg soundRawIds:Int){
+        if(!isEnableSound) {
+            LogUtils.e("isEnableSound false, ignore playSound:${soundRawIds}")
+            return
+        }
+        if(isPhoneSilent(ModuleInitializer.application)) {
+            LogUtils.e("isPhoneSilent true, ignore playSound:${soundRawIds}")
+            return
+        }
+        ThreadUtils.mainScope.launch(Dispatchers.Main) {
+            val (volume, maxVolume, percent) = systemVolume
+            //load sounds
+            val soundIds = loadSound(soundRawIds.toList())
+            //play sounds
+            playSoundOnly(soundIds,percent, percent, 0, 0, 1f)
+        }
+    }
+
+    /**
+     * 同时播放音效：soundIds（仅仅播放）
+     */
+    private suspend fun playSoundOnly(soundIds:List<Int>, leftVolume:Float, rightVolume:Float, priority:Int, loop:Int, rate:Float){
+        coroutineScope {
+            soundIds.forEach {
+                async {
+                    soundPool.stop(it)
+                    soundPool.play(it, leftVolume, rightVolume, priority, loop, rate)
                 }
             }
         }
+    }
+
+    /**
+     * 加载音频
+     */
+    private suspend fun loadSound(rawIds:List<Int>):List<Int>{
+        val rst = suspendCoroutine { continuation->
+            var count1 = 0;var count2 = 0
+            val context = ModuleInitializer.application
+            LogUtils.dTag(TAG, "loadSound:$rawIds,rawIds.size:${rawIds.size}")
+            rawIds.forEachIndexed { _, item->
+                if(soundPoolIds[item] != null) return@forEachIndexed //相当于continue
+                val id = soundPool.load(context, item, 1)
+                soundPoolIds[item] = id
+                count1++
+            }
+            LogUtils.dTag(TAG, "loadSound:$rawIds,count:$count1")
+            //no meed load
+            if(count1 == 0) return@suspendCoroutine continuation.resume(rawIds.map { soundPoolIds[it]})
+            soundPool.setOnLoadCompleteListener { soundPool, sampleId, status ->
+                count2++
+                LogUtils.dTag(TAG, "loadSound:complete,sampleId:$sampleId,status:$status,count1:$count1,count2:$count2")
+                if(count2 == count1) continuation.resume(rawIds.map { soundPoolIds[it]})
+            }
+        }
+        return rst
     }
 
     // 获取资源文件的URI
