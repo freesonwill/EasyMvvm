@@ -6,7 +6,7 @@ import androidx.dynamicanimation.animation.SpringAnimation
 import androidx.dynamicanimation.animation.SpringForce
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.Orientation
+import com.xcjh.base_lib2.utils.LogUtils
 
 /** The magnitude of translation distance while the list is over-scrolled. */
 private const val OVERSCROLL_TRANSLATION_MAGNITUDE = 0.2f
@@ -34,11 +34,13 @@ class BounceEdgeEffectFactory : RecyclerView.EdgeEffectFactory() {
 
             override fun onPull(deltaDistance: Float) {
                 super.onPull(deltaDistance)
+                //LogUtils.d(onPull~~~~~~~$deltaDistance")
                 handlePull(deltaDistance)
             }
 
             override fun onPull(deltaDistance: Float, displacement: Float) {
                 super.onPull(deltaDistance, displacement)
+                //LogUtils.d("onPull~~~~~~~$deltaDistance,$displacement")
                 handlePull(deltaDistance)
             }
 
@@ -63,6 +65,7 @@ class BounceEdgeEffectFactory : RecyclerView.EdgeEffectFactory() {
 
             override fun onRelease() {
                 super.onRelease()
+                //LogUtils.d("onRelease~~~~~~~")
                 // The finger is lifted. Start the animation to bring translation back to the resting state.
                 if(orientation == LinearLayoutManager.VERTICAL) {
                     if (recyclerView.translationY != 0f) {
@@ -77,7 +80,7 @@ class BounceEdgeEffectFactory : RecyclerView.EdgeEffectFactory() {
 
             override fun onAbsorb(velocity: Int) {
                 super.onAbsorb(velocity)
-
+                //LogUtils.d("onAbsorb~~~~~~~$velocity")
                 // The list has reached the edge on fling.
                 if(orientation == LinearLayoutManager.VERTICAL) {
                     val sign = if (direction == DIRECTION_BOTTOM) -1 else 1
@@ -109,9 +112,9 @@ class BounceEdgeEffectFactory : RecyclerView.EdgeEffectFactory() {
                     SpringAnimation(recyclerView, SpringAnimation.TRANSLATION_Y)
                 else
                     SpringAnimation(recyclerView, SpringAnimation.TRANSLATION_X))
-                .setSpring(SpringForce()
+                    .setSpring(SpringForce()
                     .setFinalPosition(0f)
-                    .setDampingRatio(1f)
+                    .setDampingRatio(0.8f)
                     .setStiffness(SpringForce.STIFFNESS_LOW)
                 )
 

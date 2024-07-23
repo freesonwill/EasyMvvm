@@ -72,6 +72,7 @@
         app:layout_constraintBottom_toTopOf="@id/indicator"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvTitle"
+        android:overScrollMode="ifContentScrolls"
         tools:itemCount="11"
         tools:listitem="@layout/item_fast3_help_1" />
 

@@ -112,7 +112,7 @@ fun createBitmapSafely(width: Int, height: Int, config: Bitmap.Config, retryCoun
  * @param action 执行方法
  */
 var lastClickTime = 0L
-fun View.clickNoRepeat(playSound:Boolean= false,interval: Long = 500, action: (view: View) -> Unit) {
+fun View.clickNoRepeat(playSound:Boolean= true,interval: Long = 500, action: (view: View) -> Unit) {
     setOnClickListener {
         val currentTime = System.currentTimeMillis()
         if (lastClickTime != 0L && (currentTime - lastClickTime < interval)) {

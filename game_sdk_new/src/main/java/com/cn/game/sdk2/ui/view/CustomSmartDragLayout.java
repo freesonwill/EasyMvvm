@@ -8,13 +8,19 @@ import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.OverScroller;
+
+import androidx.annotation.NonNull;
 import androidx.core.view.NestedScrollingParent;
 import androidx.core.view.ViewCompat;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.lxj.xpopup.enums.LayoutStatus;
 import com.lxj.xpopup.util.XPopupUtils;
 import com.lxj.xpopup.widget.SmartDragLayout;
+import com.xcjh.base_lib2.utils.LogUtils;
 
 public class CustomSmartDragLayout extends LinearLayout implements NestedScrollingParent {
     private View child;
@@ -271,8 +277,22 @@ public class CustomSmartDragLayout extends LinearLayout implements NestedScrolli
         ViewCompat.postInvalidateOnAnimation(this);
     }
 
-    public boolean onStartNestedScroll(View child, View target, int nestedScrollAxes) {
-        return nestedScrollAxes == 2 && this.enableDrag;
+    public boolean onStartNestedScroll(@NonNull View child, @NonNull View target, int nestedScrollAxes) {
+        RecyclerView rv = null;
+        if(this.child instanceof ViewGroup) {
+            for (int i = 0; i < ((ViewGroup) this.child).getChildCount(); i++) {
+                View v = ((ViewGroup) this.child).getChildAt(i);
+                if(v instanceof RecyclerView){
+                    rv = (RecyclerView) v;
+                    break;
+                }
+            }
+        }
+        if(rv != null) {
+            //滚到底部不截获，否则没有overScroll效果
+            if(!rv.canScrollVertically(1)) return false;
+        }
+        return nestedScrollAxes == ViewCompat.SCROLL_AXIS_VERTICAL && this.enableDrag;
     }
 
     public void onNestedScrollAccepted(View child, View target, int nestedScrollAxes) {

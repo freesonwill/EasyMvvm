@@ -100,7 +100,7 @@ class MoneyOKView @JvmOverloads constructor(
         binding?.apply {
             offLayout.setOnTouchListener { v, event ->
                 setTouchEvent(event, ivOff) {
-                    PromptSoundPlay.btnPlayMedia(context)
+                    PromptSoundPlay.btnPlayMedia()
                     onMoneyOKClickListener?.onDelete()
                 }
                 true
@@ -108,7 +108,7 @@ class MoneyOKView @JvmOverloads constructor(
 
             offLeftLayout.setOnTouchListener { v, event ->
                 setTouchEvent(event, ivOff) {
-                    PromptSoundPlay.btnPlayMedia(context)
+                    PromptSoundPlay.btnPlayMedia()
                     onMoneyOKClickListener?.onDelete()
                 }
                 true
@@ -117,7 +117,7 @@ class MoneyOKView @JvmOverloads constructor(
 
             okLayout.setOnTouchListener { v, event ->
                 setTouchEvent(event, ivOk) {
-                    PromptSoundPlay.btnPlayMedia(context)
+                    PromptSoundPlay.btnPlayMedia()
                     onMoneyOKClickListener?.onConfirm()
                 }
                 true
@@ -125,7 +125,7 @@ class MoneyOKView @JvmOverloads constructor(
 
             okRightLayout.setOnTouchListener { v, event ->
                 setTouchEvent(event, ivOk) {
-                    PromptSoundPlay.btnPlayMedia(context)
+                    PromptSoundPlay.btnPlayMedia()
                     onMoneyOKClickListener?.onConfirm()
                 }
                 true

@@ -7,7 +7,6 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
-import android.graphics.Point
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -17,7 +16,6 @@ import android.view.ViewPropertyAnimator
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.addListener
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
@@ -28,7 +26,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.data.BetteFlyData
 import com.cn.game.sdk2.data.EventKey
@@ -457,7 +454,12 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 endCallBack?.invoke()
                 return
             }
-            AnimHelper.doNumberAnim(mDatabind.tvAnimWin2, 0, (winMoney).toLong(), 1000)
+            var duration = when (winMoney) {
+                in 0 .. 1000 -> 500L
+                in 1000 .. 100000 -> 600L
+                else -> 700L
+            }
+            AnimHelper.doNumberAnim(mDatabind.tvAnimWin2, 0, (winMoney).toLong(), duration)
             showLottie(endCallBack)
         }
     }
@@ -567,7 +569,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                         mDatabind.txtCurrentMoney,
                         startNum = start,
                         endNumber = end,
-                        duration1 = 1000
+                        duration1 = 600
                         //duration1 = mDatabind.lottieAnimView.duration
                     )
                 }, 600)
@@ -587,7 +589,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             //Log.d(TAG,"countdown: seconds:$seconds")
             if (mViewModel.gameState == GameAboutModel.Stage.NEW && seconds in 1..5) {
                 if (gameAboutModel.fast3MainFloatVisible.value == false)
-                    PromptSoundPlay.countdownGameTip(requireContext())
+                    PromptSoundPlay.countdownGameTip()
             }
             if (seconds == 0) {
                 if (mViewModel.gameState == GameAboutModel.Stage.NEW) {
@@ -930,7 +932,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     if (bean.select || bean.money > (gameAboutModel.tempBalance.value
                             ?: 0)
                     ) return@onClick
-                    PromptSoundPlay.btnPlayMedia(requireContext())
+                    PromptSoundPlay.btnPlayMedia()
                     val models: List<SelectAnnotationBean> = models as List<SelectAnnotationBean>
                     for (data in models) {
                         data.select = bean == data
@@ -1171,18 +1173,18 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             rvHomeHistory.setOnRecycleClickListener(object :
                 ClickRecyclerView.RecyclerClickListener {
                 override fun onRecyclerClick() {
-                    PromptSoundPlay.btnPlayMedia(requireContext())
+                    PromptSoundPlay.btnPlayMedia()
                     resultAnimation(!mViewModel.isShowResult)
                 }
             })
 
             flRvHistory.setOnClickListener {
-                PromptSoundPlay.btnPlayMedia(requireContext())
+                PromptSoundPlay.btnPlayMedia()
                 resultAnimation(!mViewModel.isShowResult)
             }
 
 //            bottomHistoryLayout.setOnClickListener {
-//                PromptSoundPlay.btnPlayMedia(requireContext())
+//                PromptSoundPlay.btnPlayMedia()
 //                resultAnimation(!mViewModel.isShowResult)
             /*val v = (gameAboutModel.balance as MutableLiveData).value
             if(v == null){
@@ -1194,7 +1196,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
             //点击更多弹出框
             llHomeMore.setOnClickListener {
-                PromptSoundPlay.btnPlayMedia(requireContext())
+                PromptSoundPlay.btnPlayMedia()
                 if (homeMorePop == null) {
                     val bubbleAttach = CustomBubbleAttachPopup(requireContext())
                     bubbleAttach.customBubbleAttachListener =
@@ -1368,7 +1370,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     || gameAboutModel.currentAgainDoubleState.value == GameAboutModel.AgainDoubleState.DOUBLE_CAN_NOT
                 ) {
                     if (gameAboutModel.currentAgainDoubleState.value == GameAboutModel.AgainDoubleState.DOUBLE) {
-                        PromptSoundPlay.playAudio()
+                        PromptSoundPlay.playGoldCoinAudio()
                         AnimHelper.doScaleAnimRecovery(ivMultiple2)
                     }
                     gameMassageManager
@@ -1412,7 +1414,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 if (gameAboutModel.currentAgainDoubleState.value != GameAboutModel.AgainDoubleState.AGAIN) {
                     return@setOnClickListener
                 }
-                PromptSoundPlay.playAudio()
+                PromptSoundPlay.playGoldCoinAudio()
                 val map = gameMassageManager?.againBetting()
                 map.toString().loge("again3")
                 if (!map.isNullOrEmpty()) {
@@ -1477,7 +1479,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         betteBean: SelectAnnotationBean,
         endCallBack: (() -> Unit)? = null
     ) {
-        PromptSoundPlay.playAudio(requireContext())
+        PromptSoundPlay.playGoldCoinAudio()
         if (anchorMoneyView != null && areaView.moneyView != anchorMoneyView) {
             hiddenAnchorTop()
         }
