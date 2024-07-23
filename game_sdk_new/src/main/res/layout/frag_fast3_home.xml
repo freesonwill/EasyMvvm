@@ -475,7 +475,7 @@
                     android:clipToPadding="false"
                     android:paddingStart="0dp"
                     android:paddingEnd="0dp"
-                    android:overScrollMode="never"
+                    android:overScrollMode="ifContentScrolls"
                     app:layout_constraintBottom_toTopOf="@id/betteLayout" />
 
                 <androidx.appcompat.widget.AppCompatImageView

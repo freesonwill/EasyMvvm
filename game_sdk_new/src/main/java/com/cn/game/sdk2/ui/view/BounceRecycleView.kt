@@ -2,9 +2,7 @@ package com.cn.game.sdk2.ui.view
 
 import android.content.Context
 import android.util.AttributeSet
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.xcjh.base_lib2.utils.LogUtils
 
 
 open class BounceRecycleView @JvmOverloads constructor(
@@ -13,7 +11,7 @@ open class BounceRecycleView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : RecyclerView(context, attrs, defStyleAttr) {
     init {
-        edgeEffectFactory = BounceEdgeEffectFactory()
+        edgeEffectFactory = BounceRVEdgeEffectFactory()
     }
     /*
     private var mThumbHeight: Float = UNDEFINED

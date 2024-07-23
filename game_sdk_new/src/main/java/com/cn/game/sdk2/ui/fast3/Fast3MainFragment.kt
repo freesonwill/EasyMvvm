@@ -89,6 +89,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 
 
 @SuppressLint("SetTextI18n")
@@ -116,6 +117,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     @SuppressLint("ClickableViewAccessibility")
     override fun initView(savedInstanceState: Bundle?) {
         mDatabind.model = mViewModel
+        OverScrollDecoratorHelper.setUpOverScroll(mDatabind.viewPagerNew);
         mDatabind.bottomLayout.setOnTouchListener { _, _ -> true }
         mDatabind.resultClickView.setOnClickListener { } //屏蔽底部recycler点击
         mViewModel.navigationBarHeight.value = requireContext().navigationBarHeight

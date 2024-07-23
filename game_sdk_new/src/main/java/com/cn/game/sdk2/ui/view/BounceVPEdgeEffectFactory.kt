@@ -1,4 +1,5 @@
-package com.cn.game.sdk2.ui.view
+package com.cn.game.sdk2.ui.view;
+
 
 import android.graphics.Canvas
 import android.widget.EdgeEffect
@@ -6,7 +7,6 @@ import androidx.dynamicanimation.animation.SpringAnimation
 import androidx.dynamicanimation.animation.SpringForce
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.xcjh.base_lib2.utils.LogUtils
 
 /** The magnitude of translation distance while the list is over-scrolled. */
 private const val OVERSCROLL_TRANSLATION_MAGNITUDE = 0.2f
@@ -17,7 +17,7 @@ private const val FLING_TRANSLATION_MAGNITUDE = 0.5f
 /**
  * Replace edge effect by a bounce
  */
-class BounceEdgeEffectFactory : RecyclerView.EdgeEffectFactory() {
+class BounceVPEdgeEffectFactory : RecyclerView.EdgeEffectFactory() {
 
     override fun createEdgeEffect(recyclerView: RecyclerView, direction: Int): EdgeEffect {
 
@@ -113,10 +113,10 @@ class BounceEdgeEffectFactory : RecyclerView.EdgeEffectFactory() {
                 else
                     SpringAnimation(recyclerView, SpringAnimation.TRANSLATION_X))
                     .setSpring(SpringForce()
-                    .setFinalPosition(0f)
-                    .setDampingRatio(0.8f)
-                    .setStiffness(SpringForce.STIFFNESS_LOW)
-                )
+                        .setFinalPosition(0f)
+                        .setDampingRatio(0.8f)
+                        .setStiffness(SpringForce.STIFFNESS_LOW)
+                    )
 
         }
     }
