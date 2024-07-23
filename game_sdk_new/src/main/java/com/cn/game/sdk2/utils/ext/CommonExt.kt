@@ -92,6 +92,19 @@ object CommonExt {
         return true
     }
 
+    fun IntArray.every(predicate: (Int) -> Boolean):Boolean{
+        val it = iterator()
+        while(it.hasNext()){
+            val item = it.next()
+            if(!predicate(item)) return false
+        }
+        return true
+    }
+
+    fun IntArray.some(predicate: (Int) -> Boolean):Boolean{
+        return find(predicate) != null
+    }
+
     fun Any.formatRealMoney(): String {
         val b1 = BigDecimal(this.toString())
         val b2 = BigDecimal("100")

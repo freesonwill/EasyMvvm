@@ -319,6 +319,12 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 mDatabind.ivHomeBgCenter.isVisible = false
                 mDatabind.resultBgTop.isVisible = false
             }, duration = if (mViewModel.isCountDownStart) 250 else 0)
+
+            //暂时解决筹码栏被隐藏问题
+            delay(500)
+            if (mViewModel.gameState == GameAboutModel.Stage.NEW && !mDatabind.betteLayout.isVisible) {
+                resetBetteRecyclerVisible()
+            }
         }
     }
 
@@ -930,8 +936,9 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                         data.select = bean == data
                     }
                     mViewModel.userLastSelectBetteBean = bean
-                    notifyItemRangeChanged(0, modelCount)
-                    scrollSelectPosition2Center(true)
+                    notifyDataSetChangedSafe {
+                        scrollSelectPosition2Center(true)
+                    }
 //                    betteScrollToCenter(layoutPosition, isScrollQuick = false)
 
                 }
@@ -1025,11 +1032,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             }
 
             notifyDataSetChangedSafe {
-                llShowBetList.bindingAdapter.notifyItemRangeChanged(
-                    0,
-                    mViewModel.noteList.count()
-                )
-                val selectIndex = mViewModel.noteList.indexOfFirst { it.select }
                 scrollSelectPosition2Center(true)
             }
         }
@@ -1055,6 +1057,10 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
 
     private fun notifyDataSetChangedSafe(action: () -> Unit) {
+        mDatabind.llShowBetList.bindingAdapter.notifyItemRangeChanged(
+            0,
+            mViewModel.noteList.count()
+        )
         if (mDatabind.llShowBetList.isComputingLayout) {
             LogUtils.e("isComputingLayout")
             mDatabind.llShowBetList.post(action)
@@ -1107,6 +1113,22 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 playTogether(listOf(recyclerAnim, againAnim))
                 start()
             }
+        }
+    }
+
+    private fun resetBetteRecyclerVisible() {
+        mDatabind.apply {
+            betteLayout.isVisible = true
+            mDatabind.betteAgainLayout.isVisible = true
+
+            //开奖结果x
+            rlShowResult.isVisible = false
+            ivHomeBg.isVisible = false
+            ivHomeBgCenter.isVisible = false
+            resultBgTop.isVisible = false
+
+            llShowBetList.translationY = 0f
+            betteAgainLayout.translationX = 0f
         }
     }
 
@@ -1252,7 +1274,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                                                             tvOnline.text =
                                                                                 bean.onlineA
                                                                             if (bean.name == "快三") {
-                                                                                root.clickNoRepeat {
+                                                                                root.clickNoRepeat(true) {
                                                                                     backMainGame()
                                                                                 }
                                                                             }
@@ -1279,7 +1301,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                                     )
                                                     binding.viewPagerNew.offscreenPageLimit =
                                                         mFragList.size
-                                                    binding.close.clickNoRepeat {
+                                                    binding.close.clickNoRepeat(true) {
                                                         backMainGame()
                                                     }
                                                 }
@@ -1463,7 +1485,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         updateAnchorView(areaView)
         val betList = mDatabind.llShowBetList.models as List<SelectAnnotationBean>
         val selectedPosition = betList.indexOf(betteBean)
-        scrollSelectPosition2Center(false){
+        scrollSelectPosition2Center(false) {
             notifyBetteBean()
             safeBetteFly(selectedPosition) { betteView ->
                 betteView?.let {
@@ -1691,7 +1713,9 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     ) {
         mDatabind.apply {
             val selectedIndex = mViewModel.noteList.indexOfFirst { it.select }
-            llShowBetList.scrollToPosition(selectedIndex)
+            if (!isBetteItemVisible(selectedIndex)) {
+                llShowBetList.scrollToPosition(selectedIndex)
+            }
             llShowBetList.post {
                 selectBetteView?.let { selectedBetteView ->
                     val chipsLocation = selectedBetteView.locationOnScreen
@@ -1707,9 +1731,14 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                             return@post
                         }
                         if (isSmooth) {
-                            llShowBetList.smoothScrollBy(chipsX - targetX, 0)
+                            (llShowBetList.layoutManager as CenterLayoutManager).smoothScrollToPosition(
+                                llShowBetList,
+                                null,
+                                selectedIndex
+                            )
+//                            llShowBetList.smoothScrollBy(chipsX - targetX, 0)
                         } else {
-                            llShowBetList.scrollBy(chipsX - targetX, 0)
+                            llShowBetList.scrollBy(chipsX - targetX - 1.dp2px, 0)
 
                         }
                     }
@@ -1737,22 +1766,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 //                }
 //
 //            }
-        }
-    }
-
-    private fun isNeedSmoothScroll(position: Int, action: (View?, Boolean) -> Unit) {
-        mDatabind.apply {
-            val layoutManager = llShowBetList.layoutManager
-            var targetView = layoutManager?.findViewByPosition(position)
-            if (targetView == null) {
-                llShowBetList.scrollToPosition(position)
-                llShowBetList.post {
-                    targetView = layoutManager?.findViewByPosition(position)
-                    action.invoke(targetView, false)
-                }
-            } else {
-                action.invoke(targetView, true)
-            }
         }
     }
 

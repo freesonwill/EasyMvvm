@@ -44,12 +44,10 @@ class CustomBubbleAttachPopup(content: Context) : AttachPopupView(content){
         PopupCustomBubbleAttachBinding.bind(popupImplView).apply {
             rlPopClickRecords.isVisible = gameAboutModel.isShowHistoryAndCustomer
             rlPopClickService.isVisible = gameAboutModel.isShowHistoryAndCustomer
-            rlPopClickRecords.clickNoRepeat() {
-                PromptSoundPlay.btnPlayMedia()
+            rlPopClickRecords.clickNoRepeat(true) {
                 delayDismiss(100)
             }
-            rlPopClickService.clickNoRepeat() {
-                PromptSoundPlay.btnPlayMedia()
+            rlPopClickService.clickNoRepeat(true) {
                 delayDismiss(100)
             }
 

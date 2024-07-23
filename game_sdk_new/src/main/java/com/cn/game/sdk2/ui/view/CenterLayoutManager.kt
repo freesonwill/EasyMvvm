@@ -30,7 +30,7 @@ class CenterLayoutManager : LinearLayoutManager {
         position: Int
     ) {
         val smoothScroller: RecyclerView.SmoothScroller =
-            CenterSmoothScroller(recyclerView.context, if (state == null) 50f else 200f)
+            CenterSmoothScroller(recyclerView.context)
         smoothScroller.targetPosition = position
         startSmoothScroll(smoothScroller)
     }
@@ -42,7 +42,7 @@ class CenterLayoutManager : LinearLayoutManager {
 
     class CenterSmoothScroller internal constructor(
         context: Context?,
-        private val time: Float = 200f
+        private val time: Float = 175f
     ) : LinearSmoothScroller(context) {
         override fun calculateDtToFit(
             viewStart: Int,
@@ -51,7 +51,7 @@ class CenterLayoutManager : LinearLayoutManager {
             boxEnd: Int,
             snapPreference: Int
         ): Int {
-            return (boxStart + (boxEnd - boxStart) / 2) - (viewStart + (viewEnd - viewStart) / 2) - 4.dp2px
+            return (boxStart + (boxEnd - boxStart) / 2) - (viewStart + (viewEnd - viewStart) / 2) - 4f.dp2px
         }
 
         override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics): Float {

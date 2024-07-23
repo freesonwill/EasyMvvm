@@ -43,7 +43,7 @@ class Fast3GameHallFragment:BaseVmDbFragment<EmptyViewModel,FragmentGamehallBind
         )
         mDatabind.viewPagerNew.offscreenPageLimit = mFragList.size
 
-        mDatabind.close.clickNoRepeat {
+        mDatabind.close.clickNoRepeat(true) {
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
     }
