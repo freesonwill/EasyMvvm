@@ -457,7 +457,12 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 endCallBack?.invoke()
                 return
             }
-            AnimHelper.doNumberAnim(mDatabind.tvAnimWin2, 0, (winMoney).toLong(), 1000)
+            var duration = when (winMoney) {
+                in 0 .. 1000 -> 500L
+                in 1000 .. 100000 -> 600L
+                else -> 700L
+            }
+            AnimHelper.doNumberAnim(mDatabind.tvAnimWin2, 0, (winMoney).toLong(), duration)
             showLottie(endCallBack)
         }
     }
@@ -567,7 +572,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                         mDatabind.txtCurrentMoney,
                         startNum = start,
                         endNumber = end,
-                        duration1 = 1000
+                        duration1 = 600
                         //duration1 = mDatabind.lottieAnimView.duration
                     )
                 }, 600)
