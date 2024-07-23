@@ -115,7 +115,7 @@ val token: String
     }
 
 
-//---------------------------socket方面使用---------------------------------//
+//---------------------------socket方面使用,流程控制，不是数据---------------------------------//
 internal var nativeLib = NativeLib()
 
 var socketStatesCallback: GameApp.SocketStatesCallback? = null

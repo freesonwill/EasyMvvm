@@ -30,6 +30,7 @@ import com.cn.game.sdk2.websocket.isDouble
 import com.cn.game.sdk2.websocket.isEmpty
 import com.cn.game.sdk2.websocket.isEnterRoom
 import com.cn.game.sdk2.websocket.isLogin
+import com.cn.game.sdk2.websocket.isNeedReconnect
 import com.cn.game.sdk2.websocket.isNotEmpty
 import com.cn.game.sdk2.websocket.nativeLib
 import com.cn.game.sdk2.websocket.returnTemp
@@ -192,12 +193,9 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
     override fun loginSuccess(afterLoginSuccess: ClientRes.InfoAfterLoginSuccess) {
         isLogin = true
         "loginSuccess：${afterLoginSuccess}".loge(tag)
-        "loginSuccess -> token：$token".loge(tag)
         gameAboutModel.setLoginResult(true)
         refreshScore()
-        //初始化step2:登录成功后坐下
         enterInfo()
-//        appListener?.onLoginGame(1, "")
         appListener?.runOnUiThread {
             onLoginGame(1, "")
         }
@@ -208,13 +206,10 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
         appListener?.runOnUiThread {
             onLoginGame(errorMessage.code, errorMessage.desc)
         }
-//        appListener?.onLoginGame(errorMessage.code, errorMessage.desc)
         gameAboutModel.loginErrorMessage = errorMessage.desc
         gameAboutModel.setLoginResult(false)
 
-        "loginError：$errorMessage".loge(tag)
-        "loginError -> token：$token".loge(tag)
-        /*  when (errorMessage.code) {
+        "loginError -> token：$token".loge(tag)/*  when (errorMessage.code) {
               1000 -> {//其他服有正在进行的游戏，应跳转过去
   //          desc = 您当前还在其他游戏中，是否立刻回到该游戏？ // 713
               }
@@ -264,6 +259,15 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
         }
 
         currentConfig = configMap[miniGameId]
+        //重连时 直接进入直播间
+        if (isEnterRoom) {
+            "重连时 直接进入直播间".loge(tag)
+            "liveId:${gameAboutModel.liveId}".loge(tag)
+            "gameIds:${gameAboutModel.gameIds}".loge(tag)
+            "data:${gameAboutModel.data}".loge(tag)
+
+            GameApp.enterLive(gameAboutModel.liveId, gameAboutModel.gameIds, gameAboutModel.data)
+        }
     }
 
     //进入直播间成功，待进入游戏
@@ -271,7 +275,7 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
         isEnterRoom = true
         "groupInfo".loge(tag)
         appListener?.runOnUiThread {
-            onEnterLive(1,"")
+            onEnterLive(1, "")
         }
 //        appListener?.onEnterLive(1, "")
         gameAboutModel.isEnterGroup(true)

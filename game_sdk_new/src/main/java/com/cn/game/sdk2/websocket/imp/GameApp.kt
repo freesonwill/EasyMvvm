@@ -98,6 +98,7 @@ object GameApp : IGameForApp {
     //platform= 6 ,requestId = 0,version = "1"
     override fun login(token: String, agentName: String, anchor: Boolean) {
         gameAboutModel.isAnchor = anchor
+        gameAboutModel.agentName = agentName
         val req = ClientReq.LoginReq.newBuilder().setPlatform(6).setRequestId(0).setVersion("1")
             .setNickname("").setAgentName(agentName).setToken(token).build()
         gameMassageManager?.login(req)
@@ -116,11 +117,10 @@ object GameApp : IGameForApp {
             req.addMiniGameIds(it)
         }
         val build = req.setData(data).setId(liveId).build()
-
+        gameAboutModel.liveId = liveId
+        gameAboutModel.gameIds = gameIds
+        gameAboutModel.data = data
         gameMassageManager?.enterGroup(build)
-        gameMassageManager?.enterGame(
-            GameReq.EnterMiniGame.newBuilder().setMiniGameId(gameIds[0]).build()
-        )
     }
 
     /** 离开直播間

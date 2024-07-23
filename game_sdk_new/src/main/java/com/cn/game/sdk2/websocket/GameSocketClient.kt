@@ -10,6 +10,7 @@ import com.xcjh.base_lib2.utils.logi
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.java_websocket.client.WebSocketClient
@@ -48,7 +49,7 @@ class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
                 isTokenValid = true
                 if (isLogin) {
                     GameApp.login(
-                        token, "wali-internal", true
+                        token, gameAboutModel.agentName, gameAboutModel.isAnchor
                     )
                 }
             }
@@ -120,7 +121,7 @@ class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
                 gameMassageManager?.ping()
             }
         }
-        Timer().scheduleAtFixedRate(heartbeatTask, heartbeatInterval, heartbeatInterval)
+        Timer().schedule(heartbeatTask, heartbeatInterval, heartbeatInterval)
     }
 
     private fun stopHeartbeat() {
