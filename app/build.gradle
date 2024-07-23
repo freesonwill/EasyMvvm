@@ -18,6 +18,7 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
     sourceSets {
         main {
             jniLibs.srcDirs = ['jniLibs']
@@ -28,12 +29,6 @@ android {
         dataBinding true
     }
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -42,11 +37,12 @@ android {
         jvmTarget = '1.8'
     }
 
-    applicationVariants.all { variant ->
+    applicationVariants.all {
+        variant ->
         variant.outputs.all {
             def date = String.format('%s', new Date().format('yyyyMMddHHmmss'))
-            def gitVersion = getGitVersion()
-            outputFileName = "gamesdk-${variant.name}-v${variant.versionName}-${variant.versionCode}-${date}-${gitVersion}.apk"
+            //def gitVersion = getGitVersion()
+            outputFileName = "gamesdk-${variant.name}-${versionCode}-${date}.apk"
         }
     }
 }
@@ -67,8 +63,8 @@ dependencies {
     implementation project(path: ':game_sdk_new')
 //    implementation 'com.github.r21nomi:glrippleview:1.0.0'
 
-    outerTestImplementation 'com.squareup.leakcanary:leakcanary-android:2.14'
-    innerTestImplementation 'com.squareup.leakcanary:leakcanary-android:2.14'
+    //outerTestImplementation 'com.squareup.leakcanary:leakcanary-android:2.14'
+   // innerTestImplementation 'com.squareup.leakcanary:leakcanary-android:2.14'
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.14'
 }
 

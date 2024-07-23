@@ -1,6 +1,7 @@
 package com.cn.game.sdk2.websocket
 
 import android.util.Log
+import androidx.annotation.Keep
 
 class NativeLib {
 

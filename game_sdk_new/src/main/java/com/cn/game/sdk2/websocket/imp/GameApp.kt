@@ -28,7 +28,7 @@ import game.mod.proc.yf.proto.req.GameReq
 /**
  * 提供给app调用的方法
  */
-@Keep
+
 object GameApp : IGameForApp {
 
     /**
@@ -209,7 +209,7 @@ object GameApp : IGameForApp {
         isEnableSound = false
     }
 
-    @Keep
+
     interface OnSdkListener {
         fun customerServiceAction()
 
@@ -235,7 +235,7 @@ object GameApp : IGameForApp {
 
     }
 
-    @Keep
+
     interface SocketStatesCallback{
         fun onOpen()
         fun onClose(isNeedReconnect: Boolean)
