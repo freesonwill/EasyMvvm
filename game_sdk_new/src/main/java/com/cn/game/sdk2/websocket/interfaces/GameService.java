@@ -4,7 +4,7 @@ package com.cn.game.sdk2.websocket.interfaces;
 import game.common.proto.ClientReq;
 import game.mod.proc.yf.proto.req.GameReq;
 
-public interface GameService {
+public  interface GameService {
     void enterInfo();
     //用户登录
     void login(ClientReq.LoginReq req);

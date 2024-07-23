@@ -18,14 +18,14 @@ import java.net.URI
 /**
  * sdk初始化-连接socket
  */
-class GameSocketManager private constructor() : OnMessageListener {
+internal class GameSocketManager private constructor() : OnMessageListener {
     companion object {
         private val tag = GameSocketManager::class.java.name
 
         /**
          * 每隔10秒进行一次对长连接的心跳检测
          */
-        private  var HEART_BEAT_RATE = (5 * 1000).toLong()
+        private var HEART_BEAT_RATE = (5 * 1000).toLong()
         private var HAS_HEART = true
         private var client: GameSocketClient? = null
         private var gameServerMessageConvertFactory: GameServerMessageConvertFactory? = null
@@ -46,10 +46,9 @@ class GameSocketManager private constructor() : OnMessageListener {
         }
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
-    fun initSocketClient() {
+    fun initSocketClient(url: String) {
         "initSocketClient".loge(tag)
-        val uri = URI.create(WEB_SOCKET_URL)
+        val uri = URI.create(url)
         isNeedReconnect = true
         HAS_HEART = true
         client = GameSocketClient(uri) //获得client对象

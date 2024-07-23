@@ -6,7 +6,7 @@ import com.cn.game.sdk2.websocket.imp.GameApp
 
 interface IGameForApp {
 
-    fun loadGame(context: Context, lifecycleEnable: Boolean, onSdkListener: GameApp.OnSdkListener)
+    fun loadGame(context: Context, lifecycleEnable: Boolean, url:String, onSdkListener: GameApp.OnSdkListener)
 
     fun login(token: String, agentName: String,isAnchor: Boolean)
 
@@ -28,6 +28,7 @@ interface IGameForApp {
 
     fun dismissFloatingController()
 
-    fun refreshScore();
+
+    fun refreshScore()
 
 }

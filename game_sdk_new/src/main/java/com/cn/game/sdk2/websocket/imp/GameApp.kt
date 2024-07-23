@@ -5,6 +5,8 @@ import android.app.Application
 import android.app.Application.ActivityLifecycleCallbacks
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import androidx.annotation.Keep
 import androidx.lifecycle.Lifecycle
@@ -46,12 +48,14 @@ object GameApp : IGameForApp {
     override fun loadGame(
         context: Context,
         lifecycleEnable: Boolean,
+        url:String,
         onSdkListener: OnSdkListener
     ) {
         appContext = context
         appLifecycleEnable = lifecycleEnable
         appListener = onSdkListener
-        val initSocketClient = GameSocketManager.getInstance()?.initSocketClient()
+
+        val initSocketClient = GameSocketManager.getInstance()?.initSocketClient(url)
         (appContext as Application).registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks{
             override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
 
@@ -94,6 +98,7 @@ object GameApp : IGameForApp {
     //platform= 6 ,requestId = 0,version = "1"
     override fun login(token: String, agentName: String, anchor: Boolean) {
         gameAboutModel.isAnchor = anchor
+        gameAboutModel.agentName = agentName
         val req = ClientReq.LoginReq.newBuilder().setPlatform(6).setRequestId(0).setVersion("1")
             .setNickname("").setAgentName(agentName).setToken(token).build()
         gameMassageManager?.login(req)
@@ -112,11 +117,10 @@ object GameApp : IGameForApp {
             req.addMiniGameIds(it)
         }
         val build = req.setData(data).setId(liveId).build()
-
+        gameAboutModel.liveId = liveId
+        gameAboutModel.gameIds = gameIds
+        gameAboutModel.data = data
         gameMassageManager?.enterGroup(build)
-        gameMassageManager?.enterGame(
-            GameReq.EnterMiniGame.newBuilder().setMiniGameId(gameIds[0]).build()
-        )
     }
 
     /** 离开直播間

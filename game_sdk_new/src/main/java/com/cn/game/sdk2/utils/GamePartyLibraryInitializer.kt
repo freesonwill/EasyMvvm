@@ -16,36 +16,36 @@ object GamePartyLibraryInitializer {
         // appGameViewModelInstance= ViewModelProvider(context)[AppGameViewModel::class.java]
         mAppContext = mApp
         "初始化step1:loadGame".loge("GamePartyLibraryInitializer")
-        GameApp.loadGame(mApp.applicationContext,true,object :GameApp.OnSdkListener{
-            override fun customerServiceAction() {
-            }
-
-            override fun historyOfBetAction() {
-            }
-
-            override fun onEnterGame() {
-            }
-
-            override fun onEnterLive(type: Int, msg: String) {
-            }
-
-            override fun onLeaveLive(type: Int, str: String?) {
-            }
-
-            override fun onLoginGame(i: Int, str: String?) {
-
-            }
-
-            override fun onTokenLoseEffectiveness() {
-            }
-
-            override fun onGameFloatingDetailViewStatus(isShowUp: Boolean) {
-            }
-
-            override fun onInsufficientBalance() {
-            }
-
-        })
+//        GameApp.loadGame(mApp.applicationContext,true, "wss://ws.qxe68.com:7001/api/game/5702",object :GameApp.OnSdkListener{
+//            override fun customerServiceAction() {
+//            }
+//
+//            override fun historyOfBetAction() {
+//            }
+//
+//            override fun onEnterGame() {
+//            }
+//
+//            override fun onEnterLive(type: Int, msg: String) {
+//            }
+//
+//            override fun onLeaveLive(type: Int, str: String?) {
+//            }
+//
+//            override fun onLoginGame(i: Int, str: String?) {
+//
+//            }
+//
+//            override fun onTokenLoseEffectiveness() {
+//            }
+//
+//            override fun onGameFloatingDetailViewStatus(isShowUp: Boolean) {
+//            }
+//
+//            override fun onInsufficientBalance() {
+//            }
+//
+//        })?\
 
         //初始化获取到快三结果的View
 //        MyGameManager.getOpenResultView(mAppContext!!)

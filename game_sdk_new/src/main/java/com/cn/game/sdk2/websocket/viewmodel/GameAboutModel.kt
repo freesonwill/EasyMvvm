@@ -18,7 +18,7 @@ import com.xcjh.base_lib2.utils.LogUtils
 import game.mod.proc.yf.proto.res.GameRes
 import kotlinx.coroutines.*
 
-class GameAboutModel : BaseViewModel() {
+internal class GameAboutModel : BaseViewModel() {
     enum class Stage {
         NEW, DEAL, SETTLE
     }
@@ -57,6 +57,12 @@ class GameAboutModel : BaseViewModel() {
 
     //是否是主播： 主播只能看到"热门"游戏分类，"热门"分类中以后只会放sdk游戏，在大厅弹窗处，主播端看不到其他的tab和瓦力游戏。
     var isAnchor: Boolean = false
+    lateinit var agentName: String
+
+    lateinit var liveId: String
+    lateinit var gameIds: List<Int>
+    lateinit var data: String
+
 
     //如果不需要显示(isShowHistoryAndCustomer = false)，则主播端的更多只显示切换游戏和帮助。
     var isShowHistoryAndCustomer: Boolean = true
@@ -304,8 +310,7 @@ class GameAboutModel : BaseViewModel() {
             LogUtils.d(TAG, "countDown set:${value},isMainThread:${isMainThread}")
             _countDownSetStampTime = System.currentTimeMillis()
             ThreadUtils.runOnUiThread {
-                GameManager.instance.startCountDownTimer(
-                    field.toLong(),
+                GameManager.instance.startCountDownTimer(field.toLong(),
                     lis = object : IGameListener {
                         override fun onCountdown(time: Long) {
                             super.onCountdown(time)

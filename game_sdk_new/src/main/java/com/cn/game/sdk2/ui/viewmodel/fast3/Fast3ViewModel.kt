@@ -75,8 +75,8 @@ class Fast3ViewModel : BaseViewModel() {
     }
 
     //游戏状态
-    val gameState: Stage? get() = gameAboutModel.currentStage.value
-    var localGameStage: Stage? = null
+    internal val gameState: Stage? get() = gameAboutModel.currentStage.value
+    internal var localGameStage: Stage? = null
 
 
     //是否可点击

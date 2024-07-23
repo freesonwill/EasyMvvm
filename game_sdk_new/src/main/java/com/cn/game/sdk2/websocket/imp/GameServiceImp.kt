@@ -30,9 +30,11 @@ import com.cn.game.sdk2.websocket.isDouble
 import com.cn.game.sdk2.websocket.isEmpty
 import com.cn.game.sdk2.websocket.isEnterRoom
 import com.cn.game.sdk2.websocket.isLogin
+import com.cn.game.sdk2.websocket.isNeedReconnect
 import com.cn.game.sdk2.websocket.isNotEmpty
 import com.cn.game.sdk2.websocket.nativeLib
 import com.cn.game.sdk2.websocket.returnTemp
+import com.cn.game.sdk2.websocket.runOnUiThread
 import com.cn.game.sdk2.websocket.setCommittedState
 import com.cn.game.sdk2.websocket.sum
 import com.cn.game.sdk2.websocket.token
@@ -191,23 +193,23 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
     override fun loginSuccess(afterLoginSuccess: ClientRes.InfoAfterLoginSuccess) {
         isLogin = true
         "loginSuccess：${afterLoginSuccess}".loge(tag)
-        "loginSuccess -> token：$token".loge(tag)
         gameAboutModel.setLoginResult(true)
         refreshScore()
-        //初始化step2:登录成功后坐下
         enterInfo()
-        appListener?.onLoginGame(1, "")
+        appListener?.runOnUiThread {
+            onLoginGame(1, "")
+        }
     }
 
     override fun loginError(errorMessage: ClientRes.ErrorMessage) {
         isLogin = false
-        appListener?.onLoginGame(errorMessage.code, errorMessage.desc)
+        appListener?.runOnUiThread {
+            onLoginGame(errorMessage.code, errorMessage.desc)
+        }
         gameAboutModel.loginErrorMessage = errorMessage.desc
         gameAboutModel.setLoginResult(false)
 
-        "loginError：$errorMessage".loge(tag)
-        "loginError -> token：$token".loge(tag)
-        /*  when (errorMessage.code) {
+        "loginError -> token：$token".loge(tag)/*  when (errorMessage.code) {
               1000 -> {//其他服有正在进行的游戏，应跳转过去
   //          desc = 您当前还在其他游戏中，是否立刻回到该游戏？ // 713
               }
@@ -257,18 +259,25 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
         }
 
         currentConfig = configMap[miniGameId]
-        //todo：测试直接使用
-        GameApp.enterLive("1213", listOf(1), "")
-//        /*if (isEnterRoom) {
-//            GameApp.enterLive("1213", listOf(1), "")
-//        }*/
+        //重连时 直接进入直播间
+        if (isEnterRoom) {
+            "重连时 直接进入直播间".loge(tag)
+            "liveId:${gameAboutModel.liveId}".loge(tag)
+            "gameIds:${gameAboutModel.gameIds}".loge(tag)
+            "data:${gameAboutModel.data}".loge(tag)
+
+            GameApp.enterLive(gameAboutModel.liveId, gameAboutModel.gameIds, gameAboutModel.data)
+        }
     }
 
     //进入直播间成功，待进入游戏
     override fun groupInfo(groupInfo: GameRes.GroupInfo) {
         isEnterRoom = true
         "groupInfo".loge(tag)
-        appListener?.onEnterLive(1, "")
+        appListener?.runOnUiThread {
+            onEnterLive(1, "")
+        }
+//        appListener?.onEnterLive(1, "")
         gameAboutModel.isEnterGroup(true)
 
         gameAboutModel.gameList = groupInfo.miniGameBasicInfoListList
@@ -328,7 +337,10 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
     override fun leaveGroup(leave: GameRes.LeaveGroup) {
         isEnterRoom = false
         gameAboutModel.isLeaveGroup(true)
-        appListener?.onLeaveLive(1, "")
+//        appListener?.onLeaveLive(1, "")
+        appListener?.runOnUiThread {
+            onLeaveLive(1, "")
+        }
     }
 
     override fun leaveMiniGameInfo(miniGame: GameRes.LeaveMiniGames) {
@@ -338,7 +350,10 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
     override fun enterMiniGameInfo(miniGame: GameRes.EnterMiniGameInfo) {
         miniGameId = miniGame.miniGameId
         "enterMiniGameInfo:${miniGame.countDown}".loge(tag)
-        appListener?.onEnterGame()
+//        appListener?.onEnterGame()
+        appListener?.runOnUiThread {
+            onEnterGame()
+        }
     }
 
     /**
@@ -411,7 +426,9 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
                 isTokenValid = false
                 gameAboutModel.bettingMessage = "网络连接超时"
                 gameAboutModel.setToastErrorMessage(gameAboutModel.bettingMessage)
-                appListener?.onTokenLoseEffectiveness()
+                appListener?.runOnUiThread {
+                    onTokenLoseEffectiveness()
+                }
             }
 
             5 -> {
@@ -419,7 +436,9 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
                 isTokenValid = false
                 gameAboutModel.bettingMessage = "账号在其他设备登录，您已下线"
                 gameAboutModel.setToastErrorMessage(gameAboutModel.bettingMessage)
-                appListener?.onTokenLoseEffectiveness()
+                appListener?.runOnUiThread {
+                    onTokenLoseEffectiveness()
+                }
             }
 
             else -> {
@@ -590,7 +609,10 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
     override fun tokenLoseEffectiveness() {
         isTokenValid = false
         gameAboutModel.setToastErrorMessage("登录失效，请重新登录")
-        appListener?.onTokenLoseEffectiveness()
+//        appListener?.onTokenLoseEffectiveness()
+        appListener?.runOnUiThread {
+            onTokenLoseEffectiveness()
+        }
     }
 
     protected fun checkAgainNew() {
