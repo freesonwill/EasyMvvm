@@ -2,8 +2,6 @@ package com.cn.game.sdk2.utils.tool
 
 import android.content.Context
 import android.media.AudioManager
-import android.media.MediaPlayer
-import android.media.MediaPlayer.OnCompletionListener
 import android.media.SoundPool
 import android.net.Uri
 import android.os.Handler
@@ -48,7 +46,7 @@ object PromptSoundPlay {
     /**
      * 金币提示音~~可以一直提示
      */
-    fun playAudio() {
+    fun playGoldCoinAudio() {
         playSound(R.raw.jinbi_ying)
     }
 
@@ -109,12 +107,32 @@ object PromptSoundPlay {
     }
 
     /**
-     * 同时播放音效：soundIds（仅仅播放）
+     * 播放音效
+     * @musicIds  音乐id
+     * @parallel  是否同时播放
      */
-    private suspend fun playSoundOnly(soundIds:List<Int>, leftVolume:Float, rightVolume:Float, priority:Int, loop:Int, rate:Float){
+    private suspend fun playMusic(musicIds:List<Int>,parallel:Boolean = true){
+        TODO("play music")
+    }
+
+    /**
+     * 同时播放音效：soundIds（仅仅播放）
+     * @param soundIds 音效id
+     * @param leftVolume
+     * @param rightVolume
+     * @param priority
+     * @param rate
+     * @param parallel 是否同时播放
+     */
+    private suspend fun playSoundOnly(soundIds:List<Int>, leftVolume:Float, rightVolume:Float, priority:Int, loop:Int, rate:Float,parallel:Boolean=true){
         coroutineScope {
             soundIds.forEach {
-                async {
+                if(parallel){
+                    async {
+                        soundPool.stop(it)
+                        soundPool.play(it, leftVolume, rightVolume, priority, loop, rate)
+                    }
+                } else {
                     soundPool.stop(it)
                     soundPool.play(it, leftVolume, rightVolume, priority, loop, rate)
                 }
