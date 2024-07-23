@@ -121,6 +121,9 @@ object GameApp : IGameForApp {
         gameAboutModel.gameIds = gameIds
         gameAboutModel.data = data
         gameMassageManager?.enterGroup(build)
+        gameMassageManager?.enterGame(
+            GameReq.EnterMiniGame.newBuilder().setMiniGameId(gameIds[0]).build()
+        )
     }
 
     /** 离开直播間

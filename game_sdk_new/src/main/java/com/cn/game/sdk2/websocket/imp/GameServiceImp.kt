@@ -259,15 +259,17 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
         }
 
         currentConfig = configMap[miniGameId]
+        GameApp.enterLive("1213", listOf(1), "")
         //重连时 直接进入直播间
-        if (isEnterRoom) {
-            "重连时 直接进入直播间".loge(tag)
-            "liveId:${gameAboutModel.liveId}".loge(tag)
-            "gameIds:${gameAboutModel.gameIds}".loge(tag)
-            "data:${gameAboutModel.data}".loge(tag)
+//        if (isEnterRoom) {
+//            "重连时 直接进入直播间".loge(tag)
+//            "liveId:${gameAboutModel.liveId}".loge(tag)
+//            "gameIds:${gameAboutModel.gameIds}".loge(tag)
+//            "data:${gameAboutModel.data}".loge(tag)
+//GameApp.enterLive(gameAboutModel.liveId, gameAboutModel.gameIds, gameAboutModel.data)
+//
+//        }
 
-            GameApp.enterLive(gameAboutModel.liveId, gameAboutModel.gameIds, gameAboutModel.data)
-        }
     }
 
     //进入直播间成功，待进入游戏
