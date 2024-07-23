@@ -27,6 +27,7 @@ import com.cn.game.sdk2.utils.ext.ViewExt.locationInWindow
 import com.cn.game.sdk2.utils.tool.indicator.CommonPagerIndicator
 import com.cn.game.sdk2.websocket.appListener
 import com.cn.game.sdk2.websocket.gameAboutModel
+import com.cn.game.sdk2.websocket.runOnUiThread
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
 import com.lxj.xpopup.enums.PopupAnimation
@@ -50,31 +51,40 @@ import java.lang.ref.WeakReference
  **/
 object ViewHelper {
     private const val TAG: String = "ViewHelper"
+
     enum class ViewFloatType {
-        FastView,FastViewOverlay,HomeXPopupDialog,HelpXPopupDialog
+        FastView, FastViewOverlay, HomeXPopupDialog, HelpXPopupDialog
     }
 
     //弱引用防止view不能被回收
-    private var viewHolderMap = mutableMapOf<ViewFloatType,WeakReference<View>>()
+    private var viewHolderMap = mutableMapOf<ViewFloatType, WeakReference<View>>()
 
     private var homeXPopupDialog: BasePopupView?
         get() = viewHolderMap[ViewFloatType.HomeXPopupDialog]?.get() as BasePopupView?
-        set(value) { viewHolderMap[ViewFloatType.HomeXPopupDialog] = WeakReference(value)}
+        set(value) {
+            viewHolderMap[ViewFloatType.HomeXPopupDialog] = WeakReference(value)
+        }
 
     private var helpXPopupDialog: BasePopupView?
         get() = viewHolderMap[ViewFloatType.HelpXPopupDialog]?.get() as BasePopupView?
-        set(value) { viewHolderMap[ViewFloatType.HelpXPopupDialog] = WeakReference(value)}
+        set(value) {
+            viewHolderMap[ViewFloatType.HelpXPopupDialog] = WeakReference(value)
+        }
 
-    private var fastView:View?
+    private var fastView: View?
         get() = viewHolderMap[ViewFloatType.FastView]?.get()
-        set(value) { viewHolderMap[ViewFloatType.FastView] = WeakReference(value)}
+        set(value) {
+            viewHolderMap[ViewFloatType.FastView] = WeakReference(value)
+        }
 
-    private var fastViewOverlay:View?
+    private var fastViewOverlay: View?
         get() = viewHolderMap[ViewFloatType.FastViewOverlay]?.get()
-        set(value) { viewHolderMap[ViewFloatType.FastViewOverlay] = WeakReference(value)}
+        set(value) {
+            viewHolderMap[ViewFloatType.FastViewOverlay] = WeakReference(value)
+        }
 
     //是否显示其他pop
-    var isShowOtherPop:Boolean = false
+    var isShowOtherPop: Boolean = false
 
     /**
      * 显示帮助文档
@@ -92,8 +102,8 @@ object ViewHelper {
             }
             return
         }
-        val (offsetY,height) = homeXPopupDialog!!.findViewById<View>(R.id.topLayout).let {
-            arrayOf(it.locationInWindow[1],it.height)
+        val (offsetY, height) = homeXPopupDialog!!.findViewById<View>(R.id.topLayout).let {
+            arrayOf(it.locationInWindow[1], it.height)
         }
         helpXPopupDialog = XPopup.Builder(context)
             .isTouchThrough(false)
@@ -112,10 +122,10 @@ object ViewHelper {
             .hasNavigationBar(false)
             .enableDrag(true)
             .dismissOnTouchOutside(true)
-            .asCustom(Fast3HelpPopup(context, offsetY,height))
+            .asCustom(Fast3HelpPopup(context, offsetY, height))
             .apply {
-                if(context is LifecycleOwner) { //宿主销毁了，静态引用置null
-                    context.lifecycle.addObserver(object :DefaultLifecycleObserver{
+                if (context is LifecycleOwner) { //宿主销毁了，静态引用置null
+                    context.lifecycle.addObserver(object : DefaultLifecycleObserver {
                         override fun onDestroy(owner: LifecycleOwner) {
                             super.onDestroy(owner)
                             dismiss()
@@ -128,18 +138,19 @@ object ViewHelper {
     }
 
 
-    fun showFastViewPop(context: Context,isShow: Boolean){
-        if(!isShow){
+    fun showFastViewPop(context: Context, isShow: Boolean) {
+        if (!isShow) {
             homeXPopupDialog?.dismiss()
             return
         }
-        if(homeXPopupDialog != null) {
+        if (homeXPopupDialog != null) {
             homeXPopupDialog!!.show()
             return
         }
-        val pop =  HomeXPopupDialog(context, Fast3MainFragment(),GAME_ID_ENUM.GAME_FAST3.num).apply {
-            homeXPopupDialog = this
-        }
+        val pop =
+            HomeXPopupDialog(context, Fast3MainFragment(), GAME_ID_ENUM.GAME_FAST3.num).apply {
+                homeXPopupDialog = this
+            }
         XPopup.Builder(context)
             .hasShadowBg(false)
             .setPopupCallback(object : SimpleCallback() {
@@ -147,9 +158,13 @@ object ViewHelper {
                     super.beforeShow(popupView)
                     fastViewOverlay?.isVisible = false
                     fastView?.isVisible = false
-                    appListener?.onGameFloatingDetailViewStatus(true)
+//                    appListener?.onGameFloatingDetailViewStatus(true)
+                    appListener?.runOnUiThread {
+                        onGameFloatingDetailViewStatus(true)
+                    }
                     gameAboutModel.fast3MainFloatVisible.value = false
                 }
+
                 override fun onShow(popupView: BasePopupView?) {
                     super.onShow(popupView)
                 }
@@ -157,11 +172,14 @@ object ViewHelper {
                 override fun onDismiss(popupView: BasePopupView?) {
                     super.onDismiss(popupView)
                     gameAboutModel.fast3MainFloatVisible.value = true
-                    if(!isShowOtherPop) {
+                    if (!isShowOtherPop) {
                         fastViewOverlay?.isVisible = true
                         fastView?.isVisible = true
-                        appListener?.onGameFloatingDetailViewStatus(false)
+//                        appListener?.onGameFloatingDetailViewStatus(false)
                         //homeXPopupDialog = null
+                        appListener?.runOnUiThread {
+                            onGameFloatingDetailViewStatus(false)
+                        }
                     }
                 }
             })
@@ -177,8 +195,8 @@ object ViewHelper {
             .asCustom(pop)
             .apply {
                 //宿主销毁了，
-                if(context is LifecycleOwner) {
-                    context.lifecycle.addObserver(object :DefaultLifecycleObserver{
+                if (context is LifecycleOwner) {
+                    context.lifecycle.addObserver(object : DefaultLifecycleObserver {
                         override fun onDestroy(owner: LifecycleOwner) {
                             super.onDestroy(owner)
                             dismiss()
@@ -190,11 +208,11 @@ object ViewHelper {
             .show()
     }
 
-    fun getFastView(context: Context):View{
-        if(fastView != null) return fastView!!
-        return LayoutInflater.from(context).inflate(R.layout.drag_fast_easy,null,false).also {
+    fun getFastView(context: Context): View {
+        if (fastView != null) return fastView!!
+        return LayoutInflater.from(context).inflate(R.layout.drag_fast_easy, null, false).also {
             fastView = it
-            val lp = ViewGroup.LayoutParams(0,0)
+            val lp = ViewGroup.LayoutParams(0, 0)
             lp.width = 58.dp2px
             lp.height = ViewGroup.LayoutParams.WRAP_CONTENT
             it.layoutParams = lp
@@ -205,11 +223,11 @@ object ViewHelper {
                     homeXPopupDialog!!.show()
                     return@clickNoRepeat
                 }
-                showFastViewPop(context,true)
+                showFastViewPop(context, true)
             }
         }.apply {
-            if(context is LifecycleOwner) {
-                context.lifecycle.addObserver(object :DefaultLifecycleObserver{
+            if (context is LifecycleOwner) {
+                context.lifecycle.addObserver(object : DefaultLifecycleObserver {
                     override fun onDestroy(owner: LifecycleOwner) {
                         super.onDestroy(owner)
                         fastView = null
@@ -219,17 +237,18 @@ object ViewHelper {
         }
     }
 
-    fun getFastViewOverlay(context: Context):View{
-        if(fastViewOverlay != null) return fastViewOverlay!!
-        return LayoutInflater.from(context).inflate(R.layout.fragment_fast3_overlay,null,false).also {
-            val lp = ViewGroup.LayoutParams(0,0)
-            lp.width = 106.dp2px
-            lp.height = ViewGroup.LayoutParams.WRAP_CONTENT
-            it.layoutParams = lp
-            fastViewOverlay = it
-        }.apply {
-            if(context is LifecycleOwner) {
-                context.lifecycle.addObserver(object :DefaultLifecycleObserver{
+    fun getFastViewOverlay(context: Context): View {
+        if (fastViewOverlay != null) return fastViewOverlay!!
+        return LayoutInflater.from(context).inflate(R.layout.fragment_fast3_overlay, null, false)
+            .also {
+                val lp = ViewGroup.LayoutParams(0, 0)
+                lp.width = 106.dp2px
+                lp.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                it.layoutParams = lp
+                fastViewOverlay = it
+            }.apply {
+            if (context is LifecycleOwner) {
+                context.lifecycle.addObserver(object : DefaultLifecycleObserver {
                     override fun onDestroy(owner: LifecycleOwner) {
                         super.onDestroy(owner)
                         fastViewOverlay = null
@@ -241,13 +260,13 @@ object ViewHelper {
 
     fun ViewPager.initGameViewPager2(views: ArrayList<View>): ViewPager {
         //设置适配器
-        adapter = object : PagerAdapter(){
+        adapter = object : PagerAdapter() {
             override fun getCount(): Int {
                 return views.count()
             }
 
             override fun isViewFromObject(view: View, obj: Any): Boolean {
-                return  view == obj
+                return view == obj
             }
 
             override fun instantiateItem(container: ViewGroup, position: Int): Any {
@@ -269,7 +288,8 @@ object ViewHelper {
         titles: ArrayList<String>? = null
     ): ViewPager {
         //设置适配器
-        adapter = object : FragmentStatePagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+        adapter = object :
+            FragmentStatePagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
             override fun getCount(): Int {
                 return fragments.size
             }
@@ -364,7 +384,7 @@ object ViewHelper {
                         viewPager.currentItem = index
                         action.invoke(index)
                     }
-                    setPadding(32,0,32,0)
+                    setPadding(32, 0, 32, 0)
                 }
             }
 
@@ -395,7 +415,6 @@ object ViewHelper {
         } catch (_: Exception) {
         }
     }
-
 
 
 }

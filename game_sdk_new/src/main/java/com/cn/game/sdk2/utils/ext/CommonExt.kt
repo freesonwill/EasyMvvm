@@ -79,15 +79,15 @@ object CommonExt {
         }
     }
 
-    fun <T> Iterable<T>.some(predicate: (T) -> Boolean):Boolean{
+    fun <T> Iterable<T>.some(predicate: (T) -> Boolean): Boolean {
         return find(predicate) != null
     }
 
-    fun <T> Iterable<T>.every(predicate: (T) -> Boolean):Boolean{
+    fun <T> Iterable<T>.every(predicate: (T) -> Boolean): Boolean {
         val it = iterator()
-        while(it.hasNext()){
+        while (it.hasNext()) {
             val item = it.next()
-            if(!predicate(item)) return false
+            if (!predicate(item)) return false
         }
         return true
     }
@@ -98,7 +98,7 @@ object CommonExt {
         return b1.divide(b2, 2, RoundingMode.DOWN).stripTrailingZeros().toPlainString()
     }
 
-    fun GameAboutModel.BettingState.isCanGoOn(
+    internal fun GameAboutModel.BettingState.isCanGoOn(
         areaLimit: AreaBetConfigBean?,
         goOnAction: () -> Unit
     ) {

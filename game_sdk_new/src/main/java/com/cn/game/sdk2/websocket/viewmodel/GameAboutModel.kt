@@ -18,7 +18,7 @@ import com.xcjh.base_lib2.utils.LogUtils
 import game.mod.proc.yf.proto.res.GameRes
 import kotlinx.coroutines.*
 
-class GameAboutModel : BaseViewModel() {
+internal class GameAboutModel : BaseViewModel() {
     enum class Stage {
         NEW, DEAL, SETTLE
     }

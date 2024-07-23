@@ -2,6 +2,8 @@ package com.cn.game.sdk2.websocket
 
 import android.content.Context
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.databinding.ObservableList
@@ -62,7 +64,7 @@ import kotlin.random.Random
 /**
  * socket-url
  */
-var WEB_SOCKET_URL = "wss://ws.qxe68.com:7001/api/game/5702" ///test
+//var WEB_SOCKET_URL = "wss://ws.qxe68.com:7001/api/game/5702" ///test
 
 /**
  * 仅记录用户当前状态，用于重连服务器处理
@@ -114,37 +116,37 @@ val token: String
 
 
 //---------------------------socket方面使用---------------------------------//
-var nativeLib = NativeLib()
+internal var nativeLib = NativeLib()
 
 var socketStatesCallback: GameApp.SocketStatesCallback? = null
 
 //登录过的标记 用于重连
-var isLogin = false
+internal var isLogin = false
 
 //多用户登录token失效
-var isTokenValid = true
+internal var isTokenValid = true
 
 //token失效后，socket连接关闭，停止重连
-var isNeedReconnect = true
+internal var isNeedReconnect = true
 
 //var balance: Long = 2000000
-var isEnterRoom = false
+internal var isEnterRoom = false
 
 
 //---------------------------app方面使用---------------------------------//
-var appContext: Context? = null
+internal var appContext: Context? = null
 
-var appLifecycleEnable: Boolean = false
+internal var appLifecycleEnable: Boolean = false
 
 //用户设置 打开声音
-var isEnableSound = true
+internal var isEnableSound = true
 
 //用户设置 回调
-var appListener: GameApp.OnSdkListener? = null
+internal var appListener: GameApp.OnSdkListener? = null
 
 //---------------------------ui方面使用---------------------------------//
-var gameAboutModel = GameAboutModel()
-var gameMassageManager: UIMethodImpl? = null
+internal var gameAboutModel = GameAboutModel()
+internal var gameMassageManager: UIMethodImpl? = null
 
 
 fun <K, V> Map<K, V>.isNotEmpty(block: (MutableMap<K, V>) -> Unit): Boolean {
@@ -430,7 +432,7 @@ fun MutableList<BettingRecordBean>.convertMap(): MutableMap<Betting, BettingReco
 }
 
 //验证下注的有效性
-fun List<BettingRecordBean>.verifyAdd(
+internal fun List<BettingRecordBean>.verifyAdd(
     record: BettingRecordBean, areaBetConfigBean: AreaBetConfigBean?
 ): GameAboutModel.BettingState {
     val currentBettingTotalMoney =
@@ -528,11 +530,11 @@ fun MutableList<BettingRecordBean>.convertAgainList(): MutableMap<Betting, Betti
 }
 
 fun MutableMap<Betting, BettingRecordBean>.againIfMoneyEnough(): Boolean {
-    return this.values.sumOf { it.money } <= gameAboutModel.balance.value!!
+    return this.values.sumOf { it.money } <= (gameAboutModel.balance.value ?: 0)
 }
 
 fun MutableList<BettingRecordBean>.doubleIfMoneyEnough(): Boolean {
-    return sumOf { it.money } * 2 <= gameAboutModel.balance.value!!
+    return sumOf { it.money } * 2 <= (gameAboutModel.balance.value ?: 0)
 }
 
 fun MutableList<BettingRecordBean>.verifyDouble(configs: List<AreaBetConfigBean>?): VerifyDoubleResultBean? {
@@ -567,6 +569,13 @@ fun MutableList<BettingRecordBean>.double(): MutableMap<Betting, BettingRecordBe
         doubleMap[it.key] = it.value.generateUiBean(it.key)
     }
     return doubleMap
+}
+
+inline fun <OnSdkListener> OnSdkListener.runOnUiThread(crossinline function: OnSdkListener.() -> Unit):OnSdkListener {
+    Handler(Looper.getMainLooper()).post {
+        function()
+    }
+    return this
 }
 
 //没用 暂时不删

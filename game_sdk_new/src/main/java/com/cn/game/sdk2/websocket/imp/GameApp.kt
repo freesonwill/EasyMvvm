@@ -5,6 +5,8 @@ import android.app.Application
 import android.app.Application.ActivityLifecycleCallbacks
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import androidx.annotation.Keep
 import androidx.lifecycle.Lifecycle
@@ -46,12 +48,14 @@ object GameApp : IGameForApp {
     override fun loadGame(
         context: Context,
         lifecycleEnable: Boolean,
+        url:String,
         onSdkListener: OnSdkListener
     ) {
         appContext = context
         appLifecycleEnable = lifecycleEnable
         appListener = onSdkListener
-        val initSocketClient = GameSocketManager.getInstance()?.initSocketClient()
+
+        val initSocketClient = GameSocketManager.getInstance()?.initSocketClient(url)
         (appContext as Application).registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks{
             override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
 
