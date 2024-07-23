@@ -16,9 +16,9 @@ import org.java_websocket.enums.ReadyState
 import java.net.URI
 
 /**
- * sdk初始化-连接socket
+ * sdk初始化-连接socket internal
  */
-internal class GameSocketManager private constructor() : OnMessageListener {
+ class GameSocketManager private constructor() : OnMessageListener {
     companion object {
         private val tag = GameSocketManager::class.java.name
 

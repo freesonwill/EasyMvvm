@@ -120,11 +120,11 @@ internal var nativeLib = NativeLib()
 
 var socketStatesCallback: GameApp.SocketStatesCallback? = null
 
-//登录过的标记 用于重连
-internal var isLogin = false
+//登录过的标记 用于重连 internal
+ var isLogin = false
 
-//多用户登录token失效
-internal var isTokenValid = true
+//多用户登录token失效 internal
+ var isTokenValid = true
 
 //token失效后，socket连接关闭，停止重连
 internal var isNeedReconnect = true
@@ -145,7 +145,7 @@ internal var isEnableSound = true
 internal var appListener: GameApp.OnSdkListener? = null
 
 //---------------------------ui方面使用---------------------------------//
-internal var gameAboutModel = GameAboutModel()
+ var gameAboutModel = GameAboutModel() //internal
 internal var gameMassageManager: UIMethodImpl? = null
 
 
