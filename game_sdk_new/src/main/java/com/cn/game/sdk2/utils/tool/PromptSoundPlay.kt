@@ -14,12 +14,10 @@ import com.cn.game.sdk2.utils.ThreadUtils
 import com.cn.game.sdk2.websocket.isEnableSound
 import com.xcjh.base_lib2.ModuleInitializer
 import com.xcjh.base_lib2.utils.LogUtils
-import com.xcjh.base_lib2.utils.TAG
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import java.io.IOException
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -28,54 +26,21 @@ import kotlin.coroutines.suspendCoroutine
  * 提示音 Gold
  */
 object PromptSoundPlay {
-    /**
-     * 金币声音
-     */
-    private var goldMediaPlayer: MediaPlayer? = null
-
-    /**
-     * 按钮声音声音
-     */
-    private var btnMediaPlayer: MediaPlayer? = null
     private val soundPool by lazy { SoundPool.Builder()
         .setMaxStreams(5)
         .build() }
     private val soundPoolIds = SparseArray<Int>()
-
+    private var lastClickTime: Long = 0
+    private val debounceInterval: Long = 200 // 防抖间隔
+    private var isWaitingForClear = false
+    private const val TAG = "PromptSoundPlay"
     /******************************* Method *******************************************/
 
     /**
      * 金币提示音  要关闭前一个
      */
-    fun goldPlayMedia(context: Context) {
-        if (goldMediaPlayer == null) {
-            goldMediaPlayer = MediaPlayer.create(context, R.raw.jinbi_ying)
-        }
-
-        if (goldMediaPlayer != null) {
-
-            // 检查播放器状态
-            if (goldMediaPlayer!!.isPlaying) {
-                // 如果正在播放，先停止播放
-                goldMediaPlayer!!.stop()
-            }
-            // 重置 MediaPlayer 对象
-            goldMediaPlayer!!.reset()
-
-            try {
-                // 设置要播放的媒体资源
-                goldMediaPlayer!!.setDataSource(context, getResourceUri(context, R.raw.jinbi_ying))
-                // 准备MediaPlayer
-                goldMediaPlayer!!.prepare()
-                // 启动播放
-                goldMediaPlayer!!.start()
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-
-
-        }
-
+    fun goldPlayMedia() {
+        playSound(R.raw.jinbi_ying)
     }
 
 
@@ -83,93 +48,36 @@ object PromptSoundPlay {
     /**
      * 金币提示音~~可以一直提示
      */
-    fun playAudio(context: Context = ModuleInitializer.application) {
+    fun playAudio() {
         playSound(R.raw.jinbi_ying)
     }
 
     /**
      * 开始游戏声音
      */
-    fun startGameTip(context: Context) {
-        if(!isPhoneSilent(context)){
-            val startMediaPlayer = MediaPlayer()
-            try {
-                startMediaPlayer.setDataSource(context, getResourceUri(context, R.raw.sx_common_start))
-                startMediaPlayer.setOnCompletionListener(OnCompletionListener { mp ->
-                    mp.release() // 在播放完成后释放MediaPlayer
-                })
-                startMediaPlayer.setOnPreparedListener { mp -> mp.start() }
-                startMediaPlayer.prepareAsync()
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-
-
-        }
+    fun startGameTip() {
+        playSound(R.raw.sx_common_start)
     }
 
     /**
      * 还有五秒快要结束的时候
      */
-    fun countdownGameTip(context: Context) {
+    fun countdownGameTip() {
         playSound(R.raw.sx_common_countdown)
     }
 
     /**
      * 结束语音
      */
-    fun endGameTip(context: Context) {
-        if(!isPhoneSilent(context)){
-            val endMediaPlayer = MediaPlayer()
-            try {
-                endMediaPlayer.setDataSource(context, getResourceUri(context, R.raw.sx_common_stop))
-                endMediaPlayer.setOnCompletionListener(OnCompletionListener { mp ->
-                    mp.release() // 在播放完成后释放MediaPlayer
-                })
-                endMediaPlayer.setOnPreparedListener { mp -> mp.start() }
-                endMediaPlayer.prepareAsync()
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-
-
-        }
+    fun endGameTip() {
+        playSound(R.raw.sx_common_stop)
     }
 
     /**
      * 按钮提示音
      */
-    fun btnPlayMedia(context: Context=ModuleInitializer.application) {
-        if (btnMediaPlayer == null) {
-            btnMediaPlayer = MediaPlayer.create(context, R.raw.btn_ying_click)
-        }
-        if(!isPhoneSilent(context)){
-            if (btnMediaPlayer != null) {
-                // 检查播放器状态
-                if (btnMediaPlayer!!.isPlaying) {
-                    // 如果正在播放，先停止播放
-                    btnMediaPlayer!!.stop()
-                }
-                // 重置 MediaPlayer 对象
-                btnMediaPlayer!!.reset()
-
-                try {
-                    // 设置要播放的媒体资源
-                    btnMediaPlayer!!.setDataSource(
-                        context,
-                        getResourceUri(context, R.raw.btn_ying_click)
-                    )
-                    // 准备MediaPlayer
-                    btnMediaPlayer!!.prepare()
-                    // 启动播放
-                    btnMediaPlayer!!.start()
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
-
-            }
-        }
-
+    fun btnPlayMedia() {
+        playSound(R.raw.btn_ying_click)
     }
 
     /**
@@ -221,14 +129,14 @@ object PromptSoundPlay {
         val rst = suspendCoroutine { continuation->
             var count1 = 0;var count2 = 0
             val context = ModuleInitializer.application
-            LogUtils.dTag(TAG, "loadSound:$rawIds,rawIds.size:${rawIds.size}")
+            //LogUtils.dTag(TAG, "loadSound:$rawIds,rawIds.size:${rawIds.size}")
             rawIds.forEachIndexed { _, item->
                 if(soundPoolIds[item] != null) return@forEachIndexed //相当于continue
                 val id = soundPool.load(context, item, 1)
                 soundPoolIds[item] = id
                 count1++
             }
-            LogUtils.dTag(TAG, "loadSound:$rawIds,count:$count1")
+            //LogUtils.dTag(TAG, "loadSound:$rawIds,count:$count1")
             //no meed load
             if(count1 == 0) return@suspendCoroutine continuation.resume(rawIds.map { soundPoolIds[it]})
             soundPool.setOnLoadCompleteListener { soundPool, sampleId, status ->
@@ -245,12 +153,10 @@ object PromptSoundPlay {
         return Uri.parse("android.resource://" + context.packageName + "/" + resId)
     }
 
-    private var lastClickTime: Long = 0
-    private val debounceInterval: Long = 200 // 防抖间隔
-    private var isWaitingForClear = false
+
 
     /** < volume,maxVolume,volume/maxVolume > */
-    val systemVolume:Triple<Int,Int,Float> get() = run{
+    private val systemVolume:Triple<Int,Int,Float> get() = run{
         val context = ModuleInitializer.application
         val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
         val volume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
@@ -281,7 +187,7 @@ object PromptSoundPlay {
         isWaitingForClear = false
     }
 
-    /**
+     /**
      * 是否是静音或者震动模式
      */
     fun isPhoneSilent(context: Context): Boolean {

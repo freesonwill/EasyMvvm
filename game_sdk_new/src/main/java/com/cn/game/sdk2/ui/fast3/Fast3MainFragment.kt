@@ -587,7 +587,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             //Log.d(TAG,"countdown: seconds:$seconds")
             if (mViewModel.gameState == GameAboutModel.Stage.NEW && seconds in 1..5) {
                 if (gameAboutModel.fast3MainFloatVisible.value == false)
-                    PromptSoundPlay.countdownGameTip(requireContext())
+                    PromptSoundPlay.countdownGameTip()
             }
             if (seconds == 0) {
                 if (mViewModel.gameState == GameAboutModel.Stage.NEW) {
@@ -930,7 +930,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     if (bean.select || bean.money > (gameAboutModel.tempBalance.value
                             ?: 0)
                     ) return@onClick
-                    PromptSoundPlay.btnPlayMedia(requireContext())
+                    PromptSoundPlay.btnPlayMedia()
                     val models: List<SelectAnnotationBean> = models as List<SelectAnnotationBean>
                     for (data in models) {
                         data.select = bean == data
@@ -1171,18 +1171,18 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             rvHomeHistory.setOnRecycleClickListener(object :
                 ClickRecyclerView.RecyclerClickListener {
                 override fun onRecyclerClick() {
-                    PromptSoundPlay.btnPlayMedia(requireContext())
+                    PromptSoundPlay.btnPlayMedia()
                     resultAnimation(!mViewModel.isShowResult)
                 }
             })
 
             flRvHistory.setOnClickListener {
-                PromptSoundPlay.btnPlayMedia(requireContext())
+                PromptSoundPlay.btnPlayMedia()
                 resultAnimation(!mViewModel.isShowResult)
             }
 
 //            bottomHistoryLayout.setOnClickListener {
-//                PromptSoundPlay.btnPlayMedia(requireContext())
+//                PromptSoundPlay.btnPlayMedia()
 //                resultAnimation(!mViewModel.isShowResult)
             /*val v = (gameAboutModel.balance as MutableLiveData).value
             if(v == null){
@@ -1194,7 +1194,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
             //点击更多弹出框
             llHomeMore.setOnClickListener {
-                PromptSoundPlay.btnPlayMedia(requireContext())
+                PromptSoundPlay.btnPlayMedia()
                 if (homeMorePop == null) {
                     val bubbleAttach = CustomBubbleAttachPopup(requireContext())
                     bubbleAttach.customBubbleAttachListener =
@@ -1477,7 +1477,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         betteBean: SelectAnnotationBean,
         endCallBack: (() -> Unit)? = null
     ) {
-        PromptSoundPlay.playAudio(requireContext())
+        PromptSoundPlay.playAudio()
         if (anchorMoneyView != null && areaView.moneyView != anchorMoneyView) {
             hiddenAnchorTop()
         }
