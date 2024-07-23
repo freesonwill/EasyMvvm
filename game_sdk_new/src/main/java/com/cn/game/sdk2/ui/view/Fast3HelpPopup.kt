@@ -104,8 +104,7 @@ class Fast3HelpPopup(context: Context, private val offsetY: Int, private val hei
             action = { PromptSoundPlay.btnPlayMedia() }
         )
 
-        mViewBind.lltCollapse.clickNoRepeat(false, 300) {
-            PromptSoundPlay.btnPlayMedia()
+        mViewBind.lltCollapse.clickNoRepeat(true, 300) {
             val toExpand = mViewBind.content.height != fullHeight
             val topPadding = if (toExpand) 0 else 0
             val topPaddingFrom = if (!toExpand) 0 else 0
@@ -138,8 +137,7 @@ class Fast3HelpPopup(context: Context, private val offsetY: Int, private val hei
             }
             LogUtils.d(TAG, "addUpdateListener----->$start-->$end,toExpand:$toExpand")
         }
-        mViewBind.close.clickNoRepeat {
-            PromptSoundPlay.btnPlayMedia()
+        mViewBind.close.clickNoRepeat(true) {
             ViewHelper.showHelpDialog(context, false)
         }
     }

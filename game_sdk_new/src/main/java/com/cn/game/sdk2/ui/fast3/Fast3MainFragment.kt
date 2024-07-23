@@ -1274,7 +1274,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                                                             tvOnline.text =
                                                                                 bean.onlineA
                                                                             if (bean.name == "快三") {
-                                                                                root.clickNoRepeat {
+                                                                                root.clickNoRepeat(true) {
                                                                                     backMainGame()
                                                                                 }
                                                                             }
@@ -1301,7 +1301,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                                     )
                                                     binding.viewPagerNew.offscreenPageLimit =
                                                         mFragList.size
-                                                    binding.close.clickNoRepeat {
+                                                    binding.close.clickNoRepeat(true) {
                                                         backMainGame()
                                                     }
                                                 }
