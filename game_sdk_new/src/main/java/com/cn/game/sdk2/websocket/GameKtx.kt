@@ -85,6 +85,16 @@ val tokenArray = listOf(
     "35:BIyxvrqa",
 //    "69:cAjjzn2s",//失效的token
 )
+val  outerTestTokenArray = listOf(
+    "124:4uQ8FVXY",
+    "125:mw4Q1yQ4",
+    "126:giAIQrfE",
+    "127:AbI8Ppju",
+    "128:j8mFnQ8n",
+    "129:Yn7lAIUu",
+    "130:O9Cz5IXe",
+    "131:0VzbPltw",
+    "132:Q8FMTRrM")
 
 val tokenIndex = Random.nextInt(tokenArray.size)
 
@@ -103,7 +113,7 @@ val token: String
             }
 
             "outerTest" -> {
-                tokenArray[tokenIndex]
+                outerTestTokenArray[tokenIndex]
             }
 
             "release" -> {
