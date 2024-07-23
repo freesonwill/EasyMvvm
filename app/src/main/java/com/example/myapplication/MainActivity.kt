@@ -88,7 +88,7 @@ class MainActivity : AppCompatActivity() {
                 btnOpen.text = "登录失败"
             }
         }
-        if(BuildConfig.BUILD_TYPE == "debug"){
+        /*if(BuildConfig.BUILD_TYPE == "debug"){
             GameApp.createFloatEnterView(this@MainActivity).apply {
                 if(!this.isAdd()) {
                     val lp =
@@ -109,7 +109,7 @@ class MainActivity : AppCompatActivity() {
                     llshow.addView(this, lp)
                 }
             }
-        }
+        }*/
         gameAboutModel.isEnterGroup.observe(this){result->
             if(result){
                 btnOpen.text = "已进入直播间"

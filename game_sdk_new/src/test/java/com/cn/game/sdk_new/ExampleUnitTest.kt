@@ -17,6 +17,17 @@ import org.junit.Assert.*
 class ExampleUnitTest {
 
     @Test
+    fun testForeach() {
+        println("begin")
+        arrayOf(2,3,4).forEachIndexed { index, i ->
+            if(index == 1)return //相当于continue
+            println("testForeach--->${i}")
+        }
+        println("end")
+    }
+
+
+    @Test
     fun testFlow() {
         runBlocking {
             flow {
