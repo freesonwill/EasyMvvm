@@ -8,6 +8,11 @@ plugins {
 apply from: "${rootDir.path}/gradle/pin.gradle"
 apply from: rootProject.file("gradle/flavor.gradle")
 
+// 添加一个自定义的任务来清理aar目录
+/*task cleanAarOutputs(type: Delete) {
+    delete "build/outputs/aar"
+}*/
+
 android {
     namespace 'com.cn.game.sdk2'
     compileSdk 33
@@ -33,6 +38,11 @@ android {
         }
 
     }
+    /*beforeEvaluate {
+        tasks.named("assemble") {
+            it.dependsOn(cleanAarOutputs)
+        }
+    }*/
 
     libraryVariants.all {
         variant ->
@@ -85,6 +95,7 @@ android {
         }
     }
 }
+
 
 dependencies {
     //implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
