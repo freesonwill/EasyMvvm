@@ -304,7 +304,8 @@ class MatchDetailActivity :
                 //92:ZyBmhNCJ   87:MHxIHlYM
                 if(!isTokenValid){
                     btnOpen.text = "正在重新连接服务器"
-                    GameSocketManager.getInstance()?.initSocketClient()
+                    val url = "wss://ws.qxe68.com:7001/api/game/5702"
+                    GameSocketManager.getInstance()?.initSocketClient(url)
                 }else{
                     GameApp.login(
                         token, "wali-internal", true
@@ -1701,7 +1702,7 @@ class MatchDetailActivity :
      */
     fun  horseRaceLamp(){
         if( mViewModel.scrollTextList.value!=null){
-         var stl= mViewModel.scrollTextList.value
+            var stl= mViewModel.scrollTextList.value;
             mDatabind.rlMView.visibleOrInvisible(stl!!.isSuccess && stl.data!!.size > 0)
             mDatabind.marqueeView.setTextColor(R.color.c_ffffff)
             stl!!.data.notNull({ list ->

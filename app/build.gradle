@@ -8,7 +8,7 @@ plugins {
     id 'kotlinx-serialization'
 }
 apply plugin: 'kotlin-android-extensions'
-apply from: rootProject.file("gradle/sdk_dep.gradle")
+apply from: "libs/sdk_dep.gradle"
 //apply from: "${rootDir.path}/gradle/sdk_dep.gradle"
 
 def isApp = rootProject.ext.state.chatToApp
