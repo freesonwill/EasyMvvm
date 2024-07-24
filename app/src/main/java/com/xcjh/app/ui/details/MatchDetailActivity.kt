@@ -15,6 +15,8 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import com.android.cling.ClingDLNAManager
 import com.android.cling.control.DeviceControl
@@ -28,9 +30,7 @@ import com.android.cling.util.Utils
 import com.bumptech.glide.Glide
 import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
 import com.cn.game.sdk2.utils.ext.ViewExt.isAdd
-import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.imp.GameApp
-import com.cn.game.sdk2.websocket.isLogin
 import com.google.android.material.appbar.AppBarLayout
 import com.google.gson.Gson
 import com.gyf.immersionbar.ImmersionBar
@@ -76,14 +76,10 @@ import com.xcjh.app.websocket.listener.NoReadMsgPushListener
 import com.xcjh.app.websocket.listener.OtherPushListener
 import com.xcjh.base_lib.App
 import com.xcjh.base_lib.Constants
-import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.utils.*
 import com.xcjh.base_lib.utils.view.clickNoRepeat
 import com.xcjh.base_lib.utils.view.visibleOrGone
 import com.xcjh.base_lib.utils.view.visibleOrInvisible
-import kotlinx.android.synthetic.main.dialog_video_volume.content
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.fourthline.cling.model.meta.Device
@@ -389,38 +385,40 @@ class MatchDetailActivity :
         initVp()
         initOther()
         // setTestTab()
-        if(gameAboutModel.isLoginSuccess.value == true){
-            GameApp.enterLive("1213", listOf(1), "")
-        }
-        gameAboutModel.isEnterGroup.observe(this){ result->
-            if(result){
-                val container = findViewById<FrameLayout>(android.R.id.content)
-                GameApp.createFloatEnterView(this@MatchDetailActivity).apply {
-                    if(!this.isAdd()) {
-                        val lp = RelativeLayout.LayoutParams(layoutParams.width, layoutParams.height)
-                        lp.topMargin = 150.dp2px
-                        lp.marginEnd = 0.dp2px
-                        lp.addRule(RelativeLayout.ALIGN_PARENT_START)
-                        container.addView(this, lp)
-                    }
-                }
-                GameApp.createFloatResultView(this@MatchDetailActivity).apply {
-                    if(!this.isAdd()) {
-                        val lp = RelativeLayout.LayoutParams(layoutParams.width, layoutParams.height)
-                        lp.topMargin = 50.dp2px
-                        lp.marginEnd = 0.dp2px
-                        lp.addRule(RelativeLayout.ALIGN_PARENT_END)
-                        container.addView(this, lp)
-                    }
-                }
-
+        GameApp.apply {
+            val activity = this@MatchDetailActivity
+            if(isLoginSuccess.value == true){
+                enterLive("1213", listOf(1), "")
             }
+            isEnterGroup.observe(activity){ result->
+                if(result){
+                    val container = findViewById<FrameLayout>(android.R.id.content)
+                    createFloatEnterView(activity).apply {
+                        if(!this.isAdd()) {
+                            val lp = FrameLayout.LayoutParams(layoutParams.width, layoutParams.height)
+                            lp.topMargin = 150.dp2px
+                            lp.marginEnd = 0.dp2px
+                            container.addView(this, lp)
+                        }
+                    }
+                    createFloatResultView(activity).apply {
+                        if(!this.isAdd()) {
+                            val lp = FrameLayout.LayoutParams(layoutParams.width, layoutParams.height)
+                            lp.topMargin = 70.dp2px
+                            lp.marginStart = context.screenWidth - layoutParams.width
+                            container.addView(this, lp)
+                        }
+                    }
+
+                }
+            }
+            lifecycle.addObserver(object :DefaultLifecycleObserver{
+                override fun onDestroy(owner: LifecycleOwner) {
+                    super.onDestroy(owner)
+                    leaveLive()
+                }
+            })
         }
-
-    }
-
-    override fun finish() {
-        GameApp.leaveLive()
     }
 
 
@@ -1666,7 +1664,7 @@ class MatchDetailActivity :
      */
     fun  horseRaceLamp(){
         if( mViewModel.scrollTextList.value!=null){
-         var stl= mViewModel.scrollTextList.value
+            var stl= mViewModel.scrollTextList.value;
             mDatabind.rlMView.visibleOrInvisible(stl!!.isSuccess && stl.data!!.size > 0)
             mDatabind.marqueeView.setTextColor(R.color.c_ffffff)
             stl!!.data.notNull({ list ->

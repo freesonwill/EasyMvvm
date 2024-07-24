@@ -14,11 +14,8 @@ import android.util.Log
 import android.view.Choreographer
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.Button
-import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.ProgressBar
-import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.AppCompatImageView
@@ -28,14 +25,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
-import com.cn.game.sdk2.utils.ext.ViewExt.isAdd
-import com.cn.game.sdk2.websocket.GameSocketManager
-import com.cn.game.sdk2.websocket.gameAboutModel
-import com.cn.game.sdk2.websocket.imp.GameApp
-import com.cn.game.sdk2.websocket.isTokenValid
-import com.cn.game.sdk2.websocket.token
-import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 import com.engagelab.privates.core.api.MTCorePrivatesApi
 import com.engagelab.privates.push.api.MTPushPrivatesApi
 import com.google.gson.Gson
@@ -122,50 +111,6 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         MsgFragment(),
         MyUserFragment(),
     )
-
-    private fun showGameSdk(container:RelativeLayout){
-        val context = this@MainActivity
-        val btnOpen = Button(context)
-        val lp = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,FrameLayout.LayoutParams.WRAP_CONTENT)
-        lp.topMargin = 250.dp2px
-        container.addView(btnOpen,lp)
-
-        GameApp.setSocketStatesCallback(object : GameApp.SocketStatesCallback{
-            override fun onOpen() {
-                btnOpen.post{
-                    btnOpen.text = "服务器连接成功,点击登录"
-                    btnOpen.isClickable = true
-                }
-            }
-            override fun onClose(isNeedReconnect: Boolean) {
-                btnOpen.post{
-                    if(isNeedReconnect){
-                        btnOpen.text = "正在重新连接服务器"
-                    }else{
-                        btnOpen.text = "token失效,点击重新登录"
-                        btnOpen.isClickable = true
-                    }
-                }
-            }
-        })
-        btnOpen.setOnClickListener {
-            btnOpen.isClickable = false;
-            if(gameAboutModel.isLoginSuccess.value == true){
-
-            }else{
-                //92:ZyBmhNCJ   87:MHxIHlYM
-                if(!isTokenValid){
-                    btnOpen.text = "正在重新连接服务器"
-                    GameSocketManager.getInstance()?.initSocketClient("wss://ws.qxe68.com:7001/api/game/5702")
-                }else{
-                    GameApp.login(
-                        token, "wali-internal", true
-                    )
-                    btnOpen.text = "正在登录"
-                }
-            }
-        }
-    }
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)

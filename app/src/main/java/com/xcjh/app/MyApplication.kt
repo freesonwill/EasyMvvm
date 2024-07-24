@@ -8,11 +8,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.room.Room
-import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.imp.GameApp
-import com.cn.game.sdk2.websocket.isTokenValid
-import com.cn.game.sdk2.websocket.token
-import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 import com.drake.statelayout.StateConfig
 import com.engagelab.privates.core.api.MTCorePrivatesApi
 import com.engagelab.privates.push.api.MTPushPrivatesApi
@@ -29,6 +25,7 @@ import com.lxj.xpopup.core.BasePopupView
 import com.scwang.smart.refresh.footer.ClassicsFooter
 import com.scwang.smart.refresh.header.MaterialHeader
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
+import com.shuyu.gsyvideoplayer.GSYVideoManager
 import com.shuyu.gsyvideoplayer.player.IjkPlayerManager
 import com.shuyu.gsyvideoplayer.player.PlayerFactory
 import com.tencent.mmkv.MMKV
@@ -51,7 +48,9 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import me.jessyan.autosize.AutoSizeConfig
+import tv.danmaku.ijk.media.player.IjkMediaPlayer
 import java.util.Locale
+import kotlin.random.Random
 
 
 //Application全局的ViewModel，里面存放了一些账户信息，基本配置信息等
@@ -73,7 +72,6 @@ class MyApplication : App() , LifecycleObserver {
         lateinit var dataChatList: MyRoomChatList
         lateinit var appViewModelInstance: AppViewModel
         lateinit var eventViewModelInstance: EventViewModel
-
     }
 
     init {
@@ -96,62 +94,70 @@ class MyApplication : App() , LifecycleObserver {
 //        game.initialize(this,this)
         //ijk内核，默认模式
         PlayerFactory.setPlayManager(IjkPlayerManager::class.java)
+        IjkPlayerManager.setLogLevel(IjkMediaPlayer.IJK_LOG_SILENT)
         initDataBase()
         initUI()
         initPush()
-        GameApp.setSocketStatesCallback(object :GameApp.SocketStatesCallback{
+        GameApp.apply {
+            setSocketStatesCallback(object :GameApp.SocketStatesCallback{
 
-            override fun onClose(isNeedReconnect: Boolean) {
+                override fun onClose(isNeedReconnect: Boolean) { }
 
-            }
-
-            override fun onOpen() {
-                if(isTokenValid) {
-                    GameApp.login(
-                        token, "wali-internal", false
-                    )
+                override fun onOpen() {
+                    val tokenArray = listOf(
+                        "124:4uQ8FVXY",
+                        "125:mw4Q1yQ4",
+                        "126:giAIQrfE",
+                        "127:AbI8Ppju",
+                        "128:j8mFnQ8n",
+                        "129:Yn7lAIUu",
+                        "130:O9Cz5IXe",
+                        "131:0VzbPltw",
+                        "132:Q8FMTRrM")
+                    val token = tokenArray[Random.nextInt(tokenArray.size)]
+                    login(token, "wali-internal", false)
                 }
-            }
+            })
+            loadGame(this@MyApplication,true,"wss://ws.qxe68.com:7001/api/game/5702",object : GameApp.OnSdkListener{
+                override fun customerServiceAction() {
 
-        })
-        GameApp.loadGame(this,true,"wss://ws.qxe68.com:7001/api/game/5702",object : GameApp.OnSdkListener{
-            override fun customerServiceAction() {
+                }
 
-            }
+                override fun historyOfBetAction() {
 
-            override fun historyOfBetAction() {
+                }
 
-            }
+                override fun onEnterGame() {
 
-            override fun onEnterGame() {
+                }
 
-            }
+                override fun onEnterLive(type: Int, msg: String) {
 
-            override fun onEnterLive(type: Int, msg: String) {
+                }
 
-            }
+                override fun onGameFloatingDetailViewStatus(isShowUp: Boolean) {
 
-            override fun onGameFloatingDetailViewStatus(isShowUp: Boolean) {
+                }
 
-            }
+                override fun onInsufficientBalance() {
 
-            override fun onInsufficientBalance() {
+                }
 
-            }
+                override fun onLeaveLive(type: Int, str: String?) {
 
-            override fun onLeaveLive(type: Int, str: String?) {
+                }
 
-            }
+                override fun onLoginGame(i: Int, str: String?) {
 
-            override fun onLoginGame(i: Int, str: String?) {
+                }
 
-            }
+                override fun onTokenLoseEffectiveness() {
 
-            override fun onTokenLoseEffectiveness() {
+                }
+            })
+            //GameApp.isShowHistoryAndCustomer(false)
+        }
 
-            }
-        })
-        GameApp.isShowHistoryAndCustomer(false)
     }
 
     private fun loadBrandingTheme(languageCode: String) {

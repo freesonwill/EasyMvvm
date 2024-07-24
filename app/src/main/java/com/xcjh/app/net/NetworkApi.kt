@@ -70,7 +70,7 @@ class NetworkApi : BaseNetworkApi() {
             // addInterceptor(CacheInterceptor())
             // addInterceptor(TokenOutInterceptor())
             // 日志拦截器
-            addInterceptor(
+            /*addInterceptor(
                 LoggingInterceptor.Builder() //构建者模式
                     .loggable(BuildConfig.DEBUG) //是否开启日志打印
                     .setLevel(Level.BASIC) //打印的等级
@@ -79,7 +79,7 @@ class NetworkApi : BaseNetworkApi() {
                     .response("Response===") // Response的Tag
                     //.addHeader("log-header", "I am the log request header.") // 添加打印头, 注意 key 和 value 都不能是中文
                     .build()
-            )
+            )*/
             //超时时间 连接、读、写
             connectTimeout(30, TimeUnit.SECONDS)
             readTimeout(30, TimeUnit.SECONDS)
