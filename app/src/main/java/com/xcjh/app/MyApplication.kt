@@ -8,6 +8,11 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.room.Room
+import com.cn.game.sdk2.websocket.gameAboutModel
+import com.cn.game.sdk2.websocket.imp.GameApp
+import com.cn.game.sdk2.websocket.isTokenValid
+import com.cn.game.sdk2.websocket.token
+import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 import com.drake.statelayout.StateConfig
 import com.engagelab.privates.core.api.MTCorePrivatesApi
 import com.engagelab.privates.push.api.MTPushPrivatesApi
@@ -94,6 +99,59 @@ class MyApplication : App() , LifecycleObserver {
         initDataBase()
         initUI()
         initPush()
+        GameApp.setSocketStatesCallback(object :GameApp.SocketStatesCallback{
+
+            override fun onClose(isNeedReconnect: Boolean) {
+
+            }
+
+            override fun onOpen() {
+                if(isTokenValid) {
+                    GameApp.login(
+                        token, "wali-internal", false
+                    )
+                }
+            }
+
+        })
+        GameApp.loadGame(this,true,"wss://ws.qxe68.com:7001/api/game/5702",object : GameApp.OnSdkListener{
+            override fun customerServiceAction() {
+
+            }
+
+            override fun historyOfBetAction() {
+
+            }
+
+            override fun onEnterGame() {
+
+            }
+
+            override fun onEnterLive(type: Int, msg: String) {
+
+            }
+
+            override fun onGameFloatingDetailViewStatus(isShowUp: Boolean) {
+
+            }
+
+            override fun onInsufficientBalance() {
+
+            }
+
+            override fun onLeaveLive(type: Int, str: String?) {
+
+            }
+
+            override fun onLoginGame(i: Int, str: String?) {
+
+            }
+
+            override fun onTokenLoseEffectiveness() {
+
+            }
+        })
+        GameApp.isShowHistoryAndCustomer(false)
     }
 
     private fun loadBrandingTheme(languageCode: String) {

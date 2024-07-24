@@ -35,6 +35,7 @@ import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.imp.GameApp
 import com.cn.game.sdk2.websocket.isTokenValid
 import com.cn.game.sdk2.websocket.token
+import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 import com.engagelab.privates.core.api.MTCorePrivatesApi
 import com.engagelab.privates.push.api.MTPushPrivatesApi
 import com.google.gson.Gson
@@ -60,6 +61,8 @@ import com.xcjh.app.bean.JsonBean
 import com.xcjh.app.bean.LoginInfo
 import com.xcjh.app.bean.TimeConstantsDat
 import com.xcjh.app.databinding.ActivityHomeBinding
+import com.xcjh.app.net.ApiComService
+import com.xcjh.app.net.ChangeHostUtil
 import com.xcjh.app.placeLoginDialog
 import com.xcjh.app.ui.details.MatchDetailActivity
 import com.xcjh.app.ui.home.home.HomeFragment
@@ -120,14 +123,56 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         MyUserFragment(),
     )
 
+    private fun showGameSdk(container:RelativeLayout){
+        val context = this@MainActivity
+        val btnOpen = Button(context)
+        val lp = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,FrameLayout.LayoutParams.WRAP_CONTENT)
+        lp.topMargin = 250.dp2px
+        container.addView(btnOpen,lp)
 
+        GameApp.setSocketStatesCallback(object : GameApp.SocketStatesCallback{
+            override fun onOpen() {
+                btnOpen.post{
+                    btnOpen.text = "服务器连接成功,点击登录"
+                    btnOpen.isClickable = true
+                }
+            }
+            override fun onClose(isNeedReconnect: Boolean) {
+                btnOpen.post{
+                    if(isNeedReconnect){
+                        btnOpen.text = "正在重新连接服务器"
+                    }else{
+                        btnOpen.text = "token失效,点击重新登录"
+                        btnOpen.isClickable = true
+                    }
+                }
+            }
+        })
+        btnOpen.setOnClickListener {
+            btnOpen.isClickable = false;
+            if(gameAboutModel.isLoginSuccess.value == true){
+
+            }else{
+                //92:ZyBmhNCJ   87:MHxIHlYM
+                if(!isTokenValid){
+                    btnOpen.text = "正在重新连接服务器"
+                    GameSocketManager.getInstance()?.initSocketClient("wss://ws.qxe68.com:7001/api/game/5702")
+                }else{
+                    GameApp.login(
+                        token, "wali-internal", true
+                    )
+                    btnOpen.text = "正在登录"
+                }
+            }
+        }
+    }
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         //MTPushPrivatesApi.clearNotification(this)
 //        placeLoginDialog()
-
-        showStatusBar() //showStatusBar
+        //this.showGameSdk(mDatabind.reSlot)
+        showStatusBar()
 
 
 //        mDatabind.btnClick.clickNoRepeat {

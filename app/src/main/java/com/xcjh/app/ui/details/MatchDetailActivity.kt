@@ -9,7 +9,6 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
@@ -29,11 +28,9 @@ import com.android.cling.util.Utils
 import com.bumptech.glide.Glide
 import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
 import com.cn.game.sdk2.utils.ext.ViewExt.isAdd
-import com.cn.game.sdk2.websocket.GameSocketManager
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.imp.GameApp
-import com.cn.game.sdk2.websocket.isTokenValid
-import com.cn.game.sdk2.websocket.token
+import com.cn.game.sdk2.websocket.isLogin
 import com.google.android.material.appbar.AppBarLayout
 import com.google.gson.Gson
 import com.gyf.immersionbar.ImmersionBar
@@ -272,77 +269,13 @@ class MatchDetailActivity :
 
             }
     }
-    private fun showGameSdk(container: FrameLayout){
-        val context = this
-        val btnOpen = Button(context).apply { text = "正在连接服务器" }
-        val lp = RelativeLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)
-        lp.topMargin = 250.dp2px
-        container.addView(btnOpen,lp)
-        GameApp.setSocketStatesCallback(object : GameApp.SocketStatesCallback{
-            override fun onOpen() {
-                btnOpen.post{
-                    btnOpen.text = "服务器连接成功,点击登录"
-                    btnOpen.isClickable = true
-                }
-            }
-            override fun onClose(isNeedReconnect: Boolean) {
-                btnOpen.post{
-                    if(isNeedReconnect){
-                        btnOpen.text = "正在重新连接服务器"
-                    }else{
-                        btnOpen.text = "token失效,点击重新登录"
-                        btnOpen.isClickable = true
-                    }
-                }
-            }
-        })
-        btnOpen.setOnClickListener {
-            btnOpen.isClickable = false
-            if(gameAboutModel.isLoginSuccess.value == true){
 
-            }else{
-                //92:ZyBmhNCJ   87:MHxIHlYM
-                if(!isTokenValid){
-                    btnOpen.text = "正在重新连接服务器"
-                    val url = "wss://ws.qxe68.com:7001/api/game/5702"
-                    GameSocketManager.getInstance()?.initSocketClient(url)
-                }else{
-                    GameApp.login(
-                        token, "wali-internal", true
-                    )
-                    btnOpen.text = "正在登录"
-                }
-            }
-        }
-        gameAboutModel.isEnterGroup.observe(this){ result->
-            if(result){
-                btnOpen.text = "已进入直播间"
-                GameApp.createFloatEnterView(context).apply {
-                    if(!this.isAdd()) {
-                        val lp = FrameLayout.LayoutParams(layoutParams.width, layoutParams.height)
-                        lp.topMargin = 150.dp2px
-                        lp.marginEnd = 0.dp2px
-                        container.addView(this, lp)
-                    }
-                }
-                GameApp.createFloatResultView(context).apply {
-                    if(!this.isAdd()) {
-                        val lp = FrameLayout.LayoutParams(layoutParams.width, layoutParams.height)
-                        lp.topMargin = 50.dp2px
-                        lp.marginStart = context.screenWidth - lp.width
-                        container.addView(this, lp)
-                    }
-                }
-
-            }
-        }
-    }
 
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-        this.showGameSdk(findViewById(android.R.id.content))
+
         mDatabind.btnClick.clickNoRepeat {
             Log.i("CCCCCC","-======="+mDatabind.videoPlayer.isIfCurrentIsFullscreen)
         }
@@ -456,7 +389,38 @@ class MatchDetailActivity :
         initVp()
         initOther()
         // setTestTab()
+        if(gameAboutModel.isLoginSuccess.value == true){
+            GameApp.enterLive("1213", listOf(1), "")
+        }
+        gameAboutModel.isEnterGroup.observe(this){ result->
+            if(result){
+                val container = findViewById<FrameLayout>(android.R.id.content)
+                GameApp.createFloatEnterView(this@MatchDetailActivity).apply {
+                    if(!this.isAdd()) {
+                        val lp = RelativeLayout.LayoutParams(layoutParams.width, layoutParams.height)
+                        lp.topMargin = 150.dp2px
+                        lp.marginEnd = 0.dp2px
+                        lp.addRule(RelativeLayout.ALIGN_PARENT_START)
+                        container.addView(this, lp)
+                    }
+                }
+                GameApp.createFloatResultView(this@MatchDetailActivity).apply {
+                    if(!this.isAdd()) {
+                        val lp = RelativeLayout.LayoutParams(layoutParams.width, layoutParams.height)
+                        lp.topMargin = 50.dp2px
+                        lp.marginEnd = 0.dp2px
+                        lp.addRule(RelativeLayout.ALIGN_PARENT_END)
+                        container.addView(this, lp)
+                    }
+                }
 
+            }
+        }
+
+    }
+
+    override fun finish() {
+        GameApp.leaveLive()
     }
 
 
@@ -1702,7 +1666,7 @@ class MatchDetailActivity :
      */
     fun  horseRaceLamp(){
         if( mViewModel.scrollTextList.value!=null){
-            var stl= mViewModel.scrollTextList.value;
+         var stl= mViewModel.scrollTextList.value
             mDatabind.rlMView.visibleOrInvisible(stl!!.isSuccess && stl.data!!.size > 0)
             mDatabind.marqueeView.setTextColor(R.color.c_ffffff)
             stl!!.data.notNull({ list ->
