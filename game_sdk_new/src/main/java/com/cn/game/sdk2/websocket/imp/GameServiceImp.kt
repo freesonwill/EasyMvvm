@@ -259,7 +259,7 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
         }
 
         currentConfig = configMap[miniGameId]
-        GameApp.enterLive("1213", listOf(1), "")
+        //GameApp.enterLive("1213", listOf(1), "")
         //重连时 直接进入直播间
 //        if (isEnterRoom) {
 //            "重连时 直接进入直播间".loge(tag)

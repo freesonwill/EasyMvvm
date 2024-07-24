@@ -80,10 +80,8 @@ val tokenArray = listOf(
     "37:QyJbGSGR",
     "24:zQQBFVFI",
     "50:OtdAVXdd",
-//    "74:4wNIFMMi",//失效的token
     "51:Ja9L1rG6",
     "35:BIyxvrqa",
-//    "69:cAjjzn2s",//失效的token
 )
 val  outerTestTokenArray = listOf(
     "124:4uQ8FVXY",
@@ -97,7 +95,7 @@ val  outerTestTokenArray = listOf(
     "132:Q8FMTRrM")
 
 val tokenIndex = Random.nextInt(tokenArray.size)
-
+val outTokenIndex = Random.nextInt(outerTestTokenArray.size)
 @Suppress("KotlinConstantConditions")
 val token: String
     get() {
@@ -109,15 +107,15 @@ val token: String
             }
 
             "innerTest" -> {
-                "99:mFGB4ljy"
+                tokenArray[tokenIndex]
             }
 
             "outerTest" -> {
-                outerTestTokenArray[tokenIndex]
+                outerTestTokenArray[outTokenIndex]
             }
 
             "release" -> {
-                tokenArray[Random.nextInt(tokenArray.size)]
+                outerTestTokenArray[outTokenIndex]
             }
 
             else -> throw IllegalStateException("wrong buildType:${BuildConfig.BUILD_TYPE}")

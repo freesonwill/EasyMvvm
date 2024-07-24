@@ -62,8 +62,6 @@ class MainActivity : AppCompatActivity() {
             }
         })
         btnOpen.setOnClickListener {
-            //MyGameManager.showFastView(this)
-            //ViewHelper.showFastView(this)
             btnOpen.isClickable = false;
             if(gameAboutModel.isLoginSuccess.value == true){
 
@@ -71,23 +69,26 @@ class MainActivity : AppCompatActivity() {
                 //92:ZyBmhNCJ   87:MHxIHlYM
                 if(!isTokenValid){
                     btnOpen.text = "正在重新连接服务器"
-                    GameSocketManager.getInstance()?.initSocketClient("wss://ws.qxe68.com:7001/api/game/5702")
+                    //GameSocketManager.getInstance()?.initSocketClient("wss://ws.qxe68.com:7001/api/game/5702")
                 }else{
                     GameApp.login(
-                        token, "wali-internal", false
-                    )
+                        token, "wali-internal", false)
                     btnOpen.text = "正在登录"
                 }
             }
         }
         gameAboutModel.isLoginSuccess.observe(this){result->
             if(result){
-                btnOpen.text = "进入直播间"
+                btnOpen.text = "正在进入直播间"
             }else{
                 btnOpen.isClickable = true
                 btnOpen.text = "登录失败"
             }
         }
+        gameAboutModel.isSitDown.observe(this){
+            GameApp.enterLive("1213", listOf(1), "")
+        }
+
         if(BuildConfig.BUILD_TYPE == "debug"){
             GameApp.createFloatEnterView(this@MainActivity).apply {
                 if(!this.isAdd()) {
