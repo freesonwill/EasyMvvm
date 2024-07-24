@@ -36,10 +36,10 @@ android {
 
     libraryVariants.all {
         variant ->
-            variant.outputs.all {
+            variant.outputs.all { output ->
                 def date = String.format('%s', new Date().format('yyyyMMddHHmmss'))
-                //def gitVersion = getGitVersion()
-                outputFileName = "gamesdk-${variant.name}-${date}.apk"
+                def gitVersion = getGitVersion()
+                outputFileName = "gamesdk-${variant.name}-${date}-${gitVersion}.aar"
             }
     }
 
