@@ -38,7 +38,6 @@ class Fast3HelpPopup(context: Context, private val offsetY: Int, private val hei
     private lateinit var mViewBind: FragmentFast3HelpBinding
 
     //全屏的高度
-    //private var fullHeight: Int = context.run { screenHeight + statusBarHeight + navigationBarHeight }
     private var fullHeight: Int = mActivity.run { screenHeight + when {
             !hasNotchScreen -> 0 //Asus没有刘海屏，screenHeight就是全高
             else -> if(hasNavigationBar) navigationBarHeight else 0   //有刘海屏，需要+navigationBarHeight

@@ -64,7 +64,7 @@
 -keep public class * extends android.app.backup.BackupAgentHelper
 -keep public class * extends android.preference.Preference
 -keep public class * extends android.view.View
--keep public class com.android.vending.licensing.ILicensingService
+#-keep public class com.android.vending.licensing.ILicensingService
 
 # 保留support下的所有类及其内部类
 -keep class android.support.** {*;}
@@ -160,8 +160,8 @@
 -dontnote com.google.android.material.**
 -dontwarn androidx.**
 ################glide###############
--keep public class * implements com.bumptech.glide.module.GlideModule
--keep public class * extends com.bumptech.glide.module.AppGlideModule
+#-keep public class * implements com.bumptech.glide.module.GlideModule
+#-keep public class * extends com.bumptech.glide.module.AppGlideModule
 -keep public enum com.bumptech.glide.load.ImageHeaderParser$** {
   **[] $VALUES;
   public *;
@@ -183,12 +183,12 @@
 -keep class **.*_SnakeProxy
 
 # Gson
--keep class sun.misc.Unsafe { *; }
+#-keep class sun.misc.Unsafe { *; }
 -keep class com.google.gson.** { *; }
 -keep class com.xcjh.app.bean.**{ *; }
 -keep class res.anim.** { *; }
 -keep class com.xcjh.app.websocket.bean.**{ *; }
--keep class com.xcjh.base_lib.network.BaseResponse { *; }
+#-keep class com.xcjh.base_lib.network.BaseResponse { *; }
 -keep class com.xcjh.base_lib.bean.** { *; }
 
 -keep class com.xcjh.app.view.** { *; }
@@ -212,10 +212,10 @@
 }
 -keep public class com.alibaba.android.arouter.routes.**{*;}
 -keep public class com.alibaba.android.arouter.facade.**{*;}
--keep class * implements com.alibaba.android.arouter.facade.template.ISyringe{*;}
+#-keep class * implements com.alibaba.android.arouter.facade.template.ISyringe{*;}
 
 # 如果使用了 byType 的方式获取 Service，需添加下面规则，保护接口
--keep interface * implements com.alibaba.android.arouter.facade.template.IProvider
+#-keep interface * implements com.alibaba.android.arouter.facade.template.IProvider
 
 # 如果使用了 单类注入，即不定义接口实现 IProvider，需添加下面规则，保护实现
 # -keep class * implements com.alibaba.android.arouter.facade.template.IProvider
@@ -326,7 +326,15 @@
 -keep class com.google.protobuf.**
 -keep class com.cn.game.sdk2.websocket.interfaces.**{*;}
 -keep class com.cn.game.sdk2.websocket.imp.GameApp{*;}
+-keep class com.cn.game.sdk2.websocket.GameKtxKt{*;}
 -keep class com.cn.game.sdk2.websocket.imp.GameApp$OnSdkListener{*;}
+-keep class com.cn.game.sdk2.websocket.imp.GameApp$SocketStatesCallback{*;}
+-keep class com.cn.game.sdk2.websocket.GameSocketManager{*;}
+-keep class com.cn.game.sdk2.websocket.GameSocketManager$Companion{*;}
+-keep class com.cn.game.sdk2.websocket.viewmodel.GameAboutModel{*;}
+-keep class com.cn.game.sdk2.utils.ext.** {*;}
+-keep class com.xcjh.base_lib2.ModuleInitializer$Companion{*;}
+
 # protobuf
 -keepclasseswithmembernames public class * extends com.google.protobuf.MessageLite {*;}
 -keepclasseswithmembernames public class * extends com.google.protobuf.MessageOrBuilder {*;}

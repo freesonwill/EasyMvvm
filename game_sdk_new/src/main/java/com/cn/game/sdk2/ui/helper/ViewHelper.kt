@@ -86,6 +86,8 @@ object ViewHelper {
     //是否显示其他pop
     var isShowOtherPop: Boolean = false
 
+    /************************** Method *********************************************/
+
     /**
      * 显示帮助文档
      */
@@ -147,8 +149,8 @@ object ViewHelper {
             homeXPopupDialog!!.show()
             return
         }
-        val pop =
-            HomeXPopupDialog(context, Fast3MainFragment(), GAME_ID_ENUM.GAME_FAST3.num).apply {
+        val pop = HomeXPopupDialog(context, Fast3MainFragment(), GAME_ID_ENUM.GAME_FAST3.num)
+            .apply {
                 homeXPopupDialog = this
             }
         XPopup.Builder(context)
