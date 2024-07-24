@@ -1,6 +1,5 @@
 package com.cn.game.sdk2.websocket.imp
 
-import com.cn.game.sdk2.BuildConfig
 import com.cn.game.sdk2.network.code.GameReqCode
 import com.cn.game.sdk2.websocket.bean.Betting
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
@@ -21,7 +20,6 @@ import com.cn.game.sdk2.websocket.convertBetting
 import com.cn.game.sdk2.websocket.copyFrom
 import com.cn.game.sdk2.websocket.doubleIfMoneyEnough
 import com.cn.game.sdk2.websocket.gameAboutModel
-import com.cn.game.sdk2.websocket.gameMassageManager
 import com.cn.game.sdk2.websocket.getMoneyByState
 import com.cn.game.sdk2.websocket.interfaces.GameService
 import com.cn.game.sdk2.websocket.isBig
@@ -30,14 +28,12 @@ import com.cn.game.sdk2.websocket.isDouble
 import com.cn.game.sdk2.websocket.isEmpty
 import com.cn.game.sdk2.websocket.isEnterRoom
 import com.cn.game.sdk2.websocket.isLogin
-import com.cn.game.sdk2.websocket.isNeedReconnect
 import com.cn.game.sdk2.websocket.isNotEmpty
 import com.cn.game.sdk2.websocket.nativeLib
 import com.cn.game.sdk2.websocket.returnTemp
 import com.cn.game.sdk2.websocket.runOnUiThread
 import com.cn.game.sdk2.websocket.setCommittedState
 import com.cn.game.sdk2.websocket.sum
-import com.cn.game.sdk2.websocket.token
 import com.cn.game.sdk2.websocket.verifyDouble
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 import com.xcjh.base_lib2.utils.logd
@@ -52,7 +48,7 @@ import java.util.concurrent.ConcurrentHashMap
 /**
  * 提供ui层调用的统一对象
  */
-abstract class GameServiceImp(private val client: GameSocketClient) : GameService,
+internal abstract class GameServiceImp(private val client: GameSocketClient) : GameService,
     GameServerMessageConvertFactory {
 
     protected open var bettingStepList: ObservableArrayList<BettingRecordBean> =
@@ -209,7 +205,7 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
         gameAboutModel.loginErrorMessage = errorMessage.desc
         gameAboutModel.setLoginResult(false)
 
-        "loginError -> token：$token".loge(tag)/*  when (errorMessage.code) {
+        "loginError".loge(tag)/*  when (errorMessage.code) {
               1000 -> {//其他服有正在进行的游戏，应跳转过去
   //          desc = 您当前还在其他游戏中，是否立刻回到该游戏？ // 713
               }
@@ -259,16 +255,15 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
         }
 
         currentConfig = configMap[miniGameId]
-        GameApp.enterLive("1213", listOf(1), "")
+//        GameApp.enterLive("1213", listOf(1), "")
         //重连时 直接进入直播间
-//        if (isEnterRoom) {
-//            "重连时 直接进入直播间".loge(tag)
-//            "liveId:${gameAboutModel.liveId}".loge(tag)
-//            "gameIds:${gameAboutModel.gameIds}".loge(tag)
-//            "data:${gameAboutModel.data}".loge(tag)
-//GameApp.enterLive(gameAboutModel.liveId, gameAboutModel.gameIds, gameAboutModel.data)
-//
-//        }
+        if (isEnterRoom) {
+            "重连时 直接进入直播间".loge(tag)
+            "liveId:${gameAboutModel.liveId}".loge(tag)
+            "gameIds:${gameAboutModel.gameIds}".loge(tag)
+            "data:${gameAboutModel.data}".loge(tag)
+            GameApp.enterLive(gameAboutModel.liveId, gameAboutModel.gameIds, gameAboutModel.data)
+        }
 
     }
 
@@ -279,7 +274,6 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
         appListener?.runOnUiThread {
             onEnterLive(1, "")
         }
-//        appListener?.onEnterLive(1, "")
         gameAboutModel.isEnterGroup(true)
 
         gameAboutModel.gameList = groupInfo.miniGameBasicInfoListList
@@ -339,7 +333,6 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
     override fun leaveGroup(leave: GameRes.LeaveGroup) {
         isEnterRoom = false
         gameAboutModel.isLeaveGroup(true)
-//        appListener?.onLeaveLive(1, "")
         appListener?.runOnUiThread {
             onLeaveLive(1, "")
         }
@@ -352,7 +345,6 @@ abstract class GameServiceImp(private val client: GameSocketClient) : GameServic
     override fun enterMiniGameInfo(miniGame: GameRes.EnterMiniGameInfo) {
         miniGameId = miniGame.miniGameId
         "enterMiniGameInfo:${miniGame.countDown}".loge(tag)
-//        appListener?.onEnterGame()
         appListener?.runOnUiThread {
             onEnterGame()
         }

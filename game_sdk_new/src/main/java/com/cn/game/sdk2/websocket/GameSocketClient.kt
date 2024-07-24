@@ -1,8 +1,5 @@
 package com.cn.game.sdk2.websocket
 
-import android.os.Handler
-import android.os.Looper
-import android.os.Message
 import android.util.Log
 import com.cn.game.sdk2.websocket.imp.GameApp
 import com.xcjh.base_lib2.utils.loge
@@ -10,7 +7,6 @@ import com.xcjh.base_lib2.utils.logi
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.java_websocket.client.WebSocketClient
@@ -21,7 +17,7 @@ import java.nio.ByteBuffer
 import java.util.Timer
 import java.util.TimerTask
 
-class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
+internal class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
 
     private var _tag = "GameSocketClient"
     private var onMessageListener: OnMessageListener? = null
@@ -30,14 +26,6 @@ class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
 
     fun setOnMessageListener(listener: OnMessageListener) {
         onMessageListener = listener
-    }
-
-    fun re() {
-        "---尝试重连---".loge()
-        if (isNeedReconnect) {
-            //nativeLib.reset()
-            reconnect()
-        }
     }
 
     @OptIn(DelicateCoroutinesApi::class)
@@ -49,7 +37,7 @@ class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
                 isTokenValid = true
                 if (isLogin) {
                     GameApp.login(
-                        token, gameAboutModel.agentName, gameAboutModel.isAnchor
+                        gameAboutModel.token, gameAboutModel.agentName, gameAboutModel.isAnchor
                     )
                 }
             }

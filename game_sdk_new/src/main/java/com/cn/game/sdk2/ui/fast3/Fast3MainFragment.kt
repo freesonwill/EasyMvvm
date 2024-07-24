@@ -558,7 +558,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     "add code=${it.areaCode},${it.id}".loge("UPDATE_ALL_AREA_VIEW")
                 }
             }
-        gameMassageManager?.observeAgainDoubleState(this)
 
         //总余额监听
         gameAboutModel.balance.observe(viewLifecycleOwner) {

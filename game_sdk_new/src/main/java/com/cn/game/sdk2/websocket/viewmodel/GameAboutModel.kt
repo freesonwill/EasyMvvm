@@ -1,6 +1,5 @@
 package com.cn.game.sdk2.websocket.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.cn.game.sdk2.manager.GameManager
@@ -19,7 +18,7 @@ import game.mod.proc.yf.proto.res.GameRes
 import kotlinx.coroutines.*
 
 //internal
- class GameAboutModel : BaseViewModel() {
+internal class GameAboutModel : BaseViewModel() {
     enum class Stage {
         NEW, DEAL, SETTLE
     }
@@ -59,6 +58,7 @@ import kotlinx.coroutines.*
     //是否是主播： 主播只能看到"热门"游戏分类，"热门"分类中以后只会放sdk游戏，在大厅弹窗处，主播端看不到其他的tab和瓦力游戏。
     var isAnchor: Boolean = false
     lateinit var agentName: String
+    lateinit var token:String
 
     lateinit var liveId: String
     lateinit var gameIds: List<Int>

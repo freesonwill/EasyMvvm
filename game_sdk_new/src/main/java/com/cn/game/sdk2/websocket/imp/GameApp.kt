@@ -5,10 +5,7 @@ import android.app.Application
 import android.app.Application.ActivityLifecycleCallbacks
 import android.content.Context
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.View
-import androidx.annotation.Keep
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
@@ -97,6 +94,7 @@ object GameApp : IGameForApp {
      */
     //platform= 6 ,requestId = 0,version = "1"
     override fun login(token: String, agentName: String, anchor: Boolean) {
+        gameAboutModel.token = token
         gameAboutModel.isAnchor = anchor
         gameAboutModel.agentName = agentName
         val req = ClientReq.LoginReq.newBuilder().setPlatform(6).setRequestId(0).setVersion("1")
@@ -218,17 +216,17 @@ object GameApp : IGameForApp {
 
 
     interface OnSdkListener {
+        fun onLoginGame(type: Int, msg: String?)
+
+        fun onEnterLive(type: Int, msg: String)
+
+        fun onEnterGame()
+
         fun customerServiceAction()
 
         fun historyOfBetAction()
 
-        fun onEnterGame()
-
-        fun onEnterLive(type: Int, msg: String)
-
-        fun onLeaveLive(type: Int, str: String?)
-
-        fun onLoginGame(i: Int, str: String?)
+        fun onLeaveLive(type: Int, msg: String?)
 
         fun onTokenLoseEffectiveness()
 

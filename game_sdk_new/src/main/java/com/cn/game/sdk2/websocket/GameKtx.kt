@@ -61,70 +61,63 @@ import com.xcjh.base_lib2.utils.loge
 import game.mod.proc.yf.proto.res.GameRes
 import kotlin.random.Random
 
-/**
- * socket-url
- */
-//var WEB_SOCKET_URL = "wss://ws.qxe68.com:7001/api/game/5702" ///test
 
-/**
- * 仅记录用户当前状态，用于重连服务器处理
- */
-//测试打包专用 99:mFGB4ljy
-//92:ZyBmhNCJ   87:MHxIHlYM  93:Ufx3Dy8y 94:0aPEwiYK   金额少：97:nMz8aSsZ  98:gCrUd5Gz
-val tokenArray = listOf(
-    "101:PcI4jEcP",
-    "99:mFGB4ljy",
-    "42:aRYvqlC5",
-    "33:ZtG5WhUh",
-    "29:zNbNe45L",
-    "37:QyJbGSGR",
-    "24:zQQBFVFI",
-    "50:OtdAVXdd",
-//    "74:4wNIFMMi",//失效的token
-    "51:Ja9L1rG6",
-    "35:BIyxvrqa",
-//    "69:cAjjzn2s",//失效的token
-)
-
-val tokenIndex = Random.nextInt(tokenArray.size)
-
-@Suppress("KotlinConstantConditions")
-val token: String
-    get() {
-        return when (BuildConfig.BUILD_TYPE) {
-            "debug" -> {
-//                "33:ZtG5WhUh"
-                "94:0aPEwiYK"
-//                "109:lW2OFWum"
-            }
-
-            "innerTest" -> {
-                "99:mFGB4ljy"
-            }
-
-            "outerTest" -> {
-                tokenArray[tokenIndex]
-            }
-
-            "release" -> {
-                tokenArray[Random.nextInt(tokenArray.size)]
-            }
-
-            else -> throw IllegalStateException("wrong buildType:${BuildConfig.BUILD_TYPE}")
-        }
-    }
+////测试打包专用 99:mFGB4ljy
+////92:ZyBmhNCJ   87:MHxIHlYM  93:Ufx3Dy8y 94:0aPEwiYK   金额少：97:nMz8aSsZ  98:gCrUd5Gz
+//val tokenArray = listOf(
+//    "101:PcI4jEcP",
+//    "99:mFGB4ljy",
+//    "42:aRYvqlC5",
+//    "33:ZtG5WhUh",
+//    "29:zNbNe45L",
+//    "37:QyJbGSGR",
+//    "24:zQQBFVFI",
+//    "50:OtdAVXdd",
+////    "74:4wNIFMMi",//失效的token
+//    "51:Ja9L1rG6",
+//    "35:BIyxvrqa",
+////    "69:cAjjzn2s",//失效的token
+//)
+//
+//val tokenIndex = Random.nextInt(tokenArray.size)
+//
+//@Suppress("KotlinConstantConditions")
+//val token: String
+//    get() {
+//        return when (BuildConfig.BUILD_TYPE) {
+//            "debug" -> {
+////                "33:ZtG5WhUh"
+//                "94:0aPEwiYK"
+////                "109:lW2OFWum"
+//            }
+//
+//            "innerTest" -> {
+//                "99:mFGB4ljy"
+//            }
+//
+//            "outerTest" -> {
+//                tokenArray[tokenIndex]
+//            }
+//
+//            "release" -> {
+//                tokenArray[Random.nextInt(tokenArray.size)]
+//            }
+//
+//            else -> throw IllegalStateException("wrong buildType:${BuildConfig.BUILD_TYPE}")
+//        }
+//    }
 
 
 //---------------------------socket方面使用,流程控制，不是数据---------------------------------//
 internal var nativeLib = NativeLib()
 
-var socketStatesCallback: GameApp.SocketStatesCallback? = null
+internal var socketStatesCallback: GameApp.SocketStatesCallback? = null
 
-//登录过的标记 用于重连 internal
- var isLogin = false
+//登录过的标记 用于重连
+internal var isLogin = false
 
-//多用户登录token失效 internal
- var isTokenValid = true
+//多用户登录token失效
+internal var isTokenValid = true
 
 //token失效后，socket连接关闭，停止重连
 internal var isNeedReconnect = true
@@ -145,11 +138,11 @@ internal var isEnableSound = true
 internal var appListener: GameApp.OnSdkListener? = null
 
 //---------------------------ui方面使用---------------------------------//
- var gameAboutModel = GameAboutModel() //internal
+internal var gameAboutModel = GameAboutModel() //
 internal var gameMassageManager: UIMethodImpl? = null
 
 
-fun <K, V> Map<K, V>.isNotEmpty(block: (MutableMap<K, V>) -> Unit): Boolean {
+internal fun <K, V> Map<K, V>.isNotEmpty(block: (MutableMap<K, V>) -> Unit): Boolean {
     if (this.isNotEmpty()) {
         block(this.toMutableMap())
         return true
