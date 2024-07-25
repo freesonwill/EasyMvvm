@@ -10,7 +10,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
-import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
@@ -27,6 +26,7 @@ import com.android.cling.entity.ClingPlayType
 import com.android.cling.startBindUpnpService
 import com.android.cling.stopUpnpService
 import com.android.cling.util.Utils
+import com.blankj.utilcode.util.ToastUtils
 import com.bumptech.glide.Glide
 import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
 import com.cn.game.sdk2.utils.ext.ViewExt.isAdd
@@ -44,18 +44,16 @@ import com.shuyu.gsyvideoplayer.builder.GSYVideoOptionBuilder
 import com.shuyu.gsyvideoplayer.model.VideoOptionModel
 import com.shuyu.gsyvideoplayer.utils.GSYVideoType
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer
+import com.xcjh.app.MyApplication
 import com.xcjh.app.R
 import com.xcjh.app.adapter.ViewPager2Adapter
 import com.xcjh.app.appViewModel
 import com.xcjh.app.bean.AnchorListBean
-import com.xcjh.app.bean.MatchBean
 import com.xcjh.app.bean.MatchDetailBean
 import com.xcjh.app.databinding.ActivityMatchDetailBinding
 import com.xcjh.app.isTopActivity
-import com.xcjh.app.net.ApiComService
 import com.xcjh.app.ui.chat.ChatActivity
 import com.xcjh.app.ui.details.common.GSYBaseActivity
-import com.xcjh.app.ui.details.fragment.*
 import com.xcjh.app.utils.*
 import com.xcjh.app.utils.TimeUtil
 import com.xcjh.app.view.LiveOpenPopup
@@ -85,7 +83,6 @@ import kotlinx.coroutines.launch
 import org.fourthline.cling.model.meta.Device
 import tv.danmaku.ijk.media.player.IjkMediaPlayer
 import java.math.BigDecimal
-import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.math.abs
 
@@ -387,11 +384,12 @@ class MatchDetailActivity :
         // setTestTab()
         GameApp.apply {
             val activity = this@MatchDetailActivity
-            if(isLoginSuccess.value == true){
-                enterLive("1213", listOf(1), "")
-            }
-            isEnterGroup.observe(activity){ result->
-                if(result){
+            MyApplication.isEnterLive.observe(activity){ result->
+                if(result.isFailure){
+                    ToastUtils.showShort("进入直播间失败:${result.exceptionOrNull()?.message}")
+                    return@observe
+                }
+                if(result.isSuccess){
                     val container = findViewById<FrameLayout>(android.R.id.content)
                     createFloatEnterView(activity).apply {
                         if(!this.isAdd()) {

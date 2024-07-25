@@ -2,10 +2,12 @@ package com.xcjh.app
 
 import android.app.Activity
 import android.content.Context
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.room.Room
 import com.cn.game.sdk2.websocket.imp.GameApp
@@ -25,7 +27,6 @@ import com.lxj.xpopup.core.BasePopupView
 import com.scwang.smart.refresh.footer.ClassicsFooter
 import com.scwang.smart.refresh.header.MaterialHeader
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
-import com.shuyu.gsyvideoplayer.GSYVideoManager
 import com.shuyu.gsyvideoplayer.player.IjkPlayerManager
 import com.shuyu.gsyvideoplayer.player.PlayerFactory
 import com.tencent.mmkv.MMKV
@@ -49,7 +50,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import me.jessyan.autosize.AutoSizeConfig
 import tv.danmaku.ijk.media.player.IjkMediaPlayer
-import java.util.Locale
 import kotlin.random.Random
 
 
@@ -72,6 +72,9 @@ class MyApplication : App() , LifecycleObserver {
         lateinit var dataChatList: MyRoomChatList
         lateinit var appViewModelInstance: AppViewModel
         lateinit var eventViewModelInstance: EventViewModel
+
+        val isEnterLive  = MutableLiveData<Result<String>>()
+        val isLoginResult = MutableLiveData<Result<String>>()
     }
 
     init {
@@ -83,7 +86,6 @@ class MyApplication : App() , LifecycleObserver {
     override fun onCreate() {
         super.onCreate()
         MMKV.initialize(appContext)
-
 
         //设置字体不走系统
         AutoSizeConfig.getInstance().isExcludeFontScale = true
@@ -99,23 +101,29 @@ class MyApplication : App() , LifecycleObserver {
         initUI()
         initPush()
         GameApp.apply {
+            val loginAction:()->Unit = {
+                val tokenArray = listOf(
+                    "124:4uQ8FVXY",
+                    "125:mw4Q1yQ4",
+                    "126:giAIQrfE",
+                    "127:AbI8Ppju",
+                    "128:j8mFnQ8n",
+                    "129:Yn7lAIUu",
+                    "130:O9Cz5IXe",
+                    "131:0VzbPltw",
+                    "132:Q8FMTRrM")
+                val token = tokenArray[Random.nextInt(tokenArray.size)]
+                login(token, "wali-internal", false )
+            }
             setSocketStatesCallback(object :GameApp.SocketStatesCallback{
 
-                override fun onClose(isNeedReconnect: Boolean) { }
+                override fun onClose(isNeedReconnect: Boolean) {
+                    Log.d("MyApplication","setSocketStatesCallback onClose")
+                }
 
                 override fun onOpen() {
-                    val tokenArray = listOf(
-                        "124:4uQ8FVXY",
-                        "125:mw4Q1yQ4",
-                        "126:giAIQrfE",
-                        "127:AbI8Ppju",
-                        "128:j8mFnQ8n",
-                        "129:Yn7lAIUu",
-                        "130:O9Cz5IXe",
-                        "131:0VzbPltw",
-                        "132:Q8FMTRrM")
-                    val token = tokenArray[Random.nextInt(tokenArray.size)]
-                    login(token, "wali-internal", false)
+                    Log.d("MyApplication","setSocketStatesCallback onOpen")
+                    loginAction()
                 }
             })
             loadGame(this@MyApplication,true,"wss://ws.qxe68.com:7001/api/game/5702",object : GameApp.OnSdkListener{
@@ -132,7 +140,11 @@ class MyApplication : App() , LifecycleObserver {
                 }
 
                 override fun onEnterLive(type: Int, msg: String) {
-
+                    if(type == 1) {
+                        isEnterLive.value = Result.success("")
+                    } else {
+                        isEnterLive.value = Result.failure(Exception(msg))
+                    }
                 }
 
                 override fun onGameFloatingDetailViewStatus(isShowUp: Boolean) {
@@ -143,16 +155,21 @@ class MyApplication : App() , LifecycleObserver {
 
                 }
 
-                override fun onLeaveLive(type: Int, str: String?) {
+                override fun onLeaveLive(type: Int, msg: String?) {
 
                 }
 
-                override fun onLoginGame(i: Int, str: String?) {
-
+                override fun onLoginGame(i: Int, msg: String?) {
+                    if(i == 1) {
+                        isLoginResult.value = Result.success("")
+                        enterLive("1213", listOf(1), "")
+                    } else {
+                        isLoginResult.value = Result.failure(Exception(msg))
+                    }
                 }
 
                 override fun onTokenLoseEffectiveness() {
-
+                    loginAction()
                 }
             })
             //GameApp.isShowHistoryAndCustomer(false)
