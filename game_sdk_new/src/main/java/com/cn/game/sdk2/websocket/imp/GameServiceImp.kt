@@ -350,27 +350,6 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
         }
     }
 
-    /**
-     * 下注返回失败
-     *  将临时确认下注的重新加临时集合里 便于取消和二次确认
-     *//*  private fun returnTemp() {
-          "returnTemp".loge("returnTemp")
-          bettingListTemp.isNotEmpty { temp ->
-              bettingListTempConfirmed.forEach {
-                  if (temp.containsKey(it.key)) {
-                      temp[it.key]!!.money += it.value.money
-                      bettingListTemp[it.key] = temp[it.key]!!
-                  } else {
-                      bettingListTemp[it.key] = it.value
-                  }
-              }
-          }.isEmpty {
-              bettingListTemp.putAll(bettingListTempConfirmed)
-          }
-          tempMoney += confirmTempMoney
-          bettingListTempConfirmed.clear()
-      }*/
-
     override fun miniGameBetResult(result: GameRes.MyMiniGameBetResult) {
         previousSuccess = true
         "服务器下注结果：$result".loge()
@@ -383,22 +362,7 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
                         true, bettingStepList.getMoneyByState(BettingStatus.COMMITTING)
                     )
                 )
-                bettingStepList.setCommittedState()/*
-                //下注成功后 保存当前下注总额为已确认下注金额；并将当前下注总额清空
-                //currentCountMoney包含之前确认的和现在临时的，所以可以直接覆盖已提交的
-                confirmMoney += confirmTempMoney
-                balance -= confirmMoney
-                //跟新again和double
-                gameAboutModel.setOnceCountMoney(getPanelAllMoney())
-
-                bettingListTempConfirmed.forEach { (betting, temBean) ->
-                    if (bettingListConfirmed.containsKey(betting)) {
-                        temBean.money += bettingListConfirmed[betting]?.money!!
-                    }
-                }
-                bettingListConfirmed copyFrom bettingListTempConfirmed
-                bettingListTempConfirmed.clear()
-                confirmTempMoney = 0*/
+                bettingStepList.setCommittedState()
             }
 
             1 -> {
@@ -458,18 +422,6 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
         gameAboutModel.changeStage(GameAboutModel.Stage.NEW)
         curStage = GameAboutModel.Stage.NEW
         checkAgainNew()
-//        gameAboutModel.setOnceCountMoney(0)
-//        againBettingMap.isNotEmpty {
-//            //新的一局开始，并且上一局有数据，并且余额足够
-//            if (againCountMoney <= balance) {
-//                gameAboutModel.changeMeetAgain(true)
-//            } else {
-//                //新的一局开始，并且上一局有数据，但是余额不足
-//                gameAboutModel.changeMeetAgain(false)
-//            }
-//        }.isEmpty {
-//            gameAboutModel.changeMeetAgain(false)
-//        }
         resetPanel()
         currentConfig = configMap[miniGameId]
     }
@@ -479,13 +431,6 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
      */
     private fun resetPanel() {
         //重置上一局的所有钱
-//        limitMap.clear()
-//        confirmMoney = 0
-//        tempMoney = 0
-//        confirmTempMoney = 0
-//        bettingListTempConfirmed.clear()
-//        bettingListConfirmed.clear()
-//        bettingListTemp.clear()
         gameAboutModel.netIncome = 0
         bettingStepList.clear()
     }
@@ -504,19 +449,10 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
         gameAboutModel.countDown = settle.countDown //当前阶段剩余时间倒计时
         val confirmMoney = bettingStepList.getMoneyByState(BettingStatus.COMMITTED)
 
-        /*if(BuildConfig.BUILD_TYPE == "debug"){
-            GameRes.BeginSettle::class.java.getDeclaredField("winScore_").apply {
-                isAccessible = true
-                set(settle,10000)
-            }
-        }*/
-
         if (settle.winScore > 0) {
             //如果中奖 就计算净收入
             gameAboutModel.netIncome = settle.winScore - confirmMoney
         }
-//        //结束时更新余额
-//        balance = balance + settle.winScore - confirmMoney
         //开奖号码
         //主动设置豹子
         val lotteryNumbers = if (gameAboutModel.manualLeopard) {
@@ -546,13 +482,6 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
         //跟新阶段
         gameAboutModel.changeStage(GameAboutModel.Stage.SETTLE)
         //清空本局已下注数据，并复制到续压集合里
-//        bettingListConfirmed.isNotEmpty {
-//            againBettingList.clear()
-//            againBettingList copyFrom bettingListConfirmed
-//        }
-//        if (confirmMoney > 0) {
-//            againCountMoney = confirmMoney
-//        }
         if (bettingStepList.isNotEmpty()) {
             againBettingMap.clear()
             againBettingMap.putAll(bettingStepList.convertAgainList())
@@ -603,7 +532,6 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
     override fun tokenLoseEffectiveness() {
         isTokenValid = false
         gameAboutModel.setToastErrorMessage("登录失效，请重新登录")
-//        appListener?.onTokenLoseEffectiveness()
         appListener?.runOnUiThread {
             onTokenLoseEffectiveness()
         }
