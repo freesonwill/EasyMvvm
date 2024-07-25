@@ -1,5 +1,6 @@
 package com.xcjh.base_lib2.utils;
 
+import android.app.Application;
 import android.content.ClipData;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -17,7 +18,7 @@ import androidx.annotation.IntRange;
 import androidx.annotation.RequiresApi;
 import androidx.collection.SimpleArrayMap;
 
-import com.xcjh.base_lib2.App;
+import com.xcjh.base_lib2.utils.log.Utils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -583,8 +584,9 @@ public final class LogUtils {
         String versionName = "";
         int versionCode = 0;
         try {
-            PackageInfo pi = App.appGame.getPackageManager()
-                    .getPackageInfo(App.appGame.getPackageName(), 0);
+            Application appGame = Utils.getApp();
+            PackageInfo pi = appGame.getPackageManager()
+                    .getPackageInfo(appGame.getPackageName(), 0);
             if (pi != null) {
                 versionName = pi.versionName;
                 versionCode = pi.versionCode;
@@ -667,13 +669,14 @@ public final class LogUtils {
             if (mDefaultDir != null) {
                 return;
             }
+            Application appGame = Utils.getApp();
             if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
-                    && App.appGame.getExternalCacheDir() != null)
+                    && appGame.getExternalCacheDir() != null)
             {
-                mDefaultDir = App.appGame.getExternalCacheDir() + FILE_SEP + "log" + FILE_SEP;
+                mDefaultDir = appGame.getExternalCacheDir() + FILE_SEP + "log" + FILE_SEP;
             }
             else {
-                mDefaultDir = App.appGame.getCacheDir() + FILE_SEP + "log" + FILE_SEP;
+                mDefaultDir = appGame.getCacheDir() + FILE_SEP + "log" + FILE_SEP;
             }
         }
 
