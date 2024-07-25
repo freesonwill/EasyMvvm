@@ -6,6 +6,7 @@ import android.app.Application.ActivityLifecycleCallbacks
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.UiThread
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
@@ -29,9 +30,8 @@ import game.mod.proc.yf.proto.req.GameReq
  */
 
 object GameApp : IGameForApp {
-    val isEnterGroup get() = gameAboutModel.isEnterGroup
-
-    val isLoginSuccess get() = gameAboutModel.isLoginSuccess
+    private val isEnterGroup get() = gameAboutModel.isEnterGroup
+    private val isLoginSuccess get() = gameAboutModel.isLoginSuccess
 
     /************************************* Method *************************************/
 
@@ -220,34 +220,34 @@ object GameApp : IGameForApp {
 
 
     interface OnSdkListener {
-        fun onLoginGame(type: Int, msg: String?)
+        @UiThread fun onLoginGame(type: Int, msg: String?)
 
-        fun onEnterLive(type: Int, msg: String)
+        @UiThread fun onEnterLive(type: Int, msg: String)
 
-        fun onEnterGame()
+        @UiThread fun onEnterGame()
 
-        fun customerServiceAction()
+        @UiThread fun customerServiceAction()
 
-        fun historyOfBetAction()
+        @UiThread fun historyOfBetAction()
 
-        fun onLeaveLive(type: Int, msg: String?)
+        @UiThread fun onLeaveLive(type: Int, msg: String?)
 
-        fun onTokenLoseEffectiveness()
+        @UiThread fun onTokenLoseEffectiveness()
 
         /**
          * 游戏主界面切换的回调
          * isShowUp: true为打开，false为关闭
          */
-        fun onGameFloatingDetailViewStatus(isShowUp: Boolean)
+        @UiThread fun onGameFloatingDetailViewStatus(isShowUp: Boolean)
 
-        fun onInsufficientBalance()
+        @UiThread fun onInsufficientBalance()
 
     }
 
 
     interface SocketStatesCallback{
-        fun onOpen()
-        fun onClose(isNeedReconnect: Boolean)
+        @UiThread fun onOpen()
+        @UiThread fun onClose(isNeedReconnect: Boolean)
     }
 
     fun setSocketStatesCallback(callback: SocketStatesCallback){

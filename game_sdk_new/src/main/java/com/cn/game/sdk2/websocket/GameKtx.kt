@@ -9,6 +9,7 @@ import androidx.annotation.RequiresApi
 import androidx.databinding.ObservableList
 import com.cn.game.sdk2.BuildConfig
 import com.cn.game.sdk2.ui.fast3.Fast3MainFragment
+import com.cn.game.sdk2.utils.ThreadUtils
 import com.cn.game.sdk2.websocket.bean.AreaBetConfigBean
 import com.cn.game.sdk2.websocket.bean.BOOM_1
 import com.cn.game.sdk2.websocket.bean.BOOM_2
@@ -575,7 +576,7 @@ fun MutableList<BettingRecordBean>.double(): MutableMap<Betting, BettingRecordBe
 }
 
 inline fun <OnSdkListener> OnSdkListener.runOnUiThread(crossinline function: OnSdkListener.() -> Unit):OnSdkListener {
-    Handler(Looper.getMainLooper()).post {
+    ThreadUtils.runOnUiThread(0){
         function()
     }
     return this

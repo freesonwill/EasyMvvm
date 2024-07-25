@@ -1,23 +1,18 @@
 package com.example.myapplication
 
 import android.annotation.SuppressLint
-import android.os.Build
 import android.os.Bundle
-import android.view.WindowManager
 import android.widget.Button
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.ColorUtils
 import androidx.core.view.setPadding
-import androidx.fragment.app.Fragment
-import com.cn.game.sdk2.BuildConfig
-import com.cn.game.sdk2.ui.view.FastLogoView
 import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
 import com.cn.game.sdk2.utils.ext.ViewExt.isAdd
 import com.cn.game.sdk2.websocket.imp.GameApp
 import com.xcjh.base_lib2.utils.loge
+import kotlin.random.Random
 
 
 class MainActivity : AppCompatActivity(), GameApp.OnSdkListener {
@@ -39,22 +34,18 @@ class MainActivity : AppCompatActivity(), GameApp.OnSdkListener {
         GameApp.setSocketStatesCallback(object : GameApp.SocketStatesCallback {
             override fun onOpen() {
                 socketIsOpen = true
-                btnOpen.post {
-                    btnOpen.text = "服务器连接成功,点击登录"
-                    btnOpen.isClickable = true
-                }
+                btnOpen.text = "服务器连接成功,点击登录"
+                btnOpen.isClickable = true
             }
 
             override fun onClose(isNeedReconnect: Boolean) {
                 socketIsOpen = false
-                btnOpen.post {
-                    if (isNeedReconnect) {
-                        btnOpen.text = "正在重新连接服务器"
-                    } else {
-                        btnOpen.text = "token失效,点击重新登录"
-                        btnOpen.isClickable = true
-                        isLogin = false
-                    }
+                if (isNeedReconnect) {
+                    btnOpen.text = "正在重新连接服务器"
+                } else {
+                    btnOpen.text = "token失效,点击重新登录"
+                    btnOpen.isClickable = true
+                    isLogin = false
                 }
             }
         })
@@ -63,9 +54,7 @@ class MainActivity : AppCompatActivity(), GameApp.OnSdkListener {
             btnOpen.isClickable = false
             if (socketIsOpen) {
                 if (!isLogin) {
-                    GameApp.login(
-                        token, "wali-internal", false
-                    )
+                    GameApp.login(token, "wali-internal", false)
                     btnOpen.text = "正在登录"
                 } else {
                     GameApp.enterLive("1213", listOf(1), "")
@@ -74,36 +63,6 @@ class MainActivity : AppCompatActivity(), GameApp.OnSdkListener {
                 GameApp.loadGame(applicationContext, true, url = url, this)
             }
         }
-        GameApp.loadGame(applicationContext,true, "wss://ws.qxe68.com:7001/api/game/5702",object :GameApp.OnSdkListener{
-            override fun customerServiceAction() {
-            }
-
-            override fun historyOfBetAction() {
-            }
-
-            override fun onEnterGame() {
-            }
-
-            override fun onEnterLive(type: Int, msg: String) {
-            }
-
-            override fun onLeaveLive(type: Int, str: String?) {
-            }
-
-            override fun onLoginGame(i: Int, str: String?) {
-
-            }
-
-            override fun onTokenLoseEffectiveness() {
-            }
-
-            override fun onGameFloatingDetailViewStatus(isShowUp: Boolean) {
-            }
-
-            override fun onInsufficientBalance() {
-            }
-
-        })
 
     }
 
@@ -133,15 +92,6 @@ class MainActivity : AppCompatActivity(), GameApp.OnSdkListener {
                 }
             }
 
-            GameApp.createFloatEnterView(this@MainActivity).apply {
-                if (!this.isAdd()) {
-                    val lp = RelativeLayout.LayoutParams(layoutParams.width, layoutParams.height)
-                    lp.topMargin = 200.dp2px
-                    lp.marginEnd = 0.dp2px
-                    lp.addRule(RelativeLayout.ALIGN_PARENT_END)
-                    llshow.addView(this, lp)
-                }
-            }
             GameApp.createFloatResultView(this@MainActivity).apply {
                 if (!this.isAdd()) {
                     val lp = RelativeLayout.LayoutParams(layoutParams.width, layoutParams.height)
