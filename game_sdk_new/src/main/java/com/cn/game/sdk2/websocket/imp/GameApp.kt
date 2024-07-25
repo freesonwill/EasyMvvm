@@ -29,6 +29,11 @@ import game.mod.proc.yf.proto.req.GameReq
  */
 
 object GameApp : IGameForApp {
+    val isEnterGroup get() = gameAboutModel.isEnterGroup
+
+    val isLoginSuccess get() = gameAboutModel.isLoginSuccess
+
+    /************************************* Method *************************************/
 
     /**
      * app需要实现IAppForGame接口
@@ -51,7 +56,6 @@ object GameApp : IGameForApp {
         appContext = context
         appLifecycleEnable = lifecycleEnable
         appListener = onSdkListener
-
         val initSocketClient = GameSocketManager.getInstance()?.initSocketClient(url)
         (appContext as Application).registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks{
             override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {

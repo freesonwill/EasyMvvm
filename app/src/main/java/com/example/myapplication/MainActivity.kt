@@ -74,6 +74,36 @@ class MainActivity : AppCompatActivity(), GameApp.OnSdkListener {
                 GameApp.loadGame(applicationContext, true, url = url, this)
             }
         }
+        GameApp.loadGame(applicationContext,true, "wss://ws.qxe68.com:7001/api/game/5702",object :GameApp.OnSdkListener{
+            override fun customerServiceAction() {
+            }
+
+            override fun historyOfBetAction() {
+            }
+
+            override fun onEnterGame() {
+            }
+
+            override fun onEnterLive(type: Int, msg: String) {
+            }
+
+            override fun onLeaveLive(type: Int, str: String?) {
+            }
+
+            override fun onLoginGame(i: Int, str: String?) {
+
+            }
+
+            override fun onTokenLoseEffectiveness() {
+            }
+
+            override fun onGameFloatingDetailViewStatus(isShowUp: Boolean) {
+            }
+
+            override fun onInsufficientBalance() {
+            }
+
+        })
 
     }
 

@@ -61,6 +61,16 @@ import com.xcjh.base_lib2.utils.loge
 import game.mod.proc.yf.proto.res.GameRes
 import kotlin.random.Random
 
+val outerTestTokenArray = listOf(
+    "124:4uQ8FVXY",
+    "125:mw4Q1yQ4",
+    "126:giAIQrfE",
+    "127:AbI8Ppju",
+    "128:j8mFnQ8n",
+    "129:Yn7lAIUu",
+    "130:O9Cz5IXe",
+    "131:0VzbPltw",
+    "132:Q8FMTRrM")
 
 ////测试打包专用 99:mFGB4ljy
 ////92:ZyBmhNCJ   87:MHxIHlYM  93:Ufx3Dy8y 94:0aPEwiYK   金额少：97:nMz8aSsZ  98:gCrUd5Gz
