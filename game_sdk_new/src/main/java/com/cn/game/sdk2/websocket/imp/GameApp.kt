@@ -19,6 +19,8 @@ import com.cn.game.sdk2.websocket.gameMassageManager
 import com.cn.game.sdk2.websocket.interfaces.IGameForApp
 import com.cn.game.sdk2.websocket.isEnableSound
 import com.cn.game.sdk2.websocket.isNeedReconnect
+import com.xcjh.base_lib2.App
+import com.xcjh.base_lib2.ModuleInitializer
 import com.xcjh.base_lib2.utils.loge
 import game.common.proto.ClientReq
 import game.mod.proc.yf.proto.req.GameReq
@@ -47,6 +49,7 @@ object GameApp : IGameForApp {
     override fun loadGame(context: Context, lifecycleEnable: Boolean, url: String, onSdkListener: OnSdkListener) {
         "loadGame".loge()
         appContext = context
+        ModuleInitializer.application = context.applicationContext as Application
         appLifecycleEnable = lifecycleEnable
         appListener = onSdkListener
         GameSocketManager.getInstance()?.initSocketClient(url)
@@ -81,6 +84,10 @@ object GameApp : IGameForApp {
             }
 
         })
+    }
+
+    override fun removeSdkListener() {
+        appListener = null
     }
 
     /** 登录
@@ -166,7 +173,7 @@ object GameApp : IGameForApp {
      * 入口漂浮窗視圖
      */
     override fun createFloatEnterView(context: Context): View {
-        if (appLifecycleEnable && context is Activity) {
+        if (appLifecycleEnable && context is LifecycleOwner) {
             (context as LifecycleOwner).lifecycle.addObserver(object : LifecycleEventObserver {
                 override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
                     when (event) {
@@ -247,6 +254,9 @@ object GameApp : IGameForApp {
          */
         fun onGameFloatingDetailViewStatus(isShowUp: Boolean)
 
+        /**
+         * 余额不足
+         */
         fun onInsufficientBalance()
 
     }

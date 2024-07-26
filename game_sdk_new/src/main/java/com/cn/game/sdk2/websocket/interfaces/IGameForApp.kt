@@ -8,6 +8,8 @@ interface IGameForApp {
 
     fun loadGame(context: Context, lifecycleEnable: Boolean, url:String, onSdkListener: GameApp.OnSdkListener)
 
+    fun removeSdkListener()
+
     fun login(token: String, agentName: String,isAnchor: Boolean)
 
     fun enterLive(liveId: String, gameIds: List<Int>, data: String)

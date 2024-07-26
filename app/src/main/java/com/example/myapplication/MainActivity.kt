@@ -8,6 +8,8 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.setPadding
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
 import com.cn.game.sdk2.utils.ext.ViewExt.isAdd
 import com.cn.game.sdk2.websocket.imp.GameApp
@@ -54,7 +56,14 @@ class MainActivity : AppCompatActivity(), GameApp.OnSdkListener {
         btnOpen.setOnClickListener {
             when (index) {
                 0 -> {
-                    GameApp.loadGame(applicationContext, true, url = url, this)
+                    GameApp.loadGame(applicationContext, true, url = url, this).apply {
+                        lifecycle.addObserver(object :DefaultLifecycleObserver{
+                            override fun onDestroy(owner: LifecycleOwner) {
+                                super.onDestroy(owner)
+                                GameApp.removeSdkListener()
+                            }
+                        })
+                    }
                     index++
                 }
                 1 -> {

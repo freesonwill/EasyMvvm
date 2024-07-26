@@ -328,7 +328,7 @@
 -keep class com.cn.game.sdk2.websocket.imp.GameApp{*;}
 -keep class com.cn.game.sdk2.websocket.GameKtxKt{*;}
 -keep class com.cn.game.sdk2.websocket.imp.GameApp$OnSdkListener{*;}
--keep class com.cn.game.sdk2.websocket.imp.GameApp$SocketStatesCallback{*;}
+#-keep class com.cn.game.sdk2.websocket.imp.GameApp$SocketStatesCallback{*;}
 #-keep class com.cn.game.sdk2.websocket.GameSocketManager{*;}
 #-keep class com.cn.game.sdk2.websocket.GameSocketManager$Companion{*;}
 #-keep class com.cn.game.sdk2.websocket.viewmodel.GameAboutModel{*;}
