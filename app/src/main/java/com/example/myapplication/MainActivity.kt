@@ -28,40 +28,53 @@ class MainActivity : AppCompatActivity(), GameApp.OnSdkListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-         btnOpen = findViewById<TextView>(R.id.btnOpen)
-         llshow = findViewById<RelativeLayout>(R.id.llshow)
+        btnOpen = findViewById<TextView>(R.id.btnOpen)
+        llshow = findViewById<RelativeLayout>(R.id.llshow)
         val btnXiu = findViewById<Button>(R.id.btnXiu)
-        GameApp.setSocketStatesCallback(object : GameApp.SocketStatesCallback {
-            override fun onOpen() {
-                socketIsOpen = true
-                btnOpen.text = "服务器连接成功,点击登录"
-                btnOpen.isClickable = true
-            }
-
-            override fun onClose(isNeedReconnect: Boolean) {
-                socketIsOpen = false
-                if (isNeedReconnect) {
-                    btnOpen.text = "正在重新连接服务器"
-                } else {
-                    btnOpen.text = "token失效,点击重新登录"
-                    btnOpen.isClickable = true
-                    isLogin = false
-                }
-            }
-        })
-
+        val cpu = findViewById<Button>(R.id.cpu)
+//        GameApp.setSocketStatesCallback(object : GameApp.SocketStatesCallback {
+//            override fun onOpen() {
+//                socketIsOpen = true
+//                btnOpen.text = "服务器连接成功,点击登录"
+//                btnOpen.isClickable = true
+//            }
+//
+//            override fun onClose(isNeedReconnect: Boolean) {
+//                socketIsOpen = false
+//                if (isNeedReconnect) {
+//                    btnOpen.text = "正在重新连接服务器"
+//                } else {
+//                    btnOpen.text = "token失效,点击重新登录"
+//                    btnOpen.isClickable = true
+//                    isLogin = false
+//                }
+//            }
+//        })
+        var index = 0
         btnOpen.setOnClickListener {
-            btnOpen.isClickable = false
-            if (socketIsOpen) {
-                if (!isLogin) {
+            when (index) {
+                0 -> {
+                    GameApp.loadGame(applicationContext, true, url = url, this)
+                    index++
+                }
+                1 -> {
                     GameApp.login(token, "wali-internal", false)
                     btnOpen.text = "正在登录"
-                } else {
+                    index++
+                }
+                2 -> {
                     GameApp.enterLive("1213", listOf(1), "")
                 }
-            } else {
-                GameApp.loadGame(applicationContext, true, url = url, this)
             }
+
+        }
+
+        btnXiu.setOnClickListener {
+            GameApp.leaveLive()
+        }
+
+        cpu.setOnClickListener {
+            GameApp.enterLive("1213", listOf(1), "")
         }
 
     }
@@ -106,7 +119,12 @@ class MainActivity : AppCompatActivity(), GameApp.OnSdkListener {
     }
 
     override fun onLeaveLive(type: Int, str: String?) {
+        "onLeaveLive->$str".loge()
+        btnOpen.text = "已离开房间"
+    }
 
+    override fun initSuccessful() {
+        btnOpen.text = "已连接服务器，点击登录"
     }
 
     override fun onLoginGame(i: Int, str: String?) {
@@ -114,22 +132,9 @@ class MainActivity : AppCompatActivity(), GameApp.OnSdkListener {
         btnOpen.isClickable = true
         if (i == 1) {
             isLogin = true
-            btnOpen.text = "进入直播间"
+            btnOpen.text = "已登录，点击进入直播间"
         } else {
             btnOpen.text = "登录失败"
-        }
-        TextView(this).apply {
-            val lp = RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT
-            )
-            lp.topMargin = 200.dp2px
-            lp.marginEnd = 0.dp2px
-            setTextColor(ContextCompat.getColor(context, R.color.white))
-            background = ContextCompat.getDrawable(context, com.cn.game.sdk2.R.color.blue_ed)
-            setPadding(10.dp2px)
-            lp.addRule(RelativeLayout.ALIGN_PARENT_START)
-            llshow.addView(this, lp)
-            text = "token:$token"
         }
     }
 
