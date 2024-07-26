@@ -52,7 +52,7 @@ abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
             }
             override fun onStart(owner: LifecycleOwner) {
                 super.onResume(owner)
-                (System.currentTimeMillis() - startTime).let{ LogUtils.d(TAG,"${this@BaseFast3Fragment.javaClass.simpleName} load costMills:$it") }
+                (System.currentTimeMillis() - startTime).let{ LogUtils.dTag(TAG,"${this@BaseFast3Fragment.javaClass.simpleName} load costMills:$it") }
             }
         })*/
         initAreaViewList()
@@ -102,7 +102,7 @@ abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
      * 播放透明度动画
      */
     private fun playAlphaAnimTogether(dic: List<View>, duration: Long, count: Int) {
-        //LogUtils.d("playAlphaAnimTogether begin:${mViewModel.playAlphaAnimationLD.value},${javaClass.simpleName}")
+        //LogUtils.dTag(TAG,"playAlphaAnimTogether begin:${mViewModel.playAlphaAnimationLD.value},${javaClass.simpleName}")
         if (mViewModel.playAlphaAnimationLD.value != true) mViewModel.playAlphaAnimationLD.value =
             true
         areaFlickAnimatorSet?.cancel()
@@ -122,7 +122,7 @@ abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
         areaFlickAnimatorSet = AnimatorSet().apply {
             playTogether(animators)
             addListener(onEnd = {
-                //LogUtils.d("playAlphaAnimTogether end:${mViewModel.playAlphaAnimationLD.value},${javaClass.simpleName}")
+                //LogUtils.dTag(TAG,"playAlphaAnimTogether end:${mViewModel.playAlphaAnimationLD.value},${javaClass.simpleName}")
                 if (mViewModel.playAlphaAnimationLD.value != false) mViewModel.playAlphaAnimationLD.value =
                     false
             })

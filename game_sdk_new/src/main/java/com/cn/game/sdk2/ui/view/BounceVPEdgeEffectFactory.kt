@@ -34,13 +34,13 @@ class BounceVPEdgeEffectFactory : RecyclerView.EdgeEffectFactory() {
 
             override fun onPull(deltaDistance: Float) {
                 super.onPull(deltaDistance)
-                //LogUtils.d(onPull~~~~~~~$deltaDistance")
+                //LogUtils.dTag(TAG,onPull~~~~~~~$deltaDistance")
                 handlePull(deltaDistance)
             }
 
             override fun onPull(deltaDistance: Float, displacement: Float) {
                 super.onPull(deltaDistance, displacement)
-                //LogUtils.d("onPull~~~~~~~$deltaDistance,$displacement")
+                //LogUtils.dTag(TAG,"onPull~~~~~~~$deltaDistance,$displacement")
                 handlePull(deltaDistance)
             }
 
@@ -65,7 +65,7 @@ class BounceVPEdgeEffectFactory : RecyclerView.EdgeEffectFactory() {
 
             override fun onRelease() {
                 super.onRelease()
-                //LogUtils.d("onRelease~~~~~~~")
+                //LogUtils.dTag(TAG,"onRelease~~~~~~~")
                 // The finger is lifted. Start the animation to bring translation back to the resting state.
                 if(orientation == LinearLayoutManager.VERTICAL) {
                     if (recyclerView.translationY != 0f) {
@@ -80,7 +80,7 @@ class BounceVPEdgeEffectFactory : RecyclerView.EdgeEffectFactory() {
 
             override fun onAbsorb(velocity: Int) {
                 super.onAbsorb(velocity)
-                //LogUtils.d("onAbsorb~~~~~~~$velocity")
+                //LogUtils.dTag(TAG,"onAbsorb~~~~~~~$velocity")
                 // The list has reached the edge on fling.
                 if(orientation == LinearLayoutManager.VERTICAL) {
                     val sign = if (direction == DIRECTION_BOTTOM) -1 else 1

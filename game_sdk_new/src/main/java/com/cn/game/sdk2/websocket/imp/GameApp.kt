@@ -44,9 +44,7 @@ object GameApp : IGameForApp {
      * 加載SDK
      * app集成sdk 先调用此方法初始化websocket
      */
-    override fun loadGame(
-        context: Context, lifecycleEnable: Boolean, url: String, onSdkListener: OnSdkListener
-    ) {
+    override fun loadGame(context: Context, lifecycleEnable: Boolean, url: String, onSdkListener: OnSdkListener) {
         "loadGame".loge()
         appContext = context
         appLifecycleEnable = lifecycleEnable
@@ -238,6 +236,9 @@ object GameApp : IGameForApp {
 
         fun onLeaveLive(type: Int, msg: String?)
 
+        /**
+         * token失效
+         */
         fun onTokenLoseEffectiveness()
 
         /**

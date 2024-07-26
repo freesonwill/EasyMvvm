@@ -285,7 +285,7 @@ public class VerticalSmartDragLayout extends LinearLayout implements NestedScrol
 
     //子的滚动布局
     public void onNestedScroll(View target, int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed) {
-        //LogUtils.d("dxConsumed:"+dxConsumed+",dyConsumed:"+dyConsumed+",dxUnconsumed:"+dxUnconsumed+",dyUnconsumed:"+dyUnconsumed);
+        //LogUtils.dTag(TAG,"dxConsumed:"+dxConsumed+",dyConsumed:"+dyConsumed+",dxUnconsumed:"+dxUnconsumed+",dyUnconsumed:"+dyUnconsumed);
         if(dyUnconsumed != 0)
             this.scrollTo(this.getScrollX(), this.getScrollY() + dyUnconsumed);
     }

@@ -139,8 +139,9 @@ class MainActivity : AppCompatActivity(), GameApp.OnSdkListener {
     }
 
     override fun onTokenLoseEffectiveness() {
+        btnOpen.text = "token失效,点击重新登录"
         btnOpen.isClickable = true
-        btnOpen.text = "token失效"
+        isLogin = false
     }
 
     override fun onGameFloatingDetailViewStatus(isShowUp: Boolean) {

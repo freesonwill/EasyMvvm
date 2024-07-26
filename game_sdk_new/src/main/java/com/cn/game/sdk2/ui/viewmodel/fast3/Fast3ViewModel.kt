@@ -126,7 +126,7 @@ class Fast3ViewModel : BaseViewModel() {
         }
     val countDown: Long
         get() {
-            LogUtils.d(TAG, "countDown get ${gameAboutModel.countDown}")
+            LogUtils.dTag(TAG, "countDown get ${gameAboutModel.countDown}")
             //return GameManager.instance.countDown
             return gameAboutModel.countDown.toLong()
         }
@@ -151,7 +151,7 @@ class Fast3ViewModel : BaseViewModel() {
 
     override fun onCleared() {
         super.onCleared()
-        LogUtils.d(TAG, "~~~~~~~~~OnCleared")
+        LogUtils.dTag(TAG, "~~~~~~~~~OnCleared")
     }
 
     fun clear() {

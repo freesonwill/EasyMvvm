@@ -223,7 +223,7 @@ public final class LogUtils {
         if (type_low < CONFIG.mConsoleFilter && type_low < CONFIG.mFileFilter){
             return;
         }
-        final TagHead tagHead = processTagAndHead(tag);
+        final TagHead tagHead = processTagAndHead(CONFIG.mTagPrefix+tag);
         String body = processBody(type_high, contents);
         if (CONFIG.mLog2ConsoleSwitch && type_low >= CONFIG.mConsoleFilter && type_high != FILE) {
             print2Console(type_low, tagHead.tag, tagHead.consoleHead, body);
@@ -654,6 +654,7 @@ public final class LogUtils {
         private boolean mLogSwitch         = true;  // The switch of log.
         private boolean mLog2ConsoleSwitch = true;  // The logcat's switch of log.
         private String mGlobalTag         = null;  // The global tag of log.
+        private String mTagPrefix          = null;  // The tag prefix of log.
         private boolean mTagIsSpace        = true;  // The global tag is space.
         private boolean mLogHeadSwitch     = true;  // The head's switch of log.
         private boolean mLog2FileSwitch    = false; // The file's switch of log.
@@ -697,6 +698,15 @@ public final class LogUtils {
             } else {
                 mGlobalTag = tag;
                 mTagIsSpace = false;
+            }
+            return this;
+        }
+
+        public Config setTagPrefix(final String tagPrefix) {
+            if (isSpace(tagPrefix)) {
+                mTagPrefix = "";
+            } else {
+                mTagPrefix = tagPrefix;
             }
             return this;
         }

@@ -92,7 +92,6 @@ import kotlinx.coroutines.launch
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 
 
-@SuppressLint("SetTextI18n")
 class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>() {
     companion object {
         const val TAG = "Fast3MainFragment"
@@ -133,7 +132,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 override fun onResume(owner: LifecycleOwner) {
                     super.onResume(owner)
                     (System.currentTimeMillis() - startTime).let {
-                        LogUtils.d(TAG, "Fast3MainFragment load costMills:$it")
+                        LogUtils.dTag(TAG,"Fast3MainFragment load costMills:$it")
                     }
                 }
 
@@ -152,7 +151,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             mFragList.add(PairsDiceFragment())
             mFragList.add(LeopardFragment())
             (System.currentTimeMillis() - startTime).let {
-                LogUtils.d(TAG, "Fast3MainFragment load costMills1:$it")
+                LogUtils.dTag(TAG,"Fast3MainFragment load costMills1:$it")
             }
             mDatabind.viewPagerNew.initGameViewPager(
                 childFragmentManager, mFragList, arrayListOf(
@@ -164,10 +163,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 )
             )
             (System.currentTimeMillis() - startTime).let {
-                LogUtils.d(
-                    TAG,
-                    "Fast3MainFragment load costMills2:$it"
-                )
+                LogUtils.dTag(TAG, "Fast3MainFragment load costMills2:$it")
             }
             mDatabind.magicIndicator.bindViewPagerNewGame(
                 mDatabind.viewPagerNew, arrayListOf(
@@ -185,10 +181,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 mDatabind.viewPagerNew.offscreenPageLimit = mFragList.size
             }
             (System.currentTimeMillis() - startTime).let {
-                LogUtils.d(
-                    TAG,
-                    "Fast3MainFragment load costMills3:$it"
-                )
+                LogUtils.dTag(TAG,"Fast3MainFragment load costMills3:$it")
             }
         }
         setBetAdapter()
@@ -206,7 +199,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         mDatabind.txtHomeTime.text = mViewModel.homeTimeSeconds.value.toString()
         lifecycleScope.launchWhenResumed {
             //开始下注
-            LogUtils.d(TAG, "initData startBetting")
+            LogUtils.dTag(TAG,"initData startBetting")
             delay(200)
             updateGameStage()
         }
@@ -236,11 +229,11 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         lifecycleScope.launch(Dispatchers.IO) {
             LayoutInflater.from(context).inflate(R.layout.item_bet_history, null).apply {
                 measureView()
-                LogUtils.d(TAG, "historyRvHeight->$measuredHeight")
+                LogUtils.dTag(TAG,"historyRvHeight->$measuredHeight")
                 resultRvHeight = this.measuredHeight
                 findViewById<LinearLayout>(R.id.llShowDice).apply {
                     this.measureView()
-                    LogUtils.d(TAG, "historyMoveHeight->$measuredHeight")
+                    LogUtils.dTag(TAG,"historyMoveHeight->$measuredHeight")
                     resultAnimMoveHeight = this.measuredHeight - 2.dp2px
                 }
                 val params = mDatabind.flRvHistory.layoutParams
@@ -255,6 +248,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
      */
     private fun updateGameStage() {
         gameAboutModel.currentStage.value?.let {
+            LogUtils.dTag(TAG,"updateGameStage-->${it},countDown:${mViewModel.countDown},localGameStage:${mViewModel.localGameStage}")
             if (mViewModel.localGameStage == it) return@let
             mViewModel.isClickOperation = it == GameAboutModel.Stage.NEW
             mDatabind.txtHomeTime.isVisible = it == GameAboutModel.Stage.NEW
@@ -274,10 +268,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 }
             }
             //if(!mViewModel.isCountDownInit) mViewModel.countDown = gameAboutModel.countDown * 1L
-            LogUtils.dTag(
-                TAG,
-                "updateGameStage-->${it},countDown:${mViewModel.countDown},isCountDownStart:${mViewModel.isCountDownStart}"
-            )
+            LogUtils.dTag(TAG,"updateGameStage-->${it},countDown:${mViewModel.countDown},isCountDownStart:${mViewModel.isCountDownStart}")
         }
     }
 
@@ -297,7 +288,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     txtHomeStatic.text = resources.getString(R.string.g_home_txt_please)
                 }
             }
-            LogUtils.d(TAG, "onStartBetting, isCountDownStart:${mViewModel.isCountDownStart}")
+            LogUtils.dTag(TAG,"onStartBetting, isCountDownStart:${mViewModel.isCountDownStart}")
             //取消注区闪烁
             mViewModel.cancelAreaFlickAnimLiveData.value = true
             //重置注区筹码
@@ -477,7 +468,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             }
             //groupWinLottie没在前台显示，不要做Lottie动画
             if (!groupWinLottie.isShown) {
-                LogUtils.w(TAG, "groupWinLottie is not shown at the front, ignore showLottie")
+                LogUtils.w("groupWinLottie is not shown at the front, ignore showLottie")
                 onAnimationEnd()
                 return
             }
@@ -513,13 +504,13 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     }
 
                     override fun onAnimationEnd(animation: Animator) {
-                        //LogUtils.d(TAG,"groupWinLottie onAnimationEnd")
+                        //LogUtils.dTag(TAG,"groupWinLottie onAnimationEnd")
                         onAnimationEnd()
                         isAnimating = false
                     }
 
                     override fun onAnimationCancel(animation: Animator) {
-                        //LogUtils.d(TAG,"groupWinLottie onAnimationCancel")
+                        //LogUtils.dTag(TAG,"groupWinLottie onAnimationCancel")
                         isAnimating = false
                     }
 
@@ -759,10 +750,10 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                             }
                         )
                     }
-                    LogUtils.d(TAG, "receive playAlphaAnimationLD:animator:${animator.hashCode()}")
+                    LogUtils.dTag(TAG,"receive playAlphaAnimationLD:animator:${animator.hashCode()}")
                     animator?.start()
                 } else {
-                    LogUtils.d(
+                    LogUtils.dTag(TAG,
                         TAG,
                         "receive playAlphaAnimationLD:animator:${animator.hashCode()},cancel"
                     )
@@ -1065,7 +1056,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             mViewModel.noteList.count()
         )
         if (mDatabind.llShowBetList.isComputingLayout) {
-            LogUtils.e("isComputingLayout")
+            LogUtils.eTag(TAG,"isComputingLayout")
             mDatabind.llShowBetList.post(action)
         } else {
             action.invoke()
@@ -1441,19 +1432,19 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
     override fun onDetach() {
         super.onDetach()
-        LogUtils.d(TAG, "onDetach~~~~~~~~~~~~~~")
+        LogUtils.dTag(TAG,"onDetach~~~~~~~~~~~~~~")
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        LogUtils.d(TAG, "onDestroyView~~~~~~~~~~~~~~")
+        LogUtils.dTag(TAG,"onDestroyView~~~~~~~~~~~~~~")
     }
 
     /**
      * 关闭页面
      */
     override fun onDestroy() {
-        LogUtils.d(TAG, "onDestroy~~~~~~~~~~~~~~")
+        LogUtils.dTag(TAG,"onDestroy~~~~~~~~~~~~~~")
         //关闭的时候要把这个赋值为0选择
         mViewModel.noteList.forEach {
             it.select = false

@@ -221,7 +221,7 @@ object ViewHelper {
             val llFastClick = it.findViewById<LinearLayout>(R.id.llFastClick)
             llFastClick.clickNoRepeat(true) {
                 if (homeXPopupDialog != null) {
-                    LogUtils.d(TAG, "homeXPopupDialog exists, no need to create it.")
+                    LogUtils.dTag(TAG, "homeXPopupDialog exists, no need to create it.")
                     homeXPopupDialog!!.show()
                     return@clickNoRepeat
                 }
@@ -290,8 +290,7 @@ object ViewHelper {
         titles: ArrayList<String>? = null
     ): ViewPager {
         //设置适配器
-        adapter = object :
-            FragmentStatePagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+        adapter = object : FragmentStatePagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
             override fun getCount(): Int {
                 return fragments.size
             }

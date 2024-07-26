@@ -308,7 +308,7 @@ internal class GameAboutModel : BaseViewModel() {
     var countDown: Int = 0 //阶段倒计时
         set(value) {
             field = value - 0 //减去500ms延时
-            LogUtils.d(TAG, "countDown set:${value},isMainThread:${isMainThread}")
+            LogUtils.dTag(TAG, "countDown set:${value},isMainThread:${isMainThread}")
             _countDownSetStampTime = System.currentTimeMillis()
             ThreadUtils.runOnUiThread {
                 GameManager.instance.startCountDownTimer(field.toLong(),
@@ -325,7 +325,7 @@ internal class GameAboutModel : BaseViewModel() {
         }
         get() {
             val elapsed = System.currentTimeMillis() - _countDownSetStampTime
-            LogUtils.d(TAG, "countDown elapsed:${elapsed}")
+            LogUtils.dTag(TAG, "countDown elapsed:${elapsed}")
             return (field - elapsed).toInt()
         }
     private val _countDownSecondsLD: UnPeekLiveData<Int> = UnPeekLiveData(0)

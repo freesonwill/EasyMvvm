@@ -33,7 +33,7 @@ object CommonUtils {
             val top = insets.getInsets(WindowInsetsCompat.Type.systemBars()).top
             val bottom = insets.getInsets(WindowInsetsCompat.Type.systemBars()).bottom
             val height = bottom
-            LogUtils.d(TAG,"getNavigationBarHeight-->top:$top,bottom:$bottom")
+            LogUtils.dTag(TAG,"getNavigationBarHeight-->top:$top,bottom:$bottom")
             return  height
         }
         return 0

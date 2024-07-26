@@ -2,7 +2,7 @@ package com.xcjh.base_lib2.utils
 
 import android.util.Log
 
-const val TAG = "GameSdk->"
+const val TAG = "GameSdk_"
 
 /**
  *
@@ -23,7 +23,7 @@ fun String.logi(tag: String = TAG) = log(LEVEL.I, tag, this)
 
 fun String.logw(tag: String = TAG) = log(LEVEL.W, tag, this)
 
-fun String.loge(tag: String = TAG) = log(LEVEL.E, TAG + tag, this)
+fun String.loge(tag: String = TAG) = log(LEVEL.E, tag, this)
 
 private fun log(level: LEVEL, tag: String, message: String) {
     if (!jetpackMvvmLog) return

@@ -79,7 +79,7 @@ class CustomBubbleAttachPopup(content: Context) : AttachPopupView(content){
                 val transaction = fragmentManager.beginTransaction();
                 if(oldFragment != null )transaction.hide(oldFragment!!)
                 transaction.add(R.id.fl_container, fragment,"switchGame").commit()
-                LogUtils.d(TAG, "onCreate")
+                LogUtils.dTag(TAG, "onCreate")
             }
 
          /*   private fun showFragment(fragment: Fragment?, tag: String) {

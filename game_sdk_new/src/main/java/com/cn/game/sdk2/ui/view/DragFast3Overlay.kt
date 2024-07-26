@@ -29,7 +29,7 @@ class DragFast3Overlay @JvmOverloads constructor(
     private lateinit var binding: FragmentFast3OverlayBinding
 
     private fun onInit() {
-        LogUtils.d(TAG, "onInit~~~~~~~~~~")
+        LogUtils.dTag(TAG, "onInit~~~~~~~~~~")
         binding = FragmentFast3OverlayBinding.bind(this)
 
         gameAboutModel.historyRounds.apply {
@@ -57,7 +57,7 @@ class DragFast3Overlay @JvmOverloads constructor(
 
     private fun updateUI() {
         val roundInfo: RoundInfoBean? = gameAboutModel.currentSettleResult
-        LogUtils.d(TAG,"updateUI: roundInfo:${roundInfo}")
+        LogUtils.dTag(TAG,"updateUI: roundInfo:${roundInfo}")
         binding.apply {
             lltResult.visibility = if(roundInfo != null) View.VISIBLE else View.INVISIBLE
             roundInfo?.run {

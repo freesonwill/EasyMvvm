@@ -30,7 +30,7 @@ class HomeXPopupDialog(context: Context, private val fragment: Fragment, private
 
     override fun onCreate() {
         super.onCreate()
-        LogUtils.d(TAG, "onCreate")
+        LogUtils.dTag(TAG, "onCreate")
         binding = DialogHomeXpopupContainerBinding.bind(popupImplView)
         if(!fragment.isAdded){
             val transaction = fragmentManager.beginTransaction();
@@ -57,12 +57,12 @@ class HomeXPopupDialog(context: Context, private val fragment: Fragment, private
 
     override fun onDismiss() {
         super.onDismiss()
-        LogUtils.d(TAG, "onDismiss")
+        LogUtils.dTag(TAG, "onDismiss")
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        LogUtils.d(TAG, "onDestroy")
+        LogUtils.dTag(TAG, "onDestroy")
         /*val f = fragmentManager.findFragmentById(R.id.fl_container) ?: return
         fragmentManager.beginTransaction().remove(f).commit()*/
     }

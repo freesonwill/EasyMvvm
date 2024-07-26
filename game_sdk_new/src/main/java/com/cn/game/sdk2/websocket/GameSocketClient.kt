@@ -79,9 +79,6 @@ internal class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
         reconnectHandle()
         stopHeartbeat()
         onMessageListener?.onClose(code, reason, remote)
-//        runBlocking(Dispatchers.Main) {
-//            socketStatesCallback?.onClose(isNeedReconnect)
-//        }
     }
 
 
