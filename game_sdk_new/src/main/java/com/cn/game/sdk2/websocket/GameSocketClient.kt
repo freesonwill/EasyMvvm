@@ -47,7 +47,7 @@ internal class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
         timer?.cancel()
         timer = null
         startHeartbeat()
-        appListener?.initSuccessful()
+        appListener?.runOnUiThread { initSuccessful() }
     }
 
     override fun onMessage(message: String?) {
