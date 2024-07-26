@@ -236,7 +236,7 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
 
     //进入房间坐下成功，待进入直播间
     override fun enterInfo(enterInfo: GameRes.EnterInfo) {
-        "enterInfo".loge(tag)
+        "进入房间坐下成功".loge(tag)
         gameAboutModel.isSitDown(true)
         val balance = enterInfo.self.score
         gameAboutModel.changeBalance(balance)
@@ -270,7 +270,7 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
     //进入直播间成功，待进入游戏
     override fun groupInfo(groupInfo: GameRes.GroupInfo) {
         isEnterRoom = true
-        "groupInfo".loge(tag)
+        "进入直播间成功".loge(tag)
         appListener?.runOnUiThread {
             onEnterLive(1, "")
         }
@@ -344,7 +344,7 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
 
     override fun enterMiniGameInfo(miniGame: GameRes.EnterMiniGameInfo) {
         miniGameId = miniGame.miniGameId
-        "enterMiniGameInfo:${miniGame.countDown}".loge(tag)
+        "进入游戏:${miniGame.countDown}".loge(tag)
         appListener?.runOnUiThread {
             onEnterGame()
         }
@@ -409,13 +409,14 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
     }
 
     override fun refreshUserProperties(userScore: GameRes.RefreshUserScore) {
-        "refreshUserProperties:$userScore".loge(tag)
+        "刷新余额:$userScore".loge(tag)
         val balance = userScore.score
         gameAboutModel.changeBalance(balance)
         gameAboutModel.changeTempBalance(balance)
     }
 
     override fun beginRound(round: GameRes.BeginNewRound) {
+        "Round".loge(tag)
         previousSuccess = true
         gameAboutModel.roundId = round.roundId //期号
         gameAboutModel.countDown = round.countDown //当前阶段剩余时间倒计时
@@ -436,6 +437,7 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
     }
 
     override fun beginDeal(round: GameRes.BeginDeal) {
+        "Deal".loge(tag)
         curStage = GameAboutModel.Stage.DEAL
         gameAboutModel.roundId = round.roundId //期号
         gameAboutModel.countDown = round.countDown //当前阶段剩余时间倒计时
@@ -444,6 +446,7 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
     }
 
     override fun beginSettle(settle: GameRes.BeginSettle) {
+        "Settle".loge(tag)
         curStage = GameAboutModel.Stage.SETTLE
         gameAboutModel.roundId = settle.roundInfo.roundId //期号
         gameAboutModel.countDown = settle.countDown //当前阶段剩余时间倒计时
@@ -505,7 +508,7 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
 
     override fun errorMessage(errorMessage: ClientRes.ErrorMessage) {
         val desc = errorMessage.desc
-        "code = ${errorMessage.code},msg = ${errorMessage.desc}".loge("errorMessage")
+        "服务器返回的error:code = ${errorMessage.code},msg = ${errorMessage.desc}".loge(tag)
         gameAboutModel.setToastErrorMessage(desc)
     }
 
@@ -530,6 +533,7 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
      * token失效通知app
      */
     override fun tokenLoseEffectiveness() {
+        "登录失效，请重新登录".loge(tag)
         isTokenValid = false
         gameAboutModel.setToastErrorMessage("登录失效，请重新登录")
         appListener?.runOnUiThread {

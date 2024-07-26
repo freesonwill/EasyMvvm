@@ -122,7 +122,7 @@ val outerTestTokenArray = listOf(
 //---------------------------socket方面使用,流程控制，不是数据---------------------------------//
 internal var nativeLib = NativeLib()
 
-internal var socketStatesCallback: GameApp.SocketStatesCallback? = null
+//internal var socketStatesCallback: GameApp.SocketStatesCallback? = null
 
 //登录过的标记 用于重连
 internal var isLogin = false

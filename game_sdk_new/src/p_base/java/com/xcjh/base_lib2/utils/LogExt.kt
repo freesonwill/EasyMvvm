@@ -2,7 +2,7 @@ package com.xcjh.base_lib2.utils
 
 import android.util.Log
 
-const val TAG = "客户端===="
+const val TAG = "GameSdk->"
 
 /**
  *

@@ -25,7 +25,7 @@ class ModuleInitializer : Initializer<String> {
 
     private fun initGameSdk(application:Application){
         val storeOwner = ViewModelStoreOwner {  ViewModelStore() }
-        GamePartyLibraryInitializer.initialize(storeOwner,application)
+//        GamePartyLibraryInitializer.initialize(storeOwner,application)
     }
 
     override fun dependencies(): List<Class<out Initializer<*>>> {

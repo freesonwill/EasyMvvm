@@ -47,9 +47,7 @@ internal class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
         timer?.cancel()
         timer = null
         startHeartbeat()
-        runBlocking(Dispatchers.Main) {
-            socketStatesCallback?.onOpen()
-        }
+        appListener?.initSuccessful()
     }
 
     override fun onMessage(message: String?) {
@@ -81,9 +79,9 @@ internal class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
         reconnectHandle()
         stopHeartbeat()
         onMessageListener?.onClose(code, reason, remote)
-        runBlocking(Dispatchers.Main) {
-            socketStatesCallback?.onClose(isNeedReconnect)
-        }
+//        runBlocking(Dispatchers.Main) {
+//            socketStatesCallback?.onClose(isNeedReconnect)
+//        }
     }
 
 
