@@ -10,17 +10,18 @@ import com.xcjh.base_lib2.ModuleInitializer
  */
 object Fast3ToastHelper {
     private var _instance:Fast3Toast? = null
-    private lateinit var host:ConstraintLayout
+    private var host:ConstraintLayout? = null
 
     fun attachToHost(anchorView:ConstraintLayout){
         this.host = anchorView
     }
 
     private fun attachToHost(){
-        assert(::host.isInitialized)
+        assert(host != null)
+        val host = this.host!!
         val context = ModuleInitializer.application
         _instance = Fast3Toast(context, host)
-        this.host.viewTreeObserver.addOnWindowAttachListener(object :OnWindowAttachListener {
+        host.viewTreeObserver.addOnWindowAttachListener(object :OnWindowAttachListener {
             override fun onWindowAttached() {
             }
             override fun onWindowDetached() {
@@ -41,5 +42,6 @@ object Fast3ToastHelper {
 
     fun destroy(){
         _instance = null
+        host = null
     }
 }

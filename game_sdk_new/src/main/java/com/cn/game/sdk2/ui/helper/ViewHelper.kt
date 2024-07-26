@@ -305,7 +305,8 @@ object ViewHelper {
             }
 
             override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
-                //保留此方法，不销毁PageItem，解决开始初始化page太多问题
+                super.destroyItem(container, position, `object`)
+//                fragments.remove(`object`)
             }
         }
         return this

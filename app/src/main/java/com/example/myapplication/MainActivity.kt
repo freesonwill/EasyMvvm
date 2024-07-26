@@ -151,5 +151,10 @@ class MainActivity : AppCompatActivity(), GameApp.OnSdkListener {
 
     }
 
+    override fun onDestroy() {
+        GameApp.leaveLive()
+        super.onDestroy()
+    }
+
 
 }
