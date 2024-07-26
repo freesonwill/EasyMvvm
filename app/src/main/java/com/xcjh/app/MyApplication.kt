@@ -178,7 +178,7 @@ class MyApplication : App() , LifecycleObserver {
                     isConnectResult.value = Result.failure(Exception("token失效"))
                 }
             })
-            isShowHistoryAndCustomer(false)
+            //isShowHistoryAndCustomer(false)
         }
 
     }

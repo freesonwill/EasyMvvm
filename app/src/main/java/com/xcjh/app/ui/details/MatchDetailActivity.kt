@@ -421,7 +421,7 @@ class MatchDetailActivity :
                 }
                 override fun onDestroy(owner: LifecycleOwner) {
                     super.onDestroy(owner)
-                    LogUtils.dTag(MyApplication.TAG,"onDestroy leaveLive.......")
+                    Log.d(MyApplication.TAG,"onDestroy leaveLive.......")
                     leaveLive()
                 }
             })
