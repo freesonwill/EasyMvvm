@@ -11,6 +11,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.room.Room
 import com.cn.game.sdk2.websocket.imp.GameApp
+import com.cn.game.sdk2.websocket.imp.GameApp.login
 import com.drake.statelayout.StateConfig
 import com.engagelab.privates.core.api.MTCorePrivatesApi
 import com.engagelab.privates.push.api.MTPushPrivatesApi
@@ -43,6 +44,7 @@ import com.xcjh.base_lib.BuildConfig
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.manager.KtxActivityManger
+import com.xcjh.base_lib.utils.LogUtils
 import com.xcjh.base_lib.utils.startNewActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -75,6 +77,26 @@ class MyApplication : App() , LifecycleObserver {
 
         val isEnterLive  = MutableLiveData<Result<String>>()
         val isLoginResult = MutableLiveData<Result<String>>()
+        val isConnectResult = MutableLiveData<Result<String>>()
+        const val TAG = "GameSdk_sl_live"
+
+        /**
+         * 进入直播间
+         */
+        fun enterLive(){
+            val tokenArray = listOf(
+                "124:4uQ8FVXY",
+                "125:mw4Q1yQ4",
+                "126:giAIQrfE",
+                "127:AbI8Ppju",
+                "128:j8mFnQ8n",
+                "129:Yn7lAIUu",
+                "130:O9Cz5IXe",
+                "131:0VzbPltw",
+                "132:Q8FMTRrM")
+            val token = tokenArray[Random.nextInt(tokenArray.size)]
+            login(token, "wali-internal", false )
+        }
     }
 
     init {
@@ -100,46 +122,28 @@ class MyApplication : App() , LifecycleObserver {
         initDataBase()
         initUI()
         initPush()
+        Log.d(TAG,"onCreate")
         GameApp.apply {
-            val loginAction:()->Unit = {
-                val tokenArray = listOf(
-                    "124:4uQ8FVXY",
-                    "125:mw4Q1yQ4",
-                    "126:giAIQrfE",
-                    "127:AbI8Ppju",
-                    "128:j8mFnQ8n",
-                    "129:Yn7lAIUu",
-                    "130:O9Cz5IXe",
-                    "131:0VzbPltw",
-                    "132:Q8FMTRrM")
-                val token = tokenArray[Random.nextInt(tokenArray.size)]
-                login(token, "wali-internal", false )
-            }
-            setSocketStatesCallback(object :GameApp.SocketStatesCallback{
-
-                override fun onClose(isNeedReconnect: Boolean) {
-                    Log.d("MyApplication","setSocketStatesCallback onClose")
-                }
-
-                override fun onOpen() {
-                    Log.d("MyApplication","setSocketStatesCallback onOpen")
-                    loginAction()
-                }
-            })
             loadGame(this@MyApplication,true,"wss://ws.qxe68.com:7001/api/game/5702",object : GameApp.OnSdkListener{
                 override fun customerServiceAction() {
-
+                    Log.d(TAG,"customerServiceAction")
                 }
 
                 override fun historyOfBetAction() {
+                    Log.d(TAG,"historyOfBetAction")
+                }
 
+                override fun initSuccessful() {
+                    Log.d(TAG,"initSuccessful")
+                    isConnectResult.value = Result.success("")
                 }
 
                 override fun onEnterGame() {
-
+                    Log.d(TAG,"onEnterGame")
                 }
 
                 override fun onEnterLive(type: Int, msg: String) {
+                    Log.d(TAG,"onEnterLive i:$type,msg:$msg")
                     if(type == 1) {
                         isEnterLive.value = Result.success("")
                     } else {
@@ -148,19 +152,20 @@ class MyApplication : App() , LifecycleObserver {
                 }
 
                 override fun onGameFloatingDetailViewStatus(isShowUp: Boolean) {
-
+                    Log.d(TAG,"onGameFloatingDetailViewStatus isShowUp:$isShowUp")
                 }
 
                 override fun onInsufficientBalance() {
-
+                    Log.d(TAG,"onInsufficientBalance")
                 }
 
                 override fun onLeaveLive(type: Int, msg: String?) {
-
+                    Log.d(TAG,"onLeaveLive i:$type,msg:$msg")
                 }
 
-                override fun onLoginGame(i: Int, msg: String?) {
-                    if(i == 1) {
+                override fun onLoginGame(type: Int, msg: String?) {
+                    Log.d(TAG,"onLoginGame i:$type,msg:$msg")
+                    if(type == 1) {
                         isLoginResult.value = Result.success("")
                         enterLive("1213", listOf(1), "")
                     } else {
@@ -169,13 +174,16 @@ class MyApplication : App() , LifecycleObserver {
                 }
 
                 override fun onTokenLoseEffectiveness() {
-                    loginAction()
+                    Log.d(TAG,"onTokenLoseEffectiveness")
+                    isConnectResult.value = Result.failure(Exception("token失效"))
                 }
             })
-            //GameApp.isShowHistoryAndCustomer(false)
+            isShowHistoryAndCustomer(false)
         }
 
     }
+
+
 
     private fun loadBrandingTheme(languageCode: String) {
         // 根据语言代码生成对应的主题名称

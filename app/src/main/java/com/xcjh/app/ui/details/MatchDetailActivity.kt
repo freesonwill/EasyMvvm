@@ -411,8 +411,17 @@ class MatchDetailActivity :
                 }
             }
             lifecycle.addObserver(object :DefaultLifecycleObserver{
+                override fun onCreate(owner: LifecycleOwner) {
+                    super.onCreate(owner)
+                    if(MyApplication.isConnectResult.value?.isSuccess == true) {
+                        MyApplication.enterLive()
+                    } else {
+                        ToastUtils.showShort("进入直播间失败: socket未连接上,${MyApplication.isConnectResult.value?.exceptionOrNull()?.message}")
+                    }
+                }
                 override fun onDestroy(owner: LifecycleOwner) {
                     super.onDestroy(owner)
+                    LogUtils.dTag(MyApplication.TAG,"onDestroy leaveLive.......")
                     leaveLive()
                 }
             })
