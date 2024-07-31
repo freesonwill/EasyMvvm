@@ -31,7 +31,7 @@
             android:scaleType="fitXY"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/icon_hong_off" />
+            app:srcCompat="@drawable/game_sdk_icon_hong_off" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ivOk"
@@ -43,14 +43,14 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/ivOff"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/icon_lv_ok" />
+            app:srcCompat="@drawable/game_sdk_icon_lv_ok" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/ivShowMoney"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
-            android:background="@drawable/chips_amount"
+            android:background="@drawable/game_sdk_chips_amount"
             android:gravity="center"
             android:paddingStart="6dp"
             android:paddingEnd="6dp"
@@ -77,5 +77,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/topLayout"
-        app:srcCompat="@drawable/icon_ok_wushi" />
+        app:srcCompat="@drawable/game_sdk_icon_ok_wushi" />
 </androidx.constraintlayout.widget.ConstraintLayout>

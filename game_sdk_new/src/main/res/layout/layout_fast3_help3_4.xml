@@ -5,4 +5,4 @@
     android:layout_width="match_parent"
     android:layout_height="248dp"
     android:layout_marginTop="0dp"
-    app:srcCompat="@drawable/help_3_4" />
+    app:srcCompat="@drawable/game_sdk_help_3_4" />

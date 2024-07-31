@@ -9,7 +9,7 @@
     android:paddingBottom="4dp"
     android:orientation="vertical"
     android:gravity="center"
-    android:background="@drawable/shape_6_38000000">
+    android:background="@drawable/game_sdk_shape_6_38000000">
     <androidx.appcompat.widget.AppCompatTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -32,18 +32,18 @@
             android:id="@+id/ivOpenOne"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            app:srcCompat="@drawable/icon_dice_yi"/>
+            app:srcCompat="@drawable/game_sdk_icon_dice_yi"/>
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ivOpenTwo"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginLeft="4dp"
-            app:srcCompat="@drawable/icon_dice_er"/>
+            app:srcCompat="@drawable/game_sdk_icon_dice_er"/>
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ivOpenThree"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginLeft="4dp"
-            app:srcCompat="@drawable/icon_dice_er"/>
+            app:srcCompat="@drawable/game_sdk_icon_dice_er"/>
     </LinearLayout>
 </LinearLayout>

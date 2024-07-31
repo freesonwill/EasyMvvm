@@ -37,7 +37,7 @@
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="20dp"
             android:layout_height="20dp"
-            app:srcCompat="@drawable/ic_close" />
+            app:srcCompat="@drawable/game_sdk_ic_close" />
     </LinearLayout>
 
     <LinearLayout
@@ -55,7 +55,7 @@
             android:id="@+id/ivCollapse"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            app:srcCompat="@drawable/ic_expand" />
+            app:srcCompat="@drawable/game_sdk_ic_expand" />
     </LinearLayout>
 
     <com.cn.game.sdk2.ui.view.BounceRecycleView
@@ -67,7 +67,7 @@
         android:orientation="vertical"
         android:paddingTop="5dp"
         android:scrollbars="vertical"
-        android:scrollbarThumbVertical="@drawable/scrollbar_thumb"
+        android:scrollbarThumbVertical="@drawable/game_sdk_scrollbar_thumb"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@id/indicator"
         app:layout_constraintEnd_toEndOf="parent"

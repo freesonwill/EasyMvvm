@@ -20,13 +20,13 @@
             android:id="@+id/llShowDice"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            app:srcCompat="@drawable/shape_3_006ce4"
+            app:srcCompat="@drawable/game_sdk_shape_3_006ce4"
             xmlns:app="http://schemas.android.com/apk/res-auto"/>
 
         <View
             android:id="@+id/viewSan"
             android:layout_width="match_parent"
-            android:background="@drawable/icon_sum_shisan"
+            android:background="@drawable/game_sdk_icon_sum_shisan"
             android:layout_height="100dp"/>
     </LinearLayout>
 </RelativeLayout>

@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="106dp"
     android:layout_height="wrap_content"
-    android:background="@drawable/shape_38_000000">
+    android:background="@drawable/game_sdk_shape_38_000000">
 
     <TextView
         android:id="@+id/tvTitle"
@@ -52,21 +52,21 @@
             android:id="@+id/ivDrawYi"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            app:srcCompat="@drawable/icon_dice_yi" />
+            app:srcCompat="@drawable/game_sdk_icon_dice_yi" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ivDrawEr"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginLeft="4dp"
-            app:srcCompat="@drawable/icon_dice_er" />
+            app:srcCompat="@drawable/game_sdk_icon_dice_er" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ivDrawSan"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginLeft="4dp"
-            app:srcCompat="@drawable/icon_dice_san" />
+            app:srcCompat="@drawable/game_sdk_icon_dice_san" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 </com.cn.game.sdk2.ui.view.DragFast3Overlay>

@@ -8,7 +8,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.databinding.FragmentFast3HelpBinding
-import com.cn.game.sdk2.ui.fast3.Fast3HelpFragment.Companion.TAG
 import com.cn.game.sdk2.ui.helper.ViewHelper
 import com.cn.game.sdk2.utils.ext.ViewExt.bindRecycleView
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
@@ -130,7 +129,7 @@ class Fast3HelpPopup(context: Context, private val offsetY: Int, private val hei
                     onEnd = {
                         //动画结束
                         setStatusBarColor(if(toExpand) ContextCompat.getColor(context,R.color.c_141624) else originalStatusBarColor)
-                        mViewBind.ivCollapse.setImageResource(if (!toExpand) R.drawable.ic_expand else R.drawable.ic_collapse)
+                        mViewBind.ivCollapse.setImageResource(if (!toExpand) R.drawable.game_sdk_ic_expand else R.drawable.game_sdk_ic_collapse)
                     })
                 start()
             }

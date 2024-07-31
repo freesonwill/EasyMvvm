@@ -410,7 +410,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             roundInfo?.run {
                 performs.forEachIndexed { index, item ->
                     val id = resources.getIdentifier(
-                        "icon_dice_" + item.toPinyin(),
+                        "game_sdk_icon_dice_" + item.toPinyin(),
                         "drawable",
                         requireContext().packageName
                     )
@@ -428,8 +428,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 } else {
                     ivBetSize.isVisible = true
                     ivBetOdd.isVisible = true
-                    ivBetSize.setImageResource(if (isBig) R.drawable.icon_home_result_big else R.drawable.icon_home_result_small)
-                    ivBetOdd.setImageResource(if (isDouble) R.drawable.icon_home_result_double else R.drawable.icon_home_result_single)
+                    ivBetSize.setImageResource(if (isBig) R.drawable.game_sdk_icon_home_result_big else R.drawable.game_sdk_icon_home_result_small)
+                    ivBetOdd.setImageResource(if (isDouble) R.drawable.game_sdk_icon_home_result_double else R.drawable.game_sdk_icon_home_result_single)
                 }
             }
         }
@@ -673,26 +673,26 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 when (it) {
                     GameAboutModel.AgainDoubleState.NUll, GameAboutModel.AgainDoubleState.AGAIN_CAN_NOT_50 -> {
                         ivXuya.isVisible = true
-                        ivXuya.setImageResource(R.drawable.icon_xuya_gray)
+                        ivXuya.setImageResource(R.drawable.game_sdk_icon_xuya_gray)
                         ivMultiple2.isVisible = false
                     }
 
                     GameAboutModel.AgainDoubleState.AGAIN -> {
                         ivXuya.isVisible = true
-                        ivXuya.setImageResource(R.drawable.icon_xuya)
+                        ivXuya.setImageResource(R.drawable.game_sdk_icon_xuya)
                         ivMultiple2.isVisible = false
                     }
 
                     GameAboutModel.AgainDoubleState.DOUBLE -> {
                         ivXuya.isVisible = false
                         ivMultiple2.isVisible = true
-                        ivMultiple2.setImageResource(R.drawable.icon_multiple2)
+                        ivMultiple2.setImageResource(R.drawable.game_sdk_icon_multiple2)
                     }
 
                     GameAboutModel.AgainDoubleState.DOUBLE_CAN_NOT, GameAboutModel.AgainDoubleState.DOUBLE_CAN_NOT_50 -> {
                         ivXuya.isVisible = false
                         ivMultiple2.isVisible = true
-                        ivMultiple2.setImageResource(R.drawable.icon_multiple2_gray)
+                        ivMultiple2.setImageResource(R.drawable.game_sdk_icon_multiple2_gray)
                     }
                 }
             }
@@ -882,20 +882,20 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                             val bean = _data as SelectAnnotationBean
                             val id = if ((gameAboutModel.tempBalance.value ?: 0) < bean.money) {
                                 resources.getIdentifier(
-                                    "icon_shortage_" + bean.moneyPinyin,
+                                    "game_sdk_icon_shortage_" + bean.moneyPinyin,
                                     "drawable",
                                     requireContext().packageName
                                 )
                             } else {
                                 if (bean.select) {
                                     resources.getIdentifier(
-                                        "icon_select_" + bean.moneyPinyin,
+                                        "game_sdk_icon_select_" + bean.moneyPinyin,
                                         "drawable",
                                         requireContext().packageName
                                     )
                                 } else {
                                     resources.getIdentifier(
-                                        "icon_no_" + bean.moneyPinyin,
+                                        "game_sdk_icon_no_" + bean.moneyPinyin,
                                         "drawable",
                                         requireContext().packageName
                                     )
@@ -954,7 +954,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                 mainTxtBean.performs.forEachIndexed { index, item ->
                                     val child = llShowDice.getChildAt(index) as ImageView
                                     val id = resources.getIdentifier(
-                                        "icon_dice_" + item.toPinyin(),
+                                        "game_sdk_icon_dice_" + item.toPinyin(),
                                         "drawable",
                                         requireContext().packageName
                                     )
@@ -964,14 +964,14 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                 if (mainTxtBean.isLeopard) {
                                     txtBetSize.text = getString(R.string.g_home_txt_leopard)
                                     txtBetOdd.text = getString(R.string.g_home_txt_leopard)
-                                    txtBetSize.background = getDrawable(R.drawable.shape_3_01933b)
-                                    txtBetOdd.background = getDrawable(R.drawable.shape_3_01933b)
+                                    txtBetSize.background = getDrawable(R.drawable.game_sdk_shape_3_01933b)
+                                    txtBetOdd.background = getDrawable(R.drawable.game_sdk_shape_3_01933b)
 
                                 } else {
                                     txtBetSize.background =
-                                        getDrawable(if (mainTxtBean.isBig) R.drawable.shape_3_b83030 else R.drawable.shape_3_006ce4)
+                                        getDrawable(if (mainTxtBean.isBig) R.drawable.game_sdk_shape_3_b83030 else R.drawable.game_sdk_shape_3_006ce4)
                                     txtBetOdd.background =
-                                        getDrawable(if (mainTxtBean.isDouble) R.drawable.shape_3_b83030 else R.drawable.shape_3_006ce4)
+                                        getDrawable(if (mainTxtBean.isDouble) R.drawable.game_sdk_shape_3_b83030 else R.drawable.game_sdk_shape_3_006ce4)
                                     txtBetSize.text =
                                         if (mainTxtBean.isBig) getString(R.string.g_home_txt_big) else getString(
                                             R.string.g_home_txt_small
@@ -1534,7 +1534,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         val betImageView = ImageView(requireContext()).apply {
             setImageResource(
                 resources.getIdentifier(
-                    "icon_select_" + betteBean.moneyPinyin,
+                    "game_sdk_icon_select_" + betteBean.moneyPinyin,
                     "drawable",
                     requireContext().packageName
                 )

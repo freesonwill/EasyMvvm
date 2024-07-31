@@ -20,7 +20,7 @@
             <RelativeLayout
                 android:paddingLeft="12dp"
                 android:paddingRight="12dp"
-                android:background="@drawable/ripple"
+                android:background="@drawable/game_sdk_ripple"
                 android:id="@+id/rlPopClickRecords"
                 android:layout_width="match_parent"
                 android:layout_height="38dp">
@@ -34,7 +34,7 @@
                         android:layout_width="16dp"
                         android:layout_height="16dp"
                         android:layout_marginLeft="1dp"
-                        app:srcCompat="@drawable/home_icon_records"/>
+                        app:srcCompat="@drawable/game_sdk_home_icon_records"/>
                     <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -54,7 +54,7 @@
             <RelativeLayout
                 android:paddingLeft="12dp"
                 android:paddingRight="12dp"
-                android:background="@drawable/ripple"
+                android:background="@drawable/game_sdk_ripple"
                 android:id="@+id/rlPopClickService"
                 android:layout_width="match_parent"
                 android:layout_height="38dp">
@@ -69,7 +69,7 @@
                         android:layout_width="16dp"
                         android:layout_height="16dp"
                         android:layout_marginLeft="1dp"
-                        app:srcCompat="@drawable/home_icon_service" />
+                        app:srcCompat="@drawable/game_sdk_home_icon_service" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"
@@ -88,7 +88,7 @@
             <RelativeLayout
                 android:paddingLeft="12dp"
                 android:paddingRight="12dp"
-                android:background="@drawable/ripple"
+                android:background="@drawable/game_sdk_ripple"
                 android:id="@+id/rl_pop_click_switch_game"
                 android:layout_width="match_parent"
                 android:layout_height="38dp">
@@ -101,7 +101,7 @@
                     <androidx.appcompat.widget.AppCompatImageView
                         android:layout_width="16dp"
                         android:layout_height="16dp"
-                        app:srcCompat="@drawable/home_icon_toggle"/>
+                        app:srcCompat="@drawable/game_sdk_home_icon_toggle"/>
                     <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -119,7 +119,7 @@
             <RelativeLayout
                 android:paddingLeft="12dp"
                 android:paddingRight="12dp"
-                android:background="@drawable/ripple"
+                android:background="@drawable/game_sdk_ripple"
                 android:id="@+id/rlPopClickAssist"
                 android:layout_width="match_parent"
                 android:layout_height="38dp">
@@ -133,7 +133,7 @@
                         android:layout_width="16dp"
                         android:layout_height="16dp"
                         android:layout_marginLeft="1dp"
-                        app:srcCompat="@drawable/home_icon_assist"/>
+                        app:srcCompat="@drawable/game_sdk_home_icon_assist"/>
                     <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -150,7 +150,7 @@
         android:layout_marginTop="-8dp"
         android:layout_gravity="end"
         android:layout_marginEnd="12dp"
-        android:background="@drawable/shape_triangle_white"
+        android:background="@drawable/game_sdk_shape_triangle_white"
         android:layout_width="16dp"
         android:layout_height="16dp"/>
 </FrameLayout>

@@ -21,7 +21,7 @@
             android:id="@+id/llShowSection"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/shape_9_141624"
+            android:background="@drawable/game_sdk_shape_9_141624"
             android:clipChildren="false"
             android:clipToPadding="false"
             android:orientation="vertical"
@@ -43,14 +43,14 @@
                 android:visibility="gone"
                 app:layout_constraintBottom_toTopOf="@id/bottomLayout"
                 app:layout_constraintTop_toBottomOf="@id/centerLayout"
-                app:srcCompat="@drawable/result_bg_bottom" />
+                app:srcCompat="@drawable/game_sdk_result_bg_bottom" />
 
             <FrameLayout
                 android:id="@+id/flRvHistory"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginHorizontal="3dp"
-                android:background="@drawable/shape_3_66273153"
+                android:background="@drawable/game_sdk_shape_3_66273153"
                 app:layout_constrainedHeight="true"
                 app:layout_constraintBottom_toBottomOf="@id/bottomHistoryLayout"
                 app:layout_constraintTop_toTopOf="@id/bottomHistoryLayout"
@@ -86,7 +86,7 @@
                         android:layout_width="23dp"
                         android:layout_height="39dp"
                         android:scaleType="fitXY"
-                        app:srcCompat="@drawable/icon_bg_btn" />
+                        app:srcCompat="@drawable/game_sdk_icon_bg_btn" />
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/ivHomeRotation"
@@ -95,7 +95,7 @@
                         android:layout_centerInParent="true"
                         android:rotation="180"
                         android:scaleType="fitXY"
-                        app:srcCompat="@drawable/icon_arrow_top" />
+                        app:srcCompat="@drawable/game_sdk_icon_arrow_top" />
 
                 </RelativeLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -106,7 +106,7 @@
                 android:id="@+id/centerLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/shape_9_141624"
+                android:background="@drawable/game_sdk_shape_9_141624"
                 android:clipChildren="false"
                 android:clipToPadding="false"
                 app:layout_constraintBottom_toTopOf="@id/flRvHistory"
@@ -120,7 +120,7 @@
                     android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/viewPagerNew"
-                    app:srcCompat="@drawable/result_bg_bottom" />
+                    app:srcCompat="@drawable/game_sdk_result_bg_bottom" />
 
                 <RelativeLayout
                     android:id="@+id/titleLayout"
@@ -138,7 +138,7 @@
                         android:id="@+id/ivHomeLogo"
                         android:layout_width="34dp"
                         android:layout_height="34dp"
-                        app:srcCompat="@drawable/icon_kuai_logo" />
+                        app:srcCompat="@drawable/game_sdk_icon_kuai_logo" />
 
                     <LinearLayout
                         android:id="@+id/llShowCountdown"
@@ -196,7 +196,7 @@
                                 android:layout_width="22dp"
                                 android:layout_height="18dp"
                                 android:scaleType="fitXY"
-                                app:srcCompat="@drawable/icon_video_bo" />
+                                app:srcCompat="@drawable/game_sdk_icon_video_bo" />
 
                             <androidx.appcompat.widget.AppCompatTextView
                                 android:layout_width="wrap_content"
@@ -222,15 +222,15 @@
                                 android:layout_height="wrap_content"
                                 android:duplicateParentState="true"
                                 android:scaleType="fitXY"
-                                android:tint="@drawable/selector_ll_home_more_btn_bg"
-                                app:srcCompat="@drawable/icon_more" />
+                                android:tint="@drawable/game_sdk_selector_ll_home_more_btn_bg"
+                                app:srcCompat="@drawable/game_sdk_icon_more" />
 
                             <androidx.appcompat.widget.AppCompatTextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:duplicateParentState="true"
                                 android:text="@string/g_home_txt_more"
-                                android:textColor="@drawable/selector_ll_home_more_btn_bg"
+                                android:textColor="@drawable/game_sdk_selector_ll_home_more_btn_bg"
                                 android:textSize="9sp" />
                         </LinearLayout>
                     </LinearLayout>
@@ -264,7 +264,7 @@
                         android:layout_height="match_parent"
                         android:layout_alignParentEnd="true"
                         android:layout_marginEnd="10dp"
-                        android:background="@drawable/shape_3_111130"
+                        android:background="@drawable/game_sdk_shape_3_111130"
                         android:paddingHorizontal="8dp"
                         android:paddingVertical="3dp"
                         app:layout_constraintRight_toRightOf="parent"
@@ -291,7 +291,7 @@
                             app:layout_constraintBottom_toBottomOf="@id/txtCurrentMoney"
                             app:layout_constraintStart_toEndOf="@id/txtCurrentMoney"
                             app:layout_constraintTop_toTopOf="@id/txtCurrentMoney"
-                            app:srcCompat="@drawable/icon_right" />
+                            app:srcCompat="@drawable/game_sdk_icon_right" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </RelativeLayout>
@@ -319,21 +319,21 @@
                             android:id="@+id/ivDrawYi"
                             android:layout_width="34dp"
                             android:layout_height="34dp"
-                            app:srcCompat="@drawable/icon_dice_yi" />
+                            app:srcCompat="@drawable/game_sdk_icon_dice_yi" />
 
                         <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/ivDrawEr"
                             android:layout_width="34dp"
                             android:layout_height="34dp"
                             android:layout_marginLeft="15dp"
-                            app:srcCompat="@drawable/icon_dice_er" />
+                            app:srcCompat="@drawable/game_sdk_icon_dice_er" />
 
                         <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/ivDrawSan"
                             android:layout_width="34dp"
                             android:layout_height="34dp"
                             android:layout_marginLeft="15dp"
-                            app:srcCompat="@drawable/icon_dice_san" />
+                            app:srcCompat="@drawable/game_sdk_icon_dice_san" />
                     </LinearLayout>
 
 
@@ -359,7 +359,7 @@
                             android:layout_height="28dp"
                             android:layout_marginLeft="16dp"
                             android:layout_marginTop="0.5dp"
-                            app:srcCompat="@drawable/icon_home_result_small" />
+                            app:srcCompat="@drawable/game_sdk_icon_home_result_small" />
 
                         <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/ivBetOdd"
@@ -367,7 +367,7 @@
                             android:layout_height="28dp"
                             android:layout_marginTop="0.5dp"
                             android:layout_marginLeft="16dp"
-                            app:srcCompat="@drawable/icon_home_result_double" />
+                            app:srcCompat="@drawable/game_sdk_icon_home_result_double" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -416,7 +416,7 @@
                     <View
                         android:layout_width="15dp"
                         android:layout_height="0dp"
-                        android:background="@drawable/shape_0_141624"
+                        android:background="@drawable/game_sdk_shape_0_141624"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"/>
@@ -435,7 +435,7 @@
                         android:id="@+id/ivBetEndFg"
                         android:layout_width="44dp"
                         android:layout_height="44dp"
-                        android:src="@drawable/again_bg"
+                        android:src="@drawable/game_sdk_again_bg"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -450,7 +450,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:srcCompat="@drawable/icon_xuya_gray"
+                        app:srcCompat="@drawable/game_sdk_icon_xuya_gray"
                         tools:visibility="visible" />
 
                     <androidx.appcompat.widget.AppCompatImageView
@@ -464,7 +464,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:srcCompat="@drawable/icon_multiple2_sel" />
+                        app:srcCompat="@drawable/game_sdk_icon_multiple2_sel" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.viewpager.widget.ViewPager
@@ -482,7 +482,7 @@
                     android:id="@+id/resultBgTop"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
-                    android:background="@drawable/result_bg_top"
+                    android:background="@drawable/game_sdk_result_bg_top"
                     android:scaleType="fitXY"
                     android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="@id/viewPagerNew" />
@@ -492,7 +492,7 @@
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:scaleType="fitXY"
-                    android:src="@drawable/result_bg"
+                    android:src="@drawable/game_sdk_result_bg"
                     app:layout_constraintBottom_toBottomOf="@id/viewPagerNew"
                     app:layout_constraintEnd_toEndOf="@id/viewPagerNew"
                     app:layout_constraintStart_toStartOf="@id/viewPagerNew"

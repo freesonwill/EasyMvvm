@@ -22,7 +22,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="fitXY"
-                app:srcCompat="@drawable/icon_single_bg" />
+                app:srcCompat="@drawable/game_sdk_icon_single_bg" />
 
             <com.cn.game.sdk2.ui.view.game.GameAreaView
                 android:id="@+id/gavPairsOne"
@@ -45,7 +45,7 @@
                         android:layout_height="30dp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/icon_dice_yi" />
+                        app:srcCompat="@drawable/game_sdk_icon_dice_yi" />
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/ivPairsOneRight"
@@ -54,7 +54,7 @@
                         android:layout_marginStart="4dp"
                         app:layout_constraintStart_toEndOf="@id/ivPairsOneLeft"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/icon_dice_yi" />
+                        app:srcCompat="@drawable/game_sdk_icon_dice_yi" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/txtPairsOddsOne"
@@ -72,7 +72,7 @@
                     android:layout_height="match_parent"
                     android:scaleType="fitXY"
                     android:visibility="gone"
-                    app:srcCompat="@drawable/flash_left_top" />
+                    app:srcCompat="@drawable/game_sdk_flash_left_top" />
             </com.cn.game.sdk2.ui.view.game.GameAreaView>
 
             <com.cn.game.sdk2.ui.view.game.GameAreaView
@@ -96,7 +96,7 @@
                         android:layout_height="30dp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/icon_dice_er" />
+                        app:srcCompat="@drawable/game_sdk_icon_dice_er" />
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/ivPairsTwoRight"
@@ -105,7 +105,7 @@
                         android:layout_marginStart="@dimen/dp_4"
                         app:layout_constraintStart_toEndOf="@id/ivPairsTwoLeft"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/icon_dice_er" />
+                        app:srcCompat="@drawable/game_sdk_icon_dice_er" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/txtPairsOddsTwo"
@@ -123,7 +123,7 @@
                     android:layout_height="match_parent"
                     android:scaleType="fitXY"
                     android:visibility="gone"
-                    app:srcCompat="@drawable/flash_right_top" />
+                    app:srcCompat="@drawable/game_sdk_flash_right_top" />
             </com.cn.game.sdk2.ui.view.game.GameAreaView>
 
             <com.cn.game.sdk2.ui.view.game.GameAreaView
@@ -147,7 +147,7 @@
                         android:layout_height="30dp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/icon_dice_san" />
+                        app:srcCompat="@drawable/game_sdk_icon_dice_san" />
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/ivPairsThreeRight"
@@ -156,7 +156,7 @@
                         android:layout_marginStart="@dimen/dp_4"
                         app:layout_constraintStart_toEndOf="@id/ivPairsThreeLeft"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/icon_dice_san" />
+                        app:srcCompat="@drawable/game_sdk_icon_dice_san" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/txtPairsOddsThree"
@@ -175,7 +175,7 @@
                     android:layout_height="match_parent"
                     android:scaleType="fitXY"
                     android:visibility="gone"
-                    app:srcCompat="@drawable/flash_centre" />
+                    app:srcCompat="@drawable/game_sdk_flash_centre" />
             </com.cn.game.sdk2.ui.view.game.GameAreaView>
 
             <com.cn.game.sdk2.ui.view.game.GameAreaView
@@ -199,7 +199,7 @@
                         android:layout_height="30dp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/icon_dice_si" />
+                        app:srcCompat="@drawable/game_sdk_icon_dice_si" />
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/ivPairsFourRight"
@@ -208,7 +208,7 @@
                         android:layout_marginStart="@dimen/dp_4"
                         app:layout_constraintStart_toEndOf="@id/ivPairsFourLeft"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/icon_dice_si" />
+                        app:srcCompat="@drawable/game_sdk_icon_dice_si" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/txtPairsOddsFour"
@@ -226,7 +226,7 @@
                     android:layout_height="match_parent"
                     android:scaleType="fitXY"
                     android:visibility="gone"
-                    app:srcCompat="@drawable/flash_centre" />
+                    app:srcCompat="@drawable/game_sdk_flash_centre" />
             </com.cn.game.sdk2.ui.view.game.GameAreaView>
 
             <com.cn.game.sdk2.ui.view.game.GameAreaView
@@ -250,7 +250,7 @@
                         android:layout_height="30dp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/icon_dice_wu" />
+                        app:srcCompat="@drawable/game_sdk_icon_dice_wu" />
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/ivPairsFiveRight"
@@ -259,7 +259,7 @@
                         android:layout_marginStart="@dimen/dp_4"
                         app:layout_constraintStart_toEndOf="@id/ivPairsFiveLeft"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/icon_dice_wu" />
+                        app:srcCompat="@drawable/game_sdk_icon_dice_wu" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/txtPairsOddsFive"
@@ -277,7 +277,7 @@
                     android:layout_height="match_parent"
                     android:scaleType="fitXY"
                     android:visibility="gone"
-                    app:srcCompat="@drawable/flash_right_be" />
+                    app:srcCompat="@drawable/game_sdk_flash_right_be" />
             </com.cn.game.sdk2.ui.view.game.GameAreaView>
 
             <com.cn.game.sdk2.ui.view.game.GameAreaView
@@ -301,7 +301,7 @@
                         android:layout_height="30dp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/icon_dice_liu" />
+                        app:srcCompat="@drawable/game_sdk_icon_dice_liu" />
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/ivPairsSixRight"
@@ -310,7 +310,7 @@
                         android:layout_marginStart="@dimen/dp_4"
                         app:layout_constraintStart_toEndOf="@id/ivPairsSixLeft"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/icon_dice_liu" />
+                        app:srcCompat="@drawable/game_sdk_icon_dice_liu" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/txtPairsOddsSix"
@@ -328,7 +328,7 @@
                     android:layout_height="match_parent"
                     android:scaleType="fitXY"
                     android:visibility="gone"
-                    app:srcCompat="@drawable/flash_left_be" />
+                    app:srcCompat="@drawable/game_sdk_flash_left_be" />
             </com.cn.game.sdk2.ui.view.game.GameAreaView>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>

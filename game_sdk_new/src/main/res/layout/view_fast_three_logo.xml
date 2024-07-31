@@ -5,12 +5,12 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:id="@+id/llFastClick"
-    android:background="@drawable/shape_14_0000">
+    android:background="@drawable/game_sdk_shape_14_0000">
     <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="match_parent"
         android:layout_height="52dp"
         android:scaleType="fitXY"
-       app:srcCompat="@drawable/kuai_icon_logo"/>
+       app:srcCompat="@drawable/game_sdk_kuai_icon_logo"/>
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/txtTime"
         android:layout_width="match_parent"

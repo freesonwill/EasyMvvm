@@ -8,48 +8,48 @@
     <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="match_parent"
         android:layout_height="33dp"
-        app:srcCompat="@drawable/help_3_0" />
+        app:srcCompat="@drawable/game_sdk_help_3_0" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="match_parent"
         android:layout_height="292dp"
         android:layout_marginTop="10dp"
-        app:srcCompat="@drawable/help_3_1" />
+        app:srcCompat="@drawable/game_sdk_help_3_1" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="match_parent"
         android:layout_height="292dp"
         android:layout_marginTop="24dp"
-        app:srcCompat="@drawable/help_3_2" />
+        app:srcCompat="@drawable/game_sdk_help_3_2" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="match_parent"
         android:layout_height="272dp"
         android:layout_marginTop="24dp"
-        app:srcCompat="@drawable/help_3_3" />
+        app:srcCompat="@drawable/game_sdk_help_3_3" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="match_parent"
         android:layout_height="268dp"
         android:layout_marginTop="24dp"
-        app:srcCompat="@drawable/help_3_5" />
+        app:srcCompat="@drawable/game_sdk_help_3_5" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="match_parent"
         android:layout_height="268dp"
-        app:srcCompat="@drawable/help_3_4" />
+        app:srcCompat="@drawable/game_sdk_help_3_4" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="match_parent"
         android:layout_height="273dp"
         android:layout_marginTop="24dp"
-        app:srcCompat="@drawable/help_3_6" />
+        app:srcCompat="@drawable/game_sdk_help_3_6" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="match_parent"
         android:layout_height="288dp"
         android:layout_marginTop="24dp"
-        app:srcCompat="@drawable/help_3_7" />
+        app:srcCompat="@drawable/game_sdk_help_3_7" />
 
 
 </androidx.appcompat.widget.LinearLayoutCompat>

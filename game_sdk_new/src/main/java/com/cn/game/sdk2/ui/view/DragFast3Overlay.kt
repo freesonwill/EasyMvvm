@@ -63,7 +63,7 @@ class DragFast3Overlay @JvmOverloads constructor(
             roundInfo?.run {
                 performs.forEachIndexed { index, item ->
                     val id = resources.getIdentifier(
-                        "icon_dice_" + item.toPinyin(),
+                        "game_sdk_icon_dice_" + item.toPinyin(),
                         "drawable",
                         context.packageName
                     )
