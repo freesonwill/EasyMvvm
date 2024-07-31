@@ -38,6 +38,7 @@ internal class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
             withContext(Dispatchers.Main) {
                 isTokenValid = true
                 if (isLogin) {
+                    "重连成功，需要重新登录，登录Token：${gameAboutModel.token}".logi(_tag)
                     GameApp.login(
                         gameAboutModel.token, gameAboutModel.agentName, gameAboutModel.isAnchor
                     )
@@ -58,7 +59,6 @@ internal class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
         if (!bytes!!.hasRemaining()) {
             return
         }
-        "GameSocketMessage-onMessage".logi(_tag)
         val resp: Array<Any?>? = nativeLib.newUnpack(bytes.array())
         resp?.let {
             val mid = it[0] as Int?
@@ -91,7 +91,7 @@ internal class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
         timer = Timer().apply {
             schedule(object : TimerTask() {
                 override fun run() {
-                    "reconnectHandle".loge(_tag)
+                    "GameSDK start reconnect".loge(_tag)
                     if (!isOpen && isNeedReconnect) reconnect()
                 }
             }, reconnectInterval)

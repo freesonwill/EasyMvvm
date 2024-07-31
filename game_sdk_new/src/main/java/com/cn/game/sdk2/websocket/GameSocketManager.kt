@@ -1,12 +1,17 @@
 package com.cn.game.sdk2.websocket
 
 import android.annotation.SuppressLint
+import android.app.ActivityManager
+import android.content.Context
+import android.os.Process
 import com.cn.game.sdk2.network.code.GameResCode
 import com.cn.game.sdk2.websocket.imp.UIMethodImpl
 import com.xcjh.base_lib2.utils.loge
+import com.xcjh.base_lib2.utils.logi
 import game.common.proto.ClientRes
 import game.mod.proc.yf.proto.res.GameRes
 import java.net.URI
+
 
 /**
  * sdk初始化-连接socket
@@ -21,8 +26,6 @@ internal class GameSocketManager private constructor() : OnMessageListener {
         private var HAS_HEART = true
         private var client: GameSocketClient? = null
         private var gameServerMessageConvertFactory: GameServerMessageConvertFactory? = null
-
-//        var gameService: GameServiceImp? = null
 
         @SuppressLint("StaticFieldLeak")
         private var INSTANCE: GameSocketManager? = null
@@ -39,48 +42,33 @@ internal class GameSocketManager private constructor() : OnMessageListener {
     }
 
     fun initSocketClient(url: String) {
-        "initSocketClient".loge(tag)
-        val uri = URI.create(url)
-        isNeedReconnect = true
-        HAS_HEART = true
-        client = GameSocketClient(uri) //获得client对象
-//                client?.reset()
-        client?.setOnMessageListener(this@GameSocketManager)
-        gameMassageManager = UIMethodImpl.generate(client!!) //获得接口对象
-        client?.connectionLostTimeout = 0
-        client!!.connect() //连接socket
-//        GlobalScope.launch {
-//            withContext(Dispatchers.IO) {
-//                isNeedReconnect = true
-//                HAS_HEART = true
-//                client = GameSocketClient(uri) //获得client对象
-////                client?.reset()
-//                client?.setOnMessageListener(this@GameSocketManager)
-//                gameMassageManager = UIMethodImpl.generate(client!!) //获得接口对象
-//                client?.connectionLostTimeout = 0
-//                client!!.connectBlocking() //连接socket
-//                //心跳发送
-//                while (isNeedReconnect) {
-//                    delay(HEART_BEAT_RATE)
-//                    if (HAS_HEART) {
-//                        client?.let {
-//                            if (it.readyState == ReadyState.OPEN) {
-//                                HEART_BEAT_RATE = (5 * 1000).toLong()
-//                                gameMassageManager?.ping()
-//                            }//正常发送心跳
-//                            if (it.isClosed) {
-//                                it.re()
-//                            }
-//                        }
-//                    } else {
-//                        client?.let {
-//                            if (it.readyState == ReadyState.OPEN) HAS_HEART = true //socket恢复
-//                        }
-//                    }
-//                }
-//            }
-//        }
+        if (isMainProcess()) {
+            "initSocketClient".logi(tag)
+            val uri = URI.create(url)
+            isNeedReconnect = true
+            HAS_HEART = true
+            client = GameSocketClient(uri) //获得client对象
+            client?.setOnMessageListener(this@GameSocketManager)
+            gameMassageManager = UIMethodImpl.generate(client!!) //获得接口对象
+            client?.connectionLostTimeout = 0
+            client!!.connect() //连接socket
+        }else{
+            "initSocketClient --- Repeat operation".loge(tag)
+        }
+    }
 
+    private fun isMainProcess(): Boolean {
+        val packageName = appContext?.packageName
+        val pid = Process.myPid()
+        val manager = appContext?.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        for (processInfo in manager.runningAppProcesses) {
+            if (processInfo.pid == pid) {
+                // 对比进程名，进程名是否为主进程名
+                "currentProcess->${processInfo.pid}".logi(tag)
+                return processInfo.processName == packageName
+            }
+        }
+        return false
     }
 
     private fun resetUserState() {
@@ -99,7 +87,6 @@ internal class GameSocketManager private constructor() : OnMessageListener {
             it.printStackTrace()
             client = null
         }
-
     }
 
     fun stopService() {
