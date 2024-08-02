@@ -97,9 +97,13 @@ class GameAreaView : FrameLayout {
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
             moneyView.let { moneyView ->
+                if (moneyView.parentView == null) {
+                    moneyView.parentView = this.parent.parent as ViewGroup
+                }
                 moneyView.parentView?.addView(moneyView, params)
                 moneyView.translationX = it.value.viewXYTemporary[0]
                 moneyView.translationY = it.value.viewXYTemporary[1]
+                moneyView.translationZ = 2f
                 moneyView.bringToFront()
             }
         }
@@ -109,6 +113,9 @@ class GameAreaView : FrameLayout {
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
             betteView.let { betteView ->
+                if (betteView.parentView == null) {
+                    betteView.parentView = this.parent.parent as ViewGroup
+                }
                 betteView.parentView?.addView(betteView, params)
                 betteView.translationX = it.value.viewXYTemporary[0]
                 betteView.translationY = it.value.viewXYTemporary[1]

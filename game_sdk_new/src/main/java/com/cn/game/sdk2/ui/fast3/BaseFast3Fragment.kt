@@ -31,6 +31,7 @@ import com.cn.game.sdk2.websocket.bean.Betting
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.gameMassageManager
+import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 import com.xcjh.base_lib2.utils.LogUtils
 
 /**
@@ -59,6 +60,23 @@ abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
         if (gameAboutModel.isisAllowedBet.value != false) {
             for (areaView in areaViewList) {
                 setMoneyOKClickListener(areaView)
+            }
+        }
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        for (areaView in areaViewList) {
+            if (gameAboutModel.tempMap.isNotEmpty() && gameAboutModel.currentStage.value == GameAboutModel.Stage.NEW) {
+                gameAboutModel.tempMap.forEach {
+                    if (areaView.areaCode == it.key.number) {
+                        areaView.againAdd(it)
+                        areaView.setShowMoney(it.value.money)
+                        areaView.moneyView.hiddenTop()
+                        mViewModel.updateMoneyViewLiveData.value = areaView
+                    }
+                }
             }
         }
     }

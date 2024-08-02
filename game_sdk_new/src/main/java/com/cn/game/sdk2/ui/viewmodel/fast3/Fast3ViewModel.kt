@@ -64,6 +64,7 @@ class Fast3ViewModel : BaseViewModel() {
     val userLotteryResultLiveData: UnPeekLiveData<ArrayList<Betting>> = UnPeekLiveData()
     val cancelAreaFlickAnimLiveData = UnPeekLiveData<Boolean>()
     val addMoneyOkViewLiveData: UnPeekLiveData<Pair<GameAreaView, ViewGroup>> = UnPeekLiveData()
+    val updateMoneyViewLiveData:UnPeekLiveData<GameAreaView> = UnPeekLiveData()
 
     val homeTimeSeconds: LiveData<Int> = gameAboutModel.countDownSecondsLD
     val homeTimeColorLD: LiveData<Int> by lazy {

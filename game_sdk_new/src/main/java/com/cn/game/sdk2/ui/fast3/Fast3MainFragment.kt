@@ -132,7 +132,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 override fun onResume(owner: LifecycleOwner) {
                     super.onResume(owner)
                     (System.currentTimeMillis() - startTime).let {
-                        LogUtils.dTag(TAG,"Fast3MainFragment load costMills:$it")
+                        LogUtils.dTag(TAG, "Fast3MainFragment load costMills:$it")
                     }
                 }
 
@@ -151,7 +151,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             mFragList.add(PairsDiceFragment())
             mFragList.add(LeopardFragment())
             (System.currentTimeMillis() - startTime).let {
-                LogUtils.dTag(TAG,"Fast3MainFragment load costMills1:$it")
+                LogUtils.dTag(TAG, "Fast3MainFragment load costMills1:$it")
             }
             mDatabind.viewPagerNew.initGameViewPager(
                 childFragmentManager, mFragList, arrayListOf(
@@ -181,7 +181,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 mDatabind.viewPagerNew.offscreenPageLimit = mFragList.size
             }
             (System.currentTimeMillis() - startTime).let {
-                LogUtils.dTag(TAG,"Fast3MainFragment load costMills3:$it")
+                LogUtils.dTag(TAG, "Fast3MainFragment load costMills3:$it")
             }
         }
         setBetAdapter()
@@ -199,7 +199,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         mDatabind.txtHomeTime.text = mViewModel.homeTimeSeconds.value.toString()
         lifecycleScope.launchWhenResumed {
             //开始下注
-            LogUtils.dTag(TAG,"initData startBetting")
+            LogUtils.dTag(TAG, "initData startBetting")
             delay(200)
             updateGameStage()
         }
@@ -229,11 +229,11 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         lifecycleScope.launch(Dispatchers.IO) {
             LayoutInflater.from(context).inflate(R.layout.item_bet_history, null).apply {
                 measureView()
-                LogUtils.dTag(TAG,"historyRvHeight->$measuredHeight")
+                LogUtils.dTag(TAG, "historyRvHeight->$measuredHeight")
                 resultRvHeight = this.measuredHeight
                 findViewById<LinearLayout>(R.id.llShowDice).apply {
                     this.measureView()
-                    LogUtils.dTag(TAG,"historyMoveHeight->$measuredHeight")
+                    LogUtils.dTag(TAG, "historyMoveHeight->$measuredHeight")
                     resultAnimMoveHeight = this.measuredHeight - 2.dp2px
                 }
                 val params = mDatabind.flRvHistory.layoutParams
@@ -248,7 +248,10 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
      */
     private fun updateGameStage() {
         gameAboutModel.currentStage.value?.let {
-            LogUtils.dTag(TAG,"updateGameStage-->${it},countDown:${mViewModel.countDown},localGameStage:${mViewModel.localGameStage}")
+            LogUtils.dTag(
+                TAG,
+                "updateGameStage-->${it},countDown:${mViewModel.countDown},localGameStage:${mViewModel.localGameStage}"
+            )
             if (mViewModel.localGameStage == it) return@let
             mViewModel.isClickOperation = it == GameAboutModel.Stage.NEW
             mDatabind.txtHomeTime.isVisible = it == GameAboutModel.Stage.NEW
@@ -268,7 +271,10 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 }
             }
             //if(!mViewModel.isCountDownInit) mViewModel.countDown = gameAboutModel.countDown * 1L
-            LogUtils.dTag(TAG,"updateGameStage-->${it},countDown:${mViewModel.countDown},isCountDownStart:${mViewModel.isCountDownStart}")
+            LogUtils.dTag(
+                TAG,
+                "updateGameStage-->${it},countDown:${mViewModel.countDown},isCountDownStart:${mViewModel.isCountDownStart}"
+            )
         }
     }
 
@@ -288,7 +294,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                     txtHomeStatic.text = resources.getString(R.string.g_home_txt_please)
                 }
             }
-            LogUtils.dTag(TAG,"onStartBetting, isCountDownStart:${mViewModel.isCountDownStart}")
+            LogUtils.dTag(TAG, "onStartBetting, isCountDownStart:${mViewModel.isCountDownStart}")
             //取消注区闪烁
             mViewModel.cancelAreaFlickAnimLiveData.value = true
             //重置注区筹码
@@ -448,8 +454,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                 return
             }
             var duration = when (winMoney) {
-                in 0 .. 1000 -> 500L
-                in 1000 .. 100000 -> 600L
+                in 0..1000 -> 500L
+                in 1000..100000 -> 600L
                 else -> 700L
             }
             AnimHelper.doNumberAnim(mDatabind.tvAnimWin2, 0, (winMoney).toLong(), duration)
@@ -646,6 +652,13 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             }
         }
 
+        mViewModel.updateMoneyViewLiveData.observe(viewLifecycleOwner) {
+            lifecycleScope.launch {
+                delay(100)
+                currentBetteAreaMap[it.areaCode] = it
+            }
+        }
+
         mViewModel.betOkClick.observe(this) {
             gameMassageManager
                 ?.commitBetting { bettingState, areaLimit ->
@@ -750,10 +763,14 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                             }
                         )
                     }
-                    LogUtils.dTag(TAG,"receive playAlphaAnimationLD:animator:${animator.hashCode()}")
+                    LogUtils.dTag(
+                        TAG,
+                        "receive playAlphaAnimationLD:animator:${animator.hashCode()}"
+                    )
                     animator?.start()
                 } else {
-                    LogUtils.dTag(TAG,
+                    LogUtils.dTag(
+                        TAG,
                         TAG,
                         "receive playAlphaAnimationLD:animator:${animator.hashCode()},cancel"
                     )
@@ -964,8 +981,10 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                 if (mainTxtBean.isLeopard) {
                                     txtBetSize.text = getString(R.string.g_home_txt_leopard)
                                     txtBetOdd.text = getString(R.string.g_home_txt_leopard)
-                                    txtBetSize.background = getDrawable(R.drawable.game_sdk_shape_3_01933b)
-                                    txtBetOdd.background = getDrawable(R.drawable.game_sdk_shape_3_01933b)
+                                    txtBetSize.background =
+                                        getDrawable(R.drawable.game_sdk_shape_3_01933b)
+                                    txtBetOdd.background =
+                                        getDrawable(R.drawable.game_sdk_shape_3_01933b)
 
                                 } else {
                                     txtBetSize.background =
@@ -1056,7 +1075,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             mViewModel.noteList.count()
         )
         if (mDatabind.llShowBetList.isComputingLayout) {
-            LogUtils.eTag(TAG,"isComputingLayout")
+            LogUtils.eTag(TAG, "isComputingLayout")
             mDatabind.llShowBetList.post(action)
         } else {
             action.invoke()
@@ -1268,7 +1287,9 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                                                             tvOnline.text =
                                                                                 bean.onlineA
                                                                             if (bean.name == "快三") {
-                                                                                root.clickNoRepeat(true) {
+                                                                                root.clickNoRepeat(
+                                                                                    true
+                                                                                ) {
                                                                                     backMainGame()
                                                                                 }
                                                                             }
@@ -1432,19 +1453,19 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
     override fun onDetach() {
         super.onDetach()
-        LogUtils.dTag(TAG,"onDetach~~~~~~~~~~~~~~")
+        LogUtils.dTag(TAG, "onDetach~~~~~~~~~~~~~~")
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        LogUtils.dTag(TAG,"onDestroyView~~~~~~~~~~~~~~")
+        LogUtils.dTag(TAG, "onDestroyView~~~~~~~~~~~~~~")
     }
 
     /**
      * 关闭页面
      */
     override fun onDestroy() {
-        LogUtils.dTag(TAG,"onDestroy~~~~~~~~~~~~~~")
+        LogUtils.dTag(TAG, "onDestroy~~~~~~~~~~~~~~")
         //关闭的时候要把这个赋值为0选择
         mViewModel.noteList.forEach {
             it.select = false
@@ -1547,6 +1568,9 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         params.topMargin = jettonViewLocation[1] - viewPagerLocation[1] - 5.dp2px
         params.leftMargin = jettonViewLocation[0] - viewPagerLocation[0] - 2.dp2px
         betImageView.layoutParams = params
+        if (betteViewGroup == null) {
+            betteViewGroup = areaView.parent.parent as ViewGroup
+        }
         betteViewGroup?.addView(betImageView)
 
         val scale = targetSize.toFloat() / betteSize.toFloat()
