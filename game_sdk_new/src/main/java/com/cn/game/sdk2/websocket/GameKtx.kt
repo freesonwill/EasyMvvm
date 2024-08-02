@@ -71,7 +71,8 @@ val outerTestTokenArray = listOf(
     "129:Yn7lAIUu",
     "130:O9Cz5IXe",
     "131:0VzbPltw",
-    "132:Q8FMTRrM")
+    "132:Q8FMTRrM"
+)
 
 ////测试打包专用 99:mFGB4ljy
 ////92:ZyBmhNCJ   87:MHxIHlYM  93:Ufx3Dy8y 94:0aPEwiYK   金额少：97:nMz8aSsZ  98:gCrUd5Gz
@@ -521,6 +522,12 @@ fun Map<Betting, List<BettingRecordBean>>.merge(): MutableList<BettingRecordBean
 }
 
 fun MutableList<BettingRecordBean>.convertAgainList(): MutableMap<Betting, BettingRecordBean> {
+    val againList: MutableMap<Betting, BettingRecordBean> = toMapByAreaCode()
+    clear()
+    return againList
+}
+
+fun MutableList<BettingRecordBean>.toMapByAreaCode(): MutableMap<Betting, BettingRecordBean> {
     val againList: MutableMap<Betting, BettingRecordBean> = mutableMapOf()
     filter { it.state == BettingStatus.COMMITTED }.groupBy(BettingRecordBean::bettingArea).map {
         val sumOf = it.value.sumOf { it.money }
@@ -529,7 +536,6 @@ fun MutableList<BettingRecordBean>.convertAgainList(): MutableMap<Betting, Betti
         copy.state = BettingStatus.TEMP
         againList[it.key] = copy
     }
-    clear()
     return againList
 }
 
@@ -575,8 +581,8 @@ fun MutableList<BettingRecordBean>.double(): MutableMap<Betting, BettingRecordBe
     return doubleMap
 }
 
-inline fun <OnSdkListener> OnSdkListener.runOnUiThread(crossinline function: OnSdkListener.() -> Unit):OnSdkListener {
-    ThreadUtils.runOnUiThread(0){
+inline fun <OnSdkListener> OnSdkListener.runOnUiThread(crossinline function: OnSdkListener.() -> Unit): OnSdkListener {
+    ThreadUtils.runOnUiThread(0) {
         function()
     }
     return this

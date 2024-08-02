@@ -36,6 +36,7 @@ import com.cn.game.sdk2.websocket.returnTemp
 import com.cn.game.sdk2.websocket.runOnUiThread
 import com.cn.game.sdk2.websocket.setCommittedState
 import com.cn.game.sdk2.websocket.sum
+import com.cn.game.sdk2.websocket.toMapByAreaCode
 import com.cn.game.sdk2.websocket.verifyDouble
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 import com.xcjh.base_lib2.utils.logd
@@ -311,7 +312,8 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
                 )
                 bettingStepList.setCommittedState()
                 gameAboutModel.tempMap.clear()
-                gameAboutModel.tempMap.putAll(bettingStepList.convertAgainList())
+                gameAboutModel.tempMap.putAll(bettingStepList.toMapByAreaCode())
+                "tempMaP:${ gameAboutModel.tempMap}".loge()
             }
 
             1 -> {
@@ -367,6 +369,7 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
     override fun beginRound(round: GameRes.BeginNewRound) {
         "Round".logi(tag)
         previousSuccess = true
+        gameAboutModel.tempMap.clear()
         gameAboutModel.roundId = round.roundId //期号
         gameAboutModel.countDown = round.countDown //当前阶段剩余时间倒计时
         gameAboutModel.changeStage(GameAboutModel.Stage.NEW)
