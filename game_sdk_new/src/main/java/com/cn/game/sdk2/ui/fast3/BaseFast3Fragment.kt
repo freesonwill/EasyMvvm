@@ -67,8 +67,8 @@ abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
 
     override fun onResume() {
         super.onResume()
-        for (areaView in areaViewList) {
-            if (gameAboutModel.tempMap.isNotEmpty() && gameAboutModel.currentStage.value == GameAboutModel.Stage.NEW) {
+        if (gameAboutModel.tempMap.isNotEmpty() && gameAboutModel.currentStage.value == GameAboutModel.Stage.NEW) {
+            for (areaView in areaViewList) {
                 gameAboutModel.tempMap.forEach {
                     if (areaView.areaCode == it.key.number) {
                         areaView.againAdd(it)
