@@ -1,11 +1,13 @@
 package com.cn.game.sdk2.websocket.imp
 
 import com.cn.game.sdk2.network.code.GameReqCode
+import com.cn.game.sdk2.ui.helper.ViewHelper
 import com.cn.game.sdk2.websocket.bean.Betting
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import com.cn.game.sdk2.websocket.GameServerMessageConvertFactory
 import com.cn.game.sdk2.websocket.GameSocketClient
 import com.cn.game.sdk2.websocket.againIfMoneyEnough
+import com.cn.game.sdk2.websocket.appContext
 import com.cn.game.sdk2.websocket.appListener
 import com.cn.game.sdk2.websocket.bean.AreaBetBean
 import com.cn.game.sdk2.websocket.bean.AreaBetConfigBean
@@ -288,6 +290,7 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
 
     override fun enterMiniGameInfo(miniGame: GameRes.EnterMiniGameInfo) {
         miniGameId = miniGame.miniGameId
+        gameAboutModel.isEnterGameSuccess = true
         "进入游戏:${miniGame.miniGameId}".logi(tag)
         appListener?.runOnUiThread {
             onEnterGame()
@@ -307,6 +310,8 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
                     )
                 )
                 bettingStepList.setCommittedState()
+                gameAboutModel.tempMap.clear()
+                gameAboutModel.tempMap.putAll(bettingStepList.convertAgainList())
             }
 
             1 -> {
@@ -399,6 +404,7 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
         if (settle.winScore > 0) {
             //如果中奖 就计算净收入
             gameAboutModel.netIncome = settle.winScore - confirmMoney
+            ViewHelper.showFastViewPopWhenWin()
         }
         //开奖号码
         //主动设置豹子

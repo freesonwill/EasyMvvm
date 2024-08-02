@@ -18,9 +18,7 @@ import com.xcjh.base_lib2.utils.LogUtils
  * createTime   : 2024/6/27 13:54
  **/
 class DragFastEasy @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0
+    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : LinearLayout(context, attrs, defStyleAttr) {
     private val TAG = javaClass.simpleName
     private val gcFunc = mutableListOf<() -> Unit>()
@@ -32,8 +30,11 @@ class DragFastEasy @JvmOverloads constructor(
 
         gameAboutModel.countDownSecondsLD.apply {
             observeForever(object : Observer<Int> {
-                init { gcFunc.add { removeObserver(this) } }
-                override fun onChanged(t: Int){
+                init {
+                    gcFunc.add { removeObserver(this) }
+                }
+
+                override fun onChanged(t: Int) {
                     updateUI()
                 }
             })
@@ -41,9 +42,10 @@ class DragFastEasy @JvmOverloads constructor(
         gameAboutModel.currentStage.apply {
             observeForever(object : Observer<Stage> {
                 init {
-                    gcFunc.add {removeObserver(this) }
+                    gcFunc.add { removeObserver(this) }
                 }
-                override fun onChanged(t: Stage){
+
+                override fun onChanged(t: Stage) {
                     updateUI()
                 }
             })
@@ -53,18 +55,21 @@ class DragFastEasy @JvmOverloads constructor(
 
     private fun updateUI() {
         val stage = gameAboutModel.currentStage.value
-        when(stage) {
+        when (stage) {
             Stage.NEW -> {
-                val time = gameAboutModel.countDownSecondsLD.value!!
+                val time = gameAboutModel.countDownSecondsLD.value ?: 0
                 binding.txtTime.text = CommonUtils.formatSeconds(time)
             }
+
             Stage.DEAL -> {
                 binding.txtTime.text = context.getString(R.string.g_f3_dealing)
             }
+
             Stage.SETTLE -> {
                 binding.txtTime.text = context.getString(R.string.g_f3_setting)
             }
-            else ->{}
+
+            else -> {}
         }
     }
 

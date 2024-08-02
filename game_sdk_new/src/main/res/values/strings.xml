@@ -38,6 +38,8 @@
     <string name="money_min_error">低于注区下注金额下限</string>
     <string name="fast3_tittle">一分快三</string>
     <string name="bet_success_prompt">下注成功¥%1$s</string>
+    <string name="toast_login_fault">服务器连接已断开</string>
+    <string name="toast_enter_game_fault">未获取到游戏信息，请退出直播间重新进入</string>
 
 
 </resources>

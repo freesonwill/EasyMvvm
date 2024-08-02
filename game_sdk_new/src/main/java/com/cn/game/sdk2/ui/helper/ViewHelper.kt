@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -27,6 +28,7 @@ import com.cn.game.sdk2.utils.ext.ViewExt.locationInWindow
 import com.cn.game.sdk2.utils.tool.indicator.CommonPagerIndicator
 import com.cn.game.sdk2.websocket.appListener
 import com.cn.game.sdk2.websocket.gameAboutModel
+import com.cn.game.sdk2.websocket.isLogin
 import com.cn.game.sdk2.websocket.runOnUiThread
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
@@ -107,8 +109,7 @@ object ViewHelper {
         val (offsetY, height) = homeXPopupDialog!!.findViewById<View>(R.id.topLayout).let {
             arrayOf(it.locationInWindow[1], it.height)
         }
-        helpXPopupDialog = XPopup.Builder(context)
-            .isTouchThrough(false)
+        helpXPopupDialog = XPopup.Builder(context).isTouchThrough(false)
             .setPopupCallback(object : SimpleCallback() {
                 override fun onDismiss(popupView: BasePopupView?) {
                     super.onDismiss(popupView)
@@ -116,16 +117,10 @@ object ViewHelper {
                 }
             })
             //.customAnimator(EmptyAnimator(bubbleAttach, 0))
-            .navigationBarColor(android.R.color.transparent)
-            .hasShadowBg(false) // 去掉半透明背景
-            .isViewMode(true)
-            .animationDuration(100)
-            .hasStatusBar(false)
-            .hasNavigationBar(false)
-            .enableDrag(true)
-            .dismissOnTouchOutside(true)
-            .asCustom(Fast3HelpPopup(context, offsetY, height))
-            .apply {
+            .navigationBarColor(android.R.color.transparent).hasShadowBg(false) // 去掉半透明背景
+            .isViewMode(true).animationDuration(100).hasStatusBar(false).hasNavigationBar(false)
+            .enableDrag(true).dismissOnTouchOutside(true)
+            .asCustom(Fast3HelpPopup(context, offsetY, height)).apply {
                 if (context is LifecycleOwner) { //宿主销毁了，静态引用置null
                     context.lifecycle.addObserver(object : DefaultLifecycleObserver {
                         override fun onDestroy(owner: LifecycleOwner) {
@@ -135,8 +130,7 @@ object ViewHelper {
                         }
                     })
                 }
-            }
-            .show()
+            }.show()
     }
 
 
@@ -149,13 +143,11 @@ object ViewHelper {
             homeXPopupDialog!!.show()
             return
         }
-        val pop = HomeXPopupDialog(context, Fast3MainFragment(), GAME_ID_ENUM.GAME_FAST3.num)
-            .apply {
-                homeXPopupDialog = this
-            }
-        XPopup.Builder(context)
-            .hasShadowBg(false)
-            .setPopupCallback(object : SimpleCallback() {
+        val pop =
+            HomeXPopupDialog(context, Fast3MainFragment(), GAME_ID_ENUM.GAME_FAST3.num).apply {
+                    homeXPopupDialog = this
+                }
+        XPopup.Builder(context).hasShadowBg(false).setPopupCallback(object : SimpleCallback() {
                 override fun beforeShow(popupView: BasePopupView?) {
                     super.beforeShow(popupView)
                     fastViewOverlay?.isVisible = false
@@ -184,18 +176,11 @@ object ViewHelper {
                         }
                     }
                 }
-            })
-            .popupAnimation(PopupAnimation.TranslateFromBottom)
-            .animationDuration(100)
+            }).popupAnimation(PopupAnimation.TranslateFromBottom).animationDuration(100)
             .moveUpToKeyboard(false) //如果不加这个，评论弹窗会移动到软键盘上面
-            .isViewMode(true)
-            .isTouchThrough(true)
-            .isDestroyOnDismiss(false) //对于只使用一次的弹窗，推荐设置这个
+            .isViewMode(true).isTouchThrough(true).isDestroyOnDismiss(false) //对于只使用一次的弹窗，推荐设置这个
             .isThreeDrag(false) //是否开启三阶拖拽，如果设置enableDrag(false)则无效
-            .enableDrag(true)
-            .dismissOnTouchOutside(true)
-            .asCustom(pop)
-            .apply {
+            .enableDrag(true).dismissOnTouchOutside(true).asCustom(pop).apply {
                 //宿主销毁了，
                 if (context is LifecycleOwner) {
                     context.lifecycle.addObserver(object : DefaultLifecycleObserver {
@@ -206,8 +191,11 @@ object ViewHelper {
                         }
                     })
                 }
-            }
-            .show()
+            }.show()
+    }
+
+    fun showFastViewPopWhenWin(){
+        homeXPopupDialog?.show()
     }
 
     fun getFastView(context: Context): View {
@@ -223,6 +211,22 @@ object ViewHelper {
                 if (homeXPopupDialog != null) {
                     LogUtils.dTag(TAG, "homeXPopupDialog exists, no need to create it.")
                     homeXPopupDialog!!.show()
+                    return@clickNoRepeat
+                }
+                if (!gameAboutModel.isOpen || !gameAboutModel.isLoginSuccess.value!!) {
+                    Toast.makeText(
+                        context,
+                        context.resources.getString(R.string.toast_login_fault),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    return@clickNoRepeat
+                }
+                if (!gameAboutModel.isEnterGameSuccess) {
+                    Toast.makeText(
+                        context,
+                        context.resources.getString(R.string.toast_enter_game_fault),
+                        Toast.LENGTH_SHORT
+                    ).show()
                     return@clickNoRepeat
                 }
                 showFastViewPop(context, true)
@@ -249,15 +253,15 @@ object ViewHelper {
                 it.layoutParams = lp
                 fastViewOverlay = it
             }.apply {
-            if (context is LifecycleOwner) {
-                context.lifecycle.addObserver(object : DefaultLifecycleObserver {
-                    override fun onDestroy(owner: LifecycleOwner) {
-                        super.onDestroy(owner)
-                        fastViewOverlay = null
-                    }
-                })
+                if (context is LifecycleOwner) {
+                    context.lifecycle.addObserver(object : DefaultLifecycleObserver {
+                        override fun onDestroy(owner: LifecycleOwner) {
+                            super.onDestroy(owner)
+                            fastViewOverlay = null
+                        }
+                    })
+                }
             }
-        }
     }
 
     fun ViewPager.initGameViewPager2(views: ArrayList<View>): ViewPager {
@@ -290,7 +294,8 @@ object ViewHelper {
         titles: ArrayList<String>? = null
     ): ViewPager {
         //设置适配器
-        adapter = object : FragmentStatePagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+        adapter = object :
+            FragmentStatePagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
             override fun getCount(): Int {
                 return fragments.size
             }
@@ -324,8 +329,7 @@ object ViewHelper {
     ): ViewPager {
         //设置适配器
         adapter = object : FragmentStatePagerAdapter(
-            fragmentManager,
-            BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
+            fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
         ) {
             override fun getCount(): Int {
                 return fragments.size

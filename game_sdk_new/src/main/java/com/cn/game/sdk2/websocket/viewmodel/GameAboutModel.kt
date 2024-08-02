@@ -1,7 +1,5 @@
 package com.cn.game.sdk2.websocket.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.cn.game.sdk2.manager.GameManager
 import com.cn.game.sdk2.manager.listener.IGameListener
 import com.cn.game.sdk2.utils.ThreadUtils
@@ -11,11 +9,12 @@ import com.cn.game.sdk2.websocket.bean.Betting
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import com.cn.game.sdk2.websocket.bean.BettingResponsesBean
 import com.cn.game.sdk2.websocket.bean.RoundInfoBean
-import com.kunminx.architecture.ui.callback.UnPeekLiveData
 import com.xcjh.base_lib2.base.BaseViewModel
+import com.xcjh.base_lib2.callback.livedata.UnPeekLiveData
 import com.xcjh.base_lib2.utils.LogUtils
 import game.mod.proc.yf.proto.res.GameRes
 import kotlinx.coroutines.*
+import java.util.concurrent.ConcurrentHashMap
 
 //internal
 internal class GameAboutModel : BaseViewModel() {
@@ -32,23 +31,23 @@ internal class GameAboutModel : BaseViewModel() {
     }
 
     private val _currentStage = UnPeekLiveData<Stage>()
-    private val _currentAgainDoubleState = MutableLiveData<AgainDoubleState>()
-    private val _balance = MutableLiveData<Long>()
-    private val _tempBalance = MutableLiveData<Long>()
-    private val _syncAreaBetInfo = MutableLiveData<List<AreaBetBean>>()
-    private val _clearTrendsIds = MutableLiveData<List<Int>>()
-    private val _historyRounds = MutableLiveData<List<RoundInfoBean>>()
+    private val _currentAgainDoubleState = UnPeekLiveData<AgainDoubleState>()
+    private val _balance = UnPeekLiveData<Long>()
+    private val _tempBalance = UnPeekLiveData<Long>()
+    private val _syncAreaBetInfo = UnPeekLiveData<List<AreaBetBean>>()
+    private val _clearTrendsIds = UnPeekLiveData<List<Int>>()
+    private val _historyRounds = UnPeekLiveData<List<RoundInfoBean>>()
 
-    private val _isMeetAgain = MutableLiveData<Boolean>()
-    private val _isLoginSuccess = MutableLiveData<Boolean>()
-    private val _isSitDown = MutableLiveData<Boolean>()
-    private val _isEnterGroup = MutableLiveData<Boolean>()
-    private val _isLeaveGroup = MutableLiveData<Boolean>()
+    private val _isMeetAgain = UnPeekLiveData<Boolean>()
+    private val _isLoginSuccess = UnPeekLiveData<Boolean>()
+    private val _isSitDown = UnPeekLiveData<Boolean>()
+    private val _isEnterGroup = UnPeekLiveData<Boolean>()
+    private val _isLeaveGroup = UnPeekLiveData<Boolean>()
 
-    private val _isBettingSuccess = MutableLiveData<BettingResponsesBean>()
-    private val _toastErrorMessage = MutableLiveData<String>()
-    private val _isShowGame = MutableLiveData<Boolean>()
-    private val _isAllowedBet = MutableLiveData<Boolean>(true)
+    private val _isBettingSuccess = UnPeekLiveData<BettingResponsesBean>()
+    private val _toastErrorMessage = UnPeekLiveData<String>()
+    private val _isShowGame = UnPeekLiveData<Boolean>()
+    private val _isAllowedBet = UnPeekLiveData<Boolean>()
 
     var isOpen: Boolean = false
 
@@ -58,11 +57,13 @@ internal class GameAboutModel : BaseViewModel() {
     //是否是主播： 主播只能看到"热门"游戏分类，"热门"分类中以后只会放sdk游戏，在大厅弹窗处，主播端看不到其他的tab和瓦力游戏。
     var isAnchor: Boolean = false
     lateinit var agentName: String
-    lateinit var token:String
+    lateinit var token: String
 
     lateinit var liveId: String
     lateinit var gameIds: List<Int>
     lateinit var data: String
+
+    var isEnterGameSuccess = false
 
 
     //如果不需要显示(isShowHistoryAndCustomer = false)，则主播端的更多只显示切换游戏和帮助。
@@ -115,27 +116,27 @@ internal class GameAboutModel : BaseViewModel() {
     val isLoginSuccess
         get() = _isLoginSuccess
 
-    val isSitDown: LiveData<Boolean>
+    val isSitDown: UnPeekLiveData<Boolean>
         get() = _isSitDown
 
-    val isisAllowedBet: LiveData<Boolean>
+    val isisAllowedBet: UnPeekLiveData<Boolean>
         get() = _isAllowedBet
-    val isShowGame: LiveData<Boolean>
+    val isShowGame: UnPeekLiveData<Boolean>
         get() = _isShowGame
 
-    val isEnterGroup: LiveData<Boolean>
+    val isEnterGroup: UnPeekLiveData<Boolean>
         get() = _isEnterGroup
 
-    val isLeaveGroup: LiveData<Boolean>
+    val isLeaveGroup: UnPeekLiveData<Boolean>
         get() = _isLeaveGroup
 
     /*********正在玩的阶段***********/
-    val toastErrorMessage: LiveData<String>
+    val toastErrorMessage: UnPeekLiveData<String>
         get() = _toastErrorMessage
 
     // 下注是否成功
     // 绑定使用 bettingMessage
-    val isBettingSuccess: LiveData<BettingResponsesBean>
+    val isBettingSuccess: UnPeekLiveData<BettingResponsesBean>
         get() = _isBettingSuccess
 
     var bettingMessage: String = ""
@@ -146,11 +147,11 @@ internal class GameAboutModel : BaseViewModel() {
     //   - roundId 期号
     //  - countDown 倒计时
     //  - 结算结果 currentSettleResult
-    val currentStage: LiveData<Stage>
+    val currentStage: UnPeekLiveData<Stage>
         get() = _currentStage
 
     // 监听续压和加倍的状态
-    val currentAgainDoubleState: LiveData<AgainDoubleState>
+    val currentAgainDoubleState: UnPeekLiveData<AgainDoubleState>
         get() = _currentAgainDoubleState
 
     // 当前的历史记录
@@ -158,19 +159,19 @@ internal class GameAboutModel : BaseViewModel() {
 
     // 实现balance的observe，监听余额变化
     // 该值需要缩小100倍，保留两位小数 用于展示
-    val balance: LiveData<Long>
+    val balance: UnPeekLiveData<Long>
         get() = _balance
 
     //临时计算用的余额 用于显示砝码的状态
-    val tempBalance: LiveData<Long>
+    val tempBalance: UnPeekLiveData<Long>
         get() = _tempBalance
 
     // 实现syncAreaBetInfo的observe，监听default牌面的人数变化
-    val syncAreaBetInfo: LiveData<List<AreaBetBean>>
+    val syncAreaBetInfo: UnPeekLiveData<List<AreaBetBean>>
         get() = _syncAreaBetInfo
 
     //历史记录的列表
-    val historyRounds: LiveData<List<RoundInfoBean>>
+    val historyRounds: UnPeekLiveData<List<RoundInfoBean>>
         get() = _historyRounds
 
 
@@ -193,13 +194,13 @@ internal class GameAboutModel : BaseViewModel() {
     var lastBetting: Betting? = null
     var gameList: MutableList<GameRes.MiniGameBasicInfo>? = null
 
-
+    var tempMap: MutableMap<Betting, BettingRecordBean> = ConcurrentHashMap()
     /*********End***********/
 
     /**
      * 监听isMeetAgain
      */
-    val isMeetAgain: LiveData<Boolean>
+    val isMeetAgain: UnPeekLiveData<Boolean>
         get() = _isMeetAgain
 
     fun setBettingSuccess(isSuccess: BettingResponsesBean) {
@@ -295,9 +296,9 @@ internal class GameAboutModel : BaseViewModel() {
     }
 
 
-    private val _onceCountMoney = MutableLiveData<Int>()
+    private val _onceCountMoney = UnPeekLiveData<Int>()
 
-    val onceCountMoney: LiveData<Int>
+    val onceCountMoney: UnPeekLiveData<Int>
         get() = _onceCountMoney
 
 
@@ -311,7 +312,8 @@ internal class GameAboutModel : BaseViewModel() {
             LogUtils.dTag(TAG, "countDown set:${value},isMainThread:${isMainThread}")
             _countDownSetStampTime = System.currentTimeMillis()
             ThreadUtils.runOnUiThread {
-                GameManager.instance.startCountDownTimer(field.toLong(),
+                GameManager.instance.startCountDownTimer(
+                    field.toLong(),
                     lis = object : IGameListener {
                         override fun onCountdown(time: Long) {
                             super.onCountdown(time)
@@ -328,8 +330,8 @@ internal class GameAboutModel : BaseViewModel() {
             LogUtils.dTag(TAG, "countDown elapsed:${elapsed}")
             return (field - elapsed).toInt()
         }
-    private val _countDownSecondsLD: UnPeekLiveData<Int> = UnPeekLiveData(0)
-    val countDownSecondsLD: LiveData<Int> = _countDownSecondsLD
+    private val _countDownSecondsLD: UnPeekLiveData<Int> = UnPeekLiveData()
+    val countDownSecondsLD: UnPeekLiveData<Int> = _countDownSecondsLD
     private var _countDownSetStampTime: Long = 0L
     val isCountDownStart get() = (System.currentTimeMillis() - _countDownSetStampTime) < 50
 
