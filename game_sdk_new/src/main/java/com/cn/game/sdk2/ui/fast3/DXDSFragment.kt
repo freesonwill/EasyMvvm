@@ -149,4 +149,9 @@ class DXDSFragment() : BaseFast3Fragment<Fast3ViewModel, FragDxdsBinding>() {
             mViewModel.addMoneyOkViewLiveData.value = Pair(areaView, mDatabind.flRoot)
         }
     }
+
+    override fun onDestroy() {
+        numAnimSet?.cancel()
+        super.onDestroy()
+    }
 }

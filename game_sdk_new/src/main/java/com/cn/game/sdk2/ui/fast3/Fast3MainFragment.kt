@@ -202,6 +202,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             LogUtils.dTag(TAG, "initData startBetting")
             delay(200)
             updateGameStage()
+            updateAgainDoubleUi()
         }
     }
 
@@ -681,34 +682,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         //续压、加倍状态监听
         gameAboutModel.currentAgainDoubleState.observe(viewLifecycleOwner) {
             Log.e(TAG, "续压加倍状态监听--->${it}")
-            mDatabind.apply {
-
-                when (it) {
-                    GameAboutModel.AgainDoubleState.NUll, GameAboutModel.AgainDoubleState.AGAIN_CAN_NOT_50 -> {
-                        ivXuya.isVisible = true
-                        ivXuya.setImageResource(R.drawable.game_sdk_icon_xuya_gray)
-                        ivMultiple2.isVisible = false
-                    }
-
-                    GameAboutModel.AgainDoubleState.AGAIN -> {
-                        ivXuya.isVisible = true
-                        ivXuya.setImageResource(R.drawable.game_sdk_icon_xuya)
-                        ivMultiple2.isVisible = false
-                    }
-
-                    GameAboutModel.AgainDoubleState.DOUBLE -> {
-                        ivXuya.isVisible = false
-                        ivMultiple2.isVisible = true
-                        ivMultiple2.setImageResource(R.drawable.game_sdk_icon_multiple2)
-                    }
-
-                    GameAboutModel.AgainDoubleState.DOUBLE_CAN_NOT, GameAboutModel.AgainDoubleState.DOUBLE_CAN_NOT_50 -> {
-                        ivXuya.isVisible = false
-                        ivMultiple2.isVisible = true
-                        ivMultiple2.setImageResource(R.drawable.game_sdk_icon_multiple2_gray)
-                    }
-                }
-            }
+            updateAgainDoubleUi()
         }
 
         //开奖历史记录
@@ -783,6 +757,36 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         //error
         gameAboutModel.toastErrorMessage.observe(viewLifecycleOwner) { msg ->
             Fast3ToastHelper.showToastNormal(msg)
+        }
+    }
+
+    private fun updateAgainDoubleUi() {
+        mDatabind.apply {
+            when (gameAboutModel.currentAgainDoubleState.value) {
+                null, GameAboutModel.AgainDoubleState.NUll, GameAboutModel.AgainDoubleState.AGAIN_CAN_NOT_50 -> {
+                    ivXuya.isVisible = true
+                    ivXuya.setImageResource(R.drawable.game_sdk_icon_xuya_gray)
+                    ivMultiple2.isVisible = false
+                }
+
+                GameAboutModel.AgainDoubleState.AGAIN -> {
+                    ivXuya.isVisible = true
+                    ivXuya.setImageResource(R.drawable.game_sdk_icon_xuya)
+                    ivMultiple2.isVisible = false
+                }
+
+                GameAboutModel.AgainDoubleState.DOUBLE -> {
+                    ivXuya.isVisible = false
+                    ivMultiple2.isVisible = true
+                    ivMultiple2.setImageResource(R.drawable.game_sdk_icon_multiple2)
+                }
+
+                GameAboutModel.AgainDoubleState.DOUBLE_CAN_NOT, GameAboutModel.AgainDoubleState.DOUBLE_CAN_NOT_50 -> {
+                    ivXuya.isVisible = false
+                    ivMultiple2.isVisible = true
+                    ivMultiple2.setImageResource(R.drawable.game_sdk_icon_multiple2_gray)
+                }
+            }
         }
     }
 
@@ -1437,6 +1441,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
                             currentBetteAreaMap[it.key.number] = areaView
                             areaView.setShowMoney(it.value.money)
+                            areaView.moneyView.hiddenTop()
                         }
                     }
                     if (currentBetteAreaMap.containsKey(gameAboutModel.lastBetting?.number)) {

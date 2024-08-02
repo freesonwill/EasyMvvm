@@ -374,4 +374,9 @@ abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
                 areaView.updateBetteIcon(recordBean.money)
             })
     }
+
+    override fun onDestroy() {
+        areaFlickAnimatorSet?.cancel()
+        super.onDestroy()
+    }
 }
