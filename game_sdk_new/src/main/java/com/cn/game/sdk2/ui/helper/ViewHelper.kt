@@ -143,8 +143,7 @@ object ViewHelper {
             homeXPopupDialog!!.show()
             return
         }
-        val pop =
-            HomeXPopupDialog(context, Fast3MainFragment(), GAME_ID_ENUM.GAME_FAST3.num).apply {
+        val pop = HomeXPopupDialog(context, Fast3MainFragment(), GAME_ID_ENUM.GAME_FAST3.num).apply {
                     homeXPopupDialog = this
                 }
         XPopup.Builder(context).hasShadowBg(false).setPopupCallback(object : SimpleCallback() {

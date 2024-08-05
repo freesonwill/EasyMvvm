@@ -3,6 +3,7 @@ package com.cn.game.sdk2.websocket
 import android.util.Log
 import com.cn.game.sdk2.utils.ext.CommonExt.isMainThread
 import com.cn.game.sdk2.websocket.imp.GameApp
+import com.xcjh.base_lib2.utils.TAG
 import com.xcjh.base_lib2.utils.loge
 import com.xcjh.base_lib2.utils.logi
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -21,7 +22,7 @@ import java.util.TimerTask
 
 internal class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
 
-    private var _tag = "GameSocketClient"
+    private var _tag = TAG+"SocketClient"
     private var onMessageListener: OnMessageListener? = null
     private val reconnectInterval: Long = 1000
     private var timer: Timer? = null
@@ -91,6 +92,7 @@ internal class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
     }
 
     private fun reconnectHandle() {
+        timer?.cancel()
         timer = Timer().apply {
             schedule(object : TimerTask() {
                 override fun run() {
