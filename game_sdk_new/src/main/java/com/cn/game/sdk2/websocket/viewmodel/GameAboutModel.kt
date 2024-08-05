@@ -195,6 +195,7 @@ internal class GameAboutModel : BaseViewModel() {
     var gameList: MutableList<GameRes.MiniGameBasicInfo>? = null
 
     var tempMap: MutableMap<Betting, BettingRecordBean> = ConcurrentHashMap()
+    var previousRoundId: String = "" //期号
     /*********End***********/
 
     /**

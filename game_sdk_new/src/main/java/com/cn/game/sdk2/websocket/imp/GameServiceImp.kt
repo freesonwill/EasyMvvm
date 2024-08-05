@@ -216,7 +216,7 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
     //进入直播间成功，待进入游戏
     override fun groupInfo(groupInfo: GameRes.GroupInfo) {
         isEnterRoom = true
-        "进入直播间成功".logi(tag)
+        "进入直播间成功:$groupInfo".logi(tag)
         appListener?.runOnUiThread {
             onEnterLive(1, "")
         }
@@ -238,22 +238,17 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
             )
         }
         roundInfoListList?.let {
-            val elements = it.last().performsList[0].elementsList
-            val roundInfoBean = RoundInfoBean(
-                it.last().roundId, elements, elements.sum(), elements.isBig(), elements.isDouble()
-            )
-            gameAboutModel.currentSettleResult = roundInfoBean
+            if (it.isNotEmpty()){
+                val elements = it.last().performsList[0].elementsList
+                val roundInfoBean = RoundInfoBean(
+                    it.last().roundId, elements, elements.sum(), elements.isBig(), elements.isDouble()
+                )
+                gameAboutModel.currentSettleResult = roundInfoBean
+            }else{
+                setCurrentHistory(miniGameBasicInfo.lastRoundInfo)
+            }
         } ?: run {
-            val lastRoundInfo = miniGameBasicInfo.lastRoundInfo
-            val elements = lastRoundInfo.performsList[0].elementsList
-            val roundInfoBean = RoundInfoBean(
-                lastRoundInfo.roundId,
-                elements,
-                elements.sum(),
-                elements.isBig(),
-                elements.isDouble()
-            )
-            gameAboutModel.currentSettleResult = roundInfoBean
+            setCurrentHistory(miniGameBasicInfo.lastRoundInfo)
         }
 
         gameAboutModel.addHistoryRounds(roundHistoryList)
@@ -276,6 +271,18 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
         )
     }
 
+    private fun setCurrentHistory(roundInfo:GameRes.RoundInfo){
+        val elements = roundInfo.performsList[0].elementsList
+        val roundInfoBean = RoundInfoBean(
+            roundInfo.roundId,
+            elements,
+            elements.sum(),
+            elements.isBig(),
+            elements.isDouble()
+        )
+        gameAboutModel.currentSettleResult = roundInfoBean
+    }
+
     //离开直播间成功
     override fun leaveGroup(leave: GameRes.LeaveGroup) {
         isEnterRoom = false
@@ -283,16 +290,19 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
         appListener?.runOnUiThread {
             onLeaveLive(1, "")
         }
+        "离开直播间：$leave".logi(tag)
     }
 
     override fun leaveMiniGameInfo(miniGame: GameRes.LeaveMiniGames) {
-        "leaveMiniGameInfo$miniGame".logi(tag)
+        "离开游戏：$miniGame".logi(tag)
     }
 
     override fun enterMiniGameInfo(miniGame: GameRes.EnterMiniGameInfo) {
         miniGameId = miniGame.miniGameId
+        gameAboutModel.roundId = miniGame.roundId
+        "进入游戏 ->${miniGame}".logi(tag)
         gameAboutModel.isEnterGameSuccess = true
-        "进入游戏:${miniGame.miniGameId}".logi(tag)
+        checkAgainNew()
         appListener?.runOnUiThread {
             onEnterGame()
         }
@@ -313,7 +323,7 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
                 bettingStepList.setCommittedState()
                 gameAboutModel.tempMap.clear()
                 gameAboutModel.tempMap.putAll(bettingStepList.toMapByAreaCode())
-                "tempMaP:${ gameAboutModel.tempMap}".loge()
+                gameAboutModel.previousRoundId = gameAboutModel.roundId
             }
 
             1 -> {
@@ -371,6 +381,7 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
         previousSuccess = true
         gameAboutModel.tempMap.clear()
         gameAboutModel.roundId = round.roundId //期号
+        "Round roundId->${gameAboutModel.roundId}".loge("roundId")
         gameAboutModel.countDown = round.countDown //当前阶段剩余时间倒计时
         gameAboutModel.changeStage(GameAboutModel.Stage.NEW)
         curStage = GameAboutModel.Stage.NEW

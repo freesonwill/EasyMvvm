@@ -33,6 +33,7 @@ import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.gameMassageManager
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 import com.xcjh.base_lib2.utils.LogUtils
+import com.xcjh.base_lib2.utils.loge
 
 /**
  * Description:
@@ -44,8 +45,7 @@ abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
     protected var areaViewList: MutableList<GameAreaView> = mutableListOf()
     private var areaFlickAnimatorSet: AnimatorSet? = null
 
-    override fun initView(savedInstanceState: Bundle?) {
-        /*lifecycle.addObserver(object : DefaultLifecycleObserver {
+    override fun initView(savedInstanceState: Bundle?) {/*lifecycle.addObserver(object : DefaultLifecycleObserver {
             var startTime:Long = 0
             override fun onCreate(owner: LifecycleOwner) {
                 super.onCreate(owner)
@@ -67,7 +67,13 @@ abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
 
     override fun onResume() {
         super.onResume()
-        if (gameAboutModel.tempMap.isNotEmpty() && gameAboutModel.currentStage.value == GameAboutModel.Stage.NEW) {
+        val isCurrentRound =
+            gameAboutModel.roundId.isNotEmpty() &&
+                    gameAboutModel.previousRoundId.isNotEmpty() &&
+                    gameAboutModel.roundId != "0" &&
+                    gameAboutModel.previousRoundId != "0" &&
+                    gameAboutModel.roundId == gameAboutModel.previousRoundId
+        if (isCurrentRound && gameAboutModel.tempMap.isNotEmpty() && gameAboutModel.currentStage.value == GameAboutModel.Stage.NEW) {
             for (areaView in areaViewList) {
                 gameAboutModel.tempMap.forEach {
                     if (areaView.areaCode == it.key.number) {
@@ -101,9 +107,7 @@ abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
     }
 
     private fun setLotteryResult(
-        resultList: ArrayList<Betting>,
-        duration: Long,
-        count: Int
+        resultList: ArrayList<Betting>, duration: Long, count: Int
     ) {
         val views = mutableListOf<View>()
         for (areaView in areaViewList) {
@@ -190,10 +194,7 @@ abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
 
 
     abstract fun addMoneyOkView(
-        areaView: GameAreaView,
-        rawX: Float,
-        rawY: Float,
-        emitAnimCallBack: () -> Unit
+        areaView: GameAreaView, rawX: Float, rawY: Float, emitAnimCallBack: () -> Unit
     )
 
     protected fun handleViewTranslation(
@@ -222,27 +223,10 @@ abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
         val dy = endY - betteY
 
         //是否左右边界
-        val isLeftStart = areaView.id == R.id.small_view
-                || areaView.id == R.id.single_view
-                || areaView.id == R.id.gavDiceOne
-                || areaView.id == R.id.gavDiceSix
-                || areaView.id == R.id.gavSumFour
-                || areaView.id == R.id.gavSumNine
-                || areaView.id == R.id.gavSumFourteen
-                || areaView.id == R.id.gavPairsOne
-                || areaView.id == R.id.gavPairsSix
-                || areaView.id == R.id.gavLeopardOne
-                || areaView.id == R.id.gavLeopardSix
-        val isRightEnd = areaView.id == R.id.big_view
-                || areaView.id == R.id.double_view
-                || areaView.id == R.id.gavDiceTwo
-                || areaView.id == R.id.gavDiceFive
-                || areaView.id == R.id.gavSumEight
-                || areaView.id == R.id.gavSumThirteen
-                || areaView.id == R.id.gavPairsTwo
-                || areaView.id == R.id.gavPairsFive
-                || areaView.id == R.id.gavLeopardTwo
-                || areaView.id == R.id.gavLeopardFive
+        val isLeftStart =
+            areaView.id == R.id.small_view || areaView.id == R.id.single_view || areaView.id == R.id.gavDiceOne || areaView.id == R.id.gavDiceSix || areaView.id == R.id.gavSumFour || areaView.id == R.id.gavSumNine || areaView.id == R.id.gavSumFourteen || areaView.id == R.id.gavPairsOne || areaView.id == R.id.gavPairsSix || areaView.id == R.id.gavLeopardOne || areaView.id == R.id.gavLeopardSix
+        val isRightEnd =
+            areaView.id == R.id.big_view || areaView.id == R.id.double_view || areaView.id == R.id.gavDiceTwo || areaView.id == R.id.gavDiceFive || areaView.id == R.id.gavSumEight || areaView.id == R.id.gavSumThirteen || areaView.id == R.id.gavPairsTwo || areaView.id == R.id.gavPairsFive || areaView.id == R.id.gavLeopardTwo || areaView.id == R.id.gavLeopardFive
 
         val limitLeft = if (areaView.id == R.id.double_view) {
             val leopardLocation = IntArray(2)

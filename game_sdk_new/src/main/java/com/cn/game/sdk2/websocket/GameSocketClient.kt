@@ -73,7 +73,9 @@ internal class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
     }
 
     override fun onClose(code: Int, reason: String?, remote: Boolean) {
-        "socket-onClose-->code:${code}-reason:$reason-remote:$remote,isMainThread:${isMainThread}".loge(_tag)
+        "socket-onClose-->code:${code}-reason:$reason-remote:$remote,isMainThread:${isMainThread}".loge(
+            _tag
+        )
         gameAboutModel.isOpen = false
         nativeLib.reset()
         reconnectHandle()
@@ -84,6 +86,7 @@ internal class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
 
     override fun onError(ex: Exception?) {
         "onError:${ex?.message}".loge(_tag)
+        ex?.printStackTrace()
         if (ex is WebsocketNotConnectedException) reconnectHandle()
     }
 
