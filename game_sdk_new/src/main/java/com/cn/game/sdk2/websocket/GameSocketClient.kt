@@ -3,14 +3,12 @@ package com.cn.game.sdk2.websocket
 import android.util.Log
 import com.cn.game.sdk2.utils.ext.CommonExt.isMainThread
 import com.cn.game.sdk2.websocket.imp.GameApp
-import com.xcjh.base_lib2.utils.TAG
 import com.xcjh.base_lib2.utils.loge
 import com.xcjh.base_lib2.utils.logi
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.java_websocket.client.WebSocketClient
 import org.java_websocket.exceptions.WebsocketNotConnectedException
@@ -22,7 +20,7 @@ import java.util.TimerTask
 
 internal class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
 
-    private var _tag = TAG+"SocketClient"
+    private var _tag = "SocketClient"
     private var onMessageListener: OnMessageListener? = null
     private val reconnectInterval: Long = 1000
     private var timer: Timer? = null
