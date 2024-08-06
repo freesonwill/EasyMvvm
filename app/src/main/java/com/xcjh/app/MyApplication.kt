@@ -182,7 +182,6 @@ class MyApplication : App() , LifecycleObserver {
             })
             //isShowHistoryAndCustomer(false)
         }
-
     }
 
 

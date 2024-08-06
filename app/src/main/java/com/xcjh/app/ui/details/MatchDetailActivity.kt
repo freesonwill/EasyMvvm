@@ -268,7 +268,6 @@ class MatchDetailActivity :
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-
         mDatabind.btnClick.clickNoRepeat {
             Log.i("CCCCCC","-======="+mDatabind.videoPlayer.isIfCurrentIsFullscreen)
         }
@@ -558,7 +557,7 @@ class MatchDetailActivity :
         /**
          * 直播流关闭
          */
-        MyWsManager.getInstance(App.app)?.setC2CListener(javaClass.name, object : C2CListener {
+        MyWsManager.getInstance(App.app)?.setC2CListener(this.toString(), object : C2CListener {
             override fun onSendMsgIsOk(isOk: Boolean, bean: ReceiveWsBean<*>) {
             }
             override fun onSystemMsgReceive(chat: FeedSystemNoticeBean) {
@@ -602,9 +601,7 @@ class MatchDetailActivity :
             }
 
         })
-
-
-        MyWsManager.getInstance(App.app)?.setNoReadMsgListener(javaClass.name, object :NoReadMsgPushListener{
+        MyWsManager.getInstance(App.app)?.setNoReadMsgListener(this.toString(), object :NoReadMsgPushListener{
             override fun onUserIsKicked() {
                 super.onUserIsKicked()
                 if (mDatabind.videoPlayer.isIfCurrentIsFullscreen) {
@@ -612,12 +609,9 @@ class MatchDetailActivity :
 //                    mDatabind.videoPlayer.customPlayer!!.exitFullScreen()
                     mDatabind.videoPlayer.currentPlayer.fullscreenButton.performClick()
                 }
-
-
             }
         })
-        MyWsManager.getInstance(App.app)
-            ?.setLiveStatusListener(this.toString(), object : LiveStatusListener {
+        MyWsManager.getInstance(App.app)?.setLiveStatusListener(this.toString(), object : LiveStatusListener {
                 /**
                  * 主播开播
                  */
@@ -916,8 +910,7 @@ class MatchDetailActivity :
         }
 
 
-        MyWsManager.getInstance(App.app)
-            ?.setOtherPushListener(this.toString(), object : OtherPushListener {
+        MyWsManager.getInstance(App.app)?.setOtherPushListener(this.toString(), object : OtherPushListener {
                 //收到比赛实时数据
                 override fun onChangeMatchData(matchList: ArrayList<ReceiveChangeMsg>) {
                     try {
@@ -2048,6 +2041,7 @@ class MatchDetailActivity :
         ClingDLNAManager.getInstant().destroy()
 
         super.onDestroy()
+        //Log.d(MyApplication.TAG,"onDestroy ${javaClass.name}--->${this.toString()}")
         MyWsManager.getInstance(App.app)?.removeLiveStatusListener(this.toString())
         MyWsManager.getInstance(App.app)?.removeOtherPushListener(this.toString())
         MyWsManager.getInstance(App.app)?.removeMOtherOffListenerListener(this.toString())
