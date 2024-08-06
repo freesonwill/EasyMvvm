@@ -384,6 +384,18 @@ class MatchDetailActivity :
         // setTestTab()
         GameApp.apply {
             val activity = this@MatchDetailActivity
+            MyApplication.isConnectResult.value?.let {
+                if (it.isFailure) {
+                    ToastUtils.showShort("进入直播间失败:${it.exceptionOrNull()?.message}")
+                }
+            }
+            MyApplication.isLoginResult.observe(activity) {
+                if (it.isFailure) {
+                    //游戏登录失败，请关闭应用重新打开
+                    ToastUtils.showShort("${it.exceptionOrNull()?.message}，即将重新登录")
+                    MyApplication.login()
+                }
+            }
             MyApplication.isEnterLive.observe(activity){ result->
                 if(result.isFailure){
                     ToastUtils.showShort("进入直播间失败:${result.exceptionOrNull()?.message}")
@@ -414,7 +426,7 @@ class MatchDetailActivity :
                 override fun onCreate(owner: LifecycleOwner) {
                     super.onCreate(owner)
                     if(MyApplication.isConnectResult.value?.isSuccess == true) {
-                        MyApplication.enterLive()
+                        MyApplication.login()
                     } else {
                         ToastUtils.showShort("进入直播间失败: socket未连接上,${MyApplication.isConnectResult.value?.exceptionOrNull()?.message}")
                     }

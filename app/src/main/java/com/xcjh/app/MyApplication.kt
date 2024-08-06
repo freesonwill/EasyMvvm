@@ -44,8 +44,8 @@ import com.xcjh.base_lib.BuildConfig
 import com.xcjh.base_lib.Constants
 import com.xcjh.base_lib.appContext
 import com.xcjh.base_lib.manager.KtxActivityManger
-import com.xcjh.base_lib.utils.LogUtils
 import com.xcjh.base_lib.utils.startNewActivity
+import com.xcjh.base_lib2.callback.livedata.UnPeekLiveData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -81,9 +81,9 @@ class MyApplication : App() , LifecycleObserver {
         const val TAG = "GameSdk_sl_live"
 
         /**
-         * 进入直播间
+         * 登录
          */
-        fun enterLive(){
+        fun login(){
             val tokenArray = listOf(
                 "124:4uQ8FVXY",
                 "125:mw4Q1yQ4",
@@ -97,7 +97,9 @@ class MyApplication : App() , LifecycleObserver {
             val token = tokenArray[Random.nextInt(tokenArray.size)]
             login(token, "wali-internal", false )
         }
+
     }
+
 
     init {
 
