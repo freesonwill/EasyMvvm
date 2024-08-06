@@ -422,13 +422,6 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
 
     private fun initWs() {
         MyWsManager.getInstance(this)?.initService()
-        MyWsManager.getInstance(this)
-            ?.setNoReadMsgListener(javaClass.name, object : NoReadMsgPushListener {
-                override fun onNoReadMsgNums(nums: String) {
-                    super.onNoReadMsgNums(nums)
-                    //  initMsgNums(nums)
-                }
-            })
         //获取到要推送的比赛
         MyWsManager.getInstance(this)
             ?.setOtherPushListener(javaClass.name, object : OtherPushListener {
@@ -446,6 +439,10 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         //被挤下线
         MyWsManager.getInstance(this)
             ?.setNoReadMsgListener(javaClass.name, object : NoReadMsgPushListener {
+                override fun onNoReadMsgNums(nums: String) {
+                    super.onNoReadMsgNums(nums)
+                    //  initMsgNums(nums)
+                }
                 override fun onUserIsKicked() {
                     super.onUserIsKicked()
                     if (CacheUtil.isLogin()) {
@@ -883,6 +880,8 @@ class MainActivity : BaseActivity<MainVm, ActivityHomeBinding>() {
         }
         MyWsManager.getInstance(this)?.stopService()
         MTPushPrivatesApi.setNotificationBadge(this, 0)
+        MyWsManager.getInstance(this)?.removeNoReadMsgListener(javaClass.name)
+        MyWsManager.getInstance(this)?.removeOtherPushListener(javaClass.name)
         super.onDestroy()
     }
 

@@ -2042,10 +2042,11 @@ class MatchDetailActivity :
 
         super.onDestroy()
         //Log.d(MyApplication.TAG,"onDestroy ${javaClass.name}--->${this.toString()}")
+        MyWsManager.getInstance(App.app)?.removeNoReadMsgListener(this.toString())
+        MyWsManager.getInstance(App.app)?.removeC2CListener(this.toString())
         MyWsManager.getInstance(App.app)?.removeLiveStatusListener(this.toString())
         MyWsManager.getInstance(App.app)?.removeOtherPushListener(this.toString())
         MyWsManager.getInstance(App.app)?.removeMOtherOffListenerListener(this.toString())
-        MyWsManager.getInstance(App.app)?.removeC2CListener(this.toString())
 
     }
 
