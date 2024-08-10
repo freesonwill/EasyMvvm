@@ -171,7 +171,7 @@ Java_com_cn_game_sdk2_websocket_NativeLib_unpack(JNIEnv *env,
          wDataSize);
     env->ReleaseByteArrayElements(data, body, 0);
 
-    delete someUnsignedChar;
+    delete[] someUnsignedChar;
     return retobjarr;
 }
 

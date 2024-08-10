@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.core.animation.doOnEnd
 import com.cn.game.sdk2.utils.ext.CommonExt.formatRealMoney
+
 import com.xcjh.base_lib2.utils.StringFormatUtil.Companion.decimalFormat2
 import com.xcjh.base_lib2.utils.StringFormatUtil.Companion.decimalFormatMax2
 import java.math.BigDecimal

@@ -1,4 +1,4 @@
-package com.cn.game.sdk2.ui.fast3
+package com.cn.game.sdk2.ui.page.fast3
 
 import android.os.Bundle
 import androidx.recyclerview.widget.GridLayoutManager

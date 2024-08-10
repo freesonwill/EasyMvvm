@@ -1,18 +1,15 @@
-package com.cn.game.sdk2.ui
+package com.cn.game.sdk2.ui.popup
 
 
 import android.content.Context
 import android.content.ContextWrapper
-import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.data.EventKey
 import com.cn.game.sdk2.databinding.DialogHomeXpopupContainerBinding
-import com.cn.game.sdk2.ui.view.VerticalBottomPopupView
 import com.cn.game.sdk2.utils.FlowBus
-import com.lxj.xpopup.core.BottomPopupView
 import com.xcjh.base_lib2.utils.LogUtils
 
 /**

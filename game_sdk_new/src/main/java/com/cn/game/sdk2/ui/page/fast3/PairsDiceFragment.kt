@@ -1,30 +1,30 @@
-package com.cn.game.sdk2.ui.fast3
+package com.cn.game.sdk2.ui.page.fast3
 
 import android.view.ViewTreeObserver
-import com.cn.game.sdk2.databinding.FragmentSingleDiceBinding
+import com.cn.game.sdk2.databinding.FragmentPairsDiceBinding
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
 
-
 /**
- * 默认
+ * 对子
  */
-class SingleDiceFragment: BaseFast3Fragment<Fast3ViewModel, FragmentSingleDiceBinding>() {
+class PairsDiceFragment: BaseFast3Fragment<Fast3ViewModel, FragmentPairsDiceBinding>() {
+
     override fun initAreaViewList() {
+        mDatabind.model = mViewModel
         mDatabind.apply {
-            model = mViewModel
             areaViewList = mutableListOf(
-                gavDiceOne.also { it.flickerView = ivSingleOne },
-                gavDiceTwo.also { it.flickerView = ivSingleTwo },
-                gavDiceThree.also { it.flickerView = ivSingleThree },
-                gavDiceFour.also { it.flickerView = ivSingleFour },
-                gavDiceFive.also { it.flickerView = ivSingleFive },
-                gavDiceSix.also { it.flickerView = ivSingleSix },
+                gavPairsOne.also { it.flickerView = ivPairsOne },
+                gavPairsTwo.also { it.flickerView = ivPairsTwo },
+                gavPairsThree.also { it.flickerView = ivPairsThree },
+                gavPairsFour.also { it.flickerView = ivPairsFour },
+                gavPairsFive.also { it.flickerView = ivPairsFive },
+                gavPairsSix.also { it.flickerView = ivPairsSix },
             )
 
             for (i in areaViewList.indices) {
-                areaViewList[i].areaInfo = mViewModel.singleDiceBettingArray[i + 1]
-                areaViewList[i].moneyView.pageIndex = 1
+                areaViewList[i].areaInfo = mViewModel.pairsDiceBettingArray[i + 1]
+                areaViewList[i].moneyView.pageIndex = 3
             }
         }
     }

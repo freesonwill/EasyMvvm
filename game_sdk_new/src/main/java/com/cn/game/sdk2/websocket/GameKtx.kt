@@ -8,7 +8,7 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.databinding.ObservableList
 import com.cn.game.sdk2.BuildConfig
-import com.cn.game.sdk2.ui.fast3.Fast3MainFragment
+import com.cn.game.sdk2.ui.page.fast3.Fast3MainFragment
 import com.cn.game.sdk2.utils.ThreadUtils
 import com.cn.game.sdk2.websocket.bean.AreaBetConfigBean
 import com.cn.game.sdk2.websocket.bean.BOOM_1

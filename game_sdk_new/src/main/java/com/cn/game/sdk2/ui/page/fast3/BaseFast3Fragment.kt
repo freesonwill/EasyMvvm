@@ -1,6 +1,5 @@
-package com.cn.game.sdk2.ui.fast3
+package com.cn.game.sdk2.ui.page.fast3
 
-import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
@@ -20,7 +19,7 @@ import com.cn.game.sdk2.data.EventKey
 import com.cn.game.sdk2.data.bean.SelectAnnotationBean
 import com.cn.game.sdk2.databinding.FragDxdsBinding
 import com.cn.game.sdk2.utils.ext.ViewExt.isAdd
-import com.cn.game.sdk2.ui.view.MoneyOKView
+import com.cn.game.sdk2.ui.view.game.MoneyOKView
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
 import com.cn.game.sdk2.utils.FlowBus
@@ -32,8 +31,6 @@ import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.gameMassageManager
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
-import com.xcjh.base_lib2.utils.LogUtils
-import com.xcjh.base_lib2.utils.loge
 
 /**
  * Description:

@@ -1,13 +1,11 @@
-package com.cn.game.sdk2.ui.view
+package com.cn.game.sdk2.ui.view.game
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Observer
 import com.cn.game.sdk2.databinding.FragmentFast3OverlayBinding
-import com.cn.game.sdk2.utils.ThreadUtils
 import com.cn.game.sdk2.utils.ext.CommonExt.toPinyin
 import com.cn.game.sdk2.websocket.bean.RoundInfoBean
 import com.cn.game.sdk2.websocket.gameAboutModel

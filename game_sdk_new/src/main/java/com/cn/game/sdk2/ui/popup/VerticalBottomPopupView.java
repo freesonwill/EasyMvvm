@@ -1,4 +1,4 @@
-package com.cn.game.sdk2.ui.view;
+package com.cn.game.sdk2.ui.popup;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 
 import com.cn.game.sdk2.R.id;
 import com.cn.game.sdk2.R.layout;
+import com.cn.game.sdk2.ui.view.VerticalSmartDragLayout;
 import com.lxj.xpopup.animator.PopupAnimator;
 import com.lxj.xpopup.animator.TranslateAnimator;
 import com.lxj.xpopup.core.BasePopupView;

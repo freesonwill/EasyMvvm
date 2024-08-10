@@ -3,10 +3,9 @@ package com.cn.game.sdk2.ui.view
 import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
-import android.view.animation.Animation
-import android.view.animation.ScaleAnimation
 import android.widget.FrameLayout
 import androidx.core.view.isVisible
+import com.cn.game.sdk2.ui.view.game.MoneyOKView
 import com.cn.game.sdk2.utils.ext.ViewExt.isInArea
 
 /**

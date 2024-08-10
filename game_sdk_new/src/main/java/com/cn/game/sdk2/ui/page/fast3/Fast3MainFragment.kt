@@ -1,4 +1,4 @@
-package com.cn.game.sdk2.ui.fast3
+package com.cn.game.sdk2.ui.page.fast3
 
 import android.animation.Animator
 import android.animation.Animator.AnimatorListener
@@ -47,8 +47,8 @@ import com.cn.game.sdk2.ui.helper.ViewHelper.initGameViewPager2
 import com.cn.game.sdk2.ui.view.CenterLayoutManager
 import com.cn.game.sdk2.ui.view.ClickRecyclerView
 import com.cn.game.sdk2.ui.view.CommonLinearLayoutItemDecoration
-import com.cn.game.sdk2.ui.view.CustomBubbleAttachPopup
-import com.cn.game.sdk2.ui.view.MoneyOKView
+import com.cn.game.sdk2.ui.popup.game.CustomBubbleAttachPopup
+import com.cn.game.sdk2.ui.view.game.MoneyOKView
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
 import com.cn.game.sdk2.utils.FlowBus
@@ -60,8 +60,8 @@ import com.cn.game.sdk2.utils.ext.CommonExt.toPinyin
 import com.cn.game.sdk2.utils.ext.ViewExt.getDrawable
 import com.cn.game.sdk2.utils.ext.ViewExt.isAdd
 import com.cn.game.sdk2.utils.ext.ViewExt.locationOnScreen
+import com.cn.game.sdk2.utils.ext.ViewExt.measureView
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
-import com.cn.game.sdk2.utils.tool.measureView
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import com.cn.game.sdk2.websocket.bean.RoundInfoBean
 import com.cn.game.sdk2.websocket.gameAboutModel
@@ -193,6 +193,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     override fun lazyLoadData() {
     }
 
+    @SuppressLint("SetTextI18n")
     override fun initData() {
         //获取当前余额
         mDatabind.txtCurrentMoney.text = "¥ ${mViewModel.currentMoney.formatRealMoney()}"

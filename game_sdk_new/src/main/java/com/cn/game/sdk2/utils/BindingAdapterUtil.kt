@@ -1,10 +1,10 @@
-package com.cn.game.sdk2.utils.ext
+package com.cn.game.sdk2.utils
 
 import android.widget.RelativeLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.cn.game.sdk2.ui.view.MoneyOKView
+import com.cn.game.sdk2.ui.view.game.MoneyOKView
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.view.game.GameAreaView.LocationClickListener
 import com.cn.game.sdk2.websocket.bean.Betting

@@ -160,6 +160,21 @@ object ViewExt {
         })
     }
 
+    fun View.measureView() {
+        val params = layoutParams
+        val width = if ((params?.width ?: 0) > 0) {
+            View.MeasureSpec.makeMeasureSpec(params.width, View.MeasureSpec.EXACTLY)
+        } else {
+            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        }
+        val height = if ((params?.height ?: 0) > 0) {
+            View.MeasureSpec.makeMeasureSpec(params.height, View.MeasureSpec.EXACTLY)
+        } else {
+            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        }
+        measure(width, height)
+    }
+
     fun View.isAdd(): Boolean {
         return parent != null
     }

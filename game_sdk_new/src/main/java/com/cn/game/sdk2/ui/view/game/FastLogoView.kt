@@ -1,4 +1,4 @@
-package com.cn.game.sdk2.ui.view
+package com.cn.game.sdk2.ui.view.game
 
 import android.content.Context
 import android.util.AttributeSet
@@ -11,6 +11,7 @@ import com.xcjh.base_lib2.utils.view.clickNoRepeat
 /**
  * 快三开奖logoView
  */
+@Deprecated("")
 public class FastLogoView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, null, defStyleAttr) {
     lateinit var llFastClick: LinearLayout
     lateinit var txtTime: AppCompatTextView

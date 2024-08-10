@@ -2,7 +2,6 @@ package com.cn.game.sdk2.ui.helper
 
 import android.content.Context
 import android.graphics.Paint
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,15 +19,14 @@ import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.data.enums.GAME_ID_ENUM
-import com.cn.game.sdk2.ui.HomeXPopupDialog
-import com.cn.game.sdk2.ui.fast3.Fast3MainFragment
-import com.cn.game.sdk2.ui.view.Fast3HelpPopup
+import com.cn.game.sdk2.ui.popup.HomeXPopupDialog
+import com.cn.game.sdk2.ui.page.fast3.Fast3MainFragment
+import com.cn.game.sdk2.ui.popup.fast3.Fast3HelpPopup
 import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
 import com.cn.game.sdk2.utils.ext.ViewExt.locationInWindow
 import com.cn.game.sdk2.utils.tool.indicator.CommonPagerIndicator
 import com.cn.game.sdk2.websocket.appListener
 import com.cn.game.sdk2.websocket.gameAboutModel
-import com.cn.game.sdk2.websocket.isLogin
 import com.cn.game.sdk2.websocket.runOnUiThread
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView

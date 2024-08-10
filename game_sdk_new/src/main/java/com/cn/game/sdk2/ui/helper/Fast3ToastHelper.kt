@@ -2,14 +2,14 @@ package com.cn.game.sdk2.ui.helper
 
 import android.view.ViewTreeObserver.OnWindowAttachListener
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.cn.game.sdk2.ui.view.Fast3Toast
+import com.cn.game.sdk2.ui.view.game.Fast3Toast
 import com.xcjh.base_lib2.ModuleInitializer
 
 /**
  * 快3Toast辅助类
  */
 object Fast3ToastHelper {
-    private var _instance:Fast3Toast? = null
+    private var _instance: Fast3Toast? = null
     private var host:ConstraintLayout? = null
 
     fun attachToHost(anchorView:ConstraintLayout){

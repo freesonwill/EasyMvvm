@@ -1,8 +1,7 @@
-package com.cn.game.sdk2.ui.view
+package com.cn.game.sdk2.ui.view.game
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.widget.LinearLayout
 import androidx.lifecycle.Observer
 import com.cn.game.sdk2.R

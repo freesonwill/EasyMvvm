@@ -63,7 +63,7 @@ android {
     externalNativeBuild {
         cmake {
             path file('src/main/cpp/CMakeLists.txt')
-            version '3.18.1'
+           // version '3.18.1'
         }
     }
 
@@ -89,7 +89,12 @@ android {
             }
         }
     }
+
 }
+
+/*tasks.named('mergeDebugNativeLibs') {
+    dependsOn(tasks.named('externalNativeBuildInnerTest'))
+}*/
 
 dependencies {
     //implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
@@ -119,6 +124,20 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 }
 
+
+/*task androidSourcesJar(type: Jar) {
+    archiveClassifier.set("sources")
+    from android.sourceSets.main.java.srcDirs
+    from android.sourceSets.main.kotlin.srcDirs
+}
+
+artifacts {
+    archives androidSourcesJar
+}*/
+
+
+
+return
 /****************************************************/
 /*publishing {
     publications {

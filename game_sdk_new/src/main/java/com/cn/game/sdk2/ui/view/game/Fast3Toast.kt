@@ -1,10 +1,7 @@
-package com.cn.game.sdk2.ui.view
+package com.cn.game.sdk2.ui.view.game
 
-import android.animation.Animator
 import android.animation.ValueAnimator
 import android.content.Context
-import android.os.Handler
-import android.os.Looper
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -16,8 +13,6 @@ import com.cn.game.sdk2.databinding.ToastLayoutBinding
 import com.cn.game.sdk2.utils.ThreadUtils
 import com.xcjh.base_lib2.utils.LogUtils
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay

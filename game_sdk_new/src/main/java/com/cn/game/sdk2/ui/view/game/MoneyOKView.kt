@@ -1,4 +1,4 @@
-package com.cn.game.sdk2.ui.view
+package com.cn.game.sdk2.ui.view.game
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator

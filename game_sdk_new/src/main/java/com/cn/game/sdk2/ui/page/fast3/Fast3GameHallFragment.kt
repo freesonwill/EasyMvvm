@@ -1,9 +1,10 @@
-package com.cn.game.sdk2.ui.fast3
+package com.cn.game.sdk2.ui.page.fast3
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.databinding.FragmentGamehallBinding
+import com.cn.game.sdk2.ui.page.fast3.Fast3GameHallItemFragment
 import com.cn.game.sdk2.ui.helper.ViewHelper.bindViewPagerNewGame
 import com.cn.game.sdk2.ui.helper.ViewHelper.initGameViewPager
 import com.cn.game.sdk2.ui.viewmodel.EmptyViewModel

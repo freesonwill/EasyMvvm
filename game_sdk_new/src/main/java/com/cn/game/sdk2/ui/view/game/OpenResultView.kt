@@ -1,4 +1,4 @@
-package com.cn.game.sdk2.ui.view
+package com.cn.game.sdk2.ui.view.game
 
 import android.content.Context
 import android.util.AttributeSet
@@ -11,6 +11,7 @@ import com.cn.game.sdk2.R
 /**
  * 快三开奖结果
  */
+@Deprecated("")
 class OpenResultView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, null, defStyleAttr) {
     /**
      * 日期
