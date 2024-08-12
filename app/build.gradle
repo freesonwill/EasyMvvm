@@ -37,9 +37,9 @@ android {
         jvmTarget = '1.8'
     }
 
-    applicationVariants.all {
+    applicationVariants.configureEach {
         variant ->
-        variant.outputs.all {
+        variant.outputs.configureEach {
             def date = String.format('%s', new Date().format('yyyyMMddHHmmss'))
             def gitVersion = getGitVersion()
             outputFileName = "gamesdk-${variant.name}-v${variant.versionName}-${variant.versionCode}-${date}-${gitVersion}.apk"

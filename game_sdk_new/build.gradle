@@ -36,12 +36,12 @@ android {
 
     }
 
-    libraryVariants.all {
+    libraryVariants.configureEach {
         variant ->
             variant.assembleProvider.configure {
                 delete fileTree(dir: "$buildDir/outputs/aar", include: '**/*')
             }
-            variant.outputs.all { output ->
+            variant.outputs.configureEach { output ->
                 def date = String.format('%s', new Date().format('yyyyMMddHHmmss'))
                 def gitVersion = getGitVersion()
                 outputFileName = "gamesdk-${variant.name}-${date}-${gitVersion}.aar"
