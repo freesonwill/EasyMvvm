@@ -12,7 +12,6 @@ import com.cn.game.sdk2.ui.helper.ViewHelper
 import com.cn.game.sdk2.ui.popup.CustomBottomPopupView
 import com.cn.game.sdk2.utils.ext.ViewExt.bindRecycleView
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
-import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
 import com.drake.brv.annotaion.DividerOrientation
 import com.drake.brv.utils.dividerSpace
 import com.drake.brv.utils.setup
@@ -23,7 +22,7 @@ import com.gyf.immersionbar.ktx.navigationBarHeight
 import com.gyf.immersionbar.ktx.notchHeight
 import com.gyf.immersionbar.ktx.statusBarHeight
 import com.xcjh.base_lib2.utils.LogUtils
-import com.xcjh.base_lib2.utils.dp2px
+import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
 import com.xcjh.base_lib2.utils.screenHeight
 import com.xcjh.base_lib2.utils.view.clickNoRepeat
 import com.xcjh.base_lib2.utils.view.getStringArray

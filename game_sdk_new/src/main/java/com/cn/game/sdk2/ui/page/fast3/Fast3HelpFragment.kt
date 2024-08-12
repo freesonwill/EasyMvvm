@@ -11,7 +11,7 @@ import com.drake.brv.annotaion.DividerOrientation
 import com.drake.brv.utils.dividerSpace
 import com.drake.brv.utils.setup
 import com.xcjh.base_lib2.base.fragment.BaseVmVbFragment
-import com.xcjh.base_lib2.utils.dp2px
+import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
 import com.xcjh.base_lib2.utils.view.clickNoRepeat
 
 class Fast3HelpFragment : BaseVmVbFragment<EmptyViewModel, FragmentFast3HelpBinding>() {

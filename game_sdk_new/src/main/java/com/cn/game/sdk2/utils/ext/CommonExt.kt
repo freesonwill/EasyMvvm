@@ -1,6 +1,8 @@
 package com.cn.game.sdk2.utils.ext
 
+import android.content.Context
 import android.os.Looper
+import android.view.View
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.ui.helper.Fast3ToastHelper
 import com.cn.game.sdk2.utils.PinyinUtils
@@ -52,6 +54,20 @@ object CommonExt {
             val v = this
             (v / scale + 0.5f).toInt()
         }
+
+    fun Context.dp2px(dp: Int): Int {
+        val scale = resources.displayMetrics.density
+        return (dp * scale + 0.5f).toInt()
+    }
+
+
+    /**
+     * dp值转换为px
+     */
+    fun View.dp2px(dp: Int): Int {
+        val scale = resources.displayMetrics.density
+        return (dp * scale + 0.5f).toInt()
+    }
 
     fun Int.toPinyin(): String {
         return PinyinUtils.toPinyin(this)
