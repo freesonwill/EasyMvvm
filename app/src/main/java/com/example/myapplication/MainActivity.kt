@@ -2,6 +2,7 @@ package com.example.myapplication
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.View
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
@@ -25,7 +26,7 @@ class MainActivity : AppCompatActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        
+        findViewById<View>(R.id.btnOpen).visibility = View.GONE
         GameApp.apply {
             enterLive("1213", listOf(1), "")
             val container = findViewById<FrameLayout>(android.R.id.content)

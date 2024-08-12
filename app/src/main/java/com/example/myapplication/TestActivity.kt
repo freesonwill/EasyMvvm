@@ -57,11 +57,11 @@ class TestActivity : AppCompatActivity(), GameApp.OnSdkListener {
         btnOpen.setOnClickListener {
             when (index) {
                 0 -> {
-                    GameApp.loadGame(applicationContext, true, url = url, this).apply {
+                    GameApp.loadGame(applicationContext, url = url, this).apply {
                         lifecycle.addObserver(object : DefaultLifecycleObserver {
                             override fun onDestroy(owner: LifecycleOwner) {
                                 super.onDestroy(owner)
-                                GameApp.removeSdkListener()
+                               // GameApp.removeSdkListener()
                             }
                         })
                     }

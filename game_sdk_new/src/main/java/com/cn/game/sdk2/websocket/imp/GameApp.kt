@@ -12,14 +12,12 @@ import androidx.lifecycle.LifecycleOwner
 import com.cn.game.sdk2.ui.helper.ViewHelper
 import com.cn.game.sdk2.websocket.GameSocketManager
 import com.cn.game.sdk2.websocket.appContext
-import com.cn.game.sdk2.websocket.appLifecycleEnable
 import com.cn.game.sdk2.websocket.appListener
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.gameMassageManager
 import com.cn.game.sdk2.websocket.interfaces.IGameForApp
 import com.cn.game.sdk2.websocket.isEnableSound
 import com.cn.game.sdk2.websocket.isNeedReconnect
-import com.xcjh.base_lib2.App
 import com.xcjh.base_lib2.ModuleInitializer
 import com.xcjh.base_lib2.utils.loge
 import game.common.proto.ClientReq
@@ -46,11 +44,10 @@ object GameApp : IGameForApp {
      * 加載SDK
      * app集成sdk 先调用此方法初始化websocket
      */
-    override fun loadGame(context: Context, lifecycleEnable: Boolean, url: String, onSdkListener: OnSdkListener) {
+    override fun loadGame(context: Context,url: String, onSdkListener: OnSdkListener) {
         "loadGame".loge()
         appContext = context
         ModuleInitializer.application = context.applicationContext as Application
-        appLifecycleEnable = lifecycleEnable
         appListener = onSdkListener
         GameSocketManager.getInstance()?.initSocketClient(url)
         (appContext as Application).registerActivityLifecycleCallbacks(object :
@@ -86,9 +83,9 @@ object GameApp : IGameForApp {
         })
     }
 
-    override fun removeSdkListener() {
+    /*override fun removeSdkListener() {
         appListener = null
-    }
+    }*/
 
     /** 登录
      * - Parameter agentName: 平台名称
@@ -152,7 +149,6 @@ object GameApp : IGameForApp {
     /**
      * 是否彈出遊戲框
      */
-    @Deprecated("")
     override fun gameFloatingDetailViewStatusWithBlock(isShow: Boolean) {
         gameAboutModel.isShowGame(isShow)
     }
@@ -173,7 +169,7 @@ object GameApp : IGameForApp {
      * 入口漂浮窗視圖
      */
     override fun createFloatEnterView(context: Context): View {
-        if (appLifecycleEnable && context is LifecycleOwner) {
+        if (context is LifecycleOwner) {
             (context as LifecycleOwner).lifecycle.addObserver(object : LifecycleEventObserver {
                 override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
                     when (event) {
@@ -213,18 +209,6 @@ object GameApp : IGameForApp {
 
     override fun refreshScore() {
         gameMassageManager?.refreshScore()
-    }
-
-    fun onResume() {
-        isEnableSound = true
-    }
-
-    fun onPause() {
-        isEnableSound = false
-    }
-
-    fun onStop() {
-        isEnableSound = false
     }
 
 
