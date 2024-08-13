@@ -35,8 +35,8 @@ class HomeXPopupDialog(context: Context, private val fragment: Fragment, private
         }
     }
 
-    override fun doShowAnimation() {
-        super.doShowAnimation()
+    override fun onAnimationEnd() {
+        super.onAnimationEnd()
         if(!isLoadFragment){
             isLoadFragment = true
             FlowBus.with<Boolean>(EventKey.LOAD_FRAGMENT).post(lifecycleScope,true)

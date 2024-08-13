@@ -142,51 +142,52 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             })
         }
         FlowBus.with<Boolean>(EventKey.LOAD_FRAGMENT).register(viewLifecycleOwner) {
-            val startTime = System.currentTimeMillis()
-            //viewpager
-            mFragList.add(DXDSFragment())
-            mFragList.add(SingleDiceFragment())
-            mFragList.add(SumTotalFragment())
-            mFragList.add(PairsDiceFragment())
-            mFragList.add(LeopardFragment())
-            (System.currentTimeMillis() - startTime).let {
-                LogUtils.dTag(TAG, "Fast3MainFragment load costMills1:$it")
-            }
-            mDatabind.viewPagerNew.initGameViewPager(
-                childFragmentManager, mFragList, arrayListOf(
-                    getString(R.string.g_home_txt_default),
-                    getString(R.string.g_home_tab_single),
-                    getString(R.string.g_home_tab_sum),
-                    getString(R.string.g_home_tab_double),
-                    getString(R.string.g_home_tab_leopard)
-                )
-            )
-            (System.currentTimeMillis() - startTime).let {
-                LogUtils.dTag(TAG, "Fast3MainFragment load costMills2:$it")
-            }
-            mDatabind.magicIndicator.bindViewPagerNewGame(
-                mDatabind.viewPagerNew, arrayListOf(
-                    getString(R.string.g_home_txt_default),
-                    getString(R.string.g_home_tab_single),
-                    getString(R.string.g_home_tab_sum),
-                    getString(R.string.g_home_tab_double),
-                    getString(R.string.g_home_tab_leopard)
-                ),
-                scrollEnable = true,
-                action = { PromptSoundPlay.btnPlayMedia() }
-            )
-            lifecycleScope.launchWhenResumed {
-                delay(1000)
-                mDatabind.viewPagerNew.offscreenPageLimit = mFragList.size
-            }
-            (System.currentTimeMillis() - startTime).let {
-                LogUtils.dTag(TAG, "Fast3MainFragment load costMills3:$it")
-            }
+            mDatabind.viewPagerNew.offscreenPageLimit = mFragList.size
         }
+        loadFragment()
         setBetAdapter()
         setClick()
         measureHistoryRvHeight()
         setNavigationBar()
+    }
+
+    private fun loadFragment(){
+        val startTime = System.currentTimeMillis()
+        //viewpager
+        mFragList.add(DXDSFragment())
+        mFragList.add(SingleDiceFragment())
+        mFragList.add(SumTotalFragment())
+        mFragList.add(PairsDiceFragment())
+        mFragList.add(LeopardFragment())
+        (System.currentTimeMillis() - startTime).let {
+            LogUtils.dTag(TAG, "Fast3MainFragment load costMills1:$it")
+        }
+        mDatabind.viewPagerNew.initGameViewPager(
+            childFragmentManager, mFragList, arrayListOf(
+                getString(R.string.g_home_txt_default),
+                getString(R.string.g_home_tab_single),
+                getString(R.string.g_home_tab_sum),
+                getString(R.string.g_home_tab_double),
+                getString(R.string.g_home_tab_leopard)
+            )
+        )
+        (System.currentTimeMillis() - startTime).let {
+            LogUtils.dTag(TAG, "Fast3MainFragment load costMills2:$it")
+        }
+        mDatabind.magicIndicator.bindViewPagerNewGame(
+            mDatabind.viewPagerNew, arrayListOf(
+                getString(R.string.g_home_txt_default),
+                getString(R.string.g_home_tab_single),
+                getString(R.string.g_home_tab_sum),
+                getString(R.string.g_home_tab_double),
+                getString(R.string.g_home_tab_leopard)
+            ),
+            scrollEnable = true,
+            action = { PromptSoundPlay.btnPlayMedia() }
+        )
+        (System.currentTimeMillis() - startTime).let {
+            LogUtils.dTag(TAG, "Fast3MainFragment load costMills3:$it")
+        }
     }
 
     override fun lazyLoadData() {
@@ -227,21 +228,28 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
     //测量耗时操作可放到IO线程
     private fun measureHistoryRvHeight() {
-        lifecycleScope.launch(Dispatchers.IO) {
-            LayoutInflater.from(context).inflate(R.layout.item_bet_history, null).apply {
-                measureView()
-                LogUtils.dTag(TAG, "historyRvHeight->$measuredHeight")
-                resultRvHeight = this.measuredHeight
-                findViewById<LinearLayout>(R.id.llShowDice).apply {
-                    this.measureView()
-                    LogUtils.dTag(TAG, "historyMoveHeight->$measuredHeight")
-                    resultAnimMoveHeight = this.measuredHeight - 2.dp2px
-                }
-                val params = mDatabind.flRvHistory.layoutParams
-                params?.height = resultRvHeight - resultAnimMoveHeight
-                mDatabind.flRvHistory.layoutParams = params
-            }
-        }
+//        lifecycleScope.launch(Dispatchers.IO) {
+//            LayoutInflater.from(context).inflate(R.layout.item_bet_history, null).apply {
+//                measureView()
+//                LogUtils.dTag(TAG, "historyRvHeight->$measuredHeight")
+//                LogUtils.dTag(TAG, "historyRvHeight2->"+121.dp2px)
+//                resultRvHeight = this.measuredHeight
+//                findViewById<LinearLayout>(R.id.llShowDice).apply {
+//                    this.measureView()
+//                    LogUtils.dTag(TAG, "historyMoveHeight->$measuredHeight")
+//                    LogUtils.dTag(TAG, "historyMoveHeight2->"+79.dp2px)
+//                    resultAnimMoveHeight = this.measuredHeight - 2.dp2px
+//                }
+//                val params = mDatabind.flRvHistory.layoutParams
+//                params?.height = resultRvHeight - resultAnimMoveHeight
+//                mDatabind.flRvHistory.layoutParams = params
+//            }
+//        }
+        val params = mDatabind.flRvHistory.layoutParams
+        resultRvHeight = 122.dp2px
+        resultAnimMoveHeight = 79.dp2px
+        params?.height = resultRvHeight - resultAnimMoveHeight
+        mDatabind.flRvHistory.layoutParams = params
     }
 
     /**Ï

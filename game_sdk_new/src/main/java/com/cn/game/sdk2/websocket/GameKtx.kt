@@ -63,15 +63,15 @@ import game.mod.proc.yf.proto.res.GameRes
 import kotlin.random.Random
 
 val outerTestTokenArray = listOf(
-    "124:4uQ8FVXY",
-    "125:mw4Q1yQ4",
-    "126:giAIQrfE",
+    "124:3CEn7OHz",
+    "125:ozNPWgtT",
+    "126:Ncgvqc9s",
     "127:AbI8Ppju",
-    "128:j8mFnQ8n",
-    "129:Yn7lAIUu",
-    "130:O9Cz5IXe",
-    "131:0VzbPltw",
-    "132:Q8FMTRrM"
+    "128:O7IBonor",
+    "129:wxGKbzD",
+    "130:uWJaPj0B",
+    "131:LUA0401p",
+    "132:pwMrc3Mp"
 )
 
 ////测试打包专用 99:mFGB4ljy

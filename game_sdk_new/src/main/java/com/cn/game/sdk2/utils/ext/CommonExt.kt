@@ -29,7 +29,7 @@ object CommonExt {
             val context = ModuleInitializer.application
             val scale = context.resources.displayMetrics.density
             val dp = this
-            (dp * scale + 0.5f).toInt()
+            (dp * scale + 0.5).toInt()
         }
 
     inline val Int.px2dp

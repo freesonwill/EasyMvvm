@@ -251,12 +251,11 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_centerHorizontal="true"
+                        android:layout_toStartOf="@id/frrl"
+                        android:layout_alignParentStart="true"
                         android:layout_marginEnd="5dp"
                         android:clipChildren="false"
-                        android:clipToPadding="false"
-                        app:layout_constraintEnd_toStartOf="@id/frrl"
-                        app:layout_constraintStart_toStartOf="parent"
-                        tools:ignore="MissingConstraints" />
+                        android:clipToPadding="false" />
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/frrl"
@@ -266,9 +265,7 @@
                         android:layout_marginEnd="10dp"
                         android:background="@drawable/game_sdk_shape_3_111130"
                         android:paddingHorizontal="8dp"
-                        android:paddingVertical="3dp"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
+                        android:paddingVertical="3dp">
 
                         <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/txtCurrentMoney"
@@ -282,7 +279,7 @@
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
-                            tools:text="¥ 20000" />
+                            tools:text="¥ 2000000000" />
 
                         <androidx.appcompat.widget.AppCompatImageView
                             android:layout_width="5dp"
