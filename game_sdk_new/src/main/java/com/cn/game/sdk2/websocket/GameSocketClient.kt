@@ -22,7 +22,7 @@ internal class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
 
     private var _tag = "SocketClient"
     private var onMessageListener: OnMessageListener? = null
-    private val reconnectInterval: Long = 1000
+    private val reconnectInterval: Long = 2000
     private var timer: Timer? = null
 
     fun setOnMessageListener(listener: OnMessageListener) {

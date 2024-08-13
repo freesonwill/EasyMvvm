@@ -14,6 +14,7 @@ import androidx.lifecycle.LifecycleOwner
 import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
 import com.cn.game.sdk2.utils.ext.ViewExt.isAdd
 import com.cn.game.sdk2.websocket.imp.GameApp
+import com.cn.game.sdk2.websocket.outerTestTokenArray
 import com.xcjh.base_lib2.utils.loge
 import kotlin.random.Random
 
@@ -27,12 +28,14 @@ class TestActivity : AppCompatActivity(), GameApp.OnSdkListener {
     private val url = "wss://ws.qxe68.com:7001/api/game/5702" ///test
     private val token = "93:Ufx3Dy8y" ///test
 
+    var btnIndex = 0;
+
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        btnOpen = findViewById<TextView>(R.id.btnOpen)
-        llshow = findViewById<RelativeLayout>(R.id.llshow)
+        btnOpen = findViewById(R.id.btnOpen)
+        llshow = findViewById(R.id.llshow)
         val btnXiu = findViewById<Button>(R.id.btnXiu)
         val cpu = findViewById<Button>(R.id.cpu)
 //        GameApp.setSocketStatesCallback(object : GameApp.SocketStatesCallback {
@@ -53,25 +56,27 @@ class TestActivity : AppCompatActivity(), GameApp.OnSdkListener {
 //                }
 //            }
 //        })
-        var index = 0
+        var isLoadGame = false
         btnOpen.setOnClickListener {
-            when (index) {
+            when (btnIndex) {
                 0 -> {
-                    GameApp.loadGame(applicationContext, url = url, this).apply {
-                        lifecycle.addObserver(object : DefaultLifecycleObserver {
-                            override fun onDestroy(owner: LifecycleOwner) {
-                                super.onDestroy(owner)
-                               // GameApp.removeSdkListener()
-                            }
-                        })
+                    if(!isLoadGame) {
+                        isLoadGame = true
+                        GameApp.loadGame(applicationContext, url = url, this).apply {
+                            lifecycle.addObserver(object : DefaultLifecycleObserver {
+                                override fun onDestroy(owner: LifecycleOwner) {
+                                    super.onDestroy(owner)
+                                    // GameApp.removeSdkListener()
+                                }
+                            })
+                        }
                     }
-                    index++
                 }
 
                 1 -> {
-                    GameApp.login(token, "wali-internal", false)
+                   // GameApp.login(token, "wali-internal", false)
+                    GameApp.login(outerTestTokenArray[Random.nextInt(outerTestTokenArray.size)], "wali-internal", false)
                     btnOpen.text = "正在登录"
-                    index++
                 }
 
                 2 -> {
@@ -105,6 +110,7 @@ class TestActivity : AppCompatActivity(), GameApp.OnSdkListener {
 
     override fun onEnterLive(type: Int, msg: String) {
         if (type == 1) {
+            btnIndex = 2
             btnOpen.text = "已进入直播间"
             val context = this
             GameApp.createFloatEnterView(context).apply {
@@ -137,6 +143,7 @@ class TestActivity : AppCompatActivity(), GameApp.OnSdkListener {
 
     override fun initSuccessful() {
         btnOpen.text = "已连接服务器，点击登录"
+        btnIndex = 1
     }
 
     override fun onLoginGame(i: Int, str: String?) {
@@ -145,8 +152,10 @@ class TestActivity : AppCompatActivity(), GameApp.OnSdkListener {
         if (i == 1) {
             isLogin = true
             btnOpen.text = "已登录，点击进入直播间"
+            btnIndex = 2
         } else {
             btnOpen.text = "登录失败"
+            btnIndex = 1
         }
     }
 
@@ -154,6 +163,7 @@ class TestActivity : AppCompatActivity(), GameApp.OnSdkListener {
         btnOpen.text = "token失效,点击重新登录"
         btnOpen.isClickable = true
         isLogin = false
+        btnIndex = 1
     }
 
     override fun onGameFloatingDetailViewStatus(isShowUp: Boolean) {
