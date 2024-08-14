@@ -1,10 +1,14 @@
 package com.cn.game.sdk2.websocket
 
 import android.util.Log
+import androidx.lifecycle.lifecycleScope
+import com.cn.game.sdk2.data.EventKey
+import com.cn.game.sdk2.utils.FlowBus
+import com.cn.game.sdk2.utils.ThreadUtils
 import com.cn.game.sdk2.utils.ext.CommonExt.isMainThread
 import com.cn.game.sdk2.websocket.imp.GameApp
 import com.xcjh.base_lib2.utils.loge
-import com.xcjh.base_lib2.utils.logi
+import com.xcjh.base_lib2.utils.logd
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -31,23 +35,24 @@ internal class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
 
     @OptIn(DelicateCoroutinesApi::class)
     override fun onOpen(handshakedata: ServerHandshake?) {
-        "GameSocketClient-连接成功！onOpen,isMainThread:${isMainThread}".logi(_tag)
+        "GameSocketClient-连接成功！onOpen,isMainThread:${isMainThread}".logd(_tag)
         gameAboutModel.isOpen = true
         GlobalScope.launch {
             withContext(Dispatchers.Main) {
                 isTokenValid = true
                 if (isLogin) {
-                    "重连成功，需要重新登录，登录Token：${gameAboutModel.token}".logi(_tag)
+                    "重连成功，需要重新登录，登录Token：${gameAboutModel.token}".logd(_tag)
                     GameApp.login(
-                        gameAboutModel.token, gameAboutModel.agentName, gameAboutModel.isAnchor
-                    )
+                        gameAboutModel.token,
+                        gameAboutModel.agentName, gameAboutModel.isAnchor, gameAboutModel.simplifyMoreButtons)
                 }
             }
         }
         timer?.cancel()
         timer = null
         startHeartbeat()
-        appListener?.runOnUiThread { initSuccessful() }
+        //appListener?.runOnUiThread { initSuccessful() }
+        FlowBus.with<Boolean>(EventKey.SOCKET_CONNECTED).post(GlobalScope,true)
     }
 
     override fun onMessage(message: String?) {
@@ -66,7 +71,7 @@ internal class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
             if (it.size > 2) {
                 str = (it[2] as ByteArray?)!!
             }
-            "GameSocketMessage-onMessage:mid-$mid sid-$sid".logi(_tag)
+            "GameSocketMessage-onMessage:mid-$mid sid-$sid".logd(_tag)
             onMessageListener?.onMessage(mid, sid, str)
         }
     }
@@ -109,7 +114,7 @@ internal class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
         heartbeatTask = object : TimerTask() {
             // 发送心跳消息
             override fun run() {
-                "startHeartbeat".logi(_tag)
+                "startHeartbeat".logd(_tag)
                 gameMassageManager?.ping()
             }
         }

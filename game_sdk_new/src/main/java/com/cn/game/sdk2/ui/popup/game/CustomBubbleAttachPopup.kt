@@ -40,8 +40,8 @@ class CustomBubbleAttachPopup(content: Context) : AttachPopupView(content){
         setArrowRadius(XPopupUtils.dp2px(context, 2f))*/
 
         PopupCustomBubbleAttachBinding.bind(popupImplView).apply {
-            rlPopClickRecords.isVisible = gameAboutModel.isShowHistoryAndCustomer
-            rlPopClickService.isVisible = gameAboutModel.isShowHistoryAndCustomer
+            rlPopClickRecords.isVisible = !gameAboutModel.simplifyMoreButtons
+            rlPopClickService.isVisible = !gameAboutModel.simplifyMoreButtons
             rlPopClickRecords.clickNoRepeat(true) {
                 delayDismiss(100)
             }

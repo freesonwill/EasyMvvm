@@ -111,8 +111,8 @@ dependencies {
     }
     implementation 'com.airbnb.android:lottie:6.4.0'
     implementation "me.jessyan:autosize:1.2.1"
-    api "com.geyifeng.immersionbar:immersionbar:3.2.2"
-    api "com.geyifeng.immersionbar:immersionbar-ktx:3.2.2"
+    implementation "com.geyifeng.immersionbar:immersionbar:3.2.2"
+    implementation "com.geyifeng.immersionbar:immersionbar-ktx:3.2.2"
     implementation 'com.kunminx.arch:unpeek-livedata:7.8.0'
     implementation "org.java-websocket:Java-WebSocket:1.5.3"
     implementation 'com.github.hackware1993:MagicIndicator:1.7.0'

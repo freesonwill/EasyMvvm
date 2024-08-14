@@ -11,11 +11,14 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.setPadding
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import com.cn.game.sdk2.data.EventKey
+import com.cn.game.sdk2.utils.FlowBus
 import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
 import com.cn.game.sdk2.utils.ext.ViewExt.isAdd
 import com.cn.game.sdk2.websocket.imp.GameApp
 import com.cn.game.sdk2.websocket.outerTestTokenArray
 import com.xcjh.base_lib2.utils.loge
+import kotlinx.coroutines.GlobalScope
 import kotlin.random.Random
 
 
@@ -57,12 +60,16 @@ class TestActivity : AppCompatActivity(), GameApp.OnSdkListener {
 //            }
 //        })
         var isLoadGame = false
+        FlowBus.with<Boolean>(EventKey.SOCKET_CONNECTED).register(this) {
+            btnOpen.text = "已连接服务器，点击登录"
+            btnIndex = 1
+        }
         btnOpen.setOnClickListener {
             when (btnIndex) {
                 0 -> {
                     if(!isLoadGame) {
                         isLoadGame = true
-                        GameApp.loadGame(applicationContext, url = url, this).apply {
+                        GameApp.loadGame(applicationContext,true, gameServer = url, logServer = "", this).apply {
                             lifecycle.addObserver(object : DefaultLifecycleObserver {
                                 override fun onDestroy(owner: LifecycleOwner) {
                                     super.onDestroy(owner)
@@ -75,7 +82,7 @@ class TestActivity : AppCompatActivity(), GameApp.OnSdkListener {
 
                 1 -> {
                    // GameApp.login(token, "wali-internal", false)
-                    GameApp.login(outerTestTokenArray[Random.nextInt(outerTestTokenArray.size)], "wali-internal", false)
+                    GameApp.login(outerTestTokenArray[Random.nextInt(outerTestTokenArray.size)], "wali-internal", false,false)
                     btnOpen.text = "正在登录"
                 }
 
@@ -136,14 +143,9 @@ class TestActivity : AppCompatActivity(), GameApp.OnSdkListener {
         }
     }
 
-    override fun onLeaveLive(type: Int, str: String?) {
+    override fun onLeaveLive(liveId: String, type: Int, str: String?) {
         "onLeaveLive->$str".loge()
         btnOpen.text = "已离开房间"
-    }
-
-    override fun initSuccessful() {
-        btnOpen.text = "已连接服务器，点击登录"
-        btnIndex = 1
     }
 
     override fun onLoginGame(i: Int, str: String?) {
@@ -171,6 +173,10 @@ class TestActivity : AppCompatActivity(), GameApp.OnSdkListener {
     }
 
     override fun onInsufficientBalance() {
+
+    }
+
+    override fun onClickOtherGame(gameId: Int) {
 
     }
 

@@ -112,7 +112,7 @@ object PromptSoundPlay {
      * @parallel  是否同时播放
      */
     private suspend fun playMusic(musicIds:List<Int>,parallel:Boolean = true){
-        TODO("play music")
+
     }
 
     /**

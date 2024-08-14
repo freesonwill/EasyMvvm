@@ -9,13 +9,11 @@ import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewPropertyAnimator
 import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.LinearLayout
 import androidx.core.animation.addListener
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
@@ -59,7 +57,6 @@ import com.cn.game.sdk2.utils.ext.CommonExt.toPinyin
 import com.cn.game.sdk2.utils.ext.ViewExt.getDrawable
 import com.cn.game.sdk2.utils.ext.ViewExt.isAdd
 import com.cn.game.sdk2.utils.ext.ViewExt.locationOnScreen
-import com.cn.game.sdk2.utils.ext.ViewExt.measureView
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import com.cn.game.sdk2.websocket.bean.RoundInfoBean
@@ -83,7 +80,6 @@ import com.xcjh.base_lib2.utils.LogUtils
 import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
 import com.xcjh.base_lib2.utils.loge
 import com.xcjh.base_lib2.utils.view.clickNoRepeat
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
@@ -1236,7 +1232,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                             }
 
                             fun showMainGame(show: Boolean) {
-                                ViewHelper.showFastViewPop(requireContext(), show)
+                                ViewHelper.showGameMainPopup(requireContext(), show)
                             }
 
                             override fun switchGame() {

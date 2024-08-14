@@ -27,7 +27,7 @@
     <string name="g_home_drawing_begin">开始开奖</string>
     <string name="g_home_drawing_being">开奖中</string>
     <string name="g_home_drawing_end">开奖结束</string>
-    <!-- TODO: Remove or change this placeholder text -->
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="money_insufficient">余额不足</string>
     <string name="money_insufficient_50">余额需¥50以上才可下注, 请您充值</string>

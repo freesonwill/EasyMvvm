@@ -132,7 +132,7 @@ object ViewHelper {
     }
 
 
-    fun showFastViewPop(context: Context, isShow: Boolean) {
+    fun showGameMainPopup(context: Context, isShow: Boolean) {
         if (!isShow) {
             homeXPopupDialog?.dismiss()
             return
@@ -195,7 +195,7 @@ object ViewHelper {
         homeXPopupDialog?.show()
     }
 
-    fun getFastView(context: Context): View {
+    fun getGameEnterView(context: Context): View {
         if (fastView != null) return fastView!!
         return LayoutInflater.from(context).inflate(R.layout.drag_fast_easy, null, false).also {
             fastView = it
@@ -226,7 +226,7 @@ object ViewHelper {
                     ).show()
                     return@clickNoRepeat
                 }
-                showFastViewPop(context, true)
+                showGameMainPopup(context, true)
             }
         }.apply {
             if (context is LifecycleOwner) {

@@ -41,7 +41,7 @@ import com.cn.game.sdk2.websocket.verifyDouble
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 import com.xcjh.base_lib2.utils.logd
 import com.xcjh.base_lib2.utils.loge
-import com.xcjh.base_lib2.utils.logi
+import com.xcjh.base_lib2.utils.logd
 import game.common.proto.ClientReq
 import game.common.proto.ClientRes
 import game.mod.proc.yf.proto.req.GameReq
@@ -138,7 +138,7 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
 
     override fun loginSuccess(afterLoginSuccess: ClientRes.InfoAfterLoginSuccess) {
         isLogin = true
-        "loginSuccess：${afterLoginSuccess}".logi(tag)
+        "loginSuccess：${afterLoginSuccess}".logd(tag)
         gameAboutModel.setLoginResult(true)
         refreshScore()
         enterInfo()
@@ -186,7 +186,7 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
 
     //进入房间坐下成功，待进入直播间
     override fun enterInfo(enterInfo: GameRes.EnterInfo) {
-        "进入房间坐下成功".logi(tag)
+        "进入房间坐下成功".logd(tag)
         gameAboutModel.isSitDown(true)
         val balance = enterInfo.self.score
         gameAboutModel.changeBalance(balance)
@@ -216,7 +216,7 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
     //进入直播间成功，待进入游戏
     override fun groupInfo(groupInfo: GameRes.GroupInfo) {
         isEnterRoom = true
-        "进入直播间成功:$groupInfo".logi(tag)
+        "进入直播间成功:$groupInfo".logd(tag)
         appListener?.runOnUiThread {
             onEnterLive(1, "")
         }
@@ -286,21 +286,22 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
     //离开直播间成功
     override fun leaveGroup(leave: GameRes.LeaveGroup) {
         isEnterRoom = false
+        gameAboutModel.liveId = ""
         gameAboutModel.isLeaveGroup(true)
         appListener?.runOnUiThread {
-            onLeaveLive(1, "")
+            onLeaveLive(gameAboutModel.liveId, 1,"")
         }
-        "离开直播间：$leave".logi(tag)
+        "离开直播间：$leave".logd(tag)
     }
 
     override fun leaveMiniGameInfo(miniGame: GameRes.LeaveMiniGames) {
-        "离开游戏：$miniGame".logi(tag)
+        "离开游戏：$miniGame".logd(tag)
     }
 
     override fun enterMiniGameInfo(miniGame: GameRes.EnterMiniGameInfo) {
         miniGameId = miniGame.miniGameId
         gameAboutModel.roundId = miniGame.roundId
-        "进入游戏 ->${miniGame}".logi(tag)
+        "进入游戏 ->${miniGame}".logd(tag)
         gameAboutModel.isEnterGameSuccess = true
         checkAgainNew()
         appListener?.runOnUiThread {
@@ -310,7 +311,7 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
 
     override fun miniGameBetResult(result: GameRes.MyMiniGameBetResult) {
         previousSuccess = true
-        "服务器下注结果：$result".logi()
+        "服务器下注结果：$result".logd()
         //result = 0 成功 1 余额不住 3超时
         when (result.betResultInfoListList[0].result) {
             0 -> {
@@ -370,14 +371,14 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
     }
 
     override fun refreshUserProperties(userScore: GameRes.RefreshUserScore) {
-        "刷新余额:$userScore".logi(tag)
+        "刷新余额:$userScore".logd(tag)
         val balance = userScore.score
         gameAboutModel.changeBalance(balance)
         gameAboutModel.changeTempBalance(balance)
     }
 
     override fun beginRound(round: GameRes.BeginNewRound) {
-        "Round".logi(tag)
+        "Round".logd(tag)
         previousSuccess = true
         gameAboutModel.tempMap.clear()
         gameAboutModel.roundId = round.roundId //期号
@@ -400,7 +401,7 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
     }
 
     override fun beginDeal(round: GameRes.BeginDeal) {
-        "Deal".logi(tag)
+        "Deal".logd(tag)
         curStage = GameAboutModel.Stage.DEAL
         gameAboutModel.roundId = round.roundId //期号
         gameAboutModel.countDown = round.countDown //当前阶段剩余时间倒计时
@@ -409,7 +410,7 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
     }
 
     override fun beginSettle(settle: GameRes.BeginSettle) {
-        "Settle".logi(tag)
+        "Settle".logd(tag)
         curStage = GameAboutModel.Stage.SETTLE
         gameAboutModel.roundId = settle.roundInfo.roundId //期号
         gameAboutModel.countDown = settle.countDown //当前阶段剩余时间倒计时
@@ -497,7 +498,7 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
      * token失效通知app
      */
     override fun tokenLoseEffectiveness() {
-        "登录失效，请重新登录".logi(tag)
+        "登录失效，请重新登录".logd(tag)
         isTokenValid = false
         gameAboutModel.setToastErrorMessage("登录失效，请重新登录")
         appListener?.runOnUiThread {
@@ -511,31 +512,31 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
                 if (bettingStepList.isEmpty()) {
                     if (it.againIfMoneyEnough()) {
                         if (gameAboutModel.balance.value!! < 5000) {
-                            "BALANCE < 50".logi("checkAgainAndDouble")
+                            "BALANCE < 50".logd("checkAgainAndDouble")
                             gameAboutModel.changeAgainDoubleState(GameAboutModel.AgainDoubleState.AGAIN_CAN_NOT_50)
                         } else {
-                            "again不为空 并且余额足够 并且牌面上也为空 -> 返回AGAIN".logi("checkAgainAndDouble")
+                            "again不为空 并且余额足够 并且牌面上也为空 -> 返回AGAIN".logd("checkAgainAndDouble")
                             gameAboutModel.changeAgainDoubleState(GameAboutModel.AgainDoubleState.AGAIN)
                         }
                     } else {
-                        "again不为空 牌面上为空 并且余额不足够 -> 进入checkDouble".logi("checkAgainAndDouble")
+                        "again不为空 牌面上为空 并且余额不足够 -> 进入checkDouble".logd("checkAgainAndDouble")
                         gameAboutModel.changeAgainDoubleState(GameAboutModel.AgainDoubleState.NUll)
                     }
                 } else {
-                    "again不为空,但牌面上不为空".logi("checkAgainAndDouble")
+                    "again不为空,但牌面上不为空".logd("checkAgainAndDouble")
                     checkDoubleNew()
                 }
             }.isEmpty {
                 if (bettingStepList.isEmpty()) {
-                    "again为空,并且牌面上也为空".logi("checkAgainAndDouble")
+                    "again为空,并且牌面上也为空".logd("checkAgainAndDouble")
                     gameAboutModel.changeAgainDoubleState(GameAboutModel.AgainDoubleState.NUll)
                 } else {
-                    "again为空,但牌面上不为空 -> 进入checkDouble".logi("checkAgainAndDouble")
+                    "again为空,但牌面上不为空 -> 进入checkDouble".logd("checkAgainAndDouble")
                     checkDoubleNew()
                 }
             }
         } else {
-            "checkAgain()->不是新阶段->NUll".logi("checkAgainAndDouble")
+            "checkAgain()->不是新阶段->NUll".logd("checkAgainAndDouble")
             gameAboutModel.changeAgainDoubleState(GameAboutModel.AgainDoubleState.NUll)
         }
     }
@@ -544,18 +545,18 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
         if (bettingStepList.doubleIfMoneyEnough()) {
             bettingStepList.verifyDouble(currentConfig)?.let {
                 if (it.noMoney) {
-                    "double 钱不够".logi("checkAgainAndDouble")
+                    "double 钱不够".logd("checkAgainAndDouble")
                     gameAboutModel.changeAgainDoubleState(GameAboutModel.AgainDoubleState.NUll)
                 } else {
-                    "checkDouble()->${it.limitBean?.areaCode}号注区超限->DOUBLE_CAN_NOT".logi("checkAgainAndDouble")
+                    "checkDouble()->${it.limitBean?.areaCode}号注区超限->DOUBLE_CAN_NOT".logd("checkAgainAndDouble")
                     gameAboutModel.changeAgainDoubleState(GameAboutModel.AgainDoubleState.DOUBLE_CAN_NOT)
                 }
             } ?: run {
-                "满足double".logi("checkAgainAndDouble")
+                "满足double".logd("checkAgainAndDouble")
                 gameAboutModel.changeAgainDoubleState(GameAboutModel.AgainDoubleState.DOUBLE)
             }
         } else {
-            "既不满足续压 钱也不够加倍".logi("GameServiceImpl")
+            "既不满足续压 钱也不够加倍".logd("GameServiceImpl")
             gameAboutModel.changeAgainDoubleState(GameAboutModel.AgainDoubleState.DOUBLE_CAN_NOT)
         }
     }

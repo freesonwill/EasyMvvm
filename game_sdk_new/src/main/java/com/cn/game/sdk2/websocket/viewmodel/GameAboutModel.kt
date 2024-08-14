@@ -67,7 +67,7 @@ internal class GameAboutModel : BaseViewModel() {
 
 
     //如果不需要显示(isShowHistoryAndCustomer = false)，则主播端的更多只显示切换游戏和帮助。
-    var isShowHistoryAndCustomer: Boolean = true
+    var simplifyMoreButtons: Boolean = true
 
     /** 需要监听的字段
      * @see currentAgainDoubleState 续压和加倍监听

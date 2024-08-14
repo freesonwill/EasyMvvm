@@ -35,7 +35,6 @@ Java_com_cn_game_sdk2_websocket_NativeLib_pack(JNIEnv *env,
 ) {
 
     LOGD("[jni] dataSize = %d", dataSize);
-    // TODO: implement pack()
 
     CCPayloadCipher *chiper = getChipper(env, thiz);
     LOGD("get chiper %p", chiper);
@@ -108,7 +107,6 @@ Java_com_cn_game_sdk2_websocket_NativeLib_newPack(JNIEnv *env,
 extern "C"
 JNIEXPORT jlong JNICALL
 Java_com_cn_game_sdk2_websocket_NativeLib_nativeCreateChiper(JNIEnv *env, jobject thiz) {
-    // TODO: implement nativeCreateChiper()
 
     CCPayloadCipher *chiper = new CCPayloadCipher();
 
@@ -119,7 +117,6 @@ Java_com_cn_game_sdk2_websocket_NativeLib_nativeCreateChiper(JNIEnv *env, jobjec
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_cn_game_sdk2_websocket_NativeLib_reset(JNIEnv *env, jobject thiz) {
-    // TODO: implement nativeCreateChiper()
 
     CCPayloadCipher *chiper = getChipper(env, thiz);
 
@@ -133,7 +130,6 @@ Java_com_cn_game_sdk2_websocket_NativeLib_unpack(JNIEnv *env,
                                                         jobject thiz,
                                                         jbyteArray data
 ) {
-    // TODO: implement unpack()
     CCPayloadCipher *chiper = getChipper(env, thiz);
 
     jsize len = env->GetArrayLength(data);
@@ -223,7 +219,6 @@ extern "C"
 JNIEXPORT void JNICALL
 Java_com_cn_game_sdk2_websocket_NativeLib_nativeFinalizer(JNIEnv *env, jobject thiz,
                                                                  jlong ptr) {
-    // TODO: implement nativeFinalizer()
     CCPayloadCipher *chiper = getChipper(env, thiz);
 
     LOGD("delete chipper=%p", chiper);
@@ -235,7 +230,7 @@ Java_com_cn_game_sdk2_websocket_NativeLib_nativeFinalizer(JNIEnv *env, jobject t
 extern "C"
 JNIEXPORT jobjectArray JNICALL
 Java_com_chittybang_game_1sdk2_util_NativeLib_test(JNIEnv *env, jobject thiz) {
-    // TODO: implement test()
+
 
     short int mid = 7;
     short int sid = 6;

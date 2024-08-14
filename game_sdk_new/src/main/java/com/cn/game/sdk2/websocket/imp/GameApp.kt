@@ -12,6 +12,7 @@ import androidx.lifecycle.LifecycleOwner
 import com.cn.game.sdk2.ui.helper.ViewHelper
 import com.cn.game.sdk2.websocket.GameSocketManager
 import com.cn.game.sdk2.websocket.appContext
+import com.cn.game.sdk2.websocket.appLifecycleEnable
 import com.cn.game.sdk2.websocket.appListener
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.gameMassageManager
@@ -44,12 +45,19 @@ object GameApp : IGameForApp {
      * 加載SDK
      * app集成sdk 先调用此方法初始化websocket
      */
-    override fun loadGame(context: Context,url: String, onSdkListener: OnSdkListener) {
-        "loadGame".loge()
+    override fun loadGame(
+        context: Context,
+        lifecycleEnable: Boolean,
+        gameServer: String,
+        logServer: String,
+        onSdkListener: OnSdkListener
+    ) {
         appContext = context
         ModuleInitializer.application = context.applicationContext as Application
+        appLifecycleEnable = lifecycleEnable
         appListener = onSdkListener
-        GameSocketManager.getInstance()?.initSocketClient(url)
+        GameSocketManager.getInstance()?.initSocketClient(gameServer)
+        //todo:logServer
         (appContext as Application).registerActivityLifecycleCallbacks(object :
             ActivityLifecycleCallbacks {
             override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
@@ -95,12 +103,18 @@ object GameApp : IGameForApp {
      * - ——>3)App进入直播间:GameServiceImp.groupInfo() ——>4)进入小游戏:GameServiceImp.gameInfo()
      */
     //platform= 6 ,requestId = 0,version = "1"
-    override fun login(token: String, agentName: String, anchor: Boolean) {
+    override fun login(
+        token: String,
+        agentName: String,
+        isAnchor: Boolean,
+        simplifyMoreButtons: Boolean
+    )  {
         if (gameAboutModel.isOpen) {
             "login".loge()
             gameAboutModel.token = token
-            gameAboutModel.isAnchor = anchor
+            gameAboutModel.isAnchor = isAnchor
             gameAboutModel.agentName = agentName
+            gameAboutModel.simplifyMoreButtons = simplifyMoreButtons
             val req = ClientReq.LoginReq.newBuilder().setPlatform(6).setRequestId(0).setVersion("1")
                 .setNickname("").setAgentName(agentName).setToken(token).build()
             gameMassageManager?.login(req)
@@ -126,7 +140,9 @@ object GameApp : IGameForApp {
         gameAboutModel.liveId = liveId
         gameAboutModel.gameIds = gameIds
         gameAboutModel.data = data
-        gameMassageManager?.enterGroup(build)/*gameMassageManager?.enterGame(
+        gameMassageManager?.enterGroup(build)
+        //测试直接进入游戏
+        /*gameMassageManager?.enterGame(
             GameReq.EnterMiniGame.newBuilder().setMiniGameId(gameIds[0]).build()
         )*/
     }
@@ -149,9 +165,6 @@ object GameApp : IGameForApp {
     /**
      * 是否彈出遊戲框
      */
-    override fun gameFloatingDetailViewStatusWithBlock(isShow: Boolean) {
-        gameAboutModel.isShowGame(isShow)
-    }
 
     /**
      * 是否允許下注
@@ -161,28 +174,24 @@ object GameApp : IGameForApp {
         gameAboutModel.isAllowedBet(isAllowedBet = isAllow)
     }
 
-    override fun isShowHistoryAndCustomer(show: Boolean) {
-        gameAboutModel.isShowHistoryAndCustomer = show
-    }
-
     /**
      * 入口漂浮窗視圖
      */
     override fun createFloatEnterView(context: Context): View {
-        if (context is LifecycleOwner) {
+        if (context is LifecycleOwner && appLifecycleEnable) {
             (context as LifecycleOwner).lifecycle.addObserver(object : LifecycleEventObserver {
                 override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
                     when (event) {
                         Lifecycle.Event.ON_RESUME -> {
-                            isEnableSound = true
+                            resumeGame()
                         }
 
                         Lifecycle.Event.ON_PAUSE -> {
-                            isEnableSound = false
+                            pauseGame()
                         }
 
                         Lifecycle.Event.ON_STOP -> {
-                            isEnableSound = false
+                            pauseGame()
                         }
 
                         else -> {
@@ -193,8 +202,18 @@ object GameApp : IGameForApp {
 
             })
         }
-        return ViewHelper.getFastView(context)
+        return ViewHelper.getGameEnterView(context)
     }
+
+    internal fun resumeGame(){
+        isEnableSound = true
+    }
+
+    internal fun pauseGame(){
+        //todo：暂停动画等任务
+        isEnableSound = false
+    }
+
 
     /**
      * 结果视图
@@ -207,13 +226,28 @@ object GameApp : IGameForApp {
         gameAboutModel.isShowGame(false)
     }
 
+    override fun onResume() {
+        resumeGame()
+    }
+
+    override fun onPause() {
+        pauseGame()
+    }
+
+    override fun onStop() {
+        pauseGame()
+    }
+
     override fun refreshScore() {
         gameMassageManager?.refreshScore()
     }
 
+    override fun openGameDialog(miniGameId: Int) {
+        //todo：打开其他游戏窗口
+    }
+
 
     interface OnSdkListener {
-        fun initSuccessful()
 
         fun onLoginGame(type: Int, msg: String?)
 
@@ -221,11 +255,7 @@ object GameApp : IGameForApp {
 
         fun onEnterGame()
 
-        fun customerServiceAction()
-
-        fun historyOfBetAction()
-
-        fun onLeaveLive(type: Int, msg: String?)
+        fun onLeaveLive(liveId: String,type: Int, msg: String?)
 
         /**
          * token失效
@@ -238,10 +268,19 @@ object GameApp : IGameForApp {
          */
         fun onGameFloatingDetailViewStatus(isShowUp: Boolean)
 
+        fun historyOfBetAction()
+
+        fun customerServiceAction()
+
         /**
          * 余额不足
          */
         fun onInsufficientBalance()
+
+        /**
+        点击游戏大厅里除了sdk本身游戏外的回调
+         */
+        fun onClickOtherGame(gameId:Int)
 
     }
 

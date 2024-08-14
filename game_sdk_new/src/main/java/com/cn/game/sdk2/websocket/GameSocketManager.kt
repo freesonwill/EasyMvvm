@@ -8,7 +8,7 @@ import com.cn.game.sdk2.network.code.GameResCode
 import com.cn.game.sdk2.websocket.imp.UIMethodImpl
 import com.xcjh.base_lib2.utils.log.ProcessUtils
 import com.xcjh.base_lib2.utils.loge
-import com.xcjh.base_lib2.utils.logi
+import com.xcjh.base_lib2.utils.logd
 import game.common.proto.ClientRes
 import game.mod.proc.yf.proto.res.GameRes
 import java.net.URI
@@ -44,7 +44,7 @@ internal class GameSocketManager private constructor() : OnMessageListener {
 
     fun initSocketClient(url: String) {
         if (isMainProcess()) {
-            "initSocketClient".logi(tag)
+            "initSocketClient".logd(tag)
             val uri = URI.create(url)
             isNeedReconnect = true
             HAS_HEART = true
@@ -65,7 +65,7 @@ internal class GameSocketManager private constructor() : OnMessageListener {
         for (processInfo in manager.runningAppProcesses) {
             if (processInfo.pid == pid) {
                 // 对比进程名，进程名是否为主进程名
-                "currentProcess->${processInfo.pid}".logi(tag)
+                "currentProcess->${processInfo.pid}".logd(tag)
                 return processInfo.processName == packageName
             }
         }
