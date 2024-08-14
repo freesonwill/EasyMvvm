@@ -138,6 +138,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             })
         }
         FlowBus.with<Boolean>(EventKey.LOAD_FRAGMENT).register(viewLifecycleOwner) {
+            "offscreenPageLimit = ${mFragList.size}".loge()
             mDatabind.viewPagerNew.offscreenPageLimit = mFragList.size
         }
         loadFragment()

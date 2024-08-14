@@ -1,12 +1,7 @@
 package com.cn.game.sdk2.websocket
 
 import android.content.Context
-import android.os.Build
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
-import androidx.annotation.RequiresApi
-import androidx.databinding.ObservableList
 import com.cn.game.sdk2.BuildConfig
 import com.cn.game.sdk2.ui.page.fast3.Fast3MainFragment
 import com.cn.game.sdk2.utils.ThreadUtils
@@ -58,11 +53,9 @@ import com.cn.game.sdk2.websocket.bean.areaMap
 import com.cn.game.sdk2.websocket.imp.GameApp
 import com.cn.game.sdk2.websocket.imp.UIMethodImpl
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
-import com.xcjh.base_lib2.utils.loge
-import game.mod.proc.yf.proto.res.GameRes
 import kotlin.random.Random
 
-val outerTestTokenArray = listOf(
+val tokenArray = listOf(
     "124:3CEn7OHz",
     "125:ozNPWgtT",
     "126:Ncgvqc9s",
@@ -93,31 +86,29 @@ val outerTestTokenArray = listOf(
 //
 //val tokenIndex = Random.nextInt(tokenArray.size)
 //
-//@Suppress("KotlinConstantConditions")
-//val token: String
-//    get() {
-//        return when (BuildConfig.BUILD_TYPE) {
-//            "debug" -> {
-////                "33:ZtG5WhUh"
-//                "94:0aPEwiYK"
-////                "109:lW2OFWum"
-//            }
-//
-//            "innerTest" -> {
-//                "99:mFGB4ljy"
-//            }
-//
-//            "outerTest" -> {
-//                tokenArray[tokenIndex]
-//            }
-//
-//            "release" -> {
-//                tokenArray[Random.nextInt(tokenArray.size)]
-//            }
-//
-//            else -> throw IllegalStateException("wrong buildType:${BuildConfig.BUILD_TYPE}")
-//        }
-//    }
+@Suppress("KotlinConstantConditions")
+val token: String
+    get() {
+        return when (BuildConfig.BUILD_TYPE) {
+            "debug" -> {
+                tokenArray[Random.nextInt(tokenArray.size)]
+            }
+
+            "innerTest" -> {
+                "99:mFGB4ljy"
+            }
+
+            "outerTest" -> {
+                tokenArray[Random.nextInt(tokenArray.size)]
+            }
+
+            "release" -> {
+                tokenArray[Random.nextInt(tokenArray.size)]
+            }
+
+            else -> throw IllegalStateException("wrong buildType:${BuildConfig.BUILD_TYPE}")
+        }
+    }
 
 
 //---------------------------socket方面使用,流程控制，不是数据---------------------------------//

@@ -2,6 +2,7 @@ package com.cn.game.sdk2.websocket.interfaces
 
 import android.content.Context
 import android.view.View
+import com.cn.game.sdk2.data.bean.MoreGame
 import com.cn.game.sdk2.websocket.imp.GameApp
 
 interface IGameForApp {
@@ -98,5 +99,7 @@ interface IGameForApp {
         14.打开直播间里指定gameid的游戏界面（在直播间里点击跟投的时候可以调用，目前只有快三一款游戏，所以暂时只弹出快三的游戏界面）
      */
     fun openGameDialog(miniGameId:Int)
+
+    fun setMoreGames(moreGameList:List<MoreGame>)
     
 }

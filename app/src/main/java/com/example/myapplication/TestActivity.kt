@@ -7,8 +7,6 @@ import android.widget.Button
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
-import androidx.core.view.setPadding
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.cn.game.sdk2.data.EventKey
@@ -16,9 +14,8 @@ import com.cn.game.sdk2.utils.FlowBus
 import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
 import com.cn.game.sdk2.utils.ext.ViewExt.isAdd
 import com.cn.game.sdk2.websocket.imp.GameApp
-import com.cn.game.sdk2.websocket.outerTestTokenArray
+import com.cn.game.sdk2.websocket.tokenArray
 import com.xcjh.base_lib2.utils.loge
-import kotlinx.coroutines.GlobalScope
 import kotlin.random.Random
 
 
@@ -82,7 +79,7 @@ class TestActivity : AppCompatActivity(), GameApp.OnSdkListener {
 
                 1 -> {
                    // GameApp.login(token, "wali-internal", false)
-                    GameApp.login(outerTestTokenArray[Random.nextInt(outerTestTokenArray.size)], "wali-internal", false,false)
+                    GameApp.login(tokenArray[Random.nextInt(tokenArray.size)], "wali-internal", false,false)
                     btnOpen.text = "正在登录"
                 }
 

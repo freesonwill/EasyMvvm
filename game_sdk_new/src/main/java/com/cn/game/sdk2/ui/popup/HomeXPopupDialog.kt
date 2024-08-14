@@ -11,6 +11,8 @@ import com.cn.game.sdk2.data.EventKey
 import com.cn.game.sdk2.databinding.DialogHomeXpopupContainerBinding
 import com.cn.game.sdk2.utils.FlowBus
 import com.xcjh.base_lib2.utils.LogUtils
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
 
 /**
  * Description:
@@ -35,13 +37,15 @@ class HomeXPopupDialog(context: Context, private val fragment: Fragment, private
         }
     }
 
-    override fun onAnimationEnd() {
-        super.onAnimationEnd()
+    @OptIn(DelicateCoroutinesApi::class)
+    override fun onShow() {
+        super.onShow()
         if(!isLoadFragment){
             isLoadFragment = true
-            FlowBus.with<Boolean>(EventKey.LOAD_FRAGMENT).post(lifecycleScope,true)
+            FlowBus.with<Boolean>(EventKey.LOAD_FRAGMENT).post(GlobalScope,true)
         }
     }
+
 
     private val fragmentManager
         get() = run {

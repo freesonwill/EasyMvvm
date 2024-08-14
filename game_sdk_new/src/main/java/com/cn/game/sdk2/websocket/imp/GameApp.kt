@@ -9,6 +9,7 @@ import android.view.View
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
+import com.cn.game.sdk2.data.bean.MoreGame
 import com.cn.game.sdk2.ui.helper.ViewHelper
 import com.cn.game.sdk2.websocket.GameSocketManager
 import com.cn.game.sdk2.websocket.appContext
@@ -159,6 +160,8 @@ object GameApp : IGameForApp {
      */
     override fun cancelGame() {
         isNeedReconnect = false
+        appContext = null
+        appListener = null
         GameSocketManager.getInstance()?.stopService()
     }
 
@@ -243,7 +246,11 @@ object GameApp : IGameForApp {
     }
 
     override fun openGameDialog(miniGameId: Int) {
-        //todo：打开其他游戏窗口
+        gameAboutModel.isShowGame(true)
+    }
+
+    override fun setMoreGames(moreGameList: List<MoreGame>) {
+        TODO("Not yet implemented")
     }
 
 
