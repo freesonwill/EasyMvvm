@@ -34,7 +34,7 @@ Java_com_cn_game_sdk2_websocket_NativeLib_pack(JNIEnv *env,
                                                       jint dataSize
 ) {
 
-    LOGD("[jni] dataSize = %d", dataSize);
+    //LOGD("[jni] dataSize = %d", dataSize);
 
     CCPayloadCipher *chiper = getChipper(env, thiz);
     LOGD("get chiper %p", chiper);
@@ -60,7 +60,7 @@ Java_com_cn_game_sdk2_websocket_NativeLib_pack(JNIEnv *env,
     jbyteArray bytes = 0;
 
 
-    LOGD("%s: outDataSize %u", __FUNCTION__, outDataSize);
+    //LOGD("%s: outDataSize %u", __FUNCTION__, outDataSize);
     jbyteArray jarrRet = env->NewByteArray(outDataSize);
     env->SetByteArrayRegion(jarrRet, 0, outDataSize, (jbyte *) outData);
 
@@ -82,7 +82,7 @@ Java_com_cn_game_sdk2_websocket_NativeLib_newPack(JNIEnv *env,
     if (cipher == nullptr) {
         return nullptr;
     }
-    LOGD(">.>%s: mid=%u,sid=%u", __FUNCTION__, mid, sid);
+    //LOGD(">.>%s: mid=%u,sid=%u", __FUNCTION__, mid, sid);
     jbyte *dataBytes = env->GetByteArrayElements(data, nullptr);
     if (dataBytes == nullptr) {
         return nullptr;
@@ -163,8 +163,8 @@ Java_com_cn_game_sdk2_websocket_NativeLib_unpack(JNIEnv *env,
     env->SetObjectArrayElement(retobjarr, 1, NewInteger(env, sid));
     env->SetObjectArrayElement(retobjarr, 2, env->NewStringUTF(str.data()));
 
-    LOGD(">.>%s: mid=%u,sid=%u,text=[%s],textSize=[%d]", __FUNCTION__, mid, sid, str.data(),
-         wDataSize);
+    //LOGD(">.>%s: mid=%u,sid=%u,text=[%s],textSize=[%d]", __FUNCTION__, mid, sid, str.data(),
+    //     wDataSize);
     env->ReleaseByteArrayElements(data, body, 0);
 
     delete[] someUnsignedChar;
@@ -205,8 +205,8 @@ Java_com_cn_game_sdk2_websocket_NativeLib_newUnpack(JNIEnv *env, jobject thiz,
 //    LOGD("before to string");
     // Log the results
     std::string str(reinterpret_cast<const char *>(pDataBuffer), wDataSize);
-    LOGD(">.>%s: mid=%u, sid=%u, text=[%s], textSize=[%d]", __FUNCTION__, mid, sid, str.c_str(),
-         wDataSize);
+    //LOGD(">.>%s: mid=%u, sid=%u, text=[%s], textSize=[%d]", __FUNCTION__, mid, sid, str.c_str(),
+     //    wDataSize);
 
     // Release resources
     env->DeleteLocalRef(dataBufferArray);

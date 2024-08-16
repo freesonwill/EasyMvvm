@@ -28,229 +28,247 @@ import game.mod.proc.yf.proto.req.GameReq
 
 /**
  * 提供给app调用的方法
+ * 文档见 
+ * @see IGameForApp ：由于商户要求与另一java统一，从单例改用静态方法调用
  */
 
-object GameApp : IGameForApp {
+class GameApp  private constructor(){
+    companion object{
+        /************************************* Method *************************************/
 
-    /************************************* Method *************************************/
+        /**
+         * app需要实现IAppForGame接口
+         * 用于sdk调用
+         *  - 历史记录
+         *  - 联系客服
+         *  - token失效
+         */
 
-    /**
-     * app需要实现IAppForGame接口
-     * 用于sdk调用
-     *  - 历史记录
-     *  - 联系客服
-     *  - token失效
-     */
+        /**
+         * 加載SDK
+         * app集成sdk 先调用此方法初始化websocket
+         */
 
-    /**
-     * 加載SDK
-     * app集成sdk 先调用此方法初始化websocket
-     */
-    override fun loadGame(
-        context: Context,
-        lifecycleEnable: Boolean,
-        gameServer: String,
-        logServer: String,
-        onSdkListener: OnSdkListener
-    ) {
-        appContext = context
-        ModuleInitializer.application = context.applicationContext as Application
-        appLifecycleEnable = lifecycleEnable
-        appListener = onSdkListener
-        GameSocketManager.getInstance()?.initSocketClient(gameServer)
-        //todo:logServer
-        (appContext as Application).registerActivityLifecycleCallbacks(object :
-            ActivityLifecycleCallbacks {
-            override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-
-            }
-
-            override fun onActivityStarted(activity: Activity) {
-
-            }
-
-            override fun onActivityResumed(activity: Activity) {
-
-            }
-
-            override fun onActivityPaused(activity: Activity) {
-
-            }
-
-            override fun onActivityStopped(activity: Activity) {
-
-            }
-
-            override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
-
-            }
-
-            override fun onActivityDestroyed(activity: Activity) {
-
-            }
-
-        })
-    }
-
-    /*override fun removeSdkListener() {
-        appListener = null
-    }*/
-
-    /** 登录
-     * - Parameter agentName: 平台名称
-     * - Parameter token: 用户token
-     * - type ==1 成功 type =1000（desc：您当前还在其他游戏中）type =1001 （desc：token验证失败）type =1002 （desc：余额不足）type =1005（desc：当前服务器正在维护）type =200（desc：其他情况）
-     * - 初始化流程：1）App调用登录：loadGame + loginGameWithAgentName ——>2）进入房间坐下：GameServiceImp.enterInfo()
-     * - ——>3)App进入直播间:GameServiceImp.groupInfo() ——>4)进入小游戏:GameServiceImp.gameInfo()
-     */
-    //platform= 6 ,requestId = 0,version = "1"
-    override fun login(
-        token: String,
-        agentName: String,
-        isAnchor: Boolean,
-        simplifyMoreButtons: Boolean
-    )  {
-        if (gameAboutModel.isOpen) {
-            "login".loge()
-            gameAboutModel.token = token
-            gameAboutModel.isAnchor = isAnchor
-            gameAboutModel.agentName = agentName
-            gameAboutModel.simplifyMoreButtons = simplifyMoreButtons
-            val req = ClientReq.LoginReq.newBuilder().setPlatform(6).setRequestId(0).setVersion("1")
-                .setNickname("").setAgentName(agentName).setToken(token).build()
-            gameMassageManager?.login(req)
-        } else {
-            "login-->socket is not connect，please wait for a successful connection before attempting to login".loge()
-        }
-    }
-
-    /** 进入直播間
-     * - Parameter liveId: 直播間id
-     * - Parameter gIds: 遊戲ids
-     * - Parameter data_p: 透传资料（转抛）
-     * - type ==1 成功 随便
-     */
-    //1213,3
-    override fun enterLive(liveId: String, gameIds: List<Int>, data: String) {
-        "enterLive".loge()
-        val req = GameReq.EnterGroup.newBuilder()
-        gameIds.forEach {
-            req.addMiniGameIds(it)
-        }
-        val build = req.setData(data).setId(liveId).build()
-        gameAboutModel.liveId = liveId
-        gameAboutModel.gameIds = gameIds
-        gameAboutModel.data = data
-        gameMassageManager?.enterGroup(build)
-        //测试直接进入游戏
-        /*gameMassageManager?.enterGame(
-            GameReq.EnterMiniGame.newBuilder().setMiniGameId(gameIds[0]).build()
-        )*/
-    }
-
-    /** 离开直播間
-     * - Parameter liveId: 直播間id
-     */
-    override fun leaveLive() {
-        gameMassageManager?.levelGroup()
-    }
-
-    /**
-     * 注销游戏
-     */
-    override fun cancelGame() {
-        isNeedReconnect = false
-        appContext = null
-        appListener = null
-        GameSocketManager.getInstance()?.stopService()
-    }
-
-    /**
-     * 是否彈出遊戲框
-     */
-
-    /**
-     * 是否允許下注
-     * - Parameter isAllow: 默認true
-     */
-    override fun allowedBet(isAllow: Boolean) {
-        gameAboutModel.isAllowedBet(isAllowedBet = isAllow)
-    }
-
-    /**
-     * 入口漂浮窗視圖
-     */
-    override fun createFloatEnterView(context: Context): View {
-        if (context is LifecycleOwner && appLifecycleEnable) {
-            (context as LifecycleOwner).lifecycle.addObserver(object : LifecycleEventObserver {
-                override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
-                    when (event) {
-                        Lifecycle.Event.ON_RESUME -> {
-                            resumeGame()
-                        }
-
-                        Lifecycle.Event.ON_PAUSE -> {
-                            pauseGame()
-                        }
-
-                        Lifecycle.Event.ON_STOP -> {
-                            pauseGame()
-                        }
-
-                        else -> {
-
-                        }
-                    }
+        @JvmStatic
+         fun loadGame(
+            context: Context,
+            lifecycleEnable: Boolean,
+            gameServer: String,
+            logServer: String,
+            onSdkListener: OnSdkListener
+        ) {
+            appContext = context
+            ModuleInitializer.application = context.applicationContext as Application
+            appLifecycleEnable = lifecycleEnable
+            appListener = onSdkListener
+            GameSocketManager.getInstance()?.initSocketClient(gameServer)
+            //todo:logServer
+            (appContext as Application).registerActivityLifecycleCallbacks(object :
+                ActivityLifecycleCallbacks {
+                override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
+                    
                 }
 
+                override fun onActivityStarted(activity: Activity) {
+                    
+                }
+
+                override fun onActivityResumed(activity: Activity) {
+                    
+                }
+
+                override fun onActivityPaused(activity: Activity) {
+                    
+                }
+
+                override fun onActivityStopped(activity: Activity) {
+                    
+                }
+
+                override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
+                    
+                }
+
+                override fun onActivityDestroyed(activity: Activity) {
+                    
+                }
             })
         }
-        return ViewHelper.getGameEnterView(context)
-    }
 
-    internal fun resumeGame(){
-        isEnableSound = true
-    }
+        /* fun removeSdkListener() {
+            appListener = null
+        }*/
 
-    internal fun pauseGame(){
-        //todo：暂停动画等任务
-        isEnableSound = false
-    }
+        /** 登录
+         * - Parameter agentName: 平台名称
+         * - Parameter token: 用户token
+         * - type ==1 成功 type =1000（desc：您当前还在其他游戏中）type =1001 （desc：token验证失败）type =1002 （desc：余额不足）type =1005（desc：当前服务器正在维护）type =200（desc：其他情况）
+         * - 初始化流程：1）App调用登录：loadGame + loginGameWithAgentName ——>2）进入房间坐下：GameServiceImp.enterInfo()
+         * - ——>3)App进入直播间:GameServiceImp.groupInfo() ——>4)进入小游戏:GameServiceImp.gameInfo()
+         */
+        //platform= 6 ,requestId = 0,version = "1"
+        @JvmStatic
+         fun login(
+            token: String,
+            agentName: String,
+            isAnchor: Boolean,
+            simplifyMoreButtons: Boolean
+        )  {
+            if (gameAboutModel.isOpen) {
+                "login".loge()
+                gameAboutModel.token = token
+                gameAboutModel.isAnchor = isAnchor
+                gameAboutModel.agentName = agentName
+                gameAboutModel.simplifyMoreButtons = simplifyMoreButtons
+                val req = ClientReq.LoginReq.newBuilder().setPlatform(6).setRequestId(0).setVersion("1")
+                    .setNickname("").setAgentName(agentName).setToken(token).build()
+                gameMassageManager?.login(req)
+            } else {
+                "login-->socket is not connect，please wait for a successful connection before attempting to login".loge()
+            }
+        }
+
+        /** 进入直播間
+         * - Parameter liveId: 直播間id
+         * - Parameter gIds: 遊戲ids
+         * - Parameter data_p: 透传资料（转抛）
+         * - type ==1 成功 随便
+         */
+        //1213,3
+        @JvmStatic
+         fun enterLive(liveId: String, gameIds: List<Int>, data: String) {
+            "enterLive".loge()
+            val req = GameReq.EnterGroup.newBuilder()
+            gameIds.forEach {
+                req.addMiniGameIds(it)
+            }
+            val build = req.setData(data).setId(liveId).build()
+            gameAboutModel.liveId = liveId
+            gameAboutModel.gameIds = gameIds
+            gameAboutModel.data = data
+            gameMassageManager?.enterGroup(build)
+            //测试直接进入游戏
+            /*gameMassageManager?.enterGame(
+                GameReq.EnterMiniGame.newBuilder().setMiniGameId(gameIds[0]).build()
+            )*/
+        }
+
+        /** 离开直播間
+         * - Parameter liveId: 直播間id
+         */
+        @JvmStatic
+         fun leaveLive() {
+            gameMassageManager?.levelGroup()
+        }
+
+        /**
+         * 注销游戏
+         */
+        @JvmStatic
+         fun cancelGame() {
+            isNeedReconnect = false
+            appContext = null
+            appListener = null
+            GameSocketManager.getInstance()?.stopService()
+        }
+
+        /**
+         * 是否彈出遊戲框
+         */
+
+        /**
+         * 是否允許下注
+         * - Parameter isAllow: 默認true
+         */
+        @JvmStatic
+         fun allowedBet(isAllow: Boolean) {
+            gameAboutModel.isAllowedBet(isAllowedBet = isAllow)
+        }
+
+        /**
+         * 入口漂浮窗視圖
+         */
+        @JvmStatic
+         fun createFloatEnterView(context: Context): View {
+            if (context is LifecycleOwner && appLifecycleEnable) {
+                (context as LifecycleOwner).lifecycle.addObserver(object : LifecycleEventObserver {
+                     override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+                        when (event) {
+                            Lifecycle.Event.ON_RESUME -> {
+                                resumeGame()
+                            }
+
+                            Lifecycle.Event.ON_PAUSE -> {
+                                pauseGame()
+                            }
+
+                            Lifecycle.Event.ON_STOP -> {
+                                pauseGame()
+                            }
+
+                            else -> {
+
+                            }
+                        }
+                    }
+
+                })
+            }
+            return ViewHelper.getGameEnterView(context)
+        }
+
+        internal fun resumeGame(){
+            isEnableSound = true
+        }
+
+        internal fun pauseGame(){
+            //todo：暂停动画等任务
+            isEnableSound = false
+        }
 
 
-    /**
-     * 结果视图
-     */
-    override fun createFloatResultView(context: Context): View {
-        return ViewHelper.getFastViewOverlay(context)
-    }
+        /**
+         * 结果视图
+         */
+        @JvmStatic
+         fun createFloatResultView(context: Context): View {
+            return ViewHelper.getFastViewOverlay(context)
+        }
 
-    override fun dismissFloatingController() {
-        gameAboutModel.isShowGame(false)
-    }
+        @JvmStatic
+         fun dismissFloatingController() {
+            gameAboutModel.isShowGame(false)
+        }
 
-    override fun onResume() {
-        resumeGame()
-    }
+        @JvmStatic
+         fun onResume() {
+            resumeGame()
+        }
 
-    override fun onPause() {
-        pauseGame()
-    }
+        @JvmStatic
+         fun onPause() {
+            pauseGame()
+        }
 
-    override fun onStop() {
-        pauseGame()
-    }
+        @JvmStatic
+         fun onStop() {
+            pauseGame()
+        }
 
-    override fun refreshScore() {
-        gameMassageManager?.refreshScore()
-    }
+        @JvmStatic
+         fun refreshScore() {
+            gameMassageManager?.refreshScore()
+        }
 
-    override fun openGameDialog(miniGameId: Int) {
-        gameAboutModel.isShowGame(true)
-    }
+        @JvmStatic
+         fun openGameDialog(miniGameId: Int) {
+            gameAboutModel.isShowGame(true)
+        }
 
-    override fun setMoreGames(moreGameList: List<MoreGame>) {
-        TODO("Not yet implemented")
+        @JvmStatic
+         fun setMoreGames(moreGameList: List<MoreGame>) {
+            
+        }
     }
 
 
@@ -275,9 +293,9 @@ object GameApp : IGameForApp {
          */
         fun onGameFloatingDetailViewStatus(isShowUp: Boolean)
 
-        fun historyOfBetAction()
+        fun onHistoryOfBetAction()
 
-        fun customerServiceAction()
+        fun onCustomerServiceAction()
 
         /**
          * 余额不足

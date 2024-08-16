@@ -6,6 +6,7 @@ import android.content.Context
 import androidx.core.animation.addListener
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.databinding.FragmentFast3HelpBinding
 import com.cn.game.sdk2.ui.helper.ViewHelper
@@ -78,6 +79,7 @@ class Fast3HelpPopup(context: Context, private val offsetY: Int, private val hei
     }
 
     private fun initView() {
+        mViewBind.rvContent.layoutManager = LinearLayoutManager(context)
         mViewBind.rvContent
             .dividerSpace(
                 context.dp2px(20),

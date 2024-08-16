@@ -11,7 +11,9 @@ import com.cn.game.sdk2.databinding.PopupCustomBubbleAttachBinding
 import com.cn.game.sdk2.ui.popup.HomeXPopupDialog.Companion.TAG
 import com.cn.game.sdk2.ui.page.fast3.Fast3GameHallFragment
 import com.cn.game.sdk2.ui.helper.ViewHelper
+import com.cn.game.sdk2.websocket.appListener
 import com.cn.game.sdk2.websocket.gameAboutModel
+import com.cn.game.sdk2.websocket.runOnUiThread
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.AttachPopupView
 import com.lxj.xpopup.core.BasePopupView
@@ -44,9 +46,15 @@ class CustomBubbleAttachPopup(content: Context) : AttachPopupView(content){
             rlPopClickService.isVisible = !gameAboutModel.simplifyMoreButtons
             rlPopClickRecords.clickNoRepeat(true) {
                 delayDismiss(100)
+                appListener?.runOnUiThread {
+                    onHistoryOfBetAction()
+                }
             }
             rlPopClickService.clickNoRepeat(true) {
                 delayDismiss(100)
+                appListener?.runOnUiThread {
+                    onCustomerServiceAction()
+                }
             }
 
             rlPopClickSwitchGame.clickNoRepeat(true,0) {

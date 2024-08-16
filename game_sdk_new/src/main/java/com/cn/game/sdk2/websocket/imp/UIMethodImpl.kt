@@ -1,9 +1,7 @@
 package com.cn.game.sdk2.websocket.imp
 
-import androidx.lifecycle.LifecycleOwner
 import com.cn.game.sdk2.websocket.GameSocketClient
 import com.cn.game.sdk2.websocket.GameSocketManager
-import com.cn.game.sdk2.websocket.appContext
 import com.cn.game.sdk2.websocket.appListener
 import com.cn.game.sdk2.websocket.bean.AreaBetConfigBean
 import com.cn.game.sdk2.websocket.bean.Betting
@@ -57,9 +55,6 @@ internal class UIMethodImpl private constructor(client: GameSocketClient) : Game
      *
      * @see [doubleBetting] 加倍下注
      *
-     * @see [pushHistoryOfBetAction] 历史记录按钮
-     *
-     * @see [pushCustomerServiceAction] 联系客服按钮
      */
 
 
@@ -211,22 +206,6 @@ internal class UIMethodImpl private constructor(client: GameSocketClient) : Game
         }
     }
 
-    /**
-     * 历史记录按钮
-     */
-    fun pushHistoryOfBetAction() {
-        appListener?.runOnUiThread {
-            historyOfBetAction()
-        }
-    }
 
-    /**
-     * 联系客服按钮
-     */
-    fun pushCustomerServiceAction() {
-        appListener?.runOnUiThread {
-            customerServiceAction()
-        }
-    }
 
 }

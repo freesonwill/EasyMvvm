@@ -323,7 +323,6 @@
 
 -keep class game.**{*;}
 -keep class com.cn.game.sdk2.websocket.NativeLib{*;}
--keep class com.google.protobuf.**
 -keep class com.cn.game.sdk2.websocket.interfaces.**{*;}
 -keep class com.cn.game.sdk2.websocket.imp.GameApp{*;}
 -keep class com.cn.game.sdk2.websocket.GameKtxKt{*;}
@@ -333,8 +332,11 @@
 #-keep class com.cn.game.sdk2.websocket.GameSocketManager$Companion{*;}
 #-keep class com.cn.game.sdk2.websocket.viewmodel.GameAboutModel{*;}
 -keep class com.cn.game.sdk2.utils.ext.** {*;}
+-keep class com.cn.game.sdk2.data.bean.MoreGame{*;}
 -keep class com.xcjh.base_lib2.ModuleInitializer$Companion{*;}
 
 # protobuf
 -keepclasseswithmembernames public class * extends com.google.protobuf.MessageLite {*;}
 -keepclasseswithmembernames public class * extends com.google.protobuf.MessageOrBuilder {*;}
+-keep class com.google.protobuf.**
+-keep class * extends com.google.protobuf.GeneratedMessageLite { *; }

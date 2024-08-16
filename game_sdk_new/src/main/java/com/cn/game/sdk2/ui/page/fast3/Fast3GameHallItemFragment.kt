@@ -2,6 +2,7 @@ package com.cn.game.sdk2.ui.page.fast3
 
 import android.os.Bundle
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.data.bean.GameHallItem
 import com.cn.game.sdk2.databinding.ItemGamehallPageBinding
@@ -18,6 +19,7 @@ class Fast3GameHallItemFragment() : BaseVmVbFragment<Fast3GameHallItemViewModel,
 
     override fun initView(savedInstanceState: Bundle?) {
         mViewBind.rvContent.itemAnimator = null
+        mViewBind.rvContent.layoutManager = LinearLayoutManager(requireContext())
         mViewBind.rvContent.dividerSpace(
             requireContext().dp2px(20),
             DividerOrientation.HORIZONTAL

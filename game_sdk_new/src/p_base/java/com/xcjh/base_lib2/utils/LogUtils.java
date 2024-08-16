@@ -653,7 +653,7 @@ public final class LogUtils {
         private String mFilePrefix        = "util";// The file prefix of log.
         private boolean mLogSwitch         = true;  // The switch of log.
         private boolean mLog2ConsoleSwitch = true;  // The logcat's switch of log.
-        private String mGlobalTag         = null;  // The global tag of log.
+        private String mGlobalTag         = "log";  // The global tag of log.
         private String mTagPrefix          = null;  // The tag prefix of log.
         private boolean mTagIsSpace        = true;  // The global tag is space.
         private boolean mLogHeadSwitch     = true;  // The head's switch of log.

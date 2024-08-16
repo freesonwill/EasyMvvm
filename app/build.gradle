@@ -61,10 +61,15 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     implementation project(path: ':game_sdk_new')
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 //    implementation 'com.github.r21nomi:glrippleview:1.0.0'
 
     //outerTestImplementation 'com.squareup.leakcanary:leakcanary-android:2.14'
    // innerTestImplementation 'com.squareup.leakcanary:leakcanary-android:2.14'
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.14'
+
+//    implementation  'io.github.scwang90:refresh-layout-kernel:2.0.5'      //核心必须依赖
+//    implementation  'io.github.scwang90:refresh-header-classics:2.0.5'    //经典刷新头
+//    implementation  'io.github.scwang90:refresh-footer-classics:2.0.5'    //经典加载
 }
 

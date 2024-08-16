@@ -6,7 +6,7 @@
     android:id="@+id/rvContent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+    tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent"
     tools:itemCount="11"

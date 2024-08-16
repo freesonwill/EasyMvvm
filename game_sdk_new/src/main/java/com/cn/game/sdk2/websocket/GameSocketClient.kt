@@ -7,6 +7,7 @@ import com.cn.game.sdk2.utils.FlowBus
 import com.cn.game.sdk2.utils.ThreadUtils
 import com.cn.game.sdk2.utils.ext.CommonExt.isMainThread
 import com.cn.game.sdk2.websocket.imp.GameApp
+import com.xcjh.base_lib2.utils.LogUtils
 import com.xcjh.base_lib2.utils.loge
 import com.xcjh.base_lib2.utils.logd
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -36,18 +37,17 @@ internal class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
     @OptIn(DelicateCoroutinesApi::class)
     override fun onOpen(handshakedata: ServerHandshake?) {
         "GameSocketClient-连接成功！onOpen,isMainThread:${isMainThread}".logd(_tag)
+        "address = ${this.uri}".loge(_tag)
         gameAboutModel.isOpen = true
-        GlobalScope.launch {
-            withContext(Dispatchers.Main) {
-                isTokenValid = true
-                if (isLogin) {
-                    "重连成功，需要重新登录，登录Token：${gameAboutModel.token}".logd(_tag)
-                    GameApp.login(
-                        gameAboutModel.token,
-                        gameAboutModel.agentName, gameAboutModel.isAnchor, gameAboutModel.simplifyMoreButtons)
-                }
-            }
+
+        isTokenValid = true
+        if (isLogin) {
+            "重连成功，需要重新登录，登录Token：${gameAboutModel.token}".logd(_tag)
+            GameApp.login(
+                gameAboutModel.token,
+                gameAboutModel.agentName, gameAboutModel.isAnchor, gameAboutModel.simplifyMoreButtons)
         }
+
         timer?.cancel()
         timer = null
         startHeartbeat()
@@ -80,6 +80,7 @@ internal class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
         "socket-onClose-->code:${code}-reason:$reason-remote:$remote,isMainThread:${isMainThread}".loge(
             _tag
         )
+        "address = ${this.uri}".loge(_tag)
         gameAboutModel.isOpen = false
         nativeLib.reset()
         reconnectHandle()
@@ -111,10 +112,11 @@ internal class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
     private val heartbeatInterval: Long = 10000 //
 
     private fun startHeartbeat() {
+        heartbeatTask?.cancel()
         heartbeatTask = object : TimerTask() {
             // 发送心跳消息
             override fun run() {
-                "startHeartbeat".logd(_tag)
+                LogUtils.d("startHeartbeat")
                 gameMassageManager?.ping()
             }
         }

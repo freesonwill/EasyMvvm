@@ -22,11 +22,6 @@
 *
 > var gameMassageManager
 > -
-> - 历史记录按钮
-> - fun pushHistoryOfBetAction()
-> 
-> - 联系客服按钮
-> - fun pushCustomerServiceAction()
 > 
 > - 临时下注
 > - recordBean 当前下注对象

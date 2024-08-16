@@ -39,15 +39,16 @@ android {
             zipAlignEnabled true
             minifyEnabled false
             //buildConfigField "String", "token","\"87:MHxIHlYM\""
+            debuggable true
             jniDebuggable true
             signingConfig signingConfigs.debug
         }
 
 
         release {
-//            debuggable false
             zipAlignEnabled true
             minifyEnabled true
+            debuggable false
             //buildConfigField "String", "token","\"random\""
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'

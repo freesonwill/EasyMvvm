@@ -138,7 +138,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             })
         }
         FlowBus.with<Boolean>(EventKey.LOAD_FRAGMENT).register(viewLifecycleOwner) {
-            "offscreenPageLimit = ${mFragList.size}".loge()
             mDatabind.viewPagerNew.offscreenPageLimit = mFragList.size
         }
         loadFragment()
@@ -553,11 +552,11 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 
 
     override fun createObserver() {
-        Log.i(TAG, "createObserver------------>")
         FlowBus.with<List<GameAreaView>>(EventKey.UPDATE_ALL_AREA_VIEW)
             .register(viewLifecycleOwner) { list ->
                 list.forEach {
                     allGameAreaMap[it.areaCode] = it
+                    LogUtils.d()
                     "add code=${it.areaCode},${it.id}".loge("UPDATE_ALL_AREA_VIEW")
                 }
             }
@@ -1279,6 +1278,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
                                                                 false
                                                             )
                                                         mViewBind.rvContent.itemAnimator = null
+                                                        mViewBind.rvContent.layoutManager = LinearLayoutManager(requireContext())
                                                         mViewBind.rvContent.dividerSpace(
                                                             requireContext().dp2px(20),
                                                             DividerOrientation.HORIZONTAL

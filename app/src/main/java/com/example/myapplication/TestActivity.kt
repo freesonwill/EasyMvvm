@@ -23,9 +23,9 @@ class TestActivity : AppCompatActivity(), GameApp.OnSdkListener {
     private lateinit var btnOpen: TextView
     private lateinit var llshow: RelativeLayout
 
-    private var socketIsOpen = false
     private var isLogin = false
-    private val url = "wss://ws.qxe68.com:7001/api/game/5702" ///test
+    //private val url = "wss://ws.qxe68.com:7001/api/game/5702" ///test
+    private val url = "ws://35.220.148.132:7642" ///联调
     private val token = "93:Ufx3Dy8y" ///test
 
     var btnIndex = 0;
@@ -66,7 +66,7 @@ class TestActivity : AppCompatActivity(), GameApp.OnSdkListener {
                 0 -> {
                     if(!isLoadGame) {
                         isLoadGame = true
-                        GameApp.loadGame(applicationContext,true, gameServer = url, logServer = "", this).apply {
+                        GameApp.loadGame(applicationContext,true,  url, "", this).apply {
                             lifecycle.addObserver(object : DefaultLifecycleObserver {
                                 override fun onDestroy(owner: LifecycleOwner) {
                                     super.onDestroy(owner)
@@ -91,20 +91,20 @@ class TestActivity : AppCompatActivity(), GameApp.OnSdkListener {
         }
 
         btnXiu.setOnClickListener {
-            GameApp.leaveLive()
+            //GameApp.leaveLive()
         }
 
         cpu.setOnClickListener {
-            GameApp.enterLive("1213", listOf(1), "")
+            //GameApp.enterLive("1213", listOf(1), "")
         }
 
     }
 
-    override fun customerServiceAction() {
+    override fun onCustomerServiceAction() {
 
     }
 
-    override fun historyOfBetAction() {
+    override fun onHistoryOfBetAction() {
 
     }
 
@@ -117,7 +117,7 @@ class TestActivity : AppCompatActivity(), GameApp.OnSdkListener {
             btnIndex = 2
             btnOpen.text = "已进入直播间"
             val context = this
-            GameApp.createFloatEnterView(context).apply {
+            GameApp.createFloatEnterView(context)?.apply {
                 if (!this.isAdd()) {
                     val lp = RelativeLayout.LayoutParams(layoutParams.width, layoutParams.height)
                     lp.topMargin = 200.dp2px
