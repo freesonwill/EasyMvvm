@@ -10,11 +10,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.cn.game.sdk2.data.EventKey
+import com.cn.game.sdk2.ui.helper.Fast3ToastHelper
 import com.cn.game.sdk2.utils.FlowBus
 import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
 import com.cn.game.sdk2.utils.ext.ViewExt.isAdd
 import com.cn.game.sdk2.websocket.imp.GameApp
 import com.cn.game.sdk2.websocket.tokenArray
+import com.xcjh.base_lib2.utils.LogUtils
 import com.xcjh.base_lib2.utils.loge
 import kotlin.random.Random
 
@@ -24,8 +26,8 @@ class TestActivity : AppCompatActivity(), GameApp.OnSdkListener {
     private lateinit var llshow: RelativeLayout
 
     private var isLogin = false
-    //private val url = "wss://ws.qxe68.com:7001/api/game/5702" ///test
-    private val url = "ws://35.220.148.132:7642" ///联调
+    private val url = "wss://ws.qxe68.com:7001/api/game/5702" ///test
+    //private val url = "ws://35.220.148.132:7642" ///联调
     private val token = "93:Ufx3Dy8y" ///test
 
     var btnIndex = 0;
@@ -101,11 +103,11 @@ class TestActivity : AppCompatActivity(), GameApp.OnSdkListener {
     }
 
     override fun onCustomerServiceAction() {
-
+        Fast3ToastHelper.showToastNormal("onCustomerServiceAction")
     }
 
     override fun onHistoryOfBetAction() {
-
+        Fast3ToastHelper.showToastNormal("onHistoryOfBetAction")
     }
 
     override fun onEnterGame() {

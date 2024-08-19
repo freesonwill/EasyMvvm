@@ -1,5 +1,6 @@
 package com.cn.game.sdk2.ui.helper
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Paint
 import android.view.LayoutInflater
@@ -12,15 +13,17 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentPagerAdapter
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.data.enums.GAME_ID_ENUM
-import com.cn.game.sdk2.ui.popup.HomeXPopupDialog
 import com.cn.game.sdk2.ui.page.fast3.Fast3MainFragment
+import com.cn.game.sdk2.ui.popup.HomeXPopupDialog
 import com.cn.game.sdk2.ui.popup.fast3.Fast3HelpPopup
 import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
 import com.cn.game.sdk2.utils.ext.ViewExt.locationInWindow
@@ -30,7 +33,6 @@ import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.runOnUiThread
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
-import com.lxj.xpopup.enums.PopupAnimation
 import com.lxj.xpopup.interfaces.SimpleCallback
 import com.xcjh.base_lib2.utils.LogUtils
 import com.xcjh.base_lib2.utils.toHtml
@@ -144,7 +146,10 @@ object ViewHelper {
         val pop = HomeXPopupDialog(context, Fast3MainFragment(), GAME_ID_ENUM.GAME_FAST3.num).apply {
                     homeXPopupDialog = this
                 }
-        XPopup.Builder(context).hasShadowBg(false).setPopupCallback(object : SimpleCallback() {
+        XPopup.Builder(context)
+            .hasShadowBg(false)
+            .setPopupCallback(object : SimpleCallback() {
+
                 override fun beforeShow(popupView: BasePopupView?) {
                     super.beforeShow(popupView)
                     fastViewOverlay?.isVisible = false
@@ -173,11 +178,17 @@ object ViewHelper {
                         }
                     }
                 }
-            }).popupAnimation(PopupAnimation.TranslateFromBottom).animationDuration(100)
+            })
+            //.popupAnimation(PopupAnimation.TranslateFromBottom)
+            .animationDuration(200)
             .moveUpToKeyboard(false) //如果不加这个，评论弹窗会移动到软键盘上面
-            .isViewMode(true).isTouchThrough(true).isDestroyOnDismiss(false) //对于只使用一次的弹窗，推荐设置这个
+            .isViewMode(true)
+            .isTouchThrough(true)
+            .isDestroyOnDismiss(false) //对于只使用一次的弹窗，推荐设置这个
             .isThreeDrag(false) //是否开启三阶拖拽，如果设置enableDrag(false)则无效
-            .enableDrag(true).dismissOnTouchOutside(true).asCustom(pop).apply {
+            .enableDrag(true)
+            .dismissOnTouchOutside(true)
+            .asCustom(pop).apply {
                 //宿主销毁了，
                 if (context is LifecycleOwner) {
                     context.lifecycle.addObserver(object : DefaultLifecycleObserver {
@@ -293,23 +304,39 @@ object ViewHelper {
         //设置适配器
         adapter = object :
             FragmentStatePagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
-            override fun getCount(): Int {
-                return fragments.size
-            }
+                var cacheMap = hashMapOf<Int,Fragment>()
+                override fun getCount(): Int {
+                    return fragments.size
+                }
 
-            override fun getItem(position: Int): Fragment {
-                return fragments[position]
-            }
+                override fun getItem(position: Int): Fragment {
+                    return fragments[position]
+                }
 
-            override fun getPageTitle(position: Int): CharSequence? {
-                return titles?.get(position)
-            }
+                /*override fun instantiateItem(container: ViewGroup, position: Int): Any {
+                    val fragment = getItem(position)
+                    if(!cacheMap.containsKey(position)){
+                        cacheMap[position] = fragment
+                        val transaction = fragmentManager.beginTransaction()
+                        transaction.add(
+                          x  container.id, fragment,
+                            "android:switcher:" + container.id + ":" + getItemId(position)
+                        )
+                        transaction.commitNowAllowingStateLoss()
+                    }
 
-            override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
-                super.destroyItem(container, position, `object`)
-//                fragments.remove(`object`)
+                    return fragment
+                }*/
+
+                override fun getPageTitle(position: Int): CharSequence? {
+                    return titles?.get(position)
+                }
+
+                override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
+                    //super.destroyItem(container, position, `object`)
+    //                fragments.remove(`object`)
+                }
             }
-        }
         return this
     }
 

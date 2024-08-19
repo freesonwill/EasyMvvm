@@ -33,17 +33,18 @@ class HomeXPopupDialog(context: Context, private val fragment: Fragment, private
         binding = DialogHomeXpopupContainerBinding.bind(popupImplView)
         if(!fragment.isAdded){
             val transaction = fragmentManager.beginTransaction();
-            transaction.add(R.id.fl_container, fragment,"HomeXPopupDialog").commit()
+            transaction.add(R.id.fl_container, fragment,"HomeXPopupDialog").commitNowAllowingStateLoss()
         }
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     override fun onShow() {
         super.onShow()
-        if(!isLoadFragment){
-            isLoadFragment = true
-            FlowBus.with<Boolean>(EventKey.LOAD_FRAGMENT).post(GlobalScope,true)
-        }
+        /*post {
+            if (!isLoadFragment) {
+                isLoadFragment = true
+                FlowBus.with<Boolean>(EventKey.LOAD_FRAGMENT).post(GlobalScope, true)
+            }
+        }*/
     }
 
 

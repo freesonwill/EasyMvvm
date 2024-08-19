@@ -3,6 +3,7 @@ package com.xcjh.base_lib2.base.fragment
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,7 +24,7 @@ import com.xcjh.base_lib2.utils.getVmClazz
 
 abstract class BaseVmFragment<VM : BaseViewModel> : Fragment() {
 
-    private val handler = Handler()
+    private val handler = Handler(Looper.getMainLooper())
 
     //是否第一次加载
     private var isFirst: Boolean = true
@@ -105,6 +106,8 @@ abstract class BaseVmFragment<VM : BaseViewModel> : Fragment() {
             },lazyLoadTime())
         }
     }
+
+
 
     /**
      * Fragment执行onCreate后触发的方法

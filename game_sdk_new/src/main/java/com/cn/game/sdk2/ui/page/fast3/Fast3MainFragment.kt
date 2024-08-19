@@ -12,6 +12,7 @@ import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewPropertyAnimator
+import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.core.animation.addListener
@@ -114,7 +115,6 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
         OverScrollDecoratorHelper.setUpOverScroll(mDatabind.viewPagerNew);
         mDatabind.bottomLayout.setOnTouchListener { _, _ -> true }
         mDatabind.resultClickView.setOnClickListener { } //屏蔽底部recycler点击
-        mViewModel.navigationBarHeight.value = requireContext().navigationBarHeight
 
         Fast3ToastHelper.attachToHost(mDatabind.centerLayout).let {
             lifecycle.addObserver(object : DefaultLifecycleObserver {
@@ -138,7 +138,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             })
         }
         FlowBus.with<Boolean>(EventKey.LOAD_FRAGMENT).register(viewLifecycleOwner) {
-            mDatabind.viewPagerNew.offscreenPageLimit = mFragList.size
+           //mDatabind.viewPagerNew.offscreenPageLimit = mFragList.size
         }
         loadFragment()
         setBetAdapter()
@@ -218,7 +218,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             }
             val layoutParams = bottomLayout.layoutParams
             layoutParams.height = targetHeight
-            bottomLayout.layoutParams = layoutParams
+            //                         bottomLayout.layoutParams = layoutParams
         }
     }
 
@@ -232,7 +232,7 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 //                resultRvHeight = this.measuredHeight
 //                findViewById<LinearLayout>(R.id.llShowDice).apply {
 //                    this.measureView()
-//                    LogUtils.dTag(TAG, "historyMoveHeight->$measuredHeight")
+//                    LogUtils.dTag(TAG, "historyMoveHeight->$measuredHeight")R
 //                    LogUtils.dTag(TAG, "historyMoveHeight2->"+79.dp2px)
 //                    resultAnimMoveHeight = this.measuredHeight - 2.dp2px
 //                }
@@ -241,11 +241,13 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
 //                mDatabind.flRvHistory.layoutParams = params
 //            }
 //        }
-        val params = mDatabind.flRvHistory.layoutParams
-        resultRvHeight = 122.dp2px
-        resultAnimMoveHeight = 79.dp2px
-        params?.height = resultRvHeight - resultAnimMoveHeight
-        mDatabind.flRvHistory.layoutParams = params
+        mDatabind.flRvHistory.viewTreeObserver.addOnGlobalLayoutListener(object :OnGlobalLayoutListener{
+            override fun onGlobalLayout() {
+                mDatabind.flRvHistory.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                resultRvHeight = mDatabind.rvHomeHistory.height
+                resultAnimMoveHeight = resultRvHeight - mDatabind.flRvHistory.height
+            }
+        })
     }
 
     /**Ï

@@ -9,6 +9,7 @@ import com.cn.game.sdk2.R
 import com.cn.game.sdk2.data.bean.SelectAnnotationBean
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.utils.ext.CommonExt
+import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
 import com.cn.game.sdk2.websocket.bean.BOOM_1
 import com.cn.game.sdk2.websocket.bean.BOOM_2
 import com.cn.game.sdk2.websocket.bean.BOOM_3
@@ -49,6 +50,8 @@ import com.cn.game.sdk2.websocket.bean.SUM_8
 import com.cn.game.sdk2.websocket.bean.SUM_9
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel.Stage
+import com.gyf.immersionbar.ktx.hasNavigationBar
+import com.gyf.immersionbar.ktx.navigationBarHeight
 import com.kunminx.architecture.ui.callback.UnPeekLiveData
 import com.xcjh.base_lib2.base.BaseViewModel
 import com.xcjh.base_lib2.utils.LogUtils
@@ -73,6 +76,22 @@ class Fast3ViewModel : BaseViewModel() {
             if (it <= 10) return@map getColor(R.color.c_FFCB15)
             return@map getColor(R.color.c_62DF57)
         }
+    }
+    private var bottomHeight : Int = 0
+
+    init {
+        val defaultHeight = 34.dp2px
+        val targetHeight = when {
+            application.hasNavigationBar -> {
+                val navigationBarHeight = application.navigationBarHeight
+                if (navigationBarHeight > defaultHeight) navigationBarHeight else defaultHeight
+            }
+
+            else -> {
+                defaultHeight
+            }
+        }
+        bottomHeight = targetHeight
     }
 
     //游戏状态
@@ -133,7 +152,6 @@ class Fast3ViewModel : BaseViewModel() {
         }
     val isCountDownStart: Boolean get() = gameAboutModel.isCountDownStart
     val playAlphaAnimationLD by lazy { UnPeekLiveData(false) }
-    val navigationBarHeight by lazy { UnPeekLiveData(0) }
 
     /**
      * 每次点击扣钱，但是不显示出来，确定后才把这个金额显示在真实钱上
