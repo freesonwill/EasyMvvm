@@ -21,13 +21,19 @@ abstract class BaseVmDbFragment<VM : BaseViewModel, DB : ViewDataBinding> : Base
     //该类绑定的ViewDataBinding
     private var _binding: DB? = null
     val mDatabind: DB get() = _binding!!
+    var preloadBinding : DB ?= null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding  = inflateBindingWithGeneric(inflater,container,false)
+        if(null != preloadBinding){
+            _binding = preloadBinding
+            mDatabind.lifecycleOwner = viewLifecycleOwner
+        }else {
+            _binding = inflateBindingWithGeneric(inflater, container, false)
+        }
         return mDatabind.root
 //        val viewModelProvider = ViewModelProvider(this)
 //        viewModelProvider[mViewModel::class.java]

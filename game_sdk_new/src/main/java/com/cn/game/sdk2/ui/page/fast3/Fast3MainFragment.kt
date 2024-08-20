@@ -7,8 +7,10 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewPropertyAnimator
@@ -30,8 +32,10 @@ import com.cn.game.sdk2.data.BetteFlyData
 import com.cn.game.sdk2.data.EventKey
 import com.cn.game.sdk2.data.bean.GameHallItem
 import com.cn.game.sdk2.data.bean.SelectAnnotationBean
+import com.cn.game.sdk2.databinding.FragDxdsBinding
 import com.cn.game.sdk2.databinding.FragFast3HomeBinding
 import com.cn.game.sdk2.databinding.FragmentGamehallBinding
+import com.cn.game.sdk2.databinding.FragmentSingleDiceBinding
 import com.cn.game.sdk2.databinding.ItemAnnotationListBinding
 import com.cn.game.sdk2.databinding.ItemBetHistoryBinding
 import com.cn.game.sdk2.databinding.ItemGamehallPageBinding
@@ -88,7 +92,7 @@ import kotlinx.coroutines.launch
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 
 
-class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>() {
+class Fast3MainFragment(val parentContext : Context) : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>() {
     companion object {
         const val TAG = "Fast3MainFragment"
     }
@@ -108,11 +112,22 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     private val betteFlyAnimList by lazy { mutableMapOf<GameAreaView, MutableList<BetteFlyData>>() }
     private var selectBetteView: View? = null
 
+    private val fragDXDS = DXDSFragment()
+    private val fragSingleDice = SingleDiceFragment()
+
+    init {
+        val inflater = LayoutInflater.from(parentContext)
+        preloadBinding = FragFast3HomeBinding.inflate(inflater)
+        fragDXDS.preloadBinding = FragDxdsBinding.inflate(inflater)
+        fragSingleDice.preloadBinding = FragmentSingleDiceBinding.inflate(inflater)
+    }
+
     //==================================== Method ===============================================//
     @SuppressLint("ClickableViewAccessibility")
     override fun initView(savedInstanceState: Bundle?) {
         mDatabind.model = mViewModel
         OverScrollDecoratorHelper.setUpOverScroll(mDatabind.viewPagerNew);
+        mDatabind.bottomLayout.layoutParams.height = mViewModel.bottomHeight
         mDatabind.bottomLayout.setOnTouchListener { _, _ -> true }
         mDatabind.resultClickView.setOnClickListener { } //屏蔽底部recycler点击
 
@@ -150,8 +165,8 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
     private fun loadFragment(){
         val startTime = System.currentTimeMillis()
         //viewpager
-        mFragList.add(DXDSFragment())
-        mFragList.add(SingleDiceFragment())
+        mFragList.add(fragDXDS)
+        mFragList.add(fragSingleDice)
         mFragList.add(SumTotalFragment())
         mFragList.add(PairsDiceFragment())
         mFragList.add(LeopardFragment())
@@ -245,6 +260,9 @@ class Fast3MainFragment : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>
             override fun onGlobalLayout() {
                 mDatabind.flRvHistory.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 resultRvHeight = mDatabind.rvHomeHistory.height
+                if(0 == resultRvHeight){
+                    resultRvHeight = 122.dp2px
+                }
                 resultAnimMoveHeight = resultRvHeight - mDatabind.flRvHistory.height
             }
         })

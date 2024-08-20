@@ -25,6 +25,10 @@ class DXDSFragment() : BaseFast3Fragment<Fast3ViewModel, FragDxdsBinding>() {
     private var numAnimSet: AnimatorSet? = null
     private val txtValueAnimMap by lazy { mutableMapOf<TextView, ValueAnimator>() }
 
+    init {
+
+    }
+
     override fun initAreaViewList() {
         mDatabind.model = mViewModel
         mDatabind.apply {

@@ -133,73 +133,76 @@ object ViewHelper {
             }.show()
     }
 
+    private fun tryCreateMainPopup(context: Context){
+        if(null == homeXPopupDialog){
+            val pop = HomeXPopupDialog(context, Fast3MainFragment(context), GAME_ID_ENUM.GAME_FAST3.num).apply {
+                homeXPopupDialog = this
+            }
+            XPopup.Builder(context)
+                .hasShadowBg(false)
+                .setPopupCallback(object : SimpleCallback() {
+
+                    override fun beforeShow(popupView: BasePopupView?) {
+                        super.beforeShow(popupView)
+                        fastViewOverlay?.isVisible = false
+                        fastView?.isVisible = false
+//                    appListener?.onGameFloatingDetailViewStatus(true)
+                        appListener?.runOnUiThread {
+                            onGameFloatingDetailViewStatus(true)
+                        }
+                        gameAboutModel.fast3MainFloatVisible.value = false
+                    }
+
+                    override fun onShow(popupView: BasePopupView?) {
+                        super.onShow(popupView)
+                    }
+
+                    override fun onDismiss(popupView: BasePopupView?) {
+                        super.onDismiss(popupView)
+                        gameAboutModel.fast3MainFloatVisible.value = true
+                        if (!isShowOtherPop) {
+                            fastViewOverlay?.isVisible = true
+                            fastView?.isVisible = true
+//                        appListener?.onGameFloatingDetailViewStatus(false)
+                            //homeXPopupDialog = null
+                            appListener?.runOnUiThread {
+                                onGameFloatingDetailViewStatus(false)
+                            }
+                        }
+                    }
+                })
+                //.popupAnimation(PopupAnimation.TranslateFromBottom)
+                .animationDuration(200)
+                .moveUpToKeyboard(false) //如果不加这个，评论弹窗会移动到软键盘上面
+                .isViewMode(true)
+                .isTouchThrough(true)
+                .isDestroyOnDismiss(false) //对于只使用一次的弹窗，推荐设置这个
+                .isThreeDrag(false) //是否开启三阶拖拽，如果设置enableDrag(false)则无效
+                .enableDrag(true)
+                .dismissOnTouchOutside(true)
+                .asCustom(pop).apply {
+                    //宿主销毁了，
+                    if (context is LifecycleOwner) {
+                        context.lifecycle.addObserver(object : DefaultLifecycleObserver {
+                            override fun onDestroy(owner: LifecycleOwner) {
+                                super.onDestroy(owner)
+                                dismiss()
+                                homeXPopupDialog = null
+                            }
+                        })
+                    }
+                }
+        }
+    }
+
 
     fun showGameMainPopup(context: Context, isShow: Boolean) {
+        tryCreateMainPopup(context)
         if (!isShow) {
             homeXPopupDialog?.dismiss()
             return
         }
-        if (homeXPopupDialog != null) {
-            homeXPopupDialog!!.show()
-            return
-        }
-        val pop = HomeXPopupDialog(context, Fast3MainFragment(), GAME_ID_ENUM.GAME_FAST3.num).apply {
-                    homeXPopupDialog = this
-                }
-        XPopup.Builder(context)
-            .hasShadowBg(false)
-            .setPopupCallback(object : SimpleCallback() {
-
-                override fun beforeShow(popupView: BasePopupView?) {
-                    super.beforeShow(popupView)
-                    fastViewOverlay?.isVisible = false
-                    fastView?.isVisible = false
-//                    appListener?.onGameFloatingDetailViewStatus(true)
-                    appListener?.runOnUiThread {
-                        onGameFloatingDetailViewStatus(true)
-                    }
-                    gameAboutModel.fast3MainFloatVisible.value = false
-                }
-
-                override fun onShow(popupView: BasePopupView?) {
-                    super.onShow(popupView)
-                }
-
-                override fun onDismiss(popupView: BasePopupView?) {
-                    super.onDismiss(popupView)
-                    gameAboutModel.fast3MainFloatVisible.value = true
-                    if (!isShowOtherPop) {
-                        fastViewOverlay?.isVisible = true
-                        fastView?.isVisible = true
-//                        appListener?.onGameFloatingDetailViewStatus(false)
-                        //homeXPopupDialog = null
-                        appListener?.runOnUiThread {
-                            onGameFloatingDetailViewStatus(false)
-                        }
-                    }
-                }
-            })
-            //.popupAnimation(PopupAnimation.TranslateFromBottom)
-            .animationDuration(200)
-            .moveUpToKeyboard(false) //如果不加这个，评论弹窗会移动到软键盘上面
-            .isViewMode(true)
-            .isTouchThrough(true)
-            .isDestroyOnDismiss(false) //对于只使用一次的弹窗，推荐设置这个
-            .isThreeDrag(false) //是否开启三阶拖拽，如果设置enableDrag(false)则无效
-            .enableDrag(true)
-            .dismissOnTouchOutside(true)
-            .asCustom(pop).apply {
-                //宿主销毁了，
-                if (context is LifecycleOwner) {
-                    context.lifecycle.addObserver(object : DefaultLifecycleObserver {
-                        override fun onDestroy(owner: LifecycleOwner) {
-                            super.onDestroy(owner)
-                            dismiss()
-                            homeXPopupDialog = null
-                        }
-                    })
-                }
-            }.show()
+        homeXPopupDialog!!.show()
     }
 
     fun showFastViewPopWhenWin(){
@@ -207,6 +210,7 @@ object ViewHelper {
     }
 
     fun getGameEnterView(context: Context): View {
+        tryCreateMainPopup(context)
         if (fastView != null) return fastView!!
         return LayoutInflater.from(context).inflate(R.layout.drag_fast_easy, null, false).also {
             fastView = it

@@ -77,7 +77,8 @@ class Fast3ViewModel : BaseViewModel() {
             return@map getColor(R.color.c_62DF57)
         }
     }
-    private var bottomHeight : Int = 0
+    //xml使用 勿private
+    var bottomHeight : Int = 0
 
     init {
         val defaultHeight = 34.dp2px
