@@ -24,6 +24,8 @@ import com.gyf.immersionbar.ktx.notchHeight
 import com.gyf.immersionbar.ktx.statusBarHeight
 import com.xcjh.base_lib2.utils.LogUtils
 import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
+import com.gyf.immersionbar.ktx.isGesture
+import com.gyf.immersionbar.ktx.isNavigationAtBottom
 import com.xcjh.base_lib2.utils.screenHeight
 import com.xcjh.base_lib2.utils.view.clickNoRepeat
 import com.xcjh.base_lib2.utils.view.getStringArray
@@ -40,7 +42,7 @@ class Fast3HelpPopup(context: Context, private val offsetY: Int, private val hei
 
     //全屏的高度
     private var fullHeight: Int = mActivity.run { screenHeight + when {
-            !hasNotchScreen -> 0 //Asus没有刘海屏，screenHeight就是全高
+            !hasNotchScreen ->  if(isGesture) 0 else statusBarHeight // Asus没有刘海屏，若全屏手势screenHeight就是全高，否则需要+statusBarHeight
             else -> if(hasNavigationBar) navigationBarHeight else 0   //有刘海屏，需要+navigationBarHeight
         }
     }
@@ -61,6 +63,8 @@ class Fast3HelpPopup(context: Context, private val offsetY: Int, private val hei
                 "statusBarHeight:${mActivity.statusBarHeight}," +
                 " notchHeight:${mActivity.notchHeight}" +
                 ",navigationBarHeight:${mActivity.navigationBarHeight}" +
+                ",isNavigationAtBottom:${mActivity.isNavigationAtBottom}"+
+                ",isGesture:${mActivity.isGesture}"+
                 ",actionBarHeight:${mActivity.actionBarHeight}" +
                 ",hasNavigationBar:${mActivity.hasNavigationBar}"+
                 ",hasNotchScreen:${mActivity.hasNotchScreen}"+
