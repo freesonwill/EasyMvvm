@@ -40,7 +40,7 @@ class GameListView(context: Context) : BottomPopupView(context) {
         initView()
     }
 
-    fun initView() {
+    private fun initView() {
         val views = ArrayList<View>()
         repeat(1) {
             val list = mutableListOf<GameHallItem>()

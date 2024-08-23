@@ -25,32 +25,24 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.data.BetteFlyData
 import com.cn.game.sdk2.data.EventKey
-import com.cn.game.sdk2.data.bean.GameHallItem
 import com.cn.game.sdk2.data.bean.SelectAnnotationBean
 import com.cn.game.sdk2.databinding.FragDxdsBinding
 import com.cn.game.sdk2.databinding.FragFast3HomeBinding
-import com.cn.game.sdk2.databinding.FragmentGamehallBinding
 import com.cn.game.sdk2.databinding.FragmentSingleDiceBinding
 import com.cn.game.sdk2.databinding.ItemAnnotationListBinding
 import com.cn.game.sdk2.databinding.ItemBetHistoryBinding
-import com.cn.game.sdk2.databinding.ItemGamehallPageBinding
-import com.cn.game.sdk2.databinding.ItemGamehallPageItemBinding
-import com.cn.game.sdk2.ui.animator.AlphaPopupAnimator
 import com.cn.game.sdk2.ui.helper.AnimHelper
 import com.cn.game.sdk2.ui.helper.Fast3ToastHelper
-import com.cn.game.sdk2.ui.helper.ViewHelper
 import com.cn.game.sdk2.ui.helper.ViewHelper.bindViewPagerNewGame
 import com.cn.game.sdk2.ui.helper.ViewHelper.initGameViewPager
-import com.cn.game.sdk2.ui.helper.ViewHelper.initGameViewPager2
 import com.cn.game.sdk2.ui.view.CenterLayoutManager
 import com.cn.game.sdk2.ui.view.ClickRecyclerView
 import com.cn.game.sdk2.ui.view.CommonLinearLayoutItemDecoration
-import com.cn.game.sdk2.ui.popup.game.CustomBubbleAttachPopup
+import com.cn.game.sdk2.ui.popup.game.MoreListPopup
 import com.cn.game.sdk2.ui.view.game.MoneyOKView
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
@@ -75,18 +67,11 @@ import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.gyf.immersionbar.ktx.hasNavigationBar
 import com.gyf.immersionbar.ktx.navigationBarHeight
-import com.lxj.xpopup.XPopup
-import com.lxj.xpopup.core.BasePopupView
-import com.lxj.xpopup.core.BottomPopupView
-import com.lxj.xpopup.enums.PopupAnimation
-import com.lxj.xpopup.interfaces.SimpleCallback
 import com.xcjh.base_lib2.base.fragment.BaseVmDbFragment
 import com.xcjh.base_lib2.utils.LogUtils
 import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
 import com.xcjh.base_lib2.utils.loge
-import com.xcjh.base_lib2.utils.view.clickNoRepeat
 import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
@@ -100,7 +85,6 @@ class Fast3MainFragment(val parentContext : Context) : BaseVmDbFragment<Fast3Vie
     private var mFragList = ArrayList<Fragment>()
     private var isBetteUpAnimFirst = true
 
-    private var homeMorePop: BasePopupView? = null
     private var resultAnim: ValueAnimator? = null
     private var resultRvHeight = -1
     private var resultAnimMoveHeight = -1
@@ -1236,35 +1220,15 @@ class Fast3MainFragment(val parentContext : Context) : BaseVmDbFragment<Fast3Vie
             //点击更多弹出框
             llHomeMore.setOnClickListener {
                 PromptSoundPlay.btnPlayMedia()
-                if (homeMorePop == null) {
-                    val bubbleAttach = CustomBubbleAttachPopup(requireContext())
-                    bubbleAttach.setOnCustomBubbleAttachPopupListener(object :
-                        CustomBubbleAttachPopup.OnCustomBubbleAttachPopupListener {
-                        override fun setSecondPopHeight(): Int {
-                            return mDatabind.root.height
-                        }
-                    })
-                    homeMorePop = XPopup.Builder(requireContext())
-                        .isTouchThrough(true)
-                        .setPopupCallback(object : SimpleCallback() {
-                            override fun onDismiss(popupView: BasePopupView?) {
-                                super.onDismiss(popupView)
-                                homeMorePop = null
-                            }
-                        })
-                        .customAnimator(AlphaPopupAnimator(bubbleAttach, 100, floatArrayOf(0f, 1f)))
-                        .animationDuration(100)
-                        .isDestroyOnDismiss(false)
-                        .atView(mDatabind.llHomeMore)
-                        .navigationBarColor(android.R.color.transparent)
-                        .hasShadowBg(false) // 去掉半透明背景
-                        .offsetX((-8).dp2px)
-                        .offsetY((5).dp2px)
-                        .asCustom(bubbleAttach)
-                    homeMorePop?.show()
-                } else {
-                    homeMorePop?.dismiss()
-                }
+                MoreListPopup.create(requireContext(), object :
+                    MoreListPopup.OnMoreListPopupListener {
+                    override fun bindView(): View {
+                        return mDatabind.llHomeMore
+                    }
+                    override fun setSecondPopHeight(): Int {
+                        return mDatabind.root.height
+                    }
+                })
             }
             //加倍
             ivMultiple2.setOnClickListener {
