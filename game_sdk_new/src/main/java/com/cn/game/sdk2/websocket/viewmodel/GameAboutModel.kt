@@ -1,6 +1,7 @@
 package com.cn.game.sdk2.websocket.viewmodel
 
-import com.cn.game.sdk2.manager.GameManager
+import android.os.CountDownTimer
+import com.cn.game.sdk2.manager.IGameManager
 import com.cn.game.sdk2.manager.listener.IGameListener
 import com.cn.game.sdk2.utils.ThreadUtils
 import com.cn.game.sdk2.utils.ext.CommonExt.isMainThread
@@ -17,7 +18,7 @@ import kotlinx.coroutines.*
 import java.util.concurrent.ConcurrentHashMap
 
 //internal
-internal class GameAboutModel : BaseViewModel() {
+internal class GameAboutModel : BaseViewModel(), IGameManager {
     enum class Stage {
         NEW, DEAL, SETTLE
     }
@@ -48,6 +49,8 @@ internal class GameAboutModel : BaseViewModel() {
     private val _toastErrorMessage = UnPeekLiveData<String>()
     private val _isShowGame = UnPeekLiveData<Boolean>()
     private val _isAllowedBet = UnPeekLiveData<Boolean>()
+
+    private var countDownTimer: CountDownTimer? = null
 
     var isOpen: Boolean = false
 
@@ -313,17 +316,15 @@ internal class GameAboutModel : BaseViewModel() {
             LogUtils.dTag(TAG, "countDown set:${value},isMainThread:${isMainThread}")
             _countDownSetStampTime = System.currentTimeMillis()
             ThreadUtils.runOnUiThread {
-                GameManager.instance.startCountDownTimer(
-                    field.toLong(),
-                    lis = object : IGameListener {
-                        override fun onCountdown(time: Long) {
-                            super.onCountdown(time)
-                            val t = Math.round(time / 1000f)
-                            //Log.d(TAG, "countDown,isMainThread:${isMainThread},time:$t")
-                            //onCountDown跟调用同一线程,这里不用post
-                            _countDownSecondsLD.value = t
-                        }
-                    })
+                startCountDownTimer(field.toLong(), lis = object : IGameListener {
+                    override fun onCountdown(time: Long) {
+                        super.onCountdown(time)
+                        val t = Math.round(time / 1000f)
+                        //Log.d(TAG, "countDown,isMainThread:${isMainThread},time:$t")
+                        //onCountDown跟调用同一线程,这里不用post
+                        _countDownSecondsLD.value = t
+                    }
+                })
             }
         }
         get() {
@@ -339,4 +340,19 @@ internal class GameAboutModel : BaseViewModel() {
 
     //控制隐藏Fast3MainView
     val fast3MainFloatVisible: UnPeekLiveData<Boolean> = UnPeekLiveData<Boolean>()
+    override fun startCountDownTimer(
+        countdownTime: Long, countDownInterval: Long, lis: IGameListener?
+    ) {
+        countDownTimer?.cancel()
+        countDownTimer = object : CountDownTimer(countdownTime, countDownInterval) {
+            override fun onTick(millisUntilFinished: Long) {
+                lis?.onCountdown(millisUntilFinished)
+            }
+
+            override fun onFinish() {
+                lis?.onCountdown(0)
+            }
+        }
+        countDownTimer?.start()
+    }
 }
