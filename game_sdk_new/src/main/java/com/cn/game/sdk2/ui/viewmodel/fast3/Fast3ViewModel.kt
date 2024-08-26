@@ -126,6 +126,7 @@ class Fast3ViewModel : BaseViewModel() {
         userLastSelectBetteBean = SelectAnnotationBean(money = 1000, select = true)
         mutableListOf(
             SelectAnnotationBean(money = 1000, select = true),
+            SelectAnnotationBean(money = 2000),
             SelectAnnotationBean(money = 5000),
             SelectAnnotationBean(money = 10000),
             SelectAnnotationBean(money = 20000),
