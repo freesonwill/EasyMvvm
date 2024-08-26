@@ -9,7 +9,7 @@ import com.cn.game.sdk2.R
 import com.cn.game.sdk2.data.bean.SelectAnnotationBean
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.utils.ext.CommonExt
-import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
+import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
 import com.cn.game.sdk2.websocket.bean.BOOM_1
 import com.cn.game.sdk2.websocket.bean.BOOM_2
 import com.cn.game.sdk2.websocket.bean.BOOM_3
@@ -67,7 +67,7 @@ class Fast3ViewModel : BaseViewModel() {
     val userLotteryResultLiveData: UnPeekLiveData<ArrayList<Betting>> = UnPeekLiveData()
     val cancelAreaFlickAnimLiveData = UnPeekLiveData<Boolean>()
     val addMoneyOkViewLiveData: UnPeekLiveData<Pair<GameAreaView, ViewGroup>> = UnPeekLiveData()
-    val updateMoneyViewLiveData:UnPeekLiveData<GameAreaView> = UnPeekLiveData()
+    val updateMoneyViewLiveData: UnPeekLiveData<GameAreaView> = UnPeekLiveData()
 
     val homeTimeSeconds: LiveData<Int> = gameAboutModel.countDownSecondsLD
     val homeTimeColorLD: LiveData<Int> by lazy {
@@ -77,8 +77,9 @@ class Fast3ViewModel : BaseViewModel() {
             return@map getColor(R.color.c_62DF57)
         }
     }
+
     //xml使用 勿private
-    var bottomHeight : Int = 0
+    var bottomHeight: Int = 0
 
     init {
         val defaultHeight = 34.dp2px

@@ -23,7 +23,7 @@ import com.gyf.immersionbar.ktx.navigationBarHeight
 import com.gyf.immersionbar.ktx.notchHeight
 import com.gyf.immersionbar.ktx.statusBarHeight
 import com.xcjh.base_lib2.utils.LogUtils
-import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
+import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
 import com.gyf.immersionbar.ktx.isGesture
 import com.gyf.immersionbar.ktx.isNavigationAtBottom
 import com.xcjh.base_lib2.utils.screenHeight
@@ -34,16 +34,19 @@ import com.xcjh.base_lib2.utils.view.getStringArray
 /**
  * 首页的弹出框
  */
-class Fast3HelpPopup(context: Context, private val offsetY: Int, private val height: Int) : CustomBottomPopupView(context) {
+class Fast3HelpPopup(context: Context, private val offsetY: Int, private val height: Int) :
+    CustomBottomPopupView(context) {
     companion object {
         const val TAG = "Fast3HelpPopup"
     }
+
     private lateinit var mViewBind: FragmentFast3HelpBinding
 
     //全屏的高度
-    private var fullHeight: Int = mActivity.run { screenHeight + when {
-            !hasNotchScreen ->  if(isGesture) 0 else statusBarHeight // Asus没有刘海屏，若全屏手势screenHeight就是全高，否则需要+statusBarHeight
-            else -> if(hasNavigationBar) navigationBarHeight else 0   //有刘海屏，需要+navigationBarHeight
+    private var fullHeight: Int = mActivity.run {
+        screenHeight + when {
+            !hasNotchScreen -> if (isGesture) 0 else statusBarHeight // Asus没有刘海屏，若全屏手势screenHeight就是全高，否则需要+statusBarHeight
+            else -> if (hasNavigationBar) navigationBarHeight else 0   //有刘海屏，需要+navigationBarHeight
         }
     }
 
@@ -53,22 +56,24 @@ class Fast3HelpPopup(context: Context, private val offsetY: Int, private val hei
     override fun getImplLayoutId(): Int {
         return R.layout.fragment_fast3_help
     }
-    private val mActivity:Activity get() = if(context is Fragment) (context as Fragment).requireActivity() else context as Activity
+
+    private val mActivity: Activity get() = if (context is Fragment) (context as Fragment).requireActivity() else context as Activity
     private val originalStatusBarColor = mActivity.window.statusBarColor
 
     override fun onCreate() {
         super.onCreate()
         LogUtils.dTag(
-            TAG,"screenHeight:${mActivity.screenHeight}," +
-                "statusBarHeight:${mActivity.statusBarHeight}," +
-                " notchHeight:${mActivity.notchHeight}" +
-                ",navigationBarHeight:${mActivity.navigationBarHeight}" +
-                ",isNavigationAtBottom:${mActivity.isNavigationAtBottom}"+
-                ",isGesture:${mActivity.isGesture}"+
-                ",actionBarHeight:${mActivity.actionBarHeight}" +
-                ",hasNavigationBar:${mActivity.hasNavigationBar}"+
-                ",hasNotchScreen:${mActivity.hasNotchScreen}"+
-                "")
+            TAG, "screenHeight:${mActivity.screenHeight}," +
+                    "statusBarHeight:${mActivity.statusBarHeight}," +
+                    " notchHeight:${mActivity.notchHeight}" +
+                    ",navigationBarHeight:${mActivity.navigationBarHeight}" +
+                    ",isNavigationAtBottom:${mActivity.isNavigationAtBottom}" +
+                    ",isGesture:${mActivity.isGesture}" +
+                    ",actionBarHeight:${mActivity.actionBarHeight}" +
+                    ",hasNavigationBar:${mActivity.hasNavigationBar}" +
+                    ",hasNotchScreen:${mActivity.hasNotchScreen}" +
+                    ""
+        )
         mViewBind = FragmentFast3HelpBinding.bind(popupImplView)
         // 设置过度滚动效果
         this.initView()
@@ -77,6 +82,7 @@ class Fast3HelpPopup(context: Context, private val offsetY: Int, private val hei
             mViewBind.content.layoutParams = lp
         }
     }
+
     private val mNavigationHeight get() = if (context.hasNavigationBar) context.navigationBarHeight else 0
     private fun setStatusBarColor(color: Int) {
         mActivity.window.statusBarColor = color
@@ -97,7 +103,11 @@ class Fast3HelpPopup(context: Context, private val offsetY: Int, private val hei
                         9 -> R.layout.item_fast3_help_4
                         10 -> R.layout.item_fast3_help_5
                         else -> {
-                            context.resources.getIdentifier("layout_fast3_help3_${pos-1}", "layout",context.packageName)
+                            context.resources.getIdentifier(
+                                "layout_fast3_help3_${pos - 1}",
+                                "layout",
+                                context.packageName
+                            )
                         }
                     }
                 }
@@ -136,7 +146,12 @@ class Fast3HelpPopup(context: Context, private val offsetY: Int, private val hei
                     },
                     onEnd = {
                         //动画结束
-                        setStatusBarColor(if(toExpand) ContextCompat.getColor(context,R.color.c_141624) else originalStatusBarColor)
+                        setStatusBarColor(
+                            if (toExpand) ContextCompat.getColor(
+                                context,
+                                R.color.c_141624
+                            ) else originalStatusBarColor
+                        )
                         mViewBind.ivCollapse.setImageResource(if (!toExpand) R.drawable.game_sdk_ic_expand else R.drawable.game_sdk_ic_collapse)
                     })
                 start()

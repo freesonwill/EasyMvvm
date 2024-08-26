@@ -13,9 +13,10 @@ import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.dividerSpace
 import com.drake.brv.utils.setup
 import com.xcjh.base_lib2.base.fragment.BaseVmVbFragment
-import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
+import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
 
-class Fast3GameHallItemFragment() : BaseVmVbFragment<Fast3GameHallItemViewModel, ItemGamehallPageBinding>() {
+class Fast3GameHallItemFragment() :
+    BaseVmVbFragment<Fast3GameHallItemViewModel, ItemGamehallPageBinding>() {
 
     override fun initView(savedInstanceState: Bundle?) {
         mViewBind.rvContent.itemAnimator = null
@@ -24,7 +25,7 @@ class Fast3GameHallItemFragment() : BaseVmVbFragment<Fast3GameHallItemViewModel,
             requireContext().dp2px(20),
             DividerOrientation.HORIZONTAL
         ).setup {
-            it.layoutManager = GridLayoutManager(context,4)
+            it.layoutManager = GridLayoutManager(context, 4)
             addType<GameHallItem>(R.layout.item_gamehall_page_item)
             onBind {
                 when (itemViewType) {
