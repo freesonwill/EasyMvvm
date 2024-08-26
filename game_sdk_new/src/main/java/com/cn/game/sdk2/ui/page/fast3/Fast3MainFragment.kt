@@ -478,7 +478,7 @@ class Fast3MainFragment(val parentContext : Context) : BaseVmDbFragment<Fast3Vie
                 endCallBack?.invoke()
                 return
             }
-            var duration = when (winMoney) {
+            val duration = when (winMoney) {
                 in 0..1000 -> 500L
                 in 1000..100000 -> 600L
                 else -> 700L
