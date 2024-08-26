@@ -1,10 +1,18 @@
 package com.cn.game.sdk2.data.bean
 
-class MoreGame {
-    var name = "";
-    var url = "";
-    var icon = "";
-    var onlineNum = 0
-    var gameId = 0;
-
+/**
+ * 游戏大厅数据
+ */
+data class MoreGame(
+    val idp:Int,
+    val gameType:Int,
+    var name:String,
+    val weight:Int,
+    val direction:Int,
+    val icon:String
+){
+    var online:Int = 0
 }
+
+
+
