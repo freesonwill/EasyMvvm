@@ -16,7 +16,6 @@ import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
 import com.cn.game.sdk2.utils.ext.ViewExt.isAdd
 import com.cn.game.sdk2.websocket.imp.GameApp
 import com.cn.game.sdk2.websocket.tokenArray
-import com.xcjh.base_lib2.utils.LogUtils
 import com.xcjh.base_lib2.utils.loge
 import kotlin.random.Random
 
@@ -138,7 +137,7 @@ class TestActivity : AppCompatActivity(), GameApp.OnSdkListener {
                     llshow.addView(this, lp)
                 }
             }
-
+            GameApp.setMoreGames("[{\"idp\":0,\"gameType\":0,\"name\":\"快三\",\"weight\":1,\"direction\":1,\"icon\":\"https://www.baidu.com/img/flexible/logo/pc/result@2.png\",\"online\":9257}]");
         }
     }
 

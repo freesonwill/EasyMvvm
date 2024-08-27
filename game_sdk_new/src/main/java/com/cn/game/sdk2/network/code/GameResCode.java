@@ -94,4 +94,14 @@ public interface GameResCode {
     int S2C_MULTI_TOKEN_VERIFY_FAIL = 703;
 
     int S2C_REFRESH_GAME_CONFIG = 1012;
+
+    /**
+     * 刷新瓦力遊戲配置 -> Res.RefreshWaliGameConfig
+     */
+    int S2C_REFRESH_WALI_GAME_CONFIG = 1051;
+
+    /**
+     * 刷新瓦力遊戲模擬人數 -> Res.RefreshWaliGamePlayerCount
+     */
+    int S2C_REFRESH_WALI_GAME_PLAYER_COUNT = 1052;
 }

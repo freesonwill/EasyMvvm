@@ -24,6 +24,7 @@ import com.gyf.immersionbar.ktx.notchHeight
 import com.gyf.immersionbar.ktx.statusBarHeight
 import com.xcjh.base_lib2.utils.LogUtils
 import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
+import com.cn.game.sdk2.utils.ext.DensityExt.px2dp
 import com.gyf.immersionbar.ktx.isGesture
 import com.gyf.immersionbar.ktx.isNavigationAtBottom
 import com.xcjh.base_lib2.utils.screenHeight
@@ -43,12 +44,7 @@ class Fast3HelpPopup(context: Context, private val offsetY: Int, private val hei
     private lateinit var mViewBind: FragmentFast3HelpBinding
 
     //全屏的高度
-    private var fullHeight: Int = mActivity.run {
-        screenHeight + when {
-            !hasNotchScreen -> if (isGesture) 0 else statusBarHeight // Asus没有刘海屏，若全屏手势screenHeight就是全高，否则需要+statusBarHeight
-            else -> if (hasNavigationBar) navigationBarHeight else 0   //有刘海屏，需要+navigationBarHeight
-        }
-    }
+    private val fullHeight = mActivity.run { activityContentView.height - statusBarHeight }
 
     //当前的高度
     private val curHeight: Int get() = mViewBind.content.height
@@ -72,6 +68,8 @@ class Fast3HelpPopup(context: Context, private val offsetY: Int, private val hei
                     ",actionBarHeight:${mActivity.actionBarHeight}" +
                     ",hasNavigationBar:${mActivity.hasNavigationBar}" +
                     ",hasNotchScreen:${mActivity.hasNotchScreen}" +
+                    ",activityContentViewH:" + activityContentView.height +
+                    ",88:${88.px2dp}" +
                     ""
         )
         mViewBind = FragmentFast3HelpBinding.bind(popupImplView)
@@ -83,7 +81,11 @@ class Fast3HelpPopup(context: Context, private val offsetY: Int, private val hei
         }
     }
 
-    private val mNavigationHeight get() = if (context.hasNavigationBar) context.navigationBarHeight else 0
+    private val mNavigationHeight
+        get() = if (context.hasNavigationBar) context.navigationBarHeight else {
+            if (context.isGesture) 30.dp2px else 0
+        }
+
     private fun setStatusBarColor(color: Int) {
         mActivity.window.statusBarColor = color
     }
