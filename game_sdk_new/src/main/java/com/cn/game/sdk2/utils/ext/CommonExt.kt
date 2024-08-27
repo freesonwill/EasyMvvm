@@ -2,7 +2,6 @@ package com.cn.game.sdk2.utils.ext
 
 import android.content.Context
 import android.os.Looper
-import android.view.View
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.ui.helper.Fast3ToastHelper
 import com.cn.game.sdk2.utils.PinyinUtils
@@ -22,52 +21,6 @@ import java.text.DecimalFormat
  * createTime   : 2024/6/17 16:52
  **/
 object CommonExt {
-
-
-    inline val Int.dp2px
-        get() = run {
-            val context = ModuleInitializer.application
-            val scale = context.resources.displayMetrics.density
-            val dp = this
-            (dp * scale + 0.5).toInt()
-        }
-
-    inline val Int.px2dp
-        get() = run {
-            val context = ModuleInitializer.application
-            val scale = context.resources.displayMetrics.density
-            val v = this
-            (v / scale + 0.5f).toInt()
-        }
-    inline val Float.dp2px
-        get() = run {
-            val context = ModuleInitializer.application
-            val scale = context.resources.displayMetrics.density
-            val dp = this
-            (dp * scale + 0.5f).toInt()
-        }
-
-    inline val Float.px2dp
-        get() = run {
-            val context = ModuleInitializer.application
-            val scale = context.resources.displayMetrics.density
-            val v = this
-            (v / scale + 0.5f).toInt()
-        }
-
-    fun Context.dp2px(dp: Int): Int {
-        val scale = resources.displayMetrics.density
-        return (dp * scale + 0.5f).toInt()
-    }
-
-
-    /**
-     * dp值转换为px
-     */
-    fun View.dp2px(dp: Int): Int {
-        val scale = resources.displayMetrics.density
-        return (dp * scale + 0.5f).toInt()
-    }
 
     fun Int.toPinyin(): String {
         return PinyinUtils.toPinyin(this)
@@ -108,16 +61,16 @@ object CommonExt {
         return true
     }
 
-    fun IntArray.every(predicate: (Int) -> Boolean):Boolean{
+    fun IntArray.every(predicate: (Int) -> Boolean): Boolean {
         val it = iterator()
-        while(it.hasNext()){
+        while (it.hasNext()) {
             val item = it.next()
-            if(!predicate(item)) return false
+            if (!predicate(item)) return false
         }
         return true
     }
 
-    fun IntArray.some(predicate: (Int) -> Boolean):Boolean{
+    fun IntArray.some(predicate: (Int) -> Boolean): Boolean {
         return find(predicate) != null
     }
 

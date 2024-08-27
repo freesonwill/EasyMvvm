@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.ui.helper.ViewHelper.setTextBold
-import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
+import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
 import com.cn.game.sdk2.utils.tool.indicator.CommonPagerIndicator
 import com.drake.brv.utils.bindingAdapter
 import com.xcjh.base_lib2.base.fragment.BaseVmFragment
@@ -177,5 +177,12 @@ object ViewExt {
 
     fun View.isAdd(): Boolean {
         return parent != null
+    }
+    /**
+     * dp值转换为px
+     */
+    fun View.dp2px(dp: Int): Int {
+        val scale = resources.displayMetrics.density
+        return (dp * scale + 0.5f).toInt()
     }
 }

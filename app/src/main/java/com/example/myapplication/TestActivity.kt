@@ -12,11 +12,10 @@ import androidx.lifecycle.LifecycleOwner
 import com.cn.game.sdk2.data.EventKey
 import com.cn.game.sdk2.ui.helper.Fast3ToastHelper
 import com.cn.game.sdk2.utils.FlowBus
-import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
+import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
 import com.cn.game.sdk2.utils.ext.ViewExt.isAdd
 import com.cn.game.sdk2.websocket.imp.GameApp
 import com.cn.game.sdk2.websocket.tokenArray
-import com.xcjh.base_lib2.utils.LogUtils
 import com.xcjh.base_lib2.utils.loge
 import kotlin.random.Random
 
