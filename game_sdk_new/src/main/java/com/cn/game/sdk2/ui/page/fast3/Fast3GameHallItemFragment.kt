@@ -14,10 +14,10 @@ import com.drake.brv.utils.dividerSpace
 import com.drake.brv.utils.setup
 import com.xcjh.base_lib2.base.fragment.BaseVmVbFragment
 import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class Fast3GameHallItemFragment() :
-    BaseVmVbFragment<Fast3GameHallItemViewModel, ItemGamehallPageBinding>() {
-
+class Fast3GameHallItemFragment : BaseVmVbFragment<Fast3GameHallItemViewModel, ItemGamehallPageBinding>() {
+    override val mViewModel: Fast3GameHallItemViewModel  by viewModel()
     override fun initView(savedInstanceState: Bundle?) {
         mViewBind.rvContent.itemAnimator = null
         mViewBind.rvContent.layoutManager = LinearLayoutManager(requireContext())

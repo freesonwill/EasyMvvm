@@ -4,12 +4,14 @@ import android.view.ViewTreeObserver
 import com.cn.game.sdk2.databinding.FragmentPairsDiceBinding
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
  * 对子
  */
 class PairsDiceFragment: BaseFast3Fragment<Fast3ViewModel, FragmentPairsDiceBinding>() {
-
+    override val mViewModel: Fast3ViewModel  by sharedViewModel()
     override fun initAreaViewList() {
         mDatabind.model = mViewModel
         mDatabind.apply {

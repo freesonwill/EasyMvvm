@@ -15,15 +15,18 @@ import com.cn.game.sdk2.websocket.bean.AreaBetBean
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 import com.xcjh.base_lib2.utils.LogUtils
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
  * 默认
  */
-class DXDSFragment() : BaseFast3Fragment<Fast3ViewModel, FragDxdsBinding>() {
+class DXDSFragment : BaseFast3Fragment<Fast3ViewModel, FragDxdsBinding>() {
     private var moneyViewList: SparseArray<Pair<TextView, TextView>> = SparseArray()
     private val numAnimators by lazy { mutableListOf<Animator?>() }
     private var numAnimSet: AnimatorSet? = null
     private val txtValueAnimMap by lazy { mutableMapOf<TextView, ValueAnimator>() }
+    override val mViewModel: Fast3ViewModel by sharedViewModel()
 
     init {
 

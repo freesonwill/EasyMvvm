@@ -13,11 +13,12 @@ import com.drake.brv.utils.setup
 import com.xcjh.base_lib2.base.fragment.BaseVmVbFragment
 import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
 import com.xcjh.base_lib2.utils.view.clickNoRepeat
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 @Deprecated("")
 class Fast3HelpFragment : BaseVmVbFragment<EmptyViewModel, FragmentFast3HelpBinding>() {
-    private var rootHeight: Int = 0
-
+    private var rootHeight:Int = 0
+    override val mViewModel: EmptyViewModel  by viewModel()
     companion object {
         const val TAG = "Fast3HelpFragment"
     }

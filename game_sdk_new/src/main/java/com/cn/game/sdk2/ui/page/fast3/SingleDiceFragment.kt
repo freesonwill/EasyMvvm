@@ -4,13 +4,15 @@ import android.view.ViewTreeObserver
 import com.cn.game.sdk2.databinding.FragmentSingleDiceBinding
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 /**
  * 默认
  */
 class SingleDiceFragment: BaseFast3Fragment<Fast3ViewModel, FragmentSingleDiceBinding>() {
-
+    override val mViewModel: Fast3ViewModel  by sharedViewModel()
     init {
 
     }
