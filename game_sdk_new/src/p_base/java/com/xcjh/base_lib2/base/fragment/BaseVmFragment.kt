@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import com.cn.game.sdk2.websocket.imp.GameApp
 import com.xcjh.base_lib2.base.BaseViewModel
 
 import com.xcjh.base_lib2.utils.getVmClazz
@@ -22,14 +23,14 @@ import com.xcjh.base_lib2.utils.getVmClazz
  * 描述　: ViewModelFragment基类，自动把ViewModel注入Fragment
  */
 
-abstract class BaseVmFragment<VM : BaseViewModel> : Fragment() {
+abstract class BaseVmFragment<VM : BaseViewModel> : Fragment(), GameApp.GameSdkKoinComponent {
 
     private val handler = Handler(Looper.getMainLooper())
 
     //是否第一次加载
     private var isFirst: Boolean = true
 
-    lateinit var mViewModel: VM
+    protected abstract val mViewModel: VM
 
     lateinit var mActivity: AppCompatActivity
 
@@ -54,18 +55,10 @@ abstract class BaseVmFragment<VM : BaseViewModel> : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         isFirst = true
-        mViewModel = createViewModel().also { it.onInit() }
         initView(savedInstanceState)
         initListener()
         createObserver()
         initData()
-    }
-
-    /**
-     * 创建viewModel
-     */
-    open fun createViewModel(): VM {
-        return ViewModelProvider(requireActivity())[getVmClazz(this)]
     }
 
     /**

@@ -69,6 +69,7 @@ import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import com.cn.game.sdk2.websocket.bean.RoundInfoBean
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.gameMassageManager
+import com.cn.game.sdk2.websocket.imp.GameApp
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 import com.drake.brv.annotaion.DividerOrientation
 import com.drake.brv.utils.bindingAdapter
@@ -91,9 +92,12 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class Fast3MainFragment(val parentContext : Context) : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>() {
+class Fast3MainFragment(parentContext : Context) : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>() {
+    override val mViewModel: Fast3ViewModel  by sharedViewModel()
     companion object {
         const val TAG = "Fast3MainFragment"
     }

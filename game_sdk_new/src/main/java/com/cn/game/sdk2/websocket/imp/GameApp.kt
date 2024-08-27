@@ -71,6 +71,10 @@ class GameApp  private constructor(){
             appLifecycleEnable = lifecycleEnable
             appListener = onSdkListener
             GameSocketManager.getInstance()?.initSocketClient(gameServer)
+            koinApplication.apply {
+                androidContext(context)
+                modules(moduleList)
+            }
             //todo:logServer
             (appContext as Application).registerActivityLifecycleCallbacks(object :
                 ActivityLifecycleCallbacks {
@@ -103,10 +107,7 @@ class GameApp  private constructor(){
                 }
             })
 
-            koinApplication.apply {
-                androidContext(context)
-                modules(moduleList)
-            }
+
         }
 
         /* fun removeSdkListener() {
@@ -288,7 +289,7 @@ class GameApp  private constructor(){
             gameAboutModel.setMoreGames(gameList)
         }
 
-        internal val koinApplication = KoinApplication.init()
+        internal val koinApplication by lazy { KoinApplication.init() }
     }
 
 
