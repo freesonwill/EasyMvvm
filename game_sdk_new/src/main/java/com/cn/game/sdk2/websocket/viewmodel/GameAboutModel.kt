@@ -1,9 +1,9 @@
 package com.cn.game.sdk2.websocket.viewmodel
 
+import android.os.CountDownTimer
+import com.cn.game.sdk2.manager.IGameManager
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.cn.game.sdk2.data.bean.MoreGame
-import com.cn.game.sdk2.manager.GameManager
 import com.cn.game.sdk2.manager.listener.IGameListener
 import com.cn.game.sdk2.utils.ThreadUtils
 import com.cn.game.sdk2.utils.ext.CommonExt.isMainThread
@@ -12,7 +12,6 @@ import com.cn.game.sdk2.websocket.bean.Betting
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import com.cn.game.sdk2.websocket.bean.BettingResponsesBean
 import com.cn.game.sdk2.websocket.bean.RoundInfoBean
-import com.cn.game.sdk2.websocket.gameAboutModel
 import com.xcjh.base_lib2.base.BaseViewModel
 import com.xcjh.base_lib2.callback.livedata.UnPeekLiveData
 import com.xcjh.base_lib2.utils.LogUtils
@@ -21,7 +20,7 @@ import kotlinx.coroutines.*
 import java.util.concurrent.ConcurrentHashMap
 
 //internal
-internal class GameAboutModel : BaseViewModel() {
+internal class GameAboutModel : BaseViewModel(), IGameManager {
     enum class Stage {
         NEW, DEAL, SETTLE
     }
@@ -53,7 +52,9 @@ internal class GameAboutModel : BaseViewModel() {
     private val _isShowGame = UnPeekLiveData<Boolean>()
     private val _isAllowedBet = UnPeekLiveData<Boolean>()
     private val _moreGames = UnPeekLiveData<List<MoreGame>>()
-    var moreGames:LiveData<List<MoreGame>> = _moreGames
+    var moreGames: LiveData<List<MoreGame>> = _moreGames
+
+    private var countDownTimer: CountDownTimer? = null
 
     var isOpen: Boolean = false
 
@@ -207,7 +208,7 @@ internal class GameAboutModel : BaseViewModel() {
     /**
      * 监听isMeetAgain
      */
-    val isMeetAgain: UnPeekLiveData<Boolean>
+    private val isMeetAgain: UnPeekLiveData<Boolean>
         get() = _isMeetAgain
 
     fun setBettingSuccess(isSuccess: BettingResponsesBean) {
@@ -319,17 +320,15 @@ internal class GameAboutModel : BaseViewModel() {
             LogUtils.dTag(TAG, "countDown set:${value},isMainThread:${isMainThread}")
             _countDownSetStampTime = System.currentTimeMillis()
             ThreadUtils.runOnUiThread {
-                GameManager.instance.startCountDownTimer(
-                    field.toLong(),
-                    lis = object : IGameListener {
-                        override fun onCountdown(time: Long) {
-                            super.onCountdown(time)
-                            val t = Math.round(time / 1000f)
-                            //Log.d(TAG, "countDown,isMainThread:${isMainThread},time:$t")
-                            //onCountDown跟调用同一线程,这里不用post
-                            _countDownSecondsLD.value = t
-                        }
-                    })
+                startCountDownTimer(field.toLong(), lis = object : IGameListener {
+                    override fun onCountdown(time: Long) {
+                        super.onCountdown(time)
+                        val t = Math.round(time / 1000f)
+                        //Log.d(TAG, "countDown,isMainThread:${isMainThread},time:$t")
+                        //onCountDown跟调用同一线程,这里不用post
+                        _countDownSecondsLD.value = t
+                    }
+                })
             }
         }
         get() {
@@ -347,5 +346,20 @@ internal class GameAboutModel : BaseViewModel() {
 
 
     //控制隐藏Fast3MainView
-    val fast3MainFloatVisible: UnPeekLiveData<Boolean> = UnPeekLiveData<Boolean>()
+    val fast3MainFloatVisible: UnPeekLiveData<Boolean> = UnPeekLiveData()
+    override fun startCountDownTimer(
+        countdownTime: Long, countDownInterval: Long, lis: IGameListener?
+    ) {
+        countDownTimer?.cancel()
+        countDownTimer = object : CountDownTimer(countdownTime, countDownInterval) {
+            override fun onTick(millisUntilFinished: Long) {
+                lis?.onCountdown(millisUntilFinished)
+            }
+
+            override fun onFinish() {
+                lis?.onCountdown(0)
+            }
+        }
+        countDownTimer?.start()
+    }
 }
