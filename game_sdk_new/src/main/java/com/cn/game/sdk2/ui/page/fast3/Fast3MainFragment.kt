@@ -25,35 +25,26 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.data.BetteFlyData
 import com.cn.game.sdk2.data.EventKey
-import com.cn.game.sdk2.data.bean.GameHallItem
 import com.cn.game.sdk2.data.bean.SelectAnnotationBean
 import com.cn.game.sdk2.databinding.FragDxdsBinding
 import com.cn.game.sdk2.databinding.FragFast3HomeBinding
-import com.cn.game.sdk2.databinding.FragmentGamehallBinding
 import com.cn.game.sdk2.databinding.FragmentSingleDiceBinding
 import com.cn.game.sdk2.databinding.ItemAnnotationListBinding
 import com.cn.game.sdk2.databinding.ItemBetHistoryBinding
-import com.cn.game.sdk2.databinding.ItemGamehallPageBinding
-import com.cn.game.sdk2.databinding.ItemGamehallPageItemBinding
-import com.cn.game.sdk2.ui.animator.AlphaPopupAnimator
 import com.cn.game.sdk2.ui.helper.AnimHelper
 import com.cn.game.sdk2.ui.helper.Fast3ToastHelper
-import com.cn.game.sdk2.ui.helper.ViewHelper
 import com.cn.game.sdk2.ui.helper.ViewHelper.bindViewPagerNewGame
 import com.cn.game.sdk2.ui.helper.ViewHelper.initGameViewPager
-import com.cn.game.sdk2.ui.helper.ViewHelper.initGameViewPager2
-import com.cn.game.sdk2.ui.popup.game.CustomBubbleAttachPopup
 import com.cn.game.sdk2.ui.view.CenterLayoutManager
 import com.cn.game.sdk2.ui.view.ClickRecyclerView
 import com.cn.game.sdk2.ui.view.CommonLinearLayoutItemDecoration
-import com.cn.game.sdk2.ui.view.game.GameAreaView
+import com.cn.game.sdk2.ui.popup.game.MoreListPopup
 import com.cn.game.sdk2.ui.view.game.MoneyOKView
+import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
 import com.cn.game.sdk2.utils.FlowBus
 import com.cn.game.sdk2.utils.ext.BizExt.isLeopard
@@ -78,17 +69,10 @@ import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.gyf.immersionbar.ktx.hasNavigationBar
 import com.gyf.immersionbar.ktx.navigationBarHeight
-import com.lxj.xpopup.XPopup
-import com.lxj.xpopup.core.BasePopupView
-import com.lxj.xpopup.core.BottomPopupView
-import com.lxj.xpopup.enums.PopupAnimation
-import com.lxj.xpopup.interfaces.SimpleCallback
 import com.xcjh.base_lib2.base.fragment.BaseVmDbFragment
 import com.xcjh.base_lib2.utils.LogUtils
 import com.xcjh.base_lib2.utils.loge
-import com.xcjh.base_lib2.utils.view.clickNoRepeat
 import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
@@ -105,7 +89,6 @@ class Fast3MainFragment(parentContext : Context) : BaseVmDbFragment<Fast3ViewMod
     private var mFragList = ArrayList<Fragment>()
     private var isBetteUpAnimFirst = true
 
-    private var homeMorePop: BasePopupView? = null
     private var resultAnim: ValueAnimator? = null
     private var resultRvHeight = -1
     private var resultAnimMoveHeight = -1
@@ -1241,168 +1224,15 @@ class Fast3MainFragment(parentContext : Context) : BaseVmDbFragment<Fast3ViewMod
             //点击更多弹出框
             llHomeMore.setOnClickListener {
                 PromptSoundPlay.btnPlayMedia()
-                if (homeMorePop == null) {
-                    val bubbleAttach = CustomBubbleAttachPopup(requireContext())
-                    bubbleAttach.customBubbleAttachListener =
-                        object : CustomBubbleAttachPopup.CustomBubbleAttachListener {
-                            private var gameHall: BasePopupView? = null
-                            private var isDismissing = false
-                            fun backMainGame() {
-                                if (gameHall == null || isDismissing) return
-                                isDismissing = true
-                                lifecycleScope.launch {
-                                    gameHall?.dismiss()
-                                    showMainGame(true)
-                                }
-                            }
-
-                            fun showMainGame(show: Boolean) {
-                                ViewHelper.showGameMainPopup(requireContext(), show)
-                            }
-
-                            override fun switchGame() {
-                                lifecycleScope.launch {
-                                    listOf(
-                                        async { showMainGame(false) },
-                                        async {
-                                            //delay(20)
-                                            val context = requireContext()
-                                            val popupView = object : BottomPopupView(context) {
-                                                override fun getImplLayoutId(): Int =
-                                                    R.layout.fragment_gamehall
-
-                                                lateinit var binding: FragmentGamehallBinding
-                                                override fun onCreate() {
-                                                    super.onCreate()
-                                                    binding =
-                                                        FragmentGamehallBinding.bind(popupImplView)
-                                                    binding.lltRoot.layoutParams.also {
-                                                        it.height = mDatabind.root.height
-                                                        binding.lltRoot.layoutParams = it
-                                                    }
-                                                    initView()
-                                                }
-
-                                                fun initView() {
-                                                    val views = ArrayList<View>()
-                                                    val list = mutableListOf<GameHallItem>()
-                                                    gameAboutModel.moreGames.value?.let { games->
-                                                        for (item in games) {
-                                                            val hallItem = GameHallItem(
-                                                                item.icon,
-                                                                item.name,
-                                                                item.online.toString()
-                                                            )
-                                                            list.add(hallItem)
-                                                        }
-                                                    }
-                                                    val mViewBind =
-                                                        ItemGamehallPageBinding.inflate(
-                                                            layoutInflater,
-                                                            null,
-                                                            false
-                                                        )
-                                                    mViewBind.rvContent.itemAnimator = null
-                                                    mViewBind.rvContent.layoutManager = LinearLayoutManager(requireContext())
-                                                    mViewBind.rvContent.dividerSpace(
-                                                        requireContext().dp2px(20),
-                                                        DividerOrientation.HORIZONTAL
-                                                    ).setup {
-                                                        it.layoutManager = GridLayoutManager(context, 4)
-                                                        addType<GameHallItem>(R.layout.item_gamehall_page_item)
-                                                        onBind {
-                                                            when (itemViewType) {
-                                                                R.layout.item_gamehall_page_item -> {
-                                                                    getBinding<ItemGamehallPageItemBinding>().apply {
-                                                                        val bean = _data as GameHallItem
-                                                                        Glide.with(context).load(bean.url).into(ivGame)
-                                                                        tvName.text = bean.name
-                                                                        tvOnline.text = bean.onlineA
-                                                                        if (bean.name == "快三") {
-                                                                            root.clickNoRepeat(
-                                                                                true
-                                                                            ) {
-                                                                                backMainGame()
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }.models = list
-                                                    views.add(mViewBind.root)
-
-                                                    binding.viewPagerNew.initGameViewPager2(views)
-                                                    binding.magicIndicator.bindViewPagerNewGame(
-                                                        binding.viewPagerNew, arrayListOf(
-                                                            "热门",
-                                                            /*"棋牌",
-                                                            "视讯",
-                                                            "捕鱼",
-                                                            "体育",
-                                                            "电子",*/
-                                                        ),
-                                                        scrollEnable = true,
-                                                        action = { PromptSoundPlay.btnPlayMedia() }
-                                                    )
-                                                    binding.viewPagerNew.offscreenPageLimit =
-                                                        mFragList.size
-                                                    binding.close.clickNoRepeat(true) {
-                                                        backMainGame()
-                                                    }
-                                                }
-                                            }
-                                            XPopup.Builder(context)
-                                                .isTouchThrough(false)
-                                                .setPopupCallback(object : SimpleCallback() {
-                                                    override fun onCreated(popupView: BasePopupView?) {
-                                                        super.onCreated(popupView)
-                                                        gameHall = popupView
-                                                        ViewHelper.isShowOtherPop = true
-                                                    }
-
-                                                    override fun beforeDismiss(popupView: BasePopupView?) {
-                                                        super.onDismiss(popupView)
-                                                        backMainGame()
-                                                        gameHall = null
-                                                        ViewHelper.isShowOtherPop = false
-                                                    }
-                                                })
-                                                .popupAnimation(PopupAnimation.TranslateFromBottom)
-                                                .navigationBarColor(android.R.color.transparent)
-                                                .animationDuration(100)//默认300ms
-                                                .isViewMode(true)
-                                                .hasShadowBg(false) // 去掉半透明背景
-                                                .enableDrag(true)
-                                                .dismissOnTouchOutside(true)
-                                                .asCustom(popupView)
-                                                .show()
-                                        }
-                                    ).awaitAll()
-                                }
-                            }
-                        }
-                    homeMorePop = XPopup.Builder(requireContext())
-                        .isTouchThrough(true)
-                        .setPopupCallback(object : SimpleCallback() {
-                            override fun onDismiss(popupView: BasePopupView?) {
-                                super.onDismiss(popupView)
-                                homeMorePop = null
-                            }
-                        })
-                        .customAnimator(AlphaPopupAnimator(bubbleAttach, 100, floatArrayOf(0f, 1f)))
-                        .animationDuration(100)
-                        .isDestroyOnDismiss(false)
-                        .atView(mDatabind.llHomeMore)
-                        .navigationBarColor(android.R.color.transparent)
-                        .hasShadowBg(false) // 去掉半透明背景
-                        .offsetX((-8).dp2px)
-                        .offsetY((5).dp2px)
-                        .asCustom(bubbleAttach)
-                    homeMorePop?.show()
-                } else {
-                    homeMorePop?.dismiss()
-                }
+                MoreListPopup.create(requireContext(), object :
+                    MoreListPopup.OnMoreListPopupListener {
+                    override fun bindView(): View {
+                        return mDatabind.llHomeMore
+                    }
+                    override fun setSecondPopHeight(): Int {
+                        return mDatabind.root.height
+                    }
+                })
             }
             //加倍
             ivMultiple2.setOnClickListener {
