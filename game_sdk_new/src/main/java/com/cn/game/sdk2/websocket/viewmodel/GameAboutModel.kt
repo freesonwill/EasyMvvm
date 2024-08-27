@@ -2,6 +2,8 @@ package com.cn.game.sdk2.websocket.viewmodel
 
 import android.os.CountDownTimer
 import com.cn.game.sdk2.manager.IGameManager
+import androidx.lifecycle.LiveData
+import com.cn.game.sdk2.data.bean.MoreGame
 import com.cn.game.sdk2.manager.listener.IGameListener
 import com.cn.game.sdk2.utils.ThreadUtils
 import com.cn.game.sdk2.utils.ext.CommonExt.isMainThread
@@ -49,6 +51,8 @@ internal class GameAboutModel : BaseViewModel(), IGameManager {
     private val _toastErrorMessage = UnPeekLiveData<String>()
     private val _isShowGame = UnPeekLiveData<Boolean>()
     private val _isAllowedBet = UnPeekLiveData<Boolean>()
+    private val _moreGames = UnPeekLiveData<List<MoreGame>>()
+    var moreGames: LiveData<List<MoreGame>> = _moreGames
 
     private var countDownTimer: CountDownTimer? = null
 
@@ -204,7 +208,7 @@ internal class GameAboutModel : BaseViewModel(), IGameManager {
     /**
      * 监听isMeetAgain
      */
-    val isMeetAgain: UnPeekLiveData<Boolean>
+    private val isMeetAgain: UnPeekLiveData<Boolean>
         get() = _isMeetAgain
 
     fun setBettingSuccess(isSuccess: BettingResponsesBean) {
@@ -336,10 +340,13 @@ internal class GameAboutModel : BaseViewModel(), IGameManager {
     val countDownSecondsLD: UnPeekLiveData<Int> = _countDownSecondsLD
     private var _countDownSetStampTime: Long = 0L
     val isCountDownStart get() = (System.currentTimeMillis() - _countDownSetStampTime) < 50
+    fun setMoreGames(data: List<MoreGame>) {
+        _moreGames.value = data
+    }
 
 
     //控制隐藏Fast3MainView
-    val fast3MainFloatVisible: UnPeekLiveData<Boolean> = UnPeekLiveData<Boolean>()
+    val fast3MainFloatVisible: UnPeekLiveData<Boolean> = UnPeekLiveData()
     override fun startCountDownTimer(
         countdownTime: Long, countDownInterval: Long, lis: IGameListener?
     ) {

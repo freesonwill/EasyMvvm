@@ -1,10 +1,12 @@
 package com.cn.game.sdk2.ui.view.game
 
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.RelativeLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.addListener
@@ -22,7 +24,7 @@ import kotlin.coroutines.suspendCoroutine
 
 class Fast3Toast @JvmOverloads constructor(
     context: Context,
-    private val anchorView: ConstraintLayout,
+    val anchorView: ConstraintLayout,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : RelativeLayout(context, attrs, defStyleAttr) {
@@ -45,8 +47,9 @@ class Fast3Toast @JvmOverloads constructor(
         LogUtils.dTag(TAG,"Caught exception in CoroutineExceptionHandler: $throwable")
     }
     private var msg:CharSequence = ""
+
     /**
-     *
+     * 显示Toast
      */
     @JvmOverloads
     fun showToastNormal(msg: CharSequence, duration: Long, replace: Boolean = true) {

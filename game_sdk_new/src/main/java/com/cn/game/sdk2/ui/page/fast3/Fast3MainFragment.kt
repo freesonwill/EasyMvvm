@@ -27,6 +27,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.data.BetteFlyData
 import com.cn.game.sdk2.data.EventKey
@@ -47,15 +48,16 @@ import com.cn.game.sdk2.ui.helper.ViewHelper
 import com.cn.game.sdk2.ui.helper.ViewHelper.bindViewPagerNewGame
 import com.cn.game.sdk2.ui.helper.ViewHelper.initGameViewPager
 import com.cn.game.sdk2.ui.helper.ViewHelper.initGameViewPager2
+import com.cn.game.sdk2.ui.popup.game.CustomBubbleAttachPopup
 import com.cn.game.sdk2.ui.view.CenterLayoutManager
 import com.cn.game.sdk2.ui.view.ClickRecyclerView
 import com.cn.game.sdk2.ui.view.CommonLinearLayoutItemDecoration
-import com.cn.game.sdk2.ui.popup.game.CustomBubbleAttachPopup
-import com.cn.game.sdk2.ui.view.game.MoneyOKView
 import com.cn.game.sdk2.ui.view.game.GameAreaView
+import com.cn.game.sdk2.ui.view.game.MoneyOKView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
 import com.cn.game.sdk2.utils.FlowBus
 import com.cn.game.sdk2.utils.ext.BizExt.isLeopard
+import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
 import com.cn.game.sdk2.utils.ext.CommonExt.formatRealMoney
 import com.cn.game.sdk2.utils.ext.CommonExt.isCanGoOn
 import com.cn.game.sdk2.utils.ext.CommonExt.toPinyin
@@ -82,7 +84,6 @@ import com.lxj.xpopup.enums.PopupAnimation
 import com.lxj.xpopup.interfaces.SimpleCallback
 import com.xcjh.base_lib2.base.fragment.BaseVmDbFragment
 import com.xcjh.base_lib2.utils.LogUtils
-import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
 import com.xcjh.base_lib2.utils.loge
 import com.xcjh.base_lib2.utils.view.clickNoRepeat
 import kotlinx.coroutines.async
@@ -478,7 +479,7 @@ class Fast3MainFragment(val parentContext : Context) : BaseVmDbFragment<Fast3Vie
                 endCallBack?.invoke()
                 return
             }
-            var duration = when (winMoney) {
+            val duration = when (winMoney) {
                 in 0..1000 -> 500L
                 in 1000..100000 -> 600L
                 else -> 700L
@@ -1280,55 +1281,52 @@ class Fast3MainFragment(val parentContext : Context) : BaseVmDbFragment<Fast3Vie
 
                                                 fun initView() {
                                                     val views = ArrayList<View>()
-                                                    repeat(1) {
-                                                        val list = mutableListOf<GameHallItem>()
-                                                        for (i in 1..1) {
-                                                            list.add(
-                                                                GameHallItem(
-                                                                    "a",
-                                                                    "快三",
-                                                                    "3389在线"
-                                                                )
+                                                    val list = mutableListOf<GameHallItem>()
+                                                    gameAboutModel.moreGames.value?.let { games->
+                                                        for (item in games) {
+                                                            val hallItem = GameHallItem(
+                                                                item.icon,
+                                                                item.name,
+                                                                item.online.toString()
                                                             )
+                                                            list.add(hallItem)
                                                         }
-                                                        val mViewBind =
-                                                            ItemGamehallPageBinding.inflate(
-                                                                layoutInflater,
-                                                                null,
-                                                                false
-                                                            )
-                                                        mViewBind.rvContent.itemAnimator = null
-                                                        mViewBind.rvContent.layoutManager = LinearLayoutManager(requireContext())
-                                                        mViewBind.rvContent.dividerSpace(
-                                                            requireContext().dp2px(20),
-                                                            DividerOrientation.HORIZONTAL
-                                                        ).setup {
-                                                            it.layoutManager =
-                                                                GridLayoutManager(context, 4)
-                                                            addType<GameHallItem>(R.layout.item_gamehall_page_item)
-                                                            onBind {
-                                                                when (itemViewType) {
-                                                                    R.layout.item_gamehall_page_item -> {
-                                                                        getBinding<ItemGamehallPageItemBinding>().apply {
-                                                                            val bean =
-                                                                                _data as GameHallItem
-                                                                            tvName.text = bean.name
-                                                                            tvOnline.text =
-                                                                                bean.onlineA
-                                                                            if (bean.name == "快三") {
-                                                                                root.clickNoRepeat(
-                                                                                    true
-                                                                                ) {
-                                                                                    backMainGame()
-                                                                                }
+                                                    }
+                                                    val mViewBind =
+                                                        ItemGamehallPageBinding.inflate(
+                                                            layoutInflater,
+                                                            null,
+                                                            false
+                                                        )
+                                                    mViewBind.rvContent.itemAnimator = null
+                                                    mViewBind.rvContent.layoutManager = LinearLayoutManager(requireContext())
+                                                    mViewBind.rvContent.dividerSpace(
+                                                        requireContext().dp2px(20),
+                                                        DividerOrientation.HORIZONTAL
+                                                    ).setup {
+                                                        it.layoutManager = GridLayoutManager(context, 4)
+                                                        addType<GameHallItem>(R.layout.item_gamehall_page_item)
+                                                        onBind {
+                                                            when (itemViewType) {
+                                                                R.layout.item_gamehall_page_item -> {
+                                                                    getBinding<ItemGamehallPageItemBinding>().apply {
+                                                                        val bean = _data as GameHallItem
+                                                                        Glide.with(context).load(bean.url).into(ivGame)
+                                                                        tvName.text = bean.name
+                                                                        tvOnline.text = bean.onlineA
+                                                                        if (bean.name == "快三") {
+                                                                            root.clickNoRepeat(
+                                                                                true
+                                                                            ) {
+                                                                                backMainGame()
                                                                             }
                                                                         }
                                                                     }
                                                                 }
                                                             }
-                                                        }.models = list
-                                                        views.add(mViewBind.root)
-                                                    }
+                                                        }
+                                                    }.models = list
+                                                    views.add(mViewBind.root)
 
                                                     binding.viewPagerNew.initGameViewPager2(views)
                                                     binding.magicIndicator.bindViewPagerNewGame(
