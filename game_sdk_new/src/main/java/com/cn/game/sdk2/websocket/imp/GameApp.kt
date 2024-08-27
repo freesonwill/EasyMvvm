@@ -6,6 +6,7 @@ import android.app.Application.ActivityLifecycleCallbacks
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import android.webkit.RenderProcessGoneDetail
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
@@ -20,6 +21,8 @@ import com.cn.game.sdk2.websocket.gameMassageManager
 import com.cn.game.sdk2.websocket.interfaces.IGameForApp
 import com.cn.game.sdk2.websocket.isEnableSound
 import com.cn.game.sdk2.websocket.isNeedReconnect
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.xcjh.base_lib2.ModuleInitializer
 import com.xcjh.base_lib2.utils.loge
 import game.common.proto.ClientReq
@@ -265,9 +268,13 @@ class GameApp  private constructor(){
             gameAboutModel.isShowGame(true)
         }
 
+        /**
+         eg: [{"idp":0,"gameType":0,"name":"快三","weight":1,"direction":1,"icon":"https://www.baidu.com/img/flexible/logo/pc/result@2.png","online":9257}]
+         */
         @JvmStatic
-         fun setMoreGames(moreGameList: List<MoreGame>) {
-            
+        fun setMoreGames(moreGameList: String) {
+            val gameList = Gson().fromJson<List<MoreGame>>(moreGameList,object : TypeToken<List<MoreGame>>(){}.type)
+            gameAboutModel.setMoreGames(gameList)
         }
     }
 

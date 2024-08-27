@@ -1,5 +1,8 @@
 package com.cn.game.sdk2.websocket.viewmodel
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import com.cn.game.sdk2.data.bean.MoreGame
 import com.cn.game.sdk2.manager.GameManager
 import com.cn.game.sdk2.manager.listener.IGameListener
 import com.cn.game.sdk2.utils.ThreadUtils
@@ -9,6 +12,7 @@ import com.cn.game.sdk2.websocket.bean.Betting
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import com.cn.game.sdk2.websocket.bean.BettingResponsesBean
 import com.cn.game.sdk2.websocket.bean.RoundInfoBean
+import com.cn.game.sdk2.websocket.gameAboutModel
 import com.xcjh.base_lib2.base.BaseViewModel
 import com.xcjh.base_lib2.callback.livedata.UnPeekLiveData
 import com.xcjh.base_lib2.utils.LogUtils
@@ -48,6 +52,8 @@ internal class GameAboutModel : BaseViewModel() {
     private val _toastErrorMessage = UnPeekLiveData<String>()
     private val _isShowGame = UnPeekLiveData<Boolean>()
     private val _isAllowedBet = UnPeekLiveData<Boolean>()
+    private val _moreGames = UnPeekLiveData<List<MoreGame>>()
+    var moreGames:LiveData<List<MoreGame>> = _moreGames
 
     var isOpen: Boolean = false
 
@@ -335,6 +341,9 @@ internal class GameAboutModel : BaseViewModel() {
     val countDownSecondsLD: UnPeekLiveData<Int> = _countDownSecondsLD
     private var _countDownSetStampTime: Long = 0L
     val isCountDownStart get() = (System.currentTimeMillis() - _countDownSetStampTime) < 50
+    fun setMoreGames(data: List<MoreGame>) {
+        _moreGames.value = data
+    }
 
 
     //控制隐藏Fast3MainView

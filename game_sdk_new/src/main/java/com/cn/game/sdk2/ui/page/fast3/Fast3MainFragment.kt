@@ -48,6 +48,7 @@ import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
 import com.cn.game.sdk2.utils.FlowBus
 import com.cn.game.sdk2.utils.ext.BizExt.isLeopard
+import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
 import com.cn.game.sdk2.utils.ext.CommonExt.formatRealMoney
 import com.cn.game.sdk2.utils.ext.CommonExt.isCanGoOn
 import com.cn.game.sdk2.utils.ext.CommonExt.toPinyin
@@ -69,7 +70,6 @@ import com.gyf.immersionbar.ktx.hasNavigationBar
 import com.gyf.immersionbar.ktx.navigationBarHeight
 import com.xcjh.base_lib2.base.fragment.BaseVmDbFragment
 import com.xcjh.base_lib2.utils.LogUtils
-import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
 import com.xcjh.base_lib2.utils.loge
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
@@ -462,7 +462,7 @@ class Fast3MainFragment(val parentContext : Context) : BaseVmDbFragment<Fast3Vie
                 endCallBack?.invoke()
                 return
             }
-            var duration = when (winMoney) {
+            val duration = when (winMoney) {
                 in 0..1000 -> 500L
                 in 1000..100000 -> 600L
                 else -> 700L
