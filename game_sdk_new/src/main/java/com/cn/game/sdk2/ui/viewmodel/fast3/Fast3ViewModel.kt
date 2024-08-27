@@ -1,53 +1,20 @@
 package com.cn.game.sdk2.ui.viewmodel.fast3
 
-import android.util.Log
-import android.util.SparseArray
 import android.view.ViewGroup
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.data.bean.SelectAnnotationBean
 import com.cn.game.sdk2.ui.view.game.GameAreaView
+import com.cn.game.sdk2.utils.BettingAreaUtil.getBoomBets
+import com.cn.game.sdk2.utils.BettingAreaUtil.getDefaultBets
+import com.cn.game.sdk2.utils.BettingAreaUtil.getDoubleBets
+import com.cn.game.sdk2.utils.BettingAreaUtil.getSingleBets
+import com.cn.game.sdk2.utils.BettingAreaUtil.getSumBets
+import com.cn.game.sdk2.utils.BettingAreaUtil.toSpareArray
 import com.cn.game.sdk2.utils.ext.CommonExt
 import com.cn.game.sdk2.utils.ext.CommonExt.dp2px
-import com.cn.game.sdk2.websocket.bean.BOOM_1
-import com.cn.game.sdk2.websocket.bean.BOOM_2
-import com.cn.game.sdk2.websocket.bean.BOOM_3
-import com.cn.game.sdk2.websocket.bean.BOOM_4
-import com.cn.game.sdk2.websocket.bean.BOOM_5
-import com.cn.game.sdk2.websocket.bean.BOOM_6
-import com.cn.game.sdk2.websocket.bean.BOOM_ALL
 import com.cn.game.sdk2.websocket.bean.Betting
-import com.cn.game.sdk2.websocket.bean.DEFAULT_BIG
-import com.cn.game.sdk2.websocket.bean.DEFAULT_DOUBLE
-import com.cn.game.sdk2.websocket.bean.DEFAULT_SINGLE
-import com.cn.game.sdk2.websocket.bean.DEFAULT_SMALL
-import com.cn.game.sdk2.websocket.bean.DOUBLE_1
-import com.cn.game.sdk2.websocket.bean.DOUBLE_2
-import com.cn.game.sdk2.websocket.bean.DOUBLE_3
-import com.cn.game.sdk2.websocket.bean.DOUBLE_4
-import com.cn.game.sdk2.websocket.bean.DOUBLE_5
-import com.cn.game.sdk2.websocket.bean.DOUBLE_6
-import com.cn.game.sdk2.websocket.bean.SINGLE_1
-import com.cn.game.sdk2.websocket.bean.SINGLE_2
-import com.cn.game.sdk2.websocket.bean.SINGLE_3
-import com.cn.game.sdk2.websocket.bean.SINGLE_4
-import com.cn.game.sdk2.websocket.bean.SINGLE_5
-import com.cn.game.sdk2.websocket.bean.SINGLE_6
-import com.cn.game.sdk2.websocket.bean.SUM_10
-import com.cn.game.sdk2.websocket.bean.SUM_11
-import com.cn.game.sdk2.websocket.bean.SUM_12
-import com.cn.game.sdk2.websocket.bean.SUM_13
-import com.cn.game.sdk2.websocket.bean.SUM_14
-import com.cn.game.sdk2.websocket.bean.SUM_15
-import com.cn.game.sdk2.websocket.bean.SUM_16
-import com.cn.game.sdk2.websocket.bean.SUM_17
-import com.cn.game.sdk2.websocket.bean.SUM_4
-import com.cn.game.sdk2.websocket.bean.SUM_5
-import com.cn.game.sdk2.websocket.bean.SUM_6
-import com.cn.game.sdk2.websocket.bean.SUM_7
-import com.cn.game.sdk2.websocket.bean.SUM_8
-import com.cn.game.sdk2.websocket.bean.SUM_9
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel.Stage
 import com.gyf.immersionbar.ktx.hasNavigationBar
@@ -205,65 +172,23 @@ class Fast3ViewModel : BaseViewModel() {
     }
 
     val dXDSBettingArray by lazy {
-        SparseArray<Betting>().also {
-            it[1] = DEFAULT_BIG()
-            it[2] = DEFAULT_SMALL()
-            it[3] = DEFAULT_SINGLE()
-            it[4] = DEFAULT_DOUBLE()
-            it[5] = BOOM_ALL()
-        }
+        getDefaultBets().toSpareArray()
     }
 
     val leopardBettingArray by lazy {
-        SparseArray<Betting>().also {
-            it[1] = BOOM_1()
-            it[2] = BOOM_2()
-            it[3] = BOOM_3()
-            it[4] = BOOM_4()
-            it[5] = BOOM_5()
-            it[6] = BOOM_6()
-        }
+        getBoomBets().toSpareArray()
     }
 
     val pairsDiceBettingArray by lazy {
-        SparseArray<Betting>().also {
-            it[1] = DOUBLE_1()
-            it[2] = DOUBLE_2()
-            it[3] = DOUBLE_3()
-            it[4] = DOUBLE_4()
-            it[5] = DOUBLE_5()
-            it[6] = DOUBLE_6()
-        }
+        getDoubleBets().toSpareArray()
     }
 
     val singleDiceBettingArray by lazy {
-        SparseArray<Betting>().also {
-            it[1] = SINGLE_1()
-            it[2] = SINGLE_2()
-            it[3] = SINGLE_3()
-            it[4] = SINGLE_4()
-            it[5] = SINGLE_5()
-            it[6] = SINGLE_6()
-        }
+        getSingleBets().toSpareArray()
     }
 
     val sumTotalBettingArray by lazy {
-        SparseArray<Betting>().also {
-            it[4] = SUM_4()
-            it[5] = SUM_5()
-            it[6] = SUM_6()
-            it[7] = SUM_7()
-            it[8] = SUM_8()
-            it[9] = SUM_9()
-            it[10] = SUM_10()
-            it[11] = SUM_11()
-            it[12] = SUM_12()
-            it[13] = SUM_13()
-            it[14] = SUM_14()
-            it[15] = SUM_15()
-            it[16] = SUM_16()
-            it[17] = SUM_17()
-        }
+        getSumBets().toSpareArray(4)
     }
 
     @JvmOverloads

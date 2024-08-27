@@ -4,52 +4,29 @@ import android.content.Context
 import android.util.Log
 import com.cn.game.sdk2.BuildConfig
 import com.cn.game.sdk2.ui.page.fast3.Fast3MainFragment
+import com.cn.game.sdk2.utils.BettingAreaUtil.BET_AREA_BOOM_1
+import com.cn.game.sdk2.utils.BettingAreaUtil.BET_AREA_BOOM_ALL
+import com.cn.game.sdk2.utils.BettingAreaUtil.BET_AREA_DEFAULT_BIG
+import com.cn.game.sdk2.utils.BettingAreaUtil.BET_AREA_DEFAULT_DOUBLE
+import com.cn.game.sdk2.utils.BettingAreaUtil.BET_AREA_DEFAULT_SINGLE
+import com.cn.game.sdk2.utils.BettingAreaUtil.BET_AREA_DEFAULT_SMALL
+import com.cn.game.sdk2.utils.BettingAreaUtil.BET_AREA_DOUBLE_1
+import com.cn.game.sdk2.utils.BettingAreaUtil.BET_AREA_SINGLE_1
+import com.cn.game.sdk2.utils.BettingAreaUtil.BET_AREA_SUM_4
+import com.cn.game.sdk2.utils.BettingAreaUtil.getAllBets
+import com.cn.game.sdk2.utils.BettingAreaUtil.getBoomBets
+import com.cn.game.sdk2.utils.BettingAreaUtil.getDefaultBets
+import com.cn.game.sdk2.utils.BettingAreaUtil.getDoubleBets
+import com.cn.game.sdk2.utils.BettingAreaUtil.getSingleBets
+import com.cn.game.sdk2.utils.BettingAreaUtil.getSumBets
 import com.cn.game.sdk2.utils.ThreadUtils
 import com.cn.game.sdk2.websocket.bean.AreaBetConfigBean
-import com.cn.game.sdk2.websocket.bean.BOOM_1
-import com.cn.game.sdk2.websocket.bean.BOOM_2
-import com.cn.game.sdk2.websocket.bean.BOOM_3
-import com.cn.game.sdk2.websocket.bean.BOOM_4
-import com.cn.game.sdk2.websocket.bean.BOOM_5
-import com.cn.game.sdk2.websocket.bean.BOOM_6
-import com.cn.game.sdk2.websocket.bean.BOOM_ALL
 import com.cn.game.sdk2.websocket.bean.Betting
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import com.cn.game.sdk2.websocket.bean.BettingStatus
-import com.cn.game.sdk2.websocket.bean.DEFAULT_BIG
-import com.cn.game.sdk2.websocket.bean.DEFAULT_DOUBLE
-import com.cn.game.sdk2.websocket.bean.DEFAULT_SINGLE
-import com.cn.game.sdk2.websocket.bean.DEFAULT_SMALL
-import com.cn.game.sdk2.websocket.bean.DOUBLE_1
-import com.cn.game.sdk2.websocket.bean.DOUBLE_2
-import com.cn.game.sdk2.websocket.bean.DOUBLE_3
-import com.cn.game.sdk2.websocket.bean.DOUBLE_4
-import com.cn.game.sdk2.websocket.bean.DOUBLE_5
-import com.cn.game.sdk2.websocket.bean.DOUBLE_6
 import com.cn.game.sdk2.websocket.bean.ObservableArrayList
 import com.cn.game.sdk2.websocket.bean.SINGLE
-import com.cn.game.sdk2.websocket.bean.SINGLE_1
-import com.cn.game.sdk2.websocket.bean.SINGLE_2
-import com.cn.game.sdk2.websocket.bean.SINGLE_3
-import com.cn.game.sdk2.websocket.bean.SINGLE_4
-import com.cn.game.sdk2.websocket.bean.SINGLE_5
-import com.cn.game.sdk2.websocket.bean.SINGLE_6
-import com.cn.game.sdk2.websocket.bean.SUM_10
-import com.cn.game.sdk2.websocket.bean.SUM_11
-import com.cn.game.sdk2.websocket.bean.SUM_12
-import com.cn.game.sdk2.websocket.bean.SUM_13
-import com.cn.game.sdk2.websocket.bean.SUM_14
-import com.cn.game.sdk2.websocket.bean.SUM_15
-import com.cn.game.sdk2.websocket.bean.SUM_16
-import com.cn.game.sdk2.websocket.bean.SUM_17
-import com.cn.game.sdk2.websocket.bean.SUM_4
-import com.cn.game.sdk2.websocket.bean.SUM_5
-import com.cn.game.sdk2.websocket.bean.SUM_6
-import com.cn.game.sdk2.websocket.bean.SUM_7
-import com.cn.game.sdk2.websocket.bean.SUM_8
-import com.cn.game.sdk2.websocket.bean.SUM_9
 import com.cn.game.sdk2.websocket.bean.VerifyDoubleResultBean
-import com.cn.game.sdk2.websocket.bean.areaMap
 import com.cn.game.sdk2.websocket.imp.GameApp
 import com.cn.game.sdk2.websocket.imp.UIMethodImpl
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
@@ -161,184 +138,78 @@ fun Boolean.isEmpty(block: () -> Unit) {
 
 //计算开奖注区
 fun List<Int>.calculateArea(): ArrayList<Betting> {
-    if (this.size != 3) return java.util.ArrayList()
-    val num1 = this[0]
-    val num2 = this[1]
-    val num3 = this[2]
-    val sum = num1 + num2 + num3
-    val betAreaList = ArrayList<Betting>()
+    if (size != 3) return ArrayList()
+    val dice1 = this[0]
+    val sum = sum()
 
-    //豹子
-    if (isEquals()) {
-        betAreaList.add(BOOM_ALL())
-        when (num1) {
-            1 -> {
-                betAreaList.add(BOOM_1())
-            }
-
-            2 -> {
-                betAreaList.add(BOOM_2())
-            }
-
-            3 -> {
-                betAreaList.add(BOOM_3())
-            }
-
-            4 -> {
-                betAreaList.add(BOOM_4())
-            }
-
-            5 -> {
-                betAreaList.add(BOOM_5())
-            }
-
-            6 -> {
-                betAreaList.add(BOOM_6())
-            }
-        }
-    } else {
-        //------默认------
-        //大小
-        val betArea1 = if (sum >= 11) {
-            DEFAULT_BIG()
+    return ArrayList<Betting>().apply {
+        if (isEquals()) {
+            add(getDefaultBets().first { it.number == BET_AREA_BOOM_ALL })
+            add(getBoomBets().first { it.number == (BET_AREA_BOOM_1 - 1 + dice1) })
         } else {
-            DEFAULT_SMALL()
+            //------默认------
+            getDefaultBets().let { defaultBets ->
+                listOf(
+                    //大小
+                    if (sum >= 11) BET_AREA_DEFAULT_BIG else BET_AREA_DEFAULT_SMALL,
+                    //单双
+                    if (sum % 2 == 0) BET_AREA_DEFAULT_DOUBLE else BET_AREA_DEFAULT_SINGLE
+                ).map { betArea ->
+                    defaultBets.first { it.number == betArea }
+                }.also {
+                    addAll(it)
+                }
+            }
         }
-        //单双
-        val betArea2 = if (sum % 2 == 0) {
-            DEFAULT_DOUBLE()
-        } else {
-            DEFAULT_SINGLE()
+
+        //------总和------
+        getSumBets()
+            .firstOrNull { it.number == (BET_AREA_SUM_4 - 4 + sum) }
+            // 排除三个一样的 3 6 9 12 15 18
+            ?.takeIf { sum % 3 != 0 || !isEquals() }
+            ?.let { add(it) }
+
+        //------对子------
+        isPairs { double, num ->
+            getDoubleBets()
+                .firstOrNull { it.number == (BET_AREA_DOUBLE_1 - 1 + num) }
+                ?.takeIf { double }
+                ?.let { add(it) }
         }
-        betAreaList.add(betArea1)
-        betAreaList.add(betArea2)
+
+        //----单个----
+        addAll(
+            countSingle().mapNotNull { (key, value) ->
+                getSingleBets()
+                    .firstOrNull { it.number == (BET_AREA_SINGLE_1 - 1 + key) }
+                    ?.apply { count = value }
+            }
+        )
     }
-    //------总和------排除三个一样的 3 6 9 12 15 18
-    when (sum) {
-        4 -> betAreaList.add(SUM_4())
-        5 -> betAreaList.add(SUM_5())
-        6 -> {
-            if (!isEquals()) betAreaList.add(SUM_6())
-        }
-
-        7 -> betAreaList.add(SUM_7())
-        8 -> betAreaList.add(SUM_8())
-        9 -> {
-            if (!isEquals()) betAreaList.add(SUM_9())
-        }
-
-        10 -> betAreaList.add(SUM_10())
-        11 -> betAreaList.add(SUM_11())
-        12 -> {
-            if (!isEquals()) betAreaList.add(SUM_12())
-        }
-
-        13 -> betAreaList.add(SUM_13())
-        14 -> betAreaList.add(SUM_14())
-        15 -> {
-            if (!isEquals()) betAreaList.add(SUM_15())
-        }
-
-        16 -> betAreaList.add(SUM_16())
-        17 -> betAreaList.add(SUM_17())
-    }
-    //------对子------
-    isPairs { double, num ->
-        if (double) {
-            when (num) {
-                1 -> {
-                    betAreaList.add(DOUBLE_1())
-                }
-
-                2 -> {
-                    betAreaList.add(DOUBLE_2())
-                }
-
-                3 -> {
-                    betAreaList.add(DOUBLE_3())
-                }
-
-                4 -> {
-                    betAreaList.add(DOUBLE_4())
-                }
-
-                5 -> {
-                    betAreaList.add(DOUBLE_5())
-                }
-
-                6 -> {
-                    betAreaList.add(DOUBLE_6())
-                }
-            }
-        }
-    }
-    //----单个----
-    val countMap = countSingle()
-    countMap.forEach {
-        when (it.key) {
-            1 -> {
-                betAreaList.add(SINGLE_1(count = it.value))
-            }
-
-            2 -> {
-                betAreaList.add(SINGLE_2(count = it.value))
-            }
-
-            3 -> {
-                betAreaList.add(SINGLE_3(count = it.value))
-            }
-
-            4 -> {
-                betAreaList.add(SINGLE_4(count = it.value))
-            }
-
-            5 -> {
-                betAreaList.add(SINGLE_5(count = it.value))
-            }
-
-            6 -> {
-                betAreaList.add(SINGLE_6(count = it.value))
-            }
-        }
-    }
-
-    return betAreaList
 }
 
 fun List<Int>.isEquals(): Boolean {
-    if (this.size != 3) return false
-    return this[0] == this[1] && this[0] == this[2]
+    return size == 3 && all { it == this[0] }
 }
 
 //计算对子 返回是否是对子 和对子点数
 fun List<Int>.isPairs(block: (double: Boolean, num: Int) -> Unit) {
     if (this.size != 3) {
         block(false, -1)
+        return
+    }
+
+    val pairs = groupBy { it }.filter { it.value.size == 2 }
+    if(pairs.isNotEmpty()) {
+        block(true, pairs.keys.first())
     } else {
-        val num1 = this[0]
-        val num2 = this[1]
-        val num3 = this[2]
-        if (num1 == num2) {
-            block(true, num1)
-        } else if (num1 == num3) {
-            block(true, num1)
-        } else if (num2 == num3) {
-            block(true, num2)
-        } else {
-            block(false, -1)
-        }
+        block(false, -1)
     }
 }
 
 //计算总和
 fun List<Int>.sum(): Int {
-    if (this.size != 3) {
-        return 0
-    }
-    val num1 = this[0]
-    val num2 = this[1]
-    val num3 = this[2]
-    return num1 + num2 + num3
+    return if(size == 3) sumOf { it } else 0
 }
 
 //大小
@@ -386,11 +257,7 @@ fun List<Betting>.calculateUserLotteryResult(userBettingList: MutableList<Bettin
 
 //注区号转换注区对象
 fun Int.convertBetting(): Betting? {
-    return if (areaMap.containsKey(this)) {
-        areaMap[this]
-    } else {
-        null
-    }
+    return getAllBets().firstOrNull { it.number == this }
 }
 
 @JvmName("copyFromAreaBetConfig")
