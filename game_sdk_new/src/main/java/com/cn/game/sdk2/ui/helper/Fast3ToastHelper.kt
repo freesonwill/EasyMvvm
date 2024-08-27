@@ -22,8 +22,7 @@ object Fast3ToastHelper {
         val context = ModuleInitializer.application
         _instance = Fast3Toast(context, host)
         host.viewTreeObserver.addOnWindowAttachListener(object :OnWindowAttachListener {
-            override fun onWindowAttached() {
-            }
+            override fun onWindowAttached() {}
             override fun onWindowDetached() {
                 host.viewTreeObserver.removeOnWindowAttachListener(this)
                 this@Fast3ToastHelper.destroy()
@@ -32,7 +31,7 @@ object Fast3ToastHelper {
     }
 
     fun showToastNormal(msg: CharSequence, duration: Long = 2_000,canReplace:Boolean = true) {
-        if(_instance == null) attachToHost()
+        if(_instance == null || this.host != _instance?.anchorView) attachToHost()
         _instance?.showToastNormal(msg,duration,canReplace)
     }
 
