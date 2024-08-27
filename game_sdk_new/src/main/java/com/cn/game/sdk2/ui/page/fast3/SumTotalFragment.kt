@@ -4,11 +4,14 @@ import android.view.ViewTreeObserver
 import com.cn.game.sdk2.databinding.FragmentSumTotalBinding
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
  * 总和
  */
 class SumTotalFragment: BaseFast3Fragment<Fast3ViewModel, FragmentSumTotalBinding>() {
+    override val mViewModel: Fast3ViewModel  by sharedViewModel()
     override fun initAreaViewList() {
         mDatabind.model = mViewModel
         mDatabind.apply {

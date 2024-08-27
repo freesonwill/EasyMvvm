@@ -11,9 +11,11 @@ import com.cn.game.sdk2.ui.viewmodel.EmptyViewModel
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.xcjh.base_lib2.base.fragment.BaseVmDbFragment
 import com.xcjh.base_lib2.utils.view.clickNoRepeat
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class Fast3GameHallFragment:BaseVmDbFragment<EmptyViewModel,FragmentGamehallBinding>() {
     private var mFragList = ArrayList<Fragment>()
+    override val mViewModel: EmptyViewModel by viewModel()
 
     override fun initView(savedInstanceState: Bundle?) {
         mFragList.add(Fast3GameHallItemFragment())

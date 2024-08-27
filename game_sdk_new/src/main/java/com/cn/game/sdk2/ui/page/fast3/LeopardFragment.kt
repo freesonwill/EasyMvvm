@@ -4,12 +4,14 @@ import android.view.ViewTreeObserver
 import com.cn.game.sdk2.databinding.FragmentLeopardBinding
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
  * 豹子
  */
 class LeopardFragment: BaseFast3Fragment<Fast3ViewModel, FragmentLeopardBinding>() {
-
+    override val mViewModel: Fast3ViewModel  by sharedViewModel()
     override fun initAreaViewList() {
         mDatabind.model = mViewModel
         mDatabind.apply {

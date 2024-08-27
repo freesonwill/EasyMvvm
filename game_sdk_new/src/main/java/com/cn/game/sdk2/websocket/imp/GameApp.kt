@@ -11,6 +11,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import com.cn.game.sdk2.data.bean.MoreGame
+import com.cn.game.sdk2.moduleList
 import com.cn.game.sdk2.ui.helper.ViewHelper
 import com.cn.game.sdk2.websocket.GameSocketManager
 import com.cn.game.sdk2.websocket.appContext
@@ -18,6 +19,7 @@ import com.cn.game.sdk2.websocket.appLifecycleEnable
 import com.cn.game.sdk2.websocket.appListener
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.gameMassageManager
+import com.cn.game.sdk2.websocket.imp.GameApp.Companion.koinApplication
 import com.cn.game.sdk2.websocket.interfaces.IGameForApp
 import com.cn.game.sdk2.websocket.isEnableSound
 import com.cn.game.sdk2.websocket.isNeedReconnect
@@ -27,6 +29,10 @@ import com.xcjh.base_lib2.ModuleInitializer
 import com.xcjh.base_lib2.utils.loge
 import game.common.proto.ClientReq
 import game.mod.proc.yf.proto.req.GameReq
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.Koin
+import org.koin.core.KoinApplication
+import org.koin.core.component.KoinComponent
 
 
 /**
@@ -65,6 +71,10 @@ class GameApp  private constructor(){
             appLifecycleEnable = lifecycleEnable
             appListener = onSdkListener
             GameSocketManager.getInstance()?.initSocketClient(gameServer)
+            koinApplication.apply {
+                androidContext(context)
+                modules(moduleList)
+            }
             //todo:logServer
             (appContext as Application).registerActivityLifecycleCallbacks(object :
                 ActivityLifecycleCallbacks {
@@ -96,6 +106,8 @@ class GameApp  private constructor(){
                     
                 }
             })
+
+
         }
 
         /* fun removeSdkListener() {
@@ -276,6 +288,8 @@ class GameApp  private constructor(){
             val gameList = Gson().fromJson<List<MoreGame>>(moreGameList,object : TypeToken<List<MoreGame>>(){}.type)
             gameAboutModel.setMoreGames(gameList)
         }
+
+        internal val koinApplication by lazy { KoinApplication.init() }
     }
 
 
@@ -325,5 +339,12 @@ class GameApp  private constructor(){
 //    fun setSocketStatesCallback(callback: SocketStatesCallback){
 //        socketStatesCallback = callback
 //    }
+
+
+    internal interface GameSdkKoinComponent : KoinComponent {
+        override fun getKoin(): Koin {
+            return koinApplication.koin
+        }
+    }
 
 }
