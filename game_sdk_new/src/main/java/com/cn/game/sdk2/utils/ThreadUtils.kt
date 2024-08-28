@@ -6,7 +6,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 
 /**
- * Description:
+ * Description: 线程工具类
  * author       : zhangsan
  * createTime   : 2024/6/18 15:37
  **/

@@ -33,7 +33,7 @@ import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 import kotlin.random.Random
 
 val tokenArray = listOf(
-    "124:3CEn7OHz",
+    "124:VmbZQ98O1",
     "125:ozNPWgtT",
     "126:Ncgvqc9s",
     "127:AbI8Ppju",

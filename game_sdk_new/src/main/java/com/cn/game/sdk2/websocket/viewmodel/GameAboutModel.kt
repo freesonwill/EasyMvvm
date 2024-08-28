@@ -1,26 +1,22 @@
 package com.cn.game.sdk2.websocket.viewmodel
 
-import android.os.CountDownTimer
-import com.cn.game.sdk2.manager.IGameManager
 import androidx.lifecycle.LiveData
 import com.cn.game.sdk2.data.bean.MoreGame
-import com.cn.game.sdk2.manager.listener.IGameListener
-import com.cn.game.sdk2.utils.ThreadUtils
 import com.cn.game.sdk2.utils.ext.CommonExt.isMainThread
 import com.cn.game.sdk2.websocket.bean.AreaBetBean
 import com.cn.game.sdk2.websocket.bean.Betting
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import com.cn.game.sdk2.websocket.bean.BettingResponsesBean
 import com.cn.game.sdk2.websocket.bean.RoundInfoBean
+import com.cn.game.sdk2.websocket.helper.CountDownHelper
 import com.xcjh.base_lib2.base.BaseViewModel
 import com.xcjh.base_lib2.callback.livedata.UnPeekLiveData
-import com.xcjh.base_lib2.utils.LogUtils
 import game.mod.proc.yf.proto.res.GameRes
 import kotlinx.coroutines.*
 import java.util.concurrent.ConcurrentHashMap
 
 //internal
-internal class GameAboutModel : BaseViewModel(), IGameManager {
+internal class GameAboutModel : BaseViewModel() {
     enum class Stage {
         NEW, DEAL, SETTLE
     }
@@ -53,8 +49,6 @@ internal class GameAboutModel : BaseViewModel(), IGameManager {
     private val _isAllowedBet = UnPeekLiveData<Boolean>()
     private val _moreGames = UnPeekLiveData<List<MoreGame>>()
     var moreGames: LiveData<List<MoreGame>> = _moreGames
-
-    private var countDownTimer: CountDownTimer? = null
 
     var isOpen: Boolean = false
 
@@ -314,52 +308,15 @@ internal class GameAboutModel : BaseViewModel(), IGameManager {
         _onceCountMoney.postValue(money)
     }
 
-    var countDown: Int = 0 //阶段倒计时
-        set(value) {
-            field = value - 0 //减去500ms延时
-            LogUtils.dTag(TAG, "countDown set:${value},isMainThread:${isMainThread}")
-            _countDownSetStampTime = System.currentTimeMillis()
-            ThreadUtils.runOnUiThread {
-                startCountDownTimer(field.toLong(), lis = object : IGameListener {
-                    override fun onCountdown(time: Long) {
-                        super.onCountdown(time)
-                        val t = Math.round(time / 1000f)
-                        //Log.d(TAG, "countDown,isMainThread:${isMainThread},time:$t")
-                        //onCountDown跟调用同一线程,这里不用post
-                        _countDownSecondsLD.value = t
-                    }
-                })
-            }
-        }
-        get() {
-            val elapsed = System.currentTimeMillis() - _countDownSetStampTime
-            LogUtils.dTag(TAG, "countDown elapsed:${elapsed}")
-            return (field - elapsed).toInt()
-        }
-    private val _countDownSecondsLD: UnPeekLiveData<Int> = UnPeekLiveData()
-    val countDownSecondsLD: UnPeekLiveData<Int> = _countDownSecondsLD
-    private var _countDownSetStampTime: Long = 0L
-    val isCountDownStart get() = (System.currentTimeMillis() - _countDownSetStampTime) < 50
+    private val countDownHelper:CountDownHelper = CountDownHelper()
+    var countDown:Int by countDownHelper::countDown
+    val countDownSecondsLD: UnPeekLiveData<Int> by countDownHelper::countDownSecondsLD
+    val isCountDownStart by countDownHelper::isCountDownStart
+    //设置游戏大厅数据
     fun setMoreGames(data: List<MoreGame>) {
         _moreGames.value = data
     }
 
-
     //控制隐藏Fast3MainView
     val fast3MainFloatVisible: UnPeekLiveData<Boolean> = UnPeekLiveData()
-    override fun startCountDownTimer(
-        countdownTime: Long, countDownInterval: Long, lis: IGameListener?
-    ) {
-        countDownTimer?.cancel()
-        countDownTimer = object : CountDownTimer(countdownTime, countDownInterval) {
-            override fun onTick(millisUntilFinished: Long) {
-                lis?.onCountdown(millisUntilFinished)
-            }
-
-            override fun onFinish() {
-                lis?.onCountdown(0)
-            }
-        }
-        countDownTimer?.start()
-    }
 }

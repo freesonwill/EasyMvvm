@@ -44,7 +44,14 @@ class Fast3HelpPopup(context: Context, private val offsetY: Int, private val hei
     private lateinit var mViewBind: FragmentFast3HelpBinding
 
     //全屏的高度
-    private val fullHeight = mActivity.run { activityContentView.height - statusBarHeight }
+    private val fullHeight = mActivity.run {
+        when {
+            //没挖孔
+            hasNotchScreen -> activityContentView.height - statusBarHeight
+            //挖孔屏
+            else -> if (!isGesture) activityContentView.height-navigationBarHeight/2 else (activityContentView.height - navigationBarHeight)
+        }
+    }
 
     //当前的高度
     private val curHeight: Int get() = mViewBind.content.height
