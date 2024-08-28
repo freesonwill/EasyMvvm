@@ -30,7 +30,6 @@ dependencyResolutionManagement {
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
     }
 }
-rootProject.name = "My Application"
 include ':app'
 //include ':base_lib'
 

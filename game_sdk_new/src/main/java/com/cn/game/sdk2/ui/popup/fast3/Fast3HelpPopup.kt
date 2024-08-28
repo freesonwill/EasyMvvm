@@ -46,9 +46,9 @@ class Fast3HelpPopup(context: Context, private val offsetY: Int, private val hei
     //全屏的高度
     private val fullHeight = mActivity.run {
         when {
-            //没挖孔
-            hasNotchScreen -> activityContentView.height - statusBarHeight
-            //挖孔屏
+            //刘海屏: 刘海高度取代了状态栏高度
+            hasNotchScreen -> activityContentView.height - notchHeight
+            //非刘海屏
             else -> if (!isGesture) activityContentView.height-navigationBarHeight/2 else (activityContentView.height - navigationBarHeight)
         }
     }
