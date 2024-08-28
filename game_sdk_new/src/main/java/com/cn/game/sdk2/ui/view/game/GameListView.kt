@@ -2,6 +2,7 @@ package com.cn.game.sdk2.ui.view.game
 
 import android.content.Context
 import androidx.recyclerview.widget.GridLayoutManager
+import com.bumptech.glide.Glide
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.data.bean.GameHallItem
 import com.cn.game.sdk2.databinding.FragmentGamehallBinding
@@ -11,6 +12,7 @@ import com.cn.game.sdk2.ui.helper.ViewHelper.bindViewPagerNewGame
 import com.cn.game.sdk2.ui.helper.ViewHelper.initGameViewPager2
 import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
+import com.cn.game.sdk2.websocket.gameAboutModel
 import com.drake.brv.annotaion.DividerOrientation
 import com.drake.brv.utils.dividerSpace
 import com.drake.brv.utils.setup
@@ -39,13 +41,19 @@ class GameListView(context: Context) : BottomPopupView(context) {
     }
 
     private fun initView() {
-        val item = GameHallItem(
-            "a",
-            "快三",
-            "3389在线"
-        )
-        val mViewBind =
-            ItemGamehallPageBinding.inflate(
+        val gameHallList = mutableListOf<GameHallItem>().also { list->
+            gameAboutModel.moreGames.value?.let { games->
+                for (item in games) {
+                    val hallItem = GameHallItem(
+                        item.icon,
+                        item.name,
+                        item.online.toString()
+                    )
+                    list.add(hallItem)
+                }
+            }
+        }
+        val mViewBind = ItemGamehallPageBinding.inflate(
                 context.layoutInflater!!,
                 null,
                 false
@@ -61,15 +69,12 @@ class GameListView(context: Context) : BottomPopupView(context) {
                 when (itemViewType) {
                     R.layout.item_gamehall_page_item -> {
                         getBinding<ItemGamehallPageItemBinding>().apply {
-                            val bean =
-                                _data as GameHallItem
+                            val bean = _data as GameHallItem
+                            Glide.with(context).load(bean.url).into(ivGame)
                             tvName.text = bean.name
-                            tvOnline.text =
-                                bean.onlineA
+                            tvOnline.text = bean.onlineA
                             if (bean.name == "快三") {
-                                root.clickNoRepeat(
-                                    true
-                                ) {
+                                root.clickNoRepeat(true) {
                                     dismiss()
                                 }
                             }
@@ -77,7 +82,7 @@ class GameListView(context: Context) : BottomPopupView(context) {
                     }
                 }
             }
-        }.models = listOf(item)
+        }.models = gameHallList
         val pages = listOf(
             "热门"
         )
