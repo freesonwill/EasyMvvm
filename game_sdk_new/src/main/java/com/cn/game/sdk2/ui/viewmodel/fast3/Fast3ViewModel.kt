@@ -15,8 +15,8 @@ import com.cn.game.sdk2.utils.BettingAreaUtil.toSpareArray
 import com.cn.game.sdk2.utils.ext.CommonExt
 import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
 import com.cn.game.sdk2.websocket.bean.Betting
+import com.cn.game.sdk2.websocket.constants.GameStage
 import com.cn.game.sdk2.websocket.gameAboutModel
-import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel.Stage
 import com.gyf.immersionbar.ktx.hasNavigationBar
 import com.gyf.immersionbar.ktx.navigationBarHeight
 import com.kunminx.architecture.ui.callback.UnPeekLiveData
@@ -64,8 +64,8 @@ class Fast3ViewModel : BaseViewModel() {
     }
 
     //游戏状态
-    internal val gameState: Stage? get() = gameAboutModel.currentStage.value
-    internal var localGameStage: Stage? = null
+    internal val gameState: GameStage? get() = gameAboutModel.currentStage.value
+    internal var localGameStage: GameStage? = null
 
 
     //是否可点击

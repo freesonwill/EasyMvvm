@@ -19,14 +19,14 @@ import com.cn.game.sdk2.utils.BettingAreaUtil.getDefaultBets
 import com.cn.game.sdk2.utils.BettingAreaUtil.getDoubleBets
 import com.cn.game.sdk2.utils.BettingAreaUtil.getSingleBets
 import com.cn.game.sdk2.utils.BettingAreaUtil.getSumBets
-import com.cn.game.sdk2.utils.ThreadUtils
 import com.cn.game.sdk2.websocket.bean.AreaBetConfigBean
 import com.cn.game.sdk2.websocket.bean.Betting
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
-import com.cn.game.sdk2.websocket.bean.BettingStatus
 import com.cn.game.sdk2.websocket.bean.ObservableArrayList
 import com.cn.game.sdk2.websocket.bean.SINGLE
 import com.cn.game.sdk2.websocket.bean.VerifyDoubleResultBean
+import com.cn.game.sdk2.websocket.constants.BettingState
+import com.cn.game.sdk2.websocket.constants.BettingStatus
 import com.cn.game.sdk2.websocket.imp.GameApp
 import com.cn.game.sdk2.websocket.imp.UIMethodImpl
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
@@ -118,7 +118,7 @@ internal var isEnableSound = true
 internal var appListener: GameApp.OnSdkListener? = null
 
 //---------------------------ui方面使用---------------------------------//
-internal var gameAboutModel = GameAboutModel() //
+internal var gameAboutModel =  GameAboutModel() //
 internal var gameMassageManager: UIMethodImpl? = null
 
 
@@ -297,17 +297,17 @@ fun MutableList<BettingRecordBean>.convertMap(): MutableMap<Betting, BettingReco
 //验证下注的有效性
 internal fun List<BettingRecordBean>.verifyAdd(
     record: BettingRecordBean, areaBetConfigBean: AreaBetConfigBean?
-): GameAboutModel.BettingState {
+): BettingState {
     val currentBettingTotalMoney =
         filter { it.bettingArea.number == record.bettingArea.number }.sumOf { it.money }
-    if ((gameAboutModel.balance.value ?: 0) <= 5000) return GameAboutModel.BettingState.NO_MONEY_50
+    if ((gameAboutModel.balance.value ?: 0) <= 5000) return BettingState.NO_MONEY_50
     val totalMoney = filter { it.state == BettingStatus.TEMP }.sumOf { it.money }
     val moneyEnough = totalMoney <= gameAboutModel.balance.value!!
-    if (!moneyEnough) return GameAboutModel.BettingState.NO_MONEY
+    if (!moneyEnough) return BettingState.NO_MONEY
     if (areaBetConfigBean != null) {
-        if (currentBettingTotalMoney > areaBetConfigBean.maxLimit) return GameAboutModel.BettingState.OFFSET_MAX
+        if (currentBettingTotalMoney > areaBetConfigBean.maxLimit) return BettingState.OFFSET_MAX
     }
-    return GameAboutModel.BettingState.GO_ON
+    return BettingState.GO_ON
 }
 
 //生成指定注区的牌面展示对象

@@ -18,19 +18,19 @@ import com.cn.game.sdk2.base.BaseGameFragment
 import com.cn.game.sdk2.data.EventKey
 import com.cn.game.sdk2.data.bean.SelectAnnotationBean
 import com.cn.game.sdk2.databinding.FragDxdsBinding
-import com.cn.game.sdk2.utils.ext.ViewExt.isAdd
-import com.cn.game.sdk2.ui.view.game.MoneyOKView
 import com.cn.game.sdk2.ui.view.game.GameAreaView
+import com.cn.game.sdk2.ui.view.game.MoneyOKView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
 import com.cn.game.sdk2.utils.FlowBus
 import com.cn.game.sdk2.utils.ext.CommonExt.isCanGoOn
 import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
+import com.cn.game.sdk2.utils.ext.ViewExt.isAdd
 import com.cn.game.sdk2.utils.ext.ViewExt.locationOnScreen
 import com.cn.game.sdk2.websocket.bean.Betting
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
+import com.cn.game.sdk2.websocket.constants.GameStage
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.gameMassageManager
-import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 
 /**
  * Description:
@@ -70,7 +70,7 @@ abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
                     gameAboutModel.roundId != "0" &&
                     gameAboutModel.previousRoundId != "0" &&
                     gameAboutModel.roundId == gameAboutModel.previousRoundId
-        if (isCurrentRound && gameAboutModel.tempMap.isNotEmpty() && gameAboutModel.currentStage.value == GameAboutModel.Stage.NEW) {
+        if (isCurrentRound && gameAboutModel.tempMap.isNotEmpty() && gameAboutModel.currentStage.value == GameStage.NEW) {
             for (areaView in areaViewList) {
                 gameAboutModel.tempMap.forEach {
                     if (areaView.areaCode == it.key.number) {
