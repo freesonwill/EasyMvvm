@@ -93,7 +93,7 @@ object ViewHelper {
     /**
      * 显示帮助文档
      */
-    fun showHelpDialog(context: Context, isShow: Boolean = true) {
+    fun showHelpDialog(context: Context, isShow: Boolean = true, pageHeight: Int) {
         if (helpXPopupDialog != null) {
             when {
                 isShow && !helpXPopupDialog!!.isShow -> {
@@ -106,9 +106,7 @@ object ViewHelper {
             }
             return
         }
-        val (offsetY, height) = homeXPopupDialog!!.findViewById<View>(R.id.topLayout).let {
-            arrayOf(it.locationInWindow[1], it.height)
-        }
+        val (offsetY, height) = arrayOf(0, pageHeight)
         helpXPopupDialog = XPopup.Builder(context).isTouchThrough(false)
             .setPopupCallback(object : SimpleCallback() {
                 override fun onDismiss(popupView: BasePopupView?) {
