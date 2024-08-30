@@ -7,6 +7,7 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.webkit.RenderProcessGoneDetail
+import androidx.annotation.UiThread
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
@@ -294,51 +295,65 @@ class GameApp  private constructor(){
 
 
     interface OnSdkListener {
-
+        /**
+         * 登录游戏
+         * type: 1为成功. 其他为失败
+         * msg: 错误信息,只在失败时有值
+         */
         fun onLoginGame(type: Int, msg: String?)
 
+        /**
+         * 进入直播间
+         * type: 1为成功. 其他为失败
+         * msg: 错误信息,只在失败时有值
+         */
         fun onEnterLive(type: Int, msg: String)
 
+        /**
+         * 进入游戏
+         */
         fun onEnterGame()
 
+        /**
+         * 离开直播间
+         * liveId: 直播间id
+         * type: 1为成功. 其他为失败
+         * msg: 错误信息,只在失败时有值
+         */
         fun onLeaveLive(liveId: String,type: Int, msg: String?)
 
         /**
          * token失效
          */
-        fun onTokenLoseEffectiveness()
+        @UiThread fun onTokenLoseEffectiveness()
 
         /**
          * 游戏主界面切换的回调
          * isShowUp: true为打开，false为关闭
          */
-        fun onGameFloatingDetailViewStatus(isShowUp: Boolean)
+        @UiThread fun onGameFloatingDetailViewStatus(isShowUp: Boolean)
 
-        fun onHistoryOfBetAction()
+        /**
+         * 点击投注记录
+         */
+        @UiThread fun onHistoryOfBetAction()
 
-        fun onCustomerServiceAction()
+        /**
+         * 点击客服
+         */
+        @UiThread fun onCustomerServiceAction()
 
         /**
          * 余额不足
          */
-        fun onInsufficientBalance()
+        @UiThread fun onInsufficientBalance()
 
         /**
-        点击游戏大厅里除了sdk本身游戏外的回调
+         * 点击游戏大厅里除了sdk本身游戏外的回调
+         * data: 游戏item的json
          */
-        fun onClickOtherGame(gameId:Int)
-
+        @UiThread fun onClickOtherGameWithBlock(json:String)
     }
-
-
-//    interface SocketStatesCallback{
-//        fun onOpen()
-//        fun onClose(isNeedReconnect: Boolean)
-//    }
-//
-//    fun setSocketStatesCallback(callback: SocketStatesCallback){
-//        socketStatesCallback = callback
-//    }
 
 
     internal interface GameSdkKoinComponent : KoinComponent {

@@ -12,6 +12,9 @@ data class MoreGame(
     val icon:String
 ){
     var online:Int = 0
+
+    //是否是本地游戏
+    val isLocal get() = !icon.startsWith("http")
 }
 
 

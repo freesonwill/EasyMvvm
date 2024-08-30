@@ -11,10 +11,13 @@ import com.cn.game.sdk2.ui.helper.ViewHelper.bindViewPagerNewGame
 import com.cn.game.sdk2.ui.helper.ViewHelper.initGameViewPager2
 import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
+import com.cn.game.sdk2.websocket.appListener
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.drake.brv.annotaion.DividerOrientation
 import com.drake.brv.utils.dividerSpace
+import com.google.gson.Gson
 import com.lxj.xpopup.core.BottomPopupView
+import com.xcjh.base_lib2.utils.LogUtils
 import com.xcjh.base_lib2.utils.layoutInflater
 import com.xcjh.base_lib2.utils.view.clickNoRepeat
 
@@ -27,10 +30,15 @@ class GameListView(context: Context) : BottomPopupView(context) {
 
     var targetHeight: Int = 0
 
+    private var onItemClickListener:(item: GameHallItem) -> Unit = {
+        val dataStr = Gson().toJson(it)
+        LogUtils.d("onItemClick-->$dataStr")
+        appListener?.onClickOtherGameWithBlock(dataStr)
+    }
+
     override fun onCreate() {
         super.onCreate()
-        binding =
-            FragmentGamehallBinding.bind(popupImplView)
+        binding = FragmentGamehallBinding.bind(popupImplView)
         binding.lltRoot.layoutParams.also {
             it.height = targetHeight
             binding.lltRoot.layoutParams = it
@@ -64,6 +72,7 @@ class GameListView(context: Context) : BottomPopupView(context) {
         mViewBind.rvContent.layoutManager = GridLayoutManager(context, 4)
         val adapter = GameListAdapter()
         mViewBind.rvContent.adapter = adapter
+        adapter.onItemClickListener = onItemClickListener
         adapter.submitList(gameHallList)
         val pages = listOf(
             "热门"

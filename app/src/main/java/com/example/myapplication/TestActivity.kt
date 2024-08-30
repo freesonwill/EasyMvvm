@@ -71,7 +71,7 @@ class TestActivity : AppCompatActivity(), GameApp.OnSdkListener {
                             lifecycle.addObserver(object : DefaultLifecycleObserver {
                                 override fun onDestroy(owner: LifecycleOwner) {
                                     super.onDestroy(owner)
-                                    // GameApp.removeSdkListener()
+                                    // GameApp.x()
                                 }
                             })
                         }
@@ -141,8 +141,8 @@ class TestActivity : AppCompatActivity(), GameApp.OnSdkListener {
         }
     }
 
-    override fun onLeaveLive(liveId: String, type: Int, str: String?) {
-        "onLeaveLive->$str".loge()
+    override fun onLeaveLive(liveId: String, type: Int, msg: String?) {
+        "onLeaveLive->$msg".loge()
         btnOpen.text = "已离开房间"
     }
 
@@ -174,7 +174,7 @@ class TestActivity : AppCompatActivity(), GameApp.OnSdkListener {
 
     }
 
-    override fun onClickOtherGame(gameId: Int) {
+    override fun onClickOtherGameWithBlock(json: String) {
 
     }
 
@@ -182,6 +182,4 @@ class TestActivity : AppCompatActivity(), GameApp.OnSdkListener {
         GameApp.leaveLive()
         super.onDestroy()
     }
-
-
 }

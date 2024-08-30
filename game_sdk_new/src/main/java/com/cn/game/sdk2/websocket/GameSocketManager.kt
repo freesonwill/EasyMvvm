@@ -28,7 +28,7 @@ internal class GameSocketManager private constructor() : OnMessageListener {
         private var client: GameSocketClient? = null
         private var gameServerMessageConvertFactory: GameServerMessageConvertFactory? = null
 
-        @SuppressLint("StaticFieldLeak")
+        //@SuppressLint("StaticFieldLeak")
         private var INSTANCE: GameSocketManager? = null
         fun getInstance(): GameSocketManager? {
             if (INSTANCE == null) {
