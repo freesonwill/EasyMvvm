@@ -2,12 +2,11 @@ package com.cn.game.sdk2.ui.view.game
 
 import android.content.Context
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bumptech.glide.Glide
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.data.bean.GameHallItem
 import com.cn.game.sdk2.databinding.FragmentGamehallBinding
 import com.cn.game.sdk2.databinding.ItemGamehallPageBinding
-import com.cn.game.sdk2.databinding.ItemGamehallPageItemBinding
+import com.cn.game.sdk2.ui.adapter.GameListAdapter
 import com.cn.game.sdk2.ui.helper.ViewHelper.bindViewPagerNewGame
 import com.cn.game.sdk2.ui.helper.ViewHelper.initGameViewPager2
 import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
@@ -15,7 +14,6 @@ import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.drake.brv.annotaion.DividerOrientation
 import com.drake.brv.utils.dividerSpace
-import com.drake.brv.utils.setup
 import com.lxj.xpopup.core.BottomPopupView
 import com.xcjh.base_lib2.utils.layoutInflater
 import com.xcjh.base_lib2.utils.view.clickNoRepeat
@@ -62,27 +60,11 @@ class GameListView(context: Context) : BottomPopupView(context) {
         mViewBind.rvContent.dividerSpace(
             context.dp2px(20),
             DividerOrientation.HORIZONTAL
-        ).setup {
-            it.layoutManager = GridLayoutManager(context, 4)
-            addType<GameHallItem>(R.layout.item_gamehall_page_item)
-            onBind {
-                when (itemViewType) {
-                    R.layout.item_gamehall_page_item -> {
-                        getBinding<ItemGamehallPageItemBinding>().apply {
-                            val bean = _data as GameHallItem
-                            Glide.with(context).load(bean.url).into(ivGame)
-                            tvName.text = bean.name
-                            tvOnline.text = bean.onlineA
-                            if (bean.name == "快三") {
-                                root.clickNoRepeat(true) {
-                                    dismiss()
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }.models = gameHallList
+        )
+        mViewBind.rvContent.layoutManager = GridLayoutManager(context, 4)
+        val adapter = GameListAdapter()
+        mViewBind.rvContent.adapter = adapter
+        adapter.submitList(gameHallList)
         val pages = listOf(
             "热门"
         )
