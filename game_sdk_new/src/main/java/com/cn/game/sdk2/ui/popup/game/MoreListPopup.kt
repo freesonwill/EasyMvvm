@@ -3,6 +3,7 @@ package com.cn.game.sdk2.ui.popup.game
 import android.content.Context
 import android.view.View
 import androidx.core.view.isVisible
+import androidx.fragment.app.FragmentActivity
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.databinding.PopupCustomBubbleAttachBinding
 import com.cn.game.sdk2.ui.animator.AlphaPopupAnimator
@@ -96,8 +97,8 @@ class MoreListPopup private constructor(content: Context) : AttachPopupView(cont
     }
 
     private fun showGameList() {
-        val popupView = GameListView(context)
-        popupView.targetHeight = listener?.getSecondPopHeight() ?: 0
+        val popupView = listener?.let { GameListView(context, listener = it) }
+        popupView?.targetHeight = listener?.getSecondPopHeight() ?: 0
         XPopup.Builder(context)
             .isTouchThrough(false)
             .popupAnimation(PopupAnimation.TranslateFromBottom)
@@ -116,6 +117,7 @@ class MoreListPopup private constructor(content: Context) : AttachPopupView(cont
     }
 
     interface OnMoreListPopupListener {
+        fun getFragmentActivity(): FragmentActivity
         fun bindView(): View
         fun getSecondPopHeight(): Int
     }

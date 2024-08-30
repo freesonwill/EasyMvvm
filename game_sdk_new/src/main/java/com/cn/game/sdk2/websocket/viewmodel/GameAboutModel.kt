@@ -12,7 +12,6 @@ import com.cn.game.sdk2.websocket.bean.RoundInfoBean
 import com.cn.game.sdk2.websocket.constants.AgainDoubleState
 import com.cn.game.sdk2.websocket.constants.GameStage
 import com.cn.game.sdk2.websocket.helper.CountDownHelper
-import com.xcjh.base_lib2.base.BaseViewModel
 import com.xcjh.base_lib2.callback.livedata.UnPeekLiveData
 import game.mod.proc.yf.proto.res.GameRes
 import kotlinx.coroutines.*
@@ -294,6 +293,11 @@ internal class GameAboutModel  {
         }
         _moreGames.value = games
     }
+
+    fun getMoreGameList(): List<Int> {
+        return moreGames.value?.map { it.gameType }?.distinct() ?: listOf()
+    }
+
     //控制隐藏Fast3MainView
     val fast3MainFloatVisible: UnPeekLiveData<Boolean> = UnPeekLiveData()
 }

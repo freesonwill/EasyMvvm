@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="wrap_content"
+    android:layout_width="wrap_content"
+    android:layout_margin="0dp"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal">
+    <TextView
+        android:id="@+id/tvGameListTabItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:gravity="center"
+        android:layout_margin="0dp"
+        android:padding="0dp"
+        android:textColor="@color/g_9696b8"
+        android:textStyle="normal"
+        tools:text="熱門"/>
+</LinearLayout>
