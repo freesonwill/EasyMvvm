@@ -3,7 +3,9 @@ package com.xcjh.base_lib2
 import android.app.Application
 import android.content.Context
 import androidx.startup.Initializer
+import com.cn.game.sdk2.BuildConfig
 import com.xcjh.base_lib2.utils.LogUtils
+import com.xcjh.base_lib2.utils.LogUtilsExt
 
 /**
  * @Description:   模块初始化
@@ -19,13 +21,12 @@ class ModuleInitializer : Initializer<String> {
     override fun create(context: Context): String {
         application = context as Application
         LogUtils.getConfig()
-            //.setLogSwitch(BuildConfig.DEBUG)
-            .setTagPrefix(com.xcjh.base_lib2.utils.TAG)
+            .setLogSwitch(BuildConfig.DEBUG)
+            .setTagPrefix(LogUtilsExt.TAG)
             .setBorderSwitch(false)
             .setLogHeadSwitch(false)
             .setSingleTagSwitch(false)
             //.setGlobalTag("game_sdk")
-        //com.xcjh.base_lib2.utils.jetpackMvvmLog = true
         LogUtils.dTag(TAG, "ModuleInitializer--->create")
         return TAG
     }

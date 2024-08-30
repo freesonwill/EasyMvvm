@@ -6,9 +6,8 @@ import android.content.Context
 import android.os.Process
 import com.cn.game.sdk2.network.code.GameResCode
 import com.cn.game.sdk2.websocket.imp.UIMethodImpl
-import com.xcjh.base_lib2.utils.log.ProcessUtils
-import com.xcjh.base_lib2.utils.loge
-import com.xcjh.base_lib2.utils.logd
+import com.xcjh.base_lib2.utils.LogUtilsExt.logd
+import com.xcjh.base_lib2.utils.LogUtilsExt.loge
 import game.common.proto.ClientRes
 import game.mod.proc.yf.proto.res.GameRes
 import java.net.URI

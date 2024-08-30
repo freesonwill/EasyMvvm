@@ -27,7 +27,7 @@ import com.cn.game.sdk2.websocket.isNeedReconnect
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.xcjh.base_lib2.ModuleInitializer
-import com.xcjh.base_lib2.utils.loge
+import com.xcjh.base_lib2.utils.LogUtilsExt.loge
 import game.common.proto.ClientReq
 import game.mod.proc.yf.proto.req.GameReq
 import org.koin.android.ext.koin.androidContext

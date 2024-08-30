@@ -40,19 +40,15 @@ import com.cn.game.sdk2.websocket.sum
 import com.cn.game.sdk2.websocket.toMapByAreaCode
 import com.cn.game.sdk2.websocket.verifyDouble
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
-import com.xcjh.base_lib2.utils.logd
-import com.xcjh.base_lib2.utils.loge
-import com.xcjh.base_lib2.utils.logd
+import com.xcjh.base_lib2.utils.LogUtilsExt.logd
+import com.xcjh.base_lib2.utils.LogUtilsExt.loge
 import game.common.proto.ClientReq
 import game.common.proto.ClientRes
 import game.mod.proc.yf.proto.req.GameReq
 import game.mod.proc.yf.proto.req.GameReq.EnterMiniGame
 import game.mod.proc.yf.proto.res.GameRes
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.concurrent.ConcurrentHashMap
-import kotlin.random.Random
 
 /**
  * 提供ui层调用的统一对象

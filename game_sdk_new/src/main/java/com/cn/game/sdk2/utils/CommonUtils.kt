@@ -5,7 +5,6 @@ import android.view.View
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.xcjh.base_lib2.utils.LogUtils
-import com.xcjh.base_lib2.utils.TAG
 import java.util.Locale
 
 
@@ -15,7 +14,7 @@ import java.util.Locale
  * createTime   : 2024/6/27 17:05
  **/
 object CommonUtils {
-
+    private const val TAG:String = "CommonUtils"
 
     @JvmOverloads
     fun formatSeconds(totalSeconds: Int, format: String = "%02d:%02d"): String {

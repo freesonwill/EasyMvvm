@@ -16,7 +16,7 @@ import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
 import com.cn.game.sdk2.utils.ext.ViewExt.isAdd
 import com.cn.game.sdk2.websocket.imp.GameApp
 import com.cn.game.sdk2.websocket.tokenArray
-import com.xcjh.base_lib2.utils.loge
+import com.xcjh.base_lib2.utils.LogUtilsExt.loge
 import kotlin.random.Random
 
 

@@ -71,7 +71,7 @@ import com.gyf.immersionbar.ktx.navigationBarHeight
 import com.xcjh.base_lib2.base.fragment.BaseVmDbFragment
 import com.xcjh.base_lib2.utils.LogUtils
 import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
-import com.xcjh.base_lib2.utils.loge
+import com.xcjh.base_lib2.utils.LogUtilsExt.loge
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

@@ -8,8 +8,8 @@ import com.cn.game.sdk2.utils.ThreadUtils
 import com.cn.game.sdk2.utils.ext.CommonExt.isMainThread
 import com.cn.game.sdk2.websocket.imp.GameApp
 import com.xcjh.base_lib2.utils.LogUtils
-import com.xcjh.base_lib2.utils.loge
-import com.xcjh.base_lib2.utils.logd
+import com.xcjh.base_lib2.utils.LogUtilsExt.logd
+import com.xcjh.base_lib2.utils.LogUtilsExt.loge
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
