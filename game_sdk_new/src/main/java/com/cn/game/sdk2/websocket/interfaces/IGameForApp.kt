@@ -2,7 +2,7 @@ package com.cn.game.sdk2.websocket.interfaces
 
 import android.content.Context
 import android.view.View
-import com.cn.game.sdk2.data.bean.MoreGame
+import com.cn.game.sdk2.data.bean.GameHallItem
 import com.cn.game.sdk2.websocket.imp.GameApp
 
 interface IGameForApp {
@@ -100,6 +100,6 @@ interface IGameForApp {
      */
     fun openGameDialog(miniGameId:Int)
 
-    fun setMoreGames(moreGameList:List<MoreGame>)
+    fun setMoreGames(moreGameList:List<GameHallItem>)
     
 }

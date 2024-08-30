@@ -16,9 +16,9 @@ class GameListAdapter : BaseAdapter<GameHallItem, BaseViewHolder, ItemGamehallPa
         binding: ItemGamehallPageItemBinding,
         item: GameHallItem
     ) {
-        Glide.with(holder.itemView.context).load(item.url).into(binding.ivGame)
+        Glide.with(holder.itemView.context).load(item.icon).into(binding.ivGame)
         binding.tvName.text = item.name
-        binding.tvOnline.text = item.onlineA
+        binding.tvOnline.text = item.online.toString()
     }
 
     override fun createViewBinding(

@@ -11,7 +11,7 @@ import androidx.annotation.UiThread
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
-import com.cn.game.sdk2.data.bean.MoreGame
+import com.cn.game.sdk2.data.bean.GameHallItem
 import com.cn.game.sdk2.moduleList
 import com.cn.game.sdk2.ui.helper.ViewHelper
 import com.cn.game.sdk2.websocket.GameSocketManager
@@ -286,7 +286,7 @@ class GameApp  private constructor(){
          */
         @JvmStatic
         fun setMoreGames(moreGameList: String) {
-            val gameList = Gson().fromJson<List<MoreGame>>(moreGameList,object : TypeToken<List<MoreGame>>(){}.type)
+            val gameList = Gson().fromJson<List<GameHallItem>>(moreGameList,object : TypeToken<List<GameHallItem>>(){}.type)
             gameAboutModel.setMoreGames(gameList)
         }
 

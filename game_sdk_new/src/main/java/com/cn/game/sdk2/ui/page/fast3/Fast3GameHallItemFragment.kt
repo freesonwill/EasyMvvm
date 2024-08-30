@@ -33,7 +33,7 @@ class Fast3GameHallItemFragment : BaseVmVbFragment<Fast3GameHallItemViewModel, I
                         getBinding<ItemGamehallPageItemBinding>().apply {
                             val bean = _data as GameHallItem
                             tvName.text = bean.name
-                            tvOnline.text = bean.onlineA
+                            tvOnline.text = bean.online.toString()
                         }
                     }
                 }

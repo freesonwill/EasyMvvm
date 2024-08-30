@@ -1,6 +1,8 @@
 package com.cn.game.sdk2.ui.view.game
 
 import android.content.Context
+import androidx.core.view.doOnDetach
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.data.bean.GameHallItem
@@ -27,7 +29,7 @@ class GameListView(context: Context) : BottomPopupView(context) {
         R.layout.fragment_gamehall
 
     private lateinit var binding: FragmentGamehallBinding
-
+    private val adapter = GameListAdapter()
     var targetHeight: Int = 0
 
     private var onItemClickListener:(item: GameHallItem) -> Unit = {
@@ -44,19 +46,13 @@ class GameListView(context: Context) : BottomPopupView(context) {
             binding.lltRoot.layoutParams = it
         }
         initView()
+        createObserver()
     }
 
     private fun initView() {
         val gameHallList = mutableListOf<GameHallItem>().also { list->
             gameAboutModel.moreGames.value?.let { games->
-                for (item in games) {
-                    val hallItem = GameHallItem(
-                        item.icon,
-                        item.name,
-                        item.online.toString()
-                    )
-                    list.add(hallItem)
-                }
+                list.addAll(games)
             }
         }
         val mViewBind = ItemGamehallPageBinding.inflate(
@@ -70,7 +66,6 @@ class GameListView(context: Context) : BottomPopupView(context) {
             DividerOrientation.HORIZONTAL
         )
         mViewBind.rvContent.layoutManager = GridLayoutManager(context, 4)
-        val adapter = GameListAdapter()
         mViewBind.rvContent.adapter = adapter
         adapter.onItemClickListener = onItemClickListener
         adapter.submitList(gameHallList)
@@ -90,4 +85,17 @@ class GameListView(context: Context) : BottomPopupView(context) {
         }
     }
 
+    /**
+     * 注册数据监听
+     */
+    private fun createObserver(){
+        Observer<List<GameHallItem>> {
+            adapter.submitList(it)
+            adapter.notifyItemRangeChanged(0,it.size)
+        }.apply {
+            gameAboutModel.moreGames.observeForever(this)
+            //view销毁时移除observer
+            doOnDetach { gameAboutModel.moreGames.removeObserver(this) }
+        }
+    }
 }

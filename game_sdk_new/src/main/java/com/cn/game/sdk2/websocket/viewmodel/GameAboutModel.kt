@@ -1,7 +1,8 @@
 package com.cn.game.sdk2.websocket.viewmodel
 
+import androidx.annotation.UiThread
 import androidx.lifecycle.LiveData
-import com.cn.game.sdk2.data.bean.MoreGame
+import com.cn.game.sdk2.data.bean.GameHallItem
 import com.cn.game.sdk2.utils.ext.CommonExt.isMainThread
 import com.cn.game.sdk2.websocket.bean.AreaBetBean
 import com.cn.game.sdk2.websocket.bean.Betting
@@ -47,8 +48,8 @@ internal class GameAboutModel : BaseViewModel() {
     private val _toastErrorMessage = UnPeekLiveData<String>()
     private val _isShowGame = UnPeekLiveData<Boolean>()
     private val _isAllowedBet = UnPeekLiveData<Boolean>()
-    private val _moreGames = UnPeekLiveData<List<MoreGame>>()
-    var moreGames: LiveData<List<MoreGame>> = _moreGames
+    private val _moreGames = UnPeekLiveData<List<GameHallItem>>()
+    var moreGames: LiveData<List<GameHallItem>> = _moreGames
 
     var isOpen: Boolean = false
 
@@ -313,10 +314,18 @@ internal class GameAboutModel : BaseViewModel() {
     val countDownSecondsLD: UnPeekLiveData<Int> by countDownHelper::countDownSecondsLD
     val isCountDownStart by countDownHelper::isCountDownStart
     //设置游戏大厅数据
-    fun setMoreGames(data: List<MoreGame>) {
+    @UiThread fun setMoreGames(data: List<GameHallItem>) {
         _moreGames.value = data
     }
-
+    //更新游戏大厅在线人数·
+    @UiThread fun setMoreGameOnlines(onlines:List<Int>){
+        val games = _moreGames.value ?: return
+        games.forEachIndexed {index,item->
+            if(index >= onlines.size) return
+            item.online = onlines[index]
+        }
+        _moreGames.value = games
+    }
     //控制隐藏Fast3MainView
     val fast3MainFloatVisible: UnPeekLiveData<Boolean> = UnPeekLiveData()
 }

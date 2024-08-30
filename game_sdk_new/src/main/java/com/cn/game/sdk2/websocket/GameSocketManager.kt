@@ -197,7 +197,11 @@ internal class GameSocketManager private constructor() : OnMessageListener {
                 GameResCode.S2C_REFRESH_GAME_CONFIG -> gameServerMessageConvertFactory?.refreshGameConfig(
                     GameRes.RefreshGameConfig.parseFrom(byteArray)
                 )
-
+                GameResCode.S2C_REFRESH_WALI_GAME_PLAYER_COUNT ->{
+                    gameServerMessageConvertFactory?.refreshGamePlayerCount(
+                        GameRes.RefreshWaliGamePlayerCount.parseFrom(byteArray)
+                    )
+                }
             }
         }
     }

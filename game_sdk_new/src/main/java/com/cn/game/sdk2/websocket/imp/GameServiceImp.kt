@@ -2,6 +2,7 @@ package com.cn.game.sdk2.websocket.imp
 
 import com.cn.game.sdk2.network.code.GameReqCode
 import com.cn.game.sdk2.ui.helper.ViewHelper
+import com.cn.game.sdk2.utils.ThreadUtils
 import com.cn.game.sdk2.websocket.bean.Betting
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import com.cn.game.sdk2.websocket.GameServerMessageConvertFactory
@@ -47,7 +48,11 @@ import game.common.proto.ClientRes
 import game.mod.proc.yf.proto.req.GameReq
 import game.mod.proc.yf.proto.req.GameReq.EnterMiniGame
 import game.mod.proc.yf.proto.res.GameRes
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.random.Random
 
 /**
  * 提供ui层调用的统一对象
@@ -219,6 +224,13 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
         "进入直播间成功:$groupInfo".logd(tag)
         appListener?.runOnUiThread {
             onEnterLive(1, "")
+            /*测试游戏大厅在线人数代码
+            ThreadUtils.mainScope.launch {
+                while (true){
+                    delay(1000)
+                    gameAboutModel.setMoreGameOnlines(listOf(Random.nextInt(10000)))
+                }
+            }*/
         }
         gameAboutModel.isEnterGroup(true)
 
@@ -558,6 +570,12 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
         } else {
             "既不满足续压 钱也不够加倍".logd("GameServiceImpl")
             gameAboutModel.changeAgainDoubleState(GameAboutModel.AgainDoubleState.DOUBLE_CAN_NOT)
+        }
+    }
+
+    override fun refreshGamePlayerCount(parseFrom: GameRes.RefreshWaliGamePlayerCount) {
+        ThreadUtils.mainScope.launch {
+            gameAboutModel.setMoreGameOnlines(parseFrom.playerCountsList)
         }
     }
 }
