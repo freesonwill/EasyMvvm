@@ -12,16 +12,21 @@ import com.drake.brv.annotaion.DividerOrientation
 import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.dividerSpace
 import com.drake.brv.utils.setup
-import com.xcjh.base_lib2.base.fragment.BaseVmVbFragment
 import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
+import com.xcjh.base_lib2.base.fragment.BaseFragment
+import com.xcjh.base_lib2.base.fragment.viewBind
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class Fast3GameHallItemFragment : BaseVmVbFragment<Fast3GameHallItemViewModel, ItemGamehallPageBinding>() {
+class Fast3GameHallItemFragment : BaseFragment<Fast3GameHallItemViewModel, ItemGamehallPageBinding>() {
+
+    override val mBinding: ItemGamehallPageBinding by viewBind()
+
     override val mViewModel: Fast3GameHallItemViewModel  by viewModel()
+
     override fun initView(savedInstanceState: Bundle?) {
-        mViewBind.rvContent.itemAnimator = null
-        mViewBind.rvContent.layoutManager = LinearLayoutManager(requireContext())
-        mViewBind.rvContent.dividerSpace(
+        mBinding.rvContent.itemAnimator = null
+        mBinding.rvContent.layoutManager = LinearLayoutManager(requireContext())
+        mBinding.rvContent.dividerSpace(
             requireContext().dp2px(20),
             DividerOrientation.HORIZONTAL
         ).setup {
@@ -49,7 +54,7 @@ class Fast3GameHallItemFragment : BaseVmVbFragment<Fast3GameHallItemViewModel, I
 
     override fun createObserver() {
         mViewModel.hallItems.observe(viewLifecycleOwner) {
-            mViewBind.rvContent.bindingAdapter.models = it
+            mBinding.rvContent.bindingAdapter.models = it
         }
     }
 

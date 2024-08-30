@@ -1,20 +1,15 @@
 package com.xcjh.base_lib2.base.fragment
 
-import android.content.Context
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModelProvider
+import androidx.viewbinding.ViewBinding
 import com.cn.game.sdk2.websocket.imp.GameApp
 import com.xcjh.base_lib2.base.BaseViewModel
-
-import com.xcjh.base_lib2.utils.getVmClazz
+import java.lang.reflect.Method
 
 
 /**
@@ -23,33 +18,21 @@ import com.xcjh.base_lib2.utils.getVmClazz
  * 描述　: ViewModelFragment基类，自动把ViewModel注入Fragment
  */
 
-abstract class BaseVmFragment<VM : BaseViewModel> : Fragment(), GameApp.GameSdkKoinComponent {
-
-    private val handler = Handler(Looper.getMainLooper())
+abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), GameApp.GameSdkKoinComponent {
 
     //是否第一次加载
     private var isFirst: Boolean = true
 
+    protected abstract val mBinding: VB
     protected abstract val mViewModel: VM
-
-    lateinit var mActivity: AppCompatActivity
-
-    /**
-     * 当前Fragment绑定的视图布局
-     */
-    abstract fun layoutId(): Int
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(layoutId(), container, false)
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        mActivity = context as AppCompatActivity
+    ): View {
+        super.onCreateView(inflater, container, savedInstanceState)
+        return mBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -92,11 +75,11 @@ abstract class BaseVmFragment<VM : BaseViewModel> : Fragment(), GameApp.GameSdkK
     private fun onVisible() {
         if (lifecycle.currentState == Lifecycle.State.STARTED && isFirst) {
             // 延迟加载 防止 切换动画还没执行完毕时数据就已经加载好了，这时页面会有渲染卡顿
-            handler.postDelayed( {
+            mBinding.root.postDelayed( {
                 lazyLoadData()
                 //在Fragment中，只有懒加载过了才能开启网络变化监听
                 isFirst = false
-            },lazyLoadTime())
+            }, lazyLoadTime())
         }
     }
 
@@ -116,9 +99,21 @@ abstract class BaseVmFragment<VM : BaseViewModel> : Fragment(), GameApp.GameSdkK
     open fun lazyLoadTime(): Long {
         return 300
     }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        handler.removeCallbacksAndMessages(null)
-    }
 }
+
+inline fun <reified T : ViewBinding> Fragment.viewBind(): Lazy<T> =
+    lazy {
+        T::class.java.inflateMethod?.invoke(null, layoutInflater) as T
+    }
+
+val <T> Class<T>.inflateMethod: Method?
+    get() =
+        try {
+            getMethod("inflate", LayoutInflater::class.java)
+        } catch (e: NoSuchMethodException) {
+            e.printStackTrace()
+            null
+        } catch (e: SecurityException) {
+            e.printStackTrace()
+            null
+        }

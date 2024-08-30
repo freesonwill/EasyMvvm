@@ -4,17 +4,21 @@ import android.view.ViewTreeObserver
 import com.cn.game.sdk2.databinding.FragmentPairsDiceBinding
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
+import com.xcjh.base_lib2.base.fragment.viewBind
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
  * 对子
  */
 class PairsDiceFragment: BaseFast3Fragment<Fast3ViewModel, FragmentPairsDiceBinding>() {
+
+    override val mBinding: FragmentPairsDiceBinding by viewBind()
     override val mViewModel: Fast3ViewModel  by sharedViewModel()
+
     override fun initAreaViewList() {
-        mDatabind.model = mViewModel
-        mDatabind.apply {
+        mBinding.model = mViewModel
+        mBinding.lifecycleOwner = viewLifecycleOwner
+        mBinding.apply {
             areaViewList = mutableListOf(
                 gavPairsOne.also { it.flickerView = ivPairsOne },
                 gavPairsTwo.also { it.flickerView = ivPairsTwo },
@@ -52,7 +56,7 @@ class PairsDiceFragment: BaseFast3Fragment<Fast3ViewModel, FragmentPairsDiceBind
                     emitAnimCallBack.invoke()
                 }
             })
-            mViewModel.addMoneyOkViewLiveData.value =Pair(areaView,mDatabind.flRoot)
+            mViewModel.addMoneyOkViewLiveData.value =Pair(areaView,mBinding.flRoot)
         }
     }
 }

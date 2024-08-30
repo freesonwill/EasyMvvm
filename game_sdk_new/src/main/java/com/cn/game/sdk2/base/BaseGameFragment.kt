@@ -5,10 +5,10 @@ import android.os.Bundle
 import android.view.View
 import androidx.databinding.ViewDataBinding
 import com.xcjh.base_lib2.base.BaseViewModel
-import com.xcjh.base_lib2.base.fragment.BaseVmDbFragment
+import com.xcjh.base_lib2.base.fragment.BaseFragment
 
 
-abstract class BaseGameFragment <VM : BaseViewModel, VB : ViewDataBinding> : BaseVmDbFragment<VM, VB>() {
+abstract class BaseGameFragment <VM : BaseViewModel, VB : ViewDataBinding> : BaseFragment<VM, VB>() {
     protected val TAG = this::class.java.simpleName
 
     abstract override fun initView(savedInstanceState: Bundle?)

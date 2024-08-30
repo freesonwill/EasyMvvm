@@ -16,7 +16,7 @@ import com.cn.game.sdk2.ui.helper.ViewHelper.setTextBold
 import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
 import com.cn.game.sdk2.utils.tool.indicator.CommonPagerIndicator
 import com.drake.brv.utils.bindingAdapter
-import com.xcjh.base_lib2.base.fragment.BaseVmFragment
+import com.xcjh.base_lib2.base.fragment.BaseFragment
 import com.xcjh.base_lib2.utils.LogUtils
 import com.xcjh.base_lib2.utils.toHtml
 import net.lucode.hackware.magicindicator.MagicIndicator
@@ -62,12 +62,12 @@ object ViewExt {
         return rawX >= rawXY[0] && rawX <= (rawXY[0] + width) && rawY >= rawXY[1] && rawY <= (rawXY[1] + height)
     }
 
-    fun BaseVmFragment<*>.getDrawable(@DrawableRes id: Int): Drawable {
+    fun BaseFragment<*, *>.getDrawable(@DrawableRes id: Int): Drawable {
         return ContextCompat.getDrawable(requireContext(), id)!!
     }
 
     @ColorInt
-    fun BaseVmFragment<*>.getColor(@ColorRes id: Int): Int {
+    fun BaseFragment<*, *>.getColor(@ColorRes id: Int): Int {
         return ContextCompat.getColor(requireContext(), id)
     }
 
