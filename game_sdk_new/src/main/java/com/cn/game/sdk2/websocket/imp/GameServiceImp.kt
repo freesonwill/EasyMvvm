@@ -569,9 +569,7 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
         }
     }
 
-    override fun refreshGamePlayerCount(parseFrom: GameRes.RefreshWaliGamePlayerCount) {
-        ThreadUtils.mainScope.launch {
-            gameAboutModel.setMoreGameOnlines(parseFrom.playerCountsList)
-        }
+    override suspend fun refreshGamePlayerCount(parseFrom: GameRes.RefreshWaliGamePlayerCount) {
+        gameAboutModel.setMoreGameOnlines(parseFrom.playerCountsList)
     }
 }

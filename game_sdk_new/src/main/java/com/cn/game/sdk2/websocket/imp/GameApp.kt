@@ -14,6 +14,7 @@ import androidx.lifecycle.LifecycleOwner
 import com.cn.game.sdk2.data.bean.GameHallItem
 import com.cn.game.sdk2.moduleList
 import com.cn.game.sdk2.ui.helper.ViewHelper
+import com.cn.game.sdk2.utils.GsonUtils
 import com.cn.game.sdk2.websocket.GameSocketManager
 import com.cn.game.sdk2.websocket.appContext
 import com.cn.game.sdk2.websocket.appLifecycleEnable
@@ -281,12 +282,19 @@ class GameApp  private constructor(){
             gameAboutModel.isShowGame(true)
         }
 
-        /**
-         eg: [{"idp":0,"gameType":0,"name":"快三","weight":1,"direction":1,"icon":"https://www.baidu.com/img/flexible/logo/pc/result@2.png","online":9257}]
-         */
+        /// 传入wali游戏接口
+        /// 传入json字符串 json 格式:
+        /// [{
+        /// "idp":1,                //游戏Id
+        /// "gameType":1,           //游戏类型
+        /// "name":"捕鱼",            //游戏名称
+        /// "weight":1,              //权重排序
+        /// "direction":1,             //屏幕方向
+        /// "icon":"icon地址"           //icon地址
+        ///}]
         @JvmStatic
         fun setMoreGames(moreGameList: String) {
-            val gameList = Gson().fromJson<List<GameHallItem>>(moreGameList,object : TypeToken<List<GameHallItem>>(){}.type)
+            val gameList = GsonUtils.fromJson<List<GameHallItem>>(moreGameList,object : TypeToken<List<GameHallItem>>(){}.type)
             gameAboutModel.setMoreGames(gameList)
         }
 

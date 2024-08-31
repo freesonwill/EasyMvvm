@@ -16,7 +16,11 @@ class GameListAdapter : BaseAdapter<GameHallItem, BaseViewHolder, ItemGamehallPa
         binding: ItemGamehallPageItemBinding,
         item: GameHallItem
     ) {
-        Glide.with(holder.itemView.context).load(item.icon).into(binding.ivGame)
+        binding.ivGame.apply {
+            if(!item.iconIsLocal) Glide.with(holder.itemView.context).load(item.icon).into(binding.ivGame)
+            else setImageResource(item.icon.toInt())
+        }
+
         binding.tvName.text = item.name
         binding.tvOnline.text = item.online.toString()
     }

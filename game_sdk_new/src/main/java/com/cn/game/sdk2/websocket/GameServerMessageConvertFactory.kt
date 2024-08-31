@@ -90,5 +90,5 @@ interface GameServerMessageConvertFactory {
     /**
      * 刷新瓦利游戏人数
      */
-    fun refreshGamePlayerCount(parseFrom: GameRes.RefreshWaliGamePlayerCount)
+    suspend fun refreshGamePlayerCount(parseFrom: GameRes.RefreshWaliGamePlayerCount)
 }

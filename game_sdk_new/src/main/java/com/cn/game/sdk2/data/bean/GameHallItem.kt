@@ -11,5 +11,5 @@ data class GameHallItem(
     var online:Int = 0
 
     //是否是本地游戏
-    val isLocal get() = !icon.startsWith("http")
+    val iconIsLocal get() = !icon.startsWith("http")
 }

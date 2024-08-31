@@ -9,15 +9,22 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import com.cn.game.sdk2.data.EventKey
+import com.cn.game.sdk2.data.bean.GameHallItem
 import com.cn.game.sdk2.ui.helper.Fast3ToastHelper
 import com.cn.game.sdk2.utils.FlowBus
+import com.cn.game.sdk2.utils.GsonUtils
 import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
 import com.cn.game.sdk2.utils.ext.ViewExt.isAdd
 import com.cn.game.sdk2.websocket.imp.GameApp
 import com.cn.game.sdk2.websocket.tokenArray
 import com.xcjh.base_lib2.utils.LogUtilsExt.loge
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.random.Random
+import kotlin.random.nextInt
 
 
 class TestActivity : AppCompatActivity(), GameApp.OnSdkListener {
@@ -137,7 +144,26 @@ class TestActivity : AppCompatActivity(), GameApp.OnSdkListener {
                     llshow.addView(this, lp)
                 }
             }
-            GameApp.setMoreGames("[{\"idp\":0,\"gameType\":0,\"name\":\"快三\",\"weight\":1,\"direction\":1,\"icon\":\"https://www.baidu.com/img/flexible/logo/pc/result@2.png\",\"online\":9257}]");
+            lifecycleScope.launch {
+                val items = withContext(Dispatchers.IO){
+                    mutableListOf<GameHallItem>().apply {
+                        repeat(200) { id ->
+                            val gameType = Random.nextInt(6)
+                            val weight = Random.nextInt(10)
+                            val item = GameHallItem(
+                                id,
+                                gameType,
+                                weight,
+                                1,
+                                if(id % 2 == 0) R.drawable.game_sdk_kuai_icon_logo.toString() else "https://www.baidu.com/img/flexible/logo/pc/result@2.png",
+                                "快三${id}_$weight"
+                            )
+                            add(item)
+                        }
+                    }
+                }
+                GameApp.setMoreGames(GsonUtils.toJson(items));
+            }
         }
     }
 
