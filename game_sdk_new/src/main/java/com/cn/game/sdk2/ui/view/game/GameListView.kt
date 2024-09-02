@@ -50,6 +50,7 @@ class GameListView(context: Context) : BottomPopupView(context) {
         val dataStr = Gson().toJson(it)
         LogUtils.d("onItemClick-->$dataStr")
         appListener?.onClickOtherGameWithBlock(dataStr)
+        dismiss()
     }
 
     override fun onCreate() {
