@@ -168,7 +168,7 @@ class Fast3HelpPopup(context: Context, private val offsetY: Int, private val hei
             LogUtils.dTag(TAG, "addUpdateListener----->$start-->$end,toExpand:$toExpand")
         }
         mViewBind.close.clickNoRepeat(true) {
-            ViewHelper.showHelpDialog(context, false, height)
+            ViewHelper.instance.showHelpDialog(context, false, height)
         }
     }
 }

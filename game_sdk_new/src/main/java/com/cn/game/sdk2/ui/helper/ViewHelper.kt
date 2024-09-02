@@ -30,15 +30,21 @@ import java.lang.ref.WeakReference
  * author       : zhangsan
  * createTime   : 2024/6/13 17:43
  **/
-object ViewHelper {
-    private const val TAG: String = "ViewHelper"
+class ViewHelper {
 
-    enum class ViewFloatType {
+    companion object {
+        private const val TAG: String = "ViewHelper"
+        val instance: ViewHelper by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) {
+            ViewHelper()
+        }
+    }
+
+    private enum class ViewFloatType {
         FastView, FastViewOverlay, HomeXPopupDialog, HelpXPopupDialog
     }
 
     //弱引用防止view不能被回收
-    private var viewHolderMap = mutableMapOf<ViewFloatType, WeakReference<View>>()
+    private val viewHolderMap = mutableMapOf<ViewFloatType, WeakReference<View>>()
 
     private var homeXPopupDialog: BasePopupView?
         get() = viewHolderMap[ViewFloatType.HomeXPopupDialog]?.get() as BasePopupView?
@@ -173,7 +179,7 @@ object ViewHelper {
     }
 
 
-    fun showGameMainPopup(context: Context, isShow: Boolean) {
+    private fun showGameMainPopup(context: Context, isShow: Boolean) {
         tryCreateMainPopup(context)
         if (!isShow) {
             homeXPopupDialog?.dismiss()
@@ -251,5 +257,13 @@ object ViewHelper {
                     })
                 }
             }
+    }
+
+    fun clearAllView() {
+        fastView = null
+        fastViewOverlay = null
+        homeXPopupDialog = null
+        helpXPopupDialog = null
+        viewHolderMap.clear()
     }
 }

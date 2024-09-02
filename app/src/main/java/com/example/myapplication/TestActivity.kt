@@ -11,6 +11,7 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.cn.game.sdk2.data.EventKey
 import com.cn.game.sdk2.ui.helper.Fast3ToastHelper
+import com.cn.game.sdk2.ui.helper.ViewHelper
 import com.cn.game.sdk2.utils.FlowBus
 import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
 import com.cn.game.sdk2.utils.ext.ViewExt.isAdd
@@ -180,6 +181,7 @@ class TestActivity : AppCompatActivity(), GameApp.OnSdkListener {
 
     override fun onDestroy() {
         GameApp.leaveLive()
+        ViewHelper.instance.clearAllView()
         super.onDestroy()
     }
 

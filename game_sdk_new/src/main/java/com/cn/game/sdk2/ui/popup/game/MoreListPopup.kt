@@ -88,7 +88,7 @@ class MoreListPopup private constructor(content: Context) : AttachPopupView(cont
             }
             rlPopClickAssist.clickNoRepeat(true){
                 delayDismiss(100)
-                ViewHelper.showHelpDialog(context,true, listener?.setSecondPopHeight() ?: 0)
+                ViewHelper.instance.showHelpDialog(context,true, listener?.setSecondPopHeight() ?: 0)
             }
         }
     }
