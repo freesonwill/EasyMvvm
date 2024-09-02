@@ -1,7 +1,15 @@
 package com.cn.game.sdk2.data.bean
 
 data class GameHallItem(
-    val url:String,
+    val idp:Int,
+    val gameType:Int,
+    val weight:Int,
+    val direction:Int,
+    val icon:String,
     val name:String,
-    val onlineA:String
-)
+) {
+    var online:Int = 0
+
+    //是否是本地游戏
+    val iconIsLocal get() = !icon.startsWith("http")
+}

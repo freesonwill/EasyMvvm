@@ -5,12 +5,17 @@ import android.app.ActivityManager
 import android.content.Context
 import android.os.Process
 import com.cn.game.sdk2.network.code.GameResCode
+import com.cn.game.sdk2.utils.ThreadUtils
 import com.cn.game.sdk2.websocket.imp.UIMethodImpl
-import com.xcjh.base_lib2.utils.log.ProcessUtils
-import com.xcjh.base_lib2.utils.loge
-import com.xcjh.base_lib2.utils.logd
+import com.xcjh.base_lib2.utils.LogUtils
+import com.xcjh.base_lib2.utils.LogUtilsExt
+import com.xcjh.base_lib2.utils.LogUtilsExt.logd
+import com.xcjh.base_lib2.utils.LogUtilsExt.loge
 import game.common.proto.ClientRes
 import game.mod.proc.yf.proto.res.GameRes
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.net.URI
 
 
@@ -28,7 +33,7 @@ internal class GameSocketManager private constructor() : OnMessageListener {
         private var client: GameSocketClient? = null
         private var gameServerMessageConvertFactory: GameServerMessageConvertFactory? = null
 
-        @SuppressLint("StaticFieldLeak")
+        //@SuppressLint("StaticFieldLeak")
         private var INSTANCE: GameSocketManager? = null
         fun getInstance(): GameSocketManager? {
             if (INSTANCE == null) {
@@ -41,7 +46,9 @@ internal class GameSocketManager private constructor() : OnMessageListener {
             return INSTANCE
         }
     }
+    private val scope get() = ThreadUtils.mainScope
 
+    /******************* Method ***********************/
     fun initSocketClient(url: String) {
         if (isMainProcess()) {
             "initSocketClient".logd(tag)
@@ -197,7 +204,16 @@ internal class GameSocketManager private constructor() : OnMessageListener {
                 GameResCode.S2C_REFRESH_GAME_CONFIG -> gameServerMessageConvertFactory?.refreshGameConfig(
                     GameRes.RefreshGameConfig.parseFrom(byteArray)
                 )
-
+                GameResCode.S2C_REFRESH_WALI_GAME_PLAYER_COUNT ->{
+                    scope.launch(Dispatchers.Main) {
+                        val data = withContext(Dispatchers.IO) {
+                            val ret = GameRes.RefreshWaliGamePlayerCount.parseFrom(byteArray)
+                            LogUtils.d("onMessage player count is ${ret.playerCountsList.size}, ${ret.playerCountsList}")
+                            ret
+                        }
+                        gameServerMessageConvertFactory?.refreshGamePlayerCount(data)
+                    }
+                }
             }
         }
     }

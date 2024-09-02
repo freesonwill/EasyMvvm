@@ -7,12 +7,14 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.webkit.RenderProcessGoneDetail
+import androidx.annotation.UiThread
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
-import com.cn.game.sdk2.data.bean.MoreGame
+import com.cn.game.sdk2.data.bean.GameHallItem
 import com.cn.game.sdk2.moduleList
 import com.cn.game.sdk2.ui.helper.ViewHelper
+import com.cn.game.sdk2.utils.GsonUtils
 import com.cn.game.sdk2.websocket.GameSocketManager
 import com.cn.game.sdk2.websocket.appContext
 import com.cn.game.sdk2.websocket.appLifecycleEnable
@@ -26,7 +28,7 @@ import com.cn.game.sdk2.websocket.isNeedReconnect
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.xcjh.base_lib2.ModuleInitializer
-import com.xcjh.base_lib2.utils.loge
+import com.xcjh.base_lib2.utils.LogUtilsExt.loge
 import game.common.proto.ClientReq
 import game.mod.proc.yf.proto.req.GameReq
 import org.koin.android.ext.koin.androidContext
@@ -280,12 +282,19 @@ class GameApp  private constructor(){
             gameAboutModel.isShowGame(true)
         }
 
-        /**
-         eg: [{"idp":0,"gameType":0,"name":"快三","weight":1,"direction":1,"icon":"https://www.baidu.com/img/flexible/logo/pc/result@2.png","online":9257}]
-         */
+        /// 传入wali游戏接口
+        /// 传入json字符串 json 格式:
+        /// [{
+        /// "idp":1,                //游戏Id
+        /// "gameType":1,           //游戏类型
+        /// "name":"捕鱼",            //游戏名称
+        /// "weight":1,              //权重排序
+        /// "direction":1,             //屏幕方向
+        /// "icon":"icon地址"           //icon地址
+        ///}]
         @JvmStatic
         fun setMoreGames(moreGameList: String) {
-            val gameList = Gson().fromJson<List<MoreGame>>(moreGameList,object : TypeToken<List<MoreGame>>(){}.type)
+            val gameList = GsonUtils.fromJson<List<GameHallItem>>(moreGameList,object : TypeToken<List<GameHallItem>>(){}.type)
             gameAboutModel.setMoreGames(gameList)
         }
 
@@ -294,51 +303,65 @@ class GameApp  private constructor(){
 
 
     interface OnSdkListener {
-
+        /**
+         * 登录游戏
+         * type: 1为成功. 其他为失败
+         * msg: 错误信息,只在失败时有值
+         */
         fun onLoginGame(type: Int, msg: String?)
 
+        /**
+         * 进入直播间
+         * type: 1为成功. 其他为失败
+         * msg: 错误信息,只在失败时有值
+         */
         fun onEnterLive(type: Int, msg: String)
 
+        /**
+         * 进入游戏
+         */
         fun onEnterGame()
 
+        /**
+         * 离开直播间
+         * liveId: 直播间id
+         * type: 1为成功. 其他为失败
+         * msg: 错误信息,只在失败时有值
+         */
         fun onLeaveLive(liveId: String,type: Int, msg: String?)
 
         /**
          * token失效
          */
-        fun onTokenLoseEffectiveness()
+        @UiThread fun onTokenLoseEffectiveness()
 
         /**
          * 游戏主界面切换的回调
          * isShowUp: true为打开，false为关闭
          */
-        fun onGameFloatingDetailViewStatus(isShowUp: Boolean)
+        @UiThread fun onGameFloatingDetailViewStatus(isShowUp: Boolean)
 
-        fun onHistoryOfBetAction()
+        /**
+         * 点击投注记录
+         */
+        @UiThread fun onHistoryOfBetAction()
 
-        fun onCustomerServiceAction()
+        /**
+         * 点击客服
+         */
+        @UiThread fun onCustomerServiceAction()
 
         /**
          * 余额不足
          */
-        fun onInsufficientBalance()
+        @UiThread fun onInsufficientBalance()
 
         /**
-        点击游戏大厅里除了sdk本身游戏外的回调
+         * 点击游戏大厅里除了sdk本身游戏外的回调
+         * data: 游戏item的json
          */
-        fun onClickOtherGame(gameId:Int)
-
+        @UiThread fun onClickOtherGameWithBlock(json:String)
     }
-
-
-//    interface SocketStatesCallback{
-//        fun onOpen()
-//        fun onClose(isNeedReconnect: Boolean)
-//    }
-//
-//    fun setSocketStatesCallback(callback: SocketStatesCallback){
-//        socketStatesCallback = callback
-//    }
 
 
     internal interface GameSdkKoinComponent : KoinComponent {

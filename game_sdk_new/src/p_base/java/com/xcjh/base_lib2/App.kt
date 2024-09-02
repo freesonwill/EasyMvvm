@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
 import com.xcjh.base_lib2.manager.KtxActivityManger
-import com.xcjh.base_lib2.utils.loge
+import com.xcjh.base_lib2.utils.LogUtilsExt.loge
 
 val appContext: Application by lazy { App.appGame }
 open class App : Application(), Application.ActivityLifecycleCallbacks, ViewModelStoreOwner {

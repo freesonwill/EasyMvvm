@@ -3,6 +3,7 @@ package com.cn.game.sdk2.utils
 import android.util.Log
 import androidx.lifecycle.*
 import com.cn.game.sdk2.data.EventKey
+import com.xcjh.base_lib2.utils.LogUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -49,7 +50,7 @@ object FlowBus {
         }
 
         //暴露的公有对象用于接收消息
-        val events = _events.asSharedFlow()
+        private val events = _events.asSharedFlow()
 
         open fun obtainEvent(): MutableSharedFlow<T> =
             MutableSharedFlow(0, 1, BufferOverflow.DROP_OLDEST)
@@ -63,7 +64,7 @@ object FlowBus {
                         action(it)
                     } catch (e: Exception) {
                         e.printStackTrace()
-                        Log.e(TAG, "FlowBus - Error:$e")
+                        LogUtils.e(TAG, "FlowBus - Error:$e")
                     }
                 }
             }

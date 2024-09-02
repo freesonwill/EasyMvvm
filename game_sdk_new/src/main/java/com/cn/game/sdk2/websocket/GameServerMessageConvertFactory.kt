@@ -86,4 +86,9 @@ interface GameServerMessageConvertFactory {
     fun tokenLoseEffectiveness()
 
     fun refreshGameConfig(configs: RefreshGameConfig)
+
+    /**
+     * 刷新瓦利游戏人数
+     */
+    suspend fun refreshGamePlayerCount(parseFrom: GameRes.RefreshWaliGamePlayerCount)
 }

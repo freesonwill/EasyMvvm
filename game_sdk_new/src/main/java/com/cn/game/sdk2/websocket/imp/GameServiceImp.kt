@@ -2,6 +2,7 @@ package com.cn.game.sdk2.websocket.imp
 
 import com.cn.game.sdk2.network.code.GameReqCode
 import com.cn.game.sdk2.ui.helper.ViewHelper
+import com.cn.game.sdk2.utils.ThreadUtils
 import com.cn.game.sdk2.websocket.bean.Betting
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import com.cn.game.sdk2.websocket.GameServerMessageConvertFactory
@@ -39,14 +40,14 @@ import com.cn.game.sdk2.websocket.sum
 import com.cn.game.sdk2.websocket.toMapByAreaCode
 import com.cn.game.sdk2.websocket.verifyDouble
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
-import com.xcjh.base_lib2.utils.logd
-import com.xcjh.base_lib2.utils.loge
-import com.xcjh.base_lib2.utils.logd
+import com.xcjh.base_lib2.utils.LogUtilsExt.logd
+import com.xcjh.base_lib2.utils.LogUtilsExt.loge
 import game.common.proto.ClientReq
 import game.common.proto.ClientRes
 import game.mod.proc.yf.proto.req.GameReq
 import game.mod.proc.yf.proto.req.GameReq.EnterMiniGame
 import game.mod.proc.yf.proto.res.GameRes
+import kotlinx.coroutines.launch
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -219,6 +220,13 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
         "进入直播间成功:$groupInfo".logd(tag)
         appListener?.runOnUiThread {
             onEnterLive(1, "")
+            /*测试游戏大厅在线人数代码
+            ThreadUtils.mainScope.launch {
+                while (true){
+                    delay(1000)
+                    gameAboutModel.setMoreGameOnlines(listOf(Random.nextInt(10000)))
+                }
+            }*/
         }
         gameAboutModel.isEnterGroup(true)
 
@@ -559,5 +567,9 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
             "既不满足续压 钱也不够加倍".logd("GameServiceImpl")
             gameAboutModel.changeAgainDoubleState(GameAboutModel.AgainDoubleState.DOUBLE_CAN_NOT)
         }
+    }
+
+    override suspend fun refreshGamePlayerCount(parseFrom: GameRes.RefreshWaliGamePlayerCount) {
+        gameAboutModel.setMoreGameOnlines(parseFrom.playerCountsList)
     }
 }

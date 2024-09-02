@@ -8,6 +8,8 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
 import org.junit.Assert.*
+import kotlin.properties.Delegates
+import kotlin.reflect.KProperty
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -19,13 +21,37 @@ class ExampleUnitTest {
     @Test
     fun testForeach() {
         println("begin")
-        arrayOf(2,3,4).forEachIndexed { index, i ->
-            if(index == 1)return //相当于continue
+        arrayOf(2, 3, 4).forEachIndexed { index, i ->
+            if (index == 1) return //相当于continue
             println("testForeach--->${i}")
         }
         println("end")
     }
 
+    class Person {
+        var name: String by PersonName()
+        var age:Int by Delegates.observable(0) { prop,oldV,newV->
+            println("$oldV->$newV")
+        }
+    }
+    class PersonName {
+        operator fun getValue(thisRef: Any?, property: KProperty<*>): String {
+            return "$thisRef, thank you for delegating '${property.name}' to me!"
+        }
+
+        operator fun setValue(thisRef: Any?, property: KProperty<*>, value: String) {
+            println("$value has been assigned to '${property.name}' in $thisRef.")
+        }
+    }
+
+    @Test
+    fun testDelegate(){
+        val p = Person()
+/*        p.name.let(::println)
+        p.name = "lisi"
+        p.name.let(::println)*/
+        p.age = 30
+    }
 
     @Test
     fun testFlow() {

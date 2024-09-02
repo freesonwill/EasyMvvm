@@ -1,4 +1,4 @@
-package com.cn.game.sdk2.websocket.viewmodel
+package com.cn.game.sdk2.websocket.repository
 
 import androidx.annotation.UiThread
 import androidx.lifecycle.LiveData
@@ -10,26 +10,23 @@ import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import com.cn.game.sdk2.websocket.bean.BettingResponsesBean
 import com.cn.game.sdk2.websocket.bean.RoundInfoBean
 import com.cn.game.sdk2.websocket.helper.CountDownHelper
-import com.xcjh.base_lib2.base.BaseViewModel
 import com.xcjh.base_lib2.callback.livedata.UnPeekLiveData
 import game.mod.proc.yf.proto.res.GameRes
-import kotlinx.coroutines.*
 import java.util.concurrent.ConcurrentHashMap
 
-//internal
-internal class GameAboutModel : BaseViewModel() {
+/**
+ * 快三游戏仓库
+ */
+class Fast3GameRepository:BaseGameRepository() {
     enum class Stage {
         NEW, DEAL, SETTLE
     }
-
     enum class AgainDoubleState {
         NUll, AGAIN, AGAIN_CAN_NOT_50, DOUBLE, DOUBLE_CAN_NOT, DOUBLE_CAN_NOT_50
     }
-
     enum class BettingState {
         GO_ON, NO_MONEY, OFFSET_MIN, OFFSET_MAX, NO_MONEY_50, NO_NETWORK
     }
-
     private val _currentStage = UnPeekLiveData<Stage>()
     private val _currentAgainDoubleState = UnPeekLiveData<AgainDoubleState>()
     private val _balance = UnPeekLiveData<Long>()
@@ -309,16 +306,18 @@ internal class GameAboutModel : BaseViewModel() {
         _onceCountMoney.postValue(money)
     }
 
-    private val countDownHelper:CountDownHelper = CountDownHelper()
+    private val countDownHelper: CountDownHelper = CountDownHelper()
     var countDown:Int by countDownHelper::countDown
     val countDownSecondsLD: UnPeekLiveData<Int> by countDownHelper::countDownSecondsLD
     val isCountDownStart by countDownHelper::isCountDownStart
     //设置游戏大厅数据
-    @UiThread fun setMoreGames(data: List<GameHallItem>) {
+    @UiThread
+    fun setMoreGames(data: List<GameHallItem>) {
         _moreGames.value = data
     }
     //更新游戏大厅在线人数·
-    @UiThread fun setMoreGameOnlines(onlines:List<Int>){
+    @UiThread
+    fun setMoreGameOnlines(onlines:List<Int>){
         val games = _moreGames.value ?: return
         games.forEachIndexed {index,item->
             if(index >= onlines.size) return

@@ -19,6 +19,7 @@ import androidx.core.content.ContextCompat
 import com.cn.game.sdk2.R
 import com.xcjh.base_lib2.appContext
 import com.xcjh.base_lib2.manager.KtxActivityManger
+import com.xcjh.base_lib2.utils.LogUtilsExt.loge
 import java.util.*
 
 
