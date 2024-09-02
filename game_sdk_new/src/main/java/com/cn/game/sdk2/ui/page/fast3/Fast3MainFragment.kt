@@ -1218,7 +1218,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                     override fun bindView(): View {
                         return mBinding.llHomeMore
                     }
-                    override fun setSecondPopHeight(): Int {
+                    override fun getSecondPopHeight(): Int {
                         return mBinding.root.height
                     }
                 })
