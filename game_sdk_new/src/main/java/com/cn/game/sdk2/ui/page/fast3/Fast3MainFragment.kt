@@ -34,8 +34,6 @@ import com.cn.game.sdk2.databinding.ItemAnnotationListBinding
 import com.cn.game.sdk2.databinding.ItemBetHistoryBinding
 import com.cn.game.sdk2.ui.helper.AnimHelper
 import com.cn.game.sdk2.ui.helper.Fast3ToastHelper
-import com.cn.game.sdk2.ui.helper.ViewHelper.bindViewPagerNewGame
-import com.cn.game.sdk2.ui.helper.ViewHelper.initGameViewPager
 import com.cn.game.sdk2.ui.view.CenterLayoutManager
 import com.cn.game.sdk2.ui.view.ClickRecyclerView
 import com.cn.game.sdk2.ui.view.CommonLinearLayoutItemDecoration
@@ -66,6 +64,8 @@ import com.gyf.immersionbar.ktx.hasNavigationBar
 import com.gyf.immersionbar.ktx.navigationBarHeight
 import com.xcjh.base_lib2.utils.LogUtils
 import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
+import com.cn.game.sdk2.utils.ext.bindViewPagerNewGame
+import com.cn.game.sdk2.utils.ext.initGameViewPager
 import com.xcjh.base_lib2.base.fragment.BaseFragment
 import com.xcjh.base_lib2.base.fragment.viewBind
 import com.xcjh.base_lib2.utils.loge

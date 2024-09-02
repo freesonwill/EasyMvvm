@@ -12,7 +12,6 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cn.game.sdk2.R
-import com.cn.game.sdk2.ui.helper.ViewHelper.setTextBold
 import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
 import com.cn.game.sdk2.utils.tool.indicator.CommonPagerIndicator
 import com.drake.brv.utils.bindingAdapter
@@ -100,7 +99,7 @@ object ViewExt {
                     textSize = 14f
                     setPadding(15.dp2px, 0, 15.dp2px, 0)
 
-                    setTextBold(this, false)
+                    this.setTextBold(false)
                     //未选中颜色
                     normalColor = ContextCompat.getColor(context, R.color.c_8F9095)
                     //选中颜色
