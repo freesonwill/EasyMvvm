@@ -6,9 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModel
+import com.cn.game.sdk2.utils.ThreadUtils.launchWithCustomContext
+import com.cn.game.sdk2.utils.ThreadUtils.mainScope
 import androidx.viewbinding.ViewBinding
 import com.cn.game.sdk2.websocket.imp.GameApp
-import com.xcjh.base_lib2.base.BaseViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import java.lang.reflect.Method
 
 
@@ -18,10 +22,11 @@ import java.lang.reflect.Method
  * 描述　: ViewModelFragment基类，自动把ViewModel注入Fragment
  */
 
-abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), GameApp.GameSdkKoinComponent {
+abstract class BaseFragment<VM : ViewModel, VB : ViewBinding> : Fragment(), GameApp.GameSdkKoinComponent {
 
     //是否第一次加载
     private var isFirst: Boolean = true
+    private var lazyJob: Job? = null
 
     protected abstract val mBinding: VB
     protected abstract val mViewModel: VM
@@ -75,11 +80,12 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), 
     private fun onVisible() {
         if (lifecycle.currentState == Lifecycle.State.STARTED && isFirst) {
             // 延迟加载 防止 切换动画还没执行完毕时数据就已经加载好了，这时页面会有渲染卡顿
-            mBinding.root.postDelayed( {
+            lazyJob = mainScope.launchWithCustomContext(this.javaClass.simpleName) {
+                delay(lazyLoadTime())
                 lazyLoadData()
                 //在Fragment中，只有懒加载过了才能开启网络变化监听
                 isFirst = false
-            }, lazyLoadTime())
+            }
         }
     }
 
@@ -98,6 +104,11 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), 
      */
     open fun lazyLoadTime(): Long {
         return 300
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        lazyJob?.cancel()
     }
 }
 

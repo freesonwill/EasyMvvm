@@ -11,8 +11,8 @@ import com.cn.game.sdk2.databinding.FragDxdsBinding
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
 import com.cn.game.sdk2.websocket.bean.AreaBetBean
+import com.cn.game.sdk2.websocket.constants.GameStage
 import com.cn.game.sdk2.websocket.gameAboutModel
-import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 import com.xcjh.base_lib2.base.fragment.viewBind
 import com.xcjh.base_lib2.utils.LogUtils
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -121,7 +121,7 @@ class DXDSFragment : BaseFast3Fragment<Fast3ViewModel, FragDxdsBinding>() {
         gameAboutModel.currentStage.observe(viewLifecycleOwner) { stage ->
             when (stage) {
                 //开局将下注人数置为0
-                GameAboutModel.Stage.NEW -> {
+                GameStage.NEW -> {
                     moneyViewList.forEach { _, v ->
                         v.first.text = 0.toString()
                         v.second.text = 0.toString()

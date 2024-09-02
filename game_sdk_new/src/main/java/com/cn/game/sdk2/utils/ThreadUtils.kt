@@ -1,9 +1,12 @@
 package com.cn.game.sdk2.utils
 
-import android.os.Handler
-import android.os.Looper
+import com.xcjh.base_lib2.utils.LogUtils
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Description: 线程工具类
@@ -11,29 +14,54 @@ import kotlinx.coroutines.Dispatchers
  * createTime   : 2024/6/18 15:37
  **/
 object ThreadUtils {
-    private val HANDLER by lazy { Handler(Looper.getMainLooper()) }
 
     /**
-     * 运行在主线程
+     *  客製的CoroutineContext，用於傳遞Exception發生時的檔案名稱（TAG）
+     *
+     *  @property name 執行CoroutineScope的檔案名稱（TAG）
      */
-    fun runOnUiThread(delay:Long = 0,runnable: Runnable) {
-        if(delay > 0) { HANDLER.postDelayed(runnable,delay); return }
-        if (Looper.myLooper() == Looper.getMainLooper()) {
-            runnable.run()
-        } else {
-            HANDLER.post(runnable)
-        }
+    internal class CustomContext(val name: String): CoroutineContext.Element {
+        companion object Key : CoroutineContext.Key<CustomContext>
+        override val key: CoroutineContext.Key<*> get() = Key
     }
 
     /**
-     * 移除主线程的Callbacks
+     *  用於捕獲執行Coroutine時發生的錯誤，配合CustomContext使用
      */
-    fun removeCallbacks(runnable: Runnable){
-        HANDLER.removeCallbacks(runnable)
+    private val exceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
+        LogUtils.dTag(
+            coroutineContext[CustomContext]?.name ?: "UNKNOWN",
+            "Caught exception in CoroutineExceptionHandler: $throwable"
+        )
     }
 
     /**
      * 主线程Scope，提供给没有LifecycleScope，ViewModelScope的场景
      */
-    val mainScope by lazy { CoroutineScope(Dispatchers.Main) }
+    val mainScope by lazy {
+        CoroutineScope(Dispatchers.Main + exceptionHandler)
+    }
+
+    /**
+     *  監聽接口專用Scope
+     */
+    val appListenerScope by lazy {
+        CoroutineScope(Dispatchers.Main + exceptionHandler)
+    }
+
+    /**
+     *  啟動使用CustomContext的Coroutine，
+     *  方便傳入Tag，以便捕獲異常時辨識
+     *
+     *  @param tag 執行CoroutineScope的檔案名稱（TAG）
+     *  @param block 要執行的程式
+     *  @return 返回Job
+     */
+    fun CoroutineScope.launchWithCustomContext(
+        tag: String, block: suspend CoroutineScope.() -> Unit
+    ): Job {
+        return launch(CustomContext(tag)) {
+            block()
+        }
+    }
 }

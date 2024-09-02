@@ -8,10 +8,11 @@ import com.cn.game.sdk2.databinding.PopupCustomBubbleAttachBinding
 import com.cn.game.sdk2.ui.animator.AlphaPopupAnimator
 import com.cn.game.sdk2.ui.helper.ViewHelper
 import com.cn.game.sdk2.ui.view.game.GameListView
+import com.cn.game.sdk2.utils.ThreadUtils.appListenerScope
+import com.cn.game.sdk2.utils.ThreadUtils.launchWithCustomContext
 import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
 import com.cn.game.sdk2.websocket.appListener
 import com.cn.game.sdk2.websocket.gameAboutModel
-import com.cn.game.sdk2.websocket.runOnUiThread
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.AttachPopupView
 import com.lxj.xpopup.core.BasePopupView
@@ -26,6 +27,7 @@ import com.xcjh.base_lib2.utils.view.clickNoRepeat
 class MoreListPopup private constructor(content: Context) : AttachPopupView(content){
 
     companion object {
+        private const val TAG = "MoreListPopup"
         private var instance: BasePopupView? = null
 
         fun create(context: Context, listener: OnMoreListPopupListener) {
@@ -71,14 +73,14 @@ class MoreListPopup private constructor(content: Context) : AttachPopupView(cont
             rlPopClickService.isVisible = !gameAboutModel.simplifyMoreButtons
             rlPopClickRecords.clickNoRepeat(true) {
                 delayDismiss(100)
-                appListener?.runOnUiThread {
-                    onHistoryOfBetAction()
+                appListenerScope.launchWithCustomContext(TAG) {
+                    appListener?.onHistoryOfBetAction()
                 }
             }
             rlPopClickService.clickNoRepeat(true) {
                 delayDismiss(100)
-                appListener?.runOnUiThread {
-                    onCustomerServiceAction()
+                appListenerScope.launchWithCustomContext(TAG) {
+                    appListener?.onCustomerServiceAction()
                 }
             }
 

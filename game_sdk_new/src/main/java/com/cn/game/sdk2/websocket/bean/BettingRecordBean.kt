@@ -1,5 +1,6 @@
 package com.cn.game.sdk2.websocket.bean
 
+import com.cn.game.sdk2.websocket.constants.BettingStatus
 import java.io.Serializable
 
 /**

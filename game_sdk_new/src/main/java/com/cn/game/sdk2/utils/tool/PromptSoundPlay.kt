@@ -4,18 +4,16 @@ import android.content.Context
 import android.media.AudioManager
 import android.media.SoundPool
 import android.net.Uri
-import android.os.Handler
-import android.os.Looper
 import android.util.SparseArray
 import com.cn.game.sdk2.R
-import com.cn.game.sdk2.utils.ThreadUtils
+import com.cn.game.sdk2.utils.ThreadUtils.launchWithCustomContext
+import com.cn.game.sdk2.utils.ThreadUtils.mainScope
 import com.cn.game.sdk2.websocket.isEnableSound
 import com.xcjh.base_lib2.ModuleInitializer
 import com.xcjh.base_lib2.utils.LogUtils
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -97,7 +95,7 @@ object PromptSoundPlay {
             LogUtils.e("isPhoneSilent true, ignore playSound:${soundRawIds}")
             return
         }
-        ThreadUtils.mainScope.launch(Dispatchers.Main) {
+        mainScope.launchWithCustomContext(TAG) {
             val (volume, maxVolume, percent) = systemVolume
             //load sounds
             val soundIds = loadSound(soundRawIds.toList())
@@ -182,8 +180,6 @@ object PromptSoundPlay {
         Triple(volume, maxVolume,1f*volume/maxVolume)
     }
 
-    private val handler = Handler(Looper.getMainLooper())
-
     fun handleClick(): Boolean {
         val now = System.currentTimeMillis()
         if (now - lastClickTime >= debounceInterval) {
@@ -195,7 +191,11 @@ object PromptSoundPlay {
         // 等待清除点击时间
         if (!isWaitingForClear) {
             isWaitingForClear = true
-            handler.postDelayed(clearLastClickRunnable, debounceInterval)
+
+            mainScope.launchWithCustomContext(TAG) {
+                delay(debounceInterval)
+                clearLastClickRunnable.run()
+            }
         }
         return false
     }

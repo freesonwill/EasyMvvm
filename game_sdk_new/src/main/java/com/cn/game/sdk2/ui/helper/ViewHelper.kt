@@ -14,10 +14,11 @@ import com.cn.game.sdk2.data.enums.GAME_ID_ENUM
 import com.cn.game.sdk2.ui.page.fast3.Fast3MainFragment
 import com.cn.game.sdk2.ui.popup.HomeXPopupDialog
 import com.cn.game.sdk2.ui.popup.fast3.Fast3HelpPopup
+import com.cn.game.sdk2.utils.ThreadUtils.appListenerScope
+import com.cn.game.sdk2.utils.ThreadUtils.launchWithCustomContext
 import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
 import com.cn.game.sdk2.websocket.appListener
 import com.cn.game.sdk2.websocket.gameAboutModel
-import com.cn.game.sdk2.websocket.runOnUiThread
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
 import com.lxj.xpopup.interfaces.SimpleCallback
@@ -127,11 +128,11 @@ class ViewHelper {
 
                     override fun beforeShow(popupView: BasePopupView?) {
                         super.beforeShow(popupView)
+
                         fastViewOverlay?.isVisible = false
                         fastView?.isVisible = false
-//                    appListener?.onGameFloatingDetailViewStatus(true)
-                        appListener?.runOnUiThread {
-                            onGameFloatingDetailViewStatus(true)
+                        appListenerScope.launchWithCustomContext(TAG) {
+                            appListener?.onGameFloatingDetailViewStatus(true)
                         }
                         gameAboutModel.fast3MainFloatVisible.value = false
                     }
@@ -142,14 +143,14 @@ class ViewHelper {
 
                     override fun onDismiss(popupView: BasePopupView?) {
                         super.onDismiss(popupView)
+
                         gameAboutModel.fast3MainFloatVisible.value = true
                         if (!isShowOtherPop) {
                             fastViewOverlay?.isVisible = true
                             fastView?.isVisible = true
-//                        appListener?.onGameFloatingDetailViewStatus(false)
-                            //homeXPopupDialog = null
-                            appListener?.runOnUiThread {
-                                onGameFloatingDetailViewStatus(false)
+
+                            appListenerScope.launchWithCustomContext(TAG) {
+                                appListener?.onGameFloatingDetailViewStatus(false)
                             }
                         }
                     }
