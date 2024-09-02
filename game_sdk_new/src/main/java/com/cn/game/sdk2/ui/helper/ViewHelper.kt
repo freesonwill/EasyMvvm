@@ -1,6 +1,5 @@
 package com.cn.game.sdk2.ui.helper
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Paint
 import android.view.LayoutInflater
@@ -13,10 +12,8 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentPagerAdapter
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
@@ -25,12 +22,13 @@ import com.cn.game.sdk2.data.enums.GAME_ID_ENUM
 import com.cn.game.sdk2.ui.page.fast3.Fast3MainFragment
 import com.cn.game.sdk2.ui.popup.HomeXPopupDialog
 import com.cn.game.sdk2.ui.popup.fast3.Fast3HelpPopup
+import com.cn.game.sdk2.utils.ThreadUtils.appListenerScope
+import com.cn.game.sdk2.utils.ThreadUtils.launchWithCustomContext
 import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
 import com.cn.game.sdk2.utils.ext.ViewExt.locationInWindow
 import com.cn.game.sdk2.utils.tool.indicator.CommonPagerIndicator
 import com.cn.game.sdk2.websocket.appListener
 import com.cn.game.sdk2.websocket.gameAboutModel
-import com.cn.game.sdk2.websocket.runOnUiThread
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
 import com.lxj.xpopup.interfaces.SimpleCallback
@@ -144,11 +142,11 @@ object ViewHelper {
 
                     override fun beforeShow(popupView: BasePopupView?) {
                         super.beforeShow(popupView)
+
                         fastViewOverlay?.isVisible = false
                         fastView?.isVisible = false
-//                    appListener?.onGameFloatingDetailViewStatus(true)
-                        appListener?.runOnUiThread {
-                            onGameFloatingDetailViewStatus(true)
+                        appListenerScope.launchWithCustomContext(TAG) {
+                            appListener?.onGameFloatingDetailViewStatus(true)
                         }
                         gameAboutModel.fast3MainFloatVisible.value = false
                     }
@@ -159,14 +157,14 @@ object ViewHelper {
 
                     override fun onDismiss(popupView: BasePopupView?) {
                         super.onDismiss(popupView)
+
                         gameAboutModel.fast3MainFloatVisible.value = true
                         if (!isShowOtherPop) {
                             fastViewOverlay?.isVisible = true
                             fastView?.isVisible = true
-//                        appListener?.onGameFloatingDetailViewStatus(false)
-                            //homeXPopupDialog = null
-                            appListener?.runOnUiThread {
-                                onGameFloatingDetailViewStatus(false)
+
+                            appListenerScope.launchWithCustomContext(TAG) {
+                                appListener?.onGameFloatingDetailViewStatus(false)
                             }
                         }
                     }

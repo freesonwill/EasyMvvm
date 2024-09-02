@@ -439,13 +439,6 @@ fun MutableList<BettingRecordBean>.double(): MutableMap<Betting, BettingRecordBe
     return doubleMap
 }
 
-inline fun <OnSdkListener> OnSdkListener.runOnUiThread(crossinline function: OnSdkListener.() -> Unit): OnSdkListener {
-    ThreadUtils.runOnUiThread(0) {
-        function()
-    }
-    return this
-}
-
 //没用 暂时不删
 fun <K> Map<K, BettingRecordBean>.copy(): MutableMap<K, BettingRecordBean> {
     val newMap = mutableMapOf<K, BettingRecordBean>()

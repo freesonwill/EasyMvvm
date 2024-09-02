@@ -1,5 +1,7 @@
 package com.cn.game.sdk2.websocket.imp
 
+import com.cn.game.sdk2.utils.ThreadUtils.appListenerScope
+import com.cn.game.sdk2.utils.ThreadUtils.launchWithCustomContext
 import com.cn.game.sdk2.websocket.GameSocketClient
 import com.cn.game.sdk2.websocket.GameSocketManager
 import com.cn.game.sdk2.websocket.appListener
@@ -17,7 +19,6 @@ import com.cn.game.sdk2.websocket.generateUiBean
 import com.cn.game.sdk2.websocket.getBeanById
 import com.cn.game.sdk2.websocket.getMoneyByState
 import com.cn.game.sdk2.websocket.merge
-import com.cn.game.sdk2.websocket.runOnUiThread
 import com.cn.game.sdk2.websocket.verifyAdd
 import com.cn.game.sdk2.websocket.verifyCommit
 import com.cn.game.sdk2.websocket.verifyDouble
@@ -28,6 +29,7 @@ import game.mod.proc.yf.proto.req.GameReq
 internal class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceImp(client) {
 
     companion object {
+        private const val TAG = "UIMethodImpl"
         @JvmStatic
         fun generate(client: GameSocketClient): UIMethodImpl {
             return UIMethodImpl(client)
@@ -105,8 +107,9 @@ internal class UIMethodImpl private constructor(client: GameSocketClient) : Game
                     bettingStepList.generateUiBean(recordBean.bettingArea),
                     null
                 )
-                appListener?.runOnUiThread {
-                    onInsufficientBalance()
+
+                appListenerScope.launchWithCustomContext(TAG) {
+                    appListener?.onInsufficientBalance()
                 }
             }
 
@@ -118,8 +121,9 @@ internal class UIMethodImpl private constructor(client: GameSocketClient) : Game
                     bettingStepList.generateUiBean(recordBean.bettingArea),
                     null
                 )
-                appListener?.runOnUiThread {
-                    onInsufficientBalance()
+
+                appListenerScope.launchWithCustomContext(TAG) {
+                    appListener?.onInsufficientBalance()
                 }
             }
 

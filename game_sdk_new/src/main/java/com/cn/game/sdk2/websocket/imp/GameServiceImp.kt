@@ -2,9 +2,8 @@ package com.cn.game.sdk2.websocket.imp
 
 import com.cn.game.sdk2.network.code.GameReqCode
 import com.cn.game.sdk2.ui.helper.ViewHelper
-import com.cn.game.sdk2.utils.ThreadUtils
-import com.cn.game.sdk2.websocket.bean.Betting
-import com.cn.game.sdk2.websocket.bean.BettingRecordBean
+import com.cn.game.sdk2.utils.ThreadUtils.appListenerScope
+import com.cn.game.sdk2.utils.ThreadUtils.launchWithCustomContext
 import com.cn.game.sdk2.websocket.GameServerMessageConvertFactory
 import com.cn.game.sdk2.websocket.GameSocketClient
 import com.cn.game.sdk2.websocket.againIfMoneyEnough
@@ -37,12 +36,10 @@ import com.cn.game.sdk2.websocket.isNotEmpty
 import com.cn.game.sdk2.websocket.isTokenValid
 import com.cn.game.sdk2.websocket.nativeLib
 import com.cn.game.sdk2.websocket.returnTemp
-import com.cn.game.sdk2.websocket.runOnUiThread
 import com.cn.game.sdk2.websocket.setCommittedState
 import com.cn.game.sdk2.websocket.sum
 import com.cn.game.sdk2.websocket.toMapByAreaCode
 import com.cn.game.sdk2.websocket.verifyDouble
-import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 import com.xcjh.base_lib2.utils.LogUtilsExt.logd
 import com.xcjh.base_lib2.utils.LogUtilsExt.loge
 import game.common.proto.ClientReq
@@ -50,7 +47,6 @@ import game.common.proto.ClientRes
 import game.mod.proc.yf.proto.req.GameReq
 import game.mod.proc.yf.proto.req.GameReq.EnterMiniGame
 import game.mod.proc.yf.proto.res.GameRes
-import kotlinx.coroutines.launch
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -146,16 +142,19 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
         gameAboutModel.setLoginResult(true)
         refreshScore()
         enterInfo()
-        appListener?.runOnUiThread {
-            onLoginGame(1, "")
+
+        appListenerScope.launchWithCustomContext(tag) {
+            appListener?.onLoginGame(1, "")
         }
     }
 
     override fun loginError(errorMessage: ClientRes.ErrorMessage) {
         isLogin = false
-        appListener?.runOnUiThread {
-            onLoginGame(errorMessage.code, errorMessage.desc)
+
+        appListenerScope.launchWithCustomContext(tag) {
+            appListener?.onLoginGame(errorMessage.code, errorMessage.desc)
         }
+
         gameAboutModel.loginErrorMessage = errorMessage.desc
         gameAboutModel.setLoginResult(false)
 
@@ -221,16 +220,17 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
     override fun groupInfo(groupInfo: GameRes.GroupInfo) {
         isEnterRoom = true
         "进入直播间成功:$groupInfo".logd(tag)
-        appListener?.runOnUiThread {
-            onEnterLive(1, "")
+        appListenerScope.launchWithCustomContext(tag) {
+            appListener?.onEnterLive(1, "")
             /*测试游戏大厅在线人数代码
-            ThreadUtils.mainScope.launch {
-                while (true){
+            mainScope.launchWithCustomContext(tag) {
+                while (true) {
                     delay(1000)
                     gameAboutModel.setMoreGameOnlines(listOf(Random.nextInt(10000)))
                 }
             }*/
         }
+
         gameAboutModel.isEnterGroup(true)
 
         gameAboutModel.gameList = groupInfo.miniGameBasicInfoListList
@@ -299,9 +299,11 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
         isEnterRoom = false
         gameAboutModel.liveId = ""
         gameAboutModel.isLeaveGroup(true)
-        appListener?.runOnUiThread {
-            onLeaveLive(gameAboutModel.liveId, 1,"")
+
+        appListenerScope.launchWithCustomContext(tag) {
+            appListener?.onLeaveLive(gameAboutModel.liveId, 1, "")
         }
+
         "离开直播间：$leave".logd(tag)
     }
 
@@ -315,8 +317,9 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
         "进入游戏 ->${miniGame}".logd(tag)
         gameAboutModel.isEnterGameSuccess = true
         checkAgainNew()
-        appListener?.runOnUiThread {
-            onEnterGame()
+
+        appListenerScope.launchWithCustomContext(tag) {
+            appListener?.onEnterGame()
         }
     }
 
@@ -357,8 +360,9 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
                 isTokenValid = false
                 gameAboutModel.bettingMessage = "网络连接超时"
                 gameAboutModel.setToastErrorMessage(gameAboutModel.bettingMessage)
-                appListener?.runOnUiThread {
-                    onTokenLoseEffectiveness()
+
+                appListenerScope.launchWithCustomContext(tag) {
+                    appListener?.onTokenLoseEffectiveness()
                 }
             }
 
@@ -367,8 +371,9 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
                 isTokenValid = false
                 gameAboutModel.bettingMessage = "账号在其他设备登录，您已下线"
                 gameAboutModel.setToastErrorMessage(gameAboutModel.bettingMessage)
-                appListener?.runOnUiThread {
-                    onTokenLoseEffectiveness()
+
+                appListenerScope.launchWithCustomContext(tag) {
+                    appListener?.onTokenLoseEffectiveness()
                 }
             }
 
@@ -512,8 +517,9 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
         "登录失效，请重新登录".logd(tag)
         isTokenValid = false
         gameAboutModel.setToastErrorMessage("登录失效，请重新登录")
-        appListener?.runOnUiThread {
-            onTokenLoseEffectiveness()
+
+        appListenerScope.launchWithCustomContext(tag) {
+            appListener?.onTokenLoseEffectiveness()
         }
     }
 
