@@ -67,7 +67,7 @@ import com.cn.game.sdk2.utils.ext.bindViewPagerNewGame
 import com.cn.game.sdk2.utils.ext.initGameViewPager
 import com.xcjh.base_lib2.base.fragment.BaseFragment
 import com.xcjh.base_lib2.base.fragment.viewBind
-import com.xcjh.base_lib2.utils.loge
+import com.xcjh.base_lib2.utils.LogUtilsExt.loge
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
