@@ -16,11 +16,11 @@
         <net.lucode.hackware.magicindicator.MagicIndicator
             android:id="@+id/magicIndicator"
             android:layout_width="match_parent"
-            android:layout_height="17dp"
+            android:layout_height="20dp"
             android:layout_centerHorizontal="true"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="@dimen/dp_10"
-            android:layout_marginEnd="5dp"
+            android:layout_marginTop="11.5dp"
+            android:layout_marginEnd="37dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -41,8 +41,8 @@
             android:id="@+id/close"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginEnd="13dp"
+            android:layout_marginTop="11.5dp"
+            android:layout_marginEnd="12dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/game_sdk_ic_close" />
