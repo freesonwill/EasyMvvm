@@ -11,6 +11,7 @@ import com.cn.game.sdk2.utils.ThreadUtils.launchWithCustomContext
 import com.cn.game.sdk2.utils.ThreadUtils.mainScope
 import androidx.viewbinding.ViewBinding
 import com.cn.game.sdk2.websocket.imp.GameApp
+import com.xcjh.base_lib2.base.BaseViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import java.lang.reflect.Method
