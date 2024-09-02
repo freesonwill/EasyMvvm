@@ -39,28 +39,29 @@ import com.cn.game.sdk2.ui.helper.AnimHelper
 import com.cn.game.sdk2.ui.helper.Fast3ToastHelper
 import com.cn.game.sdk2.ui.helper.ViewHelper.bindViewPagerNewGame
 import com.cn.game.sdk2.ui.helper.ViewHelper.initGameViewPager
+import com.cn.game.sdk2.ui.popup.game.MoreListPopup
 import com.cn.game.sdk2.ui.view.CenterLayoutManager
 import com.cn.game.sdk2.ui.view.ClickRecyclerView
 import com.cn.game.sdk2.ui.view.CommonLinearLayoutItemDecoration
-import com.cn.game.sdk2.ui.popup.game.MoreListPopup
-import com.cn.game.sdk2.ui.view.game.MoneyOKView
 import com.cn.game.sdk2.ui.view.game.GameAreaView
+import com.cn.game.sdk2.ui.view.game.MoneyOKView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
 import com.cn.game.sdk2.utils.FlowBus
 import com.cn.game.sdk2.utils.ext.BizExt.isLeopard
 import com.cn.game.sdk2.utils.ext.CommonExt.formatRealMoney
 import com.cn.game.sdk2.utils.ext.CommonExt.isCanGoOn
 import com.cn.game.sdk2.utils.ext.CommonExt.toPinyin
+import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
 import com.cn.game.sdk2.utils.ext.ViewExt.getDrawable
 import com.cn.game.sdk2.utils.ext.ViewExt.isAdd
 import com.cn.game.sdk2.utils.ext.ViewExt.locationOnScreen
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import com.cn.game.sdk2.websocket.bean.RoundInfoBean
+import com.cn.game.sdk2.websocket.constants.AgainDoubleState
+import com.cn.game.sdk2.websocket.constants.GameStage
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.gameMassageManager
-import com.cn.game.sdk2.websocket.imp.GameApp
-import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 import com.drake.brv.annotaion.DividerOrientation
 import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.dividerSpace
@@ -70,15 +71,12 @@ import com.gyf.immersionbar.ktx.hasNavigationBar
 import com.gyf.immersionbar.ktx.navigationBarHeight
 import com.xcjh.base_lib2.base.fragment.BaseVmDbFragment
 import com.xcjh.base_lib2.utils.LogUtils
-import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
 import com.xcjh.base_lib2.utils.LogUtilsExt.loge
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
-
 
 class Fast3MainFragment(parentContext : Context) : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>() {
     override val mViewModel: Fast3ViewModel  by sharedViewModel()
@@ -266,20 +264,20 @@ class Fast3MainFragment(parentContext : Context) : BaseVmDbFragment<Fast3ViewMod
                 "updateGameStage-->${it},countDown:${mViewModel.countDown},localGameStage:${mViewModel.localGameStage}"
             )
             if (mViewModel.localGameStage == it) return@let
-            mViewModel.isClickOperation = it == GameAboutModel.Stage.NEW
-            mDatabind.txtHomeTime.isVisible = it == GameAboutModel.Stage.NEW
-            mDatabind.txtHomeUnit.isVisible = it == GameAboutModel.Stage.NEW
+            mViewModel.isClickOperation = it == GameStage.NEW
+            mDatabind.txtHomeTime.isVisible = it == GameStage.NEW
+            mDatabind.txtHomeUnit.isVisible = it == GameStage.NEW
             mViewModel.localGameStage = it
             when (it) {
-                GameAboutModel.Stage.NEW -> {
+                GameStage.NEW -> {
                     onStartBetting()
                 }
 
-                GameAboutModel.Stage.DEAL -> {
+                GameStage.DEAL -> {
                     onStartDrawing()
                 }
 
-                GameAboutModel.Stage.SETTLE -> {
+                GameStage.SETTLE -> {
                     onStartSetting()
                 }
             }
@@ -331,7 +329,7 @@ class Fast3MainFragment(parentContext : Context) : BaseVmDbFragment<Fast3ViewMod
 
             //暂时解决筹码栏被隐藏问题
             delay(500)
-            if (mViewModel.gameState == GameAboutModel.Stage.NEW && !mDatabind.betteLayout.isVisible) {
+            if (mViewModel.gameState == GameStage.NEW && !mDatabind.betteLayout.isVisible) {
                 resetBetteRecyclerVisible()
             }
         }
@@ -598,12 +596,12 @@ class Fast3MainFragment(parentContext : Context) : BaseVmDbFragment<Fast3ViewMod
 
         gameAboutModel.countDownSecondsLD.observe(viewLifecycleOwner) { seconds ->
             //Log.d(TAG,"countdown: seconds:$seconds")
-            if (mViewModel.gameState == GameAboutModel.Stage.NEW && seconds in 1..5) {
+            if (mViewModel.gameState == GameStage.NEW && seconds in 1..5) {
                 if (gameAboutModel.fast3MainFloatVisible.value == false)
                     PromptSoundPlay.countdownGameTip()
             }
             if (seconds == 0) {
-                if (mViewModel.gameState == GameAboutModel.Stage.NEW) {
+                if (mViewModel.gameState == GameStage.NEW) {
                     lifecycleScope.launch {
                         playAlphaAnimTogether(
                             arrayOf(mDatabind.txtHomeStatic),
@@ -618,8 +616,8 @@ class Fast3MainFragment(parentContext : Context) : BaseVmDbFragment<Fast3ViewMod
                             canReplace = false
                         )
                         //防止断网状态
-                        if (mViewModel.gameState != GameAboutModel.Stage.DEAL)
-                            gameAboutModel.changeStage(GameAboutModel.Stage.DEAL)
+                        if (mViewModel.gameState != GameStage.DEAL)
+                            gameAboutModel.changeStage(GameStage.DEAL)
                     }
                 }
             } else {
@@ -775,25 +773,26 @@ class Fast3MainFragment(parentContext : Context) : BaseVmDbFragment<Fast3ViewMod
     private fun updateAgainDoubleUi() {
         mDatabind.apply {
             when (gameAboutModel.currentAgainDoubleState.value) {
-                null, GameAboutModel.AgainDoubleState.NUll, GameAboutModel.AgainDoubleState.AGAIN_CAN_NOT_50 -> {
+                null, AgainDoubleState.NUll, AgainDoubleState.AGAIN_CAN_NOT_50 -> {
                     ivXuya.isVisible = true
                     ivXuya.setImageResource(R.drawable.game_sdk_icon_xuya_gray)
                     ivMultiple2.isVisible = false
                 }
 
-                GameAboutModel.AgainDoubleState.AGAIN -> {
+                AgainDoubleState.AGAIN -> {
                     ivXuya.isVisible = true
                     ivXuya.setImageResource(R.drawable.game_sdk_icon_xuya)
                     ivMultiple2.isVisible = false
                 }
 
-                GameAboutModel.AgainDoubleState.DOUBLE -> {
+                AgainDoubleState.DOUBLE -> {
                     ivXuya.isVisible = false
                     ivMultiple2.isVisible = true
                     ivMultiple2.setImageResource(R.drawable.game_sdk_icon_multiple2)
                 }
 
-                GameAboutModel.AgainDoubleState.DOUBLE_CAN_NOT, GameAboutModel.AgainDoubleState.DOUBLE_CAN_NOT_50 -> {
+                AgainDoubleState.DOUBLE_CAN_NOT,
+                AgainDoubleState.DOUBLE_CAN_NOT_50 -> {
                     ivXuya.isVisible = false
                     ivMultiple2.isVisible = true
                     ivMultiple2.setImageResource(R.drawable.game_sdk_icon_multiple2_gray)
@@ -1236,14 +1235,14 @@ class Fast3MainFragment(parentContext : Context) : BaseVmDbFragment<Fast3ViewMod
             }
             //加倍
             ivMultiple2.setOnClickListener {
-                if (gameAboutModel.currentAgainDoubleState.value == GameAboutModel.AgainDoubleState.DOUBLE_CAN_NOT_50) {
+                if (gameAboutModel.currentAgainDoubleState.value == AgainDoubleState.DOUBLE_CAN_NOT_50) {
                     Fast3ToastHelper.showToastNormal(getString(R.string.money_insufficient_50))
                     return@setOnClickListener
                 }
-                if (gameAboutModel.currentAgainDoubleState.value == GameAboutModel.AgainDoubleState.DOUBLE
-                    || gameAboutModel.currentAgainDoubleState.value == GameAboutModel.AgainDoubleState.DOUBLE_CAN_NOT
+                if (gameAboutModel.currentAgainDoubleState.value == AgainDoubleState.DOUBLE
+                    || gameAboutModel.currentAgainDoubleState.value == AgainDoubleState.DOUBLE_CAN_NOT
                 ) {
-                    if (gameAboutModel.currentAgainDoubleState.value == GameAboutModel.AgainDoubleState.DOUBLE) {
+                    if (gameAboutModel.currentAgainDoubleState.value == AgainDoubleState.DOUBLE) {
                         PromptSoundPlay.playGoldCoinAudio()
                         AnimHelper.doScaleAnimRecovery(ivMultiple2)
                     }
@@ -1281,11 +1280,11 @@ class Fast3MainFragment(parentContext : Context) : BaseVmDbFragment<Fast3ViewMod
             }
             //续压
             ivXuya.setOnClickListener {
-                if (gameAboutModel.currentAgainDoubleState.value == GameAboutModel.AgainDoubleState.AGAIN_CAN_NOT_50) {
+                if (gameAboutModel.currentAgainDoubleState.value == AgainDoubleState.AGAIN_CAN_NOT_50) {
                     Fast3ToastHelper.showToastNormal(getString(R.string.money_insufficient_50))
                     return@setOnClickListener
                 }
-                if (gameAboutModel.currentAgainDoubleState.value != GameAboutModel.AgainDoubleState.AGAIN) {
+                if (gameAboutModel.currentAgainDoubleState.value != AgainDoubleState.AGAIN) {
                     return@setOnClickListener
                 }
                 PromptSoundPlay.playGoldCoinAudio()

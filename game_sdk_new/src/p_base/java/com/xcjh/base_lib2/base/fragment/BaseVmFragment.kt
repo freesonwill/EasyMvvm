@@ -2,19 +2,18 @@ package com.xcjh.base_lib2.base.fragment
 
 import android.content.Context
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModelProvider
+import com.cn.game.sdk2.utils.ThreadUtils.launchWithCustomContext
+import com.cn.game.sdk2.utils.ThreadUtils.mainScope
 import com.cn.game.sdk2.websocket.imp.GameApp
 import com.xcjh.base_lib2.base.BaseViewModel
-
-import com.xcjh.base_lib2.utils.getVmClazz
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 
 
 /**
@@ -25,10 +24,9 @@ import com.xcjh.base_lib2.utils.getVmClazz
 
 abstract class BaseVmFragment<VM : BaseViewModel> : Fragment(), GameApp.GameSdkKoinComponent {
 
-    private val handler = Handler(Looper.getMainLooper())
-
     //是否第一次加载
     private var isFirst: Boolean = true
+    private var lazyJob: Job? = null
 
     protected abstract val mViewModel: VM
 
@@ -92,11 +90,12 @@ abstract class BaseVmFragment<VM : BaseViewModel> : Fragment(), GameApp.GameSdkK
     private fun onVisible() {
         if (lifecycle.currentState == Lifecycle.State.STARTED && isFirst) {
             // 延迟加载 防止 切换动画还没执行完毕时数据就已经加载好了，这时页面会有渲染卡顿
-            handler.postDelayed( {
+            lazyJob = mainScope.launchWithCustomContext(this.javaClass.simpleName) {
+                delay(lazyLoadTime())
                 lazyLoadData()
                 //在Fragment中，只有懒加载过了才能开启网络变化监听
                 isFirst = false
-            },lazyLoadTime())
+            }
         }
     }
 
@@ -119,6 +118,6 @@ abstract class BaseVmFragment<VM : BaseViewModel> : Fragment(), GameApp.GameSdkK
 
     override fun onDestroy() {
         super.onDestroy()
-        handler.removeCallbacksAndMessages(null)
+        lazyJob?.cancel()
     }
 }

@@ -1,24 +1,20 @@
 package com.cn.game.sdk2.ui.view.game
 
 import android.animation.ValueAnimator
-import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.RelativeLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.addListener
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.databinding.ToastLayoutBinding
-import com.cn.game.sdk2.utils.ThreadUtils
-import com.xcjh.base_lib2.utils.LogUtils
-import kotlinx.coroutines.CoroutineExceptionHandler
+import com.cn.game.sdk2.utils.ThreadUtils.launchWithCustomContext
+import com.cn.game.sdk2.utils.ThreadUtils.mainScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -43,9 +39,6 @@ class Fast3Toast @JvmOverloads constructor(
     private var canReplace = true
 
     private var job: Job? = null
-    private val exceptionHandler:CoroutineExceptionHandler = CoroutineExceptionHandler {coroutineContext,throwable->
-        LogUtils.dTag(TAG,"Caught exception in CoroutineExceptionHandler: $throwable")
-    }
     private var msg:CharSequence = ""
 
     /**
@@ -64,7 +57,7 @@ class Fast3Toast @JvmOverloads constructor(
         lp.topToTop = R.id.viewPagerNew
         lp.bottomToBottom = R.id.viewPagerNew
         anchorView.addView(this, lp)
-        job = ThreadUtils.mainScope.launch(exceptionHandler) {
+        job = mainScope.launchWithCustomContext(TAG) {
             val d1 = async { playAnim(true) }
             val d2 = async {
                 d1.await()

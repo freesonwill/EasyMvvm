@@ -7,8 +7,8 @@ import androidx.lifecycle.Observer
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.databinding.DragFastEasyBinding
 import com.cn.game.sdk2.utils.CommonUtils
+import com.cn.game.sdk2.websocket.constants.GameStage
 import com.cn.game.sdk2.websocket.gameAboutModel
-import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel.Stage
 import com.xcjh.base_lib2.utils.LogUtils
 
 /**
@@ -39,12 +39,12 @@ class DragFastEasy @JvmOverloads constructor(
             })
         }
         gameAboutModel.currentStage.apply {
-            observeForever(object : Observer<Stage> {
+            observeForever(object : Observer<GameStage> {
                 init {
                     gcFunc.add { removeObserver(this) }
                 }
 
-                override fun onChanged(t: Stage) {
+                override fun onChanged(t: GameStage) {
                     updateUI()
                 }
             })
@@ -55,16 +55,16 @@ class DragFastEasy @JvmOverloads constructor(
     private fun updateUI() {
         val stage = gameAboutModel.currentStage.value
         when (stage) {
-            Stage.NEW -> {
+            GameStage.NEW -> {
                 val time = gameAboutModel.countDownSecondsLD.value ?: 0
                 binding.txtTime.text = CommonUtils.formatSeconds(time)
             }
 
-            Stage.DEAL -> {
+            GameStage.DEAL -> {
                 binding.txtTime.text = context.getString(R.string.g_f3_dealing)
             }
 
-            Stage.SETTLE -> {
+            GameStage.SETTLE -> {
                 binding.txtTime.text = context.getString(R.string.g_f3_setting)
             }
 

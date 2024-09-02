@@ -1,5 +1,7 @@
 package com.cn.game.sdk2.websocket.imp
 
+import com.cn.game.sdk2.utils.ThreadUtils.appListenerScope
+import com.cn.game.sdk2.utils.ThreadUtils.launchWithCustomContext
 import com.cn.game.sdk2.websocket.GameSocketClient
 import com.cn.game.sdk2.websocket.GameSocketManager
 import com.cn.game.sdk2.websocket.appListener
@@ -7,16 +9,16 @@ import com.cn.game.sdk2.websocket.bean.AreaBetConfigBean
 import com.cn.game.sdk2.websocket.bean.Betting
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import com.cn.game.sdk2.websocket.bean.BettingResponsesBean
-import com.cn.game.sdk2.websocket.bean.BettingStatus
 import com.cn.game.sdk2.websocket.bean.ObservableArrayList
 import com.cn.game.sdk2.websocket.cancel
+import com.cn.game.sdk2.websocket.constants.BettingState
+import com.cn.game.sdk2.websocket.constants.BettingStatus
 import com.cn.game.sdk2.websocket.double
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.generateUiBean
 import com.cn.game.sdk2.websocket.getBeanById
 import com.cn.game.sdk2.websocket.getMoneyByState
 import com.cn.game.sdk2.websocket.merge
-import com.cn.game.sdk2.websocket.runOnUiThread
 import com.cn.game.sdk2.websocket.verifyAdd
 import com.cn.game.sdk2.websocket.verifyCommit
 import com.cn.game.sdk2.websocket.verifyDouble
@@ -27,6 +29,7 @@ import game.mod.proc.yf.proto.req.GameReq
 internal class UIMethodImpl private constructor(client: GameSocketClient) : GameServiceImp(client) {
 
     companion object {
+        private const val TAG = "UIMethodImpl"
         @JvmStatic
         fun generate(client: GameSocketClient): UIMethodImpl {
             return UIMethodImpl(client)
@@ -69,56 +72,58 @@ internal class UIMethodImpl private constructor(client: GameSocketClient) : Game
      */
     fun addBetting(
         recordBean: BettingRecordBean,
-        block: (isMoneyEnough: GameAboutModel.BettingState, result: BettingRecordBean?, areaLimit: AreaBetConfigBean?) -> Unit
+        block: (isMoneyEnough: BettingState, result: BettingRecordBean?, areaLimit: AreaBetConfigBean?) -> Unit
     ) {
         bettingStepList.add(recordBean)
         val verifyResult = bettingStepList.verifyAdd(
             recordBean, currentConfig?.getBeanById(recordBean.bettingArea)
         )
         when (verifyResult) {
-            GameAboutModel.BettingState.GO_ON -> {
+            BettingState.GO_ON -> {
                 tempLastBetting = recordBean.bettingArea
                 gameAboutModel.deductTempBalance(recordBean.money)
                 block(
-                    GameAboutModel.BettingState.GO_ON,
+                    BettingState.GO_ON,
                     bettingStepList.generateUiBean(recordBean.bettingArea),
                     null
                 )
             }
 
-            GameAboutModel.BettingState.OFFSET_MAX -> {
+            BettingState.OFFSET_MAX -> {
                 bettingStepList.removeLast()
                 bettingStepList.modify()
                 block(
-                    GameAboutModel.BettingState.OFFSET_MAX,
+                    BettingState.OFFSET_MAX,
                     bettingStepList.generateUiBean(recordBean.bettingArea),
                     currentConfig?.getBeanById(recordBean.bettingArea)
                 )
             }
 
-            GameAboutModel.BettingState.NO_MONEY -> {
+            BettingState.NO_MONEY -> {
                 bettingStepList.removeLast()
                 bettingStepList.modify()
                 block(
-                    GameAboutModel.BettingState.NO_MONEY,
+                    BettingState.NO_MONEY,
                     bettingStepList.generateUiBean(recordBean.bettingArea),
                     null
                 )
-                appListener?.runOnUiThread {
-                    onInsufficientBalance()
+
+                appListenerScope.launchWithCustomContext(TAG) {
+                    appListener?.onInsufficientBalance()
                 }
             }
 
-            GameAboutModel.BettingState.NO_MONEY_50 -> {
+            BettingState.NO_MONEY_50 -> {
                 bettingStepList.removeLast()
                 bettingStepList.modify()
                 block(
-                    GameAboutModel.BettingState.NO_MONEY_50,
+                    BettingState.NO_MONEY_50,
                     bettingStepList.generateUiBean(recordBean.bettingArea),
                     null
                 )
-                appListener?.runOnUiThread {
-                    onInsufficientBalance()
+
+                appListenerScope.launchWithCustomContext(TAG) {
+                    appListener?.onInsufficientBalance()
                 }
             }
 
@@ -137,15 +142,15 @@ internal class UIMethodImpl private constructor(client: GameSocketClient) : Game
         block(resultList)
     }
 
-    fun commitBetting(block: (isMoneyEnough: GameAboutModel.BettingState, result: AreaBetConfigBean?) -> Unit) {
+    fun commitBetting(block: (isMoneyEnough: BettingState, result: AreaBetConfigBean?) -> Unit) {
         if (!gameAboutModel.isOpen) {
-            block(GameAboutModel.BettingState.NO_NETWORK, null)
+            block(BettingState.NO_NETWORK, null)
             return
         }
         if (previousSuccess) {
             val verifyCommitResult = bettingStepList.verifyCommit(currentConfig)
             if (verifyCommitResult != null) {
-                block(GameAboutModel.BettingState.OFFSET_MIN, verifyCommitResult)
+                block(BettingState.OFFSET_MIN, verifyCommitResult)
                 return
             }
             //等有返回结果后 再赋值成true
@@ -165,7 +170,7 @@ internal class UIMethodImpl private constructor(client: GameSocketClient) : Game
                 }
             val build = betReq.build()
             bet(build)
-            block(GameAboutModel.BettingState.GO_ON, null)
+            block(BettingState.GO_ON, null)
         } else {
             "下注228：上次下注还未返回".loge("addBetting")
             gameAboutModel.setBettingSuccess(BettingResponsesBean(false, 0))
@@ -192,17 +197,17 @@ internal class UIMethodImpl private constructor(client: GameSocketClient) : Game
      * 加倍后的总金额算法：@doubleMoney 只是用于传入接口的金额
      *    currentTempCountMoney * 2 + currentConfirmCountMoney
      */
-    fun doubleBetting(block: (isMoneyEnough: GameAboutModel.BettingState, result: MutableMap<Betting, BettingRecordBean?>?, areaLimit: AreaBetConfigBean?) -> Unit) {
+    fun doubleBetting(block: (isMoneyEnough: BettingState, result: MutableMap<Betting, BettingRecordBean?>?, areaLimit: AreaBetConfigBean?) -> Unit) {
         bettingStepList.verifyDouble(currentConfig)?.let {
             if (it.noMoney) {
-                block(GameAboutModel.BettingState.NO_MONEY, null, null)
+                block(BettingState.NO_MONEY, null, null)
             } else {
-                block(GameAboutModel.BettingState.OFFSET_MAX, null, it.limitBean)
+                block(BettingState.OFFSET_MAX, null, it.limitBean)
             }
         } ?: run {
             val double = bettingStepList.double()
             bettingStepList.modify()
-            block(GameAboutModel.BettingState.GO_ON, double, null)
+            block(BettingState.GO_ON, double, null)
         }
     }
 

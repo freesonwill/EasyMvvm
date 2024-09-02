@@ -9,6 +9,8 @@ import com.cn.game.sdk2.websocket.bean.Betting
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import com.cn.game.sdk2.websocket.bean.BettingResponsesBean
 import com.cn.game.sdk2.websocket.bean.RoundInfoBean
+import com.cn.game.sdk2.websocket.constants.AgainDoubleState
+import com.cn.game.sdk2.websocket.constants.GameStage
 import com.cn.game.sdk2.websocket.helper.CountDownHelper
 import com.xcjh.base_lib2.base.BaseViewModel
 import com.xcjh.base_lib2.callback.livedata.UnPeekLiveData
@@ -18,19 +20,7 @@ import java.util.concurrent.ConcurrentHashMap
 
 //internal
 internal class GameAboutModel : BaseViewModel() {
-    enum class Stage {
-        NEW, DEAL, SETTLE
-    }
-
-    enum class AgainDoubleState {
-        NUll, AGAIN, AGAIN_CAN_NOT_50, DOUBLE, DOUBLE_CAN_NOT, DOUBLE_CAN_NOT_50
-    }
-
-    enum class BettingState {
-        GO_ON, NO_MONEY, OFFSET_MIN, OFFSET_MAX, NO_MONEY_50, NO_NETWORK
-    }
-
-    private val _currentStage = UnPeekLiveData<Stage>()
+    private val _currentStage = UnPeekLiveData<GameStage>()
     private val _currentAgainDoubleState = UnPeekLiveData<AgainDoubleState>()
     private val _balance = UnPeekLiveData<Long>()
     private val _tempBalance = UnPeekLiveData<Long>()
@@ -149,7 +139,7 @@ internal class GameAboutModel : BaseViewModel() {
     //   - roundId 期号
     //  - countDown 倒计时
     //  - 结算结果 currentSettleResult
-    val currentStage: UnPeekLiveData<Stage>
+    val currentStage: UnPeekLiveData<GameStage>
         get() = _currentStage
 
     // 监听续压和加倍的状态
@@ -268,7 +258,7 @@ internal class GameAboutModel : BaseViewModel() {
         }
     }
 
-    fun changeStage(stage: Stage) {
+    fun changeStage(stage: GameStage) {
         _currentStage.postValue(stage)
     }
 

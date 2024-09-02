@@ -8,8 +8,8 @@ import androidx.lifecycle.Observer
 import com.cn.game.sdk2.databinding.FragmentFast3OverlayBinding
 import com.cn.game.sdk2.utils.ext.CommonExt.toPinyin
 import com.cn.game.sdk2.websocket.bean.RoundInfoBean
+import com.cn.game.sdk2.websocket.constants.GameStage
 import com.cn.game.sdk2.websocket.gameAboutModel
-import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel.Stage
 import com.xcjh.base_lib2.utils.LogUtils
 
 /**
@@ -39,12 +39,12 @@ class DragFast3Overlay @JvmOverloads constructor(
             })
         }
         gameAboutModel.currentStage.apply {
-            observeForever(object : Observer<Stage> {
+            observeForever(object : Observer<GameStage> {
                 init {
                     gcFunc.add { removeObserver(this) }
                 }
 
-                override fun onChanged(t: Stage?) {
+                override fun onChanged(t: GameStage?) {
                     updateUI()
                 }
             })
