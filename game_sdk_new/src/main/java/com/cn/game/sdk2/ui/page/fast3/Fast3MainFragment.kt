@@ -29,8 +29,8 @@ import com.cn.game.sdk2.data.BetteFlyData
 import com.cn.game.sdk2.data.EventKey
 import com.cn.game.sdk2.data.bean.SelectAnnotationBean
 import com.cn.game.sdk2.databinding.FragFast3HomeBinding
-import com.cn.game.sdk2.databinding.ItemAnnotationListBinding
 import com.cn.game.sdk2.databinding.ItemBetHistoryBinding
+import com.cn.game.sdk2.ui.adapter.ChipsAdapter
 import com.cn.game.sdk2.ui.helper.AnimHelper
 import com.cn.game.sdk2.ui.helper.Fast3ToastHelper
 import com.cn.game.sdk2.ui.popup.game.MoreListPopup
@@ -132,7 +132,8 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
            //mDatabind.viewPagerNew.offscreenPageLimit = mFragList.size
         }
         loadFragment()
-        setBetAdapter()
+        setChipsView()
+        setDrawHistoryView()
         setClick()
         measureHistoryRvHeight()
         setNavigationBar()
@@ -877,11 +878,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
         }
     }
 
-
-    /**
-     * 投注的适配器
-     */
-    private fun setBetAdapter() {
+    private fun setChipsView() {
         mBinding.llShowBetList.apply {
             itemAnimator = null
             layoutManager =
@@ -895,71 +892,40 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                     )
                 )
             }
-            setup {
-                addType<SelectAnnotationBean>(R.layout.item_annotation_list)
-                onBind {
-                    when (itemViewType) {
-                        R.layout.item_annotation_list -> {
-                            val binding = getBinding<ItemAnnotationListBinding>()
-                            val bean = _data as SelectAnnotationBean
-                            val id = if ((gameAboutModel.tempBalance.value ?: 0) < bean.money) {
-                                resources.getIdentifier(
-                                    "game_sdk_icon_shortage_" + bean.moneyPinyin,
-                                    "drawable",
-                                    requireContext().packageName
-                                )
-                            } else {
-                                if (bean.select) {
-                                    resources.getIdentifier(
-                                        "game_sdk_icon_select_" + bean.moneyPinyin,
-                                        "drawable",
-                                        requireContext().packageName
-                                    )
-                                } else {
-                                    resources.getIdentifier(
-                                        "game_sdk_icon_no_" + bean.moneyPinyin,
-                                        "drawable",
-                                        requireContext().packageName
-                                    )
-                                }
-                            }
-                            binding.ivShowBg.setImageResource(id)
-                            //Log.d(TAG, "onBind-->${layoutPosition},bean:${bean}")
-                            if (bean.select) {
-                                selectBetteView = binding.ivShowBg
-                                if (binding.ivShowBg.translationY == 0f) {
-                                    startBetteSelectAnim(
-                                        binding.ivShowBg,
-                                        if (isBetteUpAnimFirst) 0 else 100
-                                    )
-                                    //scrollBetteItemToCenter(layoutPosition)
-                                }
-                            } else {
-                                binding.ivShowBg.translationY = 0f
-                            }
-                        }
+            val chipsAdapter = ChipsAdapter(object : ChipsAdapter.ChipSelectedListener {
+                override fun onChipSelected(view: View) {
+                    selectBetteView = view
+                    if (view.translationY == 0f) {
+                        startBetteSelectAnim(
+                            view,
+                            if (isBetteUpAnimFirst) 0 else 100
+                        )
                     }
-
                 }
-                onClick(R.id.ivShowBg) {
-                    val bean = _data as SelectAnnotationBean
-                    if (bean.select || bean.money > (gameAboutModel.tempBalance.value
-                            ?: 0)
-                    ) return@onClick
+            })
+            adapter = chipsAdapter
+            chipsAdapter.onItemClickListener = { item ->
+                if (item.select && item.money <= (gameAboutModel.tempBalance.value ?: 0)) {
                     PromptSoundPlay.btnPlayMedia()
-                    val models: List<SelectAnnotationBean> = models as List<SelectAnnotationBean>
+                    val models: List<SelectAnnotationBean> = chipsAdapter.currentList
                     for (data in models) {
-                        data.select = bean == data
+                        data.select = item == data
                     }
-                    mViewModel.userLastSelectBetteBean = bean
+                    mViewModel.userLastSelectBetteBean = item
                     notifyDataSetChangedSafe {
                         scrollSelectPosition2Center(true)
                     }
-//                    betteScrollToCenter(layoutPosition, isScrollQuick = false)
-
                 }
-            }.models = mViewModel.noteList
+            }
+            chipsAdapter.submitList(mViewModel.noteList)
         }
+    }
+
+    /**
+     * 投注的适配器
+     */
+    private fun setDrawHistoryView() {
+
         //历史结果
         mBinding.rvHomeHistory.apply {
             itemAnimator = null
@@ -1075,10 +1041,6 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
 
 
     private fun notifyDataSetChangedSafe(action: () -> Unit) {
-        mBinding.llShowBetList.bindingAdapter.notifyItemRangeChanged(
-            0,
-            mViewModel.noteList.count()
-        )
         if (mBinding.llShowBetList.isComputingLayout) {
             LogUtils.eTag(TAG, "isComputingLayout")
             mBinding.llShowBetList.post(action)
