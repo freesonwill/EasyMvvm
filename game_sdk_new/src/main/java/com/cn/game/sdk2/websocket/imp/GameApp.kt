@@ -11,6 +11,7 @@ import androidx.annotation.UiThread
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
+import com.cn.game.sdk2.data.SortedList
 import com.cn.game.sdk2.data.bean.GameHallItem
 import com.cn.game.sdk2.moduleList
 import com.cn.game.sdk2.ui.helper.ViewHelper
@@ -294,7 +295,13 @@ class GameApp  private constructor(){
         ///}]
         @JvmStatic
         fun setMoreGames(moreGameList: String) {
-            val gameList = GsonUtils.fromJson<List<GameHallItem>>(moreGameList,object : TypeToken<List<GameHallItem>>(){}.type)
+            val gameList = GsonUtils.fromJson<SortedList<GameHallItem>>(moreGameList,object : TypeToken<SortedList<GameHallItem>>(){}.type)
+            gameList.changeComparator { o1, o2 ->
+                when(val it = o1.gameType.compareTo(o2.gameType)){
+                    0 -> o1.weight.compareTo(o2.weight)
+                    else -> it
+                }
+            }
             gameAboutModel.setMoreGames(gameList)
         }
 
