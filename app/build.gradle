@@ -4,6 +4,7 @@ plugins {
     id 'kotlin-kapt'
 }
 apply from: rootProject.file("gradle/flavor.gradle")
+apply from: rootProject.file("gradle/gamesdk_deps.gradle")
 
 android {
     namespace 'com.example.myapplication'
@@ -49,7 +50,7 @@ android {
 
 
 dependencies {
-
+    //implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
 //    implementation 'androidx.core:core-ktx:1.8.0'
 
 

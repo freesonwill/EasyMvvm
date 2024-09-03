@@ -3,6 +3,8 @@ package com.cn.game.sdk2.websocket
 import android.util.Log
 import androidx.lifecycle.lifecycleScope
 import com.cn.game.sdk2.data.EventKey
+import com.cn.game.sdk2.network.code.GameReqCode
+import com.cn.game.sdk2.network.code.GameResCode
 import com.cn.game.sdk2.utils.FlowBus
 import com.cn.game.sdk2.utils.ThreadUtils
 import com.cn.game.sdk2.utils.ext.CommonExt.isMainThread
@@ -71,7 +73,7 @@ internal class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
             if (it.size > 2) {
                 str = (it[2] as ByteArray?)!!
             }
-            "GameSocketMessage-onMessage:mid-$mid sid-$sid".logd(_tag)
+            "GameSocketMessage-onMessage:mid-$mid sid-$sid sidName-${GameResCode.of(sid)}".logd(_tag)
             onMessageListener?.onMessage(mid, sid, str)
         }
     }
