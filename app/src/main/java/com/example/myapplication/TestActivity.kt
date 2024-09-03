@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.RelativeLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
@@ -202,7 +203,7 @@ class TestActivity : AppCompatActivity(), GameApp.OnSdkListener {
     }
 
     override fun onClickOtherGameWithBlock(json: String) {
-
+        Toast.makeText(this,json,Toast.LENGTH_SHORT).show()
     }
 
     override fun onDestroy() {

@@ -40,9 +40,9 @@ class GameListView(context: Context) : BottomPopupView(context) {
     private lateinit var binding: FragmentGamehallBinding
     var targetHeight: Int = 0
     private val tabs = listOf("热门", "棋牌", "视讯", "捕鱼", "体育", "电子")
-    private val tabLists = SparseArray<SortedList<GameHallItem>>().apply {
+    private val tabLists = SparseArray<ArrayList<GameHallItem>>().apply {
         for (i in tabs.indices) {
-            put(i, SortedList { o1, o2 -> o1.weight.compareTo(o2.weight) })
+            put(i, ArrayList())
         }
     }
     private val adapters = mutableListOf<GameListAdapter>()
@@ -50,6 +50,7 @@ class GameListView(context: Context) : BottomPopupView(context) {
         val dataStr = Gson().toJson(it)
         LogUtils.d("onItemClick-->$dataStr")
         appListener?.onClickOtherGameWithBlock(dataStr)
+        dismiss()
     }
 
     override fun onCreate() {
@@ -74,6 +75,7 @@ class GameListView(context: Context) : BottomPopupView(context) {
                 list.add(it)
             }
         }
+        //set up viewPager
         val views = ArrayList<View>()
         repeat(tabs.size) { index ->
             val gameHallList = tabLists[index]
@@ -96,6 +98,7 @@ class GameListView(context: Context) : BottomPopupView(context) {
             views.add(mViewBind.root)
             adapters.add(adapter)
         }
+        //viewPager与indicator相互绑定
         val pages = tabs
         binding.viewPagerNew.initGameViewPager2(views)
         binding.magicIndicator.bindViewPagerNewGame(
@@ -105,6 +108,7 @@ class GameListView(context: Context) : BottomPopupView(context) {
             action = { PromptSoundPlay.btnPlayMedia() }
         )
         binding.viewPagerNew.offscreenPageLimit = pages.size
+        //set click
         binding.close.clickNoRepeat(true) {
             dismiss()
         }
@@ -123,9 +127,7 @@ class GameListView(context: Context) : BottomPopupView(context) {
                 val list = tabLists.get(it.gameType, null) ?: return@forEach
                 list.add(it)
             }
-            adapters.forEach {
-                it.notifyItemRangeChanged(0,adapters.size)
-            }
+            adapters.forEach { it.notifyItemRangeChanged(0,adapters.size) }
         }.apply {
             gameAboutModel.moreGames.observeForever(this)
             //view销毁时移除observer
