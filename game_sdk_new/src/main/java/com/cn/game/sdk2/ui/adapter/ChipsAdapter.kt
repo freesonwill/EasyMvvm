@@ -7,6 +7,7 @@ import com.cn.game.sdk2.data.bean.SelectAnnotationBean
 import com.cn.game.sdk2.databinding.ItemAnnotationListBinding
 import com.cn.game.sdk2.ui.compare.ChipsCompare
 import com.cn.game.sdk2.ui.viewholder.BaseViewHolder
+import com.cn.game.sdk2.utils.IconUtils
 import com.cn.game.sdk2.websocket.gameAboutModel
 
 class ChipsAdapter(private val chipSelectedListener: ChipSelectedListener) : BaseAdapter<SelectAnnotationBean, BaseViewHolder, ItemAnnotationListBinding>(
@@ -19,27 +20,17 @@ class ChipsAdapter(private val chipSelectedListener: ChipSelectedListener) : Bas
         item: SelectAnnotationBean
     ) {
         val id = if ((gameAboutModel.tempBalance.value ?: 0) < item.money) {
-            holder.resources.getIdentifier(
-                "game_sdk_icon_shortage_" + item.moneyPinyin,
-                "mipmap",
-                holder.itemView.context.packageName
-            )
+            IconUtils.getIcon("game_sdk_icon_shortage_" + item.moneyPinyin)
         } else {
             if (item.select) {
-                holder.resources.getIdentifier(
-                    "game_sdk_icon_select_" + item.moneyPinyin,
-                    "mipmap",
-                    holder.itemView.context.packageName
-                )
+                IconUtils.getIcon("game_sdk_icon_select_" + item.moneyPinyin)
             } else {
-                holder.resources.getIdentifier(
-                    "game_sdk_icon_no_" + item.moneyPinyin,
-                    "mipmap",
-                    holder.itemView.context.packageName
-                )
+                IconUtils.getIcon("game_sdk_icon_no_" + item.moneyPinyin)
             }
         }
-        binding.ivShowBg.setImageResource(id)
+        if (id != 0) {
+            binding.ivShowBg.setImageResource(id)
+        }
         //Log.d(TAG, "onBind-->${layoutPosition},bean:${bean}")
         if (item.select) {
             chipSelectedListener.onChipSelected(binding.ivShowBg)

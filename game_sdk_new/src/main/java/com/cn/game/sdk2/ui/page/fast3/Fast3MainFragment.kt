@@ -41,6 +41,7 @@ import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.view.game.MoneyOKView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
 import com.cn.game.sdk2.utils.FlowBus
+import com.cn.game.sdk2.utils.IconUtils
 import com.cn.game.sdk2.utils.ext.BizExt.isLeopard
 import com.cn.game.sdk2.utils.ext.CommonExt.formatRealMoney
 import com.cn.game.sdk2.utils.ext.CommonExt.isCanGoOn
@@ -416,15 +417,13 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
         mBinding.apply {
             roundInfo?.run {
                 performs.forEachIndexed { index, item ->
-                    val id = resources.getIdentifier(
-                        "game_sdk_icon_dice_" + item.toPinyin(),
-                        "mipmap",
-                        requireContext().packageName
-                    )
-                    when (index) {
-                        0 -> ivDrawYi.setImageResource(id)
-                        1 -> ivDrawEr.setImageResource(id)
-                        2 -> ivDrawSan.setImageResource(id)
+                    val id = IconUtils.getIcon("game_sdk_icon_dice_" + item.toPinyin())
+                    if (id != 0) {
+                        when (index) {
+                            0 -> ivDrawYi.setImageResource(id)
+                            1 -> ivDrawEr.setImageResource(id)
+                            2 -> ivDrawSan.setImageResource(id)
+                        }
                     }
                 }
                 txtHomeTotal.text = sum.toString()
@@ -1326,13 +1325,10 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
 
         // (这个图片就是执行动画的图片，从开始位置出发，经过一个抛物线（贝塞尔曲线))
         val betImageView = ImageView(requireContext()).apply {
-            setImageResource(
-                resources.getIdentifier(
-                    "game_sdk_icon_select_" + betteBean.moneyPinyin,
-                    "mipmap",
-                    requireContext().packageName
-                )
-            )
+            val id = IconUtils.getIcon("game_sdk_icon_select_" + betteBean.moneyPinyin)
+            if (id != 0) {
+                setImageResource(id)
+            }
             translationZ = 3f
         }
         val betteSize = jettonView.measuredWidth
