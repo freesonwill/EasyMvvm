@@ -905,7 +905,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
             })
             adapter = chipsAdapter
             chipsAdapter.onItemClickListener = { item ->
-                if (item.select && item.money <= (gameAboutModel.tempBalance.value ?: 0)) {
+                if (!item.select && item.money <= (gameAboutModel.tempBalance.value ?: 0)) {
                     PromptSoundPlay.btnPlayMedia()
                     val models: List<SelectAnnotationBean> = chipsAdapter.currentList
                     for (data in models) {
@@ -1041,6 +1041,11 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
 
 
     private fun notifyDataSetChangedSafe(action: () -> Unit) {
+        mBinding.llShowBetList.adapter?.notifyItemRangeChanged(
+            0,
+            mViewModel.noteList.count()
+        )
+
         if (mBinding.llShowBetList.isComputingLayout) {
             LogUtils.eTag(TAG, "isComputingLayout")
             mBinding.llShowBetList.post(action)
