@@ -284,6 +284,10 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
     }
 
     private fun setCurrentHistory(roundInfo:GameRes.RoundInfo){
+        if(roundInfo.performsList.isEmpty()){
+            LogUtils.e("error: lastRoundInfo performsList is empty")
+            return
+        }
         val elements = roundInfo.performsList[0].elementsList
         val roundInfoBean = RoundInfoBean(
             roundInfo.roundId,
