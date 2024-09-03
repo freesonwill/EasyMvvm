@@ -52,21 +52,21 @@
             android:id="@+id/ivDrawYi"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            app:srcCompat="@drawable/game_sdk_icon_dice_yi" />
+            app:srcCompat="@mipmap/game_sdk_icon_dice_yi" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ivDrawEr"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginLeft="4dp"
-            app:srcCompat="@drawable/game_sdk_icon_dice_er" />
+            app:srcCompat="@mipmap/game_sdk_icon_dice_er" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ivDrawSan"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginLeft="4dp"
-            app:srcCompat="@drawable/game_sdk_icon_dice_san" />
+            app:srcCompat="@mipmap/game_sdk_icon_dice_san" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 </com.cn.game.sdk2.ui.view.game.DragFast3Overlay>

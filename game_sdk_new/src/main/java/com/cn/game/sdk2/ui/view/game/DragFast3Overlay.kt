@@ -62,7 +62,7 @@ class DragFast3Overlay @JvmOverloads constructor(
                 performs.forEachIndexed { index, item ->
                     val id = resources.getIdentifier(
                         "game_sdk_icon_dice_" + item.toPinyin(),
-                        "drawable",
+                        "mipmap",
                         context.packageName
                     )
                     when (index) {

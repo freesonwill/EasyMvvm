@@ -21,20 +21,20 @@ class ChipsAdapter(private val chipSelectedListener: ChipSelectedListener) : Bas
         val id = if ((gameAboutModel.tempBalance.value ?: 0) < item.money) {
             holder.resources.getIdentifier(
                 "game_sdk_icon_shortage_" + item.moneyPinyin,
-                "drawable",
+                "mipmap",
                 holder.itemView.context.packageName
             )
         } else {
             if (item.select) {
                 holder.resources.getIdentifier(
                     "game_sdk_icon_select_" + item.moneyPinyin,
-                    "drawable",
+                    "mipmap",
                     holder.itemView.context.packageName
                 )
             } else {
                 holder.resources.getIdentifier(
                     "game_sdk_icon_no_" + item.moneyPinyin,
-                    "drawable",
+                    "mipmap",
                     holder.itemView.context.packageName
                 )
             }

@@ -22,7 +22,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="fitXY"
-                app:srcCompat="@drawable/game_sdk_icon_single_bg" />
+                app:srcCompat="@mipmap/game_sdk_icon_single_bg" />
 
             <com.cn.game.sdk2.ui.view.game.GameAreaView
                 android:id="@+id/gavDiceOne"
@@ -45,7 +45,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/game_sdk_icon_dice_yi" />
+                        app:srcCompat="@mipmap/game_sdk_icon_dice_yi" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/txtDiceOddsOne"
@@ -63,7 +63,7 @@
                     android:layout_height="match_parent"
                     android:scaleType="fitXY"
                     android:visibility="gone"
-                    app:srcCompat="@drawable/game_sdk_flash_left_top" />
+                    app:srcCompat="@mipmap/game_sdk_flash_left_top" />
             </com.cn.game.sdk2.ui.view.game.GameAreaView>
 
             <com.cn.game.sdk2.ui.view.game.GameAreaView
@@ -87,7 +87,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/game_sdk_icon_dice_er" />
+                        app:srcCompat="@mipmap/game_sdk_icon_dice_er" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/txtDiceOddsTwo"
@@ -106,7 +106,7 @@
                     android:layout_height="match_parent"
                     android:scaleType="fitXY"
                     android:visibility="gone"
-                    app:srcCompat="@drawable/game_sdk_flash_right_top" />
+                    app:srcCompat="@mipmap/game_sdk_flash_right_top" />
             </com.cn.game.sdk2.ui.view.game.GameAreaView>
 
             <com.cn.game.sdk2.ui.view.game.GameAreaView
@@ -130,7 +130,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/game_sdk_icon_dice_san" />
+                        app:srcCompat="@mipmap/game_sdk_icon_dice_san" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/txtDiceOddsThree"
@@ -149,7 +149,7 @@
                     android:layout_height="match_parent"
                     android:scaleType="fitXY"
                     android:visibility="gone"
-                    app:srcCompat="@drawable/game_sdk_flash_centre" />
+                    app:srcCompat="@mipmap/game_sdk_flash_centre" />
 
             </com.cn.game.sdk2.ui.view.game.GameAreaView>
 
@@ -174,7 +174,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/game_sdk_icon_dice_si" />
+                        app:srcCompat="@mipmap/game_sdk_icon_dice_si" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/txtDiceOddsFour"
@@ -193,7 +193,7 @@
                     android:layout_height="match_parent"
                     android:scaleType="fitXY"
                     android:visibility="gone"
-                    app:srcCompat="@drawable/game_sdk_flash_centre" />
+                    app:srcCompat="@mipmap/game_sdk_flash_centre" />
             </com.cn.game.sdk2.ui.view.game.GameAreaView>
 
             <com.cn.game.sdk2.ui.view.game.GameAreaView
@@ -217,7 +217,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/game_sdk_icon_dice_wu" />
+                        app:srcCompat="@mipmap/game_sdk_icon_dice_wu" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/txtDiceOddsFive"
@@ -236,7 +236,7 @@
                     android:layout_height="match_parent"
                     android:scaleType="fitXY"
                     android:visibility="gone"
-                    app:srcCompat="@drawable/game_sdk_flash_right_be" />
+                    app:srcCompat="@mipmap/game_sdk_flash_right_be" />
 
             </com.cn.game.sdk2.ui.view.game.GameAreaView>
 
@@ -261,7 +261,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/game_sdk_icon_dice_liu" />
+                        app:srcCompat="@mipmap/game_sdk_icon_dice_liu" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/txtDiceOddsSix"
@@ -279,7 +279,7 @@
                     android:layout_height="match_parent"
                     android:scaleType="fitXY"
                     android:visibility="gone"
-                    app:srcCompat="@drawable/game_sdk_flash_left_be" />
+                    app:srcCompat="@mipmap/game_sdk_flash_left_be" />
             </com.cn.game.sdk2.ui.view.game.GameAreaView>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>

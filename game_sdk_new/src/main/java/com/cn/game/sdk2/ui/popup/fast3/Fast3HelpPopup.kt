@@ -161,7 +161,7 @@ class Fast3HelpPopup(context: Context, private val offsetY: Int, private val hei
                                 R.color.c_141624
                             ) else originalStatusBarColor
                         )
-                        mViewBind.ivCollapse.setImageResource(if (!toExpand) R.drawable.game_sdk_ic_expand else R.drawable.game_sdk_ic_collapse)
+                        mViewBind.ivCollapse.setImageResource(if (!toExpand) R.mipmap.game_sdk_ic_expand else R.mipmap.game_sdk_ic_collapse)
                     })
                 start()
             }

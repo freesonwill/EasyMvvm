@@ -8,7 +8,7 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="315dp"
-        android:src="@drawable/game_sdk_help_1"
+        android:src="@mipmap/game_sdk_help_1"
         />
 
 

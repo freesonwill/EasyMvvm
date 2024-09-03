@@ -43,7 +43,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:scaleType="fitXY"
-                        app:srcCompat="@drawable/game_sdk_home_left_top" />
+                        app:srcCompat="@mipmap/game_sdk_home_left_top" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -59,7 +59,7 @@
                         <androidx.appcompat.widget.AppCompatImageView
                             android:layout_width="29dp"
                             android:layout_height="29dp"
-                            app:srcCompat="@drawable/game_sdk_icon_txt_small" />
+                            app:srcCompat="@mipmap/game_sdk_icon_txt_small" />
 
                         <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/txtOddsSmall"
@@ -94,7 +94,7 @@
                                 android:id="@+id/ivSmall"
                                 android:layout_width="8dp"
                                 android:layout_height="8dp"
-                                app:srcCompat="@drawable/game_sdk_icon_money_new" />
+                                app:srcCompat="@mipmap/game_sdk_icon_money_new" />
 
                             <androidx.appcompat.widget.AppCompatTextView
                                 android:id="@+id/txtSmallMoney"
@@ -117,7 +117,7 @@
                             <androidx.appcompat.widget.AppCompatImageView
                                 android:layout_width="8dp"
                                 android:layout_height="8dp"
-                                app:srcCompat="@drawable/game_sdk_icon_people_num" />
+                                app:srcCompat="@mipmap/game_sdk_icon_people_num" />
 
                             <androidx.appcompat.widget.AppCompatTextView
                                 android:id="@+id/txtSmallNum"
@@ -138,7 +138,7 @@
                         android:layout_height="match_parent"
                         android:scaleType="fitXY"
                         android:visibility="gone"
-                        app:srcCompat="@drawable/game_sdk_icon_lucency_left_top"
+                        app:srcCompat="@mipmap/game_sdk_icon_lucency_left_top"
                         app:tint="@color/c_ffffff" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.cn.game.sdk2.ui.view.game.GameAreaView>
@@ -161,7 +161,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:scaleType="fitXY"
-                        app:srcCompat="@drawable/game_sdk_home_right_top" />
+                        app:srcCompat="@mipmap/game_sdk_home_right_top" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -177,7 +177,7 @@
                         <androidx.appcompat.widget.AppCompatImageView
                             android:layout_width="29dp"
                             android:layout_height="29dp"
-                            app:srcCompat="@drawable/game_sdk_icon_txt_big" />
+                            app:srcCompat="@mipmap/game_sdk_icon_txt_big" />
 
                         <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/txtOddsBig"
@@ -212,7 +212,7 @@
                             <androidx.appcompat.widget.AppCompatImageView
                                 android:layout_width="8dp"
                                 android:layout_height="8dp"
-                                app:srcCompat="@drawable/game_sdk_icon_money_new" />
+                                app:srcCompat="@mipmap/game_sdk_icon_money_new" />
 
                             <androidx.appcompat.widget.AppCompatTextView
                                 android:id="@+id/txtBigMoney"
@@ -236,7 +236,7 @@
                             <androidx.appcompat.widget.AppCompatImageView
                                 android:layout_width="8dp"
                                 android:layout_height="8dp"
-                                app:srcCompat="@drawable/game_sdk_icon_people_num" />
+                                app:srcCompat="@mipmap/game_sdk_icon_people_num" />
 
                             <androidx.appcompat.widget.AppCompatTextView
                                 android:id="@+id/txtBigNum"
@@ -257,7 +257,7 @@
                         android:layout_height="match_parent"
                         android:scaleType="fitXY"
                         android:visibility="gone"
-                        app:srcCompat="@drawable/game_sdk_icon_lucency_right_top"
+                        app:srcCompat="@mipmap/game_sdk_icon_lucency_right_top"
                         app:tint="@color/c_ffffff" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.cn.game.sdk2.ui.view.game.GameAreaView>
@@ -280,7 +280,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:scaleType="fitXY"
-                        app:srcCompat="@drawable/game_sdk_home_left_below" />
+                        app:srcCompat="@mipmap/game_sdk_home_left_below" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -296,7 +296,7 @@
                         <androidx.appcompat.widget.AppCompatImageView
                             android:layout_width="29dp"
                             android:layout_height="29dp"
-                            app:srcCompat="@drawable/game_sdk_icon_txt_single" />
+                            app:srcCompat="@mipmap/game_sdk_icon_txt_single" />
 
                         <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/txtOddsSingle"
@@ -331,7 +331,7 @@
                                 android:id="@+id/ivSingle"
                                 android:layout_width="8dp"
                                 android:layout_height="8dp"
-                                app:srcCompat="@drawable/game_sdk_icon_money_new" />
+                                app:srcCompat="@mipmap/game_sdk_icon_money_new" />
 
                             <androidx.appcompat.widget.AppCompatTextView
                                 android:id="@+id/txtSingleMoney"
@@ -354,7 +354,7 @@
                             <androidx.appcompat.widget.AppCompatImageView
                                 android:layout_width="8dp"
                                 android:layout_height="8dp"
-                                app:srcCompat="@drawable/game_sdk_icon_people_num" />
+                                app:srcCompat="@mipmap/game_sdk_icon_people_num" />
 
                             <androidx.appcompat.widget.AppCompatTextView
                                 android:id="@+id/txtSingleNum"
@@ -375,7 +375,7 @@
                         android:layout_height="match_parent"
                         android:scaleType="fitXY"
                         android:visibility="gone"
-                        app:srcCompat="@drawable/game_sdk_icon_lucency_left_below"
+                        app:srcCompat="@mipmap/game_sdk_icon_lucency_left_below"
                         app:tint="@color/c_ffffff" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.cn.game.sdk2.ui.view.game.GameAreaView>
@@ -398,7 +398,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:scaleType="fitXY"
-                        app:srcCompat="@drawable/game_sdk_home_right_below" />
+                        app:srcCompat="@mipmap/game_sdk_home_right_below" />
 
 
                     <LinearLayout
@@ -415,7 +415,7 @@
                         <androidx.appcompat.widget.AppCompatImageView
                             android:layout_width="29dp"
                             android:layout_height="29dp"
-                            app:srcCompat="@drawable/game_sdk_icon_txt_double" />
+                            app:srcCompat="@mipmap/game_sdk_icon_txt_double" />
 
                         <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/txtOddsDouble"
@@ -450,7 +450,7 @@
                             <androidx.appcompat.widget.AppCompatImageView
                                 android:layout_width="8dp"
                                 android:layout_height="8dp"
-                                app:srcCompat="@drawable/game_sdk_icon_money_new" />
+                                app:srcCompat="@mipmap/game_sdk_icon_money_new" />
 
                             <androidx.appcompat.widget.AppCompatTextView
                                 android:id="@+id/txtDoubleMoney"
@@ -473,7 +473,7 @@
                             <androidx.appcompat.widget.AppCompatImageView
                                 android:layout_width="8dp"
                                 android:layout_height="8dp"
-                                app:srcCompat="@drawable/game_sdk_icon_people_num" />
+                                app:srcCompat="@mipmap/game_sdk_icon_people_num" />
 
                             <androidx.appcompat.widget.AppCompatTextView
                                 android:id="@+id/txtDoubleNum"
@@ -494,7 +494,7 @@
                         android:layout_height="match_parent"
                         android:scaleType="fitXY"
                         android:visibility="gone"
-                        app:srcCompat="@drawable/game_sdk_icon_lucency_right_below"
+                        app:srcCompat="@mipmap/game_sdk_icon_lucency_right_below"
                         app:tint="@color/c_ffffff" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.cn.game.sdk2.ui.view.game.GameAreaView>
@@ -517,7 +517,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:scaleType="fitXY"
-                        app:srcCompat="@drawable/game_sdk_home_centre" />
+                        app:srcCompat="@mipmap/game_sdk_home_centre" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -529,7 +529,7 @@
                         <androidx.appcompat.widget.AppCompatImageView
                             android:layout_width="40dp"
                             android:layout_height="20dp"
-                            app:srcCompat="@drawable/game_sdk_icon_txt_leopard" />
+                            app:srcCompat="@mipmap/game_sdk_icon_txt_leopard" />
 
                         <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/txtOddsLeopard"
@@ -549,7 +549,7 @@
                         android:layout_height="match_parent"
                         android:scaleType="fitXY"
                         android:visibility="gone"
-                        app:srcCompat="@drawable/game_sdk_icon_lucency_centre"
+                        app:srcCompat="@mipmap/game_sdk_icon_lucency_centre"
                         app:tint="@color/c_ffffff" />
                 </RelativeLayout>
             </com.cn.game.sdk2.ui.view.game.GameAreaView>

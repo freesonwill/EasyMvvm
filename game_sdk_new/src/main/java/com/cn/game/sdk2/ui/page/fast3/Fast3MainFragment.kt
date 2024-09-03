@@ -418,7 +418,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                 performs.forEachIndexed { index, item ->
                     val id = resources.getIdentifier(
                         "game_sdk_icon_dice_" + item.toPinyin(),
-                        "drawable",
+                        "mipmap",
                         requireContext().packageName
                     )
                     when (index) {
@@ -435,8 +435,8 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                 } else {
                     ivBetSize.isVisible = true
                     ivBetOdd.isVisible = true
-                    ivBetSize.setImageResource(if (isBig) R.drawable.game_sdk_icon_home_result_big else R.drawable.game_sdk_icon_home_result_small)
-                    ivBetOdd.setImageResource(if (isDouble) R.drawable.game_sdk_icon_home_result_double else R.drawable.game_sdk_icon_home_result_single)
+                    ivBetSize.setImageResource(if (isBig) R.mipmap.game_sdk_icon_home_result_big else R.mipmap.game_sdk_icon_home_result_small)
+                    ivBetOdd.setImageResource(if (isDouble) R.mipmap.game_sdk_icon_home_result_double else R.mipmap.game_sdk_icon_home_result_single)
                 }
             }
         }
@@ -1329,7 +1329,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
             setImageResource(
                 resources.getIdentifier(
                     "game_sdk_icon_select_" + betteBean.moneyPinyin,
-                    "drawable",
+                    "mipmap",
                     requireContext().packageName
                 )
             )

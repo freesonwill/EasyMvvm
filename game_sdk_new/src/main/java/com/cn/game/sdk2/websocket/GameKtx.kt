@@ -33,15 +33,7 @@ import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 import kotlin.random.Random
 //GameKtx没有按照责任,耦合度太高
 val tokenArray = listOf(
-    "124:VmbZQ98O1",
-    "125:ozNPWgtT",
-    "126:Ncgvqc9s",
-    "127:AbI8Ppju",
-    "128:O7IBonor",
-    "129:wxGKbzD",
-    "130:uWJaPj0B",
-    "131:LUA0401p",
-    "132:pwMrc3Mp"
+    "15:ZKbkjdBW"
 )
 
 ////测试打包专用 99:mFGB4ljy

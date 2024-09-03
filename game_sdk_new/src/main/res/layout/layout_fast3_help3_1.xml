@@ -8,12 +8,12 @@
     <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="match_parent"
         android:layout_height="33dp"
-        app:srcCompat="@drawable/game_sdk_help_3_0" />
+        app:srcCompat="@mipmap/game_sdk_help_3_0" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="match_parent"
         android:layout_height="292dp"
         android:layout_marginTop="10dp"
-        app:srcCompat="@drawable/game_sdk_help_3_1" />
+        app:srcCompat="@mipmap/game_sdk_help_3_1" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>

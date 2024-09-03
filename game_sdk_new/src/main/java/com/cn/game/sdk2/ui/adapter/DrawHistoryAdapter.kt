@@ -24,7 +24,7 @@ class DrawHistoryAdapter : BaseAdapter<RoundInfoBean, BaseViewHolder, ItemDrawHi
             val child = binding.llShowDice.getChildAt(index) as ImageView
             val id = holder.resources.getIdentifier(
                 "game_sdk_icon_dice_" + perform.toPinyin(),
-                "drawable",
+                "mipmap",
                 holder.itemView.context.packageName
             )
             child.setImageResource(id)

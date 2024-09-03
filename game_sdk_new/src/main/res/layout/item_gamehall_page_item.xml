@@ -14,7 +14,7 @@
         android:scaleType="centerCrop"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/game_sdk_icon_kuai_logo" />
+        app:srcCompat="@mipmap/game_sdk_icon_kuai_logo" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvName"

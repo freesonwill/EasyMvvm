@@ -32,7 +32,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="fitXY"
-                    app:srcCompat="@drawable/game_sdk_icon_sum_bg" />
+                    app:srcCompat="@mipmap/game_sdk_icon_sum_bg" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="wrap_content"
@@ -45,7 +45,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/game_sdk_icon_sum_si" />
+                        app:srcCompat="@mipmap/game_sdk_icon_sum_si" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/txtSumFour"
@@ -69,7 +69,7 @@
                     android:scaleType="fitXY"
                     android:visibility="gone"
                     app:shapeAppearanceOverlay="@style/c_center_rounded"
-                    app:srcCompat="@drawable/game_sdk_flash_centre" />
+                    app:srcCompat="@mipmap/game_sdk_flash_centre" />
             </com.cn.game.sdk2.ui.view.game.GameAreaView>
 
             <com.cn.game.sdk2.ui.view.game.GameAreaView
@@ -86,7 +86,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="fitXY"
-                    app:srcCompat="@drawable/game_sdk_icon_sum_bg" />
+                    app:srcCompat="@mipmap/game_sdk_icon_sum_bg" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="wrap_content"
@@ -99,7 +99,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/game_sdk_icon_sum_wu" />
+                        app:srcCompat="@mipmap/game_sdk_icon_sum_wu" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/txtSumFive"
@@ -123,7 +123,7 @@
                     android:scaleType="fitXY"
                     android:visibility="gone"
                     app:shapeAppearanceOverlay="@style/c_center_rounded"
-                    app:srcCompat="@drawable/game_sdk_flash_centre" />
+                    app:srcCompat="@mipmap/game_sdk_flash_centre" />
             </com.cn.game.sdk2.ui.view.game.GameAreaView>
 
             <com.cn.game.sdk2.ui.view.game.GameAreaView
@@ -140,7 +140,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="fitXY"
-                    app:srcCompat="@drawable/game_sdk_icon_sum_bg" />
+                    app:srcCompat="@mipmap/game_sdk_icon_sum_bg" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="wrap_content"
@@ -153,7 +153,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/game_sdk_icon_sum_liu" />
+                        app:srcCompat="@mipmap/game_sdk_icon_sum_liu" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/txtSumSix"
@@ -178,7 +178,7 @@
                     android:scaleType="fitXY"
                     android:visibility="gone"
                     app:shapeAppearanceOverlay="@style/c_center_rounded"
-                    app:srcCompat="@drawable/game_sdk_flash_centre" />
+                    app:srcCompat="@mipmap/game_sdk_flash_centre" />
             </com.cn.game.sdk2.ui.view.game.GameAreaView>
 
             <com.cn.game.sdk2.ui.view.game.GameAreaView
@@ -195,7 +195,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="fitXY"
-                    app:srcCompat="@drawable/game_sdk_icon_sum_bg" />
+                    app:srcCompat="@mipmap/game_sdk_icon_sum_bg" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="wrap_content"
@@ -208,7 +208,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/game_sdk_icon_sum_qi" />
+                        app:srcCompat="@mipmap/game_sdk_icon_sum_qi" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/txtSumSeven"
@@ -233,7 +233,7 @@
                     android:scaleType="fitXY"
                     android:visibility="gone"
                     app:shapeAppearanceOverlay="@style/c_center_rounded"
-                    app:srcCompat="@drawable/game_sdk_flash_centre" />
+                    app:srcCompat="@mipmap/game_sdk_flash_centre" />
             </com.cn.game.sdk2.ui.view.game.GameAreaView>
 
             <com.cn.game.sdk2.ui.view.game.GameAreaView
@@ -250,7 +250,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="fitXY"
-                    app:srcCompat="@drawable/game_sdk_icon_sum_bg" />
+                    app:srcCompat="@mipmap/game_sdk_icon_sum_bg" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="wrap_content"
@@ -263,7 +263,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/game_sdk_icon_sum_ba" />
+                        app:srcCompat="@mipmap/game_sdk_icon_sum_ba" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/txtSumEight"
@@ -287,7 +287,7 @@
                     android:scaleType="fitXY"
                     android:visibility="gone"
                     app:shapeAppearanceOverlay="@style/c_center_rounded"
-                    app:srcCompat="@drawable/game_sdk_flash_centre" />
+                    app:srcCompat="@mipmap/game_sdk_flash_centre" />
 
             </com.cn.game.sdk2.ui.view.game.GameAreaView>
 
@@ -305,7 +305,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="fitXY"
-                    app:srcCompat="@drawable/game_sdk_icon_sum_bg" />
+                    app:srcCompat="@mipmap/game_sdk_icon_sum_bg" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="wrap_content"
@@ -318,7 +318,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/game_sdk_icon_sum_jiu" />
+                        app:srcCompat="@mipmap/game_sdk_icon_sum_jiu" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/txtSumNine"
@@ -342,7 +342,7 @@
                     android:scaleType="fitXY"
                     android:visibility="gone"
                     app:shapeAppearanceOverlay="@style/c_center_rounded"
-                    app:srcCompat="@drawable/game_sdk_flash_centre" />
+                    app:srcCompat="@mipmap/game_sdk_flash_centre" />
             </com.cn.game.sdk2.ui.view.game.GameAreaView>
 
             <com.cn.game.sdk2.ui.view.game.GameAreaView
@@ -360,7 +360,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="fitXY"
-                    app:srcCompat="@drawable/game_sdk_icon_sum_bg" />
+                    app:srcCompat="@mipmap/game_sdk_icon_sum_bg" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="wrap_content"
@@ -373,7 +373,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/game_sdk_icon_sum_shi" />
+                        app:srcCompat="@mipmap/game_sdk_icon_sum_shi" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/txtSumTen"
@@ -397,7 +397,7 @@
                     android:scaleType="fitXY"
                     android:visibility="gone"
                     app:shapeAppearanceOverlay="@style/c_center_rounded"
-                    app:srcCompat="@drawable/game_sdk_flash_centre" />
+                    app:srcCompat="@mipmap/game_sdk_flash_centre" />
             </com.cn.game.sdk2.ui.view.game.GameAreaView>
 
             <com.cn.game.sdk2.ui.view.game.GameAreaView
@@ -415,7 +415,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="fitXY"
-                    app:srcCompat="@drawable/game_sdk_icon_sum_bg" />
+                    app:srcCompat="@mipmap/game_sdk_icon_sum_bg" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="wrap_content"
@@ -428,7 +428,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/game_sdk_icon_sum_shiyi" />
+                        app:srcCompat="@mipmap/game_sdk_icon_sum_shiyi" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/txtSumEleven"
@@ -452,7 +452,7 @@
                     android:scaleType="fitXY"
                     android:visibility="gone"
                     app:shapeAppearanceOverlay="@style/c_center_rounded"
-                    app:srcCompat="@drawable/game_sdk_flash_centre" />
+                    app:srcCompat="@mipmap/game_sdk_flash_centre" />
             </com.cn.game.sdk2.ui.view.game.GameAreaView>
 
             <com.cn.game.sdk2.ui.view.game.GameAreaView
@@ -470,7 +470,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="fitXY"
-                    app:srcCompat="@drawable/game_sdk_icon_sum_bg" />
+                    app:srcCompat="@mipmap/game_sdk_icon_sum_bg" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="wrap_content"
@@ -483,7 +483,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/game_sdk_icon_sum_shier" />
+                        app:srcCompat="@mipmap/game_sdk_icon_sum_shier" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/txtSumTwelve"
@@ -507,7 +507,7 @@
                     android:scaleType="fitXY"
                     android:visibility="gone"
                     app:shapeAppearanceOverlay="@style/c_center_rounded"
-                    app:srcCompat="@drawable/game_sdk_flash_centre" />
+                    app:srcCompat="@mipmap/game_sdk_flash_centre" />
             </com.cn.game.sdk2.ui.view.game.GameAreaView>
 
             <com.cn.game.sdk2.ui.view.game.GameAreaView
@@ -525,7 +525,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="fitXY"
-                    app:srcCompat="@drawable/game_sdk_icon_sum_bg" />
+                    app:srcCompat="@mipmap/game_sdk_icon_sum_bg" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="wrap_content"
@@ -538,7 +538,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/game_sdk_icon_sum_shisan" />
+                        app:srcCompat="@mipmap/game_sdk_icon_sum_shisan" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/txtSumThirteen"
@@ -564,7 +564,7 @@
                     android:scaleType="fitXY"
                     android:visibility="gone"
                     app:shapeAppearanceOverlay="@style/c_center_rounded"
-                    app:srcCompat="@drawable/game_sdk_flash_centre" />
+                    app:srcCompat="@mipmap/game_sdk_flash_centre" />
             </com.cn.game.sdk2.ui.view.game.GameAreaView>
 
             <com.cn.game.sdk2.ui.view.game.GameAreaView
@@ -581,7 +581,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="fitXY"
-                    app:srcCompat="@drawable/game_sdk_icon_sum_bg" />
+                    app:srcCompat="@mipmap/game_sdk_icon_sum_bg" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="wrap_content"
@@ -594,7 +594,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/game_sdk_icon_sum_shisi" />
+                        app:srcCompat="@mipmap/game_sdk_icon_sum_shisi" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/txtSumFourteen"
@@ -618,7 +618,7 @@
                     android:scaleType="fitXY"
                     android:visibility="gone"
                     app:shapeAppearanceOverlay="@style/c_center_rounded"
-                    app:srcCompat="@drawable/game_sdk_flash_centre" />
+                    app:srcCompat="@mipmap/game_sdk_flash_centre" />
             </com.cn.game.sdk2.ui.view.game.GameAreaView>
 
             <com.cn.game.sdk2.ui.view.game.GameAreaView
@@ -636,7 +636,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="fitXY"
-                    app:srcCompat="@drawable/game_sdk_icon_sum_bg" />
+                    app:srcCompat="@mipmap/game_sdk_icon_sum_bg" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="wrap_content"
@@ -649,7 +649,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/game_sdk_icon_sum_shiwu" />
+                        app:srcCompat="@mipmap/game_sdk_icon_sum_shiwu" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/txtSumFifteen"
@@ -673,7 +673,7 @@
                     android:scaleType="fitXY"
                     android:visibility="gone"
                     app:shapeAppearanceOverlay="@style/c_center_rounded"
-                    app:srcCompat="@drawable/game_sdk_flash_centre" />
+                    app:srcCompat="@mipmap/game_sdk_flash_centre" />
             </com.cn.game.sdk2.ui.view.game.GameAreaView>
 
             <com.cn.game.sdk2.ui.view.game.GameAreaView
@@ -691,7 +691,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="fitXY"
-                    app:srcCompat="@drawable/game_sdk_icon_sum_bg" />
+                    app:srcCompat="@mipmap/game_sdk_icon_sum_bg" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="wrap_content"
@@ -704,7 +704,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/game_sdk_icon_sum_shiliu" />
+                        app:srcCompat="@mipmap/game_sdk_icon_sum_shiliu" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/txtSumSixteen"
@@ -728,7 +728,7 @@
                     android:scaleType="fitXY"
                     android:visibility="gone"
                     app:shapeAppearanceOverlay="@style/c_center_rounded"
-                    app:srcCompat="@drawable/game_sdk_flash_centre" />
+                    app:srcCompat="@mipmap/game_sdk_flash_centre" />
             </com.cn.game.sdk2.ui.view.game.GameAreaView>
 
             <com.cn.game.sdk2.ui.view.game.GameAreaView
@@ -746,7 +746,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="fitXY"
-                    app:srcCompat="@drawable/game_sdk_icon_sum_bg" />
+                    app:srcCompat="@mipmap/game_sdk_icon_sum_bg" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="wrap_content"
@@ -759,7 +759,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/game_sdk_icon_sum_shiqi" />
+                        app:srcCompat="@mipmap/game_sdk_icon_sum_shiqi" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/txtSumSeventeen"
@@ -784,7 +784,7 @@
                     android:scaleType="fitXY"
                     android:visibility="gone"
                     app:shapeAppearanceOverlay="@style/c_center_rounded"
-                    app:srcCompat="@drawable/game_sdk_flash_centre" />
+                    app:srcCompat="@mipmap/game_sdk_flash_centre" />
             </com.cn.game.sdk2.ui.view.game.GameAreaView>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>
