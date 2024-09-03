@@ -7,10 +7,8 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewPropertyAnimator
@@ -30,15 +28,11 @@ import com.cn.game.sdk2.R
 import com.cn.game.sdk2.data.BetteFlyData
 import com.cn.game.sdk2.data.EventKey
 import com.cn.game.sdk2.data.bean.SelectAnnotationBean
-import com.cn.game.sdk2.databinding.FragDxdsBinding
 import com.cn.game.sdk2.databinding.FragFast3HomeBinding
-import com.cn.game.sdk2.databinding.FragmentSingleDiceBinding
 import com.cn.game.sdk2.databinding.ItemAnnotationListBinding
 import com.cn.game.sdk2.databinding.ItemBetHistoryBinding
 import com.cn.game.sdk2.ui.helper.AnimHelper
 import com.cn.game.sdk2.ui.helper.Fast3ToastHelper
-import com.cn.game.sdk2.ui.helper.ViewHelper.bindViewPagerNewGame
-import com.cn.game.sdk2.ui.helper.ViewHelper.initGameViewPager
 import com.cn.game.sdk2.ui.popup.game.MoreListPopup
 import com.cn.game.sdk2.ui.view.CenterLayoutManager
 import com.cn.game.sdk2.ui.view.ClickRecyclerView
@@ -69,8 +63,11 @@ import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.gyf.immersionbar.ktx.hasNavigationBar
 import com.gyf.immersionbar.ktx.navigationBarHeight
-import com.xcjh.base_lib2.base.fragment.BaseVmDbFragment
 import com.xcjh.base_lib2.utils.LogUtils
+import com.cn.game.sdk2.utils.ext.bindViewPagerNewGame
+import com.cn.game.sdk2.utils.ext.initGameViewPager
+import com.xcjh.base_lib2.base.fragment.BaseFragment
+import com.xcjh.base_lib2.base.fragment.viewBind
 import com.xcjh.base_lib2.utils.LogUtilsExt.loge
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
@@ -78,7 +75,9 @@ import kotlinx.coroutines.launch
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
-class Fast3MainFragment(parentContext : Context) : BaseVmDbFragment<Fast3ViewModel, FragFast3HomeBinding>() {
+
+class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
+    override val mBinding: FragFast3HomeBinding by viewBind()
     override val mViewModel: Fast3ViewModel  by sharedViewModel()
     companion object {
         const val TAG = "Fast3MainFragment"
@@ -98,26 +97,17 @@ class Fast3MainFragment(parentContext : Context) : BaseVmDbFragment<Fast3ViewMod
     private val betteFlyAnimList by lazy { mutableMapOf<GameAreaView, MutableList<BetteFlyData>>() }
     private var selectBetteView: View? = null
 
-    private val fragDXDS = DXDSFragment()
-    private val fragSingleDice = SingleDiceFragment()
-
-    init {
-        val inflater = LayoutInflater.from(parentContext)
-        preloadBinding = FragFast3HomeBinding.inflate(inflater)
-        fragDXDS.preloadBinding = FragDxdsBinding.inflate(inflater)
-        fragSingleDice.preloadBinding = FragmentSingleDiceBinding.inflate(inflater)
-    }
-
     //==================================== Method ===============================================//
     @SuppressLint("ClickableViewAccessibility")
     override fun initView(savedInstanceState: Bundle?) {
-        mDatabind.model = mViewModel
-        OverScrollDecoratorHelper.setUpOverScroll(mDatabind.viewPagerNew);
-        mDatabind.bottomLayout.layoutParams.height = mViewModel.bottomHeight
-        mDatabind.bottomLayout.setOnTouchListener { _, _ -> true }
-        mDatabind.resultClickView.setOnClickListener { } //屏蔽底部recycler点击
+        mBinding.model = mViewModel
+        mBinding.lifecycleOwner = viewLifecycleOwner
+        OverScrollDecoratorHelper.setUpOverScroll(mBinding.viewPagerNew);
+        mBinding.bottomLayout.layoutParams.height = mViewModel.bottomHeight
+        mBinding.bottomLayout.setOnTouchListener { _, _ -> true }
+        mBinding.resultClickView.setOnClickListener { } //屏蔽底部recycler点击
 
-        Fast3ToastHelper.attachToHost(mDatabind.centerLayout).let {
+        Fast3ToastHelper.attachToHost(mBinding.centerLayout).let {
             lifecycle.addObserver(object : DefaultLifecycleObserver {
                 var startTime: Long = 0
                 override fun onCreate(owner: LifecycleOwner) {
@@ -151,15 +141,15 @@ class Fast3MainFragment(parentContext : Context) : BaseVmDbFragment<Fast3ViewMod
     private fun loadFragment(){
         val startTime = System.currentTimeMillis()
         //viewpager
-        mFragList.add(fragDXDS)
-        mFragList.add(fragSingleDice)
+        mFragList.add(DXDSFragment())
+        mFragList.add(SingleDiceFragment())
         mFragList.add(SumTotalFragment())
         mFragList.add(PairsDiceFragment())
         mFragList.add(LeopardFragment())
         (System.currentTimeMillis() - startTime).let {
             LogUtils.dTag(TAG, "Fast3MainFragment load costMills1:$it")
         }
-        mDatabind.viewPagerNew.initGameViewPager(
+        mBinding.viewPagerNew.initGameViewPager(
             childFragmentManager, mFragList, arrayListOf(
                 getString(R.string.g_home_txt_default),
                 getString(R.string.g_home_tab_single),
@@ -171,8 +161,8 @@ class Fast3MainFragment(parentContext : Context) : BaseVmDbFragment<Fast3ViewMod
         (System.currentTimeMillis() - startTime).let {
             LogUtils.dTag(TAG, "Fast3MainFragment load costMills2:$it")
         }
-        mDatabind.magicIndicator.bindViewPagerNewGame(
-            mDatabind.viewPagerNew, arrayListOf(
+        mBinding.magicIndicator.bindViewPagerNewGame(
+            mBinding.viewPagerNew, arrayListOf(
                 getString(R.string.g_home_txt_default),
                 getString(R.string.g_home_tab_single),
                 getString(R.string.g_home_tab_sum),
@@ -193,8 +183,8 @@ class Fast3MainFragment(parentContext : Context) : BaseVmDbFragment<Fast3ViewMod
     @SuppressLint("SetTextI18n")
     override fun initData() {
         //获取当前余额
-        mDatabind.txtCurrentMoney.text = "¥ ${mViewModel.currentMoney.formatRealMoney()}"
-        mDatabind.txtHomeTime.text = mViewModel.homeTimeSeconds.value.toString()
+        mBinding.txtCurrentMoney.text = "¥ ${mViewModel.currentMoney.formatRealMoney()}"
+        mBinding.txtHomeTime.text = mViewModel.homeTimeSeconds.value.toString()
         lifecycleScope.launchWhenResumed {
             //开始下注
             LogUtils.dTag(TAG, "initData startBetting")
@@ -205,7 +195,7 @@ class Fast3MainFragment(parentContext : Context) : BaseVmDbFragment<Fast3ViewMod
     }
 
     private fun setNavigationBar() {
-        mDatabind.apply {
+        mBinding.apply {
             val defaultHeight = 34.dp2px
             val targetHeight = when {
                 requireContext().hasNavigationBar -> {
@@ -242,14 +232,14 @@ class Fast3MainFragment(parentContext : Context) : BaseVmDbFragment<Fast3ViewMod
 //                mDatabind.flRvHistory.layoutParams = params
 //            }
 //        }
-        mDatabind.flRvHistory.viewTreeObserver.addOnGlobalLayoutListener(object :OnGlobalLayoutListener{
+        mBinding.flRvHistory.viewTreeObserver.addOnGlobalLayoutListener(object :OnGlobalLayoutListener{
             override fun onGlobalLayout() {
-                mDatabind.flRvHistory.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                resultRvHeight = mDatabind.rvHomeHistory.height
+                mBinding.flRvHistory.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                resultRvHeight = mBinding.rvHomeHistory.height
                 if(0 == resultRvHeight){
                     resultRvHeight = 122.dp2px
                 }
-                resultAnimMoveHeight = resultRvHeight - mDatabind.flRvHistory.height
+                resultAnimMoveHeight = resultRvHeight - mBinding.flRvHistory.height
             }
         })
     }
@@ -265,8 +255,8 @@ class Fast3MainFragment(parentContext : Context) : BaseVmDbFragment<Fast3ViewMod
             )
             if (mViewModel.localGameStage == it) return@let
             mViewModel.isClickOperation = it == GameStage.NEW
-            mDatabind.txtHomeTime.isVisible = it == GameStage.NEW
-            mDatabind.txtHomeUnit.isVisible = it == GameStage.NEW
+            mBinding.txtHomeTime.isVisible = it == GameStage.NEW
+            mBinding.txtHomeUnit.isVisible = it == GameStage.NEW
             mViewModel.localGameStage = it
             when (it) {
                 GameStage.NEW -> {
@@ -296,7 +286,7 @@ class Fast3MainFragment(parentContext : Context) : BaseVmDbFragment<Fast3ViewMod
             if (mViewModel.isCountDownStart) {
                 Fast3ToastHelper.showToastNormal(getString(R.string.g_home_betting_begin), 2000)
             }
-            mDatabind.apply {
+            mBinding.apply {
                 async {
                     playAlphaAnimTogether(
                         arrayOf(txtHomeStatic, txtHomeTime, txtHomeUnit),
@@ -317,19 +307,19 @@ class Fast3MainFragment(parentContext : Context) : BaseVmDbFragment<Fast3ViewMod
             //下注筹码向上升起动画
             startBetteRecyclerShowOrHideAnim(isShow = true, onStart = {
                 //筹码
-                mDatabind.betteLayout.isVisible = true
-                mDatabind.betteAgainLayout.isVisible = true
+                mBinding.betteLayout.isVisible = true
+                mBinding.betteAgainLayout.isVisible = true
 
                 //开奖结果x
-                mDatabind.rlShowResult.isVisible = false
-                mDatabind.ivHomeBg.isVisible = false
-                mDatabind.ivHomeBgCenter.isVisible = false
-                mDatabind.resultBgTop.isVisible = false
+                mBinding.rlShowResult.isVisible = false
+                mBinding.ivHomeBg.isVisible = false
+                mBinding.ivHomeBgCenter.isVisible = false
+                mBinding.resultBgTop.isVisible = false
             }, duration = if (mViewModel.isCountDownStart) 250 else 0)
 
             //暂时解决筹码栏被隐藏问题
             delay(500)
-            if (mViewModel.gameState == GameStage.NEW && !mDatabind.betteLayout.isVisible) {
+            if (mViewModel.gameState == GameStage.NEW && !mBinding.betteLayout.isVisible) {
                 resetBetteRecyclerVisible()
             }
         }
@@ -337,14 +327,14 @@ class Fast3MainFragment(parentContext : Context) : BaseVmDbFragment<Fast3ViewMod
 
     private fun onStartSetting() { //开始结算
         lifecycleScope.launch {
-            mDatabind.apply {
+            mBinding.apply {
                 //Fast3ToastHelper.showToastNormal(getString(R.string.g_home_setting_begin), 1000)
                 async {
                     playAlphaAnimTogether(arrayOf(txtHomeStatic), floatArrayOf(0f, 1f))
                     txtHomeStatic.text = resources.getString(R.string.g_f3_setting)
                 }
-                mDatabind.betteLayout.isInvisible = true
-                mDatabind.betteAgainLayout.isVisible = false
+                mBinding.betteLayout.isInvisible = true
+                mBinding.betteAgainLayout.isVisible = false
                 updateCenterRoundInfoData()
                 //开奖结果显示动画
                 startCenterRoundInfoShowAnim {
@@ -397,7 +387,7 @@ class Fast3MainFragment(parentContext : Context) : BaseVmDbFragment<Fast3ViewMod
             cancelBetteFlyAnim()
             cancelTemBetting()
             //开奖时取消临时下注的
-            mDatabind.apply {
+            mBinding.apply {
                 async {
                     playAlphaAnimTogether(arrayOf(txtHomeStatic), floatArrayOf(0f, 1f))
                     txtHomeStatic.text = getString(R.string.g_f3_dealing)
@@ -423,7 +413,7 @@ class Fast3MainFragment(parentContext : Context) : BaseVmDbFragment<Fast3ViewMod
     private fun updateCenterRoundInfoData() {
         val roundInfo: RoundInfoBean? = gameAboutModel.currentSettleResult
         Log.e(TAG, "结算item" + roundInfo.toString())
-        mDatabind.apply {
+        mBinding.apply {
             roundInfo?.run {
                 performs.forEachIndexed { index, item ->
                     val id = resources.getIdentifier(
@@ -457,7 +447,7 @@ class Fast3MainFragment(parentContext : Context) : BaseVmDbFragment<Fast3ViewMod
      */
     private var lottieListener: AnimatorListener? = null
     private fun startWinLottieAnim(endCallBack: (() -> Unit)?) {
-        mDatabind.apply {
+        mBinding.apply {
             val winMoney = gameAboutModel.netIncome
             Log.e(TAG, "本轮赢钱了--->$winMoney")
             if (winMoney <= 0) {
@@ -469,13 +459,13 @@ class Fast3MainFragment(parentContext : Context) : BaseVmDbFragment<Fast3ViewMod
                 in 1000..100000 -> 600L
                 else -> 700L
             }
-            AnimHelper.doNumberAnim(mDatabind.tvAnimWin2, 0, (winMoney).toLong(), duration)
+            AnimHelper.doNumberAnim(mBinding.tvAnimWin2, 0, (winMoney).toLong(), duration)
             showLottie(endCallBack)
         }
     }
 
     private fun showLottie(endCallBack: (() -> Unit)?) {
-        mDatabind.apply {
+        mBinding.apply {
             groupWinLottie.isVisible = true
             var isAnimating = false
             val onAnimationEnd: () -> Unit = {
@@ -495,14 +485,14 @@ class Fast3MainFragment(parentContext : Context) : BaseVmDbFragment<Fast3ViewMod
                         Log.e(TAG, "groupWinLottie onAnimationStart")
                         PromptSoundPlay.playWinEffect()
                         isAnimating = true
-                        mDatabind.tvAnimWin2.alpha = 1f
+                        mBinding.tvAnimWin2.alpha = 1f
                         txtWinMoneyLabel.alpha = 1f
                         lottieLayout.postDelayed({
                             AnimatorSet().apply {
                                 playTogether(
                                     listOf(
                                         ObjectAnimator.ofFloat(
-                                            mDatabind.tvAnimWin2,
+                                            mBinding.tvAnimWin2,
                                             "alpha",
                                             1f,
                                             0f
@@ -573,9 +563,9 @@ class Fast3MainFragment(parentContext : Context) : BaseVmDbFragment<Fast3ViewMod
             if (it > mViewModel.currentMoney) {
                 val start = mViewModel.currentMoney
                 val end = it
-                mDatabind.txtCurrentMoney.postDelayed({
+                mBinding.txtCurrentMoney.postDelayed({
                     AnimHelper.doNumberAnim(
-                        mDatabind.txtCurrentMoney,
+                        mBinding.txtCurrentMoney,
                         startNum = start,
                         endNumber = end,
                         duration1 = 600
@@ -583,7 +573,7 @@ class Fast3MainFragment(parentContext : Context) : BaseVmDbFragment<Fast3ViewMod
                     )
                 }, 600)
             } else {
-                mDatabind.txtCurrentMoney.text = "¥ ${it.formatRealMoney()}"
+                mBinding.txtCurrentMoney.text = "¥ ${it.formatRealMoney()}"
             }
             mViewModel.currentMoney = it
         }
@@ -604,12 +594,12 @@ class Fast3MainFragment(parentContext : Context) : BaseVmDbFragment<Fast3ViewMod
                 if (mViewModel.gameState == GameStage.NEW) {
                     lifecycleScope.launch {
                         playAlphaAnimTogether(
-                            arrayOf(mDatabind.txtHomeStatic),
+                            arrayOf(mBinding.txtHomeStatic),
                             floatArrayOf(0f, 1f)
                         )
-                        mDatabind.txtHomeStatic.text = getString(R.string.g_f3_dealing)
-                        mDatabind.txtHomeTime.isVisible = false
-                        mDatabind.txtHomeUnit.isVisible = false
+                        mBinding.txtHomeStatic.text = getString(R.string.g_f3_dealing)
+                        mBinding.txtHomeTime.isVisible = false
+                        mBinding.txtHomeUnit.isVisible = false
                         mViewModel.isClickOperation = false
                         Fast3ToastHelper.showToastNormal(
                             getString(R.string.g_home_betting_end),
@@ -621,7 +611,7 @@ class Fast3MainFragment(parentContext : Context) : BaseVmDbFragment<Fast3ViewMod
                     }
                 }
             } else {
-                mDatabind.txtHomeTime.text = seconds.toString()
+                mBinding.txtHomeTime.text = seconds.toString()
             }
         }
         mViewModel.moneyAnimCallback = object : Fast3ViewModel.MoneyAnimCallback {
@@ -699,7 +689,7 @@ class Fast3MainFragment(parentContext : Context) : BaseVmDbFragment<Fast3ViewMod
         gameAboutModel.historyRounds.observe(viewLifecycleOwner) {
             Log.e(TAG, "开奖历史结果--->$it")
             lifecycleScope.launch {
-                val adapter = mDatabind.rvHomeHistory.bindingAdapter
+                val adapter = mBinding.rvHomeHistory.bindingAdapter
                 adapter.models = it
             }
         }
@@ -723,8 +713,8 @@ class Fast3MainFragment(parentContext : Context) : BaseVmDbFragment<Fast3ViewMod
         mViewModel.playAlphaAnimationLD.observe(viewLifecycleOwner, object : Observer<Boolean> {
             var animator: ObjectAnimator? = null
             override fun onChanged(play: Boolean) {
-                mDatabind.rvHomeHistory.scrollToPosition(mDatabind.rvHomeHistory.models!!.size - 1)
-                val layoutManager = mDatabind.rvHomeHistory.layoutManager as LinearLayoutManager
+                mBinding.rvHomeHistory.scrollToPosition(mBinding.rvHomeHistory.models!!.size - 1)
+                val layoutManager = mBinding.rvHomeHistory.layoutManager as LinearLayoutManager
                 val position = layoutManager.findLastVisibleItemPosition()
                 val view = layoutManager.findViewByPosition(position)
                 LogUtils.dTag(TAG, "receive playAlphaAnimationLD:$play,view:$view")
@@ -771,7 +761,7 @@ class Fast3MainFragment(parentContext : Context) : BaseVmDbFragment<Fast3ViewMod
     }
 
     private fun updateAgainDoubleUi() {
-        mDatabind.apply {
+        mBinding.apply {
             when (gameAboutModel.currentAgainDoubleState.value) {
                 null, AgainDoubleState.NUll, AgainDoubleState.AGAIN_CAN_NOT_50 -> {
                     ivXuya.isVisible = true
@@ -863,7 +853,7 @@ class Fast3MainFragment(parentContext : Context) : BaseVmDbFragment<Fast3ViewMod
      * 开奖结果显示或者隐藏动画
      */
     private fun resultAnimation(isShowResult: Boolean) {
-        mDatabind.apply {
+        mBinding.apply {
             resultAnim?.cancel()
             mViewModel.isShowResult = isShowResult
             ivHomeRotation.rotation = if (isShowResult) 0f else 180f
@@ -892,7 +882,7 @@ class Fast3MainFragment(parentContext : Context) : BaseVmDbFragment<Fast3ViewMod
      * 投注的适配器
      */
     private fun setBetAdapter() {
-        mDatabind.llShowBetList.apply {
+        mBinding.llShowBetList.apply {
             itemAnimator = null
             layoutManager =
                 CenterLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
@@ -971,7 +961,7 @@ class Fast3MainFragment(parentContext : Context) : BaseVmDbFragment<Fast3ViewMod
             }.models = mViewModel.noteList
         }
         //历史结果
-        mDatabind.rvHomeHistory.apply {
+        mBinding.rvHomeHistory.apply {
             itemAnimator = null
             layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
@@ -1021,8 +1011,8 @@ class Fast3MainFragment(parentContext : Context) : BaseVmDbFragment<Fast3ViewMod
                 }
             }.models = gameAboutModel.historyRounds.value
             lifecycleScope.launchWhenResumed {
-                if (!mDatabind.rvHomeHistory.models.isNullOrEmpty()) {
-                    mDatabind.rvHomeHistory.scrollToPosition(mDatabind.rvHomeHistory.models!!.size - 1)
+                if (!mBinding.rvHomeHistory.models.isNullOrEmpty()) {
+                    mBinding.rvHomeHistory.scrollToPosition(mBinding.rvHomeHistory.models!!.size - 1)
                 }
             }
         }
@@ -1031,7 +1021,7 @@ class Fast3MainFragment(parentContext : Context) : BaseVmDbFragment<Fast3ViewMod
     private fun notifyBetteBean() {
         val money = gameAboutModel.tempBalance.value ?: 0
         var scrollIndex = -1
-        mDatabind.apply {
+        mBinding.apply {
             val selectBean = mViewModel.noteList.firstOrNull { it.select }
             if (selectBean != null) {
                 if (selectBean.money > money) { //当前筹码不足
@@ -1085,13 +1075,13 @@ class Fast3MainFragment(parentContext : Context) : BaseVmDbFragment<Fast3ViewMod
 
 
     private fun notifyDataSetChangedSafe(action: () -> Unit) {
-        mDatabind.llShowBetList.bindingAdapter.notifyItemRangeChanged(
+        mBinding.llShowBetList.bindingAdapter.notifyItemRangeChanged(
             0,
             mViewModel.noteList.count()
         )
-        if (mDatabind.llShowBetList.isComputingLayout) {
+        if (mBinding.llShowBetList.isComputingLayout) {
             LogUtils.eTag(TAG, "isComputingLayout")
-            mDatabind.llShowBetList.post(action)
+            mBinding.llShowBetList.post(action)
         } else {
             action.invoke()
         }
@@ -1117,7 +1107,7 @@ class Fast3MainFragment(parentContext : Context) : BaseVmDbFragment<Fast3ViewMod
         onEnd: (() -> Unit)? = null,
         duration: Long = 250L
     ) {
-        mDatabind.apply {
+        mBinding.apply {
             val recyclerAnim = ObjectAnimator.ofFloat(
                 llShowBetList,
                 "translationY",
@@ -1145,9 +1135,9 @@ class Fast3MainFragment(parentContext : Context) : BaseVmDbFragment<Fast3ViewMod
     }
 
     private fun resetBetteRecyclerVisible() {
-        mDatabind.apply {
+        mBinding.apply {
             betteLayout.isVisible = true
-            mDatabind.betteAgainLayout.isVisible = true
+            mBinding.betteAgainLayout.isVisible = true
 
             //开奖结果x
             rlShowResult.isVisible = false
@@ -1164,7 +1154,7 @@ class Fast3MainFragment(parentContext : Context) : BaseVmDbFragment<Fast3ViewMod
      * 执行游戏结果点数显示动画
      */
     private fun startCenterRoundInfoShowAnim(duration: Long = 200L, doEnd: () -> Unit) {
-        mDatabind.apply {
+        mBinding.apply {
             val leftAnimX = ObjectAnimator.ofFloat(llResultLeft, "scaleX", 0f, 1f).apply {
                 this.duration = duration
             }
@@ -1195,7 +1185,7 @@ class Fast3MainFragment(parentContext : Context) : BaseVmDbFragment<Fast3ViewMod
     }
 
     private fun setClick() {
-        mDatabind.apply {
+        mBinding.apply {
             rvHomeHistory.setOnRecycleClickListener(object :
                 ClickRecyclerView.RecyclerClickListener {
                 override fun onRecyclerClick() {
@@ -1226,10 +1216,10 @@ class Fast3MainFragment(parentContext : Context) : BaseVmDbFragment<Fast3ViewMod
                 MoreListPopup.create(requireContext(), object :
                     MoreListPopup.OnMoreListPopupListener {
                     override fun bindView(): View {
-                        return mDatabind.llHomeMore
+                        return mBinding.llHomeMore
                     }
-                    override fun setSecondPopHeight(): Int {
-                        return mDatabind.root.height
+                    override fun getSecondPopHeight(): Int {
+                        return mBinding.root.height
                     }
                 })
             }
@@ -1359,7 +1349,7 @@ class Fast3MainFragment(parentContext : Context) : BaseVmDbFragment<Fast3ViewMod
         }
         val isFirstAdd = !currentBetteAreaMap.containsKey(areaView.areaCode)
         updateAnchorView(areaView)
-        val betList = mDatabind.llShowBetList.models as List<SelectAnnotationBean>
+        val betList = mBinding.llShowBetList.models as List<SelectAnnotationBean>
         val selectedPosition = betList.indexOf(betteBean)
         scrollSelectPosition2Center(false) {
             notifyBetteBean()
@@ -1383,13 +1373,13 @@ class Fast3MainFragment(parentContext : Context) : BaseVmDbFragment<Fast3ViewMod
 
     private fun safeBetteFly(position: Int, action: (View?) -> Unit) {
         if (!isBetteItemVisible(position)) {
-            mDatabind.llShowBetList.post {
+            mBinding.llShowBetList.post {
                 val betteView =
-                    mDatabind.llShowBetList.layoutManager?.findViewByPosition(position)
+                    mBinding.llShowBetList.layoutManager?.findViewByPosition(position)
                 action.invoke(betteView)
             }
         } else {
-            val betteView = mDatabind.llShowBetList.layoutManager?.findViewByPosition(position)
+            val betteView = mBinding.llShowBetList.layoutManager?.findViewByPosition(position)
 
             action.invoke(betteView)
         }
@@ -1408,7 +1398,7 @@ class Fast3MainFragment(parentContext : Context) : BaseVmDbFragment<Fast3ViewMod
         endCallBack: (() -> Unit)?
     ) {
         //贝塞尔曲线中间过程的点的坐标
-        val viewPagerLocation = mDatabind.viewPagerNew.locationOnScreen
+        val viewPagerLocation = mBinding.viewPagerNew.locationOnScreen
         val jettonViewLocation = jettonView.locationOnScreen
         val targetLocation = areaView.betteView.ivShowBg.locationOnScreen
 
@@ -1538,7 +1528,7 @@ class Fast3MainFragment(parentContext : Context) : BaseVmDbFragment<Fast3ViewMod
         hiddenAnchorTop()
         anchorMoneyView = areaView.moneyView
         currentBetteAreaMap[areaView.areaCode] = areaView
-        mDatabind.tempTouch.setAnchorMoneyView(areaView.moneyView)
+        mBinding.tempTouch.setAnchorMoneyView(areaView.moneyView)
         showAnchorTop()
     }
 
@@ -1554,8 +1544,8 @@ class Fast3MainFragment(parentContext : Context) : BaseVmDbFragment<Fast3ViewMod
     private fun reLocatePage() {
         anchorMoneyView?.let {
             val index = it.pageIndex
-            if (mDatabind.viewPagerNew.currentItem != index) {
-                mDatabind.viewPagerNew.currentItem = index
+            if (mBinding.viewPagerNew.currentItem != index) {
+                mBinding.viewPagerNew.currentItem = index
             }
         }
     }
@@ -1590,7 +1580,7 @@ class Fast3MainFragment(parentContext : Context) : BaseVmDbFragment<Fast3ViewMod
         isSmooth: Boolean = true,
         action: (() -> Unit)? = null
     ) {
-        mDatabind.apply {
+        mBinding.apply {
             val selectedIndex = mViewModel.noteList.indexOfFirst { it.select }
             if (!isBetteItemVisible(selectedIndex)) {
                 llShowBetList.scrollToPosition(selectedIndex)
@@ -1649,7 +1639,7 @@ class Fast3MainFragment(parentContext : Context) : BaseVmDbFragment<Fast3ViewMod
     }
 
     private fun isBetteItemVisible(position: Int): Boolean {
-        mDatabind.apply {
+        mBinding.apply {
             val layoutManager = llShowBetList.layoutManager as LinearLayoutManager
             return position in layoutManager.findFirstCompletelyVisibleItemPosition()..layoutManager.findLastCompletelyVisibleItemPosition()
         }

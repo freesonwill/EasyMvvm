@@ -1,19 +1,20 @@
 package com.xcjh.base_lib2.base.fragment
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModel
 import com.cn.game.sdk2.utils.ThreadUtils.launchWithCustomContext
 import com.cn.game.sdk2.utils.ThreadUtils.mainScope
+import androidx.viewbinding.ViewBinding
 import com.cn.game.sdk2.websocket.imp.GameApp
 import com.xcjh.base_lib2.base.BaseViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import java.lang.reflect.Method
 
 
 /**
@@ -22,32 +23,22 @@ import kotlinx.coroutines.delay
  * 描述　: ViewModelFragment基类，自动把ViewModel注入Fragment
  */
 
-abstract class BaseVmFragment<VM : BaseViewModel> : Fragment(), GameApp.GameSdkKoinComponent {
+abstract class BaseFragment<VM : ViewModel, VB : ViewBinding> : Fragment(), GameApp.GameSdkKoinComponent {
 
     //是否第一次加载
     private var isFirst: Boolean = true
     private var lazyJob: Job? = null
 
+    protected abstract val mBinding: VB
     protected abstract val mViewModel: VM
-
-    lateinit var mActivity: AppCompatActivity
-
-    /**
-     * 当前Fragment绑定的视图布局
-     */
-    abstract fun layoutId(): Int
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(layoutId(), container, false)
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        mActivity = context as AppCompatActivity
+    ): View {
+        super.onCreateView(inflater, container, savedInstanceState)
+        return mBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -121,3 +112,20 @@ abstract class BaseVmFragment<VM : BaseViewModel> : Fragment(), GameApp.GameSdkK
         lazyJob?.cancel()
     }
 }
+
+inline fun <reified T : ViewBinding> Fragment.viewBind(): Lazy<T> =
+    lazy {
+        T::class.java.inflateMethod?.invoke(null, layoutInflater) as T
+    }
+
+val <T> Class<T>.inflateMethod: Method?
+    get() =
+        try {
+            getMethod("inflate", LayoutInflater::class.java)
+        } catch (e: NoSuchMethodException) {
+            e.printStackTrace()
+            null
+        } catch (e: SecurityException) {
+            e.printStackTrace()
+            null
+        }

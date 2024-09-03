@@ -232,7 +232,7 @@ class GameApp  private constructor(){
 
                 })
             }
-            return ViewHelper.getGameEnterView(context)
+            return ViewHelper.instance.getGameEnterView(context)
         }
 
         internal fun resumeGame(){
@@ -250,7 +250,7 @@ class GameApp  private constructor(){
          */
         @JvmStatic
          fun createFloatResultView(context: Context): View {
-            return ViewHelper.getFastViewOverlay(context)
+            return ViewHelper.instance.getFastViewOverlay(context)
         }
 
         @JvmStatic

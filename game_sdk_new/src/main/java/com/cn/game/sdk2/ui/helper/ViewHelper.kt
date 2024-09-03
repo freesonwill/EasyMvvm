@@ -1,22 +1,14 @@
 package com.cn.game.sdk2.ui.helper
 
 import android.content.Context
-import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import androidx.viewpager.widget.PagerAdapter
-import androidx.viewpager.widget.ViewPager
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.data.enums.GAME_ID_ENUM
 import com.cn.game.sdk2.ui.page.fast3.Fast3MainFragment
@@ -25,23 +17,13 @@ import com.cn.game.sdk2.ui.popup.fast3.Fast3HelpPopup
 import com.cn.game.sdk2.utils.ThreadUtils.appListenerScope
 import com.cn.game.sdk2.utils.ThreadUtils.launchWithCustomContext
 import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
-import com.cn.game.sdk2.utils.ext.ViewExt.locationInWindow
-import com.cn.game.sdk2.utils.tool.indicator.CommonPagerIndicator
 import com.cn.game.sdk2.websocket.appListener
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
 import com.lxj.xpopup.interfaces.SimpleCallback
 import com.xcjh.base_lib2.utils.LogUtils
-import com.xcjh.base_lib2.utils.toHtml
 import com.xcjh.base_lib2.utils.view.clickNoRepeat
-import net.lucode.hackware.magicindicator.MagicIndicator
-import net.lucode.hackware.magicindicator.ViewPagerHelper
-import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigator
-import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapter
-import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerIndicator
-import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerTitleView
-import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.ColorTransitionPagerTitleView
 import java.lang.ref.WeakReference
 
 /**
@@ -49,15 +31,21 @@ import java.lang.ref.WeakReference
  * author       : zhangsan
  * createTime   : 2024/6/13 17:43
  **/
-object ViewHelper {
-    private const val TAG: String = "ViewHelper"
+class ViewHelper {
 
-    enum class ViewFloatType {
+    companion object {
+        private const val TAG: String = "ViewHelper"
+        val instance: ViewHelper by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) {
+            ViewHelper()
+        }
+    }
+
+    private enum class ViewFloatType {
         FastView, FastViewOverlay, HomeXPopupDialog, HelpXPopupDialog
     }
 
     //弱引用防止view不能被回收
-    private var viewHolderMap = mutableMapOf<ViewFloatType, WeakReference<View>>()
+    private val viewHolderMap = mutableMapOf<ViewFloatType, WeakReference<View>>()
 
     private var homeXPopupDialog: BasePopupView?
         get() = viewHolderMap[ViewFloatType.HomeXPopupDialog]?.get() as BasePopupView?
@@ -91,7 +79,7 @@ object ViewHelper {
     /**
      * 显示帮助文档
      */
-    fun showHelpDialog(context: Context, isShow: Boolean = true) {
+    fun showHelpDialog(context: Context, isShow: Boolean = true, pageHeight: Int) {
         if (helpXPopupDialog != null) {
             when {
                 isShow && !helpXPopupDialog!!.isShow -> {
@@ -104,9 +92,7 @@ object ViewHelper {
             }
             return
         }
-        val (offsetY, height) = homeXPopupDialog!!.findViewById<View>(R.id.topLayout).let {
-            arrayOf(it.locationInWindow[1], it.height)
-        }
+        val (offsetY, height) = arrayOf(0, pageHeight)
         helpXPopupDialog = XPopup.Builder(context).isTouchThrough(false)
             .setPopupCallback(object : SimpleCallback() {
                 override fun onDismiss(popupView: BasePopupView?) {
@@ -133,7 +119,7 @@ object ViewHelper {
 
     private fun tryCreateMainPopup(context: Context){
         if(null == homeXPopupDialog){
-            val pop = HomeXPopupDialog(context, Fast3MainFragment(context), GAME_ID_ENUM.GAME_FAST3.num).apply {
+            val pop = HomeXPopupDialog(context, Fast3MainFragment(), GAME_ID_ENUM.GAME_FAST3.num).apply {
                 homeXPopupDialog = this
             }
             XPopup.Builder(context)
@@ -194,7 +180,7 @@ object ViewHelper {
     }
 
 
-    fun showGameMainPopup(context: Context, isShow: Boolean) {
+    private fun showGameMainPopup(context: Context, isShow: Boolean) {
         tryCreateMainPopup(context)
         if (!isShow) {
             homeXPopupDialog?.dismiss()
@@ -274,179 +260,11 @@ object ViewHelper {
             }
     }
 
-    fun ViewPager.initGameViewPager2(views: ArrayList<View>): ViewPager {
-        //设置适配器
-        adapter = object : PagerAdapter() {
-            override fun getCount(): Int {
-                return views.count()
-            }
-
-            override fun isViewFromObject(view: View, obj: Any): Boolean {
-                return view == obj
-            }
-
-            override fun instantiateItem(container: ViewGroup, position: Int): Any {
-                val view = views[position]
-                container.addView(view)
-                return view
-            }
-
-            override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
-                container.removeView(`object` as View)
-            }
-        }
-        return this
+    fun clearAllView() {
+        fastView = null
+        fastViewOverlay = null
+        homeXPopupDialog = null
+        helpXPopupDialog = null
+        viewHolderMap.clear()
     }
-
-    fun ViewPager.initGameViewPager(
-        fragmentManager: FragmentManager,
-        fragments: ArrayList<Fragment>,
-        titles: ArrayList<String>? = null
-    ): ViewPager {
-        //设置适配器
-        adapter = object :
-            FragmentStatePagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
-                var cacheMap = hashMapOf<Int,Fragment>()
-                override fun getCount(): Int {
-                    return fragments.size
-                }
-
-                override fun getItem(position: Int): Fragment {
-                    return fragments[position]
-                }
-
-                /*override fun instantiateItem(container: ViewGroup, position: Int): Any {
-                    val fragment = getItem(position)
-                    if(!cacheMap.containsKey(position)){
-                        cacheMap[position] = fragment
-                        val transaction = fragmentManager.beginTransaction()
-                        transaction.add(
-                          x  container.id, fragment,
-                            "android:switcher:" + container.id + ":" + getItemId(position)
-                        )
-                        transaction.commitNowAllowingStateLoss()
-                    }
-
-                    return fragment
-                }*/
-
-                override fun getPageTitle(position: Int): CharSequence? {
-                    return titles?.get(position)
-                }
-
-                override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
-                    //super.destroyItem(container, position, `object`)
-    //                fragments.remove(`object`)
-                }
-            }
-        return this
-    }
-
-
-    /**
-     * 该文件只添加扩展方法，其他top函数根据业务情况合理安置，便于查找、管理
-     * 各种公共扩展方法
-     */
-
-    fun ViewPager.initActivityGame(
-        fragmentManager: FragmentManager,
-        fragments: ArrayList<Fragment>,
-        titles: ArrayList<String>? = null
-    ): ViewPager {
-        //设置适配器
-        adapter = object : FragmentStatePagerAdapter(
-            fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
-        ) {
-            override fun getCount(): Int {
-                return fragments.size
-            }
-
-            override fun getItem(position: Int): Fragment {
-                return fragments[position]
-            }
-
-            override fun getPageTitle(position: Int): CharSequence? {
-                return titles?.get(position)
-            }
-
-        }
-
-        return this
-    }
-
-
-    /*
-     * ViewPager + MagicIndicator 指示器
-     */
-    fun MagicIndicator.bindViewPagerNewGame(
-        viewPager: ViewPager,
-        mStringList: List<String> = arrayListOf(),
-        scrollEnable: Boolean = false,
-        action: (index: Int) -> Unit = {}
-    ) {
-        // viewPager.offscreenPageLimit = mStringList.size
-        val commonNavigator = CommonNavigator(context)
-        if (scrollEnable) {
-            commonNavigator.isSkimOver = true
-        } else {
-            commonNavigator.isAdjustMode = true
-        }
-        commonNavigator.adapter = object : CommonNavigatorAdapter() {
-
-            override fun getCount(): Int {
-                return mStringList.size
-            }
-
-            override fun getTitleView(context: Context, index: Int): IPagerTitleView {
-                requestDisallowInterceptTouchEvent(true)
-
-                return ColorTransitionPagerTitleView(context).apply {
-                    //设置文本
-                    text = mStringList[index].toHtml()
-                    //字体大小
-                    textSize = 14f
-                    setTextBold(this, false)
-                    // setBackgroundColor(ContextCompat.getColor(appContext, R.color.red_F7736D))
-                    //未选中颜色
-                    normalColor = ContextCompat.getColor(context, R.color.g_9696b8)
-                    //选中颜色
-                    selectedColor = ContextCompat.getColor(context, R.color.g_f7cf41)
-                    //点击事件
-                    setOnClickListener {
-                        viewPager.currentItem = index
-                        action.invoke(index)
-                    }
-                    setPadding(32, 0, 32, 0)
-                }
-            }
-
-            override fun getIndicator(context: Context): IPagerIndicator {
-                return CommonPagerIndicator(context).apply {
-                    mode = 0
-                    // indicatorDrawable = ContextCompat.getDrawable(context, R.drawable.ic_select)
-                }
-            }
-
-        }
-        this.navigator = commonNavigator
-
-        //viewPager 绑定 navigator
-        ViewPagerHelper.bind(this, viewPager)
-    }
-
-
-    /**
-     * 文字加粗无效的时候，如： textView.setTypeface(null, Typeface.BOLD) 或者 textView.typeface = Typeface.DEFAULT_BOLD
-     */
-    fun setTextBold(textView: TextView?, isBold: Boolean) {
-        try {
-            if (textView != null) {
-                val paint: Paint? = textView.paint
-                paint?.isFakeBoldText = isBold
-            }
-        } catch (_: Exception) {
-        }
-    }
-
-
 }

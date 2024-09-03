@@ -435,7 +435,7 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
         if (settle.winScore > 0) {
             //如果中奖 就计算净收入
             gameAboutModel.netIncome = settle.winScore - confirmMoney
-            ViewHelper.showFastViewPopWhenWin()
+            ViewHelper.instance.showFastViewPopWhenWin()
         }
         //开奖号码
         //主动设置豹子

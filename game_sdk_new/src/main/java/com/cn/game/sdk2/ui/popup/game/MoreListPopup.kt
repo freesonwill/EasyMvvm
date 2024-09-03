@@ -90,14 +90,14 @@ class MoreListPopup private constructor(content: Context) : AttachPopupView(cont
             }
             rlPopClickAssist.clickNoRepeat(true){
                 delayDismiss(100)
-                ViewHelper.showHelpDialog(context,true)
+                ViewHelper.instance.showHelpDialog(context,true, listener?.getSecondPopHeight() ?: 0)
             }
         }
     }
 
     private fun showGameList() {
         val popupView = GameListView(context)
-        popupView.targetHeight = listener?.setSecondPopHeight() ?: 0
+        popupView.targetHeight = listener?.getSecondPopHeight() ?: 0
         XPopup.Builder(context)
             .isTouchThrough(false)
             .popupAnimation(PopupAnimation.TranslateFromBottom)
@@ -117,6 +117,6 @@ class MoreListPopup private constructor(content: Context) : AttachPopupView(cont
 
     interface OnMoreListPopupListener {
         fun bindView(): View
-        fun setSecondPopHeight(): Int
+        fun getSecondPopHeight(): Int
     }
 }

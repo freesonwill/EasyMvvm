@@ -4,17 +4,20 @@ import android.view.ViewTreeObserver
 import com.cn.game.sdk2.databinding.FragmentSumTotalBinding
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
+import com.xcjh.base_lib2.base.fragment.viewBind
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
  * 总和
  */
 class SumTotalFragment: BaseFast3Fragment<Fast3ViewModel, FragmentSumTotalBinding>() {
+
+    override val mBinding: FragmentSumTotalBinding by viewBind()
     override val mViewModel: Fast3ViewModel  by sharedViewModel()
     override fun initAreaViewList() {
-        mDatabind.model = mViewModel
-        mDatabind.apply {
+        mBinding.model = mViewModel
+        mBinding.lifecycleOwner = viewLifecycleOwner
+        mBinding.apply {
             areaViewList = mutableListOf(
                 gavSumFour.also { it.flickerView = ivSumFlashFour },
                 gavSumFive.also { it.flickerView = ivSumFlashFive },
@@ -60,7 +63,7 @@ class SumTotalFragment: BaseFast3Fragment<Fast3ViewModel, FragmentSumTotalBindin
                     emitAnimCallBack.invoke()
                 }
             })
-            mViewModel.addMoneyOkViewLiveData.value =Pair(areaView,mDatabind.flRoot)
+            mViewModel.addMoneyOkViewLiveData.value =Pair(areaView,mBinding.flRoot)
         }
     }
 }

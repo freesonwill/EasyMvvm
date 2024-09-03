@@ -229,15 +229,15 @@ abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
 
         val limitLeft = if (areaView.id == R.id.double_view) {
             val leopardLocation = IntArray(2)
-            (mDatabind as FragDxdsBinding).leopardView.getLocationOnScreen(leopardLocation)
+            (mBinding as FragDxdsBinding).leopardView.getLocationOnScreen(leopardLocation)
             val leopardX = leopardLocation[0]
-            leopardX + (mDatabind as FragDxdsBinding).leopardView.measuredWidth
+            leopardX + (mBinding as FragDxdsBinding).leopardView.measuredWidth
         } else {
             areaX + (if (isLeftStart) 0 else if (areaView.id == R.id.big_view) 6.dp2px else 4.dp2px)
         }
         val limitRight = if (areaView.id == R.id.single_view) {
             val leopardLocation = IntArray(2)
-            (mDatabind as FragDxdsBinding).leopardView.getLocationOnScreen(leopardLocation)
+            (mBinding as FragDxdsBinding).leopardView.getLocationOnScreen(leopardLocation)
             val leopardX = leopardLocation[0]
             leopardX
         } else {
@@ -246,10 +246,10 @@ abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
         val limitBottom = when (areaView.id) {
             R.id.big_view -> {
                 val smallLocation = IntArray(2)
-                (mDatabind as FragDxdsBinding).ivSmall.getLocationOnScreen(smallLocation)
+                (mBinding as FragDxdsBinding).ivSmall.getLocationOnScreen(smallLocation)
 
-                val leopardLocation = (mDatabind as FragDxdsBinding).leopardView.locationOnScreen
-                if (endX + betteView.measuredWidth <= leopardLocation[0] + (mDatabind as FragDxdsBinding).leopardView.measuredWidth) {
+                val leopardLocation = (mBinding as FragDxdsBinding).leopardView.locationOnScreen
+                if (endX + betteView.measuredWidth <= leopardLocation[0] + (mBinding as FragDxdsBinding).leopardView.measuredWidth) {
                     leopardLocation[1] - 4.dp2px
                 } else {
                     smallLocation[1]
@@ -258,9 +258,9 @@ abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
 
             R.id.small_view -> {
                 val smallLocation = IntArray(2)
-                (mDatabind as FragDxdsBinding).ivSmall.getLocationOnScreen(smallLocation)
+                (mBinding as FragDxdsBinding).ivSmall.getLocationOnScreen(smallLocation)
 
-                val leopardLocation = (mDatabind as FragDxdsBinding).leopardView.locationOnScreen
+                val leopardLocation = (mBinding as FragDxdsBinding).leopardView.locationOnScreen
                 if (endX + betteView.measuredWidth >= leopardLocation[0]) {
                     leopardLocation[1] - 4.dp2px
                 } else {
@@ -270,7 +270,7 @@ abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
 
             R.id.single_view, R.id.double_view -> {
                 val smallLocation = IntArray(2)
-                (mDatabind as FragDxdsBinding).ivSingle.getLocationOnScreen(smallLocation)
+                (mBinding as FragDxdsBinding).ivSingle.getLocationOnScreen(smallLocation)
                 smallLocation[1]
             }
 

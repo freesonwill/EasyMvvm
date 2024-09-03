@@ -13,6 +13,7 @@ import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
 import com.cn.game.sdk2.websocket.bean.AreaBetBean
 import com.cn.game.sdk2.websocket.constants.GameStage
 import com.cn.game.sdk2.websocket.gameAboutModel
+import com.xcjh.base_lib2.base.fragment.viewBind
 import com.xcjh.base_lib2.utils.LogUtils
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
@@ -20,6 +21,7 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
  * 默认
  */
 class DXDSFragment : BaseFast3Fragment<Fast3ViewModel, FragDxdsBinding>() {
+    override val mBinding: FragDxdsBinding by viewBind()
     private var moneyViewList: SparseArray<Pair<TextView, TextView>> = SparseArray()
     private val numAnimators by lazy { mutableListOf<Animator?>() }
     private var numAnimSet: AnimatorSet? = null
@@ -31,8 +33,9 @@ class DXDSFragment : BaseFast3Fragment<Fast3ViewModel, FragDxdsBinding>() {
     }
 
     override fun initAreaViewList() {
-        mDatabind.model = mViewModel
-        mDatabind.apply {
+        mBinding.model = mViewModel
+        mBinding.lifecycleOwner = viewLifecycleOwner
+        mBinding.apply {
             areaViewList.add(bigView.also { it.flickerView = ivFlickerRightTop })
             areaViewList.add(smallView.also { it.flickerView = ivFlickerLeftTop })
             areaViewList.add(singleView.also { it.flickerView = ivFlickerLeftBelow })
@@ -151,7 +154,7 @@ class DXDSFragment : BaseFast3Fragment<Fast3ViewModel, FragDxdsBinding>() {
                 }
             })
 
-            mViewModel.addMoneyOkViewLiveData.value = Pair(areaView, mDatabind.flRoot)
+            mViewModel.addMoneyOkViewLiveData.value = Pair(areaView, mBinding.flRoot)
         }
     }
 
