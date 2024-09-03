@@ -3,7 +3,7 @@ package com.cn.game.sdk2.data
 import java.util.*
 
 /**
- * Description:
+ * Description: 排序List
  * author       : zhangsan
  * createTime   : 2023/5/19 15:45
  **/
