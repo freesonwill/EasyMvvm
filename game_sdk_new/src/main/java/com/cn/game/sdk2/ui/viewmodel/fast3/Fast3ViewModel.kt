@@ -86,34 +86,6 @@ class Fast3ViewModel : BaseViewModel() {
      */
     var currentMoney: Long = gameAboutModel.balance.value ?: 0L
 
-    /**
-     * 投注的钱
-     */
-    var userLastSelectBetteBean: SelectAnnotationBean? = null
-    val noteList: MutableList<SelectAnnotationBean> by lazy {
-        userLastSelectBetteBean = SelectAnnotationBean(money = 1000, select = true)
-        mutableListOf(
-            SelectAnnotationBean(money = 1000, select = true),
-            SelectAnnotationBean(money = 2000),
-            SelectAnnotationBean(money = 5000),
-            SelectAnnotationBean(money = 10000),
-            SelectAnnotationBean(money = 20000),
-            SelectAnnotationBean(money = 50000),
-            SelectAnnotationBean(money = 100000),
-            SelectAnnotationBean(money = 200000),
-            SelectAnnotationBean(money = 500000),
-            SelectAnnotationBean(money = 1000000),
-            SelectAnnotationBean(money = 2000000),
-            SelectAnnotationBean(money = 5000000),
-            SelectAnnotationBean(money = 10000000),
-        )
-    }
-    val betteBean: SelectAnnotationBean
-        get() {
-            var selectedPosition = noteList.indexOfFirst { it.select }
-            if (selectedPosition < 0) selectedPosition = 0
-            return noteList[selectedPosition]
-        }
     val countDown: Long
         get() {
             LogUtils.dTag(TAG, "countDown get ${gameAboutModel.countDown}")

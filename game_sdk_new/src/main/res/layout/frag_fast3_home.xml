@@ -301,10 +301,10 @@
                     android:gravity="center"
                     android:orientation="horizontal"
                     android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="@id/betteLayout"
+                    app:layout_constraintBottom_toBottomOf="@id/cl_chips"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/betteLayout">
+                    app:layout_constraintTop_toTopOf="@id/cl_chips">
 
                     <LinearLayout
                         android:id="@+id/llResultLeft"
@@ -373,13 +373,13 @@
                     android:id="@+id/resultClickView"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    app:layout_constraintBottom_toBottomOf="@id/betteLayout"
+                    app:layout_constraintBottom_toBottomOf="@id/cl_chips"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/betteLayout" />
+                    app:layout_constraintTop_toTopOf="@id/cl_chips" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/betteLayout"
+                    android:id="@+id/cl_chips"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/g_141624"
@@ -390,23 +390,12 @@
                     <!-- 多添加一层解决上层clipChildren为false
                         导致下面筹码list向下偏移动画绘制超出布局 -->
                     <FrameLayout
+                        android:id="@+id/fl_chips"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent">
-
-                        <com.cn.game.sdk2.ui.view.BounceRecycleView
-                            android:id="@+id/llShowBetList"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:clipChildren="false"
-                            android:clipToPadding="false"
-                            android:orientation="horizontal"
-                            android:paddingTop="5dp"
-                            tools:itemCount="11"
-                            tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                            tools:listitem="@layout/item_annotation_list" />
 
                     </FrameLayout>
 
@@ -424,9 +413,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     android:layout_marginTop="5dp"
-                    app:layout_constraintBottom_toBottomOf="@id/betteLayout"
+                    app:layout_constraintBottom_toBottomOf="@id/cl_chips"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/betteLayout">
+                    app:layout_constraintTop_toTopOf="@id/cl_chips">
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/ivBetEndFg"
@@ -473,7 +462,7 @@
                     android:overScrollMode="ifContentScrolls"
                     android:paddingStart="0dp"
                     android:paddingEnd="0dp"
-                    app:layout_constraintBottom_toTopOf="@id/betteLayout" />
+                    app:layout_constraintBottom_toTopOf="@id/cl_chips" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/resultBgTop"

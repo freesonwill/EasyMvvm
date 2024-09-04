@@ -1,5 +1,6 @@
 package com.cn.game.sdk2.ui.adapter
 
+import android.animation.ObjectAnimator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,9 +9,10 @@ import com.cn.game.sdk2.databinding.ItemAnnotationListBinding
 import com.cn.game.sdk2.ui.compare.ChipsCompare
 import com.cn.game.sdk2.ui.viewholder.BaseViewHolder
 import com.cn.game.sdk2.utils.IconUtils
+import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
 import com.cn.game.sdk2.websocket.gameAboutModel
 
-class ChipsAdapter(private val chipSelectedListener: ChipSelectedListener) : BaseAdapter<SelectAnnotationBean, BaseViewHolder, ItemAnnotationListBinding>(
+class ChipsAdapter : BaseAdapter<SelectAnnotationBean, BaseViewHolder, ItemAnnotationListBinding>(
     ChipsCompare()
 ) {
 
@@ -33,7 +35,12 @@ class ChipsAdapter(private val chipSelectedListener: ChipSelectedListener) : Bas
         }
         //Log.d(TAG, "onBind-->${layoutPosition},bean:${bean}")
         if (item.select) {
-            chipSelectedListener.onChipSelected(binding.ivShowBg)
+            if (binding.ivShowBg.translationY == 0f) {
+                val anim =
+                    ObjectAnimator.ofFloat(binding.ivShowBg, "translationY", -holder.itemView.context.dp2px(5).toFloat())
+                anim.duration = 100L
+                anim.start()
+            }
         } else {
             binding.ivShowBg.translationY = 0f
         }
@@ -52,9 +59,5 @@ class ChipsAdapter(private val chipSelectedListener: ChipSelectedListener) : Bas
         viewType: Int
     ): BaseViewHolder {
         return BaseViewHolder(binding)
-    }
-
-    interface ChipSelectedListener {
-        fun onChipSelected(view: View)
     }
 }

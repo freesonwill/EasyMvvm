@@ -29,14 +29,13 @@ import com.cn.game.sdk2.data.BetteFlyData
 import com.cn.game.sdk2.data.EventKey
 import com.cn.game.sdk2.data.bean.SelectAnnotationBean
 import com.cn.game.sdk2.databinding.FragFast3HomeBinding
-import com.cn.game.sdk2.ui.adapter.ChipsAdapter
 import com.cn.game.sdk2.ui.adapter.DrawHistoryAdapter
+import com.cn.game.sdk2.ui.fragment.ChipsFragment
+import com.cn.game.sdk2.ui.fragment.ChipsViewImp
 import com.cn.game.sdk2.ui.helper.AnimHelper
 import com.cn.game.sdk2.ui.helper.Fast3ToastHelper
 import com.cn.game.sdk2.ui.popup.game.MoreListPopup
-import com.cn.game.sdk2.ui.view.CenterLayoutManager
 import com.cn.game.sdk2.ui.view.ClickRecyclerView
-import com.cn.game.sdk2.ui.view.CommonLinearLayoutItemDecoration
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.view.game.MoneyOKView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
@@ -77,14 +76,12 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
     override val mBinding: FragFast3HomeBinding by viewBind()
     override val mViewModel: Fast3ViewModel  by sharedViewModel()
 
-    private lateinit var chipsAdapter: ChipsAdapter
     private lateinit var drawHistoryAdapter: DrawHistoryAdapter
     companion object {
         const val TAG = "Fast3MainFragment"
     }
 
     private var mFragList = ArrayList<Fragment>()
-    private var isBetteUpAnimFirst = true
 
     private var resultAnim: ValueAnimator? = null
     private var resultRvHeight = -1
@@ -95,7 +92,6 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
     private val currentBetteAreaMap by lazy { LinkedHashMap<Int, GameAreaView>() }
     private val allGameAreaMap by lazy { mutableMapOf<Int, GameAreaView>() }
     private val betteFlyAnimList by lazy { mutableMapOf<GameAreaView, MutableList<BetteFlyData>>() }
-    private var selectBetteView: View? = null
 
     //==================================== Method ===============================================//
     @SuppressLint("ClickableViewAccessibility")
@@ -216,23 +212,6 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
 
     //测量耗时操作可放到IO线程
     private fun measureHistoryRvHeight() {
-//        lifecycleScope.launch(Dispatchers.IO) {
-//            LayoutInflater.from(context).inflate(R.layout.item_bet_history, null).apply {
-//                measureView()
-//                LogUtils.dTag(TAG, "historyRvHeight->$measuredHeight")
-//                LogUtils.dTag(TAG, "historyRvHeight2->"+121.dp2px)
-//                resultRvHeight = this.measuredHeight
-//                findViewById<LinearLayout>(R.id.llShowDice).apply {
-//                    this.measureView()
-//                    LogUtils.dTag(TAG, "historyMoveHeight->$measuredHeight")R
-//                    LogUtils.dTag(TAG, "historyMoveHeight2->"+79.dp2px)
-//                    resultAnimMoveHeight = this.measuredHeight - 2.dp2px
-//                }
-//                val params = mDatabind.flRvHistory.layoutParams
-//                params?.height = resultRvHeight - resultAnimMoveHeight
-//                mDatabind.flRvHistory.layoutParams = params
-//            }
-//        }
         mBinding.flRvHistory.viewTreeObserver.addOnGlobalLayoutListener(object :OnGlobalLayoutListener{
             override fun onGlobalLayout() {
                 mBinding.flRvHistory.viewTreeObserver.removeOnGlobalLayoutListener(this)
@@ -304,11 +283,11 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
             if (mViewModel.isCountDownStart) {
                 Fast3ToastHelper.showToastNormal(getString(R.string.g_home_betting_begin), 2000)
             }
-            notifyBetteBean()
+            refreshChips()
             //下注筹码向上升起动画
             startBetteRecyclerShowOrHideAnim(isShow = true, onStart = {
                 //筹码
-                mBinding.betteLayout.isVisible = true
+                mBinding.clChips.isVisible = true
                 mBinding.betteAgainLayout.isVisible = true
 
                 //开奖结果x
@@ -320,7 +299,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
 
             //暂时解决筹码栏被隐藏问题
             delay(500)
-            if (mViewModel.gameState == GameStage.NEW && !mBinding.betteLayout.isVisible) {
+            if (mViewModel.gameState == GameStage.NEW && !mBinding.clChips.isVisible) {
                 resetBetteRecyclerVisible()
             }
         }
@@ -334,7 +313,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                     playAlphaAnimTogether(arrayOf(txtHomeStatic), floatArrayOf(0f, 1f))
                     txtHomeStatic.text = resources.getString(R.string.g_f3_setting)
                 }
-                mBinding.betteLayout.isInvisible = true
+                mBinding.clChips.isInvisible = true
                 mBinding.betteAgainLayout.isVisible = false
                 updateCenterRoundInfoData()
                 //开奖结果显示动画
@@ -396,7 +375,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                 //隐藏筹码牌动画
                 startBetteRecyclerShowOrHideAnim(isShow = false, onEnd = {
                     //注区
-                    betteLayout.isInvisible = true
+                    clChips.isInvisible = true
                     betteAgainLayout.isVisible = false
 
                     //开奖结果
@@ -793,7 +772,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
     private fun cancelTemBetting() {
         hiddenAnchorTop()
         gameMassageManager?.cancelBetting { result ->
-            notifyBetteBean()
+            refreshChips()
             notifyMoneyOkView(result)
         }
     }
@@ -874,46 +853,8 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
     }
 
     private fun setChipsView() {
-        mBinding.llShowBetList.apply {
-            itemAnimator = null
-            layoutManager =
-                CenterLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            if (itemDecorationCount == 0) {
-                addItemDecoration(
-                    CommonLinearLayoutItemDecoration(
-                        spacingV = requireContext().dp2px(10),
-                        start = requireContext().dp2px(8),
-                        end = requireContext().dp2px(40)
-                    )
-                )
-            }
-            chipsAdapter = ChipsAdapter(object : ChipsAdapter.ChipSelectedListener {
-                override fun onChipSelected(view: View) {
-                    selectBetteView = view
-                    if (view.translationY == 0f) {
-                        startBetteSelectAnim(
-                            view,
-                            if (isBetteUpAnimFirst) 0 else 100
-                        )
-                    }
-                }
-            })
-            adapter = chipsAdapter
-            chipsAdapter.onItemClickListener = { item ->
-                if (!item.select && item.money <= (gameAboutModel.tempBalance.value ?: 0)) {
-                    PromptSoundPlay.btnPlayMedia()
-                    val models: List<SelectAnnotationBean> = chipsAdapter.currentList
-                    for (data in models) {
-                        data.select = item == data
-                    }
-                    mViewModel.userLastSelectBetteBean = item
-                    notifyDataSetChangedSafe {
-                        scrollSelectPosition2Center(true)
-                    }
-                }
-            }
-            chipsAdapter.submitList(mViewModel.noteList)
-        }
+        val f = ChipsFragment()
+        childFragmentManager.beginTransaction().replace(mBinding.flChips.id, f, ChipsFragment.TAG).commit()
     }
 
     /**
@@ -938,86 +879,6 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
         }
     }
 
-    private fun notifyBetteBean() {
-        val money = gameAboutModel.tempBalance.value ?: 0
-        var scrollIndex = -1
-        mBinding.apply {
-            val selectBean = mViewModel.noteList.firstOrNull { it.select }
-            if (selectBean != null) {
-                if (selectBean.money > money) { //当前筹码不足
-                    for (i in mViewModel.noteList.lastIndex downTo 0) {
-                        mViewModel.noteList[i].select = false
-                        if (scrollIndex == -1) {
-                            if (mViewModel.noteList[i].money <= money) {
-                                scrollIndex = i
-                                mViewModel.noteList[i].select = true
-                            }
-                        }
-                    }
-                } else {
-                    scrollIndex = backUserLastSelectBette(selectBean, money)
-                }
-            } else {
-                if ((mViewModel.userLastSelectBetteBean?.money ?: 0) <= money) {
-                    scrollIndex = backUserLastSelectBette(null, money)
-                } else {
-                    if (mViewModel.noteList[0].money <= money) {
-                        mViewModel.noteList[0].select = true
-                        mViewModel.userLastSelectBetteBean = mViewModel.noteList[0]
-                        scrollIndex = 0
-                    }
-                }
-            }
-
-            notifyDataSetChangedSafe {
-                scrollSelectPosition2Center(true)
-            }
-        }
-    }
-
-    /**
-     * 取消下注筹码判断是否需要选中用户最近一次手选筹码
-     */
-    private fun backUserLastSelectBette(betteBean: SelectAnnotationBean?, money: Long): Int {
-        var index = -1
-        if (betteBean == mViewModel.userLastSelectBetteBean) return index
-        if ((mViewModel.userLastSelectBetteBean?.money ?: 0) > money) return index
-        for (i in 0..mViewModel.noteList.lastIndex) {
-            if (mViewModel.noteList[i] == mViewModel.userLastSelectBetteBean) {
-                mViewModel.noteList[i].select = true
-                index = i
-            } else {
-                mViewModel.noteList[i].select = false
-            }
-        }
-        return index
-    }
-
-
-    private fun notifyDataSetChangedSafe(action: () -> Unit) {
-        mBinding.llShowBetList.adapter?.notifyItemRangeChanged(
-            0,
-            mViewModel.noteList.count()
-        )
-
-        if (mBinding.llShowBetList.isComputingLayout) {
-            LogUtils.eTag(TAG, "isComputingLayout")
-            mBinding.llShowBetList.post(action)
-        } else {
-            action.invoke()
-        }
-    }
-
-    /**
-     * 执行筹码选中向上平移动画
-     */
-    private fun startBetteSelectAnim(showView: View, duration: Long = 100L) {
-        if (duration == 0L) isBetteUpAnimFirst = false
-        val anim =
-            ObjectAnimator.ofFloat(showView, "translationY", -requireContext().dp2px(5).toFloat())
-        anim.duration = duration
-        anim.start()
-    }
 
     /**
      * 执行筹码列表view平移出现或关闭动画
@@ -1030,9 +891,9 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
     ) {
         mBinding.apply {
             val recyclerAnim = ObjectAnimator.ofFloat(
-                llShowBetList,
+                flChips,
                 "translationY",
-                if (isShow) 0f else llShowBetList.measuredHeight.toFloat()
+                if (isShow) 0f else flChips.measuredHeight.toFloat()
             )
             val againAnim = ObjectAnimator.ofFloat(
                 betteAgainLayout,
@@ -1057,7 +918,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
 
     private fun resetBetteRecyclerVisible() {
         mBinding.apply {
-            betteLayout.isVisible = true
+            clChips.isVisible = true
             mBinding.betteAgainLayout.isVisible = true
 
             //开奖结果x
@@ -1066,7 +927,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
             ivHomeBgCenter.isVisible = false
             resultBgTop.isVisible = false
 
-            llShowBetList.translationY = 0f
+            flChips.translationY = 0f
             betteAgainLayout.translationX = 0f
         }
     }
@@ -1238,11 +1099,6 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
      */
     override fun onDestroy() {
         LogUtils.dTag(TAG, "onDestroy~~~~~~~~~~~~~~")
-        //关闭的时候要把这个赋值为0选择
-        mViewModel.noteList.forEach {
-            it.select = false
-        }
-        mViewModel.noteList[0].select = true
         //清空临时的
 
         mViewModel.clear()
@@ -1270,40 +1126,22 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
         }
         val isFirstAdd = !currentBetteAreaMap.containsKey(areaView.areaCode)
         updateAnchorView(areaView)
-        val betList = chipsAdapter.currentList
-        val selectedPosition = betList.indexOf(betteBean)
-        scrollSelectPosition2Center(false) {
-            notifyBetteBean()
-            safeBetteFly(selectedPosition) { betteView ->
-                betteView?.let {
-                    startMoneyAnimation(
-                        x,
-                        y,
-                        speed,
-                        areaView,
-                        it,
-                        betteBean,
-                        isFirstAdd,
-                        endCallBack
-                    )
-                }
+        Log.d("test", "++++ abcde")
+        childFragmentManager.findFragmentByTag(ChipsFragment.TAG)?.let {
+            (it as ChipsViewImp).onBetAreaClick { view ->
+                startMoneyAnimation(
+                    x,
+                    y,
+                    speed,
+                    areaView,
+                    view,
+                    betteBean,
+                    isFirstAdd,
+                    endCallBack
+                )
             }
         }
 
-    }
-
-    private fun safeBetteFly(position: Int, action: (View?) -> Unit) {
-        if (!isBetteItemVisible(position)) {
-            mBinding.llShowBetList.post {
-                val betteView =
-                    mBinding.llShowBetList.layoutManager?.findViewByPosition(position)
-                action.invoke(betteView)
-            }
-        } else {
-            val betteView = mBinding.llShowBetList.layoutManager?.findViewByPosition(position)
-
-            action.invoke(betteView)
-        }
     }
 
     private var betteViewGroup: ViewGroup? = null
@@ -1383,63 +1221,6 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
             }
         })
         animator.start()
-
-//        val path = Path()
-//        path.moveTo(startX, startY)
-//        path.lineTo(x, y)
-////
-//        val mPathMeasure = PathMeasure(path, false)
-//
-//        //★★★属性动画实现（从0到贝塞尔曲线的长度之间进行插值计算，获取中间过程的距离值）
-//        val valueAnimator = ValueAnimator.ofFloat(0f, mPathMeasure.length).apply {
-//            addUpdateListener { animation ->
-//                val value = animation.animatedValue as Float
-//                // ★★★★★获取当前点坐标封装到mCurrentPosition
-//                // 传入一个距离distance(0<=distance<=getLength())，然后会计算当前距
-//                // 离的坐标点和切线，pos会自动填充上坐标，这个方法很重要。
-//                mPathMeasure.getPosTan(value, mCurrentPosition, null)
-//
-//                // 筹码图片偏移
-//                betImageView.translationX = mCurrentPosition[0]
-//                betImageView.translationY = mCurrentPosition[1] - viewPagerLocation[1]
-//            }
-//
-//            addListener(
-//                onStart = {
-//                    if (areaView.betteView.translationZ == 0f) {
-//                        areaView.betteView.translationZ = 4f
-//                    }
-//                },
-//                onEnd = {
-//                    //动画结束
-//                    endCallBack?.invoke()
-//                    // 把移动的图片imageview从父布局里移除
-//                    if (betImageView.isAdd()) {
-//                        (betImageView.parent as ViewGroup).removeView(betImageView)
-//                    }
-//
-//                    if (betteFlyAnimList.containsKey(areaView)) {
-//                        if (!betteFlyAnimList[areaView]!!.last().isRunning) {
-//                            areaView.betteView.translationZ = 0f
-//                        }
-//                    } else {
-//                        areaView.betteView.translationZ = 0f
-//                    }
-//
-//                    if (!isFirstAdd) {
-//                        AnimHelper.doScaleAnimRecovery(areaView.betteView.ivShowBg, duration = 100)
-//                    }
-//                })
-//        }
-//
-//        valueAnimator.duration = speed
-//        valueAnimator.interpolator = LinearInterpolator()
-//        if (betteFlyAnimList.containsKey(areaView)) {
-//            betteFlyAnimList[areaView]?.add(valueAnimator)
-//        } else {
-//            betteFlyAnimList[areaView] = mutableListOf(valueAnimator)
-//        }
-//        valueAnimator.start()
     }
 
     private fun updateAnchorView(areaView: GameAreaView) {
@@ -1468,98 +1249,9 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
         }
     }
 
-    private fun betteScrollToCenter(
-        position: Int,
-        scrollEnd: ((View) -> Unit)? = null,
-        isScrollQuick: Boolean = true
-    ) {
-//        mDatabind.apply {
-//            val layoutManager = llShowBetList.layoutManager as CenterLayoutManager
-//            val finallyView = layoutManager.findViewByPosition(position)
-//            if (finallyView == null) {
-//                llShowBetList.scrollToPosition(position)
-//            }
-//            llShowBetList.post {
-//                layoutManager.smoothScrollToPosition(
-//                    llShowBetList,
-//                    if (isScrollQuick) null else RecyclerView.State(),
-//                    position
-//                )
-//
-//                layoutManager.findViewByPosition(position)?.let {
-//                    scrollEnd?.invoke(it)
-//                }
-//            }
-//        }
-//        scrollSelectPosition2Center(position)
-    }
-
-    private fun scrollSelectPosition2Center(
-        isSmooth: Boolean = true,
-        action: (() -> Unit)? = null
-    ) {
-        mBinding.apply {
-            val selectedIndex = mViewModel.noteList.indexOfFirst { it.select }
-            if (!isBetteItemVisible(selectedIndex)) {
-                llShowBetList.scrollToPosition(selectedIndex)
-            }
-            llShowBetList.post {
-                selectBetteView?.let { selectedBetteView ->
-                    val chipsLocation = selectedBetteView.locationOnScreen
-                    val targetX: Int = selectedBetteView.getRootView().measuredWidth / 2
-                    val chipsX: Int = chipsLocation[0] + (selectedBetteView.width / 2)
-                    if (chipsX != targetX) {
-                        if (chipsX > targetX && !llShowBetList.canScrollHorizontally(1)) {
-                            action?.invoke()
-                            return@post
-                        }
-                        if (chipsX < targetX && !llShowBetList.canScrollHorizontally(-1)) {
-                            action?.invoke()
-                            return@post
-                        }
-                        if (isSmooth) {
-                            (llShowBetList.layoutManager as CenterLayoutManager).smoothScrollToPosition(
-                                llShowBetList,
-                                null,
-                                selectedIndex
-                            )
-//                            llShowBetList.smoothScrollBy(chipsX - targetX, 0)
-                        } else {
-                            llShowBetList.scrollBy(chipsX - targetX - 1.dp2px, 0)
-
-                        }
-                    }
-                    action?.invoke()
-                }
-            }
-//            isNeedSmoothScroll(position) { targetView, smooth ->
-//                targetView?.let { selectedBetteView ->
-//                    val chipsLocation = selectedBetteView.locationOnScreen
-//                    val targetX: Int = selectedBetteView.getRootView().measuredWidth / 2
-//                    val chipsX: Int = chipsLocation[0] + (selectedBetteView.width / 2)
-//                    if (chipsX != targetX) {
-//                        if (chipsX > targetX && !llShowBetList.canScrollHorizontally(1)) {
-//                            return@isNeedSmoothScroll
-//                        }
-//                        if (chipsX < targetX && !llShowBetList.canScrollHorizontally(-1)) {
-//                            return@isNeedSmoothScroll
-//                        }
-//                        if (isSmooth) {
-//                            llShowBetList.smoothScrollBy(chipsX - targetX, 0)
-//                        } else {
-//                            llShowBetList.scrollBy(chipsX - targetX, 0)
-//                        }
-//                    }
-//                }
-//
-//            }
-        }
-    }
-
-    private fun isBetteItemVisible(position: Int): Boolean {
-        mBinding.apply {
-            val layoutManager = llShowBetList.layoutManager as LinearLayoutManager
-            return position in layoutManager.findFirstCompletelyVisibleItemPosition()..layoutManager.findLastCompletelyVisibleItemPosition()
+    private fun refreshChips() {
+        childFragmentManager.findFragmentByTag(ChipsFragment.TAG)?.let {
+            (it as ChipsViewImp).onRefreshChips()
         }
     }
 }
