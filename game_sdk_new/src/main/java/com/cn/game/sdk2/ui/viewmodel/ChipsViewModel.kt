@@ -1,16 +1,23 @@
 package com.cn.game.sdk2.ui.viewmodel
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.cn.game.sdk2.data.bean.SelectAnnotationBean
+import com.cn.game.sdk2.websocket.gameAboutModel
 
 class ChipsViewModel : ViewModel() {
 
     private val defaultIndex = 0
+
     /**
      * 投注的钱
      */
-    val chipsList: List<SelectAnnotationBean> by lazy {
-        listOf(
+    private val _chipsList = MutableLiveData<List<SelectAnnotationBean>>()
+    val chipsList: LiveData<List<SelectAnnotationBean>> = _chipsList
+
+    init {
+        _chipsList.value = listOf(
             SelectAnnotationBean(money = 1000, true),
             SelectAnnotationBean(money = 2000),
             SelectAnnotationBean(money = 5000),
@@ -27,17 +34,21 @@ class ChipsViewModel : ViewModel() {
         )
     }
 
+    private val firstChip: SelectAnnotationBean
+        get() = chipsList.value!!.first()
+
     val currentChip: SelectAnnotationBean
-        get() = chipsList.first { it.select }
+        get() = chipsList.value!!.first { it.select }
 
     val currentChipIndex: Int
-        get() = chipsList.indexOfFirst { it.select }
+        get() = chipsList.value!!.indexOfFirst { it.select }
 
     fun setSelectedChip(money: Int) {
-        chipsList.forEach {
+        val list = chipsList.value ?: return
+        list.forEach {
             it.select = it.money == money
-            return@forEach
         }
+        _chipsList.value = list
     }
 
     fun setSelectedChip(chip: SelectAnnotationBean) {
@@ -45,8 +56,45 @@ class ChipsViewModel : ViewModel() {
     }
 
     fun reset() {
-        chipsList.forEachIndexed { index, selectAnnotationBean ->
-            selectAnnotationBean.select = index == defaultIndex
+        setSelectedChip(defaultIndex)
+    }
+
+    private fun showMaxPossibleBetChip(money: Long) {
+        val list = chipsList.value ?: return
+        val maxChip = list.filter { it.money <= money }.maxByOrNull { it.money }
+        if (maxChip != null) {
+            setSelectedChip(maxChip)
+        } else {
+            setSelectedChip(list.first())
         }
+    }
+
+    fun refresh() {
+        val money = gameAboutModel.tempBalance.value ?: 0
+        val selectBean = chipsList.value?.firstOrNull { it.select }
+        if (selectBean != null) {
+            if (selectBean.money > money) {
+                showMaxPossibleBetChip(money)
+            } else {
+                backUserLastSelectChip(selectBean, money)
+            }
+        } else {
+            if (currentChip.money <= money) {
+                backUserLastSelectChip(null, money)
+            } else {
+                if (firstChip.money <= money) {
+                    setSelectedChip(firstChip)
+                }
+            }
+        }
+    }
+
+    /**
+     * 取消下注筹码判断是否需要选中用户最近一次手选筹码
+     */
+    private fun backUserLastSelectChip(betteBean: SelectAnnotationBean?, money: Long) {
+        if (betteBean == currentChip || betteBean == null) return
+        if (currentChip.money > money) return
+       setSelectedChip(betteBean.money)
     }
 }

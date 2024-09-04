@@ -1,13 +1,10 @@
 package com.cn.game.sdk2.ui.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.cn.game.sdk2.data.bean.SelectAnnotationBean
 import com.cn.game.sdk2.databinding.FragmentChipsBinding
 import com.cn.game.sdk2.ui.adapter.ChipsAdapter
-import com.cn.game.sdk2.ui.page.fast3.Fast3MainFragment
 import com.cn.game.sdk2.ui.view.CenterLayoutManager
 import com.cn.game.sdk2.ui.view.CommonLinearLayoutItemDecoration
 import com.cn.game.sdk2.ui.viewmodel.ChipsViewModel
@@ -17,7 +14,6 @@ import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.xcjh.base_lib2.base.fragment.BaseFragment
 import com.xcjh.base_lib2.base.fragment.viewBind
-import com.xcjh.base_lib2.utils.LogUtils
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class ChipsFragment : BaseFragment<ChipsViewModel, FragmentChipsBinding>(), ChipsViewImp {
@@ -39,7 +35,12 @@ class ChipsFragment : BaseFragment<ChipsViewModel, FragmentChipsBinding>(), Chip
     }
 
     override fun createObserver() {
-
+        mViewModel.chipsList.observe(viewLifecycleOwner) {
+            chipsAdapter.submitList(it)
+            notifyDataSetChangedSafe {
+                scrollSelectPosition2Center(true)
+            }
+        }
     }
 
     private fun setChipsView() {
@@ -62,41 +63,22 @@ class ChipsFragment : BaseFragment<ChipsViewModel, FragmentChipsBinding>(), Chip
                 if (!item.select && item.money <= (gameAboutModel.tempBalance.value ?: 0)) {
                     PromptSoundPlay.btnPlayMedia()
                     mViewModel.setSelectedChip(item)
-                    notifyDataSetChangedSafe {
-                        scrollSelectPosition2Center(true)
-                    }
                 }
             }
-            chipsAdapter.submitList(mViewModel.chipsList)
         }
     }
 
     private fun notifyDataSetChangedSafe(action: () -> Unit) {
-        chipsAdapter.notifyItemRangeChanged(
-            0,
-            chipsAdapter.currentList.lastIndex
-        )
+        chipsAdapter.notifyItemRangeChanged(0, chipsAdapter.itemCount)
         if (mBinding.rvChips.isComputingLayout) {
-            LogUtils.eTag(Fast3MainFragment.TAG, "isComputingLayout")
             mBinding.rvChips.post(action)
         } else {
             action.invoke()
         }
     }
 
-    /**
-     * 取消下注筹码判断是否需要选中用户最近一次手选筹码
-     */
-    private fun backUserLastSelectBette(betteBean: SelectAnnotationBean?, money: Long): Int {
-        val index = -1
-        if (betteBean == mViewModel.currentChip || betteBean == null) return index
-        if (mViewModel.currentChip.money > money) return index
-        mViewModel.setSelectedChip(betteBean.money)
-        return mViewModel.currentChipIndex
-    }
-
-    private fun safeBetteFly(position: Int, action: (View?) -> Unit) {
-        if (!isBetteItemVisible(position)) {
+    private fun safeChipFly(position: Int, action: (View?) -> Unit) {
+        if (!isChipItemVisible(position)) {
             mBinding.rvChips.post {
                 val betteView =
                     mBinding.rvChips.layoutManager?.findViewByPosition(position)
@@ -113,14 +95,14 @@ class ChipsFragment : BaseFragment<ChipsViewModel, FragmentChipsBinding>(), Chip
         action: (() -> Unit)? = null
     ) {
         mBinding.apply {
-            val selectedIndex = mViewModel.chipsList.indexOfFirst { it.select }
-            if (!isBetteItemVisible(selectedIndex)) {
+            val selectedIndex = mViewModel.currentChipIndex
+            if (!isChipItemVisible(selectedIndex)) {
                 rvChips.scrollToPosition(selectedIndex)
             }
             rvChips.post {
                 rvChips.layoutManager?.findViewByPosition(selectedIndex)?.let { chipView ->
                     val chipsLocation = chipView.locationOnScreen
-                    val targetX: Int = chipView.getRootView().measuredWidth / 2
+                    val targetX: Int = chipView.rootView.measuredWidth / 2
                     val chipsX: Int = chipsLocation[0] + (chipView.width / 2)
                     if (chipsX != targetX) {
                         if (chipsX > targetX && !rvChips.canScrollHorizontally(1)) {
@@ -139,7 +121,6 @@ class ChipsFragment : BaseFragment<ChipsViewModel, FragmentChipsBinding>(), Chip
                             )
                         } else {
                             rvChips.scrollBy(chipsX - targetX - 1.dp2px, 0)
-
                         }
                     }
                     action?.invoke()
@@ -148,11 +129,9 @@ class ChipsFragment : BaseFragment<ChipsViewModel, FragmentChipsBinding>(), Chip
         }
     }
 
-    private fun isBetteItemVisible(position: Int): Boolean {
-        mBinding.apply {
-            val layoutManager = rvChips.layoutManager as LinearLayoutManager
-            return position in layoutManager.findFirstCompletelyVisibleItemPosition()..layoutManager.findLastCompletelyVisibleItemPosition()
-        }
+    private fun isChipItemVisible(position: Int): Boolean {
+        val layoutManager = mBinding.rvChips.layoutManager as LinearLayoutManager
+        return position in layoutManager.findFirstCompletelyVisibleItemPosition()..layoutManager.findLastCompletelyVisibleItemPosition()
     }
 
     override fun onDestroy() {
@@ -161,47 +140,14 @@ class ChipsFragment : BaseFragment<ChipsViewModel, FragmentChipsBinding>(), Chip
     }
 
     override fun onRefreshChips() {
-        val money = gameAboutModel.tempBalance.value ?: 0
-        var scrollIndex = -1
-        mBinding.apply {
-            val selectBean = mViewModel.chipsList.firstOrNull { it.select }
-            if (selectBean != null) {
-                if (selectBean.money > money) { //当前筹码不足
-                    for (i in mViewModel.chipsList.lastIndex downTo 0) {
-                        mViewModel.chipsList[i].select = false
-                        if (scrollIndex == -1) {
-                            if (mViewModel.chipsList[i].money <= money) {
-                                scrollIndex = i
-                                mViewModel.chipsList[i].select = true
-                            }
-                        }
-                    }
-                } else {
-                    scrollIndex = backUserLastSelectBette(selectBean, money)
-                }
-            } else {
-                if (mViewModel.currentChip.money <= money) {
-                    scrollIndex = backUserLastSelectBette(null, money)
-                } else {
-                    if (mViewModel.chipsList.first().money <= money) {
-                        mViewModel.reset()
-                        scrollIndex = 0
-                    }
-                }
-            }
-
-            notifyDataSetChangedSafe {
-                scrollSelectPosition2Center(true)
-            }
-        }
+        mViewModel.refresh()
     }
 
     override fun onBetAreaClick(onClickChip: (chipView: View) -> Unit) {
         val selectedPosition = mViewModel.currentChipIndex
         scrollSelectPosition2Center(false) {
             onRefreshChips()
-            safeBetteFly(selectedPosition) { chipView ->
-                Log.d("test", "++++ $chipView")
+            safeChipFly(selectedPosition) { chipView ->
                 chipView?.let {
                     onClickChip.invoke(it)
                 }
