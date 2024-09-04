@@ -1,11 +1,7 @@
 package com.cn.game.sdk2.websocket
 
 import android.util.Log
-import androidx.lifecycle.lifecycleScope
-import com.cn.game.sdk2.data.EventKey
-import com.cn.game.sdk2.network.code.GameReqCode
 import com.cn.game.sdk2.network.code.GameResCode
-import com.cn.game.sdk2.utils.FlowBus
 import com.cn.game.sdk2.utils.ThreadUtils
 import com.cn.game.sdk2.utils.ext.CommonExt.isMainThread
 import com.cn.game.sdk2.websocket.imp.GameApp
@@ -13,10 +9,7 @@ import com.xcjh.base_lib2.utils.LogUtils
 import com.xcjh.base_lib2.utils.LogUtilsExt.logd
 import com.xcjh.base_lib2.utils.LogUtilsExt.loge
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.java_websocket.client.WebSocketClient
 import org.java_websocket.exceptions.WebsocketNotConnectedException
 import org.java_websocket.handshake.ServerHandshake
@@ -53,8 +46,9 @@ internal class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
         timer?.cancel()
         timer = null
         startHeartbeat()
-        //appListener?.runOnUiThread { initSuccessful() }
-        FlowBus.with<Boolean>(EventKey.SOCKET_CONNECTED).post(GlobalScope,true)
+        ThreadUtils.mainScope.launch {
+            appListener?.onSocketConnected()
+        }
     }
 
     override fun onMessage(message: String?) {
@@ -88,6 +82,9 @@ internal class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
         reconnectHandle()
         stopHeartbeat()
         onMessageListener?.onClose(code, reason, remote)
+        ThreadUtils.mainScope.launch {
+            appListener?.onSocketClosed()
+        }
     }
 
 

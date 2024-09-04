@@ -16,6 +16,7 @@ import com.cn.game.sdk2.data.bean.GameHallItem
 import com.cn.game.sdk2.moduleList
 import com.cn.game.sdk2.ui.helper.ViewHelper
 import com.cn.game.sdk2.utils.GsonUtils
+import com.cn.game.sdk2.utils.ThreadUtils
 import com.cn.game.sdk2.websocket.GameSocketManager
 import com.cn.game.sdk2.websocket.appContext
 import com.cn.game.sdk2.websocket.appLifecycleEnable
@@ -32,6 +33,7 @@ import com.xcjh.base_lib2.ModuleInitializer
 import com.xcjh.base_lib2.utils.LogUtilsExt.loge
 import game.common.proto.ClientReq
 import game.mod.proc.yf.proto.req.GameReq
+import kotlinx.coroutines.launch
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
@@ -174,9 +176,11 @@ class GameApp  private constructor(){
         /** 离开直播間
          * - Parameter liveId: 直播間id
          */
-        @JvmStatic
-         fun leaveLive() {
+        @JvmStatic fun leaveLive() {
             gameMassageManager?.levelGroup()
+            ThreadUtils.mainScope.launch {
+                ViewHelper.instance.clearAllView()
+            }
         }
 
         /**
@@ -310,6 +314,14 @@ class GameApp  private constructor(){
 
 
     interface OnSdkListener {
+        /**
+         * socket已连接
+         */
+        fun onSocketConnected() {}
+        /**
+         * socket已关闭
+         */
+        fun onSocketClosed() {}
         /**
          * 登录游戏
          * type: 1为成功. 其他为失败
