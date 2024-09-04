@@ -8,7 +8,7 @@ import com.cn.game.sdk2.websocket.gameAboutModel
 
 class ChipsViewModel : ViewModel() {
 
-    private val defaultIndex = 0
+    private val defaultIndex: Int
 
     /**
      * 投注的钱
@@ -31,7 +31,9 @@ class ChipsViewModel : ViewModel() {
             SelectAnnotationBean(money = 2000000),
             SelectAnnotationBean(money = 5000000),
             SelectAnnotationBean(money = 10000000),
-        )
+        ).apply {
+            defaultIndex = indexOfFirst { it.select }
+        }
     }
 
     private val firstChip: SelectAnnotationBean
