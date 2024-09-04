@@ -36,8 +36,7 @@ android {
 
     }
 
-    libraryVariants.configureEach {
-        variant ->
+    libraryVariants.configureEach { variant ->
             variant.assembleProvider.configure {
                 delete fileTree(dir: "$buildDir/outputs/aar", include: '**/*')
             }
@@ -47,6 +46,21 @@ android {
                 outputFileName = "gamesdk-${variant.name}-${date}-${gitVersion}.aar"
             }
     }
+    //region copy aar to app/libs
+    task cleanAAR(type:Delete){
+        delete fileTree(dir: "$rootDir/app/libs", include: '**/*')
+    }
+    task copyAAR(type:Copy){
+        from "$buildDir/outputs/aar"
+        into "$rootDir/app/libs"
+    }
+    copyAAR.dependsOn(cleanAAR) // 确保先清理目标目录
+    libraryVariants.configureEach { variant ->
+        variant.assembleProvider.configure {
+            finalizedBy(copyAAR)
+        }
+    }
+    //endregion
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8

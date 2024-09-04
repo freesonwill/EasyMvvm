@@ -15,9 +15,6 @@ abstract class BaseGameActivity <  VM : BaseViewModel, DB : ViewDataBinding> : B
     override fun initView(savedInstanceState: Bundle?) {
      }
 
-
-
-
     override fun onConfigurationChanged(newConfig: Configuration) {
         if (newConfig.fontScale != 1f) //非默认值
             resources
