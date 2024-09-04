@@ -1,5 +1,6 @@
 package com.cn.game.sdk2
 
+import com.cn.game.sdk2.ui.viewmodel.ChipsViewModel
 import com.cn.game.sdk2.ui.viewmodel.EmptyViewModel
 import com.cn.game.sdk2.ui.viewmodel.fast3.DXDSVm
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3GameHallItemViewModel
@@ -20,6 +21,7 @@ val viewModules = module {
     viewModel { PairsDiceVm() }
     viewModel { SingleDiceVm() }
     viewModel { SumTotalVm() }
+    viewModel { ChipsViewModel() }
 }
 
 val moduleList = listOf(viewModules)

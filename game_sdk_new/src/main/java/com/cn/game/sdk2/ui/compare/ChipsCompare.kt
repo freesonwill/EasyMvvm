@@ -8,13 +8,13 @@ class ChipsCompare : DiffUtil.ItemCallback<SelectAnnotationBean>() {
         oldItem: SelectAnnotationBean,
         newItem: SelectAnnotationBean
     ): Boolean {
-        return oldItem.money == newItem.money || oldItem.select == newItem.select
+        return oldItem.money == newItem.money
     }
 
     override fun areContentsTheSame(
         oldItem: SelectAnnotationBean,
         newItem: SelectAnnotationBean
     ): Boolean {
-        return oldItem == newItem
+        return oldItem.select == newItem.select
     }
 }

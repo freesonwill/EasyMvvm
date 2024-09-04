@@ -20,6 +20,7 @@ import com.cn.game.sdk2.data.bean.SelectAnnotationBean
 import com.cn.game.sdk2.databinding.FragDxdsBinding
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.view.game.MoneyOKView
+import com.cn.game.sdk2.ui.viewmodel.ChipsViewModel
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
 import com.cn.game.sdk2.utils.FlowBus
 import com.cn.game.sdk2.utils.ext.CommonExt.isCanGoOn
@@ -31,6 +32,7 @@ import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import com.cn.game.sdk2.websocket.constants.GameStage
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.gameMassageManager
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 /**
  * Description:
@@ -39,6 +41,7 @@ import com.cn.game.sdk2.websocket.gameMassageManager
  **/
 abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
     BaseGameFragment<VM, VB>() {
+    private val chipViewModel: ChipsViewModel by sharedViewModel()
     protected var areaViewList: MutableList<GameAreaView> = mutableListOf()
     private var areaFlickAnimatorSet: AnimatorSet? = null
 
@@ -170,7 +173,7 @@ abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
     private fun addBetting(areaView: GameAreaView, rawX: Float, rawY: Float) {
         //先判断余额是否够这次 并且扣取钱
         if (mViewModel.isClickOperation) {
-            val betteBean = mViewModel.betteBean
+            val betteBean = chipViewModel.currentChip
             areaView.areaInfo?.apply {
                 val bettingBean = BettingRecordBean(this, money = betteBean.money)
                 gameMassageManager?.addBetting(bettingBean) { bettingState, result, areaLimit ->
