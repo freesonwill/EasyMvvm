@@ -34,7 +34,7 @@
                         android:layout_width="16dp"
                         android:layout_height="16dp"
                         android:layout_marginLeft="1dp"
-                        app:srcCompat="@drawable/game_sdk_home_icon_records"/>
+                        app:srcCompat="@mipmap/game_sdk_home_icon_records"/>
                     <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -69,7 +69,7 @@
                         android:layout_width="16dp"
                         android:layout_height="16dp"
                         android:layout_marginLeft="1dp"
-                        app:srcCompat="@drawable/game_sdk_home_icon_service" />
+                        app:srcCompat="@mipmap/game_sdk_home_icon_service" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"
@@ -101,7 +101,7 @@
                     <androidx.appcompat.widget.AppCompatImageView
                         android:layout_width="16dp"
                         android:layout_height="16dp"
-                        app:srcCompat="@drawable/game_sdk_home_icon_toggle"/>
+                        app:srcCompat="@mipmap/game_sdk_home_icon_toggle"/>
                     <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -133,7 +133,7 @@
                         android:layout_width="16dp"
                         android:layout_height="16dp"
                         android:layout_marginLeft="1dp"
-                        app:srcCompat="@drawable/game_sdk_home_icon_assist"/>
+                        app:srcCompat="@mipmap/game_sdk_home_icon_assist"/>
                     <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

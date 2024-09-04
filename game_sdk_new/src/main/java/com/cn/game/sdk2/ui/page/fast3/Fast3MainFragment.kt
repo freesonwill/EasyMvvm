@@ -29,8 +29,8 @@ import com.cn.game.sdk2.data.BetteFlyData
 import com.cn.game.sdk2.data.EventKey
 import com.cn.game.sdk2.data.bean.SelectAnnotationBean
 import com.cn.game.sdk2.databinding.FragFast3HomeBinding
-import com.cn.game.sdk2.databinding.ItemAnnotationListBinding
-import com.cn.game.sdk2.databinding.ItemBetHistoryBinding
+import com.cn.game.sdk2.ui.adapter.ChipsAdapter
+import com.cn.game.sdk2.ui.adapter.DrawHistoryAdapter
 import com.cn.game.sdk2.ui.helper.AnimHelper
 import com.cn.game.sdk2.ui.helper.Fast3ToastHelper
 import com.cn.game.sdk2.ui.popup.game.MoreListPopup
@@ -41,12 +41,12 @@ import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.view.game.MoneyOKView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
 import com.cn.game.sdk2.utils.FlowBus
+import com.cn.game.sdk2.utils.IconUtils
 import com.cn.game.sdk2.utils.ext.BizExt.isLeopard
 import com.cn.game.sdk2.utils.ext.CommonExt.formatRealMoney
 import com.cn.game.sdk2.utils.ext.CommonExt.isCanGoOn
 import com.cn.game.sdk2.utils.ext.CommonExt.toPinyin
 import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
-import com.cn.game.sdk2.utils.ext.ViewExt.getDrawable
 import com.cn.game.sdk2.utils.ext.ViewExt.isAdd
 import com.cn.game.sdk2.utils.ext.ViewExt.locationOnScreen
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
@@ -57,10 +57,7 @@ import com.cn.game.sdk2.websocket.constants.GameStage
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.gameMassageManager
 import com.drake.brv.annotaion.DividerOrientation
-import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.dividerSpace
-import com.drake.brv.utils.models
-import com.drake.brv.utils.setup
 import com.gyf.immersionbar.ktx.hasNavigationBar
 import com.gyf.immersionbar.ktx.navigationBarHeight
 import com.xcjh.base_lib2.utils.LogUtils
@@ -79,6 +76,9 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
     override val mBinding: FragFast3HomeBinding by viewBind()
     override val mViewModel: Fast3ViewModel  by sharedViewModel()
+
+    private lateinit var chipsAdapter: ChipsAdapter
+    private lateinit var drawHistoryAdapter: DrawHistoryAdapter
     companion object {
         const val TAG = "Fast3MainFragment"
     }
@@ -132,7 +132,8 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
            //mDatabind.viewPagerNew.offscreenPageLimit = mFragList.size
         }
         loadFragment()
-        setBetAdapter()
+        setChipsView()
+        setDrawHistoryView()
         setClick()
         measureHistoryRvHeight()
         setNavigationBar()
@@ -235,7 +236,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
         mBinding.flRvHistory.viewTreeObserver.addOnGlobalLayoutListener(object :OnGlobalLayoutListener{
             override fun onGlobalLayout() {
                 mBinding.flRvHistory.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                resultRvHeight = mBinding.rvHomeHistory.height
+                resultRvHeight = mBinding.rvDrawHistory.height
                 if(0 == resultRvHeight){
                     resultRvHeight = 122.dp2px
                 }
@@ -416,15 +417,13 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
         mBinding.apply {
             roundInfo?.run {
                 performs.forEachIndexed { index, item ->
-                    val id = resources.getIdentifier(
-                        "game_sdk_icon_dice_" + item.toPinyin(),
-                        "drawable",
-                        requireContext().packageName
-                    )
-                    when (index) {
-                        0 -> ivDrawYi.setImageResource(id)
-                        1 -> ivDrawEr.setImageResource(id)
-                        2 -> ivDrawSan.setImageResource(id)
+                    val id = IconUtils.getIcon("game_sdk_icon_dice_" + item.toPinyin())
+                    if (id != 0) {
+                        when (index) {
+                            0 -> ivDrawYi.setImageResource(id)
+                            1 -> ivDrawEr.setImageResource(id)
+                            2 -> ivDrawSan.setImageResource(id)
+                        }
                     }
                 }
                 txtHomeTotal.text = sum.toString()
@@ -435,8 +434,8 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                 } else {
                     ivBetSize.isVisible = true
                     ivBetOdd.isVisible = true
-                    ivBetSize.setImageResource(if (isBig) R.drawable.game_sdk_icon_home_result_big else R.drawable.game_sdk_icon_home_result_small)
-                    ivBetOdd.setImageResource(if (isDouble) R.drawable.game_sdk_icon_home_result_double else R.drawable.game_sdk_icon_home_result_single)
+                    ivBetSize.setImageResource(if (isBig) R.mipmap.game_sdk_icon_home_result_big else R.mipmap.game_sdk_icon_home_result_small)
+                    ivBetOdd.setImageResource(if (isDouble) R.mipmap.game_sdk_icon_home_result_double else R.mipmap.game_sdk_icon_home_result_single)
                 }
             }
         }
@@ -688,10 +687,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
         //开奖历史记录
         gameAboutModel.historyRounds.observe(viewLifecycleOwner) {
             Log.e(TAG, "开奖历史结果--->$it")
-            lifecycleScope.launch {
-                val adapter = mBinding.rvHomeHistory.bindingAdapter
-                adapter.models = it
-            }
+            drawHistoryAdapter.submitList(it)
         }
 
         //下注结果
@@ -713,8 +709,8 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
         mViewModel.playAlphaAnimationLD.observe(viewLifecycleOwner, object : Observer<Boolean> {
             var animator: ObjectAnimator? = null
             override fun onChanged(play: Boolean) {
-                mBinding.rvHomeHistory.scrollToPosition(mBinding.rvHomeHistory.models!!.size - 1)
-                val layoutManager = mBinding.rvHomeHistory.layoutManager as LinearLayoutManager
+                mBinding.rvDrawHistory.scrollToPosition(drawHistoryAdapter.currentList.size - 1)
+                val layoutManager = mBinding.rvDrawHistory.layoutManager as LinearLayoutManager
                 val position = layoutManager.findLastVisibleItemPosition()
                 val view = layoutManager.findViewByPosition(position)
                 LogUtils.dTag(TAG, "receive playAlphaAnimationLD:$play,view:$view")
@@ -877,11 +873,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
         }
     }
 
-
-    /**
-     * 投注的适配器
-     */
-    private fun setBetAdapter() {
+    private fun setChipsView() {
         mBinding.llShowBetList.apply {
             itemAnimator = null
             layoutManager =
@@ -895,124 +887,52 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                     )
                 )
             }
-            setup {
-                addType<SelectAnnotationBean>(R.layout.item_annotation_list)
-                onBind {
-                    when (itemViewType) {
-                        R.layout.item_annotation_list -> {
-                            val binding = getBinding<ItemAnnotationListBinding>()
-                            val bean = _data as SelectAnnotationBean
-                            val id = if ((gameAboutModel.tempBalance.value ?: 0) < bean.money) {
-                                resources.getIdentifier(
-                                    "game_sdk_icon_shortage_" + bean.moneyPinyin,
-                                    "drawable",
-                                    requireContext().packageName
-                                )
-                            } else {
-                                if (bean.select) {
-                                    resources.getIdentifier(
-                                        "game_sdk_icon_select_" + bean.moneyPinyin,
-                                        "drawable",
-                                        requireContext().packageName
-                                    )
-                                } else {
-                                    resources.getIdentifier(
-                                        "game_sdk_icon_no_" + bean.moneyPinyin,
-                                        "drawable",
-                                        requireContext().packageName
-                                    )
-                                }
-                            }
-                            binding.ivShowBg.setImageResource(id)
-                            //Log.d(TAG, "onBind-->${layoutPosition},bean:${bean}")
-                            if (bean.select) {
-                                selectBetteView = binding.ivShowBg
-                                if (binding.ivShowBg.translationY == 0f) {
-                                    startBetteSelectAnim(
-                                        binding.ivShowBg,
-                                        if (isBetteUpAnimFirst) 0 else 100
-                                    )
-                                    //scrollBetteItemToCenter(layoutPosition)
-                                }
-                            } else {
-                                binding.ivShowBg.translationY = 0f
-                            }
-                        }
+            chipsAdapter = ChipsAdapter(object : ChipsAdapter.ChipSelectedListener {
+                override fun onChipSelected(view: View) {
+                    selectBetteView = view
+                    if (view.translationY == 0f) {
+                        startBetteSelectAnim(
+                            view,
+                            if (isBetteUpAnimFirst) 0 else 100
+                        )
                     }
-
                 }
-                onClick(R.id.ivShowBg) {
-                    val bean = _data as SelectAnnotationBean
-                    if (bean.select || bean.money > (gameAboutModel.tempBalance.value
-                            ?: 0)
-                    ) return@onClick
+            })
+            adapter = chipsAdapter
+            chipsAdapter.onItemClickListener = { item ->
+                if (!item.select && item.money <= (gameAboutModel.tempBalance.value ?: 0)) {
                     PromptSoundPlay.btnPlayMedia()
-                    val models: List<SelectAnnotationBean> = models as List<SelectAnnotationBean>
+                    val models: List<SelectAnnotationBean> = chipsAdapter.currentList
                     for (data in models) {
-                        data.select = bean == data
+                        data.select = item == data
                     }
-                    mViewModel.userLastSelectBetteBean = bean
+                    mViewModel.userLastSelectBetteBean = item
                     notifyDataSetChangedSafe {
                         scrollSelectPosition2Center(true)
                     }
-//                    betteScrollToCenter(layoutPosition, isScrollQuick = false)
-
                 }
-            }.models = mViewModel.noteList
+            }
+            chipsAdapter.submitList(mViewModel.noteList)
         }
+    }
+
+    /**
+     * 投注的适配器
+     */
+    private fun setDrawHistoryView() {
+
         //历史结果
-        mBinding.rvHomeHistory.apply {
+        mBinding.rvDrawHistory.apply {
             itemAnimator = null
             layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             dividerSpace(requireContext().dp2px(2), DividerOrientation.HORIZONTAL)
-            setup {
-                addType<RoundInfoBean>(R.layout.item_bet_history)
-                onBind {
-                    when (itemViewType) {
-                        R.layout.item_bet_history -> {
-                            getBinding<ItemBetHistoryBinding>().apply {
-                                val mainTxtBean = _data as RoundInfoBean
-                                mainTxtBean.performs.forEachIndexed { index, item ->
-                                    val child = llShowDice.getChildAt(index) as ImageView
-                                    val id = resources.getIdentifier(
-                                        "game_sdk_icon_dice_" + item.toPinyin(),
-                                        "drawable",
-                                        requireContext().packageName
-                                    )
-                                    child.setImageResource(id)
-                                }
-                                txtBetNum.text = mainTxtBean.sum.toString()
-                                if (mainTxtBean.isLeopard) {
-                                    txtBetSize.text = getString(R.string.g_home_txt_leopard)
-                                    txtBetOdd.text = getString(R.string.g_home_txt_leopard)
-                                    txtBetSize.background =
-                                        getDrawable(R.drawable.game_sdk_shape_3_01933b)
-                                    txtBetOdd.background =
-                                        getDrawable(R.drawable.game_sdk_shape_3_01933b)
-
-                                } else {
-                                    txtBetSize.background =
-                                        getDrawable(if (mainTxtBean.isBig) R.drawable.game_sdk_shape_3_b83030 else R.drawable.game_sdk_shape_3_006ce4)
-                                    txtBetOdd.background =
-                                        getDrawable(if (mainTxtBean.isDouble) R.drawable.game_sdk_shape_3_b83030 else R.drawable.game_sdk_shape_3_006ce4)
-                                    txtBetSize.text =
-                                        if (mainTxtBean.isBig) getString(R.string.g_home_txt_big) else getString(
-                                            R.string.g_home_txt_small
-                                        )
-                                    txtBetOdd.text = if (mainTxtBean.isDouble)
-                                        getString(R.string.g_home_txt_double)
-                                    else
-                                        getString(R.string.g_home_txt_single)
-                                }
-                            }
-                        }
-                    }
-                }
-            }.models = gameAboutModel.historyRounds.value
+            drawHistoryAdapter = DrawHistoryAdapter()
+            adapter = drawHistoryAdapter
+            drawHistoryAdapter.submitList(gameAboutModel.historyRounds.value)
             lifecycleScope.launchWhenResumed {
-                if (!mBinding.rvHomeHistory.models.isNullOrEmpty()) {
-                    mBinding.rvHomeHistory.scrollToPosition(mBinding.rvHomeHistory.models!!.size - 1)
+                if (drawHistoryAdapter.currentList.isNotEmpty()) {
+                    mBinding.rvDrawHistory.scrollToPosition(drawHistoryAdapter.currentList.size - 1)
                 }
             }
         }
@@ -1075,10 +995,11 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
 
 
     private fun notifyDataSetChangedSafe(action: () -> Unit) {
-        mBinding.llShowBetList.bindingAdapter.notifyItemRangeChanged(
+        mBinding.llShowBetList.adapter?.notifyItemRangeChanged(
             0,
             mViewModel.noteList.count()
         )
+
         if (mBinding.llShowBetList.isComputingLayout) {
             LogUtils.eTag(TAG, "isComputingLayout")
             mBinding.llShowBetList.post(action)
@@ -1186,7 +1107,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
 
     private fun setClick() {
         mBinding.apply {
-            rvHomeHistory.setOnRecycleClickListener(object :
+            rvDrawHistory.setOnRecycleClickListener(object :
                 ClickRecyclerView.RecyclerClickListener {
                 override fun onRecyclerClick() {
                     PromptSoundPlay.btnPlayMedia()
@@ -1349,7 +1270,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
         }
         val isFirstAdd = !currentBetteAreaMap.containsKey(areaView.areaCode)
         updateAnchorView(areaView)
-        val betList = mBinding.llShowBetList.models as List<SelectAnnotationBean>
+        val betList = chipsAdapter.currentList
         val selectedPosition = betList.indexOf(betteBean)
         scrollSelectPosition2Center(false) {
             notifyBetteBean()
@@ -1404,13 +1325,10 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
 
         // (这个图片就是执行动画的图片，从开始位置出发，经过一个抛物线（贝塞尔曲线))
         val betImageView = ImageView(requireContext()).apply {
-            setImageResource(
-                resources.getIdentifier(
-                    "game_sdk_icon_select_" + betteBean.moneyPinyin,
-                    "drawable",
-                    requireContext().packageName
-                )
-            )
+            val id = IconUtils.getIcon("game_sdk_icon_select_" + betteBean.moneyPinyin)
+            if (id != 0) {
+                setImageResource(id)
+            }
             translationZ = 3f
         }
         val betteSize = jettonView.measuredWidth

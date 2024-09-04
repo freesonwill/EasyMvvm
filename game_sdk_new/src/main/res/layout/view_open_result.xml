@@ -32,18 +32,18 @@
             android:id="@+id/ivOpenOne"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            app:srcCompat="@drawable/game_sdk_icon_dice_yi"/>
+            app:srcCompat="@mipmap/game_sdk_icon_dice_yi"/>
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ivOpenTwo"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginLeft="4dp"
-            app:srcCompat="@drawable/game_sdk_icon_dice_er"/>
+            app:srcCompat="@mipmap/game_sdk_icon_dice_er"/>
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ivOpenThree"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginLeft="4dp"
-            app:srcCompat="@drawable/game_sdk_icon_dice_er"/>
+            app:srcCompat="@mipmap/game_sdk_icon_dice_er"/>
     </LinearLayout>
 </LinearLayout>

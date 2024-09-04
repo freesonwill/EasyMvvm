@@ -6,6 +6,7 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Observer
 import com.cn.game.sdk2.databinding.FragmentFast3OverlayBinding
+import com.cn.game.sdk2.utils.IconUtils
 import com.cn.game.sdk2.utils.ext.CommonExt.toPinyin
 import com.cn.game.sdk2.websocket.bean.RoundInfoBean
 import com.cn.game.sdk2.websocket.constants.GameStage
@@ -60,15 +61,13 @@ class DragFast3Overlay @JvmOverloads constructor(
             lltResult.visibility = if(roundInfo != null) View.VISIBLE else View.INVISIBLE
             roundInfo?.run {
                 performs.forEachIndexed { index, item ->
-                    val id = resources.getIdentifier(
-                        "game_sdk_icon_dice_" + item.toPinyin(),
-                        "drawable",
-                        context.packageName
-                    )
-                    when (index) {
-                        0 -> ivDrawYi.setImageResource(id)
-                        1 -> ivDrawEr.setImageResource(id)
-                        2 -> ivDrawSan.setImageResource(id)
+                    val id = IconUtils.getIcon("game_sdk_icon_dice_" + item.toPinyin())
+                    if (id != 0) {
+                        when (index) {
+                            0 -> ivDrawYi.setImageResource(id)
+                            1 -> ivDrawEr.setImageResource(id)
+                            2 -> ivDrawSan.setImageResource(id)
+                        }
                     }
                 }
                 tvEdition.text = roundId
