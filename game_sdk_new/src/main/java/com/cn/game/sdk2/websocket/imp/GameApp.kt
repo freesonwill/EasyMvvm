@@ -6,7 +6,6 @@ import android.app.Application.ActivityLifecycleCallbacks
 import android.content.Context
 import android.os.Bundle
 import android.view.View
-import android.webkit.RenderProcessGoneDetail
 import androidx.annotation.UiThread
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -23,11 +22,9 @@ import com.cn.game.sdk2.websocket.appLifecycleEnable
 import com.cn.game.sdk2.websocket.appListener
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.gameMassageManager
-import com.cn.game.sdk2.websocket.imp.GameApp.Companion.koinApplication
 import com.cn.game.sdk2.websocket.interfaces.IGameForApp
 import com.cn.game.sdk2.websocket.isEnableSound
 import com.cn.game.sdk2.websocket.isNeedReconnect
-import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.xcjh.base_lib2.ModuleInitializer
 import com.xcjh.base_lib2.utils.LogUtilsExt.loge
@@ -287,16 +284,23 @@ class GameApp  private constructor(){
             gameAboutModel.isShowGame(true)
         }
 
-        /// 传入wali游戏接口
-        /// 传入json字符串 json 格式:
-        /// [{
-        /// "idp":1,                //游戏Id
-        /// "gameType":1,           //游戏类型
-        /// "name":"捕鱼",            //游戏名称
-        /// "weight":1,              //权重排序
-        /// "direction":1,             //屏幕方向
-        /// "icon":"icon地址"           //icon地址
-        ///}]
+        /**
+         * * 传入wali游戏接口
+            传入json字符串 json 格式:
+            [{
+            "idp":1,            //游戏Id
+            "gameType":1,      //游戏类型
+            "name":"捕鱼",      //游戏名称
+            "weight":1,        //权重排序
+            "direction":1,     //屏幕方向
+            "icon":"icon地址"   //icon地址
+            }]
+            GAME_TYPE_BUYU(1),      3
+            GAME_TYPE_SHIXUN(2),    2
+            GAME_TYPE_QIPAI(3),     1
+            GAME_TYPE_DIANZI(4),    5
+            GAME_TYPE_SPORTS(5),    4
+         */
         @JvmStatic
         fun setMoreGames(moreGameList: String) {
             val gameList = GsonUtils.fromJson<SortedList<GameHallItem>>(moreGameList,object : TypeToken<SortedList<GameHallItem>>(){}.type)
@@ -309,7 +313,16 @@ class GameApp  private constructor(){
             gameAboutModel.setMoreGames(gameList)
         }
 
+        /**
+         * socket是否连接上
+         */
+        @JvmStatic
+        val isSocketConnected get() = gameAboutModel.isOpen
+
         internal val koinApplication by lazy { KoinApplication.init() }
+
+
+
     }
 
 
@@ -317,29 +330,29 @@ class GameApp  private constructor(){
         /**
          * socket已连接
          */
-        fun onSocketConnected() {}
+        @UiThread fun onSocketConnected() {}
         /**
          * socket已关闭
          */
-        fun onSocketClosed() {}
+        @UiThread fun onSocketClosed() {}
         /**
          * 登录游戏
          * type: 1为成功. 其他为失败
          * msg: 错误信息,只在失败时有值
          */
-        fun onLoginGame(type: Int, msg: String?)
+        @UiThread fun onLoginGame(type: Int, msg: String?)
 
         /**
          * 进入直播间
          * type: 1为成功. 其他为失败
          * msg: 错误信息,只在失败时有值
          */
-        fun onEnterLive(type: Int, msg: String)
+        @UiThread fun onEnterLive(type: Int, msg: String)
 
         /**
          * 进入游戏
          */
-        fun onEnterGame()
+        @UiThread fun onEnterGame()
 
         /**
          * 离开直播间
@@ -347,7 +360,7 @@ class GameApp  private constructor(){
          * type: 1为成功. 其他为失败
          * msg: 错误信息,只在失败时有值
          */
-        fun onLeaveLive(liveId: String,type: Int, msg: String?)
+        @UiThread fun onLeaveLive(liveId: String,type: Int, msg: String?)
 
         /**
          * token失效

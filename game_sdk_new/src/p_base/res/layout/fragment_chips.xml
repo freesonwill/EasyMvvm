@@ -14,7 +14,7 @@
         android:orientation="horizontal"
         android:paddingTop="5dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:itemCount="11"
         tools:listitem="@layout/item_annotation_list" />
 
