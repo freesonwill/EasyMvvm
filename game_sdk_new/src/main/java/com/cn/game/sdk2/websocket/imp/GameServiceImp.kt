@@ -40,6 +40,7 @@ import com.cn.game.sdk2.websocket.setCommittedState
 import com.cn.game.sdk2.websocket.sum
 import com.cn.game.sdk2.websocket.toMapByAreaCode
 import com.cn.game.sdk2.websocket.verifyDouble
+import com.xcjh.base_lib2.utils.LogUtils
 import com.xcjh.base_lib2.utils.LogUtilsExt.logd
 import com.xcjh.base_lib2.utils.LogUtilsExt.loge
 import game.common.proto.ClientReq
@@ -86,7 +87,7 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
 
     override fun enterInfo() {
         send(
-            8, GameReqCode.SUB_LOGON_REQ__LOGIN.toShort(), ByteArray(0)
+            8, GameReqCode.SUB_LOGON_REQ__LOGIN.code.toShort(), ByteArray(0)
         )
     }
 
@@ -98,27 +99,27 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
     }
 
     override fun enterGroup(req: GameReq.EnterGroup) {
-        send(500, GameReqCode.C2S_ENTER_GROUP.toShort(), req.toByteArray())
+        send(500, GameReqCode.C2S_ENTER_GROUP.code.toShort(), req.toByteArray())
     }
 
     override fun levelGroup() {
-        send(500, GameReqCode.C2S_LEAVE_GROUP.toShort(), ByteArray(0))
+        send(500, GameReqCode.C2S_LEAVE_GROUP.code.toShort(), ByteArray(0))
     }
 
     override fun enterGame(req: EnterMiniGame) {
-        send(500, GameReqCode.C2S_ENTER_MINI_GAME.toShort(), req.toByteArray())
+        send(500, GameReqCode.C2S_ENTER_MINI_GAME.code.toShort(), req.toByteArray())
     }
 
     override fun levelGame(req: GameReq.LeaveMiniGamesReq) {
-        send(500, GameReqCode.C2S_LEAVE_MINI_GAME.toShort(), req.toByteArray())
+        send(500, GameReqCode.C2S_LEAVE_MINI_GAME.code.toShort(), req.toByteArray())
     }
 
     override fun bet(req: GameReq.BetReq) {
-        send(500, GameReqCode.C2S_BET.toShort(), req.toByteArray())
+        send(500, GameReqCode.C2S_BET.code.toShort(), req.toByteArray())
     }
 
     override fun refreshScore() {
-        send(500, GameReqCode.C2S_REFRESH_SCORE.toShort(), ByteArray(0))
+        send(500, GameReqCode.C2S_REFRESH_SCORE.code.toShort(), ByteArray(0))
     }
 
     override fun ping() {
@@ -158,7 +159,7 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
         gameAboutModel.loginErrorMessage = errorMessage.desc
         gameAboutModel.setLoginResult(false)
 
-        "loginError-->${errorMessage}".loge(tag)/*  when (errorMessage.code) {
+        "loginError-->${errorMessage}".loge(tag)/*  when (errorMessage.v) {
               1000 -> {//其他服有正在进行的游戏，应跳转过去
   //          desc = 您当前还在其他游戏中，是否立刻回到该游戏？ // 713
               }
@@ -283,6 +284,10 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
     }
 
     private fun setCurrentHistory(roundInfo:GameRes.RoundInfo){
+        if(roundInfo.performsList.isEmpty()){
+            LogUtils.e("error: lastRoundInfo performsList is empty")
+            return
+        }
         val elements = roundInfo.performsList[0].elementsList
         val roundInfoBean = RoundInfoBean(
             roundInfo.roundId,

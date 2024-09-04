@@ -157,7 +157,7 @@ class TestActivity : AppCompatActivity(), GameApp.OnSdkListener {
                                 gameType,
                                 weight,
                                 1,
-                                if(id % 2 == 0) R.drawable.game_sdk_kuai_icon_logo.toString() else "https://www.baidu.com/img/flexible/logo/pc/result@2.png",
+                                if(id % 2 == 0) com.cn.game.sdk2.R.drawable.game_sdk_kuai_icon_logo.toString() else "https://www.baidu.com/img/flexible/logo/pc/result@2.png",
                                 "快三${id}_$weight"
                             )
                             add(item)
