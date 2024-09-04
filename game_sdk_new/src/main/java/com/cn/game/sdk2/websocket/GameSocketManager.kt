@@ -121,98 +121,96 @@ internal class GameSocketManager private constructor() : OnMessageListener {
      * @see [client-res.proto]
      */
     private fun convertMessage(mid: Int?, sid: Int?, byteArray: ByteArray) {
-        sid?.apply {
-            when (this) {
-                GameResCode.S2C_ENTER_INFO -> gameServerMessageConvertFactory?.enterInfo(
-                    GameRes.EnterInfo.parseFrom(
-                        byteArray
-                    )
+        when (sid) {
+            GameResCode.S2C_ENTER_INFO.code -> gameServerMessageConvertFactory?.enterInfo(
+                GameRes.EnterInfo.parseFrom(
+                    byteArray
                 )
+            )
 
-                GameResCode.S2C_GROUP_INFO -> gameServerMessageConvertFactory?.groupInfo(
-                    GameRes.GroupInfo.parseFrom(
-                        byteArray
-                    )
+            GameResCode.S2C_GROUP_INFO.code -> gameServerMessageConvertFactory?.groupInfo(
+                GameRes.GroupInfo.parseFrom(
+                    byteArray
                 )
+            )
 
-                GameResCode.S2C_ENTER_MINI_GAME_INFO -> gameServerMessageConvertFactory?.enterMiniGameInfo(
-                    GameRes.EnterMiniGameInfo.parseFrom(byteArray)
+            GameResCode.S2C_ENTER_MINI_GAME_INFO.code -> gameServerMessageConvertFactory?.enterMiniGameInfo(
+                GameRes.EnterMiniGameInfo.parseFrom(byteArray)
+            )
+
+            GameResCode.S2C_LEAVE_MINI_GAME.code -> gameServerMessageConvertFactory?.leaveMiniGameInfo(
+                GameRes.LeaveMiniGames.parseFrom(byteArray)
+            )
+
+            GameResCode.S2C_BEGIN_ROUND.code -> gameServerMessageConvertFactory?.beginRound(
+                GameRes.BeginNewRound.parseFrom(
+                    byteArray
                 )
+            )
 
-                GameResCode.S2C_LEAVE_MINI_GAME -> gameServerMessageConvertFactory?.leaveMiniGameInfo(
-                    GameRes.LeaveMiniGames.parseFrom(byteArray)
+            GameResCode.S2C_BEGIN_DEAL.code -> gameServerMessageConvertFactory?.beginDeal(
+                GameRes.BeginDeal.parseFrom(byteArray)
+            )
+
+            GameResCode.S2C_BEGIN_SETTLE.code -> gameServerMessageConvertFactory?.beginSettle(
+                GameRes.BeginSettle.parseFrom(
+                    byteArray
                 )
+            )
 
-                GameResCode.S2C_BEGIN_ROUND -> gameServerMessageConvertFactory?.beginRound(
-                    GameRes.BeginNewRound.parseFrom(
-                        byteArray
-                    )
+            GameResCode.S2C_REFRESH_USER_SCORE.code -> gameServerMessageConvertFactory?.refreshUserProperties(
+                GameRes.RefreshUserScore.parseFrom(byteArray)
+            )
+
+            GameResCode.S2C_LEAVE_GROUP.code -> gameServerMessageConvertFactory?.leaveGroup(
+                GameRes.LeaveGroup.parseFrom(
+                    byteArray
                 )
+            )
 
-                GameResCode.S2C_BEGIN_DEAL -> gameServerMessageConvertFactory?.beginDeal(
-                    GameRes.BeginDeal.parseFrom(byteArray)
-                )
+            GameResCode.S2C_SYNC_AREA_BET_INFO.code -> gameServerMessageConvertFactory?.syncAreaBetInfoBack(
+                GameRes.SyncAreaBetInfo.parseFrom(byteArray)
+            )
 
-                GameResCode.S2C_BEGIN_SETTLE -> gameServerMessageConvertFactory?.beginSettle(
-                    GameRes.BeginSettle.parseFrom(
-                        byteArray
-                    )
-                )
+            GameResCode.S2C_USER_BET_RESULT.code -> gameServerMessageConvertFactory?.miniGameBetResult(
+                GameRes.MyMiniGameBetResult.parseFrom(byteArray)
+            )
 
-                GameResCode.S2C_REFRESH_USER_SCORE -> gameServerMessageConvertFactory?.refreshUserProperties(
-                    GameRes.RefreshUserScore.parseFrom(byteArray)
-                )
+            GameResCode.SUB_LOGON_RESP__SUCCESS.code -> gameServerMessageConvertFactory?.loginSuccess(
+                ClientRes.InfoAfterLoginSuccess.parseFrom(byteArray)
+            )
 
-                GameResCode.S2C_LEAVE_GROUP -> gameServerMessageConvertFactory?.leaveGroup(
-                    GameRes.LeaveGroup.parseFrom(
-                        byteArray
-                    )
-                )
+            GameResCode.SUB_LOGON_RESP__LOGIN_ERROR.code -> gameServerMessageConvertFactory?.loginError(
+                ClientRes.ErrorMessage.parseFrom(byteArray)
+            )
 
-                GameResCode.S2C_SYNC_AREA_BET_INFO -> gameServerMessageConvertFactory?.syncAreaBetInfoBack(
-                    GameRes.SyncAreaBetInfo.parseFrom(byteArray)
-                )
+            GameResCode.S2C_OTHER_ERROR.code -> gameServerMessageConvertFactory?.errorMessage(
+                ClientRes.ErrorMessage.parseFrom(byteArray)
+            )
 
-                GameResCode.S2C_USER_BET_RESULT -> gameServerMessageConvertFactory?.miniGameBetResult(
-                    GameRes.MyMiniGameBetResult.parseFrom(byteArray)
-                )
+            GameResCode.S2C_CLEAR_TRENDS.code -> gameServerMessageConvertFactory?.clearTrendsBackBlock(
+                GameRes.ClearTrends.parseFrom(byteArray)
+            )
 
-                GameResCode.SUB_LOGON_RESP__SUCCESS -> gameServerMessageConvertFactory?.loginSuccess(
-                    ClientRes.InfoAfterLoginSuccess.parseFrom(byteArray)
-                )
+            GameResCode.S2C_MULTI_USER_LOGIN.code -> gameServerMessageConvertFactory?.tokenLoseEffectiveness()
 
-                GameResCode.SUB_LOGON_RESP__LOGIN_ERROR -> gameServerMessageConvertFactory?.loginError(
-                    ClientRes.ErrorMessage.parseFrom(byteArray)
-                )
+            GameResCode.S2C_SERVER_MAINTENANCE.code -> gameServerMessageConvertFactory?.tokenLoseEffectiveness()
 
-                GameResCode.S2C_OTHER_ERROR -> gameServerMessageConvertFactory?.errorMessage(
-                    ClientRes.ErrorMessage.parseFrom(byteArray)
-                )
+            GameResCode.S2C_ROOM_TIMEOUT.code -> gameServerMessageConvertFactory?.tokenLoseEffectiveness()
 
-                GameResCode.S2C_CLEAR_TRENDS -> gameServerMessageConvertFactory?.clearTrendsBackBlock(
-                    GameRes.ClearTrends.parseFrom(byteArray)
-                )
+            GameResCode.S2C_MULTI_TOKEN_VERIFY_FAIL.code -> gameServerMessageConvertFactory?.tokenLoseEffectiveness()
 
-                GameResCode.S2C_MULTI_USER_LOGIN -> gameServerMessageConvertFactory?.tokenLoseEffectiveness()
-
-                GameResCode.S2C_SERVER_MAINTENANCE -> gameServerMessageConvertFactory?.tokenLoseEffectiveness()
-
-                GameResCode.S2C_ROOM_TIMEOUT -> gameServerMessageConvertFactory?.tokenLoseEffectiveness()
-
-                GameResCode.S2C_MULTI_TOKEN_VERIFY_FAIL -> gameServerMessageConvertFactory?.tokenLoseEffectiveness()
-
-                GameResCode.S2C_REFRESH_GAME_CONFIG -> gameServerMessageConvertFactory?.refreshGameConfig(
-                    GameRes.RefreshGameConfig.parseFrom(byteArray)
-                )
-                GameResCode.S2C_REFRESH_WALI_GAME_PLAYER_COUNT ->{
-                    scope.launch(Dispatchers.Main) {
-                        val data = withContext(Dispatchers.IO) {
-                            val ret = GameRes.RefreshWaliGamePlayerCount.parseFrom(byteArray)
-                            LogUtils.d("onMessage player count is ${ret.playerCountsList.size}, ${ret.playerCountsList}")
-                            ret
-                        }
-                        gameServerMessageConvertFactory?.refreshGamePlayerCount(data)
+            GameResCode.S2C_REFRESH_GAME_CONFIG.code -> gameServerMessageConvertFactory?.refreshGameConfig(
+                GameRes.RefreshGameConfig.parseFrom(byteArray)
+            )
+            GameResCode.S2C_REFRESH_WALI_GAME_PLAYER_COUNT.code->{
+                scope.launch(Dispatchers.Main) {
+                    val data = withContext(Dispatchers.IO) {
+                        val ret = GameRes.RefreshWaliGamePlayerCount.parseFrom(byteArray)
+                        LogUtils.d("onMessage player count is ${ret.playerCountsList.size}, ${ret.playerCountsList}")
+                        ret
                     }
+                    gameServerMessageConvertFactory?.refreshGamePlayerCount(data)
                 }
             }
         }

@@ -35,7 +35,6 @@ class Fast3GameRepository:BaseGameRepository() {
     private val _clearTrendsIds = UnPeekLiveData<List<Int>>()
     private val _historyRounds = UnPeekLiveData<List<RoundInfoBean>>()
 
-    private val _isMeetAgain = UnPeekLiveData<Boolean>()
     private val _isLoginSuccess = UnPeekLiveData<Boolean>()
     private val _isSitDown = UnPeekLiveData<Boolean>()
     private val _isEnterGroup = UnPeekLiveData<Boolean>()
@@ -197,11 +196,6 @@ class Fast3GameRepository:BaseGameRepository() {
     var previousRoundId: String = "" //期号
     /*********End***********/
 
-    /**
-     * 监听isMeetAgain
-     */
-    private val isMeetAgain: UnPeekLiveData<Boolean>
-        get() = _isMeetAgain
 
     fun setBettingSuccess(isSuccess: BettingResponsesBean) {
         _isBettingSuccess.postValue(isSuccess)
@@ -229,10 +223,6 @@ class Fast3GameRepository:BaseGameRepository() {
 
     fun isLeaveGroup(leave: Boolean) {
         _isLeaveGroup.postValue(leave)
-    }
-
-    fun changeMeetAgain(canAgain: Boolean) {
-        _isMeetAgain.postValue(canAgain)
     }
 
     fun changeBalance(b: Long) {

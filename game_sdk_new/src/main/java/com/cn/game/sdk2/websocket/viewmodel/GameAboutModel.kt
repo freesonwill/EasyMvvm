@@ -19,7 +19,7 @@ import kotlinx.coroutines.*
 import java.util.concurrent.ConcurrentHashMap
 
 //internal
-internal class GameAboutModel : BaseViewModel() {
+internal class GameAboutModel  {
     private val _currentStage = UnPeekLiveData<GameStage>()
     private val _currentAgainDoubleState = UnPeekLiveData<AgainDoubleState>()
     private val _balance = UnPeekLiveData<Long>()
@@ -28,7 +28,6 @@ internal class GameAboutModel : BaseViewModel() {
     private val _clearTrendsIds = UnPeekLiveData<List<Int>>()
     private val _historyRounds = UnPeekLiveData<List<RoundInfoBean>>()
 
-    private val _isMeetAgain = UnPeekLiveData<Boolean>()
     private val _isLoginSuccess = UnPeekLiveData<Boolean>()
     private val _isSitDown = UnPeekLiveData<Boolean>()
     private val _isEnterGroup = UnPeekLiveData<Boolean>()
@@ -190,12 +189,6 @@ internal class GameAboutModel : BaseViewModel() {
     var previousRoundId: String = "" //期号
     /*********End***********/
 
-    /**
-     * 监听isMeetAgain
-     */
-    private val isMeetAgain: UnPeekLiveData<Boolean>
-        get() = _isMeetAgain
-
     fun setBettingSuccess(isSuccess: BettingResponsesBean) {
         _isBettingSuccess.postValue(isSuccess)
     }
@@ -222,10 +215,6 @@ internal class GameAboutModel : BaseViewModel() {
 
     fun isLeaveGroup(leave: Boolean) {
         _isLeaveGroup.postValue(leave)
-    }
-
-    fun changeMeetAgain(canAgain: Boolean) {
-        _isMeetAgain.postValue(canAgain)
     }
 
     fun changeBalance(b: Long) {
@@ -286,17 +275,6 @@ internal class GameAboutModel : BaseViewModel() {
 
     fun setToastErrorMessage(msg: String) {
         _toastErrorMessage.postValue(msg)
-    }
-
-
-    private val _onceCountMoney = UnPeekLiveData<Int>()
-
-    val onceCountMoney: UnPeekLiveData<Int>
-        get() = _onceCountMoney
-
-
-    fun setOnceCountMoney(money: Int) {
-        _onceCountMoney.postValue(money)
     }
 
     private val countDownHelper:CountDownHelper = CountDownHelper()
