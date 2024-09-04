@@ -1126,7 +1126,6 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
         }
         val isFirstAdd = !currentBetteAreaMap.containsKey(areaView.areaCode)
         updateAnchorView(areaView)
-        Log.d("test", "++++ abcde")
         childFragmentManager.findFragmentByTag(ChipsFragment.TAG)?.let {
             (it as ChipsViewImp).onBetAreaClick { view ->
                 startMoneyAnimation(

@@ -61,6 +61,9 @@ class ChipsViewModel : ViewModel() {
         setSelectedChip(defaultIndex)
     }
 
+    /***
+     * 显示最大可下注筹码
+     */
     private fun showMaxPossibleBetChip(money: Long) {
         val list = chipsList.value ?: return
         val maxChip = list.filter { it.money <= money }.maxByOrNull { it.money }

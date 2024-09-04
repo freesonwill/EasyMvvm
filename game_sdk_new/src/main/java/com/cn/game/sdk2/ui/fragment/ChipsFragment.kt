@@ -16,6 +16,9 @@ import com.xcjh.base_lib2.base.fragment.BaseFragment
 import com.xcjh.base_lib2.base.fragment.viewBind
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
+/***
+ * 主頁底部籌碼模塊
+ */
 class ChipsFragment : BaseFragment<ChipsViewModel, FragmentChipsBinding>(), ChipsViewImp {
 
     companion object {
@@ -157,7 +160,14 @@ class ChipsFragment : BaseFragment<ChipsViewModel, FragmentChipsBinding>(), Chip
 
 }
 
+/***
+ * 與外部通信接口
+ */
 interface ChipsViewImp {
     fun onRefreshChips()
+
+    /***
+     * 點擊注區須回調當前籌碼view，用於籌碼飛行動畫
+     */
     fun onBetAreaClick(onClickChip: (chipView: View) -> Unit)
 }
