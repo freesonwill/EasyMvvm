@@ -515,7 +515,7 @@
                         style="@style/PuHuiTi"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="你赢了"
+                        android:text="@string/g_home_txt_you_win"
                         android:textColor="#FFE3CA"
                         android:textSize="15sp"
                         app:layout_constraintBottom_toTopOf="@id/tvAnimWin2"

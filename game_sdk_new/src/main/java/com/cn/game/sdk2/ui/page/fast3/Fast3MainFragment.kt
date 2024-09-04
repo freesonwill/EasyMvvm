@@ -48,6 +48,8 @@ import com.cn.game.sdk2.utils.ext.CommonExt.toPinyin
 import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
 import com.cn.game.sdk2.utils.ext.ViewExt.isAdd
 import com.cn.game.sdk2.utils.ext.ViewExt.locationOnScreen
+import com.cn.game.sdk2.utils.ext.bindViewPagerNewGame
+import com.cn.game.sdk2.utils.ext.initGameViewPager
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import com.cn.game.sdk2.websocket.bean.RoundInfoBean
@@ -59,11 +61,9 @@ import com.drake.brv.annotaion.DividerOrientation
 import com.drake.brv.utils.dividerSpace
 import com.gyf.immersionbar.ktx.hasNavigationBar
 import com.gyf.immersionbar.ktx.navigationBarHeight
-import com.xcjh.base_lib2.utils.LogUtils
-import com.cn.game.sdk2.utils.ext.bindViewPagerNewGame
-import com.cn.game.sdk2.utils.ext.initGameViewPager
 import com.xcjh.base_lib2.base.fragment.BaseFragment
 import com.xcjh.base_lib2.base.fragment.viewBind
+import com.xcjh.base_lib2.utils.LogUtils
 import com.xcjh.base_lib2.utils.LogUtilsExt.loge
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
@@ -136,41 +136,41 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
     }
 
     private fun loadFragment(){
-        val startTime = System.currentTimeMillis()
-        //viewpager
-        mFragList.add(DXDSFragment())
-        mFragList.add(SingleDiceFragment())
-        mFragList.add(SumTotalFragment())
-        mFragList.add(PairsDiceFragment())
-        mFragList.add(LeopardFragment())
-        (System.currentTimeMillis() - startTime).let {
-            LogUtils.dTag(TAG, "Fast3MainFragment load costMills1:$it")
-        }
-        mBinding.viewPagerNew.initGameViewPager(
-            childFragmentManager, mFragList, arrayListOf(
+        with(mBinding) {
+            val startTime = System.currentTimeMillis()
+            val gameTypes = arrayListOf(
                 getString(R.string.g_home_txt_default),
                 getString(R.string.g_home_tab_single),
                 getString(R.string.g_home_tab_sum),
                 getString(R.string.g_home_tab_double),
                 getString(R.string.g_home_tab_leopard)
             )
-        )
-        (System.currentTimeMillis() - startTime).let {
-            LogUtils.dTag(TAG, "Fast3MainFragment load costMills2:$it")
-        }
-        mBinding.magicIndicator.bindViewPagerNewGame(
-            mBinding.viewPagerNew, arrayListOf(
-                getString(R.string.g_home_txt_default),
-                getString(R.string.g_home_tab_single),
-                getString(R.string.g_home_tab_sum),
-                getString(R.string.g_home_tab_double),
-                getString(R.string.g_home_tab_leopard)
-            ),
-            scrollEnable = true,
-            action = { PromptSoundPlay.btnPlayMedia() }
-        )
-        (System.currentTimeMillis() - startTime).let {
-            LogUtils.dTag(TAG, "Fast3MainFragment load costMills3:$it")
+
+            //viewpager
+            mFragList.apply {
+                add(DXDSFragment())
+                add(SingleDiceFragment())
+                add(SumTotalFragment())
+                add(PairsDiceFragment())
+                add(LeopardFragment())
+            }
+
+            (System.currentTimeMillis() - startTime).let {
+                LogUtils.dTag(TAG, "Fast3MainFragment load costMills1:$it")
+            }
+            viewPagerNew.initGameViewPager(childFragmentManager, mFragList, gameTypes)
+            (System.currentTimeMillis() - startTime).let {
+                LogUtils.dTag(TAG, "Fast3MainFragment load costMills2:$it")
+            }
+            magicIndicator.bindViewPagerNewGame(
+                viewPagerNew,
+                gameTypes,
+                scrollEnable = true,
+                action = { PromptSoundPlay.btnPlayMedia() }
+            )
+            (System.currentTimeMillis() - startTime).let {
+                LogUtils.dTag(TAG, "Fast3MainFragment load costMills3:$it")
+            }
         }
     }
 

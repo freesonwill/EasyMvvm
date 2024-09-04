@@ -9,11 +9,11 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.cn.game.sdk2.R
-import com.cn.game.sdk2.data.SortedList
 import com.cn.game.sdk2.data.bean.GameHallItem
 import com.cn.game.sdk2.databinding.FragmentGamehallBinding
 import com.cn.game.sdk2.databinding.ItemGamehallPageBinding
 import com.cn.game.sdk2.ui.adapter.GameListAdapter
+import com.cn.game.sdk2.utils.ext.CommonExt.getString
 import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
 import com.cn.game.sdk2.utils.ext.bindViewPagerNewGame
 import com.cn.game.sdk2.utils.ext.initGameViewPager2
@@ -30,7 +30,6 @@ import com.xcjh.base_lib2.utils.view.clickNoRepeat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.Collections
 
 class GameListView(context: Context) : BottomPopupView(context) {
 
@@ -39,7 +38,14 @@ class GameListView(context: Context) : BottomPopupView(context) {
 
     private lateinit var binding: FragmentGamehallBinding
     var targetHeight: Int = 0
-    private val tabs = listOf("热门", "棋牌", "视讯", "捕鱼", "体育", "电子")
+    private val tabs = listOf(
+        R.string.g_game_list_type_hot.getString(),
+        R.string.g_game_list_type_board_game.getString(),
+        R.string.g_game_list_type_live_video.getString(),
+        R.string.g_game_list_type_fishing.getString(),
+        R.string.g_game_list_type_sports.getString(),
+        R.string.g_game_list_type_electronic.getString()
+    )
     private val tabLists = SparseArray<ArrayList<GameHallItem>>().apply {
         for (i in tabs.indices) {
             put(i, ArrayList())
