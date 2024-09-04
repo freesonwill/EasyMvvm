@@ -1,7 +1,9 @@
 package com.cn.game.sdk2.websocket.viewmodel
 
+import androidx.annotation.UiContext
 import androidx.annotation.UiThread
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.cn.game.sdk2.data.bean.GameHallItem
 import com.cn.game.sdk2.utils.ext.CommonExt.isMainThread
 import com.cn.game.sdk2.websocket.bean.AreaBetBean
@@ -36,6 +38,10 @@ internal class GameAboutModel  {
     private val _isBettingSuccess = UnPeekLiveData<BettingResponsesBean>()
     private val _toastErrorMessage = UnPeekLiveData<String>()
     private val _isShowGame = UnPeekLiveData<Boolean>()
+    private val _isShowGameInfo = MutableLiveData<Pair<Int,Boolean>>()
+    val isShowGameInfo:LiveData<Pair<Int,Boolean>> = _isShowGameInfo
+    val miniGameId:Int get() = _isShowGameInfo.value?.first ?: -1
+    val isGameList:Boolean get() = _isShowGameInfo.value?.second ?: false
     private val _isAllowedBet = UnPeekLiveData<Boolean>()
     private val _moreGames = UnPeekLiveData<List<GameHallItem>>()
     var moreGames: LiveData<List<GameHallItem>> = _moreGames
@@ -201,8 +207,11 @@ internal class GameAboutModel  {
         _isSitDown.postValue(sitDown)
     }
 
-    fun isShowGame(showGame: Boolean) {
-        _isShowGame.postValue(showGame)
+    @UiThread
+    suspend fun isShowGame(showGame: Boolean,miniGameId:Int? = null,isGameList:Boolean? = null) {
+        _isShowGame.value = showGame
+        if(miniGameId != null && isGameList != null)
+            _isShowGameInfo.value = miniGameId to isGameList
     }
 
     fun isAllowedBet(isAllowedBet: Boolean) {

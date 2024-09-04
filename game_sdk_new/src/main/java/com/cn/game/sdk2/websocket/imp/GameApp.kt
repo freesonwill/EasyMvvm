@@ -16,6 +16,7 @@ import com.cn.game.sdk2.data.bean.GameHallItem
 import com.cn.game.sdk2.moduleList
 import com.cn.game.sdk2.ui.helper.ViewHelper
 import com.cn.game.sdk2.utils.GsonUtils
+import com.cn.game.sdk2.utils.ThreadUtils
 import com.cn.game.sdk2.websocket.GameSocketManager
 import com.cn.game.sdk2.websocket.appContext
 import com.cn.game.sdk2.websocket.appLifecycleEnable
@@ -32,6 +33,7 @@ import com.xcjh.base_lib2.ModuleInitializer
 import com.xcjh.base_lib2.utils.LogUtilsExt.loge
 import game.common.proto.ClientReq
 import game.mod.proc.yf.proto.req.GameReq
+import kotlinx.coroutines.launch
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
@@ -255,7 +257,9 @@ class GameApp  private constructor(){
 
         @JvmStatic
          fun dismissFloatingController() {
-            gameAboutModel.isShowGame(false)
+            ThreadUtils.mainScope.launch {
+                gameAboutModel.isShowGame(false)
+            }
         }
 
         @JvmStatic
@@ -278,9 +282,16 @@ class GameApp  private constructor(){
             gameMassageManager?.refreshScore()
         }
 
+        /**
+         * 打开游戏对话框
+         * @param gameId: 游戏id
+         * @param isGameList: 是否打开游戏大厅,true-打开,false-不打开
+         */
         @JvmStatic
-         fun openGameDialog(miniGameId: Int) {
-            gameAboutModel.isShowGame(true)
+         fun openGameDialog(miniGameId: Int,isGameList:Boolean) {
+             ThreadUtils.mainScope.launch {
+                 gameAboutModel.isShowGame(true, miniGameId, isGameList)
+             }
         }
 
         /// 传入wali游戏接口

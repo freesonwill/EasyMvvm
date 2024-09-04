@@ -3,12 +3,14 @@ package com.cn.game.sdk2.ui.helper
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnAttachStateChangeListener
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.data.enums.GAME_ID_ENUM
 import com.cn.game.sdk2.ui.page.fast3.Fast3MainFragment
@@ -27,7 +29,7 @@ import com.xcjh.base_lib2.utils.view.clickNoRepeat
 import java.lang.ref.WeakReference
 
 /**
- * Description:
+ * Description: View辅助类
  * author       : zhangsan
  * createTime   : 2024/6/13 17:43
  **/
@@ -227,6 +229,7 @@ class ViewHelper {
                 }
                 showGameMainPopup(context, true)
             }
+            observerGameList(it)
         }.apply {
             if (context is LifecycleOwner) {
                 context.lifecycle.addObserver(object : DefaultLifecycleObserver {
@@ -237,6 +240,28 @@ class ViewHelper {
                 })
             }
         }
+    }
+
+    /**
+     * 监听打开GameList
+     */
+    private fun observerGameList(v:View){
+        v.addOnAttachStateChangeListener(object :OnAttachStateChangeListener {
+            private val obsrv:Observer<Pair<Int,Boolean>> by lazy {
+                object : Observer<Pair<Int, Boolean>> {
+                    override fun onChanged(t: Pair<Int, Boolean>?) {
+
+                    }
+                }
+            }
+            override fun onViewAttachedToWindow(p0: View) {
+                gameAboutModel.isShowGameInfo.observeForever(obsrv)
+            }
+
+            override fun onViewDetachedFromWindow(p0: View) {
+                gameAboutModel.isShowGameInfo.removeObserver(obsrv)
+            }
+        })
     }
 
     fun getFastViewOverlay(context: Context): View {

@@ -720,7 +720,6 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                 } else {
                     LogUtils.dTag(
                         TAG,
-                        TAG,
                         "receive playAlphaAnimationLD:animator:${animator.hashCode()},cancel"
                     )
                     animator?.cancel()
@@ -733,6 +732,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
         gameAboutModel.toastErrorMessage.observe(viewLifecycleOwner) { msg ->
             Fast3ToastHelper.showToastNormal(msg)
         }
+
     }
 
     private fun updateAgainDoubleUi() {
