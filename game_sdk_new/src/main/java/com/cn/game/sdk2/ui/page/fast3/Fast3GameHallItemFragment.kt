@@ -7,6 +7,7 @@ import com.cn.game.sdk2.R
 import com.cn.game.sdk2.data.bean.GameHallItem
 import com.cn.game.sdk2.databinding.ItemGamehallPageBinding
 import com.cn.game.sdk2.databinding.ItemGamehallPageItemBinding
+import com.cn.game.sdk2.ui.adapter.GameHallItemAdapter
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3GameHallItemViewModel
 import com.drake.brv.annotaion.DividerOrientation
 import com.drake.brv.utils.bindingAdapter
@@ -17,35 +18,24 @@ import com.xcjh.base_lib2.base.fragment.BaseFragment
 import com.xcjh.base_lib2.base.fragment.viewBind
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class Fast3GameHallItemFragment : BaseFragment<Fast3GameHallItemViewModel, ItemGamehallPageBinding>() {
+class Fast3GameHallItemFragment :
+    BaseFragment<Fast3GameHallItemViewModel, ItemGamehallPageBinding>() {
 
     override val mBinding: ItemGamehallPageBinding by viewBind()
 
-    override val mViewModel: Fast3GameHallItemViewModel  by viewModel()
+    override val mViewModel: Fast3GameHallItemViewModel by viewModel()
 
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.rvContent.itemAnimator = null
-        mBinding.rvContent.layoutManager = LinearLayoutManager(requireContext())
+        mBinding.rvContent.layoutManager = GridLayoutManager(requireContext(), 4)
         mBinding.rvContent.dividerSpace(
             requireContext().dp2px(20),
             DividerOrientation.HORIZONTAL
-        ).setup {
-            it.layoutManager = GridLayoutManager(context, 4)
-            addType<GameHallItem>(R.layout.item_gamehall_page_item)
-            onBind {
-                when (itemViewType) {
-                    R.layout.item_gamehall_page_item -> {
-                        getBinding<ItemGamehallPageItemBinding>().apply {
-                            val bean = _data as GameHallItem
-                            tvName.text = bean.name
-                            tvOnline.text = bean.online.toString()
-                        }
-                    }
-                }
-            }
-        }.models = mViewModel.hallItems.value
-
-
+        )
+        val adapter = GameHallItemAdapter().also {
+            it.submitList(mViewModel.hallItems.value)
+        }
+        mBinding.rvContent.adapter = adapter
     }
 
     override fun lazyLoadData() {
