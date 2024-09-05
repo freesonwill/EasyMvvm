@@ -1,6 +1,8 @@
 package com.cn.game.sdk2.utils
 
 import android.util.SparseArray
+import com.cn.game.sdk2.R
+import com.cn.game.sdk2.utils.ext.CommonExt.getString
 import com.cn.game.sdk2.websocket.bean.Betting
 import com.cn.game.sdk2.websocket.bean.BoomBet
 import com.cn.game.sdk2.websocket.bean.DefaultBet
@@ -48,43 +50,43 @@ object BettingAreaUtil {
     const val BET_AREA_BOOM_ALL = 37
 
     private val betAreaList = listOf(
-        DefaultBet(BET_AREA_DEFAULT_BIG, "大"),
-        DefaultBet(BET_AREA_DEFAULT_SMALL, "小"),
-        DefaultBet(BET_AREA_DEFAULT_SINGLE, "单"),
-        DefaultBet(BET_AREA_DEFAULT_DOUBLE, "双"),
-        SumBet(BET_AREA_SUM_4, "4点", 63f),
-        SumBet(BET_AREA_SUM_5, "5点", 32f),
-        SumBet(BET_AREA_SUM_6, "6点", 19.5f),
-        SumBet(BET_AREA_SUM_7, "7点", 13f),
-        SumBet(BET_AREA_SUM_8, "8点", 9.5f),
-        SumBet(BET_AREA_SUM_9, "9点", 8f),
-        SumBet(BET_AREA_SUM_10, "10点", 7.5f),
-        SumBet(BET_AREA_SUM_11, "11点", 7.5f),
-        SumBet(BET_AREA_SUM_12, "12点", 8f),
-        SumBet(BET_AREA_SUM_13, "13点", 9.5f),
-        SumBet(BET_AREA_SUM_14, "14点", 13f),
-        SumBet(BET_AREA_SUM_15, "15点", 19.5f),
-        SumBet(BET_AREA_SUM_16, "16点", 32f),
-        SumBet(BET_AREA_SUM_17, "17点", 63f),
-        SingleBet(BET_AREA_SINGLE_1, "单骰1"),
-        SingleBet(BET_AREA_SINGLE_2, "单骰2"),
-        SingleBet(BET_AREA_SINGLE_3, "单骰3"),
-        SingleBet(BET_AREA_SINGLE_4, "单骰4"),
-        SingleBet(BET_AREA_SINGLE_5, "单骰5"),
-        SingleBet(BET_AREA_SINGLE_6, "单骰6"),
-        DoubleBet(BET_AREA_DOUBLE_1, "对子1"),
-        DoubleBet(BET_AREA_DOUBLE_2, "对子2"),
-        DoubleBet(BET_AREA_DOUBLE_3, "对子3"),
-        DoubleBet(BET_AREA_DOUBLE_4, "对子4"),
-        DoubleBet(BET_AREA_DOUBLE_5, "对子5"),
-        DoubleBet(BET_AREA_DOUBLE_6, "对子6"),
-        BoomBet(BET_AREA_BOOM_1, "豹子1"),
-        BoomBet(BET_AREA_BOOM_2, "豹子2"),
-        BoomBet(BET_AREA_BOOM_3, "豹子3"),
-        BoomBet(BET_AREA_BOOM_4, "豹子4"),
-        BoomBet(BET_AREA_BOOM_5, "豹子5"),
-        BoomBet(BET_AREA_BOOM_6, "豹子6"),
-        BoomBet(BET_AREA_BOOM_ALL, "全豹", 32f)
+        DefaultBet(BET_AREA_DEFAULT_BIG, R.string.g_home_txt_big.getString()),
+        DefaultBet(BET_AREA_DEFAULT_SMALL, R.string.g_home_txt_small.getString()),
+        DefaultBet(BET_AREA_DEFAULT_SINGLE, R.string.g_home_txt_single.getString()),
+        DefaultBet(BET_AREA_DEFAULT_DOUBLE, R.string.g_home_txt_double.getString()),
+        SumBet(BET_AREA_SUM_4, "4${R.string.g_home_txt_sum.getString()}", 63f),
+        SumBet(BET_AREA_SUM_5, "5${R.string.g_home_txt_sum.getString()}", 32f),
+        SumBet(BET_AREA_SUM_6, "6${R.string.g_home_txt_sum.getString()}", 19.5f),
+        SumBet(BET_AREA_SUM_7, "7${R.string.g_home_txt_sum.getString()}", 13f),
+        SumBet(BET_AREA_SUM_8, "8${R.string.g_home_txt_sum.getString()}", 9.5f),
+        SumBet(BET_AREA_SUM_9, "9${R.string.g_home_txt_sum.getString()}", 8f),
+        SumBet(BET_AREA_SUM_10, "10${R.string.g_home_txt_sum.getString()}", 7.5f),
+        SumBet(BET_AREA_SUM_11, "11${R.string.g_home_txt_sum.getString()}", 7.5f),
+        SumBet(BET_AREA_SUM_12, "12${R.string.g_home_txt_sum.getString()}", 8f),
+        SumBet(BET_AREA_SUM_13, "13${R.string.g_home_txt_sum.getString()}", 9.5f),
+        SumBet(BET_AREA_SUM_14, "14${R.string.g_home_txt_sum.getString()}", 13f),
+        SumBet(BET_AREA_SUM_15, "15${R.string.g_home_txt_sum.getString()}", 19.5f),
+        SumBet(BET_AREA_SUM_16, "16${R.string.g_home_txt_sum.getString()}", 32f),
+        SumBet(BET_AREA_SUM_17, "17${R.string.g_home_txt_sum.getString()}", 63f),
+        SingleBet(BET_AREA_SINGLE_1, "${R.string.g_home_tab_single.getString()}1"),
+        SingleBet(BET_AREA_SINGLE_2, "${R.string.g_home_tab_single.getString()}2"),
+        SingleBet(BET_AREA_SINGLE_3, "${R.string.g_home_tab_single.getString()}3"),
+        SingleBet(BET_AREA_SINGLE_4, "${R.string.g_home_tab_single.getString()}4"),
+        SingleBet(BET_AREA_SINGLE_5, "${R.string.g_home_tab_single.getString()}5"),
+        SingleBet(BET_AREA_SINGLE_6, "${R.string.g_home_tab_single.getString()}6"),
+        DoubleBet(BET_AREA_DOUBLE_1, "${R.string.g_home_tab_double.getString()}1"),
+        DoubleBet(BET_AREA_DOUBLE_2, "${R.string.g_home_tab_double.getString()}2"),
+        DoubleBet(BET_AREA_DOUBLE_3, "${R.string.g_home_tab_double.getString()}3"),
+        DoubleBet(BET_AREA_DOUBLE_4, "${R.string.g_home_tab_double.getString()}4"),
+        DoubleBet(BET_AREA_DOUBLE_5, "${R.string.g_home_tab_double.getString()}5"),
+        DoubleBet(BET_AREA_DOUBLE_6, "${R.string.g_home_tab_double.getString()}6"),
+        BoomBet(BET_AREA_BOOM_1, "${R.string.g_home_tab_leopard.getString()}1"),
+        BoomBet(BET_AREA_BOOM_2, "${R.string.g_home_tab_leopard.getString()}2"),
+        BoomBet(BET_AREA_BOOM_3, "${R.string.g_home_tab_leopard.getString()}3"),
+        BoomBet(BET_AREA_BOOM_4, "${R.string.g_home_tab_leopard.getString()}4"),
+        BoomBet(BET_AREA_BOOM_5, "${R.string.g_home_tab_leopard.getString()}5"),
+        BoomBet(BET_AREA_BOOM_6, "${R.string.g_home_tab_leopard.getString()}6"),
+        BoomBet(BET_AREA_BOOM_ALL, R.string.g_home_txt_leopard_all.getString(), 32f)
     )
 
     /**

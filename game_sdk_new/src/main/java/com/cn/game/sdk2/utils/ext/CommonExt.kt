@@ -21,6 +21,13 @@ import java.text.DecimalFormat
  **/
 object CommonExt {
 
+    /***
+     *  無Context狀態下取得String
+     */
+    fun Int.getString(vararg formatArgs: Any): String {
+        return ModuleInitializer.application.getString(this, formatArgs)
+    }
+
     fun Int.toPinyin(): String {
         return PinyinUtils.toPinyin(this)
     }

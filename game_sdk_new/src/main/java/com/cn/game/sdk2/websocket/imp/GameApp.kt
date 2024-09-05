@@ -176,9 +176,11 @@ class GameApp  private constructor(){
         /** 离开直播間
          * - Parameter liveId: 直播間id
          */
-        @JvmStatic
-         fun leaveLive() {
+        @JvmStatic fun leaveLive() {
             gameMassageManager?.levelGroup()
+            ThreadUtils.mainScope.launch {
+                ViewHelper.instance.clearAllView()
+            }
         }
 
         /**
@@ -321,6 +323,14 @@ class GameApp  private constructor(){
 
 
     interface OnSdkListener {
+        /**
+         * socket已连接
+         */
+        fun onSocketConnected() {}
+        /**
+         * socket已关闭
+         */
+        fun onSocketClosed() {}
         /**
          * 登录游戏
          * type: 1为成功. 其他为失败

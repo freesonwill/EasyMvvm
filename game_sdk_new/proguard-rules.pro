@@ -325,6 +325,8 @@
 -keep class com.cn.game.sdk2.websocket.NativeLib{*;}
 -keep class com.cn.game.sdk2.websocket.interfaces.**{*;}
 -keep class com.cn.game.sdk2.websocket.imp.GameApp{*;}
+-keep class com.cn.game.sdk2.websocket.imp.GameApp$Companion{*;}
+
 -keep class com.cn.game.sdk2.websocket.GameKtxKt{*;}
 -keep class com.cn.game.sdk2.websocket.imp.GameApp$OnSdkListener{*;}
 #-keep class com.cn.game.sdk2.websocket.imp.GameApp$SocketStatesCallback{*;}
@@ -332,11 +334,13 @@
 #-keep class com.cn.game.sdk2.websocket.GameSocketManager$Companion{*;}
 #-keep class com.cn.game.sdk2.websocket.viewmodel.GameAboutModel{*;}
 -keep class com.cn.game.sdk2.utils.ext.** {*;}
--keep class com.cn.game.sdk2.data.bean.MoreGame{*;}
+-keep class com.cn.game.sdk2.utils.GsonUtils{*;}
+-keep class com.xcjh.base_lib2.utils.** {*;}
+-keep class com.cn.game.sdk2.data.bean.GameHallItem {*;}
 -keep class com.xcjh.base_lib2.ModuleInitializer$Companion{*;}
 
 # protobuf
 -keepclasseswithmembernames public class * extends com.google.protobuf.MessageLite {*;}
--keepclasseswithmembernames public class * extends com.google.protobuf.MessageOrBuilder {*;}
+-keepclasseswithmembernames public class * extends com.google.protobuf.MessageLiteOrBuilder {*;}
 -keep class com.google.protobuf.**
 -keep class * extends com.google.protobuf.GeneratedMessageLite { *; }
