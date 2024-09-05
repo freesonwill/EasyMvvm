@@ -252,81 +252,14 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </RelativeLayout>
 
-
-                <LinearLayout
-                    android:id="@+id/rlShowResult"
+                <androidx.fragment.app.FragmentContainerView
+                    android:id="@+id/fragment_settle_result"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:gravity="center"
-                    android:orientation="horizontal"
-                    android:visibility="gone"
+                    android:layout_height="wrap_content"
                     app:layout_constraintBottom_toBottomOf="@id/cl_chips"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/cl_chips"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/cl_chips">
-
-                    <LinearLayout
-                        android:id="@+id/llResultLeft"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center">
-
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/ivDrawYi"
-                            android:layout_width="34dp"
-                            android:layout_height="34dp"
-                            app:srcCompat="@mipmap/game_sdk_icon_dice_yi" />
-
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/ivDrawEr"
-                            android:layout_width="34dp"
-                            android:layout_height="34dp"
-                            android:layout_marginLeft="15dp"
-                            app:srcCompat="@mipmap/game_sdk_icon_dice_er" />
-
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/ivDrawSan"
-                            android:layout_width="34dp"
-                            android:layout_height="34dp"
-                            android:layout_marginLeft="15dp"
-                            app:srcCompat="@mipmap/game_sdk_icon_dice_san" />
-                    </LinearLayout>
-
-
-                    <LinearLayout
-                        android:id="@+id/llResultRight"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center">
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/txtHomeTotal"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="20dp"
-                            android:text="9"
-                            android:textColor="@color/c_ffffff"
-                            android:textSize="25sp"
-                            android:textStyle="bold" />
-
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/ivBetSize"
-                            android:layout_width="28dp"
-                            android:layout_height="28dp"
-                            android:layout_marginLeft="16dp"
-                            android:layout_marginTop="0.5dp"
-                            app:srcCompat="@mipmap/game_sdk_icon_home_result_small" />
-
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/ivBetOdd"
-                            android:layout_width="28dp"
-                            android:layout_height="28dp"
-                            android:layout_marginLeft="16dp"
-                            android:layout_marginTop="0.5dp"
-                            app:srcCompat="@mipmap/game_sdk_icon_home_result_double" />
-                    </LinearLayout>
-                </LinearLayout>
-
+                    app:layout_constraintEnd_toEndOf="parent" />
 
                 <View
                     android:id="@+id/resultClickView"

@@ -29,6 +29,7 @@ import com.cn.game.sdk2.databinding.FragFast3HomeBinding
 import com.cn.game.sdk2.ui.fragment.ChipsFragment
 import com.cn.game.sdk2.ui.fragment.ChipsViewImp
 import com.cn.game.sdk2.ui.fragment.DrawHistoryFragment
+import com.cn.game.sdk2.ui.fragment.DrawResultFragment
 import com.cn.game.sdk2.ui.helper.AnimHelper
 import com.cn.game.sdk2.ui.helper.Fast3ToastHelper
 import com.cn.game.sdk2.ui.popup.game.MoreListPopup
@@ -37,10 +38,8 @@ import com.cn.game.sdk2.ui.view.game.MoneyOKView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
 import com.cn.game.sdk2.utils.FlowBus
 import com.cn.game.sdk2.utils.IconUtils
-import com.cn.game.sdk2.utils.ext.BizExt.isLeopard
 import com.cn.game.sdk2.utils.ext.CommonExt.formatRealMoney
 import com.cn.game.sdk2.utils.ext.CommonExt.isCanGoOn
-import com.cn.game.sdk2.utils.ext.CommonExt.toPinyin
 import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
 import com.cn.game.sdk2.utils.ext.ViewExt.isAdd
 import com.cn.game.sdk2.utils.ext.ViewExt.locationOnScreen
@@ -48,7 +47,6 @@ import com.cn.game.sdk2.utils.ext.bindViewPagerNewGame
 import com.cn.game.sdk2.utils.ext.initGameViewPager
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
-import com.cn.game.sdk2.websocket.bean.RoundInfoBean
 import com.cn.game.sdk2.websocket.constants.AgainDoubleState
 import com.cn.game.sdk2.websocket.constants.GameStage
 import com.cn.game.sdk2.websocket.gameAboutModel
@@ -119,6 +117,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
         }
         loadFragment()
         setChipsView()
+        setDrawResultView()
         setHistoryView()
         setClick()
         setNavigationBar()
@@ -266,7 +265,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                 mBinding.betteAgainLayout.isVisible = true
 
                 //开奖结果x
-                mBinding.rlShowResult.isVisible = false
+                mBinding.fragmentSettleResult.isVisible = false
                 mBinding.ivHomeBg.isVisible = false
                 mBinding.ivHomeBgCenter.isVisible = false
                 mBinding.resultBgTop.isVisible = false
@@ -290,20 +289,23 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                 }
                 mBinding.clChips.isInvisible = true
                 mBinding.betteAgainLayout.isVisible = false
-                updateCenterRoundInfoData()
-                //开奖结果显示动画
-                startCenterRoundInfoShowAnim {
-                    //中奖动画
-                    startWinLottieAnim(endCallBack = {
-                        //开奖结果注区动画闪烁
-                        Log.e(TAG, "中奖注区结果监听--->${gameAboutModel.lotteryResultList}")
-                        mViewModel.userLotteryResultLiveData.value =
-                            gameAboutModel.lotteryResultList
 
-                        //中奖区域金额刷新
-                        Log.e(TAG, "中奖注区筹码监听--->${gameAboutModel.userLotteryResult}")
-                        notifyMoneyOkView(gameAboutModel.userLotteryResult)
-                    })
+                with((childFragmentManager.findFragmentByTag(DrawResultFragment.TAG) as DrawResultFragment)) {
+                    gameAboutModel.currentSettleResult?.let { setSettleResult(it) }
+                    mBinding.fragmentSettleResult.isVisible = true
+                    playAnim {
+                        //中奖动画
+                        startWinLottieAnim(endCallBack = {
+                            //开奖结果注区动画闪烁
+                            Log.e(TAG, "中奖注区结果监听--->${gameAboutModel.lotteryResultList}")
+                            mViewModel.userLotteryResultLiveData.value =
+                                gameAboutModel.lotteryResultList
+
+                            //中奖区域金额刷新
+                            Log.e(TAG, "中奖注区筹码监听--->${gameAboutModel.userLotteryResult}")
+                            notifyMoneyOkView(gameAboutModel.userLotteryResult)
+                        })
+                    }
                 }
             }
         }
@@ -358,39 +360,6 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                     ivHomeBgCenter.isVisible = true
                     resultBgTop.isVisible = true
                 })
-            }
-        }
-    }
-
-    /**
-     * 更新当局游戏结果信息
-     */
-    private fun updateCenterRoundInfoData() {
-        val roundInfo: RoundInfoBean? = gameAboutModel.currentSettleResult
-        Log.e(TAG, "结算item" + roundInfo.toString())
-        mBinding.apply {
-            roundInfo?.run {
-                performs.forEachIndexed { index, item ->
-                    val id = IconUtils.getIcon("game_sdk_icon_dice_" + item.toPinyin())
-                    if (id != 0) {
-                        when (index) {
-                            0 -> ivDrawYi.setImageResource(id)
-                            1 -> ivDrawEr.setImageResource(id)
-                            2 -> ivDrawSan.setImageResource(id)
-                        }
-                    }
-                }
-                txtHomeTotal.text = sum.toString()
-                //豹子只显示骰子和点数，不显示大小和单双
-                if (isLeopard) {
-                    ivBetSize.isVisible = false
-                    ivBetOdd.isVisible = false
-                } else {
-                    ivBetSize.isVisible = true
-                    ivBetOdd.isVisible = true
-                    ivBetSize.setImageResource(if (isBig) R.mipmap.game_sdk_icon_home_result_big else R.mipmap.game_sdk_icon_home_result_small)
-                    ivBetOdd.setImageResource(if (isDouble) R.mipmap.game_sdk_icon_home_result_double else R.mipmap.game_sdk_icon_home_result_single)
-                }
             }
         }
     }
@@ -768,6 +737,16 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
         childFragmentManager.beginTransaction().replace(mBinding.flChips.id, f, ChipsFragment.TAG).commit()
     }
 
+    // 設置底部當局開獎結果Fragment
+    private fun setDrawResultView() {
+        childFragmentManager.findFragmentByTag(DrawResultFragment.TAG)
+                as? DrawResultFragment ?: DrawResultFragment().also {
+            childFragmentManager.beginTransaction()
+                .replace(mBinding.fragmentSettleResult.id, it, DrawResultFragment.TAG)
+                .commitNow()
+        }
+    }
+
     // 設置底部開獎紀錄Fragment
     private fun setHistoryView() {
         val frag = childFragmentManager.findFragmentByTag(DrawHistoryFragment.TAG)
@@ -837,47 +816,13 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
             mBinding.betteAgainLayout.isVisible = true
 
             //开奖结果x
-            rlShowResult.isVisible = false
+            fragmentSettleResult.isVisible = false
             ivHomeBg.isVisible = false
             ivHomeBgCenter.isVisible = false
             resultBgTop.isVisible = false
 
             flChips.translationY = 0f
             betteAgainLayout.translationX = 0f
-        }
-    }
-
-    /**
-     * 执行游戏结果点数显示动画
-     */
-    private fun startCenterRoundInfoShowAnim(duration: Long = 200L, doEnd: () -> Unit) {
-        mBinding.apply {
-            val leftAnimX = ObjectAnimator.ofFloat(llResultLeft, "scaleX", 0f, 1f).apply {
-                this.duration = duration
-            }
-            val leftAnimY = ObjectAnimator.ofFloat(llResultLeft, "scaleY", 0f, 1f).apply {
-                this.duration = duration
-            }
-            val rightAnimX = ObjectAnimator.ofFloat(llResultRight, "scaleX", 0f, 1f).apply {
-                this.duration = duration
-                startDelay = 500
-            }
-            val rightAnimY = ObjectAnimator.ofFloat(llResultRight, "scaleY", 0f, 1f).apply {
-                this.duration = duration
-                startDelay = 500
-            }
-            AnimatorSet().apply {
-                play(leftAnimX).with(leftAnimY).with(rightAnimX).with(rightAnimY)
-                addListener(onStart = {
-                    rlShowResult.isVisible = true
-                    llResultLeft.scaleX = 0f
-                    llResultLeft.scaleY = 0f
-                    llResultRight.scaleX = 0f
-                    llResultRight.scaleY = 0f
-                },
-                    onEnd = { doEnd.invoke() })
-                start()
-            }
         }
     }
 
