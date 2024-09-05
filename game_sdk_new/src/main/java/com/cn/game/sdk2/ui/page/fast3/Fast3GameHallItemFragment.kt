@@ -32,8 +32,9 @@ class Fast3GameHallItemFragment :
             requireContext().dp2px(20),
             DividerOrientation.HORIZONTAL
         )
-        val adapter = GameHallItemAdapter().also {
-            it.submitList(mViewModel.hallItems.value)
+        val adapter = GameHallItemAdapter()
+        mViewModel.hallItems.observe(viewLifecycleOwner) {
+            adapter.submitList(it)
         }
         mBinding.rvContent.adapter = adapter
     }
