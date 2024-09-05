@@ -5,37 +5,33 @@ import android.animation.Animator.AnimatorListener
 import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
-import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewPropertyAnimator
-import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.FrameLayout
 import android.widget.ImageView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.addListener
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.data.BetteFlyData
 import com.cn.game.sdk2.data.EventKey
 import com.cn.game.sdk2.data.bean.SelectAnnotationBean
 import com.cn.game.sdk2.databinding.FragFast3HomeBinding
-import com.cn.game.sdk2.ui.adapter.DrawHistoryAdapter
 import com.cn.game.sdk2.ui.fragment.ChipsFragment
 import com.cn.game.sdk2.ui.fragment.ChipsViewImp
+import com.cn.game.sdk2.ui.fragment.DrawHistoryFragment
 import com.cn.game.sdk2.ui.helper.AnimHelper
 import com.cn.game.sdk2.ui.helper.Fast3ToastHelper
 import com.cn.game.sdk2.ui.popup.game.MoreListPopup
-import com.cn.game.sdk2.ui.view.ClickRecyclerView
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.view.game.MoneyOKView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
@@ -57,8 +53,6 @@ import com.cn.game.sdk2.websocket.constants.AgainDoubleState
 import com.cn.game.sdk2.websocket.constants.GameStage
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.gameMassageManager
-import com.drake.brv.annotaion.DividerOrientation
-import com.drake.brv.utils.dividerSpace
 import com.gyf.immersionbar.ktx.hasNavigationBar
 import com.gyf.immersionbar.ktx.navigationBarHeight
 import com.xcjh.base_lib2.base.fragment.BaseFragment
@@ -76,16 +70,12 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
     override val mBinding: FragFast3HomeBinding by viewBind()
     override val mViewModel: Fast3ViewModel  by sharedViewModel()
 
-    private lateinit var drawHistoryAdapter: DrawHistoryAdapter
     companion object {
         const val TAG = "Fast3MainFragment"
     }
 
     private var mFragList = ArrayList<Fragment>()
 
-    private var resultAnim: ValueAnimator? = null
-    private var resultRvHeight = -1
-    private var resultAnimMoveHeight = -1
     private var anchorMoneyView: MoneyOKView? = null
 
     //<areaCode,<money,View>>
@@ -129,9 +119,8 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
         }
         loadFragment()
         setChipsView()
-        setDrawHistoryView()
+        setHistoryView()
         setClick()
-        measureHistoryRvHeight()
         setNavigationBar()
     }
 
@@ -208,20 +197,6 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
             layoutParams.height = targetHeight
             //                         bottomLayout.layoutParams = layoutParams
         }
-    }
-
-    //测量耗时操作可放到IO线程
-    private fun measureHistoryRvHeight() {
-        mBinding.flRvHistory.viewTreeObserver.addOnGlobalLayoutListener(object :OnGlobalLayoutListener{
-            override fun onGlobalLayout() {
-                mBinding.flRvHistory.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                resultRvHeight = mBinding.rvDrawHistory.height
-                if(0 == resultRvHeight){
-                    resultRvHeight = 122.dp2px
-                }
-                resultAnimMoveHeight = resultRvHeight - mBinding.flRvHistory.height
-            }
-        })
     }
 
     /**Ï
@@ -666,7 +641,14 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
         //开奖历史记录
         gameAboutModel.historyRounds.observe(viewLifecycleOwner) {
             Log.e(TAG, "开奖历史结果--->$it")
-            drawHistoryAdapter.submitList(it)
+            (childFragmentManager.findFragmentByTag(DrawHistoryFragment.TAG) as DrawHistoryFragment)
+                .setDrawHistories(it)
+        }
+
+        // 執行開獎紀錄閃爍動畫
+        mViewModel.playAlphaAnimationLD.observe(viewLifecycleOwner) {
+            (childFragmentManager.findFragmentByTag(DrawHistoryFragment.TAG) as DrawHistoryFragment)
+                .playAnim(it, mViewModel.prizeAnimTime)
         }
 
         //下注结果
@@ -685,49 +667,6 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                 )
             }
         }
-        mViewModel.playAlphaAnimationLD.observe(viewLifecycleOwner, object : Observer<Boolean> {
-            var animator: ObjectAnimator? = null
-            override fun onChanged(play: Boolean) {
-                mBinding.rvDrawHistory.scrollToPosition(drawHistoryAdapter.currentList.size - 1)
-                val layoutManager = mBinding.rvDrawHistory.layoutManager as LinearLayoutManager
-                val position = layoutManager.findLastVisibleItemPosition()
-                val view = layoutManager.findViewByPosition(position)
-                LogUtils.dTag(TAG, "receive playAlphaAnimationLD:$play,view:$view")
-                if (view == null) return
-                if (play) {
-                    assert(animator == null)
-                    animator = ObjectAnimator.ofFloat(view, "alpha", 1f, 0f, 1f).apply {
-                        duration = mViewModel.prizeAnimTime // 设置动画持续时间
-                        repeatCount = 2
-                        //if (mDatabind.rvHomeHistory.size == 1) 3 else mViewModel.prizeAnimCount
-                        repeatMode = ObjectAnimator.REVERSE // 设置反向循环以实现渐隐渐显效果
-                        addListener(
-                            onCancel = {
-                                //LogUtils.dTag(TAG,"receive playAlphaAnimationLD onCancel:animator:${animator.hashCode()}")
-                                animator = null
-                            },
-                            onEnd = {
-                                //LogUtils.dTag(TAG,"receive playAlphaAnimationLD onEnd:animator:${animator.hashCode()}")
-                                animator = null
-                            }
-                        )
-                    }
-                    LogUtils.dTag(
-                        TAG,
-                        "receive playAlphaAnimationLD:animator:${animator.hashCode()}"
-                    )
-                    animator?.start()
-                } else {
-                    LogUtils.dTag(
-                        TAG,
-                        TAG,
-                        "receive playAlphaAnimationLD:animator:${animator.hashCode()},cancel"
-                    )
-                    animator?.cancel()
-                    view.alpha = 1f
-                }
-            }
-        })
 
         //error
         gameAboutModel.toastErrorMessage.observe(viewLifecycleOwner) { msg ->
@@ -824,59 +763,35 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
         }
     }
 
-    /**
-     * 开奖结果显示或者隐藏动画
-     */
-    private fun resultAnimation(isShowResult: Boolean) {
-        mBinding.apply {
-            resultAnim?.cancel()
-            mViewModel.isShowResult = isShowResult
-            ivHomeRotation.rotation = if (isShowResult) 0f else 180f
-            val startHeight = flRvHistory.height
-            val endHeight =
-                if (isShowResult) resultRvHeight else resultRvHeight - resultAnimMoveHeight
-            if (resultAnim == null) {
-                resultAnim = ValueAnimator.ofInt(startHeight, endHeight).apply {
-                    duration = 150
-                    addUpdateListener {
-                        val value = it.animatedValue as Int
-                        val params = flRvHistory.layoutParams
-                        params?.height = value
-                        flRvHistory.layoutParams = params
-                    }
-                }
-            } else {
-                resultAnim!!.setIntValues(startHeight, endHeight)
-            }
-            resultAnim?.start()
-        }
-    }
-
     private fun setChipsView() {
         val f = ChipsFragment()
         childFragmentManager.beginTransaction().replace(mBinding.flChips.id, f, ChipsFragment.TAG).commit()
     }
 
-    /**
-     * 投注的适配器
-     */
-    private fun setDrawHistoryView() {
-
-        //历史结果
-        mBinding.rvDrawHistory.apply {
-            itemAnimator = null
-            layoutManager =
-                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            dividerSpace(requireContext().dp2px(2), DividerOrientation.HORIZONTAL)
-            drawHistoryAdapter = DrawHistoryAdapter()
-            adapter = drawHistoryAdapter
-            drawHistoryAdapter.submitList(gameAboutModel.historyRounds.value)
-            lifecycleScope.launchWhenResumed {
-                if (drawHistoryAdapter.currentList.isNotEmpty()) {
-                    mBinding.rvDrawHistory.scrollToPosition(drawHistoryAdapter.currentList.size - 1)
-                }
-            }
+    // 設置底部開獎紀錄Fragment
+    private fun setHistoryView() {
+        val frag = childFragmentManager.findFragmentByTag(DrawHistoryFragment.TAG)
+                as? DrawHistoryFragment ?: DrawHistoryFragment().also {
+            childFragmentManager.beginTransaction()
+                .replace(mBinding.fragmentHistory.id, it, DrawHistoryFragment.TAG)
+                .commitNow()
         }
+
+        frag.setDrawHistoryHeightListener { height ->
+            setHistoryHeight(height)
+        }
+
+        gameAboutModel.historyRounds.value?.let { frag.setDrawHistories(it) }
+        setHistoryHeight(frag.getCurrentHeight())
+    }
+
+    // 設置底部開獎紀錄展開高度
+    private fun setHistoryHeight(height: Int) {
+        mBinding.ivHistoryBg.layoutParams =
+            (mBinding.ivHistoryBg.layoutParams as ConstraintLayout.LayoutParams)
+                .apply {
+                    this.height = height
+                }
     }
 
 
@@ -968,30 +883,6 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
 
     private fun setClick() {
         mBinding.apply {
-            rvDrawHistory.setOnRecycleClickListener(object :
-                ClickRecyclerView.RecyclerClickListener {
-                override fun onRecyclerClick() {
-                    PromptSoundPlay.btnPlayMedia()
-                    resultAnimation(!mViewModel.isShowResult)
-                }
-            })
-
-            flRvHistory.setOnClickListener {
-                PromptSoundPlay.btnPlayMedia()
-                resultAnimation(!mViewModel.isShowResult)
-            }
-
-//            bottomHistoryLayout.setOnClickListener {
-//                PromptSoundPlay.btnPlayMedia()
-//                resultAnimation(!mViewModel.isShowResult)
-            /*val v = (gameAboutModel.balance as MutableLiveData).value
-            if(v == null){
-                (gameAboutModel.balance as MutableLiveData).value = 100L + Random.nextLong(100,10000)
-            } else {
-                (gameAboutModel.balance as MutableLiveData).value = v +  Random.nextLong(100_00,1000_00)
-            }*/
-//            }
-
             //点击更多弹出框
             llHomeMore.setOnClickListener {
                 PromptSoundPlay.btnPlayMedia()
@@ -1103,8 +994,6 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
 
         mViewModel.clear()
         //关闭倒计时
-        //关闭动画
-        resultAnim?.cancel()
         super.onDestroy()
     }
 

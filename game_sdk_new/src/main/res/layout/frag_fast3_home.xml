@@ -45,61 +45,20 @@
                 app:layout_constraintTop_toBottomOf="@id/centerLayout"
                 app:srcCompat="@mipmap/game_sdk_result_bg_bottom" />
 
-            <FrameLayout
-                android:id="@+id/flRvHistory"
-                android:layout_width="match_parent"
-                android:layout_height="42dp"
-                android:layout_marginHorizontal="3dp"
-                android:background="@drawable/game_sdk_shape_3_66273153"
-                app:layout_constrainedHeight="true"
-                app:layout_constraintBottom_toBottomOf="@id/bottomHistoryLayout"
-                app:layout_constraintTop_toTopOf="@id/bottomHistoryLayout"
-                app:layout_constraintVertical_bias="1" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/bottomHistoryLayout"
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_history_bg"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="3dp"
-                android:padding="1dp"
-                app:layout_constraintBottom_toTopOf="@id/bottomLayout">
+                android:background="@drawable/game_sdk_shape_3_66273153"
+                app:layout_constraintBottom_toBottomOf="@id/fragment_history"
+                app:layout_constraintTop_toBottomOf="@id/centerLayout" />
 
-                <!--             历史记录-->
-                <com.cn.game.sdk2.ui.view.ClickRecyclerView
-                    android:id="@+id/rv_draw_history"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/rlClickHide"
-                    app:layout_constraintStart_toStartOf="parent"
-                    tools:itemCount="1"
-                    tools:listitem="@layout/item_draw_history" />
-
-                <RelativeLayout
-                    android:id="@+id/rlClickHide"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toBottomOf="@id/rv_draw_history"
-                    app:layout_constraintEnd_toEndOf="parent">
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="23dp"
-                        android:layout_height="39dp"
-                        android:scaleType="fitXY"
-                        app:srcCompat="@mipmap/game_sdk_icon_bg_btn" />
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/ivHomeRotation"
-                        android:layout_width="7dp"
-                        android:layout_height="13dp"
-                        android:layout_centerInParent="true"
-                        android:rotation="180"
-                        android:scaleType="fitXY"
-                        app:srcCompat="@mipmap/game_sdk_icon_arrow_top" />
-
-                </RelativeLayout>
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fragment_history"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toTopOf="@id/bottomLayout" />
 
             <!--            开奖结果-->
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -107,9 +66,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/game_sdk_shape_9_141624"
-                android:clipChildren="false"
+                android:clipChildren="true"
                 android:clipToPadding="false"
-                app:layout_constraintBottom_toTopOf="@id/flRvHistory"
+                app:layout_constraintBottom_toTopOf="@id/iv_history_bg"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.appcompat.widget.AppCompatImageView

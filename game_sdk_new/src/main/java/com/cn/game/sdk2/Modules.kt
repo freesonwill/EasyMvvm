@@ -7,6 +7,7 @@ import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3GameHallItemViewModel
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
 import com.cn.game.sdk2.ui.viewmodel.fast3.LeopardVm
 import com.cn.game.sdk2.ui.viewmodel.fast3.PairsDiceVm
+import com.cn.game.sdk2.ui.viewmodel.DrawHistoryViewModel
 import com.cn.game.sdk2.ui.viewmodel.fast3.SingleDiceVm
 import com.cn.game.sdk2.ui.viewmodel.fast3.SumTotalVm
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -22,6 +23,7 @@ val viewModules = module {
     viewModel { SingleDiceVm() }
     viewModel { SumTotalVm() }
     viewModel { ChipsViewModel() }
+    viewModel { DrawHistoryViewModel() }
 }
 
 val moduleList = listOf(viewModules)
