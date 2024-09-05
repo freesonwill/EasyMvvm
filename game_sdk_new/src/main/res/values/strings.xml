@@ -1,4 +1,5 @@
 <resources>
+    <string name="g_home_txt_you_win">你赢了</string>
     <string name="g_home_txt_please">请下注</string>
     <string name="g_home_txt_video">开奖视频</string>
     <string name="g_home_txt_more">更多</string>
@@ -8,6 +9,8 @@
     <string name="g_home_txt_leopard">围</string>
     <string name="g_home_txt_single">单</string>
     <string name="g_home_txt_double">双</string>
+    <string name="g_home_txt_sum">点</string>
+    <string name="g_home_txt_leopard_all">全豹</string>
     <string name="g_home_txt_open">一分快三</string>
     <string name="g_home_txt_records">投注记录</string>
     <string name="g_home_txt_service">客服</string>
@@ -28,6 +31,13 @@
     <string name="g_home_drawing_being">开奖中</string>
     <string name="g_home_drawing_end">开奖结束</string>
 
+    <string name="g_game_list_type_hot">热门</string>
+    <string name="g_game_list_type_board_game">棋牌</string>
+    <string name="g_game_list_type_live_video">视讯</string>
+    <string name="g_game_list_type_fishing">捕鱼</string>
+    <string name="g_game_list_type_sports">体育</string>
+    <string name="g_game_list_type_electronic">电子</string>
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="money_insufficient">余额不足</string>
     <string name="money_insufficient_50">余额需¥50以上才可下注, 请您充值</string>
@@ -40,6 +50,12 @@
     <string name="bet_success_prompt">下注成功¥%1$s</string>
     <string name="toast_login_fault">服务器连接已断开</string>
     <string name="toast_enter_game_fault">未获取到游戏信息，请退出直播间重新进入</string>
+    <string name="msg_asking_for_net">请求网络中...</string>
+
+    <string name="error_net_connect_timeout">网络连接超时</string>
+    <string name="error_double_login">账号在其他设备登录，您已下线</string>
+    <string name="error_login_fail">登录失效，请重新登录</string>
+    <string name="error_bet_timeout">押注超时</string>
 
 
 </resources>

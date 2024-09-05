@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:id="@+id/llResultLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivDrawYi"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            app:srcCompat="@mipmap/game_sdk_icon_dice_yi" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivDrawEr"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:layout_marginStart="15dp"
+            app:srcCompat="@mipmap/game_sdk_icon_dice_er" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivDrawSan"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:layout_marginStart="15dp"
+            app:srcCompat="@mipmap/game_sdk_icon_dice_san" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/llResultRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txtHomeTotal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:textColor="@color/c_ffffff"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            tools:text="9" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivBetSize"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="0.5dp"
+            app:srcCompat="@mipmap/game_sdk_icon_home_result_small" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivBetOdd"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="0.5dp"
+            app:srcCompat="@mipmap/game_sdk_icon_home_result_double" />
+    </LinearLayout>
+
+</androidx.appcompat.widget.LinearLayoutCompat>

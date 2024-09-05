@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.databinding.FragmentGamehallBinding
 import com.cn.game.sdk2.ui.viewmodel.EmptyViewModel
+import com.cn.game.sdk2.utils.ext.CommonExt.getString
 import com.cn.game.sdk2.utils.ext.bindViewPagerNewGame
 import com.cn.game.sdk2.utils.ext.initGameViewPager
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
@@ -19,36 +20,37 @@ class Fast3GameHallFragment: BaseFragment<EmptyViewModel,FragmentGamehallBinding
     override val mViewModel: EmptyViewModel by viewModel()
 
     override fun initView(savedInstanceState: Bundle?) {
-        mFragList.add(Fast3GameHallItemFragment())
-        mFragList.add(Fast3GameHallItemFragment())
-        mFragList.add(Fast3GameHallItemFragment())
-        mFragList.add(Fast3GameHallItemFragment())
-        mFragList.add(Fast3GameHallItemFragment())
+        with(mBinding) {
+            mFragList.apply {
+                add(Fast3GameHallItemFragment())
+                add(Fast3GameHallItemFragment())
+                add(Fast3GameHallItemFragment())
+                add(Fast3GameHallItemFragment())
+                add(Fast3GameHallItemFragment())
+            }
 
-        mBinding.viewPagerNew.initGameViewPager(
-            childFragmentManager, mFragList, arrayListOf(
-                requireContext().getString(R.string.g_home_txt_default),
-                requireContext().getString(R.string.g_home_tab_single),
-                requireContext().getString(R.string.g_home_tab_sum),
-                requireContext().getString(R.string.g_home_tab_double),
-                requireContext().getString(R.string.g_home_tab_leopard)
+            val gameTypes = arrayListOf(
+                R.string.g_home_txt_default.getString(),
+                R.string.g_home_tab_single.getString(),
+                R.string.g_home_tab_sum.getString(),
+                R.string.g_home_tab_double.getString(),
+                R.string.g_home_tab_leopard.getString(),
             )
-        )
-        mBinding.magicIndicator.bindViewPagerNewGame(
-            mBinding.viewPagerNew, arrayListOf(
-                requireContext().getString(R.string.g_home_txt_default),
-                requireContext().getString(R.string.g_home_tab_single),
-                requireContext().getString(R.string.g_home_tab_sum),
-                requireContext().getString(R.string.g_home_tab_double),
-                requireContext().getString(R.string.g_home_tab_leopard)
-            ),
-            scrollEnable = true,
-            action = { PromptSoundPlay.btnPlayMedia() }
-        )
-        mBinding.viewPagerNew.offscreenPageLimit = mFragList.size
 
-        mBinding.close.clickNoRepeat(true) {
-            requireActivity().onBackPressedDispatcher.onBackPressed()
+            viewPagerNew.apply {
+                initGameViewPager(childFragmentManager, mFragList, gameTypes)
+                offscreenPageLimit = mFragList.size
+            }
+            magicIndicator.bindViewPagerNewGame(
+                viewPagerNew,
+                gameTypes,
+                scrollEnable = true,
+                action = { PromptSoundPlay.btnPlayMedia() }
+            )
+
+            close.clickNoRepeat(true) {
+                requireActivity().onBackPressedDispatcher.onBackPressed()
+            }
         }
     }
 

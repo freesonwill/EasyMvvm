@@ -5,65 +5,57 @@ import android.animation.Animator.AnimatorListener
 import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
-import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewPropertyAnimator
-import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.FrameLayout
 import android.widget.ImageView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.addListener
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.data.BetteFlyData
 import com.cn.game.sdk2.data.EventKey
 import com.cn.game.sdk2.data.bean.SelectAnnotationBean
 import com.cn.game.sdk2.databinding.FragFast3HomeBinding
-import com.cn.game.sdk2.ui.adapter.DrawHistoryAdapter
 import com.cn.game.sdk2.ui.fragment.ChipsFragment
 import com.cn.game.sdk2.ui.fragment.ChipsViewImp
+import com.cn.game.sdk2.ui.fragment.DrawHistoryFragment
+import com.cn.game.sdk2.ui.fragment.DrawResultFragment
 import com.cn.game.sdk2.ui.helper.AnimHelper
 import com.cn.game.sdk2.ui.helper.Fast3ToastHelper
 import com.cn.game.sdk2.ui.popup.game.MoreListPopup
-import com.cn.game.sdk2.ui.view.ClickRecyclerView
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.view.game.MoneyOKView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
 import com.cn.game.sdk2.utils.FlowBus
 import com.cn.game.sdk2.utils.IconUtils
-import com.cn.game.sdk2.utils.ext.BizExt.isLeopard
 import com.cn.game.sdk2.utils.ext.CommonExt.formatRealMoney
 import com.cn.game.sdk2.utils.ext.CommonExt.isCanGoOn
-import com.cn.game.sdk2.utils.ext.CommonExt.toPinyin
 import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
 import com.cn.game.sdk2.utils.ext.ViewExt.isAdd
 import com.cn.game.sdk2.utils.ext.ViewExt.locationOnScreen
+import com.cn.game.sdk2.utils.ext.bindViewPagerNewGame
+import com.cn.game.sdk2.utils.ext.initGameViewPager
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
-import com.cn.game.sdk2.websocket.bean.RoundInfoBean
 import com.cn.game.sdk2.websocket.constants.AgainDoubleState
 import com.cn.game.sdk2.websocket.constants.GameStage
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.gameMassageManager
-import com.drake.brv.annotaion.DividerOrientation
-import com.drake.brv.utils.dividerSpace
 import com.gyf.immersionbar.ktx.hasNavigationBar
 import com.gyf.immersionbar.ktx.navigationBarHeight
-import com.xcjh.base_lib2.utils.LogUtils
-import com.cn.game.sdk2.utils.ext.bindViewPagerNewGame
-import com.cn.game.sdk2.utils.ext.initGameViewPager
 import com.xcjh.base_lib2.base.fragment.BaseFragment
 import com.xcjh.base_lib2.base.fragment.viewBind
+import com.xcjh.base_lib2.utils.LogUtils
 import com.xcjh.base_lib2.utils.LogUtilsExt.loge
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
@@ -76,16 +68,12 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
     override val mBinding: FragFast3HomeBinding by viewBind()
     override val mViewModel: Fast3ViewModel  by sharedViewModel()
 
-    private lateinit var drawHistoryAdapter: DrawHistoryAdapter
     companion object {
         const val TAG = "Fast3MainFragment"
     }
 
     private var mFragList = ArrayList<Fragment>()
 
-    private var resultAnim: ValueAnimator? = null
-    private var resultRvHeight = -1
-    private var resultAnimMoveHeight = -1
     private var anchorMoneyView: MoneyOKView? = null
 
     //<areaCode,<money,View>>
@@ -129,48 +117,48 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
         }
         loadFragment()
         setChipsView()
-        setDrawHistoryView()
+        setDrawResultView()
+        setHistoryView()
         setClick()
-        measureHistoryRvHeight()
         setNavigationBar()
     }
 
     private fun loadFragment(){
-        val startTime = System.currentTimeMillis()
-        //viewpager
-        mFragList.add(DXDSFragment())
-        mFragList.add(SingleDiceFragment())
-        mFragList.add(SumTotalFragment())
-        mFragList.add(PairsDiceFragment())
-        mFragList.add(LeopardFragment())
-        (System.currentTimeMillis() - startTime).let {
-            LogUtils.dTag(TAG, "Fast3MainFragment load costMills1:$it")
-        }
-        mBinding.viewPagerNew.initGameViewPager(
-            childFragmentManager, mFragList, arrayListOf(
+        with(mBinding) {
+            val startTime = System.currentTimeMillis()
+            val gameTypes = arrayListOf(
                 getString(R.string.g_home_txt_default),
                 getString(R.string.g_home_tab_single),
                 getString(R.string.g_home_tab_sum),
                 getString(R.string.g_home_tab_double),
                 getString(R.string.g_home_tab_leopard)
             )
-        )
-        (System.currentTimeMillis() - startTime).let {
-            LogUtils.dTag(TAG, "Fast3MainFragment load costMills2:$it")
-        }
-        mBinding.magicIndicator.bindViewPagerNewGame(
-            mBinding.viewPagerNew, arrayListOf(
-                getString(R.string.g_home_txt_default),
-                getString(R.string.g_home_tab_single),
-                getString(R.string.g_home_tab_sum),
-                getString(R.string.g_home_tab_double),
-                getString(R.string.g_home_tab_leopard)
-            ),
-            scrollEnable = true,
-            action = { PromptSoundPlay.btnPlayMedia() }
-        )
-        (System.currentTimeMillis() - startTime).let {
-            LogUtils.dTag(TAG, "Fast3MainFragment load costMills3:$it")
+
+            //viewpager
+            mFragList.apply {
+                add(DXDSFragment())
+                add(SingleDiceFragment())
+                add(SumTotalFragment())
+                add(PairsDiceFragment())
+                add(LeopardFragment())
+            }
+
+            (System.currentTimeMillis() - startTime).let {
+                LogUtils.dTag(TAG, "Fast3MainFragment load costMills1:$it")
+            }
+            viewPagerNew.initGameViewPager(childFragmentManager, mFragList, gameTypes)
+            (System.currentTimeMillis() - startTime).let {
+                LogUtils.dTag(TAG, "Fast3MainFragment load costMills2:$it")
+            }
+            magicIndicator.bindViewPagerNewGame(
+                viewPagerNew,
+                gameTypes,
+                scrollEnable = true,
+                action = { PromptSoundPlay.btnPlayMedia() }
+            )
+            (System.currentTimeMillis() - startTime).let {
+                LogUtils.dTag(TAG, "Fast3MainFragment load costMills3:$it")
+            }
         }
     }
 
@@ -208,20 +196,6 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
             layoutParams.height = targetHeight
             //                         bottomLayout.layoutParams = layoutParams
         }
-    }
-
-    //测量耗时操作可放到IO线程
-    private fun measureHistoryRvHeight() {
-        mBinding.flRvHistory.viewTreeObserver.addOnGlobalLayoutListener(object :OnGlobalLayoutListener{
-            override fun onGlobalLayout() {
-                mBinding.flRvHistory.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                resultRvHeight = mBinding.rvDrawHistory.height
-                if(0 == resultRvHeight){
-                    resultRvHeight = 122.dp2px
-                }
-                resultAnimMoveHeight = resultRvHeight - mBinding.flRvHistory.height
-            }
-        })
     }
 
     /**Ï
@@ -291,7 +265,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                 mBinding.betteAgainLayout.isVisible = true
 
                 //开奖结果x
-                mBinding.rlShowResult.isVisible = false
+                mBinding.fragmentSettleResult.isVisible = false
                 mBinding.ivHomeBg.isVisible = false
                 mBinding.ivHomeBgCenter.isVisible = false
                 mBinding.resultBgTop.isVisible = false
@@ -315,20 +289,23 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                 }
                 mBinding.clChips.isInvisible = true
                 mBinding.betteAgainLayout.isVisible = false
-                updateCenterRoundInfoData()
-                //开奖结果显示动画
-                startCenterRoundInfoShowAnim {
-                    //中奖动画
-                    startWinLottieAnim(endCallBack = {
-                        //开奖结果注区动画闪烁
-                        Log.e(TAG, "中奖注区结果监听--->${gameAboutModel.lotteryResultList}")
-                        mViewModel.userLotteryResultLiveData.value =
-                            gameAboutModel.lotteryResultList
 
-                        //中奖区域金额刷新
-                        Log.e(TAG, "中奖注区筹码监听--->${gameAboutModel.userLotteryResult}")
-                        notifyMoneyOkView(gameAboutModel.userLotteryResult)
-                    })
+                with((childFragmentManager.findFragmentByTag(DrawResultFragment.TAG) as DrawResultFragment)) {
+                    gameAboutModel.currentSettleResult?.let { setSettleResult(it) }
+                    mBinding.fragmentSettleResult.isVisible = true
+                    playAnim {
+                        //中奖动画
+                        startWinLottieAnim(endCallBack = {
+                            //开奖结果注区动画闪烁
+                            Log.e(TAG, "中奖注区结果监听--->${gameAboutModel.lotteryResultList}")
+                            mViewModel.userLotteryResultLiveData.value =
+                                gameAboutModel.lotteryResultList
+
+                            //中奖区域金额刷新
+                            Log.e(TAG, "中奖注区筹码监听--->${gameAboutModel.userLotteryResult}")
+                            notifyMoneyOkView(gameAboutModel.userLotteryResult)
+                        })
+                    }
                 }
             }
         }
@@ -383,39 +360,6 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                     ivHomeBgCenter.isVisible = true
                     resultBgTop.isVisible = true
                 })
-            }
-        }
-    }
-
-    /**
-     * 更新当局游戏结果信息
-     */
-    private fun updateCenterRoundInfoData() {
-        val roundInfo: RoundInfoBean? = gameAboutModel.currentSettleResult
-        Log.e(TAG, "结算item" + roundInfo.toString())
-        mBinding.apply {
-            roundInfo?.run {
-                performs.forEachIndexed { index, item ->
-                    val id = IconUtils.getIcon("game_sdk_icon_dice_" + item.toPinyin())
-                    if (id != 0) {
-                        when (index) {
-                            0 -> ivDrawYi.setImageResource(id)
-                            1 -> ivDrawEr.setImageResource(id)
-                            2 -> ivDrawSan.setImageResource(id)
-                        }
-                    }
-                }
-                txtHomeTotal.text = sum.toString()
-                //豹子只显示骰子和点数，不显示大小和单双
-                if (isLeopard) {
-                    ivBetSize.isVisible = false
-                    ivBetOdd.isVisible = false
-                } else {
-                    ivBetSize.isVisible = true
-                    ivBetOdd.isVisible = true
-                    ivBetSize.setImageResource(if (isBig) R.mipmap.game_sdk_icon_home_result_big else R.mipmap.game_sdk_icon_home_result_small)
-                    ivBetOdd.setImageResource(if (isDouble) R.mipmap.game_sdk_icon_home_result_double else R.mipmap.game_sdk_icon_home_result_single)
-                }
             }
         }
     }
@@ -666,7 +610,14 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
         //开奖历史记录
         gameAboutModel.historyRounds.observe(viewLifecycleOwner) {
             Log.e(TAG, "开奖历史结果--->$it")
-            drawHistoryAdapter.submitList(it)
+            (childFragmentManager.findFragmentByTag(DrawHistoryFragment.TAG) as DrawHistoryFragment)
+                .setDrawHistories(it)
+        }
+
+        // 執行開獎紀錄閃爍動畫
+        mViewModel.playAlphaAnimationLD.observe(viewLifecycleOwner) {
+            (childFragmentManager.findFragmentByTag(DrawHistoryFragment.TAG) as DrawHistoryFragment)
+                .playAnim(it, mViewModel.prizeAnimTime)
         }
 
         //下注结果
@@ -685,49 +636,6 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                 )
             }
         }
-        mViewModel.playAlphaAnimationLD.observe(viewLifecycleOwner, object : Observer<Boolean> {
-            var animator: ObjectAnimator? = null
-            override fun onChanged(play: Boolean) {
-                mBinding.rvDrawHistory.scrollToPosition(drawHistoryAdapter.currentList.size - 1)
-                val layoutManager = mBinding.rvDrawHistory.layoutManager as LinearLayoutManager
-                val position = layoutManager.findLastVisibleItemPosition()
-                val view = layoutManager.findViewByPosition(position)
-                LogUtils.dTag(TAG, "receive playAlphaAnimationLD:$play,view:$view")
-                if (view == null) return
-                if (play) {
-                    assert(animator == null)
-                    animator = ObjectAnimator.ofFloat(view, "alpha", 1f, 0f, 1f).apply {
-                        duration = mViewModel.prizeAnimTime // 设置动画持续时间
-                        repeatCount = 2
-                        //if (mDatabind.rvHomeHistory.size == 1) 3 else mViewModel.prizeAnimCount
-                        repeatMode = ObjectAnimator.REVERSE // 设置反向循环以实现渐隐渐显效果
-                        addListener(
-                            onCancel = {
-                                //LogUtils.dTag(TAG,"receive playAlphaAnimationLD onCancel:animator:${animator.hashCode()}")
-                                animator = null
-                            },
-                            onEnd = {
-                                //LogUtils.dTag(TAG,"receive playAlphaAnimationLD onEnd:animator:${animator.hashCode()}")
-                                animator = null
-                            }
-                        )
-                    }
-                    LogUtils.dTag(
-                        TAG,
-                        "receive playAlphaAnimationLD:animator:${animator.hashCode()}"
-                    )
-                    animator?.start()
-                } else {
-                    LogUtils.dTag(
-                        TAG,
-                        TAG,
-                        "receive playAlphaAnimationLD:animator:${animator.hashCode()},cancel"
-                    )
-                    animator?.cancel()
-                    view.alpha = 1f
-                }
-            }
-        })
 
         //error
         gameAboutModel.toastErrorMessage.observe(viewLifecycleOwner) { msg ->
@@ -824,59 +732,45 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
         }
     }
 
-    /**
-     * 开奖结果显示或者隐藏动画
-     */
-    private fun resultAnimation(isShowResult: Boolean) {
-        mBinding.apply {
-            resultAnim?.cancel()
-            mViewModel.isShowResult = isShowResult
-            ivHomeRotation.rotation = if (isShowResult) 0f else 180f
-            val startHeight = flRvHistory.height
-            val endHeight =
-                if (isShowResult) resultRvHeight else resultRvHeight - resultAnimMoveHeight
-            if (resultAnim == null) {
-                resultAnim = ValueAnimator.ofInt(startHeight, endHeight).apply {
-                    duration = 150
-                    addUpdateListener {
-                        val value = it.animatedValue as Int
-                        val params = flRvHistory.layoutParams
-                        params?.height = value
-                        flRvHistory.layoutParams = params
-                    }
-                }
-            } else {
-                resultAnim!!.setIntValues(startHeight, endHeight)
-            }
-            resultAnim?.start()
-        }
-    }
-
     private fun setChipsView() {
         val f = ChipsFragment()
         childFragmentManager.beginTransaction().replace(mBinding.flChips.id, f, ChipsFragment.TAG).commit()
     }
 
-    /**
-     * 投注的适配器
-     */
-    private fun setDrawHistoryView() {
-
-        //历史结果
-        mBinding.rvDrawHistory.apply {
-            itemAnimator = null
-            layoutManager =
-                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            dividerSpace(requireContext().dp2px(2), DividerOrientation.HORIZONTAL)
-            drawHistoryAdapter = DrawHistoryAdapter()
-            adapter = drawHistoryAdapter
-            drawHistoryAdapter.submitList(gameAboutModel.historyRounds.value)
-            lifecycleScope.launchWhenResumed {
-                if (drawHistoryAdapter.currentList.isNotEmpty()) {
-                    mBinding.rvDrawHistory.scrollToPosition(drawHistoryAdapter.currentList.size - 1)
-                }
-            }
+    // 設置底部當局開獎結果Fragment
+    private fun setDrawResultView() {
+        childFragmentManager.findFragmentByTag(DrawResultFragment.TAG)
+                as? DrawResultFragment ?: DrawResultFragment().also {
+            childFragmentManager.beginTransaction()
+                .replace(mBinding.fragmentSettleResult.id, it, DrawResultFragment.TAG)
+                .commitNow()
         }
+    }
+
+    // 設置底部開獎紀錄Fragment
+    private fun setHistoryView() {
+        val frag = childFragmentManager.findFragmentByTag(DrawHistoryFragment.TAG)
+                as? DrawHistoryFragment ?: DrawHistoryFragment().also {
+            childFragmentManager.beginTransaction()
+                .replace(mBinding.fragmentHistory.id, it, DrawHistoryFragment.TAG)
+                .commitNow()
+        }
+
+        frag.setDrawHistoryHeightListener { height ->
+            setHistoryHeight(height)
+        }
+
+        gameAboutModel.historyRounds.value?.let { frag.setDrawHistories(it) }
+        setHistoryHeight(frag.getCurrentHeight())
+    }
+
+    // 設置底部開獎紀錄展開高度
+    private fun setHistoryHeight(height: Int) {
+        mBinding.ivHistoryBg.layoutParams =
+            (mBinding.ivHistoryBg.layoutParams as ConstraintLayout.LayoutParams)
+                .apply {
+                    this.height = height
+                }
     }
 
 
@@ -922,7 +816,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
             mBinding.betteAgainLayout.isVisible = true
 
             //开奖结果x
-            rlShowResult.isVisible = false
+            fragmentSettleResult.isVisible = false
             ivHomeBg.isVisible = false
             ivHomeBgCenter.isVisible = false
             resultBgTop.isVisible = false
@@ -932,66 +826,8 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
         }
     }
 
-    /**
-     * 执行游戏结果点数显示动画
-     */
-    private fun startCenterRoundInfoShowAnim(duration: Long = 200L, doEnd: () -> Unit) {
-        mBinding.apply {
-            val leftAnimX = ObjectAnimator.ofFloat(llResultLeft, "scaleX", 0f, 1f).apply {
-                this.duration = duration
-            }
-            val leftAnimY = ObjectAnimator.ofFloat(llResultLeft, "scaleY", 0f, 1f).apply {
-                this.duration = duration
-            }
-            val rightAnimX = ObjectAnimator.ofFloat(llResultRight, "scaleX", 0f, 1f).apply {
-                this.duration = duration
-                startDelay = 500
-            }
-            val rightAnimY = ObjectAnimator.ofFloat(llResultRight, "scaleY", 0f, 1f).apply {
-                this.duration = duration
-                startDelay = 500
-            }
-            AnimatorSet().apply {
-                play(leftAnimX).with(leftAnimY).with(rightAnimX).with(rightAnimY)
-                addListener(onStart = {
-                    rlShowResult.isVisible = true
-                    llResultLeft.scaleX = 0f
-                    llResultLeft.scaleY = 0f
-                    llResultRight.scaleX = 0f
-                    llResultRight.scaleY = 0f
-                },
-                    onEnd = { doEnd.invoke() })
-                start()
-            }
-        }
-    }
-
     private fun setClick() {
         mBinding.apply {
-            rvDrawHistory.setOnRecycleClickListener(object :
-                ClickRecyclerView.RecyclerClickListener {
-                override fun onRecyclerClick() {
-                    PromptSoundPlay.btnPlayMedia()
-                    resultAnimation(!mViewModel.isShowResult)
-                }
-            })
-
-            flRvHistory.setOnClickListener {
-                PromptSoundPlay.btnPlayMedia()
-                resultAnimation(!mViewModel.isShowResult)
-            }
-
-//            bottomHistoryLayout.setOnClickListener {
-//                PromptSoundPlay.btnPlayMedia()
-//                resultAnimation(!mViewModel.isShowResult)
-            /*val v = (gameAboutModel.balance as MutableLiveData).value
-            if(v == null){
-                (gameAboutModel.balance as MutableLiveData).value = 100L + Random.nextLong(100,10000)
-            } else {
-                (gameAboutModel.balance as MutableLiveData).value = v +  Random.nextLong(100_00,1000_00)
-            }*/
-//            }
-
             //点击更多弹出框
             llHomeMore.setOnClickListener {
                 PromptSoundPlay.btnPlayMedia()
@@ -1103,8 +939,6 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
 
         mViewModel.clear()
         //关闭倒计时
-        //关闭动画
-        resultAnim?.cancel()
         super.onDestroy()
     }
 

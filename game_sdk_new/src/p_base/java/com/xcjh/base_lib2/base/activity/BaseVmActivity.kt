@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import com.cn.game.sdk2.R
+import com.cn.game.sdk2.utils.ext.CommonExt.getString
 import com.xcjh.base_lib2.base.BaseViewModel
 import com.xcjh.base_lib2.utils.getVmClazz
 import com.xcjh.base_lib2.utils.notNull
@@ -21,7 +23,7 @@ abstract class BaseVmActivity<VM : BaseViewModel> : AppCompatActivity() {
 
     abstract fun initView(savedInstanceState: Bundle?)
 
-    abstract fun showLoading(message: String = "请求网络中...")
+    abstract fun showLoading(message: String = R.string.msg_asking_for_net.getString())
 
     abstract fun dismissLoading()
     open fun initListener(){}

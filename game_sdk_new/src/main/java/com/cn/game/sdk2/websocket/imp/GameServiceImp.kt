@@ -1,9 +1,12 @@
 package com.cn.game.sdk2.websocket.imp
 
+import android.content.res.Resources
+import com.cn.game.sdk2.R
 import com.cn.game.sdk2.network.code.GameReqCode
 import com.cn.game.sdk2.ui.helper.ViewHelper
 import com.cn.game.sdk2.utils.ThreadUtils.appListenerScope
 import com.cn.game.sdk2.utils.ThreadUtils.launchWithCustomContext
+import com.cn.game.sdk2.utils.ext.CommonExt.getString
 import com.cn.game.sdk2.websocket.GameServerMessageConvertFactory
 import com.cn.game.sdk2.websocket.GameSocketClient
 import com.cn.game.sdk2.websocket.againIfMoneyEnough
@@ -348,14 +351,14 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
 
             1 -> {
                 bettingStepList.returnTemp()
-                gameAboutModel.bettingMessage = "余额不住"
+                gameAboutModel.bettingMessage = Resources.getSystem().getString(R.string.money_insufficient)
                 gameAboutModel.setToastErrorMessage(gameAboutModel.bettingMessage)
                 gameAboutModel.setBettingSuccess(BettingResponsesBean(false, 0))
             }
 
             2 -> {
                 bettingStepList.returnTemp()
-                gameAboutModel.bettingMessage = "押注超时"
+                gameAboutModel.bettingMessage = R.string.error_bet_timeout.getString()
                 gameAboutModel.setToastErrorMessage(gameAboutModel.bettingMessage)
                 gameAboutModel.setBettingSuccess(BettingResponsesBean(false, 0))
             }
@@ -363,7 +366,7 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
             4 -> {
                 bettingStepList.returnTemp()
                 isTokenValid = false
-                gameAboutModel.bettingMessage = "网络连接超时"
+                gameAboutModel.bettingMessage = R.string.error_net_connect_timeout.getString()
                 gameAboutModel.setToastErrorMessage(gameAboutModel.bettingMessage)
 
                 appListenerScope.launchWithCustomContext(tag) {
@@ -374,7 +377,7 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
             5 -> {
                 bettingStepList.returnTemp()
                 isTokenValid = false
-                gameAboutModel.bettingMessage = "账号在其他设备登录，您已下线"
+                gameAboutModel.bettingMessage = R.string.error_double_login.getString()
                 gameAboutModel.setToastErrorMessage(gameAboutModel.bettingMessage)
 
                 appListenerScope.launchWithCustomContext(tag) {
@@ -384,7 +387,7 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
 
             else -> {
                 bettingStepList.returnTemp()
-                gameAboutModel.bettingMessage = "网络连接超时"
+                gameAboutModel.bettingMessage = R.string.error_net_connect_timeout.getString()
                 gameAboutModel.setToastErrorMessage(gameAboutModel.bettingMessage)
                 gameAboutModel.setBettingSuccess(BettingResponsesBean(false, 0))
             }
@@ -521,7 +524,7 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
     override fun tokenLoseEffectiveness() {
         "登录失效，请重新登录".logd(tag)
         isTokenValid = false
-        gameAboutModel.setToastErrorMessage("登录失效，请重新登录")
+        gameAboutModel.setToastErrorMessage(R.string.error_login_fail.getString())
 
         appListenerScope.launchWithCustomContext(tag) {
             appListener?.onTokenLoseEffectiveness()
