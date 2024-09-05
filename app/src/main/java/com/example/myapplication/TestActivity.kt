@@ -11,11 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
-import com.cn.game.sdk2.data.EventKey
 import com.cn.game.sdk2.data.bean.GameHallItem
-import com.cn.game.sdk2.ui.helper.Fast3ToastHelper
-import com.cn.game.sdk2.ui.helper.ViewHelper
-import com.cn.game.sdk2.utils.FlowBus
 import com.cn.game.sdk2.utils.GsonUtils
 import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
 import com.cn.game.sdk2.utils.ext.ViewExt.isAdd
@@ -26,7 +22,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.random.Random
-import kotlin.random.nextInt
 
 
 class TestActivity : AppCompatActivity(), GameApp.OnSdkListener {
@@ -34,8 +29,10 @@ class TestActivity : AppCompatActivity(), GameApp.OnSdkListener {
     private lateinit var llshow: RelativeLayout
 
     private var isLogin = false
-    private val url = "wss://ws.qxe68.com:7001/api/game/5702" ///test
-    //private val url = "ws://35.220.148.132:7642" ///联调
+    private val url:String get()  = when(BuildConfig.BUILD_TYPE+"a") {
+        "release"-> "ws://35.220.148.132:7642"  //连调
+        else-> "wss://ws.qxe68.com:7001/api/game/5702" ///test
+    }
     private val token = "93:Ufx3Dy8y" ///test
 
     var btnIndex = 0;
@@ -67,10 +64,6 @@ class TestActivity : AppCompatActivity(), GameApp.OnSdkListener {
 //            }
 //        })
         var isLoadGame = false
-        FlowBus.with<Boolean>(EventKey.SOCKET_CONNECTED).register(this) {
-            btnOpen.text = "已连接服务器，点击登录"
-            btnIndex = 1
-        }
         btnOpen.setOnClickListener {
             when (btnIndex) {
                 0 -> {
@@ -109,12 +102,17 @@ class TestActivity : AppCompatActivity(), GameApp.OnSdkListener {
 
     }
 
+    override fun onSocketConnected() {
+        btnOpen.text = "已连接服务器，点击登录"
+        btnIndex = 1
+    }
+
     override fun onCustomerServiceAction() {
-        Fast3ToastHelper.showToastNormal("onCustomerServiceAction")
+        Toast.makeText(this,"onCustomerServiceAction",Toast.LENGTH_SHORT).show()
     }
 
     override fun onHistoryOfBetAction() {
-        Fast3ToastHelper.showToastNormal("onHistoryOfBetAction")
+        Toast.makeText(this,"onHistoryOfBetAction",Toast.LENGTH_SHORT).show()
     }
 
     override fun onEnterGame() {
@@ -207,7 +205,6 @@ class TestActivity : AppCompatActivity(), GameApp.OnSdkListener {
 
     override fun onDestroy() {
         GameApp.leaveLive()
-        ViewHelper.instance.clearAllView()
         super.onDestroy()
     }
 }
