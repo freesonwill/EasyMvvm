@@ -30,7 +30,7 @@ class DrawResultFragment: BaseFragment<DrawResultViewModel, FragmentDrawResultBi
 
     override fun createObserver() {
         // 更新当局游戏结果信息
-        mViewModel.settleResult.observe(viewLifecycleOwner) {
+        mViewModel.drawResult.observe(viewLifecycleOwner) {
             with(mBinding) {
                 it.performs.forEachIndexed { index, item ->
                     val id = IconUtils.getIcon("game_sdk_icon_dice_" + item.toPinyin())
@@ -70,8 +70,8 @@ class DrawResultFragment: BaseFragment<DrawResultViewModel, FragmentDrawResultBi
      *
      * @param result 開獎結果
      */
-    fun setSettleResult(result: RoundInfoBean) {
-        mViewModel.setSettleResult(result)
+    fun setDrawResult(result: RoundInfoBean) {
+        mViewModel.setDrawResult(result)
     }
 
     /**

@@ -8,16 +8,16 @@ import com.xcjh.base_lib2.base.BaseViewModel
 class DrawResultViewModel: BaseViewModel() {
 
     // 當局結果
-    private val _settleResult = MutableLiveData<RoundInfoBean>()
-    val settleResult: LiveData<RoundInfoBean> = _settleResult
+    private val _drawResult = MutableLiveData<RoundInfoBean>()
+    val drawResult: LiveData<RoundInfoBean> = _drawResult
 
     /**
      * 設定當局開獎結果
      *
      * @param result 開獎結果
      */
-    fun setSettleResult(result: RoundInfoBean) {
-        _settleResult.value = result
+    fun setDrawResult(result: RoundInfoBean) {
+        _drawResult.value = result
     }
 
 }

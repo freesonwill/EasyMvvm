@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.graphics.Rect
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.core.animation.addListener
 import androidx.lifecycle.lifecycleScope
@@ -12,11 +13,13 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.cn.game.sdk2.databinding.FragmentDrawHistoryBinding
 import com.cn.game.sdk2.ui.adapter.DrawHistoryAdapter
+import com.cn.game.sdk2.ui.page.fast3.Fast3MainFragment
 import com.cn.game.sdk2.ui.view.ClickRecyclerView
 import com.cn.game.sdk2.ui.viewmodel.DrawHistoryViewModel
 import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.websocket.bean.RoundInfoBean
+import com.cn.game.sdk2.websocket.gameAboutModel
 import com.xcjh.base_lib2.base.fragment.BaseFragment
 import com.xcjh.base_lib2.base.fragment.viewBind
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -78,12 +81,18 @@ class DrawHistoryFragment: BaseFragment<DrawHistoryViewModel, FragmentDrawHistor
     }
 
     override fun lazyLoadData() {
-        // do nothing
+        gameAboutModel.historyRounds.value?.let { setDrawHistories(it) }
     }
 
     override fun createObserver() {
         mViewModel.drawHistories.observe(viewLifecycleOwner) {
             (mBinding.rvDrawHistory.adapter as DrawHistoryAdapter).submitList(it)
+        }
+
+        //开奖历史记录
+        gameAboutModel.historyRounds.observe(viewLifecycleOwner) {
+            Log.e(Fast3MainFragment.TAG, "开奖历史结果--->$it")
+            setDrawHistories(it)
         }
     }
 

@@ -1,7 +1,6 @@
 package com.cn.game.sdk2.ui.page.fast3
 
 import android.animation.Animator
-import android.animation.Animator.AnimatorListener
 import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
@@ -31,6 +30,7 @@ import com.cn.game.sdk2.ui.fragment.ChipsFragment
 import com.cn.game.sdk2.ui.fragment.ChipsViewImp
 import com.cn.game.sdk2.ui.fragment.DrawHistoryFragment
 import com.cn.game.sdk2.ui.fragment.DrawResultFragment
+import com.cn.game.sdk2.ui.fragment.WinningAnimationFragment
 import com.cn.game.sdk2.ui.helper.AnimHelper
 import com.cn.game.sdk2.ui.helper.Fast3ToastHelper
 import com.cn.game.sdk2.ui.popup.game.MoreListPopup
@@ -120,6 +120,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
         setChipsView()
         setDrawResultView()
         setHistoryView()
+        setWinningAnimationView()
         setClick()
         setNavigationBar()
     }
@@ -266,10 +267,9 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                 mBinding.betteAgainLayout.isVisible = true
 
                 //开奖结果x
-                mBinding.fragmentSettleResult.isVisible = false
+                mBinding.fragmentDrawResult.isVisible = false
                 mBinding.ivHomeBg.isVisible = false
                 mBinding.ivHomeBgCenter.isVisible = false
-                mBinding.resultBgTop.isVisible = false
             }, duration = if (mViewModel.isCountDownStart) 250 else 0)
 
             //暂时解决筹码栏被隐藏问题
@@ -291,12 +291,15 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                 mBinding.clChips.isInvisible = true
                 mBinding.betteAgainLayout.isVisible = false
 
-                with((childFragmentManager.findFragmentByTag(DrawResultFragment.TAG) as DrawResultFragment)) {
-                    gameAboutModel.currentSettleResult?.let { setSettleResult(it) }
-                    mBinding.fragmentSettleResult.isVisible = true
+                val drawResultFrag = (childFragmentManager.findFragmentByTag(DrawResultFragment.TAG) as DrawResultFragment)
+                val winningAnimFrag = (childFragmentManager.findFragmentByTag(WinningAnimationFragment.TAG) as WinningAnimationFragment)
+
+                with(drawResultFrag) {
+                    gameAboutModel.currentSettleResult?.let { setDrawResult(it) }
+                    mBinding.fragmentDrawResult.isVisible = true
                     playAnim {
                         //中奖动画
-                        startWinLottieAnim(endCallBack = {
+                        winningAnimFrag.startWinLottieAnim(gameAboutModel.netIncome, endCallBack = {
                             //开奖结果注区动画闪烁
                             Log.e(TAG, "中奖注区结果监听--->${gameAboutModel.lotteryResultList}")
                             mViewModel.userLotteryResultLiveData.value =
@@ -359,116 +362,10 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                     //开奖结果
                     ivHomeBg.isVisible = true
                     ivHomeBgCenter.isVisible = true
-                    resultBgTop.isVisible = true
                 })
             }
         }
     }
-
-    /**
-     * 播放中奖lottie动画
-     */
-    private var lottieListener: AnimatorListener? = null
-    private fun startWinLottieAnim(endCallBack: (() -> Unit)?) {
-        mBinding.apply {
-            val winMoney = gameAboutModel.netIncome
-            Log.e(TAG, "本轮赢钱了--->$winMoney")
-            if (winMoney <= 0) {
-                endCallBack?.invoke()
-                return
-            }
-            val duration = when (winMoney) {
-                in 0..1000 -> 500L
-                in 1000..100000 -> 600L
-                else -> 700L
-            }
-            AnimHelper.doNumberAnim(mBinding.tvAnimWin2, 0, (winMoney).toLong(), duration)
-            showLottie(endCallBack)
-        }
-    }
-
-    private fun showLottie(endCallBack: (() -> Unit)?) {
-        mBinding.apply {
-            groupWinLottie.isVisible = true
-            var isAnimating = false
-            val onAnimationEnd: () -> Unit = {
-                endCallBack?.invoke()
-                groupWinLottie.isVisible = false
-                isAnimating = false
-            }
-            //groupWinLottie没在前台显示，不要做Lottie动画
-            if (!groupWinLottie.isShown) {
-                LogUtils.w("groupWinLottie is not shown at the front, ignore showLottie")
-                onAnimationEnd()
-                return
-            }
-            if (null == lottieListener) {
-                lottieListener = object : AnimatorListener {
-                    override fun onAnimationStart(animation: Animator) {
-                        Log.e(TAG, "groupWinLottie onAnimationStart")
-                        PromptSoundPlay.playWinEffect()
-                        isAnimating = true
-                        mBinding.tvAnimWin2.alpha = 1f
-                        txtWinMoneyLabel.alpha = 1f
-                        lottieLayout.postDelayed({
-                            AnimatorSet().apply {
-                                playTogether(
-                                    listOf(
-                                        ObjectAnimator.ofFloat(
-                                            mBinding.tvAnimWin2,
-                                            "alpha",
-                                            1f,
-                                            0f
-                                        ).apply {
-                                            duration = 1000 // 设置动画持续时间
-                                        },
-                                        ObjectAnimator.ofFloat(txtWinMoneyLabel, "alpha", 1f, 0f)
-                                            .apply {
-                                                duration = 1000 // 设置动画持续时间
-                                            }
-                                    )
-                                )
-                                start()
-                            }
-                        }, 2500)
-                    }
-
-                    override fun onAnimationEnd(animation: Animator) {
-                        //LogUtils.dTag(TAG,"groupWinLottie onAnimationEnd")
-                        onAnimationEnd()
-                        isAnimating = false
-                    }
-
-                    override fun onAnimationCancel(animation: Animator) {
-                        //LogUtils.dTag(TAG,"groupWinLottie onAnimationCancel")
-                        isAnimating = false
-                    }
-
-                    override fun onAnimationRepeat(animation: Animator) {
-                    }
-                }
-                lottieAnimView.addAnimatorListener(lottieListener)
-                lottieAnimView.addOnAttachStateChangeListener(object :
-                    View.OnAttachStateChangeListener {
-                    override fun onViewAttachedToWindow(p0: View) {}
-                    override fun onViewDetachedFromWindow(p0: View) {
-                        //groupWinLottie播发动画一半被window移除了，lottieListener不会执行onAnimationEnd，在这里执行
-                        LogUtils.w(
-                            TAG,
-                            "groupWinLottie is detached from window，isAnimating:${isAnimating}"
-                        )
-                        if (isAnimating) {
-                            onAnimationEnd()
-                        }
-                    }
-                })
-            }
-            lottieAnimView.playAnimation()
-            lottieAnimView2.playAnimation()
-
-        }
-    }
-
 
     override fun createObserver() {
         FlowBus.with<List<GameAreaView>>(EventKey.UPDATE_ALL_AREA_VIEW)
@@ -608,13 +505,6 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
             updateAgainDoubleUi()
         }
 
-        //开奖历史记录
-        gameAboutModel.historyRounds.observe(viewLifecycleOwner) {
-            Log.e(TAG, "开奖历史结果--->$it")
-            (childFragmentManager.findFragmentByTag(DrawHistoryFragment.TAG) as DrawHistoryFragment)
-                .setDrawHistories(it)
-        }
-
         // 執行開獎紀錄閃爍動畫
         mViewModel.playAlphaAnimationLD.observe(viewLifecycleOwner) {
             (childFragmentManager.findFragmentByTag(DrawHistoryFragment.TAG) as DrawHistoryFragment)
@@ -743,7 +633,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
         childFragmentManager.findFragmentByTag(DrawResultFragment.TAG)
                 as? DrawResultFragment ?: DrawResultFragment().also {
             childFragmentManager.beginTransaction()
-                .replace(mBinding.fragmentSettleResult.id, it, DrawResultFragment.TAG)
+                .replace(mBinding.fragmentDrawResult.id, it, DrawResultFragment.TAG)
                 .commitNow()
         }
     }
@@ -761,7 +651,6 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
             setHistoryHeight(height)
         }
 
-        gameAboutModel.historyRounds.value?.let { frag.setDrawHistories(it) }
         setHistoryHeight(frag.getCurrentHeight())
     }
 
@@ -774,6 +663,15 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                 }
     }
 
+    // 設置中獎動畫
+    private fun setWinningAnimationView() {
+        childFragmentManager.findFragmentByTag(WinningAnimationFragment.TAG)
+                as? WinningAnimationFragment ?: WinningAnimationFragment().also {
+            childFragmentManager.beginTransaction()
+                .replace(mBinding.fragmentWinning.id, it, WinningAnimationFragment.TAG)
+                .commitNow()
+        }
+    }
 
     /**
      * 执行筹码列表view平移出现或关闭动画
@@ -817,10 +715,9 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
             mBinding.betteAgainLayout.isVisible = true
 
             //开奖结果x
-            fragmentSettleResult.isVisible = false
+            fragmentDrawResult.isVisible = false
             ivHomeBg.isVisible = false
             ivHomeBgCenter.isVisible = false
-            resultBgTop.isVisible = false
 
             flChips.translationY = 0f
             betteAgainLayout.translationX = 0f

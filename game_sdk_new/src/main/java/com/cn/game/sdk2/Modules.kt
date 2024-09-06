@@ -2,8 +2,9 @@ package com.cn.game.sdk2
 
 import com.cn.game.sdk2.ui.viewmodel.ChipsViewModel
 import com.cn.game.sdk2.ui.viewmodel.DrawHistoryViewModel
-import com.cn.game.sdk2.ui.viewmodel.EmptyViewModel
 import com.cn.game.sdk2.ui.viewmodel.DrawResultViewModel
+import com.cn.game.sdk2.ui.viewmodel.EmptyViewModel
+import com.cn.game.sdk2.ui.viewmodel.WinningAnimationViewModel
 import com.cn.game.sdk2.ui.viewmodel.fast3.DXDSVm
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3GameHallItemViewModel
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
@@ -26,6 +27,7 @@ val viewModules = module {
     viewModel { ChipsViewModel() }
     viewModel { DrawHistoryViewModel() }
     viewModel { DrawResultViewModel() }
+    viewModel { WinningAnimationViewModel() }
 }
 
 val moduleList = listOf(viewModules)
