@@ -31,7 +31,7 @@ class TestActivity : AppCompatActivity(), GameApp.OnSdkListener {
     private var isLogin = false
     private val url:String get()  = when(BuildConfig.BUILD_TYPE+"a") {
         "release"-> "ws://35.220.148.132:7642"  //连调
-        else-> "wss://ws.qxe68.com:7001/api/game/5702" ///test
+        else-> "wss://ws.qxe68.com:7001/api/game/52002" ///test
     }
     private val token = "93:Ufx3Dy8y" ///test
 
