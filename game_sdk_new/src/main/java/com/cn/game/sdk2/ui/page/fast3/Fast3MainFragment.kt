@@ -295,7 +295,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                 val winningAnimFrag = (childFragmentManager.findFragmentByTag(WinningAnimationFragment.TAG) as WinningAnimationFragment)
 
                 with(drawResultFrag) {
-                    gameAboutModel.currentSettleResult?.let { setSettleResult(it) }
+                    gameAboutModel.currentSettleResult?.let { setDrawResult(it) }
                     mBinding.fragmentDrawResult.isVisible = true
                     playAnim {
                         //中奖动画

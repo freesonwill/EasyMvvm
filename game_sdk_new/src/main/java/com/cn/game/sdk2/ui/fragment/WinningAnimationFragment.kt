@@ -24,7 +24,7 @@ class WinningAnimationFragment: BaseFragment<WinningAnimationViewModel, Fragment
     private var onAnimEndCallback: (() -> Unit)? = null
     private val lottieListener = object : Animator.AnimatorListener {
         override fun onAnimationStart(animation: Animator) {
-            Log.e(Fast3MainFragment.TAG, "groupWinLottie onAnimationStart")
+            Log.e(TAG, "groupWinLottie onAnimationStart")
             PromptSoundPlay.playWinEffect()
 
             mViewModel.isAnimating = true
@@ -144,6 +144,6 @@ class WinningAnimationFragment: BaseFragment<WinningAnimationViewModel, Fragment
     }
 
     companion object {
-        const val TAG = "WinningAnimationFragment"
+        const val TAG = "WinningAnimFragment"
     }
 }
