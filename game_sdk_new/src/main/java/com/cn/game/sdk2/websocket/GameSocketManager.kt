@@ -58,7 +58,7 @@ internal class GameSocketManager private constructor() : OnMessageListener {
             client = GameSocketClient(uri) //获得client对象
             client?.setOnMessageListener(this@GameSocketManager)
             gameMassageManager = UIMethodImpl.generate(client!!) //获得接口对象
-            client?.connectionLostTimeout = 0
+            client?.connectionLostTimeout = 30
             client!!.connect() //连接socket
         }else{
             "initSocketClient --- Repeat operation".loge(tag)
