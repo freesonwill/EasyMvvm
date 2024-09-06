@@ -505,13 +505,6 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
             updateAgainDoubleUi()
         }
 
-        //开奖历史记录
-        gameAboutModel.historyRounds.observe(viewLifecycleOwner) {
-            Log.e(TAG, "开奖历史结果--->$it")
-            (childFragmentManager.findFragmentByTag(DrawHistoryFragment.TAG) as DrawHistoryFragment)
-                .setDrawHistories(it)
-        }
-
         // 執行開獎紀錄閃爍動畫
         mViewModel.playAlphaAnimationLD.observe(viewLifecycleOwner) {
             (childFragmentManager.findFragmentByTag(DrawHistoryFragment.TAG) as DrawHistoryFragment)
@@ -658,7 +651,6 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
             setHistoryHeight(height)
         }
 
-        gameAboutModel.historyRounds.value?.let { frag.setDrawHistories(it) }
         setHistoryHeight(frag.getCurrentHeight())
     }
 
