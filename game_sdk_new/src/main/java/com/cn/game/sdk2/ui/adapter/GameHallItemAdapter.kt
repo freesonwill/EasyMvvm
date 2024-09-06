@@ -7,6 +7,8 @@ import com.cn.game.sdk2.data.bean.GameHallItem
 import com.cn.game.sdk2.databinding.ItemGamehallPageItemBinding
 import com.cn.game.sdk2.ui.compare.GameHallItemCompare
 import com.cn.game.sdk2.ui.viewholder.BaseViewHolder
+import com.xcjh.base_lib2.utils.LogUtils
+import java.io.File
 
 class GameHallItemAdapter : BaseAdapter<GameHallItem, BaseViewHolder, ItemGamehallPageItemBinding>(
     GameHallItemCompare()
@@ -17,8 +19,16 @@ class GameHallItemAdapter : BaseAdapter<GameHallItem, BaseViewHolder, ItemGameha
         item: GameHallItem
     ) {
         binding.ivGame.apply {
-            if(!item.iconIsLocal) Glide.with(holder.itemView.context).load(item.icon).into(binding.ivGame)
-            else setImageResource(item.icon.toInt())
+            try {
+                when(item.iconType){
+                    0 -> setImageResource(item.icon.toInt())
+                    1 -> Glide.with(holder.itemView.context).load(item.icon).into(this)
+                    2 -> Glide.with(holder.itemView.context).load(File(item.icon)).into(this)
+                }
+            }catch (e:Exception){
+                e.printStackTrace()
+                LogUtils.e("error: ivGame load img:${e.message}")
+            }
         }
 
         binding.tvName.text = item.name
