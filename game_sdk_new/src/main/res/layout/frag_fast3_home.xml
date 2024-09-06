@@ -66,7 +66,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/game_sdk_shape_9_141624"
-                android:clipChildren="true"
+                android:clipChildren="false"
                 android:clipToPadding="false"
                 app:layout_constraintBottom_toTopOf="@id/iv_history_bg"
                 app:layout_constraintTop_toTopOf="parent">
@@ -275,21 +275,29 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/g_141624"
+                    android:clipChildren="true"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent">
 
-                    <!-- 多添加一层解决上层clipChildren为false
-                        导致下面筹码list向下偏移动画绘制超出布局 -->
-                    <FrameLayout
-                        android:id="@+id/fl_chips"
+                    <!--clipChildren設置於爺ViewGroup=true，
+                        會限制孫子ViewGroup的顯示範圍，
+                        不超出父ViewGroup的顯示範圍。
+                        因上述緣由故多加一層RelativeLayout，
+                        讓下注氣泡不被裁切，籌碼清單動畫時也不會超出佈局-->
+                    <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent">
+                        android:layout_height="match_parent">
 
-                    </FrameLayout>
+                        <FrameLayout
+                            android:id="@+id/fl_chips"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent">
+                        </FrameLayout>
+                    </RelativeLayout>
 
                     <View
                         android:layout_width="15dp"
