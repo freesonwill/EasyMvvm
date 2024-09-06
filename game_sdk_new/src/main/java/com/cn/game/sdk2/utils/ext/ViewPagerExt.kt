@@ -9,8 +9,11 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.utils.tool.indicator.CommonPagerIndicator
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import com.xcjh.base_lib2.utils.toHtml
 import net.lucode.hackware.magicindicator.MagicIndicator
 import net.lucode.hackware.magicindicator.ViewPagerHelper
@@ -178,4 +181,38 @@ fun MagicIndicator.bindViewPagerNewGame(
 
     //viewPager 绑定 navigator
     ViewPagerHelper.bind(this, viewPager)
+}
+
+fun TabLayout.bindTabNewGame(
+    viewPager: ViewPager2,
+    titles: List<String> = arrayListOf(),
+    scrollEnable: Boolean = false,
+    action: (index: Int) -> Unit = {}
+) {
+    this.tabMode = if (scrollEnable) TabLayout.MODE_SCROLLABLE else TabLayout.MODE_FIXED
+    TabLayoutMediator(this, viewPager) { tab, position ->
+        val tabView = tab.view
+        if (position < titles.size) {
+            tab.text = titles[position]
+        }
+        if (position == 0) tabView.setPadding(0, 0, 32, 0) else tabView.setPadding(
+            32,
+            0,
+            32,
+            0
+        )
+    }.attach()
+    this.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+        override fun onTabSelected(tab: TabLayout.Tab?) {
+            val position = tab?.position ?: 0
+            viewPager.currentItem = position
+            action.invoke(position)
+        }
+
+        override fun onTabUnselected(tab: TabLayout.Tab?) {
+        }
+
+        override fun onTabReselected(tab: TabLayout.Tab?) {
+        }
+    })
 }

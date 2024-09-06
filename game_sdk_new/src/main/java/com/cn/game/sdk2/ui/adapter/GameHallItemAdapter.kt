@@ -17,10 +17,10 @@ class GameHallItemAdapter : BaseAdapter<GameHallItem, BaseViewHolder, ItemGameha
         item: GameHallItem
     ) {
         binding.ivGame.apply {
-            if (!item.iconIsLocal) Glide.with(holder.itemView.context).load(item.icon)
-                .into(binding.ivGame)
+            if(!item.iconIsLocal) Glide.with(holder.itemView.context).load(item.icon).into(binding.ivGame)
             else setImageResource(item.icon.toInt())
         }
+
         binding.tvName.text = item.name
         binding.tvOnline.text = item.online.toString()
     }
@@ -33,8 +33,10 @@ class GameHallItemAdapter : BaseAdapter<GameHallItem, BaseViewHolder, ItemGameha
         return ItemGamehallPageItemBinding.inflate(inflater, parent, false)
     }
 
-    override fun createViewHolder(binding: ItemGamehallPageItemBinding, viewType: Int): BaseViewHolder {
+    override fun createViewHolder(
+        binding: ItemGamehallPageItemBinding,
+        viewType: Int
+    ): BaseViewHolder {
         return BaseViewHolder(binding)
     }
-
 }

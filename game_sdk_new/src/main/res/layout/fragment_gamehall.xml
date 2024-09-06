@@ -2,30 +2,35 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <data>
-
-    </data>
-
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/lltRoot"
         android:layout_width="match_parent"
         android:layout_height="373dp"
         android:background="@drawable/game_sdk_shape_9_141624">
 
-        <net.lucode.hackware.magicindicator.MagicIndicator
-            android:id="@+id/magicIndicator"
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tlGameList"
             android:layout_width="match_parent"
-            android:layout_height="20dp"
-            android:layout_centerHorizontal="true"
+            android:layout_height="24dp"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="11.5dp"
+            android:layout_marginTop="9.5dp"
             android:layout_marginEnd="37dp"
+            android:background="@android:color/transparent"
+            app:tabIndicatorColor="@android:color/transparent"
+            app:tabIndicatorHeight="0dp"
+            app:tabGravity="start"
+            app:tabTextColor="@color/g_9696b8"
+            app:tabMinWidth="@dimen/dp_30"
+            app:tabTextAppearance="@style/TabLayoutTextAppearance"
+            app:tabSelectedTextColor="@color/g_f7cf41"
+            app:layout_constraintEnd_toStartOf="@id/close"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.viewpager.widget.ViewPager
-            android:id="@+id/viewPagerNew"
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/vpGameList"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginStart="10dp"
@@ -35,7 +40,7 @@
             android:paddingStart="0dp"
             android:paddingEnd="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/magicIndicator" />
+            app:layout_constraintTop_toBottomOf="@id/tlGameList" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/close"
