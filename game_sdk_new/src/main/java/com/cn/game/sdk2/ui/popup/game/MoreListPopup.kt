@@ -3,7 +3,7 @@ package com.cn.game.sdk2.ui.popup.game
 import android.content.Context
 import android.view.View
 import androidx.core.view.isVisible
-import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.databinding.PopupCustomBubbleAttachBinding
 import com.cn.game.sdk2.ui.animator.AlphaPopupAnimator
@@ -117,7 +117,7 @@ class MoreListPopup private constructor(content: Context) : AttachPopupView(cont
     }
 
     interface OnMoreListPopupListener {
-        fun getFragmentActivity(): FragmentActivity
+        fun getFragmentManager(): FragmentManager
         fun bindView(): View
         fun getSecondPopHeight(): Int
     }

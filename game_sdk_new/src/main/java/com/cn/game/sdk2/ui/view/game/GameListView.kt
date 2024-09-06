@@ -48,15 +48,15 @@ class GameListView @JvmOverloads constructor(
     }
 
     private fun initView() {
-        gameAboutModel.getMoreGameList().forEach { gameType ->
+        val gameTypes = gameAboutModel.moreGames.value?.map { it.gameType }?.distinct() ?: listOf()
+        gameTypes.forEach { gameType ->
             val fragment = Fast3GameHallItemFragment.newInstance(gameType)
             fragmentList.add(fragment)
         }
-
         binding.vpGameList.adapter =
             listener?.let {
                 GameListViewPagerAdapter(
-                    it.getFragmentActivity().supportFragmentManager,
+                    it.getFragmentManager(),
                     lifecycle,
                     fragmentList
                 )
@@ -81,11 +81,7 @@ class GameListView @JvmOverloads constructor(
     }
 
     private fun cleanUpFragments() {
-        val fragmentManager = listener?.getFragmentActivity()?.supportFragmentManager
-        fragmentList.forEach {
-            fragmentManager?.beginTransaction()?.remove(it)?.commit()
-        }
-        fragmentList.clear()
+        binding.vpGameList.adapter = null
     }
 
     override fun onDetachedFromWindow() {
