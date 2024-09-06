@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.cn.game.sdk2.databinding.ItemGamehallPageBinding
 import com.cn.game.sdk2.ui.adapter.GameHallItemAdapter
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3GameHallItemViewModel
+import com.cn.game.sdk2.utils.GsonUtils
 import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
 import com.cn.game.sdk2.websocket.appListener
 import com.drake.brv.annotaion.DividerOrientation
@@ -24,10 +25,14 @@ class Fast3GameHallItemFragment : BaseFragment<Fast3GameHallItemViewModel, ItemG
         setupRecyclerView()
     }
 
+    override fun lazyLoadData() {
+    }
+
     private fun setupRecyclerView() {
         adapter = GameHallItemAdapter().apply {
             onItemClickListener = { item ->
-                val dataStr = Gson().toJson(item)
+                //val dataStr = item.toString()
+                val dataStr = GsonUtils.toJson(item)
                 appListener?.onClickOtherGameWithBlock(dataStr)
             }
         }
@@ -38,13 +43,15 @@ class Fast3GameHallItemFragment : BaseFragment<Fast3GameHallItemViewModel, ItemG
             adapter = this@Fast3GameHallItemFragment.adapter
         }
     }
-    override fun lazyLoadData() {
+
+    override fun initData() {
         mViewModel.setGameType(requireArguments().getInt("gameType"))
     }
 
     override fun createObserver() {
         mViewModel.hallItems.observe(viewLifecycleOwner) { gameList ->
             adapter.submitList(gameList)
+            adapter.notifyItemRangeChanged(0,gameList.size)
         }
     }
 

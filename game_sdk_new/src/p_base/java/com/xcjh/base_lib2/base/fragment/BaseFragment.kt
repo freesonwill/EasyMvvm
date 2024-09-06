@@ -46,8 +46,8 @@ abstract class BaseFragment<VM : ViewModel, VB : ViewBinding> : Fragment(), Game
         isFirst = true
         initView(savedInstanceState)
         initListener()
-        createObserver()
         initData()
+        createObserver()
     }
 
     /**

@@ -9,7 +9,6 @@ data class GameHallItem(
     val name:String,
 ) {
     var online:Int = 0
-    var hot:Long = 0
     /**
      * 是否是本地游戏 0-App 1-网络 2-本地
      */
@@ -17,5 +16,9 @@ data class GameHallItem(
         icon.startsWith("http") ->  1
         icon.startsWith("/") -> 2
         else -> 0
+    }
+
+    override fun toString(): String {
+        return "name:$name"
     }
 }

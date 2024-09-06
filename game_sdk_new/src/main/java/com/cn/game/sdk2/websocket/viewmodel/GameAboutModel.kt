@@ -37,7 +37,7 @@ internal class GameAboutModel  {
     private val _isShowGame = UnPeekLiveData<Boolean>()
     private val _isAllowedBet = UnPeekLiveData<Boolean>()
     private val _moreGames = UnPeekLiveData<List<GameHallItem>>()
-    var moreGames: LiveData<List<GameHallItem>> = _moreGames
+    val moreGames: LiveData<List<GameHallItem>> get()= _moreGames
 
     var isOpen: Boolean = false
 
@@ -288,14 +288,10 @@ internal class GameAboutModel  {
     @UiThread fun setMoreGameOnlines(onlines:List<Int>){
         val games = _moreGames.value ?: return
         games.forEachIndexed {index,item->
-            if(index >= onlines.size) return
+            if(index >= onlines.size) return@forEachIndexed
             item.online = onlines[index]
         }
         _moreGames.value = games
-    }
-
-    fun getMoreGameList(): List<Int> {
-        return moreGames.value?.map { it.gameType }?.distinct() ?: listOf()
     }
 
     //控制隐藏Fast3MainView

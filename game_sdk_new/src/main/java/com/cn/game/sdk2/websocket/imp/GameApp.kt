@@ -10,6 +10,7 @@ import androidx.annotation.UiThread
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
+import com.cn.game.sdk2.R
 import com.cn.game.sdk2.data.SortedList
 import com.cn.game.sdk2.data.bean.GameHallItem
 import com.cn.game.sdk2.moduleList
@@ -30,7 +31,9 @@ import com.xcjh.base_lib2.ModuleInitializer
 import com.xcjh.base_lib2.utils.LogUtilsExt.loge
 import game.common.proto.ClientReq
 import game.mod.proc.yf.proto.req.GameReq
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
@@ -303,14 +306,39 @@ class GameApp  private constructor(){
          */
         @JvmStatic
         fun setMoreGames(moreGameList: String) {
-            val gameList = GsonUtils.fromJson<SortedList<GameHallItem>>(moreGameList,object : TypeToken<SortedList<GameHallItem>>(){}.type)
-            gameList.changeComparator { o1, o2 ->
-                when(val it = o1.gameType.compareTo(o2.gameType)){
-                    0 -> o1.weight.compareTo(o2.weight)
-                    else -> it
+            ThreadUtils.mainScope.launch {
+                val gameList = withContext(Dispatchers.IO){
+                    val gameList = GsonUtils.fromJson<SortedList<GameHallItem>>(moreGameList,object : TypeToken<SortedList<GameHallItem>>(){}.type)
+                    for(i in gameList.size-1 downTo  0) {
+                        if(gameList[i].gameType <= 0 )gameList.removeAt(i)
+                    }
+                    //3>2>1>5>4
+                    val gameTypeMap = mapOf(
+                        0 to 0,
+                        3 to 1,
+                        2 to 2,
+                        1 to 3,
+                        5 to 4,
+                        4 to 5,
+                    )
+                    gameList.changeComparator { o1, o2 ->
+                        val gameType1 = gameTypeMap[o1.gameType]!!
+                        val gameType2 = gameTypeMap[o2.gameType]!!
+                        when(val it = gameType1.compareTo(gameType2)){
+                            0 -> o1.weight.compareTo(o2.weight)
+                            else -> it
+                        }
+                    }
+                    gameList.addAll(
+                        listOf(
+                            GameHallItem(0,0,1,0, R.mipmap.game_sdk_kuai_icon_logo.toString(),"快三"),
+                            GameHallItem(1,0,0, 0,R.mipmap.game_sdk_kuai_icon_logo.toString(),"快三2"),
+                        )
+                    )
+                    gameList
                 }
+                gameAboutModel.setMoreGames(gameList)
             }
-            gameAboutModel.setMoreGames(gameList)
         }
 
         /**

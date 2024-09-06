@@ -36,7 +36,7 @@ class TestActivity : AppCompatActivity() {
     private lateinit var llshow: RelativeLayout
     private var isLogin = false
     private val token = "93:Ufx3Dy8y" ///test
-    private var btnIndex = -1
+    private var btnIndex = 0
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -90,10 +90,6 @@ class TestActivity : AppCompatActivity() {
                 }
             })
         }
-        /*var f:(a:Int,b:Int)->Int = { a,b->
-            a+b
-        }
-        f(1,2)*/
         btnOpen.setOnClickListener {
             when (btnIndex) {
                 -1 -> {
@@ -102,6 +98,8 @@ class TestActivity : AppCompatActivity() {
 
                 0 -> {
                     ProxyApplication.instance.loadGame()
+                    btnIndex  = -1
+                    btnOpen.text = "正在连接请稍后"
                 }
 
                 1 -> {
@@ -218,7 +216,7 @@ class TestActivity : AppCompatActivity() {
                 val items = withContext(Dispatchers.IO) {
                     mutableListOf<GameHallItem>().apply {
                         repeat(200) { id ->
-                            val gameType = Random.nextInt(6)
+                            val gameType = Random.nextInt(5)+1
                             val weight = Random.nextInt(10)
                             val item = GameHallItem(
                                 id,
@@ -232,7 +230,6 @@ class TestActivity : AppCompatActivity() {
                                 },
                                 "快三${gameType}_${id}_$weight"
                             )
-                            if(gameType == 2) item.hot = 10
                             add(item)
                         }
                     }
