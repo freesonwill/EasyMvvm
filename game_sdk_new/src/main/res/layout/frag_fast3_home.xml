@@ -253,7 +253,7 @@
                 </RelativeLayout>
 
                 <androidx.fragment.app.FragmentContainerView
-                    android:id="@+id/fragment_settle_result"
+                    android:id="@+id/fragment_draw_result"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:layout_constraintBottom_toBottomOf="@id/cl_chips"

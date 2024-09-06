@@ -266,7 +266,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                 mBinding.betteAgainLayout.isVisible = true
 
                 //开奖结果x
-                mBinding.fragmentSettleResult.isVisible = false
+                mBinding.fragmentDrawResult.isVisible = false
                 mBinding.ivHomeBg.isVisible = false
                 mBinding.ivHomeBgCenter.isVisible = false
                 mBinding.resultBgTop.isVisible = false
@@ -293,7 +293,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
 
                 with((childFragmentManager.findFragmentByTag(DrawResultFragment.TAG) as DrawResultFragment)) {
                     gameAboutModel.currentSettleResult?.let { setSettleResult(it) }
-                    mBinding.fragmentSettleResult.isVisible = true
+                    mBinding.fragmentDrawResult.isVisible = true
                     playAnim {
                         //中奖动画
                         startWinLottieAnim(endCallBack = {
@@ -743,7 +743,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
         childFragmentManager.findFragmentByTag(DrawResultFragment.TAG)
                 as? DrawResultFragment ?: DrawResultFragment().also {
             childFragmentManager.beginTransaction()
-                .replace(mBinding.fragmentSettleResult.id, it, DrawResultFragment.TAG)
+                .replace(mBinding.fragmentDrawResult.id, it, DrawResultFragment.TAG)
                 .commitNow()
         }
     }
@@ -817,7 +817,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
             mBinding.betteAgainLayout.isVisible = true
 
             //开奖结果x
-            fragmentSettleResult.isVisible = false
+            fragmentDrawResult.isVisible = false
             ivHomeBg.isVisible = false
             ivHomeBgCenter.isVisible = false
             resultBgTop.isVisible = false
