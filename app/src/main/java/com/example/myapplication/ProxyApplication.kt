@@ -12,7 +12,7 @@ class ProxyApplication : Application() {
     }
     private val url:String get()  = when(BuildConfig.BUILD_TYPE) {
         "release"-> "ws://35.220.148.132:7642"  //连调
-        else-> "wss://ws.qxe68.com:7001/api/game/5702" ///test
+        else-> "wss://ws.qxe68.com:7001/api/game/52002" ///test
     }
     private val  _onGameAppEvent = MutableLiveData<Pair<String,Map<String,Any?>>>()
     private val _onSocketConnected :MutableLiveData<Boolean> = MutableLiveData()
