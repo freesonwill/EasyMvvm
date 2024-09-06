@@ -18,6 +18,7 @@ import androidx.core.animation.addListener
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
@@ -838,6 +839,9 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                     }
                     override fun getSecondPopHeight(): Int {
                         return mBinding.root.height
+                    }
+                    override fun getFragmentManager(): FragmentManager {
+                        return childFragmentManager
                     }
                 })
             }

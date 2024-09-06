@@ -1,14 +1,26 @@
 package com.cn.game.sdk2.ui.helper
 
 import android.content.Context
+import android.graphics.Paint
+import android.graphics.Typeface
+import android.util.TypedValue
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.isVisible
+import androidx.core.view.marginLeft
+import androidx.core.view.setPadding
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.data.enums.GAME_ID_ENUM
 import com.cn.game.sdk2.ui.page.fast3.Fast3MainFragment
@@ -19,6 +31,8 @@ import com.cn.game.sdk2.utils.ThreadUtils.launchWithCustomContext
 import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
 import com.cn.game.sdk2.websocket.appListener
 import com.cn.game.sdk2.websocket.gameAboutModel
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
 import com.lxj.xpopup.interfaces.SimpleCallback

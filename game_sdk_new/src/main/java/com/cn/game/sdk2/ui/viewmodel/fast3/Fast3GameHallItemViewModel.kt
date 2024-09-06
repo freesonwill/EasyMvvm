@@ -1,19 +1,15 @@
 package com.cn.game.sdk2.ui.viewmodel.fast3
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
 import com.cn.game.sdk2.data.bean.GameHallItem
-import com.xcjh.base_lib2.base.BaseViewModel
+import com.cn.game.sdk2.websocket.gameAboutModel
 import com.xcjh.base_lib2.callback.livedata.UnPeekLiveData
 
-class Fast3GameHallItemViewModel : BaseViewModel() {
+class Fast3GameHallItemViewModel : ViewModel() {
     private val _hallItems = UnPeekLiveData<List<GameHallItem>>()
-    val hallItems:LiveData<List<GameHallItem>> = _hallItems
-
-    override fun onInit() {
-        val list = mutableListOf<GameHallItem>()
-        for (i in 0..10) {
-            list.add(GameHallItem(1,1,1,1,"a", "快三"))
-        }
-        _hallItems.value = list
+    val hallItems: LiveData<List<GameHallItem>> = _hallItems
+    fun setGameType(type: Int) {
+        _hallItems.value = gameAboutModel.moreGames.value?.filter { it.gameType == type }
     }
 }
