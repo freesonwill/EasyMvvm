@@ -61,14 +61,19 @@ internal class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
         }
         val resp: Array<Any?>? = nativeLib.newUnpack(bytes.array())
         resp?.let {
-            val mid = it[0] as Int?
-            val sid = it[1] as Int?
-            var str = bytes.array()
-            if (it.size > 2) {
-                str = (it[2] as ByteArray?)!!
+            try {
+                val mid = it[0] as Int?
+                val sid = it[1] as Int?
+                var str = bytes.array()
+                if (it.size > 2) {
+                    str = (it[2] as ByteArray?)!!
+                }
+                "GameSocketMessage-onMessage:mid-$mid sid-$sid sidName-${GameResCode.of(sid)}".logd(_tag)
+                onMessageListener?.onMessage(mid, sid, str)
+            } catch (e: Exception) {
+                "GameSocketMessage-onMessage:越界访问错误，错误内容-${e.message}".loge(_tag)
+                e.printStackTrace()
             }
-            "GameSocketMessage-onMessage:mid-$mid sid-$sid sidName-${GameResCode.of(sid)}".logd(_tag)
-            onMessageListener?.onMessage(mid, sid, str)
         }
     }
 
