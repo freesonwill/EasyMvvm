@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.recyclerview.widget.GridLayoutManager
 import com.cn.game.sdk2.databinding.ItemGamehallPageBinding
 import com.cn.game.sdk2.ui.adapter.GameHallItemAdapter
+import com.cn.game.sdk2.ui.view.BounceRVEdgeEffectFactory
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3GameHallItemViewModel
 import com.cn.game.sdk2.utils.GsonUtils
 import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
@@ -39,8 +40,9 @@ class Fast3GameHallItemFragment : BaseFragment<Fast3GameHallItemViewModel, ItemG
         mBinding.rvContent.apply {
             itemAnimator = null
             layoutManager = GridLayoutManager(context, 4)
-            dividerSpace(context.dp2px(20), DividerOrientation.HORIZONTAL)
+            dividerSpace(25.dp2px, DividerOrientation.HORIZONTAL)
             adapter = this@Fast3GameHallItemFragment.adapter
+            edgeEffectFactory = BounceRVEdgeEffectFactory()
         }
     }
 

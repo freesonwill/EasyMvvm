@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.widget.ViewPager2
@@ -190,6 +191,7 @@ fun TabLayout.bindTabNewGame(
     action: (index: Int) -> Unit = {}
 ) {
     this.tabMode = if (scrollEnable) TabLayout.MODE_SCROLLABLE else TabLayout.MODE_FIXED
+    var tabClickedByUser = false
     TabLayoutMediator(this, viewPager) { tab, position ->
         val tabView = tab.view
         if (position < titles.size) {
@@ -201,12 +203,19 @@ fun TabLayout.bindTabNewGame(
             32,
             0
         )
+        tabView.setOnClickListener {
+            tabClickedByUser = true
+        }
     }.attach()
+
     this.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
         override fun onTabSelected(tab: TabLayout.Tab?) {
             val position = tab?.position ?: 0
             viewPager.currentItem = position
-            action.invoke(position)
+            if (tabClickedByUser) {
+                action.invoke(position)
+                tabClickedByUser = false // 重置点击状态
+            }
         }
 
         override fun onTabUnselected(tab: TabLayout.Tab?) {
@@ -215,4 +224,19 @@ fun TabLayout.bindTabNewGame(
         override fun onTabReselected(tab: TabLayout.Tab?) {
         }
     })
+
+}
+
+/***
+ * 设置ViewPager2的overScroll模式和回弹效果
+ * @param overScrollMode 回弹模式
+ * @param effectFactory  回弹效果工厂
+ */
+@JvmOverloads
+fun ViewPager2.setOverScrollModeExt(overScrollMode: Int,effectFactory: RecyclerView.EdgeEffectFactory? = null) {
+    val view = getChildAt(0)
+    if (view is RecyclerView) {
+        view.overScrollMode = overScrollMode
+        if(effectFactory != null) view.edgeEffectFactory = effectFactory
+    }
 }
