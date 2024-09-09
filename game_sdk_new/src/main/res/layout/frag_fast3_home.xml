@@ -198,7 +198,8 @@
                 <RelativeLayout
                     android:id="@+id/vvvvvv"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="21dp"
+                    android:layout_marginBottom="8dp"
                     android:clipChildren="false"
                     android:clipToPadding="false"
                     android:orientation="vertical"
@@ -207,22 +208,19 @@
                     <net.lucode.hackware.magicindicator.MagicIndicator
                         android:id="@+id/magicIndicator"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_alignParentStart="true"
+                        android:layout_centerHorizontal="true"
                         android:layout_marginEnd="5dp"
                         android:layout_toStartOf="@id/frrl"
-                        android:layout_alignTop="@id/frrl"
-                        android:layout_alignBottom="@id/frrl"
                         android:clipChildren="false"
                         android:clipToPadding="false" />
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/frrl"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginVertical="12dp"
+                        android:layout_height="match_parent"
                         android:layout_alignParentEnd="true"
-                        android:layout_alignParentTop="true"
                         android:layout_marginEnd="10dp"
                         android:background="@drawable/game_sdk_shape_3_111130"
                         android:paddingHorizontal="8dp"
