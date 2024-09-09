@@ -13,9 +13,10 @@
 
     <TextView
         android:id="@+id/tvTitle"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="49dp"
-        android:layout_marginTop="2dp"
+        android:layout_marginTop="0dp"
+        android:background="#141624"
         android:gravity="center"
         android:text="@string/g_home_txt_assist"
         android:textColor="#E8E8E9"
@@ -57,7 +58,6 @@
             android:layout_height="20dp"
             app:srcCompat="@mipmap/game_sdk_ic_expand" />
     </LinearLayout>
-
     <com.cn.game.sdk2.ui.view.BounceRecycleView
         android:id="@+id/rvContent"
         android:layout_width="match_parent"
