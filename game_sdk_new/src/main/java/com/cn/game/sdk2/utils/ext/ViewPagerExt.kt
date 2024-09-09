@@ -136,11 +136,11 @@ fun MagicIndicator.bindViewPagerNewGame(
 ) {
     // viewPager.offscreenPageLimit = mStringList.size
     val commonNavigator = CommonNavigator(context)
-    if (scrollEnable) {
-        commonNavigator.isSkimOver = true
-    } else {
-        commonNavigator.isAdjustMode = true
-    }
+//    if (scrollEnable) {
+//        commonNavigator.isSkimOver = true
+//    } else {
+//        commonNavigator.isAdjustMode = true
+//    }
     commonNavigator.adapter = object : CommonNavigatorAdapter() {
 
         override fun getCount(): Int {
