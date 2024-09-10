@@ -1,6 +1,10 @@
 package com.cn.game.sdk2.ui.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.view.MotionEvent.ACTION_DOWN
+import android.view.MotionEvent.ACTION_UP
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.cn.game.sdk2.data.bean.GameHallItem
@@ -13,6 +17,8 @@ import java.io.File
 class GameHallItemAdapter : BaseAdapter<GameHallItem, BaseViewHolder, ItemGamehallPageItemBinding>(
     GameHallItemCompare()
 ) {
+    private val IMAGE_SCALE_RATIO = 0.8f
+    @SuppressLint("ClickableViewAccessibility")
     override fun convertPlus(
         holder: BaseViewHolder,
         binding: ItemGamehallPageItemBinding,
@@ -33,6 +39,20 @@ class GameHallItemAdapter : BaseAdapter<GameHallItem, BaseViewHolder, ItemGameha
 
         binding.tvName.text = item.name
         binding.tvOnline.text = item.online.toString()
+        binding.root.setOnTouchListener { _, event ->
+            when(event.action) {
+                ACTION_DOWN -> {
+                    binding.ivGame.scaleX = IMAGE_SCALE_RATIO
+                    binding.ivGame.scaleY = IMAGE_SCALE_RATIO
+                }
+                ACTION_UP -> {
+                    binding.ivGame.scaleX = 1.0f
+                    binding.ivGame.scaleY = 1.0f
+                }
+                else -> Unit
+            }
+            return@setOnTouchListener false
+        }
     }
 
     override fun createViewBinding(
