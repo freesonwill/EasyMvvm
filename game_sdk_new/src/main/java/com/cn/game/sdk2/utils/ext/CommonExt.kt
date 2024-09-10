@@ -46,7 +46,7 @@ object CommonExt {
         betting.apply {
             val decimalFormat = DecimalFormat(format)
             if (multipliers.isNotEmpty()) {
-                return multipliers.joinToString(", ", "x[", "]", transform = {
+                return multipliers.joinToString(",", "x[","]", transform = {
                     decimalFormat.format(it)
                 })
             }
