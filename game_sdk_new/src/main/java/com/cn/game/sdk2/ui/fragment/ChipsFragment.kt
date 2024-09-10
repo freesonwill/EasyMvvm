@@ -2,7 +2,9 @@ package com.cn.game.sdk2.ui.fragment
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.cn.game.sdk2.R
 import com.cn.game.sdk2.databinding.FragmentChipsBinding
 import com.cn.game.sdk2.ui.adapter.ChipsAdapter
 import com.cn.game.sdk2.ui.view.CenterLayoutManager
@@ -11,6 +13,7 @@ import com.cn.game.sdk2.ui.viewmodel.ChipsViewModel
 import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
 import com.cn.game.sdk2.utils.ext.ViewExt.locationOnScreen
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
+import com.cn.game.sdk2.websocket.appListener
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.xcjh.base_lib2.base.fragment.BaseFragment
 import com.xcjh.base_lib2.base.fragment.viewBind
@@ -63,9 +66,14 @@ class ChipsFragment : BaseFragment<ChipsViewModel, FragmentChipsBinding>(), Chip
             chipsAdapter = ChipsAdapter()
             adapter = chipsAdapter
             chipsAdapter.onItemClickListener = { item ->
-                if (!item.select && item.money <= (gameAboutModel.tempBalance.value ?: 0)) {
-                    PromptSoundPlay.btnPlayMedia()
-                    mViewModel.setSelectedChip(item)
+                if (!item.select) {
+                    if (item.money <= (gameAboutModel.tempBalance.value ?: 0)) {
+                        PromptSoundPlay.btnPlayMedia()
+                        mViewModel.setSelectedChip(item)
+                    } else {
+                        Toast.makeText(context, resources.getString(R.string.error_bet_money_insufficient), Toast.LENGTH_LONG).show()
+                        appListener?.onInsufficientBalance()
+                    }
                 }
             }
         }
