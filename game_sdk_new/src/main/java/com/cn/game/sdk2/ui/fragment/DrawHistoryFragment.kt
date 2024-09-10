@@ -177,7 +177,7 @@ class DrawHistoryFragment: BaseFragment<DrawHistoryViewModel, FragmentDrawHistor
             val view = (layoutManager as LinearLayoutManager).findViewByPosition(position) ?: return
 
             animator = if (isPlay) {
-                ObjectAnimator.ofFloat(view, "alpha", 1f, 0f, 1f)
+                ObjectAnimator.ofFloat(view, "alpha", 0f, 1f)
                     .apply {
                         this.duration = duration
                         repeatCount = 2
