@@ -5,11 +5,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rvContent"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+    android:layout_height="match_parent"
+    android:overScrollMode="ifContentScrolls"
+    android:paddingStart="20dp"
+    android:paddingEnd="0dp"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent"
     tools:itemCount="11"
-    tools:listitem="@layout/item_gamehall_page_item">
-
-</com.cn.game.sdk2.ui.view.ClickRecyclerView>
+    tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+    tools:listitem="@layout/item_gamehall_page_item" />

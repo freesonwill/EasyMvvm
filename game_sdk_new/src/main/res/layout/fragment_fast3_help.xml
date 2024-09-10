@@ -10,12 +10,29 @@
     android:background="#141624"
     android:paddingTop="0dp"
     android:paddingBottom="48dp">
-
+    <com.cn.game.sdk2.ui.view.BounceRecycleView
+        android:id="@+id/rvContent"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:orientation="vertical"
+        android:paddingTop="5dp"
+        android:scrollbars="vertical"
+        android:scrollbarThumbVertical="@drawable/game_sdk_scrollbar_thumb"
+        tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toTopOf="@id/indicator"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle"
+        android:overScrollMode="ifContentScrolls"
+        tools:itemCount="11"
+        tools:listitem="@layout/item_fast3_help_1" />
     <TextView
         android:id="@+id/tvTitle"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="49dp"
-        android:layout_marginTop="2dp"
+        android:layout_marginTop="0dp"
+        android:background="#141624"
         android:gravity="center"
         android:text="@string/g_home_txt_assist"
         android:textColor="#E8E8E9"
@@ -58,23 +75,6 @@
             app:srcCompat="@mipmap/game_sdk_ic_expand" />
     </LinearLayout>
 
-    <com.cn.game.sdk2.ui.view.BounceRecycleView
-        android:id="@+id/rvContent"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:orientation="vertical"
-        android:paddingTop="5dp"
-        android:scrollbars="vertical"
-        android:scrollbarThumbVertical="@drawable/game_sdk_scrollbar_thumb"
-        tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toTopOf="@id/indicator"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvTitle"
-        android:overScrollMode="ifContentScrolls"
-        tools:itemCount="11"
-        tools:listitem="@layout/item_fast3_help_1" />
 
     <net.lucode.hackware.magicindicator.MagicIndicator
         android:id="@+id/indicator"
