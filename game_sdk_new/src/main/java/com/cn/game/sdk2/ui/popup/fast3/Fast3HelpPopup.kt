@@ -98,11 +98,6 @@ class Fast3HelpPopup(context: Context, private val offsetY: Int, private val hei
     }
 
     private fun initView() {
-        mViewBind.apply {
-            tvTitle.bringToFront()
-            lltCollapse.bringToFront()
-            close.bringToFront()
-        }
         mViewBind.rvContent.layoutManager = LinearLayoutManager(context)
         mViewBind.rvContent
             .dividerSpace(
