@@ -24,6 +24,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottieAnimView2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:lottie_fileName="line.json"
+        android:elevation="1dp"
+        tools:lottie_progress="0.25"
+        android:layout_marginBottom="100dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/lottieLayout"/>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/lottieLayout"
         android:layout_width="0dp"
@@ -41,13 +54,6 @@
             android:layout_height="match_parent"
             app:lottie_fileName="redcircle.json"
             tools:lottie_progress="0.1" />
-
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/lottieAnimView2"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:lottie_fileName="line.json"
-            tools:lottie_progress="0.5" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/txtWinMoneyLabel"
@@ -86,6 +92,6 @@
         android:id="@+id/groupWinLottie"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="ivResultBg,lottieLayout" />
+        app:constraint_referenced_ids="ivResultBg,lottieLayout, lottieAnimView2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
