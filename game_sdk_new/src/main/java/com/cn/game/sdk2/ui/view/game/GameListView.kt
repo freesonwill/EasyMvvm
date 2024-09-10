@@ -7,8 +7,10 @@ import com.cn.game.sdk2.databinding.FragmentGamehallBinding
 import com.cn.game.sdk2.ui.adapter.GameListViewPagerAdapter
 import com.cn.game.sdk2.ui.page.fast3.Fast3GameHallItemFragment
 import com.cn.game.sdk2.ui.popup.game.MoreListPopup
+import com.cn.game.sdk2.ui.view.BounceRVEdgeEffectFactory
 import com.cn.game.sdk2.utils.ext.CommonExt.getString
 import com.cn.game.sdk2.utils.ext.bindTabNewGame
+import com.cn.game.sdk2.utils.ext.setOverScrollModeExt
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.lxj.xpopup.core.BottomPopupView
@@ -61,7 +63,7 @@ class GameListView @JvmOverloads constructor(
                     fragmentList
                 )
             }
-
+        binding.vpGameList.setOverScrollModeExt(OVER_SCROLL_IF_CONTENT_SCROLLS,BounceRVEdgeEffectFactory())
         binding.tlGameList.bindTabNewGame(
             viewPager = binding.vpGameList,
             titles = tabTitles,
