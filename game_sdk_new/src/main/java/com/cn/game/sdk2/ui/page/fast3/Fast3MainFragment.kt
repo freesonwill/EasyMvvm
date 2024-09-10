@@ -42,6 +42,7 @@ import com.cn.game.sdk2.utils.IconUtils
 import com.cn.game.sdk2.utils.ext.CommonExt.formatRealMoney
 import com.cn.game.sdk2.utils.ext.CommonExt.isCanGoOn
 import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
+import com.cn.game.sdk2.utils.ext.ViewExt.getCenterPoint
 import com.cn.game.sdk2.utils.ext.ViewExt.isAdd
 import com.cn.game.sdk2.utils.ext.ViewExt.locationOnScreen
 import com.cn.game.sdk2.utils.ext.bindViewPagerNewGame
@@ -297,7 +298,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                 with(drawResultFrag) {
                     gameAboutModel.currentSettleResult?.let { setDrawResult(it) }
                     mBinding.fragmentDrawResult.isVisible = true
-                    playAnim {
+                    playAnim(viewPagerNew.getCenterPoint()) {
                         //中奖动画
                         winningAnimFrag.startWinLottieAnim(gameAboutModel.netIncome, endCallBack = {
                             //开奖结果注区动画闪烁
