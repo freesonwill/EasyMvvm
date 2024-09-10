@@ -271,6 +271,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                 mBinding.fragmentDrawResult.isVisible = false
                 mBinding.ivHomeBg.isVisible = false
                 mBinding.ivHomeBgCenter.isVisible = false
+                mBinding.resultBgTop.isVisible = false
             }, duration = if (mViewModel.isCountDownStart) 250 else 0)
 
             //暂时解决筹码栏被隐藏问题
@@ -365,6 +366,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                         //开奖结果
                         ivHomeBg.isVisible = true
                         ivHomeBgCenter.isVisible = true
+                        resultBgTop.isVisible = true
                     },
                     duration = 0
                 )
@@ -723,6 +725,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
             fragmentDrawResult.isVisible = false
             ivHomeBg.isVisible = false
             ivHomeBgCenter.isVisible = false
+            resultBgTop.isVisible = false
 
             flChips.translationY = 0f
             betteAgainLayout.translationX = 0f
