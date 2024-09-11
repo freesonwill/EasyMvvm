@@ -30,7 +30,7 @@ class CountDownHelper {
                 var remainingTime = field
                 while(remainingTime > 0) {
                     _countDownSecondsLD.value = round(remainingTime / 1000f).toInt()
-                    delay(1000L)
+                    delay(Math.min(1000L,remainingTime*1L))
                     remainingTime -= 1000
                 }
                 _countDownSecondsLD.value = 0
