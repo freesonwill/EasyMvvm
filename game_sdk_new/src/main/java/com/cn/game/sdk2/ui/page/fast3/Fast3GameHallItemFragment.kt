@@ -2,52 +2,66 @@ package com.cn.game.sdk2.ui.page.fast3
 
 import android.os.Bundle
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.cn.game.sdk2.R
-import com.cn.game.sdk2.data.bean.GameHallItem
 import com.cn.game.sdk2.databinding.ItemGamehallPageBinding
-import com.cn.game.sdk2.databinding.ItemGamehallPageItemBinding
 import com.cn.game.sdk2.ui.adapter.GameHallItemAdapter
+import com.cn.game.sdk2.ui.view.BounceRVEdgeEffectFactory
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3GameHallItemViewModel
-import com.drake.brv.annotaion.DividerOrientation
-import com.drake.brv.utils.bindingAdapter
-import com.drake.brv.utils.dividerSpace
-import com.drake.brv.utils.setup
+import com.cn.game.sdk2.utils.GsonUtils
 import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
+import com.cn.game.sdk2.websocket.appListener
+import com.drake.brv.annotaion.DividerOrientation
+import com.drake.brv.utils.dividerSpace
+import com.google.gson.Gson
 import com.xcjh.base_lib2.base.fragment.BaseFragment
 import com.xcjh.base_lib2.base.fragment.viewBind
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class Fast3GameHallItemFragment :
-    BaseFragment<Fast3GameHallItemViewModel, ItemGamehallPageBinding>() {
+class Fast3GameHallItemFragment : BaseFragment<Fast3GameHallItemViewModel, ItemGamehallPageBinding>() {
 
     override val mBinding: ItemGamehallPageBinding by viewBind()
-
     override val mViewModel: Fast3GameHallItemViewModel by viewModel()
+    private lateinit var adapter: GameHallItemAdapter
 
     override fun initView(savedInstanceState: Bundle?) {
-        mBinding.rvContent.itemAnimator = null
-        mBinding.rvContent.layoutManager = GridLayoutManager(requireContext(), 4)
-        mBinding.rvContent.dividerSpace(
-            requireContext().dp2px(20),
-            DividerOrientation.HORIZONTAL
-        )
-        val adapter = GameHallItemAdapter()
-        mViewModel.hallItems.observe(viewLifecycleOwner) {
-            adapter.submitList(it)
-        }
-        mBinding.rvContent.adapter = adapter
+        setupRecyclerView()
     }
 
     override fun lazyLoadData() {
-
     }
 
-    override fun createObserver() {
-        mViewModel.hallItems.observe(viewLifecycleOwner) {
-            mBinding.rvContent.bindingAdapter.models = it
+    private fun setupRecyclerView() {
+        adapter = GameHallItemAdapter().apply {
+            onItemClickListener = { item ->
+                //val dataStr = item.toString()
+                val dataStr = GsonUtils.toJson(item)
+                appListener?.onClickOtherGameWithBlock(dataStr)
+            }
+        }
+        mBinding.rvContent.apply {
+            itemAnimator = null
+            layoutManager = GridLayoutManager(context, 4)
+            dividerSpace(25.dp2px, DividerOrientation.HORIZONTAL)
+            adapter = this@Fast3GameHallItemFragment.adapter
+            edgeEffectFactory = BounceRVEdgeEffectFactory()
         }
     }
 
+    override fun initData() {
+        mViewModel.setGameType(requireArguments().getInt("gameType"))
+    }
 
+    override fun createObserver() {
+        mViewModel.hallItems.observe(viewLifecycleOwner) { gameList ->
+            adapter.submitList(gameList)
+            adapter.notifyItemRangeChanged(0,gameList.size)
+        }
+    }
+
+    companion object {
+        fun newInstance(gameType: Int) = Fast3GameHallItemFragment().apply {
+            arguments = Bundle().apply {
+                putInt("gameType", gameType)
+            }
+        }
+    }
 }

@@ -7,10 +7,14 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.utils.tool.indicator.CommonPagerIndicator
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import com.xcjh.base_lib2.utils.toHtml
 import net.lucode.hackware.magicindicator.MagicIndicator
 import net.lucode.hackware.magicindicator.ViewPagerHelper
@@ -132,11 +136,11 @@ fun MagicIndicator.bindViewPagerNewGame(
 ) {
     // viewPager.offscreenPageLimit = mStringList.size
     val commonNavigator = CommonNavigator(context)
-    if (scrollEnable) {
-        commonNavigator.isSkimOver = true
-    } else {
-        commonNavigator.isAdjustMode = true
-    }
+//    if (scrollEnable) {
+//        commonNavigator.isSkimOver = true
+//    } else {
+//        commonNavigator.isAdjustMode = true
+//    }
     commonNavigator.adapter = object : CommonNavigatorAdapter() {
 
         override fun getCount(): Int {
@@ -178,4 +182,61 @@ fun MagicIndicator.bindViewPagerNewGame(
 
     //viewPager 绑定 navigator
     ViewPagerHelper.bind(this, viewPager)
+}
+
+fun TabLayout.bindTabNewGame(
+    viewPager: ViewPager2,
+    titles: List<String> = arrayListOf(),
+    scrollEnable: Boolean = false,
+    action: (index: Int) -> Unit = {}
+) {
+    this.tabMode = if (scrollEnable) TabLayout.MODE_SCROLLABLE else TabLayout.MODE_FIXED
+    var tabClickedByUser = false
+    TabLayoutMediator(this, viewPager) { tab, position ->
+        val tabView = tab.view
+        if (position < titles.size) {
+            tab.text = titles[position]
+        }
+        if (position == 0) tabView.setPadding(0, 0, 32, 0) else tabView.setPadding(
+            32,
+            0,
+            32,
+            0
+        )
+        tabView.setOnClickListener {
+            tabClickedByUser = true
+        }
+    }.attach()
+
+    this.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+        override fun onTabSelected(tab: TabLayout.Tab?) {
+            val position = tab?.position ?: 0
+            viewPager.currentItem = position
+            if (tabClickedByUser) {
+                action.invoke(position)
+                tabClickedByUser = false // 重置点击状态
+            }
+        }
+
+        override fun onTabUnselected(tab: TabLayout.Tab?) {
+        }
+
+        override fun onTabReselected(tab: TabLayout.Tab?) {
+        }
+    })
+
+}
+
+/***
+ * 设置ViewPager2的overScroll模式和回弹效果
+ * @param overScrollMode 回弹模式
+ * @param effectFactory  回弹效果工厂
+ */
+@JvmOverloads
+fun ViewPager2.setOverScrollModeExt(overScrollMode: Int,effectFactory: RecyclerView.EdgeEffectFactory? = null) {
+    val view = getChildAt(0)
+    if (view is RecyclerView) {
+        view.overScrollMode = overScrollMode
+        if(effectFactory != null) view.edgeEffectFactory = effectFactory
+    }
 }

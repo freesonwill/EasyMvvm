@@ -6,11 +6,11 @@ import android.app.Application.ActivityLifecycleCallbacks
 import android.content.Context
 import android.os.Bundle
 import android.view.View
-import android.webkit.RenderProcessGoneDetail
 import androidx.annotation.UiThread
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
+import com.cn.game.sdk2.R
 import com.cn.game.sdk2.data.SortedList
 import com.cn.game.sdk2.data.bean.GameHallItem
 import com.cn.game.sdk2.moduleList
@@ -23,17 +23,17 @@ import com.cn.game.sdk2.websocket.appLifecycleEnable
 import com.cn.game.sdk2.websocket.appListener
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.gameMassageManager
-import com.cn.game.sdk2.websocket.imp.GameApp.Companion.koinApplication
 import com.cn.game.sdk2.websocket.interfaces.IGameForApp
 import com.cn.game.sdk2.websocket.isEnableSound
 import com.cn.game.sdk2.websocket.isNeedReconnect
-import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.xcjh.base_lib2.ModuleInitializer
 import com.xcjh.base_lib2.utils.LogUtilsExt.loge
 import game.common.proto.ClientReq
 import game.mod.proc.yf.proto.req.GameReq
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
@@ -296,29 +296,70 @@ class GameApp  private constructor(){
              }
         }
 
-        /// 传入wali游戏接口
-        /// 传入json字符串 json 格式:
-        /// [{
-        /// "idp":1,                //游戏Id
-        /// "gameType":1,           //游戏类型
-        /// "name":"捕鱼",            //游戏名称
-        /// "weight":1,              //权重排序
-        /// "direction":1,             //屏幕方向
-        /// "icon":"icon地址"           //icon地址
-        ///}]
+        /**
+         * * 传入wali游戏接口
+            传入json字符串 json 格式:
+            [{
+            "idp":1,            //游戏Id
+            "gameType":1,      //游戏类型
+            "name":"捕鱼",      //游戏名称
+            "weight":1,        //权重排序
+            "direction":1,     //屏幕方向
+            "icon":"icon地址"   //icon地址
+            }]
+            GAME_TYPE_BUYU(1),      3
+            GAME_TYPE_SHIXUN(2),    2
+            GAME_TYPE_QIPAI(3),     1
+            GAME_TYPE_DIANZI(4),    5
+            GAME_TYPE_SPORTS(5),    4
+         */
         @JvmStatic
         fun setMoreGames(moreGameList: String) {
-            val gameList = GsonUtils.fromJson<SortedList<GameHallItem>>(moreGameList,object : TypeToken<SortedList<GameHallItem>>(){}.type)
-            gameList.changeComparator { o1, o2 ->
-                when(val it = o1.gameType.compareTo(o2.gameType)){
-                    0 -> o1.weight.compareTo(o2.weight)
-                    else -> it
+            ThreadUtils.mainScope.launch {
+                val gameList = withContext(Dispatchers.IO){
+                    val gameList = GsonUtils.fromJson<SortedList<GameHallItem>>(moreGameList,object : TypeToken<SortedList<GameHallItem>>(){}.type)
+                    for(i in gameList.size-1 downTo  0) {
+                        if(gameList[i].gameType <= 0 )gameList.removeAt(i)
+                    }
+                    //3>2>1>5>4
+                    val gameTypeMap = mapOf(
+                        0 to 0,
+                        3 to 1,
+                        2 to 2,
+                        1 to 3,
+                        5 to 4,
+                        4 to 5,
+                    )
+                    gameList.changeComparator { o1, o2 ->
+                        val gameType1 = gameTypeMap[o1.gameType]!!
+                        val gameType2 = gameTypeMap[o2.gameType]!!
+                        when(val it = gameType1.compareTo(gameType2)){
+                            0 -> o1.weight.compareTo(o2.weight)
+                            else -> it
+                        }
+                    }
+                    gameList.addAll(
+                        listOf(
+                            GameHallItem(0,0,1,0, R.mipmap.game_sdk_kuai_icon_logo.toString(),"快三"),
+                            GameHallItem(1,0,0, 0,R.mipmap.game_sdk_kuai_icon_logo.toString(),"快三2"),
+                        )
+                    )
+                    gameList
                 }
+                gameAboutModel.setMoreGames(gameList)
             }
-            gameAboutModel.setMoreGames(gameList)
         }
 
+        /**
+         * socket是否连接上
+         */
+        @JvmStatic
+        val isSocketConnected get() = gameAboutModel.isOpen
+
         internal val koinApplication by lazy { KoinApplication.init() }
+
+
+
     }
 
 
@@ -326,29 +367,29 @@ class GameApp  private constructor(){
         /**
          * socket已连接
          */
-        fun onSocketConnected() {}
+        @UiThread fun onSocketConnected() {}
         /**
          * socket已关闭
          */
-        fun onSocketClosed() {}
+        @UiThread fun onSocketClosed() {}
         /**
          * 登录游戏
          * type: 1为成功. 其他为失败
          * msg: 错误信息,只在失败时有值
          */
-        fun onLoginGame(type: Int, msg: String?)
+        @UiThread fun onLoginGame(type: Int, msg: String?)
 
         /**
          * 进入直播间
          * type: 1为成功. 其他为失败
          * msg: 错误信息,只在失败时有值
          */
-        fun onEnterLive(type: Int, msg: String)
+        @UiThread fun onEnterLive(type: Int, msg: String)
 
         /**
          * 进入游戏
          */
-        fun onEnterGame()
+        @UiThread fun onEnterGame()
 
         /**
          * 离开直播间
@@ -356,7 +397,7 @@ class GameApp  private constructor(){
          * type: 1为成功. 其他为失败
          * msg: 错误信息,只在失败时有值
          */
-        fun onLeaveLive(liveId: String,type: Int, msg: String?)
+        @UiThread fun onLeaveLive(liveId: String,type: Int, msg: String?)
 
         /**
          * token失效

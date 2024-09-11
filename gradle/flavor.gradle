@@ -61,6 +61,7 @@ android {
             minifyEnabled false
             //buildConfigField "String", "token","\"99:mFGB4ljy\""
             signingConfig signingConfigs.innerTest
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
 
         //随机token
@@ -71,6 +72,7 @@ android {
             //buildConfigField "String", "token","\"random\""
             jniDebuggable true
             signingConfig signingConfigs.outerTest
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
 
     }

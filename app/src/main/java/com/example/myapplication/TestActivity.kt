@@ -1,9 +1,13 @@
 package com.example.myapplication
 
+import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.view.View
 import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -17,79 +21,131 @@ import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
 import com.cn.game.sdk2.utils.ext.ViewExt.isAdd
 import com.cn.game.sdk2.websocket.imp.GameApp
 import com.cn.game.sdk2.websocket.tokenArray
+import com.hjq.permissions.OnPermissionCallback
+import com.hjq.permissions.XXPermissions
 import com.xcjh.base_lib2.utils.LogUtilsExt.loge
+import com.xcjh.base_lib2.utils.screenWidth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.random.Random
 
 
-class TestActivity : AppCompatActivity(), GameApp.OnSdkListener {
+class TestActivity : AppCompatActivity() {
     private lateinit var btnOpen: TextView
     private lateinit var llshow: RelativeLayout
-
     private var isLogin = false
-    private val url:String get()  = when(BuildConfig.BUILD_TYPE+"a") {
-        "release"-> "ws://35.220.148.132:7642"  //连调
-        else-> "wss://ws.qxe68.com:7001/api/game/5702" ///test
-    }
-    private val token = "93:Ufx3Dy8y" ///test
-
-    var btnIndex = 0;
+    private var btnIndex = 0
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_test)
         btnOpen = findViewById(R.id.btnOpen)
         llshow = findViewById(R.id.llshow)
         val btnXiu = findViewById<Button>(R.id.btnXiu)
         val cpu = findViewById<Button>(R.id.cpu)
-//        GameApp.setSocketStatesCallback(object : GameApp.SocketStatesCallback {
-//            override fun onOpen() {
-//                socketIsOpen = true
-//                btnOpen.text = "服务器连接成功,点击登录"
-//                btnOpen.isClickable = true
-//            }
-//
-//            override fun onClose(isNeedReconnect: Boolean) {
-//                socketIsOpen = false
-//                if (isNeedReconnect) {
-//                    btnOpen.text = "正在重新连接服务器"
-//                } else {
-//                    btnOpen.text = "token失效,点击重新登录"
-//                    btnOpen.isClickable = true
-//                    isLogin = false
-//                }
-//            }
-//        })
-        var isLoadGame = false
+        ProxyApplication.instance.apply {
+            onSocketConnected.observe(this@TestActivity) {
+                if (it) {
+                    btnOpen.text = "已连接服务器，点击登录"
+                    btnIndex = 1
+                } else {
+                    btnOpen.text = "未连接服务器，点击连接"
+                    btnIndex = 0
+                }
+            }
+            onGameSdkEvent.observe(this@TestActivity) {
+                when (it.first) {
+                    "onCustomerServiceAction" -> onCustomerServiceAction()
+                    "onHistoryOfBetAction" -> onHistoryOfBetAction()
+                    "onEnterGame" -> onEnterGame()
+                    "onEnterLive" -> onEnterLive(
+                        it.second["type"] as Int,
+                        it.second["msg"] as String
+                    )
+
+                    "onLeaveLive" -> onLeaveLive(
+                        it.second["liveId"] as String,
+                        it.second["type"] as Int,
+                        it.second["msg"] as String?
+                    )
+
+                    "onLoginGame" -> onLoginGame(
+                        it.second["type"] as Int,
+                        it.second["msg"] as String?
+                    )
+
+                    "onTokenLoseEffectiveness" -> onTokenLoseEffectiveness()
+                    "onGameFloatingDetailViewStatus" -> onGameFloatingDetailViewStatus(it.second["isShowUp"] as Boolean)
+                    "onInsufficientBalance" -> onInsufficientBalance()
+                    "onClickOtherGameWithBlock" -> onClickOtherGameWithBlock(it.second["json"] as String)
+                }
+            }
+            lifecycle.addObserver(object : DefaultLifecycleObserver {
+                override fun onDestroy(owner: LifecycleOwner) {
+                    super.onDestroy(owner)
+                    GameApp.leaveLive()
+                }
+            })
+        }
         btnOpen.setOnClickListener {
             when (btnIndex) {
+                -1 -> {
+                    Toast.makeText(this, "正在连接请稍后", Toast.LENGTH_SHORT).show()
+                }
+
                 0 -> {
-                    if(!isLoadGame) {
-                        isLoadGame = true
-                        GameApp.loadGame(applicationContext,true,  url, "", this).apply {
-                            lifecycle.addObserver(object : DefaultLifecycleObserver {
-                                override fun onDestroy(owner: LifecycleOwner) {
-                                    super.onDestroy(owner)
-                                }
-                            })
-                        }
-                    }
+                    ProxyApplication.instance.loadGame()
+                    btnIndex  = -1
+                    btnOpen.text = "正在连接请稍后"
                 }
 
                 1 -> {
-                   // GameApp.login(token, "wali-internal", false)
-                    GameApp.login(tokenArray[Random.nextInt(tokenArray.size)], "wali-internal", false,false)
+                    // GameApp.login(token, "wali-internal", false)
+                    GameApp.login(
+                        tokenArray[Random.nextInt(tokenArray.size)],
+                        "wali-internal",
+                        false,
+                        false
+                    )
                     btnOpen.text = "正在登录"
                 }
 
                 2 -> {
-                    startActivity(Intent(this, MainActivity::class.java))
+                    val context = this
+                    btnOpen.visibility = View.GONE
+                    GameApp.apply {
+                        enterLive("1213", listOf(1), "")
+                        val container = findViewById<FrameLayout>(android.R.id.content)
+                        createFloatEnterView(context).apply {
+                            if (!this.isAdd()) {
+                                val lp =
+                                    FrameLayout.LayoutParams(
+                                        layoutParams.width,
+                                        layoutParams.height
+                                    )
+                                lp.topMargin = 150.dp2px
+                                lp.marginEnd = 0.dp2px
+                                container.addView(this, lp)
+                            }
+                        }
+                        createFloatResultView(context).apply {
+                            if (!this.isAdd()) {
+                                val lp =
+                                    FrameLayout.LayoutParams(
+                                        layoutParams.width,
+                                        layoutParams.height
+                                    )
+                                lp.topMargin = 70.dp2px
+                                lp.marginStart = context.screenWidth - layoutParams.width
+                                container.addView(this, lp)
+                            }
+                        }
+                    }
+                    //startActivity(Intent(this, MainActivity::class.java))
                 }
             }
-
         }
 
         btnXiu.setOnClickListener {
@@ -99,27 +155,39 @@ class TestActivity : AppCompatActivity(), GameApp.OnSdkListener {
         cpu.setOnClickListener {
             //GameApp.enterLive("1213", listOf(1), "")
         }
+        val needPermissions = mutableListOf<String>().also {
+            if (applicationInfo.targetSdkVersion >= Build.VERSION_CODES.TIRAMISU) {
+                it.add(Manifest.permission.READ_MEDIA_IMAGES)
+                it.add(Manifest.permission.READ_MEDIA_VIDEO)
+                it.add(Manifest.permission.READ_MEDIA_AUDIO)
+            } else {
+                it.add(Manifest.permission.READ_EXTERNAL_STORAGE)
+            }
+        }
+        val activity = this
+        XXPermissions.with(this).permission(needPermissions).request(object : OnPermissionCallback {
+                override fun onGranted(permissions: List<String>, all: Boolean) {
+
+                }
+                override fun onDenied(permissions: List<String>, never: Boolean) {
+                    Toast.makeText(activity,"请允许读取sdcard权限",Toast.LENGTH_SHORT).show()
+                }
+            })
+    }
+
+    private fun onCustomerServiceAction() {
+        Toast.makeText(this, "onCustomerServiceAction", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun onHistoryOfBetAction() {
+        Toast.makeText(this, "onHistoryOfBetAction", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun onEnterGame() {
 
     }
 
-    override fun onSocketConnected() {
-        btnOpen.text = "已连接服务器，点击登录"
-        btnIndex = 1
-    }
-
-    override fun onCustomerServiceAction() {
-        Toast.makeText(this,"onCustomerServiceAction",Toast.LENGTH_SHORT).show()
-    }
-
-    override fun onHistoryOfBetAction() {
-        Toast.makeText(this,"onHistoryOfBetAction",Toast.LENGTH_SHORT).show()
-    }
-
-    override fun onEnterGame() {
-
-    }
-
-    override fun onEnterLive(type: Int, msg: String) {
+    private fun onEnterLive(type: Int, msg: String) {
         if (type == 1) {
             btnIndex = 2
             btnOpen.text = "已进入直播间"
@@ -144,18 +212,22 @@ class TestActivity : AppCompatActivity(), GameApp.OnSdkListener {
                 }
             }
             lifecycleScope.launch {
-                val items = withContext(Dispatchers.IO){
+                val items = withContext(Dispatchers.IO) {
                     mutableListOf<GameHallItem>().apply {
                         repeat(200) { id ->
-                            val gameType = Random.nextInt(6)
+                            val gameType = Random.nextInt(5)+1
                             val weight = Random.nextInt(10)
                             val item = GameHallItem(
                                 id,
                                 gameType,
                                 weight,
                                 1,
-                                if(id % 2 == 0) com.cn.game.sdk2.R.mipmap.game_sdk_kuai_icon_logo.toString() else "https://www.baidu.com/img/flexible/logo/pc/result@2.png",
-                                "快三${id}_$weight"
+                                when (id % 3) {
+                                    0 -> com.cn.game.sdk2.R.mipmap.game_sdk_kuai_icon_logo.toString()
+                                    1 -> "https://www.baidu.com/img/flexible/logo/pc/result@2.png"
+                                    else -> Environment.getExternalStorageDirectory().absolutePath + "/134.jpg"
+                                },
+                                "快三${gameType}_${id}_$weight"
                             )
                             add(item)
                         }
@@ -166,12 +238,13 @@ class TestActivity : AppCompatActivity(), GameApp.OnSdkListener {
         }
     }
 
-    override fun onLeaveLive(liveId: String, type: Int, msg: String?) {
+    private fun onLeaveLive(liveId: String, type: Int, msg: String?) {
         "onLeaveLive->$msg".loge()
         btnOpen.text = "已离开房间"
+        btnIndex = 1
     }
 
-    override fun onLoginGame(i: Int, str: String?) {
+    private fun onLoginGame(i: Int, msg: String?) {
         "main->$i".loge()
         btnOpen.isClickable = true
         if (i == 1) {
@@ -184,27 +257,23 @@ class TestActivity : AppCompatActivity(), GameApp.OnSdkListener {
         }
     }
 
-    override fun onTokenLoseEffectiveness() {
+    private fun onTokenLoseEffectiveness() {
         btnOpen.text = "token失效,点击重新登录"
         btnOpen.isClickable = true
         isLogin = false
         btnIndex = 1
     }
 
-    override fun onGameFloatingDetailViewStatus(isShowUp: Boolean) {
+    private fun onGameFloatingDetailViewStatus(isShowUp: Boolean) {
 
     }
 
-    override fun onInsufficientBalance() {
+    private fun onInsufficientBalance() {
 
     }
 
-    override fun onClickOtherGameWithBlock(json: String) {
-        Toast.makeText(this,json,Toast.LENGTH_SHORT).show()
+    private fun onClickOtherGameWithBlock(json: String) {
+        Toast.makeText(this, json, Toast.LENGTH_SHORT).show()
     }
 
-    override fun onDestroy() {
-        GameApp.leaveLive()
-        super.onDestroy()
-    }
 }
