@@ -6,14 +6,6 @@
     android:layout_height="match_parent">
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/resultBgTop"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@mipmap/game_sdk_result_bg_top"
-        android:scaleType="fitXY"
-        app:layout_constraintBottom_toBottomOf="parent" />
-
-    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/ivResultBg"
         android:layout_width="0dp"
         android:layout_height="0dp"

@@ -1,6 +1,7 @@
 package com.cn.game.sdk2.utils.ext
 
 import android.content.Context
+import android.graphics.Point
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.view.View
@@ -183,5 +184,11 @@ object ViewExt {
     fun View.dp2px(dp: Int): Int {
         val scale = resources.displayMetrics.density
         return (dp * scale + 0.5f).toInt()
+    }
+
+    fun View.getCenterPoint(): Point {
+        val location = IntArray(2)
+        getLocationOnScreen(location)
+        return Point(location[0] + width / 2, location[1] + height / 2)
     }
 }
