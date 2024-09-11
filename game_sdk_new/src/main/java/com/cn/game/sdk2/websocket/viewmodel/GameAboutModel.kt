@@ -207,7 +207,7 @@ internal class GameAboutModel  {
     }
 
     @UiThread
-    suspend fun isShowGame(showGame: Boolean,miniGameId:Int? = null,isGameList:Boolean? = null) {
+    fun isShowGame(showGame: Boolean,miniGameId:Int? = null,isGameList:Boolean? = null) {
         _isShowGame.value = showGame
         if(miniGameId != null && isGameList != null)
             _isShowGameInfo.value = miniGameId to isGameList

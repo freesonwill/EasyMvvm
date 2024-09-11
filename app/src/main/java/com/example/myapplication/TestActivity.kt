@@ -173,6 +173,12 @@ class TestActivity : AppCompatActivity() {
                     Toast.makeText(activity,"请允许读取sdcard权限",Toast.LENGTH_SHORT).show()
                 }
             })
+        findViewById<View>(R.id.toGameMain).setOnClickListener {
+            GameApp.openGameDialog(-1,false)
+        }
+        findViewById<View>(R.id.toGameList).setOnClickListener {
+            GameApp.openGameDialog(100,true)
+        }
     }
 
     private fun onCustomerServiceAction() {

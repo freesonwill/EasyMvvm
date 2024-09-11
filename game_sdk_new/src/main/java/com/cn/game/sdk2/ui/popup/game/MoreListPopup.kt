@@ -87,7 +87,7 @@ class MoreListPopup private constructor(content: Context) : AttachPopupView(cont
 
             rlPopClickSwitchGame.clickNoRepeat(true) {
                 delayDismiss(100)
-                showGameList()
+                ViewHelper.instance.showGameList(context,listener!!.getFragmentManager(),listener!!.getSecondPopHeight())
             }
             rlPopClickAssist.clickNoRepeat(true){
                 delayDismiss(100)
@@ -96,21 +96,7 @@ class MoreListPopup private constructor(content: Context) : AttachPopupView(cont
         }
     }
 
-    private fun showGameList() {
-        val popupView = listener?.let { GameListView(context, listener = it) }
-        popupView?.targetHeight = listener?.getSecondPopHeight() ?: 0
-        XPopup.Builder(context)
-            .isTouchThrough(false)
-            .popupAnimation(PopupAnimation.TranslateFromBottom)
-            .navigationBarColor(android.R.color.transparent)
-            .animationDuration(100)//默认300ms
-            .isViewMode(true)
-            .hasShadowBg(false) // 去掉半透明背景
-            .enableDrag(true)
-            .dismissOnTouchOutside(true)
-            .asCustom(popupView)
-            .show()
-    }
+
 
     private fun setOnCustomBubbleAttachPopupListener(listener: OnMoreListPopupListener) {
         this.listener = listener
