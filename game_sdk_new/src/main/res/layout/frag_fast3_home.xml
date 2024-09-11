@@ -252,15 +252,6 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </RelativeLayout>
 
-                <androidx.fragment.app.FragmentContainerView
-                    android:id="@+id/fragment_draw_result"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toBottomOf="@id/cl_chips"
-                    app:layout_constraintTop_toTopOf="@id/cl_chips"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
-
                 <View
                     android:id="@+id/resultClickView"
                     android:layout_width="match_parent"
@@ -364,6 +355,15 @@
                     android:paddingEnd="0dp"
                     app:layout_constraintBottom_toTopOf="@id/cl_chips" />
 
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/resultBgTop"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:background="@mipmap/game_sdk_result_bg_top"
+                    android:scaleType="fitXY"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@id/viewPagerNew" />
+
                 <androidx.fragment.app.FragmentContainerView
                     android:id="@+id/fragment_winning"
                     android:layout_width="0dp"
@@ -372,6 +372,17 @@
                     app:layout_constraintEnd_toEndOf="@id/viewPagerNew"
                     app:layout_constraintStart_toStartOf="@id/viewPagerNew"
                     app:layout_constraintTop_toTopOf="@id/viewPagerNew" />
+
+                <androidx.fragment.app.FragmentContainerView
+                    android:id="@+id/fragment_draw_result"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    app:layout_constraintBottom_toBottomOf="@id/cl_chips"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/cl_chips" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
