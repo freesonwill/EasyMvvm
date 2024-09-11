@@ -113,9 +113,6 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                 }
             })
         }
-        FlowBus.with<Boolean>(EventKey.LOAD_FRAGMENT).register(viewLifecycleOwner) {
-           //mDatabind.viewPagerNew.offscreenPageLimit = mFragList.size
-        }
         loadFragment()
         setChipsView()
         setDrawResultView()

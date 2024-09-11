@@ -3,6 +3,8 @@ package com.cn.game.sdk2.utils.ext
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.IntDef
+import androidx.annotation.IntRange
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -16,6 +18,7 @@ import com.cn.game.sdk2.utils.tool.indicator.CommonPagerIndicator
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.xcjh.base_lib2.utils.toHtml
+import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 import net.lucode.hackware.magicindicator.MagicIndicator
 import net.lucode.hackware.magicindicator.ViewPagerHelper
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigator
@@ -238,5 +241,19 @@ fun ViewPager2.setOverScrollModeExt(overScrollMode: Int,effectFactory: RecyclerV
     if (view is RecyclerView) {
         view.overScrollMode = overScrollMode
         if(effectFactory != null) view.edgeEffectFactory = effectFactory
+    }
+}
+
+/***
+ * 设置ViewPager2的overScroll模式和回弹效果
+ * @param overScrollMode 回弹模式
+ * @param orientation  Either ORIENTATION_HORIZONTAL or ORIENTATION_VERTICAL.
+ */
+@JvmOverloads
+fun ViewPager2.setOverScrollModeExt(overScrollMode: Int,orientation:Int) {
+    val view = getChildAt(0)
+    if (view is RecyclerView) {
+        view.overScrollMode = overScrollMode
+        OverScrollDecoratorHelper.setUpOverScroll(view,orientation);
     }
 }

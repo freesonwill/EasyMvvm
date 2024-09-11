@@ -259,7 +259,7 @@ class MoneyOKView @JvmOverloads constructor(
     }
 
     /**
-     * 显示金钱(包括小数点,s不能超过5位)
+     * 显示金钱(包括小数点,不能超过5位)
      */
     private fun showMoneyFormat(money: Int): String {
         val moneyInt = money / 100f

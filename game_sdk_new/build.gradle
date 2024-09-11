@@ -47,7 +47,7 @@ android {
             variant.outputs.configureEach { output ->
                 def date = String.format('%s', new Date().format('yyyyMMddHHmmss'))
                 def gitVersion = getGitVersion()
-                outputFileName = "gamesdk-${variant.na1me}-${date}-v${VERSIONNAME}-${gitVersion}.aar"
+                outputFileName = "gamesdk-${variant.name}-${date}-v${VERSIONNAME}-${gitVersion}.aar"
             }
     }
     //region copy aar to app/libs
