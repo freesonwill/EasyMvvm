@@ -172,7 +172,7 @@ class ViewHelper {
                         }
                     }
                 })
-                //.popupAnimation(PopupAnimation.TranslateFromBottom)
+                .popupAnimation(PopupAnimation.TranslateAlphaFromBottom)
                 .animationDuration(animationDuration)
                 .moveUpToKeyboard(false) //如果不加这个，评论弹窗会移动到软键盘上面
                 .isViewMode(true)
@@ -217,9 +217,9 @@ class ViewHelper {
         popupView.targetHeight = targetHeight
         XPopup.Builder(context)
             .isTouchThrough(false)
-            .popupAnimation(PopupAnimation.TranslateFromBottom)
+            .popupAnimation(PopupAnimation.TranslateAlphaFromBottom)
             .navigationBarColor(android.R.color.transparent)
-            .animationDuration(100)//默认300ms
+            .animationDuration(150)//默认300ms
             .isViewMode(true)
             .hasShadowBg(false) // 去掉半透明背景
             .enableDrag(true)
@@ -328,6 +328,7 @@ class ViewHelper {
                     withTimeout(1000){
                         while(homeXPopupDialog == null || homeXPopupDialog?.isShow == false) delay(10)
                     }
+                    homeXPopupDialog!!.dismiss()
                     val context = v.context
                     val fm = homeXPopupDialog!!.fragment.childFragmentManager
                     val height = homeXPopupDialog!!.fragment.requireView().height
