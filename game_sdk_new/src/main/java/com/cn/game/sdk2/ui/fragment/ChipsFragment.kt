@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.databinding.FragmentChipsBinding
 import com.cn.game.sdk2.ui.adapter.ChipsAdapter
+import com.cn.game.sdk2.ui.helper.ToastHelper
 import com.cn.game.sdk2.ui.view.CenterLayoutManager
 import com.cn.game.sdk2.ui.view.CommonLinearLayoutItemDecoration
 import com.cn.game.sdk2.ui.viewmodel.ChipsViewModel
@@ -17,6 +18,7 @@ import com.cn.game.sdk2.websocket.appListener
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.xcjh.base_lib2.base.fragment.BaseFragment
 import com.xcjh.base_lib2.base.fragment.viewBind
+import com.xcjh.base_lib2.utils.windowManager
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 /***
@@ -71,7 +73,11 @@ class ChipsFragment : BaseFragment<ChipsViewModel, FragmentChipsBinding>(), Chip
                         PromptSoundPlay.btnPlayMedia()
                         mViewModel.setSelectedChip(item)
                     } else {
-                        Toast.makeText(context, resources.getString(R.string.error_bet_money_insufficient), Toast.LENGTH_LONG).show()
+                        ToastHelper.instance.showWindowToast(
+                            context = context,
+                            msg = resources.getString(R.string.error_bet_money_insufficient),
+                            context.resources.displayMetrics.heightPixels/2,
+                        )
                         appListener?.onInsufficientBalance()
                     }
                 }
