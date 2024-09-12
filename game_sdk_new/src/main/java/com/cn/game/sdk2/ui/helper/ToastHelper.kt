@@ -187,11 +187,18 @@ private class HostToastView(context: Context) : LinearLayout(context, null, 0) {
             }
 
             is LinearLayout -> {
-                //TODO
+                val lp = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+                lp.gravity = Gravity.CENTER
+                parent.addView(view, lp)
             }
 
             is RelativeLayout -> {
-                //TODO
+                val lp = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT)
+                lp.addRule(RelativeLayout.ALIGN_LEFT, view.id)
+                lp.addRule(RelativeLayout.ALIGN_TOP, view.id)
+                lp.addRule(RelativeLayout.CENTER_HORIZONTAL)
+                lp.addRule(RelativeLayout.CENTER_VERTICAL)
+                parent.addView(view, lp)
             }
 
             is FrameLayout -> {
