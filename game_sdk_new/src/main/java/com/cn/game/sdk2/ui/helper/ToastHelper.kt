@@ -15,6 +15,7 @@ import com.cn.game.sdk2.databinding.ToastLayoutBinding
 import com.cn.game.sdk2.utils.ThreadUtils.launchWithCustomContext
 import com.cn.game.sdk2.utils.ThreadUtils.mainScope
 import com.xcjh.base_lib2.ModuleInitializer
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.coroutines.resume
@@ -23,42 +24,68 @@ import kotlin.coroutines.suspendCoroutine
 class ToastHelper {
 
     companion object {
-        private const val TAG = "ToastHelper"
         val instance: ToastHelper by lazy { ToastHelper() }
     }
 
     private var defaultY = 0
+    private var canReplace = true
+    private var job: Job? = null
+    private var mToast: Toast? = null
+    private var mHostToast: HostToastView? = null
 
     /**
      * @param offsetY 從上往下偏移，不設置則沿用前次顯示位置，橫向置中
      */
-    fun showWindowToast(context: Context = ModuleInitializer.application, msg: String, offsetY: Int = defaultY, duration: Long = 2000, canReplace:Boolean = true) {
-        val toast = Toast.makeText(context, msg, duration.toInt())
-        val view = HostToastView(context)
-        toast.view = view
-        toast.setGravity(Gravity.CENTER_HORIZONTAL or Gravity.TOP, 0, offsetY)
-        view.setMsg(msg)
-        mainScope.launchWithCustomContext("showWindowToast") {
-            delay(duration)
-            toast.view = null
+    fun showWindowToast(context: Context = ModuleInitializer.application, msg: String, offsetY: Int = defaultY, duration: Long = 2000, replace:Boolean = true) {
+        if (!this.canReplace) return
+        dismiss()
+        this.canReplace = replace
+        mToast = Toast.makeText(context, msg, duration.toInt()).apply {
+            val view = HostToastView(context)
+            this.view = view
+            setGravity(Gravity.CENTER_HORIZONTAL or Gravity.TOP, 0, offsetY)
+            view.setMsg(msg)
+            job = mainScope.launchWithCustomContext("showWindowToast") {
+                delay(duration)
+                this@apply.view = null
+                dismiss()
+            }
+            show()
         }
-        toast.show()
     }
 
-    fun showHostToast(attachView: View, msg: String, duration: Long = 2000, canReplace:Boolean = true) {
-        val view = HostToastView(attachView.context)
-        view.show(attachView, msg, duration)
-        view.post {
-            val context = view.context
-            val y = view.getToastY()
-            val resourceId = context.resources.getIdentifier("status_bar_height", "dimen", "android")
-            val statusBarHeight = if (resourceId > 0) {
-                context.resources.getDimensionPixelSize(resourceId)
-            } else {
-                0
+    fun showHostToast(attachView: View, msg: String, duration: Long = 2000, replace:Boolean = true) {
+        if (!this.canReplace) return
+        dismiss()
+        this.canReplace = replace
+        mHostToast = HostToastView(attachView.context).apply {
+            show(attachView, msg, duration)
+            post {
+                val y = getToastY()
+                val resourceId = context.resources.getIdentifier("status_bar_height", "dimen", "android")
+                val statusBarHeight = if (resourceId > 0) {
+                    context.resources.getDimensionPixelSize(resourceId)
+                } else {
+                    0
+                }
+                defaultY = y - statusBarHeight
             }
-            defaultY = y - statusBarHeight
+            job = mainScope.launchWithCustomContext("showHostToast") {
+                delay(duration)
+                dismiss()
+            }
         }
+    }
+
+    private fun dismiss() {
+        if (job?.isCompleted != true) {
+            job?.cancel()
+        }
+        mToast?.cancel()
+        mHostToast?.cancel()
+        mToast = null
+        mHostToast = null
+        this.canReplace = true
     }
 }
 
@@ -72,7 +99,7 @@ private class HostToastView(context: Context) : LinearLayout(context, null, 0) {
 
     init {
         gravity = Gravity.CENTER
-        tag = TAG
+        tag = hashCode()
     }
 
     fun show(host: View, msg: CharSequence, duration: Long) {
@@ -82,14 +109,12 @@ private class HostToastView(context: Context) : LinearLayout(context, null, 0) {
         binding.toastText.text = msg
         bindViewToParent(host, rootView)
         mainScope.launchWithCustomContext(TAG) {
-            val d1 = launch { playAnim(true) }
-            val d2 = launch {
+            launch {
+                playAnim(true)
                 delay(duration)
                 playAnim(false)
                 dismissToast(rootView)
-            }
-            d1.join()
-            d2.join()
+            }.join()
         }
     }
 
@@ -134,10 +159,14 @@ private class HostToastView(context: Context) : LinearLayout(context, null, 0) {
         }
     }
 
-    fun dismissToast(rootView: ViewGroup = findParentView(this)) {
-        rootView.findViewWithTag<View>(TAG)?.let {
+    private fun dismissToast(rootView: ViewGroup = findParentView(this)) {
+        rootView.findViewWithTag<View>(hashCode())?.let {
             rootView.removeView(it)
         }
+    }
+
+    fun cancel() {
+        visibility = View.GONE
     }
 
     private fun findParentView(view: View): ViewGroup {
