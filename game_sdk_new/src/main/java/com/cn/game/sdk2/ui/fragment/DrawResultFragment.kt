@@ -2,6 +2,7 @@ package com.cn.game.sdk2.ui.fragment
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.graphics.Point
 import android.os.Bundle
 import androidx.core.animation.addListener
 import androidx.core.view.isVisible
@@ -11,6 +12,7 @@ import com.cn.game.sdk2.ui.viewmodel.DrawResultViewModel
 import com.cn.game.sdk2.utils.IconUtils
 import com.cn.game.sdk2.utils.ext.BizExt.isLeopard
 import com.cn.game.sdk2.utils.ext.CommonExt.toPinyin
+import com.cn.game.sdk2.utils.ext.ViewExt.getCenterPoint
 import com.cn.game.sdk2.websocket.bean.RoundInfoBean
 import com.xcjh.base_lib2.base.fragment.BaseFragment
 import com.xcjh.base_lib2.base.fragment.viewBind
@@ -80,19 +82,29 @@ class DrawResultFragment: BaseFragment<DrawResultViewModel, FragmentDrawResultBi
      * @param duration 動畫時間，預設為200L
      * @param doEnd 動畫結束後執行
      */
-    fun playAnim(duration: Long = 200L, doEnd: () -> Unit) {
+    fun playAnim(startPosition: Point, duration: Long = 200L, doEnd: () -> Unit) {
         mBinding.apply {
-            val scaleProperties = arrayOf("scaleX", "scaleY")
+            val scaleProperties = listOf(
+                Triple("scaleX", 0f, 1f),
+                Triple("scaleY", 0f, 1f)
+            )
+            val leftPositionProperties = mutableListOf<Triple<String, Float, Float>>().apply {
+                val point = llResultLeft.getCenterPoint()
 
-            val leftAnim = scaleProperties.map { property ->
-                ObjectAnimator.ofFloat(llResultLeft, property, 0f, 1f)
-                    .apply {
-                        this.duration = duration
-                    }
+                add(Triple("translationX", (startPosition.x - point.x).toFloat(), 0f))
+                add(Triple("translationY", (startPosition.y - point.y).toFloat(), 0f))
             }
 
+            val leftAnim =
+                leftPositionProperties.apply { addAll(scaleProperties) }.map { property ->
+                    ObjectAnimator.ofFloat(llResultLeft, property.first, property.second, property.third)
+                        .apply {
+                            this.duration = duration
+                        }
+                }
+
             val rightAnim = scaleProperties.map { property ->
-                ObjectAnimator.ofFloat(llResultRight, property, 0f, 1f)
+                ObjectAnimator.ofFloat(llResultRight, property.first, property.second, property.third)
                     .apply {
                         this.duration = duration
                         startDelay = 500

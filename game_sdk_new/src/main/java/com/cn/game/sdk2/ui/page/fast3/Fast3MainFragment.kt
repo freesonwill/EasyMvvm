@@ -40,6 +40,7 @@ import com.cn.game.sdk2.utils.IconUtils
 import com.cn.game.sdk2.utils.ext.CommonExt.formatRealMoney
 import com.cn.game.sdk2.utils.ext.CommonExt.isCanGoOn
 import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
+import com.cn.game.sdk2.utils.ext.ViewExt.getCenterPoint
 import com.cn.game.sdk2.utils.ext.ViewExt.isAdd
 import com.cn.game.sdk2.utils.ext.ViewExt.locationOnScreen
 import com.cn.game.sdk2.utils.ext.bindViewPagerNewGame
@@ -90,9 +91,6 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
         mBinding.bottomLayout.setOnTouchListener { _, _ -> true }
         mBinding.resultClickView.setOnClickListener { } //屏蔽底部recycler点击
 
-        FlowBus.with<Boolean>(EventKey.LOAD_FRAGMENT).register(viewLifecycleOwner) {
-           //mDatabind.viewPagerNew.offscreenPageLimit = mFragList.size
-        }
         loadFragment()
         setChipsView()
         setDrawResultView()
@@ -247,6 +245,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                 mBinding.fragmentDrawResult.isVisible = false
                 mBinding.ivHomeBg.isVisible = false
                 mBinding.ivHomeBgCenter.isVisible = false
+                mBinding.resultBgTop.isVisible = false
             }, duration = if (mViewModel.isCountDownStart) 250 else 0)
 
             //暂时解决筹码栏被隐藏问题
@@ -274,7 +273,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                 with(drawResultFrag) {
                     gameAboutModel.currentSettleResult?.let { setDrawResult(it) }
                     mBinding.fragmentDrawResult.isVisible = true
-                    playAnim {
+                    playAnim(viewPagerNew.getCenterPoint()) {
                         //中奖动画
                         winningAnimFrag.startWinLottieAnim(gameAboutModel.netIncome, endCallBack = {
                             //开奖结果注区动画闪烁
@@ -341,6 +340,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                         //开奖结果
                         ivHomeBg.isVisible = true
                         ivHomeBgCenter.isVisible = true
+                        resultBgTop.isVisible = true
                     },
                     duration = 0
                 )
@@ -694,6 +694,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
             fragmentDrawResult.isVisible = false
             ivHomeBg.isVisible = false
             ivHomeBgCenter.isVisible = false
+            resultBgTop.isVisible = false
 
             flChips.translationY = 0f
             betteAgainLayout.translationX = 0f

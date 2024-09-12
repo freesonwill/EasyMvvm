@@ -15,6 +15,7 @@ import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.lxj.xpopup.core.BottomPopupView
 import com.xcjh.base_lib2.utils.view.clickNoRepeat
+import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 
 class GameListView @JvmOverloads constructor(
     context: Context,
@@ -63,7 +64,7 @@ class GameListView @JvmOverloads constructor(
                     fragmentList
                 )
             }
-        binding.vpGameList.setOverScrollModeExt(OVER_SCROLL_IF_CONTENT_SCROLLS,BounceRVEdgeEffectFactory())
+        binding.vpGameList.setOverScrollModeExt(OVER_SCROLL_IF_CONTENT_SCROLLS,OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
         binding.tlGameList.bindTabNewGame(
             viewPager = binding.vpGameList,
             titles = tabTitles,
