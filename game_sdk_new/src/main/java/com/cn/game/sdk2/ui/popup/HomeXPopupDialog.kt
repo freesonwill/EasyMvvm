@@ -19,7 +19,7 @@ import kotlinx.coroutines.GlobalScope
  * author       : zhangsan
  * createTime   : 2024/6/13 18:18
  **/
-class HomeXPopupDialog(context: Context, private val fragment: Fragment, private var miniGameId: Int) : VerticalBottomPopupView(context) {
+class HomeXPopupDialog(context: Context, val fragment: Fragment, private var miniGameId: Int) : VerticalBottomPopupView(context) {
 
     companion object {
         const val TAG = "HomeXPopupDialog"
@@ -36,17 +36,6 @@ class HomeXPopupDialog(context: Context, private val fragment: Fragment, private
             transaction.add(R.id.fl_container, fragment,"HomeXPopupDialog").commitNowAllowingStateLoss()
         }
     }
-
-    override fun onShow() {
-        super.onShow()
-        /*post {
-            if (!isLoadFragment) {
-                isLoadFragment = true
-                FlowBus.with<Boolean>(EventKey.LOAD_FRAGMENT).post(GlobalScope, true)
-            }
-        }*/
-    }
-
 
     private val fragmentManager
         get() = run {

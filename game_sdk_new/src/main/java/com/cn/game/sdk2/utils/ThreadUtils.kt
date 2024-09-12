@@ -5,6 +5,7 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
@@ -29,7 +30,7 @@ object ThreadUtils {
      *  用於捕獲執行Coroutine時發生的錯誤，配合CustomContext使用
      */
     private val exceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
-        LogUtils.dTag(
+        LogUtils.eTag(
             coroutineContext[CustomContext]?.name ?: "UNKNOWN",
             "Caught exception in CoroutineExceptionHandler: $throwable"
         )
@@ -39,14 +40,14 @@ object ThreadUtils {
      * 主线程Scope，提供给没有LifecycleScope，ViewModelScope的场景
      */
     val mainScope by lazy {
-        CoroutineScope(Dispatchers.Main + exceptionHandler)
+        CoroutineScope (SupervisorJob() + Dispatchers.Main + exceptionHandler)
     }
 
     /**
      *  監聽接口專用Scope
      */
     val appListenerScope by lazy {
-        CoroutineScope(Dispatchers.Main + exceptionHandler)
+        CoroutineScope(SupervisorJob() + Dispatchers.Main + exceptionHandler)
     }
 
     /**
