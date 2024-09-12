@@ -18,8 +18,6 @@ import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.data.BetteFlyData
@@ -32,7 +30,7 @@ import com.cn.game.sdk2.ui.fragment.DrawHistoryFragment
 import com.cn.game.sdk2.ui.fragment.DrawResultFragment
 import com.cn.game.sdk2.ui.fragment.WinningAnimationFragment
 import com.cn.game.sdk2.ui.helper.AnimHelper
-import com.cn.game.sdk2.ui.helper.Fast3ToastHelper
+import com.cn.game.sdk2.ui.helper.ToastHelper
 import com.cn.game.sdk2.ui.popup.game.MoreListPopup
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.view.game.MoneyOKView
@@ -92,27 +90,6 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
         mBinding.bottomLayout.setOnTouchListener { _, _ -> true }
         mBinding.resultClickView.setOnClickListener { } //屏蔽底部recycler点击
 
-        Fast3ToastHelper.attachToHost(mBinding.centerLayout).let {
-            lifecycle.addObserver(object : DefaultLifecycleObserver {
-                var startTime: Long = 0
-                override fun onCreate(owner: LifecycleOwner) {
-                    super.onCreate(owner)
-                    startTime = System.currentTimeMillis()
-                }
-
-                override fun onResume(owner: LifecycleOwner) {
-                    super.onResume(owner)
-                    (System.currentTimeMillis() - startTime).let {
-                        LogUtils.dTag(TAG, "Fast3MainFragment load costMills:$it")
-                    }
-                }
-
-                override fun onDestroy(owner: LifecycleOwner) {
-                    super.onDestroy(owner)
-                    Fast3ToastHelper.destroy()
-                }
-            })
-        }
         FlowBus.with<Boolean>(EventKey.LOAD_FRAGMENT).register(viewLifecycleOwner) {
            //mDatabind.viewPagerNew.offscreenPageLimit = mFragList.size
         }
@@ -240,7 +217,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
         lifecycleScope.launch {
             //开始语音
             if (mViewModel.isCountDownStart) {
-                Fast3ToastHelper.showToastNormal(getString(R.string.g_home_betting_begin), 2000)
+                ToastHelper.instance.showHostToast(mBinding.viewPagerNew, getString(R.string.g_home_betting_begin))
             }
             mBinding.apply {
                 async {
@@ -257,7 +234,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
             //重置注区筹码
             notifyMoneyOkView(null)
             if (mViewModel.isCountDownStart) {
-                Fast3ToastHelper.showToastNormal(getString(R.string.g_home_betting_begin), 2000)
+                ToastHelper.instance.showHostToast(mBinding.viewPagerNew, getString(R.string.g_home_betting_begin))
             }
             refreshChips()
             //下注筹码向上升起动画
@@ -425,10 +402,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                         mBinding.txtHomeTime.isVisible = false
                         mBinding.txtHomeUnit.isVisible = false
                         mViewModel.isClickOperation = false
-                        Fast3ToastHelper.showToastNormal(
-                            getString(R.string.g_home_betting_end),
-                            canReplace = false
-                        )
+                        ToastHelper.instance.showHostToast(mBinding.viewPagerNew, getString(R.string.g_home_betting_end))
                         //防止断网状态
                         if (mViewModel.gameState != GameStage.DEAL)
                             gameAboutModel.changeStage(GameStage.DEAL)
@@ -487,7 +461,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
         mViewModel.betOkClick.observe(this) {
             gameMassageManager
                 ?.commitBetting { bettingState, areaLimit ->
-                    bettingState.isCanGoOn(areaLimit) {
+                    bettingState.isCanGoOn(mBinding.viewPagerNew, areaLimit) {
                         hiddenAnchorTop()
                     }
                 }
@@ -520,21 +494,19 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
             Log.e(TAG, "下注结果监听--->${response}")
             if (!response.isSuccess) {
                 //失败时显示delete ok按钮
-                Fast3ToastHelper.showToastNormal("网络连接失败")
+                ToastHelper.instance.showHostToast(mBinding.viewPagerNew, "网络连接失败")
                 showAnchorTop()
             } else {
-                Fast3ToastHelper.showToastNormal(
-                    getString(
-                        R.string.bet_success_prompt,
-                        response.money.formatRealMoney()
-                    )
-                )
+                ToastHelper.instance.showHostToast(mBinding.viewPagerNew, getString(
+                    R.string.bet_success_prompt,
+                    response.money.formatRealMoney()
+                ))
             }
         }
 
         //error
         gameAboutModel.toastErrorMessage.observe(viewLifecycleOwner) { msg ->
-            Fast3ToastHelper.showToastNormal(msg)
+            ToastHelper.instance.showHostToast(mBinding.viewPagerNew, msg)
         }
     }
 
@@ -749,7 +721,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
             //加倍
             ivMultiple2.setOnClickListener {
                 if (gameAboutModel.currentAgainDoubleState.value == AgainDoubleState.DOUBLE_CAN_NOT_50) {
-                    Fast3ToastHelper.showToastNormal(getString(R.string.money_insufficient_50))
+                    ToastHelper.instance.showHostToast(mBinding.viewPagerNew, getString(R.string.money_insufficient_50))
                     return@setOnClickListener
                 }
                 if (gameAboutModel.currentAgainDoubleState.value == AgainDoubleState.DOUBLE
@@ -761,7 +733,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                     }
                     gameMassageManager
                         ?.doubleBetting { bettingState, map, areaLimit ->
-                            bettingState.isCanGoOn(areaLimit) {
+                            bettingState.isCanGoOn(mBinding.viewPagerNew, areaLimit) {
                                 if (!map.isNullOrEmpty()) {
                                     map.forEach {
                                         it.value.let { record ->
@@ -794,7 +766,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
             //续压
             ivXuya.setOnClickListener {
                 if (gameAboutModel.currentAgainDoubleState.value == AgainDoubleState.AGAIN_CAN_NOT_50) {
-                    Fast3ToastHelper.showToastNormal(getString(R.string.money_insufficient_50))
+                    ToastHelper.instance.showHostToast(mBinding.viewPagerNew, getString(R.string.money_insufficient_50))
                     return@setOnClickListener
                 }
                 if (gameAboutModel.currentAgainDoubleState.value != AgainDoubleState.AGAIN) {

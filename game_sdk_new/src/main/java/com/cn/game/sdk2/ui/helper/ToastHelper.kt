@@ -6,6 +6,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.Toast
@@ -170,7 +171,7 @@ private class HostToastView(context: Context) : LinearLayout(context, null, 0) {
     }
 
     private fun findParentView(view: View): ViewGroup {
-        if (view is ConstraintLayout || view is LinearLayout || view is RelativeLayout) return view as ViewGroup
+        if (view is ConstraintLayout || view is LinearLayout || view is RelativeLayout || view is FrameLayout) return view as ViewGroup
         return findParentView(view.parent as View)
     }
 
@@ -191,6 +192,12 @@ private class HostToastView(context: Context) : LinearLayout(context, null, 0) {
 
             is RelativeLayout -> {
                 //TODO
+            }
+
+            is FrameLayout -> {
+                val lp = FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+                lp.gravity = Gravity.CENTER
+                parent.addView(this, lp)
             }
 
             else -> {
