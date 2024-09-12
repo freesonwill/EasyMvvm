@@ -36,6 +36,22 @@
             android:layout_height="wrap_content"
             android:text=""
             android:visibility="gone" />
+
+        <Button
+            android:id="@+id/toGameMain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="跳转游戏主界面"
+            />
+
+        <Button
+            android:id="@+id/toGameList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="跳转游戏大厅"
+            />
     </LinearLayout>
 
     <Button

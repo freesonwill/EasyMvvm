@@ -21,4 +21,21 @@ data class GameHallItem(
     override fun toString(): String {
         return "name:$name"
     }
+    companion object {
+        private val gameTypeMap by lazy { mapOf(
+            0 to 0,
+            3 to 1,
+            2 to 2,
+            1 to 3,
+            5 to 4,
+            4 to 5,
+        )    }
+
+        /**
+         * 游戏类型转Tab的索引
+         */
+        fun gameType2Index(gameType: Int):Int{
+            return gameTypeMap[gameType]!!
+        }
+    }
 }

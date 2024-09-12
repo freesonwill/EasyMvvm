@@ -2,47 +2,43 @@ package com.cn.game.sdk2.ui.helper
 
 import android.animation.ValueAnimator
 import android.content.Context
-import android.graphics.Paint
-import android.graphics.Typeface
-import android.util.TypedValue
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnAttachStateChangeListener
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
+import androidx.core.view.doOnDetach
 import androidx.core.view.isVisible
-import androidx.core.view.marginLeft
-import androidx.core.view.setPadding
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import androidx.viewpager.widget.ViewPager
-import androidx.viewpager2.widget.ViewPager2
+import androidx.lifecycle.Observer
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.data.enums.GAME_ID_ENUM
 import com.cn.game.sdk2.ui.page.fast3.Fast3MainFragment
 import com.cn.game.sdk2.ui.popup.HomeXPopupDialog
 import com.cn.game.sdk2.ui.popup.fast3.Fast3HelpPopup
+import com.cn.game.sdk2.ui.view.game.GameListView
+import com.cn.game.sdk2.utils.ThreadUtils
 import com.cn.game.sdk2.utils.ThreadUtils.appListenerScope
 import com.cn.game.sdk2.utils.ThreadUtils.launchWithCustomContext
 import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
 import com.cn.game.sdk2.websocket.appListener
 import com.cn.game.sdk2.websocket.gameAboutModel
-import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
+import com.lxj.xpopup.enums.PopupAnimation
 import com.lxj.xpopup.interfaces.SimpleCallback
 import com.xcjh.base_lib2.utils.LogUtils
 import com.xcjh.base_lib2.utils.view.clickNoRepeat
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeout
 import java.lang.ref.WeakReference
 
 /**
- * Description:
+ * Description: View辅助类
  * author       : zhangsan
  * createTime   : 2024/6/13 17:43
  **/
@@ -62,8 +58,8 @@ class ViewHelper {
     //弱引用防止view不能被回收
     private val viewHolderMap = mutableMapOf<ViewFloatType, WeakReference<View>>()
 
-    private var homeXPopupDialog: BasePopupView?
-        get() = viewHolderMap[ViewFloatType.HomeXPopupDialog]?.get() as BasePopupView?
+    private var homeXPopupDialog: HomeXPopupDialog?
+        get() = viewHolderMap[ViewFloatType.HomeXPopupDialog]?.get() as HomeXPopupDialog?
         set(value) {
             viewHolderMap[ViewFloatType.HomeXPopupDialog] = WeakReference(value)
         }
@@ -73,6 +69,7 @@ class ViewHelper {
         set(value) {
             viewHolderMap[ViewFloatType.HelpXPopupDialog] = WeakReference(value)
         }
+    private var gameListDialog:GameListView? = null
 
     private var fastView: View?
         get() = viewHolderMap[ViewFloatType.FastView]?.get()
@@ -85,7 +82,6 @@ class ViewHelper {
         set(value) {
             viewHolderMap[ViewFloatType.FastViewOverlay] = WeakReference(value)
         }
-
     //是否显示其他pop
     var isShowOtherPop: Boolean = false
 
@@ -132,7 +128,7 @@ class ViewHelper {
             }.show()
     }
 
-    private fun tryCreateMainPopup(context: Context) {
+    private fun tryCreateMainPopup(context: Context, animationDuration: Int = 200) {
         if (null == homeXPopupDialog) {
             val pop =
                 HomeXPopupDialog(context, Fast3MainFragment(), GAME_ID_ENUM.GAME_FAST3.num).apply {
@@ -173,7 +169,7 @@ class ViewHelper {
                     }
                 })
                 //.popupAnimation(PopupAnimation.TranslateFromBottom)
-                .animationDuration(200)
+                .animationDuration(animationDuration)
                 .moveUpToKeyboard(false) //如果不加这个，评论弹窗会移动到软键盘上面
                 .isViewMode(true)
                 .isTouchThrough(true)
@@ -196,6 +192,42 @@ class ViewHelper {
         }
     }
 
+    /**
+     * 展示游戏大厅
+     * @param context 上下文
+     * @param fm FragmentManager
+     * @param targetHeight view高度
+     * @param miniGameId 游戏id
+     */
+    fun showGameList(
+        context: Context,
+        fm: FragmentManager,
+        targetHeight: Int,
+        miniGameId: Int? = null
+    ) {
+        if(gameListDialog != null){
+            gameListDialog?.switchPage(miniGameId)
+            return
+        }
+        val popupView = GameListView(context, fm = fm, miniGameId=miniGameId)
+        popupView.targetHeight = targetHeight
+        XPopup.Builder(context)
+            .isTouchThrough(false)
+            .popupAnimation(PopupAnimation.TranslateFromBottom)
+            .navigationBarColor(android.R.color.transparent)
+            .animationDuration(100)//默认300ms
+            .isViewMode(true)
+            .hasShadowBg(false) // 去掉半透明背景
+            .enableDrag(true)
+            .dismissOnTouchOutside(true)
+            .asCustom(popupView)
+            .show()
+        gameListDialog = popupView
+        popupView.doOnDetach {
+            gameListDialog = null
+            LogUtils.eTag(TAG, "gameListDialog set null")
+        }
+    }
     private fun fadeIn(view: View) {
         val animator = ValueAnimator.ofFloat(0f, 1f)
         animator.addUpdateListener {
@@ -217,7 +249,7 @@ class ViewHelper {
     }
 
 
-    private fun showGameMainPopup(context: Context, isShow: Boolean) {
+    private fun showGameMainPopup(context: Context, isShow: Boolean = true) {
         tryCreateMainPopup(context)
         if (!isShow) {
             homeXPopupDialog?.dismiss()
@@ -264,6 +296,7 @@ class ViewHelper {
                 }
                 showGameMainPopup(context, true)
             }
+            observerGameList(it)
         }.apply {
             if (context is LifecycleOwner) {
                 context.lifecycle.addObserver(object : DefaultLifecycleObserver {
@@ -274,6 +307,37 @@ class ViewHelper {
                 })
             }
         }
+    }
+
+    /**
+     * 监听打开GameList
+     */
+    private fun observerGameList(v: View) {
+        v.addOnAttachStateChangeListener(object : OnAttachStateChangeListener {
+            private val obsrv: Observer<Pair<Int, Boolean>> = Observer<Pair<Int, Boolean>> {
+                ThreadUtils.mainScope.launch {
+                    val miniGameId = gameAboutModel.miniGameId
+                    val isGameList = gameAboutModel.isGameList
+                    if (!isGameList) return@launch showGameMainPopup(v.context)
+                    showGameMainPopup(v.context)
+                    withTimeout(1000){
+                        while(homeXPopupDialog == null || homeXPopupDialog?.isShow == false) delay(10)
+                    }
+                    val context = v.context
+                    val fm = homeXPopupDialog!!.fragment.childFragmentManager
+                    val height = homeXPopupDialog!!.fragment.requireView().height
+                    showGameList(context, fm, height, miniGameId)
+                }
+            }
+
+            override fun onViewAttachedToWindow(p0: View) {
+                gameAboutModel.isShowGameInfo.observeForever(obsrv)
+            }
+
+            override fun onViewDetachedFromWindow(p0: View) {
+                gameAboutModel.isShowGameInfo.removeObserver(obsrv)
+            }
+        })
     }
 
     fun getFastViewOverlay(context: Context): View {

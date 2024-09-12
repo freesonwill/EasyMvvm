@@ -2,7 +2,9 @@ package com.cn.game.sdk2.ui.view.game
 
 import android.content.Context
 import android.util.AttributeSet
+import androidx.fragment.app.FragmentManager
 import com.cn.game.sdk2.R
+import com.cn.game.sdk2.data.bean.GameHallItem
 import com.cn.game.sdk2.databinding.FragmentGamehallBinding
 import com.cn.game.sdk2.ui.adapter.GameListViewPagerAdapter
 import com.cn.game.sdk2.ui.page.fast3.Fast3GameHallItemFragment
@@ -22,7 +24,8 @@ class GameListView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0,
-    private val listener: MoreListPopup.OnMoreListPopupListener? = null
+    private val fm: FragmentManager,
+    private val miniGameId: Int?
 ) : BottomPopupView(context) {
 
     override fun getImplLayoutId(): Int =
@@ -42,13 +45,13 @@ class GameListView @JvmOverloads constructor(
 
     override fun onCreate() {
         super.onCreate()
-        binding =
-            FragmentGamehallBinding.bind(popupImplView)
+        binding = FragmentGamehallBinding.bind(popupImplView)
         binding.lltRoot.layoutParams.also {
             it.height = targetHeight
             binding.lltRoot.layoutParams = it
         }
         initView()
+        initData()
     }
 
     private fun initView() {
@@ -57,14 +60,7 @@ class GameListView @JvmOverloads constructor(
             val fragment = Fast3GameHallItemFragment.newInstance(gameType)
             fragmentList.add(fragment)
         }
-        binding.vpGameList.adapter =
-            listener?.let {
-                GameListViewPagerAdapter(
-                    it.getFragmentManager(),
-                    lifecycle,
-                    fragmentList
-                )
-            }
+        binding.vpGameList.adapter = GameListViewPagerAdapter(fm, lifecycle, fragmentList)
         binding.vpGameList.setOverScrollModeExt(OVER_SCROLL_IF_CONTENT_SCROLLS,OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
         binding.tlGameList.bindTabNewGame(
             viewPager = binding.vpGameList,
@@ -77,6 +73,25 @@ class GameListView @JvmOverloads constructor(
         binding.vpGameList.offscreenPageLimit = tabTitles.size
         binding.close.clickNoRepeat(true) {
             dismiss()
+        }
+    }
+
+    private fun initData(){
+        switchPage(this.miniGameId,false)
+    }
+
+    /**
+     * 切换到游戏所在页面
+     * @param miniGameId 游戏ID
+     * @param smoothScroll 是否丝滑滚动
+     */
+    fun switchPage(miniGameId:Int?,smoothScroll:Boolean = true) {
+        if(miniGameId == null) return
+        gameAboutModel.moreGames.value?.let { list->
+            val item = list.find { it.idp == miniGameId }
+            if(item == null) return@let
+            val page = GameHallItem.gameType2Index(item.gameType)
+            binding.vpGameList.setCurrentItem(page,smoothScroll)
         }
     }
 
