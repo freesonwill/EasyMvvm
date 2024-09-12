@@ -11,6 +11,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
@@ -110,20 +111,25 @@ object ViewExt {
                     setOnClickListener {
                         action.invoke(index)
                         recyclerView.stopScroll()
-                        if (index > 2) {
-                            //todo：改扩展方法不能通用
-                            (recyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(
-                                index + 6,
-                                0
-                            )
-                        } else {
-                            (recyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(
-                                index,
-                                0
-                            )
-                        }
+                        smoothScrollToPosition(index)
                     }
                 }
+            }
+
+            private fun smoothScrollToPosition(index: Int) {
+                val smoothScroller = object : LinearSmoothScroller(recyclerView.context) {
+                    override fun getVerticalSnapPreference(): Int {
+                        return SNAP_TO_START
+                    }
+                }
+
+                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                smoothScroller.targetPosition = if (index > 2) {
+                    index + 6
+                } else {
+                    index
+                }
+                layoutManager.startSmoothScroll(smoothScroller)
             }
 
             override fun getIndicator(context: Context): IPagerIndicator {
@@ -142,8 +148,9 @@ object ViewExt {
                 val layoutManager = recyclerView.layoutManager as LinearLayoutManager
                 val firstPos: Int = layoutManager.findFirstVisibleItemPosition()
                 val lastPos: Int = layoutManager.findLastVisibleItemPosition()
-                var position = if (lastPos != recyclerView.bindingAdapter.modelCount-1) firstPos else lastPos
-                LogUtils.dTag(TAG,"position-->$firstPos --> $lastPos,${position},dx:$dx,dy:$dy")
+                var position =
+                    if (lastPos != recyclerView.bindingAdapter.modelCount - 1) firstPos else lastPos
+                LogUtils.dTag(TAG, "position-->$firstPos --> $lastPos,${position},dx:$dx,dy:$dy")
                 position = if (position < 2) position else if (position < 9) 2 else position - 6
                 indicator.onPageSelected(position)
                 indicator.onPageScrolled(position, 0f, 0)
@@ -178,6 +185,7 @@ object ViewExt {
     fun View.isAdd(): Boolean {
         return parent != null
     }
+
     /**
      * dp值转换为px
      */
