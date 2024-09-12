@@ -42,20 +42,19 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/close"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:padding="10dp"
-            android:layout_marginTop="1dp"
+            android:layout_marginTop="1.5dp"
             android:layout_marginEnd="2dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            android:tint="@drawable/game_sdk_selector_ll_home_more_btn_bg"
             app:srcCompat="@mipmap/game_sdk_ic_close" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

@@ -12,6 +12,7 @@ import com.cn.game.sdk2.ui.popup.game.MoreListPopup
 import com.cn.game.sdk2.ui.view.BounceRVEdgeEffectFactory
 import com.cn.game.sdk2.utils.ext.CommonExt.getString
 import com.cn.game.sdk2.utils.ext.bindTabNewGame
+import com.cn.game.sdk2.utils.ext.removeTips
 import com.cn.game.sdk2.utils.ext.setOverScrollModeExt
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.websocket.gameAboutModel
@@ -68,6 +69,7 @@ class GameListView @JvmOverloads constructor(
         ) {
             PromptSoundPlay.btnPlayMedia()
         }
+        binding.tlGameList.removeTips()
         binding.vpGameList.offscreenPageLimit = tabTitles.size
         binding.close.clickNoRepeat(true) {
             dismiss()

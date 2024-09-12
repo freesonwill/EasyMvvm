@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.IntDef
 import androidx.annotation.IntRange
+import androidx.appcompat.widget.TooltipCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -227,7 +228,14 @@ fun TabLayout.bindTabNewGame(
         override fun onTabReselected(tab: TabLayout.Tab?) {
         }
     })
+}
 
+fun TabLayout.removeTips() {
+    for (i in 0 until tabCount) {
+        getTabAt(i)?.view?.let { tabView ->
+            TooltipCompat.setTooltipText(tabView, null)
+        }
+    }
 }
 
 /***
