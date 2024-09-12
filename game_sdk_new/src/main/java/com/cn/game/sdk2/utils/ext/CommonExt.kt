@@ -1,8 +1,9 @@
 package com.cn.game.sdk2.utils.ext
 
 import android.os.Looper
+import android.view.View
 import com.cn.game.sdk2.R
-import com.cn.game.sdk2.ui.helper.Fast3ToastHelper
+import com.cn.game.sdk2.ui.helper.ToastHelper
 import com.cn.game.sdk2.utils.PinyinUtils
 import com.cn.game.sdk2.websocket.bean.AreaBetConfigBean
 import com.cn.game.sdk2.websocket.bean.Betting
@@ -87,6 +88,7 @@ object CommonExt {
     }
 
     internal fun BettingState.isCanGoOn(
+        toastView: View,
         areaLimit: AreaBetConfigBean?,
         goOnAction: () -> Unit
     ) {
@@ -96,39 +98,35 @@ object CommonExt {
             }
 
             BettingState.NO_MONEY_50 -> {
-                Fast3ToastHelper.showToastNormal(ModuleInitializer.application.getString(R.string.money_insufficient_50))
+                ToastHelper.instance.showHostToast(toastView, toastView.context.getString(R.string.money_insufficient_50))
             }
 
             BettingState.NO_MONEY -> {
                 if ((gameAboutModel.balance.value ?: 0) < 50) {
-                    Fast3ToastHelper.showToastNormal(ModuleInitializer.application.getString(R.string.money_insufficient_50))
+                    ToastHelper.instance.showHostToast(toastView, toastView.context.getString(R.string.money_insufficient_50))
                 } else {
-                    Fast3ToastHelper.showToastNormal(ModuleInitializer.application.getString(R.string.money_insufficient))
+                    ToastHelper.instance.showHostToast(toastView, toastView.context.getString(R.string.money_insufficient))
                 }
             }
 
             BettingState.OFFSET_MIN -> {
-                Fast3ToastHelper.showToastNormal(
-                    ModuleInitializer.application.getString(
-                        R.string.money_min_error_with_area,
-                        areaLimit?.areaCode?.toastStr,
-                        "¥${areaLimit?.minLimit?.formatRealMoney()}"
-                    )
-                )
+                ToastHelper.instance.showHostToast(toastView, toastView.context.getString(
+                    R.string.money_min_error_with_area,
+                    areaLimit?.areaCode?.toastStr,
+                    "¥${areaLimit?.minLimit?.formatRealMoney()}"
+                ))
             }
 
             BettingState.OFFSET_MAX -> {
-                Fast3ToastHelper.showToastNormal(
-                    ModuleInitializer.application.getString(
-                        R.string.money_max_error_with_area,
-                        areaLimit?.areaCode?.toastStr,
-                        "¥${areaLimit?.maxLimit?.formatRealMoney()}"
-                    )
-                )
+                ToastHelper.instance.showHostToast(toastView, toastView.context.getString(
+                    R.string.money_max_error_with_area,
+                    areaLimit?.areaCode?.toastStr,
+                    "¥${areaLimit?.maxLimit?.formatRealMoney()}"
+                ))
             }
 
             BettingState.NO_NETWORK -> {
-                Fast3ToastHelper.showToastNormal(ModuleInitializer.application.getString(R.string.money_no_network))
+                ToastHelper.instance.showHostToast(toastView, toastView.context.getString(R.string.money_no_network))
             }
         }
     }
