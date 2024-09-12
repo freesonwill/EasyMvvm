@@ -258,73 +258,29 @@ class MoneyOKView @JvmOverloads constructor(
 
     }
 
-    private fun showMoneyFormat(money: Int): String {
-        if (money < 1000 * 100) {
-            return money.formatRealMoney()
-        } else if (money < 10000 * 100) {
-            if ((money % 100000) == 0) {
-                val resultNoDecimal = (money / 100000f).round(0)
-                return resultNoDecimal + "k"
-
-            } else if ((money % 10000) == 0) {
-                val resultNoDecimal = (money / 100000f).round(1)
-                return resultNoDecimal + "k"
-            } else {
-                val resultNoDecimal = (money / 100000f).round(2)
-                return resultNoDecimal + "k"
-            }
-        } else {
-            val tenThousand = money / 1000000
-            val thousand = money / 100000 % 10
-            val hundred = money / 10000 % 10
-            val ten = money / 1000 % 10
-            if (thousand > 0) { // 千位有值
-                return if (hundred > 0) { // 百位有值
-                    if (ten > 0) { // 十位有值
-//                        ("${tenThousand}.${thousand}${hundred}W+")
-                        ("${tenThousand}.${thousand}${hundred}W")
-                    } else { // 十位没有值
-                        ("${tenThousand}.${thousand}${hundred}W")
-                    }
-
-                } else { // 百位没有值
-                    if (ten > 0) { // 十位有值
-                        ("${tenThousand}.${thousand}W")
-//                        ("${tenThousand}.${thousand}W+")
-                    } else { // 十位没有值
-                        ("${tenThousand}.${thousand}W")
-                    }
-                }
-
-            } else { // 千位没有值
-                return if (hundred > 0) { // 百位有值
-                    if (ten > 0) { // 十位有值
-                        ("${tenThousand}.0${hundred}W")
-//                        ("${tenThousand}.0${hundred}W+")
-                    } else { // 十位没有值
-                        ("${tenThousand}.0${hundred}W")
-                    }
-
-                } else { // 百位没有值
-                    if (ten > 0) { // 十位有值
-                        ("${tenThousand}W")
-//                        ("${tenThousand}W+")
-                    } else { // 十位没有值
-                        ("${tenThousand}W")
-                    }
-                }
-            }
-        }
-    }
-
     /**
-     * 保留几位小数并且是截取
+     * 显示金钱(包括小数点,不能超过5位)
      */
-    private fun Float.round(decimalPlaces: Int): String {
-        if (decimalPlaces < 0) throw IllegalArgumentException()
-
-        val bigDecimal = BigDecimal(this.toString())
-        return bigDecimal.setScale(decimalPlaces, RoundingMode.DOWN).stripTrailingZeros()
-            .toPlainString()
+    private fun showMoneyFormat(money: Int): String {
+        val moneyInt = money / 100f
+        val sb = StringBuilder()
+        val units = arrayOf(10000 to "W", 1000 to "K", 1 to "")
+        for (i in units.indices) {
+            val unit = units[i].first
+            val unitStr = units[i].second
+            if (moneyInt >= unit) {
+                (moneyInt / unit).let {
+                    if (it.compareTo(it.toInt()) == 0) sb.append(it.toInt()).append(unitStr)
+                    else sb.append(it).append(unitStr)
+                }
+            }
+            if (sb.length > 5) {
+                sb.clear()
+                sb.append((moneyInt / unit).toInt()).append("${unitStr}+")
+                return sb.toString()
+            }
+            if(sb.isNotEmpty()) return sb.toString()
+        }
+        throw IllegalStateException("showMoneyFormat:${money} error")
     }
 }

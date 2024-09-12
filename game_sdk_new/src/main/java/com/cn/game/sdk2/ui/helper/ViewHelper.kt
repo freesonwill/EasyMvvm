@@ -1,5 +1,6 @@
 package com.cn.game.sdk2.ui.helper
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Paint
 import android.graphics.Typeface
@@ -131,20 +132,22 @@ class ViewHelper {
             }.show()
     }
 
-    private fun tryCreateMainPopup(context: Context){
-        if(null == homeXPopupDialog){
-            val pop = HomeXPopupDialog(context, Fast3MainFragment(), GAME_ID_ENUM.GAME_FAST3.num).apply {
-                homeXPopupDialog = this
-            }
+    private fun tryCreateMainPopup(context: Context) {
+        if (null == homeXPopupDialog) {
+            val pop =
+                HomeXPopupDialog(context, Fast3MainFragment(), GAME_ID_ENUM.GAME_FAST3.num).apply {
+                    homeXPopupDialog = this
+                }
             XPopup.Builder(context)
                 .hasShadowBg(false)
                 .setPopupCallback(object : SimpleCallback() {
 
                     override fun beforeShow(popupView: BasePopupView?) {
                         super.beforeShow(popupView)
-
-                        fastViewOverlay?.isVisible = false
-                        fastView?.isVisible = false
+                        fastViewOverlay?.let { fadeOut(it) }
+                        fastView?.let { fadeOut(it) }
+                        //fastViewOverlay?.isVisible = false
+                        //fastView?.isVisible = false
                         appListenerScope.launchWithCustomContext(TAG) {
                             appListener?.onGameFloatingDetailViewStatus(true)
                         }
@@ -157,12 +160,12 @@ class ViewHelper {
 
                     override fun onDismiss(popupView: BasePopupView?) {
                         super.onDismiss(popupView)
-
                         gameAboutModel.fast3MainFloatVisible.value = true
                         if (!isShowOtherPop) {
-                            fastViewOverlay?.isVisible = true
-                            fastView?.isVisible = true
-
+                            fastViewOverlay?.let { fadeIn(it) }
+                            fastView?.let { fadeIn(it) }
+                            //fastViewOverlay?.isVisible = true
+                            //fastView?.isVisible = true
                             appListenerScope.launchWithCustomContext(TAG) {
                                 appListener?.onGameFloatingDetailViewStatus(false)
                             }
@@ -193,6 +196,26 @@ class ViewHelper {
         }
     }
 
+    private fun fadeIn(view: View) {
+        val animator = ValueAnimator.ofFloat(0f, 1f)
+        animator.addUpdateListener {
+            val alpha = it.animatedValue as Float
+            view.alpha = alpha
+        }
+        animator.duration = 200
+        animator.start()
+    }
+
+    private fun fadeOut(view: View) {
+        val animator = ValueAnimator.ofFloat(1f, 0f)
+        animator.addUpdateListener {
+            val alpha = it.animatedValue as Float
+            view.alpha = alpha
+        }
+        animator.duration = 200
+        animator.start()
+    }
+
 
     private fun showGameMainPopup(context: Context, isShow: Boolean) {
         tryCreateMainPopup(context)
@@ -203,7 +226,7 @@ class ViewHelper {
         homeXPopupDialog!!.show()
     }
 
-    fun showFastViewPopWhenWin(){
+    fun showFastViewPopWhenWin() {
         homeXPopupDialog?.show()
     }
 

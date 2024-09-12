@@ -21,8 +21,8 @@ class CountDownHelper {
 
     var countDown: Int = 0 //阶段倒计时
         set(value) {
-            field = value - 0 //减去500ms延时
-            LogUtils.dTag(TAG, "countDown set:${value},isMainThread:$isMainThread")
+            field = value - 1000 //服务器有延时
+            LogUtils.dTag(TAG, "countDown set:${value}-${field},isMainThread:$isMainThread")
             _countDownSetStampTime = System.currentTimeMillis()
 
             stopCountDown()
@@ -30,7 +30,7 @@ class CountDownHelper {
                 var remainingTime = field
                 while(remainingTime > 0) {
                     _countDownSecondsLD.value = round(remainingTime / 1000f).toInt()
-                    delay(1000L)
+                    delay(Math.min(1000L,remainingTime*1L))
                     remainingTime -= 1000
                 }
                 _countDownSecondsLD.value = 0
