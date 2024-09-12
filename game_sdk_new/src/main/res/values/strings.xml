@@ -37,6 +37,7 @@
     <string name="g_game_list_type_fishing">捕鱼</string>
     <string name="g_game_list_type_sports">体育</string>
     <string name="g_game_list_type_electronic">电子</string>
+    <string name="g_game_list_type_online">%d在线</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="money_insufficient">余额不足</string>

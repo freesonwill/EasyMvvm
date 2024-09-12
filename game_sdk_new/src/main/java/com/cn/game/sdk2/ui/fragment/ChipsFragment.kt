@@ -14,6 +14,7 @@ import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.xcjh.base_lib2.base.fragment.BaseFragment
 import com.xcjh.base_lib2.base.fragment.viewBind
+import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 /***
@@ -49,8 +50,7 @@ class ChipsFragment : BaseFragment<ChipsViewModel, FragmentChipsBinding>(), Chip
     private fun setChipsView() {
         mBinding.rvChips.apply {
             itemAnimator = null
-            layoutManager =
-                CenterLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            layoutManager = CenterLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             if (itemDecorationCount == 0) {
                 addItemDecoration(
                     CommonLinearLayoutItemDecoration(
@@ -68,6 +68,7 @@ class ChipsFragment : BaseFragment<ChipsViewModel, FragmentChipsBinding>(), Chip
                     mViewModel.setSelectedChip(item)
                 }
             }
+            OverScrollDecoratorHelper.setUpOverScroll(this,OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
         }
     }
 

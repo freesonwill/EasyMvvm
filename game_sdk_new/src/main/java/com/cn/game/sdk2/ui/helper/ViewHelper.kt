@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.view.doOnDetach
-import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
@@ -112,9 +111,14 @@ class ViewHelper {
                 }
             })
             //.customAnimator(EmptyAnimator(bubbleAttach, 0))
-            .navigationBarColor(android.R.color.transparent).hasShadowBg(false) // 去掉半透明背景
-            .isViewMode(true).animationDuration(100).hasStatusBar(false).hasNavigationBar(false)
-            .enableDrag(true).dismissOnTouchOutside(true)
+            .navigationBarColor(android.R.color.transparent)
+            .hasShadowBg(false) // 去掉半透明背景
+            .isViewMode(true)
+            .animationDuration(150)
+            .hasStatusBar(false)
+            .hasNavigationBar(false)
+            .enableDrag(true)
+            .dismissOnTouchOutside(true)
             .asCustom(Fast3HelpPopup(context, offsetY, height)).apply {
                 if (context is LifecycleOwner) { //宿主销毁了，静态引用置null
                     context.lifecycle.addObserver(object : DefaultLifecycleObserver {
@@ -296,8 +300,8 @@ class ViewHelper {
                 }
                 showGameMainPopup(context, true)
             }
-            observerGameList(it)
         }.apply {
+            observerShowGameInfo(this)
             if (context is LifecycleOwner) {
                 context.lifecycle.addObserver(object : DefaultLifecycleObserver {
                     override fun onDestroy(owner: LifecycleOwner) {
@@ -310,9 +314,10 @@ class ViewHelper {
     }
 
     /**
-     * 监听打开GameList
+     * 监听ShowGameInfo打开投注界面和游戏大厅
+     * @param v gamesdk游戏浮窗
      */
-    private fun observerGameList(v: View) {
+    private fun observerShowGameInfo(v: View) {
         v.addOnAttachStateChangeListener(object : OnAttachStateChangeListener {
             private val obsrv: Observer<Pair<Int, Boolean>> = Observer<Pair<Int, Boolean>> {
                 ThreadUtils.mainScope.launch {
