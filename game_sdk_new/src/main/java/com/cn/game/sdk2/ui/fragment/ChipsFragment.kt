@@ -39,6 +39,11 @@ class ChipsFragment : BaseFragment<ChipsViewModel, FragmentChipsBinding>(), Chip
     }
 
     override fun createObserver() {
+        //临时金额变化时需要刷新筹码的可用状态
+        gameAboutModel.tempBalance.observe(viewLifecycleOwner) {
+            chipsAdapter.submitList(mViewModel.chipsList.value)
+            chipsAdapter.notifyItemRangeChanged(0, chipsAdapter.itemCount)
+        }
         mViewModel.chipsList.observe(viewLifecycleOwner) {
             chipsAdapter.submitList(it)
             notifyDataSetChangedSafe {
