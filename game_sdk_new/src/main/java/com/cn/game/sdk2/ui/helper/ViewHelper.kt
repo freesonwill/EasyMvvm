@@ -109,6 +109,18 @@ class ViewHelper {
                     super.onDismiss(popupView)
                     helpXPopupDialog = null
                 }
+
+                override fun beforeDismiss(popupView: BasePopupView?) {
+                    isShowOtherPop = false
+                    showGameMainPopup(context, true)
+                    super.beforeDismiss(popupView)
+                }
+
+                override fun beforeShow(popupView: BasePopupView?) {
+                    isShowOtherPop = true
+                    showGameMainPopup(context, false)
+                    super.beforeShow(popupView)
+                }
             })
             //.customAnimator(EmptyAnimator(bubbleAttach, 0))
             .navigationBarColor(android.R.color.transparent)
@@ -144,12 +156,22 @@ class ViewHelper {
 
                     override fun beforeShow(popupView: BasePopupView?) {
                         super.beforeShow(popupView)
-                        fastViewOverlay?.let { fadeOut(it) }
-                        fastView?.let { fadeOut(it) }
-                        //fastViewOverlay?.isVisible = false
-                        //fastView?.isVisible = false
-                        appListenerScope.launchWithCustomContext(TAG) {
-                            appListener?.onGameFloatingDetailViewStatus(true)
+                        if(!isShowOtherPop) {
+                            fastViewOverlay?.let {
+                                if(it.alpha == 1f) {
+                                    fadeOut(it)
+                                }
+                            }
+                            fastView?.let {
+                                if(it.alpha == 1f) {
+                                    fadeOut(it)
+                                }
+                            }
+                            //fastViewOverlay?.isVisible = false
+                            //fastView?.isVisible = false
+                            appListenerScope.launchWithCustomContext(TAG) {
+                                appListener?.onGameFloatingDetailViewStatus(true)
+                            }
                         }
                         gameAboutModel.fast3MainFloatVisible.value = false
                     }
@@ -224,6 +246,19 @@ class ViewHelper {
             .hasShadowBg(false) // 去掉半透明背景
             .enableDrag(true)
             .dismissOnTouchOutside(true)
+            .setPopupCallback(object: SimpleCallback() {
+                override fun beforeDismiss(popupView: BasePopupView?) {
+                    isShowOtherPop = false
+                    showGameMainPopup(context, true)
+                    super.beforeDismiss(popupView)
+                }
+
+                override fun beforeShow(popupView: BasePopupView?) {
+                    isShowOtherPop = true
+                    showGameMainPopup(context, false)
+                    super.beforeShow(popupView)
+                }
+            })
             .asCustom(popupView)
             .show()
         gameListDialog = popupView
@@ -232,6 +267,7 @@ class ViewHelper {
             LogUtils.eTag(TAG, "gameListDialog set null")
         }
     }
+
     private fun fadeIn(view: View) {
         val animator = ValueAnimator.ofFloat(0f, 1f)
         animator.addUpdateListener {
