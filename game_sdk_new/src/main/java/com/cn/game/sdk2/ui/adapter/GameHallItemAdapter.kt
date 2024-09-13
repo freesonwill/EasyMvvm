@@ -3,7 +3,6 @@ package com.cn.game.sdk2.ui.adapter
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.MotionEvent.ACTION_CANCEL
 import android.view.MotionEvent.ACTION_DOWN
 import android.view.MotionEvent.ACTION_UP
@@ -22,6 +21,8 @@ class GameHallItemAdapter : BaseAdapter<GameHallItem, BaseViewHolder, ItemGameha
 ) {
     private val IMAGE_SCALE_RATIO = 0.8f
     private val IMAGE_SCALE_DURATION = 300L
+    private var scaleXAnimation: ObjectAnimator? = null
+    private var scaleYAnimation: ObjectAnimator? = null
     @SuppressLint("ClickableViewAccessibility")
     override fun convertPlus(
         holder: BaseViewHolder,
@@ -63,12 +64,16 @@ class GameHallItemAdapter : BaseAdapter<GameHallItem, BaseViewHolder, ItemGameha
         } else {
             Pair(1.0f, IMAGE_SCALE_RATIO)
         }
-        ObjectAnimator.ofFloat(view, "scaleX", start, end).apply {
+        scaleXAnimation?.cancel()
+        scaleYAnimation?.cancel()
+        scaleXAnimation = ObjectAnimator.ofFloat(view, "scaleX", start, end).apply {
             this.duration = IMAGE_SCALE_DURATION
-        }.start()
-        ObjectAnimator.ofFloat(view, "scaleY", start, end).apply {
+            start()
+        }
+        scaleYAnimation = ObjectAnimator.ofFloat(view, "scaleY", start, end).apply {
             this.duration = IMAGE_SCALE_DURATION
-        }.start()
+            start()
+        }
     }
 
     override fun createViewBinding(
