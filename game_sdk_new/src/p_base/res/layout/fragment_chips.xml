@@ -13,6 +13,7 @@
         android:clipToPadding="false"
         android:orientation="horizontal"
         android:paddingTop="5dp"
+        android:overScrollMode="ifContentScrolls"
         app:layout_constraintTop_toTopOf="parent"
         tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:itemCount="11"

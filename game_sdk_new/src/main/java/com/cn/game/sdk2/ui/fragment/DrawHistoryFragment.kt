@@ -22,6 +22,7 @@ import com.cn.game.sdk2.websocket.bean.RoundInfoBean
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.xcjh.base_lib2.base.fragment.BaseFragment
 import com.xcjh.base_lib2.base.fragment.viewBind
+import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
@@ -53,6 +54,7 @@ class DrawHistoryFragment: BaseFragment<DrawHistoryViewModel, FragmentDrawHistor
             rvDrawHistory.apply {
                 itemAnimator = null
                 layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                OverScrollDecoratorHelper.setUpOverScroll(this,OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
                 adapter = DrawHistoryAdapter()
                 addItemDecoration(itemDecoration)
 

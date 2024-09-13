@@ -46,6 +46,7 @@ import com.cn.game.sdk2.utils.ext.ViewExt.locationOnScreen
 import com.cn.game.sdk2.utils.ext.bindViewPagerNewGame
 import com.cn.game.sdk2.utils.ext.initGameViewPager
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
+import com.cn.game.sdk2.websocket.appListener
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import com.cn.game.sdk2.websocket.constants.AgainDoubleState
 import com.cn.game.sdk2.websocket.constants.GameStage
@@ -57,6 +58,7 @@ import com.xcjh.base_lib2.base.fragment.BaseFragment
 import com.xcjh.base_lib2.base.fragment.viewBind
 import com.xcjh.base_lib2.utils.LogUtils
 import com.xcjh.base_lib2.utils.LogUtilsExt.loge
+import com.xcjh.base_lib2.utils.view.clickNoRepeat
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -703,6 +705,10 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
 
     private fun setClick() {
         mBinding.apply {
+            //余额点击跳转充值
+            frrl.clickNoRepeat(interval = 100){
+                appListener?.onInsufficientBalance()
+            }
             //点击更多弹出框
             llHomeMore.setOnClickListener {
                 PromptSoundPlay.btnPlayMedia()

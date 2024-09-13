@@ -19,6 +19,7 @@ import com.cn.game.sdk2.websocket.gameAboutModel
 import com.xcjh.base_lib2.base.fragment.BaseFragment
 import com.xcjh.base_lib2.base.fragment.viewBind
 import com.xcjh.base_lib2.utils.windowManager
+import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 /***
@@ -43,6 +44,11 @@ class ChipsFragment : BaseFragment<ChipsViewModel, FragmentChipsBinding>(), Chip
     }
 
     override fun createObserver() {
+        //临时金额变化时需要刷新筹码的可用状态
+        gameAboutModel.tempBalance.observe(viewLifecycleOwner) {
+            chipsAdapter.submitList(mViewModel.chipsList.value)
+            chipsAdapter.notifyItemRangeChanged(0, chipsAdapter.itemCount)
+        }
         mViewModel.chipsList.observe(viewLifecycleOwner) {
             chipsAdapter.submitList(it)
             notifyDataSetChangedSafe {
@@ -54,8 +60,7 @@ class ChipsFragment : BaseFragment<ChipsViewModel, FragmentChipsBinding>(), Chip
     private fun setChipsView() {
         mBinding.rvChips.apply {
             itemAnimator = null
-            layoutManager =
-                CenterLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            layoutManager = CenterLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             if (itemDecorationCount == 0) {
                 addItemDecoration(
                     CommonLinearLayoutItemDecoration(
@@ -82,6 +87,7 @@ class ChipsFragment : BaseFragment<ChipsViewModel, FragmentChipsBinding>(), Chip
                     }
                 }
             }
+            OverScrollDecoratorHelper.setUpOverScroll(this,OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
         }
     }
 

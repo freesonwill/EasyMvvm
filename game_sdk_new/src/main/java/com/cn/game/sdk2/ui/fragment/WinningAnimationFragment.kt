@@ -132,11 +132,12 @@ class WinningAnimationFragment: BaseFragment<WinningAnimationViewModel, Fragment
             }
 
             val duration = when {
-                winMoney <= 1000 -> 500L
-                winMoney <= 100000 -> 600L
-                else -> 700L
+                winMoney < 10_00 -> 400
+                winMoney < 100_00 -> 500
+                winMoney < 1000_00 -> 600
+                winMoney <= 10000_00 -> 700
+                else -> 1000L
             }
-
             AnimHelper.doNumberAnim(tvAnimWin2, 0, (winMoney).toLong(), duration)
             lottieAnimView.playAnimation()
             lottieAnimView2.playAnimation()
