@@ -57,6 +57,7 @@
     <string name="error_double_login">账号在其他设备登录，您已下线</string>
     <string name="error_login_fail">登录失效，请重新登录</string>
     <string name="error_bet_timeout">押注超时</string>
+    <string name="error_bet_money_insufficient">余额不足请充值</string>
 
 
 </resources>
