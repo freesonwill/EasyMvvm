@@ -89,4 +89,20 @@
     <style name="TabLayoutTextAppearance" parent="TextAppearance.Design.Tab">
         <item name="android:textSize">14sp</item>
     </style>
+
+    <style name="show_money_style">
+        <item name="android:fontFamily">@font/chronica_w03_bold</item>
+        <item name="android:paddingStart">9.7dp</item>
+        <item name="android:paddingEnd">9.7dp</item>
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingBottom">0dp</item>
+        <item name="android:textColor">@color/g_f8e0c4</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:background">@mipmap/game_sdk_chips_amount</item>
+        <item name="android:layout_marginTop">2dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">23.7dp</item>
+
+    </style>
 </resources>
