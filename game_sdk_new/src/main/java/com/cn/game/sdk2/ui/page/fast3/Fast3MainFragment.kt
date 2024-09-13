@@ -44,6 +44,7 @@ import com.cn.game.sdk2.utils.ext.ViewExt.getCenterPoint
 import com.cn.game.sdk2.utils.ext.ViewExt.isAdd
 import com.cn.game.sdk2.utils.ext.ViewExt.locationOnScreen
 import com.cn.game.sdk2.utils.ext.removeTips
+import com.cn.game.sdk2.utils.ext.setOverScrollModeExt
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.websocket.appListener
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
@@ -64,6 +65,7 @@ import com.xcjh.base_lib2.utils.view.clickNoRepeat
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
@@ -115,6 +117,9 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                 LogUtils.dTag(TAG, "Fast3MainFragment load costMills1:$it")
             }
             viewPagerNew.adapter = PagerAdapter(childFragmentManager, lifecycle, gamePageList)
+            viewPagerNew.setOverScrollModeExt(
+                BottomPopupView.OVER_SCROLL_IF_CONTENT_SCROLLS,
+                OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
             TabLayoutMediator(tlGame, viewPagerNew) { tab, position ->
                 val tabView = tab.view
                     tab.text = gamePageList[position].title
