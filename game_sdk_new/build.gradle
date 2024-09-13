@@ -8,10 +8,10 @@ plugins {
 apply from: "${rootDir.path}/gradle/pin.gradle"
 apply from: rootProject.file("gradle/flavor.gradle")
 apply from: rootProject.file("gradle/gamesdk_deps.gradle")
-// 添加一个自定义的任务来清理aar目录
+
 ext {
-    VERSIONCODE = 1
-    VERSIONNAME = "0.0.1"
+    VERSIONCODE = 2
+    VERSIONNAME = "0.0.2"
 }
 
 android {
