@@ -47,16 +47,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/ivShowMoney"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:background="@mipmap/game_sdk_chips_amount"
-            android:gravity="center"
-            android:paddingStart="6dp"
-            android:paddingEnd="6dp"
-            android:textColor="@color/g_f8e0c4"
-            android:textSize="13sp"
-            style="@style/ChronicaW03Bold"
+            style="@style/show_money_style"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ivOk"
