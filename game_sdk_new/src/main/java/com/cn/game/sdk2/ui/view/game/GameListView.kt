@@ -3,21 +3,23 @@ package com.cn.game.sdk2.ui.view.game
 import android.content.Context
 import android.util.AttributeSet
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Observer
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.data.bean.GameHallItem
 import com.cn.game.sdk2.databinding.FragmentGamehallBinding
 import com.cn.game.sdk2.ui.adapter.GameListViewPagerAdapter
+import com.cn.game.sdk2.ui.helper.ToastHelper
 import com.cn.game.sdk2.ui.page.fast3.Fast3GameHallItemFragment
-import com.cn.game.sdk2.ui.popup.game.MoreListPopup
-import com.cn.game.sdk2.ui.view.BounceRVEdgeEffectFactory
 import com.cn.game.sdk2.utils.ext.CommonExt.getString
 import com.cn.game.sdk2.utils.ext.bindTabNewGame
 import com.cn.game.sdk2.utils.ext.removeTips
 import com.cn.game.sdk2.utils.ext.setOverScrollModeExt
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
+import com.cn.game.sdk2.websocket.constants.GameStage
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.lxj.xpopup.core.BottomPopupView
 import com.xcjh.base_lib2.utils.view.clickNoRepeat
+import com.xcjh.base_lib2.utils.view.getString
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 
 class GameListView @JvmOverloads constructor(
@@ -42,8 +44,24 @@ class GameListView @JvmOverloads constructor(
         R.string.g_game_list_type_electronic.getString()
     )
     private val fragmentList = mutableListOf<Fast3GameHallItemFragment>()
+    private val gameStageListener = object : Observer<GameStage> {
+        override fun onChanged(t: GameStage) {
+            // 因為gameAboutModel.currentStage裡面已經有資料，第一次observer就會trigger
+            // 故用fragmentList作為初始化完成的依據，初始化完成後再監聽
+            if (fragmentList.isEmpty()) {
+                return
+            }
+            when (t) {
+                GameStage.NEW -> ToastHelper.instance.showHostToast(binding.lltRoot, getString(R.string.g_home_betting_begin))
+                GameStage.SETTLE -> {}
+                GameStage.DEAL -> ToastHelper.instance.showHostToast(binding.lltRoot, getString(R.string.g_home_betting_end))
+            }
+        }
+
+    }
 
     override fun onCreate() {
+        gameAboutModel.currentStage.observeForever(gameStageListener)
         super.onCreate()
         binding = FragmentGamehallBinding.bind(popupImplView)
         binding.lltRoot.layoutParams.also {
@@ -96,6 +114,7 @@ class GameListView @JvmOverloads constructor(
     }
 
     override fun onDismiss() {
+        gameAboutModel.currentStage.removeObserver(gameStageListener)
         super.onDismiss()
         cleanUpFragments()
     }
