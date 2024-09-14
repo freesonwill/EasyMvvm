@@ -21,7 +21,7 @@ import java.io.File
 class GameHallItemAdapter : BaseAdapter<GameHallItem, BaseViewHolder, ItemGamehallPageItemBinding>(
     GameHallItemCompare()
 ) {
-    private val IMAGE_SCALE_RATIO = 0.8f
+    private val IMAGE_SCALE_RATIO = 0.9f
     private val IMAGE_SCALE_DURATION = 300L
     private var scaleXAnimation: ObjectAnimator? = null
     private var scaleYAnimation: ObjectAnimator? = null
