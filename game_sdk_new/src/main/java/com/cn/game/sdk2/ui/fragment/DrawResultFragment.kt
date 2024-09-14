@@ -78,15 +78,15 @@ class DrawResultFragment: BaseFragment<DrawResultViewModel, FragmentDrawResultBi
 
     /**
      * 執行動畫
-     *
+     * 规格: 左侧动画 位移和放缩动画同时进行,scale 0.1->1 执行250ms; 右侧动画:间隔左侧动画750ms, scale 0.1->1 执行200ms
      * @param duration 動畫時間，預設為200L
      * @param doEnd 動畫結束後執行
      */
     fun playAnim(startPosition: Point, duration: Long = 200L, doEnd: () -> Unit) {
         mBinding.apply {
             val scaleProperties = listOf(
-                Triple("scaleX", 0f, 1f),
-                Triple("scaleY", 0f, 1f)
+                Triple("scaleX", 0.1f, 1f),
+                Triple("scaleY", 0.1f, 1f)
             )
             val leftPositionProperties = mutableListOf<Triple<String, Float, Float>>().apply {
                 val point = llResultLeft.getCenterPoint()
@@ -99,15 +99,15 @@ class DrawResultFragment: BaseFragment<DrawResultViewModel, FragmentDrawResultBi
                 leftPositionProperties.apply { addAll(scaleProperties) }.map { property ->
                     ObjectAnimator.ofFloat(llResultLeft, property.first, property.second, property.third)
                         .apply {
-                            this.duration = duration
+                            this.duration = 250
                         }
                 }
 
             val rightAnim = scaleProperties.map { property ->
                 ObjectAnimator.ofFloat(llResultRight, property.first, property.second, property.third)
                     .apply {
-                        this.duration = duration
-                        startDelay = 500
+                        this.duration = 200
+                        startDelay = 750
                     }
             }
 
@@ -115,10 +115,10 @@ class DrawResultFragment: BaseFragment<DrawResultViewModel, FragmentDrawResultBi
                 playTogether(leftAnim + rightAnim)
                 addListener(
                     onStart = {
-                        llResultLeft.scaleX = 0f
-                        llResultLeft.scaleY = 0f
-                        llResultRight.scaleX = 0f
-                        llResultRight.scaleY = 0f
+                        llResultLeft.scaleX = scaleProperties[0].second
+                        llResultLeft.scaleY = scaleProperties[1].second
+                        llResultRight.scaleX = scaleProperties[0].second
+                        llResultRight.scaleY =scaleProperties[1].second
                     },
                     onEnd = { doEnd.invoke() }
                 )
