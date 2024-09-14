@@ -22,7 +22,7 @@ class GameHallItemAdapter : BaseAdapter<GameHallItem, BaseViewHolder, ItemGameha
     GameHallItemCompare()
 ) {
     private val IMAGE_SCALE_RATIO = 0.9f
-    private val IMAGE_SCALE_DURATION = 300L
+    private val IMAGE_SCALE_DURATION = 100L
     private var scaleXAnimation: ObjectAnimator? = null
     private var scaleYAnimation: ObjectAnimator? = null
     @SuppressLint("ClickableViewAccessibility")
