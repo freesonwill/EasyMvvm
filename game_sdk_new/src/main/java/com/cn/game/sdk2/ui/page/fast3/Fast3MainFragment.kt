@@ -332,20 +332,15 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                     txtHomeStatic.text = getString(R.string.g_f3_dealing)
                 }
                 //隐藏筹码牌动画
-                startBetteRecyclerShowOrHideAnim(
-                    isShow = false,
-                    onEnd = {
-                        //注区
-                        clChips.isInvisible = true
-                        betteAgainLayout.isVisible = false
+                startBetteRecyclerShowOrHideAnim(isShow = false, onEnd = {
+                    //注区
+                    clChips.isInvisible = true
+                    betteAgainLayout.isVisible = false
 
-                        //开奖结果
-                        ivHomeBg.isVisible = true
-                        ivHomeBgCenter.isVisible = true
-                        resultBgTop.isVisible = true
-                    },
-                    duration = 0
-                )
+                    //开奖结果
+                    ivHomeBg.isVisible = true
+                    ivHomeBgCenter.isVisible = true
+                })
             }
         }
     }
