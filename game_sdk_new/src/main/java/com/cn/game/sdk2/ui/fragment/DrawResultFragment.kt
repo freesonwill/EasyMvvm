@@ -4,6 +4,7 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.graphics.Point
 import android.os.Bundle
+import android.view.animation.OvershootInterpolator
 import androidx.core.animation.addListener
 import androidx.core.view.isVisible
 import com.cn.game.sdk2.R
@@ -95,30 +96,35 @@ class DrawResultFragment: BaseFragment<DrawResultViewModel, FragmentDrawResultBi
                 add(Triple("translationY", (startPosition.y - point.y).toFloat(), 0f))
             }
 
-            val leftAnim =
-                leftPositionProperties.apply { addAll(scaleProperties) }.map { property ->
+            val leftAnim = AnimatorSet().apply {
+                val anim = leftPositionProperties.apply { addAll(scaleProperties) }.map { property ->
                     ObjectAnimator.ofFloat(llResultLeft, property.first, property.second, property.third)
                         .apply {
                             this.duration = 250
                         }
                 }
-
-            val rightAnim = scaleProperties.map { property ->
-                ObjectAnimator.ofFloat(llResultRight, property.first, property.second, property.third)
-                    .apply {
-                        this.duration = 200
-                        startDelay = 750
-                    }
+                playTogether(anim)
             }
 
+            val rightAnim = AnimatorSet().apply {
+                val anim = scaleProperties.map { property ->
+                    ObjectAnimator.ofFloat(llResultRight,property.first, property.second, property.third)
+                        .apply {
+                            this.duration = 400
+                            startDelay = 500+250 //延迟500ms,但是为了跟ios同步,这里加上250偏移
+                            interpolator = OvershootInterpolator(2f)
+                        }
+                }
+                playTogether(anim)
+            }
             AnimatorSet().apply {
-                playTogether(leftAnim + rightAnim)
+                playSequentially(leftAnim , rightAnim)
                 addListener(
-                    onStart = {
-                        llResultLeft.scaleX = scaleProperties[0].second
-                        llResultLeft.scaleY = scaleProperties[1].second
-                        llResultRight.scaleX = scaleProperties[0].second
-                        llResultRight.scaleY =scaleProperties[1].second
+                    onStart = { //设置为0f是为了隐藏view
+                        llResultLeft.scaleX = 0f
+                        llResultLeft.scaleY = 0f
+                        llResultRight.scaleX = 0f
+                        llResultRight.scaleY = 0f
                     },
                     onEnd = { doEnd.invoke() }
                 )
