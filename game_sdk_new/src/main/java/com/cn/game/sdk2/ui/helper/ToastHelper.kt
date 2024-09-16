@@ -55,7 +55,7 @@ class ToastHelper {
         }
     }
 
-    fun showHostToast(attachView: View, msg: String, duration: Long = 2000, replace:Boolean = true) {
+    fun showHostToast(attachView: View, msg: String, duration: Long = 3000, replace:Boolean = true) {
         if (!this.canReplace) return
         dismiss()
         this.canReplace = replace
@@ -138,12 +138,14 @@ private class HostToastView(context: Context) : LinearLayout(context, null, 0) {
                 addUpdateListener { animation ->
                     val p = animation.animatedValue as Float
                     scaleX = p
+                    alpha = p
                     scaleY = p
                 }
                 var isCanceled = false
                 addListener(
                     onStart = {
                         scaleX = start
+                        alpha = start
                         scaleY = start
                     },
                     onCancel = {
