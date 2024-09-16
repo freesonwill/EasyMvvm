@@ -11,17 +11,21 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
+import com.cn.game.sdk2.data.EventKey
 import com.cn.game.sdk2.databinding.FragmentDrawHistoryBinding
 import com.cn.game.sdk2.ui.adapter.DrawHistoryAdapter
 import com.cn.game.sdk2.ui.page.fast3.Fast3MainFragment
 import com.cn.game.sdk2.ui.view.ClickRecyclerView
 import com.cn.game.sdk2.ui.viewmodel.DrawHistoryViewModel
+import com.cn.game.sdk2.utils.FlowBus
 import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.websocket.bean.RoundInfoBean
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.xcjh.base_lib2.base.fragment.BaseFragment
 import com.xcjh.base_lib2.base.fragment.viewBind
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -91,10 +95,18 @@ class DrawHistoryFragment: BaseFragment<DrawHistoryViewModel, FragmentDrawHistor
             (mBinding.rvDrawHistory.adapter as DrawHistoryAdapter).submitList(it)
         }
 
-        //开奖历史记录
-        gameAboutModel.historyRounds.observe(viewLifecycleOwner) {
-            Log.e(Fast3MainFragment.TAG, "开奖历史结果--->$it")
-            setDrawHistories(it)
+        /**
+         * 播放完结算飞行动画在播放结果闪烁
+         */
+        FlowBus.with<Boolean>(EventKey.PLAY_DRAW_HISTORY_ANIM).register(viewLifecycleOwner){
+            lifecycleScope.launch {
+                val historyRounds = gameAboutModel.historyRounds.value!!
+                Log.e(Fast3MainFragment.TAG, "开奖历史结果--->$it")
+                setDrawHistories(historyRounds)
+                delay(50) //延迟等待recycleView刷新
+                while (mBinding.rvDrawHistory.isComputingLayout) delay(1)
+                playAnim(true)
+            }
         }
     }
 

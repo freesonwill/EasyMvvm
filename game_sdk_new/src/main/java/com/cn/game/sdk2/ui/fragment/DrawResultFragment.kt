@@ -78,12 +78,12 @@ class DrawResultFragment: BaseFragment<DrawResultViewModel, FragmentDrawResultBi
     }
 
     /**
-     * 執行動畫
+     * 執行开奖飞行+缩放動畫
      * 规格: 左侧动画 位移和放缩动画同时进行,scale 0.1->1 执行250ms; 右侧动画:间隔左侧动画750ms, scale 0.1->1 执行200ms
      * @param duration 動畫時間，預設為200L
      * @param doEnd 動畫結束後執行
      */
-    fun playAnim(startPosition: Point, duration: Long = 200L, doEnd: () -> Unit) {
+    fun playResultAnim(startPosition: Point, duration: Long = 200L, doEnd: () -> Unit) {
         mBinding.apply {
             val scaleProperties = listOf(
                 Triple("scaleX", 0.1f, 1f),

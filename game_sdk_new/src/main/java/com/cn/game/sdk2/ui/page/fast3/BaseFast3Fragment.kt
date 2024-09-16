@@ -12,6 +12,7 @@ import androidx.core.animation.addListener
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.databinding.ViewDataBinding
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.base.BaseGameFragment
@@ -125,8 +126,6 @@ abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
      */
     private fun playAlphaAnimTogether(dic: List<View>, duration: Long, count: Int) {
         //LogUtils.dTag(TAG,"playAlphaAnimTogether begin:${mViewModel.playAlphaAnimationLD.value},${javaClass.simpleName}")
-        if (mViewModel.playAlphaAnimationLD.value != true) mViewModel.playAlphaAnimationLD.value =
-            true
         areaFlickAnimatorSet?.cancel()
         val animators = (dic.map { maskView ->
             val animator = ObjectAnimator.ofFloat(maskView, "alpha", 0f, 1f).apply {
@@ -145,8 +144,6 @@ abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
             playTogether(animators)
             addListener(onEnd = {
                 //LogUtils.dTag(TAG,"playAlphaAnimTogether end:${mViewModel.playAlphaAnimationLD.value},${javaClass.simpleName}")
-                if (mViewModel.playAlphaAnimationLD.value != false) mViewModel.playAlphaAnimationLD.value =
-                    false
             })
             start()
         }

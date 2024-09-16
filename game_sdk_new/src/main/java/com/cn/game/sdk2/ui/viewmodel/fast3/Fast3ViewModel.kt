@@ -93,7 +93,6 @@ class Fast3ViewModel : BaseViewModel() {
             return gameAboutModel.countDown.toLong()
         }
     val isCountDownStart: Boolean get() = gameAboutModel.isCountDownStart
-    val playAlphaAnimationLD by lazy { UnPeekLiveData(false) }
 
     /**
      * 每次点击扣钱，但是不显示出来，确定后才把这个金额显示在真实钱上
