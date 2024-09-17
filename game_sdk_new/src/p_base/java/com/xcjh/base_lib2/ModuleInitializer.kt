@@ -28,8 +28,7 @@ class ModuleInitializer : Initializer<String> {
             .setBorderSwitch(false)
             .setLogHeadSwitch(false)
             .setSingleTagSwitch(false)
-            //.setGlobalTag("game_sdk")
-        LogUtils.dTag(TAG, "ModuleInitializer--->create,versionCode:${BuildConfig.GAMESDK_VERSION_CODE},versionName:${BuildConfig.GAMESDK_VERSION_NAME}")
+        LogUtils.eTag(TAG, "ModuleInitializer--->create,versionCode:${BuildConfig.GAMESDK_VERSION_CODE},versionName:${BuildConfig.GAMESDK_VERSION_NAME}")
         return TAG
     }
 

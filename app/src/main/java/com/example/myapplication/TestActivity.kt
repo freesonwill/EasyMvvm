@@ -302,7 +302,7 @@ class TestActivity : AppCompatActivity() {
     }
 
     private fun onInsufficientBalance() {
-
+        Toast.makeText(this,"模拟跳转充值界面",Toast.LENGTH_SHORT).show()
     }
 
     private fun onClickOtherGameWithBlock(json: String) {
