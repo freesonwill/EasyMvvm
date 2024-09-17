@@ -110,12 +110,10 @@ private class HostToastView(context: Context) : LinearLayout(context, null, 0) {
         binding.toastText.text = msg
         bindViewToParent(host, rootView)
         mainScope.launchWithCustomContext(TAG) {
-            launch {
-                playAnim(true)
-                delay(duration)
-                playAnim(false)
-                dismissToast(rootView)
-            }.join()
+            playAnim(true)
+            delay(duration)
+            playAnim(false)
+            dismissToast(rootView)
         }
     }
 

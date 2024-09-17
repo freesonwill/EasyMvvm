@@ -205,7 +205,7 @@
                     android:orientation="vertical"
                     app:layout_constraintBottom_toTopOf="@id/viewPagerNew">
 
-                    <com.google.android.material.tabs.TabLayout
+                    <net.lucode.hackware.magicindicator.MagicIndicator
                         android:id="@+id/tl_game"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -357,7 +357,7 @@
                         app:srcCompat="@drawable/game_sdk_icon_multiple2_sel" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <androidx.viewpager2.widget.ViewPager2
+                <androidx.viewpager.widget.ViewPager
                     android:id="@+id/viewPagerNew"
                     android:layout_width="match_parent"
                     android:layout_height="174dp"

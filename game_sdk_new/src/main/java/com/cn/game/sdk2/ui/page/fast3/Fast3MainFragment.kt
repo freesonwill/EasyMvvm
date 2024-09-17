@@ -6,7 +6,6 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewPropertyAnimator
@@ -16,6 +15,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.addListener
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import com.cn.game.sdk2.R
@@ -44,6 +44,8 @@ import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
 import com.cn.game.sdk2.utils.ext.ViewExt.getCenterPoint
 import com.cn.game.sdk2.utils.ext.ViewExt.isAdd
 import com.cn.game.sdk2.utils.ext.ViewExt.locationOnScreen
+import com.cn.game.sdk2.utils.ext.bindViewPagerNewGame
+import com.cn.game.sdk2.utils.ext.initGameViewPager
 import com.cn.game.sdk2.utils.ext.removeTips
 import com.cn.game.sdk2.utils.ext.setOverScrollModeExt
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
@@ -117,7 +119,20 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
             (System.currentTimeMillis() - startTime).let {
                 LogUtils.dTag(TAG, "Fast3MainFragment load costMills1:$it")
             }
-            viewPagerNew.adapter = PagerAdapter(childFragmentManager, lifecycle, gamePageList)
+            val mFragList = gamePageList.map { it.page() }
+            val gameTypes = gamePageList.map { it.title }
+            viewPagerNew.initGameViewPager(childFragmentManager, mFragList, gameTypes)
+            (System.currentTimeMillis() - startTime).let {
+                LogUtils.dTag(TAG, "Fast3MainFragment load costMills2:$it")
+            }
+            tlGame.bindViewPagerNewGame(
+                viewPagerNew,
+                gameTypes,
+                scrollEnable = true,
+                action = { PromptSoundPlay.btnPlayMedia() }
+            )
+
+            /*viewPagerNew.adapter = PagerAdapter(childFragmentManager, lifecycle, gamePageList)
             viewPagerNew.setOverScrollModeExt(
                 BottomPopupView.OVER_SCROLL_IF_CONTENT_SCROLLS,
                 OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
@@ -146,6 +161,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                 }
             })
             tlGame.removeTips()
+            */
             (System.currentTimeMillis() - startTime).let {
                 LogUtils.dTag(TAG, "Fast3MainFragment load costMills2:$it")
             }
@@ -289,16 +305,15 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                 with(drawResultFrag) {
                     gameAboutModel.currentSettleResult?.let { setDrawResult(it) }
                     mBinding.fragmentDrawResult.isVisible = true
-                    playAnim(viewPagerNew.getCenterPoint()) {
+                    //开奖结果注区动画闪烁
+                    LogUtils.d(TAG, "中奖注区结果监听--->${gameAboutModel.lotteryResultList}")
+                    mViewModel.userLotteryResultLiveData.value = gameAboutModel.lotteryResultList
+                    playResultAnim(viewPagerNew.getCenterPoint()) {
+                        FlowBus.with<Boolean>(EventKey.PLAY_DRAW_HISTORY_ANIM).post(lifecycleScope,true)
                         //中奖动画
                         winningAnimFrag.startWinLottieAnim(gameAboutModel.netIncome, endCallBack = {
-                            //开奖结果注区动画闪烁
-                            Log.e(TAG, "中奖注区结果监听--->${gameAboutModel.lotteryResultList}")
-                            mViewModel.userLotteryResultLiveData.value =
-                                gameAboutModel.lotteryResultList
-
                             //中奖区域金额刷新
-                            Log.e(TAG, "中奖注区筹码监听--->${gameAboutModel.userLotteryResult}")
+                            LogUtils.d(TAG, "中奖注区筹码监听--->${gameAboutModel.userLotteryResult}")
                             notifyMoneyOkView(gameAboutModel.userLotteryResult)
                         })
                     }
@@ -308,7 +323,10 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
     }
 
     /**
-     * 播放透明度动画
+     * 并行播放透明度动画
+     * @param views 目标view(多个)
+     * @param alphas 透明度数组
+     * @param d 持续时间
      */
     private fun playAlphaAnimTogether(views: Array<View>, alphas: FloatArray, d: Long = 200) {
         val set = AnimatorSet()
@@ -371,7 +389,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
 
         //总余额监听
         gameAboutModel.balance.observe(viewLifecycleOwner) {
-            Log.e(TAG, "收到的总余额：${it},old:${mViewModel.currentMoney}, new:$it")
+            LogUtils.e(TAG, "收到的总余额：${it},old:${mViewModel.currentMoney}, new:$it")
             if (it > mViewModel.currentMoney) {
                 val start = mViewModel.currentMoney
                 val end = it
@@ -392,7 +410,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
 
 //        //临时金额变化，用于刷新筹码可用
         gameAboutModel.tempBalance.observe(viewLifecycleOwner) {
-            Log.e(TAG, "收到当前可用金额：${it}")
+            LogUtils.e(TAG, "收到当前可用金额：${it}")
 //            notifyBetteBean(it)
         }
 
@@ -490,19 +508,13 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
 
         //续压、加倍状态监听
         gameAboutModel.currentAgainDoubleState.observe(viewLifecycleOwner) {
-            Log.e(TAG, "续压加倍状态监听--->${it}")
+            LogUtils.e(TAG, "续压加倍状态监听--->${it}")
             updateAgainDoubleUi()
-        }
-
-        // 執行開獎紀錄閃爍動畫
-        mViewModel.playAlphaAnimationLD.observe(viewLifecycleOwner) {
-            (childFragmentManager.findFragmentByTag(DrawHistoryFragment.TAG) as DrawHistoryFragment)
-                .playAnim(it, mViewModel.prizeAnimTime)
         }
 
         //下注结果
         gameAboutModel.isBettingSuccess.observe(viewLifecycleOwner) { response ->
-            Log.e(TAG, "下注结果监听--->${response}")
+            LogUtils.e(TAG, "下注结果监听--->${response}")
             if (!response.isSuccess) {
                 //失败时显示delete ok按钮
                 ToastHelper.instance.showHostToast(mBinding.viewPagerNew, "网络连接失败")

@@ -54,8 +54,8 @@ fun ViewPager.initGameViewPager2(views: ArrayList<View>): ViewPager {
 
 fun ViewPager.initGameViewPager(
     fragmentManager: FragmentManager,
-    fragments: ArrayList<Fragment>,
-    titles: ArrayList<String>? = null
+    fragments: List<Fragment>,
+    titles: List<String>? = null
 ): ViewPager {
     //设置适配器
     adapter = object :
