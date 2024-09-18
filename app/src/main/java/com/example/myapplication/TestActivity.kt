@@ -179,6 +179,15 @@ class TestActivity : AppCompatActivity() {
         findViewById<View>(R.id.toGameList).setOnClickListener {
             GameApp.openGameDialog(100,true)
         }
+        findViewById<View>(R.id.tvOnline).setOnClickListener {
+            /*测试游戏大厅在线人数代码
+           mainScope.launchWithCustomContext(tag) {
+               while (true) {
+                   delay(1000)
+                   gameAboutModel.setMoreGameOnlines(listOf(Random.nextInt(10000)))
+               }
+           }*/
+        }
     }
 
     private fun onCustomerServiceAction() {

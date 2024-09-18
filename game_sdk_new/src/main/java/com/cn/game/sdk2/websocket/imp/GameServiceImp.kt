@@ -193,7 +193,7 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
 
     //进入房间坐下成功，待进入直播间
     override fun enterInfo(enterInfo: GameRes.EnterInfo) {
-        "进入房间坐下成功".logd(tag)
+        "进入房间坐下成功".loge(tag)
         gameAboutModel.isSitDown(true)
         val balance = enterInfo.self.score
         gameAboutModel.changeBalance(balance)
@@ -223,16 +223,9 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
     //进入直播间成功，待进入游戏
     override fun groupInfo(groupInfo: GameRes.GroupInfo) {
         isEnterRoom = true
-        "进入直播间成功:$groupInfo".logd(tag)
+        "进入直播间成功:$groupInfo".loge(tag)
         appListenerScope.launchWithCustomContext(tag) {
             appListener?.onEnterLive(1, "")
-            /*测试游戏大厅在线人数代码
-            mainScope.launchWithCustomContext(tag) {
-                while (true) {
-                    delay(1000)
-                    gameAboutModel.setMoreGameOnlines(listOf(Random.nextInt(10000)))
-                }
-            }*/
         }
 
         gameAboutModel.isEnterGroup(true)
@@ -312,17 +305,17 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
             appListener?.onLeaveLive(gameAboutModel.liveId, 1, "")
         }
 
-        "离开直播间：$leave".logd(tag)
+        "离开直播间：$leave".loge(tag)
     }
 
     override fun leaveMiniGameInfo(miniGame: GameRes.LeaveMiniGames) {
-        "离开游戏：$miniGame".logd(tag)
+        "离开游戏：$miniGame".loge(tag)
     }
 
     override fun enterMiniGameInfo(miniGame: GameRes.EnterMiniGameInfo) {
         miniGameId = miniGame.miniGameId
         gameAboutModel.roundId = miniGame.roundId
-        "进入游戏 ->${miniGame}".logd(tag)
+        "进入游戏 ->${miniGame}".loge(tag)
         gameAboutModel.isEnterGameSuccess = true
         checkAgainNew()
 

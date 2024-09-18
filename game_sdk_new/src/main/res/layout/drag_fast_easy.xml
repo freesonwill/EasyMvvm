@@ -20,6 +20,7 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:paddingTop="2dp"
+        android:text="00:00"
         android:textColor="@color/c_ffffff"
         android:textSize="@dimen/sp_12"
         android:paddingBottom="3dp"
