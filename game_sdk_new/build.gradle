@@ -8,10 +8,10 @@ plugins {
 apply from: "${rootDir.path}/gradle/pin.gradle"
 apply from: rootProject.file("gradle/flavor.gradle")
 apply from: rootProject.file("gradle/gamesdk_deps.gradle")
-// 添加一个自定义的任务来清理aar目录
+
 ext {
-    VERSIONCODE = 1
-    VERSIONNAME = "0.0.1"
+    GAMESDK_VERSION_CODE = 2
+    GAMESDK_VERSION_NAME = "0.0.2"
 }
 
 android {
@@ -21,8 +21,8 @@ android {
     defaultConfig {
         minSdk 21
         targetSdk 33
-        versionCode 1
-        versionName "0.0.1"
+        versionCode GAMESDK_VERSION_CODE
+        versionName GAMESDK_VERSION_NAME
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -40,6 +40,11 @@ android {
 
     }
 
+    buildTypes.configureEach {
+        buildConfigField "String", "GAMESDK_VERSION_NAME", "\"$GAMESDK_VERSION_NAME\""
+        buildConfigField "int", "GAMESDK_VERSION_CODE", "$GAMESDK_VERSION_CODE"
+    }
+
     libraryVariants.configureEach { variant ->
             variant.assembleProvider.configure {
                 delete fileTree(dir: "$buildDir/outputs/aar", include: '**/*')
@@ -47,7 +52,7 @@ android {
             variant.outputs.configureEach { output ->
                 def date = String.format('%s', new Date().format('yyyyMMddHHmmss'))
                 def gitVersion = getGitVersion()
-                outputFileName = "gamesdk-${variant.name}-${date}-v${VERSIONNAME}-${gitVersion}.aar"
+                outputFileName = "gamesdk-${variant.name}-${date}-v${GAMESDK_VERSION_NAME}-${gitVersion}.aar"
             }
     }
     //region copy aar to app/libs

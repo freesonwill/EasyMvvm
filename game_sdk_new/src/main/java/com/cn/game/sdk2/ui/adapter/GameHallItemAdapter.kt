@@ -1,23 +1,30 @@
 package com.cn.game.sdk2.ui.adapter
 
+import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
-import android.view.MotionEvent
+import android.view.MotionEvent.ACTION_CANCEL
 import android.view.MotionEvent.ACTION_DOWN
 import android.view.MotionEvent.ACTION_UP
+import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
+import com.cn.game.sdk2.R
 import com.cn.game.sdk2.data.bean.GameHallItem
 import com.cn.game.sdk2.databinding.ItemGamehallPageItemBinding
 import com.cn.game.sdk2.ui.compare.GameHallItemCompare
 import com.cn.game.sdk2.ui.viewholder.BaseViewHolder
+import com.cn.game.sdk2.utils.ext.CommonExt.getString
 import com.xcjh.base_lib2.utils.LogUtils
 import java.io.File
 
 class GameHallItemAdapter : BaseAdapter<GameHallItem, BaseViewHolder, ItemGamehallPageItemBinding>(
     GameHallItemCompare()
 ) {
-    private val IMAGE_SCALE_RATIO = 0.8f
+    private val IMAGE_SCALE_RATIO = 0.9f
+    private val IMAGE_SCALE_DURATION = 100L
+    private var scaleXAnimation: ObjectAnimator? = null
+    private var scaleYAnimation: ObjectAnimator? = null
     @SuppressLint("ClickableViewAccessibility")
     override fun convertPlus(
         holder: BaseViewHolder,
@@ -38,20 +45,36 @@ class GameHallItemAdapter : BaseAdapter<GameHallItem, BaseViewHolder, ItemGameha
         }
 
         binding.tvName.text = item.name
-        binding.tvOnline.text = item.online.toString()
+        binding.tvOnline.text = binding.root.context.getString(R.string.g_game_list_type_online,item.online)
         binding.root.setOnTouchListener { _, event ->
             when(event.action) {
                 ACTION_DOWN -> {
-                    binding.ivGame.scaleX = IMAGE_SCALE_RATIO
-                    binding.ivGame.scaleY = IMAGE_SCALE_RATIO
+                    scaleIcon(binding.ivGame, false)
                 }
-                ACTION_UP -> {
-                    binding.ivGame.scaleX = 1.0f
-                    binding.ivGame.scaleY = 1.0f
+                ACTION_UP, ACTION_CANCEL -> {
+                    scaleIcon(binding.ivGame, true)
                 }
                 else -> Unit
             }
             return@setOnTouchListener false
+        }
+    }
+
+    private fun scaleIcon(view: View, isReverse: Boolean) {
+        val (start, end) = if (isReverse) {
+            Pair(IMAGE_SCALE_RATIO, 1.0f)
+        } else {
+            Pair(1.0f, IMAGE_SCALE_RATIO)
+        }
+        scaleXAnimation?.cancel()
+        scaleYAnimation?.cancel()
+        scaleXAnimation = ObjectAnimator.ofFloat(view, "scaleX", start, end).apply {
+            this.duration = IMAGE_SCALE_DURATION
+            start()
+        }
+        scaleYAnimation = ObjectAnimator.ofFloat(view, "scaleY", start, end).apply {
+            this.duration = IMAGE_SCALE_DURATION
+            start()
         }
     }
 

@@ -54,8 +54,8 @@ fun ViewPager.initGameViewPager2(views: ArrayList<View>): ViewPager {
 
 fun ViewPager.initGameViewPager(
     fragmentManager: FragmentManager,
-    fragments: ArrayList<Fragment>,
-    titles: ArrayList<String>? = null
+    fragments: List<Fragment>,
+    titles: List<String>? = null
 ): ViewPager {
     //设置适配器
     adapter = object :
@@ -266,6 +266,8 @@ fun ViewPager2.setOverScrollModeExt(overScrollMode: Int,orientation:Int) {
     val view = getChildAt(0)
     if (view is RecyclerView) {
         view.overScrollMode = overScrollMode
-        OverScrollDecoratorHelper.setUpOverScroll(view,orientation);
+        OverScrollDecoratorHelper.setUpOverScroll(view,orientation)
+        view.clipChildren = false
+        view.clipToPadding = false
     }
 }

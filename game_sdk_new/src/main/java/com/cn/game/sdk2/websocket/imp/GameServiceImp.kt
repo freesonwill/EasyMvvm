@@ -429,7 +429,9 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
         curStage = GameStage.DEAL
         gameAboutModel.roundId = round.roundId //期号
         gameAboutModel.countDown = round.countDown //当前阶段剩余时间倒计时
-        gameAboutModel.changeStage(GameStage.DEAL)
+        if (gameAboutModel.currentStage.value != GameStage.DEAL) {
+            gameAboutModel.changeStage(GameStage.DEAL)
+        }
         gameAboutModel.changeTempBalance(gameAboutModel.balance.value ?: 0)
     }
 

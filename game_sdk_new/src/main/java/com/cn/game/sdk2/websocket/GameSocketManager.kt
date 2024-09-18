@@ -35,6 +35,7 @@ internal class GameSocketManager private constructor() : OnMessageListener {
 
         //@SuppressLint("StaticFieldLeak")
         private var INSTANCE: GameSocketManager? = null
+        @JvmStatic
         fun getInstance(): GameSocketManager? {
             if (INSTANCE == null) {
                 synchronized(GameSocketManager::class.java) {

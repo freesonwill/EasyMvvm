@@ -37,6 +37,7 @@
     <string name="g_game_list_type_fishing">捕鱼</string>
     <string name="g_game_list_type_sports">体育</string>
     <string name="g_game_list_type_electronic">电子</string>
+    <string name="g_game_list_type_online">%d在线</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="money_insufficient">余额不足</string>
@@ -56,6 +57,7 @@
     <string name="error_double_login">账号在其他设备登录，您已下线</string>
     <string name="error_login_fail">登录失效，请重新登录</string>
     <string name="error_bet_timeout">押注超时</string>
+    <string name="error_bet_money_insufficient">余额不足请充值</string>
 
 
 </resources>

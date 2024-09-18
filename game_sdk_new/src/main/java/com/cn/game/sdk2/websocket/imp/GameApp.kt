@@ -259,7 +259,9 @@ class GameApp  private constructor(){
 
         @JvmStatic
          fun dismissFloatingController() {
-            gameAboutModel.isShowGame(false)
+            ThreadUtils.mainScope.launch {
+                gameAboutModel.isShowGame(false)
+            }
         }
 
         @JvmStatic
@@ -282,9 +284,16 @@ class GameApp  private constructor(){
             gameMassageManager?.refreshScore()
         }
 
+        /**
+         * 打开游戏对话框
+         * @param gameId: 游戏id
+         * @param isGameList: 是否打开游戏大厅,true-打开,false-不打开
+         */
         @JvmStatic
-         fun openGameDialog(miniGameId: Int) {
-            gameAboutModel.isShowGame(true)
+        fun openGameDialog(miniGameId: Int,isGameList:Boolean) {
+             ThreadUtils.mainScope.launch {
+                 gameAboutModel.isShowGame(true, miniGameId, isGameList)
+             }
         }
 
         /**
@@ -312,18 +321,9 @@ class GameApp  private constructor(){
                     for(i in gameList.size-1 downTo  0) {
                         if(gameList[i].gameType <= 0 )gameList.removeAt(i)
                     }
-                    //3>2>1>5>4
-                    val gameTypeMap = mapOf(
-                        0 to 0,
-                        3 to 1,
-                        2 to 2,
-                        1 to 3,
-                        5 to 4,
-                        4 to 5,
-                    )
                     gameList.changeComparator { o1, o2 ->
-                        val gameType1 = gameTypeMap[o1.gameType]!!
-                        val gameType2 = gameTypeMap[o2.gameType]!!
+                        val gameType1 = GameHallItem.gameType2Index(o1.gameType)
+                        val gameType2 = GameHallItem.gameType2Index(o2.gameType)
                         when(val it = gameType1.compareTo(gameType2)){
                             0 -> o1.weight.compareTo(o2.weight)
                             else -> it

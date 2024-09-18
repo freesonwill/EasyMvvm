@@ -4,6 +4,7 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.graphics.Point
 import android.os.Bundle
+import android.view.animation.OvershootInterpolator
 import androidx.core.animation.addListener
 import androidx.core.view.isVisible
 import com.cn.game.sdk2.R
@@ -77,16 +78,16 @@ class DrawResultFragment: BaseFragment<DrawResultViewModel, FragmentDrawResultBi
     }
 
     /**
-     * 執行動畫
-     *
+     * 執行开奖飞行+缩放動畫
+     * 规格: 左侧动画 位移和放缩动画同时进行,scale 0.1->1 执行250ms; 右侧动画:间隔左侧动画750ms, scale 0.1->1 执行200ms
      * @param duration 動畫時間，預設為200L
      * @param doEnd 動畫結束後執行
      */
-    fun playAnim(startPosition: Point, duration: Long = 200L, doEnd: () -> Unit) {
+    fun playResultAnim(startPosition: Point, duration: Long = 200L, doEnd: () -> Unit) {
         mBinding.apply {
             val scaleProperties = listOf(
-                Triple("scaleX", 0f, 1f),
-                Triple("scaleY", 0f, 1f)
+                Triple("scaleX", 0.1f, 1f),
+                Triple("scaleY", 0.1f, 1f)
             )
             val leftPositionProperties = mutableListOf<Triple<String, Float, Float>>().apply {
                 val point = llResultLeft.getCenterPoint()
@@ -95,26 +96,31 @@ class DrawResultFragment: BaseFragment<DrawResultViewModel, FragmentDrawResultBi
                 add(Triple("translationY", (startPosition.y - point.y).toFloat(), 0f))
             }
 
-            val leftAnim =
-                leftPositionProperties.apply { addAll(scaleProperties) }.map { property ->
+            val leftAnim = AnimatorSet().apply {
+                val anim = leftPositionProperties.apply { addAll(scaleProperties) }.map { property ->
                     ObjectAnimator.ofFloat(llResultLeft, property.first, property.second, property.third)
                         .apply {
-                            this.duration = duration
+                            this.duration = 250
                         }
                 }
-
-            val rightAnim = scaleProperties.map { property ->
-                ObjectAnimator.ofFloat(llResultRight, property.first, property.second, property.third)
-                    .apply {
-                        this.duration = duration
-                        startDelay = 500
-                    }
+                playTogether(anim)
             }
 
+            val rightAnim = AnimatorSet().apply {
+                val anim = scaleProperties.map { property ->
+                    ObjectAnimator.ofFloat(llResultRight,property.first, property.second, property.third)
+                        .apply {
+                            this.duration = 400
+                            startDelay = 500+250 //延迟500ms,但是为了跟ios同步,这里加上250偏移
+                            interpolator = OvershootInterpolator(2f)
+                        }
+                }
+                playTogether(anim)
+            }
             AnimatorSet().apply {
-                playTogether(leftAnim + rightAnim)
+                playSequentially(leftAnim , rightAnim)
                 addListener(
-                    onStart = {
+                    onStart = { //设置为0f是为了隐藏view
                         llResultLeft.scaleX = 0f
                         llResultLeft.scaleY = 0f
                         llResultRight.scaleX = 0f
