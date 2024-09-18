@@ -400,6 +400,9 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                         mBinding.txtHomeUnit.isVisible = false
                         mViewModel.isClickOperation = false
                         ToastHelper.instance.showHostToast(mBinding.viewPagerNew, getString(R.string.g_home_betting_end))
+                        //防止断网状态
+                        if (mViewModel.gameState != GameStage.DEAL)
+                            gameAboutModel.changeStage(GameStage.DEAL)
                     }
                 }
             } else {
