@@ -135,7 +135,7 @@ class GameApp  private constructor(){
             simplifyMoreButtons: Boolean
         )  {
             if (gameAboutModel.isOpen) {
-                "login".loge()
+                "login token:$token".loge()
                 gameAboutModel.token = token
                 gameAboutModel.isAnchor = isAnchor
                 gameAboutModel.agentName = agentName

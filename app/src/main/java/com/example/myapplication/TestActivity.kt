@@ -29,6 +29,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.random.Random
+import kotlin.random.nextInt
 
 
 class TestActivity : AppCompatActivity() {
@@ -36,7 +37,18 @@ class TestActivity : AppCompatActivity() {
     private lateinit var llshow: RelativeLayout
     private var isLogin = false
     private var btnIndex = 0
-    private val token = "15:ZKbkjdBW"
+    private val token = listOf(
+        "38:hPvYi501",//zhangsan
+        "13:iL4YQarZ",//xiaoyang
+        "15:ZKbkjdBW",
+        "15:DbMcxyy1", //link
+        "134:vdfjXERY",//jeremy
+        "8:mLp8oVPC" ,//kc
+        "133:RRv82JLC",//ricky
+        "92:FVcRRDlj",//joseph
+    ).let {
+        it[Random.nextInt(it.size)]
+    }
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -98,7 +110,7 @@ class TestActivity : AppCompatActivity() {
 
                 0 -> {
                     ProxyApplication.instance.loadGame()
-                    btnIndex  = -1
+                    btnIndex = -1
                     btnOpen.text = "正在连接请稍后"
                 }
 
@@ -167,18 +179,19 @@ class TestActivity : AppCompatActivity() {
         }
         val activity = this
         XXPermissions.with(this).permission(needPermissions).request(object : OnPermissionCallback {
-                override fun onGranted(permissions: List<String>, all: Boolean) {
+            override fun onGranted(permissions: List<String>, all: Boolean) {
 
-                }
-                override fun onDenied(permissions: List<String>, never: Boolean) {
-                    Toast.makeText(activity,"请允许读取sdcard权限",Toast.LENGTH_SHORT).show()
-                }
-            })
+            }
+
+            override fun onDenied(permissions: List<String>, never: Boolean) {
+                Toast.makeText(activity, "请允许读取sdcard权限", Toast.LENGTH_SHORT).show()
+            }
+        })
         findViewById<View>(R.id.toGameMain).setOnClickListener {
-            GameApp.openGameDialog(-1,false)
+            GameApp.openGameDialog(-1, false)
         }
         findViewById<View>(R.id.toGameList).setOnClickListener {
-            GameApp.openGameDialog(100,true)
+            GameApp.openGameDialog(100, true)
         }
         findViewById<View>(R.id.tvOnline).setOnClickListener {
             /*测试游戏大厅在线人数代码
@@ -231,7 +244,7 @@ class TestActivity : AppCompatActivity() {
                 val items = withContext(Dispatchers.IO) {
                     mutableListOf<GameHallItem>().apply {
                         repeat(200) { id ->
-                            val gameType = Random.nextInt(5)+1
+                            val gameType = Random.nextInt(5) + 1
                             val weight = Random.nextInt(10)
                             val item = GameHallItem(
                                 id,
