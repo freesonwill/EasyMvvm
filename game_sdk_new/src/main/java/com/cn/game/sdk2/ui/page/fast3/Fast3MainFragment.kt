@@ -752,9 +752,10 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                     ToastHelper.instance.showHostToast(mBinding.viewPagerNew, getString(R.string.money_insufficient_50))
                     return@setOnClickListener
                 }
-                if (gameAboutModel.currentAgainDoubleState.value == AgainDoubleState.DOUBLE
-                    || gameAboutModel.currentAgainDoubleState.value == AgainDoubleState.DOUBLE_CAN_NOT
-                ) {
+                if (gameAboutModel.currentAgainDoubleState.value == AgainDoubleState.DOUBLE_CAN_NOT) {
+                    return@setOnClickListener
+                }
+                if (gameAboutModel.currentAgainDoubleState.value == AgainDoubleState.DOUBLE) {
                     if (gameAboutModel.currentAgainDoubleState.value == AgainDoubleState.DOUBLE) {
                         PromptSoundPlay.playGoldCoinAudio()
                         AnimHelper.doScaleAnimRecovery(ivMultiple2)
