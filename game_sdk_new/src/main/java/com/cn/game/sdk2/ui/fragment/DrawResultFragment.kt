@@ -86,8 +86,8 @@ class DrawResultFragment: BaseFragment<DrawResultViewModel, FragmentDrawResultBi
     fun playResultAnim(startPosition: Point, duration: Long = 200L, doEnd: () -> Unit) {
         mBinding.apply {
             val scaleProperties = listOf(
-                Triple("scaleX", 0.1f, 1f),
-                Triple("scaleY", 0.1f, 1f)
+                Triple("scaleX", 0f, 1f),
+                Triple("scaleY", 0f, 1f)
             )
             val leftPositionProperties = mutableListOf<Triple<String, Float, Float>>().apply {
                 val point = llResultLeft.getCenterPoint()

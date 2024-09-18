@@ -36,6 +36,7 @@ class TestActivity : AppCompatActivity() {
     private lateinit var llshow: RelativeLayout
     private var isLogin = false
     private var btnIndex = 0
+    private val token = "15:ZKbkjdBW"
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -104,7 +105,7 @@ class TestActivity : AppCompatActivity() {
                 1 -> {
                     // GameApp.login(token, "wali-internal", false)
                     GameApp.login(
-                        tokenArray[Random.nextInt(tokenArray.size)],
+                        token,
                         "wali-internal",
                         false,
                         false

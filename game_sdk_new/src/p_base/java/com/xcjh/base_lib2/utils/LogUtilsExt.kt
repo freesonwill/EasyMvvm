@@ -5,7 +5,7 @@ object LogUtilsExt {
 
     fun String.logd(tag: String = TAG) = LogUtils.dTag(tag, this)
     fun String.logv(tag: String = TAG) = LogUtils.vTag(tag, this)
-    fun String.logi(tag: String = TAG) = LogUtils.vTag(tag, this)
-    fun String.logw(tag: String = TAG) = LogUtils.vTag(tag, this)
-    fun String.loge(tag: String = TAG) = LogUtils.vTag("$TAG$tag", this)
+    fun String.logi(tag: String = TAG) = LogUtils.iTag(tag, this)
+    fun String.logw(tag: String = TAG) = LogUtils.wTag(tag, this)
+    fun String.loge(tag: String = TAG) = LogUtils.eTag(tag, this)
 }
