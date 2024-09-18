@@ -15,7 +15,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.addListener
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import com.cn.game.sdk2.R
@@ -44,8 +43,6 @@ import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
 import com.cn.game.sdk2.utils.ext.ViewExt.getCenterPoint
 import com.cn.game.sdk2.utils.ext.ViewExt.isAdd
 import com.cn.game.sdk2.utils.ext.ViewExt.locationOnScreen
-import com.cn.game.sdk2.utils.ext.bindViewPagerNewGame
-import com.cn.game.sdk2.utils.ext.initGameViewPager
 import com.cn.game.sdk2.utils.ext.removeTips
 import com.cn.game.sdk2.utils.ext.setOverScrollModeExt
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
@@ -119,20 +116,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
             (System.currentTimeMillis() - startTime).let {
                 LogUtils.dTag(TAG, "Fast3MainFragment load costMills1:$it")
             }
-            val mFragList = gamePageList.map { it.page() }
-            val gameTypes = gamePageList.map { it.title }
-            viewPagerNew.initGameViewPager(childFragmentManager, mFragList, gameTypes)
-            (System.currentTimeMillis() - startTime).let {
-                LogUtils.dTag(TAG, "Fast3MainFragment load costMills2:$it")
-            }
-            tlGame.bindViewPagerNewGame(
-                viewPagerNew,
-                gameTypes,
-                scrollEnable = true,
-                action = { PromptSoundPlay.btnPlayMedia() }
-            )
-
-            /*viewPagerNew.adapter = PagerAdapter(childFragmentManager, lifecycle, gamePageList)
+            viewPagerNew.adapter = PagerAdapter(childFragmentManager, lifecycle, gamePageList)
             viewPagerNew.setOverScrollModeExt(
                 BottomPopupView.OVER_SCROLL_IF_CONTENT_SCROLLS,
                 OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
@@ -145,13 +129,16 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                     32,
                     0
                 )
+                tabView.setOnClickListener {
+                    PromptSoundPlay.btnPlayMedia()
+
+                }
             }.attach()
 
             tlGame.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     val position = tab?.position ?: 0
                     viewPagerNew.currentItem = position
-                    PromptSoundPlay.btnPlayMedia()
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {
@@ -161,7 +148,6 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                 }
             })
             tlGame.removeTips()
-            */
             (System.currentTimeMillis() - startTime).let {
                 LogUtils.dTag(TAG, "Fast3MainFragment load costMills2:$it")
             }
