@@ -129,13 +129,16 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                     32,
                     0
                 )
+                tabView.setOnClickListener {
+                    PromptSoundPlay.btnPlayMedia()
+
+                }
             }.attach()
 
             tlGame.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     val position = tab?.position ?: 0
                     viewPagerNew.currentItem = position
-                    PromptSoundPlay.btnPlayMedia()
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {
