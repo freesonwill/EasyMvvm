@@ -230,10 +230,14 @@ fun TabLayout.bindTabNewGame(
     })
 }
 
-fun TabLayout.removeTips() {
-    for (i in 0 until tabCount) {
-        getTabAt(i)?.view?.let { tabView ->
-            TooltipCompat.setTooltipText(tabView, null)
+fun TabLayout.removeAllTips() {
+    post {
+        for (i in 0 until tabCount) {
+            getTabAt(i)?.view?.let { tabView ->
+                TooltipCompat.setTooltipText(tabView, null)
+                tabView.setOnLongClickListener { true }
+                tabView.isLongClickable = false
+            }
         }
     }
 }
