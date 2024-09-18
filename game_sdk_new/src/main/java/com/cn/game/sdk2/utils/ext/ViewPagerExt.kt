@@ -262,6 +262,8 @@ fun ViewPager2.setOverScrollModeExt(overScrollMode: Int,orientation:Int) {
     val view = getChildAt(0)
     if (view is RecyclerView) {
         view.overScrollMode = overScrollMode
-        OverScrollDecoratorHelper.setUpOverScroll(view,orientation);
+        OverScrollDecoratorHelper.setUpOverScroll(view,orientation)
+        view.clipChildren = false
+        view.clipToPadding = false
     }
 }
