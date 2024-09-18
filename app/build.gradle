@@ -18,6 +18,10 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        def prop = new Properties()
+        prop.load(project.rootProject.file("local.properties").newDataInputStream())
+        buildConfigField "String", "token", "\"${prop.getProperty("user.token")}\""?:"\"\""
     }
 
     sourceSets {
