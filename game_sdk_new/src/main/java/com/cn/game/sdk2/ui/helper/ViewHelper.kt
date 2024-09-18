@@ -302,6 +302,30 @@ class ViewHelper {
         homeXPopupDialog?.show()
     }
 
+    /**
+     * 验证是否能进入游戏
+     * @return true 不能进入; false 能进入
+     */
+    private fun verifyEnterGame(context: Context):Boolean{
+        if (!gameAboutModel.isOpen || !gameAboutModel.isLoginSuccess.value!!) {
+            Toast.makeText(
+                context,
+                context.resources.getString(R.string.toast_login_fault),
+                Toast.LENGTH_SHORT
+            ).show()
+            return false
+        }
+        if (!gameAboutModel.isEnterGameSuccess) {
+            Toast.makeText(
+                context,
+                context.resources.getString(R.string.toast_enter_game_fault),
+                Toast.LENGTH_SHORT
+            ).show()
+            return false
+        }
+        return true
+    }
+
     fun getGameEnterView(context: Context): View {
         tryCreateMainPopup(context)
         if (fastView != null) return fastView!!
@@ -313,25 +337,11 @@ class ViewHelper {
             it.layoutParams = lp
             val llFastClick = it.findViewById<LinearLayout>(R.id.llFastClick)
             llFastClick.clickNoRepeat(true) {
+                LogUtils.eTag(TAG, "isEnterGameSuccess:${gameAboutModel.isEnterGameSuccess},isOpen:${gameAboutModel.isOpen},isLoginSuccess:${gameAboutModel.isLoginSuccess.value},homeXPopupDialog:${homeXPopupDialog}")
+                if(!verifyEnterGame(context)) return@clickNoRepeat
                 if (homeXPopupDialog != null) {
-                    LogUtils.dTag(TAG, "homeXPopupDialog exists, no need to create it.")
+                    LogUtils.eTag(TAG, "homeXPopupDialog exists, no need to create it.")
                     homeXPopupDialog!!.show()
-                    return@clickNoRepeat
-                }
-                if (!gameAboutModel.isOpen || !gameAboutModel.isLoginSuccess.value!!) {
-                    Toast.makeText(
-                        context,
-                        context.resources.getString(R.string.toast_login_fault),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    return@clickNoRepeat
-                }
-                if (!gameAboutModel.isEnterGameSuccess) {
-                    Toast.makeText(
-                        context,
-                        context.resources.getString(R.string.toast_enter_game_fault),
-                        Toast.LENGTH_SHORT
-                    ).show()
                     return@clickNoRepeat
                 }
                 showGameMainPopup(context, true)
@@ -357,18 +367,22 @@ class ViewHelper {
         v.addOnAttachStateChangeListener(object : OnAttachStateChangeListener {
             private val obsrv: Observer<Pair<Int, Boolean>> = Observer<Pair<Int, Boolean>> {
                 ThreadUtils.mainScope.launch {
+                    val context = v.context
+                    if(!verifyEnterGame(context)) return@launch
                     val miniGameId = gameAboutModel.miniGameId
                     val isGameList = gameAboutModel.isGameList
-                    if (!isGameList) return@launch showGameMainPopup(v.context)
-                    showGameMainPopup(v.context)
-                    withTimeout(1000){
-                        while(homeXPopupDialog == null || homeXPopupDialog?.isShow == false) delay(10)
+                    if (!isGameList) { //投注主界面
+                        showGameMainPopup(v.context)
+                    } else { //投注界面-->游戏列表界面
+                        showGameMainPopup(context)
+                        withTimeout(1000){
+                            while(homeXPopupDialog == null || homeXPopupDialog?.isShow == false) delay(10)
+                        }
+                        homeXPopupDialog!!.dismiss()
+                        val fm = homeXPopupDialog!!.fragment.childFragmentManager
+                        val height = homeXPopupDialog!!.fragment.requireView().height
+                        showGameList(context, fm, height, miniGameId)
                     }
-                    homeXPopupDialog!!.dismiss()
-                    val context = v.context
-                    val fm = homeXPopupDialog!!.fragment.childFragmentManager
-                    val height = homeXPopupDialog!!.fragment.requireView().height
-                    showGameList(context, fm, height, miniGameId)
                 }
             }
 

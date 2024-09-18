@@ -35,26 +35,6 @@ import kotlin.random.Random
 val tokenArray = listOf(
     "15:ZKbkjdBW"
 )
-
-////测试打包专用 99:mFGB4ljy
-////92:ZyBmhNCJ   87:MHxIHlYM  93:Ufx3Dy8y 94:0aPEwiYK   金额少：97:nMz8aSsZ  98:gCrUd5Gz
-//val tokenArray = listOf(
-//    "101:PcI4jEcP",
-//    "99:mFGB4ljy",
-//    "42:aRYvqlC5",
-//    "33:ZtG5WhUh",
-//    "29:zNbNe45L",
-//    "37:QyJbGSGR",
-//    "24:zQQBFVFI",
-//    "50:OtdAVXdd",
-////    "74:4wNIFMMi",//失效的token
-//    "51:Ja9L1rG6",
-//    "35:BIyxvrqa",
-////    "69:cAjjzn2s",//失效的token
-//)
-//
-//val tokenIndex = Random.nextInt(tokenArray.size)
-//
 @Suppress("KotlinConstantConditions")
 val token: String
     get() {

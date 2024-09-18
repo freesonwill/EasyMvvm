@@ -392,6 +392,7 @@
                     android:layout_height="wrap_content"
                     android:clipChildren="false"
                     android:clipToPadding="false"
+                    android:visibility="invisible"
                     app:layout_constraintBottom_toBottomOf="@id/cl_chips"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

@@ -67,4 +67,12 @@
         android:layout_alignParentEnd="true"
         android:text="设置中奖"
         android:visibility="visible" />
+    <Button
+        android:id="@+id/tvOnline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="380dp"
+        android:layout_alignParentEnd="true"
+        android:text="测试在线人数"
+        android:visibility="visible" />
 </RelativeLayout>
