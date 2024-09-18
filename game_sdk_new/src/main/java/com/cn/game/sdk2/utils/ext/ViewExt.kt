@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Point
 import android.graphics.drawable.Drawable
 import android.os.Build
+import android.util.DisplayMetrics
 import android.view.View
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
@@ -120,6 +121,13 @@ object ViewExt {
                 val smoothScroller = object : LinearSmoothScroller(recyclerView.context) {
                     override fun getVerticalSnapPreference(): Int {
                         return SNAP_TO_START
+                    }
+
+                    // 覆寫 calculateSpeedPerPixel 方法
+                    override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics?): Float {
+                        //因為 LinearSmoothScroller 的預設值是25f (在 LinearSmoothScroller 源碼中可以找到，這個值是private static final，因此不能更動)，要加快速度就要降低這個值
+                        val millSecondsPerInch = 15f
+                        return millSecondsPerInch / displayMetrics!!.densityDpi
                     }
                 }
 
