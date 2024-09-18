@@ -198,7 +198,7 @@
                 <RelativeLayout
                     android:id="@+id/vvvvvv"
                     android:layout_width="match_parent"
-                    android:layout_height="21dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
                     android:clipChildren="false"
                     android:clipToPadding="false"
@@ -206,20 +206,33 @@
                     app:layout_constraintBottom_toTopOf="@id/viewPagerNew">
 
                     <net.lucode.hackware.magicindicator.MagicIndicator
-                        android:id="@+id/magicIndicator"
+                        android:id="@+id/tl_game"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_alignParentStart="true"
                         android:layout_centerHorizontal="true"
+                        android:layout_alignTop="@id/frrl"
+                        android:layout_alignBottom="@id/frrl"
                         android:layout_marginEnd="5dp"
                         android:layout_toStartOf="@id/frrl"
                         android:clipChildren="false"
-                        android:clipToPadding="false" />
+                        android:clipToPadding="false"
+                        android:background="@android:color/transparent"
+                        app:tabIndicator="@null"
+                        app:tabRippleColor="@null"
+                        app:tabIndicatorHeight="0dp"
+                        app:tabGravity="start"
+                        app:tabMode="scrollable"
+                        app:tabTextColor="@color/g_9696b8"
+                        app:tabMinWidth="@dimen/dp_30"
+                        app:tabIndicatorAnimationMode="elastic"
+                        app:tabTextAppearance="@style/TabLayoutTextAppearance"
+                        app:tabSelectedTextColor="@color/g_f7cf41" />
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/frrl"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_marginEnd="10dp"
                         android:background="@drawable/game_sdk_shape_3_111130"
@@ -243,7 +256,7 @@
                         <androidx.appcompat.widget.AppCompatImageView
                             android:layout_width="5dp"
                             android:layout_height="8dp"
-                            android:layout_marginLeft="@dimen/dp_4"
+                            android:layout_marginStart="@dimen/dp_4"
                             app:layout_constraintBottom_toBottomOf="@id/txtCurrentMoney"
                             app:layout_constraintStart_toEndOf="@id/txtCurrentMoney"
                             app:layout_constraintTop_toTopOf="@id/txtCurrentMoney"

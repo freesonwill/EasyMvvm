@@ -2,8 +2,10 @@ package com.xcjh.base_lib2
 
 import android.app.Application
 import android.content.Context
+import android.widget.Toast
 import androidx.startup.Initializer
 import com.cn.game.sdk2.BuildConfig
+import com.xcjh.base_lib2.utils.APKVersionInfoUtils
 import com.xcjh.base_lib2.utils.LogUtils
 import com.xcjh.base_lib2.utils.LogUtilsExt
 
@@ -27,7 +29,7 @@ class ModuleInitializer : Initializer<String> {
             .setLogHeadSwitch(false)
             .setSingleTagSwitch(false)
             //.setGlobalTag("game_sdk")
-        LogUtils.dTag(TAG, "ModuleInitializer--->create")
+        LogUtils.dTag(TAG, "ModuleInitializer--->create,versionCode:${BuildConfig.GAMESDK_VERSION_CODE},versionName:${BuildConfig.GAMESDK_VERSION_NAME}")
         return TAG
     }
 
