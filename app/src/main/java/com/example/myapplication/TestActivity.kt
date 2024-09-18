@@ -28,6 +28,7 @@ import com.xcjh.base_lib2.utils.screenWidth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.Properties
 import kotlin.random.Random
 import kotlin.random.nextInt
 
@@ -47,7 +48,10 @@ class TestActivity : AppCompatActivity() {
         "133:RRv82JLC",//ricky
         "92:FVcRRDlj",//joseph
     ).let {
-        it[Random.nextInt(it.size)]
+        BuildConfig.token.ifEmpty {
+            it[Random.nextInt(it.size)]
+        }
+
     }
 
     @SuppressLint("MissingInflatedId")
