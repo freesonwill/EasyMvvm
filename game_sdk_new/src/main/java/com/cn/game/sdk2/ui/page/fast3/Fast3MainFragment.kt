@@ -43,7 +43,7 @@ import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
 import com.cn.game.sdk2.utils.ext.ViewExt.getCenterPoint
 import com.cn.game.sdk2.utils.ext.ViewExt.isAdd
 import com.cn.game.sdk2.utils.ext.ViewExt.locationOnScreen
-import com.cn.game.sdk2.utils.ext.removeTips
+import com.cn.game.sdk2.utils.ext.removeAllTips
 import com.cn.game.sdk2.utils.ext.setOverScrollModeExt
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.websocket.appListener
@@ -147,7 +147,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                 override fun onTabReselected(tab: TabLayout.Tab?) {
                 }
             })
-            tlGame.removeTips()
+            tlGame.removeAllTips()
             (System.currentTimeMillis() - startTime).let {
                 LogUtils.dTag(TAG, "Fast3MainFragment load costMills2:$it")
             }
