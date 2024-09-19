@@ -13,12 +13,9 @@ import com.cn.game.sdk2.utils.BettingAreaUtil.getSingleBets
 import com.cn.game.sdk2.utils.BettingAreaUtil.getSumBets
 import com.cn.game.sdk2.utils.BettingAreaUtil.toSpareArray
 import com.cn.game.sdk2.utils.ext.CommonExt
-import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
 import com.cn.game.sdk2.websocket.bean.Betting
 import com.cn.game.sdk2.websocket.constants.GameStage
 import com.cn.game.sdk2.websocket.gameAboutModel
-import com.gyf.immersionbar.ktx.hasNavigationBar
-import com.gyf.immersionbar.ktx.navigationBarHeight
 import com.kunminx.architecture.ui.callback.UnPeekLiveData
 import com.xcjh.base_lib2.base.BaseViewModel
 import com.xcjh.base_lib2.utils.LogUtils
@@ -43,24 +40,6 @@ class Fast3ViewModel : BaseViewModel() {
             if (it <= 10) return@map getColor(R.color.c_FFCB15)
             return@map getColor(R.color.c_62DF57)
         }
-    }
-
-    //xml使用 勿private
-    var bottomHeight: Int = 0
-
-    init {
-        val defaultHeight = 34.dp2px
-        val targetHeight = when {
-            application.hasNavigationBar -> {
-                val navigationBarHeight = application.navigationBarHeight
-                if (navigationBarHeight > defaultHeight) navigationBarHeight else defaultHeight
-            }
-
-            else -> {
-                defaultHeight
-            }
-        }
-        bottomHeight = targetHeight
     }
 
     //游戏状态
