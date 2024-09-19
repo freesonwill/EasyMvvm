@@ -126,7 +126,7 @@ object ViewExt {
                     // 覆寫 calculateSpeedPerPixel 方法
                     override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics?): Float {
                         //因為 LinearSmoothScroller 的預設值是25f (在 LinearSmoothScroller 源碼中可以找到，這個值是private static final，因此不能更動)，要加快速度就要降低這個值
-                        val millSecondsPerInch = 10f - abs(oldIndex - index)
+                        val millSecondsPerInch = 10f / abs(oldIndex - index)
                         return millSecondsPerInch / displayMetrics!!.densityDpi
                     }
                 }
