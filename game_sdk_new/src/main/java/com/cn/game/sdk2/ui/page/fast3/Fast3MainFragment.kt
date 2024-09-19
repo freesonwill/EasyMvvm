@@ -135,8 +135,51 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
 
             tlGame.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
+                    val prevPosition = viewPagerNew.currentItem
                     val position = tab?.position ?: 0
-                    viewPagerNew.currentItem = position
+                    if(prevPosition == position) return
+
+                    val prevFragment = gamePageList[prevPosition].page.invoke()
+                    val isPrev = prevPosition < position
+                    val width = viewPagerNew.width
+
+                    // 把要移除畫面的fragment放到fakeViewPager上
+                    childFragmentManager.beginTransaction()
+                        .replace(fragmentFakeViewPager.id, prevFragment, gamePageList[prevPosition].title)
+                        .commitNow()
+                    fragmentFakeViewPager.isVisible = true
+
+                    // 將ViewPager移動到指定位置
+                    viewPagerNew.setCurrentItem(position, false)
+
+                    // 構建動畫
+                    val animationList =
+                        listOf(
+                            Triple(viewPagerNew, if (isPrev) width * 1f else width * -1f, 0f),
+                            Triple(fragmentFakeViewPager, 0f, if (isPrev) width * -1f else width * 1f)
+                        ).map {
+                            ObjectAnimator.ofFloat(it.first, "translationX", it.second, it.third)
+                        }
+
+                    // 執行動畫
+                    AnimatorSet().apply {
+                        playTogether(animationList)
+                        addListener(
+                            onStart = {
+                                fragmentFakeViewPager.translationX = 0f
+                                viewPagerNew.translationX =
+                                    if(isPrev) width * -1f
+                                    else width * 1f
+                            },
+                            onEnd = {
+                                fragmentFakeViewPager.isVisible = false
+                                childFragmentManager.beginTransaction()
+                                    .remove(prevFragment)
+                                    .commitNow()
+                            }
+                        )
+                        start()
+                    }
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {
