@@ -62,7 +62,6 @@ import com.xcjh.base_lib2.base.fragment.viewBind
 import com.xcjh.base_lib2.utils.LogUtils
 import com.xcjh.base_lib2.utils.LogUtilsExt.loge
 import com.xcjh.base_lib2.utils.view.clickNoRepeat
-import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
@@ -89,7 +88,6 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.model = mViewModel
         mBinding.lifecycleOwner = viewLifecycleOwner
-        mBinding.bottomLayout.layoutParams.height = mViewModel.bottomHeight
         mBinding.bottomLayout.setOnTouchListener { _, _ -> true }
         mBinding.resultClickView.setOnClickListener { } //屏蔽底部recycler点击
 
@@ -236,7 +234,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                 ToastHelper.instance.showHostToast(mBinding.viewPagerNew, getString(R.string.g_home_betting_begin))
             }
             mBinding.apply {
-                async {
+                launch {
                     playAlphaAnimTogether(
                         arrayOf(txtHomeStatic, txtHomeTime, txtHomeUnit),
                         floatArrayOf(0f, 1f)
@@ -278,7 +276,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
         lifecycleScope.launch {
             mBinding.apply {
                 //Fast3ToastHelper.showToastNormal(getString(R.string.g_home_setting_begin), 1000)
-                async {
+                launch {
                     playAlphaAnimTogether(arrayOf(txtHomeStatic), floatArrayOf(0f, 1f))
                     txtHomeStatic.text = resources.getString(R.string.g_f3_setting)
                 }
@@ -337,15 +335,11 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
      */
     private fun onStartDrawing() {
         lifecycleScope.launch {//关闭
-            if (mViewModel.isCountDownStart) {
-                //PromptSoundPlay.endGameTip(requireContext())
-                //Fast3ToastHelper.showToastNormal(getString(R.string.g_home_drawing_begin), 1000)
-            }
             cancelBetteFlyAnim()
             cancelTemBetting()
             //开奖时取消临时下注的
             mBinding.apply {
-                async {
+                launch {
                     playAlphaAnimTogether(arrayOf(txtHomeStatic), floatArrayOf(0f, 1f))
                     txtHomeStatic.text = getString(R.string.g_f3_dealing)
                 }
@@ -563,9 +557,9 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
 
     private fun cancelBetteFlyAnim() {
         betteFlyAnimList.forEach {
-            it.value.forEach {
-                it.animator.cancel()
-                it.isRunning = false
+            it.value.forEach { bfd ->
+                bfd.animator.cancel()
+                bfd.isRunning = false
             }
         }
         betteFlyAnimList.clear()
