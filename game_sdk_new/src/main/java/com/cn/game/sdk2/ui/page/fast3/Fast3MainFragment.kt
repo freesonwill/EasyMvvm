@@ -247,9 +247,6 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
             mViewModel.cancelAreaFlickAnimLiveData.value = true
             //重置注区筹码
             notifyMoneyOkView(null)
-            if (mViewModel.isCountDownStart) {
-                ToastHelper.instance.showHostToast(mBinding.viewPagerNew, getString(R.string.g_home_betting_begin))
-            }
             refreshChips()
             //下注筹码向上升起动画
             startBetteRecyclerShowOrHideAnim(isShow = true, onStart = {
@@ -402,19 +399,10 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
             }
             if (seconds == 0) {
                 if (mViewModel.gameState == GameStage.NEW) {
-                    lifecycleScope.launch {
-                        playAlphaAnimTogether(
-                            arrayOf(mBinding.txtHomeStatic),
-                            floatArrayOf(0f, 1f)
-                        )
-                        mBinding.txtHomeStatic.text = getString(R.string.g_f3_dealing)
-                        mBinding.txtHomeTime.isVisible = false
-                        mBinding.txtHomeUnit.isVisible = false
-                        mViewModel.isClickOperation = false
-                        ToastHelper.instance.showHostToast(mBinding.viewPagerNew, getString(R.string.g_home_betting_end))
-                        //防止断网状态
-                        if (mViewModel.gameState != GameStage.DEAL)
-                            gameAboutModel.changeStage(GameStage.DEAL)
+                    ToastHelper.instance.showHostToast(mBinding.viewPagerNew, getString(R.string.g_home_betting_end))
+                    //防止断网状态
+                    if (mViewModel.gameState != GameStage.DEAL) {
+                        gameAboutModel.changeStage(GameStage.DEAL)
                     }
                 }
             } else {
