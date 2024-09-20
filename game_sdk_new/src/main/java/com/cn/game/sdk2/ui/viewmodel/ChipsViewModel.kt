@@ -33,6 +33,7 @@ class ChipsViewModel : ViewModel() {
             val tempMoney = gameAboutModel.tempBalance.value ?: 0
             if (tempMoney >= first().money) {
                 first().select = true
+                userLastSelectedChip = first()
             }
         }
     }
@@ -46,7 +47,9 @@ class ChipsViewModel : ViewModel() {
     val currentChipIndex: Int
         get() = chipsList.value!!.indexOfFirst { it.select }
 
-    fun setSelectedChip(money: Int) {
+    private var userLastSelectedChip: SelectAnnotationBean
+
+    private fun setSelectedChip(money: Int) {
         val list = chipsList.value ?: return
         list.forEach {
             it.select = it.money == money
@@ -54,14 +57,28 @@ class ChipsViewModel : ViewModel() {
         _chipsList.value = list
     }
 
-    fun setSelectedChip(chip: SelectAnnotationBean) {
+    private fun setSelectedChip(chip: SelectAnnotationBean) {
         setSelectedChip(chip.money)
+    }
+
+    fun setUserSelectChip(chip: SelectAnnotationBean) {
+        userLastSelectedChip = chip
+        setSelectedChip(chip)
+    }
+
+    fun cancelBet() {
+        val money = gameAboutModel.tempBalance.value ?: 0
+        if (money < userLastSelectedChip.money) {
+            setMaxPossibleBetChip(money)
+        } else {
+            setSelectedChip(userLastSelectedChip)
+        }
     }
 
     /***
      * 显示最大可下注筹码
      */
-    private fun showMaxPossibleBetChip(money: Long) {
+    private fun setMaxPossibleBetChip(money: Long) {
         val list = chipsList.value ?: return
         if (money < firstChip.money) {
             setDisableChip()
@@ -80,12 +97,12 @@ class ChipsViewModel : ViewModel() {
         val selectBean = chipsList.value?.firstOrNull { it.select }
         if (selectBean != null) {
             if (selectBean.money > money) {
-                showMaxPossibleBetChip(money)
+                setMaxPossibleBetChip(money)
             } else {
                 setSelectedChip(selectBean)
             }
         } else {
-            showMaxPossibleBetChip(money)
+            setMaxPossibleBetChip(money)
         }
     }
 

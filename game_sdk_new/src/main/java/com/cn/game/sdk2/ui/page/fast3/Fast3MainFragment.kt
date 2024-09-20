@@ -541,6 +541,9 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
      */
     private fun cancelTemBetting() {
         hiddenAnchorTop()
+        childFragmentManager.findFragmentByTag(ChipsFragment.TAG)?.let {
+            (it as ChipsViewImp).cancelBet()
+        }
         gameMassageManager?.cancelBetting { result ->
             notifyMoneyOkView(result)
         }

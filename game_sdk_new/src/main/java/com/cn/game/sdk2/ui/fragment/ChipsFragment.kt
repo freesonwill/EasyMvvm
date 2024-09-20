@@ -73,7 +73,7 @@ class ChipsFragment : BaseFragment<ChipsViewModel, FragmentChipsBinding>(), Chip
                 if (!item.select) {
                     if (item.money <= (gameAboutModel.tempBalance.value ?: 0)) {
                         PromptSoundPlay.btnPlayMedia()
-                        mViewModel.setSelectedChip(item)
+                        mViewModel.setUserSelectChip(item)
                     } else {
                         ToastHelper.instance.showWindowToast(
                             context = context,
@@ -155,6 +155,10 @@ class ChipsFragment : BaseFragment<ChipsViewModel, FragmentChipsBinding>(), Chip
         return position in layoutManager.findFirstCompletelyVisibleItemPosition()..layoutManager.findLastCompletelyVisibleItemPosition()
     }
 
+    override fun cancelBet() {
+        mViewModel.cancelBet()
+    }
+
     override fun onBetAreaClick(onClickChip: (chipView: View) -> Unit) {
         scrollSelectPosition2Center(false) {
             safeChipFly { chipView ->
@@ -171,6 +175,10 @@ class ChipsFragment : BaseFragment<ChipsViewModel, FragmentChipsBinding>(), Chip
  * 與外部通信接口
  */
 interface ChipsViewImp {
+    /***
+     * 取消下注的回調，用於回復使用者最後選擇的籌碼
+     */
+    fun cancelBet()
 
     /***
      * 點擊注區須回調當前籌碼view，用於籌碼飛行動畫
