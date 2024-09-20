@@ -57,7 +57,8 @@ public class VerticalBottomPopupView extends BasePopupView {
         this.bottomPopupContainer.dismissOnTouchOutside(VerticalBottomPopupView.this.popupInfo.isDismissOnTouchOutside);
         this.bottomPopupContainer.isThreeDrag(VerticalBottomPopupView.this.popupInfo.isThreeDrag);
         XPopupUtils.applyPopupSize((ViewGroup)this.getPopupContentView(), this.getMaxWidth(), this.getMaxHeight(), this.getPopupWidth(), this.getPopupHeight(), (Runnable)null);
-        this.bottomPopupContainer.setOnCloseListener(new SmartDragLayout.OnCloseListener() {
+        this.bottomPopupContainer.setOnCloseListener(new VerticalSmartDragLayout.OnCloseListener() {
+
             public void onClose() {
                 VerticalBottomPopupView.this.beforeDismiss();
                 if (VerticalBottomPopupView.this.popupInfo != null && VerticalBottomPopupView.this.popupInfo.xPopupCallback != null) {
@@ -65,6 +66,10 @@ public class VerticalBottomPopupView extends BasePopupView {
                 }
 
                 VerticalBottomPopupView.this.doAfterDismiss();
+            }
+
+            public void onClosing() {
+                VerticalBottomPopupView.this.onClosing();
             }
 
             public void onDrag(int value, float percent, boolean isScrollUp) {
@@ -82,6 +87,10 @@ public class VerticalBottomPopupView extends BasePopupView {
 
             public void onOpen() {
             }
+
+            public void onOpening() {
+                VerticalBottomPopupView.this.onOpening();
+            }
         });
         this.bottomPopupContainer.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
@@ -97,6 +106,12 @@ public class VerticalBottomPopupView extends BasePopupView {
 
             }
         });
+    }
+    public void onClosing(){
+
+    }
+    public void onOpening(){
+
     }
 
     protected void doMeasure() {
