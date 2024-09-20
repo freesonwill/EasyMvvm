@@ -1,62 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/lltRoot"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="373dp"
-        android:background="@drawable/game_sdk_shape_9_141624">
+        android:fillViewport="true"
+        android:layout_height="373dp">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/lltRoot"
+            android:layout_width="match_parent"
+            android:layout_height="373dp"
+            android:background="@drawable/game_sdk_shape_9_141624">
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tlGameList"
+                android:layout_width="0dp"
+                android:layout_height="24dp"
+                android:paddingTop="0dp"
+                android:paddingBottom="0dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="11dp"
+                android:layout_marginEnd="10dp"
+                android:background="@android:color/transparent"
+                app:tabIndicatorColor="@android:color/transparent"
+                app:tabRippleColor="@null"
+                app:tabIndicatorHeight="0dp"
+                app:tabGravity="start"
+                app:tabTextColor="@color/g_9696b8"
+                app:tabMinWidth="@dimen/dp_30"
+                app:tabTextAppearance="@style/TabLayoutTextAppearance"
+                app:tabSelectedTextColor="@color/g_f7cf41"
+                app:layout_constraintEnd_toStartOf="@id/close"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tlGameList"
-            android:layout_width="0dp"
-            android:layout_height="24dp"
-            android:paddingTop="0dp"
-            android:paddingBottom="0dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="11dp"
-            android:layout_marginEnd="10dp"
-            android:background="@android:color/transparent"
-            app:tabIndicatorColor="@android:color/transparent"
-            app:tabRippleColor="@null"
-            app:tabIndicatorHeight="0dp"
-            app:tabGravity="start"
-            app:tabTextColor="@color/g_9696b8"
-            app:tabMinWidth="@dimen/dp_30"
-            app:tabTextAppearance="@style/TabLayoutTextAppearance"
-            app:tabSelectedTextColor="@color/g_f7cf41"
-            app:layout_constraintEnd_toStartOf="@id/close"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/close"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:padding="8dp"
+                android:layout_marginTop="6.5dp"
+                android:layout_marginEnd="4dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:tint="@drawable/game_sdk_selector_ll_home_more_btn_bg"
+                app:srcCompat="@mipmap/game_sdk_ic_close" />
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/vpGameList"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="42dp"
+                android:layout_marginEnd="0dp"
+                android:layout_marginBottom="50dp"
+                android:paddingStart="0dp"
+                android:paddingEnd="0dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/close"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:padding="8dp"
-            android:layout_marginTop="6.5dp"
-            android:layout_marginEnd="4dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:tint="@drawable/game_sdk_selector_ll_home_more_btn_bg"
-            app:srcCompat="@mipmap/game_sdk_ic_close" />
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/vpGameList"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="0dp"
-            android:layout_marginTop="42dp"
-            android:layout_marginEnd="0dp"
-            android:layout_marginBottom="50dp"
-            android:paddingStart="0dp"
-            android:paddingEnd="0dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </layout>
