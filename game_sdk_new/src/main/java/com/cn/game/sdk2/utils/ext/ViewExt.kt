@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Point
 import android.graphics.drawable.Drawable
 import android.os.Build
-import android.util.DisplayMetrics
 import android.view.View
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
@@ -27,7 +26,6 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNav
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerIndicator
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerTitleView
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.ColorTransitionPagerTitleView
-import kotlin.math.abs
 
 /**
  * Description:
@@ -82,7 +80,6 @@ object ViewExt {
         action: (index: Int) -> Unit = {}
     ) {
         val commonNavigator = CommonNavigator(context)
-        var oldIndex = 0
         if (scrollEnable) {
             commonNavigator.isSkimOver = true
         } else {
@@ -123,11 +120,9 @@ object ViewExt {
                         return SNAP_TO_START
                     }
 
-                    // 覆寫 calculateSpeedPerPixel 方法
-                    override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics?): Float {
-                        //因為 LinearSmoothScroller 的預設值是25f (在 LinearSmoothScroller 源碼中可以找到，這個值是private static final，因此不能更動)，要加快速度就要降低這個值
-                        val millSecondsPerInch = 10f / abs(oldIndex - index)
-                        return millSecondsPerInch / displayMetrics!!.densityDpi
+                    override fun calculateTimeForScrolling(dx: Int): Int {
+                        val timeForScrolling = 90
+                        return timeForScrolling
                     }
                 }
 
@@ -162,7 +157,6 @@ object ViewExt {
                 position = if (position < 2) position else if (position < 9) 2 else position - 6
                 indicator.onPageSelected(position)
                 indicator.onPageScrolled(position, 0f, 0)
-                oldIndex = position
             }
 
             // newState 表示滚动状态：
