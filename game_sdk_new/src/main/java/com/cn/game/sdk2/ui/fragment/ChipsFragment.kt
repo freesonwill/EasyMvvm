@@ -2,7 +2,6 @@ package com.cn.game.sdk2.ui.fragment
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.databinding.FragmentChipsBinding
@@ -18,7 +17,6 @@ import com.cn.game.sdk2.websocket.appListener
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.xcjh.base_lib2.base.fragment.BaseFragment
 import com.xcjh.base_lib2.base.fragment.viewBind
-import com.xcjh.base_lib2.utils.windowManager
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
@@ -46,8 +44,7 @@ class ChipsFragment : BaseFragment<ChipsViewModel, FragmentChipsBinding>(), Chip
     override fun createObserver() {
         //临时金额变化时需要刷新筹码的可用状态
         gameAboutModel.tempBalance.observe(viewLifecycleOwner) {
-            chipsAdapter.submitList(mViewModel.chipsList.value)
-            chipsAdapter.notifyItemRangeChanged(0, chipsAdapter.itemCount)
+            mViewModel.refresh()
         }
         mViewModel.chipsList.observe(viewLifecycleOwner) {
             chipsAdapter.submitList(it)
@@ -100,7 +97,8 @@ class ChipsFragment : BaseFragment<ChipsViewModel, FragmentChipsBinding>(), Chip
         }
     }
 
-    private fun safeChipFly(position: Int, action: (View?) -> Unit) {
+    private fun safeChipFly(action: (View?) -> Unit) {
+        val position = mViewModel.currentChipIndex
         if (!isChipItemVisible(position)) {
             mBinding.rvChips.post {
                 val betteView =
@@ -157,20 +155,9 @@ class ChipsFragment : BaseFragment<ChipsViewModel, FragmentChipsBinding>(), Chip
         return position in layoutManager.findFirstCompletelyVisibleItemPosition()..layoutManager.findLastCompletelyVisibleItemPosition()
     }
 
-    override fun onDestroy() {
-        mViewModel.reset()
-        super.onDestroy()
-    }
-
-    override fun onRefreshChips() {
-        mViewModel.refresh()
-    }
-
     override fun onBetAreaClick(onClickChip: (chipView: View) -> Unit) {
-        val selectedPosition = mViewModel.currentChipIndex
         scrollSelectPosition2Center(false) {
-            onRefreshChips()
-            safeChipFly(selectedPosition) { chipView ->
+            safeChipFly { chipView ->
                 chipView?.let {
                     onClickChip.invoke(it)
                 }
@@ -184,7 +171,6 @@ class ChipsFragment : BaseFragment<ChipsViewModel, FragmentChipsBinding>(), Chip
  * 與外部通信接口
  */
 interface ChipsViewImp {
-    fun onRefreshChips()
 
     /***
      * 點擊注區須回調當前籌碼view，用於籌碼飛行動畫

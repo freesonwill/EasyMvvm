@@ -252,7 +252,6 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
             mViewModel.cancelAreaFlickAnimLiveData.value = true
             //重置注区筹码
             notifyMoneyOkView(null)
-            refreshChips()
             //下注筹码向上升起动画
             startBetteRecyclerShowOrHideAnim(isShow = true, onStart = {
                 //筹码
@@ -543,7 +542,6 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
     private fun cancelTemBetting() {
         hiddenAnchorTop()
         gameMassageManager?.cancelBetting { result ->
-            refreshChips()
             notifyMoneyOkView(result)
         }
     }
@@ -958,12 +956,6 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
             if (mBinding.viewPagerNew.currentItem != index) {
                 mBinding.viewPagerNew.currentItem = index
             }
-        }
-    }
-
-    private fun refreshChips() {
-        childFragmentManager.findFragmentByTag(ChipsFragment.TAG)?.let {
-            (it as ChipsViewImp).onRefreshChips()
         }
     }
 }

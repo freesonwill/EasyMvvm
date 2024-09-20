@@ -8,8 +8,6 @@ import com.cn.game.sdk2.websocket.gameAboutModel
 
 class ChipsViewModel : ViewModel() {
 
-    private val defaultIndex: Int
-
     /**
      * 投注的钱
      */
@@ -18,7 +16,7 @@ class ChipsViewModel : ViewModel() {
 
     init {
         _chipsList.value = listOf(
-            SelectAnnotationBean(money = 1000, true),
+            SelectAnnotationBean(money = 1000),
             SelectAnnotationBean(money = 2000),
             SelectAnnotationBean(money = 5000),
             SelectAnnotationBean(money = 10000),
@@ -32,7 +30,10 @@ class ChipsViewModel : ViewModel() {
             SelectAnnotationBean(money = 5000000),
             SelectAnnotationBean(money = 10000000),
         ).apply {
-            defaultIndex = indexOfFirst { it.select }
+            val tempMoney = gameAboutModel.tempBalance.value ?: 0
+            if (tempMoney >= first().money) {
+                first().select = true
+            }
         }
     }
 
@@ -55,10 +56,6 @@ class ChipsViewModel : ViewModel() {
 
     fun setSelectedChip(chip: SelectAnnotationBean) {
         setSelectedChip(chip.money)
-    }
-
-    fun reset() {
-        setSelectedChip(defaultIndex)
     }
 
     /***
