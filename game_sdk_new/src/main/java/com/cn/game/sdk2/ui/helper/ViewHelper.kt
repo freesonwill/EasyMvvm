@@ -109,18 +109,6 @@ class ViewHelper {
                     super.onDismiss(popupView)
                     helpXPopupDialog = null
                 }
-
-                override fun beforeDismiss(popupView: BasePopupView?) {
-                    isShowOtherPop = false
-                    showGameMainPopup(context, true)
-                    super.beforeDismiss(popupView)
-                }
-
-                override fun beforeShow(popupView: BasePopupView?) {
-                    isShowOtherPop = true
-                    showGameMainPopup(context, false)
-                    super.beforeShow(popupView)
-                }
             })
             //.customAnimator(EmptyAnimator(bubbleAttach, 0))
             .navigationBarColor(android.R.color.transparent)
@@ -144,7 +132,7 @@ class ViewHelper {
             }.show()
     }
 
-    private fun tryCreateMainPopup(context: Context, animationDuration: Int = 200) {
+    private fun tryCreateMainPopup(context: Context, animationDuration: Int = 150) {
         if (null == homeXPopupDialog) {
             val pop = object :HomeXPopupDialog(context, Fast3MainFragment(), GAME_ID_ENUM.GAME_FAST3.num) {
                 override fun onOpening() {
@@ -226,8 +214,21 @@ class ViewHelper {
             gameListDialog?.switchPage(miniGameId)
             return
         }
-        val popupView = GameListView(context, fm = fm, miniGameId=miniGameId)
-        popupView.targetHeight = targetHeight
+        val popupView = object: GameListView(context, fm = fm, miniGameId=miniGameId) {
+            override fun onClosing() {
+                isShowOtherPop = false
+                showGameMainPopup(context, true)
+                super.onClosing()
+            }
+
+            override fun onOpening() {
+                isShowOtherPop = true
+                showGameMainPopup(context, false)
+                super.onOpening()
+            }
+        }.apply {
+            this.targetHeight = targetHeight
+        }
         XPopup.Builder(context)
             .isTouchThrough(false)
             .popupAnimation(PopupAnimation.TranslateAlphaFromBottom)
@@ -237,19 +238,6 @@ class ViewHelper {
             .hasShadowBg(false) // 去掉半透明背景
             .enableDrag(true)
             .dismissOnTouchOutside(true)
-            .setPopupCallback(object: SimpleCallback() {
-                override fun beforeDismiss(popupView: BasePopupView?) {
-                    isShowOtherPop = false
-                    showGameMainPopup(context, true)
-                    super.beforeDismiss(popupView)
-                }
-
-                override fun beforeShow(popupView: BasePopupView?) {
-                    isShowOtherPop = true
-                    showGameMainPopup(context, false)
-                    super.beforeShow(popupView)
-                }
-            })
             .asCustom(popupView)
             .show()
         gameListDialog = popupView
