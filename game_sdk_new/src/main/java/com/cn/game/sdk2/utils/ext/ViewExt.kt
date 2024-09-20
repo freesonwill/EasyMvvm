@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Point
 import android.graphics.drawable.Drawable
 import android.os.Build
-import android.util.DisplayMetrics
 import android.view.View
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
@@ -94,7 +93,6 @@ object ViewExt {
 
             override fun getTitleView(context: Context, index: Int): IPagerTitleView {
                 requestDisallowInterceptTouchEvent(true)
-
                 return ColorTransitionPagerTitleView(context).apply {
                     //设置文本
                     text = mStringList[index].toHtml()
@@ -107,7 +105,6 @@ object ViewExt {
                     normalColor = ContextCompat.getColor(context, R.color.c_8F9095)
                     //选中颜色
                     selectedColor = ContextCompat.getColor(context, R.color.c_3994F9)
-
                     //点击事件
                     setOnClickListener {
                         action.invoke(index)
@@ -123,11 +120,9 @@ object ViewExt {
                         return SNAP_TO_START
                     }
 
-                    // 覆寫 calculateSpeedPerPixel 方法
-                    override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics?): Float {
-                        //因為 LinearSmoothScroller 的預設值是25f (在 LinearSmoothScroller 源碼中可以找到，這個值是private static final，因此不能更動)，要加快速度就要降低這個值
-                        val millSecondsPerInch = 15f
-                        return millSecondsPerInch / displayMetrics!!.densityDpi
+                    override fun calculateTimeForScrolling(dx: Int): Int {
+                        val timeForScrolling = 90
+                        return timeForScrolling
                     }
                 }
 
