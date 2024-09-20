@@ -40,8 +40,8 @@ class ChipsViewModel : ViewModel() {
     private val firstChip: SelectAnnotationBean
         get() = chipsList.value!!.first()
 
-    val currentChip: SelectAnnotationBean
-        get() = chipsList.value!!.first { it.select }
+    val currentChip: SelectAnnotationBean?
+        get() = chipsList.value!!.firstOrNull { it.select }
 
     val currentChipIndex: Int
         get() = chipsList.value!!.indexOfFirst { it.select }
@@ -63,11 +63,15 @@ class ChipsViewModel : ViewModel() {
      */
     private fun showMaxPossibleBetChip(money: Long) {
         val list = chipsList.value ?: return
+        if (money < firstChip.money) {
+            setDisableChip()
+            return
+        }
         val maxChip = list.filter { it.money <= money }.maxByOrNull { it.money }
         if (maxChip != null) {
             setSelectedChip(maxChip)
         } else {
-            setSelectedChip(list.first())
+            setDisableChip()
         }
     }
 
@@ -78,25 +82,14 @@ class ChipsViewModel : ViewModel() {
             if (selectBean.money > money) {
                 showMaxPossibleBetChip(money)
             } else {
-                backUserLastSelectChip(selectBean, money)
+                setSelectedChip(selectBean)
             }
         } else {
-            if (currentChip.money <= money) {
-                backUserLastSelectChip(null, money)
-            } else {
-                if (firstChip.money <= money) {
-                    setSelectedChip(firstChip)
-                }
-            }
+            showMaxPossibleBetChip(money)
         }
     }
 
-    /**
-     * 取消下注筹码判断是否需要选中用户最近一次手选筹码
-     */
-    private fun backUserLastSelectChip(betteBean: SelectAnnotationBean?, money: Long) {
-        if (betteBean == currentChip || betteBean == null) return
-        if (currentChip.money > money) return
-       setSelectedChip(betteBean.money)
+    private fun setDisableChip() {
+        setSelectedChip(0)
     }
 }

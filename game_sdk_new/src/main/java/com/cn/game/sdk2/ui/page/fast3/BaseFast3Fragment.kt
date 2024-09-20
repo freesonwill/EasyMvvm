@@ -170,19 +170,20 @@ abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
     private fun addBetting(areaView: GameAreaView, rawX: Float, rawY: Float) {
         //先判断余额是否够这次 并且扣取钱
         if (mViewModel.isClickOperation) {
-            val betteBean = chipViewModel.currentChip
-            areaView.areaInfo?.apply {
-                val bettingBean = BettingRecordBean(this, money = betteBean.money)
-                gameMassageManager?.addBetting(bettingBean) { bettingState, result, areaLimit ->
-                    bettingState.isCanGoOn(mBinding.root, areaLimit) {
-                        result?.let {
-                            areaView.setShowMoney(result.money, false)
-                            if (!areaView.moneyView.isAdd()) {
-                                addMoneyOkView(areaView, rawX, rawY) {
-                                    emitMoneyAnim(result, areaView, betteBean, isNewAdd = true)
+            chipViewModel.currentChip?.let { betteBean ->
+                areaView.areaInfo?.apply {
+                    val bettingBean = BettingRecordBean(this, money = betteBean.money)
+                    gameMassageManager?.addBetting(bettingBean) { bettingState, result, areaLimit ->
+                        bettingState.isCanGoOn(mBinding.root, areaLimit) {
+                            result?.let {
+                                areaView.setShowMoney(result.money, false)
+                                if (!areaView.moneyView.isAdd()) {
+                                    addMoneyOkView(areaView, rawX, rawY) {
+                                        emitMoneyAnim(result, areaView, betteBean, isNewAdd = true)
+                                    }
+                                } else {
+                                    emitMoneyAnim(result, areaView, betteBean)
                                 }
-                            } else {
-                                emitMoneyAnim(result, areaView, betteBean)
                             }
                         }
                     }
