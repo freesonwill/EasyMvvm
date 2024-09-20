@@ -331,8 +331,8 @@ class GameApp  private constructor(){
                     }
                     gameList.addAll(
                         listOf(
-                            GameHallItem(0,0,1,0, R.mipmap.game_sdk_kuai_icon_logo.toString(),"快三"),
-                            GameHallItem(1,0,0, 0,R.mipmap.game_sdk_kuai_icon_logo.toString(),"快三2"),
+                            GameHallItem(0,0,1,0, R.mipmap.game_sdk_icon_kuai_logo.toString(),"快三"),
+                            GameHallItem(1,0,0, 0,R.mipmap.game_sdk_icon_kuai_logo.toString(),"快三2"),
                         )
                     )
                     gameList

@@ -39,7 +39,7 @@
         android:layout_alignParentEnd="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="220dp"
+        android:layout_marginTop="50dp"
         android:text="跳转游戏主界面" />
 
     <Button
@@ -47,14 +47,14 @@
         android:layout_alignParentEnd="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="280dp"
+        android:layout_marginTop="100dp"
         android:text="跳转游戏大厅" />
 
     <Button
         android:id="@+id/btnSetBetResult"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="330dp"
+        android:layout_marginTop="150dp"
         android:layout_alignParentEnd="true"
         android:text="设置豹子"
         android:visibility="visible" />
@@ -63,7 +63,7 @@
         android:id="@+id/setWin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="380dp"
+        android:layout_marginTop="200dp"
         android:layout_alignParentEnd="true"
         android:text="设置中奖"
         android:visibility="visible" />
@@ -71,7 +71,7 @@
         android:id="@+id/tvOnline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="380dp"
+        android:layout_marginTop="250dp"
         android:layout_alignParentEnd="true"
         android:text="测试在线人数"
         android:visibility="visible" />
