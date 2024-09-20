@@ -135,8 +135,13 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
 
             tlGame.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
-                    val position = tab?.position ?: 0
-                    viewPagerNew.currentItem = position
+                    AnimHelper.doDirectViewPagerAnim(
+                        targetPosition = tab?.position ?: 0,
+                        fragmentManger = childFragmentManager,
+                        prevFragment = gamePageList[viewPagerNew.currentItem].page.invoke(),
+                        viewPager = viewPagerNew,
+                        fakeViewPager = fragmentFakeViewPager
+                    )
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {
