@@ -4,6 +4,7 @@ package com.cn.game.sdk2.ui.view;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -218,7 +219,7 @@ public class CustomSmartDragLayout extends LinearLayout implements NestedScrolli
             y = this.minY;
         }
 
-        float fraction = (float)(y - this.minY) * 1.0F / (float)(this.maxY - this.minY);
+        float fraction = (float) (y - this.minY) / (float)(this.maxY - this.minY);
         this.isScrollUp = y > this.getScrollY();
         if (this.listener != null) {
             if (this.isUserClose && fraction == 0.0F && this.status != LayoutStatus.Close) {

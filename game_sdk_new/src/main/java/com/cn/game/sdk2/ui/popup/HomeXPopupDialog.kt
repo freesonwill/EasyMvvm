@@ -19,7 +19,7 @@ import kotlinx.coroutines.GlobalScope
  * author       : zhangsan
  * createTime   : 2024/6/13 18:18
  **/
-class HomeXPopupDialog(context: Context, val fragment: Fragment, private var miniGameId: Int) : VerticalBottomPopupView(context) {
+open class HomeXPopupDialog(context: Context, val fragment: Fragment, private var miniGameId: Int) : VerticalBottomPopupView(context) {
 
     companion object {
         const val TAG = "HomeXPopupDialog"

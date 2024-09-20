@@ -146,29 +146,28 @@ class ViewHelper {
 
     private fun tryCreateMainPopup(context: Context, animationDuration: Int = 200) {
         if (null == homeXPopupDialog) {
-            val pop =
-                HomeXPopupDialog(context, Fast3MainFragment(), GAME_ID_ENUM.GAME_FAST3.num).apply {
-                    homeXPopupDialog = this
+            val pop = object :HomeXPopupDialog(context, Fast3MainFragment(), GAME_ID_ENUM.GAME_FAST3.num) {
+                override fun onOpening() {
+                    if(!isShowOtherPop) {
+                        fastViewOverlay?.let { if(it.alpha == 1f) fadeOut(it) }
+                        fastView?.let { if(it.alpha == 1f) fadeOut(it) }
+                    }
                 }
+                override fun onClosing() {
+                    if (!isShowOtherPop) {
+                        fastViewOverlay?.let { if(it.alpha == 0f) fadeIn(it) }
+                        fastView?.let { if(it.alpha == 0f) fadeIn(it) }
+                    }
+                }
+            }.apply {
+                homeXPopupDialog = this
+            }
             XPopup.Builder(context)
                 .hasShadowBg(false)
                 .setPopupCallback(object : SimpleCallback() {
-
                     override fun beforeShow(popupView: BasePopupView?) {
                         super.beforeShow(popupView)
                         if(!isShowOtherPop) {
-                            fastViewOverlay?.let {
-                                if(it.alpha == 1f) {
-                                    fadeOut(it)
-                                }
-                            }
-                            fastView?.let {
-                                if(it.alpha == 1f) {
-                                    fadeOut(it)
-                                }
-                            }
-                            //fastViewOverlay?.isVisible = false
-                            //fastView?.isVisible = false
                             appListenerScope.launchWithCustomContext(TAG) {
                                 appListener?.onGameFloatingDetailViewStatus(true)
                             }
@@ -176,18 +175,10 @@ class ViewHelper {
                         gameAboutModel.fast3MainFloatVisible.value = false
                     }
 
-                    override fun onShow(popupView: BasePopupView?) {
-                        super.onShow(popupView)
-                    }
-
                     override fun onDismiss(popupView: BasePopupView?) {
                         super.onDismiss(popupView)
                         gameAboutModel.fast3MainFloatVisible.value = true
                         if (!isShowOtherPop) {
-                            fastViewOverlay?.let { fadeIn(it) }
-                            fastView?.let { fadeIn(it) }
-                            //fastViewOverlay?.isVisible = true
-                            //fastView?.isVisible = true
                             appListenerScope.launchWithCustomContext(TAG) {
                                 appListener?.onGameFloatingDetailViewStatus(false)
                             }
@@ -274,7 +265,7 @@ class ViewHelper {
             val alpha = it.animatedValue as Float
             view.alpha = alpha
         }
-        animator.duration = 200
+        animator.duration = 100
         animator.start()
     }
 
@@ -284,7 +275,7 @@ class ViewHelper {
             val alpha = it.animatedValue as Float
             view.alpha = alpha
         }
-        animator.duration = 200
+        animator.duration = 100
         animator.start()
     }
 

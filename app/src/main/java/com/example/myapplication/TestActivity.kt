@@ -39,9 +39,8 @@ class TestActivity : AppCompatActivity() {
     private var isLogin = false
     private var btnIndex = 0
     private val token = listOf(
-        "38:hPvYi501",//zhangsan
-        "13:iL4YQarZ",//xiaoyang
-        "15:ZKbkjdBW",
+        "138:u0GOKGuZ",//zhangsan
+        "139:WpN53o8K",//xiaoyang
         "15:DbMcxyy1", //link
         "134:vdfjXERY",//jeremy
         "8:mLp8oVPC" ,//kc
@@ -130,37 +129,8 @@ class TestActivity : AppCompatActivity() {
                 }
 
                 2 -> {
-                    val context = this
                     btnOpen.visibility = View.GONE
-                    GameApp.apply {
-                        enterLive("1213", listOf(1), "")
-                        val container = findViewById<FrameLayout>(android.R.id.content)
-                        createFloatEnterView(context).apply {
-                            if (!this.isAdd()) {
-                                val lp =
-                                    FrameLayout.LayoutParams(
-                                        layoutParams.width,
-                                        layoutParams.height
-                                    )
-                                lp.topMargin = 150.dp2px
-                                lp.marginEnd = 0.dp2px
-                                container.addView(this, lp)
-                            }
-                        }
-                        createFloatResultView(context).apply {
-                            if (!this.isAdd()) {
-                                val lp =
-                                    FrameLayout.LayoutParams(
-                                        layoutParams.width,
-                                        layoutParams.height
-                                    )
-                                lp.topMargin = 70.dp2px
-                                lp.marginStart = context.screenWidth - layoutParams.width
-                                container.addView(this, lp)
-                            }
-                        }
-                    }
-                    //startActivity(Intent(this, MainActivity::class.java))
+                    GameApp.enterLive("1213", listOf(1), "")
                 }
             }
         }
@@ -225,10 +195,10 @@ class TestActivity : AppCompatActivity() {
             btnIndex = 2
             btnOpen.text = "已进入直播间"
             val context = this
-            GameApp.createFloatEnterView(context)?.apply {
+            GameApp.createFloatEnterView(context).apply {
                 if (!this.isAdd()) {
                     val lp = RelativeLayout.LayoutParams(layoutParams.width, layoutParams.height)
-                    lp.topMargin = 200.dp2px
+                    lp.topMargin = 400.dp2px
                     lp.marginEnd = 0.dp2px
                     lp.addRule(RelativeLayout.ALIGN_PARENT_END)
                     llshow.addView(this, lp)
@@ -238,7 +208,7 @@ class TestActivity : AppCompatActivity() {
             GameApp.createFloatResultView(this).apply {
                 if (!this.isAdd()) {
                     val lp = RelativeLayout.LayoutParams(layoutParams.width, layoutParams.height)
-                    lp.topMargin = 50.dp2px
+                    lp.topMargin = 550.dp2px
                     lp.marginEnd = 0.dp2px
                     lp.addRule(RelativeLayout.ALIGN_PARENT_END)
                     llshow.addView(this, lp)
@@ -256,7 +226,7 @@ class TestActivity : AppCompatActivity() {
                                 weight,
                                 1,
                                 when (id % 3) {
-                                    0 -> com.cn.game.sdk2.R.mipmap.game_sdk_kuai_icon_logo.toString()
+                                    0 -> com.cn.game.sdk2.R.mipmap.game_sdk_icon_kuai_logo.toString()
                                     1 -> "https://www.baidu.com/img/flexible/logo/pc/result@2.png"
                                     else -> Environment.getExternalStorageDirectory().absolutePath + "/134.jpg"
                                 },
