@@ -9,4 +9,4 @@ local.properties
 .DS_Store
 z_doc/token.txt
 .vscode/
-app/libs/*.aar
+app/libs/*.*

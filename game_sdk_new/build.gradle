@@ -1,3 +1,5 @@
+import org.apache.tools.ant.taskdefs.Rename
+
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
@@ -55,18 +57,33 @@ android {
                 outputFileName = "gamesdk-${variant.name}-${date}-v${GAMESDK_VERSION_NAME}-${gitVersion}.aar"
             }
     }
-    //region copy aar to app/libs
+    //region clean aar --> copy aar --> zip aar
     task cleanAAR(type:Delete){
         delete fileTree(dir: "$rootDir/app/libs", include: '**/*')
+        delete fileTree(dir: "$rootDir/app/build", include: '**/*.zip')
+        def aarFile = file("$rootDir/app/libs").list().find { it.endsWith(".aar")}
+        println("cleanAAR:${aarFile}")
     }
     task copyAAR(type:Copy){
         from "$buildDir/outputs/aar"
         into "$rootDir/app/libs"
+        def aarFile = file("$rootDir/app/libs").list().find { it.endsWith(".aar")}
+        println("copyAAR_aarFile:${aarFile}")
+        mustRunAfter("bundleReleaseAar")
     }
     copyAAR.dependsOn(cleanAAR) // 确保先清理目标目录
+
+    task zipAAR(type: Zip){
+        from("$rootDir/app/libs","$rootDir/z_doc/sdk接入文档(Android)1.0.5.pages","$rootDir/z_doc/changelog.txt")
+        destinationDirectory = file("$rootDir/app/build")
+        def date = String.format('%s', new Date().format('yyyyMMdd'))
+        archiveFileName = "AndroidSdk及接入文档${date}.zip"
+    }
+    zipAAR.dependsOn(copyAAR)
+
     libraryVariants.configureEach { variant ->
         variant.assembleProvider.configure {
-            finalizedBy(copyAAR)
+            finalizedBy(zipAAR)
         }
     }
     //endregion
