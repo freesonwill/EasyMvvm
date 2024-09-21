@@ -78,7 +78,7 @@ android {
         from("$rootDir/app/libs","$rootDir/z_doc/sdk接入文档(Android)1.0.5.pages","$rootDir/z_doc/changelog.txt","$rootDir/gradle/gamesdk_deps.gradle")
         destinationDirectory = file("$rootDir/app/build")
         def date = String.format('%s', new Date().format('yyyyMMdd'))
-        archiveFileName = "AndroidSdk及接入文档${date}.zip"
+        archiveFileName = "AndroidSdk及接入文档${date}v${GAMESDK_VERSION_NAME}.zip"
     }
     zipAAR.dependsOn(copyAAR)
 
