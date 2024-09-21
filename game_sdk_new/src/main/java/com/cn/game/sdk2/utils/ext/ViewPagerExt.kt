@@ -235,7 +235,7 @@ fun TabLayout.removeAllTips() {
         for (i in 0 until tabCount) {
             getTabAt(i)?.view?.let { tabView ->
                 TooltipCompat.setTooltipText(tabView, null)
-                tabView.setOnLongClickListener { true }
+                tabView.setOnLongClickListener { false }
                 tabView.isLongClickable = false
             }
         }
