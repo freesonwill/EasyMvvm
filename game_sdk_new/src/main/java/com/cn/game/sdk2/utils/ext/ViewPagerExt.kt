@@ -3,6 +3,7 @@ package com.cn.game.sdk2.utils.ext
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.annotation.IntDef
 import androidx.annotation.IntRange
 import androidx.appcompat.widget.TooltipCompat
@@ -22,6 +23,7 @@ import com.cn.game.sdk2.utils.tool.indicator.CommonPagerIndicator
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.xcjh.base_lib2.utils.toHtml
+import kotlinx.coroutines.Job
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 import net.lucode.hackware.magicindicator.MagicIndicator
 import net.lucode.hackware.magicindicator.ViewPagerHelper
@@ -193,8 +195,6 @@ fun MagicIndicator.bindViewPagerNewGame(
 
 fun TabLayout.bindTabNewGame(
     viewPager: ViewPager2,
-    fragmentManager: FragmentManager,
-    fakeViewPager: FragmentContainerView,
     titles: List<String> = arrayListOf(),
     scrollEnable: Boolean = false,
     action: (index: Int) -> Unit = {}
@@ -224,16 +224,6 @@ fun TabLayout.bindTabNewGame(
                 action.invoke(position)
                 tabClickedByUser = false // 重置点击状态
             }
-            //see FragmentStateAdapter add fragment
-            val fragment: Fragment = fragmentManager.findFragmentByTag("f" + viewPager.currentItem)?: return
-            AnimHelper.doDirectViewPagerAnim(
-                targetPosition = position,
-                fragmentManger = fragmentManager,
-                prevFragment = fragment,
-                viewPager = viewPager,
-                fakeViewPager = fakeViewPager
-
-            )
         }
 
         override fun onTabUnselected(tab: TabLayout.Tab?) {

@@ -9,6 +9,7 @@ import com.cn.game.sdk2.data.bean.GameHallItem
 import com.cn.game.sdk2.data.bean.PagerBean
 import com.cn.game.sdk2.databinding.FragmentGamehallBinding
 import com.cn.game.sdk2.ui.adapter.GameListViewPagerAdapter
+import com.cn.game.sdk2.ui.helper.AnimHelper
 import com.cn.game.sdk2.ui.helper.ToastHelper
 import com.cn.game.sdk2.ui.page.fast3.Fast3GameHallItemFragment
 import com.cn.game.sdk2.ui.popup.VerticalBottomPopupView
@@ -21,6 +22,7 @@ import com.cn.game.sdk2.websocket.constants.GameStage
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.xcjh.base_lib2.utils.view.clickNoRepeat
 import com.xcjh.base_lib2.utils.view.getString
+import kotlinx.coroutines.Job
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 
 open class GameListView @JvmOverloads constructor(
@@ -60,6 +62,7 @@ open class GameListView @JvmOverloads constructor(
         }
 
     }
+    private var switchTabAnimJob: Job? = null
 
     override fun onCreate() {
         gameAboutModel.currentStage.observeForever(gameStageListener)
@@ -83,12 +86,17 @@ open class GameListView @JvmOverloads constructor(
         binding.vpGameList.setOverScrollModeExt(OVER_SCROLL_IF_CONTENT_SCROLLS,OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
         binding.tlGameList.bindTabNewGame(
             viewPager = binding.vpGameList,
-            fragmentManager = fm,
-            fakeViewPager = binding.fcvFakeViewPager,
             titles = tabTitles,
             scrollEnable = true
         ) {
             PromptSoundPlay.btnPlayMedia()
+            switchTabAnimJob?.cancel()
+            switchTabAnimJob = AnimHelper.doDirectViewPagerAnim(
+                targetPosition = it,
+                viewPager = binding.vpGameList,
+                fakeViewPager = binding.fcvFakeViewPager
+
+            )
         }
         binding.tlGameList.removeAllTips()
         binding.close.clickNoRepeat(true) {
