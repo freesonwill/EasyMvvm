@@ -6,14 +6,15 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.cn.game.sdk2.data.bean.PagerBean
+import com.cn.game.sdk2.ui.page.fast3.Fast3GameHallItemFragment
 
 class GameListViewPagerAdapter(
     fragmentManager: FragmentManager,
     lifecycle: Lifecycle,
-    private val fragments: List<PagerBean>
+    private val gameTypes: List<Int>
 ) : FragmentStateAdapter(fragmentManager,lifecycle) {
 
-    override fun getItemCount(): Int = fragments.size
+    override fun getItemCount(): Int = gameTypes.size
 
-    override fun createFragment(position: Int): Fragment = fragments[position].page.invoke()
+    override fun createFragment(position: Int): Fragment = Fast3GameHallItemFragment.newInstance(gameTypes[position])
 }

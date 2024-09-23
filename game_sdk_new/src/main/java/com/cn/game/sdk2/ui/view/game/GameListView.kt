@@ -47,12 +47,13 @@ open class GameListView @JvmOverloads constructor(
         R.string.g_game_list_type_sports.getString(),
         R.string.g_game_list_type_electronic.getString()
     )
-    private val fragmentList = mutableListOf<PagerBean>()//Fast3GameHallItemFragment>()
+//    private val fragmentList = mutableListOf<PagerBean>()//Fast3GameHallItemFragment>()
+//    private lateinit var gameStageListener: Observer<GameStage>
     private val gameStageListener = object : Observer<GameStage> {
         override fun onChanged(t: GameStage) {
             // 因為gameAboutModel.currentStage裡面已經有資料，第一次observer就會trigger
             // 故用fragmentList作為初始化完成的依據，初始化完成後再監聽
-            if (fragmentList.isEmpty()) {
+            if (!::gameListAdapter.isInitialized) {
                 return
             }
             when (t) {
@@ -64,7 +65,7 @@ open class GameListView @JvmOverloads constructor(
 
     }
     private var switchTabAnimJob: Job? = null
-
+    private lateinit var gameListAdapter: GameListViewPagerAdapter
     override fun onCreate() {
         gameAboutModel.currentStage.observeForever(gameStageListener)
         super.onCreate()
@@ -79,11 +80,8 @@ open class GameListView @JvmOverloads constructor(
 
     private fun initView() {
         val gameTypes = gameAboutModel.moreGames.value?.map { it.gameType }?.distinct() ?: listOf()
-        gameTypes.forEach { gameType ->
-            val fragment = Fast3GameHallItemFragment.newInstance(gameType)
-            fragmentList.add(PagerBean(gameTypes.toString()){ fragment })
-        }
-        binding.vpGameList.adapter = GameListViewPagerAdapter(fm, lifecycle, fragmentList)
+        gameListAdapter = GameListViewPagerAdapter(fm, lifecycle, gameTypes)
+        binding.vpGameList.adapter = gameListAdapter
         binding.vpGameList.setOverScrollModeExt(OVER_SCROLL_IF_CONTENT_SCROLLS,OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
         binding.tlGameList.bindTabNewGame(
             viewPager = binding.vpGameList,
@@ -100,6 +98,7 @@ open class GameListView @JvmOverloads constructor(
             )
         }
         binding.tlGameList.removeAllTips()
+        binding.vpGameList.offscreenPageLimit = gameTypes.size
         binding.close.clickNoRepeat(true) {
             dismiss()
         }
