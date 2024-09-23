@@ -214,21 +214,7 @@ class ViewHelper {
             gameListDialog?.switchPage(miniGameId)
             return
         }
-        val popupView = object: GameListView(context, fm = fm, miniGameId=miniGameId) {
-            override fun onClosing() {
-                isShowOtherPop = false
-                showGameMainPopup(context, true)
-                super.onClosing()
-            }
-
-            override fun onOpening() {
-                isShowOtherPop = true
-                showGameMainPopup(context, false)
-                super.onOpening()
-            }
-        }.apply {
-            this.targetHeight = targetHeight
-        }
+        val popupView = GameListView(context, fm = fm, miniGameId=miniGameId)
         XPopup.Builder(context)
             .isTouchThrough(false)
             .popupAnimation(PopupAnimation.TranslateAlphaFromBottom)
@@ -238,6 +224,19 @@ class ViewHelper {
             .hasShadowBg(false) // 去掉半透明背景
             .enableDrag(true)
             .dismissOnTouchOutside(true)
+            .setPopupCallback(object: SimpleCallback() {
+                override fun beforeDismiss(popupView: BasePopupView?) {
+                    isShowOtherPop = false
+                    showGameMainPopup(context, true)
+                    super.beforeDismiss(popupView)
+                }
+
+                override fun beforeShow(popupView: BasePopupView?) {
+                    isShowOtherPop = true
+                    showGameMainPopup(context, false)
+                    super.beforeShow(popupView)
+                }
+            })
             .asCustom(popupView)
             .show()
         gameListDialog = popupView

@@ -20,6 +20,7 @@ import com.cn.game.sdk2.utils.ext.setOverScrollModeExt
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.websocket.constants.GameStage
 import com.cn.game.sdk2.websocket.gameAboutModel
+import com.lxj.xpopup.core.BottomPopupView
 import com.xcjh.base_lib2.utils.view.clickNoRepeat
 import com.xcjh.base_lib2.utils.view.getString
 import kotlinx.coroutines.Job
@@ -31,7 +32,7 @@ open class GameListView @JvmOverloads constructor(
     defStyleAttr: Int = 0,
     private val fm: FragmentManager,
     private val miniGameId: Int?
-) : VerticalBottomPopupView(context) {
+) : BottomPopupView(context) {
 
     override fun getImplLayoutId(): Int =
         R.layout.fragment_gamehall
