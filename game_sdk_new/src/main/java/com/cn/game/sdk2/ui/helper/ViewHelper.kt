@@ -112,8 +112,9 @@ class ViewHelper {
             })
             //.customAnimator(EmptyAnimator(bubbleAttach, 0))
             .navigationBarColor(android.R.color.transparent)
+            .atView(gameListDialog) //將helpXPopupDialog依附在gameListDialog上
             .hasShadowBg(false) // 去掉半透明背景
-            .isViewMode(true)
+            .isViewMode(false)  //弹窗以「Dialog 模式」显示，操作行为与iOS一致
             .animationDuration(150)
             .hasStatusBar(false)
             .hasNavigationBar(false)
