@@ -115,11 +115,7 @@ class ViewHelper {
                     showGameMainPopup(context, true)
                     super.beforeDismiss(popupView)
                 }
-
-                override fun beforeShow(popupView: BasePopupView?) {
-                    isShowOtherPop = false
-                    super.beforeShow(popupView)
-                }
+                
             })
             //.customAnimator(EmptyAnimator(bubbleAttach, 0))
             .navigationBarColor(android.R.color.transparent)
