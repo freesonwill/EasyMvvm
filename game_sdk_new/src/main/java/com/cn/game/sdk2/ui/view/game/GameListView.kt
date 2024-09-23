@@ -10,6 +10,7 @@ import com.cn.game.sdk2.databinding.FragmentGamehallBinding
 import com.cn.game.sdk2.ui.adapter.GameListViewPagerAdapter
 import com.cn.game.sdk2.ui.helper.ToastHelper
 import com.cn.game.sdk2.ui.page.fast3.Fast3GameHallItemFragment
+import com.cn.game.sdk2.ui.popup.VerticalBottomPopupView
 import com.cn.game.sdk2.utils.ext.CommonExt.getString
 import com.cn.game.sdk2.utils.ext.bindTabNewGame
 import com.cn.game.sdk2.utils.ext.removeAllTips
@@ -17,18 +18,17 @@ import com.cn.game.sdk2.utils.ext.setOverScrollModeExt
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.websocket.constants.GameStage
 import com.cn.game.sdk2.websocket.gameAboutModel
-import com.lxj.xpopup.core.BottomPopupView
 import com.xcjh.base_lib2.utils.view.clickNoRepeat
 import com.xcjh.base_lib2.utils.view.getString
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 
-class GameListView @JvmOverloads constructor(
+open class GameListView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0,
     private val fm: FragmentManager,
     private val miniGameId: Int?
-) : BottomPopupView(context) {
+) : VerticalBottomPopupView(context) {
 
     override fun getImplLayoutId(): Int =
         R.layout.fragment_gamehall
