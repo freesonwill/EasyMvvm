@@ -1,9 +1,11 @@
 package com.cn.game.sdk2.ui.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.cn.game.sdk2.data.bean.SelectAnnotationBean
+import com.cn.game.sdk2.data.enums.ChipBean
+import com.cn.game.sdk2.data.enums.ChipsEnum
 import com.cn.game.sdk2.websocket.gameAboutModel
 
 class ChipsViewModel : ViewModel() {
@@ -11,64 +13,56 @@ class ChipsViewModel : ViewModel() {
     /**
      * 投注的钱
      */
-    private val _chipsList = MutableLiveData<List<SelectAnnotationBean>>()
-    val chipsList: LiveData<List<SelectAnnotationBean>> = _chipsList
+    private val _chipsList = MutableLiveData<List<ChipBean>>()
+    val chipsList: LiveData<List<ChipBean>> = _chipsList
 
     init {
-        _chipsList.value = listOf(
-            SelectAnnotationBean(money = 1000),
-            SelectAnnotationBean(money = 2000),
-            SelectAnnotationBean(money = 5000),
-            SelectAnnotationBean(money = 10000),
-            SelectAnnotationBean(money = 20000),
-            SelectAnnotationBean(money = 50000),
-            SelectAnnotationBean(money = 100000),
-            SelectAnnotationBean(money = 200000),
-            SelectAnnotationBean(money = 500000),
-            SelectAnnotationBean(money = 1000000),
-            SelectAnnotationBean(money = 2000000),
-            SelectAnnotationBean(money = 5000000),
-            SelectAnnotationBean(money = 10000000),
-        ).apply {
+        _chipsList.value =
+            ChipsEnum.createChipsList().apply {
             val tempMoney = gameAboutModel.tempBalance.value ?: 0
-            if (tempMoney >= first().money) {
-                first().select = true
+            if (tempMoney >= first().chip.money) {
+                first().isSelected = true
                 userLastSelectedChip = first()
             }
         }
     }
 
-    private val firstChip: SelectAnnotationBean
+    private val firstChip: ChipBean
         get() = chipsList.value!!.first()
 
-    val currentChip: SelectAnnotationBean?
-        get() = chipsList.value!!.firstOrNull { it.select }
+    val currentChip: ChipBean?
+        get() = chipsList.value!!.firstOrNull { it.isSelected }
 
     val currentChipIndex: Int
-        get() = chipsList.value!!.indexOfFirst { it.select }
+        get() = chipsList.value!!.indexOfFirst { it.isSelected }
 
-    private var userLastSelectedChip: SelectAnnotationBean
+    private var userLastSelectedChip: ChipBean
 
-    private fun setSelectedChip(money: Int) {
-        val list = chipsList.value ?: return
-        list.forEach {
-            it.select = it.money == money
+    private fun setSelectedChip(ce: ChipsEnum?) {
+        _chipsList.value = chipsList.value?.let { list ->
+            ce?.let {
+                list.onEach {
+                    it.isSelected = it.chip == ce
+                }
+            } ?: list.onEach {
+                it.isSelected = false
+            }
         }
-        _chipsList.value = list
     }
 
-    private fun setSelectedChip(chip: SelectAnnotationBean) {
-        setSelectedChip(chip.money)
+    private fun setSelectedChip(cb: ChipBean) {
+        setSelectedChip(cb.chip)
     }
 
-    fun setUserSelectChip(chip: SelectAnnotationBean) {
-        userLastSelectedChip = chip
-        setSelectedChip(chip)
+    fun setUserSelectChip(cb: ChipBean) {
+        userLastSelectedChip = cb
+        setSelectedChip(cb)
     }
 
     fun cancelBet() {
         val money = gameAboutModel.tempBalance.value ?: 0
-        if (money < userLastSelectedChip.money) {
+        Log.d("abcd", "++++++ $money")
+        if (money < userLastSelectedChip.chip.money) {
             setMaxPossibleBetChip(money)
         } else {
             setSelectedChip(userLastSelectedChip)
@@ -80,11 +74,11 @@ class ChipsViewModel : ViewModel() {
      */
     private fun setMaxPossibleBetChip(money: Long) {
         val list = chipsList.value ?: return
-        if (money < firstChip.money) {
+        if (money < firstChip.chip.money) {
             setDisableChip()
             return
         }
-        val maxChip = list.filter { it.money <= money }.maxByOrNull { it.money }
+        val maxChip = list.filter { it.chip.money <= money }.maxByOrNull { it.chip.money }
         if (maxChip != null) {
             setSelectedChip(maxChip)
         } else {
@@ -94,9 +88,9 @@ class ChipsViewModel : ViewModel() {
 
     fun refresh() {
         val money = gameAboutModel.tempBalance.value ?: 0
-        val selectBean = chipsList.value?.firstOrNull { it.select }
+        val selectBean = chipsList.value?.firstOrNull { it.isSelected }
         if (selectBean != null) {
-            if (selectBean.money > money) {
+            if (selectBean.chip.money > money) {
                 setMaxPossibleBetChip(money)
             } else {
                 setSelectedChip(selectBean)
@@ -107,6 +101,6 @@ class ChipsViewModel : ViewModel() {
     }
 
     private fun setDisableChip() {
-        setSelectedChip(0)
+        setSelectedChip(null)
     }
 }

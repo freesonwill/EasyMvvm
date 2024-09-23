@@ -1,20 +1,20 @@
 package com.cn.game.sdk2.ui.compare
 
 import androidx.recyclerview.widget.DiffUtil
-import com.cn.game.sdk2.data.bean.SelectAnnotationBean
+import com.cn.game.sdk2.data.enums.ChipBean
 
-class ChipsCompare : DiffUtil.ItemCallback<SelectAnnotationBean>() {
+class ChipsCompare : DiffUtil.ItemCallback<ChipBean>() {
     override fun areItemsTheSame(
-        oldItem: SelectAnnotationBean,
-        newItem: SelectAnnotationBean
+        oldItem: ChipBean,
+        newItem: ChipBean
     ): Boolean {
-        return oldItem.money == newItem.money
+        return oldItem.chip == newItem.chip
     }
 
     override fun areContentsTheSame(
-        oldItem: SelectAnnotationBean,
-        newItem: SelectAnnotationBean
+        oldItem: ChipBean,
+        newItem: ChipBean
     ): Boolean {
-        return oldItem.select == newItem.select
+        return oldItem.isSelected == newItem.isSelected
     }
 }

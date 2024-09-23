@@ -12,12 +12,11 @@ import androidx.core.animation.addListener
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.databinding.ViewDataBinding
-import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.base.BaseGameFragment
 import com.cn.game.sdk2.data.EventKey
-import com.cn.game.sdk2.data.bean.SelectAnnotationBean
+import com.cn.game.sdk2.data.enums.ChipBean
 import com.cn.game.sdk2.databinding.FragDxdsBinding
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.view.game.MoneyOKView
@@ -172,7 +171,7 @@ abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
         if (mViewModel.isClickOperation) {
             chipViewModel.currentChip?.let { betteBean ->
                 areaView.areaInfo?.apply {
-                    val bettingBean = BettingRecordBean(this, money = betteBean.money)
+                    val bettingBean = BettingRecordBean(this, money = betteBean.chip.money)
                     gameMassageManager?.addBetting(bettingBean) { bettingState, result, areaLimit ->
                         bettingState.isCanGoOn(mBinding.root, areaLimit) {
                             result?.let {
@@ -327,7 +326,7 @@ abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
     private fun emitMoneyAnim(
         recordBean: BettingRecordBean,
         areaView: GameAreaView,
-        betteBean: SelectAnnotationBean,
+        betteBean: ChipBean,
         isNewAdd: Boolean = false
     ) {
         val moneyOKView = areaView.moneyView
