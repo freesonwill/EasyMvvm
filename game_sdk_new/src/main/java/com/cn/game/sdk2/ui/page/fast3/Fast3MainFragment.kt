@@ -62,6 +62,7 @@ import com.xcjh.base_lib2.base.fragment.viewBind
 import com.xcjh.base_lib2.utils.LogUtils
 import com.xcjh.base_lib2.utils.LogUtilsExt.loge
 import com.xcjh.base_lib2.utils.view.clickNoRepeat
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
@@ -77,6 +78,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
     }
 
     private var anchorMoneyView: MoneyOKView? = null
+    private var switchTabAnimJob: Job? = null
 
     //<areaCode,<money,View>>
     private val currentBetteAreaMap by lazy { LinkedHashMap<Int, GameAreaView>() }
@@ -135,10 +137,9 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
 
             tlGame.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
-                    AnimHelper.doDirectViewPagerAnim(
+                    switchTabAnimJob?.cancel()
+                    switchTabAnimJob = AnimHelper.doDirectViewPagerAnim(
                         targetPosition = tab?.position ?: 0,
-                        fragmentManger = childFragmentManager,
-                        prevFragment = gamePageList[viewPagerNew.currentItem].page.invoke(),
                         viewPager = viewPagerNew,
                         fakeViewPager = fragmentFakeViewPager
                     )
