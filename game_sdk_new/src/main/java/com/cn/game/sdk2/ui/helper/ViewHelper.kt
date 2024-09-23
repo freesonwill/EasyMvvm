@@ -109,13 +109,6 @@ class ViewHelper {
                     super.onDismiss(popupView)
                     helpXPopupDialog = null
                 }
-
-                override fun beforeDismiss(popupView: BasePopupView?) {
-                    isShowOtherPop = false
-                    showGameMainPopup(context, true)
-                    super.beforeDismiss(popupView)
-                }
-                
             })
             //.customAnimator(EmptyAnimator(bubbleAttach, 0))
             .navigationBarColor(android.R.color.transparent)
