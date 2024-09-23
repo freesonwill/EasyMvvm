@@ -376,7 +376,7 @@
                     android:paddingEnd="0dp"
                     app:layout_constraintBottom_toTopOf="@id/cl_chips" />
 
-                <androidx.fragment.app.FragmentContainerView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/fragment_fake_view_pager"
                     android:layout_width="match_parent"
                     android:layout_height="174dp"
