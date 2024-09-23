@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.data.bean.GameHallItem
+import com.cn.game.sdk2.data.bean.PagerBean
 import com.cn.game.sdk2.databinding.FragmentGamehallBinding
 import com.cn.game.sdk2.ui.adapter.GameListViewPagerAdapter
 import com.cn.game.sdk2.ui.helper.ToastHelper
@@ -43,7 +44,7 @@ class GameListView @JvmOverloads constructor(
         R.string.g_game_list_type_sports.getString(),
         R.string.g_game_list_type_electronic.getString()
     )
-    private val fragmentList = mutableListOf<Fast3GameHallItemFragment>()
+    private val fragmentList = mutableListOf<PagerBean>()//Fast3GameHallItemFragment>()
     private val gameStageListener = object : Observer<GameStage> {
         override fun onChanged(t: GameStage) {
             // 因為gameAboutModel.currentStage裡面已經有資料，第一次observer就會trigger
@@ -76,19 +77,20 @@ class GameListView @JvmOverloads constructor(
         val gameTypes = gameAboutModel.moreGames.value?.map { it.gameType }?.distinct() ?: listOf()
         gameTypes.forEach { gameType ->
             val fragment = Fast3GameHallItemFragment.newInstance(gameType)
-            fragmentList.add(fragment)
+            fragmentList.add(PagerBean(gameTypes.toString()){ fragment })
         }
         binding.vpGameList.adapter = GameListViewPagerAdapter(fm, lifecycle, fragmentList)
         binding.vpGameList.setOverScrollModeExt(OVER_SCROLL_IF_CONTENT_SCROLLS,OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
         binding.tlGameList.bindTabNewGame(
             viewPager = binding.vpGameList,
+            fragmentManager = fm,
+            fakeViewPager = binding.fcvFakeViewPager,
             titles = tabTitles,
             scrollEnable = true
         ) {
             PromptSoundPlay.btnPlayMedia()
         }
         binding.tlGameList.removeAllTips()
-        binding.vpGameList.offscreenPageLimit = tabTitles.size
         binding.close.clickNoRepeat(true) {
             dismiss()
         }
