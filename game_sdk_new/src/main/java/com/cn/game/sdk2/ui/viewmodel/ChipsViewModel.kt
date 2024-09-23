@@ -35,7 +35,7 @@ class ChipsViewModel : ViewModel() {
     val currentChipIndex: Int
         get() = chipsList.value!!.indexOfFirst { it.isSelected }
 
-    private var userLastSelectedChip: ChipBean
+    private var userLastSelectedChip: ChipBean? = null
 
     private fun setSelectedChip(ce: ChipsEnum?) {
         _chipsList.value = chipsList.value?.let { list ->
@@ -64,10 +64,12 @@ class ChipsViewModel : ViewModel() {
      */
     fun cancelBet() {
         val money = gameAboutModel.balance.value ?: 0
-        if (money < userLastSelectedChip.chip.money) {
-            setMaxPossibleBetChip(money)
-        } else {
-            setSelectedChip(userLastSelectedChip)
+        userLastSelectedChip?.let {
+            if (money < it.chip.money) {
+                setMaxPossibleBetChip(money)
+            } else {
+                setSelectedChip(it)
+            }
         }
     }
 
