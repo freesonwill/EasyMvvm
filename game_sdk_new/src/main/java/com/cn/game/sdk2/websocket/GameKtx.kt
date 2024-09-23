@@ -30,6 +30,7 @@ import com.cn.game.sdk2.websocket.constants.BettingStatus
 import com.cn.game.sdk2.websocket.imp.GameApp
 import com.cn.game.sdk2.websocket.imp.UIMethodImpl
 import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
+import com.xcjh.base_lib2.utils.LogUtils
 import kotlin.random.Random
 //GameKtx没有按照责任,耦合度太高
 val tokenArray = listOf(
@@ -211,7 +212,7 @@ fun List<Int>.countSingle(): HashMap<Int, Int> {
 fun List<Betting>.calculateUserLotteryResult(userBettingList: MutableList<BettingRecordBean>): ArrayList<BettingRecordBean> {
     val userBettingMap: Map<Betting, BettingRecordBean> = userBettingList.convertMap()
     val userLotteryResult = ArrayList<BettingRecordBean>()
-    Log.e(Fast3MainFragment.TAG, userBettingMap.toString())
+    LogUtils.e("calculateUserLotteryResult userBettingMap:$userBettingMap")
     forEach {
         if (userBettingMap.containsKey(it)) {
             val betting = userBettingMap[it]!!.copy()

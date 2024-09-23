@@ -18,7 +18,7 @@
         android:clipToPadding="false"
         android:orientation="vertical"
         android:paddingTop="5dp"
-        android:scrollbars="vertical"
+        android:scrollbars="none"
         android:scrollbarThumbVertical="@drawable/game_sdk_scrollbar_thumb"
         tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@id/indicator"

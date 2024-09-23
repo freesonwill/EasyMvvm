@@ -16,7 +16,7 @@ import androidx.core.view.ViewCompat;
 
 import com.lxj.xpopup.enums.LayoutStatus;
 import com.lxj.xpopup.util.XPopupUtils;
-import com.lxj.xpopup.widget.SmartDragLayout;
+import com.xcjh.base_lib2.utils.LogUtils;
 
 public class VerticalSmartDragLayout extends LinearLayout implements NestedScrollingParent {
     private View child;
@@ -34,7 +34,7 @@ public class VerticalSmartDragLayout extends LinearLayout implements NestedScrol
     float touchX;
     float touchY;
     boolean isScrollUp;
-    private SmartDragLayout.OnCloseListener listener;
+    private OnCloseListener listener;
     private int scaledTouchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
 
     public VerticalSmartDragLayout(Context context) {
@@ -212,13 +212,16 @@ public class VerticalSmartDragLayout extends LinearLayout implements NestedScrol
             y = this.minY;
         }
 
-        float fraction = (float)(y - this.minY) * 1.0F / (float)(this.maxY - this.minY);
+        float fraction = (float) (y - this.minY) / (float)(this.maxY - this.minY);
+        //LogUtils.d("scrollTo:"+",x:"+x+",y:"+y+",fraction:"+fraction+" minY:"+minY+",maxY:"+maxY+",scrollY:"+this.getScrollY()+",this.status:"+this.status);
         this.isScrollUp = y > this.getScrollY();
         if (this.listener != null) {
             if (this.isUserClose && fraction == 0.0F && this.status != LayoutStatus.Close) {
+                if(this.status == LayoutStatus.Open) this.listener.onClosing();
                 this.status = LayoutStatus.Close;
                 this.listener.onClose();
             } else if (fraction == 1.0F && this.status != LayoutStatus.Open) {
+                if(this.status == LayoutStatus.Close) this.listener.onOpening();
                 this.status = LayoutStatus.Open;
                 this.listener.onOpen();
             }
@@ -251,6 +254,7 @@ public class VerticalSmartDragLayout extends LinearLayout implements NestedScrol
                 int dy = VerticalSmartDragLayout.this.maxY - VerticalSmartDragLayout.this.getScrollY();
                 VerticalSmartDragLayout.this.smoothScroll(VerticalSmartDragLayout.this.enableDrag && VerticalSmartDragLayout.this.isThreeDrag ? dy / 3 : dy, true);
                 VerticalSmartDragLayout.this.status = LayoutStatus.Opening;
+                VerticalSmartDragLayout.this.listener.onOpening();
             }
         });
     }
@@ -262,6 +266,7 @@ public class VerticalSmartDragLayout extends LinearLayout implements NestedScrol
                 VerticalSmartDragLayout.this.scroller.abortAnimation();
                 VerticalSmartDragLayout.this.smoothScroll(VerticalSmartDragLayout.this.minY - VerticalSmartDragLayout.this.getScrollY(), false);
                 VerticalSmartDragLayout.this.status = LayoutStatus.Closing;
+                listener.onClosing();
             }
         });
     }
@@ -334,8 +339,18 @@ public class VerticalSmartDragLayout extends LinearLayout implements NestedScrol
         this.dismissOnTouchOutside = dismissOnTouchOutside;
     }
 
-    public void setOnCloseListener(SmartDragLayout.OnCloseListener listener) {
+    public void setOnCloseListener(OnCloseListener listener) {
         this.listener = listener;
+    }
+
+    public interface OnCloseListener {
+        void onClose();
+        void onClosing();
+
+        void onDrag(int y, float percent, boolean isScrollUp);
+
+        void onOpen();
+        void onOpening();
     }
 
 }
