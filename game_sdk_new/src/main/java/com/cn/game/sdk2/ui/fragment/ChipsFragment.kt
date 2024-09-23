@@ -1,7 +1,6 @@
 package com.cn.game.sdk2.ui.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cn.game.sdk2.R
@@ -45,7 +44,6 @@ class ChipsFragment : BaseFragment<ChipsViewModel, FragmentChipsBinding>(), Chip
     override fun createObserver() {
         //临时金额变化时需要刷新筹码的可用状态
         gameAboutModel.tempBalance.observe(viewLifecycleOwner) {
-            Log.d("abcd", "tempBalance: $it")
             mViewModel.refresh()
         }
         mViewModel.chipsList.observe(viewLifecycleOwner) {
@@ -72,18 +70,18 @@ class ChipsFragment : BaseFragment<ChipsViewModel, FragmentChipsBinding>(), Chip
             chipsAdapter = ChipsAdapter()
             adapter = chipsAdapter
             chipsAdapter.onItemClickListener = { item ->
-                if (!item.isSelected) {
-                    if (item.chip.money <= (gameAboutModel.tempBalance.value ?: 0)) {
+                if (item.chip.money <= (gameAboutModel.tempBalance.value ?: 0)) {
+                    if (!item.isSelected) {
                         PromptSoundPlay.btnPlayMedia()
-                        mViewModel.setUserSelectChip(item)
-                    } else {
-                        ToastHelper.instance.showWindowToast(
-                            context = context,
-                            msg = resources.getString(R.string.error_bet_money_insufficient),
-                            context.resources.displayMetrics.heightPixels/2,
-                        )
-                        appListener?.onInsufficientBalance()
                     }
+                    mViewModel.setUserSelectChip(item)
+                } else {
+                    ToastHelper.instance.showWindowToast(
+                        context = context,
+                        msg = resources.getString(R.string.error_bet_money_insufficient),
+                        context.resources.displayMetrics.heightPixels/2,
+                    )
+                    appListener?.onInsufficientBalance()
                 }
             }
             OverScrollDecoratorHelper.setUpOverScroll(this,OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)

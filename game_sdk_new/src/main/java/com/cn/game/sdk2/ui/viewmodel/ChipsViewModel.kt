@@ -1,6 +1,5 @@
 package com.cn.game.sdk2.ui.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -59,9 +58,12 @@ class ChipsViewModel : ViewModel() {
         setSelectedChip(cb)
     }
 
+
+    /**
+     * 取消下注，根據真實籌碼顯示最後選擇籌碼
+     */
     fun cancelBet() {
-        val money = gameAboutModel.tempBalance.value ?: 0
-        Log.d("abcd", "++++++ $money")
+        val money = gameAboutModel.balance.value ?: 0
         if (money < userLastSelectedChip.chip.money) {
             setMaxPossibleBetChip(money)
         } else {
