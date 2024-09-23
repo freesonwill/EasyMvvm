@@ -12,8 +12,8 @@ apply from: rootProject.file("gradle/flavor.gradle")
 apply from: rootProject.file("gradle/gamesdk_deps.gradle")
 
 ext {
-    GAMESDK_VERSION_CODE = 3
-    GAMESDK_VERSION_NAME = "0.0.3"
+    GAMESDK_VERSION_CODE = 4
+    GAMESDK_VERSION_NAME = "0.0.4"
 }
 
 android {
@@ -69,12 +69,13 @@ android {
         into "$rootDir/app/libs"
         def aarFile = file("$rootDir/app/libs").list().find { it.endsWith(".aar")}
         println("copyAAR_aarFile:${aarFile}")
-        mustRunAfter("bundleReleaseAar")
+        def assembleBuildTypes = gradle.startParameter.taskNames[0]
+        if(assembleBuildTypes != null )mustRunAfter(assembleBuildTypes)  //== mustRunAfter("assemble${buildType}")
     }
     copyAAR.dependsOn(cleanAAR) // 确保先清理目标目录
 
     task zipAAR(type: Zip){
-        from("$rootDir/app/libs","$rootDir/z_doc/sdk接入文档(Android)1.0.5.pages","$rootDir/z_doc/changelog.txt")
+        from("$rootDir/app/libs","$rootDir/z_doc/sdk接入文档(Android)1.0.5.pages","$rootDir/z_doc/changelog.txt","$rootDir/gradle/gamesdk_deps.gradle")
         destinationDirectory = file("$rootDir/app/build")
         def date = String.format('%s', new Date().format('yyyyMMdd'))
         archiveFileName = "AndroidSdk及接入文档${date}.zip"

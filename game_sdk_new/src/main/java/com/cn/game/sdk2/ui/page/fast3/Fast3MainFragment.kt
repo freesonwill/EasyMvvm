@@ -353,6 +353,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                     //开奖结果
                     ivHomeBg.isVisible = true
                     ivHomeBgCenter.isVisible = true
+                    resultBgTop.isVisible = true
                 })
             }
         }

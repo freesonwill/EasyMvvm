@@ -78,8 +78,16 @@
                     android:scaleType="fitXY"
                     android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/viewPagerNew"
                     app:srcCompat="@mipmap/game_sdk_result_bg_bottom" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/resultBgTop"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:scaleType="fitXY"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toTopOf="@id/ivHomeBgCenter"
+                    app:srcCompat="@mipmap/game_sdk_result_bg_top" />
 
                 <RelativeLayout
                     android:id="@+id/titleLayout"
@@ -378,16 +386,6 @@
                     android:paddingStart="0dp"
                     android:paddingEnd="0dp"
                     app:layout_constraintBottom_toTopOf="@id/cl_chips" />
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/resultBgTop"
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:background="@mipmap/game_sdk_result_bg_top"
-                    android:scaleType="fitXY"
-                    android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="@id/viewPagerNew" />
-
                 <androidx.fragment.app.FragmentContainerView
                     android:id="@+id/fragment_winning"
                     android:layout_width="0dp"
