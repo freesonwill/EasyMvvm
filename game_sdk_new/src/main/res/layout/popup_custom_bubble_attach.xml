@@ -34,18 +34,14 @@
                     android:orientation="horizontal">
 
                     <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:layout_marginLeft="1dp"
+                        style="@style/more_list_pop_iv"
+                        android:layout_marginTop="0dp"
                         app:srcCompat="@mipmap/game_sdk_home_icon_records" />
 
                     <androidx.appcompat.widget.AppCompatTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dp_8"
+                        style="@style/more_list_pop_tv"
                         android:text="@string/g_home_txt_records"
-                        android:textColor="@color/g_141624"
-                        android:textSize="14sp" />
+                        />
                 </LinearLayout>
             </RelativeLayout>
 
@@ -71,18 +67,14 @@
                     android:orientation="horizontal">
 
                     <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:layout_marginLeft="1dp"
+                        style="@style/more_list_pop_iv"
+                        android:layout_marginTop="-0.8dp"
                         app:srcCompat="@mipmap/game_sdk_home_icon_service" />
 
                     <androidx.appcompat.widget.AppCompatTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dp_8"
+                        style="@style/more_list_pop_tv"
                         android:text="@string/g_home_txt_service"
-                        android:textColor="@color/g_141624"
-                        android:textSize="14sp" />
+                        />
                 </LinearLayout>
             </RelativeLayout>
 
@@ -108,17 +100,14 @@
                     android:orientation="horizontal">
 
                     <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
+                        style="@style/more_list_pop_iv"
+                        android:layout_marginTop="0.6dp"
                         app:srcCompat="@mipmap/game_sdk_home_icon_toggle" />
 
                     <androidx.appcompat.widget.AppCompatTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dp_8"
+                        style="@style/more_list_pop_tv"
                         android:text="@string/g_home_txt_toggle"
-                        android:textColor="@color/g_141624"
-                        android:textSize="14sp" />
+                        />
                 </LinearLayout>
             </RelativeLayout>
 
@@ -144,18 +133,14 @@
                     android:orientation="horizontal">
 
                     <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:layout_marginLeft="1dp"
+                        style="@style/more_list_pop_iv"
+                        android:layout_marginTop="0.8dp"
                         app:srcCompat="@mipmap/game_sdk_home_icon_assist" />
 
                     <androidx.appcompat.widget.AppCompatTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dp_8"
+                        style="@style/more_list_pop_tv"
                         android:text="@string/g_home_txt_assist"
-                        android:textColor="@color/g_141624"
-                        android:textSize="14sp" />
+                        />
                 </LinearLayout>
             </RelativeLayout>
         </LinearLayout>

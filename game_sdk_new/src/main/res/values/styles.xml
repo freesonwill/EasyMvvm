@@ -105,4 +105,18 @@
         <item name="android:layout_height">24dp</item>
 
     </style>
+    <style name="more_list_pop_iv" >
+        <item name="android:layout_width">16dp</item>
+        <item name="android:layout_height">16dp</item>
+        <item name="android:layout_marginStart">1dp</item>
+        <item name="android:layout_marginTop">0dp</item>
+    </style>
+    <style name="more_list_pop_tv" >
+        <item  name="android:layout_width">wrap_content</item>
+        <item  name="android:layout_height">wrap_content</item>
+        <item  name="android:layout_marginStart">@dimen/dp_8</item>
+        <item  name="android:textColor">@color/g_141624</item>
+        <item  name="android:textSize">14sp</item>
+    </style>
+
 </resources>
