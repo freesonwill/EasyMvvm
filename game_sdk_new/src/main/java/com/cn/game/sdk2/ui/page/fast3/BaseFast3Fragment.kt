@@ -81,7 +81,7 @@ abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
                         areaView.againAdd(it)
                         areaView.setShowMoney(it.value.money)
                         areaView.moneyView.hiddenTop()
-                        mViewModel.updateMoneyViewLiveData.value = areaView
+                        FlowBus.with<GameAreaView>(EventKey.UpdateMoneyView).post(lifecycleScope,areaView)
                     }
                 }
             }

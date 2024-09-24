@@ -5,4 +5,6 @@ enum class EventKey(val v:String) {
     LOAD_FRAGMENT("LOAD_FRAGMENT"),
     SOCKET_CONNECTED("SOCKET_CONNECTED"),
     PLAY_DRAW_HISTORY_ANIM("PLAY_HISTORY_ANIM"), //播放历史闪烁动画
+    AddMoneyOkView("AddMoneyOkView"),
+    UpdateMoneyView("UpdateMoneyView"),
 }

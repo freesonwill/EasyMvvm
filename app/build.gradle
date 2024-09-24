@@ -21,7 +21,7 @@ android {
 
         def prop = new Properties()
         prop.load(project.rootProject.file("local.properties").newDataInputStream())
-        buildConfigField "String", "token", "\"${prop.getProperty("user.token")}\""?:"\"\""
+        buildConfigField "String", "token", prop.getProperty("user.token").with { delegate ? "\"${delegate}\"": "\"\"" }
     }
 
     sourceSets {
