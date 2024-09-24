@@ -12,6 +12,7 @@ import androidx.core.animation.addListener
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.databinding.ViewDataBinding
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.base.BaseGameFragment
