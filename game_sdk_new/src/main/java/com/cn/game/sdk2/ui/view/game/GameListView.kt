@@ -12,7 +12,7 @@ import com.cn.game.sdk2.ui.adapter.GameListViewPagerAdapter
 import com.cn.game.sdk2.ui.helper.AnimHelper
 import com.cn.game.sdk2.ui.helper.ToastHelper
 import com.cn.game.sdk2.ui.page.fast3.Fast3GameHallItemFragment
-import com.cn.game.sdk2.ui.popup.VerticalBottomPopupView
+import com.cn.game.sdk2.ui.xpopup.CustomPopupView
 import com.cn.game.sdk2.utils.ext.CommonExt.getString
 import com.cn.game.sdk2.utils.ext.bindTabNewGame
 import com.cn.game.sdk2.utils.ext.removeAllTips
@@ -32,7 +32,7 @@ open class GameListView @JvmOverloads constructor(
     defStyleAttr: Int = 0,
     private val fm: FragmentManager,
     private val miniGameId: Int?
-) : BottomPopupView(context) {
+) : CustomPopupView(context) {
 
     override fun getImplLayoutId(): Int =
         R.layout.fragment_gamehall
