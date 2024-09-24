@@ -23,6 +23,7 @@ import com.cn.game.sdk2.utils.ThreadUtils
 import com.cn.game.sdk2.utils.ThreadUtils.appListenerScope
 import com.cn.game.sdk2.utils.ThreadUtils.launchWithCustomContext
 import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
+import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.websocket.appListener
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.lxj.xpopup.XPopup
@@ -146,6 +147,7 @@ class ViewHelper {
                     if (!isShowOtherPop) {
                         fastViewOverlay?.let { if(it.alpha == 0f) fadeIn(it) }
                         fastView?.let { if(it.alpha == 0f) fadeIn(it) }
+                        PromptSoundPlay.btnPlayMedia()
                     }
                 }
             }.apply {

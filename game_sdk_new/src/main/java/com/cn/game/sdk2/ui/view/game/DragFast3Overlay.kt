@@ -28,6 +28,7 @@ class DragFast3Overlay @JvmOverloads constructor(
     private lateinit var binding: FragmentFast3OverlayBinding
 
     private fun onInit() {
+        if(this.isInEditMode)  return
         LogUtils.dTag(TAG, "onInit~~~~~~~~~~")
         binding = FragmentFast3OverlayBinding.bind(this)
 
