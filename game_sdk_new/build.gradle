@@ -50,11 +50,13 @@ android {
     libraryVariants.configureEach { variant ->
             variant.assembleProvider.configure {
                 delete fileTree(dir: "$buildDir/outputs/aar", include: '**/*')
+                finalizedBy(zipAAR)
             }
             variant.outputs.configureEach { output ->
                 def date = String.format('%s', new Date().format('yyyyMMddHHmmss'))
                 def gitVersion = getGitVersion()
                 outputFileName = "gamesdk-${variant.name}-${date}-v${GAMESDK_VERSION_NAME}-${gitVersion}.aar"
+
             }
     }
     //region clean aar --> copy aar --> zip aar
@@ -65,12 +67,14 @@ android {
         println("cleanAAR:${aarFile}")
     }
     task copyAAR(type:Copy){
+        def assembleBuildTypes = gradle.startParameter.taskNames.with {it2-> if(it2 != null && it2.size() > 0)it2[0] else null}
+        println("copyAAR_aarFile_assembleBuildTypes:${assembleBuildTypes}")
+        if(assembleBuildTypes == null || !assembleBuildTypes.startsWith(":game_sdk_new:assemble")) return
         from "$buildDir/outputs/aar"
         into "$rootDir/app/libs"
         def aarFile = file("$rootDir/app/libs").list().find { it.endsWith(".aar")}
         println("copyAAR_aarFile:${aarFile}")
-        def assembleBuildTypes = gradle.startParameter.taskNames[0]
-        if(assembleBuildTypes != null )mustRunAfter(assembleBuildTypes)  //== mustRunAfter("assemble${buildType}")
+        mustRunAfter(assembleBuildTypes)  //== mustRunAfter("assemble${buildType}")
     }
     copyAAR.dependsOn(cleanAAR) // 确保先清理目标目录
 
@@ -82,11 +86,11 @@ android {
     }
     zipAAR.dependsOn(copyAAR)
 
-    libraryVariants.configureEach { variant ->
+    /*libraryVariants.configureEach { variant ->
         variant.assembleProvider.configure {
             finalizedBy(zipAAR)
         }
-    }
+    }*/
     //endregion
 
     compileOptions {
