@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.ViewConfiguration
-import com.cn.game.sdk2.R
 import com.lxj.xpopup.enums.LayoutStatus
 import kotlin.math.abs
 
@@ -27,17 +26,6 @@ class CustomDragLayout @JvmOverloads constructor(
         override fun onClose()
         fun onClosing()
         override fun onDrag(y: Int, percent: Float, isScrollUp: Boolean)
-    }
-
-    init {
-        context.theme.obtainStyledAttributes(attrs, R.styleable.CustomDragLayout, 0, 0)
-            .apply {
-                try {
-                    isHome = getBoolean(R.styleable.CustomDragLayout_isHome, false)
-                } finally {
-                    recycle()
-                }
-            }
     }
 
     // 設置是否為主遊戲畫面
@@ -70,7 +58,6 @@ class CustomDragLayout @JvmOverloads constructor(
                     if (abs(deltaX) > abs(deltaY) && abs(deltaX) > scaledTouchSlop) {
                         return false
                     } else if (deltaY > scaledTouchSlop) {
-                        onTouchEvent(ev)
                         return true
                     }
                 }
