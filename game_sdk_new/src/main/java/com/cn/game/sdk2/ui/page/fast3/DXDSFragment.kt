@@ -4,16 +4,10 @@ import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ValueAnimator
 import android.util.SparseArray
-import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import android.widget.TextView
 import androidx.core.util.forEach
-import androidx.lifecycle.lifecycleScope
-import com.cn.game.sdk2.data.EventKey
 import com.cn.game.sdk2.databinding.FragDxdsBinding
-import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
-import com.cn.game.sdk2.utils.FlowBus
 import com.cn.game.sdk2.websocket.bean.AreaBetBean
 import com.cn.game.sdk2.websocket.constants.GameStage
 import com.cn.game.sdk2.websocket.gameAboutModel
@@ -134,30 +128,6 @@ class DXDSFragment : BaseFast3Fragment<Fast3ViewModel, FragDxdsBinding>() {
 
                 else -> {}
             }
-        }
-    }
-
-    /**
-     * 添加moneyView 计算偏移
-     */
-    override fun addMoneyOkView(
-        areaView: GameAreaView,
-        rawX: Float,
-        rawY: Float,
-        emitAnimCallBack: () -> Unit
-    ) {
-        areaView.moneyView.let {
-            val viewTreeObserver = it.viewTreeObserver
-            viewTreeObserver.addOnGlobalLayoutListener(object :
-                ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    // 确保只监听一次
-                    it.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                    handleViewTranslation(it, areaView, rawX, rawY)
-                    emitAnimCallBack.invoke()
-                }
-            })
-            FlowBus.with<Pair<GameAreaView, ViewGroup>>(EventKey.AddMoneyOkView).post(lifecycleScope,Pair(areaView,mBinding.flRoot))
         }
     }
 

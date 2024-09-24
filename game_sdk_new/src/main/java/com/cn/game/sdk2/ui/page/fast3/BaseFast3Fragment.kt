@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.ImageView
 import androidx.core.animation.addListener
 import androidx.core.view.isInvisible
@@ -198,10 +199,23 @@ abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
         }
     }
 
-
-    abstract fun addMoneyOkView(
+    private fun addMoneyOkView(
         areaView: GameAreaView, rawX: Float, rawY: Float, emitAnimCallBack: () -> Unit
-    )
+    ) {
+        areaView.moneyView.let {
+            val viewTreeObserver = it.viewTreeObserver
+            viewTreeObserver.addOnGlobalLayoutListener(object :
+                ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    // 确保只监听一次
+                    it.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    handleViewTranslation(it, areaView, rawX, rawY)
+                    emitAnimCallBack.invoke()
+                }
+            })
+            FlowBus.with<Pair<GameAreaView, ViewGroup>>(EventKey.AddMoneyOkView).post(lifecycleScope,Pair(areaView,mBinding.root as ViewGroup))
+        }
+    }
 
     protected fun handleViewTranslation(
         it: MoneyOKView,
