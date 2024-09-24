@@ -126,12 +126,12 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
     }
 
     override fun ping() {
-        send(0, 2, ByteArray(0))
+        send(0, GameReqCode.C2S_PING.code.toShort(), ByteArray(0))
     }
 
     private fun send(mid: Short, sid: Short, data: ByteArray) {
         //messageViewModel?.setSendData(SendDataBean(mid, sid, data))
-        "send()->mid:$mid-sid:$sid".logd(tag)
+        "send()->mid:$mid-sid:$sid(${GameReqCode.of(sid.toInt())})".logd(tag)
         try {
             val msg = nativeLib.newPack(mid, sid, data, data.size)
             client.send(msg)

@@ -1,9 +1,13 @@
 package com.cn.game.sdk2.ui.page.fast3
 
+import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import androidx.lifecycle.lifecycleScope
+import com.cn.game.sdk2.data.EventKey
 import com.cn.game.sdk2.databinding.FragmentSumTotalBinding
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
+import com.cn.game.sdk2.utils.FlowBus
 import com.xcjh.base_lib2.base.fragment.viewBind
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
@@ -63,7 +67,7 @@ class SumTotalFragment: BaseFast3Fragment<Fast3ViewModel, FragmentSumTotalBindin
                     emitAnimCallBack.invoke()
                 }
             })
-            mViewModel.addMoneyOkViewLiveData.value =Pair(areaView,mBinding.flRoot)
+            FlowBus.with<Pair<GameAreaView, ViewGroup>>(EventKey.AddMoneyOkView).post(lifecycleScope,Pair(areaView,mBinding.flRoot))
         }
     }
 }

@@ -425,8 +425,8 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                 tryMoneyAnimation(x, y, speed, areaView, betteBean, endCallBack)
             }
         }
-
-        mViewModel.addMoneyOkViewLiveData.observe(viewLifecycleOwner) {
+        FlowBus.with<Pair<GameAreaView, ViewGroup>>(EventKey.AddMoneyOkView).register(viewLifecycleOwner)  {
+            LogUtils.d("received AddMoneyOkView:${it.first.areaCode}")
             val areaView = it.first
             betteViewGroup = it.second
             areaView.moneyView.let { moneyOkView ->
@@ -451,8 +451,8 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                 betteViewGroup?.addView(betteView, params)
             }
         }
-
-        mViewModel.updateMoneyViewLiveData.observe(viewLifecycleOwner) {
+        FlowBus.with<GameAreaView>(EventKey.UpdateMoneyView).register(viewLifecycleOwner){
+            LogUtils.d("received UpdateMoneyView :${it.areaCode}")
             lifecycleScope.launch {
                 delay(100)
                 currentBetteAreaMap[it.areaCode] = it

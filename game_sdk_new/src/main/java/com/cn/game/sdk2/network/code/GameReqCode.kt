@@ -2,6 +2,11 @@ package com.cn.game.sdk2.network.code
 
 enum class GameReqCode(val code:Int) {
     CMD_ID_UNKNOWN(-1),
+
+    /**
+     * 心跳
+     */
+    C2S_PING(2),
     /**
      * 用户登录
      */

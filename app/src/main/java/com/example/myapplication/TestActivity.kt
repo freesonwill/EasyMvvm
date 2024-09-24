@@ -57,6 +57,7 @@ class TestActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_test)
+        //setContentView(R.layout.activity_scrollview)
         btnOpen = findViewById(R.id.btnOpen)
         llshow = findViewById(R.id.llshow)
         val btnXiu = findViewById<Button>(R.id.btnXiu)
@@ -198,7 +199,7 @@ class TestActivity : AppCompatActivity() {
             GameApp.createFloatEnterView(context).apply {
                 if (!this.isAdd()) {
                     val lp = RelativeLayout.LayoutParams(layoutParams.width, layoutParams.height)
-                    lp.topMargin = 400.dp2px
+                    lp.topMargin = 500.dp2px
                     lp.marginEnd = 0.dp2px
                     lp.addRule(RelativeLayout.ALIGN_PARENT_END)
                     llshow.addView(this, lp)
@@ -208,7 +209,7 @@ class TestActivity : AppCompatActivity() {
             GameApp.createFloatResultView(this).apply {
                 if (!this.isAdd()) {
                     val lp = RelativeLayout.LayoutParams(layoutParams.width, layoutParams.height)
-                    lp.topMargin = 550.dp2px
+                    lp.topMargin = 400.dp2px
                     lp.marginEnd = 0.dp2px
                     lp.addRule(RelativeLayout.ALIGN_PARENT_END)
                     llshow.addView(this, lp)
@@ -257,6 +258,7 @@ class TestActivity : AppCompatActivity() {
         } else {
             btnOpen.text = "登录失败"
             btnIndex = 1
+            Toast.makeText(this,"登录失败:$msg",Toast.LENGTH_SHORT).show()
         }
     }
 
