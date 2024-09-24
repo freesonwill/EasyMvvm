@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.cn.game.sdk2.R
-import com.cn.game.sdk2.data.bean.SelectAnnotationBean
 import com.cn.game.sdk2.data.enums.GameEnum
+import com.cn.game.sdk2.data.enums.ChipBean
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.utils.BettingAreaUtil.getBoomBets
 import com.cn.game.sdk2.utils.BettingAreaUtil.getDefaultBets
@@ -72,7 +72,7 @@ class Fast3ViewModel : BaseViewModel() {
         y: Float,
         speed: Long = 250,
         areaView: GameAreaView,
-        betteBean: SelectAnnotationBean,
+        betteBean: ChipBean,
         endCallBack: (() -> Unit)? = null
     ) {
         moneyAnimCallback?.apply {
@@ -86,7 +86,7 @@ class Fast3ViewModel : BaseViewModel() {
             y: Float,
             speed: Long,
             areaView: GameAreaView,
-            betteBean: SelectAnnotationBean,
+            betteBean: ChipBean,
             endCallBack: (() -> Unit)?
         )
     }
