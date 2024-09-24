@@ -1,20 +1,18 @@
 package com.cn.game.sdk2.ui.viewholder
 
 import android.animation.ObjectAnimator
-import com.cn.game.sdk2.data.bean.SelectAnnotationBean
+import com.cn.game.sdk2.data.enums.ChipBean
 import com.cn.game.sdk2.databinding.ItemAnnotationListBinding
-import com.cn.game.sdk2.utils.IconUtils
 import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
 import com.cn.game.sdk2.websocket.gameAboutModel
 
 class ChipsViewHolder(private val mBinding: ItemAnnotationListBinding) : BaseViewHolder(mBinding) {
 
-    fun init(item: SelectAnnotationBean) {
+    fun init(item: ChipBean) {
         val id = getIconId(item)
-        if (id != 0) {
-            mBinding.ivShowBg.setImageResource(id)
-        }
-        if (item.select) {
+        mBinding.ivShowBg.setImageResource(id)
+
+        if (item.isSelected) {
             if (mBinding.ivShowBg.translationY == 0f) {
                 showUpAnim()
             }
@@ -23,14 +21,14 @@ class ChipsViewHolder(private val mBinding: ItemAnnotationListBinding) : BaseVie
         }
     }
 
-    private fun getIconId(item: SelectAnnotationBean): Int {
-        return if ((gameAboutModel.tempBalance.value ?: 0) < item.money) {
-            IconUtils.getIcon("game_sdk_icon_shortage_" + item.moneyPinyin)
+    private fun getIconId(item: ChipBean): Int {
+        return if ((gameAboutModel.tempBalance.value ?: 0) < item.chip.money) {
+            item.chip.disableRes
         } else {
-            if (item.select) {
-                IconUtils.getIcon("game_sdk_icon_select_" + item.moneyPinyin)
+            if (item.isSelected) {
+                item.chip.selectedRes
             } else {
-                IconUtils.getIcon("game_sdk_icon_no_" + item.moneyPinyin)
+                item.chip.enableRes
             }
         }
     }

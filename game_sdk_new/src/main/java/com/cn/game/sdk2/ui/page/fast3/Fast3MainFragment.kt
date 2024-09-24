@@ -21,7 +21,7 @@ import com.cn.game.sdk2.R
 import com.cn.game.sdk2.data.BetteFlyData
 import com.cn.game.sdk2.data.EventKey
 import com.cn.game.sdk2.data.bean.PagerBean
-import com.cn.game.sdk2.data.bean.SelectAnnotationBean
+import com.cn.game.sdk2.data.enums.ChipBean
 import com.cn.game.sdk2.databinding.FragFast3HomeBinding
 import com.cn.game.sdk2.ui.adapter.PagerAdapter
 import com.cn.game.sdk2.ui.fragment.ChipsFragment
@@ -253,7 +253,6 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
             mViewModel.cancelAreaFlickAnimLiveData.value = true
             //重置注区筹码
             notifyMoneyOkView(null)
-            refreshChips()
             //下注筹码向上升起动画
             startBetteRecyclerShowOrHideAnim(isShow = true, onStart = {
                 //筹码
@@ -422,7 +421,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                 y: Float,
                 speed: Long,
                 areaView: GameAreaView,
-                betteBean: SelectAnnotationBean,
+                betteBean: ChipBean,
                 endCallBack: (() -> Unit)?
             ) {
                 tryMoneyAnimation(x, y, speed, areaView, betteBean, endCallBack)
@@ -544,8 +543,10 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
      */
     private fun cancelTemBetting() {
         hiddenAnchorTop()
+        childFragmentManager.findFragmentByTag(ChipsFragment.TAG)?.let {
+            (it as ChipsViewImp).cancelBet()
+        }
         gameMassageManager?.cancelBetting { result ->
-            refreshChips()
             notifyMoneyOkView(result)
         }
     }
@@ -832,7 +833,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
         y: Float,
         speed: Long,
         areaView: GameAreaView,
-        betteBean: SelectAnnotationBean,
+        betteBean: ChipBean,
         endCallBack: (() -> Unit)? = null
     ) {
         PromptSoundPlay.playGoldCoinAudio()
@@ -866,7 +867,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
         speed: Long,
         areaView: GameAreaView,
         jettonView: View,
-        betteBean: SelectAnnotationBean,
+        betteBean: ChipBean,
         isFirstAdd: Boolean,
         endCallBack: (() -> Unit)?
     ) {
@@ -877,10 +878,8 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
 
         // (这个图片就是执行动画的图片，从开始位置出发，经过一个抛物线（贝塞尔曲线))
         val betImageView = ImageView(requireContext()).apply {
-            val id = IconUtils.getIcon("game_sdk_icon_select_" + betteBean.moneyPinyin)
-            if (id != 0) {
-                setImageResource(id)
-            }
+            val id = betteBean.chip.selectedRes
+            setImageResource(id)
             translationZ = 3f
         }
         val betteSize = jettonView.measuredWidth
@@ -960,12 +959,6 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
             if (mBinding.viewPagerNew.currentItem != index) {
                 mBinding.viewPagerNew.currentItem = index
             }
-        }
-    }
-
-    private fun refreshChips() {
-        childFragmentManager.findFragmentByTag(ChipsFragment.TAG)?.let {
-            (it as ChipsViewImp).onRefreshChips()
         }
     }
 }
