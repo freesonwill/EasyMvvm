@@ -17,6 +17,11 @@ open class CustomPopupView(context: Context): BasePopupView(context) {
         customDragLayout = findViewById(R.id.bottomPopupContainer)
     }
 
+    // 設置是否為遊戲主畫面
+    fun setIsHome(isHome: Boolean) {
+        customDragLayout?.setIsHome(isHome)
+    }
+
     private fun addInnerContent() {
         val contentView = LayoutInflater.from(this.context)
             .inflate(

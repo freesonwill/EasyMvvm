@@ -130,7 +130,6 @@ open class OriSmartDragLayout @JvmOverloads constructor(
                 child!!.getGlobalVisibleRect(rect)
                 if (!XPopupUtils.isInRect(event.rawX, event.rawY, rect) && dismissOnTouchOutside) {
                     val distance = sqrt((event.x - touchX).pow(2f) + (event.y - touchY).pow(2f))
-                        .toFloat()
                     if (distance < ViewConfiguration.get(context).scaledTouchSlop) {
                         performClick()
                     }
@@ -142,7 +141,7 @@ open class OriSmartDragLayout @JvmOverloads constructor(
                     } else {
                         finishScroll()
                     }
-                    //                    tracker.recycle();
+//                    tracker.recycle();
                     tracker = null
                 }
             }

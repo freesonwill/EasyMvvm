@@ -5,21 +5,17 @@ import android.content.Context
 import android.content.ContextWrapper
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.lifecycleScope
 import com.cn.game.sdk2.R
-import com.cn.game.sdk2.data.EventKey
 import com.cn.game.sdk2.databinding.DialogHomeXpopupContainerBinding
-import com.cn.game.sdk2.utils.FlowBus
+import com.cn.game.sdk2.ui.xpopup.CustomPopupView
 import com.xcjh.base_lib2.utils.LogUtils
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
 
 /**
  * Description:
  * author       : zhangsan
  * createTime   : 2024/6/13 18:18
  **/
-open class HomeXPopupDialog(context: Context, val fragment: Fragment, private var miniGameId: Int) : VerticalBottomPopupView(context) {
+open class HomeXPopupDialog(context: Context, val fragment: Fragment, private var miniGameId: Int) : CustomPopupView(context) {
 
     companion object {
         const val TAG = "HomeXPopupDialog"

@@ -151,6 +151,7 @@ class ViewHelper {
                     }
                 }
             }.apply {
+                setIsHome(true)
                 homeXPopupDialog = this
             }
             XPopup.Builder(context)

@@ -5,6 +5,10 @@
 
     </declare-styleable>
 
+    <declare-styleable name="CustomDragLayout">
+        <attr name="isHome" format="boolean"/>
+    </declare-styleable>
+
 
     <attr name="RecyclerView.dividerOrientation">
         <enum name="horizontal" value="0" />
