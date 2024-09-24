@@ -3,11 +3,13 @@ package com.cn.game.sdk2.utils.ext
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.annotation.IntDef
 import androidx.annotation.IntRange
 import androidx.appcompat.widget.TooltipCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -15,10 +17,13 @@ import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.widget.ViewPager2
 import com.cn.game.sdk2.R
+import com.cn.game.sdk2.data.bean.PagerBean
+import com.cn.game.sdk2.ui.helper.AnimHelper
 import com.cn.game.sdk2.utils.tool.indicator.CommonPagerIndicator
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.xcjh.base_lib2.utils.toHtml
+import kotlinx.coroutines.Job
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 import net.lucode.hackware.magicindicator.MagicIndicator
 import net.lucode.hackware.magicindicator.ViewPagerHelper
@@ -215,7 +220,6 @@ fun TabLayout.bindTabNewGame(
     this.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
         override fun onTabSelected(tab: TabLayout.Tab?) {
             val position = tab?.position ?: 0
-            viewPager.currentItem = position
             if (tabClickedByUser) {
                 action.invoke(position)
                 tabClickedByUser = false // 重置点击状态
