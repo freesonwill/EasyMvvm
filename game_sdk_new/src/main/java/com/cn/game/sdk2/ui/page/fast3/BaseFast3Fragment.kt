@@ -92,12 +92,18 @@ abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
 
     override fun createObserver() {
         super.createObserver()
-        mViewModel.userLotteryResultLiveData.observe(viewLifecycleOwner) { resultList ->
-            setLotteryResult(resultList, mViewModel.prizeAnimTime, mViewModel.prizeAnimCount)
-        }
 
-        mViewModel.cancelAreaFlickAnimLiveData.observe(viewLifecycleOwner) {
-            areaFlickAnimatorSet?.cancel()
+        gameAboutModel.currentStage.observe(viewLifecycleOwner) { stage: GameStage ->
+            when (stage) {
+                GameStage.NEW -> areaFlickAnimatorSet?.cancel()
+                GameStage.DEAL -> {}
+                GameStage.SETTLE -> {
+                    gameAboutModel.lotteryResultList?.let { result ->
+                        setLotteryResult(result, mViewModel.prizeAnimTime, mViewModel.prizeAnimCount)
+
+                    }
+                }
+            }
         }
     }
 
@@ -169,7 +175,7 @@ abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
 
     private fun addBetting(areaView: GameAreaView, rawX: Float, rawY: Float) {
         //先判断余额是否够这次 并且扣取钱
-        if (mViewModel.isClickOperation) {
+        if (gameAboutModel.currentStage.value == GameStage.NEW) {
             val betteBean = chipViewModel.currentChip
             areaView.areaInfo?.apply {
                 val bettingBean = BettingRecordBean(this, money = betteBean.money)

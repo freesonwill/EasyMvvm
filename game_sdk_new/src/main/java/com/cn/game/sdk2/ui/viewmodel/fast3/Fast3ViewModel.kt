@@ -1,6 +1,5 @@
 package com.cn.game.sdk2.ui.viewmodel.fast3
 
-import android.view.ViewGroup
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
@@ -32,8 +31,6 @@ class Fast3ViewModel : BaseViewModel() {
     var betDeleteClick: UnPeekLiveData<Boolean> = UnPeekLiveData()
 
     var moneyAnimCallback: MoneyAnimCallback? = null
-    val userLotteryResultLiveData: UnPeekLiveData<ArrayList<Betting>> = UnPeekLiveData()
-    val cancelAreaFlickAnimLiveData = UnPeekLiveData<Boolean>()
 
     val homeTimeSeconds: LiveData<Int> = gameAboutModel.countDownSecondsLD
     val homeTimeColorLD: LiveData<Int> by lazy {
@@ -49,19 +46,6 @@ class Fast3ViewModel : BaseViewModel() {
     internal var localGameStage: GameStage? = null
 
 
-    //是否可点击
-    val isClickOperationLD: LiveData<Boolean> by lazy { UnPeekLiveData(true) }
-    var isClickOperation: Boolean
-        get() = isClickOperationLD.value!!
-        set(value) {
-            (isClickOperationLD as UnPeekLiveData).value = value
-        }
-
-    /**
-     * 是否显示骰子的结果组合
-     */
-    var isShowResult: Boolean = false
-
     /**
      * 余额
      */
@@ -75,11 +59,6 @@ class Fast3ViewModel : BaseViewModel() {
         }
     val isCountDownStart: Boolean get() = gameAboutModel.isCountDownStart
 
-    /**
-     * 每次点击扣钱，但是不显示出来，确定后才把这个金额显示在真实钱上
-     */
-    var temporaryCurrentMoney: Int = 500000
-
     /** 开奖动画次数 **/
     val prizeAnimCount = 5
 
@@ -87,18 +66,6 @@ class Fast3ViewModel : BaseViewModel() {
      * 开奖动画时间(ms)
      */
     val prizeAnimTime = 500L
-
-    //========================================== Method =========================================//
-
-    override fun onCleared() {
-        super.onCleared()
-        LogUtils.dTag(TAG, "~~~~~~~~~OnCleared")
-    }
-
-    fun clear() {
-
-    }
-
 
     fun emitMoneyAnim(
         x: Float,

@@ -201,7 +201,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                 "updateGameStage-->${it},countDown:${mViewModel.countDown},localGameStage:${mViewModel.localGameStage}"
             )
             if (mViewModel.localGameStage == it) return@let
-            mViewModel.isClickOperation = it == GameStage.NEW
+            mBinding.viewPagerNew.isEnabled = it == GameStage.NEW
             mBinding.txtHomeTime.isVisible = it == GameStage.NEW
             mBinding.txtHomeUnit.isVisible = it == GameStage.NEW
             mViewModel.localGameStage = it
@@ -243,8 +243,6 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                 }
             }
             LogUtils.dTag(TAG, "onStartBetting, isCountDownStart:${mViewModel.isCountDownStart}")
-            //取消注区闪烁
-            mViewModel.cancelAreaFlickAnimLiveData.value = true
             //重置注区筹码
             notifyMoneyOkView(null)
             refreshChips()
@@ -288,7 +286,6 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                     mBinding.fragmentDrawResult.isVisible = true
                     //开奖结果注区动画闪烁
                     LogUtils.d(TAG, "中奖注区结果监听--->${gameAboutModel.lotteryResultList}")
-                    mViewModel.userLotteryResultLiveData.value = gameAboutModel.lotteryResultList
                     playResultAnim(viewPagerNew.getCenterPoint()) {
                         FlowBus.with<Boolean>(EventKey.PLAY_DRAW_HISTORY_ANIM).post(lifecycleScope,true)
                         //中奖动画
@@ -813,10 +810,6 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
      */
     override fun onDestroy() {
         LogUtils.dTag(TAG, "onDestroy~~~~~~~~~~~~~~")
-        //清空临时的
-
-        mViewModel.clear()
-        //关闭倒计时
         super.onDestroy()
     }
 
