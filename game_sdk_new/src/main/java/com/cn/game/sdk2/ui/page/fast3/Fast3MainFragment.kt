@@ -20,8 +20,8 @@ import androidx.lifecycle.lifecycleScope
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.data.BetteFlyData
 import com.cn.game.sdk2.data.EventKey
-import com.cn.game.sdk2.data.bean.PagerBean
 import com.cn.game.sdk2.data.bean.SelectAnnotationBean
+import com.cn.game.sdk2.data.enums.GameEnum
 import com.cn.game.sdk2.databinding.FragFast3HomeBinding
 import com.cn.game.sdk2.ui.adapter.PagerAdapter
 import com.cn.game.sdk2.ui.fragment.ChipsFragment
@@ -93,7 +93,6 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
         mBinding.bottomLayout.setOnTouchListener { _, _ -> true }
         mBinding.resultClickView.setOnClickListener { } //屏蔽底部recycler点击
 
-        loadFragment()
         setChipsView()
         setDrawResultView()
         setHistoryView()
@@ -102,38 +101,18 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
         setNavigationBar()
     }
 
-    private fun loadFragment(){
+    private fun loadFragment(game: GameEnum) {
+
         with(mBinding) {
             val startTime = System.currentTimeMillis()
-            val gamePageList = mutableListOf<PagerBean>().apply {
-                add(PagerBean(getString(R.string.g_home_txt_default)) { DXDSFragment() })
-                add(PagerBean(getString(R.string.g_home_tab_single)) { SingleDiceFragment() })
-                add(PagerBean(getString(R.string.g_home_tab_sum)) { SumTotalFragment() })
-                add(PagerBean(getString(R.string.g_home_tab_double)) { PairsDiceFragment() })
-                add(PagerBean(getString(R.string.g_home_tab_leopard)) { LeopardFragment() })
-            }
+            val gameList = game.gamePage.map { it.gamePageBean }
+            viewPagerNew.adapter = null
+            viewPagerNew.adapter = PagerAdapter(childFragmentManager, lifecycle, gameList)
 
-            (System.currentTimeMillis() - startTime).let {
-                LogUtils.dTag(TAG, "Fast3MainFragment load costMills1:$it")
-            }
-            viewPagerNew.adapter = PagerAdapter(childFragmentManager, lifecycle, gamePageList)
             viewPagerNew.setOverScrollModeExt(
                 BottomPopupView.OVER_SCROLL_IF_CONTENT_SCROLLS,
                 OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
-            TabLayoutMediator(tlGame, viewPagerNew) { tab, position ->
-                val tabView = tab.view
-                    tab.text = gamePageList[position].title
-                tabView.setPadding(
-                    32,
-                    0,
-                    32,
-                    0
-                )
-                tabView.setOnClickListener {
-                    PromptSoundPlay.btnPlayMedia()
 
-                }
-            }.attach()
 
             tlGame.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
@@ -151,6 +130,21 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                 override fun onTabReselected(tab: TabLayout.Tab?) {
                 }
             })
+
+            TabLayoutMediator(tlGame, viewPagerNew) { tab, position ->
+                val tabView = tab.view
+                tab.text = gameList[position].title
+                tabView.setPadding(
+                    32,
+                    0,
+                    32,
+                    0
+                )
+                tabView.setOnClickListener {
+                    PromptSoundPlay.btnPlayMedia()
+
+                }
+            }.attach()
             tlGame.removeAllTips()
             (System.currentTimeMillis() - startTime).let {
                 LogUtils.dTag(TAG, "Fast3MainFragment load costMills2:$it")
@@ -371,6 +365,9 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                 }
             }
 
+        mViewModel.game.observe(viewLifecycleOwner) {
+            loadFragment(it)
+        }
         //总余额监听
         gameAboutModel.balance.observe(viewLifecycleOwner) {
             LogUtils.e(TAG, "收到的总余额：${it},old:${mViewModel.currentMoney}, new:$it")

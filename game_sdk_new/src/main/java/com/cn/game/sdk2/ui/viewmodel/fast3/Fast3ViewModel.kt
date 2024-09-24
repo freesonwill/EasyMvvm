@@ -2,9 +2,11 @@ package com.cn.game.sdk2.ui.viewmodel.fast3
 
 import android.view.ViewGroup
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.data.bean.SelectAnnotationBean
+import com.cn.game.sdk2.data.enums.GameEnum
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.utils.BettingAreaUtil.getBoomBets
 import com.cn.game.sdk2.utils.BettingAreaUtil.getDefaultBets
@@ -23,6 +25,8 @@ import com.xcjh.base_lib2.utils.getColor
 
 class Fast3ViewModel : BaseViewModel() {
 
+    private val _game = MutableLiveData(GameEnum.GAME_FAST3)
+    val game: LiveData<GameEnum> = _game
 
     var betOkClick: UnPeekLiveData<Boolean> = UnPeekLiveData()
     var betDeleteClick: UnPeekLiveData<Boolean> = UnPeekLiveData()
