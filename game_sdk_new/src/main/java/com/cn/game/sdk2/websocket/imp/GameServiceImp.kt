@@ -4,6 +4,7 @@ import android.content.res.Resources
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.network.code.GameReqCode
 import com.cn.game.sdk2.ui.helper.ViewHelper
+import com.cn.game.sdk2.utils.GsonUtils
 import com.cn.game.sdk2.utils.ThreadUtils.appListenerScope
 import com.cn.game.sdk2.utils.ThreadUtils.launchWithCustomContext
 import com.cn.game.sdk2.utils.ext.CommonExt.getString
@@ -58,7 +59,9 @@ import java.util.concurrent.ConcurrentHashMap
  */
 internal abstract class GameServiceImp(private val client: GameSocketClient) : GameService,
     GameServerMessageConvertFactory {
-
+    companion object {
+        const val TAG = "GameService"
+    }
     protected open var bettingStepList: ObservableArrayList<BettingRecordBean> =
         ObservableArrayList()
 
@@ -418,10 +421,34 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
     }
 
     override fun beginDeal(round: GameRes.BeginDeal) {
-        "Deal".logd(tag)
+        "${TAG}-->Deal:${GsonUtils.toJson(round.roundInfo)}".logd(tag)
         curStage = GameStage.DEAL
         gameAboutModel.roundId = round.roundId //期号
         gameAboutModel.countDown = round.countDown //当前阶段剩余时间倒计时
+        //开奖号码
+        run{
+            //主动设置豹子
+            val lotteryNumbers = if (gameAboutModel.manualLeopard) {
+                gameAboutModel.manualLeopard = false
+                listOf(6, 6, 6)
+            } else {
+                round.roundInfo.performsList[0].elementsList
+            }
+            //中奖注区
+            val lotteryResultList = lotteryNumbers.calculateArea()
+            //添加历史记录
+            val currentRound = RoundInfoBean(
+                round.roundInfo.roundId,
+                lotteryNumbers,
+                lotteryNumbers.sum(),
+                lotteryNumbers.isBig(),
+                lotteryNumbers.isDouble()
+            )
+            gameAboutModel.addHistoryRound(currentRound)
+            gameAboutModel.lotteryResultList = lotteryResultList
+            //计算用户中奖注区及金额
+            gameAboutModel.userLotteryResult = lotteryResultList.calculateUserLotteryResult(bettingStepList)
+        }
         if (gameAboutModel.currentStage.value != GameStage.DEAL) {
             gameAboutModel.changeStage(GameStage.DEAL)
         }
@@ -429,9 +456,8 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
     }
 
     override fun beginSettle(settle: GameRes.BeginSettle) {
-        "Settle".logd(tag)
+        "${TAG}-->settle:${GsonUtils.toJson(settle.winScore)}".logd(tag)
         curStage = GameStage.SETTLE
-        gameAboutModel.roundId = settle.roundInfo.roundId //期号
         gameAboutModel.countDown = settle.countDown //当前阶段剩余时间倒计时
         val confirmMoney = bettingStepList.getMoneyByState(BettingStatus.COMMITTED)
 
@@ -440,32 +466,7 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
             gameAboutModel.netIncome = settle.winScore - confirmMoney
             ViewHelper.instance.showFastViewPopWhenWin()
         }
-        //开奖号码
-        //主动设置豹子
-        val lotteryNumbers = if (gameAboutModel.manualLeopard) {
-            gameAboutModel.manualLeopard = false
-            listOf(6, 6, 6)
-        } else {
-            settle.roundInfo.performsList[0].elementsList
-        }
 
-        //中奖注区
-        val lotteryResultList = lotteryNumbers.calculateArea()
-        //添加历史记录
-        val currentRound = RoundInfoBean(
-            settle.roundInfo.roundId,
-            lotteryNumbers,
-            lotteryNumbers.sum(),
-            lotteryNumbers.isBig(),
-            lotteryNumbers.isDouble()
-        )
-
-        gameAboutModel.addHistoryRound(currentRound)
-
-        gameAboutModel.lotteryResultList = lotteryResultList
-        //计算用户中奖注区及金额
-        gameAboutModel.userLotteryResult =
-            lotteryResultList.calculateUserLotteryResult(bettingStepList)
         //跟新阶段
         gameAboutModel.changeStage(GameStage.SETTLE)
         //清空本局已下注数据，并复制到续压集合里
@@ -473,7 +474,6 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
             againBettingMap.clear()
             againBettingMap.putAll(bettingStepList.convertAgainList())
         }
-
     }
 
     override fun syncAreaBetInfoBack(syncAreaBetInfo: GameRes.SyncAreaBetInfo) {

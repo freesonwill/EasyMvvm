@@ -169,6 +169,8 @@ message BeginDeal {
     int32 countDown = 2;
     // 期号
     string roundId = 3;
+    // 开奖资讯
+    RoundInfo roundInfo = 4;
 }
 
 // 各小游结算
@@ -177,8 +179,6 @@ message BeginSettle {
     int32 miniGameId = 1;
     // 当前阶段剩余时间倒计时(ms)
     int32 countDown = 2;
-    // 开奖资讯
-    RoundInfo roundInfo = 3;
     // 玩家自己押注输赢结果
     repeated SettleResult mySettleResult = 4;
 

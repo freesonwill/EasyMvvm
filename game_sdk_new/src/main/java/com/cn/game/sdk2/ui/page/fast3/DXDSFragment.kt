@@ -55,9 +55,9 @@ class DXDSFragment : BaseGameFragment<DXDSViewModel, FragDxdsBinding>() {
 
     private fun updateAreaBetInfo(list: List<AreaBetBean>?) {
         if (list == null) return
-        LogUtils.dTag(TAG, "updateAreaBetInfo--->$list")
+        //LogUtils.dTag(TAG, "updateAreaBetInfo--->$list")
         if (numAnimSet?.isRunning == true) {
-            LogUtils.dTag(TAG, "updateAreaBetInfo--->running")
+            LogUtils.dTag(TAG, "updateAreaBetInfo--->numAnimSet is running")
             return
         }
         numAnimators.clear()
