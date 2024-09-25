@@ -7,7 +7,7 @@ import android.util.SparseArray
 import android.widget.TextView
 import androidx.core.util.forEach
 import com.cn.game.sdk2.databinding.FragDxdsBinding
-import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
+import com.cn.game.sdk2.ui.viewmodel.fast3.GameViewModel
 import com.cn.game.sdk2.websocket.bean.AreaBetBean
 import com.cn.game.sdk2.websocket.constants.GameStage
 import com.cn.game.sdk2.websocket.gameAboutModel
@@ -18,13 +18,13 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 /**
  * 默认
  */
-class DXDSFragment : BaseFast3Fragment<Fast3ViewModel, FragDxdsBinding>() {
+class DXDSFragment : BaseFast3Fragment<GameViewModel, FragDxdsBinding>() {
     override val mBinding: FragDxdsBinding by viewBind()
     private var moneyViewList: SparseArray<Pair<TextView, TextView>> = SparseArray()
     private val numAnimators by lazy { mutableListOf<Animator?>() }
     private var numAnimSet: AnimatorSet? = null
     private val txtValueAnimMap by lazy { mutableMapOf<TextView, ValueAnimator>() }
-    override val mViewModel: Fast3ViewModel by sharedViewModel()
+    override val mViewModel: GameViewModel by sharedViewModel()
 
     init {
 

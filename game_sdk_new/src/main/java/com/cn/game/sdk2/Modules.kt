@@ -4,10 +4,11 @@ import com.cn.game.sdk2.ui.viewmodel.ChipsViewModel
 import com.cn.game.sdk2.ui.viewmodel.DrawHistoryViewModel
 import com.cn.game.sdk2.ui.viewmodel.DrawResultViewModel
 import com.cn.game.sdk2.ui.viewmodel.EmptyViewModel
+import com.cn.game.sdk2.ui.viewmodel.MainViewModel
 import com.cn.game.sdk2.ui.viewmodel.WinningAnimationViewModel
 import com.cn.game.sdk2.ui.viewmodel.fast3.DXDSVm
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3GameHallItemViewModel
-import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
+import com.cn.game.sdk2.ui.viewmodel.fast3.GameViewModel
 import com.cn.game.sdk2.ui.viewmodel.fast3.LeopardVm
 import com.cn.game.sdk2.ui.viewmodel.fast3.PairsDiceVm
 import com.cn.game.sdk2.ui.viewmodel.fast3.SingleDiceVm
@@ -19,7 +20,7 @@ val viewModules = module {
     viewModel { EmptyViewModel() }
     viewModel { DXDSVm() }
     viewModel { Fast3GameHallItemViewModel() }
-    viewModel { Fast3ViewModel() }
+    viewModel { GameViewModel() }
     viewModel { LeopardVm() }
     viewModel { PairsDiceVm() }
     viewModel { SingleDiceVm() }
@@ -28,6 +29,7 @@ val viewModules = module {
     viewModel { DrawHistoryViewModel() }
     viewModel { DrawResultViewModel() }
     viewModel { WinningAnimationViewModel() }
+    viewModel { MainViewModel() }
 }
 
 val moduleList = listOf(viewModules)

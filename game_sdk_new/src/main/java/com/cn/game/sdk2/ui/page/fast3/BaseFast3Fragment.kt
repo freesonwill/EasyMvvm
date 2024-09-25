@@ -3,6 +3,7 @@ package com.cn.game.sdk2.ui.page.fast3
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -12,18 +13,18 @@ import android.widget.ImageView
 import androidx.core.animation.addListener
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
-import androidx.databinding.ViewDataBinding
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
+import androidx.viewbinding.ViewBinding
 import com.cn.game.sdk2.R
-import com.cn.game.sdk2.base.BaseGameFragment
 import com.cn.game.sdk2.data.EventKey
 import com.cn.game.sdk2.data.enums.ChipBean
 import com.cn.game.sdk2.databinding.FragDxdsBinding
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.view.game.MoneyOKView
 import com.cn.game.sdk2.ui.viewmodel.ChipsViewModel
-import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
+import com.cn.game.sdk2.ui.viewmodel.fast3.GameViewModel
 import com.cn.game.sdk2.utils.FlowBus
 import com.cn.game.sdk2.utils.ext.CommonExt.isCanGoOn
 import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
@@ -34,6 +35,7 @@ import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import com.cn.game.sdk2.websocket.constants.GameStage
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.gameMassageManager
+import com.xcjh.base_lib2.base.fragment.BaseFragment
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 /**
@@ -41,9 +43,11 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
  * author       : zhangsan
  * createTime   : 2024/6/21 18:14
  **/
-abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
-    BaseGameFragment<VM, VB>() {
+abstract class BaseFast3Fragment<VM : ViewModel, VB : ViewBinding> :
+    BaseFragment<VM, VB>() {
+    protected val TAG = this::class.java.simpleName
     private val chipViewModel: ChipsViewModel by sharedViewModel()
+    private val gameViewModel: GameViewModel by sharedViewModel()
     protected var areaViewList: MutableList<GameAreaView> = mutableListOf()
     private var areaFlickAnimatorSet: AnimatorSet? = null
 
@@ -92,15 +96,13 @@ abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
     abstract fun initAreaViewList()
 
     override fun createObserver() {
-        super.createObserver()
-
         gameAboutModel.currentStage.observe(viewLifecycleOwner) { stage: GameStage ->
             when (stage) {
                 GameStage.NEW -> areaFlickAnimatorSet?.cancel()
                 GameStage.DEAL -> {}
                 GameStage.SETTLE -> {
                     gameAboutModel.lotteryResultList?.let { result ->
-                        setLotteryResult(result, mViewModel.prizeAnimTime, mViewModel.prizeAnimCount)
+                        setLotteryResult(result, gameViewModel.prizeAnimTime, gameViewModel.prizeAnimCount)
 
                     }
                 }
@@ -109,9 +111,37 @@ abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
     }
 
     override fun lazyLoadData() {
-        super.lazyLoadData()
         FlowBus.with<List<GameAreaView>>(EventKey.UPDATE_ALL_AREA_VIEW)
             .post(mViewModel.viewModelScope, areaViewList)
+    }
+
+    fun finishFragClick() {
+        parentFragmentManager.popBackStack()
+    }
+
+    open fun finishTopClick(view: View?) {
+        activity?.finish()
+    }
+
+    /**
+     * 延迟加载 防止 切换动画还没执行完毕时数据就已经加载好了，这时页面会有渲染卡顿  bug
+     * 这里传入你想要延迟的时间，延迟时间可以设置比转场动画时间长一点 单位： 毫秒
+     * 不传默认 300毫秒
+     * @return Long
+     */
+    override fun lazyLoadTime(): Long {
+        return 300
+    }
+
+    /**
+     * 泛型的高级特性 泛型实例化
+     * 跳转
+     */
+    inline fun <reified T> startNewActivity(block: Intent.() -> Unit = {}) {
+        val intent = Intent(this.activity, T::class.java)
+        //把intent实例 传入block 函数类型参数
+        intent.block()
+        startActivity(intent)
     }
 
     private fun setLotteryResult(
@@ -159,11 +189,11 @@ abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
     private fun setMoneyOKClickListener(areaView: GameAreaView) {
         areaView.moneyView.setMoneyOKClickListener(object : MoneyOKView.OnMoneyOKClickListener {
             override fun onConfirm() {
-                mViewModel.betOkClick.value = true;
+                gameViewModel.betOkClick.value = true;
             }
 
             override fun onDelete() {
-                mViewModel.betDeleteClick.value = true;
+                gameViewModel.betDeleteClick.value = true;
             }
         })
 
@@ -368,7 +398,7 @@ abstract class BaseFast3Fragment<VM : Fast3ViewModel, VB : ViewDataBinding> :
             betteView.parentView = betteView.parent as ViewGroup
             betteView.isVisible = false
         }
-        mViewModel.emitMoneyAnim(
+        gameViewModel.emitMoneyAnim(
             rax,
             ray,
             areaView = areaView,

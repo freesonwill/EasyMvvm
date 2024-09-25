@@ -34,9 +34,9 @@ import com.cn.game.sdk2.ui.helper.ToastHelper
 import com.cn.game.sdk2.ui.popup.game.MoreListPopup
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.view.game.MoneyOKView
-import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
+import com.cn.game.sdk2.ui.viewmodel.MainViewModel
+import com.cn.game.sdk2.ui.viewmodel.fast3.GameViewModel
 import com.cn.game.sdk2.utils.FlowBus
-import com.cn.game.sdk2.utils.IconUtils
 import com.cn.game.sdk2.utils.ext.CommonExt.formatRealMoney
 import com.cn.game.sdk2.utils.ext.CommonExt.isCanGoOn
 import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
@@ -67,11 +67,13 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
+class Fast3MainFragment : BaseFragment<MainViewModel, FragFast3HomeBinding>() {
     override val mBinding: FragFast3HomeBinding by viewBind()
-    override val mViewModel: Fast3ViewModel  by sharedViewModel()
+    override val mViewModel: MainViewModel  by viewModel()
+    private val gameViewModel: GameViewModel by sharedViewModel()
 
     companion object {
         const val TAG = "Fast3MainFragment"
@@ -407,7 +409,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                 mBinding.txtHomeTime.text = seconds.toString()
             }
         }
-        mViewModel.moneyAnimCallback = object : Fast3ViewModel.MoneyAnimCallback {
+        gameViewModel.moneyAnimCallback = object : GameViewModel.MoneyAnimCallback {
             override fun startAnim(
                 x: Float,
                 y: Float,
@@ -453,7 +455,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
             }
         }
 
-        mViewModel.betOkClick.observe(this) {
+        gameViewModel.betOkClick.observe(this) {
             gameMassageManager
                 ?.commitBetting { bettingState, areaLimit ->
                     bettingState.isCanGoOn(mBinding.viewPagerNew, areaLimit) {
@@ -462,7 +464,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                 }
         }
 
-        mViewModel.betDeleteClick.observe(this) {
+        gameViewModel.betDeleteClick.observe(this) {
             cancelBetteFlyAnim()
             cancelTemBetting()
         }
