@@ -31,10 +31,12 @@ class ProxyApplication : Application() {
         GameApp.loadGame(applicationContext,true,  url, "", object :GameApp.OnSdkListener {
             override fun onSocketConnected() {
                 _onSocketConnected.value = true
+                _onGameAppEvent.value = Pair("onSocketConnected", mapOf())
             }
 
             override fun onSocketClosed() {
                 _onSocketConnected.value = false
+                _onGameAppEvent.value = Pair("onSocketClosed", mapOf())
             }
             override fun onClickOtherGameWithBlock(json: String) {
                 _onGameAppEvent.value = Pair("onClickOtherGameWithBlock", mapOf("json" to json))
