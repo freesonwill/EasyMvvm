@@ -7,10 +7,12 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.core.view.isVisible
+import com.cn.game.sdk2.data.EventKey
 import com.cn.game.sdk2.databinding.FragmentWinningAnimationBinding
 import com.cn.game.sdk2.ui.helper.AnimHelper
 import com.cn.game.sdk2.ui.page.fast3.Fast3MainFragment
 import com.cn.game.sdk2.ui.viewmodel.WinningAnimationViewModel
+import com.cn.game.sdk2.utils.FlowBus
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.xcjh.base_lib2.base.fragment.BaseFragment
 import com.xcjh.base_lib2.base.fragment.viewBind
