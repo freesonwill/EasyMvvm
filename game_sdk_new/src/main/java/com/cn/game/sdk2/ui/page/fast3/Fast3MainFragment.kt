@@ -279,31 +279,26 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
         lifecycleScope.launch {
             mBinding.apply {
                 //Fast3ToastHelper.showToastNormal(getString(R.string.g_home_setting_begin), 1000)
-                launch {
+                run {
                     playAlphaAnimTogether(arrayOf(txtHomeStatic), floatArrayOf(0f, 1f))
                     txtHomeStatic.text = resources.getString(R.string.g_f3_setting)
                 }
                 mBinding.clChips.isInvisible = true
                 mBinding.betteAgainLayout.isVisible = false
 
-                val drawResultFrag = (childFragmentManager.findFragmentByTag(DrawResultFragment.TAG) as DrawResultFragment)
-                val winningAnimFrag = (childFragmentManager.findFragmentByTag(WinningAnimationFragment.TAG) as WinningAnimationFragment)
-
-                with(drawResultFrag) {
-                    gameAboutModel.currentSettleResult?.let { setDrawResult(it) }
-                    mBinding.fragmentDrawResult.isVisible = true
-                    //开奖结果注区动画闪烁
-                    LogUtils.d(TAG, "中奖注区结果监听--->${gameAboutModel.lotteryResultList}")
+                //开奖结果注区动画闪烁
+                run {
+                    FlowBus.with<Boolean>(EventKey.PLAY_DRAW_HISTORY_ANIM).post(lifecycleScope,true);
+                    LogUtils.dTag(TAG, "中奖注区结果监听--->${gameAboutModel.lotteryResultList}")
                     mViewModel.userLotteryResultLiveData.value = gameAboutModel.lotteryResultList
-                    playResultAnim(viewPagerNew.getCenterPoint()) {
-                        FlowBus.with<Boolean>(EventKey.PLAY_DRAW_HISTORY_ANIM).post(lifecycleScope,true)
-                        //中奖动画
-                        winningAnimFrag.startWinLottieAnim(gameAboutModel.netIncome, endCallBack = {
-                            //中奖区域金额刷新
-                            LogUtils.d(TAG, "中奖注区筹码监听--->${gameAboutModel.userLotteryResult}")
-                            notifyMoneyOkView(gameAboutModel.userLotteryResult)
-                        })
-                    }
+                }
+                with(childFragmentManager.findFragmentByTag(WinningAnimationFragment.TAG) as WinningAnimationFragment) {
+                    //中奖动画
+                    startWinLottieAnim(gameAboutModel.netIncome, endCallBack = {
+                        //中奖区域金额刷新
+                        LogUtils.dTag(TAG, "中奖注区筹码监听--->${gameAboutModel.userLotteryResult}")
+                        notifyMoneyOkView(gameAboutModel.userLotteryResult)
+                    })
                 }
             }
         }
@@ -342,10 +337,12 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
             cancelTemBetting()
             //开奖时取消临时下注的
             mBinding.apply {
-                launch {
+                //标题栏
+                run {
                     playAlphaAnimTogether(arrayOf(txtHomeStatic), floatArrayOf(0f, 1f))
                     txtHomeStatic.text = getString(R.string.g_f3_dealing)
                 }
+
                 //隐藏筹码牌动画
                 startBetteRecyclerShowOrHideAnim(isShow = false, onEnd = {
                     //注区
@@ -362,11 +359,29 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
     }
 
     override fun createObserver() {
+        //监听历史变化来播放开奖动画
+        gameAboutModel.historyRounds.observe(viewLifecycleOwner) {
+            lifecycleScope.launch {
+                //播放开奖动画(骰子扇形+数字伸缩)
+                with((childFragmentManager.findFragmentByTag(DrawResultFragment.TAG) as DrawResultFragment)) {
+                    delay(200)
+                    //避免当前不是开奖状态还播放开奖状态
+                    if(gameAboutModel.currentStage.value != GameStage.DEAL) {
+                        LogUtils.e(TAG,"currentStage:${gameAboutModel.currentStage.value} != Deal,ignore playing result anim")
+                        return@with
+                    }
+                    LogUtils.d(TAG,"currentSettleResult:${gameAboutModel.currentSettleResult}")
+                    mBinding.fragmentDrawResult.isVisible = true
+                    gameAboutModel.currentSettleResult?.let { setDrawResult(it) }
+                    playResultAnim(mBinding.viewPagerNew.getCenterPoint(), doEnd = {})
+                }
+            }
+        }
+
         FlowBus.with<List<GameAreaView>>(EventKey.UPDATE_ALL_AREA_VIEW)
             .register(viewLifecycleOwner) { list ->
                 list.forEach {
                     allGameAreaMap[it.areaCode] = it
-                    LogUtils.d()
                     "add code=${it.areaCode},${it.id}".loge("UPDATE_ALL_AREA_VIEW")
                 }
             }
@@ -383,7 +398,6 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                         startNum = start,
                         endNumber = end,
                         duration1 = 600
-                        //duration1 = mDatabind.lottieAnimView.duration
                     )
                 }, 600)
             } else {
@@ -429,7 +443,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
             }
         }
         FlowBus.with<Pair<GameAreaView, ViewGroup>>(EventKey.AddMoneyOkView).register(viewLifecycleOwner)  {
-            LogUtils.d("received AddMoneyOkView:${it.first.areaCode}")
+            LogUtils.d(TAG,"received AddMoneyOkView:${it.first.areaCode}")
             val areaView = it.first
             betteViewGroup = it.second
             areaView.moneyView.let { moneyOkView ->
@@ -455,7 +469,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
             }
         }
         FlowBus.with<GameAreaView>(EventKey.UpdateMoneyView).register(viewLifecycleOwner){
-            LogUtils.d("received UpdateMoneyView :${it.areaCode}")
+            LogUtils.d(TAG,"received UpdateMoneyView :${it.areaCode}")
             lifecycleScope.launch {
                 delay(100)
                 currentBetteAreaMap[it.areaCode] = it
@@ -483,7 +497,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
 
         //续压、加倍状态监听
         gameAboutModel.currentAgainDoubleState.observe(viewLifecycleOwner) {
-            LogUtils.e(TAG, "续压加倍状态监听--->${it}")
+            LogUtils.e(TAG,"续压加倍状态监听--->${it}")
             updateAgainDoubleUi()
         }
 
