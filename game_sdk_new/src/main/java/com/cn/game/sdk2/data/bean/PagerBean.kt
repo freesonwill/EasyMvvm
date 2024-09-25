@@ -1,7 +1,7 @@
 package com.cn.game.sdk2.data.bean
 
 import androidx.fragment.app.Fragment
-import com.cn.game.sdk2.ui.page.fast3.BaseFast3Fragment
+import com.cn.game.sdk2.ui.page.fast3.BaseGameFragment
 
 /***
  * TabLayout & ViewPager 所用
@@ -14,5 +14,5 @@ open class PagerBean(
 
 class GamePageBean(
     title: String,
-    page: (() -> BaseFast3Fragment<*, *>)
+    page: (() -> BaseGameFragment<*, *>)
 ) : PagerBean(title, page)

@@ -1,17 +1,17 @@
 package com.cn.game.sdk2.ui.page.fast3
 
 import com.cn.game.sdk2.databinding.FragmentPairsDiceBinding
-import com.cn.game.sdk2.ui.viewmodel.fast3.GameViewModel
+import com.cn.game.sdk2.ui.viewmodel.fast3.PairsDiceViewModel
 import com.xcjh.base_lib2.base.fragment.viewBind
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
  * 对子
  */
-class PairsDiceFragment: BaseFast3Fragment<GameViewModel, FragmentPairsDiceBinding>() {
+class PairsDiceFragment: BaseGameFragment<PairsDiceViewModel, FragmentPairsDiceBinding>() {
 
     override val mBinding: FragmentPairsDiceBinding by viewBind()
-    override val mViewModel: GameViewModel  by sharedViewModel()
+    override val mViewModel: PairsDiceViewModel  by viewModel()
 
     override fun initAreaViewList() {
         mBinding.model = mViewModel

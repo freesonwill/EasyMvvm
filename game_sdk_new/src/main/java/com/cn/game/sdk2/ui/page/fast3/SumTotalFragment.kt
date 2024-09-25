@@ -1,17 +1,17 @@
 package com.cn.game.sdk2.ui.page.fast3
 
 import com.cn.game.sdk2.databinding.FragmentSumTotalBinding
-import com.cn.game.sdk2.ui.viewmodel.fast3.GameViewModel
+import com.cn.game.sdk2.ui.viewmodel.fast3.SumTotalViewModel
 import com.xcjh.base_lib2.base.fragment.viewBind
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
  * 总和
  */
-class SumTotalFragment: BaseFast3Fragment<GameViewModel, FragmentSumTotalBinding>() {
+class SumTotalFragment: BaseGameFragment<SumTotalViewModel, FragmentSumTotalBinding>() {
 
     override val mBinding: FragmentSumTotalBinding by viewBind()
-    override val mViewModel: GameViewModel  by sharedViewModel()
+    override val mViewModel: SumTotalViewModel  by viewModel()
     override fun initAreaViewList() {
         mBinding.model = mViewModel
         mBinding.lifecycleOwner = viewLifecycleOwner

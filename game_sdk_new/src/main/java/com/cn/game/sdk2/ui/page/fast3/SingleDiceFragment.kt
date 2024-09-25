@@ -1,17 +1,17 @@
 package com.cn.game.sdk2.ui.page.fast3
 
 import com.cn.game.sdk2.databinding.FragmentSingleDiceBinding
-import com.cn.game.sdk2.ui.viewmodel.fast3.GameViewModel
+import com.cn.game.sdk2.ui.viewmodel.fast3.SingleDiceViewModel
 import com.xcjh.base_lib2.base.fragment.viewBind
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
  * 默认
  */
-class SingleDiceFragment: BaseFast3Fragment<GameViewModel, FragmentSingleDiceBinding>() {
+class SingleDiceFragment: BaseGameFragment<SingleDiceViewModel, FragmentSingleDiceBinding>() {
 
     override val mBinding: FragmentSingleDiceBinding by viewBind()
-    override val mViewModel: GameViewModel  by sharedViewModel()
+    override val mViewModel: SingleDiceViewModel  by viewModel()
 
     override fun initAreaViewList() {
         mBinding.apply {

@@ -1,17 +1,17 @@
 package com.cn.game.sdk2.ui.page.fast3
 
 import com.cn.game.sdk2.databinding.FragmentLeopardBinding
-import com.cn.game.sdk2.ui.viewmodel.fast3.GameViewModel
+import com.cn.game.sdk2.ui.viewmodel.fast3.LeopardViewModel
 import com.xcjh.base_lib2.base.fragment.viewBind
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
  * 豹子
  */
-class LeopardFragment: BaseFast3Fragment<GameViewModel, FragmentLeopardBinding>() {
+class LeopardFragment: BaseGameFragment<LeopardViewModel, FragmentLeopardBinding>() {
 
     override val mBinding: FragmentLeopardBinding by viewBind()
-    override val mViewModel: GameViewModel  by sharedViewModel()
+    override val mViewModel: LeopardViewModel  by viewModel()
 
     override fun initAreaViewList() {
         mBinding.model = mViewModel

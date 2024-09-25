@@ -7,7 +7,7 @@
 
         <variable
             name="model"
-            type="com.cn.game.sdk2.ui.viewmodel.fast3.GameViewModel" />
+            type="com.cn.game.sdk2.ui.viewmodel.fast3.PairsDiceViewModel" />
     </data>
 
     <FrameLayout

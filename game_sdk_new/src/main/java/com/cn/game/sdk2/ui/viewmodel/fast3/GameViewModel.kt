@@ -2,14 +2,6 @@ package com.cn.game.sdk2.ui.viewmodel.fast3
 
 import com.cn.game.sdk2.data.enums.ChipBean
 import com.cn.game.sdk2.ui.view.game.GameAreaView
-import com.cn.game.sdk2.utils.BettingAreaUtil.getBoomBets
-import com.cn.game.sdk2.utils.BettingAreaUtil.getDefaultBets
-import com.cn.game.sdk2.utils.BettingAreaUtil.getDoubleBets
-import com.cn.game.sdk2.utils.BettingAreaUtil.getSingleBets
-import com.cn.game.sdk2.utils.BettingAreaUtil.getSumBets
-import com.cn.game.sdk2.utils.BettingAreaUtil.toSpareArray
-import com.cn.game.sdk2.utils.ext.CommonExt
-import com.cn.game.sdk2.websocket.bean.Betting
 import com.kunminx.architecture.ui.callback.UnPeekLiveData
 import com.xcjh.base_lib2.base.BaseViewModel
 
@@ -55,32 +47,4 @@ class GameViewModel : BaseViewModel() {
             endCallBack: (() -> Unit)?
         )
     }
-
-    val dXDSBettingArray by lazy {
-        getDefaultBets().toSpareArray()
-    }
-
-    val leopardBettingArray by lazy {
-        getBoomBets().toSpareArray()
-    }
-
-    val pairsDiceBettingArray by lazy {
-        getDoubleBets().toSpareArray()
-    }
-
-    val singleDiceBettingArray by lazy {
-        getSingleBets().toSpareArray()
-    }
-
-    val sumTotalBettingArray by lazy {
-        getSumBets().toSpareArray(4)
-    }
-
-    @JvmOverloads
-    fun multiplierStr(betting: Betting, format: String = "×#.##"): String =
-        CommonExt.multiplierStr(betting, format)
-
-    @JvmOverloads
-    fun multiplierSingStr(betting: Betting, format: String = "#.##"): String =
-        CommonExt.multiplierStr(betting, format)
 }

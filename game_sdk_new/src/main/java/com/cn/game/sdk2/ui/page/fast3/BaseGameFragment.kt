@@ -43,7 +43,7 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
  * author       : zhangsan
  * createTime   : 2024/6/21 18:14
  **/
-abstract class BaseFast3Fragment<VM : ViewModel, VB : ViewBinding> :
+abstract class BaseGameFragment<VM : ViewModel, VB : ViewBinding> :
     BaseFragment<VM, VB>() {
     protected val TAG = this::class.java.simpleName
     private val chipViewModel: ChipsViewModel by sharedViewModel()
