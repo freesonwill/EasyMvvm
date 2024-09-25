@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewPropertyAnimator
+import android.view.animation.LinearInterpolator
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -882,35 +883,36 @@ class Fast3MainFragment : BaseFragment<MainViewModel, FragFast3HomeBinding>() {
         val viewPagerLocation = mBinding.viewPagerNew.locationOnScreen
         val jettonViewLocation = jettonView.locationOnScreen
         val targetLocation = areaView.betteView.ivShowBg.locationOnScreen
-
+        val betteSize = jettonView.measuredWidth
+        val targetSize = 32.dp2px
+        val scale = targetSize.toFloat() / betteSize.toFloat()
         // (这个图片就是执行动画的图片，从开始位置出发，经过一个抛物线（贝塞尔曲线))
         val betImageView = ImageView(requireContext()).apply {
             val id = betteBean.chip.selectedRes
             setImageResource(id)
-            translationZ = 3f
+            scaleX = scale
+            scaleY = scale
         }
-        val betteSize = jettonView.measuredWidth
-        val targetSize = 32.dp2px
+
         val params = FrameLayout.LayoutParams(betteSize, betteSize)
-        params.topMargin = jettonViewLocation[1] - viewPagerLocation[1] - 5.dp2px
-        params.leftMargin = jettonViewLocation[0] - viewPagerLocation[0] - 2.dp2px
+        params.topMargin = jettonViewLocation[1] - viewPagerLocation[1]
+        params.leftMargin = jettonViewLocation[0] - viewPagerLocation[0]
         betImageView.layoutParams = params
         if (betteViewGroup == null) {
             betteViewGroup = areaView.parent.parent as ViewGroup
         }
         betteViewGroup?.addView(betImageView)
 
-        val scale = targetSize.toFloat() / betteSize.toFloat()
-        val offset = (betteSize - targetSize) / 2
+        val xOffset = 12.dp2px
+        val yOffset = 5.dp2px
         val animator: ViewPropertyAnimator = betImageView.animate()
-            .scaleX(scale)
-            .scaleY(scale)
-            .translationX((targetLocation[0] - jettonViewLocation[0] - offset + 2.dp2px).toFloat())
-            .translationY((targetLocation[1] - jettonViewLocation[1] - offset + 5.dp2px).toFloat())
-            .setDuration(300)
+            .setInterpolator(LinearInterpolator())
+            .translationX((targetLocation[0] - jettonViewLocation[0]).toFloat() - xOffset)
+            .translationY((targetLocation[1] - jettonViewLocation[1]).toFloat() - yOffset)
+            .setDuration(200)
+
         animator.setListener(object : AnimatorListenerAdapter() {
             override fun onAnimationStart(animation: Animator) {
-                areaView.betteView.translationZ = 4f
                 if (betteFlyAnimList.containsKey(areaView)) {
                     betteFlyAnimList[areaView]?.add(BetteFlyData(animator, true))
                 } else {
@@ -933,8 +935,6 @@ class Fast3MainFragment : BaseFragment<MainViewModel, FragFast3HomeBinding>() {
                 } else {
                     areaView.betteView.translationZ = 0f
                 }
-
-
                 if (!isFirstAdd) {
                     AnimHelper.doScaleAnimRecovery(areaView.betteView.ivShowBg, duration = 100)
                 }
