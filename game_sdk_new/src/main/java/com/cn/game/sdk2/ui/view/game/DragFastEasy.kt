@@ -24,7 +24,8 @@ class DragFastEasy @JvmOverloads constructor(
     private lateinit var binding: DragFastEasyBinding
 
     private fun onInit() {
-        //LogUtils.dTag(TAG, "onInit~~~~~~~~~~")
+        if(isInEditMode)  return
+        LogUtils.dTag(TAG, "onInit~~~~~~~~~~")
         binding = DragFastEasyBinding.bind(this)
 
         gameAboutModel.countDownSecondsLD.apply {

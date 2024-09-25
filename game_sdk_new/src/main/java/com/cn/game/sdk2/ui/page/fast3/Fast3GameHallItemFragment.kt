@@ -8,6 +8,7 @@ import com.cn.game.sdk2.ui.view.BounceRVEdgeEffectFactory
 import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3GameHallItemViewModel
 import com.cn.game.sdk2.utils.GsonUtils
 import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
+import com.cn.game.sdk2.utils.ext.clearAllItemDecorations
 import com.cn.game.sdk2.websocket.appListener
 import com.drake.brv.annotaion.DividerOrientation
 import com.drake.brv.utils.dividerSpace
@@ -40,6 +41,7 @@ class Fast3GameHallItemFragment : BaseFragment<Fast3GameHallItemViewModel, ItemG
         mBinding.rvContent.apply {
             itemAnimator = null
             layoutManager = GridLayoutManager(context, 4)
+            clearAllItemDecorations()
             dividerSpace(25.dp2px, DividerOrientation.HORIZONTAL)
             adapter = this@Fast3GameHallItemFragment.adapter
             edgeEffectFactory = BounceRVEdgeEffectFactory()

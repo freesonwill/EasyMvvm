@@ -50,7 +50,6 @@ android {
     libraryVariants.configureEach { variant ->
             variant.assembleProvider.configure {
                 delete fileTree(dir: "$buildDir/outputs/aar", include: '**/*')
-                finalizedBy(zipAAR)
             }
             variant.outputs.configureEach { output ->
                 def date = String.format('%s', new Date().format('yyyyMMddHHmmss'))
@@ -69,7 +68,7 @@ android {
     task copyAAR(type:Copy){
         def assembleBuildTypes = gradle.startParameter.taskNames.with {it2-> if(it2 != null && it2.size() > 0)it2[0] else null}
         println("copyAAR_aarFile_assembleBuildTypes:${assembleBuildTypes}")
-        if(assembleBuildTypes == null || !assembleBuildTypes.startsWith(":game_sdk_new:assemble")) return
+        if(assembleBuildTypes == null || !assembleBuildTypes.startsWith(":${project.name}:assemble")) return
         from "$buildDir/outputs/aar"
         into "$rootDir/app/libs"
         def aarFile = file("$rootDir/app/libs").list().find { it.endsWith(".aar")}
@@ -86,11 +85,11 @@ android {
     }
     zipAAR.dependsOn(copyAAR)
 
-    /*libraryVariants.configureEach { variant ->
+    libraryVariants.configureEach { variant ->
         variant.assembleProvider.configure {
             finalizedBy(zipAAR)
         }
-    }*/
+    }
     //endregion
 
     compileOptions {

@@ -23,6 +23,7 @@ import com.cn.game.sdk2.utils.ThreadUtils
 import com.cn.game.sdk2.utils.ThreadUtils.appListenerScope
 import com.cn.game.sdk2.utils.ThreadUtils.launchWithCustomContext
 import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
+import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.websocket.appListener
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.lxj.xpopup.XPopup
@@ -146,6 +147,7 @@ class ViewHelper {
                     if (!isShowOtherPop) {
                         fastViewOverlay?.let { if(it.alpha == 0f) fadeIn(it) }
                         fastView?.let { if(it.alpha == 0f) fadeIn(it) }
+                        PromptSoundPlay.btnPlayMedia()
                     }
                 }
             }.apply {
@@ -215,21 +217,7 @@ class ViewHelper {
             gameListDialog?.switchPage(miniGameId)
             return
         }
-        val popupView = object: GameListView(context, fm = fm, miniGameId=miniGameId) {
-            override fun onClosing() {
-                isShowOtherPop = false
-                showGameMainPopup(context, true)
-                super.onClosing()
-            }
-
-            override fun onOpening() {
-                isShowOtherPop = true
-                showGameMainPopup(context, false)
-                super.onOpening()
-            }
-        }.apply {
-            this.targetHeight = targetHeight
-        }
+        val popupView = GameListView(context, fm = fm, miniGameId=miniGameId)
         XPopup.Builder(context)
             .isTouchThrough(false)
             .popupAnimation(PopupAnimation.TranslateAlphaFromBottom)
@@ -239,6 +227,19 @@ class ViewHelper {
             .hasShadowBg(false) // 去掉半透明背景
             .enableDrag(true)
             .dismissOnTouchOutside(true)
+            .setPopupCallback(object: SimpleCallback() {
+                override fun beforeDismiss(popupView: BasePopupView?) {
+                    isShowOtherPop = false
+                    showGameMainPopup(context, true)
+                    super.beforeDismiss(popupView)
+                }
+
+                override fun beforeShow(popupView: BasePopupView?) {
+                    isShowOtherPop = true
+                    showGameMainPopup(context, false)
+                    super.beforeShow(popupView)
+                }
+            })
             .asCustom(popupView)
             .show()
         gameListDialog = popupView
