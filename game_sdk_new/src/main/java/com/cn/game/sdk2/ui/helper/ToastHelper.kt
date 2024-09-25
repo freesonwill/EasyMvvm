@@ -214,12 +214,39 @@ private class HostToastView(context: Context) : LinearLayout(context, null, 0) {
 
             is RelativeLayout -> {
                 val lp = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT)
-                lp.addRule(RelativeLayout.CENTER_HORIZONTAL)
-                lp.addRule(RelativeLayout.CENTER_VERTICAL)
+                lp.addRule(RelativeLayout.ALIGN_TOP, view.id)
+                lp.addRule(RelativeLayout.ALIGN_BOTTOM, view.id)
+                lp.addRule(RelativeLayout.ALIGN_START, view.id)
+                lp.addRule(RelativeLayout.ALIGN_END, view.id)
                 parent.addView(this, lp)
             }
 
             is FrameLayout -> {
+                val targetLocation = IntArray(2)
+                view.getLocationOnScreen(targetLocation) // 或 getLocationInWindow()
+
+                // 計算 targetView 的中心點
+                val targetCenterX = targetLocation[0] + view.width / 2
+                val targetCenterY = targetLocation[1] + view.height / 2
+
+                // 獲取 parent 的位置，因為 getLocationOnScreen 返回的是相對螢幕的座標
+                val parentLocation = IntArray(2)
+                parent.getLocationOnScreen(parentLocation)
+
+                // 計算相對於 parent 的中心點位置
+                val relativeCenterX = targetCenterX - parentLocation[0]
+                val relativeCenterY = targetCenterY - parentLocation[1]
+
+                // 設置 newView 的 LayoutParams，讓其中心點對齊到 targetView 的中心點
+                val layoutParams = FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.WRAP_CONTENT,
+                    FrameLayout.LayoutParams.WRAP_CONTENT
+                )
+
+                // 設置 newView 的 margin 使其中心點對齊 targetView 的中心點
+                layoutParams.leftMargin = relativeCenterX - this.width / 2
+                layoutParams.topMargin = relativeCenterY - this.height / 2
+
                 val lp = FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
                 lp.gravity = Gravity.CENTER
                 parent.addView(this, lp)
