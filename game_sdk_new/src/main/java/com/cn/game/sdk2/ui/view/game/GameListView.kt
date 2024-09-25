@@ -6,11 +6,13 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.data.bean.GameHallItem
+import com.cn.game.sdk2.data.bean.PagerBean
 import com.cn.game.sdk2.databinding.FragmentGamehallBinding
 import com.cn.game.sdk2.ui.adapter.GameListViewPagerAdapter
+import com.cn.game.sdk2.ui.helper.AnimHelper
 import com.cn.game.sdk2.ui.helper.ToastHelper
 import com.cn.game.sdk2.ui.page.fast3.Fast3GameHallItemFragment
-import com.cn.game.sdk2.ui.popup.VerticalBottomPopupView
+import com.cn.game.sdk2.ui.xpopup.CustomPopupView
 import com.cn.game.sdk2.utils.ext.CommonExt.getString
 import com.cn.game.sdk2.utils.ext.bindTabNewGame
 import com.cn.game.sdk2.utils.ext.removeAllTips
@@ -18,8 +20,10 @@ import com.cn.game.sdk2.utils.ext.setOverScrollModeExt
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.websocket.constants.GameStage
 import com.cn.game.sdk2.websocket.gameAboutModel
+import com.lxj.xpopup.core.BottomPopupView
 import com.xcjh.base_lib2.utils.view.clickNoRepeat
 import com.xcjh.base_lib2.utils.view.getString
+import kotlinx.coroutines.Job
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 
 open class GameListView @JvmOverloads constructor(
@@ -28,7 +32,7 @@ open class GameListView @JvmOverloads constructor(
     defStyleAttr: Int = 0,
     private val fm: FragmentManager,
     private val miniGameId: Int?
-) : VerticalBottomPopupView(context) {
+) : CustomPopupView(context) {
 
     override fun getImplLayoutId(): Int =
         R.layout.fragment_gamehall
@@ -43,12 +47,13 @@ open class GameListView @JvmOverloads constructor(
         R.string.g_game_list_type_sports.getString(),
         R.string.g_game_list_type_electronic.getString()
     )
-    private val fragmentList = mutableListOf<Fast3GameHallItemFragment>()
+//    private val fragmentList = mutableListOf<PagerBean>()//Fast3GameHallItemFragment>()
+//    private lateinit var gameStageListener: Observer<GameStage>
     private val gameStageListener = object : Observer<GameStage> {
         override fun onChanged(t: GameStage) {
             // 因為gameAboutModel.currentStage裡面已經有資料，第一次observer就會trigger
             // 故用fragmentList作為初始化完成的依據，初始化完成後再監聽
-            if (fragmentList.isEmpty()) {
+            if (!::gameListAdapter.isInitialized) {
                 return
             }
             when (t) {
@@ -59,7 +64,8 @@ open class GameListView @JvmOverloads constructor(
         }
 
     }
-
+    private var switchTabAnimJob: Job? = null
+    private lateinit var gameListAdapter: GameListViewPagerAdapter
     override fun onCreate() {
         gameAboutModel.currentStage.observeForever(gameStageListener)
         super.onCreate()
@@ -74,11 +80,8 @@ open class GameListView @JvmOverloads constructor(
 
     private fun initView() {
         val gameTypes = gameAboutModel.moreGames.value?.map { it.gameType }?.distinct() ?: listOf()
-        gameTypes.forEach { gameType ->
-            val fragment = Fast3GameHallItemFragment.newInstance(gameType)
-            fragmentList.add(fragment)
-        }
-        binding.vpGameList.adapter = GameListViewPagerAdapter(fm, lifecycle, fragmentList)
+        gameListAdapter = GameListViewPagerAdapter(fm, lifecycle, gameTypes)
+        binding.vpGameList.adapter = gameListAdapter
         binding.vpGameList.setOverScrollModeExt(OVER_SCROLL_IF_CONTENT_SCROLLS,OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
         binding.tlGameList.bindTabNewGame(
             viewPager = binding.vpGameList,
@@ -86,9 +89,16 @@ open class GameListView @JvmOverloads constructor(
             scrollEnable = true
         ) {
             PromptSoundPlay.btnPlayMedia()
+            switchTabAnimJob?.cancel()
+            switchTabAnimJob = AnimHelper.doDirectViewPagerAnim(
+                targetPosition = it,
+                viewPager = binding.vpGameList,
+                fakeViewPager = binding.fcvFakeViewPager
+
+            )
         }
         binding.tlGameList.removeAllTips()
-        binding.vpGameList.offscreenPageLimit = tabTitles.size
+        binding.vpGameList.offscreenPageLimit = gameTypes.size
         binding.close.clickNoRepeat(true) {
             dismiss()
         }

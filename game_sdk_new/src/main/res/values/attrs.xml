@@ -5,7 +5,6 @@
 
     </declare-styleable>
 
-
     <attr name="RecyclerView.dividerOrientation">
         <enum name="horizontal" value="0" />
         <enum name="vertical" value="1" />

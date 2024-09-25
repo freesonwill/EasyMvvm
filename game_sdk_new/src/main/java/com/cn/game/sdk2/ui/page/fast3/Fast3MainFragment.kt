@@ -20,8 +20,8 @@ import androidx.lifecycle.lifecycleScope
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.data.BetteFlyData
 import com.cn.game.sdk2.data.EventKey
-import com.cn.game.sdk2.data.bean.PagerBean
-import com.cn.game.sdk2.data.bean.SelectAnnotationBean
+import com.cn.game.sdk2.data.enums.ChipBean
+import com.cn.game.sdk2.data.enums.GameEnum
 import com.cn.game.sdk2.databinding.FragFast3HomeBinding
 import com.cn.game.sdk2.ui.adapter.PagerAdapter
 import com.cn.game.sdk2.ui.fragment.ChipsFragment
@@ -34,9 +34,9 @@ import com.cn.game.sdk2.ui.helper.ToastHelper
 import com.cn.game.sdk2.ui.popup.game.MoreListPopup
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.view.game.MoneyOKView
-import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
+import com.cn.game.sdk2.ui.viewmodel.MainViewModel
+import com.cn.game.sdk2.ui.viewmodel.fast3.GameViewModel
 import com.cn.game.sdk2.utils.FlowBus
-import com.cn.game.sdk2.utils.IconUtils
 import com.cn.game.sdk2.utils.ext.CommonExt.formatRealMoney
 import com.cn.game.sdk2.utils.ext.CommonExt.isCanGoOn
 import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
@@ -67,11 +67,13 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
+class Fast3MainFragment : BaseFragment<MainViewModel, FragFast3HomeBinding>() {
     override val mBinding: FragFast3HomeBinding by viewBind()
-    override val mViewModel: Fast3ViewModel  by sharedViewModel()
+    override val mViewModel: MainViewModel  by viewModel()
+    private val gameViewModel: GameViewModel by sharedViewModel()
 
     companion object {
         const val TAG = "Fast3MainFragment"
@@ -93,7 +95,6 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
         mBinding.bottomLayout.setOnTouchListener { _, _ -> true }
         mBinding.resultClickView.setOnClickListener { } //屏蔽底部recycler点击
 
-        loadFragment()
         setChipsView()
         setDrawResultView()
         setHistoryView()
@@ -102,27 +103,20 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
         setNavigationBar()
     }
 
-    private fun loadFragment(){
+    private fun loadFragment(game: GameEnum) {
+
         with(mBinding) {
             val startTime = System.currentTimeMillis()
-            val gamePageList = mutableListOf<PagerBean>().apply {
-                add(PagerBean(getString(R.string.g_home_txt_default)) { DXDSFragment() })
-                add(PagerBean(getString(R.string.g_home_tab_single)) { SingleDiceFragment() })
-                add(PagerBean(getString(R.string.g_home_tab_sum)) { SumTotalFragment() })
-                add(PagerBean(getString(R.string.g_home_tab_double)) { PairsDiceFragment() })
-                add(PagerBean(getString(R.string.g_home_tab_leopard)) { LeopardFragment() })
-            }
+            val gameList = game.gamePage.map { it.gamePageBean }
+            viewPagerNew.adapter = null
+            viewPagerNew.adapter = PagerAdapter(childFragmentManager, lifecycle, gameList)
 
-            (System.currentTimeMillis() - startTime).let {
-                LogUtils.dTag(TAG, "Fast3MainFragment load costMills1:$it")
-            }
-            viewPagerNew.adapter = PagerAdapter(childFragmentManager, lifecycle, gamePageList)
             viewPagerNew.setOverScrollModeExt(
                 BottomPopupView.OVER_SCROLL_IF_CONTENT_SCROLLS,
                 OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
             TabLayoutMediator(tlGame, viewPagerNew) { tab, position ->
                 val tabView = tab.view
-                    tab.text = gamePageList[position].title
+                tab.text = gameList[position].title
                 tabView.setPadding(
                     32,
                     0,
@@ -207,7 +201,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                 "updateGameStage-->${it},countDown:${mViewModel.countDown},localGameStage:${mViewModel.localGameStage}"
             )
             if (mViewModel.localGameStage == it) return@let
-            mViewModel.isClickOperation = it == GameStage.NEW
+            mBinding.viewPagerNew.isEnabled = it == GameStage.NEW
             mBinding.txtHomeTime.isVisible = it == GameStage.NEW
             mBinding.txtHomeUnit.isVisible = it == GameStage.NEW
             mViewModel.localGameStage = it
@@ -249,11 +243,8 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                 }
             }
             LogUtils.dTag(TAG, "onStartBetting, isCountDownStart:${mViewModel.isCountDownStart}")
-            //取消注区闪烁
-            mViewModel.cancelAreaFlickAnimLiveData.value = true
             //重置注区筹码
             notifyMoneyOkView(null)
-            refreshChips()
             //下注筹码向上升起动画
             startBetteRecyclerShowOrHideAnim(isShow = true, onStart = {
                 //筹码
@@ -290,7 +281,6 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                 run {
                     FlowBus.with<Boolean>(EventKey.PLAY_DRAW_HISTORY_ANIM).post(lifecycleScope,true);
                     LogUtils.dTag(TAG, "中奖注区结果监听--->${gameAboutModel.lotteryResultList}")
-                    mViewModel.userLotteryResultLiveData.value = gameAboutModel.lotteryResultList
                 }
                 with(childFragmentManager.findFragmentByTag(WinningAnimationFragment.TAG) as WinningAnimationFragment) {
                     //中奖动画
@@ -386,6 +376,9 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                 }
             }
 
+        mViewModel.game.observe(viewLifecycleOwner) {
+            loadFragment(it)
+        }
         //总余额监听
         gameAboutModel.balance.observe(viewLifecycleOwner) {
             LogUtils.e(TAG, "收到的总余额：${it},old:${mViewModel.currentMoney}, new:$it")
@@ -430,13 +423,13 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                 mBinding.txtHomeTime.text = seconds.toString()
             }
         }
-        mViewModel.moneyAnimCallback = object : Fast3ViewModel.MoneyAnimCallback {
+        gameViewModel.moneyAnimCallback = object : GameViewModel.MoneyAnimCallback {
             override fun startAnim(
                 x: Float,
                 y: Float,
                 speed: Long,
                 areaView: GameAreaView,
-                betteBean: SelectAnnotationBean,
+                betteBean: ChipBean,
                 endCallBack: (() -> Unit)?
             ) {
                 tryMoneyAnimation(x, y, speed, areaView, betteBean, endCallBack)
@@ -476,7 +469,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
             }
         }
 
-        mViewModel.betOkClick.observe(this) {
+        gameViewModel.betOkClick.observe(this) {
             gameMassageManager
                 ?.commitBetting { bettingState, areaLimit ->
                     bettingState.isCanGoOn(mBinding.viewPagerNew, areaLimit) {
@@ -485,7 +478,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
                 }
         }
 
-        mViewModel.betDeleteClick.observe(this) {
+        gameViewModel.betDeleteClick.observe(this) {
             cancelBetteFlyAnim()
             cancelTemBetting()
         }
@@ -558,8 +551,10 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
      */
     private fun cancelTemBetting() {
         hiddenAnchorTop()
+        childFragmentManager.findFragmentByTag(ChipsFragment.TAG)?.let {
+            (it as ChipsViewImp).cancelBet()
+        }
         gameMassageManager?.cancelBetting { result ->
-            refreshChips()
             notifyMoneyOkView(result)
         }
     }
@@ -830,10 +825,6 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
      */
     override fun onDestroy() {
         LogUtils.dTag(TAG, "onDestroy~~~~~~~~~~~~~~")
-        //清空临时的
-
-        mViewModel.clear()
-        //关闭倒计时
         super.onDestroy()
     }
 
@@ -846,7 +837,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
         y: Float,
         speed: Long,
         areaView: GameAreaView,
-        betteBean: SelectAnnotationBean,
+        betteBean: ChipBean,
         endCallBack: (() -> Unit)? = null
     ) {
         PromptSoundPlay.playGoldCoinAudio()
@@ -880,7 +871,7 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
         speed: Long,
         areaView: GameAreaView,
         jettonView: View,
-        betteBean: SelectAnnotationBean,
+        betteBean: ChipBean,
         isFirstAdd: Boolean,
         endCallBack: (() -> Unit)?
     ) {
@@ -891,10 +882,8 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
 
         // (这个图片就是执行动画的图片，从开始位置出发，经过一个抛物线（贝塞尔曲线))
         val betImageView = ImageView(requireContext()).apply {
-            val id = IconUtils.getIcon("game_sdk_icon_select_" + betteBean.moneyPinyin)
-            if (id != 0) {
-                setImageResource(id)
-            }
+            val id = betteBean.chip.selectedRes
+            setImageResource(id)
             translationZ = 3f
         }
         val betteSize = jettonView.measuredWidth
@@ -974,12 +963,6 @@ class Fast3MainFragment : BaseFragment<Fast3ViewModel, FragFast3HomeBinding>() {
             if (mBinding.viewPagerNew.currentItem != index) {
                 mBinding.viewPagerNew.currentItem = index
             }
-        }
-    }
-
-    private fun refreshChips() {
-        childFragmentManager.findFragmentByTag(ChipsFragment.TAG)?.let {
-            (it as ChipsViewImp).onRefreshChips()
         }
     }
 }
