@@ -7,4 +7,5 @@ enum class EventKey(val v:String) {
     PLAY_DRAW_HISTORY_ANIM("PLAY_HISTORY_ANIM"), //播放历史闪烁动画
     AddMoneyOkView("AddMoneyOkView"),
     UpdateMoneyView("UpdateMoneyView"),
+    RemoveMoneyView("RemoveMoneyView"),
 }

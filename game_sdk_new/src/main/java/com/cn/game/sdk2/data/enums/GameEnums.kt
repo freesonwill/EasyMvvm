@@ -25,6 +25,6 @@ enum class Fast3Game(override val gamePageBean: GamePageBean): Game {
     DEFAULT(GamePageBean(ModuleInitializer.application.getString(R.string.g_home_txt_default)) { DXDSFragment() }),
     SINGLE_DICE(GamePageBean(ModuleInitializer.application.getString(R.string.g_home_tab_single)) { SingleDiceFragment() }),
     SUM_TOTAL(GamePageBean(ModuleInitializer.application.getString(R.string.g_home_tab_sum)) { SumTotalFragment() }),
-    PAIRS_DICE(GamePageBean(ModuleInitializer.application.getString(R.string.g_home_tab_sum)) { PairsDiceFragment() }),
+    PAIRS_DICE(GamePageBean(ModuleInitializer.application.getString(R.string.g_home_tab_double)) { PairsDiceFragment() }),
     LEOPARD(GamePageBean(ModuleInitializer.application.getString(R.string.g_home_tab_leopard)) { LeopardFragment() }),
 }

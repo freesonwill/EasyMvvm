@@ -411,6 +411,12 @@ abstract class BaseGameFragment<VM : ViewModel, VB : ViewBinding> :
 
     override fun onDestroy() {
         areaFlickAnimatorSet?.cancel()
+
+        // 銷毀時通知main移除注區view，避免洩漏
+        for (areaView in areaViewList) {
+            // 需使用activity lifecycleScope, 預防fragment destroy時lifecycleScope被銷毀導致無法post
+            FlowBus.with<Int>(EventKey.RemoveMoneyView).post(requireActivity().lifecycleScope, areaView.areaCode)
+        }
         super.onDestroy()
     }
 }

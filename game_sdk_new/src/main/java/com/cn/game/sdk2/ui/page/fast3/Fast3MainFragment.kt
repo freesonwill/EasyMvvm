@@ -463,10 +463,13 @@ class Fast3MainFragment : BaseFragment<MainViewModel, FragFast3HomeBinding>() {
         }
         FlowBus.with<GameAreaView>(EventKey.UpdateMoneyView).register(viewLifecycleOwner){
             LogUtils.d(TAG,"received UpdateMoneyView :${it.areaCode}")
-            lifecycleScope.launch {
-                delay(100)
-                currentBetteAreaMap[it.areaCode] = it
-            }
+            currentBetteAreaMap[it.areaCode] = it
+
+        }
+        FlowBus.with<Int>(EventKey.RemoveMoneyView).register(viewLifecycleOwner){
+            LogUtils.d(TAG,"received RemoveMoneyView :$it")
+            currentBetteAreaMap.remove(it)
+            allGameAreaMap.remove(it)
         }
 
         gameViewModel.betOkClick.observe(this) {
