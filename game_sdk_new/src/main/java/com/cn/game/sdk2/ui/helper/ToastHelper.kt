@@ -2,23 +2,22 @@ package com.cn.game.sdk2.ui.helper
 
 import android.animation.ValueAnimator
 import android.content.Context
+import android.graphics.PixelFormat
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
-import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.addListener
 import com.cn.game.sdk2.databinding.ToastLayoutBinding
 import com.cn.game.sdk2.utils.ThreadUtils.launchWithCustomContext
 import com.cn.game.sdk2.utils.ThreadUtils.mainScope
-import com.xcjh.base_lib2.ModuleInitializer
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -31,27 +30,24 @@ class ToastHelper {
     private var defaultY = 0
     private var canReplace = true
     private var job: Job? = null
-    private var mToast: Toast? = null
-    private var mHostToast: HostToastView? = null
+    private var windowManager: WindowManager? = null
+    private var mToast: HostToastView? = null
 
     /**
      * @param offsetY 從上往下偏移，不設置則沿用前次顯示位置，橫向置中
      */
-    fun showWindowToast(context: Context = ModuleInitializer.application, msg: String, offsetY: Int = defaultY, duration: Long = 2000, replace:Boolean = true) {
+    fun showWindowToast(context: Context, msg: String, offsetY: Int = defaultY, duration: Long = 3000, replace:Boolean = true) {
         if (!this.canReplace) return
         dismiss()
         this.canReplace = replace
-        mToast = Toast.makeText(context, msg, duration.toInt()).apply {
-            val view = HostToastView(context)
-            this.view = view
-            setGravity(Gravity.CENTER_HORIZONTAL or Gravity.TOP, 0, offsetY)
-            view.setMsg(msg)
+        windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        mToast = HostToastView(context).apply {
+            showWindow(context, msg, offsetY, duration)
+            defaultY = offsetY
             job = mainScope.launchWithCustomContext("showWindowToast") {
                 delay(duration)
-                this@apply.view = null
                 dismiss()
             }
-            show()
         }
     }
 
@@ -59,7 +55,7 @@ class ToastHelper {
         if (!this.canReplace) return
         dismiss()
         this.canReplace = replace
-        mHostToast = HostToastView(attachView.context).apply {
+        mToast = HostToastView(attachView.context).apply {
             show(attachView, msg, duration)
             post {
                 val y = getToastY()
@@ -83,9 +79,10 @@ class ToastHelper {
             job?.cancel()
         }
         mToast?.cancel()
-        mHostToast?.cancel()
+
+        windowManager?.removeView(mToast)
+        windowManager = null
         mToast = null
-        mHostToast = null
         this.canReplace = true
     }
 }
@@ -114,6 +111,28 @@ private class HostToastView(context: Context) : LinearLayout(context, null, 0) {
             delay(duration)
             playAnim(false)
             dismissToast(rootView)
+        }
+    }
+
+    fun showWindow(context: Context, msg: CharSequence, offsetY: Int = 0, duration: Long) {
+        val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        val layoutParams = WindowManager.LayoutParams()
+
+        // 设置参数
+        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT
+        layoutParams.width = WindowManager.LayoutParams.WRAP_CONTENT
+        layoutParams.format = PixelFormat.TRANSLUCENT
+        layoutParams.flags = (WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        setMsg(msg)
+        layoutParams.gravity = Gravity.TOP or Gravity.CENTER_HORIZONTAL
+        layoutParams.y = offsetY
+        wm.addView(this, layoutParams)
+        mainScope.launchWithCustomContext(TAG) {
+            playAnim(true)
+            delay(duration)
+            playAnim(false)
         }
     }
 
