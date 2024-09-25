@@ -171,7 +171,7 @@ private class HostToastView(context: Context) : LinearLayout(context, null, 0) {
     }
 
     private fun findParentView(view: View): ViewGroup {
-        if (view is ConstraintLayout || view is LinearLayout || view is RelativeLayout || view is FrameLayout) return view as ViewGroup
+        if (view is ConstraintLayout || view is RelativeLayout || view is FrameLayout) return view as ViewGroup
         return findParentView(view.parent as View)
     }
 
@@ -187,18 +187,17 @@ private class HostToastView(context: Context) : LinearLayout(context, null, 0) {
             }
 
             is LinearLayout -> {
-                val lp = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
-                lp.gravity = Gravity.CENTER
-                parent.addView(view, lp)
+                // 移除LinearLayout，因為LinearLayout無法實現疊加畫面
+//                val lp = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+//                lp.gravity = Gravity.CENTER
+//                parent.addView(view, lp)
             }
 
             is RelativeLayout -> {
                 val lp = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT)
-                lp.addRule(RelativeLayout.ALIGN_LEFT, view.id)
-                lp.addRule(RelativeLayout.ALIGN_TOP, view.id)
                 lp.addRule(RelativeLayout.CENTER_HORIZONTAL)
                 lp.addRule(RelativeLayout.CENTER_VERTICAL)
-                parent.addView(view, lp)
+                parent.addView(this, lp)
             }
 
             is FrameLayout -> {
