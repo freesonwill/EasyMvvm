@@ -66,10 +66,7 @@ class WinningAnimationFragment: BaseFragment<WinningAnimationViewModel, Fragment
         override fun onViewAttachedToWindow(p0: View) {}
         override fun onViewDetachedFromWindow(p0: View) {
             //groupWinLottie播发动画一半被window移除了，lottieListener不会执行onAnimationEnd，在这里执行
-            LogUtils.w(
-                Fast3MainFragment.TAG,
-                "groupWinLottie is detached from window，isAnimating:${mViewModel.isAnimating}"
-            )
+            LogUtils.wTag(Fast3MainFragment.TAG,"groupWinLottie is detached from window，isAnimating:${mViewModel.isAnimating}")
 
             if (mViewModel.isAnimating) {
                 handleAnimEnd()

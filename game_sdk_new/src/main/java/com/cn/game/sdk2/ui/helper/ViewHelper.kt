@@ -14,7 +14,7 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.cn.game.sdk2.R
-import com.cn.game.sdk2.data.enums.GAME_ID_ENUM
+import com.cn.game.sdk2.data.enums.GameEnum
 import com.cn.game.sdk2.ui.page.fast3.Fast3MainFragment
 import com.cn.game.sdk2.ui.popup.HomeXPopupDialog
 import com.cn.game.sdk2.ui.popup.fast3.Fast3HelpPopup
@@ -136,7 +136,7 @@ class ViewHelper {
 
     private fun tryCreateMainPopup(context: Context, animationDuration: Int = 150) {
         if (null == homeXPopupDialog) {
-            val pop = object :HomeXPopupDialog(context, Fast3MainFragment(), GAME_ID_ENUM.GAME_FAST3.num) {
+            val pop = object :HomeXPopupDialog(context, Fast3MainFragment(), GameEnum.GAME_FAST3.gameId) {
                 override fun onOpening() {
                     if(!isShowOtherPop) {
                         fastViewOverlay?.let { if(it.alpha == 1f) fadeOut(it) }

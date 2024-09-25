@@ -4,37 +4,27 @@ import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ValueAnimator
 import android.util.SparseArray
-import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import android.widget.TextView
 import androidx.core.util.forEach
-import androidx.lifecycle.lifecycleScope
-import com.cn.game.sdk2.data.EventKey
 import com.cn.game.sdk2.databinding.FragDxdsBinding
-import com.cn.game.sdk2.ui.view.game.GameAreaView
-import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3ViewModel
-import com.cn.game.sdk2.utils.FlowBus
+import com.cn.game.sdk2.ui.viewmodel.fast3.DXDSViewModel
 import com.cn.game.sdk2.websocket.bean.AreaBetBean
 import com.cn.game.sdk2.websocket.constants.GameStage
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.xcjh.base_lib2.base.fragment.viewBind
 import com.xcjh.base_lib2.utils.LogUtils
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
  * 默认
  */
-class DXDSFragment : BaseFast3Fragment<Fast3ViewModel, FragDxdsBinding>() {
+class DXDSFragment : BaseGameFragment<DXDSViewModel, FragDxdsBinding>() {
     override val mBinding: FragDxdsBinding by viewBind()
     private var moneyViewList: SparseArray<Pair<TextView, TextView>> = SparseArray()
     private val numAnimators by lazy { mutableListOf<Animator?>() }
     private var numAnimSet: AnimatorSet? = null
     private val txtValueAnimMap by lazy { mutableMapOf<TextView, ValueAnimator>() }
-    override val mViewModel: Fast3ViewModel by sharedViewModel()
-
-    init {
-
-    }
+    override val mViewModel: DXDSViewModel by viewModel()
 
     override fun initAreaViewList() {
         mBinding.model = mViewModel
@@ -65,9 +55,9 @@ class DXDSFragment : BaseFast3Fragment<Fast3ViewModel, FragDxdsBinding>() {
 
     private fun updateAreaBetInfo(list: List<AreaBetBean>?) {
         if (list == null) return
-        LogUtils.dTag(TAG, "updateAreaBetInfo--->$list")
+        //LogUtils.dTag(TAG, "updateAreaBetInfo--->$list")
         if (numAnimSet?.isRunning == true) {
-            LogUtils.dTag(TAG, "updateAreaBetInfo--->running")
+            LogUtils.dTag(TAG, "updateAreaBetInfo--->numAnimSet is running")
             return
         }
         numAnimators.clear()
@@ -134,30 +124,6 @@ class DXDSFragment : BaseFast3Fragment<Fast3ViewModel, FragDxdsBinding>() {
 
                 else -> {}
             }
-        }
-    }
-
-    /**
-     * 添加moneyView 计算偏移
-     */
-    override fun addMoneyOkView(
-        areaView: GameAreaView,
-        rawX: Float,
-        rawY: Float,
-        emitAnimCallBack: () -> Unit
-    ) {
-        areaView.moneyView.let {
-            val viewTreeObserver = it.viewTreeObserver
-            viewTreeObserver.addOnGlobalLayoutListener(object :
-                ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    // 确保只监听一次
-                    it.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                    handleViewTranslation(it, areaView, rawX, rawY)
-                    emitAnimCallBack.invoke()
-                }
-            })
-            FlowBus.with<Pair<GameAreaView, ViewGroup>>(EventKey.AddMoneyOkView).post(lifecycleScope,Pair(areaView,mBinding.flRoot))
         }
     }
 
