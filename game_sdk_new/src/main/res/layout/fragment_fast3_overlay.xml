@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="106dp"
     android:layout_height="wrap_content"
-    android:background="@drawable/game_sdk_shape_38_000000">
+    android:background="@mipmap/game_sdk_float_overlay_bg">
 
     <TextView
         android:id="@+id/tvTitle"
@@ -16,6 +16,7 @@
         android:layout_marginTop="2dp"
         android:text="@string/fast3_tittle"
         android:textColor="#8FE7FB"
+        android:visibility="gone"
         android:textSize="10sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -39,8 +40,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="2dp"
-        android:layout_marginBottom="5dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="0dp"
         android:gravity="center"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -199,7 +199,7 @@ class TestActivity : AppCompatActivity() {
             GameApp.createFloatEnterView(context).apply {
                 if (!this.isAdd()) {
                     val lp = RelativeLayout.LayoutParams(layoutParams.width, layoutParams.height)
-                    lp.topMargin = 500.dp2px
+                    lp.topMargin = 468.dp2px
                     lp.marginEnd = 0.dp2px
                     lp.addRule(RelativeLayout.ALIGN_PARENT_END)
                     llshow.addView(this, lp)
