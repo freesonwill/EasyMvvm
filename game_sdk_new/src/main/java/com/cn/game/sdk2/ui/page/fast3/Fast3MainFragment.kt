@@ -718,9 +718,7 @@ class Fast3MainFragment : BaseFragment<MainViewModel, FragFast3HomeBinding>() {
             }
             //点击更多弹出框
             llHomeMore.setOnClickListener { view ->
-                val location = IntArray(2)
-                view.getLocationOnScreen(location)
-
+                val location = view.locationOnScreen
                 val clickX = location[0] + view.width / 2
                 val clickY = location[1] + view.height / 2
                 PromptSoundPlay.btnPlayMedia()
