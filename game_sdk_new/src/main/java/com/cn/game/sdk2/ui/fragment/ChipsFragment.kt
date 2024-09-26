@@ -49,7 +49,7 @@ class ChipsFragment : BaseFragment<ChipsViewModel, FragmentChipsBinding>(), Chip
         mViewModel.chipsList.observe(viewLifecycleOwner) {
             chipsAdapter.submitList(it)
             notifyDataSetChangedSafe {
-                scrollSelectPosition2Center(true)
+                scrollSelectPosition2Center()
             }
         }
     }
@@ -108,7 +108,6 @@ class ChipsFragment : BaseFragment<ChipsViewModel, FragmentChipsBinding>(), Chip
     }
 
     private fun scrollSelectPosition2Center(
-        isSmooth: Boolean = true,
         action: (() -> Unit)? = null
     ) {
         mBinding.apply {
@@ -130,15 +129,11 @@ class ChipsFragment : BaseFragment<ChipsViewModel, FragmentChipsBinding>(), Chip
                             action?.invoke()
                             return@post
                         }
-                        if (isSmooth) {
-                            (rvChips.layoutManager as CenterLayoutManager).smoothScrollToPosition(
-                                rvChips,
-                                null,
-                                selectedIndex
-                            )
-                        } else {
-                            rvChips.scrollBy(chipsX - targetX - 1.dp2px, 0)
-                        }
+                        (rvChips.layoutManager as CenterLayoutManager).smoothScrollToPosition(
+                            rvChips,
+                            null,
+                            selectedIndex
+                        )
                     }
                     action?.invoke()
                 }
@@ -156,7 +151,7 @@ class ChipsFragment : BaseFragment<ChipsViewModel, FragmentChipsBinding>(), Chip
     }
 
     override fun onBetAreaClick(onClickChip: (chipView: View) -> Unit) {
-        scrollSelectPosition2Center(false) {
+        scrollSelectPosition2Center {
             safeChipFly { chipView ->
                 chipView?.let {
                     onClickChip.invoke(it)
