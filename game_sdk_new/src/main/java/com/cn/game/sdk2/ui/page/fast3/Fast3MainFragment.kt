@@ -717,20 +717,22 @@ class Fast3MainFragment : BaseFragment<MainViewModel, FragFast3HomeBinding>() {
                 appListener?.onInsufficientBalance()
             }
             //点击更多弹出框
-            llHomeMore.setOnClickListener {
+            llHomeMore.setOnClickListener { view ->
                 PromptSoundPlay.btnPlayMedia()
                 MoreListPopup.create(requireContext(), object :
                     MoreListPopup.OnMoreListPopupListener {
                     override fun bindView(): View {
                         return mBinding.llHomeMore
                     }
+
                     override fun getSecondPopHeight(): Int {
                         return mBinding.root.height
                     }
+
                     override fun getFragmentManager(): FragmentManager {
                         return childFragmentManager
                     }
-                })
+                }, view.getCenterPoint())
             }
             //加倍
             ivMultiple2.setOnClickListener {
