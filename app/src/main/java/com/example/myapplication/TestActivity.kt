@@ -240,7 +240,7 @@ class TestActivity : AppCompatActivity() {
                                 weight,
                                 1,
                                 when (id % 3) {
-                                    0 -> com.cn.game.sdk2.R.mipmap.game_sdk_icon_kuai_logo.toString()
+                                    0 -> com.cn.game.sdk2.R.mipmap.game_sdk_icon_kuai_logo2.toString()
                                     1 -> "https://www.baidu.com/img/flexible/logo/pc/result@2.png"
                                     else -> Environment.getExternalStorageDirectory().absolutePath + "/134.jpg"
                                 },
