@@ -1,6 +1,7 @@
 package com.cn.game.sdk2.ui.popup.game
 
 import android.content.Context
+import android.graphics.Point
 import android.view.View
 import android.view.animation.LinearInterpolator
 import androidx.core.view.isVisible
@@ -31,9 +32,10 @@ class MoreListPopup private constructor(content: Context) : AttachPopupView(cont
         fun create(
             context: Context,
             listener: OnMoreListPopupListener,
-            clickX: Float,
-            clickY: Float
+            clickPivot: Point
         ) {
+            val clickX = clickPivot.x.toFloat()
+            val clickY = clickPivot.y.toFloat()
             if (instance == null) {
                 val bubbleAttach = MoreListPopup(context).apply {
                     setOnCustomBubbleAttachPopupListener(listener)

@@ -718,22 +718,21 @@ class Fast3MainFragment : BaseFragment<MainViewModel, FragFast3HomeBinding>() {
             }
             //点击更多弹出框
             llHomeMore.setOnClickListener { view ->
-                val location = view.locationOnScreen
-                val clickX = location[0] + view.width / 2
-                val clickY = location[1] + view.height / 2
                 PromptSoundPlay.btnPlayMedia()
                 MoreListPopup.create(requireContext(), object :
                     MoreListPopup.OnMoreListPopupListener {
                     override fun bindView(): View {
                         return mBinding.llHomeMore
                     }
+
                     override fun getSecondPopHeight(): Int {
                         return mBinding.root.height
                     }
+
                     override fun getFragmentManager(): FragmentManager {
                         return childFragmentManager
                     }
-                }, clickX.toFloat(), clickY.toFloat())
+                }, view.getCenterPoint())
             }
             //加倍
             ivMultiple2.setOnClickListener {
