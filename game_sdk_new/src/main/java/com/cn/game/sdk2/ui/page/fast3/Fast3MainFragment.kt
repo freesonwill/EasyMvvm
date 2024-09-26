@@ -278,18 +278,16 @@ class Fast3MainFragment : BaseFragment<MainViewModel, FragFast3HomeBinding>() {
                 mBinding.clChips.isInvisible = true
                 mBinding.betteAgainLayout.isVisible = false
 
-                //开奖结果注区动画闪烁
                 run {
-                    FlowBus.with<Boolean>(EventKey.PLAY_DRAW_HISTORY_ANIM).post(lifecycleScope,true);
-                    LogUtils.dTag(TAG, "中奖注区结果监听--->${gameAboutModel.lotteryResultList}")
+                    //开奖结果注区动画闪烁
+                    FlowBus.with<Boolean>(EventKey.PLAY_DRAW_HISTORY_ANIM).post(lifecycleScope,true)
+                    //中奖区域金额刷新(移除未中奖的筹码)
+                    LogUtils.dTag(TAG, "中奖注区筹码监听--->${gameAboutModel.userLotteryResult}")
+                    notifyMoneyOkView(gameAboutModel.userLotteryResult)
                 }
                 with(childFragmentManager.findFragmentByTag(WinningAnimationFragment.TAG) as WinningAnimationFragment) {
                     //中奖动画
-                    startWinLottieAnim(gameAboutModel.netIncome, endCallBack = {
-                        //中奖区域金额刷新
-                        LogUtils.dTag(TAG, "中奖注区筹码监听--->${gameAboutModel.userLotteryResult}")
-                        notifyMoneyOkView(gameAboutModel.userLotteryResult)
-                    })
+                    startWinLottieAnim(gameAboutModel.netIncome, endCallBack = {})
                 }
             }
         }
@@ -574,7 +572,7 @@ class Fast3MainFragment : BaseFragment<MainViewModel, FragFast3HomeBinding>() {
     }
 
     /**
-     * 刷新页面上注区里moneyView显示
+     * 刷新页面上注区里moneyView显示(移除未中奖的筹码)
      * 取消下注、结算时刷新中奖区域金额
      */
     private fun notifyMoneyOkView(list: List<BettingRecordBean?>?) {

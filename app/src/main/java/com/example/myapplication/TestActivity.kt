@@ -40,7 +40,7 @@ class TestActivity : AppCompatActivity() {
     private var btnIndex = 0
     private val token = listOf(
         "138:u0GOKGuZ",//zhangsan
-        "139:WpN53o8K",//xiaoyang
+        "139:bQgx6LMD",//xiaoyang
         "15:DbMcxyy1", //link
         "134:vdfjXERY",//jeremy
         "8:mLp8oVPC" ,//kc
@@ -74,6 +74,8 @@ class TestActivity : AppCompatActivity() {
             }
             onGameSdkEvent.observe(this@TestActivity) {
                 when (it.first) {
+                    "onSocketConnected"-> onSocketConnected()
+                    "onSocketClosed"-> onSocketClosed()
                     "onCustomerServiceAction" -> onCustomerServiceAction()
                     "onHistoryOfBetAction" -> onHistoryOfBetAction()
                     "onEnterGame" -> onEnterGame()
@@ -191,8 +193,19 @@ class TestActivity : AppCompatActivity() {
 
     }
 
+    private fun onSocketConnected(){
+        Toast.makeText(this,"onSocketConnected",Toast.LENGTH_SHORT).show()
+    }
+
+    private fun onSocketClosed(){
+        Toast.makeText(this,"onSocketClosed",Toast.LENGTH_SHORT).show()
+        btnOpen.visibility = View.VISIBLE
+        btnIndex = 0
+    }
+
     private fun onEnterLive(type: Int, msg: String) {
         if (type == 1) {
+            btnOpen.visibility = View.GONE
             btnIndex = 2
             btnOpen.text = "已进入直播间"
             val context = this

@@ -21,6 +21,7 @@ import com.cn.game.sdk2.R
 import com.cn.game.sdk2.data.EventKey
 import com.cn.game.sdk2.data.enums.ChipBean
 import com.cn.game.sdk2.databinding.FragDxdsBinding
+import com.cn.game.sdk2.ui.page.fast3.Fast3MainFragment.Companion
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.view.game.MoneyOKView
 import com.cn.game.sdk2.ui.viewmodel.ChipsViewModel
@@ -36,6 +37,7 @@ import com.cn.game.sdk2.websocket.constants.GameStage
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.gameMassageManager
 import com.xcjh.base_lib2.base.fragment.BaseFragment
+import com.xcjh.base_lib2.utils.LogUtils
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 /**
@@ -101,11 +103,14 @@ abstract class BaseGameFragment<VM : ViewModel, VB : ViewBinding> :
                 GameStage.NEW -> areaFlickAnimatorSet?.cancel()
                 GameStage.DEAL -> {}
                 GameStage.SETTLE -> {
-                    gameAboutModel.lotteryResultList?.let { result ->
-                        setLotteryResult(result, gameViewModel.prizeAnimTime, gameViewModel.prizeAnimCount)
 
-                    }
                 }
+            }
+        }
+        FlowBus.with<Boolean>(EventKey.PLAY_DRAW_HISTORY_ANIM).register(viewLifecycleOwner){
+            LogUtils.dTag(Fast3MainFragment.TAG, "中奖注区结果监听--->${gameAboutModel.lotteryResultList}")
+            gameAboutModel.lotteryResultList?.let { result ->
+                setLotteryResult(result, gameViewModel.prizeAnimTime, gameViewModel.prizeAnimCount)
             }
         }
     }
