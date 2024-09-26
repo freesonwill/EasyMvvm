@@ -12,8 +12,8 @@ apply from: rootProject.file("gradle/flavor.gradle")
 apply from: rootProject.file("gradle/gamesdk_deps.gradle")
 
 ext {
-    GAMESDK_VERSION_CODE = 4
-    GAMESDK_VERSION_NAME = "0.0.4"
+    GAMESDK_VERSION_CODE = 5
+    GAMESDK_VERSION_NAME = "0.0.5"
 }
 
 android {
