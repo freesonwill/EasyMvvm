@@ -2,13 +2,12 @@ package com.cn.game.sdk2.ui.popup.game
 
 import android.content.Context
 import android.view.View
+import android.view.animation.LinearInterpolator
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.databinding.PopupCustomBubbleAttachBinding
-import com.cn.game.sdk2.ui.animator.AlphaPopupAnimator
 import com.cn.game.sdk2.ui.helper.ViewHelper
-import com.cn.game.sdk2.ui.view.game.GameListView
 import com.cn.game.sdk2.utils.ThreadUtils.appListenerScope
 import com.cn.game.sdk2.utils.ThreadUtils.launchWithCustomContext
 import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
@@ -17,7 +16,6 @@ import com.cn.game.sdk2.websocket.gameAboutModel
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.AttachPopupView
 import com.lxj.xpopup.core.BasePopupView
-import com.lxj.xpopup.enums.PopupAnimation
 import com.lxj.xpopup.interfaces.SimpleCallback
 import com.xcjh.base_lib2.utils.view.clickNoRepeat
 
@@ -25,13 +23,17 @@ import com.xcjh.base_lib2.utils.view.clickNoRepeat
 /**
  * 首页的弹出框
  */
-class MoreListPopup private constructor(content: Context) : AttachPopupView(content){
+class MoreListPopup private constructor(content: Context) : AttachPopupView(content) {
 
     companion object {
         private const val TAG = "MoreListPopup"
         private var instance: BasePopupView? = null
-
-        fun create(context: Context, listener: OnMoreListPopupListener) {
+        fun create(
+            context: Context,
+            listener: OnMoreListPopupListener,
+            clickX: Float,
+            clickY: Float
+        ) {
             if (instance == null) {
                 val bubbleAttach = MoreListPopup(context).apply {
                     setOnCustomBubbleAttachPopupListener(listener)
@@ -39,19 +41,50 @@ class MoreListPopup private constructor(content: Context) : AttachPopupView(cont
                 instance = XPopup.Builder(context)
                     .isTouchThrough(true)
                     .setPopupCallback(object : SimpleCallback() {
+                        override fun beforeShow(popupView: BasePopupView?) {
+                            super.beforeShow(popupView)
+                            bubbleAttach.apply {
+                                scaleX = 0f
+                                scaleY = 0f
+                                pivotX = clickX
+                                pivotY = clickY
+                                animate()
+                                    .scaleX(1f)
+                                    .scaleY(1f)
+                                    .setInterpolator(LinearInterpolator())
+                                    .setDuration(150L)
+                                    .start()
+                            }
+                        }
+
+                        override fun beforeDismiss(popupView: BasePopupView?) {
+                            super.beforeDismiss(popupView)
+                            bubbleAttach.animate().cancel()
+                            bubbleAttach.apply {
+                                pivotX = clickX
+                                pivotY = clickY
+                                animate()
+                                    .alpha(0f)
+                                    .scaleX(0f)
+                                    .scaleY(0f)
+                                    .setInterpolator(LinearInterpolator())
+                                    .setDuration(150L)
+                                    .start()
+                            }
+                        }
+
                         override fun onDismiss(popupView: BasePopupView?) {
                             super.onDismiss(popupView)
                             bubbleAttach.dismiss()
                             instance = null
                         }
                     })
-                    .customAnimator(AlphaPopupAnimator(bubbleAttach, 100, floatArrayOf(0f, 1f)))
-                    .animationDuration(100)
+                    .animationDuration(200)
                     .isDestroyOnDismiss(false)
                     .atView(listener.bindView())
                     .navigationBarColor(android.R.color.transparent)
                     .hasShadowBg(false) // 去掉半透明背景
-                    .offsetX((-8).dp2px)
+                    .offsetX((-6).dp2px)
                     .offsetY((5).dp2px)
                     .asCustom(bubbleAttach)
                 instance!!.show()
