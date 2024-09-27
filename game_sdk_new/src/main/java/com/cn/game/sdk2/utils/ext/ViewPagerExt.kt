@@ -19,9 +19,9 @@ import androidx.viewpager2.widget.ViewPager2
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.data.bean.PagerBean
 import com.cn.game.sdk2.ui.helper.AnimHelper
+import com.cn.game.sdk2.ui.view.TabLayoutMediator
 import com.cn.game.sdk2.utils.tool.indicator.CommonPagerIndicator
 import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
 import com.xcjh.base_lib2.utils.toHtml
 import kotlinx.coroutines.Job
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
