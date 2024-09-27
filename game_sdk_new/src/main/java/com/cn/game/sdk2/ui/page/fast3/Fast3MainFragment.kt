@@ -17,6 +17,7 @@ import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
+import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.cn.game.sdk2.R
 import com.cn.game.sdk2.data.BetteFlyData
 import com.cn.game.sdk2.data.EventKey
@@ -32,6 +33,7 @@ import com.cn.game.sdk2.ui.fragment.WinningAnimationFragment
 import com.cn.game.sdk2.ui.helper.AnimHelper
 import com.cn.game.sdk2.ui.helper.ToastHelper
 import com.cn.game.sdk2.ui.popup.game.MoreListPopup
+import com.cn.game.sdk2.ui.view.TabLayoutMediator
 import com.cn.game.sdk2.ui.view.game.GameAreaView
 import com.cn.game.sdk2.ui.view.game.MoneyOKView
 import com.cn.game.sdk2.ui.viewmodel.MainViewModel
@@ -53,7 +55,6 @@ import com.cn.game.sdk2.websocket.constants.GameStage
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.gameMassageManager
 import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
 import com.gyf.immersionbar.ktx.hasNavigationBar
 import com.gyf.immersionbar.ktx.navigationBarHeight
 import com.lxj.xpopup.core.BottomPopupView
@@ -114,7 +115,7 @@ class Fast3MainFragment : BaseFragment<MainViewModel, FragFast3HomeBinding>() {
             viewPagerNew.setOverScrollModeExt(
                 BottomPopupView.OVER_SCROLL_IF_CONTENT_SCROLLS,
                 OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
-            TabLayoutMediator(tlGame, viewPagerNew) { tab, position ->
+            TabLayoutMediator(tlGame, viewPagerNew, true, false) { tab, position ->
                 val tabView = tab.view
                 tab.text = gameList[position].title
                 tabView.setPadding(
@@ -125,7 +126,6 @@ class Fast3MainFragment : BaseFragment<MainViewModel, FragFast3HomeBinding>() {
                 )
                 tabView.setOnClickListener {
                     PromptSoundPlay.btnPlayMedia()
-
                 }
             }.attach()
 
