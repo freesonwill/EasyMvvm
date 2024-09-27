@@ -22,7 +22,6 @@ import com.cn.game.sdk2.websocket.merge
 import com.cn.game.sdk2.websocket.verifyAdd
 import com.cn.game.sdk2.websocket.verifyCommit
 import com.cn.game.sdk2.websocket.verifyDouble
-import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 import com.xcjh.base_lib2.utils.LogUtilsExt.loge
 import game.mod.proc.yf.proto.req.GameReq
 

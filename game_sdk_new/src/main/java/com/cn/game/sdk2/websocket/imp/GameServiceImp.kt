@@ -320,6 +320,7 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
         gameAboutModel.roundId = miniGame.roundId
         "进入游戏 ->${miniGame}".loge(tag)
         gameAboutModel.isEnterGameSuccess = true
+        removePreviousBettingBean()
         checkAgainNew()
 
         appListenerScope.launchWithCustomContext(tag) {
@@ -406,6 +407,7 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
         gameAboutModel.countDown = round.countDown //当前阶段剩余时间倒计时
         gameAboutModel.changeStage(GameStage.NEW)
         curStage = GameStage.NEW
+        removePreviousBettingBean()
         checkAgainNew()
         resetPanel()
         currentConfig = configMap[miniGameId]
@@ -558,6 +560,22 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
         } else {
             "checkAgain()->不是新阶段->NUll".logd("checkAgainAndDouble")
             gameAboutModel.changeAgainDoubleState(AgainDoubleState.NUll)
+        }
+    }
+
+    private fun removePreviousBettingBean() {
+        if (bettingStepList.isNotEmpty()) {
+            val roundId = gameAboutModel.roundId
+            if (bettingStepList.first().roundId != roundId) {
+                bettingStepList.apply {
+                    val iterator = iterator()
+                    while (iterator.hasNext()) {
+                        if (roundId != iterator.next().roundId) {
+                            iterator.remove()
+                        }
+                    }
+                }
+            }
         }
     }
 

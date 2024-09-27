@@ -8,6 +8,8 @@ import java.io.Serializable
  */
 data class BettingRecordBean(
 
+    val roundId: String,
+
     /**
      * 注区
      */
