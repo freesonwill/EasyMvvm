@@ -528,6 +528,7 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
 
     protected fun checkAgainNew() {
         if (curStage == GameStage.NEW) {
+            removePreviousBettingBean()
             againBettingMap.isNotEmpty {
                 if (bettingStepList.isEmpty()) {
                     if (it.againIfMoneyEnough()) {
@@ -558,6 +559,22 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
         } else {
             "checkAgain()->不是新阶段->NUll".logd("checkAgainAndDouble")
             gameAboutModel.changeAgainDoubleState(AgainDoubleState.NUll)
+        }
+    }
+
+    private fun removePreviousBettingBean() {
+        if (bettingStepList.isNotEmpty()) {
+            val roundId = gameAboutModel.roundId
+            if (bettingStepList.first().roundId != roundId) {
+                bettingStepList.apply {
+                    val iterator = iterator()
+                    while (iterator.hasNext()) {
+                        if (roundId != iterator.next().roundId) {
+                            iterator.remove()
+                        }
+                    }
+                }
+            }
         }
     }
 

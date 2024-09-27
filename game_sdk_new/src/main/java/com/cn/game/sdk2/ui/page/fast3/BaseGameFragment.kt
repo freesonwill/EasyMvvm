@@ -214,14 +214,13 @@ abstract class BaseGameFragment<VM : ViewModel, VB : ViewBinding> :
         if (gameAboutModel.currentStage.value == GameStage.NEW) {
             chipViewModel.currentChip?.let { betteBean ->
                 areaView.areaInfo?.apply {
-                    val isFirstAdd = !areaView.moneyView.isAdd()
                     val roundId = gameAboutModel.roundId
                     val bettingBean = BettingRecordBean(roundId, this, money = betteBean.chip.money)
-                    gameMassageManager?.addBetting(bettingBean, isFirstAdd) { bettingState, result, areaLimit ->
+                    gameMassageManager?.addBetting(bettingBean) { bettingState, result, areaLimit ->
                         bettingState.isCanGoOn(mBinding.root, areaLimit) {
                             result?.let {
                                 areaView.setShowMoney(result.money, false)
-                                if (isFirstAdd) {
+                                if (!areaView.moneyView.isAdd()) {
                                     addMoneyOkView(areaView, rawX, rawY) {
                                         emitMoneyAnim(result, areaView, betteBean, isNewAdd = true)
                                     }
