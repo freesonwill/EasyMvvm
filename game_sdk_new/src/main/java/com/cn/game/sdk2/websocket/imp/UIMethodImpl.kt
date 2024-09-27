@@ -22,7 +22,6 @@ import com.cn.game.sdk2.websocket.merge
 import com.cn.game.sdk2.websocket.verifyAdd
 import com.cn.game.sdk2.websocket.verifyCommit
 import com.cn.game.sdk2.websocket.verifyDouble
-import com.cn.game.sdk2.websocket.viewmodel.GameAboutModel
 import com.xcjh.base_lib2.utils.LogUtilsExt.loge
 import game.mod.proc.yf.proto.req.GameReq
 
@@ -72,6 +71,7 @@ internal class UIMethodImpl private constructor(client: GameSocketClient) : Game
      */
     fun addBetting(
         recordBean: BettingRecordBean,
+        isFirstAdd: Boolean,
         block: (isMoneyEnough: BettingState, result: BettingRecordBean?, areaLimit: AreaBetConfigBean?) -> Unit
     ) {
         bettingStepList.add(recordBean)
@@ -80,6 +80,9 @@ internal class UIMethodImpl private constructor(client: GameSocketClient) : Game
         )
         when (verifyResult) {
             BettingState.GO_ON -> {
+                if (isFirstAdd) {
+                    removePreviousBettingBean()
+                }
                 tempLastBetting = recordBean.bettingArea
                 gameAboutModel.deductTempBalance(recordBean.money)
                 block(
@@ -129,6 +132,24 @@ internal class UIMethodImpl private constructor(client: GameSocketClient) : Game
 
             else -> {}
         }
+    }
+
+    private fun removePreviousBettingBean() {
+        if (bettingStepList.isNotEmpty()) {
+            val roundId = gameAboutModel.roundId
+            if (bettingStepList.first().roundId != roundId) {
+                bettingStepList.apply {
+                    val iterator = iterator()
+                    while (iterator.hasNext()) {
+                        if (roundId != iterator.next().roundId) {
+                            iterator.remove()
+                        }
+                    }
+                }
+            }
+        }
+
+
     }
 
     /**
