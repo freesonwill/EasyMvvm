@@ -115,7 +115,7 @@ class Fast3MainFragment : BaseFragment<MainViewModel, FragFast3HomeBinding>() {
             viewPagerNew.setOverScrollModeExt(
                 BottomPopupView.OVER_SCROLL_IF_CONTENT_SCROLLS,
                 OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
-            TabLayoutMediator(tlGame, viewPagerNew, true, false) { tab, position ->
+            TabLayoutMediator(tlGame, viewPagerNew) { tab, position ->
                 val tabView = tab.view
                 tab.text = gameList[position].title
                 tabView.setPadding(

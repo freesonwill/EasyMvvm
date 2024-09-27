@@ -34,7 +34,6 @@ public final class TabLayoutMediator {
     @NonNull private final TabLayout tabLayout;
     @NonNull private final ViewPager2 viewPager;
     private final boolean autoRefresh;
-    private final boolean smoothScroll;
     private final TabConfigurationStrategy tabConfigurationStrategy;
     @Nullable private RecyclerView.Adapter<?> adapter;
     private boolean attached;
@@ -70,19 +69,9 @@ public final class TabLayoutMediator {
             @NonNull ViewPager2 viewPager,
             boolean autoRefresh,
             @NonNull TabConfigurationStrategy tabConfigurationStrategy) {
-        this(tabLayout, viewPager, autoRefresh, /* smoothScroll= */ true, tabConfigurationStrategy);
-    }
-
-    public TabLayoutMediator(
-            @NonNull TabLayout tabLayout,
-            @NonNull ViewPager2 viewPager,
-            boolean autoRefresh,
-            boolean smoothScroll,
-            @NonNull TabConfigurationStrategy tabConfigurationStrategy) {
         this.tabLayout = tabLayout;
         this.viewPager = viewPager;
         this.autoRefresh = autoRefresh;
-        this.smoothScroll = smoothScroll;
         this.tabConfigurationStrategy = tabConfigurationStrategy;
     }
 

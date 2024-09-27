@@ -201,7 +201,7 @@ fun TabLayout.bindTabNewGame(
 ) {
     this.tabMode = if (scrollEnable) TabLayout.MODE_SCROLLABLE else TabLayout.MODE_FIXED
     var tabClickedByUser = false
-    TabLayoutMediator(this, viewPager, true, false) { tab, position ->
+    TabLayoutMediator(this, viewPager) { tab, position ->
         val tabView = tab.view
         if (position < titles.size) {
             tab.text = titles[position]
