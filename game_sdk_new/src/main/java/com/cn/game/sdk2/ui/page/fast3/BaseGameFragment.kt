@@ -214,7 +214,8 @@ abstract class BaseGameFragment<VM : ViewModel, VB : ViewBinding> :
         if (gameAboutModel.currentStage.value == GameStage.NEW) {
             chipViewModel.currentChip?.let { betteBean ->
                 areaView.areaInfo?.apply {
-                    val bettingBean = BettingRecordBean(this, money = betteBean.chip.money)
+                    val roundId = gameAboutModel.roundId
+                    val bettingBean = BettingRecordBean(roundId, this, money = betteBean.chip.money)
                     gameMassageManager?.addBetting(bettingBean) { bettingState, result, areaLimit ->
                         bettingState.isCanGoOn(mBinding.root, areaLimit) {
                             result?.let {
