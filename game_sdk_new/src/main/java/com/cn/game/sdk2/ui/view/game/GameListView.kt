@@ -98,7 +98,8 @@ open class GameListView @JvmOverloads constructor(
             )
         }
         binding.tlGameList.removeAllTips()
-        binding.vpGameList.offscreenPageLimit = gameTypes.size
+        //如果商户传递错误游戏大厅数据,gameTypes可能为0
+        binding.vpGameList.offscreenPageLimit = Math.max(gameTypes.size,1)
         binding.close.clickNoRepeat(true) {
             dismiss()
         }
