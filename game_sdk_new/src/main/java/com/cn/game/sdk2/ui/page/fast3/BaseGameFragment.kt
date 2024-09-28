@@ -31,6 +31,7 @@ import com.cn.game.sdk2.utils.ext.CommonExt.isCanGoOn
 import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
 import com.cn.game.sdk2.utils.ext.ViewExt.isAdd
 import com.cn.game.sdk2.utils.ext.ViewExt.locationOnScreen
+import com.cn.game.sdk2.websocket.appListener
 import com.cn.game.sdk2.websocket.bean.Betting
 import com.cn.game.sdk2.websocket.bean.BettingRecordBean
 import com.cn.game.sdk2.websocket.constants.GameStage
@@ -231,6 +232,9 @@ abstract class BaseGameFragment<VM : ViewModel, VB : ViewBinding> :
                         }
                     }
                 }
+            } ?:let {
+                //一个筹码都没有选中说明余额不足,提醒用户跳转充值界面
+                appListener?.onInsufficientBalance()
             }
         }
     }
