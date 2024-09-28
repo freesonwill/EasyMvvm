@@ -290,7 +290,7 @@ class ViewHelper {
      * @return true 不能进入; false 能进入
      */
     private fun verifyEnterGame(context: Context):Boolean{
-        if (!gameAboutModel.isOpen || !gameAboutModel.isLoginSuccess.value!!) {
+        if (!gameAboutModel.isOpen || gameAboutModel.isLoginSuccess.value != true) {
             Toast.makeText(
                 context,
                 context.resources.getString(R.string.toast_login_fault),

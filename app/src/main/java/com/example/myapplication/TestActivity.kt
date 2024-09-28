@@ -78,11 +78,11 @@ class TestActivity : AppCompatActivity() {
                     "onSocketClosed"-> onSocketClosed()
                     "onCustomerServiceAction" -> onCustomerServiceAction()
                     "onHistoryOfBetAction" -> onHistoryOfBetAction()
-                    "onEnterGame" -> onEnterGame()
                     "onEnterLive" -> onEnterLive(
                         it.second["type"] as Int,
                         it.second["msg"] as String
                     )
+                    "onEnterGame" -> onEnterGame()
 
                     "onLeaveLive" -> onLeaveLive(
                         it.second["liveId"] as String,
@@ -132,7 +132,6 @@ class TestActivity : AppCompatActivity() {
                 }
 
                 2 -> {
-                    btnOpen.visibility = View.GONE
                     GameApp.enterLive("1213", listOf(1), "")
                 }
             }
@@ -190,7 +189,7 @@ class TestActivity : AppCompatActivity() {
     }
 
     private fun onEnterGame() {
-
+        btnOpen.visibility = View.GONE
     }
 
     private fun onSocketConnected(){
@@ -205,7 +204,7 @@ class TestActivity : AppCompatActivity() {
 
     private fun onEnterLive(type: Int, msg: String) {
         if (type == 1) {
-            btnOpen.visibility = View.GONE
+
             btnIndex = 2
             btnOpen.text = "已进入直播间"
             val context = this

@@ -331,9 +331,9 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
     override fun miniGameBetResult(result: GameRes.MyMiniGameBetResult) {
         previousSuccess = true
         "服务器下注结果：$result".logd()
-        //result = 0 成功 1 余额不住 3超时
+        //result = 0、succes 1、余额不足 2、押注超时 3、4、请求超时
         when (result.betResultInfoListList[0].result) {
-            0 -> {
+            0 -> {//成功
                 gameAboutModel.lastBetting = tempLastBetting
                 gameAboutModel.setBettingSuccess(
                     BettingResponsesBean(
@@ -346,21 +346,21 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
                 gameAboutModel.previousRoundId = gameAboutModel.roundId
             }
 
-            1 -> {
+            1 -> {//余额不足
                 bettingStepList.returnTemp()
                 gameAboutModel.bettingMessage = Resources.getSystem().getString(R.string.money_insufficient)
                 gameAboutModel.setToastErrorMessage(gameAboutModel.bettingMessage)
                 gameAboutModel.setBettingSuccess(BettingResponsesBean(false, 0))
             }
 
-            2 -> {
+            2 -> {//押注超时
                 bettingStepList.returnTemp()
                 gameAboutModel.bettingMessage = R.string.error_bet_timeout.getString()
                 gameAboutModel.setToastErrorMessage(gameAboutModel.bettingMessage)
                 gameAboutModel.setBettingSuccess(BettingResponsesBean(false, 0))
             }
 
-            4 -> {
+            4 -> {//token失效,请求超时
                 bettingStepList.returnTemp()
                 isTokenValid = false
                 gameAboutModel.bettingMessage = R.string.error_net_connect_timeout.getString()
@@ -371,7 +371,7 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
                 }
             }
 
-            5 -> {
+            5 -> {//被踢下线
                 bettingStepList.returnTemp()
                 isTokenValid = false
                 gameAboutModel.bettingMessage = R.string.error_double_login.getString()
@@ -458,7 +458,7 @@ internal abstract class GameServiceImp(private val client: GameSocketClient) : G
     }
 
     override fun beginSettle(settle: GameRes.BeginSettle) {
-        "${TAG}-->settle:${GsonUtils.toJson(settle.winScore)}".logd(tag)
+        "${TAG}-->settle:${GsonUtils.toJson(settle)}".logd(tag)
         curStage = GameStage.SETTLE
         gameAboutModel.countDown = settle.countDown //当前阶段剩余时间倒计时
         val confirmMoney = bettingStepList.getMoneyByState(BettingStatus.COMMITTED)

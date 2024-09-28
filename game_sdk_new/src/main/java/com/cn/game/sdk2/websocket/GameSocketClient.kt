@@ -31,8 +31,7 @@ internal class GameSocketClient(serverUri: URI?) : WebSocketClient(serverUri) {
 
     @OptIn(DelicateCoroutinesApi::class)
     override fun onOpen(handshakedata: ServerHandshake?) {
-        "GameSocketClient-连接成功！onOpen,isMainThread:${isMainThread}".logd(_tag)
-        "address = ${this.uri}".loge(_tag)
+        "GameSocketClient-连接成功！onOpen,isMainThread:${isMainThread},address = ${this.uri}".logd(_tag)
         gameAboutModel.isOpen = true
 
         isTokenValid = true

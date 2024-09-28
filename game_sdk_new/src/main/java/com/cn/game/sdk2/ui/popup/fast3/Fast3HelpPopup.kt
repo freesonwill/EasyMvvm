@@ -43,7 +43,9 @@ class Fast3HelpPopup(context: Context, private val offsetY: Int, private val hei
 
     private lateinit var mViewBind: FragmentFast3HelpBinding
 
-    //全屏的高度
+    /**
+     * 全屏的高度
+     */
     private val fullHeight = mActivity.run {
         when {
             //刘海屏: 刘海高度取代了状态栏高度
@@ -77,6 +79,7 @@ class Fast3HelpPopup(context: Context, private val offsetY: Int, private val hei
                     ",hasNotchScreen:${mActivity.hasNotchScreen}" +
                     ",activityContentViewH:" + activityContentView.height +
                     ",88:${88.px2dp}" +
+                    ",fullHeight:${fullHeight}" +
                     ""
         )
         mViewBind = FragmentFast3HelpBinding.bind(popupImplView)

@@ -356,10 +356,10 @@ class Fast3MainFragment : BaseFragment<MainViewModel, FragFast3HomeBinding>() {
                     delay(200)
                     //避免当前不是开奖状态还播放开奖状态
                     if(gameAboutModel.currentStage.value != GameStage.DEAL) {
-                        LogUtils.e(TAG,"currentStage:${gameAboutModel.currentStage.value} != Deal,ignore playing result anim")
+                        LogUtils.eTag(TAG,"currentStage:${gameAboutModel.currentStage.value} != Deal,ignore playing result anim")
                         return@with
                     }
-                    LogUtils.d(TAG,"currentSettleResult:${gameAboutModel.currentSettleResult}")
+                    LogUtils.dTag(TAG,"currentSettleResult:${gameAboutModel.currentSettleResult}")
                     mBinding.fragmentDrawResult.isVisible = true
                     gameAboutModel.currentSettleResult?.let { setDrawResult(it) }
                     playResultAnim(mBinding.viewPagerNew.getCenterPoint(), doEnd = {})
@@ -380,7 +380,7 @@ class Fast3MainFragment : BaseFragment<MainViewModel, FragFast3HomeBinding>() {
         }
         //总余额监听
         gameAboutModel.balance.observe(viewLifecycleOwner) {
-            LogUtils.e(TAG, "收到的总余额：${it},old:${mViewModel.currentMoney}, new:$it")
+            LogUtils.eTag(TAG, "收到的总余额：${it},old:${mViewModel.currentMoney}, new:$it")
             if (it > mViewModel.currentMoney) {
                 val start = mViewModel.currentMoney
                 val end = it
@@ -400,7 +400,7 @@ class Fast3MainFragment : BaseFragment<MainViewModel, FragFast3HomeBinding>() {
 
 //        //临时金额变化，用于刷新筹码可用
         gameAboutModel.tempBalance.observe(viewLifecycleOwner) {
-            LogUtils.e(TAG, "收到当前可用金额：${it}")
+            LogUtils.eTag(TAG, "收到当前可用金额：${it}")
 //            notifyBetteBean(it)
         }
 
@@ -435,7 +435,7 @@ class Fast3MainFragment : BaseFragment<MainViewModel, FragFast3HomeBinding>() {
             }
         }
         FlowBus.with<Pair<GameAreaView, ViewGroup>>(EventKey.AddMoneyOkView).register(viewLifecycleOwner)  {
-            LogUtils.d(TAG,"received AddMoneyOkView:${it.first.areaCode}")
+            LogUtils.dTag(TAG,"received AddMoneyOkView:${it.first.areaCode}")
             val areaView = it.first
             betteViewGroup = it.second
             areaView.moneyView.let { moneyOkView ->
@@ -461,12 +461,12 @@ class Fast3MainFragment : BaseFragment<MainViewModel, FragFast3HomeBinding>() {
             }
         }
         FlowBus.with<GameAreaView>(EventKey.UpdateMoneyView).register(viewLifecycleOwner){
-            LogUtils.d(TAG,"received UpdateMoneyView :${it.areaCode}")
+            LogUtils.dTag(TAG,"received UpdateMoneyView :${it.areaCode}")
             currentBetteAreaMap[it.areaCode] = it
 
         }
         FlowBus.with<Int>(EventKey.RemoveMoneyView).register(viewLifecycleOwner){
-            LogUtils.d(TAG,"received RemoveMoneyView :$it")
+            LogUtils.dTag(TAG,"received RemoveMoneyView :$it")
             currentBetteAreaMap.remove(it)
             allGameAreaMap.remove(it)
         }
@@ -492,13 +492,13 @@ class Fast3MainFragment : BaseFragment<MainViewModel, FragFast3HomeBinding>() {
 
         //续压、加倍状态监听
         gameAboutModel.currentAgainDoubleState.observe(viewLifecycleOwner) {
-            LogUtils.e(TAG,"续压加倍状态监听--->${it}")
+            LogUtils.eTag(TAG,"续压加倍状态监听--->${it}")
             updateAgainDoubleUi()
         }
 
         //下注结果
         gameAboutModel.isBettingSuccess.observe(viewLifecycleOwner) { response ->
-            LogUtils.e(TAG, "下注结果监听--->${response}")
+            LogUtils.eTag(TAG, "下注结果监听--->${response}")
             if (!response.isSuccess) {
                 //失败时显示delete ok按钮
                 ToastHelper.instance.showHostToast(mBinding.viewPagerNew, "网络连接失败")
