@@ -55,6 +55,7 @@ import com.cn.game.sdk2.websocket.constants.AgainDoubleState
 import com.cn.game.sdk2.websocket.constants.GameStage
 import com.cn.game.sdk2.websocket.gameAboutModel
 import com.cn.game.sdk2.websocket.gameMassageManager
+import com.eetrust.lib_bounce_effect.setBounceEdgeEffect
 import com.google.android.material.tabs.TabLayout
 import com.gyf.immersionbar.ktx.hasNavigationBar
 import com.gyf.immersionbar.ktx.navigationBarHeight
@@ -116,6 +117,7 @@ class Fast3MainFragment : BaseFragment<MainViewModel, FragFast3HomeBinding>() {
             viewPagerNew.setOverScrollModeExt(
                 BottomPopupView.OVER_SCROLL_IF_CONTENT_SCROLLS,
                 OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
+//            viewPagerNew.setBounceEdgeEffect(overScrollMagnitude=1f, flingMagnitude = 10f)
             TabLayoutMediator(tlGame, viewPagerNew) { tab, position ->
                 val tabView = tab.view
                 tab.text = gameList[position].title

@@ -11,7 +11,7 @@ open class BounceRecycleView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : RecyclerView(context, attrs, defStyleAttr) {
     init {
-        edgeEffectFactory = BounceRVEdgeEffectFactory()
+//        edgeEffectFactory = BounceRVEdgeEffectFactory()
     }
     /*
     private var mThumbHeight: Float = UNDEFINED

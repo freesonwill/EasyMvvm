@@ -9,12 +9,16 @@ import com.cn.game.sdk2.ui.viewmodel.fast3.Fast3GameHallItemViewModel
 import com.cn.game.sdk2.utils.GsonUtils
 import com.cn.game.sdk2.utils.ext.DensityExt.dp2px
 import com.cn.game.sdk2.utils.ext.clearAllItemDecorations
+import com.cn.game.sdk2.utils.ext.setOverScrollModeExt
 import com.cn.game.sdk2.websocket.appListener
 import com.drake.brv.annotaion.DividerOrientation
 import com.drake.brv.utils.dividerSpace
+import com.eetrust.lib_bounce_effect.setBounceEdgeEffect
 import com.google.gson.Gson
+import com.lxj.xpopup.core.BottomPopupView
 import com.xcjh.base_lib2.base.fragment.BaseFragment
 import com.xcjh.base_lib2.base.fragment.viewBind
+import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class Fast3GameHallItemFragment : BaseFragment<Fast3GameHallItemViewModel, ItemGamehallPageBinding>() {
@@ -44,7 +48,9 @@ class Fast3GameHallItemFragment : BaseFragment<Fast3GameHallItemViewModel, ItemG
             clearAllItemDecorations()
             dividerSpace(25.dp2px, DividerOrientation.HORIZONTAL)
             adapter = this@Fast3GameHallItemFragment.adapter
-            edgeEffectFactory = BounceRVEdgeEffectFactory()
+           // edgeEffectFactory = BounceRVEdgeEffectFactory()
+            // setBounceEdgeEffect(overScrollMagnitude=3f,flingMagnitude=3f)
+            OverScrollDecoratorHelper.setUpOverScroll(this,OverScrollDecoratorHelper.ORIENTATION_VERTICAL)
         }
     }
 

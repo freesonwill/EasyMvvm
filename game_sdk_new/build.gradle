@@ -9,7 +9,7 @@ plugins {
 }
 apply from: "${rootDir.path}/gradle/pin.gradle"
 apply from: rootProject.file("gradle/flavor.gradle")
-apply from: rootProject.file("gradle/gamesdk_deps.gradle")
+//apply from: rootProject.file("gradle/gamesdk_deps.gradle")
 
 ext {
     GAMESDK_VERSION_CODE = 5
@@ -161,6 +161,8 @@ dependencies {
     //implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
     implementation "com.github.getActivity:XXPermissions:16.8"
     implementation 'com.github.bumptech.glide:glide:4.12.0'
+    implementation project(':lib_bounce_effect')
+    implementation project(':liboverscroll')
     annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
     implementation 'com.google.code.gson:gson:2.10.1'
     implementation "androidx.appcompat:appcompat:1.6.1"
@@ -184,7 +186,7 @@ dependencies {
     implementation ('com.github.liangjingkanji:BRV:1.5.8'){
         exclude group: "io.github.scwang90"
     }
-    implementation 'io.github.everythingme:overscroll-decor-android:1.1.1'
+    //implementation 'io.github.everythingme:overscroll-decor-android:1.1.1'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'

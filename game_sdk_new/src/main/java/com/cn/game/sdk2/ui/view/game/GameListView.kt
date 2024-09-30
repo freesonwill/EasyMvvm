@@ -20,6 +20,7 @@ import com.cn.game.sdk2.utils.ext.setOverScrollModeExt
 import com.cn.game.sdk2.utils.tool.PromptSoundPlay
 import com.cn.game.sdk2.websocket.constants.GameStage
 import com.cn.game.sdk2.websocket.gameAboutModel
+import com.eetrust.lib_bounce_effect.setBounceEdgeEffect
 import com.lxj.xpopup.core.BottomPopupView
 import com.xcjh.base_lib2.utils.view.clickNoRepeat
 import com.xcjh.base_lib2.utils.view.getString
@@ -82,7 +83,8 @@ open class GameListView @JvmOverloads constructor(
         val gameTypes = gameAboutModel.moreGames.value?.map { it.gameType }?.distinct() ?: listOf()
         gameListAdapter = GameListViewPagerAdapter(fm, lifecycle, gameTypes)
         binding.vpGameList.adapter = gameListAdapter
-        binding.vpGameList.setOverScrollModeExt(OVER_SCROLL_IF_CONTENT_SCROLLS,OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
+        //binding.vpGameList.setOverScrollModeExt(OVER_SCROLL_IF_CONTENT_SCROLLS,OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL)
+        binding.vpGameList.setBounceEdgeEffect()
         binding.tlGameList.bindTabNewGame(
             viewPager = binding.vpGameList,
             titles = tabTitles,
