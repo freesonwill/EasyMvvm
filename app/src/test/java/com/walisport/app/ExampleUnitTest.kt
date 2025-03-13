@@ -1,4 +1,4 @@
-package com.example.wls_android
+package com.walisport.app
 
 import org.junit.Test
 
