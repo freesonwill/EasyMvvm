@@ -39,6 +39,7 @@ dependencies {
     implementation(project(":module_home"))
     implementation(project(":module_login"))
     implementation(project(":module_setting"))
+    implementation(project(":videoplayer"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
