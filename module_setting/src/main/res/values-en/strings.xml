@@ -1,0 +1,13 @@
+<resources>
+    <string name="setting">Setting</string>
+    <string name="pan">Pan</string>
+    <string name="common">Common</string>
+    <string name="menu_europe">Europe</string>
+    <string name="menu_odds_display">Odds Display</string>
+    <string name="menu_notice_set">Notice Setting</string>
+    <string name="menu_background_set">Background Setting</string>
+    <string name="menu_language_set">Language Setting</string>
+    <string name="menu_language_simple">Simple Chinese</string>
+    <string name="menu_language_traditional">Traditional Chinese</string>
+    <string name="menu_language_english">English</string>
+</resources>
