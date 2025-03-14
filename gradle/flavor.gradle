@@ -1,0 +1,17 @@
+ext {
+    SDK_VERSION_CODE = 1
+    SDK_VERSION_NAME = "0.0.1"
+    SDK_PRODUCT = "general"
+    BUILD_TIME = String.format('%s', new Date().format('yyyyMMddHHmmss'))
+    TAG_DEFAULT = "WLS"
+}
+
+android{
+    buildFeatures {
+        buildConfig true
+    }
+
+    defaultConfig {
+        buildConfigField "String", "TAG_DEFAULT", "\"${TAG_DEFAULT}\""
+    }
+}

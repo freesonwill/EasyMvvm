@@ -1,8 +1,9 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    id("kotlin-kapt")
 }
-
+apply(from = rootProject.file("gradle/flavor.gradle"))
 android {
     namespace = "com.walisport.lib_base"
     compileSdk = 34
@@ -30,6 +31,11 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    buildFeatures {
+        dataBinding = true
+        viewBinding = true
+    }
+
 }
 
 dependencies {
