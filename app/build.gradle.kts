@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
 }
 
+apply(from = rootProject.file("gradle/flavor.gradle"))
+
 android {
     namespace = "com.walisport.app"
     compileSdk = 34
@@ -36,6 +38,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":lib_common"))
     implementation(project(":module_home"))
     implementation(project(":module_login"))
     implementation(project(":module_setting"))
