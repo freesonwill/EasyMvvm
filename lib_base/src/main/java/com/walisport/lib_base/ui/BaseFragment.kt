@@ -30,7 +30,7 @@ import kotlin.coroutines.EmptyCoroutineContext
  * @date: 2025/3/13 18:38
  * @description: ViewModelFragment基类，自动把ViewModel注入Fragment
  */
-abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), IView, KoinComponent {
+abstract class BaseFragment<VM : BaseViewModel<*>, VB : ViewBinding> : Fragment(), IView, KoinComponent {
     protected open val TAG = this.javaClass.simpleName
     //是否第一次加载
     private var isFirst: Boolean = true

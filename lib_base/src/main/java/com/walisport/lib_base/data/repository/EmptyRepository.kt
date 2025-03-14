@@ -2,9 +2,9 @@ package com.walisport.lib_base.data.repository
 
 /**
  * @author: zhangsan
- * @date: 2025/3/14 14:00
+ * @date: 2025/3/14 16:49
  * @description:
  */
-interface IRepository {
+class EmptyRepository : IRepository {
 
 }

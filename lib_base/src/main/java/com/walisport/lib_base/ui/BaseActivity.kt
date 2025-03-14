@@ -24,7 +24,7 @@ import kotlin.coroutines.EmptyCoroutineContext
  * @date: 2025/3/14 09:48
  * @description:
  */
-abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActivity(), IView,KoinComponent {
+abstract class BaseActivity<VM : BaseViewModel<*>,VB : ViewBinding> : AppCompatActivity(), IView,KoinComponent {
     protected open val TAG = this.javaClass.simpleName
     protected abstract val mBinding: VB
     protected abstract val mViewModel: VM
