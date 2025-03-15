@@ -36,5 +36,5 @@ include(":lib_common")
 include(":module_login")
 include(":module_home")
 include(":module_setting")
-include(":videoplayer")
+include(":lib_ijkplayer")
 
