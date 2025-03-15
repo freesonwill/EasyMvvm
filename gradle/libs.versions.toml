@@ -13,6 +13,9 @@ composeBom = "2024.04.01"
 activity = "1.9.0"
 constraintlayout = "2.2.1"
 ijkPlayerVersion ="0.8.8"
+annotationJvm = "1.9.1"
+media3Exoplayer = "1.5.1"
+exoPlayer="r1.5.11"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -36,6 +39,9 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 ijkplayer = { group = "tv.danmaku.ijk.media", name = "ijkplayer-java", version.ref = "ijkPlayerVersion" }
 ijkplayerArmV7a = { group = "tv.danmaku.ijk.media", name = "ijkplayer-armv7a", version.ref = "ijkPlayerVersion" }
 ijkplayerArm64 = { group = "tv.danmaku.ijk.media", name = "ijkplayer-arm64", version.ref = "ijkPlayerVersion" }
+androidx-annotation-jvm = { group = "androidx.annotation", name = "annotation-jvm", version.ref = "annotationJvm" }
+android-exoplayer = { group = "com.google.android.exoplayer", name = "exoplayer", version.ref = "exoPlayer" }
+
 
 
 
