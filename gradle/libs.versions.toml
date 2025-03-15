@@ -35,7 +35,7 @@ androidx-activity = { group = "androidx.activity", name = "activity", version.re
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 ijkplayer = { group = "tv.danmaku.ijk.media", name = "ijkplayer-java", version.ref = "ijkPlayerVersion" }
 ijkplayerArmV7a = { group = "tv.danmaku.ijk.media", name = "ijkplayer-armv7a", version.ref = "ijkPlayerVersion" }
-ijkplayerArm64 = { group = "tv.danmaku.ijk.media", name = "ijkplayer-armv7a", version.ref = "ijkPlayerVersion" }
+ijkplayerArm64 = { group = "tv.danmaku.ijk.media", name = "ijkplayer-arm64", version.ref = "ijkPlayerVersion" }
 
 
 
