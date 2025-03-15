@@ -34,6 +34,10 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 ijkplayer = { group = "tv.danmaku.ijk.media", name = "ijkplayer-java", version.ref = "ijkPlayerVersion" }
+ijkplayerArmV7a = { group = "tv.danmaku.ijk.media", name = "ijkplayer-armv7a", version.ref = "ijkPlayerVersion" }
+ijkplayerArm64 = { group = "tv.danmaku.ijk.media", name = "ijkplayer-armv7a", version.ref = "ijkPlayerVersion" }
+
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

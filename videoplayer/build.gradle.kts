@@ -42,6 +42,8 @@ android {
 
 dependencies {
     implementation(libs.ijkplayer)
+    implementation(libs.ijkplayerArmV7a)
+    implementation(libs.ijkplayerArm64)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
