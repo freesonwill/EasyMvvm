@@ -18,7 +18,6 @@
 package tv.danmaku.ijk.media.example.widget.media;
 
 import android.graphics.SurfaceTexture;
-
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.View;

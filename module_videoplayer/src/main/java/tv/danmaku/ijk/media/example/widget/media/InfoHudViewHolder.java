@@ -56,14 +56,14 @@ public class InfoHudViewHolder {
     }
 
     private static String formatedDurationMilli(long duration) {
-        if (duration >=  1000) {
-            return String.format(Locale.US, "%.2f sec", ((float)duration) / 1000);
+        if (duration >= 1000) {
+            return String.format(Locale.US, "%.2f sec", ((float) duration) / 1000);
         } else {
             return String.format(Locale.US, "%d msec", duration);
         }
     }
 
-    private static String formatedSpeed(long bytes,long elapsed_milli) {
+    private static String formatedSpeed(long bytes, long elapsed_milli) {
         if (elapsed_milli <= 0) {
             return "0 B/s";
         }
@@ -72,29 +72,29 @@ public class InfoHudViewHolder {
             return "0 B/s";
         }
 
-        float bytes_per_sec = ((float)bytes) * 1000.f /  elapsed_milli;
+        float bytes_per_sec = ((float) bytes) * 1000.f / elapsed_milli;
         if (bytes_per_sec >= 1000 * 1000) {
-            return String.format(Locale.US, "%.2f MB/s", ((float)bytes_per_sec) / 1000 / 1000);
+            return String.format(Locale.US, "%.2f MB/s", ((float) bytes_per_sec) / 1000 / 1000);
         } else if (bytes_per_sec >= 1000) {
-            return String.format(Locale.US, "%.1f KB/s", ((float)bytes_per_sec) / 1000);
+            return String.format(Locale.US, "%.1f KB/s", ((float) bytes_per_sec) / 1000);
         } else {
-            return String.format(Locale.US, "%d B/s", (long)bytes_per_sec);
+            return String.format(Locale.US, "%d B/s", (long) bytes_per_sec);
         }
     }
 
-    public void updateLoadCost(long time)  {
+    public void updateLoadCost(long time) {
         mLoadCost = time;
     }
 
-    public void updateSeekCost(long time)  {
+    public void updateSeekCost(long time) {
         mSeekCost = time;
     }
 
     private static String formatedSize(long bytes) {
         if (bytes >= 100 * 1000) {
-            return String.format(Locale.US, "%.2f MB", ((float)bytes) / 1000 / 1000);
+            return String.format(Locale.US, "%.2f MB", ((float) bytes) / 1000 / 1000);
         } else if (bytes >= 100) {
-            return String.format(Locale.US, "%.1f KB", ((float)bytes) / 1000);
+            return String.format(Locale.US, "%.1f KB", ((float) bytes) / 1000);
         } else {
             return String.format(Locale.US, "%d B", bytes);
         }
@@ -140,11 +140,11 @@ public class InfoHudViewHolder {
 
                     long videoCachedDuration = mp.getVideoCachedDuration();
                     long audioCachedDuration = mp.getAudioCachedDuration();
-                    long videoCachedBytes    = mp.getVideoCachedBytes();
-                    long audioCachedBytes    = mp.getAudioCachedBytes();
-                    long tcpSpeed            = mp.getTcpSpeed();
-                    long bitRate             = mp.getBitRate();
-                    long seekLoadDuration    = mp.getSeekLoadDuration();
+                    long videoCachedBytes = mp.getVideoCachedBytes();
+                    long audioCachedBytes = mp.getAudioCachedBytes();
+                    long tcpSpeed = mp.getTcpSpeed();
+                    long bitRate = mp.getBitRate();
+                    long seekLoadDuration = mp.getSeekLoadDuration();
 
                     setRowValue(R.string.v_cache, String.format(Locale.US, "%s, %s", formatedDurationMilli(videoCachedDuration), formatedSize(videoCachedBytes)));
                     setRowValue(R.string.a_cache, String.format(Locale.US, "%s, %s", formatedDurationMilli(audioCachedDuration), formatedSize(audioCachedBytes)));
@@ -152,7 +152,7 @@ public class InfoHudViewHolder {
                     setRowValue(R.string.seek_cost, String.format(Locale.US, "%d ms", mSeekCost));
                     setRowValue(R.string.seek_load_cost, String.format(Locale.US, "%d ms", seekLoadDuration));
                     setRowValue(R.string.tcp_speed, String.format(Locale.US, "%s", formatedSpeed(tcpSpeed, 1000)));
-                    setRowValue(R.string.bit_rate, String.format(Locale.US, "%.2f kbs", bitRate/1000f));
+                    setRowValue(R.string.bit_rate, String.format(Locale.US, "%.2f kbs", bitRate / 1000f));
 
                     mHandler.removeMessages(MSG_UPDATE_HUD);
                     mHandler.sendEmptyMessageDelayed(MSG_UPDATE_HUD, 500);

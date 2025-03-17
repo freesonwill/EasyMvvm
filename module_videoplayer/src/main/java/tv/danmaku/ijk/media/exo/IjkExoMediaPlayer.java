@@ -29,12 +29,12 @@ import java.io.FileDescriptor;
 import java.util.Map;
 
 import tv.danmaku.ijk.media.exo.demo.EventLogger;
+import tv.danmaku.ijk.media.exo.demo.SmoothStreamingTestMediaDrmCallback;
 import tv.danmaku.ijk.media.exo.demo.player.DemoPlayer;
 import tv.danmaku.ijk.media.exo.demo.player.DemoPlayer.RendererBuilder;
 import tv.danmaku.ijk.media.exo.demo.player.ExtractorRendererBuilder;
 import tv.danmaku.ijk.media.exo.demo.player.HlsRendererBuilder;
 import tv.danmaku.ijk.media.exo.demo.player.SmoothStreamingRendererBuilder;
-import tv.danmaku.ijk.media.exo.demo.SmoothStreamingTestMediaDrmCallback;
 import tv.danmaku.ijk.media.player.AbstractMediaPlayer;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 import tv.danmaku.ijk.media.player.MediaInfo;
@@ -320,7 +320,7 @@ public class IjkExoMediaPlayer extends AbstractMediaPlayer {
                 return new ExtractorRendererBuilder(mAppContext, userAgent, contentUri);
         }
     }
-    
+
     /**
      * Makes a best guess to infer the type from a media {@link Uri}
      *
@@ -337,8 +337,7 @@ public class IjkExoMediaPlayer extends AbstractMediaPlayer {
         private boolean mDidPrepare = false;
         private boolean mIsBuffering = false;
 
-        public void onStateChanged(boolean playWhenReady, int playbackState)
-        {
+        public void onStateChanged(boolean playWhenReady, int playbackState) {
             if (mIsBuffering) {
                 switch (playbackState) {
                     case ExoPlayer.STATE_ENDED:
@@ -380,14 +379,12 @@ public class IjkExoMediaPlayer extends AbstractMediaPlayer {
             }
         }
 
-        public void onError(Exception e)
-        {
+        public void onError(Exception e) {
             notifyOnError(IMediaPlayer.MEDIA_ERROR_UNKNOWN, IMediaPlayer.MEDIA_ERROR_UNKNOWN);
         }
 
         public void onVideoSizeChanged(int width, int height, int unappliedRotationDegrees,
-                                float pixelWidthHeightRatio)
-        {
+                                       float pixelWidthHeightRatio) {
             mVideoWidth = width;
             mVideoHeight = height;
             notifyOnVideoSizeChanged(width, height, 1, 1);
