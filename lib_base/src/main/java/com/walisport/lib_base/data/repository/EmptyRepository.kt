@@ -5,6 +5,4 @@ package com.walisport.lib_base.data.repository
  * @date: 2025/3/14 16:49
  * @description:
  */
-class EmptyRepository : IRepository {
-
-}
+class EmptyRepository : BaseRepository()
