@@ -32,6 +32,8 @@ https://docs.google.com/spreadsheets/d/1fRuB82X0Fmsgi54u52gEWbAgxl5t8CzJVqGr1USD
 ### mvvm架构
 ![img.png](z_doc/img/img.png)
 
+https://hackmd.io/KG_B6mDgSL-ow3J-YrzRvQ?view=#
+
 ## Todo
 ### 方案讨论
 1. Activity之间通信选用什么？ ARouter,EventBus or else?
