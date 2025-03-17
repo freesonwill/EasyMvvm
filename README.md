@@ -32,7 +32,7 @@ https://docs.google.com/spreadsheets/d/1fRuB82X0Fmsgi54u52gEWbAgxl5t8CzJVqGr1USD
 ### mvvm架构
 ![img.png](z_doc/img/img.png)
 
-https://hackmd.io/KG_B6mDgSL-ow3J-YrzRvQ?view=#
+https://hackmd.io/@LinkHsieh/HkcXg8Shkx
 
 ## Todo
 ### 方案讨论
