@@ -10,8 +10,10 @@ import com.walisport.lib_base.utils.LogUtilsExt.logd
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 /**
@@ -49,13 +51,11 @@ class ApplicationModuleInitializer : Initializer<String> {
 
 
     private val viewModules = module {
-        viewModel { EmptyViewModel(get()) }
+        viewModelOf(::EmptyViewModel)
     }
 
     private val repoModules = module {
-        single {
-            EmptyRepository()
-        }
+        singleOf(::EmptyRepository)
     }
     private val moduleList:List<Module> = listOf(viewModules,repoModules)
 }

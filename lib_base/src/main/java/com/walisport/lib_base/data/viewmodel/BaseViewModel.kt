@@ -8,7 +8,7 @@ import com.walisport.lib_base.data.repository.IRepository
  * @date: 2025/3/14 09:51
  * @description:
  */
-abstract class BaseViewModel<R:IRepository>(val repo:R) : ViewModel() {
+abstract class BaseViewModel : ViewModel() {
     //数据回收操作
     private val clearActions by lazy { mutableSetOf<() -> Unit>() }
 

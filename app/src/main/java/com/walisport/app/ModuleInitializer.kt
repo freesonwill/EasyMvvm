@@ -6,9 +6,10 @@ import com.walisport.app.data.MainRepository
 import com.walisport.app.data.MainViewModel
 import com.walisport.lib_base.ApplicationModuleInitializer
 import com.walisport.lib_base.utils.LogUtilsExt.logd
-import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 /**
@@ -30,12 +31,10 @@ class ModuleInitializer : Initializer<String> {
     }
 
     private val viewModules = module {
-        viewModel { MainViewModel(get()) }
+        viewModelOf(::MainViewModel)
     }
     private val repoModules = module {
-        single {
-            MainRepository()
-        }
+        singleOf(::MainRepository)
     }
     private val moduleList:List<Module> = listOf(viewModules,repoModules)
 }

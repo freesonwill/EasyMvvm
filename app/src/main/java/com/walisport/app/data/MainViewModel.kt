@@ -7,7 +7,7 @@ import com.walisport.lib_base.data.viewmodel.BaseViewModel
  * @date: 2025/3/14 16:56
  * @description:
  */
-class MainViewModel(repo: MainRepository) : BaseViewModel<MainRepository>(repo) {
+class MainViewModel : BaseViewModel() {
 
     override fun onInit() {
         super.onInit()
