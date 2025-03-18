@@ -36,13 +36,44 @@ https://hackmd.io/@LinkHsieh/HkcXg8Shkx
 
 ## Todo
 ### 方案讨论
-1. Activity之间通信选用什么？ ARouter,EventBus or else?
-2. Fragment之间通信选用什么？ Navigation or else？
+1. Activity之间通信选用什么？ ARouter,EventBus or else?   
+```text
+使用Navigation
+```
+2. Fragment之间通信选用什么？ Navigation or else？  
+```text
+使用Navigation
+```
+
 3. 通用的标题栏样式? 需要内置到BaseActivity,BaseFragment中吗？
+```text
+
+```
 4. 沉浸式标题栏方案？
+```text
+
+```
 5. 加载Activity/Fragment统一的Loading框，错误框，空白框内置到BaseActivity,BaseFragment中吗？
+```text
+
+```
 6. 换肤方案？SkinCompat, AppCompat or else?
+```text
+
+```
 7. 直播设计：选用SurfaceView , TextureView or else?
+```text
+
+```
 9. 直播的弹幕设计：TextView or else?
+```text
+
+```
 10. 直播的礼物特效设计： Animation or Lottie ?
+```text
+
+```
 11. 消息推送设计： Netty or WebSocket？
+```text
+
+```

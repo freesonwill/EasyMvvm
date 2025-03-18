@@ -7,7 +7,4 @@ import com.walisport.lib_base.data.repository.BaseRepository
  * @date: 2025/3/14 16:58
  * @description:
  */
-class MainRepository : BaseRepository() {
-
-
-}
+class MainRepository : BaseRepository()
