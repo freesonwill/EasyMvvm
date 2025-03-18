@@ -1,35 +1,46 @@
 package com.walisport.module_setting
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import com.walisport.lib_base.data.viewmodel.EmptyViewModel
+import com.walisport.lib_base.ui.BaseActivity
+import com.walisport.lib_base.ui.viewBind
 import com.walisport.module_setting.databinding.ActivitySettingBinding
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
  * 瓦力体育设置界面
  */
 
-class SettingActivity : AppCompatActivity() {
+class SettingActivity : BaseActivity<EmptyViewModel, ActivitySettingBinding>() {
+    override val mBinding: ActivitySettingBinding by viewBind()
+    override val mViewModel: EmptyViewModel by viewModel()
 
-    private lateinit var mBinding: ActivitySettingBinding
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_setting)
-        initView()
+    override fun initView(savedInstanceState: Bundle?) {
+
     }
 
-    private fun initView(){
-        mBinding.relSettingOdds.setOnClickListener{
+    override fun initListener() {
+        mBinding.relSettingOdds.setOnClickListener {
 
         }
-        mBinding.relSettingNotice.setOnClickListener{
+        mBinding.relSettingNotice.setOnClickListener {
 
         }
-        mBinding.relSettingBg.setOnClickListener{
+        mBinding.relSettingBg.setOnClickListener {
 
         }
-        mBinding.relSettingLanguage.setOnClickListener{
+        mBinding.relSettingLanguage.setOnClickListener {
 
         }
     }
+
+    override fun createObserver() {
+
+    }
+
+    override fun lazyLoadData() {
+
+    }
+
 }
