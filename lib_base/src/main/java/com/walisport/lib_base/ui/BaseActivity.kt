@@ -2,7 +2,10 @@ package com.walisport.lib_base.ui
 
 import android.app.Activity
 import android.os.Bundle
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -15,7 +18,6 @@ import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.koin.core.component.KoinComponent
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
@@ -24,16 +26,19 @@ import kotlin.coroutines.EmptyCoroutineContext
  * @date: 2025/3/14 09:48
  * @description:
  */
-abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActivity(), IView,KoinComponent {
+abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActivity(), IView {
     protected open val TAG = this.javaClass.simpleName
     protected abstract val mBinding: VB
     protected abstract val mViewModel: VM
     //是否第一次加载
     private var isFirst: Boolean = true
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        immersionPre()
         setContentView(mBinding.root)
+        immersionPost()
         mViewModel.onInit()
         initView(savedInstanceState)
         initListener()
@@ -44,6 +49,24 @@ abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActi
     override fun onResume() {
         super.onResume()
         onVisible()
+    }
+
+    /**
+     * 沉浸式（setContentView之前）
+     */
+    private fun immersionPre(){
+        enableEdgeToEdge()
+    }
+
+    /**
+     * 沉浸式（setContentView之后）
+     */
+    private fun immersionPost(){
+        ViewCompat.setOnApplyWindowInsetsListener(mBinding.root) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
     }
 
     /**

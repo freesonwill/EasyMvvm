@@ -36,10 +36,11 @@ class SettingActivity : BaseActivity<EmptyViewModel, ActivitySettingBinding>() {
     }
 
     override fun createObserver() {
+
     }
 
     override fun lazyLoadData() {
-    }
 
+    }
 
 }
