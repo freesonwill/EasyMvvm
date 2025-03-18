@@ -46,6 +46,8 @@ dependencies {
     implementation(libs.android.exoplayer)
     implementation(libs.androidx.core)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.drawerlayout)
+    implementation(libs.androidx.appcompat)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

@@ -9,5 +9,6 @@
     <color name="white">#FFFFFFFF</color>
 
     <color name="ijk_transparent_dark">#77000000</color>
+    <color name="video_landscape_competition_name_color">#E6E6E6</color>
 
 </resources>
