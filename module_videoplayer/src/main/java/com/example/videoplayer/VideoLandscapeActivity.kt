@@ -3,6 +3,9 @@ package com.example.videoplayer
 import android.app.Activity
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
+import android.widget.Button
+import android.widget.ImageView
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -29,6 +32,9 @@ class VideoLandscapeActivity : Activity() {
         mVideoView?.setMediaController(mMediaController)
         mVideoView?.setVideoURI(Uri.parse(testUrl))
         mVideoView?.start()
+
+        findViewById<ImageView>(R.id.video_landscape_back).setOnClickListener { this@VideoLandscapeActivity.finish() }
+
     }
 
     private fun hideSystemUI() {
