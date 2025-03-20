@@ -1,4 +1,4 @@
-package com.walisport.app
+package com.walisport.app.ui
 
 import android.os.Bundle
 import com.walisport.app.data.MainViewModel
