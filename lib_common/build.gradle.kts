@@ -39,6 +39,7 @@ dependencies {
     api(libs.material)
     api(libs.androidx.activity)
     api(libs.androidx.constraintlayout)
+    implementation(libs.mmkv)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
