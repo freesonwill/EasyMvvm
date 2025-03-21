@@ -13,6 +13,7 @@ composeBom = "2024.04.01"
 activity = "1.9.0"
 constraintlayout = "2.2.1"
 koin = "3.5.0"
+okhttps = "4.12.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -35,6 +36,7 @@ androidx-activity = { group = "androidx.activity", name = "activity", version.re
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 koin = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
 startup = { group = "androidx.startup", name = "startup-runtime", version = "1.1.1" }
+okhttps = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttps" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

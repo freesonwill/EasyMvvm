@@ -6,10 +6,10 @@ import com.walisport.app.data.MainRepository
 import com.walisport.app.data.MainViewModel
 import com.walisport.lib_base.ApplicationModuleInitializer
 import com.walisport.lib_base.utils.LogUtilsExt.logd
+import com.walisport.lib_common.CommonModuleInitializer
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
-import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
 /**
@@ -27,14 +27,15 @@ class ModuleInitializer : Initializer<String> {
     }
 
     override fun dependencies(): List<Class<out Initializer<*>>> {
-        return listOf(ApplicationModuleInitializer::class.java)
+        return listOf(ApplicationModuleInitializer::class.java, CommonModuleInitializer::class.java)
     }
 
     private val viewModules = module {
         viewModelOf(::MainViewModel)
     }
     private val repoModules = module {
-        factoryOf(::MainRepository)
+        factory { MainRepository(get()) }
+//        factoryOf(::MainRepository)
     }
     private val moduleList:List<Module> = listOf(viewModules,repoModules)
 }

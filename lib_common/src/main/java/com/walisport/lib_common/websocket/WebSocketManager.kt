@@ -1,0 +1,88 @@
+package com.walisport.lib_common.websocket
+
+import com.walisport.lib_base.utils.LogUtilsExt.logi
+import com.walisport.lib_common.websocket.model.ConnectSuccess
+import com.walisport.lib_common.websocket.model.IConnectState
+import com.walisport.lib_common.websocket.model.IRequest
+import com.walisport.lib_common.websocket.model.IResponse
+import com.walisport.lib_common.websocket.model.SocketRequestData
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExecutorCoroutineDispatcher
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
+import java.util.concurrent.Executors
+
+class WebSocketManager(
+   private val socket : ISocket<IRequest, IResponse, IConnectState>
+) {
+    private var connectStateFlow: Flow<IConnectState>? = null
+    private val workingScope by lazy { CoroutineScope(Dispatchers.IO) }
+
+    private var heartbeatJob: Job? = null
+    private var heartbeatDispatcher: ExecutorCoroutineDispatcher? = null
+
+    companion object {
+        private const val heartbeatInterval: Long = 10000
+    }
+
+    suspend fun connect(host: String) : Flow<IConnectState> {
+        return socket.connect(host).also {
+            connectStateFlow = it
+        }.map { state ->
+            when(state) {
+                is ConnectSuccess -> {
+                    startHeartbeat()
+                }
+                else -> {
+                    stopHeartbeat()
+                }
+            }
+            state
+        }
+    }
+
+    fun disconnect() {
+        socket.disConnect()
+    }
+
+    fun reConnect() {
+        socket.reConnect()
+    }
+
+    fun destroy() {
+        socket.destroy()
+        stopHeartbeat()
+    }
+
+    private fun startHeartbeat() {
+        "startHeartbeat!".logi(this.javaClass.simpleName)
+        heartbeatJob?.cancel()
+        heartbeatDispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
+        heartbeatJob = CoroutineScope(heartbeatDispatcher!!).launch {
+            while (true) {
+                delay(heartbeatInterval)
+                "Send Heartbeat!".logi(this.javaClass.simpleName)
+                socket.send(
+                    SocketRequestData(
+                        mid = 0,
+                        sid = 2,
+                        null
+                    )
+                )
+            }
+        }
+    }
+
+    private fun stopHeartbeat() {
+        "stopHeartbeat!".logi(this.javaClass.simpleName)
+        heartbeatJob?.cancel()
+        heartbeatDispatcher?.close()
+    }
+
+    fun getSocketFlow(): Flow<IResponse> = socket.responseObserve()
+}
