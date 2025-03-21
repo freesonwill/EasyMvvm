@@ -1,6 +1,7 @@
 package com.walisport.app.data
 
 import androidx.lifecycle.viewModelScope
+import com.walisport.lib_base.data.remote.Response
 import com.walisport.lib_base.data.viewmodel.BaseViewModel
 import kotlinx.coroutines.launch
 
@@ -9,12 +10,20 @@ import kotlinx.coroutines.launch
  * @date: 2025/3/14 16:56
  * @description:
  */
-class MainViewModel(val repo: MainRepository) : BaseViewModel() {
+class MainViewModel(private val repo: MainRepository) : BaseViewModel() {
 
-    override fun onInit() {
-        super.onInit()
+    // 此為範例
+    fun login() {
         viewModelScope.launch {
-            repo.startSocket()
+            sendApi({
+                repo.login()
+            }, {
+                if (it is Response.Success) {
+                    // TODO 成功
+                } else if (it is Response.Failed) {
+                    // TODO 失敗
+                }
+            })
         }
     }
 }

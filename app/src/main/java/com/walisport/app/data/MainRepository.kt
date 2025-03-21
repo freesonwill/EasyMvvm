@@ -1,10 +1,11 @@
 package com.walisport.app.data
 
+import com.walisport.lib_base.data.remote.Response
 import com.walisport.lib_base.data.repository.BaseRepository
-import com.walisport.lib_base.utils.LogUtilsExt.logd
 import com.walisport.lib_base.utils.LogUtilsExt.logi
 import com.walisport.lib_common.websocket.WebSocketManager
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 
 /**
  * @author: zhangsan
@@ -17,5 +18,14 @@ class MainRepository(private val socketManager: WebSocketManager) : BaseReposito
         socketManager.connect("wss://ws.qxe68.com:7001/api/game/52002").collect {
             "$it".logi(this.javaClass.simpleName)
         }
+    }
+
+    // 此為範例
+    suspend fun login(): Response {
+        return scope.async {
+            // TODO 處理登入
+            delay(1_000L)
+            Response.Success
+        }.await()
     }
 }

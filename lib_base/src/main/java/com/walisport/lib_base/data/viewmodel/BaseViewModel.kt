@@ -1,7 +1,10 @@
 package com.walisport.lib_base.data.viewmodel
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.walisport.lib_base.data.repository.IRepository
+import com.walisport.lib_base.data.remote.ApiResponseState
+import com.walisport.lib_base.data.remote.Response
 
 /**
  * @author: zhangsan
@@ -9,23 +12,23 @@ import com.walisport.lib_base.data.repository.IRepository
  * @description:
  */
 abstract class BaseViewModel : ViewModel() {
-    //数据回收操作
-    private val clearActions by lazy { mutableSetOf<() -> Unit>() }
 
-    //============================ Method ================================//
-    open fun onInit() { }
+    private val _onApiResponseStateListener = MutableLiveData<ApiResponseState>(ApiResponseState.Idle)
+    val onApiResponseStateListener: LiveData<ApiResponseState> = _onApiResponseStateListener
 
-    override fun onCleared() {
-        super.onCleared()
-        val it = clearActions.iterator()
-        while (it.hasNext()) {
-            it.next().invoke()
-            it.remove()
+    protected suspend fun sendApi(request: suspend () -> Response, callback: (Response) -> Unit) {
+        _onApiResponseStateListener.value = ApiResponseState.Processing
+        val response = request()
+        callback(response)
+        if (response is Response.Success) {
+            _onApiResponseStateListener.value = ApiResponseState.Succeeded
+        } else if (response is Response.Failed) {
+            _onApiResponseStateListener.value = ApiResponseState.Failed(response.code, response.desc)
         }
+        resetApiResponseState()
     }
 
-    //注册自动回收数据
-    fun registerClearAction(onClear: () -> Unit) {
-        clearActions.add(onClear)
+    protected fun resetApiResponseState() {
+        _onApiResponseStateListener.value = ApiResponseState.Idle
     }
 }
