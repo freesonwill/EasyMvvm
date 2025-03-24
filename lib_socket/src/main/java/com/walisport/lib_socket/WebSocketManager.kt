@@ -1,11 +1,11 @@
-package com.walisport.lib_common.websocket
+package com.walisport.lib_socket
 
 import com.walisport.lib_base.utils.LogUtilsExt.logi
-import com.walisport.lib_common.websocket.model.ConnectSuccess
-import com.walisport.lib_common.websocket.model.IConnectState
-import com.walisport.lib_common.websocket.model.IRequest
-import com.walisport.lib_common.websocket.model.IResponse
-import com.walisport.lib_common.websocket.model.SocketRequestData
+import com.walisport.lib_socket.data.ConnectSuccess
+import com.walisport.lib_socket.data.IConnectState
+import com.walisport.lib_socket.data.IRequest
+import com.walisport.lib_socket.data.IResponse
+import com.walisport.lib_socket.data.SocketRequestData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExecutorCoroutineDispatcher

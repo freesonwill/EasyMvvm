@@ -7,6 +7,7 @@ import com.walisport.app.data.MainViewModel
 import com.walisport.lib_base.ApplicationModuleInitializer
 import com.walisport.lib_base.utils.LogUtilsExt.logd
 import com.walisport.lib_common.CommonModuleInitializer
+import com.walisport.lib_socket.SocketModuleInitializer
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
@@ -27,7 +28,7 @@ class ModuleInitializer : Initializer<String> {
     }
 
     override fun dependencies(): List<Class<out Initializer<*>>> {
-        return listOf(ApplicationModuleInitializer::class.java, CommonModuleInitializer::class.java)
+        return listOf(ApplicationModuleInitializer::class.java, SocketModuleInitializer::class.java, CommonModuleInitializer::class.java)
     }
 
     private val viewModules = module {

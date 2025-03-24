@@ -1,22 +1,18 @@
+@Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
 }
 
-apply(from = rootProject.file("gradle/flavor.gradle"))
-
 android {
-    namespace = "com.walisport.app"
+    namespace = "com.walisport.lib_socket"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.walisport.app"
         minSdk = 24
-        targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
@@ -38,17 +34,12 @@ android {
 }
 
 dependencies {
-    implementation(project(":lib_common"))
-    implementation(project(":lib_socket"))
-    implementation(project(":module_home"))
-    implementation(project(":module_login"))
-    implementation(project(":module_setting"))
+    api(project(":lib_base"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
-    implementation(libs.androidx.activity)
-    implementation(libs.androidx.constraintlayout)
     testImplementation(libs.junit)
+    api(libs.okhttps)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }

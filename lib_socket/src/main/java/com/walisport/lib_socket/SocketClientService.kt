@@ -1,17 +1,17 @@
-package com.walisport.lib_common.websocket
+package com.walisport.lib_socket
 
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import com.walisport.lib_common.extension.collectFirstSubscribe
-import com.walisport.lib_common.websocket.model.ConnectClosed
-import com.walisport.lib_common.websocket.model.ConnectFailure
-import com.walisport.lib_common.websocket.model.ConnectSuccess
-import com.walisport.lib_common.websocket.model.IConnectState
-import com.walisport.lib_common.websocket.model.IRequest
-import com.walisport.lib_common.websocket.model.IResponse
-import com.walisport.lib_common.websocket.model.NetworkUnavailable
-import com.walisport.lib_common.websocket.model.SocketConnectState
+import com.walisport.lib_socket.data.ConnectClosed
+import com.walisport.lib_socket.data.ConnectFailure
+import com.walisport.lib_socket.data.ConnectSuccess
+import com.walisport.lib_socket.data.IConnectState
+import com.walisport.lib_socket.data.IRequest
+import com.walisport.lib_socket.data.IResponse
+import com.walisport.lib_socket.data.NetworkUnavailable
+import com.walisport.lib_socket.data.SocketConnectState
+import com.walisport.lib_socket.extension.collectFirstSubscribe
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel

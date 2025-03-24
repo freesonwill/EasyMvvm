@@ -1,4 +1,4 @@
-package com.walisport.lib_common.websocket
+package com.walisport.lib_socket
 
 import kotlinx.coroutines.flow.SharedFlow
 

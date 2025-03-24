@@ -1,6 +1,7 @@
 package com.walisport.app
 
 import android.os.Bundle
+import androidx.lifecycle.viewModelScope
 import com.walisport.app.data.MainViewModel
 import com.walisport.app.databinding.ActivityMainBinding
 import com.walisport.lib_base.data.remote.ApiResponseState
@@ -13,7 +14,7 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
     override val mViewModel: MainViewModel by viewModel()
 
     override fun initView(savedInstanceState: Bundle?) {
-
+        mViewModel.startSocketConnect()
     }
 
     override fun initListener() {

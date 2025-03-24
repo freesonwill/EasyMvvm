@@ -1,12 +1,15 @@
-package com.walisport.lib_common
+package com.walisport.lib_socket
 
 import android.content.Context
 import androidx.startup.Initializer
 import com.walisport.lib_base.utils.LogUtilsExt.logd
+import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
+import org.koin.dsl.module
+import java.lang.ref.WeakReference
 
-class CommonModuleInitializer : Initializer<String> {
+class SocketModuleInitializer : Initializer<String> {
     private val TAG = this.javaClass.simpleName
 
     override fun create(context: Context):String {
@@ -19,5 +22,10 @@ class CommonModuleInitializer : Initializer<String> {
         return emptyList()
     }
 
-    private val moduleList:List<Module> = listOf()
+    private val socketModules = module {
+        factory<ISocket<*,*,*>> { SocketClientService(context = WeakReference(androidContext())) }
+        single { WebSocketManager(get()) }
+    }
+
+    private val moduleList:List<Module> = listOf(socketModules)
 }

@@ -1,4 +1,4 @@
-package com.walisport.lib_common.extension
+package com.walisport.lib_socket.extension
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

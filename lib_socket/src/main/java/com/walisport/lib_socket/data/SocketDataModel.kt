@@ -1,4 +1,4 @@
-package com.walisport.lib_common.websocket.model
+package com.walisport.lib_socket.data
 
 interface IRequest
 

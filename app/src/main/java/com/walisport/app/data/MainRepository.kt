@@ -3,9 +3,11 @@ package com.walisport.app.data
 import com.walisport.lib_base.data.remote.Response
 import com.walisport.lib_base.data.repository.BaseRepository
 import com.walisport.lib_base.utils.LogUtilsExt.logi
-import com.walisport.lib_common.websocket.WebSocketManager
+import com.walisport.lib_socket.WebSocketManager
+import com.walisport.lib_socket.data.IConnectState
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 
 /**
  * @author: zhangsan
@@ -14,10 +16,8 @@ import kotlinx.coroutines.delay
  */
 class MainRepository(private val socketManager: WebSocketManager) : BaseRepository() {
 
-    suspend fun startSocket() {
-        socketManager.connect("wss://ws.qxe68.com:7001/api/game/52002").collect {
-            "$it".logi(this.javaClass.simpleName)
-        }
+    suspend fun startSocket() : Flow<IConnectState> {
+        return socketManager.connect("wss://ws.qxe68.com:7001/api/game/52002")
     }
 
     // 此為範例

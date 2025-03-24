@@ -3,6 +3,8 @@ package com.walisport.app.data
 import androidx.lifecycle.viewModelScope
 import com.walisport.lib_base.data.remote.Response
 import com.walisport.lib_base.data.viewmodel.BaseViewModel
+import com.walisport.lib_base.utils.LogUtilsExt.logd
+import com.walisport.lib_base.utils.LogUtilsExt.logi
 import kotlinx.coroutines.launch
 
 /**
@@ -11,6 +13,14 @@ import kotlinx.coroutines.launch
  * @description:
  */
 class MainViewModel(private val repo: MainRepository) : BaseViewModel() {
+
+    fun startSocketConnect() {
+        viewModelScope.launch {
+            repo.startSocket().collect {
+                "connect result $it".logi(this::class.java.simpleName)
+            }
+        }
+    }
 
     // 此為範例
     fun login() {
