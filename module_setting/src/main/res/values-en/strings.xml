@@ -10,4 +10,10 @@
     <string name="menu_language_simple">Simple Chinese</string>
     <string name="menu_language_traditional">Traditional Chinese</string>
     <string name="menu_language_english">English</string>
+    <string name="menu_notice_sys">System Notice</string>
+    <string name="menu_notice_app">App Notice</string>
+    <string name="menu_goal_football">Goal(Football)</string>
+    <string name="menu_game_football">Begin(Football)</string>
+    <string name="menu_part">Part</string>
+    <string name="theme_class">Class</string>
 </resources>
