@@ -13,6 +13,17 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
+        ndk {
+            // 只接入 armeabi-v7a 和 x86 架构
+            //abiFilters 'armeabi-v7a', 'x86', 'arm64-v8a', 'x86_64'
+            abiFilters.addAll(listOf("armeabi-v7a", "arm64-v8a")) // 仅支持 arm 版本
+        }
+        externalNativeBuild {
+            cmake {
+                //cppFlags "-Isrc/main/cpp"
+                cppFlags += listOf("-std=c++11")
+            }
+        }
     }
 
     buildTypes {
@@ -30,6 +41,12 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
+    }
+    externalNativeBuild {
+        cmake {
+            path = file("src/main/cpp/CMakeLists.txt")
+            // version '3.18.1'
+        }
     }
 }
 

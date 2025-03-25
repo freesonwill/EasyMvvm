@@ -22,11 +22,13 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
 import okhttp3.*
+import okio.ByteString.Companion.toByteString
 import java.lang.ref.WeakReference
 import java.util.concurrent.TimeUnit
 
 class SocketClientService(
-    private val context: WeakReference<Context>
+    private val context: WeakReference<Context>,
+    private val security: ISecurity<IRequest, ByteArray, IResponse>
 ) : ISocket<IRequest, IResponse, IConnectState> {
     private var currentState : SocketConnectState = SocketConnectState.None
     private val workingScope by lazy { CoroutineScope(Dispatchers.IO) }
@@ -112,6 +114,10 @@ class SocketClientService(
 
 
     override fun send(data: IRequest) {
+        val byteArray = security.encrypt(data)
+        if (byteArray != null) {
+            webSocket?.send(byteArray.toByteString())
+        }
 
     }
 

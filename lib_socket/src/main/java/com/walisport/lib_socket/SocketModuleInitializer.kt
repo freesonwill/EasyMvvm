@@ -23,7 +23,8 @@ class SocketModuleInitializer : Initializer<String> {
     }
 
     private val socketModules = module {
-        factory<ISocket<*,*,*>> { SocketClientService(context = WeakReference(androidContext())) }
+        factory<ISocket<*,*,*>> { SocketClientService(context = WeakReference(androidContext()), get()) }
+        factory<ISecurity<*, *, *>> { NativeLib() }
         single { WebSocketManager(get()) }
     }
 
