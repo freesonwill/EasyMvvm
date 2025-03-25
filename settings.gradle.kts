@@ -23,7 +23,7 @@ rootProject.name = "wls-android"
 include(":app")
 include(":lib_base")
 include(":lib_common")
-include(":lib_databse")
+include(":lib_database")
 include(":module_login")
 include(":module_home")
 include(":module_setting")

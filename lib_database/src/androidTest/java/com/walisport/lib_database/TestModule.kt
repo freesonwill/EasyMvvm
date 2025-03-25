@@ -1,4 +1,4 @@
-package com.walisport.lib_databse
+package com.walisport.lib_database
 
 import androidx.test.platform.app.InstrumentationRegistry
 import org.koin.dsl.module

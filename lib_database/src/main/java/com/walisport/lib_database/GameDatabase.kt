@@ -1,12 +1,14 @@
-package com.walisport.lib_databse
+package com.walisport.lib_database
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.walisport.lib_database.dao.TestDao
+import com.walisport.lib_database.entity.TestBean
 
 @Database(
-    entities = [],
+    entities = [TestBean::class],
     version = 1,
     exportSchema = false
 )
@@ -22,12 +24,15 @@ abstract class GameDatabase: RoomDatabase() {
         }
 
         fun invokeTestDatabase(context: Context) =
-            Room.inMemoryDatabaseBuilder(context, GameDatabase::class.java).build()
+            Room.inMemoryDatabaseBuilder(context, GameDatabase::class.java)
+                .allowMainThreadQueries()
+                .fallbackToDestructiveMigration()
+                .build()
 
-        private fun buildDatabase(context: Context) = Room.databaseBuilder(
-            context,
-            GameDatabase::class.java,
-            "game_database.db"
-        ).build()
+        private fun buildDatabase(context: Context) =
+            Room.databaseBuilder(context, GameDatabase::class.java, "game_database.db")
+                .build()
     }
+
+    abstract fun testDao(): TestDao
 }

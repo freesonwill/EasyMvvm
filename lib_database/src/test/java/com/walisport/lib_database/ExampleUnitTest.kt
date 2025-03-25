@@ -1,4 +1,4 @@
-package com.walisport.lib_databse
+package com.walisport.lib_database
 
 import org.junit.Test
 

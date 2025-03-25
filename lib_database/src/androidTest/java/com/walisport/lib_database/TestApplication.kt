@@ -1,7 +1,6 @@
-package com.walisport.lib_databse
+package com.walisport.lib_database
 
 import android.app.Application
-import com.walisport.lib_databse.testModuleList
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
