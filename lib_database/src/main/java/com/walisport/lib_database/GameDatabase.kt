@@ -30,7 +30,7 @@ abstract class GameDatabase: RoomDatabase() {
                 .build()
 
         private fun buildDatabase(context: Context) =
-            Room.databaseBuilder(context, GameDatabase::class.java, "game_database.db")
+            Room.inMemoryDatabaseBuilder(context, GameDatabase::class.java)
                 .build()
     }
 

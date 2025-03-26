@@ -41,8 +41,10 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    androidTestImplementation(libs.koin)
     api(libs.room)
     api(libs.room.ktx)
     kapt(libs.room.compiler)
+
+    implementation(libs.koin)
+    implementation(libs.startup)
 }
