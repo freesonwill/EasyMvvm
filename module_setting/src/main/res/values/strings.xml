@@ -3,6 +3,7 @@
     <string name="pan">盘口</string>
     <string name="common">通用</string>
     <string name="menu_europe">欧洲盘</string>
+    <string name="menu_hk">香港盘</string>
     <string name="menu_odds_display">赔率显示</string>
     <string name="menu_notice_set">通知设置</string>
     <string name="menu_background_set">背景设置</string>
@@ -16,4 +17,14 @@
     <string name="menu_game_football">开赛(足球)</string>
     <string name="menu_part">部分</string>
     <string name="theme_class">经典</string>
+    <string name="theme_black_blue">黑蓝</string>
+    <string name="theme_black_green">黑绿</string>
+    <string name="theme_black_red">黑红</string>
+    <string name="theme_white_blue">白蓝</string>
+    <string name="theme_white_green">白绿</string>
+    <string name="cancel">取消</string>
+    <string name="confirm">确定</string>
+    <string name="method_odds_display">赔率显示方式</string>
+    <string name="explain">说明</string>
+    <string name="shut_down">关闭</string>
 </resources>

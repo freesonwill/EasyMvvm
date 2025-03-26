@@ -22,7 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="@string/setting"
+            android:text="@string/menu_notice_set"
             android:textColor="@color/color_222222"
             android:textSize="@dimen/sp_17"
             android:textStyle="bold"/>
