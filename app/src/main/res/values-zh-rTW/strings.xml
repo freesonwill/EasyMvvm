@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">瓦力體育</string>
-    <string name="splash_counter_down_skip">跳過</string>
+    <string name="splash_counter_down_skip">跳過 (%s)</string>
 </resources>

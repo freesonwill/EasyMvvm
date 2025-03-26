@@ -3,6 +3,7 @@ package com.walisport.app
 import android.content.Context
 import androidx.startup.Initializer
 import com.walisport.app.data.MainRepository
+import com.walisport.app.data.SplashRepository
 import com.walisport.app.data.MainViewModel
 import com.walisport.app.data.SplashViewModel
 import com.walisport.lib_base.ApplicationModuleInitializer
@@ -37,6 +38,7 @@ class ModuleInitializer : Initializer<String> {
     }
     private val repoModules = module {
         factoryOf(::MainRepository)
+        factoryOf(::SplashRepository)
     }
     private val moduleList:List<Module> = listOf(viewModules,repoModules)
 }
