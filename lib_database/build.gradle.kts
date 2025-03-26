@@ -9,7 +9,7 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        minSdk = 23
+        minSdk = 24
 
         testInstrumentationRunner = "com.walisport.lib_database.InstrumentationTestRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -42,7 +42,7 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
     androidTestImplementation(libs.koin)
-    implementation(libs.room)
-    implementation(libs.room.ktx)
+    api(libs.room)
+    api(libs.room.ktx)
     kapt(libs.room.compiler)
 }
