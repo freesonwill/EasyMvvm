@@ -13,6 +13,10 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
     override val mBinding: ActivitySplashBinding by viewBind()
     override val mViewModel: SplashViewModel by viewModel()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
+
 
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.apply {

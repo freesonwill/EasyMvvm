@@ -14,4 +14,9 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <!--启动页-->
+    <style name="Theme.Launcher" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
 </resources>
