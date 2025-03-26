@@ -1,0 +1,237 @@
+syntax = "proto3";
+package galaxy.common.proto;
+
+
+//比赛
+message Match {
+    int64 match_id = 1;       //比赛id
+    bool collect = 2;         //用户是否收藏
+    MatchBasicInfo basic_info = 3; //比赛基本信息
+    repeated Market market = 4;  // 所有的选择和赔率
+}
+
+//比赛基本信息
+message MatchBasicInfo{
+    int64 match_id = 1;       //比赛id
+    string match_name = 2;    //比赛名称
+    string home_team = 3;     //主队名称
+    int32 home_team_id = 4;   //主队id
+    string home_team_icon = 5; //主队icon
+    string away_team = 6;     //客队名称
+    int32 away_team_id = 7;   //客队id
+    string away_team_icon = 8; //客队icon
+    int64 start_time = 9;     //开始时间,13位时间戳
+    int32 status = 10;         //比赛状态 0-已结束 1-推迟 2-中断 3-取消 4-未开赛 5-进行中 6-延迟 7-废弃 8-暂停
+    int32 tournament_id = 11;  //联赛id
+    string tournament_name = 12;  //联赛
+    string tournament_short_name = 13;
+    string tournament_icon = 14;  //联赛icon
+    int32 sport_id = 15;      //球类
+    string sport_name = 16;      //球类
+    MatchLiveInfo live_info = 17;  //比赛实时信息
+    bool bet_stop = 18;         // false: 未停止投注, true: 已停止投注
+}
+
+//比赛实时信息
+message MatchLiveInfo {
+    int32 clock = 1;        //走表时间，以秒为单位
+    bool roll_clock = 2;    //是否走表
+    string period = 3;      //阶段
+    string score = 4;       //比分
+    bool live_video = 5;    //该比赛是否有视频或者直播
+    int32 viewer_count = 6;    //观看数量
+    int64 clock_modified = 7;  //走表修改时间
+}
+
+//盘口
+message Market {
+    int64 market_id = 1;      //盘口id
+    string market_name = 2;   //盘口名称
+    repeated MarketDetail market_detail = 3;
+}
+
+//盘口详情
+message MarketDetail {
+    string specifier = 1;     //盘口说明符，可能为空
+    repeated Selection selection = 2; //选项
+}
+
+//盘口选项
+message Selection {
+    int64 selection_id = 1;   //投注项id
+    string name = 2;          //选项名称
+    string short_name = 3;    //选项简称
+    string odds = 4;          //赔率
+    bool active = 5;          //true - 可以投注  false - 不可投注
+    bool parlay = 6;          //true - 支持串关  false - 不支持串关
+}
+
+// 下注项
+message BetOption {
+    int64 match_id = 1;       //required 比赛id
+    int64 selection_id = 2;   //required 选项id
+    string odds = 3;          //required 赔率
+}
+
+// 下注串关方式
+message BetCombo {
+    int32 serial_value = 1;     //required 串关选项个数, 如：投注4场比赛的3串1，此字段为3，如果是全串关（4串11*11)，此字段为0
+    string bet_amount = 2;       //required 每个子单投注金额， 如 4选个的3串1*4，四个子单，每子单投注"10"元，总共投注40元，此字段为10
+    int32 odds_change = 3;      //required 接受赔率变化类型,0:不接受赔率变动 1:接受最优赔率变动 2:接受任意赔率变动
+}
+
+message PlaceBetInfo {
+    string order_id = 1;
+    int32 serial_value = 2;     // 串关选项个数, 如：投注4场比赛的3串1，此字段为3，如果是全串关（4串11*11)，此字段为0
+    int32 order_status = 3;     // 订单状态 0创建成功，1确认中，2拒单，3取消订单，4接单成功，5已结算
+    string order_status_msg = 5;  // 订单状态msg
+}
+
+//限额选项
+message RiskSelection {
+    int64 match_id = 1;       //比赛id
+    int64 selection_id = 2;   //选项id
+}
+
+//单关投注限额
+message RiskSingleBet {
+    int64 match_id = 1;     //比赛id
+    int64 selection_id = 2; //选项id
+    int64 min = 3;          //最小限额
+    int64 max = 4;          //最大限额
+}
+
+//串关投注限额
+message RiskComboBet {
+    int32 serial_value = 2; //串关选项个数, 如：投注4场比赛的3串1，此字段为3，如果是全串关（4串11*11），此字段为0
+    int64 min = 3;          //最小限额
+    int64 max = 4;          //最大限额
+}
+
+// 注单记录
+message Order {
+    string bet_id = 1;        //下注id
+    int64 bet_time = 2;       //下注时间
+    int64 settle_time = 3;    //结算时间
+    string bet_amount = 4;     //下注总金额
+    string return_amount = 5; //返还金额
+    repeated OrderSelection selections = 6; //选项
+    int32 combo_type = 7;           //串关类型，0-单关  1-串关  2-全串关(4串11)  3-全串关和单关(4串15)
+    string parlay_name = 8;         //串关名称
+    string odds = 9;                //赔率
+    int32 status = 10;              //订单状态 1投注确认中，2拒单，3取消订单，4接单成功，5已结算
+    bool early_support = 11;            //是否支持提前结算
+    string early_bet_amount = 12;        //部分提前结算总本金
+    string early_return_amount = 13;    //部分提前结算赢得总金额
+    int32 early_settle_times = 14;      //已经提前结算的次数
+    int32 result_status = 15;           //订单结果, 0-未结算 1-赢 2-和局 3-输 4-输一半 5-赢一半 6-退款 7-提前结算
+    EarlySettlePrice early_settle_price = 16; //提前结算报价
+}
+
+// 注单投注项
+message OrderSelection {
+    int64 selection_id = 1;   //投注项id
+    string selection_name = 2;  //选项名称
+    string odds = 3;          //下注赔率
+    string market_name = 4;   //盘口名称
+    int64 market_id = 5;     //盘口id
+    string specifier = 6;    //盘口说明符
+    string bet_score = 7;         //下注时比分
+    MatchBasicInfo match_basic = 8; //比赛基本信息
+    int32 status = 9;        //选项状态 0-未结算 1-赢 2-平 3-输 4-赢半 5-输半 6-取消
+    string end_score = 10;         //结束时比分
+    bool in_play = 11; //是否滚球
+}
+
+// 预约注单记录
+message ReserveOrder {
+    string reserve_id = 1;        //下注id
+    int64 reserve_time = 2;       //预约时间
+    int64 bet_amount = 3;     //下注金额
+    ReserveOrderSelection selection = 4; //选项
+    int32 status = 5;        //选项状态 0 - 预约中  1 - 预约成功  2 - 预约失败 3 - 取消
+}
+
+
+// 预约注单投注项
+message ReserveOrderSelection {
+    int64 selection_id = 1;     //投注项id
+    string selection_name = 2;  //选项名称
+    string odds = 3;            //预约下注赔率
+    string market_name = 4;     //盘口名称
+    int64 market_id = 5;        //盘口id
+    string specifier = 6;       //盘口说明符
+    MatchBasicInfo match_basic = 8; //比赛基本信息
+}
+
+// 提前结算报价
+message EarlySettlePrice {
+    string bet_id = 1; //订单ID
+    string price = 2;  // 提前结算1元的报价，如返回0.92，就是提前结算1元可获得0.92元，无价格或者为0表示不能进行提前结算
+    int32 settle_total = 3; //单笔订单最大有效提前结算次数
+    string settle_min = 4; //订单提前结算单次最小结算本金
+    int32 settle_status = 5; //投注确认中，2拒单，3取消订单，4接单成功，5已结算,101 预约提前结算中,102 提前结算进行中
+}
+
+//玩法概览
+message PlayTypeStatistical {
+    int32 play_type = 1; //玩法类型, 0-全部 1-滚球 2-今日 3-早盘 4-冠军
+    int32 match_count = 2; //比赛数量
+    repeated SportStatistical sport_statistical = 3; //球类概览
+    string play_name = 4; //玩法名称
+
+}
+
+//球类概览
+message SportStatistical {
+    int32 sport_id = 1;     //球类id
+    string sport_name = 2;   //球类名称
+    int32 match_count = 3;  //比赛数量
+}
+
+//球类
+message Sport {
+    int32 sport_id = 1;     //球类id
+    string sport_name = 2;   //球类名称
+}
+
+
+//联赛信息
+message Tournament {
+    int32 id = 1;           //联赛id
+    string name = 2;        //联赛名称
+    string simple_name = 3; //缩写
+    string icon = 4;        //联赛icon url
+    int32 sport_id = 5;     //球类id
+    bool hot = 6;           //是否热门
+    int32 weight = 7;           //权重
+}
+
+//系统设置
+message Setting {
+    int32 odd_type = 1;                     //赔率类型, 0-欧盘 1-香港盘
+    NotifyMatchType system_goal = 2;        //系统通知-进球
+    NotifyMatchType system_kick_off = 3;    //系统通知-开球
+    NotifyMatchType app_goal = 4;           //app内通知-开球
+    int32 background = 5; //背景设置
+    string lang = 6; //语言
+}
+
+//需要发送系统通知的比赛类型
+message NotifyMatchType {
+    bool bet_match = 1;     //已投注的比赛通知
+    bool collect_match = 2; //已收藏的比赛通知
+    bool all_match = 3;     //所有的比赛通知
+}
+
+// 盘口分类
+message MarketType {
+    string code = 1; // code
+    string name = 2; // name
+    repeated MarketBase marketBase = 3; //market基础信息
+}
+message MarketBase {
+    int64 market_id = 1;      //盘口id
+    string market_name = 2;   //盘口名称
+}
+

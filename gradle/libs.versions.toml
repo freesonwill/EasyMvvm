@@ -15,6 +15,7 @@ constraintlayout = "2.2.1"
 koin = "3.5.0"
 okhttps = "4.12.0"
 mmkv = "1.2.12"
+protobuf = "4.30.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -39,6 +40,7 @@ koin = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
 mmkv = { module = "com.tencent:mmkv", version.ref = "mmkv" }
 startup = { group = "androidx.startup", name = "startup-runtime", version = "1.1.1" }
 okhttps = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttps" }
+protobuf = { group ="com.google.protobuf", name = "protobuf-javalite", version.ref = "protobuf" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

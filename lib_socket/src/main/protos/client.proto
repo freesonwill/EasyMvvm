@@ -1,0 +1,455 @@
+syntax = "proto3";
+
+package galaxy.client.proto;
+
+import "common.proto";
+
+import "sloth.proto";
+
+// 7-7: 登录游戏服
+message LoginReq {
+  int64 uid = 1;          //required 用户Id。cocos 实际范围为 int32；h5 为 int64
+  string token = 2;       //required 登录token。client从大厅/商户登录获取
+
+  string version = 3;     // client 壳版本。仅供 cocos 捕鱼判断是否为旧版本
+  string base = 4;        // 热更版本。仅供 cocos 连 logon 使用，其他不要传
+  string game_version = 5;// 小游戏版本。仅供 cocos 连 logon 使用，其他不要传
+
+  int32 platform = 6;     // 账号平台 2=2n1（默认）、4=h5试玩、5=h5。cocos 可不传
+  int32 server = 7;       // serverId。游戏服有合并端口，cocos 用此字段识别进哪个服
+  string lang = 8;        // client端语言，可不传，默认 zh-CN
+  int32 odd_type = 9;    //赔率类型, 0-欧盘 1-香港盘
+
+}
+
+message LoginResp {
+  bool success = 1;
+  string message = 2;
+}
+
+// 7-9: 切换语言
+message ChangeLangReq {
+  string lang = 1; //required client端语言
+}
+
+// 7-10: 离开游戏（无携带消息）
+message LogoutReq {
+}
+
+// 7-100: ping消息, 客户端回传数据。纯回传，server 无业务处理，无返回
+message PingBackReq {
+  string data = 1; // 纯文本数据
+}
+
+// 500-1000: 获取赛事统计
+message StatisticalReq {
+}
+
+message StatisticalResp {
+  repeated galaxy.common.proto.PlayTypeStatistical statistical = 1;
+}
+
+// 500-1001: 获取联赛信息
+message ListTournamentReq {
+  int32 sport_id = 1;     //required 球类id
+  int32 play_type = 2;    //required 玩法类型, 0-全部 1-滚球 2-今日 3-早盘 4-冠军
+  int64 start_time = 3;   //开始时间，13 位时间戳，按赛事开赛时间范围查询
+  int64 end_time = 4;     //结束时间，13 位时间戳，按赛事开赛时间范围查询
+  int32 size = 5;     //查询数量 0为查询所有
+}
+
+message ListTournamentResp {
+  repeated galaxy.common.proto.Tournament tournament = 1;
+}
+
+// 500-1002: 获取比赛列表，盘口信息只返回热门盘口
+message ListMatchReq {
+  int32 sport_id = 1;     //required 球类id
+  int32 play_type = 2;    //required 玩法类型, 0-全部 1-滚球 2-今日 3-早盘 4-冠军
+  int32 tournament_id = 3;//联赛id
+  int64 start_time = 4;   //开始时间,13 位时间戳
+  int64 end_time = 5;     //结束时间,13 位时间戳
+  int32 page = 6;         // 请求的页数,从1开始
+  int32 size = 7;         // 每页显示数量,最大50
+}
+
+message ListMatchResp {
+  repeated galaxy.common.proto.Match match = 1;
+  int32 total = 2;   // 总比赛数量
+}
+
+// 500-1003: 获取比赛详情
+message GetMatchReq {
+  repeated int64 match_id = 1; //required 比赛id
+}
+
+message GetMatchResp {
+  repeated galaxy.common.proto.Match match = 1;
+}
+
+// 500-1004: 获取球类信息
+message ListSportReq{
+
+}
+
+message ListSportResp{
+  repeated galaxy.common.proto.Sport sport= 1;
+}
+
+// 500-1005: 查询余额
+message BalanceReq {
+}
+
+// 500-1006: 查询联赛比赛
+message TournamentMatchReq {
+  int32 tournament_id = 3;//required 联赛id
+  int32 page = 6;         // 请求的页数,从1开始
+  int32 size = 7;         // 每页显示数量,最大50
+}
+
+message TournamentMatchResp {
+  repeated galaxy.common.proto.Match match = 1;
+  int32 total = 2;   // 总比赛数量
+  string tournament_name = 3;
+  string tournament_short_name = 4;
+  string icon = 5;
+  string color = 6; //配色
+}
+
+// 500-1007: 盘口分类
+message MarketTypeReq {
+  int64 match_id = 1; //required 比赛id
+}
+
+message MarketTypeResp {
+  repeated galaxy.common.proto.MarketType marketType = 1;
+}
+
+message BalanceResp {
+  string balance = 1; //余额
+}
+
+// 500-1015: 单关下注
+message SingleBetReq {
+  int64 match_id = 1;       //required 比赛id
+  int64 selection_id = 2;   //required 选项id
+  string odds = 3;          //required 赔率
+  string bet_amount = 4;       //required 投注
+  int32 odds_change = 5;      //required 接受赔率变化类型,0:不接受赔率变动 1:接受最优赔率变动 2:接受任意赔率变动
+}
+
+message SingleBetResp {
+  bool success = 1;
+  string message = 2;  // 例如："Bet placed successfully."
+  string order_id = 3;
+  int32 order_status = 4;  // 订单状态 0创建成功，1确认中，2拒单，3取消订单，4接单成功，5已结算
+  string order_status_msg = 5;  // 订单状态msg
+}
+
+// 500-1010: 多关下注
+message MultipleBetReq {
+  repeated galaxy.common.proto.BetOption bet = 1;     // 投注项
+  repeated galaxy.common.proto.BetCombo combo = 2;    // 串关方式
+}
+
+message MultipleBetResp {
+  bool success = 1;
+  string message = 2;  // 例如："Bet placed successfully."
+  repeated galaxy.common.proto.PlaceBetInfo place_bet_info= 3;
+}
+
+
+
+
+// 500-1011: 发起提前结算
+message EarlySettleReq {
+  string bet_id = 1;          //required 注单id
+  string amount = 2;           //required 提前结算本金
+  string expect_price = 3;    //required 期望提前结算单位价格
+  bool accept_price_reduce = 4;   //required false:不接受价格变低 true:接受价格变低下注
+}
+
+message EarlySettleResp {
+  bool success = 1;
+  string message = 2;  // 例如："Bet placed successfully."
+}
+
+// 500-1012: 获取用户下注记录列表
+message GetOrderReq {
+  bool settled = 1;       //required  false-未结算 true-已结算
+  int64 start_time = 2;   //开始时间,13位时间戳
+  int64 end_time = 3;     //结束时间,13位时间戳
+  int32 page = 4;         //required 当前页码
+  int32 page_size = 5;    //required 每页大小
+  repeated int32 sport_id = 6;     //required 球类id
+
+}
+
+message GetOrderResp {
+  repeated galaxy.common.proto.Order order = 1; // 下注记录
+  int32 total = 2;  //总条数
+}
+
+//500-1013: 获取单关下注限额
+message GetSingleRiskReq {
+  repeated galaxy.common.proto.RiskSelection selection = 1; // 选项
+}
+
+message GetSingleRiskResp {
+  repeated galaxy.common.proto.RiskSingleBet risk = 1;    //限额
+}
+
+//500-1014: 获取窜关下注限额
+message GetComboRiskReq {
+  repeated galaxy.common.proto.RiskSelection selection = 1; // 选项
+}
+
+message GetComboRiskResp {
+  repeated galaxy.common.proto.RiskComboBet risk = 1;     //限额
+}
+
+// 500-1016: 提前结算报价
+message EarlySettlePriceReq {
+  repeated string bet_id = 1;          //required 注单id
+}
+
+message EarlySettlePriceResp {
+ repeated galaxy.common.proto.EarlySettlePrice price = 1;
+}
+
+
+// 500-1020: 预约下注
+message ReserveBetReq {
+  galaxy.common.proto.BetOption bet = 1;  // 投注项
+  int64 bet_amount = 2;       //required  每笔下注金额
+}
+
+message ReserveBetResp {
+  bool success = 1;
+  string message = 2;
+}
+
+// 500-1021: 获取用户预约下注记录列表
+message GetReserveOrderReq {
+  int64 start_time = 1; //开始时间,13位时间戳
+  int64 end_time = 2;   //结束时间,13位时间戳
+}
+
+message GetReserveOrderResp {
+  repeated galaxy.common.proto.ReserveOrder order = 1; // 预约记录
+}
+
+
+// 500-1022: 取消预约下注
+message ReserveCancelReq {
+  string reserve_id = 1; //required 预约id
+}
+
+message ReserveCancelResp {
+  bool success = 1;
+  string message = 2;
+}
+
+// 500-1023: 修改预约下注订单
+message ReserveUpdateReq {
+  string reserve_id = 1;//required 预约id
+  int64 amount = 2;     //required 新的本金
+  string odds = 3;      //required 新的预约赔率
+}
+
+message ReserveUpdateResp {
+  bool success = 1;
+  string message = 2;
+}
+
+
+// 500-1030: 搜索
+message SearchReq {
+  string word = 1; //required 搜索词
+}
+
+message SearchResp {
+  galaxy.common.proto.Tournament tournament = 1;          //联赛
+  repeated galaxy.common.proto.MatchBasicInfo match = 2;  //比赛信息
+}
+
+// 500-1031: 历史搜索词
+message SearchHistoryReq {
+}
+
+message SearchHistoryResp {
+  repeated string history = 1;//历史搜索词
+  repeated string hot = 2;    //热门搜索词
+}
+
+// 500-1032: 搜索自动补充词汇
+message SearchRecommendReq {
+  string word = 1; //required 搜索词
+}
+
+message SearchRecommendResp {
+  repeated string recommend = 1; //推荐词
+}
+
+// 500-1040: 添加收藏
+message AddCollectReq {
+  repeated int64 match_id = 1; //required 比赛id
+}
+
+message AddCollectResp {
+  bool success = 1;
+  string message = 2;
+}
+
+// 500-1041: 移除收藏
+message RemoveCollectReq {
+  repeated int64 match_id = 1; //required 比赛id
+}
+
+message RemoveCollectResp {
+  bool success = 1;
+  string message = 2;
+}
+
+// 500-1042: 收藏列表
+message ListCollectReq {
+  int32 page = 1;         // 请求的页数,从1开始
+  int32 size = 2;         // 每页显示数量,最大50
+}
+
+message ListCollectResp {
+  repeated galaxy.common.proto.Match match = 1; //比赛
+  int32 total = 2;   // 总比赛数量
+}
+
+// 500-1050: 获取系统设置
+message GetSettingReq {
+}
+
+message GetSettingResp {
+  galaxy.common.proto.Setting setting = 1;
+}
+
+// 500-1051: 修改系统设置
+message UpdateSettingReq {
+  galaxy.common.proto.Setting setting = 1; //
+}
+
+message UpdateSettingResp{
+  bool success = 1;
+}
+
+// 500-1100: 订阅比赛
+message SubscribeMatchReq {
+  repeated int64 match_id = 1; //required 比赛id
+  bool simple = 2;    //true - 只推送3个热门比赛盘口   false - 推送所有比赛盘口
+  bool replace = 3;   //true - 删除之前的所有订阅  false - 不删除之前的订阅
+}
+
+message SubscribeMatchResp {
+  bool success = 1;
+  string message = 2;
+}
+
+// 500-1101: 取消订阅比赛
+message CancelSubscribeMatchReq {
+  repeated int64 match_id = 1; //required 比赛id
+}
+
+message CancelSubscribeMatchResp {
+  bool success = 1;
+  string message = 2;
+}
+
+
+// 600-1000: 比赛推送
+message MatchNotify {
+  int64 match_id = 1;         //比赛id
+  MatchBasicUpdate basic_update = 2;
+  MatchMarketUpdate market_update = 3;
+}
+
+// 比赛基本信息
+message MatchBasicUpdate {
+  int32 status = 1;           //比赛状态 0-已结束 1-推迟 2-中断 3-取消 4-未开赛 5-进行中 6-延迟 7-废弃 8-暂停
+  bool bet_stop = 2;          // false: 未停止投注, true: 已停止投注
+  galaxy.common.proto.MatchLiveInfo live_info = 3;  //比赛实时信息
+  int64 start_time = 4;       //开始时间,13位时间戳
+}
+
+// 比赛盘口变化
+message MatchMarketUpdate {
+  repeated galaxy.common.proto.Market market = 1; //只推送有变化的盘口
+}
+
+//600-1001: 订单状态推送
+message OrderStatusNotify {
+  repeated OrderStatus order_status = 1;
+}
+
+message OrderStatus {
+  string order_id = 1;
+  int32 status = 2;   //2-拒单 4-接单成功
+}
+
+
+//700-2001: 比赛统计数据
+message MatchLiveReq{
+  int32 match_id = 1; //required 比赛id
+}
+message MatchLiveResp{
+  MatchLiveData match_live_data = 1;
+}
+
+//700-2002: 比赛阵容数据
+message MatchLineupReq{
+  int32 match_id = 1; //required 比赛id
+}
+message MatchLineupResp{
+  MatchLineupDetail match_lineup_detail = 1;
+}
+
+//700-2003: 赛事积分榜数据
+message CompetitionTableReq{
+  int32 comp_id = 1; //required 赛事id
+}
+message CompetitionTableResp{
+  CompetitionTables competition_tables = 1;
+}
+
+//700-2004: 比赛趋势数据
+message MatchTrendReq{
+  int32 match_id = 1; //required 比赛id
+}
+message MatchTrendResp{
+  MatchTrendData match_trend_data = 1;
+}
+
+//700-1100: 比赛统计数据推送
+message SubscribeMatchLiveReq{
+  int32 match_id = 1; //required 比赛id  -1：取消订阅
+}
+message SubscribeMatchLiveResp{
+  MatchLiveData match_live_data = 1;
+}
+
+//700-2005: 比赛直播流
+message MatchLiveStreamReq{
+  int32 match_id = 1; //required 比赛id
+}
+message MatchLiveStreamResp{
+  int32 match_id = 1; //required 比赛id
+  repeated MatchLiveStream streams = 2; //视频流列表
+}
+
+//700-2006: 比赛动画直播URL
+message MatchAnimationLiveReq{
+  int32 match_id = 1; //required 比赛id
+}
+message MatchAnimationLiveResp{
+  int32 match_id = 1; //required 比赛id
+  string url = 2; // iframeUrl
+}
+
+
+

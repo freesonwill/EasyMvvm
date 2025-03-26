@@ -1,7 +1,10 @@
+import com.google.protobuf.gradle.*
 @Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    id("com.google.protobuf") version "0.9.4"
+    id("kotlin-kapt")
 }
 
 android {
@@ -48,6 +51,29 @@ android {
             // version '3.18.1'
         }
     }
+    //protobuf設定
+    sourceSets {
+        getByName("main") {
+            proto {
+                srcDir("src/main/protos")
+            }
+        }
+    }
+}
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:4.30.1"
+    }
+    generateProtoTasks {
+        all().configureEach {
+            plugins {
+                id("java") {
+                    option("lite")
+                }
+
+            }
+        }
+    }
 }
 
 dependencies {
@@ -57,6 +83,7 @@ dependencies {
     implementation(libs.material)
     testImplementation(libs.junit)
     api(libs.okhttps)
+    api(libs.protobuf)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }
