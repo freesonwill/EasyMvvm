@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.startup.Initializer
 import com.walisport.app.data.MainRepository
 import com.walisport.app.data.MainViewModel
+import com.walisport.app.data.SplashViewModel
 import com.walisport.lib_base.ApplicationModuleInitializer
 import com.walisport.lib_base.utils.LogUtilsExt.logd
 import org.koin.androidx.viewmodel.dsl.viewModelOf
@@ -32,6 +33,7 @@ class ModuleInitializer : Initializer<String> {
 
     private val viewModules = module {
         viewModelOf(::MainViewModel)
+        viewModelOf(::SplashViewModel)
     }
     private val repoModules = module {
         factoryOf(::MainRepository)

@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">瓦力体育</string>
+    <string name="splash_counter_down_skip">跳过</string>
 </resources>
