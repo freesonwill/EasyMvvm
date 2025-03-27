@@ -5,7 +5,10 @@ import com.walisport.lib_socket.data.ConnectSuccess
 import com.walisport.lib_socket.data.IConnectState
 import com.walisport.lib_socket.data.IRequest
 import com.walisport.lib_socket.data.IResponse
+import com.walisport.lib_socket.data.ISocket
 import com.walisport.lib_socket.data.SocketRequestData
+import com.walisport.lib_socket.extension.asRemoteRequest
+import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExecutorCoroutineDispatcher
@@ -67,15 +70,18 @@ class WebSocketManager(
             while (true) {
                 delay(heartbeatInterval)
                 "Send Heartbeat!".logi(this.javaClass.simpleName)
+
                 socket.send(
-                    SocketRequestData(
-                        mid = 0,
-                        sid = 2,
-                        null
-                    )
+                    Client.PingBackReq.newBuilder().apply {
+                        this.data = "1234567"
+                    }.build().asRemoteRequest(0,2)
                 )
             }
         }
+    }
+
+    fun send(data: IRequest) {
+        socket.send(data)
     }
 
     private fun stopHeartbeat() {

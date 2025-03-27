@@ -3,9 +3,10 @@ package com.walisport.lib_socket
 import android.util.Log
 import com.walisport.lib_socket.data.IRequest
 import com.walisport.lib_socket.data.IResponse
-import com.walisport.lib_socket.data.InvalidDataError
+import com.walisport.lib_socket.data.ISecurity
+import com.walisport.lib_socket.data.InvalidDataResponseError
 import com.walisport.lib_socket.data.SocketRequestData
-import com.walisport.lib_socket.data.SocketResponseData
+import com.walisport.lib_socket.data.SocketOriginResponseData
 import java.lang.Exception
 
 class NativeLib : ISecurity<IRequest, ByteArray, IResponse> {
@@ -44,19 +45,19 @@ class NativeLib : ISecurity<IRequest, ByteArray, IResponse> {
             || unpack[0] !is Int
             || unpack[1] !is Int
             || unpack[2] !is ByteArray) {
-            InvalidDataError()
+            InvalidDataResponseError()
         } else {
             try {
                 val mid = (unpack[0] as Int).toShort()
                 val sid = (unpack[1] as Int).toShort()
                 val jsonPayload = unpack[2] as ByteArray
-                SocketResponseData(
+                SocketOriginResponseData(
                     mid = mid,
                     sid = sid,
                     originProto = jsonPayload
                 )
             } catch (e: Exception) {
-                InvalidDataError()
+                InvalidDataResponseError()
             }
         }
     }

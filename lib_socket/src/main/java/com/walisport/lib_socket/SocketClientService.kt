@@ -3,12 +3,15 @@ package com.walisport.lib_socket
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import com.walisport.lib_base.utils.LogUtilsExt.logi
 import com.walisport.lib_socket.data.ConnectClosed
 import com.walisport.lib_socket.data.ConnectFailure
 import com.walisport.lib_socket.data.ConnectSuccess
 import com.walisport.lib_socket.data.IConnectState
 import com.walisport.lib_socket.data.IRequest
 import com.walisport.lib_socket.data.IResponse
+import com.walisport.lib_socket.data.ISecurity
+import com.walisport.lib_socket.data.ISocket
 import com.walisport.lib_socket.data.NetworkUnavailable
 import com.walisport.lib_socket.data.SocketConnectState
 import com.walisport.lib_socket.extension.collectFirstSubscribe
@@ -22,7 +25,9 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
 import okhttp3.*
+import okio.ByteString
 import okio.ByteString.Companion.toByteString
+import java.lang.Exception
 import java.lang.ref.WeakReference
 import java.util.concurrent.TimeUnit
 
@@ -91,6 +96,26 @@ class SocketClientService(
                 currentState = SocketConnectState.Connecting
                 this@SocketClientService.webSocket = webSocket
                 workingScope.launch { connectStateFlow.emit(ConnectSuccess()) }
+            }
+
+            override fun onMessage(webSocket: WebSocket, text: String) {
+//                super.onMessage(webSocket, text)
+                "onMessage text $text".logi(this@SocketClientService::class.java.simpleName)
+            }
+
+            override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
+//                super.onMessage(webSocket, bytes)
+                try {
+                    "onMessage bytes $bytes".logi(this@SocketClientService::class.java.simpleName)
+                    if (bytes.size != 0) {
+                        val byteArray = bytes.toByteArray()
+                        val data = security.decrypt(byteArray)
+                        workingScope.launch { socketResponseFlow.emit(data) }
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    //TODO error
+                }
             }
         })
 

@@ -3,6 +3,8 @@ package com.walisport.lib_socket
 import android.content.Context
 import androidx.startup.Initializer
 import com.walisport.lib_base.utils.LogUtilsExt.logd
+import com.walisport.lib_socket.data.ISecurity
+import com.walisport.lib_socket.data.ISocket
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
@@ -23,7 +25,7 @@ class SocketModuleInitializer : Initializer<String> {
     }
 
     private val socketModules = module {
-        factory<ISocket<*,*,*>> { SocketClientService(context = WeakReference(androidContext()), get()) }
+        factory<ISocket<*, *, *>> { SocketClientService(context = WeakReference(androidContext()), get()) }
         factory<ISecurity<*, *, *>> { NativeLib() }
         single { WebSocketManager(get()) }
     }

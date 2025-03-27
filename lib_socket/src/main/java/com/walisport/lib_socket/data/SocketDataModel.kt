@@ -1,11 +1,13 @@
 package com.walisport.lib_socket.data
 
+import com.google.protobuf.GeneratedMessageLite
+
 interface IRequest
 
 interface IResponse
 
 //Socket有收到message後處理出錯
-interface SocketError {
+interface SocketResponseError {
     val msg: String
 }
 
@@ -34,15 +36,28 @@ data class SocketRequestData(
 ): ISocketData(), IRequest
 
 @Suppress("ArrayInDataClass")
-data class SocketResponseData(
+data class SocketOriginResponseData(
     override val mid: Short,
     override val sid: Short,
     val originProto: ByteArray?
 ): ISocketData(), IResponse
 
+data class SocketResponseData<T: GeneratedMessageLite<*,*>>(
+    override val mid: Short,
+    override val sid: Short,
+    val responseData: T?
+): ISocketData(), IResponse
+
 //在解密過程錯誤
-data class InvalidDataError(
+data class InvalidDataResponseError(
     override val msg: String = "Invalid socket data type!"
-): IResponse, SocketError
+): IResponse, SocketResponseError
+
+//解析的proto的類型錯誤，檢查是否給錯proto type
+data class InvalidProtoTypeResponseError(
+    val mid: Short,
+    val sid: Short,
+    override val msg: String = "mid = $mid, sid = $sid, Invalid proto type or missing proto mapping!"
+) : IResponse, SocketResponseError
 
 

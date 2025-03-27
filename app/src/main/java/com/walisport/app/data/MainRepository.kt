@@ -1,13 +1,17 @@
 package com.walisport.app.data
 
-import com.walisport.lib_base.data.remote.Response
 import com.walisport.lib_base.data.repository.BaseRepository
-import com.walisport.lib_base.utils.LogUtilsExt.logi
 import com.walisport.lib_socket.WebSocketManager
 import com.walisport.lib_socket.data.IConnectState
+import com.walisport.lib_socket.data.SocketResponseError
+import com.walisport.lib_socket.data.SocketResponseData
+import com.walisport.lib_socket.extension.asRemoteRequest
+import com.walisport.lib_socket.extension.observeProtoMessage
+import galaxy.client.proto.Client
 import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeoutOrNull
 
 /**
  * @author: zhangsan
@@ -16,16 +20,41 @@ import kotlinx.coroutines.flow.Flow
  */
 class MainRepository(private val socketManager: WebSocketManager) : BaseRepository() {
 
-    suspend fun startSocket() : Flow<IConnectState> {
-        return socketManager.connect("wss://ws.qxe68.com:7001/api/game/52002")
+    suspend fun startSocket() : IConnectState? {
+        return withTimeoutOrNull(5000) {
+            async {
+                socketManager.connect("wss://betwavepro.ja700.com/fb-ws").first()
+            }.await()
+        }
     }
 
-    // 此為範例
-    suspend fun login(): Response {
-        return scope.async {
-            // TODO 處理登入
-            delay(1_000L)
-            Response.Success
-        }.await()
+    fun sendLogin(uid: Int, token: String) {
+        scope.launch {
+            val deferred = withTimeoutOrNull(2000) {
+                async {
+                    socketManager.observeProtoMessage<Client.LoginResp>(7,7).first()
+                }.await()
+            }
+            if (deferred == null) {
+              //time out
+
+            } else if (deferred is SocketResponseData<*>) {
+                //拿到資料
+
+            } else if (deferred is SocketResponseError) {
+                //發生錯誤
+
+            }
+
+        }
+
+        val req = Client.LoginReq.newBuilder().apply {
+            this.uid = uid.toLong()
+            this.token = token
+            this.lang = "zh-CN"
+            this.platform = 5
+            this.oddType = 0
+        }.build()
+        socketManager.send(req.asRemoteRequest(7,7))
     }
 }
