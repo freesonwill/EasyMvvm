@@ -99,12 +99,10 @@ class SocketClientService(
             }
 
             override fun onMessage(webSocket: WebSocket, text: String) {
-//                super.onMessage(webSocket, text)
                 "onMessage text $text".logi(this@SocketClientService::class.java.simpleName)
             }
 
             override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
-//                super.onMessage(webSocket, bytes)
                 try {
                     "onMessage bytes $bytes".logi(this@SocketClientService::class.java.simpleName)
                     if (bytes.size != 0) {

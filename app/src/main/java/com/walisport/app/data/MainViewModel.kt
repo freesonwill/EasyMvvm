@@ -5,11 +5,8 @@ import com.walisport.lib_base.data.viewmodel.BaseViewModel
 import com.walisport.lib_base.utils.LogUtilsExt.loge
 import com.walisport.lib_base.utils.LogUtilsExt.logi
 import com.walisport.lib_socket.data.ConnectSuccess
-import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withTimeoutOrNull
 
 /**
  * @author: zhangsan
@@ -22,7 +19,7 @@ class MainViewModel(private val repo: MainRepository) : BaseViewModel() {
         token: String
     ) {
         //第一次與socket連接，成功後做登入，如果每次斷線重連後都需要登入，可以把登入寫進observe內
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.Default) {
             when(val connectState = repo.startSocket()) {
                 null -> { //timeout
                     "Connection Timeout".loge(MainViewModel::class.java.simpleName)
@@ -45,5 +42,6 @@ class MainViewModel(private val repo: MainRepository) : BaseViewModel() {
         token: String
     ) {
         repo.sendLogin(uid, token)
+
     }
 }
