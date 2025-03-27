@@ -60,4 +60,8 @@ data class InvalidProtoTypeResponseError(
     override val msg: String = "mid = $mid, sid = $sid, Invalid proto type or missing proto mapping!"
 ) : IResponse, SocketResponseError
 
+data class ResponseTimeOutError(
+    override val msg: String = "response time out!!"
+) : IResponse, SocketResponseError
+
 

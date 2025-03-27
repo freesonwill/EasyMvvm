@@ -13,22 +13,4 @@ import com.walisport.lib_base.data.remote.Response
  */
 abstract class BaseViewModel : ViewModel() {
 
-    private val _onApiResponseStateListener = MutableLiveData<ApiResponseState>(ApiResponseState.Idle)
-    val onApiResponseStateListener: LiveData<ApiResponseState> = _onApiResponseStateListener
-
-    protected suspend fun sendApi(request: suspend () -> Response, callback: (Response) -> Unit) {
-        _onApiResponseStateListener.value = ApiResponseState.Processing
-        val response = request()
-        callback(response)
-        if (response is Response.Success) {
-            _onApiResponseStateListener.value = ApiResponseState.Succeeded
-        } else if (response is Response.Failed) {
-            _onApiResponseStateListener.value = ApiResponseState.Failed(response.code, response.desc)
-        }
-        resetApiResponseState()
-    }
-
-    protected fun resetApiResponseState() {
-        _onApiResponseStateListener.value = ApiResponseState.Idle
-    }
 }

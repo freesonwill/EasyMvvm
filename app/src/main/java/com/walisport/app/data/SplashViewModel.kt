@@ -3,6 +3,13 @@ package com.walisport.app.data
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.walisport.lib_base.data.viewmodel.BaseViewModel
+import com.walisport.lib_base.utils.LogUtilsExt.loge
+import com.walisport.lib_base.utils.LogUtilsExt.logi
+import com.walisport.lib_socket.data.ConnectSuccess
+import com.walisport.lib_socket.data.ResponseTimeOutError
+import com.walisport.lib_socket.data.SocketResponseData
+import com.walisport.lib_socket.data.SocketResponseError
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class SplashViewModel(private val repository: SplashRepository) : BaseViewModel() {
@@ -13,6 +20,48 @@ class SplashViewModel(private val repository: SplashRepository) : BaseViewModel(
         viewModelScope.launch {
             repository.countDownSecondsLD.collect {
                 homeTimeSeconds.value = it
+            }
+        }
+    }
+
+    fun startSocketConnectAndLogin(
+        uid: Int,
+        token: String
+    ) {
+        //第一次與socket連接，成功後做登入，如果每次斷線重連後都需要登入，可以把登入寫進observe內
+        viewModelScope.launch(Dispatchers.Default) {
+            when(val connectState = repository.startSocket()) {
+                null -> {
+                    //timeout
+                    "Connection Timeout".loge(MainViewModel::class.java.simpleName)
+                }
+                is ConnectSuccess -> {  //連接成功
+                    "Connection Success".logi(MainViewModel::class.java.simpleName)
+                    login(uid, token)
+                }
+                else -> {   //連接不成功
+                    "Connection Failure -> $connectState".loge(MainViewModel::class.java.simpleName)
+                }
+            }
+        }
+
+    }
+
+    private fun login(
+        uid: Int,
+        token: String
+    ) {
+        viewModelScope.launch(Dispatchers.Default) {
+            when(val res = repository.sendLogin(uid, token)) {
+                is ResponseTimeOutError -> {
+                    "login time out".logi(this@SplashViewModel::class.java.simpleName)
+                }
+                is SocketResponseData<*> -> {
+                    "login success".logi(this@SplashViewModel::class.java.simpleName)
+                }
+                is SocketResponseError -> {
+                    res.msg.logi(this@SplashViewModel::class.java.simpleName)
+                }
             }
         }
     }
