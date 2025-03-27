@@ -3,7 +3,9 @@ package com.walisport.app
 import android.content.Context
 import androidx.startup.Initializer
 import com.walisport.app.data.MainRepository
+import com.walisport.app.data.SplashRepository
 import com.walisport.app.data.MainViewModel
+import com.walisport.app.data.SplashViewModel
 import com.walisport.lib_base.ApplicationModuleInitializer
 import com.walisport.lib_base.utils.LogUtilsExt.logd
 import com.walisport.lib_common.CommonModuleInitializer
@@ -11,6 +13,7 @@ import com.walisport.lib_socket.SocketModuleInitializer
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
+import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
 /**
@@ -33,10 +36,11 @@ class ModuleInitializer : Initializer<String> {
 
     private val viewModules = module {
         viewModelOf(::MainViewModel)
+        viewModelOf(::SplashViewModel)
     }
     private val repoModules = module {
         factory { MainRepository(get()) }
-//        factoryOf(::MainRepository)
+        factoryOf(::SplashRepository)
     }
     private val moduleList:List<Module> = listOf(viewModules,repoModules)
 }

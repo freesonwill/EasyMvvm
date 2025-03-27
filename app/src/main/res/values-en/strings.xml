@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Wali Sport</string>
+    <string name="splash_counter_down_skip">Skip (%s)</string>
 </resources>
