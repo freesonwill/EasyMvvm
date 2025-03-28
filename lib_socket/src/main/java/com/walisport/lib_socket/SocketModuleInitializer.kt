@@ -1,5 +1,6 @@
 package com.walisport.lib_socket
 
+import android.app.Application
 import android.content.Context
 import androidx.startup.Initializer
 import com.walisport.lib_base.utils.LogUtilsExt.logd
@@ -25,7 +26,7 @@ class SocketModuleInitializer : Initializer<String> {
     }
 
     private val socketModules = module {
-        factory<ISocket<*, *, *>> { SocketClientService(context = WeakReference(androidContext()), get()) }
+        factory<ISocket<*, *, *>> { SocketClientService(context = WeakReference(androidContext() as Application), get()) }
         factory<ISecurity<*, *, *>> { NativeLib() }
         single { WebSocketManager(get()) }
     }

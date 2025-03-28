@@ -1,5 +1,6 @@
 package com.walisport.lib_socket
 
+import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
@@ -28,7 +29,7 @@ import java.lang.ref.WeakReference
 import java.util.concurrent.TimeUnit
 
 class SocketClientService(
-    private val context: WeakReference<Context>,
+    private val context: WeakReference<Application>,
     private val security: ISecurity<IRequest, ByteArray, IResponse>
 ) : ISocket<IRequest, IResponse, ConnectState> {
     private var currentState : SocketConnectState = SocketConnectState.None
