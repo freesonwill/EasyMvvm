@@ -4,15 +4,11 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import com.walisport.lib_base.utils.LogUtilsExt.logi
-import com.walisport.lib_socket.data.ConnectClosed
-import com.walisport.lib_socket.data.ConnectFailure
-import com.walisport.lib_socket.data.ConnectSuccess
-import com.walisport.lib_socket.data.IConnectState
+import com.walisport.lib_socket.data.ConnectState
 import com.walisport.lib_socket.data.IRequest
 import com.walisport.lib_socket.data.IResponse
 import com.walisport.lib_socket.data.ISecurity
 import com.walisport.lib_socket.data.ISocket
-import com.walisport.lib_socket.data.NetworkUnavailable
 import com.walisport.lib_socket.data.SocketConnectState
 import com.walisport.lib_socket.extension.collectFirstSubscribe
 import kotlinx.coroutines.CoroutineScope
@@ -34,10 +30,10 @@ import java.util.concurrent.TimeUnit
 class SocketClientService(
     private val context: WeakReference<Context>,
     private val security: ISecurity<IRequest, ByteArray, IResponse>
-) : ISocket<IRequest, IResponse, IConnectState> {
+) : ISocket<IRequest, IResponse, ConnectState> {
     private var currentState : SocketConnectState = SocketConnectState.None
     private val workingScope by lazy { CoroutineScope(Dispatchers.IO) }
-    private val connectStateFlow : MutableSharedFlow<IConnectState> by lazy {
+    private val connectStateFlow : MutableSharedFlow<ConnectState> by lazy {
         MutableSharedFlow(
             replay = 0,
             extraBufferCapacity = 5,
@@ -59,7 +55,7 @@ class SocketClientService(
     private var webSocket: WebSocket? = null
     private var host: String = ""
 
-    override suspend fun connect(host: String): SharedFlow<IConnectState> {
+    override suspend fun connect(host: String): SharedFlow<ConnectState> {
         if (currentState != SocketConnectState.None) {
             throw IllegalStateException("socket need to set back to none or using reconnect!")
         }
@@ -79,23 +75,23 @@ class SocketClientService(
                 super.onFailure(webSocket, t, response)
                 currentState = SocketConnectState.Failure
                 if (!hasNetworkConnection()) {
-                    workingScope.launch { connectStateFlow.emit(NetworkUnavailable()) }
+                    workingScope.launch { connectStateFlow.emit(ConnectState.NetworkUnavailable) }
                 } else {
-                    workingScope.launch { connectStateFlow.emit(ConnectFailure()) }
+                    workingScope.launch { connectStateFlow.emit(ConnectState.ConnectFailure) }
                 }
             }
 
             override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
                 super.onClosed(webSocket, code, reason)
                 currentState = SocketConnectState.Closed
-                workingScope.launch { connectStateFlow.emit(ConnectClosed()) }
+                workingScope.launch { connectStateFlow.emit(ConnectState.ConnectClosed) }
             }
 
             override fun onOpen(webSocket: WebSocket, response: Response) {
                 super.onOpen(webSocket, response)
                 currentState = SocketConnectState.Connecting
                 this@SocketClientService.webSocket = webSocket
-                workingScope.launch { connectStateFlow.emit(ConnectSuccess()) }
+                workingScope.launch { connectStateFlow.emit(ConnectState.ConnectSuccess) }
             }
 
             override fun onMessage(webSocket: WebSocket, text: String) {
@@ -146,7 +142,7 @@ class SocketClientService(
 
     override fun responseObserve(): SharedFlow<IResponse> = socketResponseFlow
 
-    override fun stateChangeObserve(): SharedFlow<IConnectState> = connectStateFlow
+    override fun stateChangeObserve(): SharedFlow<ConnectState> = connectStateFlow
 
 
     private fun hasNetworkConnection(): Boolean {

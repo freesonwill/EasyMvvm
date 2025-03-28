@@ -5,7 +5,7 @@ import com.walisport.lib_base.utils.LogUtilsExt.logi
 import com.walisport.lib_common.helper.CountDownHelper
 import com.walisport.lib_socket.WebSocketManager
 import com.walisport.lib_socket.data.ApiCode
-import com.walisport.lib_socket.data.IConnectState
+import com.walisport.lib_socket.data.ConnectState
 import com.walisport.lib_socket.data.IResponse
 import com.walisport.lib_socket.data.ResponseTimeOutError
 import com.walisport.lib_socket.data.SocketResponseData
@@ -37,7 +37,7 @@ class SplashRepository(
         countDown = 5_000
     }
 
-    suspend fun startSocket() : IConnectState? {
+    suspend fun startSocket() : ConnectState? {
         return withTimeoutOrNull(5000) {
             async {
                 socketManager.connect("wss://betwavepro.ja700.com/fb-ws").first()

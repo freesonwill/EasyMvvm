@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.walisport.lib_base.data.viewmodel.BaseViewModel
 import com.walisport.lib_base.utils.LogUtilsExt.loge
 import com.walisport.lib_base.utils.LogUtilsExt.logi
-import com.walisport.lib_socket.data.ConnectSuccess
+import com.walisport.lib_socket.data.ConnectState
 import com.walisport.lib_socket.data.ResponseTimeOutError
 import com.walisport.lib_socket.data.SocketResponseData
 import com.walisport.lib_socket.data.SocketResponseError
@@ -38,7 +38,7 @@ class SplashViewModel : BaseViewModel() {
                     //timeout
                     "Connection Timeout".loge(MainViewModel::class.java.simpleName)
                 }
-                is ConnectSuccess -> {  //連接成功
+                is ConnectState.ConnectSuccess -> {  //連接成功
                     "Connection Success".logi(MainViewModel::class.java.simpleName)
                     login(uid, token)
                 }

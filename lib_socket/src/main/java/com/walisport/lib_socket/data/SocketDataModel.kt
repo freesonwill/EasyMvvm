@@ -16,17 +16,12 @@ abstract class ISocketData {
     abstract val sid: Short
 }
 
-interface IConnectState
-//socket連線成功
-class ConnectSuccess : IConnectState
-//socket關閉，通常是主動關閉
-class ConnectClosed : IConnectState
-//socket錯誤，網路斷聯
-class NetworkUnavailable : IConnectState
-//socket錯誤
-class ConnectFailure : IConnectState
-
-
+sealed class ConnectState {
+    data object ConnectSuccess : ConnectState()
+    data object ConnectClosed : ConnectState()
+    data object NetworkUnavailable : ConnectState()
+    data object ConnectFailure : ConnectState()
+}
 
 @Suppress("ArrayInDataClass")
 data class SocketRequestData(

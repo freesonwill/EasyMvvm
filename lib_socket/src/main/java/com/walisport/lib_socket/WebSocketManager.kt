@@ -2,12 +2,10 @@ package com.walisport.lib_socket
 
 import com.walisport.lib_base.utils.LogUtilsExt.logi
 import com.walisport.lib_socket.data.ApiCode
-import com.walisport.lib_socket.data.ConnectSuccess
-import com.walisport.lib_socket.data.IConnectState
+import com.walisport.lib_socket.data.ConnectState
 import com.walisport.lib_socket.data.IRequest
 import com.walisport.lib_socket.data.IResponse
 import com.walisport.lib_socket.data.ISocket
-import com.walisport.lib_socket.data.SocketRequestData
 import com.walisport.lib_socket.extension.asRemoteRequest
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
@@ -22,9 +20,9 @@ import kotlinx.coroutines.launch
 import java.util.concurrent.Executors
 
 class WebSocketManager(
-   private val socket : ISocket<IRequest, IResponse, IConnectState>
+   private val socket : ISocket<IRequest, IResponse, ConnectState>
 ) {
-    private var connectStateFlow: Flow<IConnectState>? = null
+    private var connectStateFlow: Flow<ConnectState>? = null
     private val workingScope by lazy { CoroutineScope(Dispatchers.IO) }
 
     private var heartbeatJob: Job? = null
@@ -34,12 +32,12 @@ class WebSocketManager(
         private const val heartbeatInterval: Long = 10000
     }
 
-    suspend fun connect(host: String) : Flow<IConnectState> {
+    suspend fun connect(host: String) : Flow<ConnectState> {
         return socket.connect(host).also {
             connectStateFlow = it
         }.map { state ->
             when(state) {
-                is ConnectSuccess -> {
+                is ConnectState.ConnectSuccess -> {
                     startHeartbeat()
                 }
                 else -> {
