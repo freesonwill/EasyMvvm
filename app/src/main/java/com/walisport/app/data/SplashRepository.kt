@@ -12,6 +12,8 @@ import com.walisport.lib_socket.data.SocketResponseError
 import com.walisport.lib_socket.extension.asRemoteRequest
 import com.walisport.lib_socket.extension.observeProtoMessage
 import galaxy.client.proto.Client
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.first
@@ -19,7 +21,10 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
 
-class SplashRepository(private val socketManager: WebSocketManager) : BaseRepository() {
+class SplashRepository(
+    override val scope: CoroutineScope,
+    private val socketManager: WebSocketManager
+) : BaseRepository() {
 
     private val countDownHelper = CountDownHelper()
 
@@ -41,12 +46,12 @@ class SplashRepository(private val socketManager: WebSocketManager) : BaseReposi
 
     suspend fun sendLogin(uid: Int, token: String): IResponse {
         //要注意，一定要在同一個scope中
-        val deferred = scope.async {
-            withTimeoutOrNull(2000) {
+        val deferred = scope.async(Dispatchers.Default) {
+            withTimeoutOrNull(3000) {
                 socketManager.observeProtoMessage<Client.LoginResp>(7,7).first()
             }
         }
-        scope.launch {
+        scope.launch(Dispatchers.Default) {
             val req = Client.LoginReq.newBuilder().apply {
                 this.uid = uid.toLong()
                 this.token = token

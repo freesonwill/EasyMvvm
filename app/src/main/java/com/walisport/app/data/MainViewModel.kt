@@ -7,12 +7,14 @@ import com.walisport.lib_base.utils.LogUtilsExt.logi
 import com.walisport.lib_socket.data.ConnectSuccess
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.koin.core.parameter.parametersOf
+import org.koin.core.component.inject
 
 /**
  * @author: zhangsan
  * @date: 2025/3/14 16:56
  * @description:
  */
-class MainViewModel(private val repo: MainRepository) : BaseViewModel() {
-
+class MainViewModel : BaseViewModel() {
+    private val repository : MainRepository by inject { parametersOf(viewModelScope) }
 }

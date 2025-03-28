@@ -11,10 +11,13 @@ import com.walisport.lib_socket.data.SocketResponseData
 import com.walisport.lib_socket.data.SocketResponseError
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.koin.core.component.inject
+import org.koin.core.parameter.parametersOf
 
-class SplashViewModel(private val repository: SplashRepository) : BaseViewModel() {
+class SplashViewModel : BaseViewModel() {
 
     val homeTimeSeconds: MutableLiveData<Int> = MutableLiveData()
+    private val repository: SplashRepository by inject { parametersOf(viewModelScope) }
 
     init {
         viewModelScope.launch {

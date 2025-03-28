@@ -67,7 +67,7 @@ class NativeLib : ISecurity<IRequest, ByteArray, IResponse> {
 
     override fun encrypt(data: IRequest): ByteArray? {
         if (data !is SocketRequestData) return null
-
+        "encrypt and send data -> mid = ${data.mid}, sid = ${data.sid} data = ${data.payloadByteArray}".logi(NativeLib::class.java.simpleName)
         return newPack(
             mid = data.mid,
             sid = data.sid,

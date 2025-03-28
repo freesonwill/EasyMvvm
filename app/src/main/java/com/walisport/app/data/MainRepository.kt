@@ -9,6 +9,7 @@ import com.walisport.lib_socket.data.SocketResponseError
 import com.walisport.lib_socket.extension.asRemoteRequest
 import com.walisport.lib_socket.extension.observeProtoMessage
 import galaxy.client.proto.Client
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -19,6 +20,9 @@ import kotlinx.coroutines.withTimeoutOrNull
  * @date: 2025/3/14 16:58
  * @description:
  */
-class MainRepository(private val socketManager: WebSocketManager) : BaseRepository() {
+class MainRepository(
+    override val scope: CoroutineScope,
+    private val socketManager: WebSocketManager
+) : BaseRepository() {
 
 }
