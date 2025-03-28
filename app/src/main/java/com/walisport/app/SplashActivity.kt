@@ -2,9 +2,9 @@ package com.walisport.app
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.lifecycle.findViewTreeLifecycleOwner
 import com.walisport.app.data.SplashViewModel
 import com.walisport.app.databinding.ActivitySplashBinding
+import com.walisport.app.ui.MainActivity
 import com.walisport.lib_base.ui.BaseActivity
 import com.walisport.lib_base.ui.viewBind
 import com.walisport.lib_base.utils.LogUtilsExt.logd
@@ -113,15 +113,10 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
     override val mBinding: ActivitySplashBinding by viewBind()
     override val mViewModel: SplashViewModel by viewModel()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        "uid:$uid, token:$token".logd(TAG)
-        mViewModel.startSocketConnectAndLogin(uid, token)
-    }
-
 
     override fun initView(savedInstanceState: Bundle?) {
-
+        "uid:$uid, token:$token".logd(TAG)
+        mViewModel.startSocketConnectAndLogin(uid, token)
     }
 
     override fun initListener() {
@@ -138,8 +133,7 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
             if (seconds == 0) {
                 jumpToMainActivity()
             } else {
-                mBinding.splashCounterDown.text =
-                    getString(R.string.splash_counter_down_skip, seconds.toString())
+                mBinding.splashCounterDown.text = getString(R.string.splash_counter_down_skip, seconds.toString())
             }
         }
     }
