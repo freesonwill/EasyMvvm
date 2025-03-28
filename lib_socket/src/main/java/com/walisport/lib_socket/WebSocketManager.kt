@@ -1,6 +1,7 @@
 package com.walisport.lib_socket
 
 import com.walisport.lib_base.utils.LogUtilsExt.logi
+import com.walisport.lib_socket.data.ApiCode
 import com.walisport.lib_socket.data.ConnectSuccess
 import com.walisport.lib_socket.data.IConnectState
 import com.walisport.lib_socket.data.IRequest
@@ -74,7 +75,7 @@ class WebSocketManager(
                 socket.send(
                     Client.PingBackReq.newBuilder().apply {
                         this.data = "1234567"
-                    }.build().asRemoteRequest(0,2)
+                    }.build().asRemoteRequest(ApiCode.PING)
                 )
             }
         }

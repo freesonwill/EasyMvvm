@@ -4,6 +4,7 @@ import com.walisport.lib_base.data.repository.BaseRepository
 import com.walisport.lib_base.utils.LogUtilsExt.logi
 import com.walisport.lib_common.helper.CountDownHelper
 import com.walisport.lib_socket.WebSocketManager
+import com.walisport.lib_socket.data.ApiCode
 import com.walisport.lib_socket.data.IConnectState
 import com.walisport.lib_socket.data.IResponse
 import com.walisport.lib_socket.data.ResponseTimeOutError
@@ -48,7 +49,7 @@ class SplashRepository(
         //要注意，一定要在同一個scope中
         val deferred = scope.async(Dispatchers.Default) {
             withTimeoutOrNull(3000) {
-                socketManager.observeProtoMessage<Client.LoginResp>(7,7).first()
+                socketManager.observeProtoMessage<Client.LoginResp>(ApiCode.LOGIN).first()
             }
         }
         scope.launch(Dispatchers.Default) {
@@ -59,7 +60,7 @@ class SplashRepository(
                 this.platform = 5
                 this.oddType = 0
             }.build()
-            socketManager.send(req.asRemoteRequest(7,7))
+            socketManager.send(req.asRemoteRequest(ApiCode.LOGIN))
         }
         return deferred.await() ?: ResponseTimeOutError()
     }
