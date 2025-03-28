@@ -30,6 +30,8 @@ message MatchBasicInfo{
     string sport_name = 16;      //球类
     MatchLiveInfo live_info = 17;  //比赛实时信息
     bool bet_stop = 18;         // false: 未停止投注, true: 已停止投注
+    bool tournament_hot = 19;  //是否热门联赛
+    int32 tournament_weight = 20;           //联赛权重
 }
 
 //比赛实时信息

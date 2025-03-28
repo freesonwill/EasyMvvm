@@ -155,7 +155,7 @@ message MultipleBetReq {
 message MultipleBetResp {
   bool success = 1;
   string message = 2;  // 例如："Bet placed successfully."
-  repeated galaxy.common.proto.PlaceBetInfo place_bet_info= 3;
+  repeated galaxy.common.proto.PlaceBetInfo place_bet_info = 3;
 }
 
 
@@ -181,8 +181,8 @@ message GetOrderReq {
   int64 end_time = 3;     //结束时间,13位时间戳
   int32 page = 4;         //required 当前页码
   int32 page_size = 5;    //required 每页大小
-  repeated int32 sport_id = 6;     //required 球类id
-
+  repeated int32 sport_id = 6;     // 球类id
+  int64 match_id = 7; // 比赛id
 }
 
 message GetOrderResp {
@@ -233,6 +233,8 @@ message ReserveBetResp {
 message GetReserveOrderReq {
   int64 start_time = 1; //开始时间,13位时间戳
   int64 end_time = 2;   //结束时间,13位时间戳
+  repeated int32 sport_id = 3;     // 球类id
+  int64 match_id = 4; // 比赛id
 }
 
 message GetReserveOrderResp {
@@ -385,6 +387,11 @@ message MatchMarketUpdate {
 //600-1001: 订单状态推送
 message OrderStatusNotify {
   repeated OrderStatus order_status = 1;
+}
+
+//600-1002: 订单余额推送
+message BalanceNotify {
+  string balance = 1; //余额
 }
 
 message OrderStatus {
