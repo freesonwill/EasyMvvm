@@ -1,9 +1,6 @@
 package com.walisport.lib_common.ui
 
-import android.net.Uri
 import android.os.Bundle
-import android.os.CountDownTimer
-import androidx.activity.OnBackPressedCallback
 import androidx.annotation.CallSuper
 import androidx.annotation.NavigationRes
 import androidx.navigation.NavController
@@ -32,14 +29,10 @@ abstract class BaseNavActivity : BaseActivity<EmptyViewModel, ActvityBaseNavBind
         mBinding.root.post {
             findNavController().setGraph(navigationID(),intent.extras)
         }
-        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                // 返回到上一个 Fragment
-                if (!findNavController().navigateUp()) {
-                    finish()
-                }
-            }
-        })
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        return findNavController().navigateUp() || super.onSupportNavigateUp()
     }
 
     override fun initListener() {

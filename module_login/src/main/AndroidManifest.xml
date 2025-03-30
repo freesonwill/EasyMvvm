@@ -4,12 +4,11 @@
     <application>
         <activity
             android:name=".ui.LoginActivity"
-            android:exported="true">
+            android:exported="false">
 
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="walisport.intent.action.login_activity" />
                 <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="walisport" android:host="login_activity" />
             </intent-filter>
         </activity>

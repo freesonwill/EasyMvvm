@@ -1,0 +1,22 @@
+package com.walisport.app.ui
+
+import android.os.Bundle
+import com.walisport.app.R
+import com.walisport.lib_base.utils.LogUtilsExt.logd
+import com.walisport.lib_common.ContextUtils
+import com.walisport.lib_common.ui.BaseNavActivity
+
+class AppNavActivity : BaseNavActivity() {
+    override fun navigationID(): Int = R.navigation.app_nav_graph
+
+    override fun initView(savedInstanceState: Bundle?) {
+        super.initView(savedInstanceState)
+    }
+
+    override fun lazyLoadData() {
+        super.lazyLoadData()
+        "packageNames:${ContextUtils.getAllPackageName(this)}".logd(TAG)
+    }
+
+
+}

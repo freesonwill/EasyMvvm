@@ -42,5 +42,15 @@
     </fragment>
 
 
+    <activity
+        android:id="@+id/loginActivity"
+        android:name="com.walisport.module_login.ui.LoginActivity"
+        android:label="LoginActivity"
+        >
+
+        <!--<deepLink app:uri="walisport://login_activity?userId={userId}" />-->
+    </activity>
+
+
 </navigation>
 

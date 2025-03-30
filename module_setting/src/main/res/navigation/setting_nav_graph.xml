@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/setting_nav_graph"
+    app:startDestination="@id/settingActivity">
+
+    <activity
+        android:id="@+id/settingActivity"
+        android:name="com.walisport.module_setting.SettingActivity"
+        android:label="SettingActivity" />
+
+    <activity
+        android:id="@+id/loginActivity"
+        android:label="LoginActivity"
+        >
+        <argument
+            android:name="userId"
+            android:defaultValue="Tom"
+            app:argType="string"
+            app:nullable="true" />
+        <deepLink app:uri="walisport://login_activity?userId={userId}" />
+    </activity>
+</navigation>

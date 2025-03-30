@@ -5,12 +5,12 @@ import androidx.navigation.fragment.findNavController
 import com.walisport.lib_base.data.viewmodel.EmptyViewModel
 import com.walisport.lib_base.ui.BaseFragment
 import com.walisport.lib_base.ui.viewBind
-import com.walisport.module_home.databinding.FragmentSecondBinding
+import com.walisport.module_home.databinding.FragmentThirdBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class SecondFragment : BaseFragment<EmptyViewModel,FragmentSecondBinding>() {
-    override val mBinding: FragmentSecondBinding by viewBind()
+class ThirdFragment : BaseFragment<EmptyViewModel,FragmentThirdBinding>() {
+    override val mBinding: FragmentThirdBinding by viewBind()
     override val mViewModel: EmptyViewModel by viewModel()
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -19,7 +19,7 @@ class SecondFragment : BaseFragment<EmptyViewModel,FragmentSecondBinding>() {
 
     override fun initListener() {
         mBinding.root.setOnClickListener {
-            findNavController().navigate(SecondFragmentDirections.actionSecondFragmentToThirdFragment())
+            findNavController().navigate(ThirdFragmentDirections.actionThirdFragmentToHomeFragment())
         }
     }
 
