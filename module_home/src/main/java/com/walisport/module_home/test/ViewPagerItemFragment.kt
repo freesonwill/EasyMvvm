@@ -23,7 +23,7 @@ class ViewPagerItemFragment : BaseFragment<EmptyViewModel, FragmentViewPagerItem
             val navHostFragment = childFragmentManager.findFragmentById(R.id.nav_host_fragment_vp) as NavHostFragment
             // 传递参数到 `NavGraph`
             val navController = navHostFragment.navController
-            navController.setGraph(R.navigation.home_nav_graph_vp, bundle)
+            navController.setGraph(R.navigation.nav_graph_vp_home, bundle)
 
             // 4. 手动 navigate 到 `startDestination`
             val startDestination = navController.graph.startDestinationId

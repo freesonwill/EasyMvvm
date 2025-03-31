@@ -6,6 +6,6 @@ import com.walisport.module_home.R
 class HomeActivity : BaseNavActivity() {
 
     override fun navigationID(): Int {
-        return R.navigation.home_nav_graph
+        return R.navigation.nav_graph_home
     }
 }

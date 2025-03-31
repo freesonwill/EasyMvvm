@@ -6,7 +6,7 @@ import com.walisport.lib_common.ui.BaseNavActivity
 import com.walisport.module_login.R
 
 class LoginActivity : BaseNavActivity() {
-    override fun navigationID(): Int = R.navigation.login_nav_graph
+    override fun navigationID(): Int = R.navigation.nav_graph_login
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)

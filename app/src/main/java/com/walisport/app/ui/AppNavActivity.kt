@@ -7,7 +7,7 @@ import com.walisport.lib_common.ContextUtils
 import com.walisport.lib_common.ui.BaseNavActivity
 
 class AppNavActivity : BaseNavActivity() {
-    override fun navigationID(): Int = R.navigation.app_nav_graph
+    override fun navigationID(): Int = R.navigation.nav_graph_app
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
