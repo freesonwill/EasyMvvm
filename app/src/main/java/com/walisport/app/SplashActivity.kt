@@ -121,6 +121,10 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
 
 
     override fun initView(savedInstanceState: Bundle?) {
+
+    }
+
+    override fun initListener() {
         mBinding.apply {
             splashCounterDown.setOnClickListener {
                 jumpToMainActivity()
@@ -128,11 +132,8 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
         }
     }
 
-    override fun initListener() {
-    }
-
     override fun createObserver() {
-        mViewModel.homeTimeSeconds.observe(mBinding.splashCounterDown.findViewTreeLifecycleOwner()!!) { seconds ->
+        mViewModel.homeTimeSeconds.observe(this) { seconds ->
 
             if (seconds == 0) {
                 jumpToMainActivity()
