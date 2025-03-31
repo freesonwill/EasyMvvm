@@ -15,7 +15,7 @@ class StatusBarDelegate(private val activity: Activity) : IStatusBar {
     override fun setStatusBar(config: IStatusBar.Config) {
         val immersionBar = ImmersionBar.with(activity)
         //如果全屏播放不用设置状态栏颜色
-        if (config.statusBarVisible) {
+        if (config.hideStatusBar) {
             immersionBar.fullScreen(true) //启用全屏模式
             immersionBar.hideBar(BarHide.FLAG_HIDE_BAR) //状态栏隐藏
         } else {

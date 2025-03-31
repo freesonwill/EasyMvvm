@@ -20,12 +20,12 @@ interface IStatusBar {
     /**
      * 状态栏配置
      * @property statusBarColor 状态栏颜色
-     * @property statusBarVisible 是否全屏
+     * @property hideBar 是否全屏
      */
     data class Config(
         //状态栏颜色
         val statusBarColor: Int = android.R.color.black,
-        //是否全屏
-        val statusBarVisible: Boolean = false,
+        //是否隐藏状态栏
+        val hideStatusBar: Boolean = false,
     )
 }

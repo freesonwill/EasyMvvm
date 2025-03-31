@@ -115,11 +115,10 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
     override val mViewModel: SplashViewModel by viewModel()
 
     override fun configStatusBar(): IStatusBar.Config {
-        return IStatusBar.Config(statusBarVisible = true)
+        return IStatusBar.Config(hideStatusBar = true)
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        setStatusBar(IStatusBar.Config(statusBarVisible = true))
     }
 
     override fun initData() {
