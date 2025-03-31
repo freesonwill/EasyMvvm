@@ -16,6 +16,10 @@
         android:resizeableActivity="true"
         >
         <activity
+            android:name=".SplashActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
             android:name=".view.FeedbackSuggestionsActivity"
             android:exported="true">
         <intent-filter>
@@ -28,6 +32,12 @@
             android:name=".MainActivity"
             android:exported="true">
         </activity>
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="false" />
+
+
         <provider
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"
