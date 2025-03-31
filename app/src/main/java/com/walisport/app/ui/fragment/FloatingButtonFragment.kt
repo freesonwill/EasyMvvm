@@ -13,6 +13,7 @@ class FloatingButtonFragment : BaseFragment<FloatingButtonViewModel, FragmentFlo
 
     override val mBinding: FragmentFloatingButtonBinding by viewBind()
     override val mViewModel: FloatingButtonViewModel by viewModel()
+    private var onClickListener: (() -> Unit)? = null
 
     override fun initView(savedInstanceState: Bundle?) {
         setFloatingViewPosition(requireActivity().resources.displayMetrics.heightPixels)
@@ -20,7 +21,7 @@ class FloatingButtonFragment : BaseFragment<FloatingButtonViewModel, FragmentFlo
 
     override fun initListener() {
         mBinding.fab.setPerformClick {
-            // TODO 跳转到投注记录
+            onClickListener?.invoke()
         }
     }
 
@@ -47,5 +48,9 @@ class FloatingButtonFragment : BaseFragment<FloatingButtonViewModel, FragmentFlo
         layoutParams.topMargin = (screenHeight * 2 / 3) - floatingView.height / 2
 
         floatingView.layoutParams = layoutParams
+    }
+
+    fun setOnClickListener(onClickListener: () -> Unit) {
+        this.onClickListener = onClickListener
     }
 }
