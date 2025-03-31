@@ -42,7 +42,7 @@ abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActi
         initListener()
         initData()
         createObserver()
-        setStatusBar(IStatusBar.Config())
+        setStatusBar(configStatusBar())
     }
 
     override fun onResume() {
@@ -53,6 +53,9 @@ abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActi
     override fun setStatusBar(config: IStatusBar.Config) {
         statusBar.setStatusBar(config)
     }
+
+    override fun configStatusBar():IStatusBar.Config = IStatusBar.Config()
+
     /**
      * 是否需要懒加载
      */

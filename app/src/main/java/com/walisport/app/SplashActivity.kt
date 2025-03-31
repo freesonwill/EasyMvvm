@@ -19,7 +19,11 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        setStatusBar(IStatusBar.Config(statusBarVisible = true))
+
+    }
+
+    override fun configStatusBar(): IStatusBar.Config {
+        return IStatusBar.Config(statusBarVisible = true)
     }
 
     override fun initListener() {
