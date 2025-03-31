@@ -73,6 +73,16 @@ class HomeFragment : BaseFragment<EmptyViewModel, FragmentHomeBinding>() {
             //startActivity(Intent().apply { component  = ComponentName(requireActivity().packageName, "com.walisport.module_login.ui.LoginActivity") })
             //findNavController().navigate(R.id.loginFragment)
         }
+
+        mBinding.tv6.setOnClickListener{
+            //
+//            findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToSecondFragment("Tom"))
+
+        }
+
+        mBinding.tv7.setOnClickListener{
+            findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToSecondFragment("Tom"))
+        }
     }
 
     private fun toFragmentInner(){
