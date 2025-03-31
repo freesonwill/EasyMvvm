@@ -19,6 +19,14 @@ class UserDataManager {
             is Int -> {
                 mmkv.putInt(key, value)
             }
+
+            is Long -> {
+                mmkv.putLong(key, value)
+            }
+
+            is Float -> {
+                mmkv.putFloat(key, value)
+            }
         }
     }
 }

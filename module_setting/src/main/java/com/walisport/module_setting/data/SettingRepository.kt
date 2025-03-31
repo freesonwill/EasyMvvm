@@ -1,7 +1,7 @@
 package com.walisport.module_setting.data
 
 import com.walisport.lib_base.data.repository.BaseRepository
-import com.walisport.lib_common.data.UserDataKey.KEY_SKIN
+import com.walisport.lib_common.data.UserDataKey
 import com.walisport.lib_common.data.UserDataManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,7 +17,7 @@ class SettingRepository(override val scope: CoroutineScope) : BaseRepository() {
 
     //设置皮肤背景
     fun setSkinType(type: String) {
-        manager.setKeyValue(KEY_SKIN, type)
+        manager.setKeyValue(UserDataKey.KEY_SKIN.key, type)
         _skinType.tryEmit(type)
     }
 }
