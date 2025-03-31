@@ -1,6 +1,6 @@
 package com.walisport.lib_common.data
 
-object UserDataConstant {
+object UserDataKey {
     //皮肤类型
     const val KEY_SKIN = "Skin"
 

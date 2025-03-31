@@ -1,14 +1,15 @@
 package com.walisport.module_setting.data
 
 import com.walisport.lib_base.data.repository.BaseRepository
-import com.walisport.lib_common.data.UserDataConstant.KEY_SKIN
+import com.walisport.lib_common.data.UserDataKey.KEY_SKIN
 import com.walisport.lib_common.data.UserDataManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.koin.java.KoinJavaComponent.inject
 
-class SettingRepository(override val scope: CoroutineScope, ) : BaseRepository() {
+class SettingRepository(override val scope: CoroutineScope) : BaseRepository() {
+
     private val manager: UserDataManager by inject(UserDataManager::class.java)
     private val _skinType = MutableStateFlow<String?>(null)
     val skinType: StateFlow<String?>
