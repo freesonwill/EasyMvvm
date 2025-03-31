@@ -14,6 +14,11 @@ interface IView {
     fun initView(savedInstanceState: Bundle?)
 
     /**
+     * 初始化数据
+     */
+    fun initData() {}
+
+    /**
      * 初始化监听器
      */
     fun initListener()

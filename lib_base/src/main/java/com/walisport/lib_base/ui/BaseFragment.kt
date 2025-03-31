@@ -42,13 +42,14 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), 
         if (mBinding is ViewDataBinding) {
             (mBinding as ViewDataBinding).lifecycleOwner = viewLifecycleOwner
         }
-        initView(savedInstanceState)
         return mBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initView(savedInstanceState)
         initListener()
+        initData()
         createObserver()
         trackLoadingTime()
     }

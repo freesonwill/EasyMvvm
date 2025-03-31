@@ -2,16 +2,14 @@ package com.walisport.app.ui
 
 import android.content.Intent
 import android.os.Bundle
-import com.walisport.app.BuildConfig
+import com.walisport.app.BuildConfig.token
+import com.walisport.app.BuildConfig.uid
 import com.walisport.app.data.MainViewModel
 import com.walisport.app.databinding.ActivityMainBinding
-import com.walisport.lib_base.data.remote.ApiResponseState
 import com.walisport.lib_base.ui.BaseActivity
 import com.walisport.lib_base.ui.viewBind
 import com.walisport.lib_base.utils.LogUtilsExt.logd
-import com.walisport.module_home.ui.HomeActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import kotlin.random.Random
 
 class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
     override val mBinding: ActivityMainBinding by viewBind()

@@ -21,6 +21,7 @@ class LoginFragment : BaseFragment<EmptyViewModel, FragmentLoginBinding>() {
     override val mBinding: FragmentLoginBinding by viewBind()
     override val mViewModel: EmptyViewModel by viewModel()
     private val args: LoginFragmentArgs by navArgs()
+    private val TAG = this.javaClass.simpleName
 
     override fun initView(savedInstanceState: Bundle?) {
         //val userId = arguments?.getString("userId")

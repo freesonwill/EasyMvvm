@@ -38,6 +38,7 @@ abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActi
         immersionPost()
         initView(savedInstanceState)
         initListener()
+        initData()
         createObserver()
     }
 
