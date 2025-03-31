@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewbinding.ViewBinding
 import com.walisport.lib_base.data.viewmodel.BaseViewModel
+import com.walisport.lib_base.ui.interface_.IStatusBar
 import com.walisport.lib_base.ui.interface_.IView
 import com.walisport.lib_base.utils.CommonUtils.inflateMethod
 import com.walisport.lib_base.utils.LogUtilsExt.logd
@@ -30,12 +31,14 @@ import kotlin.coroutines.EmptyCoroutineContext
  * @date: 2025/3/13 18:38
  * @description: ViewModelFragment基类，自动把ViewModel注入Fragment
  */
-abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), IView, KoinComponent {
+abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), IView, KoinComponent,IStatusBar {
     protected open val TAG = this.javaClass.simpleName
     //是否第一次加载
     private var isFirst: Boolean = true
     protected abstract val mBinding: VB
     protected abstract val mViewModel: VM
+    //设置颜色，默认根据主题颜色设定
+    private val statusBar:IStatusBar by lazy { StatusBarDelegate(requireActivity())  }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -63,6 +66,14 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), 
     override fun onResume() {
         super.onResume()
         onVisible()
+    }
+
+    override fun setStatusBarColor(color: Int) {
+        statusBar.setStatusBarColor(color)
+    }
+
+    override fun setStatusBarVisible(b: Boolean) {
+        statusBar.setStatusBarVisible(b)
     }
 
     /**

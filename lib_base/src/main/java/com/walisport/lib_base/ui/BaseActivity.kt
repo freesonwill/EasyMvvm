@@ -1,19 +1,14 @@
 package com.walisport.lib_base.ui
 
 import android.app.Activity
-import android.graphics.Color
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewbinding.ViewBinding
-import com.gyf.immersionbar.ImmersionBar
-import com.walisport.lib_base.R
 import com.walisport.lib_base.data.viewmodel.BaseViewModel
+import com.walisport.lib_base.ui.interface_.IStatusBar
 import com.walisport.lib_base.ui.interface_.IView
 import com.walisport.lib_base.utils.CommonUtils.inflateMethod
 import kotlinx.coroutines.CoroutineScope
@@ -29,7 +24,7 @@ import kotlin.coroutines.EmptyCoroutineContext
  * @date: 2025/3/14 09:48
  * @description:
  */
-abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActivity(), IView {
+abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActivity(), IView, IStatusBar {
     protected open val TAG = this.javaClass.simpleName
     protected abstract val mBinding: VB
     protected abstract val mViewModel: VM
@@ -37,24 +32,17 @@ abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActi
     private var isFirst: Boolean = true
 
     //设置颜色，默认根据主题颜色设定
-    protected var titleBgColor : Int = 0
+    private val statusBar:IStatusBar by lazy { StatusBarDelegate(this)  }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //immersionPre()
         setContentView(mBinding.root)
-        //immersionPost()
         mViewModel.onInit()
         initView(savedInstanceState)
-        setImmersionBar(titleBgColor)
         initListener()
         initData()
         createObserver()
-
-    }
-    //颜色设置,颜色设置待定，根据根据换肤方案进行修改 0 为主题颜色
-    private fun setImmersionBar(titleBgColor: Int){
-        ImmersionBar.with(this).statusBarColor(if (titleBgColor==0)android.R.color.black else titleBgColor).init();
+        setStatusBarColor(android.R.color.white)
     }
 
     override fun onResume() {
@@ -62,23 +50,13 @@ abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActi
         onVisible()
     }
 
-//    /**
-//     * 沉浸式（setContentView之前）
-//     */
-//    private fun immersionPre(){
-//        enableEdgeToEdge()
-//    }
-//
-//    /**
-//     * 沉浸式（setContentView之后）
-//     */
-//    private fun immersionPost(){
-//        ViewCompat.setOnApplyWindowInsetsListener(mBinding.root) { v, insets ->
-//            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-//            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-//            insets
-//        }
-//    }
+    override fun setStatusBarColor(color: Int) {
+        statusBar.setStatusBarColor(color)
+    }
+
+    override fun setStatusBarVisible(b: Boolean) {
+        statusBar.setStatusBarVisible(b)
+    }
 
     /**
      * 是否需要懒加载
