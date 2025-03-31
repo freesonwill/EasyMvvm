@@ -114,15 +114,16 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
     override val mBinding: ActivitySplashBinding by viewBind()
     override val mViewModel: SplashViewModel by viewModel()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
     override fun configStatusBar(): IStatusBar.Config {
         return IStatusBar.Config(statusBarVisible = true)
     }
 
     override fun initView(savedInstanceState: Bundle?) {
         setStatusBar(IStatusBar.Config(statusBarVisible = true))
+    }
+
+    override fun initData() {
+        super.initData()
         "uid:$uid, token:$token".logd(TAG)
         mViewModel.startSocketConnectAndLogin(uid, token)
     }
