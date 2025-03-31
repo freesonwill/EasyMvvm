@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -17,6 +19,11 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val prop = Properties()
+        prop.load(project.rootProject.file("local.properties").inputStream())
+        buildConfigField("int", "uid", prop.getProperty("user.uid"))
+        buildConfigField("String", "token", prop.getProperty("user.token").let { it->"\"$it\"" })
     }
 
     buildTypes {
@@ -35,10 +42,16 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    sourceSets {
+        getByName("main") {
+            jniLibs.srcDirs("jniLibs")
+        }
+    }
 }
 
 dependencies {
     implementation(project(":lib_common"))
+    implementation(project(":lib_socket"))
     implementation(project(":module_home"))
     implementation(project(":module_login"))
     implementation(project(":module_setting"))

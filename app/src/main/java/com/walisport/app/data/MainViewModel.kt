@@ -1,6 +1,9 @@
 package com.walisport.app.data
 
+import androidx.lifecycle.viewModelScope
 import com.walisport.lib_base.data.viewmodel.BaseViewModel
+import org.koin.core.parameter.parametersOf
+import org.koin.core.component.inject
 
 /**
  * @author: zhangsan
@@ -8,8 +11,5 @@ import com.walisport.lib_base.data.viewmodel.BaseViewModel
  * @description:
  */
 class MainViewModel : BaseViewModel() {
-
-    override fun onInit() {
-        super.onInit()
-    }
+    private val repository : MainRepository by inject { parametersOf(viewModelScope) }
 }

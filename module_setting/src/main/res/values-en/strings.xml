@@ -3,6 +3,7 @@
     <string name="pan">Pan</string>
     <string name="common">Common</string>
     <string name="menu_europe">Europe</string>
+    <string name="menu_hk">HongKong</string>
     <string name="menu_odds_display">Odds Display</string>
     <string name="menu_notice_set">Notice Setting</string>
     <string name="menu_background_set">Background Setting</string>
@@ -16,4 +17,14 @@
     <string name="menu_game_football">Begin(Football)</string>
     <string name="menu_part">Part</string>
     <string name="theme_class">Class</string>
+    <string name="theme_black_blue">Black Blue</string>
+    <string name="theme_black_green">Black Green</string>
+    <string name="theme_black_red">Black Red</string>
+    <string name="theme_white_blue">White Blue</string>
+    <string name="theme_white_green">White Green</string>
+    <string name="cancel">Cancel</string>
+    <string name="confirm">Confirm</string>
+    <string name="method_odds_display">Odds Display Method</string>
+    <string name="explain">Explain</string>
+    <string name="shut_down">Shut Down</string>
 </resources>

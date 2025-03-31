@@ -30,25 +30,16 @@ abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActi
     protected open val TAG = this.javaClass.simpleName
     protected abstract val mBinding: VB
     protected abstract val mViewModel: VM
-    //是否第一次加载
-    private var isFirst: Boolean = true
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         immersionPre()
         setContentView(mBinding.root)
         immersionPost()
-        mViewModel.onInit()
         initView(savedInstanceState)
         initListener()
         initData()
         createObserver()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        onVisible()
     }
 
     /**
@@ -66,21 +57,6 @@ abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActi
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
-        }
-    }
-
-    /**
-     * 是否需要懒加载
-     */
-    private fun onVisible() {
-        if (lifecycle.currentState == Lifecycle.State.STARTED && isFirst) {
-            // 延迟加载 防止 切换动画还没执行完毕时数据就已经加载好了，这时页面会有渲染卡顿
-            lifecycleScope.launch {
-                delay(lazyLoadTime())
-                lazyLoadData()
-                //在Fragment中，只有懒加载过了才能开启网络变化监听
-                isFirst = false
-            }
         }
     }
 }

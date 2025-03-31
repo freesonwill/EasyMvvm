@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@id/textViewScreen"
+    >
+
+    <fragment
+        android:id="@+id/textViewScreen"
+        android:name="com.walisport.module_home.test.ViewPagerItem2Fragment"
+        android:label="TextView Screen"
+        tools:layout="@layout/fragment_view_pager_item2"
+        >
+        <!-- 添加参数 -->
+        <argument
+            android:name="title"
+            app:argType="string"
+            android:defaultValue="default_user" />
+        <action
+            android:id="@+id/action_textViewScreen_to_homeFragment3"
+            app:destination="@id/homeFragment3" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/homeFragment3"
+        android:name="com.walisport.module_home.ui.fragment.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" />
+
+
+</navigation>

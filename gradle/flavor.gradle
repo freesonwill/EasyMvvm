@@ -6,10 +6,13 @@ ext {
     TAG_DEFAULT = "WLS"
 }
 
+apply plugin: 'androidx.navigation.safeargs.kotlin'
+apply plugin: 'kotlin-kapt'
+
 android{
 
     buildFeatures {
-        buildConfig true
+        buildConfig = true
         dataBinding = true
         viewBinding = true
     }
