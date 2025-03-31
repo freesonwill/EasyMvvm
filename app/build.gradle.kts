@@ -42,10 +42,16 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    sourceSets {
+        getByName("main") {
+            jniLibs.srcDirs("jniLibs")
+        }
+    }
 }
 
 dependencies {
     implementation(project(":lib_common"))
+    implementation(project(":lib_socket"))
     implementation(project(":module_home"))
     implementation(project(":module_login"))
     implementation(project(":module_setting"))
