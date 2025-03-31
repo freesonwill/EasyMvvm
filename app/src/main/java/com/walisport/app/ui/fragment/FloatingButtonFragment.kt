@@ -3,16 +3,16 @@ package com.walisport.app.ui.fragment
 import android.os.Bundle
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.fragment.app.viewModels
 import com.walisport.app.databinding.FragmentFloatingButtonBinding
 import com.walisport.app.viewmodel.FloatingButtonViewModel
 import com.walisport.lib_base.ui.BaseFragment
 import com.walisport.lib_base.ui.viewBind
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FloatingButtonFragment : BaseFragment<FloatingButtonViewModel, FragmentFloatingButtonBinding>() {
 
     override val mBinding: FragmentFloatingButtonBinding by viewBind()
-    override val mViewModel: FloatingButtonViewModel by viewModels()
+    override val mViewModel: FloatingButtonViewModel by viewModel()
 
     override fun initView(savedInstanceState: Bundle?) {
         setFloatingViewPosition(requireActivity().resources.displayMetrics.heightPixels)
