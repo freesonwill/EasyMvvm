@@ -1,11 +1,14 @@
 package com.walisport.app.ui.custom
 
+import android.app.Activity
 import android.content.Context
+import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
+import androidx.window.layout.WindowMetricsCalculator
 import com.walisport.app.databinding.LayoutMovableFloatingButtonBinding
 import kotlin.math.abs
 
@@ -29,8 +32,7 @@ class MovableFloatingButton : LinearLayout, View.OnTouchListener {
     }
 
     override fun onTouch(v: View, event: MotionEvent): Boolean {
-        val action = event.action
-        when (action) {
+        when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 downRawX = event.rawX
                 downRawY = event.rawY
@@ -47,8 +49,8 @@ class MovableFloatingButton : LinearLayout, View.OnTouchListener {
                 val parentHeight = viewParent.height
 
                 // 取得狀態欄 & 底部導航欄高度
-                val statusBarHeight = getStatusBarHeight()
-                val navigationBarHeight = getNavigationBarHeight()
+                val statusBarHeight = getStatusBarHeight(context)
+                val navigationBarHeight = getNavigationBarHeight(context)
 
                 // 計算新的 X 座標 (限制在 0 ~ (parentWidth - vWidth))
                 var newX = event.rawX + dX
@@ -84,18 +86,26 @@ class MovableFloatingButton : LinearLayout, View.OnTouchListener {
         }
     }
 
-    private fun getStatusBarHeight(): Int {
-        val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
-        return if (resourceId > 0) resources.getDimensionPixelSize(resourceId) else 0
+    private fun getStatusBarHeight(context: Context): Int {
+        val rect = Rect()
+        val window = (context as? Activity)?.window
+        window?.decorView?.getWindowVisibleDisplayFrame(rect)
+        return rect.top
     }
 
-    private fun getNavigationBarHeight(): Int {
-        val resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android")
-        return if (resourceId > 0) resources.getDimensionPixelSize(resourceId) else 0
+    private fun getNavigationBarHeight(context: Context): Int {
+        val metrics = context.resources.displayMetrics
+        val usableHeight = metrics.heightPixels
+
+        val realMetrics = WindowMetricsCalculator.getOrCreate().computeCurrentWindowMetrics(context).bounds
+        val realHeight = realMetrics.height()
+
+        return if (realHeight > usableHeight) realHeight - usableHeight else 0
     }
 
     override fun performClick(): Boolean {
         performClick?.invoke()
+        super.performClick()
         return true
     }
 
