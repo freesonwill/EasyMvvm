@@ -11,29 +11,15 @@ import com.walisport.lib_base.ui.interface_.IStatusBar
  * @description:
  */
 class StatusBarDelegate(private val activity: Activity) : IStatusBar {
-    //设置颜色，默认根据主题颜色设定
-    private var statusBarColor: Int = android.R.color.black
-    //是否隐藏状态栏，用于全屏播放
-    private var statusBarVisible: Boolean = false
 
-    override fun setStatusBarColor(color: Int):IStatusBar {
-        this.statusBarColor = color
-        return this
-    }
-
-    override fun setStatusBarVisible(b: Boolean):IStatusBar {
-        statusBarVisible = b
-        return this
-    }
-
-    override fun applyStatusBar() {
+    override fun setStatusBar(config: IStatusBar.Config) {
         val immersionBar = ImmersionBar.with(activity)
         //如果全屏播放不用设置状态栏颜色
-        if (statusBarVisible) {
+        if (config.statusBarVisible) {
             immersionBar.fullScreen(true) //启用全屏模式
             immersionBar.hideBar(BarHide.FLAG_HIDE_BAR) //状态栏隐藏
         } else {
-            immersionBar.statusBarColor(statusBarColor)//设置状态栏颜色
+            immersionBar.statusBarColor(config.statusBarColor)//设置状态栏颜色
                 .hideBar(BarHide.FLAG_HIDE_NAVIGATION_BAR)   // 隐藏虚拟导航栏
         }
         immersionBar.init()

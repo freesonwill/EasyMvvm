@@ -7,19 +7,17 @@ package com.walisport.lib_base.ui.interface_
  */
 interface IStatusBar {
     /**
-     * 设置状态栏颜色
-     * @param color
+     * 设置状态栏
      */
-    fun setStatusBarColor(color:Int):IStatusBar
+    fun setStatusBar(config: Config)
 
     /**
-     * 设置状态栏显隐
-     * @param b
+     * 状态栏配置
+     * @property statusBarColor
+     * @property statusBarVisible
      */
-    fun setStatusBarVisible(b:Boolean):IStatusBar
-
-    /**
-     * 生效状态栏
-     */
-    fun applyStatusBar()
+    data class Config(
+        val statusBarColor: Int = android.R.color.transparent,
+        val statusBarVisible: Boolean = true,
+    )
 }

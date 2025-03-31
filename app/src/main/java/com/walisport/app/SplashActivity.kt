@@ -2,10 +2,10 @@ package com.walisport.app
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.lifecycle.findViewTreeLifecycleOwner
 import com.walisport.app.data.SplashViewModel
 import com.walisport.app.databinding.ActivitySplashBinding
 import com.walisport.lib_base.ui.BaseActivity
+import com.walisport.lib_base.ui.interface_.IStatusBar
 import com.walisport.lib_base.ui.viewBind
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -19,7 +19,7 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        setStatusBarVisible(true)
+        setStatusBar(IStatusBar.Config(statusBarVisible = true))
     }
 
     override fun initListener() {

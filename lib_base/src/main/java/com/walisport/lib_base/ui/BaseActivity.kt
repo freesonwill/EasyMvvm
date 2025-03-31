@@ -42,7 +42,7 @@ abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActi
         initListener()
         initData()
         createObserver()
-        applyStatusBar()
+        setStatusBar(IStatusBar.Config())
     }
 
     override fun onResume() {
@@ -50,18 +50,8 @@ abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActi
         onVisible()
     }
 
-    override fun setStatusBarColor(color: Int):IStatusBar {
-        statusBar.setStatusBarColor(color)
-        return statusBar
-    }
-
-    override fun setStatusBarVisible(b: Boolean):IStatusBar {
-        statusBar.setStatusBarVisible(b)
-        return statusBar
-    }
-
-    override fun applyStatusBar() {
-        statusBar.applyStatusBar()
+    override fun setStatusBar(config: IStatusBar.Config) {
+        statusBar.setStatusBar(config)
     }
     /**
      * 是否需要懒加载
