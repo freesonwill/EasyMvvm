@@ -98,8 +98,4 @@ class HomeFragment : BaseFragment<EmptyViewModel, FragmentHomeBinding>() {
 
     }
 
-    override fun lazyLoadData() {
-
-    }
-
 }

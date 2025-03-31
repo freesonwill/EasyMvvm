@@ -13,10 +13,9 @@ class AppNavActivity : BaseNavActivity() {
         super.initView(savedInstanceState)
     }
 
-    override fun lazyLoadData() {
-        super.lazyLoadData()
+    override fun initData() {
+        super.initData()
         "packageNames:${ContextUtils.getAllPackageName(this)}".logd(TAG)
     }
-
 
 }
