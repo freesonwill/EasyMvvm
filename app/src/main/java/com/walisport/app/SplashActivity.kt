@@ -19,7 +19,7 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        setStatusBarColor(android.R.color.transparent)
+        setStatusBarVisible(true)
     }
 
     override fun initListener() {

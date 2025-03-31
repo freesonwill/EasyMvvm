@@ -39,10 +39,11 @@ abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActi
         setContentView(mBinding.root)
         mViewModel.onInit()
         initView(savedInstanceState)
+        upImmersionBar()
         initListener()
         initData()
         createObserver()
-        setStatusBarColor(android.R.color.white)
+
     }
 
     override fun onResume() {
@@ -54,6 +55,9 @@ abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActi
         statusBar.setStatusBarColor(color)
     }
 
+    override fun upImmersionBar() {
+        statusBar.upImmersionBar()
+    }
     override fun setStatusBarVisible(b: Boolean) {
         statusBar.setStatusBarVisible(b)
     }

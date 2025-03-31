@@ -8,4 +8,5 @@ package com.walisport.lib_base.ui.interface_
 interface IStatusBar {
     fun setStatusBarColor(color:Int)
     fun setStatusBarVisible(b:Boolean)
+    fun upImmersionBar()
 }
