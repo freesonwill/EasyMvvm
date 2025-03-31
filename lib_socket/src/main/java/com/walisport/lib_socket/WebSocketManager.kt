@@ -37,6 +37,8 @@ class WebSocketManager(
     companion object {
         private const val heartbeatInterval: Long = 10000
         private const val reconnectInterval: Long = 5000
+
+        const val responseTimeout: Long = 5000
     }
     init {
         observeState()
