@@ -39,11 +39,10 @@ abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActi
         setContentView(mBinding.root)
         mViewModel.onInit()
         initView(savedInstanceState)
-        upImmersionBar()
         initListener()
         initData()
         createObserver()
-
+        applyStatusBar()
     }
 
     override fun onResume() {
@@ -51,17 +50,19 @@ abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActi
         onVisible()
     }
 
-    override fun setStatusBarColor(color: Int) {
+    override fun setStatusBarColor(color: Int):IStatusBar {
         statusBar.setStatusBarColor(color)
+        return statusBar
     }
 
-    override fun upImmersionBar() {
-        statusBar.upImmersionBar()
-    }
-    override fun setStatusBarVisible(b: Boolean) {
+    override fun setStatusBarVisible(b: Boolean):IStatusBar {
         statusBar.setStatusBarVisible(b)
+        return statusBar
     }
 
+    override fun applyStatusBar() {
+        statusBar.applyStatusBar()
+    }
     /**
      * 是否需要懒加载
      */

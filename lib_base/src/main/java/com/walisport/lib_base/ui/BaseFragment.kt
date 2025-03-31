@@ -61,6 +61,7 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), 
         initData()
         createObserver()
         trackLoadingTime()
+        applyStatusBar()
     }
 
     override fun onResume() {
@@ -68,14 +69,19 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), 
         onVisible()
     }
 
-    override fun setStatusBarColor(color: Int) {
+    override fun setStatusBarColor(color: Int):IStatusBar {
         statusBar.setStatusBarColor(color)
+        return statusBar
     }
 
-    override fun setStatusBarVisible(b: Boolean) {
+    override fun setStatusBarVisible(b: Boolean):IStatusBar {
         statusBar.setStatusBarVisible(b)
+        return statusBar
     }
 
+    override fun applyStatusBar() {
+        statusBar.applyStatusBar()
+    }
     /**
      * 是否需要懒加载
      */
