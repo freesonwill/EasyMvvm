@@ -46,14 +46,21 @@ class MovableFloatingButton : LinearLayout, View.OnTouchListener {
                 val parentWidth = viewParent.width
                 val parentHeight = viewParent.height
 
+                // 取得狀態欄 & 底部導航欄高度
+                val statusBarHeight = getStatusBarHeight()
+                val navigationBarHeight = getNavigationBarHeight()
+
+                // 計算新的 X 座標 (限制在 0 ~ (parentWidth - vWidth))
                 var newX = event.rawX + dX
                 newX = 0f.coerceAtLeast(newX)
                 newX = (parentWidth - vWidth).toFloat().coerceAtMost(newX)
 
+                // 計算新的 Y 座標 (限制在 狀態欄底部 ~ 底部導航欄上方)
                 var newY = event.rawY + dY
-                newY = 0f.coerceAtLeast(newY)
-                newY = (parentHeight - vHeight).toFloat().coerceAtMost(newY)
+                newY = statusBarHeight.toFloat().coerceAtLeast(newY)
+                newY = (parentHeight - navigationBarHeight - vHeight).toFloat().coerceAtMost(newY)
 
+                // 設定位置
                 v.animate()
                     .x(newX)
                     .y(newY)
@@ -75,6 +82,16 @@ class MovableFloatingButton : LinearLayout, View.OnTouchListener {
             }
             else -> return super.onTouchEvent(event)
         }
+    }
+
+    private fun getStatusBarHeight(): Int {
+        val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
+        return if (resourceId > 0) resources.getDimensionPixelSize(resourceId) else 0
+    }
+
+    private fun getNavigationBarHeight(): Int {
+        val resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android")
+        return if (resourceId > 0) resources.getDimensionPixelSize(resourceId) else 0
     }
 
     override fun performClick(): Boolean {
