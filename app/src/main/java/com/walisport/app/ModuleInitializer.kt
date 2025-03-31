@@ -8,6 +8,9 @@ import com.walisport.app.data.MainViewModel
 import com.walisport.app.data.SplashViewModel
 import com.walisport.lib_base.ApplicationModuleInitializer
 import com.walisport.lib_base.utils.LogUtilsExt.logd
+import com.walisport.lib_common.CommonModuleInitializer
+import com.walisport.lib_socket.SocketModuleInitializer
+import kotlinx.coroutines.CoroutineScope
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
@@ -29,7 +32,7 @@ class ModuleInitializer : Initializer<String> {
     }
 
     override fun dependencies(): List<Class<out Initializer<*>>> {
-        return listOf(ApplicationModuleInitializer::class.java)
+        return listOf(ApplicationModuleInitializer::class.java, SocketModuleInitializer::class.java, CommonModuleInitializer::class.java)
     }
 
     private val viewModules = module {
@@ -37,8 +40,8 @@ class ModuleInitializer : Initializer<String> {
         viewModelOf(::SplashViewModel)
     }
     private val repoModules = module {
-        factoryOf(::MainRepository)
-        factoryOf(::SplashRepository)
+        factory { (scope: CoroutineScope) -> MainRepository(scope, get()) }
+        factory { (scope: CoroutineScope) -> SplashRepository(scope, get()) }
     }
     private val moduleList:List<Module> = listOf(viewModules,repoModules)
 }

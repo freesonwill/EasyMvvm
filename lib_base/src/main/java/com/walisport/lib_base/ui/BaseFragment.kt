@@ -20,9 +20,7 @@ import com.walisport.lib_base.utils.LogUtilsExt.logd
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.koin.core.component.KoinComponent
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
@@ -49,16 +47,13 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), 
         if (mBinding is ViewDataBinding) {
             (mBinding as ViewDataBinding).lifecycleOwner = viewLifecycleOwner
         }
+        initView(savedInstanceState)
         return mBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        isFirst = true
-        mViewModel.onInit()
-        initView(savedInstanceState)
         initListener()
-        initData()
         createObserver()
         trackLoadingTime()
     }

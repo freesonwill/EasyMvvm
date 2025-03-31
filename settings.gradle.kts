@@ -9,6 +9,7 @@ pluginManagement {
         }
         mavenCentral()
         gradlePluginPortal()
+        google()
     }
 }
 dependencyResolutionManagement {
@@ -27,3 +28,4 @@ include(":lib_database")
 include(":module_login")
 include(":module_home")
 include(":module_setting")
+include(":lib_socket")

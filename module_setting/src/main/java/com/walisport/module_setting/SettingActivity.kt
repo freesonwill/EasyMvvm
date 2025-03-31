@@ -39,8 +39,4 @@ class SettingActivity : BaseActivity<EmptyViewModel, ActivitySettingBinding>() {
 
     }
 
-    override fun lazyLoadData() {
-
-    }
-
 }
