@@ -1,6 +1,7 @@
 package com.walisport.lib_base.ui
 
 import android.app.Activity
+import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -10,6 +11,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewbinding.ViewBinding
+import com.gyf.immersionbar.ImmersionBar
+import com.walisport.lib_base.R
 import com.walisport.lib_base.data.viewmodel.BaseViewModel
 import com.walisport.lib_base.ui.interface_.IView
 import com.walisport.lib_base.utils.CommonUtils.inflateMethod
@@ -33,17 +36,25 @@ abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActi
     //是否第一次加载
     private var isFirst: Boolean = true
 
+    //设置颜色，默认根据主题颜色设定
+    protected var titleBgColor : Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        immersionPre()
+        //immersionPre()
         setContentView(mBinding.root)
-        immersionPost()
+        //immersionPost()
         mViewModel.onInit()
         initView(savedInstanceState)
+        setImmersionBar(titleBgColor)
         initListener()
         initData()
         createObserver()
+
+    }
+    //颜色设置,颜色设置待定，根据根据换肤方案进行修改 0 为主题颜色
+    private fun setImmersionBar(titleBgColor: Int){
+        ImmersionBar.with(this).statusBarColor(if (titleBgColor==0)android.R.color.black else titleBgColor).init();
     }
 
     override fun onResume() {
@@ -51,23 +62,23 @@ abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActi
         onVisible()
     }
 
-    /**
-     * 沉浸式（setContentView之前）
-     */
-    private fun immersionPre(){
-        enableEdgeToEdge()
-    }
-
-    /**
-     * 沉浸式（setContentView之后）
-     */
-    private fun immersionPost(){
-        ViewCompat.setOnApplyWindowInsetsListener(mBinding.root) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
-    }
+//    /**
+//     * 沉浸式（setContentView之前）
+//     */
+//    private fun immersionPre(){
+//        enableEdgeToEdge()
+//    }
+//
+//    /**
+//     * 沉浸式（setContentView之后）
+//     */
+//    private fun immersionPost(){
+//        ViewCompat.setOnApplyWindowInsetsListener(mBinding.root) { v, insets ->
+//            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+//            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+//            insets
+//        }
+//    }
 
     /**
      * 是否需要懒加载

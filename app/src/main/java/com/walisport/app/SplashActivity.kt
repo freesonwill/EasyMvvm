@@ -18,9 +18,8 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
         super.onCreate(savedInstanceState)
     }
 
-
     override fun initView(savedInstanceState: Bundle?) {
-
+        titleBgColor = android.R.color.transparent
     }
 
     override fun initListener() {
