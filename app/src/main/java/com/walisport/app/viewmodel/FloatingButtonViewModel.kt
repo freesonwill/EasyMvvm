@@ -14,7 +14,7 @@ class FloatingButtonViewModel(private val repo: FloatingButtonRepository) : Base
 
     init {
         viewModelScope.launch {
-            repo.getBettingCount().collect {
+            repo.observeBettingCount().collect {
                 _onBettingCount.value = it
             }
         }

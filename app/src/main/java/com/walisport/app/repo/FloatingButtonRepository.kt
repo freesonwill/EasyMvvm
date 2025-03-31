@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 class FloatingButtonRepository: BaseRepository() {
 
     // TODO 測試用，須改成監聽下注list size
-    fun getBettingCount(): Flow<Int> {
+    fun observeBettingCount(): Flow<Int> {
         var count = 0
         return MutableSharedFlow<Int>().apply {
             scope.launch {
