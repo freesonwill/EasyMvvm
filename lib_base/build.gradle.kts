@@ -34,6 +34,10 @@ android {
 }
 
 dependencies {
+    api(libs.navigation.ui)
+    api(libs.navigation.ui.ktx)
+    api(libs.navigation.fragment)
+    api(libs.navigation.fragment.ktx)
     api(libs.startup)
     api(libs.koin)
     implementation(libs.androidx.core.ktx)

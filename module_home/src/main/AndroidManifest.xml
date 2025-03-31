@@ -3,8 +3,10 @@
 
     <application>
         <activity
-            android:name=".MainActivity"
-            android:exported="false" />
+            android:name=".ui.HomeActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Wsl.Android">
+        </activity>
     </application>
 
 </manifest>

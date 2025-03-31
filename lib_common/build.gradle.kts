@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
 }
+apply(from = rootProject.file("gradle/flavor.gradle"))
 
 android {
     namespace = "com.walisport.lib_common"

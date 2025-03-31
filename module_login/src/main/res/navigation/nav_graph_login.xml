@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_login"
+    app:startDestination="@id/loginFragment">
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.walisport.module_login.ui.fragment.LoginFragment"
+        android:label="LoginFragment"
+        tools:layout="@layout/fragment_login">
+
+        <argument
+            android:name="userId"
+            app:argType="string"
+            app:nullable="true" />
+
+        <deepLink app:uri="walisport://module_login/loginFragment?userId={userId}" />
+
+
+        <action
+            android:id="@+id/action_loginFragment_to_loginSecondFragment"
+            app:destination="@id/loginSecondFragment">
+            <argument
+                android:name="username"
+                android:defaultValue="Guest"
+                app:argType="string" />
+            <argument
+                android:name="age"
+                android:defaultValue="0"
+                app:argType="integer" />
+        </action>
+    </fragment>
+
+    <fragment
+        android:id="@+id/loginSecondFragment"
+        android:name="com.walisport.module_login.ui.fragment.LoginSecondFragment"
+        android:label="fragment_login_second"
+        tools:layout="@layout/fragment_login_second">
+
+        <deepLink app:uri="walisport://module_login/loginSecondFragment" />
+    </fragment>
+
+
+    <activity
+        android:id="@+id/loginActivity"
+        android:name="com.walisport.module_login.ui.LoginActivity"
+        android:label="LoginActivity"
+        >
+
+        <!--<deepLink app:uri="walisport://login_activity?userId={userId}" />-->
+    </activity>
+
+
+</navigation>
+

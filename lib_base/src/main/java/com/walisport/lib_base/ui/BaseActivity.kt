@@ -37,17 +37,11 @@ abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(mBinding.root)
-        mViewModel.onInit()
         initView(savedInstanceState)
         initListener()
         initData()
         createObserver()
         setStatusBar(IStatusBar.Config())
-    }
-
-    override fun onResume() {
-        super.onResume()
-        onVisible()
     }
 
     override fun setStatusBar(config: IStatusBar.Config) {

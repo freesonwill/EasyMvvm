@@ -42,18 +42,19 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    sourceSets {
+        getByName("main") {
+            jniLibs.srcDirs("jniLibs")
+        }
+    }
 }
 
 dependencies {
     implementation(project(":lib_common"))
+    implementation(project(":lib_socket"))
     implementation(project(":module_home"))
     implementation(project(":module_login"))
     implementation(project(":module_setting"))
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
-    implementation(libs.androidx.activity)
-    implementation(libs.androidx.constraintlayout)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

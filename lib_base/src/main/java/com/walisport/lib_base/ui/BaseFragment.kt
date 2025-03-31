@@ -14,15 +14,14 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewbinding.ViewBinding
 import com.walisport.lib_base.data.viewmodel.BaseViewModel
 import com.walisport.lib_base.ui.interface_.IStatusBar
+import com.walisport.lib_base.ui.interface_.IStatusBar
 import com.walisport.lib_base.ui.interface_.IView
 import com.walisport.lib_base.utils.CommonUtils.inflateMethod
 import com.walisport.lib_base.utils.LogUtilsExt.logd
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.koin.core.component.KoinComponent
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
@@ -32,9 +31,6 @@ import kotlin.coroutines.EmptyCoroutineContext
  * @description: ViewModelFragment基类，自动把ViewModel注入Fragment
  */
 abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), IView, KoinComponent,IStatusBar {
-    protected open val TAG = this.javaClass.simpleName
-    //是否第一次加载
-    private var isFirst: Boolean = true
     protected abstract val mBinding: VB
     protected abstract val mViewModel: VM
     //设置颜色，默认根据主题颜色设定
@@ -54,8 +50,6 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        isFirst = true
-        mViewModel.onInit()
         initView(savedInstanceState)
         initListener()
         initData()
@@ -63,28 +57,8 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), 
         trackLoadingTime()
     }
 
-    override fun onResume() {
-        super.onResume()
-        onVisible()
-    }
-
     override fun setStatusBar(config: IStatusBar.Config) {
         statusBar.setStatusBar(config)
-    }
-
-    /**
-     * 是否需要懒加载
-     */
-    private fun onVisible() {
-        if (lifecycle.currentState == Lifecycle.State.STARTED && isFirst) {
-            // 延迟加载 防止 切换动画还没执行完毕时数据就已经加载好了，这时页面会有渲染卡顿
-            lifecycleScope.launch {
-                delay(lazyLoadTime())
-                lazyLoadData()
-                //在Fragment中，只有懒加载过了才能开启网络变化监听
-                isFirst = false
-            }
-        }
     }
 
     /**
