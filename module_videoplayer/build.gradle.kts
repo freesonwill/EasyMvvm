@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.videoplayer"
+    namespace = "com.walisport.videoplayer"
     compileSdk = 34
 
     defaultConfig {

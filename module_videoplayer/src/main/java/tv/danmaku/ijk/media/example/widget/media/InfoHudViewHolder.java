@@ -7,7 +7,7 @@ import android.util.SparseArray;
 import android.view.View;
 import android.widget.TableLayout;
 
-import com.example.videoplayer.R;
+import com.walisport.videoplayer.R;
 
 import java.util.Locale;
 

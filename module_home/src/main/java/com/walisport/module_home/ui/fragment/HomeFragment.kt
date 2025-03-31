@@ -83,6 +83,10 @@ class HomeFragment : BaseFragment<EmptyViewModel, FragmentHomeBinding>() {
         mBinding.tv7.setOnClickListener{
             findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToSecondFragment("Tom"))
         }
+
+        mBinding.tv8.setOnClickListener{
+            findNavController().navigate(Uri.parse("walisport://video_landscape_activity?userId=lucy"))
+        }
     }
 
     private fun toFragmentInner(){

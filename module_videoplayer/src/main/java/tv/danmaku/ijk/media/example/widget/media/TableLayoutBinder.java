@@ -25,7 +25,7 @@ import android.view.ViewGroup;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
-import com.example.videoplayer.R;
+import com.walisport.videoplayer.R;
 
 
 public class TableLayoutBinder {

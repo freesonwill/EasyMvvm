@@ -1,14 +1,13 @@
-package com.example.videoplayer
+package com.walisport.videoplayer.ui
 
 import android.app.Activity
 import android.net.Uri
 import android.os.Bundle
-import android.view.View
-import android.widget.Button
 import android.widget.ImageView
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import com.walisport.videoplayer.R
 import tv.danmaku.ijk.media.example.widget.media.AndroidMediaController
 import tv.danmaku.ijk.media.example.widget.media.IjkVideoView
 
@@ -22,7 +21,8 @@ class VideoLandscapeActivity : Activity() {
         setContentView(R.layout.activity_video_landscape)
         hideSystemUI()
 
-        val testUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
+        val testUrl =
+            "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
 
 //        val url =
 //            "https://jjghvku4.jmyuyu.com/sport/201_3455709_1.flv?auth_key=1742356008-0-0-cebbd8cd6498a8af12b4d1962956fa99"

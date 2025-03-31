@@ -21,7 +21,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import com.example.videoplayer.R;
+import com.walisport.videoplayer.R;
 
 
 public class Settings {
