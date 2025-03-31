@@ -38,6 +38,7 @@
         android:name="com.walisport.module_login.ui.fragment.LoginSecondFragment"
         android:label="fragment_login_second"
         tools:layout="@layout/fragment_login_second">
+
         <deepLink app:uri="walisport://module_login/loginSecondFragment" />
     </fragment>
 

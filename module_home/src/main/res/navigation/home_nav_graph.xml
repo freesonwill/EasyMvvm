@@ -107,5 +107,19 @@
             />
     </fragment>
 
+    <fragment
+        android:id="@+id/viewPagerFragment"
+        android:name="com.walisport.module_home.test.ViewPagerFragment"
+        android:label="ViewPagerFragment"
+        >
+        <action
+            android:id="@+id/action_viewPagerItem2Fragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:popUpToSaveState="true"
+            app:restoreState="true"
+            />
+    </fragment>
+
+
 
 </navigation>

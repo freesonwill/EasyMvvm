@@ -15,7 +15,7 @@
 ```
 
 - (3) 命名规范(建议): '模块名_nav_graph'
-建议一个Activity，多个fragment, activity存在缺点。
+建议一个Activity，多个fragment。
 
 ## 2. 跳转Activity
 
@@ -89,7 +89,7 @@ module_nav_graph.xml
 （2）隐式，通过deepLink跳转
 
 需要在fragment所在module的nav_graph配置
-![img_2.png](z_doc/img/img_2.png)
+![img_2.png](img/img_2.png)
 
 ## 4. deeplink
 
@@ -98,8 +98,8 @@ deeplink的泄漏问题:
    (1) exported = true
 
    (2) action,uri配置正确
-![img.png](z_doc/img/img_5.png)
-![img_1.png](z_doc/img/img_1.png)
+![img.png](img/img_5.png)
+![img_1.png](img/img_1.png)
 
 外部应用只能打开activity的deepLink，打不开fragment的deepLink
 navigation配置了activity的deepLink标签，才能在内部才能使用
@@ -122,8 +122,8 @@ val args: LoginFragmentArgs by navArgs()
 - 
 - activity
 需要在action配置argument，在activity配置无效
-![img_3.png](z_doc/img/img_3.png)
-![img_4.png](z_doc/img/img_4.png)
+![img_3.png](img/img_3.png)
+![img_4.png](img/img_4.png)
 ```kotlin
 //发送
 findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToLoginActivity("actionHomeFragmentToLoginActivity"))
@@ -206,8 +206,8 @@ val navOptions = NavOptions.Builder()
             app:popUpToInclusive="true"/>
 </fragment>
 ```
-app:popUpTo="@id/homeFragment" //清除 homeFragment 之后的所有 Fragment（不包含 homeFragment 本身）
-app:popUpToInclusive="true" //连 homeFragment 也会被清除，等于完全移除 homeFragment 及其之后的所有 Fragment
+app:popUpTo="@id/homeFragment" //清除 homeFragment 之后的所有 Fragment（不包含 homeFragment 本身）    
+app:popUpToInclusive="true" //连 homeFragment 也会被清除，等于完全移除 homeFragment 及其之后的所有 Fragment    
 
 
 ### 循环路由
@@ -223,6 +223,14 @@ A->B-C->A，C-A时需要配置popUpToInclusive，popUpTo
 ### 保存Fragment状态
 app:restoreState="true"    
 app:popUpToSaveState="true"
-
-## 总结
-总结：activity隐式跳转存在deepLink泄漏风险，推荐一个Activity+多个Fragment实现
+```xml
+<action
+  android:id="@+id/swap_stack"
+  app:destination="@id/second_stack"
+  app:restoreState="true"
+  app:popUpTo="@id/first_stack_start_destination"
+  app:popUpToSaveState="true"
+/>
+```
+## ViewPager2中的fragment跳转和返回
+要用activity的navController进行路由
