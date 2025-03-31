@@ -39,8 +39,8 @@ abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActi
         setContentView(mBinding.root)
         initView(savedInstanceState)
         initListener()
-        createObserver()
         initData()
+        createObserver()
         setStatusBar(configStatusBar())
     }
 
