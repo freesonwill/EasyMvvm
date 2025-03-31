@@ -1,0 +1,34 @@
+package com.walisport.module_setting
+
+import android.content.Context
+import androidx.startup.Initializer
+import com.walisport.lib_base.ApplicationModuleInitializer
+import com.walisport.module_setting.data.SettingRepository
+import com.walisport.module_setting.data.SettingViewModel
+import kotlinx.coroutines.CoroutineScope
+import org.koin.androidx.viewmodel.dsl.viewModelOf
+import org.koin.core.context.loadKoinModules
+import org.koin.core.module.Module
+import org.koin.dsl.module
+
+class SettingModuleInitializer : Initializer<String> {
+
+    private val TAG = this.javaClass.simpleName
+
+    override fun create(context: Context): String {
+        loadKoinModules(moduleList)
+        return TAG
+    }
+
+    override fun dependencies(): List<Class<out Initializer<*>>> {
+        return listOf(ApplicationModuleInitializer::class.java)
+    }
+
+    private val viewModules = module {
+        viewModelOf(::SettingViewModel)
+    }
+    private val repoModules = module {
+        factory { (scope: CoroutineScope) -> SettingRepository(scope) }
+    }
+    private val moduleList: List<Module> = listOf(viewModules, repoModules)
+}
