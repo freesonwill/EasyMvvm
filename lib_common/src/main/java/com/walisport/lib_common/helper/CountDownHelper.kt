@@ -22,7 +22,7 @@ class CountDownHelper {
 
     var countDown: Int = 0 //阶段倒计时
         set(value) {
-            field = value - 1000 //服务器有延时
+            field = value //服务器有延时
             LogUtils.dTag(TAG, "countDown set:${value}-${field},isMainThread:$isMainThread")
             _countDownSetStampTime = System.currentTimeMillis()
 
