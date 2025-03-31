@@ -21,6 +21,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
@@ -29,7 +30,8 @@ import kotlin.coroutines.EmptyCoroutineContext
  * @date: 2025/3/13 18:38
  * @description: ViewModelFragment基类，自动把ViewModel注入Fragment
  */
-abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), IView, KoinComponent,IStatusBar {
+abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), IView,
+    KoinComponent,IStatusBar {
     protected abstract val mBinding: VB
     protected abstract val mViewModel: VM
     //设置颜色，默认根据主题颜色设定
@@ -59,6 +61,7 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), 
         statusBar.setStatusBar(config)
     }
 
+    override fun configStatusBar():IStatusBar.Config = IStatusBar.Config()
     /**
      * 是否开启统计加载时间
      */

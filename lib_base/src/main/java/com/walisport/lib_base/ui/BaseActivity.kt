@@ -43,6 +43,7 @@ abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActi
         setStatusBar(configStatusBar())
     }
 
+
     override fun setStatusBar(config: IStatusBar.Config) {
         statusBar.setStatusBar(config)
     }

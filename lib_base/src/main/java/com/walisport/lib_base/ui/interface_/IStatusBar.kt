@@ -7,7 +7,6 @@ package com.walisport.lib_base.ui.interface_
  * @description:
  */
 interface IStatusBar {
-
     /**
      * 配置StatusBar
      */
@@ -25,8 +24,8 @@ interface IStatusBar {
      */
     data class Config(
         //状态栏颜色
-        val statusBarColor: Int = android.R.color.transparent,
+        val statusBarColor: Int = android.R.color.black,
         //是否全屏
-        val statusBarVisible: Boolean = true,
+        val statusBarVisible: Boolean = false,
     )
 }

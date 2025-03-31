@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import com.walisport.app.data.SplashViewModel
 import com.walisport.app.databinding.ActivitySplashBinding
+import com.walisport.app.ui.MainActivity
 import com.walisport.lib_base.ui.BaseActivity
 import com.walisport.lib_base.ui.interface_.IStatusBar
 import com.walisport.lib_base.ui.viewBind
@@ -116,7 +117,9 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
-
+    override fun configStatusBar(): IStatusBar.Config {
+        return IStatusBar.Config(statusBarVisible = true)
+    }
 
     override fun initView(savedInstanceState: Bundle?) {
         setStatusBar(IStatusBar.Config(statusBarVisible = true))
