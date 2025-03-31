@@ -17,7 +17,7 @@ class SettingRepository(override val scope: CoroutineScope) : BaseRepository() {
 
     //设置皮肤背景
     fun setSkinType(type: String) {
-        manager.setKeyValue(UserDataKey.KEY_SKIN.key, type)
+        manager.setKeyValue(UserDataKey.KEY_SKIN, type)
         _skinType.tryEmit(type)
     }
 }

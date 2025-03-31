@@ -6,26 +6,26 @@ class UserDataManager {
 
     private val mmkv = MMKV.defaultMMKV()
 
-    fun <T> setKeyValue(key: String, value: T) {
+    fun <T> setKeyValue(key: UserDataKey, value: T) {
         when (value) {
             is String -> {
-                mmkv.putString(key, value)
+                mmkv.putString(key.key, value)
             }
 
             is Boolean -> {
-                mmkv.putBoolean(key, value)
+                mmkv.putBoolean(key.key, value)
             }
 
             is Int -> {
-                mmkv.putInt(key, value)
+                mmkv.putInt(key.key, value)
             }
 
             is Long -> {
-                mmkv.putLong(key, value)
+                mmkv.putLong(key.key, value)
             }
 
             is Float -> {
-                mmkv.putFloat(key, value)
+                mmkv.putFloat(key.key, value)
             }
         }
     }
