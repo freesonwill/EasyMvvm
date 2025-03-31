@@ -3,9 +3,9 @@
 
 #include <android/log.h>
 
-#include "realgo/realgo.h"
+#include "libduckgo/duckgo.h"
 
-#define  LOG_TAG    "realgo"
+#define  LOG_TAG    "duckgo"
 #define  LOGD(...)  __android_log_print(ANDROID_LOG_DEBUG,LOG_TAG,__VA_ARGS__)
 
 // https://stackoverflow.com/a/49566764
@@ -15,11 +15,11 @@ jobject NewInteger(JNIEnv *env, int value) {
     return env->NewObject(integerClass, integerConstructor, static_cast<jint>(value));
 }
 
-static CCPayloadCipher *getChipper(JNIEnv *env, jobject thiz) {
+static CCSPayloadCipher *getChipper(JNIEnv *env, jobject thiz) {
     jclass jc = env->GetObjectClass(thiz);
     jfieldID fid = env->GetFieldID(jc, "mNativePtr", "J");
     jlong p = (jlong) env->GetLongField(thiz, fid);
-    CCPayloadCipher *chiper = (CCPayloadCipher *) p;
+    CCSPayloadCipher *chiper = (CCSPayloadCipher *) p;
     return chiper;
 }
 
@@ -36,7 +36,7 @@ Java_com_walisport_lib_1socket_NativeLib_pack(JNIEnv *env,
 
     //LOGD("[jni] dataSize = %d", dataSize);
 
-    CCPayloadCipher *chiper = getChipper(env, thiz);
+    CCSPayloadCipher *chiper = getChipper(env, thiz);
     LOGD("get chiper %p", chiper);
 
     unsigned char outData[SOCKET_BUFFER];
@@ -78,7 +78,7 @@ Java_com_walisport_lib_1socket_NativeLib_newPack(JNIEnv *env,
                                                          jint dataSize
 ) {
     // 获取CCPayloadCipher对象
-    CCPayloadCipher *cipher = getChipper(env, thiz);
+    CCSPayloadCipher *cipher = getChipper(env, thiz);
     if (cipher == nullptr) {
         return nullptr;
     }
@@ -108,7 +108,7 @@ extern "C"
 JNIEXPORT jlong JNICALL
 Java_com_walisport_lib_1socket_NativeLib_nativeCreateChiper(JNIEnv *env, jobject thiz) {
 
-    CCPayloadCipher *chiper = new CCPayloadCipher();
+    CCSPayloadCipher *chiper = new CCSPayloadCipher();
 
     LOGD("create chipper=%p", chiper);
     return (jlong) chiper;
@@ -118,7 +118,7 @@ extern "C"
 JNIEXPORT void JNICALL
 Java_com_walisport_lib_1socket_NativeLib_reset(JNIEnv *env, jobject thiz) {
 
-    CCPayloadCipher *chiper = getChipper(env, thiz);
+    CCSPayloadCipher *chiper = getChipper(env, thiz);
 
     LOGD("reset chipper=%p", chiper);
     chiper->reset();
@@ -130,7 +130,7 @@ Java_com_walisport_lib_1socket_NativeLib_unpack(JNIEnv *env,
                                                         jobject thiz,
                                                         jbyteArray data
 ) {
-    CCPayloadCipher *chiper = getChipper(env, thiz);
+    CCSPayloadCipher *chiper = getChipper(env, thiz);
 
     jsize len = env->GetArrayLength(data);
     jbyte *body = env->GetByteArrayElements(data, 0);
@@ -175,7 +175,7 @@ extern "C"
 JNIEXPORT jobjectArray JNICALL
 Java_com_walisport_lib_1socket_NativeLib_newUnpack(JNIEnv *env, jobject thiz,
                                                            jbyteArray data) {
-    CCPayloadCipher *cipher = getChipper(env, thiz);
+    CCSPayloadCipher *cipher = getChipper(env, thiz);
 
     // Get the length of the byte array
     jsize len = env->GetArrayLength(data);
@@ -219,7 +219,7 @@ extern "C"
 JNIEXPORT void JNICALL
 Java_com_walisport_lib_1socket_NativeLib_nativeFinalizer(JNIEnv *env, jobject thiz,
                                                                  jlong ptr) {
-    CCPayloadCipher *chiper = getChipper(env, thiz);
+    CCSPayloadCipher *chiper = getChipper(env, thiz);
 
     LOGD("delete chipper=%p", chiper);
     if (chiper) {

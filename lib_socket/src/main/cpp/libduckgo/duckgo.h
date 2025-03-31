@@ -4,22 +4,22 @@
 
 #include <stdint.h>
 
-#define REALGO_VERSION      5
+#define DUCKGO_VERSION      6
 #define SOCKET_BUFFER       8192
 typedef unsigned char       BYTE;
 typedef unsigned int        UINT32;
 typedef unsigned short      WORD;
 typedef unsigned int        DWORD;
 
-#define CCPayloadCipher _x_d
-#define CCPayloadCipher_p _x_p
+#define CCSPayloadCipher _xs_d
+#define CCSPayloadCipher_p _xs_p
 
-class CCPayloadCipher_p;
-class CCPayloadCipher
+class CCSPayloadCipher_p;
+class CCSPayloadCipher
 {
 public:
-    CCPayloadCipher();
-    virtual ~CCPayloadCipher();
+    CCSPayloadCipher();
+    virtual ~CCSPayloadCipher();
     
     /**
      when network close, call me
@@ -73,5 +73,5 @@ public:
                unsigned int *dataBufferSize
                );
 private:
-    CCPayloadCipher_p *_p;
+    CCSPayloadCipher_p *_p;
 };
