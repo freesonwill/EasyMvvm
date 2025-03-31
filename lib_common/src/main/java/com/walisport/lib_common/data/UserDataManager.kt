@@ -6,10 +6,6 @@ class UserDataManager {
 
     private val mmkv = MMKV.defaultMMKV()
 
-    companion object {
-        private var instance: UserDataManager? = null
-    }
-
     fun <T> setKeyValue(key: String, value: T) {
         when (value) {
             is String -> {
