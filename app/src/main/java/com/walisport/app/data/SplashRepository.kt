@@ -1,6 +1,7 @@
 package com.walisport.app.data
 
 import com.walisport.lib_base.data.repository.BaseRepository
+import com.walisport.lib_base.utils.LogUtilsExt.loge
 import com.walisport.lib_base.utils.LogUtilsExt.logi
 import com.walisport.lib_common.helper.CountDownHelper
 import com.walisport.lib_socket.WebSocketManager
@@ -17,6 +18,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -37,12 +39,8 @@ class SplashRepository(
         countDown = 5_000
     }
 
-    suspend fun startSocket() : ConnectState? {
-        return withTimeoutOrNull(5000) {
-            async {
-                socketManager.connect("wss://betwavepro.ja700.com/fb-ws").first()
-            }.await()
-        }
+    suspend fun startSocket() : ConnectState {
+        return socketManager.connect("wss://betwavepro.ja700.com/fb-ws").first()
     }
 
     suspend fun sendLogin(uid: Int, token: String): IResponse {

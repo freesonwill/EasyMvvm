@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import com.walisport.lib_base.utils.LogUtilsExt.loge
 import com.walisport.lib_base.utils.LogUtilsExt.logi
 import com.walisport.lib_socket.data.ConnectState
 import com.walisport.lib_socket.data.IRequest
@@ -76,20 +77,24 @@ class SocketClientService(
                 super.onFailure(webSocket, t, response)
                 currentState = SocketConnectState.Failure
                 if (!hasNetworkConnection()) {
+                    "Socket Client -> NetworkUnavailable".loge(SocketClientService::class.java.simpleName)
                     workingScope.launch { connectStateFlow.emit(ConnectState.NetworkUnavailable) }
                 } else {
+                    "Socket Client -> ConnectFailure:$t".loge(SocketClientService::class.java.simpleName)
                     workingScope.launch { connectStateFlow.emit(ConnectState.ConnectFailure) }
                 }
             }
 
             override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
                 super.onClosed(webSocket, code, reason)
+                "Socket Client -> ConnectClosed".loge(SocketClientService::class.java.simpleName)
                 currentState = SocketConnectState.Closed
                 workingScope.launch { connectStateFlow.emit(ConnectState.ConnectClosed) }
             }
 
             override fun onOpen(webSocket: WebSocket, response: Response) {
                 super.onOpen(webSocket, response)
+                "Socket Client -> ConnectOpen".loge(SocketClientService::class.java.simpleName)
                 currentState = SocketConnectState.Connecting
                 this@SocketClientService.webSocket = webSocket
                 workingScope.launch { connectStateFlow.emit(ConnectState.ConnectSuccess) }
@@ -120,7 +125,7 @@ class SocketClientService(
         webSocket?.close(1001, null)
     }
 
-    override fun reConnect() {
+    override fun reconnect() {
         if (currentState != SocketConnectState.Connecting) {
             openWebSocket()
         }

@@ -8,7 +8,7 @@ interface ISocket<REQ, RES, State> {
 
     fun disConnect()
 
-    fun reConnect()
+    fun reconnect()
 
     fun send(data : REQ)
 

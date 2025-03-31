@@ -1,5 +1,6 @@
 package com.walisport.lib_socket
 
+import com.walisport.lib_base.utils.LogUtilsExt.loge
 import com.walisport.lib_base.utils.LogUtilsExt.logi
 import com.walisport.lib_socket.data.ApiCode
 import com.walisport.lib_socket.data.ConnectState
@@ -15,6 +16,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.util.concurrent.Executors
@@ -22,43 +24,81 @@ import java.util.concurrent.Executors
 class WebSocketManager(
    private val socket : ISocket<IRequest, IResponse, ConnectState>
 ) {
-    private var connectStateFlow: Flow<ConnectState>? = null
     private val workingScope by lazy { CoroutineScope(Dispatchers.IO) }
 
     private var heartbeatJob: Job? = null
     private var heartbeatDispatcher: ExecutorCoroutineDispatcher? = null
 
+    private var reconnectJob: Job? = null
+    private var reconnectDispatcher: ExecutorCoroutineDispatcher? = null
+
+    private var retryCount = 0
+
     companion object {
         private const val heartbeatInterval: Long = 10000
+        private const val reconnectInterval: Long = 5000
+    }
+    init {
+        observeState()
     }
 
     suspend fun connect(host: String) : Flow<ConnectState> {
-        return socket.connect(host).also {
-            connectStateFlow = it
-        }.map { state ->
-            when(state) {
-                is ConnectState.ConnectSuccess -> {
-                    startHeartbeat()
-                }
-                else -> {
-                    stopHeartbeat()
+        return socket.connect(host)
+    }
+
+    private fun observeState(){
+        workingScope.launch {
+            getConnectStateFlow().collect { state ->
+                when(state) {
+                    is ConnectState.ConnectSuccess -> {
+                        stopReconnect()
+                        startHeartbeat()
+                    }
+                    else -> {
+                        stopHeartbeat()
+                        startReconnect()
+                    }
                 }
             }
-            state
         }
+
     }
 
     fun disconnect() {
         socket.disConnect()
     }
 
-    fun reConnect() {
-        socket.reConnect()
+    private fun reconnect() {
+        socket.reconnect()
     }
 
     fun destroy() {
         socket.destroy()
         stopHeartbeat()
+    }
+
+    fun send(data: IRequest) {
+        socket.send(data)
+    }
+
+    private fun startReconnect() {
+        "startReconnect!".logi(this.javaClass.simpleName)
+        reconnectJob?.cancel()
+        reconnectDispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
+        reconnectJob = CoroutineScope(reconnectDispatcher!!).launch {
+            while (true) {
+                delay(reconnectInterval)
+                retryCount++
+                "try to reconnect! retry count = $retryCount".logi(this.javaClass.simpleName)
+                reconnect()
+            }
+        }
+    }
+    private fun stopReconnect() {
+        "stop reconnect!".logi(this.javaClass.simpleName)
+        retryCount = 0
+        reconnectJob?.cancel()
+        reconnectDispatcher?.close()
     }
 
     private fun startHeartbeat() {
@@ -78,11 +118,6 @@ class WebSocketManager(
             }
         }
     }
-
-    fun send(data: IRequest) {
-        socket.send(data)
-    }
-
     private fun stopHeartbeat() {
         "stopHeartbeat!".logi(this.javaClass.simpleName)
         heartbeatJob?.cancel()
@@ -90,4 +125,5 @@ class WebSocketManager(
     }
 
     fun getSocketFlow(): Flow<IResponse> = socket.responseObserve()
+    fun getConnectStateFlow(): Flow<ConnectState> = socket.stateChangeObserve()
 }
