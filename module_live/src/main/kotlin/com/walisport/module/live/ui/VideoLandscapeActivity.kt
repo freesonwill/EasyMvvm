@@ -1,4 +1,4 @@
-package com.walisport.module_live.ui
+package com.walisport.module.live.ui
 
 import android.app.Activity
 import android.net.Uri
@@ -7,7 +7,7 @@ import android.widget.ImageView
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import com.walisport.module_live.R
+import com.walisport.module.live.R
 import tv.danmaku.ijk.media.example.widget.media.AndroidMediaController
 import tv.danmaku.ijk.media.example.widget.media.IjkVideoView
 
