@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.Wsl.BottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/WlsButtonSheetStyle</item>
+        <item name="background">@color/color_dialog_window_background</item>
+        <item name="android:windowBackground">@color/color_dialog_window_background</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <style name="WlsButtonSheetStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/bg_bottom_sheet_dialog</item>
+        <item name="behavior_peekHeight">auto</item>
+    </style>
+</resources>
