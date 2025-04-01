@@ -46,8 +46,8 @@ message("===============================")
 
 MESSAGE( ${CMAKE_SOURCE_DIR}/${ANDROID_ABI})
 
-add_library(realgo STATIC IMPORTED)
-set_target_properties(realgo PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/realgo/${ANDROID_ABI}/librealgo.a)
+add_library(libduckgo STATIC IMPORTED)
+set_target_properties(libduckgo PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/libduckgo/${ANDROID_ABI}/libduckgo.a)
 
 link_directories(${CMAKE_SOURCE_DIR}/${ANDROID_ABI})
 target_link_directories(util
@@ -62,5 +62,5 @@ target_link_libraries( # Specifies the target library.
         # included in the NDK.
         ${log-lib}
 
-        realgo
+        libduckgo
         )

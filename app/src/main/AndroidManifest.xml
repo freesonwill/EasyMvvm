@@ -14,7 +14,20 @@
         android:theme="@style/Theme.Wsl.Android"
         tools:targetApi="31">
         <activity
+            android:name=".ui.AppNavActivity"
+            android:exported="false" />
+        <activity
             android:name=".SplashActivity"
+            android:exported="true">
+
+            <!--<intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>-->
+        </activity>
+        <activity
+            android:name=".ui.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,16 +36,12 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".MainActivity"
-            android:exported="false" />
-
-
         <provider
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"
             android:exported="false"
             tools:node="merge">
+
             <!--
             用于在应用程序启动时自动初始化组件
                  1.  name 为 CustomInitializer 的全路径，或者相对于资源文件的路径
