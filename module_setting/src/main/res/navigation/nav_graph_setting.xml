@@ -1,23 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/setting_nav_graph"
-    app:startDestination="@id/settingActivity">
+    app:startDestination="@id/settingFragment">
 
-    <activity
-        android:id="@+id/settingActivity"
-        android:name="com.walisport.module_setting.SettingActivity"
-        android:label="SettingActivity" />
+    <fragment
+        android:id="@+id/settingFragment"
+        android:name="com.walisport.module_setting.fragment.SettingFragment"
+        android:label="fragment_setting"
+        tools:layout="@layout/fragment_setting">
 
-    <activity
-        android:id="@+id/loginActivity"
-        android:label="LoginActivity"
-        >
-        <argument
-            android:name="userId"
-            android:defaultValue="Tom"
-            app:argType="string"
-            app:nullable="true" />
-        <deepLink app:uri="walisport://login_activity?userId={userId}" />
-    </activity>
+        <action
+            android:id="@+id/action_settingFragment_to_noticedFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
+            app:destination="@id/noticedFragment" />
+
+        <action
+            android:id="@+id/action_settingFragment_to_backgroundFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
+            app:destination="@id/backgroundFragment" />
+
+        <action
+            android:id="@+id/action_settingFragment_to_languageFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
+            app:destination="@id/languageFragment" />
+
+        <deepLink app:uri="walisport://module_setting/settingFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/noticedFragment"
+        android:name="com.walisport.module_setting.fragment.NoticeFragment"
+        android:label="NoticeFragment" />
+
+    <fragment
+        android:id="@+id/backgroundFragment"
+        android:name="com.walisport.module_setting.fragment.BackgroundFragment"
+        android:label="BackgroundFragment" />
+
+    <fragment
+        android:id="@+id/languageFragment"
+        android:name="com.walisport.module_setting.fragment.LanguageFragment"
+        android:label="LanguageFragment" />
 </navigation>

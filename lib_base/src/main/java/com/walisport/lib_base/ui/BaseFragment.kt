@@ -13,6 +13,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewbinding.ViewBinding
 import com.walisport.lib_base.data.viewmodel.BaseViewModel
+import com.walisport.lib_base.ui.interface_.StatusBarConfig
+import com.walisport.lib_base.ui.interface_.IStatusBar
 import com.walisport.lib_base.ui.interface_.IView
 import com.walisport.lib_base.utils.CommonUtils.inflateMethod
 import com.walisport.lib_base.utils.LogUtilsExt.logd
@@ -20,6 +22,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
@@ -28,10 +31,12 @@ import kotlin.coroutines.EmptyCoroutineContext
  * @date: 2025/3/13 18:38
  * @description: ViewModelFragment基类，自动把ViewModel注入Fragment
  */
-abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), IView {
-
+abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), IView,
+    KoinComponent,IStatusBar {
     protected abstract val mBinding: VB
     protected abstract val mViewModel: VM
+    //设置颜色，默认根据主题颜色设定
+    private val statusBar:IStatusBar by lazy { StatusBarDelegate(requireActivity())  }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -54,6 +59,9 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), 
         trackLoadingTime()
     }
 
+    override fun setStatusBar(config: StatusBarConfig) {
+        statusBar.setStatusBar(config)
+    }
     /**
      * 是否开启统计加载时间
      */
