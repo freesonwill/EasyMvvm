@@ -1,15 +1,14 @@
-package com.walisport.module_login.ui.fragment
+package com.walisport.module.login.ui.fragment
 
 import android.os.Bundle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.navigation.navArgs
 import com.walisport.lib_base.data.viewmodel.EmptyViewModel
 import com.walisport.lib_base.ui.BaseFragment
 import com.walisport.lib_base.ui.viewBind
 import com.walisport.lib_base.utils.LogUtilsExt.logd
-import com.walisport.module_login.R
-import com.walisport.module_login.databinding.FragmentLoginBinding
+import com.walisport.module.login.R
+import com.walisport.module.login.databinding.FragmentLoginBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**

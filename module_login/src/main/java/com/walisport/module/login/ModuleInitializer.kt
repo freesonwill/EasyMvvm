@@ -1,4 +1,4 @@
-package com.walisport.module_login
+package com.walisport.module.login
 
 /**
  * @author: zhangsan
