@@ -12,7 +12,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="@{model.videoPlayVisible}">
 
         <tv.danmaku.ijk.media.example.widget.media.IjkVideoView
             android:id="@+id/videoView"
@@ -31,18 +32,18 @@
             android:layout_height="@dimen/dp_28"
             android:layout_marginEnd="@dimen/dp_16"
             android:layout_marginBottom="@dimen/dp_8"
-            android:src="@drawable/video_landscape_choose_source"
+            android:src="@drawable/video_fragment_choose_source"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/iv_fullscreen" />
+            app:layout_constraintEnd_toStartOf="@+id/iv_to_fullscreen" />
 
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/iv_fullscreen"
+            android:id="@+id/iv_to_fullscreen"
             android:layout_width="@dimen/dp_28"
             android:layout_height="@dimen/dp_28"
             android:layout_marginEnd="@dimen/dp_8"
             android:layout_marginBottom="@dimen/dp_8"
-            android:src="@drawable/video_landscape_choose_source"
+            android:src="@drawable/video_fragment_to_fullscreen"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
