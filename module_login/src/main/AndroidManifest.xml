@@ -9,11 +9,11 @@
             <intent-filter>
                 <action android:name="walisport.intent.action.login_activity" />
                 <category android:name="android.intent.category.DEFAULT" />
-                <data android:scheme="walisport" android:host="login_activity" />
+                <data
+                    android:scheme="walisport"
+                    android:host="login_activity" />
             </intent-filter>
         </activity>
-
-
 
 
     </application>
