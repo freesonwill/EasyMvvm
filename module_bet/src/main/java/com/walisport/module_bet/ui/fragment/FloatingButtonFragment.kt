@@ -1,18 +1,18 @@
-package com.walisport.app.ui.fragment
+package com.walisport.module_bet.ui.fragment
 
 import android.os.Bundle
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.walisport.app.databinding.FragmentFloatingButtonBinding
-import com.walisport.app.viewmodel.FloatingButtonViewModel
+import com.walisport.module_bet.viewmodel.FloatingButtonViewModel
 import com.walisport.lib_base.ui.BaseFragment
 import com.walisport.lib_base.ui.viewBind
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class FloatingButtonFragment : BaseFragment<FloatingButtonViewModel, FragmentFloatingButtonBinding>() {
+class FloatingButtonFragment : BaseFragment<com.walisport.module_bet.viewmodel.FloatingButtonViewModel, FragmentFloatingButtonBinding>() {
 
     override val mBinding: FragmentFloatingButtonBinding by viewBind()
-    override val mViewModel: FloatingButtonViewModel by viewModel()
+    override val mViewModel: com.walisport.module_bet.viewmodel.FloatingButtonViewModel by viewModel()
     private var onClickListener: (() -> Unit)? = null
 
     override fun initView(savedInstanceState: Bundle?) {

@@ -37,10 +37,16 @@ android {
 
 dependencies {
 
+    implementation(project(":lib_base"))
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
+    implementation(libs.androidx.window)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    implementation(libs.koin)
+    implementation(libs.startup)
 }

@@ -1,4 +1,4 @@
-package com.walisport.app.ui.custom
+package com.walisport.module_bet.ui.custom
 
 import android.app.Activity
 import android.content.Context
@@ -9,7 +9,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
 import androidx.window.layout.WindowMetricsCalculator
-import com.walisport.app.databinding.LayoutMovableFloatingButtonBinding
+import com.walisport.module_bet.databinding.LayoutMovableFloatingButtonBinding
 import kotlin.math.abs
 
 class MovableFloatingButton : LinearLayout, View.OnTouchListener {

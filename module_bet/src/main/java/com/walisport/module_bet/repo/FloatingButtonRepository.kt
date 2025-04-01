@@ -1,6 +1,8 @@
-package com.walisport.app.repo
+package com.walisport.module_bet.repo
 
 import com.walisport.lib_base.data.repository.BaseRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -21,4 +23,6 @@ class FloatingButtonRepository: BaseRepository() {
             }
         }
     }
+
+    override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 }
