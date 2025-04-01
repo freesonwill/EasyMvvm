@@ -1,4 +1,4 @@
-package com.walisport.module_setting.data
+package com.walisport.module.setting.data
 
 import com.walisport.lib_base.data.repository.BaseRepository
 import com.walisport.lib_common.data.UserDataKey

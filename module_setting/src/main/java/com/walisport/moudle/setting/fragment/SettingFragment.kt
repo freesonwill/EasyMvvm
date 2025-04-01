@@ -1,12 +1,12 @@
-package com.walisport.module_setting.fragment
+package com.walisport.module.setting.fragment
 
 import android.os.Bundle
 import androidx.navigation.fragment.findNavController
 import com.walisport.lib_base.ui.BaseFragment
 import com.walisport.lib_base.ui.viewBind
-import com.walisport.module_setting.R
-import com.walisport.module_setting.data.SettingViewModel
-import com.walisport.module_setting.databinding.FragmentSettingBinding
+import com.walisport.module.setting.R
+import com.walisport.module.setting.data.SettingViewModel
+import com.walisport.module.setting.databinding.FragmentSettingBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**

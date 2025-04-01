@@ -1,10 +1,10 @@
-package com.walisport.module_setting.fragment
+package com.walisport.module.setting.fragment
 
 import android.os.Bundle
 import com.walisport.lib_base.ui.BaseFragment
 import com.walisport.lib_base.ui.viewBind
-import com.walisport.module_setting.data.NoticeViewModel
-import com.walisport.module_setting.databinding.FragmentNoticeBinding
+import com.walisport.module.setting.databinding.FragmentNoticeBinding
+import com.walisport.module.setting.data.NoticeViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
