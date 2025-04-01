@@ -7,12 +7,13 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
+import com.walisport.lib_base.ui.viewBind
 import com.walisport.lib_common.R
 import com.walisport.lib_common.databinding.DialogCommonBinding
 import com.walisport.lib_common.utils.ViewUtils
 
 class CommonDialog private constructor() : DialogFragment() {
-    private lateinit var mBinding: DialogCommonBinding
+    private val mBinding: DialogCommonBinding by viewBind()
     private var title: String? = null
     private var message: String? = null
     private var okText: String? = null
@@ -23,7 +24,6 @@ class CommonDialog private constructor() : DialogFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        mBinding = DialogCommonBinding.inflate(inflater, container, false)
         return mBinding.root
     }
 
