@@ -6,19 +6,7 @@
 
     <application>
 
-        <activity
-            android:name=".ui.VideoLandscapeActivity"
-            android:exported="false"
-            android:screenOrientation="landscape"
-            tools:ignore="DiscouragedApi">
-            <intent-filter>
-                <action android:name="walisport.intent.action.login_activity" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data
-                    android:host="video_landscape_activity"
-                    android:scheme="walisport" />
-            </intent-filter>
-        </activity>
+
     </application>
 
 </manifest>

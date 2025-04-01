@@ -36,6 +36,7 @@ android {
 
 dependencies {
     implementation(project(":lib_common"))
+    implementation(project(":module_videoplayer"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
