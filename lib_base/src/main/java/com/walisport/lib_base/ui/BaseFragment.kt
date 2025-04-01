@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewbinding.ViewBinding
 import com.walisport.lib_base.data.viewmodel.BaseViewModel
+import com.walisport.lib_base.ui.interface_.StatusBarConfig
 import com.walisport.lib_base.ui.interface_.IStatusBar
 import com.walisport.lib_base.ui.interface_.IView
 import com.walisport.lib_base.utils.CommonUtils.inflateMethod
@@ -58,11 +59,9 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), 
         trackLoadingTime()
     }
 
-    override fun setStatusBar(config: IStatusBar.Config) {
+    override fun setStatusBar(config: StatusBarConfig) {
         statusBar.setStatusBar(config)
     }
-
-    override fun configStatusBar():IStatusBar.Config = IStatusBar.Config()
     /**
      * 是否开启统计加载时间
      */

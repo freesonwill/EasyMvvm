@@ -3,6 +3,7 @@ package com.walisport.lib_base.ui
 import android.app.Activity
 import com.gyf.immersionbar.BarHide
 import com.gyf.immersionbar.ImmersionBar
+import com.walisport.lib_base.ui.interface_.StatusBarConfig
 import com.walisport.lib_base.ui.interface_.IStatusBar
 
 /**
@@ -12,7 +13,7 @@ import com.walisport.lib_base.ui.interface_.IStatusBar
  */
 class StatusBarDelegate(private val activity: Activity) : IStatusBar {
 
-    override fun setStatusBar(config: IStatusBar.Config) {
+    override fun setStatusBar(config: StatusBarConfig) {
         val immersionBar = ImmersionBar.with(activity)
         //如果全屏播放不用设置状态栏颜色
         if (config.hideStatusBar) {

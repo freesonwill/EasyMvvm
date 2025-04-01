@@ -6,7 +6,7 @@ import com.walisport.app.data.SplashViewModel
 import com.walisport.app.databinding.ActivitySplashBinding
 import com.walisport.app.ui.MainActivity
 import com.walisport.lib_base.ui.BaseActivity
-import com.walisport.lib_base.ui.interface_.IStatusBar
+import com.walisport.lib_base.ui.interface_.StatusBarConfig
 import com.walisport.lib_base.ui.viewBind
 import com.walisport.lib_base.utils.LogUtilsExt.logd
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -114,8 +114,8 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
     override val mBinding: ActivitySplashBinding by viewBind()
     override val mViewModel: SplashViewModel by viewModel()
 
-    override fun configStatusBar(): IStatusBar.Config {
-        return IStatusBar.Config(hideStatusBar = true)
+    override fun configStatusBar(): StatusBarConfig {
+        return StatusBarConfig(hideStatusBar = true)
     }
 
     override fun initView(savedInstanceState: Bundle?) {

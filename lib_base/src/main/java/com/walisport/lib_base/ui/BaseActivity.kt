@@ -8,13 +8,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewbinding.ViewBinding
 import com.walisport.lib_base.data.viewmodel.BaseViewModel
+import com.walisport.lib_base.ui.interface_.StatusBarConfig
 import com.walisport.lib_base.ui.interface_.IStatusBar
 import com.walisport.lib_base.ui.interface_.IView
 import com.walisport.lib_base.utils.CommonUtils.inflateMethod
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
@@ -45,11 +45,9 @@ abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActi
     }
 
 
-    override fun setStatusBar(config: IStatusBar.Config) {
+    override fun setStatusBar(config: StatusBarConfig) {
         statusBar.setStatusBar(config)
     }
-
-    override fun configStatusBar():IStatusBar.Config = IStatusBar.Config()
 }
 
 /**
