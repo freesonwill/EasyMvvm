@@ -8,7 +8,6 @@ import com.walisport.app.ui.MainActivity
 import com.walisport.lib_base.ui.BaseActivity
 import com.walisport.lib_base.ui.viewBind
 import com.walisport.lib_base.utils.LogUtilsExt.logd
-import com.walisport.module_setting.SettingActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.random.Random
 
@@ -140,7 +139,7 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
     }
 
     private fun jumpToMainActivity() {
-        startActivity(Intent(this, SettingActivity::class.java))
+        startActivity(Intent(this, MainActivity::class.java))
         finish()
     }
 
