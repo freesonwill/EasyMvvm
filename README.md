@@ -44,6 +44,7 @@ https://hackmd.io/@LinkHsieh/HkcXg8Shkx
 ```text
 使用Navigation
 ```
+[NavigationTutuorial.md](./z_doc/NavigationTutuorial.md)
 
 3. 通用的标题栏样式? 需要内置到BaseActivity,BaseFragment中吗？
 ```text
