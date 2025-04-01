@@ -82,6 +82,13 @@ class MovableFloatingButton : LinearLayout, View.OnTouchListener {
                 }
                 return true
             }
+            MotionEvent.ACTION_CANCEL -> {
+                downRawX = 0f
+                downRawY = 0f
+                dX = 0f
+                dY = 0f
+                return true
+            }
             else -> return super.onTouchEvent(event)
         }
     }

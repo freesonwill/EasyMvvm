@@ -3,16 +3,16 @@ package com.walisport.module_bet.ui.fragment
 import android.os.Bundle
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.walisport.app.databinding.FragmentFloatingButtonBinding
 import com.walisport.module_bet.viewmodel.FloatingButtonViewModel
 import com.walisport.lib_base.ui.BaseFragment
 import com.walisport.lib_base.ui.viewBind
+import com.walisport.module_bet.databinding.FragmentFloatingButtonBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class FloatingButtonFragment : BaseFragment<com.walisport.module_bet.viewmodel.FloatingButtonViewModel, FragmentFloatingButtonBinding>() {
+class FloatingButtonFragment : BaseFragment<FloatingButtonViewModel, FragmentFloatingButtonBinding>() {
 
     override val mBinding: FragmentFloatingButtonBinding by viewBind()
-    override val mViewModel: com.walisport.module_bet.viewmodel.FloatingButtonViewModel by viewModel()
+    override val mViewModel: FloatingButtonViewModel by viewModel()
     private var onClickListener: (() -> Unit)? = null
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -34,9 +34,6 @@ class FloatingButtonFragment : BaseFragment<com.walisport.module_bet.viewmodel.F
                 mBinding.root.visibility = View.VISIBLE
             }
         }
-    }
-
-    override fun lazyLoadData() {
     }
 
     private fun setFloatingViewPosition(screenHeight: Int) {

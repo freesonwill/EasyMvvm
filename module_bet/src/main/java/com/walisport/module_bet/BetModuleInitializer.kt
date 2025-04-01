@@ -2,8 +2,12 @@ package com.walisport.module_bet
 
 import android.content.Context
 import androidx.startup.Initializer
+import com.walisport.module_bet.repo.FloatingButtonRepository
+import com.walisport.module_bet.viewmodel.FloatingButtonViewModel
+import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
+import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
 class BetModuleInitializer: Initializer<String> {
@@ -19,7 +23,11 @@ class BetModuleInitializer: Initializer<String> {
         return emptyList()
     }
 
-    private val moduleList: List<Module> = listOf(module {
-
-    })
+    private val viewModules = module {
+        viewModelOf(::FloatingButtonViewModel)
+    }
+    private val repoModules = module {
+        factoryOf(::FloatingButtonRepository)
+    }
+    private val moduleList:List<Module> = listOf(viewModules,repoModules)
 }
