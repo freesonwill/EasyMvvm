@@ -1,6 +1,7 @@
 package com.walisport.module.setting.fragment
 
 import android.os.Bundle
+import androidx.navigation.fragment.findNavController
 import com.walisport.lib_base.ui.BaseFragment
 import com.walisport.lib_base.ui.viewBind
 import com.walisport.module.setting.data.LanguageViewModel
@@ -21,7 +22,9 @@ class LanguageFragment : BaseFragment<LanguageViewModel, FragmentLanguageBinding
     }
 
     override fun initListener() {
-
+        mBinding.ivBack.setOnClickListener{
+            findNavController().navigateUp()
+        }
     }
 
     override fun createObserver() {

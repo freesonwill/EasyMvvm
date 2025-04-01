@@ -5,48 +5,54 @@
     android:layout_height="match_parent"
     android:background="@color/color_f3f3f4">
 
-    <RelativeLayout
-        android:id="@+id/rel_bar"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/title_bar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_46"
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
             android:layout_marginStart="@dimen/dp_16"
             android:text="@string/cancel"
             android:textColor="@color/color_666666"
-            android:textSize="@dimen/sp_15"/>
+            android:textSize="@dimen/sp_15"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
             android:text="@string/menu_background_set"
             android:textColor="@color/color_222222"
             android:textSize="@dimen/sp_17"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
             android:layout_marginEnd="@dimen/dp_16"
             android:text="@string/confirm"
             android:textColor="@color/color_5fce7b"
-            android:textSize="@dimen/sp_15"/>
-    </RelativeLayout>
+            android:textSize="@dimen/sp_15"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_marginTop="@dimen/dp_20"
-        app:layout_constraintTop_toBottomOf="@+id/rel_bar">
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@+id/title_bar">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -63,13 +69,13 @@
                 <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="@dimen/dp_105"
                     android:layout_height="@dimen/dp_154"
-                    android:background="@mipmap/bg_theme_class" />
+                    android:background="@drawable/bg_theme_class" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="@dimen/dp_10">
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:orientation="horizontal">
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:layout_width="@dimen/dp_16"
@@ -83,10 +89,8 @@
                         android:layout_marginStart="@dimen/dp_5"
                         android:text="@string/theme_class"
                         android:textColor="@color/color_666666"
-                        android:textSize="@dimen/sp_15"/>
+                        android:textSize="@dimen/sp_15" />
                 </LinearLayout>
-
-
             </LinearLayout>
 
             <LinearLayout
@@ -99,13 +103,13 @@
                 <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="@dimen/dp_105"
                     android:layout_height="@dimen/dp_154"
-                    android:background="@mipmap/bg_theme_blue" />
+                    android:background="@drawable/bg_theme_blue" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="@dimen/dp_10">
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:orientation="horizontal">
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:layout_width="@dimen/dp_16"
@@ -119,7 +123,7 @@
                         android:layout_marginStart="@dimen/dp_5"
                         android:text="@string/theme_black_blue"
                         android:textColor="@color/color_666666"
-                        android:textSize="@dimen/sp_15"/>
+                        android:textSize="@dimen/sp_15" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -133,13 +137,13 @@
                 <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="@dimen/dp_105"
                     android:layout_height="@dimen/dp_154"
-                    android:background="@mipmap/bg_theme_green" />
+                    android:background="@drawable/bg_theme_green" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="@dimen/dp_10">
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:orientation="horizontal">
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:layout_width="@dimen/dp_16"
@@ -153,7 +157,7 @@
                         android:layout_marginStart="@dimen/dp_5"
                         android:text="@string/theme_black_green"
                         android:textColor="@color/color_666666"
-                        android:textSize="@dimen/sp_15"/>
+                        android:textSize="@dimen/sp_15" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
@@ -174,13 +178,13 @@
                 <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="@dimen/dp_105"
                     android:layout_height="@dimen/dp_154"
-                    android:background="@mipmap/bg_theme_red" />
+                    android:background="@drawable/bg_theme_red" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="@dimen/dp_10">
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:orientation="horizontal">
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:layout_width="@dimen/dp_16"
@@ -194,7 +198,7 @@
                         android:layout_marginStart="@dimen/dp_5"
                         android:text="@string/theme_black_red"
                         android:textColor="@color/color_666666"
-                        android:textSize="@dimen/sp_15"/>
+                        android:textSize="@dimen/sp_15" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -208,13 +212,13 @@
                 <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="@dimen/dp_105"
                     android:layout_height="@dimen/dp_154"
-                    android:background="@mipmap/bg_theme_white_blue" />
+                    android:background="@drawable/bg_theme_white_blue" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="@dimen/dp_10">
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:orientation="horizontal">
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:layout_width="@dimen/dp_16"
@@ -228,7 +232,7 @@
                         android:layout_marginStart="@dimen/dp_5"
                         android:text="@string/theme_white_blue"
                         android:textColor="@color/color_666666"
-                        android:textSize="@dimen/sp_15"/>
+                        android:textSize="@dimen/sp_15" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -242,13 +246,13 @@
                 <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="@dimen/dp_105"
                     android:layout_height="@dimen/dp_154"
-                    android:background="@mipmap/bg_theme_white_green" />
+                    android:background="@drawable/bg_theme_white_green" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="@dimen/dp_10">
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:orientation="horizontal">
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:layout_width="@dimen/dp_16"
@@ -262,7 +266,7 @@
                         android:layout_marginStart="@dimen/dp_5"
                         android:text="@string/theme_white_green"
                         android:textColor="@color/color_666666"
-                        android:textSize="@dimen/sp_15"/>
+                        android:textSize="@dimen/sp_15" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>

@@ -22,16 +22,19 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
     }
 
     override fun initListener() {
-        mBinding.relSettingOdds.setOnClickListener {
+        mBinding.ivBack.setOnClickListener {
+            findNavController().navigateUp()
+        }
+        mBinding.settingOdds.setOnClickListener {
 
         }
-        mBinding.relSettingNotice.setOnClickListener {
+        mBinding.settingNotice.setOnClickListener {
             findNavController().navigate(R.id.action_settingFragment_to_noticedFragment)
         }
-        mBinding.relSettingBg.setOnClickListener {
+        mBinding.settingBg.setOnClickListener {
             findNavController().navigate(R.id.action_settingFragment_to_backgroundFragment)
         }
-        mBinding.relSettingLanguage.setOnClickListener {
+        mBinding.settingLanguage.setOnClickListener {
             findNavController().navigate(R.id.action_settingFragment_to_languageFragment)
         }
     }

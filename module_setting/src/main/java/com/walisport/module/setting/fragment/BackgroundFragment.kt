@@ -1,6 +1,7 @@
 package com.walisport.module.setting.fragment
 
 import android.os.Bundle
+import androidx.navigation.fragment.findNavController
 import com.walisport.lib_base.ui.BaseFragment
 import com.walisport.lib_base.ui.viewBind
 import com.walisport.module.setting.data.BackgroundViewModel
@@ -21,7 +22,9 @@ class BackgroundFragment: BaseFragment<BackgroundViewModel, FragmentBackgroundBi
     }
 
     override fun initListener() {
-
+        mBinding.tvCancel.setOnClickListener{
+            findNavController().navigateUp()
+        }
     }
 
     override fun createObserver() {
