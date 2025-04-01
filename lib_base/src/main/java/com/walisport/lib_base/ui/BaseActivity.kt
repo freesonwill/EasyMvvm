@@ -2,21 +2,19 @@ package com.walisport.lib_base.ui
 
 import android.app.Activity
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewbinding.ViewBinding
 import com.walisport.lib_base.data.viewmodel.BaseViewModel
+import com.walisport.lib_base.ui.interface_.StatusBarConfig
+import com.walisport.lib_base.ui.interface_.IStatusBar
 import com.walisport.lib_base.ui.interface_.IView
 import com.walisport.lib_base.utils.CommonUtils.inflateMethod
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
@@ -26,38 +24,29 @@ import kotlin.coroutines.EmptyCoroutineContext
  * @date: 2025/3/14 09:48
  * @description:
  */
-abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActivity(), IView {
+abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActivity(), IView, IStatusBar {
     protected open val TAG = this.javaClass.simpleName
     protected abstract val mBinding: VB
     protected abstract val mViewModel: VM
+    //是否第一次加载
+    private var isFirst: Boolean = true
+
+    //设置颜色，默认根据主题颜色设定
+    private val statusBar:IStatusBar by lazy { StatusBarDelegate(this)  }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        immersionPre()
         setContentView(mBinding.root)
-        immersionPost()
         initView(savedInstanceState)
         initListener()
         initData()
         createObserver()
+        setStatusBar(configStatusBar())
     }
 
-    /**
-     * 沉浸式（setContentView之前）
-     */
-    private fun immersionPre(){
-        enableEdgeToEdge()
-    }
 
-    /**
-     * 沉浸式（setContentView之后）
-     */
-    private fun immersionPost(){
-        ViewCompat.setOnApplyWindowInsetsListener(mBinding.root) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+    override fun setStatusBar(config: StatusBarConfig) {
+        statusBar.setStatusBar(config)
     }
 }
 
