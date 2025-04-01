@@ -52,7 +52,9 @@ https://hackmd.io/@LinkHsieh/HkcXg8Shkx
 ```
 4. 沉浸式标题栏方案？
 ```text
-
+使用ImmersionBar
+1:IStatusBar.Config态栏参数
+2:StatusBarDelegate.setStatusBar()设置状态栏
 ```
 5. 加载Activity/Fragment统一的Loading框，错误框，空白框内置到BaseActivity,BaseFragment中吗？
 ```text
