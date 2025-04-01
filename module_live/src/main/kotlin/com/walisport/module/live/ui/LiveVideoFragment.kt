@@ -1,6 +1,8 @@
 package com.walisport.module.live.ui
 
+import android.net.Uri
 import android.os.Bundle
+import androidx.navigation.fragment.findNavController
 import com.walisport.lib_base.ui.BaseFragment
 import com.walisport.lib_base.ui.viewBind
 import com.walisport.module.live.databinding.FragmentLiveVideoBinding
@@ -17,6 +19,12 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
     }
 
     override fun initListener() {
+        mBinding.ivChooseSource.setOnClickListener {
+
+        }
+        mBinding.ivToFullscreen.setOnClickListener {
+            findNavController().navigate(Uri.parse("walisport://video_landscape_activity?userId=lucy"))
+        }
     }
 
     override fun createObserver() {
