@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <application
-        android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true"
-        android:theme="@style/Theme.Wlsandroid" />
+    <application>
+
+        <activity
+            android:name=".ui.VideoLandscapeActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            tools:ignore="DiscouragedApi">
+            <intent-filter>
+                <action android:name="walisport.intent.action.login_activity" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data
+                    android:host="video_landscape_activity"
+                    android:scheme="walisport" />
+            </intent-filter>
+        </activity>
+    </application>
 
 </manifest>
