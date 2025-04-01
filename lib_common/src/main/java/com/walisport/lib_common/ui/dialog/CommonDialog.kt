@@ -6,13 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentManager
 import com.walisport.lib_common.R
 import com.walisport.lib_common.databinding.DialogCommonBinding
 import com.walisport.lib_common.utils.ViewUtils
 
-class CommonDialog : DialogFragment() {
-    private var _binding: DialogCommonBinding? = null
-    private val binding get() = _binding!!
+class CommonDialog private constructor() : DialogFragment() {
+    private lateinit var mBinding: DialogCommonBinding
     private var title: String? = null
     private var message: String? = null
     private var okText: String? = null
@@ -23,8 +23,8 @@ class CommonDialog : DialogFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = DialogCommonBinding.inflate(inflater, container, false)
-        return binding.root
+        mBinding = DialogCommonBinding.inflate(inflater, container, false)
+        return mBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -36,24 +36,24 @@ class CommonDialog : DialogFragment() {
             cancelText = it.getString(ARG_CANCEL_TEXT)
         }
 
-        binding.tvCommonDialogTitle.apply {
-            text = title ?: ""
-            if (title.isNullOrEmpty()) {
-                visibility = View.GONE
+        with(mBinding) {
+            tvCommonDialogTitle.apply {
+                text = title ?: ""
+                visibility = if (title.isNullOrEmpty()) View.GONE else View.VISIBLE
             }
-        }
-        binding.tvCommonDialogMessage.text = message ?: ""
-        binding.btnCommonDialogOk.text = okText ?: ""
-        binding.btnCommonDialogCancel.text = cancelText ?: ""
+            tvCommonDialogMessage.text = message ?: ""
+            btnCommonDialogOk.text = okText ?: ""
+            btnCommonDialogCancel.text = cancelText ?: ""
 
-        binding.btnCommonDialogOk.setOnClickListener {
-            onOkClick?.invoke()
-            dismiss()
-        }
+            btnCommonDialogOk.setOnClickListener {
+                onOkClick?.invoke()
+                dismiss()
+            }
 
-        binding.btnCommonDialogCancel.setOnClickListener {
-            onCancelClick?.invoke()
-            dismiss()
+            btnCommonDialogCancel.setOnClickListener {
+                onCancelClick?.invoke()
+                dismiss()
+            }
         }
     }
 
@@ -64,6 +64,11 @@ class CommonDialog : DialogFragment() {
     fun setOnCancelClickListener(listener: () -> Unit) {
         onCancelClick = listener
     }
+    fun showSafely(manager: FragmentManager, tag: String) {
+        if (!isAdded && manager.findFragmentByTag(tag) == null) {
+            show(manager, tag)
+        }
+    }
 
     override fun onStart() {
         super.onStart()
@@ -71,11 +76,6 @@ class CommonDialog : DialogFragment() {
             setLayout(ViewUtils.dpToPx(280f).toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
             setBackgroundDrawable( ContextCompat.getDrawable(requireContext(), R.drawable.shape_corner_12))
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     companion object {
