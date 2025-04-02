@@ -30,7 +30,7 @@ fun GeneratedMessageLite<*, *>.asRemoteRequest(apiCode: ApiCode) : SocketRequest
     )
 }
 
-inline fun <reified T: GeneratedMessageLite<*,*>>WebSocketManager.observeProtoMessage(apiCode: ApiCode) : Flow<IResponse> = getSocketFlow()
+inline fun <reified T: GeneratedMessageLite<*,*>>WebSocketManager.observeProtoMessage(apiCode: ApiCode) : Flow<SocketResponseData<T>> = getSocketFlow()
     .filterIsInstance<SocketOriginResponseData>()
     .filter {it.mid == apiCode.mid && it.sid == apiCode.sid}
     .map {
@@ -42,11 +42,16 @@ inline fun <reified T: GeneratedMessageLite<*,*>>WebSocketManager.observeProtoMe
             return@map SocketResponseData(
                 mid = it.mid,
                 sid = it.sid,
-                responseData = proto
+                responseData = proto,
             )
         } catch (e: Exception) {
             e.printStackTrace()
-            return@map InvalidProtoTypeResponseError(apiCode.mid, apiCode.sid)
+            return@map SocketResponseData(
+                mid = it.mid,
+                sid = it.sid,
+                responseData = null,
+                error = InvalidProtoTypeResponseError()
+            )
         }
     }
 
@@ -56,12 +61,17 @@ suspend inline fun<reified T: GeneratedMessageLite<*,*>>WebSocketManager.sendAnd
     apiCode: ApiCode,
     timeout: Long? = null,
     request: () -> GeneratedMessageLite<*, *>
-): IResponse {
+): SocketResponseData<T> {
     val deferred = scope.async(dispatcher) {
         withTimeoutOrNull(timeout ?: responseTimeout) {
             observeProtoMessage<T>(apiCode).first()
         }
     }
     send(request.invoke().asRemoteRequest(apiCode))
-    return deferred.await() ?: ResponseTimeOutError()
+    return deferred.await() ?: SocketResponseData(
+        mid = apiCode.mid,
+        sid = apiCode.sid,
+        responseData = null,
+        error = ResponseTimeOutError()
+    )
 }

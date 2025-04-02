@@ -40,7 +40,8 @@ data class SocketOriginResponseData(
 data class SocketResponseData<T: GeneratedMessageLite<*,*>>(
     override val mid: Short,
     override val sid: Short,
-    val responseData: T?
+    val responseData: T?,
+    val error: SocketResponseError? = null,
 ): ISocketData(), IResponse
 
 //在解密過程錯誤
@@ -50,13 +51,11 @@ data class InvalidDataResponseError(
 
 //解析的proto的類型錯誤，檢查是否給錯proto type
 data class InvalidProtoTypeResponseError(
-    val mid: Short,
-    val sid: Short,
-    override val msg: String = "mid = $mid, sid = $sid, Invalid proto type or missing proto mapping!"
-) : IResponse, SocketResponseError
+    override val msg: String = "Invalid proto type or missing proto mapping!"
+) : SocketResponseError
 
 data class ResponseTimeOutError(
     override val msg: String = "response time out!!"
-) : IResponse, SocketResponseError
+) : SocketResponseError
 
 

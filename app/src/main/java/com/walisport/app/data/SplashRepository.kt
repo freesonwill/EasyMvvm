@@ -1,11 +1,13 @@
 package com.walisport.app.data
 
+import com.google.protobuf.GeneratedMessageLite
 import com.walisport.lib_base.data.repository.BaseRepository
 import com.walisport.lib_common.helper.CountDownHelper
 import com.walisport.lib_socket.WebSocketManager
 import com.walisport.lib_socket.data.ApiCode
 import com.walisport.lib_socket.data.ConnectState
 import com.walisport.lib_socket.data.IResponse
+import com.walisport.lib_socket.data.SocketResponseData
 import com.walisport.lib_socket.extension.sendAndWaitProtoMessageResponse
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
@@ -32,7 +34,7 @@ class SplashRepository(
         return socketManager.connect("wss://betwavepro.ja700.com/fb-ws").first()
     }
 
-    suspend fun sendLogin(uid: Int, token: String): IResponse {
+    suspend fun sendLogin(uid: Int, token: String): SocketResponseData<Client.LoginResp> {
         return socketManager.sendAndWaitProtoMessageResponse<Client.LoginResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,

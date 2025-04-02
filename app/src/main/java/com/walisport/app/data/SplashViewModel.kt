@@ -9,6 +9,7 @@ import com.walisport.lib_socket.data.ConnectState
 import com.walisport.lib_socket.data.ResponseTimeOutError
 import com.walisport.lib_socket.data.SocketResponseData
 import com.walisport.lib_socket.data.SocketResponseError
+import galaxy.client.proto.Client
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
@@ -51,15 +52,18 @@ class SplashViewModel : BaseViewModel() {
         token: String
     ) {
         viewModelScope.launch(Dispatchers.Default) {
-            when(val res = repository.sendLogin(uid, token)) {
+            val res = repository.sendLogin(uid, token)
+            when(res.error) {
+                null -> {
+                    res.responseData?.apply {
+                        "login isSuccess = ${this.success}".logi(this@SplashViewModel::class.java.simpleName)
+                    }
+                }
                 is ResponseTimeOutError -> {
                     "login time out".logi(this@SplashViewModel::class.java.simpleName)
                 }
-                is SocketResponseData<*> -> {
-                    "login success".logi(this@SplashViewModel::class.java.simpleName)
-                }
                 is SocketResponseError -> {
-                    res.msg.logi(this@SplashViewModel::class.java.simpleName)
+                    res.error!!.msg.logi(this@SplashViewModel::class.java.simpleName)
                 }
             }
         }
