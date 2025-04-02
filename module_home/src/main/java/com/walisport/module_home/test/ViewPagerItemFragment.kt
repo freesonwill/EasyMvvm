@@ -3,9 +3,9 @@ package com.walisport.module.home.test
 import android.os.Bundle
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.NavHostFragment
-import com.walisport.lib_base.data.viewmodel.EmptyViewModel
-import com.walisport.lib_base.ui.BaseFragment
-import com.walisport.lib_base.ui.viewBind
+import com.walisport.lib.base.data.viewmodel.EmptyViewModel
+import com.walisport.lib.base.ui.BaseFragment
+import com.walisport.lib.base.ui.viewBind
 import com.walisport.module.home.R
 import com.walisport.module.home.databinding.FragmentViewPagerItemBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel

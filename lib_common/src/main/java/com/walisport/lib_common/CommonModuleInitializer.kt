@@ -3,8 +3,7 @@ package com.walisport.lib_common
 import android.content.Context
 import androidx.startup.Initializer
 import com.tencent.mmkv.MMKV
-import com.walisport.lib_base.ApplicationModuleInitializer
-import com.walisport.lib_base.utils.LogUtilsExt.logd
+import com.walisport.lib.base.ApplicationModuleInitializer
 import com.walisport.lib_common.data.UserDataManager
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module

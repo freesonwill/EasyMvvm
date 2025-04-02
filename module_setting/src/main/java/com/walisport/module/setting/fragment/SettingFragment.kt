@@ -2,8 +2,8 @@ package com.walisport.module.setting.fragment
 
 import android.os.Bundle
 import androidx.navigation.fragment.findNavController
-import com.walisport.lib_base.ui.BaseFragment
-import com.walisport.lib_base.ui.viewBind
+import com.walisport.lib.base.ui.BaseFragment
+import com.walisport.lib.base.ui.viewBind
 import com.walisport.lib_common.utils.ext.ResourceExt.getString
 import com.walisport.module.setting.R
 import com.walisport.module.setting.data.SettingViewModel

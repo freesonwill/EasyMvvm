@@ -3,8 +3,8 @@ package com.walisport.module.live.ui
 import android.net.Uri
 import android.os.Bundle
 import androidx.navigation.fragment.findNavController
-import com.walisport.lib_base.ui.BaseFragment
-import com.walisport.lib_base.ui.viewBind
+import com.walisport.lib.base.ui.BaseFragment
+import com.walisport.lib.base.ui.viewBind
 import com.walisport.module.live.databinding.FragmentLiveVideoBinding
 import com.walisport.module.live.ui.viewmodel.LiveVideoViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel

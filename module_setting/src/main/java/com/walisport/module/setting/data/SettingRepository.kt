@@ -1,6 +1,6 @@
 package com.walisport.module.setting.data
 
-import com.walisport.lib_base.data.repository.BaseRepository
+import com.walisport.lib.base.data.repository.BaseRepository
 import com.walisport.lib_common.data.UserDataKey
 import com.walisport.lib_common.data.UserDataManager
 import kotlinx.coroutines.CoroutineScope
