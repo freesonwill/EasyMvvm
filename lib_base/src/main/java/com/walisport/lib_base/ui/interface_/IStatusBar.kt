@@ -25,7 +25,7 @@ interface IStatusBar {
  */
 data class StatusBarConfig(
     //状态栏颜色
-    val statusBarColor: Int = android.R.color.white,
+    val statusBarColor: Int = android.R.color.black,
     //是否隐藏状态栏
     val hideStatusBar: Boolean = false,
 )

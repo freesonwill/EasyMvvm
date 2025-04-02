@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.navigation.fragment.findNavController
 import com.walisport.lib_base.ui.BaseFragment
 import com.walisport.lib_base.ui.viewBind
+import com.walisport.lib_common.utils.ext.ResourceExt.getString
 import com.walisport.module.setting.R
 import com.walisport.module.setting.data.SettingViewModel
 import com.walisport.module.setting.databinding.FragmentSettingBinding
@@ -22,7 +23,7 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
     }
 
     override fun initListener() {
-        mBinding.ivBack.setOnClickListener {
+        mBinding.titleBar.loadGeneralTitleBar(R.string.setting.getString()) {
             findNavController().navigateUp()
         }
         mBinding.settingOdds.setOnClickListener {
