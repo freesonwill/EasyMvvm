@@ -1,20 +1,24 @@
 package com.walisport.lib_common.widget
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
+import com.bumptech.glide.Glide
 import com.walisport.lib_common.R
 import com.walisport.lib_common.databinding.TittleBarDefaultBinding
+import com.walisport.lib_common.databinding.TittleBarLiveBinding
 import com.walisport.lib_common.databinding.TittleBarSearchBinding
+import com.walisport.lib_common.utils.ext.DimensionExt.dp2px
+import com.walisport.lib_common.utils.ext.clickNoRepeat
 
 class TitleBarView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : Toolbar(context, attrs, defStyleAttr) {
-
 
     /**
      * 通用标题
@@ -25,7 +29,7 @@ class TitleBarView @JvmOverloads constructor(
         val binding = TittleBarDefaultBinding.inflate(LayoutInflater.from(context), this, true)
         binding.apply {
             tvTitleName.text = titleName
-            ivBack.setOnClickListener {
+            ivBack.clickNoRepeat {
                 callback()
             }
         }
@@ -41,8 +45,8 @@ class TitleBarView @JvmOverloads constructor(
         val binding = TittleBarDefaultBinding.inflate(LayoutInflater.from(context), this, true)
         binding.apply {
             tvTitleName.text = titleName
-            ivBack.setOnClickListener { callback() }
-            tvTitleRight.setOnClickListener { callbackRight() }
+            ivBack.clickNoRepeat { callback() }
+            tvTitleRight.clickNoRepeat { callbackRight() }
         }
     }
 
@@ -60,10 +64,10 @@ class TitleBarView @JvmOverloads constructor(
         val binding = TittleBarSearchBinding.inflate(LayoutInflater.from(context), this, true)
         binding.apply {
             ceSearch.hint = hintText
-            ivBack.setOnClickListener {
+            ivBack.clickNoRepeat {
                 callback()
             }
-            tvSearchText.setOnClickListener {
+            tvSearchText.clickNoRepeat {
                 //hint text 为空 提示请输入搜索内容
                 if (hintText.isEmpty() && ceSearch.text.toString().isEmpty()) {
 
@@ -83,17 +87,28 @@ class TitleBarView @JvmOverloads constructor(
      * @param competitionName 联赛对站 A VS B
      * @param money 剩余总金额
      * @param callback 返回
-     * @param callbackCompetition 下拉切换
+     * @param callbackCompetition 下拉切换 boolean 单前状态展开还是收起
      */
+    @SuppressLint("SetTextI18n")
     fun loadLiveTitleBar(
         leagueImgUrl: String,
         competitionName: String,
         money: String,
         callback: () -> Unit,
-        callbackCompetition: (String) -> Unit
+        callbackCompetition: () -> Unit
     ) {
-
-
+        val binding = TittleBarLiveBinding.inflate(LayoutInflater.from(context), this, true)
+        Glide.with(context).load(leagueImgUrl).override(96.dp2px,22.dp2px).into(binding.ivLandscapeLeagueIcon)
+        binding.apply {
+            tvCompetitionName.text = competitionName
+            tvMoney.text= "¥ $money"
+            ivBack.clickNoRepeat {
+                callback()
+            }
+            tvCompetitionName.clickNoRepeat {
+                callbackCompetition()
+            }
+        }
     }
 
 }

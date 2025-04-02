@@ -1,4 +1,4 @@
-package com.walisport.module_home.ui.fragment
+package com.walisport.module.home.ui.fragment
 
 import android.content.Intent
 import android.net.Uri
@@ -10,8 +10,8 @@ import androidx.navigation.fragment.findNavController
 import com.walisport.lib_base.data.viewmodel.EmptyViewModel
 import com.walisport.lib_base.ui.BaseFragment
 import com.walisport.lib_base.ui.viewBind
-import com.walisport.module_home.R
-import com.walisport.module_home.databinding.FragmentHomeBinding
+import com.walisport.module.home.R
+import com.walisport.module.home.databinding.FragmentHomeBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HomeFragment : BaseFragment<EmptyViewModel, FragmentHomeBinding>() {
