@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.widget.LinearLayout
 import com.walisport.module.bet.databinding.LayoutNumberKeyboardBinding
 
-class CalculatorView : LinearLayout {
+class NumberKeyboardView : LinearLayout {
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)

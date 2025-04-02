@@ -2,15 +2,29 @@
 <resources>
     <style name="NumberKeyboardButton">
         <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_margin">2dp</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_columnWeight">1</item>
+        <item name="android:layout_rowWeight">1</item>
+        <item name="android:background">@drawable/shape_6dp</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/color_textview</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="TextViewStyle">
+        <item name="android:textColor">@color/color_textview</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="ButtonStyle">
         <item name="android:paddingTop">14dp</item>
         <item name="android:paddingBottom">14dp</item>
-        <item name="android:layout_columnWeight">1</item>
-        <item name="android:background">@drawable/bg_button_calculator</item>
-        <item name="android:textSize">18sp</item>
-        <item name="android:textColor">#D3D3D6</item>
-        <item name="android:gravity">center</item>
-        <item name="android:layout_weight">1</item>
+        <item name="android:background">@drawable/shape_8dp</item>
+        <item name="android:backgroundTint">@color/color_button</item>
+        <item name="android:textColor">#000000</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textStyle">bold</item>
     </style>
 </resources>
