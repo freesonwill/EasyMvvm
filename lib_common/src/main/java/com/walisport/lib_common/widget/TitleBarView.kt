@@ -40,7 +40,10 @@ class TitleBarView @JvmOverloads constructor(
     /**
      * 背景设置标题
      * @param titleName 标题名称
-     * @param callback 返回
+     * @param callback 左边点击回调
+     * @param callbackConfirm 右边点击回调
+     * @param leftName 左边按钮字体
+     * @param rightsName 右边按钮字体
      */
     fun loadBackgroundTitleBar(titleName: String, leftName:String,rightsName:String,callback: () -> Unit,callbackConfirm: () -> Unit) {
         val binding = TittleBarBackgroundBinding.inflate(LayoutInflater.from(context), this, true)
