@@ -1,4 +1,4 @@
-package com.walisport.module_bet.repo
+package com.walisport.module.bet.repo
 
 import com.walisport.lib_base.data.repository.BaseRepository
 import kotlinx.coroutines.CoroutineScope

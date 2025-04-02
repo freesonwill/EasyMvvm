@@ -1,8 +1,8 @@
-package com.walisport.module_bet
+package com.walisport.module.bet
 
 import android.content.Context
 import androidx.startup.Initializer
-import com.walisport.module_bet.repo.FloatingButtonRepository
+import com.walisport.module.bet.repo.FloatingButtonRepository
 import com.walisport.module_bet.viewmodel.FloatingButtonViewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.loadKoinModules

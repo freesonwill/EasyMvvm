@@ -1,4 +1,4 @@
-package com.walisport.module_bet
+package com.walisport.module.bet
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

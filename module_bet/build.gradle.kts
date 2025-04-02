@@ -7,7 +7,7 @@ plugins {
 apply(from = rootProject.file("gradle/flavor.gradle"))
 
 android {
-    namespace = "com.walisport.module_bet"
+    namespace = "com.walisport.module.bet"
     compileSdk = 34
 
     defaultConfig {

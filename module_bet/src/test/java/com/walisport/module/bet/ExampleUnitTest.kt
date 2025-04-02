@@ -1,4 +1,4 @@
-package com.walisport.module_bet
+package com.walisport.module.bet
 
 import org.junit.Test
 
