@@ -1,8 +1,10 @@
+import org.jetbrains.kotlin.gradle.internal.Kapt3GradleSubplugin.Companion.findKaptConfiguration
 import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id("com.google.devtools.ksp")
 }
 
 apply(from = rootProject.file("gradle/flavor.gradle"))
@@ -66,4 +68,6 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.immersionbar)
+    implementation(libs.glide)
+    ksp(libs.glidecompiler)
 }
