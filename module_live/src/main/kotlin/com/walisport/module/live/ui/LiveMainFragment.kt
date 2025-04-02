@@ -1,7 +1,6 @@
 package com.walisport.module.live.ui
 
 import android.os.Bundle
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import com.walisport.lib_base.ui.BaseFragment
 import com.walisport.lib_base.ui.viewBind
@@ -16,14 +15,23 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
 
     override fun initView(savedInstanceState: Bundle?) {
+        setCountView()
     }
 
     override fun initListener() {
         mBinding.ivBack.setOnClickListener { findNavController().navigateUp() }
 
-        mViewModel.viewModelScope
     }
 
     override fun createObserver() {
+    }
+
+    private fun setCountView() {
+        childFragmentManager.findFragmentByTag(LiveVideoFragment.TAG)
+                as? LiveVideoFragment ?: LiveVideoFragment().also {
+            childFragmentManager.beginTransaction()
+                .replace(mBinding.fragmentVideo.id, it, LiveVideoFragment.TAG)
+                .commitNow()
+        }
     }
 }

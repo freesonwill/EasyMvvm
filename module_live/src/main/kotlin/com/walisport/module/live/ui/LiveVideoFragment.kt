@@ -30,4 +30,8 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
     override fun createObserver() {
 
     }
+
+    companion object {
+        const val TAG = "LiveVideoFragment"
+    }
 }
