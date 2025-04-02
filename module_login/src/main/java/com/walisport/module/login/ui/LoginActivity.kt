@@ -1,9 +1,9 @@
-package com.walisport.module_login.ui
+package com.walisport.module.login.ui
 
 import android.os.Bundle
 import com.walisport.lib_base.utils.LogUtilsExt.logd
 import com.walisport.lib_common.ui.BaseNavActivity
-import com.walisport.module_login.R
+import com.walisport.module.login.R
 
 class LoginActivity : BaseNavActivity() {
     override fun navigationID(): Int = R.navigation.nav_graph_login

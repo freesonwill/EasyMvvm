@@ -1,6 +1,7 @@
 package com.walisport.module.setting.fragment
 
 import android.os.Bundle
+import androidx.navigation.fragment.findNavController
 import com.walisport.lib_base.ui.BaseFragment
 import com.walisport.lib_base.ui.viewBind
 import com.walisport.module.setting.databinding.FragmentNoticeBinding
@@ -21,7 +22,18 @@ class NoticeFragment : BaseFragment<NoticeViewModel, FragmentNoticeBinding>() {
     }
 
     override fun initListener() {
+        mBinding.ivBack.setOnClickListener{
+            findNavController().navigateUp()
+        }
+        mBinding.noticeGoal.setOnClickListener {
 
+        }
+        mBinding.noticeStart.setOnClickListener {
+
+        }
+        mBinding.noticeAppGoal.setOnClickListener {
+
+        }
     }
 
     override fun createObserver() {

@@ -3,6 +3,7 @@ package com.walisport.app.ui
 
 import android.content.Intent
 import android.os.Bundle
+import com.bumptech.glide.Glide
 import com.walisport.app.BuildConfig.token
 import com.walisport.app.BuildConfig.uid
 import com.walisport.app.data.MainViewModel
@@ -26,7 +27,6 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
     }
 
     override fun initListener() {
-
     }
 
     override fun createObserver() {

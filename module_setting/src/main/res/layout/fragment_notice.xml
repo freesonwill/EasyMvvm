@@ -5,35 +5,41 @@
     android:layout_height="match_parent"
     android:background="@color/color_f3f3f4">
 
-    <RelativeLayout
-        android:id="@+id/rel_bar"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/title_bar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_46"
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_back"
             android:layout_width="@dimen/dp_32"
             android:layout_height="@dimen/dp_32"
-            android:layout_centerVertical="true"
             android:layout_marginStart="@dimen/dp_10"
-            android:background="@mipmap/icon_back" />
+            android:background="@mipmap/icon_back"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
         <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
             android:text="@string/menu_notice_set"
             android:textColor="@color/color_222222"
             android:textSize="@dimen/sp_17"
-            android:textStyle="bold"/>
-    </RelativeLayout>
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_marginTop="@dimen/dp_20"
-        app:layout_constraintTop_toBottomOf="@+id/rel_bar">
+        app:layout_constraintTop_toBottomOf="@+id/title_bar">
 
         <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
@@ -43,99 +49,112 @@
             android:textColor="@color/color_666666"
             android:textSize="@dimen/sp_15" />
 
-        <RelativeLayout
-            android:id="@+id/rel_setting_odds"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/notice_goal"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_52"
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginEnd="@dimen/dp_12"
             android:layout_marginTop="@dimen/dp_10"
-            android:background="@drawable/bg_shape_round_rect_top">
+            android:background="@drawable/ripple_effect_top">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="@dimen/dp_20"
                 android:layout_height="@dimen/dp_20"
-                android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/dp_10"
-                android:background="@mipmap/icon_setting_football" />
+                android:background="@mipmap/icon_setting_football"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/dp_40"
                 android:text="@string/menu_goal_football"
                 android:textColor="@color/color_222222"
-                android:textSize="@dimen/sp_15" />
+                android:textSize="@dimen/sp_15"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="@dimen/dp_10"
                 android:layout_height="@dimen/dp_24"
-                android:layout_centerVertical="true"
-                android:layout_alignParentEnd="true"
                 android:layout_marginEnd="@dimen/dp_10"
-                android:background="@mipmap/icon_right_arrow" />
+                android:background="@mipmap/icon_right_arrow"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_alignParentEnd="true"
                 android:layout_marginEnd="@dimen/dp_30"
                 android:text="@string/menu_part"
                 android:textColor="@color/color_929292"
-                android:textSize="@dimen/sp_15" />
+                android:textSize="@dimen/sp_15"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_1"
                 android:layout_marginStart="@dimen/dp_40"
                 android:layout_marginEnd="@dimen/dp_10"
-                android:layout_alignParentBottom="true"
-                android:background="@color/color_f3f3f4"/>
-        </RelativeLayout>
+                android:background="@color/color_f3f3f4"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <RelativeLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/notice_start"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_52"
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginEnd="@dimen/dp_12"
-            android:background="@drawable/bg_shape_round_rect_bottom">
+            android:background="@drawable/ripple_effect_bottom">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="@dimen/dp_20"
                 android:layout_height="@dimen/dp_20"
-                android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/dp_10"
-                android:background="@mipmap/icon_setting_begin" />
+                android:background="@mipmap/icon_setting_begin"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/dp_40"
                 android:text="@string/menu_game_football"
                 android:textColor="@color/color_222222"
-                android:textSize="@dimen/sp_15" />
+                android:textSize="@dimen/sp_15"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="@dimen/dp_10"
                 android:layout_height="@dimen/dp_24"
-                android:layout_centerVertical="true"
-                android:layout_alignParentEnd="true"
                 android:layout_marginEnd="@dimen/dp_10"
-                android:background="@mipmap/icon_right_arrow" />
+                android:background="@mipmap/icon_right_arrow"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_alignParentEnd="true"
                 android:layout_marginEnd="@dimen/dp_30"
                 android:text="@string/menu_part"
                 android:textColor="@color/color_929292"
-                android:textSize="@dimen/sp_15" />
-        </RelativeLayout>
+                android:textSize="@dimen/sp_15"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
@@ -146,55 +165,54 @@
             android:textColor="@color/color_666666"
             android:textSize="@dimen/sp_15" />
 
-        <RelativeLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/notice_app_goal"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_52"
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginEnd="@dimen/dp_12"
             android:layout_marginTop="@dimen/dp_10"
-            android:background="@drawable/bg_shape_round_rect">
+            android:background="@drawable/ripple_effect">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="@dimen/dp_20"
                 android:layout_height="@dimen/dp_20"
-                android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/dp_10"
-                android:background="@mipmap/icon_setting_football" />
+                android:background="@mipmap/icon_setting_football"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/dp_40"
                 android:text="@string/menu_goal_football"
                 android:textColor="@color/color_222222"
-                android:textSize="@dimen/sp_15" />
+                android:textSize="@dimen/sp_15"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="@dimen/dp_10"
                 android:layout_height="@dimen/dp_24"
-                android:layout_centerVertical="true"
-                android:layout_alignParentEnd="true"
                 android:layout_marginEnd="@dimen/dp_10"
-                android:background="@mipmap/icon_right_arrow" />
+                android:background="@mipmap/icon_right_arrow"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_alignParentEnd="true"
                 android:layout_marginEnd="@dimen/dp_30"
                 android:text="@string/menu_part"
                 android:textColor="@color/color_929292"
-                android:textSize="@dimen/sp_15" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_1"
-                android:layout_marginStart="@dimen/dp_40"
-                android:layout_marginEnd="@dimen/dp_10"
-                android:layout_alignParentBottom="true"
-                android:background="@color/color_f3f3f4"/>
-        </RelativeLayout>
+                android:textSize="@dimen/sp_15"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

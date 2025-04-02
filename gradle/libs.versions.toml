@@ -29,8 +29,10 @@ navigation = "2.8.9"
 annotation = "1.9.1"
 lifecycleLivedataKtx = "2.8.7"
 lifecycleViewmodelKtx = "2.8.7"
-
+window = "1.3.0"
+glide = "4.16.0"
 immersionbar = "3.2.2"
+kspversion = "2.0.21-1.0.27"
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -73,11 +75,14 @@ androidx-runner = { group = "androidx.test", name = "runner", version.ref = "run
 androidx-annotation = { group = "androidx.annotation", name = "annotation", version.ref = "annotation" }
 androidx-lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycleLivedataKtx" }
 androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
-
+androidx-window = { group = "androidx.window", name = "window", version.ref = "window" }
 immersionbar = { group = "com.geyifeng.immersionbar", name = "immersionbar", version.ref = "immersionbar" }
+glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
+glidecompiler = { group = "com.github.bumptech.glide", name = "compiler", version.ref = "glide" }
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 navigation-safeargs = { id = "androidx.navigation.safeargs.kotlin", version.ref = "navigation" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "kspversion" }
 

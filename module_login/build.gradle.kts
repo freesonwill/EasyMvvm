@@ -2,11 +2,11 @@ plugins {
 //    alias(libs.plugins.android.application)
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    id("kotlin-kapt")
+    id("com.google.devtools.ksp")
 }
 apply(from = rootProject.file("gradle/flavor.gradle"))
 android {
-    namespace = "com.walisport.module_login"
+    namespace = "com.walisport.module.login"
     compileSdk = 34
 
     defaultConfig {
