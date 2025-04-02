@@ -1,0 +1,69 @@
+package com.walisport.lib_common.utils.ext
+
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.drawable.BitmapDrawable
+import android.view.View
+import android.widget.ImageView
+import com.walisport.lib_common.R
+
+
+/**
+ * 将view转为bitmap
+ */
+@Deprecated("use View.drawToBitmap()")
+fun View.toBitmap(scale: Float = 1f, config: Bitmap.Config = Bitmap.Config.ARGB_8888): Bitmap? {
+    if (this is ImageView) {
+        if (drawable is BitmapDrawable) return (drawable as BitmapDrawable).bitmap
+    }
+    this.clearFocus()
+    val bitmap = createBitmapSafely(
+        (width * scale).toInt(),
+        (height * scale).toInt(),
+        config,
+        1
+    )
+    if (bitmap != null) {
+        Canvas().run {
+            setBitmap(bitmap)
+            save()
+            drawColor(Color.WHITE)
+            scale(scale, scale)
+            this@toBitmap.draw(this)
+            restore()
+            setBitmap(null)
+        }
+    }
+    return bitmap
+}
+
+/**
+ * 防止重复点击事件 默认0.5秒内不可重复点击
+ * @param interval 时间间隔 默认0.5秒
+ * @param action 执行方法
+ */
+fun View.clickNoRepeat(playSound: Boolean = true, interval: Long = 500, action: (view: View) -> Unit) {
+    setOnClickListener {
+        val lastTime = getTag(R.id.tag_last_click_time) as? Long ?: 0L
+        val currentTime = System.currentTimeMillis()
+        if (lastTime != 0L && (currentTime - lastTime < interval)) {
+            return@setOnClickListener
+        }
+        setTag(R.id.tag_last_click_time, currentTime)
+        action(it)
+    }
+}
+
+fun createBitmapSafely(width: Int, height: Int, config: Bitmap.Config, retryCount: Int): Bitmap? {
+    try {
+        return Bitmap.createBitmap(width, height, config)
+    } catch (e: OutOfMemoryError) {
+        e.printStackTrace()
+        if (retryCount > 0) {
+            System.gc()
+            return createBitmapSafely(width, height, config, retryCount - 1)
+        }
+        return null
+    }
+}

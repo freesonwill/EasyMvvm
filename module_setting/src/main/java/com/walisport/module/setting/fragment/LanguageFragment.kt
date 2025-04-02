@@ -25,6 +25,15 @@ class LanguageFragment : BaseFragment<LanguageViewModel, FragmentLanguageBinding
         mBinding.ivBack.setOnClickListener{
             findNavController().navigateUp()
         }
+        mBinding.languageSimple.setOnClickListener {
+
+        }
+        mBinding.languageTradition.setOnClickListener {
+
+        }
+        mBinding.languageEnglish.setOnClickListener {
+
+        }
     }
 
     override fun createObserver() {

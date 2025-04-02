@@ -58,7 +58,7 @@
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginEnd="@dimen/dp_12"
             android:layout_marginTop="@dimen/dp_10"
-            android:background="@drawable/bg_shape_round_rect">
+            android:background="@drawable/ripple_effect">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="@dimen/dp_20"
@@ -123,7 +123,7 @@
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginEnd="@dimen/dp_12"
             android:layout_marginTop="@dimen/dp_10"
-            android:background="@drawable/bg_shape_round_rect_top">
+            android:background="@drawable/ripple_effect_top">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="@dimen/dp_20"
@@ -174,7 +174,7 @@
             android:layout_height="@dimen/dp_52"
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginEnd="@dimen/dp_12"
-            android:background="@color/white">
+            android:background="@drawable/ripple_effect_rectangle">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="@dimen/dp_20"
@@ -225,7 +225,7 @@
             android:layout_height="@dimen/dp_52"
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginEnd="@dimen/dp_12"
-            android:background="@drawable/bg_shape_round_rect_bottom">
+            android:background="@drawable/ripple_effect_bottom">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="@dimen/dp_20"
