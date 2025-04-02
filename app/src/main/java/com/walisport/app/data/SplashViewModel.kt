@@ -33,7 +33,7 @@ class SplashViewModel : BaseViewModel() {
         token: String
     ) {
         //第一次與socket連接，成功後做登入，如果每次斷線重連後都需要登入，可以把登入寫進observe內
-        viewModelScope.launch(Dispatchers.Default) {
+        viewModelScope.launch(Dispatchers.IO) {
             when(val connectState = repository.startSocket()) {
                 is ConnectState.ConnectSuccess -> {  //連接成功
                     "Connection Success".logi(MainViewModel::class.java.simpleName)
@@ -51,7 +51,7 @@ class SplashViewModel : BaseViewModel() {
         uid: Int,
         token: String
     ) {
-        viewModelScope.launch(Dispatchers.Default) {
+        viewModelScope.launch(Dispatchers.IO) {
             val res = repository.sendLogin(uid, token)
             when(res.error) {
                 null -> {
