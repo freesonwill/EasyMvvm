@@ -58,10 +58,10 @@ class SplashViewModel : BaseViewModel() {
                     }
                 }
                 is ResponseTimeOutError -> {
-                    "login time out".logi(this@SplashViewModel::class.java.simpleName)
+                    "login time out".loge(this@SplashViewModel::class.java.simpleName)
                 }
                 is SocketResponseError -> {
-                    res.error!!.msg.logi(this@SplashViewModel::class.java.simpleName)
+                    res.error!!.msg.loge(this@SplashViewModel::class.java.simpleName)
                 }
             }
         }
