@@ -42,13 +42,13 @@
         app:layout_constraintTop_toBottomOf="@+id/title_bar">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/setting_language_simple"
+            android:id="@+id/language_simple"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_52"
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginEnd="@dimen/dp_12"
             android:layout_marginTop="@dimen/dp_10"
-            android:background="@drawable/bg_shape_round_rect_top">
+            android:background="@drawable/ripple_effect_top">
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
@@ -80,12 +80,12 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/setting_language_tradition"
+            android:id="@+id/language_tradition"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_52"
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginEnd="@dimen/dp_12"
-            android:background="@color/white">
+            android:background="@drawable/ripple_effect_rectangle">
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
@@ -117,12 +117,12 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/setting_language_english"
+            android:id="@+id/language_english"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_52"
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginEnd="@dimen/dp_12"
-            android:background="@drawable/bg_shape_round_rect_bottom">
+            android:background="@drawable/ripple_effect_bottom">
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
