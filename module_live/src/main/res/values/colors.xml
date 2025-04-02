@@ -2,4 +2,9 @@
 <resources>
     <color name="ijk_transparent_dark">#77000000</color>
     <color name="video_landscape_competition_name_color">#E6E6E6</color>
+    <color name="bet_slip_selected">#24ee8a</color>
+    <color name="bet_slip_normal">#161823</color>
+    <color name="bet_slip_text_selected">#000000</color>
+    <color name="bet_slip_text_normal">#929298</color>
+
 </resources>
