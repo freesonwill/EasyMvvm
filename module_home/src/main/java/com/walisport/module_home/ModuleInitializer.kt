@@ -1,4 +1,4 @@
-package com.walisport.module_home
+package com.walisport.module.home
 
 import android.content.Context
 import androidx.startup.Initializer
