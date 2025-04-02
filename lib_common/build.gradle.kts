@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    id("com.google.devtools.ksp")
+    id("kotlin-kapt")
 }
 apply(from = rootProject.file("gradle/flavor.gradle"))
 
@@ -49,5 +49,5 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     api(libs.glide)
-    ksp(libs.glidecompiler)
+    kapt(libs.glidecompiler)
 }

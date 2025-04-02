@@ -2,12 +2,14 @@ package com.walisport.lib_common.widget
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.drm.DrmRights
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import com.bumptech.glide.Glide
 import com.walisport.lib_common.R
+import com.walisport.lib_common.databinding.TittleBarBackgroundBinding
 import com.walisport.lib_common.databinding.TittleBarDefaultBinding
 import com.walisport.lib_common.databinding.TittleBarLiveBinding
 import com.walisport.lib_common.databinding.TittleBarSearchBinding
@@ -36,7 +38,27 @@ class TitleBarView @JvmOverloads constructor(
     }
 
     /**
-     * 通用标题
+     * 背景设置标题
+     * @param titleName 标题名称
+     * @param callback 返回
+     */
+    fun loadBackgroundTitleBar(titleName: String, leftName:String,rightsName:String,callback: () -> Unit,callbackConfirm: () -> Unit) {
+        val binding = TittleBarBackgroundBinding.inflate(LayoutInflater.from(context), this, true)
+        binding.apply {
+            tvTitleName.text = titleName
+            tvBack.text = leftName
+            tvTitleRight.text = rightsName
+            tvBack.clickNoRepeat {
+                callback()
+            }
+            tvTitleRight.clickNoRepeat {
+                callbackConfirm()
+            }
+        }
+    }
+
+    /**
+     * 通用标题2
      * @param titleName 标题名称
      * @param callback 返回
      * @param callbackRight 右边按钮点击回调
@@ -46,6 +68,7 @@ class TitleBarView @JvmOverloads constructor(
         binding.apply {
             tvTitleName.text = titleName
             ivBack.clickNoRepeat { callback() }
+            tvTitleRight.visibility = VISIBLE
             tvTitleRight.clickNoRepeat { callbackRight() }
         }
     }
@@ -87,15 +110,17 @@ class TitleBarView @JvmOverloads constructor(
      * @param competitionName 联赛对站 A VS B
      * @param money 剩余总金额
      * @param callback 返回
+     * @param expand 展开还是收起
      * @param callbackCompetition 下拉切换 boolean 单前状态展开还是收起
      */
     @SuppressLint("SetTextI18n")
     fun loadLiveTitleBar(
         leagueImgUrl: String,
         competitionName: String,
+        expand:Boolean,
         money: String,
         callback: () -> Unit,
-        callbackCompetition: () -> Unit
+        callbackCompetition: (Boolean) -> Unit
     ) {
         val binding = TittleBarLiveBinding.inflate(LayoutInflater.from(context), this, true)
         Glide.with(context).load(leagueImgUrl).override(96.dp2px,22.dp2px).into(binding.ivLandscapeLeagueIcon)
@@ -106,7 +131,7 @@ class TitleBarView @JvmOverloads constructor(
                 callback()
             }
             tvCompetitionName.clickNoRepeat {
-                callbackCompetition()
+                callbackCompetition(!expand)
             }
         }
     }
