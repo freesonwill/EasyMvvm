@@ -6,8 +6,7 @@ import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.view.View
 import android.widget.ImageView
-
-
+import com.walisport.lib_common.R
 
 
 /**
@@ -44,14 +43,14 @@ fun View.toBitmap(scale: Float = 1f, config: Bitmap.Config = Bitmap.Config.ARGB_
  * @param interval 时间间隔 默认0.5秒
  * @param action 执行方法
  */
-var lastClickTime = 0L
-fun View.clickNoRepeat(playSound:Boolean= true,interval: Long = 500, action: (view: View) -> Unit) {
+fun View.clickNoRepeat(playSound: Boolean = true, interval: Long = 500, action: (view: View) -> Unit) {
     setOnClickListener {
+        val lastTime = getTag(R.id.tag_last_click_time) as? Long ?: 0L
         val currentTime = System.currentTimeMillis()
-        if (lastClickTime != 0L && (currentTime - lastClickTime < interval)) {
+        if (lastTime != 0L && (currentTime - lastTime < interval)) {
             return@setOnClickListener
         }
-        lastClickTime = currentTime
+        setTag(R.id.tag_last_click_time, currentTime)
         action(it)
     }
 }
