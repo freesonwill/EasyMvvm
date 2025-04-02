@@ -6,8 +6,8 @@
     android:layout_alignParentBottom="true"
     android:background="@color/white">
 
-    <RelativeLayout
-        android:id="@+id/rel_bar"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/title_bar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_46"
         app:layout_constraintTop_toTopOf="parent">
@@ -15,100 +15,115 @@
         <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
             android:text="@string/method_odds_display"
             android:textColor="@color/color_222222"
             android:textSize="@dimen/sp_16"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
             android:layout_marginEnd="@dimen/dp_16"
             android:text="@string/explain"
             android:textColor="@color/color_929298"
-            android:textSize="@dimen/sp_15"/>
+            android:textSize="@dimen/sp_15"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
             android:layout_alignParentBottom="true"
-            android:background="@color/color_f3f3f4"/>
-    </RelativeLayout>
+            android:background="@color/color_f3f3f4"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@+id/rel_bar">
+        app:layout_constraintTop_toBottomOf="@+id/title_bar">
 
-        <RelativeLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_52">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="@dimen/dp_20"
                 android:layout_height="@dimen/dp_20"
-                android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/dp_24"
-                android:background="@mipmap/icon_menu_europe" />
+                android:background="@mipmap/icon_menu_europe"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/dp_60"
                 android:text="@string/menu_europe"
                 android:textColor="@color/color_222222"
-                android:textSize="@dimen/sp_15" />
+                android:textSize="@dimen/sp_15"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="@dimen/dp_16"
                 android:layout_height="@dimen/dp_16"
-                android:layout_centerVertical="true"
-                android:layout_alignParentEnd="true"
                 android:layout_marginEnd="@dimen/dp_20"
-                android:background="@mipmap/icon_radio_selected" />
+                android:background="@mipmap/icon_radio_selected"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_1"
                 android:layout_marginStart="@dimen/dp_60"
                 android:layout_marginEnd="@dimen/dp_10"
-                android:layout_alignParentBottom="true"
-                android:background="@color/color_f3f3f4"/>
-        </RelativeLayout>
+                android:background="@color/color_f3f3f4"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <RelativeLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_52">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="@dimen/dp_20"
                 android:layout_height="@dimen/dp_20"
-                android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/dp_24"
-                android:background="@mipmap/icon_menu_hk" />
+                android:background="@mipmap/icon_menu_hk"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/dp_60"
                 android:text="@string/menu_hk"
                 android:textColor="@color/color_222222"
-                android:textSize="@dimen/sp_15" />
+                android:textSize="@dimen/sp_15"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="@dimen/dp_16"
                 android:layout_height="@dimen/dp_16"
-                android:layout_centerVertical="true"
-                android:layout_alignParentEnd="true"
                 android:layout_marginEnd="@dimen/dp_20"
-                android:background="@mipmap/icon_radio_normal" />
-        </RelativeLayout>
+                android:background="@mipmap/icon_radio_normal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <View
             android:layout_width="match_parent"

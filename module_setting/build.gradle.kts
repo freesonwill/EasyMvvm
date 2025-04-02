@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.walisport.module_setting"
+    namespace = "com.walisport.module.setting"
     compileSdk = 34
 
     defaultConfig {

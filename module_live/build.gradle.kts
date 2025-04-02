@@ -6,7 +6,7 @@ plugins {
 apply(from = rootProject.file("gradle/flavor.gradle"))
 
 android {
-    namespace = "com.walisport.module_live"
+    namespace = "com.walisport.module.live"
     compileSdk = 34
 
     defaultConfig {
@@ -36,6 +36,7 @@ android {
 
 dependencies {
     implementation(project(":lib_common"))
+    implementation(project(":lib_videoplayer"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">module_live</string>
+    <string name="video_landscape_match_status">赛况</string>
+    <string name="video_landscape_choose_video_source">选解说</string>
 </resources>

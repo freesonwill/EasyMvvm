@@ -5,38 +5,44 @@
     android:layout_height="match_parent"
     android:background="@color/color_f3f3f4">
 
-    <RelativeLayout
-        android:id="@+id/rel_bar"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/title_bar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_46"
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_back"
             android:layout_width="@dimen/dp_32"
             android:layout_height="@dimen/dp_32"
-            android:layout_centerVertical="true"
             android:layout_marginStart="@dimen/dp_10"
-            android:background="@mipmap/icon_back" />
+            android:background="@mipmap/icon_back"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
         <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
             android:text="@string/setting"
             android:textColor="@color/color_222222"
             android:textSize="@dimen/sp_17"
-            android:textStyle="bold"/>
-    </RelativeLayout>
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_marginTop="@dimen/dp_20"
-        app:layout_constraintTop_toBottomOf="@+id/rel_bar">
+        app:layout_constraintTop_toBottomOf="@+id/title_bar">
 
-        <RelativeLayout
-            android:id="@+id/rel_setting_notice"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/setting_language_simple"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_52"
             android:layout_marginStart="@dimen/dp_12"
@@ -47,31 +53,34 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/dp_10"
                 android:text="@string/menu_language_simple"
                 android:textColor="@color/color_222222"
-                android:textSize="@dimen/sp_15" />
+                android:textSize="@dimen/sp_15"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="@dimen/dp_16"
                 android:layout_height="@dimen/dp_16"
-                android:layout_centerVertical="true"
-                android:layout_alignParentEnd="true"
                 android:layout_marginEnd="@dimen/dp_10"
-                android:background="@mipmap/icon_radio_selected" />
+                android:background="@mipmap/icon_radio_selected"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_1"
-                android:layout_marginStart="@dimen/dp_40"
+                android:layout_marginStart="@dimen/dp_10"
                 android:layout_marginEnd="@dimen/dp_10"
-                android:layout_alignParentBottom="true"
-                android:background="@color/color_f3f3f4"/>
-        </RelativeLayout>
+                android:background="@color/color_f3f3f4"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <RelativeLayout
-            android:id="@+id/rel_setting_bg"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/setting_language_tradition"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_52"
             android:layout_marginStart="@dimen/dp_12"
@@ -81,31 +90,34 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/dp_10"
                 android:text="@string/menu_language_traditional"
                 android:textColor="@color/color_222222"
-                android:textSize="@dimen/sp_15" />
+                android:textSize="@dimen/sp_15"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="@dimen/dp_16"
                 android:layout_height="@dimen/dp_16"
-                android:layout_centerVertical="true"
-                android:layout_alignParentEnd="true"
                 android:layout_marginEnd="@dimen/dp_10"
-                android:background="@mipmap/icon_radio_normal" />
+                android:background="@mipmap/icon_radio_normal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_1"
-                android:layout_marginStart="@dimen/dp_40"
+                android:layout_marginStart="@dimen/dp_10"
                 android:layout_marginEnd="@dimen/dp_10"
-                android:layout_alignParentBottom="true"
-                android:background="@color/color_f3f3f4"/>
-        </RelativeLayout>
+                android:background="@color/color_f3f3f4"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <RelativeLayout
-            android:id="@+id/rel_setting_language"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/setting_language_english"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_52"
             android:layout_marginStart="@dimen/dp_12"
@@ -115,19 +127,22 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/dp_10"
                 android:text="@string/menu_language_english"
                 android:textColor="@color/color_222222"
-                android:textSize="@dimen/sp_15" />
+                android:textSize="@dimen/sp_15"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="@dimen/dp_16"
                 android:layout_height="@dimen/dp_16"
-                android:layout_centerVertical="true"
-                android:layout_alignParentEnd="true"
                 android:layout_marginEnd="@dimen/dp_10"
-                android:background="@mipmap/icon_radio_normal" />
-        </RelativeLayout>
+                android:background="@mipmap/icon_radio_normal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
