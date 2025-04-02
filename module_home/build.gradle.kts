@@ -6,7 +6,7 @@ plugins {
 apply(from = rootProject.file("gradle/flavor.gradle"))
 
 android {
-    namespace = "com.walisport.module_home"
+    namespace = "com.walisport.module.home"
     compileSdk = 34
 
     defaultConfig {

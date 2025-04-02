@@ -1,4 +1,4 @@
-package com.walisport.module_home.test
+package com.walisport.module.home.test
 
 import android.os.Bundle
 import android.view.ViewGroup

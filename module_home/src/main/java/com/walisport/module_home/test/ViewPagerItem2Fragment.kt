@@ -1,4 +1,4 @@
-package com.walisport.module_home.test
+package com.walisport.module.home.test
 
 import android.os.Bundle
 import androidx.navigation.findNavController
@@ -7,8 +7,8 @@ import androidx.navigation.fragment.navArgs
 import com.walisport.lib_base.data.viewmodel.EmptyViewModel
 import com.walisport.lib_base.ui.BaseFragment
 import com.walisport.lib_base.ui.viewBind
-import com.walisport.module_home.R
-import com.walisport.module_home.databinding.FragmentViewPagerItem2Binding
+import com.walisport.module.home.R
+import com.walisport.module.home.databinding.FragmentViewPagerItem2Binding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**

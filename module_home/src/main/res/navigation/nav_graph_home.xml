@@ -8,7 +8,7 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.walisport.module_home.ui.fragment.HomeFragment"
+        android:name="com.walisport.module.home.ui.fragment.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home">
         <action
@@ -74,7 +74,7 @@
 
     <fragment
         android:id="@+id/secondFragment"
-        android:name="com.walisport.module_home.ui.fragment.SecondFragment"
+        android:name="com.walisport.module.home.ui.fragment.SecondFragment"
         android:label="fragment_second"
         tools:layout="@layout/fragment_second"
         >
@@ -91,12 +91,12 @@
 
     <activity
         android:id="@+id/homeActivity"
-        android:name="com.walisport.module_home.ui.HomeActivity"
+        android:name="com.walisport.module.home.ui.HomeActivity"
         android:label="activity_home"
         tools:layout="@layout/activity_home" />
     <fragment
         android:id="@+id/thirdFragment"
-        android:name="com.walisport.module_home.ui.fragment.ThirdFragment"
+        android:name="com.walisport.module.home.ui.fragment.ThirdFragment"
         android:label="fragment_third"
         tools:layout="@layout/fragment_third" >
         <action
@@ -109,7 +109,7 @@
 
     <fragment
         android:id="@+id/viewPagerFragment"
-        android:name="com.walisport.module_home.test.ViewPagerFragment"
+        android:name="com.walisport.module.home.test.ViewPagerFragment"
         android:label="ViewPagerFragment"
         >
         <action
@@ -119,21 +119,6 @@
             app:restoreState="true"
             />
     </fragment>
-
-    <activity
-        android:id="@+id/VideoLandscapeActivity"
-        android:label="activity_video_landscape"
-        app:targetPackage="${applicationId}"
-        app:data="walisport://video_landscape_activity"
-        >
-        <argument
-            android:name="userId"
-            android:defaultValue="@null"
-            app:argType="string"
-            app:nullable="true" />
-        <deepLink app:uri="walisport://video_landscape_activity?userId={userId}" />
-    </activity>
-
 
 
 </navigation>

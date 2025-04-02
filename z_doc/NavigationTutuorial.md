@@ -162,7 +162,7 @@ findNavController().navigate(Uri.parse("walisport://login_activity?userId=lucy")
 <navigation >
  <fragment
         android:id="@+id/homeFragment"
-        android:name="com.walisport.module_home.ui.fragment.HomeFragment"
+        android:name="com.walisport.module.home.ui.fragment.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home">
 
@@ -196,7 +196,7 @@ val navOptions = NavOptions.Builder()
 ```xml
 <fragment
         android:id="@+id/homeFragment"
-        android:name="com.walisport.module_home.ui.fragment.HomeFragment"
+        android:name="com.walisport.module.home.ui.fragment.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home">
         <action
