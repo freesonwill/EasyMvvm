@@ -19,7 +19,6 @@ import androidx.annotation.RequiresApi;
 import androidx.collection.SimpleArrayMap;
 
 import com.walisport.lib.base.utils.log.Utils;
-import com.walisport.lib.base.utils.log.Utils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
