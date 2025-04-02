@@ -4,8 +4,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     id("com.google.protobuf") version "0.9.4"
-    id("com.google.devtools.ksp")
-
+    id("kotlin-kapt")
 }
 
 android {
