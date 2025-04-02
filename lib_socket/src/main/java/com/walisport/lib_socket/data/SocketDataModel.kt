@@ -40,7 +40,7 @@ data class SocketOriginResponseData(
 data class SocketResponseData<T: GeneratedMessageLite<*,*>>(
     override val mid: Short,
     override val sid: Short,
-    val responseData: T?,
+    val data: T?,
     val error: SocketResponseError? = null,
 ): ISocketData(), IResponse
 

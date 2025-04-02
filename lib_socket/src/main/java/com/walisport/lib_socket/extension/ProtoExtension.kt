@@ -4,7 +4,6 @@ import com.google.protobuf.GeneratedMessageLite
 import com.walisport.lib_socket.WebSocketManager
 import com.walisport.lib_socket.WebSocketManager.Companion.responseTimeout
 import com.walisport.lib_socket.data.ApiCode
-import com.walisport.lib_socket.data.IResponse
 import com.walisport.lib_socket.data.InvalidProtoTypeResponseError
 import com.walisport.lib_socket.data.ResponseTimeOutError
 import com.walisport.lib_socket.data.SocketRequestData
@@ -18,7 +17,6 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
 import java.lang.Exception
 
@@ -42,14 +40,14 @@ inline fun <reified T: GeneratedMessageLite<*,*>>WebSocketManager.observeProtoMe
             return@map SocketResponseData(
                 mid = it.mid,
                 sid = it.sid,
-                responseData = proto,
+                data = proto,
             )
         } catch (e: Exception) {
             e.printStackTrace()
             return@map SocketResponseData(
                 mid = it.mid,
                 sid = it.sid,
-                responseData = null,
+                data = null,
                 error = InvalidProtoTypeResponseError()
             )
         }
@@ -71,7 +69,7 @@ suspend inline fun<reified T: GeneratedMessageLite<*,*>>WebSocketManager.sendAnd
     return deferred.await() ?: SocketResponseData(
         mid = apiCode.mid,
         sid = apiCode.sid,
-        responseData = null,
+        data = null,
         error = ResponseTimeOutError()
     )
 }

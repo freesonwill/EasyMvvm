@@ -7,9 +7,7 @@ import com.walisport.lib_base.utils.LogUtilsExt.loge
 import com.walisport.lib_base.utils.LogUtilsExt.logi
 import com.walisport.lib_socket.data.ConnectState
 import com.walisport.lib_socket.data.ResponseTimeOutError
-import com.walisport.lib_socket.data.SocketResponseData
 import com.walisport.lib_socket.data.SocketResponseError
-import galaxy.client.proto.Client
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
@@ -55,7 +53,7 @@ class SplashViewModel : BaseViewModel() {
             val res = repository.sendLogin(uid, token)
             when(res.error) {
                 null -> {
-                    res.responseData?.apply {
+                    res.data?.apply {
                         "login isSuccess = ${this.success}".logi(this@SplashViewModel::class.java.simpleName)
                     }
                 }
