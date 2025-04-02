@@ -3,6 +3,7 @@ package com.walisport.lib_common.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import com.walisport.lib_common.R
 import com.walisport.lib_common.databinding.TittleBarDefaultBinding
@@ -24,7 +25,7 @@ class TitleBarView @JvmOverloads constructor(
         val binding = TittleBarDefaultBinding.inflate(LayoutInflater.from(context), this, true)
         binding.apply {
             tvTitleName.text = titleName
-            ivBack.setOnClickListener{
+            ivBack.setOnClickListener {
                 callback()
             }
         }
@@ -36,12 +37,12 @@ class TitleBarView @JvmOverloads constructor(
      * @param callback 返回
      * @param callbackRight 右边按钮点击回调
      */
-    fun loadTitleBarShowRight(titleName: String, callback: () -> Unit,callbackRight:() ->Unit) {
+    fun loadTitleBarShowRight(titleName: String, callback: () -> Unit, callbackRight: () -> Unit) {
         val binding = TittleBarDefaultBinding.inflate(LayoutInflater.from(context), this, true)
         binding.apply {
             tvTitleName.text = titleName
-            ivBack.setOnClickListener{ callback() }
-            tvTitleRight.setOnClickListener{  callbackRight() }
+            ivBack.setOnClickListener { callback() }
+            tvTitleRight.setOnClickListener { callbackRight() }
         }
     }
 
@@ -51,16 +52,28 @@ class TitleBarView @JvmOverloads constructor(
      * @param callback 返回
      * @param callbackSearch 搜索
      */
-    fun loadSearchTitleBar(hintText: String, callback: () -> Unit,callbackSearch: (String) -> Unit) {
+    fun loadSearchTitleBar(
+        hintText: String,
+        callback: () -> Unit,
+        callbackSearch: (String) -> Unit
+    ) {
         val binding = TittleBarSearchBinding.inflate(LayoutInflater.from(context), this, true)
         binding.apply {
             ceSearch.hint = hintText
             ivBack.setOnClickListener {
                 callback()
             }
-            tvSearchText.setOnClickListener{
-                callbackSearch(ceSearch.text.toString())
+            tvSearchText.setOnClickListener {
+                //hint text 为空 提示请输入搜索内容
+                if (hintText.isEmpty() && ceSearch.text.toString().isEmpty()) {
+
+                } else {
+                    //如果输入内容为空，传入hint内容
+                    callbackSearch(ceSearch.text.toString().ifEmpty { hintText })
+                }
+
             }
+
         }
     }
 
@@ -72,8 +85,13 @@ class TitleBarView @JvmOverloads constructor(
      * @param callback 返回
      * @param callbackCompetition 下拉切换
      */
-    fun loadLiveTitleBar(leagueImgUrl: String,competitionName:String,money:String, callback: () -> Unit,callbackCompetition: (String) -> Unit) {
-
+    fun loadLiveTitleBar(
+        leagueImgUrl: String,
+        competitionName: String,
+        money: String,
+        callback: () -> Unit,
+        callbackCompetition: (String) -> Unit
+    ) {
 
 
     }
