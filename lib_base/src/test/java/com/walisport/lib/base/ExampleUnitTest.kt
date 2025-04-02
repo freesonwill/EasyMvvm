@@ -1,4 +1,4 @@
-package com.walisport.base
+package com.walisport.lib.base
 
 import org.junit.Test
 
