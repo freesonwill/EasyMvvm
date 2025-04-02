@@ -50,13 +50,13 @@
             android:textSize="@dimen/sp_15" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/setting_goal"
+            android:id="@+id/notice_goal"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_52"
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginEnd="@dimen/dp_12"
             android:layout_marginTop="@dimen/dp_10"
-            android:background="@drawable/bg_shape_round_rect_top">
+            android:background="@drawable/ripple_effect_top">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="@dimen/dp_20"
@@ -108,12 +108,12 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/setting_start"
+            android:id="@+id/notice_start"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_52"
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginEnd="@dimen/dp_12"
-            android:background="@drawable/bg_shape_round_rect_bottom">
+            android:background="@drawable/ripple_effect_bottom">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="@dimen/dp_20"
@@ -166,13 +166,13 @@
             android:textSize="@dimen/sp_15" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/setting_app_goal"
+            android:id="@+id/notice_app_goal"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_52"
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginEnd="@dimen/dp_12"
             android:layout_marginTop="@dimen/dp_10"
-            android:background="@drawable/bg_shape_round_rect">
+            android:background="@drawable/ripple_effect">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="@dimen/dp_20"

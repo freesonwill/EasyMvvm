@@ -25,6 +25,15 @@ class NoticeFragment : BaseFragment<NoticeViewModel, FragmentNoticeBinding>() {
         mBinding.ivBack.setOnClickListener{
             findNavController().navigateUp()
         }
+        mBinding.noticeGoal.setOnClickListener {
+
+        }
+        mBinding.noticeStart.setOnClickListener {
+
+        }
+        mBinding.noticeAppGoal.setOnClickListener {
+
+        }
     }
 
     override fun createObserver() {
