@@ -1,9 +1,6 @@
 package com.walisport.module.live.ui
 
 import android.os.Bundle
-import android.util.TypedValue
-import android.view.ViewGroup
-import android.widget.TextView
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.tabs.TabLayoutMediator
 import com.walisport.lib.base.adapter.PagerAdapter
