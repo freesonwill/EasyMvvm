@@ -1,4 +1,4 @@
-package com.walisport.lib_common.ui.adapter
+package com.walisport.lib.common.ui.adapter
 
 import android.content.res.Resources
 import androidx.recyclerview.widget.RecyclerView

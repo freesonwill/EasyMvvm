@@ -1,9 +1,9 @@
-package com.walisport.lib_common.helper
+package com.walisport.lib.common.helper
 
 import com.walisport.lib.base.utils.LogUtilsExt.logd
 import com.walisport.lib.base.utils.LogUtilsExt.loge
-import com.walisport.lib_common.databinding.ToastLayoutBinding
-import com.walisport.lib_common.utils.ThreadUtils.launchWithCustomContext
+import com.walisport.lib.common.databinding.ToastLayoutBinding
+import com.walisport.lib.common.utils.ThreadUtils.launchWithCustomContext
 import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.PixelFormat

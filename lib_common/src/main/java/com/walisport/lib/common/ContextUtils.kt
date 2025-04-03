@@ -1,4 +1,4 @@
-package com.walisport.lib_common
+package com.walisport.lib.common
 
 import android.annotation.SuppressLint
 import android.content.Context

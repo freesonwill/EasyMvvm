@@ -1,4 +1,4 @@
-package com.walisport.lib_common.utils.ext
+package com.walisport.lib.common.utils.ext
 
 /**
  * 字符串扩展

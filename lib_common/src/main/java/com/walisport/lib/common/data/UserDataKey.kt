@@ -1,4 +1,4 @@
-package com.walisport.lib_common.data
+package com.walisport.lib.common.data
 
 enum class UserDataKey(val key: String) {
 

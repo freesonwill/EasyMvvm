@@ -1,4 +1,4 @@
-package com.walisport.lib_common.data
+package com.walisport.lib.common.data
 
 import com.tencent.mmkv.MMKV
 

@@ -1,4 +1,4 @@
-package com.walisport.lib_common.utils.ext
+package com.walisport.lib.common.utils.ext
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -6,7 +6,7 @@ import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.view.View
 import android.widget.ImageView
-import com.walisport.lib_common.R
+import com.walisport.lib.common.R
 
 
 /**

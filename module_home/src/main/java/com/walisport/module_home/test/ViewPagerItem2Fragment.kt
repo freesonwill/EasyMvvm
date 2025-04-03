@@ -25,7 +25,7 @@ class ViewPagerItem2Fragment : BaseFragment<EmptyViewModel, FragmentViewPagerIte
 
     override fun initListener() {
         mBinding.tv.setOnClickListener {
-            val navController = requireActivity().findNavController(com.walisport.lib_common.R.id.nav_host)
+            val navController = requireActivity().findNavController(com.walisport.lib.common.R.id.nav_host)
             navController.navigate(ViewPagerFragmentDirections.actionViewPagerItem2FragmentToHomeFragment())
             //findNavController().navigate(ViewPagerItem2FragmentDirections.actionTextViewScreenToHomeFragment3())
         }

@@ -1,4 +1,4 @@
-package com.walisport.lib_common.widget
+package com.walisport.lib.common.widget
 
 import android.content.Context
 import android.graphics.drawable.Drawable
@@ -12,7 +12,7 @@ import android.view.View.OnTouchListener
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
-import com.walisport.lib_common.R
+import com.walisport.lib.common.R
 
 class ClearableEditText : AppCompatEditText, OnTouchListener,
     OnFocusChangeListener, TextWatcher {

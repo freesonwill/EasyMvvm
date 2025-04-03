@@ -1,4 +1,4 @@
-package com.walisport.lib_common.utils.ext
+package com.walisport.lib.common.utils.ext
 
 import android.app.Application
 import android.util.TypedValue

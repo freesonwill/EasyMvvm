@@ -1,10 +1,10 @@
-package com.walisport.lib_common
+package com.walisport.lib.common
 
 import android.content.Context
 import androidx.startup.Initializer
 import com.tencent.mmkv.MMKV
 import com.walisport.lib.base.ApplicationModuleInitializer
-import com.walisport.lib_common.data.UserDataManager
+import com.walisport.lib.common.data.UserDataManager
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
 import org.koin.dsl.module
