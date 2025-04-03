@@ -2,10 +2,9 @@ package com.walisport.module.live
 
 import android.content.Context
 import androidx.startup.Initializer
-import com.walisport.lib_base.ApplicationModuleInitializer
+import com.walisport.lib.base.ApplicationModuleInitializer
 import com.walisport.module.live.data.LiveMainRepository
 import com.walisport.module.live.viewmodel.LiveMainViewModel
-import kotlinx.coroutines.CoroutineScope
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module

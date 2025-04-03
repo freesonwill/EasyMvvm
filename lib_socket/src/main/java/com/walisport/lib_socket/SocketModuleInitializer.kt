@@ -3,7 +3,7 @@ package com.walisport.lib_socket
 import android.app.Application
 import android.content.Context
 import androidx.startup.Initializer
-import com.walisport.lib_base.utils.LogUtilsExt.logd
+import com.walisport.lib.base.utils.LogUtilsExt.logd
 import com.walisport.lib_socket.data.ISecurity
 import com.walisport.lib_socket.data.ISocket
 import org.koin.android.ext.koin.androidContext

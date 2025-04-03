@@ -2,8 +2,8 @@ package com.walisport.module.live.ui
 
 import android.os.Bundle
 import androidx.navigation.fragment.findNavController
-import com.walisport.lib_base.ui.BaseFragment
-import com.walisport.lib_base.ui.viewBind
+import com.walisport.lib.base.ui.BaseFragment
+import com.walisport.lib.base.ui.viewBind
 import com.walisport.module.live.databinding.FragmentLiveMainBinding
 import com.walisport.module.live.viewmodel.LiveMainViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel

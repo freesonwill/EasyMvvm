@@ -2,7 +2,7 @@ package com.walisport.app.ui
 
 import android.os.Bundle
 import com.walisport.app.R
-import com.walisport.lib_base.utils.LogUtilsExt.logd
+import com.walisport.lib.base.utils.LogUtilsExt.logd
 import com.walisport.lib_common.ContextUtils
 import com.walisport.lib_common.ui.BaseNavActivity
 
