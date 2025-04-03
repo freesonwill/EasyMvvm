@@ -33,5 +33,6 @@
     <string name="notice_bet">Matches Bet On</string>
     <string name="notice_favourite">Favourite Notice On</string>
     <string name="notice_all">All Notice On</string>
-
+    <string name="display_odds_ben">(Display odds including stake)</string>
+    <string name="display_odds_not">(Display odds not including stake)</string>
 </resources>

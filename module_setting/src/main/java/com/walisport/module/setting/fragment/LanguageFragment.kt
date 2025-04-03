@@ -1,6 +1,7 @@
 package com.walisport.module.setting.fragment
 
 import android.os.Bundle
+import androidx.navigation.fragment.findNavController
 import com.walisport.lib.base.ui.BaseFragment
 import com.walisport.lib.base.ui.viewBind
 import com.walisport.lib.common.utils.ext.ResourceExt.getString
@@ -25,6 +26,9 @@ class LanguageFragment : BaseFragment<LanguageViewModel, FragmentLanguageBinding
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        mBinding.titleBar.loadGeneralTitleBar(R.string.menu_language_set.getString()) {
+            findNavController().navigateUp()
+        }
         val languageType = mViewModel.getLanguageType()
         if ("SIMPLE" == languageType) {
             mBinding.radioSimple.isChecked = true
@@ -42,9 +46,6 @@ class LanguageFragment : BaseFragment<LanguageViewModel, FragmentLanguageBinding
     }
 
     override fun initListener() {
-        mBinding.titleBar.loadGeneralTitleBar(R.string.menu_language_set.getString()) {
-
-        }
         mBinding.radioSimple.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 setRadioButtonChecked(TYPE_SIMPLE)

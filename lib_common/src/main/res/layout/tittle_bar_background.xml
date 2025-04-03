@@ -14,7 +14,7 @@
         android:id="@+id/tv_title_name"
         android:textColor="@color/white"
         android:text=""
-       style="@style/CustomToolbarTvStyle"
+        style="@style/CustomToolbarTvStyle"
         tools:ignore="MissingConstraints" />
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_title_right"
