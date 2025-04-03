@@ -14,6 +14,14 @@
         <deepLink app:uri="walisport://module_live/liveFragment" />
     </fragment>
 
+    <fragment
+        android:id="@+id/leagueFragment"
+        android:name="com.walisport.module.live.ui.LeagueFragment"
+        android:label="fragment_live_league"
+        tools:layout="@layout/fragment_league">
+
+        <deepLink app:uri="walisport://module_live/leagueFragment" />
+    </fragment>
 
     <activity
         android:id="@+id/VideoLandscapeActivity"
