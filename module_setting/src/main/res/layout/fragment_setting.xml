@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_f3f3f4">
+    android:background="@color/color_0E0F19">
 
     <com.walisport.lib.common.widget.TitleBarView
         android:id="@+id/title_bar"
@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_12"
             android:text="@string/pan"
-            android:textColor="@color/color_666666"
+            android:textColor="@color/color_929298"
             android:textSize="@dimen/sp_15" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -52,7 +52,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/dp_40"
                 android:text="@string/menu_odds_display"
-                android:textColor="@color/color_222222"
+                android:textColor="@color/white"
                 android:textSize="@dimen/sp_15"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -77,7 +77,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="@dimen/dp_30"
                 android:text="@string/menu_europe"
-                android:textColor="@color/color_929292"
+                android:textColor="@color/color_929298"
                 android:textSize="@dimen/sp_15"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -90,7 +90,7 @@
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginTop="@dimen/dp_20"
             android:text="@string/common"
-            android:textColor="@color/color_666666"
+            android:textColor="@color/color_929298"
             android:textSize="@dimen/sp_15" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -118,7 +118,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/dp_40"
                 android:text="@string/menu_notice_set"
-                android:textColor="@color/color_222222"
+                android:textColor="@color/white"
                 android:textSize="@dimen/sp_15"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -141,7 +141,7 @@
                 android:layout_marginStart="@dimen/dp_40"
                 android:layout_marginEnd="@dimen/dp_10"
                 android:layout_alignParentBottom="true"
-                android:background="@color/color_f3f3f4"
+                android:background="@color/color_1d1f29"
                 app:layout_constraintBottom_toBottomOf="parent"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -169,7 +169,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/dp_40"
                 android:text="@string/menu_background_set"
-                android:textColor="@color/color_222222"
+                android:textColor="@color/white"
                 android:textSize="@dimen/sp_15"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -192,7 +192,7 @@
                 android:layout_marginStart="@dimen/dp_40"
                 android:layout_marginEnd="@dimen/dp_10"
                 android:layout_alignParentBottom="true"
-                android:background="@color/color_f3f3f4"
+                android:background="@color/color_1d1f29"
                 app:layout_constraintBottom_toBottomOf="parent"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -218,7 +218,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_40"
                 android:text="@string/menu_language_set"
-                android:textColor="@color/color_222222"
+                android:textColor="@color/white"
                 android:textSize="@dimen/sp_15"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"

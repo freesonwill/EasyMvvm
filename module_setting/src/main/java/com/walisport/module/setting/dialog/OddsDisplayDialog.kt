@@ -1,8 +1,13 @@
 package com.walisport.module.setting.dialog
 
+import android.graphics.Color
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import com.walisport.lib.base.ui.BaseBottomSheetFragment
 import com.walisport.lib.base.ui.viewBind
+import com.walisport.module.setting.R
 import com.walisport.module.setting.databinding.DialogOddsDisplayBinding
 
 class OddsDisplayDialog : BaseBottomSheetFragment<DialogOddsDisplayBinding>() {
@@ -23,6 +28,22 @@ class OddsDisplayDialog : BaseBottomSheetFragment<DialogOddsDisplayBinding>() {
             mBinding.radioEp.isChecked = false
             mBinding.radioHk.isChecked = true
         }
+        val spannableString = SpannableString(getString(R.string.display_odds_ben))
+        spannableString.setSpan(
+            ForegroundColorSpan(Color.RED),
+            5,
+            7,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        mBinding.tvDisplayOddsEp.text = spannableString
+        val spannableStringHK = SpannableString(getString(R.string.display_odds_not))
+        spannableStringHK.setSpan(
+            ForegroundColorSpan(Color.RED),
+            5,
+            8,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        mBinding.tvDisplayOddsHk.text = spannableStringHK
     }
 
     override fun initListener() {

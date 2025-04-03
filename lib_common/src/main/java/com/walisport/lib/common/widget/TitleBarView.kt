@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.appcompat.widget.Toolbar
 import com.bumptech.glide.Glide
+import com.walisport.lib.common.R
 import com.walisport.lib.common.databinding.TittleBarBackgroundBinding
 import com.walisport.lib.common.databinding.TittleBarDefaultBinding
 import com.walisport.lib.common.databinding.TittleBarLiveBinding
@@ -123,7 +124,9 @@ class TitleBarView @JvmOverloads constructor(
         callbackCompetition: (Boolean) -> Unit
     ) {
         val binding = TittleBarLiveBinding.inflate(LayoutInflater.from(context), this, true)
-        Glide.with(context).load(leagueImgUrl).override(96.dp2px,22.dp2px).into(binding.ivLandscapeLeagueIcon)
+        Glide.with(context).load(leagueImgUrl).override(96.dp2px,22.dp2px)
+            .error(R.drawable.title_league_icon)           // 加载失败时的占位符
+            .into(binding.ivLandscapeLeagueIcon)
         binding.apply {
             tvCompetitionName.text = competitionName
             tvMoney.text= "¥ $money"

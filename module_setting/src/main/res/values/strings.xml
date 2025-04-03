@@ -33,5 +33,6 @@
     <string name="notice_bet">已投注的赛事</string>
     <string name="notice_favourite">已收藏的赛事</string>
     <string name="notice_all">所有滚动赛事</string>
-
+    <string name="display_odds_ben">(显示赔率包含本金)</string>
+    <string name="display_odds_not">(显示赔率不包含本金)</string>
 </resources>

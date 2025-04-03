@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:ndroid="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_shape_round_rect_top"
@@ -25,13 +24,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="@dimen/dp_12"
-                android:background="@mipmap/bg_dialog_notice" />
+                android:background="@drawable/bg_dialog_notice" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_game_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_20"
+                android:layout_marginTop="@dimen/dp_17"
+                android:paddingStart="@dimen/dp_12"
                 android:text="36′"
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp_13"
@@ -40,10 +40,10 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <LinearLayout
+                android:id="@+id/lay_score"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="@dimen/dp_4"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_game_time">
@@ -51,15 +51,6 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="莱斯特城"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/sp_16"
-                    android:textStyle="bold" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_5"
                     android:text="1"
                     android:textColor="@color/white"
                     android:textSize="@dimen/sp_16"
@@ -68,7 +59,9 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_5"
+                    android:layout_marginStart="@dimen/dp_6"
+                    android:layout_marginEnd="@dimen/dp_6"
+                    android:paddingStart="@dimen/dp_2"
                     android:text="-"
                     android:textColor="@color/white"
                     android:textSize="@dimen/sp_16"
@@ -77,21 +70,35 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_5"
                     android:text="0"
                     android:textColor="@color/tran_75_white"
                     android:textSize="@dimen/sp_16"
                     android:textStyle="bold" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_5"
-                    android:text="切尔西"
-                    android:textColor="@color/tran_75_white"
-                    android:textSize="@dimen/sp_16"
-                    android:textStyle="bold" />
             </LinearLayout>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="莱斯特城"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_16"
+                android:textStyle="bold"
+                android:layout_marginEnd="@dimen/dp_10"
+                app:layout_constraintTop_toTopOf="@+id/lay_score"
+                app:layout_constraintBottom_toBottomOf="@+id/lay_score"
+                app:layout_constraintEnd_toStartOf="@+id/lay_score"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="切尔西"
+                android:textColor="@color/tran_75_white"
+                android:textSize="@dimen/sp_16"
+                android:textStyle="bold"
+                android:layout_marginStart="@dimen/dp_10"
+                app:layout_constraintTop_toTopOf="@+id/lay_score"
+                app:layout_constraintBottom_toBottomOf="@+id/lay_score"
+                app:layout_constraintStart_toEndOf="@+id/lay_score"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -100,7 +107,7 @@
             android:layout_marginTop="@dimen/dp_18"
             android:gravity="center_horizontal"
             android:text="@string/tip_dialog_notice"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:textSize="@dimen/sp_17" />
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -132,7 +139,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_40"
                 android:text="@string/notice_bet"
-                android:textColor="@color/color_222222"
+                android:textColor="@color/white"
                 android:textSize="@dimen/sp_15"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -155,7 +162,7 @@
                 android:layout_height="@dimen/dp_1"
                 android:layout_marginStart="@dimen/dp_40"
                 android:layout_marginEnd="@dimen/dp_10"
-                android:background="@color/color_f3f3f4"
+                android:background="@color/color_1d1f29"
                 app:layout_constraintBottom_toBottomOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -178,7 +185,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_40"
                 android:text="@string/notice_favourite"
-                android:textColor="@color/color_222222"
+                android:textColor="@color/white"
                 android:textSize="@dimen/sp_15"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -201,7 +208,7 @@
                 android:layout_height="@dimen/dp_1"
                 android:layout_marginStart="@dimen/dp_40"
                 android:layout_marginEnd="@dimen/dp_10"
-                android:background="@color/color_f3f3f4"
+                android:background="@color/color_1d1f29"
                 app:layout_constraintBottom_toBottomOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -224,7 +231,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_40"
                 android:text="@string/notice_all"
-                android:textColor="@color/color_222222"
+                android:textColor="@color/white"
                 android:textSize="@dimen/sp_15"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -246,7 +253,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_8"
-            android:background="@color/color_f3f3f4" />
+            android:background="@color/color_0f101b" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_close"
@@ -255,7 +262,7 @@
             android:background="@drawable/ripple_effect_rectangle"
             android:gravity="center"
             android:text="@string/shut_down"
-            android:textColor="@color/color_222222"
+            android:textColor="@color/color_71e993"
             android:textSize="@dimen/sp_16"
             android:textStyle="bold" />
     </LinearLayout>
