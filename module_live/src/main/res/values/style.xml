@@ -1,0 +1,5 @@
+<resources>
+<style name="CustomTabText" parent="TextAppearance.AppCompat">
+    <item name="android:textSize">25sp</item> <!-- 设置字体大小 -->
+</style>
+</resources>

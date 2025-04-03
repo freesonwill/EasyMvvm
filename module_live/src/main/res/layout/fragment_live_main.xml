@@ -29,9 +29,10 @@
         app:tabIndicatorGravity="bottom"
         app:tabIndicatorHeight="2dp"
         app:tabMode="fixed"
+        app:tabGravity="fill"
         app:tabRippleColor="@null"
         app:tabSelectedTextColor="@color/white"
-        app:tabTextAppearance="@style/TextAppearance.Design.Tab"
+        app:tabTextAppearance="@style/CustomTabText"
         app:tabTextColor="@color/video_tab_text_color"
         tools:ignore="SpeakableTextPresentCheck" />
 
