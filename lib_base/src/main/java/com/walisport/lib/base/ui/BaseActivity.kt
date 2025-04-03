@@ -2,6 +2,8 @@ package com.walisport.lib.base.ui
 
 import android.app.Activity
 import android.os.Bundle
+import android.view.MotionEvent
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -30,7 +32,8 @@ abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActi
     protected abstract val mViewModel: VM
     //是否第一次加载
     private var isFirst: Boolean = true
-
+    // 默认不启用键盘隐藏功能，子类可覆盖 edittext软键盘弹出后，点击外部虚拟键盘消失
+    open val enableHideKeyboardOnTouchOutside = false
     //设置颜色，默认根据主题颜色设定
     private val statusBar:IStatusBar by lazy { StatusBarDelegate(this)  }
 
@@ -47,6 +50,20 @@ abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActi
 
     override fun setStatusBar(config: StatusBarConfig) {
         statusBar.setStatusBar(config)
+    }
+
+
+
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        if (enableHideKeyboardOnTouchOutside && ev?.action == MotionEvent.ACTION_DOWN) {
+            val view = currentFocus
+            if (view != null) {
+                val imm = getSystemService(InputMethodManager::class.java)
+                imm?.hideSoftInputFromWindow(view.windowToken, 0)
+                view.clearFocus()
+            }
+        }
+        return super.dispatchTouchEvent(ev)
     }
 }
 
