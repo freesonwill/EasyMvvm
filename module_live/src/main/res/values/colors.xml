@@ -2,6 +2,8 @@
 <resources>
     <color name="ijk_transparent_dark">#77000000</color>
     <color name="video_landscape_competition_name_color">#E6E6E6</color>
+    <color name="video_tab_text_color">#929298</color>
+
     <color name="brand_color">#24ee8a</color>
     <color name="theme_text">#000000</color>
     <color name="card_solid">#161823</color>

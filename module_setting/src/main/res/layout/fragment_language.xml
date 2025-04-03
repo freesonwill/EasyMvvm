@@ -4,9 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/color_f3f3f4">
+    android:background="@color/color_0E0F19">
 
-   <com.walisport.lib_common.widget.TitleBarView
+   <com.walisport.lib.common.widget.TitleBarView
        android:id="@+id/title_bar"
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
@@ -33,27 +33,30 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_10"
                 android:text="@string/menu_language_simple"
-                android:textColor="@color/color_222222"
+                android:textColor="@color/white"
                 android:textSize="@dimen/sp_15"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <RadioButton
+                android:id="@+id/radio_simple"
                 android:layout_width="@dimen/dp_16"
                 android:layout_height="@dimen/dp_16"
                 android:layout_marginEnd="@dimen/dp_10"
-                android:background="@mipmap/icon_radio_selected"
+                android:button="@null"
+                android:checked="true"
+                android:background="@drawable/selector_radio_button"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_1"
                 android:layout_marginStart="@dimen/dp_10"
                 android:layout_marginEnd="@dimen/dp_10"
-                android:background="@color/color_f3f3f4"
+                android:background="@color/color_1d1f29"
                 app:layout_constraintBottom_toBottomOf="parent"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -70,27 +73,30 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_10"
                 android:text="@string/menu_language_traditional"
-                android:textColor="@color/color_222222"
+                android:textColor="@color/white"
                 android:textSize="@dimen/sp_15"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <RadioButton
+                android:id="@+id/radio_traditional"
                 android:layout_width="@dimen/dp_16"
                 android:layout_height="@dimen/dp_16"
                 android:layout_marginEnd="@dimen/dp_10"
-                android:background="@mipmap/icon_radio_normal"
+                android:button="@null"
+                android:checked="false"
+                android:background="@drawable/selector_radio_button"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_1"
                 android:layout_marginStart="@dimen/dp_10"
                 android:layout_marginEnd="@dimen/dp_10"
-                android:background="@color/color_f3f3f4"
+                android:background="@color/color_1d1f29"
                 app:layout_constraintBottom_toBottomOf="parent"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -107,20 +113,24 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_10"
                 android:text="@string/menu_language_english"
-                android:textColor="@color/color_222222"
+                android:textColor="@color/white"
                 android:textSize="@dimen/sp_15"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <RadioButton
+                android:id="@+id/radio_english"
                 android:layout_width="@dimen/dp_16"
                 android:layout_height="@dimen/dp_16"
                 android:layout_marginEnd="@dimen/dp_10"
-                android:background="@mipmap/icon_radio_normal"
+                android:button="@null"
+                android:checked="false"
+                android:background="@drawable/selector_radio_button"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

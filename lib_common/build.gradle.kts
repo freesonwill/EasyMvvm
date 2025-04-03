@@ -6,7 +6,7 @@ plugins {
 apply(from = rootProject.file("gradle/flavor.gradle"))
 
 android {
-    namespace = "com.walisport.lib_common"
+    namespace = "com.walisport.lib.common"
     compileSdk = 34
 
     defaultConfig {
@@ -39,6 +39,7 @@ android {
 
 dependencies {
     api(project(":lib_base"))
+    api(project(":lib_skin"))
     api(libs.androidx.core.ktx)
     api(libs.androidx.appcompat)
     api(libs.material)

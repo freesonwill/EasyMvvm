@@ -16,6 +16,7 @@
     <string name="menu_goal_football">Goal(Football)</string>
     <string name="menu_game_football">Begin(Football)</string>
     <string name="menu_part">Part</string>
+    <string name="menu_all">All</string>
     <string name="theme_class">Class</string>
     <string name="theme_black_blue">Black Blue</string>
     <string name="theme_black_green">Black Green</string>
@@ -27,4 +28,11 @@
     <string name="method_odds_display">Odds Display Method</string>
     <string name="explain">Explain</string>
     <string name="shut_down">Shut Down</string>
+    <string name="tip_dialog_notice">I will be notified of goals scored in these matches</string>
+    <string name="notice_game">Game Notice</string>
+    <string name="notice_bet">Matches Bet On</string>
+    <string name="notice_favourite">Favourite Notice On</string>
+    <string name="notice_all">All Notice On</string>
+    <string name="display_odds_ben">(Display odds including stake)</string>
+    <string name="display_odds_not">(Display odds not including stake)</string>
 </resources>

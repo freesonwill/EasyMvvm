@@ -4,9 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/color_f3f3f4">
+    android:background="@color/color_0E0F19">
 
-    <com.walisport.lib_common.widget.TitleBarView
+    <com.walisport.lib.common.widget.TitleBarView
         android:id="@+id/title_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -53,7 +53,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/dp_5"
                         android:text="@string/theme_class"
-                        android:textColor="@color/color_666666"
+                        android:textColor="@color/color_929298"
                         android:textSize="@dimen/sp_15" />
                 </LinearLayout>
             </LinearLayout>
@@ -87,7 +87,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/dp_5"
                         android:text="@string/theme_black_blue"
-                        android:textColor="@color/color_666666"
+                        android:textColor="@color/white"
                         android:textSize="@dimen/sp_15" />
                 </LinearLayout>
             </LinearLayout>
@@ -121,7 +121,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/dp_5"
                         android:text="@string/theme_black_green"
-                        android:textColor="@color/color_666666"
+                        android:textColor="@color/color_929298"
                         android:textSize="@dimen/sp_15" />
                 </LinearLayout>
             </LinearLayout>
@@ -162,7 +162,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/dp_5"
                         android:text="@string/theme_black_red"
-                        android:textColor="@color/color_666666"
+                        android:textColor="@color/color_929298"
                         android:textSize="@dimen/sp_15" />
                 </LinearLayout>
             </LinearLayout>
@@ -196,7 +196,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/dp_5"
                         android:text="@string/theme_white_blue"
-                        android:textColor="@color/color_666666"
+                        android:textColor="@color/color_929298"
                         android:textSize="@dimen/sp_15" />
                 </LinearLayout>
             </LinearLayout>
@@ -230,7 +230,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/dp_5"
                         android:text="@string/theme_white_green"
-                        android:textColor="@color/color_666666"
+                        android:textColor="@color/color_929298"
                         android:textSize="@dimen/sp_15" />
                 </LinearLayout>
             </LinearLayout>

@@ -15,10 +15,21 @@
     <color name="secondary_text">#929298</color>
     <color name="district_line">#282A34</color>
     <color name="color_f3f3f4">#FFF3F3F4</color>
+    <color name="color_f3f3f5">#FFF3F3F5</color>
     <color name="color_222222">#FF222222</color>
     <color name="color_929292">#FF929292</color>
     <color name="color_929298">#FF929298</color>
     <color name="color_666666">#FF666666</color>
     <color name="color_5fce7b">#FF5FCE7B</color>
     <color name="color_0E0F1A">#FF0E0F1A</color>
+    <color name="color_0E0F19">#FF0E0F19</color>
+    <color name="color_161822">#FF161822</color>
+    <color name="color_161823">#FF161823</color>
+    <color name="color_1d1f29">#FF1d1f29</color>
+    <color name="color_0f101a">#FF0F101A</color>
+    <color name="color_0f101b">#FF0F101B</color>
+    <color name="color_71e993">#FF71e993</color>
+    <color name="color_0f1016">#FF0f1016</color>
+
+    <color name="tran_75_white">#BFFFFFFF</color>
 </resources>

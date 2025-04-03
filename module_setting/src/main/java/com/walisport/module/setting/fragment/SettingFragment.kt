@@ -4,10 +4,11 @@ import android.os.Bundle
 import androidx.navigation.fragment.findNavController
 import com.walisport.lib.base.ui.BaseFragment
 import com.walisport.lib.base.ui.viewBind
-import com.walisport.lib_common.utils.ext.ResourceExt.getString
+import com.walisport.lib.common.utils.ext.ResourceExt.getString
 import com.walisport.module.setting.R
 import com.walisport.module.setting.data.SettingViewModel
 import com.walisport.module.setting.databinding.FragmentSettingBinding
+import com.walisport.module.setting.dialog.OddsDisplayDialog
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
@@ -19,15 +20,14 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
     override val mBinding: FragmentSettingBinding by viewBind()
     override val mViewModel: SettingViewModel by viewModel()
 
-    override fun initView(savedInstanceState: Bundle?) {
-    }
+    override fun initView(savedInstanceState: Bundle?) {}
 
     override fun initListener() {
         mBinding.titleBar.loadGeneralTitleBar(R.string.setting.getString()) {
             findNavController().navigateUp()
         }
         mBinding.settingOdds.setOnClickListener {
-
+            showOddsDisplayDialog()
         }
         mBinding.settingNotice.setOnClickListener {
             findNavController().navigate(R.id.action_settingFragment_to_noticedFragment)
@@ -41,5 +41,40 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
     }
 
     override fun createObserver() {
+
+    }
+
+    private fun showOddsDisplayDialog() {
+        val displayType = mViewModel.getDisplayType()
+        val fragmentManager = requireActivity().supportFragmentManager
+        OddsDisplayDialog().apply {
+            arguments = Bundle().apply {
+                putString(bundle, displayType)
+            }
+            setOnItemClickListener(object : OddsDisplayDialog.OnClickListener {
+                override fun onClickEP() {
+                    mViewModel.setDisplayType("EP")
+                    mBinding.tvDisplay.text = getString(R.string.menu_europe)
+                    //延迟关闭弹窗防止RadioButton状态尚未改变就关闭
+                    mBinding.tvDisplay.postDelayed({
+                        dialog?.dismiss()
+                    }, 300)
+                }
+
+                override fun onClickHK() {
+                    mViewModel.setDisplayType("HK")
+                    mBinding.tvDisplay.text = getString(R.string.menu_hk)
+                    mBinding.tvDisplay.postDelayed({
+                        dialog?.dismiss()
+                    }, 300)
+                }
+
+                override fun onClickClose() {
+                    mBinding.titleBar.postDelayed({
+                        dialog?.dismiss()
+                    }, 300)
+                }
+            })
+        }.show(fragmentManager)
     }
 }

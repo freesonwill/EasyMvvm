@@ -19,10 +19,10 @@ class HomeFragment : BaseFragment<EmptyViewModel, FragmentHomeBinding>() {
     override val mViewModel: EmptyViewModel by viewModel()
 
     val navOptions = NavOptions.Builder()
-        .setEnterAnim(com.walisport.lib_common.R.anim.slide_in_right)  // 新页面进入动画
-        .setExitAnim(com.walisport.lib_common.R.anim.slide_out_left)   // 旧页面退出动画
-        .setPopEnterAnim(com.walisport.lib_common.R.anim.slide_in_left) // 返回时，新页面进入动画
-        .setPopExitAnim(com.walisport.lib_common.R.anim.slide_out_right) // 返回时，当前页面退出动画
+        .setEnterAnim(com.walisport.lib.common.R.anim.slide_in_right)  // 新页面进入动画
+        .setExitAnim(com.walisport.lib.common.R.anim.slide_out_left)   // 旧页面退出动画
+        .setPopEnterAnim(com.walisport.lib.common.R.anim.slide_in_left) // 返回时，新页面进入动画
+        .setPopExitAnim(com.walisport.lib.common.R.anim.slide_out_right) // 返回时，当前页面退出动画
         .build()
 
     override fun initView(savedInstanceState: Bundle?) {
