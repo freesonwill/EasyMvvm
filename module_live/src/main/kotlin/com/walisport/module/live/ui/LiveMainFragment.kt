@@ -46,7 +46,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     private fun loadFragment() {
         with(mBinding) {
             val list = listOf(
-                PagerBean(R.string.live_note_order.getString()) { LiveNoteOrderFragment() },
+                PagerBean(R.string.live_note_order.getString()) { LiveBetSlipFragment() },
                 PagerBean(R.string.live_bet_on.getString()) { LiveBetOnFragment()},
                 PagerBean(R.string.live_chat.getString()) { LiveChatFragment() },
                 PagerBean(R.string.live_outs.getString()) { LiveOutsFragment() },

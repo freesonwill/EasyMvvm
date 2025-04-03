@@ -1,4 +1,4 @@
-package com.walisport.module.live.ui.fragment.betslip
+package com.walisport.module.live.ui.adapter
 
 import android.annotation.SuppressLint
 import android.util.Log
@@ -7,9 +7,9 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.viewbinding.ViewBinding
-import com.walisport.lib_common.ui.adapter.BaseAdapter
-import com.walisport.lib_common.ui.adapter.BaseViewHolder
-import com.walisport.lib_common.utils.ext.DimensionExt.dp2px
+import com.walisport.lib.common.ui.adapter.BaseAdapter
+import com.walisport.lib.common.ui.adapter.BaseViewHolder
+import com.walisport.lib.common.utils.ext.DimensionExt.dp2px
 import com.walisport.module.live.R
 import com.walisport.module.live.databinding.AdapterLiveBetSlipMenuItemLayoutBinding
 
@@ -35,11 +35,12 @@ class LiveBetSlipAdapter(compare: DiffUtil.ItemCallback<String>) :
         }
 
         fun updateItem(position: Int) {
+            viewBinding.tvMenu.tag = position
             viewBinding.tvMenu.setBackgroundResource(if (selected == position) R.drawable.shape_betslip_selected else R.drawable.shape_betslip_normal)
             viewBinding.tvMenu.setTextColor(
                 ContextCompat.getColor(
                     viewBinding.tvMenu.context,
-                    if (selected == position) R.color.text_theme else R.color.secondary_text
+                    if (selected == position) R.color.theme_text else R.color.secondary_text
                 )
             )
             viewBinding.tvMenu.text = getItem(position)
