@@ -8,7 +8,9 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
+    <color name="color_f3f3f3">#FFF3F3F3</color>
     <color name="color_f3f3f4">#FFF3F3F4</color>
+    <color name="color_f3f3f5">#FFF3F3F5</color>
     <color name="color_222222">#FF222222</color>
     <color name="color_929292">#FF929292</color>
     <color name="color_929298">#FF929298</color>
@@ -17,4 +19,6 @@
     <color name="dialog_title">#24EE8A</color>
     <color name="secondary_text">#929298</color>
     <color name="district_line">#282A34</color>
+
+    <color name="tran_75_white">#BFFFFFFF</color>
 </resources>

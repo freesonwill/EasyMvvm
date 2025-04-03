@@ -16,6 +16,7 @@
     <string name="menu_goal_football">進球(足球)</string>
     <string name="menu_game_football">開賽(足球)</string>
     <string name="menu_part">部分</string>
+    <string name="menu_all">所有</string>
     <string name="theme_class">經典</string>
     <string name="theme_black_blue">黑藍</string>
     <string name="theme_black_green">黑綠</string>
@@ -27,4 +28,9 @@
     <string name="method_odds_display">賠率顯示方式</string>
     <string name="explain">說明</string>
     <string name="shut_down">關閉</string>
+    <string name="tip_dialog_notice">我將收到這些比賽的進球通知</string>
+    <string name="notice_game">开赛通知</string>
+    <string name="notice_bet">已投注的赛事</string>
+    <string name="notice_favourite">已收藏的賽事</string>
+    <string name="notice_all">所有滾動賽事</string>
 </resources>

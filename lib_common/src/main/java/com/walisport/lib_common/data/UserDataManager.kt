@@ -29,4 +29,8 @@ class UserDataManager {
             }
         }
     }
+
+    fun getStringValue(key: UserDataKey, default: String): String {
+        return mmkv.getString(key.key, default) ?: default
+    }
 }

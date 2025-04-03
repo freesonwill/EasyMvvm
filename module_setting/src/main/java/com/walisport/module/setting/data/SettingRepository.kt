@@ -20,4 +20,29 @@ class SettingRepository(override val scope: CoroutineScope) : BaseRepository() {
         manager.setKeyValue(UserDataKey.KEY_SKIN, type)
         _skinType.tryEmit(type)
     }
+
+    //获取皮肤背景
+    fun getSkinType(): String {
+        return manager.getStringValue(UserDataKey.KEY_SKIN, "CLASS")
+    }
+
+    //设置赔率显示方式
+    fun setOddsDisplayType(type: String) {
+        manager.setKeyValue(UserDataKey.KEY_DISPLAY, type)
+    }
+
+    //设置赔率显示方式
+    fun getOddsDisplayType(): String {
+        return manager.getStringValue(UserDataKey.KEY_DISPLAY, "EP")
+    }
+
+    //设置语言类型
+    fun setLanguageType(type: String) {
+        manager.setKeyValue(UserDataKey.KEY_LANGUAGE, type)
+    }
+
+    //获取语言类型
+    fun getLanguageType(): String {
+        return manager.getStringValue(UserDataKey.KEY_LANGUAGE, "SIMPLE")
+    }
 }
