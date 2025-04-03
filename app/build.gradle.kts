@@ -67,6 +67,4 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.immersionbar)
-    implementation(libs.glide)
-    kapt(libs.glidecompiler)
 }

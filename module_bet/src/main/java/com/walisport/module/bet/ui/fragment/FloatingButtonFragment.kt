@@ -4,8 +4,8 @@ import android.os.Bundle
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.walisport.module_bet.viewmodel.FloatingButtonViewModel
-import com.walisport.lib_base.ui.BaseFragment
-import com.walisport.lib_base.ui.viewBind
+import com.walisport.lib.base.ui.BaseFragment
+import com.walisport.lib.base.ui.viewBind
 import com.walisport.module.bet.databinding.FragmentFloatingButtonBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 

@@ -1,11 +1,12 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    id("kotlin-kapt")
 }
 apply(from = rootProject.file("gradle/flavor.gradle"))
 
 android {
-    namespace = "com.walisport.lib_common"
+    namespace = "com.walisport.lib.common"
     compileSdk = 34
 
     defaultConfig {
@@ -38,6 +39,7 @@ android {
 
 dependencies {
     api(project(":lib_base"))
+    api(project(":lib_skin"))
     api(libs.androidx.core.ktx)
     api(libs.androidx.appcompat)
     api(libs.material)
@@ -47,4 +49,6 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    api(libs.glide)
+    kapt(libs.glidecompiler)
 }

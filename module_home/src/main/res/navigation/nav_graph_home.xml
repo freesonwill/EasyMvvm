@@ -120,20 +120,5 @@
             />
     </fragment>
 
-    <activity
-        android:id="@+id/VideoLandscapeActivity"
-        android:label="activity_video_landscape"
-        app:targetPackage="${applicationId}"
-        app:data="walisport://video_landscape_activity"
-        >
-        <argument
-            android:name="userId"
-            android:defaultValue="@null"
-            app:argType="string"
-            app:nullable="true" />
-        <deepLink app:uri="walisport://video_landscape_activity?userId={userId}" />
-    </activity>
-
-
 
 </navigation>

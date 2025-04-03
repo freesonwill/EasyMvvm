@@ -2,9 +2,9 @@ package com.walisport.app.data
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.walisport.lib_base.data.viewmodel.BaseViewModel
-import com.walisport.lib_base.utils.LogUtilsExt.loge
-import com.walisport.lib_base.utils.LogUtilsExt.logi
+import com.walisport.lib.base.data.viewmodel.BaseViewModel
+import com.walisport.lib.base.utils.LogUtilsExt.loge
+import com.walisport.lib.base.utils.LogUtilsExt.logi
 import com.walisport.lib_socket.data.ConnectState
 import com.walisport.lib_socket.data.ResponseTimeOutError
 import com.walisport.lib_socket.data.SocketResponseError

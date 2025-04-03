@@ -1,4 +1,4 @@
-package com.walisport.lib_common
+package com.walisport.lib.common
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

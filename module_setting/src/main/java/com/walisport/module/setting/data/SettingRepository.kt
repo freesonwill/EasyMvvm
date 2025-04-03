@@ -1,8 +1,8 @@
 package com.walisport.module.setting.data
 
-import com.walisport.lib_base.data.repository.BaseRepository
-import com.walisport.lib_common.data.UserDataKey
-import com.walisport.lib_common.data.UserDataManager
+import com.walisport.lib.base.data.repository.BaseRepository
+import com.walisport.lib.common.data.UserDataKey
+import com.walisport.lib.common.data.UserDataManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
