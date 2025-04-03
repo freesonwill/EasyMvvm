@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:ndroid="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_shape_round_rect_top"
@@ -100,7 +99,7 @@
             android:layout_marginTop="@dimen/dp_18"
             android:gravity="center_horizontal"
             android:text="@string/tip_dialog_notice"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:textSize="@dimen/sp_17" />
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -132,7 +131,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_40"
                 android:text="@string/notice_bet"
-                android:textColor="@color/color_222222"
+                android:textColor="@color/white"
                 android:textSize="@dimen/sp_15"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -155,7 +154,7 @@
                 android:layout_height="@dimen/dp_1"
                 android:layout_marginStart="@dimen/dp_40"
                 android:layout_marginEnd="@dimen/dp_10"
-                android:background="@color/color_f3f3f4"
+                android:background="@color/color_1d1f29"
                 app:layout_constraintBottom_toBottomOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -178,7 +177,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_40"
                 android:text="@string/notice_favourite"
-                android:textColor="@color/color_222222"
+                android:textColor="@color/white"
                 android:textSize="@dimen/sp_15"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -201,7 +200,7 @@
                 android:layout_height="@dimen/dp_1"
                 android:layout_marginStart="@dimen/dp_40"
                 android:layout_marginEnd="@dimen/dp_10"
-                android:background="@color/color_f3f3f4"
+                android:background="@color/color_1d1f29"
                 app:layout_constraintBottom_toBottomOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -224,7 +223,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_40"
                 android:text="@string/notice_all"
-                android:textColor="@color/color_222222"
+                android:textColor="@color/white"
                 android:textSize="@dimen/sp_15"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -246,7 +245,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_8"
-            android:background="@color/color_f3f3f4" />
+            android:background="@color/color_0f101b" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_close"
@@ -255,7 +254,7 @@
             android:background="@drawable/ripple_effect_rectangle"
             android:gravity="center"
             android:text="@string/shut_down"
-            android:textColor="@color/color_222222"
+            android:textColor="@color/color_71e993"
             android:textSize="@dimen/sp_16"
             android:textStyle="bold" />
     </LinearLayout>

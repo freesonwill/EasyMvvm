@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.navigation.fragment.findNavController
 import com.walisport.lib.base.ui.BaseFragment
 import com.walisport.lib.base.ui.viewBind
+import com.walisport.lib.common.utils.ext.ResourceExt.getString
+import com.walisport.module.setting.R
 import com.walisport.module.setting.databinding.FragmentNoticeBinding
 import com.walisport.module.setting.data.NoticeViewModel
 import com.walisport.module.setting.dialog.MatchNoticeDialog
@@ -25,13 +27,12 @@ class NoticeFragment : BaseFragment<NoticeViewModel, FragmentNoticeBinding>() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-
+        mBinding.titleBar.loadGeneralTitleBar(R.string.menu_notice_set.getString()) {
+            findNavController().navigateUp()
+        }
     }
 
     override fun initListener() {
-        mBinding.ivBack.setOnClickListener {
-            findNavController().navigateUp()
-        }
         mBinding.noticeGoal.setOnClickListener {
             showMatchNoticeDialog(TYPE_SYS_GOAL)
         }
