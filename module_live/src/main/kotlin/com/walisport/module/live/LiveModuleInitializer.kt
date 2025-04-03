@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.startup.Initializer
 import com.walisport.lib.base.ApplicationModuleInitializer
 import com.walisport.module.live.data.LiveMainRepository
+import com.walisport.module.live.ui.viewmodel.LiveVideoViewModel
 import com.walisport.module.live.viewmodel.LiveMainViewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.loadKoinModules
@@ -26,6 +27,7 @@ class LiveModuleInitializer : Initializer<String> {
 
     private val viewModules = module {
         viewModelOf(::LiveMainViewModel)
+        viewModelOf(::LiveVideoViewModel)
     }
     private val repoModules = module {
         factoryOf(::LiveMainRepository)
