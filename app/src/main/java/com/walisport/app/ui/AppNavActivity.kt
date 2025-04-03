@@ -15,7 +15,6 @@ class AppNavActivity : BaseNavActivity() {
 
     override fun initData() {
         super.initData()
-        "packageNames:${ContextUtils.getAllPackageName(this)}".logd(TAG)
     }
 
 }

@@ -1,6 +1,7 @@
 package com.walisport.module.home.test
 
 import androidx.fragment.app.Fragment
+import com.walisport.lib.base.ui.BaseFragment
 
 /**
  * @author: zhangsan
@@ -13,5 +14,6 @@ import androidx.fragment.app.Fragment
  */
 open class PagerBean(
     val title: String,
+    val fragment: Fragment,
     val page: (() -> Fragment)
 )

@@ -18,11 +18,13 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
 
     override fun initView(savedInstanceState: Bundle?) {
         "uid:$uid, token:$token".logd(TAG)
-        startActivity(Intent(this, AppNavActivity::class.java))
+        mBinding.root.setOnClickListener {
+            startActivity(Intent(this, AppNavActivity::class.java))
+        }
 //        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("walisport://login_activity?userId=123"))
         //startActivity(intent)
 //        startActivity(Intent(this, HomeActivity::class.java))
-        finish()
+        //finish()
     }
 
     override fun initListener() {

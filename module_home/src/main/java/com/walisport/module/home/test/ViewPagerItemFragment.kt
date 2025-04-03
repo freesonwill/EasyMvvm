@@ -5,14 +5,21 @@ import androidx.core.os.bundleOf
 import androidx.navigation.fragment.NavHostFragment
 import com.walisport.lib.base.data.viewmodel.EmptyViewModel
 import com.walisport.lib.base.ui.BaseFragment
+import com.walisport.lib.base.ui.BaseFragment2
 import com.walisport.lib.base.ui.viewBind
 import com.walisport.module.home.R
 import com.walisport.module.home.databinding.FragmentViewPagerItemBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class ViewPagerItemFragment : BaseFragment<EmptyViewModel, FragmentViewPagerItemBinding>() {
-    override val mBinding: FragmentViewPagerItemBinding by viewBind()
-    override val mViewModel: EmptyViewModel by viewModel()
+class ViewPagerItemFragment : BaseFragment2<EmptyViewModel, FragmentViewPagerItemBinding>() {
+    override fun createVB(): FragmentViewPagerItemBinding {
+        return viewBind<FragmentViewPagerItemBinding>().value
+    }
+
+    override fun createVM(): EmptyViewModel {
+        return viewModel<EmptyViewModel>().value
+    }
+
     var title: String = ""
     var parentFragment: ViewPagerFragment? = null
 

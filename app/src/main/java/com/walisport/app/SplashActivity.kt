@@ -124,7 +124,7 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
     override fun initData() {
         super.initData()
         "uid:$uid, token:$token".logd(TAG)
-        mViewModel.startSocketConnectAndLogin(uid, token)
+        //mViewModel.startSocketConnectAndLogin(uid, token)
     }
 
     override fun initListener() {
