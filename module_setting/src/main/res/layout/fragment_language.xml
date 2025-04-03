@@ -39,14 +39,17 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <RadioButton
+                android:id="@+id/radio_simple"
                 android:layout_width="@dimen/dp_16"
                 android:layout_height="@dimen/dp_16"
                 android:layout_marginEnd="@dimen/dp_10"
-                android:background="@mipmap/icon_radio_selected"
+                android:button="@null"
+                android:checked="true"
+                android:background="@drawable/selector_radio_button"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <View
                 android:layout_width="match_parent"
@@ -76,14 +79,17 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <RadioButton
+                android:id="@+id/radio_traditional"
                 android:layout_width="@dimen/dp_16"
                 android:layout_height="@dimen/dp_16"
                 android:layout_marginEnd="@dimen/dp_10"
-                android:background="@mipmap/icon_radio_normal"
+                android:button="@null"
+                android:checked="false"
+                android:background="@drawable/selector_radio_button"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <View
                 android:layout_width="match_parent"
@@ -113,14 +119,18 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <RadioButton
+                android:id="@+id/radio_english"
                 android:layout_width="@dimen/dp_16"
                 android:layout_height="@dimen/dp_16"
                 android:layout_marginEnd="@dimen/dp_10"
-                android:background="@mipmap/icon_radio_normal"
+                android:button="@null"
+                android:checked="false"
+                android:background="@drawable/selector_radio_button"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

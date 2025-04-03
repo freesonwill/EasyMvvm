@@ -16,4 +16,14 @@ class SettingViewModel : BaseViewModel() {
     fun setSkinType(type: String) {
         repository.setSkinType(type)
     }
+
+    //设置赔率显示方式
+    fun setDisplayType(type: String) {
+        repository.setOddsDisplayType(type)
+    }
+
+    //获取赔率显示方式
+    fun getDisplayType():String{
+        return repository.getOddsDisplayType()
+    }
 }
