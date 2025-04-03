@@ -24,13 +24,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="@dimen/dp_12"
-                android:background="@mipmap/bg_dialog_notice" />
+                android:background="@drawable/bg_dialog_notice" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_game_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_20"
+                android:layout_marginTop="@dimen/dp_17"
+                android:paddingStart="@dimen/dp_12"
                 android:text="36′"
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp_13"
@@ -39,10 +40,10 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <LinearLayout
+                android:id="@+id/lay_score"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="@dimen/dp_4"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_game_time">
@@ -50,15 +51,6 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="莱斯特城"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/sp_16"
-                    android:textStyle="bold" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_5"
                     android:text="1"
                     android:textColor="@color/white"
                     android:textSize="@dimen/sp_16"
@@ -67,7 +59,9 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_5"
+                    android:layout_marginStart="@dimen/dp_6"
+                    android:layout_marginEnd="@dimen/dp_6"
+                    android:paddingStart="@dimen/dp_2"
                     android:text="-"
                     android:textColor="@color/white"
                     android:textSize="@dimen/sp_16"
@@ -76,21 +70,35 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_5"
                     android:text="0"
                     android:textColor="@color/tran_75_white"
                     android:textSize="@dimen/sp_16"
                     android:textStyle="bold" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_5"
-                    android:text="切尔西"
-                    android:textColor="@color/tran_75_white"
-                    android:textSize="@dimen/sp_16"
-                    android:textStyle="bold" />
             </LinearLayout>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="莱斯特城"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_16"
+                android:textStyle="bold"
+                android:layout_marginEnd="@dimen/dp_10"
+                app:layout_constraintTop_toTopOf="@+id/lay_score"
+                app:layout_constraintBottom_toBottomOf="@+id/lay_score"
+                app:layout_constraintEnd_toStartOf="@+id/lay_score"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="切尔西"
+                android:textColor="@color/tran_75_white"
+                android:textSize="@dimen/sp_16"
+                android:textStyle="bold"
+                android:layout_marginStart="@dimen/dp_10"
+                app:layout_constraintTop_toTopOf="@+id/lay_score"
+                app:layout_constraintBottom_toBottomOf="@+id/lay_score"
+                app:layout_constraintStart_toEndOf="@+id/lay_score"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.appcompat.widget.AppCompatTextView
