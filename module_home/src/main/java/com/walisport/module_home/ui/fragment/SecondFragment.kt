@@ -1,11 +1,11 @@
-package com.walisport.module_home.ui.fragment
+package com.walisport.module.home.ui.fragment
 
 import android.os.Bundle
 import androidx.navigation.fragment.findNavController
-import com.walisport.lib_base.data.viewmodel.EmptyViewModel
-import com.walisport.lib_base.ui.BaseFragment
-import com.walisport.lib_base.ui.viewBind
-import com.walisport.module_home.databinding.FragmentSecondBinding
+import com.walisport.lib.base.data.viewmodel.EmptyViewModel
+import com.walisport.lib.base.ui.BaseFragment
+import com.walisport.lib.base.ui.viewBind
+import com.walisport.module.home.databinding.FragmentSecondBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 

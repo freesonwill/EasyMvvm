@@ -1,7 +1,7 @@
 package com.walisport.lib_common.helper
 
-import com.walisport.lib_base.utils.LogUtils
-import com.walisport.lib_base.utils.LogUtilsExt.logd
+import com.walisport.lib.base.utils.LogUtils
+import com.walisport.lib.base.utils.LogUtilsExt.logd
 import com.walisport.lib_common.utils.ThreadUtils.launchWithCustomContext
 import com.walisport.lib_common.utils.ThreadUtils.mainScope
 import com.walisport.lib_common.utils.ext.CommonExt.isMainThread

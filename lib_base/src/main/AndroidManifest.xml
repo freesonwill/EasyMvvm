@@ -16,7 +16,7 @@
                  2.  value 为固定的 androidx.startup，用于提取 CustomInitializer 的路径
             -->
             <meta-data
-                android:name="com.walisport.lib_base.ApplicationModuleInitializer"
+                android:name="com.walisport.lib.base.ApplicationModuleInitializer"
                 android:value="androidx.startup" />
         </provider>
     </application>

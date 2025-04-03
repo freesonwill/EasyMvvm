@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
-import com.walisport.lib_base.ui.viewBind
+import com.walisport.lib.base.ui.viewBind
 import com.walisport.lib_common.R
 import com.walisport.lib_common.databinding.DialogCommonBinding
 import com.walisport.lib_common.utils.ViewUtils

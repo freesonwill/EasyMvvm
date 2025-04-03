@@ -4,8 +4,8 @@ import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import com.walisport.lib_base.utils.LogUtilsExt.loge
-import com.walisport.lib_base.utils.LogUtilsExt.logi
+import com.walisport.lib.base.utils.LogUtilsExt.loge
+import com.walisport.lib.base.utils.LogUtilsExt.logi
 import com.walisport.lib_socket.data.ConnectState
 import com.walisport.lib_socket.data.IRequest
 import com.walisport.lib_socket.data.IResponse

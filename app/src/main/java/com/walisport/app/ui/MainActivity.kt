@@ -7,9 +7,9 @@ import com.walisport.app.BuildConfig.token
 import com.walisport.app.BuildConfig.uid
 import com.walisport.app.data.MainViewModel
 import com.walisport.app.databinding.ActivityMainBinding
-import com.walisport.lib_base.ui.BaseActivity
-import com.walisport.lib_base.ui.viewBind
-import com.walisport.lib_base.utils.LogUtilsExt.logd
+import com.walisport.lib.base.ui.BaseActivity
+import com.walisport.lib.base.ui.viewBind
+import com.walisport.lib.base.utils.LogUtilsExt.logd
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
@@ -26,7 +26,6 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
     }
 
     override fun initListener() {
-
     }
 
     override fun createObserver() {

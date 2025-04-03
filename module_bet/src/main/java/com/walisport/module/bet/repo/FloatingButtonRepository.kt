@@ -1,6 +1,6 @@
 package com.walisport.module.bet.repo
 
-import com.walisport.lib_base.data.repository.BaseRepository
+import com.walisport.lib.base.data.repository.BaseRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay

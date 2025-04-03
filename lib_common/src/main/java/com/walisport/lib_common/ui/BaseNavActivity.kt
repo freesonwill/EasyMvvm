@@ -5,9 +5,9 @@ import androidx.annotation.CallSuper
 import androidx.annotation.NavigationRes
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
-import com.walisport.lib_base.data.viewmodel.EmptyViewModel
-import com.walisport.lib_base.ui.BaseActivity
-import com.walisport.lib_base.ui.viewBind
+import com.walisport.lib.base.data.viewmodel.EmptyViewModel
+import com.walisport.lib.base.ui.BaseActivity
+import com.walisport.lib.base.ui.viewBind
 import com.walisport.lib_common.databinding.ActvityBaseNavBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
