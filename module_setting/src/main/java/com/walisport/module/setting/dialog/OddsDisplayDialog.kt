@@ -1,10 +1,9 @@
 package com.walisport.module.setting.dialog
 
 import android.os.Bundle
-import com.walisport.lib_base.ui.BaseBottomSheetFragment
-import com.walisport.lib_base.ui.viewBind
+import com.walisport.lib.base.ui.BaseBottomSheetFragment
+import com.walisport.lib.base.ui.viewBind
 import com.walisport.module.setting.databinding.DialogOddsDisplayBinding
-import com.walisport.module.setting.fragment.LanguageFragment.Companion.TYPE_SIMPLE
 
 class OddsDisplayDialog : BaseBottomSheetFragment<DialogOddsDisplayBinding>() {
 

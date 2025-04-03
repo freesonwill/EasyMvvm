@@ -70,7 +70,7 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
                 }
 
                 override fun onClickClose() {
-                    mBinding.ivBack.postDelayed({
+                    mBinding.titleBar.postDelayed({
                         dialog?.dismiss()
                     }, 300)
                 }

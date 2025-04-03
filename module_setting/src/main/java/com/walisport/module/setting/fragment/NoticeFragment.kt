@@ -60,7 +60,7 @@ class NoticeFragment : BaseFragment<NoticeViewModel, FragmentNoticeBinding>() {
                 }
 
                 override fun onClickClose() {
-                    mBinding.ivBack.postDelayed({
+                    mBinding.titleBar.postDelayed({
                         dialog?.dismiss()
                     }, 300)
                 }
