@@ -1,10 +1,10 @@
-package com.walisport.lib_common.helper
+package com.walisport.lib.common.helper
 
 import com.walisport.lib.base.utils.LogUtils
 import com.walisport.lib.base.utils.LogUtilsExt.logd
-import com.walisport.lib_common.utils.ThreadUtils.launchWithCustomContext
-import com.walisport.lib_common.utils.ThreadUtils.mainScope
-import com.walisport.lib_common.utils.ext.CommonExt.isMainThread
+import com.walisport.lib.common.utils.ThreadUtils.launchWithCustomContext
+import com.walisport.lib.common.utils.ThreadUtils.mainScope
+import com.walisport.lib.common.utils.ext.CommonExt.isMainThread
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow

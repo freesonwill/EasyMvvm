@@ -1,20 +1,17 @@
-package com.walisport.lib_common.widget
+package com.walisport.lib.common.widget
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.drm.DrmRights
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import com.bumptech.glide.Glide
-import com.walisport.lib_common.R
-import com.walisport.lib_common.databinding.TittleBarBackgroundBinding
-import com.walisport.lib_common.databinding.TittleBarDefaultBinding
-import com.walisport.lib_common.databinding.TittleBarLiveBinding
-import com.walisport.lib_common.databinding.TittleBarSearchBinding
-import com.walisport.lib_common.utils.ext.DimensionExt.dp2px
-import com.walisport.lib_common.utils.ext.clickNoRepeat
+import com.walisport.lib.common.databinding.TittleBarBackgroundBinding
+import com.walisport.lib.common.databinding.TittleBarDefaultBinding
+import com.walisport.lib.common.databinding.TittleBarLiveBinding
+import com.walisport.lib.common.databinding.TittleBarSearchBinding
+import com.walisport.lib.common.utils.ext.DimensionExt.dp2px
+import com.walisport.lib.common.utils.ext.clickNoRepeat
 
 class TitleBarView @JvmOverloads constructor(
     context: Context,

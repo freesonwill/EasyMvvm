@@ -1,4 +1,4 @@
-package com.walisport.lib_common.ui.dialog
+package com.walisport.lib.common.ui.dialog
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,9 +8,9 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.walisport.lib.base.ui.viewBind
-import com.walisport.lib_common.R
-import com.walisport.lib_common.databinding.DialogCommonBinding
-import com.walisport.lib_common.utils.ViewUtils
+import com.walisport.lib.common.R
+import com.walisport.lib.common.databinding.DialogCommonBinding
+import com.walisport.lib.common.utils.ViewUtils
 
 class CommonDialog private constructor() : DialogFragment() {
     private val mBinding: DialogCommonBinding by viewBind()

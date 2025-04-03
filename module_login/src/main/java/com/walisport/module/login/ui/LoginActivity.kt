@@ -2,7 +2,7 @@ package com.walisport.module.login.ui
 
 import android.os.Bundle
 import com.walisport.lib.base.utils.LogUtilsExt.logd
-import com.walisport.lib_common.ui.BaseNavActivity
+import com.walisport.lib.common.ui.BaseNavActivity
 import com.walisport.module.login.R
 
 class LoginActivity : BaseNavActivity() {

@@ -1,4 +1,4 @@
-package com.walisport.lib_common.ui
+package com.walisport.lib.common.ui
 
 import android.os.Bundle
 import androidx.annotation.CallSuper
@@ -8,7 +8,7 @@ import androidx.navigation.findNavController
 import com.walisport.lib.base.data.viewmodel.EmptyViewModel
 import com.walisport.lib.base.ui.BaseActivity
 import com.walisport.lib.base.ui.viewBind
-import com.walisport.lib_common.databinding.ActvityBaseNavBinding
+import com.walisport.lib.common.databinding.ActvityBaseNavBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**

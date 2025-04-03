@@ -1,4 +1,4 @@
-package com.walisport.lib_common.utils
+package com.walisport.lib.common.utils
 
 import android.content.res.Resources
 import android.util.TypedValue
