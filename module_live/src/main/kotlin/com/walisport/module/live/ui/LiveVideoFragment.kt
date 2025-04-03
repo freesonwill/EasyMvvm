@@ -32,28 +32,32 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
         mViewModel.liveUrl.observe(viewLifecycleOwner) {
             mBinding.videoView.setVideoURI(Uri.parse(it))
             mBinding.videoView.start()
-            "videoView.start".logd(TAG)
-
+//            "videoView.start".logd(TAG)
         }
 
     }
 
     override fun onPause() {
-        "onPause".logd(TAG)
+//        "onPause".logd(TAG)
         super.onPause()
         mBinding.videoView.pause()
     }
 
     override fun onResume() {
-        "onResume".logd(TAG)
+//        "onResume".logd(TAG)
         super.onResume()
-        mBinding.videoView.resume()
+        if (!mBinding.videoView.isPlaying) {
+            mBinding.videoView.start()
+        }
     }
 
+
     override fun onDestroy() {
-        "onDestroy".logd(TAG)
+//        "onDestroy".logd(TAG)
         super.onDestroy()
+        mBinding.videoView.stopPlayback()
         mBinding.videoView.release(true)
+        mBinding.videoView.stopBackgroundPlay()
     }
 
     companion object {
