@@ -88,6 +88,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_notice_sys_goal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dp_30"
@@ -145,6 +146,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_notice_sys_start"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dp_30"
@@ -204,6 +206,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_notice_goal_app"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dp_30"
