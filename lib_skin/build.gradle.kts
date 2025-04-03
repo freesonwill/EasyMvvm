@@ -1,12 +1,10 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    id("kotlin-kapt")
 }
-apply(from = rootProject.file("gradle/flavor.gradle"))
 
 android {
-    namespace = "com.walisport.lib_common"
+    namespace = "com.walisport.lib.skin"
     compileSdk = 34
 
     defaultConfig {
@@ -32,23 +30,14 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-    buildFeatures {
-            viewBinding = true
-    }
 }
 
 dependencies {
-    api(project(":lib_base"))
-    api(project(":lib_skin"))
-    api(libs.androidx.core.ktx)
-    api(libs.androidx.appcompat)
-    api(libs.material)
-    api(libs.androidx.activity)
-    api(libs.androidx.constraintlayout)
-    implementation(libs.mmkv)
+    implementation(project(":lib_base"))
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    api(libs.glide)
-    kapt(libs.glidecompiler)
 }
