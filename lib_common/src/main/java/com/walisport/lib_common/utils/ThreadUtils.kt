@@ -1,6 +1,6 @@
 package com.walisport.lib_common.utils
 
-import com.walisport.lib_base.utils.LogUtilsExt.loge
+import com.walisport.lib.base.utils.LogUtilsExt.loge
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

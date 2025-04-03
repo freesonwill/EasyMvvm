@@ -1,8 +1,8 @@
 package com.walisport.module.live.ui.fragment.betslip
 
 import android.os.Bundle
-import com.walisport.lib_base.ui.BaseFragment
-import com.walisport.lib_base.ui.viewBind
+import com.walisport.lib.base.ui.BaseFragment
+import com.walisport.lib.base.ui.viewBind
 import com.walisport.module.live.databinding.FragmentLiveBetSlipLayoutBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 

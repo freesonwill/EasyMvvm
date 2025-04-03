@@ -79,4 +79,43 @@ https://hackmd.io/@LinkHsieh/HkcXg8Shkx
 11. 消息推送设计： Netty or WebSocket？
 ```text
 
+12. 自定义title：所有标题继承于TitleBarView
+```text
+通用title
+ /**
+     * 通用标题 loadGeneralTitleBar()
+     * @param titleName 标题名称
+     * @param callback 返回
+     */
+
+搜索title
+ /**
+     * 搜索标题 loadSearchTitleBar()
+     * @param hintText 搜索框提示
+     * @param callback 返回
+     * @param callbackSearch 搜索
+     */
+
+直播title
+ /**
+     * 直播标题 loadLiveTitleBar()
+     * @param leagueImgUrl 联赛图片
+     * @param competitionName 联赛对站 A VS B
+     * @param money 剩余总金额
+     * @param callback 返回
+     * @param expand 展开还是收起
+     * @param callbackCompetition 下拉切换 boolean 单前状态展开还是收起
+     */
+
+背景设置title
+  /**
+     * 背景设置标题  loadBackgroundTitleBar()
+     * @param titleName 标题名称
+     * @param callback 左边点击回调
+     * @param callbackConfirm 右边点击回调
+     * @param leftName 左边按钮字体
+     * @param rightsName 右边按钮字体
+     */
+   
+
 ```

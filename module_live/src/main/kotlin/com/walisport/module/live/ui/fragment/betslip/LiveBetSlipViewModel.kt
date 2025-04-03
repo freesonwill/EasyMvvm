@@ -1,6 +1,7 @@
 package com.walisport.module.live.ui.fragment.betslip
 
-import com.walisport.lib_base.data.viewmodel.BaseViewModel
+import com.walisport.lib.base.data.viewmodel.BaseViewModel
 
-class LiveBetSlipViewModel:BaseViewModel() {
+
+class LiveBetSlipViewModel: BaseViewModel() {
 }

@@ -1,4 +1,4 @@
-package com.walisport.module_home.ui.fragment
+package com.walisport.module.home.ui.fragment
 
 import android.content.Intent
 import android.net.Uri
@@ -7,11 +7,11 @@ import androidx.core.app.ActivityOptionsCompat
 import androidx.navigation.ActivityNavigatorExtras
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
-import com.walisport.lib_base.data.viewmodel.EmptyViewModel
-import com.walisport.lib_base.ui.BaseFragment
-import com.walisport.lib_base.ui.viewBind
-import com.walisport.module_home.R
-import com.walisport.module_home.databinding.FragmentHomeBinding
+import com.walisport.lib.base.data.viewmodel.EmptyViewModel
+import com.walisport.lib.base.ui.BaseFragment
+import com.walisport.lib.base.ui.viewBind
+import com.walisport.module.home.R
+import com.walisport.module.home.databinding.FragmentHomeBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HomeFragment : BaseFragment<EmptyViewModel, FragmentHomeBinding>() {
@@ -85,7 +85,7 @@ class HomeFragment : BaseFragment<EmptyViewModel, FragmentHomeBinding>() {
         }
 
         mBinding.tv8.setOnClickListener{
-            findNavController().navigate(Uri.parse("walisport://video_landscape_activity?userId=lucy"))
+            findNavController().navigate(Uri.parse("walisport://module_live/liveFragment"))
         }
     }
 

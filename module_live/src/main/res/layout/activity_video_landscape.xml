@@ -44,14 +44,14 @@
             android:layout_width="@dimen/dp_96"
             android:layout_height="@dimen/dp_22"
             android:scaleType="centerCrop"
-            android:src="@drawable/video_landscape_league_icon" />
+            android:src="@drawable/title_league_icon" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="1.3dp"
             android:layout_height="@dimen/dp_18"
             android:layout_marginStart="@dimen/dp_6"
             android:layout_marginEnd="@dimen/dp_6"
-            android:src="@drawable/video_landscape_separator" />
+            android:src="@drawable/title_landscape_separator" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/competition_name"
