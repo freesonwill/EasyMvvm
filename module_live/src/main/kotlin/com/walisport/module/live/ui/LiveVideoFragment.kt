@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.navigation.fragment.findNavController
 import com.walisport.lib.base.ui.BaseFragment
 import com.walisport.lib.base.ui.viewBind
+import com.walisport.lib.base.utils.LogUtilsExt.logd
 import com.walisport.module.live.databinding.FragmentLiveVideoBinding
 import com.walisport.module.live.ui.viewmodel.LiveVideoViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -31,8 +32,28 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
         mViewModel.liveUrl.observe(viewLifecycleOwner) {
             mBinding.videoView.setVideoURI(Uri.parse(it))
             mBinding.videoView.start()
+            "videoView.start".logd(TAG)
+
         }
 
+    }
+
+    override fun onPause() {
+        "onPause".logd(TAG)
+        super.onPause()
+        mBinding.videoView.pause()
+    }
+
+    override fun onResume() {
+        "onResume".logd(TAG)
+        super.onResume()
+        mBinding.videoView.resume()
+    }
+
+    override fun onDestroy() {
+        "onDestroy".logd(TAG)
+        super.onDestroy()
+        mBinding.videoView.release(true)
     }
 
     companion object {
