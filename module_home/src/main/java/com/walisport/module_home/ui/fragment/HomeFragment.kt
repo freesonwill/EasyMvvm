@@ -85,7 +85,7 @@ class HomeFragment : BaseFragment<EmptyViewModel, FragmentHomeBinding>() {
         }
 
         mBinding.tv8.setOnClickListener{
-            findNavController().navigate(Uri.parse("walisport://module_live/leagueFragment"))
+            findNavController().navigate(Uri.parse("walisport://module_live/liveFragment"))
         }
     }
 
