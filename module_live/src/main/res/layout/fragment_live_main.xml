@@ -29,16 +29,17 @@
         app:tabIndicatorGravity="bottom"
         app:tabIndicatorHeight="2dp"
         app:tabMode="fixed"
+        app:tabGravity="fill"
         app:tabRippleColor="@null"
         app:tabSelectedTextColor="@color/white"
-        app:tabTextAppearance="@style/TextAppearance.Design.Tab"
+        app:tabTextAppearance="@style/CustomTabText"
         app:tabTextColor="@color/video_tab_text_color"
         tools:ignore="SpeakableTextPresentCheck" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/vp_page"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="471dp"
         android:clipChildren="false"
         android:clipToPadding="false"
         android:overScrollMode="ifContentScrolls"
