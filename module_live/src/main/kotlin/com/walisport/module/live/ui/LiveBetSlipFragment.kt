@@ -1,17 +1,14 @@
 package com.walisport.module.live.ui
 
 import android.os.Bundle
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.tabs.TabLayoutMediator
 import com.walisport.lib.base.adapter.PagerAdapter
 import com.walisport.lib.base.ben.PagerBean
 import com.walisport.lib.base.ui.BaseFragment
 import com.walisport.lib.base.ui.viewBind
-import com.walisport.lib.common.utils.ext.ResourceExt.getString
+import com.walisport.lib.common.utils.ext.removeAllTips
 import com.walisport.module.live.R
 import com.walisport.module.live.databinding.FragmentLiveBetSlipLayoutBinding
-import com.walisport.module.live.ui.adapter.LiveBetSlipAdapter
 import com.walisport.module.live.ui.viewmodel.LiveBetSlipViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -24,38 +21,32 @@ class LiveBetSlipFragment : BaseFragment<LiveBetSlipViewModel, FragmentLiveBetSl
 
     override fun initView(savedInstanceState: Bundle?) {
         initMenu()
-        initViewPager()
     }
 
     private fun initMenu() {
-        val array = resources.getStringArray(R.array.bet_slip_menus)
-        val adapter = LiveBetSlipAdapter(object : DiffUtil.ItemCallback<String>() {
-            override fun areItemsTheSame(oldItem: String, newItem: String): Boolean {
-                return oldItem == newItem
-            }
-
-            override fun areContentsTheSame(oldItem: String, newItem: String): Boolean {
-                return oldItem == newItem
-            }
-        })
-        adapter.submitList(array.toList())
-        val manager = LinearLayoutManager(context).apply {
-            orientation = LinearLayoutManager.HORIZONTAL
-        }
-        mBinding.betslipRecycler.layoutManager = manager
-        mBinding.betslipRecycler.adapter = adapter
-    }
-
-    private fun initViewPager() {
         with(mBinding) {
             val array = resources.getStringArray(R.array.bet_slip_menus)
             val list = listOf(
                 PagerBean(array[0]) { LiveBetSlipUnsettledFragment() },
+                PagerBean(array[1]) { LiveBetSlipUnsettledFragment() },
+                PagerBean(array[2]) { LiveBetSlipUnsettledFragment() },
+                PagerBean(array[3]) { LiveBetSlipUnsettledFragment() },
+                PagerBean(array[4]) { LiveBetSlipUnsettledFragment() },
             )
+
+            tabLayout.addTab(tabLayout.newTab().setCustomView(R.layout.item_live_bet_slip_menu_layout))
             viewpager.adapter = null
             viewpager.adapter = PagerAdapter(childFragmentManager, lifecycle, list)
+            TabLayoutMediator(tabLayout, viewpager) { tab, position ->
+                val tabView = tab.view
+                tab.text = list[position].title
+                tabView.setOnClickListener {
+                }
+            }.attach()
+            tabLayout.removeAllTips()
         }
     }
+
 
     override fun initListener() {
     }

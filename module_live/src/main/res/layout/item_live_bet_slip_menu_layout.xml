@@ -9,7 +9,6 @@
         android:layout_width="@dimen/dp_74"
         android:layout_height="@dimen/dp_32"
         android:layout_marginStart="@dimen/dp_8"
-        android:background="@drawable/shape_betslip_normal"
         android:gravity="center"
         android:textColor="@color/secondary_text"
         android:textSize="@dimen/sp_14" />
