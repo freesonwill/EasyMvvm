@@ -1,17 +1,16 @@
-package com.walisport.module.home.ui.fragment
+package com.walisport.module.home.test
 
 import android.os.Bundle
 import androidx.navigation.fragment.findNavController
 import com.walisport.lib.base.data.viewmodel.EmptyViewModel
 import com.walisport.lib.base.ui.BaseFragment
-import com.walisport.lib.base.ui.viewBind
-import com.walisport.module.home.databinding.FragmentSecondBinding
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import com.walisport.module.home.databinding.FragmentTestSecondBinding
+import kotlin.reflect.KClass
 
 
-class SecondFragment : BaseFragment<EmptyViewModel,FragmentSecondBinding>() {
-    override val mBinding: FragmentSecondBinding by viewBind()
-    override val mViewModel: EmptyViewModel by viewModel()
+class SecondFragment : BaseFragment<EmptyViewModel,FragmentTestSecondBinding>() {
+    override val vbClass: KClass<FragmentTestSecondBinding> = FragmentTestSecondBinding::class
+    override val vmClass: KClass<EmptyViewModel> = EmptyViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
 

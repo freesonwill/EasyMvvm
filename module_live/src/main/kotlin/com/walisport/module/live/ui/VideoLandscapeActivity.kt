@@ -5,21 +5,19 @@ import android.os.Bundle
 import com.bumptech.glide.Glide
 import com.walisport.lib.base.ui.BaseActivity
 import com.walisport.lib.base.ui.interface_.StatusBarConfig
-import com.walisport.lib.base.ui.viewBind
 import com.walisport.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.live.databinding.ActivityVideoLandscapeBinding
 import com.walisport.module.live.viewmodel.VideoActivityViewModel
 import me.jessyan.autosize.internal.CancelAdapt
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import tv.danmaku.ijk.media.example.widget.media.AndroidMediaController
+import kotlin.reflect.KClass
 
 
 class VideoLandscapeActivity :
     BaseActivity<VideoActivityViewModel, ActivityVideoLandscapeBinding>(), CancelAdapt {
 
-    override val mBinding: ActivityVideoLandscapeBinding by viewBind()
-
-    override val mViewModel: VideoActivityViewModel by viewModel()
+    override val vbClass: KClass<ActivityVideoLandscapeBinding> = ActivityVideoLandscapeBinding::class
+    override val vmClass: KClass<VideoActivityViewModel> = VideoActivityViewModel::class
 
     private var mBackPressed = false
 
