@@ -16,7 +16,8 @@ import kotlin.reflect.KClass
 class VideoLandscapeActivity :
     BaseActivity<VideoActivityViewModel, ActivityVideoLandscapeBinding>(), CancelAdapt {
 
-    override val vbClass: KClass<ActivityVideoLandscapeBinding> = ActivityVideoLandscapeBinding::class
+    override val vbClass: KClass<ActivityVideoLandscapeBinding> =
+        ActivityVideoLandscapeBinding::class
     override val vmClass: KClass<VideoActivityViewModel> = VideoActivityViewModel::class
 
     private var mBackPressed = false
@@ -34,6 +35,10 @@ class VideoLandscapeActivity :
         mBinding.ivBack.clickNoRepeat {
             this@VideoLandscapeActivity.finish()
         }
+
+        mBinding.ivVideoLandscapeLeagueIcon.clickNoRepeat {  }
+
+        mBinding.tvCompetitionName.clickNoRepeat {  }
 
         mBinding.ivShare.clickNoRepeat { }
 

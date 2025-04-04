@@ -40,7 +40,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/tv_video_landscape_league_icon"
+            android:id="@+id/iv_video_landscape_league_icon"
             android:layout_width="@dimen/dp_96"
             android:layout_height="@dimen/dp_22"
             android:scaleType="centerCrop"
