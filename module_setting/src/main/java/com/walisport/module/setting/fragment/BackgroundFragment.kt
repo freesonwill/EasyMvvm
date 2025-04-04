@@ -35,19 +35,16 @@ class BackgroundFragment : BaseFragment<BackgroundViewModel, FragmentBackgroundB
     override fun initView(savedInstanceState: Bundle?) {
         val skinType = mViewModel.getSkinType()
         changeAppSkin(skinType)
+        val binding = TittleBarBackgroundBinding.inflate(LayoutInflater.from(context), mBinding.root, false)
+        binding.barroot.layoutParams.width = resources.displayMetrics.widthPixels-(20.dp2px)//获取屏幕高度
+        mBinding.titleBar.loadDynamicsTitleBar(binding.root)
+        binding.apply {
+            tvBack.clickNoRepeat {  findNavController().navigateUp() }
+            tvTitleRight.clickNoRepeat {  findNavController().navigateUp() }
+        }
     }
 
     override fun initListener() {
-        mBinding.titleBar.loadBackgroundTitleBar(
-            R.string.menu_background_set.getString(),
-            R.string.cancel.getString(),
-            R.string.confirm.getString(),
-            {
-                findNavController().navigateUp()
-            },
-            {//确定
-                findNavController().navigateUp()
-            })
         mBinding.layClassic.clickNoRepeat {
             mViewModel.setSkinType(SKIN_CLASSIC)
         }
