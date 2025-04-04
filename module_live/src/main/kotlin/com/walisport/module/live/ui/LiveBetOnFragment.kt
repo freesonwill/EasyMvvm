@@ -21,6 +21,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel,FragmentLiveBetOnBindi
     override val mBinding: FragmentLiveBetOnBinding by viewBind()
     override val mViewModel: LiveBetOnViewModel by viewModel()
 
+    //测试数据
     private var tabList : List<String> = listOf("全部","让球大小","波胆","角球&罚牌","罚球","角球&罚牌")
 
     override fun initView(savedInstanceState: Bundle?) {
