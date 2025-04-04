@@ -5,6 +5,7 @@ import androidx.navigation.fragment.findNavController
 import com.walisport.lib.base.ui.BaseFragment
 import com.walisport.lib.base.ui.viewBind
 import com.walisport.lib.common.utils.ext.ResourceExt.getString
+import com.walisport.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.setting.R
 import com.walisport.module.setting.data.LanguageViewModel
 import com.walisport.module.setting.databinding.FragmentLanguageBinding
@@ -61,13 +62,13 @@ class LanguageFragment : BaseFragment<LanguageViewModel, FragmentLanguageBinding
                 setRadioButtonChecked(TYPE_ENGLISH)
             }
         }
-        mBinding.languageSimple.setOnClickListener {
+        mBinding.languageSimple.clickNoRepeat {
             setRadioButtonChecked(TYPE_SIMPLE)
         }
-        mBinding.languageTradition.setOnClickListener {
+        mBinding.languageTradition.clickNoRepeat {
             setRadioButtonChecked(TYPE_TRADITION)
         }
-        mBinding.languageEnglish.setOnClickListener {
+        mBinding.languageEnglish.clickNoRepeat {
             setRadioButtonChecked(TYPE_ENGLISH)
         }
     }

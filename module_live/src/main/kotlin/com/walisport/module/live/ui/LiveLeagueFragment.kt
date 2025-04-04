@@ -10,13 +10,13 @@ import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.walisport.lib.base.ui.BaseFragment
 import com.walisport.lib.base.ui.viewBind
 import com.walisport.lib.common.utils.ext.DimensionExt.dp2px
-import com.walisport.module.live.adapter.LeagueAdapter
+import com.walisport.module.live.ui.adapter.LeagueAdapter
 import com.walisport.module.live.data.model.LeagueMatchBean
 import com.walisport.module.live.databinding.FragmentLeagueBinding
 import com.walisport.module.live.ui.viewmodel.LeagueViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class LeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>() {
+class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>() {
 
     override val mBinding: FragmentLeagueBinding by viewBind()
 
@@ -36,18 +36,20 @@ class LeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>() {
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.recyclerLeague.apply {
             itemAnimator = null
-            layoutManager = LinearLayoutManager(context)
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter = LeagueAdapter().apply {
                 addItemDecoration(itemDecoration)
-                val temp = LeagueMatchBean(0, 11001010L, "", "", "阿森纳", "曼城")
-                val list = listOf(temp, temp, temp, temp)
+                val week1 = LeagueMatchBean(0, true, "12月8日 星期四", 0, "", "", "", "0")
+                val week2 = LeagueMatchBean(0, true, "12月10日 星期六", 0, "", "", "", "0")
+                val temp = LeagueMatchBean(0, false, "", 10001010, "", "", "阿森纳", "曼城")
+                val list = listOf(temp, week1, temp, temp, temp, week2, temp, temp)
                 submitList(list)
             }
         }
     }
 
     override fun initListener() {
-        mBinding.ivLeagueClose.setOnClickListener{
+        mBinding.ivLeagueClose.setOnClickListener {
             findNavController().navigateUp()
         }
     }

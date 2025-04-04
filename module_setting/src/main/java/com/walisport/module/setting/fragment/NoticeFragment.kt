@@ -5,6 +5,7 @@ import androidx.navigation.fragment.findNavController
 import com.walisport.lib.base.ui.BaseFragment
 import com.walisport.lib.base.ui.viewBind
 import com.walisport.lib.common.utils.ext.ResourceExt.getString
+import com.walisport.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.setting.R
 import com.walisport.module.setting.databinding.FragmentNoticeBinding
 import com.walisport.module.setting.data.NoticeViewModel
@@ -33,13 +34,13 @@ class NoticeFragment : BaseFragment<NoticeViewModel, FragmentNoticeBinding>() {
     }
 
     override fun initListener() {
-        mBinding.noticeGoal.setOnClickListener {
+        mBinding.noticeGoal.clickNoRepeat {
             showMatchNoticeDialog(TYPE_SYS_GOAL)
         }
-        mBinding.noticeStart.setOnClickListener {
+        mBinding.noticeStart.clickNoRepeat {
             showMatchNoticeDialog(TYPE_SYS_MATCH)
         }
-        mBinding.noticeAppGoal.setOnClickListener {
+        mBinding.noticeAppGoal.clickNoRepeat {
             showMatchNoticeDialog(TYPE_APP_GOAL)
         }
     }
