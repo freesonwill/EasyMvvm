@@ -29,8 +29,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             findNavController().navigateUp()
         }, { b: Boolean ->  //展开收起回调
 
-        }, {
-            findNavController().navigate(LiveMainFragmentDirections.actionLiveMainFragmentToLeagueFragment())
         })
     }
 
