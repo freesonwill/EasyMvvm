@@ -27,7 +27,8 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
 //        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("walisport://login_activity?userId=123"))
         //startActivity(intent)
 //        startActivity(Intent(this, HomeActivity::class.java))
-        //finish()
+        startActivity(Intent(this, AppNavActivity::class.java))
+        finish()
     }
 
     override fun initListener() {

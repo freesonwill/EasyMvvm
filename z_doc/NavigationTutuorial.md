@@ -12,6 +12,7 @@
     <include app:graph="@navigation/home_nav_graph" />
     <include app:graph="@navigation/login_nav_graph" />
     <include app:graph="@navigation/setting_nav_graph" />
+</navigation>
 ```
 
 - (3) 命名规范(建议): '模块名_nav_graph'
@@ -300,18 +301,14 @@ nav_graph_child_fragment.xml
 </navigation>
 ```
 
-#### childFragment获取navHost
-- findChildNavController()： 在parentFragment操作子fragment
-- findNavController(): 自己内部fragment路由
-- findActivityNavController(): 子fragment想要这个页面的路由
-
+#### BaseFragment的navController
+- findChildNavController()：    在parentFragment操作子fragment
+- findNavController():           自己内部fragment路由，只会影响自己的区域
+- findActivityNavController():  子fragment想要这个页面的路由
 
 
 ### ViewPager2中的fragment跳转和返回
-要用activity的navController进行路由
-#### fragment嵌套ViewPager2时，返回崩溃问题
-- 方案一
-将NavHostFragment单独包一层
+- 页面路由: findActivityNavController()进行路由
 
-![img.png](img.png)
+- fragment嵌套ViewPager2时，返回崩溃问题: BaseFragment问题，已经修正
 

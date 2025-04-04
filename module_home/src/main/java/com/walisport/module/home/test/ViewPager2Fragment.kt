@@ -16,13 +16,7 @@ class ViewPager2Fragment : Fragment(R.layout.fragment_test_view_pager2) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val viewPager = view.findViewById<ViewPager2>(R.id.viewPagerNew)
-        val gameList = List(10) { index ->
-            PagerBean("${index + 1}",
-                ViewPagerItem2Fragment().apply {
-                    arguments = ViewPagerItem2FragmentArgs(title = "${index + 1}")
-                            .toBundle()
-                }
-            ) {
+        val gameList = List(10) { index -> PagerBean("${index + 1}") {
                 ViewPagerItem2Fragment().apply {
                     arguments = ViewPagerItem2FragmentArgs(title = "${index + 1}").toBundle()
                 }

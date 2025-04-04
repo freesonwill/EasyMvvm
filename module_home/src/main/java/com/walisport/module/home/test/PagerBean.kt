@@ -14,6 +14,5 @@ import com.walisport.lib.base.ui.BaseFragment
  */
 open class PagerBean(
     val title: String,
-    val fragment: Fragment,
     val page: (() -> Fragment)
 )

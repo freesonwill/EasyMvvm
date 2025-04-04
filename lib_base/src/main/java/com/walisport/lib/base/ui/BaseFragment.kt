@@ -151,28 +151,6 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), 
     fun findActivityNavController(@IdRes id: Int = R.id.nav_host): NavController {
         return requireActivity().findNavController(id)
     }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        //super.onSaveInstanceState(outState)
-        "onSaveInstanceState~~~~~~$this".logd(TAG)
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        "onCreate~~~~~~$this".logd(TAG)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        "onDestroy~~~~~~$this".logd(TAG)
-
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        "onDestroyView~~~~~~$this".logd(TAG)
-        "onDestroyView~~~~~~$this".printStackTrace(TAG)
-    }
 }
 
 /**

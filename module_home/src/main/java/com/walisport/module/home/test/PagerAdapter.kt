@@ -15,7 +15,7 @@ class PagerAdapter(
 
     override fun getItemCount(): Int = pages.size
 
-    override fun createFragment(position: Int): Fragment = pages[position].fragment
+    override fun createFragment(position: Int): Fragment = pages[position].page.invoke()
 
 
     override fun onBindViewHolder(

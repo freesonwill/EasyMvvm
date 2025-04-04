@@ -15,9 +15,6 @@ class ViewPagerFragment : BaseFragment<EmptyViewModel, FragmentTestViewPagerBind
         mBinding.apply {
             val gameList = List(10) { index ->
                 PagerBean("${index + 1}",
-                    ViewPagerItem2Fragment().apply {
-                        arguments = ViewPagerItem2FragmentArgs(title = "${index + 1}").toBundle()
-                    }
                     ) {
                     //创建navHostFragment
                     /*NavHostFragment.create(
