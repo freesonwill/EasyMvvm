@@ -9,16 +9,20 @@
         android:id="@+id/textViewScreen"
         android:name="com.walisport.module.home.test.ViewPagerItem2Fragment"
         android:label="TextView Screen"
-        tools:layout="@layout/fragment_view_pager_item2"
+        tools:layout="@layout/fragment_test_view_pager_item2"
         >
         <!-- 添加参数 -->
         <argument
             android:name="title"
             app:argType="string"
             android:defaultValue="default_user" />
+
         <action
             android:id="@+id/action_textViewScreen_to_homeFragment3"
-            app:destination="@id/homeFragment3" />
+            app:destination="@id/homeFragment3"
+            app:popUpToSaveState="true"
+            app:restoreState="true"
+            />
 
     </fragment>
 

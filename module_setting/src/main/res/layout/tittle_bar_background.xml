@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    style="@style/CustomToolbarStyle">
+    android:id="@+id/barroot"
+    android:layout_height="match_parent"
+    android:layout_width="wrap_content"
+    android:background="@color/tran_0"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    >
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_back"
+        android:text="@string/cancel"
         style="@style/CustomToolbarImgStyle"
         android:textColor="@color/color_666666"
         android:gravity="center"
@@ -13,10 +20,13 @@
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_title_name"
         android:textColor="@color/white"
-        android:text=""
+        android:text="@string/menu_background_set"
+        android:gravity="center"
+        android:layout_weight="1"
         style="@style/CustomToolbarTvStyle"
         tools:ignore="MissingConstraints" />
     <androidx.appcompat.widget.AppCompatTextView
+        android:text="@string/confirm"
         android:id="@+id/tv_title_right"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -26,4 +36,4 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.appcompat.widget.LinearLayoutCompat>

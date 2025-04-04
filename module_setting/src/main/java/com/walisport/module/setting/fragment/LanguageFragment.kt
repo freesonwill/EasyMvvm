@@ -5,19 +5,22 @@ import androidx.navigation.fragment.findNavController
 import com.walisport.lib.base.ui.BaseFragment
 import com.walisport.lib.base.ui.viewBind
 import com.walisport.lib.common.utils.ext.ResourceExt.getString
+import com.walisport.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.setting.R
 import com.walisport.module.setting.data.LanguageViewModel
+import com.walisport.module.setting.data.NoticeViewModel
 import com.walisport.module.setting.databinding.FragmentLanguageBinding
+import com.walisport.module.setting.databinding.FragmentNoticeBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import kotlin.reflect.KClass
 
 /**
  * 语言设置
  */
 
 class LanguageFragment : BaseFragment<LanguageViewModel, FragmentLanguageBinding>() {
-
-    override val mBinding: FragmentLanguageBinding by viewBind()
-    override val mViewModel: LanguageViewModel by viewModel()
+    override val vbClass: KClass<FragmentLanguageBinding> = FragmentLanguageBinding::class
+    override val vmClass: KClass<LanguageViewModel> = LanguageViewModel::class
 
     companion object {
         const val TYPE_SIMPLE = 0      //简体
@@ -26,9 +29,9 @@ class LanguageFragment : BaseFragment<LanguageViewModel, FragmentLanguageBinding
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        mBinding.titleBar.loadGeneralTitleBar(R.string.menu_language_set.getString()) {
+        mBinding.titleBar.loadGeneralTitleBar(R.string.menu_language_set.getString(),{
             findNavController().navigateUp()
-        }
+        })
         val languageType = mViewModel.getLanguageType()
         if ("SIMPLE" == languageType) {
             mBinding.radioSimple.isChecked = true
@@ -61,13 +64,13 @@ class LanguageFragment : BaseFragment<LanguageViewModel, FragmentLanguageBinding
                 setRadioButtonChecked(TYPE_ENGLISH)
             }
         }
-        mBinding.languageSimple.setOnClickListener {
+        mBinding.languageSimple.clickNoRepeat {
             setRadioButtonChecked(TYPE_SIMPLE)
         }
-        mBinding.languageTradition.setOnClickListener {
+        mBinding.languageTradition.clickNoRepeat {
             setRadioButtonChecked(TYPE_TRADITION)
         }
-        mBinding.languageEnglish.setOnClickListener {
+        mBinding.languageEnglish.clickNoRepeat {
             setRadioButtonChecked(TYPE_ENGLISH)
         }
     }

@@ -7,6 +7,7 @@ import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import com.walisport.lib.base.ui.BaseBottomSheetFragment
 import com.walisport.lib.base.ui.viewBind
+import com.walisport.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.setting.R
 import com.walisport.module.setting.databinding.DialogOddsDisplayBinding
 
@@ -61,17 +62,17 @@ class OddsDisplayDialog : BaseBottomSheetFragment<DialogOddsDisplayBinding>() {
                 clicklistener?.onClickHK()
             }
         }
-        mBinding.itemHk.setOnClickListener {
+        mBinding.itemHk.clickNoRepeat {
             mBinding.radioEp.isChecked = false
             mBinding.radioHk.isChecked = true
             clicklistener?.onClickHK()
         }
-        mBinding.itemEp.setOnClickListener {
+        mBinding.itemEp.clickNoRepeat {
             mBinding.radioEp.isChecked = true
             mBinding.radioHk.isChecked = false
             clicklistener?.onClickEP()
         }
-        mBinding.tvClose.setOnClickListener {
+        mBinding.tvClose.clickNoRepeat {
             clicklistener?.onClickClose()
         }
     }

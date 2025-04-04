@@ -3,6 +3,7 @@ package com.walisport.module.setting.dialog
 import android.os.Bundle
 import com.walisport.lib.base.ui.BaseBottomSheetFragment
 import com.walisport.lib.base.ui.viewBind
+import com.walisport.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.setting.databinding.DialogMatchNoticeBinding
 
 class MatchNoticeDialog : BaseBottomSheetFragment<DialogMatchNoticeBinding>() {
@@ -24,7 +25,7 @@ class MatchNoticeDialog : BaseBottomSheetFragment<DialogMatchNoticeBinding>() {
         mBinding.toggleAll.setOnCheckedChangeListener { _, isChecked ->
             clicklistener?.onClickAll(isChecked)
         }
-        mBinding.tvClose.setOnClickListener {
+        mBinding.tvClose.clickNoRepeat {
             clicklistener?.onClickClose()
         }
     }

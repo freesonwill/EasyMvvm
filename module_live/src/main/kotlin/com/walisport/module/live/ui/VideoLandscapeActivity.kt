@@ -1,72 +1,84 @@
 package com.walisport.module.live.ui
 
-import android.app.Activity
 import android.net.Uri
 import android.os.Bundle
-import android.widget.ImageView
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.WindowInsetsControllerCompat
+import com.bumptech.glide.Glide
+import com.walisport.lib.base.ui.BaseActivity
+import com.walisport.lib.base.ui.interface_.StatusBarConfig
 import com.walisport.lib.common.utils.ext.clickNoRepeat
-import com.walisport.module.live.R
+import com.walisport.module.live.databinding.ActivityVideoLandscapeBinding
+import com.walisport.module.live.viewmodel.VideoActivityViewModel
+import me.jessyan.autosize.internal.CancelAdapt
 import tv.danmaku.ijk.media.example.widget.media.AndroidMediaController
-import tv.danmaku.ijk.media.example.widget.media.IjkVideoView
+import kotlin.reflect.KClass
 
-class VideoLandscapeActivity : Activity() {
+
+class VideoLandscapeActivity :
+    BaseActivity<VideoActivityViewModel, ActivityVideoLandscapeBinding>(), CancelAdapt {
+
+    override val vbClass: KClass<ActivityVideoLandscapeBinding> = ActivityVideoLandscapeBinding::class
+    override val vmClass: KClass<VideoActivityViewModel> = VideoActivityViewModel::class
+
     private var mBackPressed = false
-    private var mMediaController: AndroidMediaController? = null
-    private var mVideoView: IjkVideoView? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_video_landscape)
-        hideSystemUI()
 
-        val testUrl =
-            "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
+    override fun configStatusBar(): StatusBarConfig {
+        return StatusBarConfig(hideStatusBar = true)
+    }
 
-//        val url =
-//            "https://jjghvku4.jmyuyu.com/sport/201_3455709_1.flv?auth_key=1742356008-0-0-cebbd8cd6498a8af12b4d1962956fa99"
+    override fun initView(savedInstanceState: Bundle?) {
+        mBinding.videoView.setMediaController(AndroidMediaController(this, false))
+    }
 
-        mVideoView = findViewById<IjkVideoView>(R.id.videoView)
-        mMediaController = AndroidMediaController(this, false)
-        mVideoView?.setMediaController(mMediaController)
-        mVideoView?.setVideoURI(Uri.parse(testUrl))
-        mVideoView?.start()
+    override fun initListener() {
+        mBinding.ivBack.clickNoRepeat {
+            this@VideoLandscapeActivity.finish()
+        }
 
-        findViewById<ImageView>(R.id.video_landscape_back).clickNoRepeat { this@VideoLandscapeActivity.finish() }
+        mBinding.ivShare.clickNoRepeat { }
+
+        mBinding.ivChooseSource.clickNoRepeat { }
+
+        mBinding.tvChooseVideoSource.clickNoRepeat { }
+
+        mBinding.tvMatchStatus.clickNoRepeat { }
 
     }
 
-    private fun hideSystemUI() {
-        WindowCompat.setDecorFitsSystemWindows(window, false)
+    override fun createObserver() {
+        mViewModel.url.observe(this) {
+            mBinding.videoView.setVideoURI(Uri.parse(it))
+            mBinding.videoView.start()
+        }
 
-        val insetsController: WindowInsetsControllerCompat =
-            WindowCompat.getInsetsController(window, window.decorView)
-        insetsController.systemBarsBehavior =
-            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-        insetsController.hide(WindowInsetsCompat.Type.statusBars())
-        insetsController.hide(WindowInsetsCompat.Type.navigationBars())
-    }
+        mViewModel.leagueIconUrl.observe(this) {
+            Glide.with(mBinding.tvVideoLandscapeLeagueIcon).load(it)
+                .placeholder(com.walisport.lib.common.R.drawable.title_league_icon)
+                .into(mBinding.tvVideoLandscapeLeagueIcon)
+        }
 
-
-    override fun onBackPressed() {
-        mBackPressed = true
-
-        super.onBackPressed()
+        mViewModel.playerAName.observe(this) {
+            mBinding.tvCompetitionName.text = "$it vs ${mViewModel.playerBName.value}"
+        }
     }
 
     override fun onStop() {
         super.onStop()
 
-        if (mBackPressed || !mVideoView?.isBackgroundPlayEnabled!!) {
-            mVideoView?.stopPlayback()
-            mVideoView?.release(true)
-            mVideoView?.stopBackgroundPlay()
+        if (mBackPressed || !mBinding.videoView.isBackgroundPlayEnabled) {
+            mBinding.videoView.stopPlayback()
+            mBinding.videoView.release(true)
+            mBinding.videoView.stopBackgroundPlay()
         } else {
-            mVideoView?.enterBackground()
+            mBinding.videoView.enterBackground()
         }
     }
+
+    override fun onBackPressed() {
+        mBackPressed = true
+        super.onBackPressed()
+    }
+
 
 }
 
