@@ -11,12 +11,16 @@
         android:label="fragment_live_main"
         tools:layout="@layout/fragment_live_main">
 
+        <action
+            android:id="@+id/action_liveMainFragment_to_leagueFragment"
+            app:destination="@id/leagueFragment" />
+
         <deepLink app:uri="walisport://module_live/liveFragment" />
     </fragment>
 
     <fragment
         android:id="@+id/leagueFragment"
-        android:name="com.walisport.module.live.ui.LeagueFragment"
+        android:name="com.walisport.module.live.ui.LiveLeagueFragment"
         android:label="fragment_live_league"
         tools:layout="@layout/fragment_league">
 
@@ -26,14 +30,15 @@
     <activity
         android:id="@+id/VideoLandscapeActivity"
         android:label="activity_video_landscape"
-        app:targetPackage="${applicationId}"
         app:data="walisport://video_landscape_activity"
-        >
+        app:targetPackage="${applicationId}">
+
         <argument
             android:name="userId"
             android:defaultValue="@null"
             app:argType="string"
             app:nullable="true" />
+
         <deepLink app:uri="walisport://video_landscape_activity?userId={userId}" />
     </activity>
 </navigation>
