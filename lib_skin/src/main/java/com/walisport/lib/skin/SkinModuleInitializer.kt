@@ -19,9 +19,8 @@ class SkinModuleInitializer : Initializer<String> {
     }
 
     private val socketModules = module {
-        single<SportSkinManager> { SportSkinManager() }
         single<SportSkinResourceManager> { SportSkinResourceManager()}
-
+        single<SportSkinManager> { SportSkinManager() }
     }
     private val moduleList: List<Module> = listOf(socketModules)
 
