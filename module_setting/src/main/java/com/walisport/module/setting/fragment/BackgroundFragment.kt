@@ -21,7 +21,7 @@ class BackgroundFragment : BaseFragment<BackgroundViewModel, FragmentBackgroundB
     override val mViewModel: BackgroundViewModel by viewModel()
 
     companion object {
-        const val SKIN_CLASS = "CLASS"               //经典
+        const val SKIN_CLASSIC = "CLASSIC"               //经典
         const val SKIN_BLACK_BLUE = "BLACK_BLUE"     //黑蓝
         const val SKIN_BLACK_GREEN = "BLACK_GREEN"   //黑绿
         const val SKIN_BLACK_RED = "BLACK_RED"       //黑红
@@ -44,8 +44,8 @@ class BackgroundFragment : BaseFragment<BackgroundViewModel, FragmentBackgroundB
             {//确定
                 findNavController().navigateUp()
             })
-        mBinding.layClass.clickNoRepeat {
-            mViewModel.setSkinType(SKIN_CLASS)
+        mBinding.layClassic.clickNoRepeat {
+            mViewModel.setSkinType(SKIN_CLASSIC)
         }
         mBinding.layBlackBlue.clickNoRepeat {
             mViewModel.setSkinType(SKIN_BLACK_BLUE)
@@ -72,14 +72,14 @@ class BackgroundFragment : BaseFragment<BackgroundViewModel, FragmentBackgroundB
 
     private fun changeAppSkin(type: String) {
         if (type == "") return
-        mBinding.radioClass.isChecked = false
+        mBinding.radioClassic.isChecked = false
         mBinding.radioBlackBlue.isChecked = false
         mBinding.radioBlackRed.isChecked = false
         mBinding.radioBlackGreen.isChecked = false
         mBinding.radioWhiteGreen.isChecked = false
         mBinding.radioWhiteBlue.isChecked = false
         when (type) {
-            SKIN_CLASS -> mBinding.radioClass.isChecked = true
+            SKIN_CLASSIC -> mBinding.radioClassic.isChecked = true
             SKIN_BLACK_BLUE -> mBinding.radioBlackBlue.isChecked = true
             SKIN_BLACK_GREEN -> mBinding.radioBlackGreen.isChecked = true
             SKIN_BLACK_RED -> mBinding.radioBlackRed.isChecked = true
