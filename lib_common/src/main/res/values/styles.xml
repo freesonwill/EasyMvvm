@@ -5,7 +5,7 @@
         <item name="android:layout_height">46dp</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:paddingEnd">@dimen/title_bar_padding_end</item>
-        <item name="android:paddingStart">@dimen/title_bar_padding_end</item>
+        <item name="android:paddingStart">@dimen/title_bar_padding_start</item>
 <!--        暂定根据设置的主题颜色再进行替换-->
         <item name="android:background">@color/black</item>
     </style>

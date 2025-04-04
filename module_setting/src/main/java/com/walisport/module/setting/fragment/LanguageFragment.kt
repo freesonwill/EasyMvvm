@@ -29,9 +29,9 @@ class LanguageFragment : BaseFragment<LanguageViewModel, FragmentLanguageBinding
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        mBinding.titleBar.loadGeneralTitleBar(R.string.menu_language_set.getString()) {
+        mBinding.titleBar.loadGeneralTitleBar(R.string.menu_language_set.getString(),{
             findNavController().navigateUp()
-        }
+        })
         val languageType = mViewModel.getLanguageType()
         if ("SIMPLE" == languageType) {
             mBinding.radioSimple.isChecked = true

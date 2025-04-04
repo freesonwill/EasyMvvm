@@ -22,9 +22,9 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
     override fun initView(savedInstanceState: Bundle?) {}
 
     override fun initListener() {
-        mBinding.titleBar.loadGeneralTitleBar(R.string.setting.getString()) {
+        mBinding.titleBar.loadGeneralTitleBar(R.string.setting.getString(),{
             findNavController().navigateUp()
-        }
+        })
         mBinding.settingOdds.clickNoRepeat {
             showOddsDisplayDialog()
         }

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:background="@color/tran_0"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    >
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_landscape_league_icon"
+            android:layout_width="@dimen/dp_96"
+            android:layout_height="@dimen/dp_22"
+            android:scaleType="centerCrop"
+            android:src="@drawable/title_league_icon" />
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="10dp"
+            android:layout_height="@dimen/dp_18"
+            android:layout_marginStart="@dimen/dp_6"
+            android:layout_marginEnd="@dimen/dp_6"
+            android:src="@drawable/title_landscape_separator" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_competition_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="法国vs阿根廷"
+            android:drawablePadding="5dp"
+            android:drawableEnd="@drawable/title_bar_dow_icon"
+            android:textColor="@color/white"
+            android:textSize="15sp" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_money"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_24"
+            android:paddingStart="@dimen/dp_5"
+            android:paddingEnd="@dimen/dp_9"
+            android:text="¥1000"
+            android:layout_marginStart="10dp"
+            android:gravity="center_vertical"
+            android:textColor="@color/title_money_text"
+            android:background="@drawable/title_live_money_background"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+</androidx.appcompat.widget.LinearLayoutCompat>
