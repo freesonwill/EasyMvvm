@@ -57,9 +57,9 @@ class VideoLandscapeActivity :
         }
 
         mViewModel.leagueIconUrl.observe(this) {
-            Glide.with(mBinding.tvVideoLandscapeLeagueIcon).load(it)
+            Glide.with(mBinding.ivVideoLandscapeLeagueIcon).load(it)
                 .placeholder(com.walisport.lib.common.R.drawable.title_league_icon)
-                .into(mBinding.tvVideoLandscapeLeagueIcon)
+                .into(mBinding.ivVideoLandscapeLeagueIcon)
         }
 
         mViewModel.playerAName.observe(this) {
