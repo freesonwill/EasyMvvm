@@ -1,7 +1,9 @@
 package com.walisport.module.live.ui
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import androidx.navigation.findNavController
 import com.bumptech.glide.Glide
 import com.walisport.lib.base.ui.BaseActivity
 import com.walisport.lib.base.ui.interface_.StatusBarConfig
@@ -36,9 +38,13 @@ class VideoLandscapeActivity :
             this@VideoLandscapeActivity.finish()
         }
 
-        mBinding.ivVideoLandscapeLeagueIcon.clickNoRepeat {  }
+        mBinding.ivVideoLandscapeLeagueIcon.clickNoRepeat {
+            jumpToLeagueFragment()
+        }
 
-        mBinding.tvCompetitionName.clickNoRepeat {  }
+        mBinding.tvCompetitionName.clickNoRepeat {
+            jumpToLeagueFragment()
+        }
 
         mBinding.ivShare.clickNoRepeat { }
 
@@ -82,6 +88,10 @@ class VideoLandscapeActivity :
     override fun onBackPressed() {
         mBackPressed = true
         super.onBackPressed()
+    }
+
+    private fun jumpToLeagueFragment(){
+
     }
 
 
