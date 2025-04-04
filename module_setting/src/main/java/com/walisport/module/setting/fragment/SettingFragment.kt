@@ -5,6 +5,7 @@ import androidx.navigation.fragment.findNavController
 import com.walisport.lib.base.ui.BaseFragment
 import com.walisport.lib.base.ui.viewBind
 import com.walisport.lib.common.utils.ext.ResourceExt.getString
+import com.walisport.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.setting.R
 import com.walisport.module.setting.data.SettingViewModel
 import com.walisport.module.setting.databinding.FragmentSettingBinding
@@ -26,16 +27,16 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
         mBinding.titleBar.loadGeneralTitleBar(R.string.setting.getString()) {
             findNavController().navigateUp()
         }
-        mBinding.settingOdds.setOnClickListener {
+        mBinding.settingOdds.clickNoRepeat {
             showOddsDisplayDialog()
         }
-        mBinding.settingNotice.setOnClickListener {
+        mBinding.settingNotice.clickNoRepeat {
             findNavController().navigate(R.id.action_settingFragment_to_noticedFragment)
         }
-        mBinding.settingBg.setOnClickListener {
+        mBinding.settingBg.clickNoRepeat {
             findNavController().navigate(R.id.action_settingFragment_to_backgroundFragment)
         }
-        mBinding.settingLanguage.setOnClickListener {
+        mBinding.settingLanguage.clickNoRepeat {
             findNavController().navigate(R.id.action_settingFragment_to_languageFragment)
         }
     }
