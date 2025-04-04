@@ -15,6 +15,7 @@ import com.walisport.module.live.viewmodel.LiveMainViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding>() {
+
     override val mBinding: FragmentLiveMainBinding by viewBind()
     override val mViewModel: LiveMainViewModel by viewModel()
     override fun initView(savedInstanceState: Bundle?) {
@@ -23,11 +24,13 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     }
 
     override fun initListener() {
-        mBinding.titleBar.loadLiveTitleBar("","中国VS日本",false,"1000.00",{
+        mBinding.titleBar.loadLiveTitleBar("", "中国VS日本", false, "1000.00", {
             //返回
             findNavController().navigateUp()
-        },{b: Boolean ->  //展开收起回调
+        }, { b: Boolean ->  //展开收起回调
 
+        }, {
+            findNavController().navigate(LiveMainFragmentDirections.actionLiveMainFragmentToLeagueFragment())
         })
     }
 
@@ -47,7 +50,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         with(mBinding) {
             val list = listOf(
                 PagerBean(R.string.live_note_order.getString()) { LiveBetSlipFragment() },
-                PagerBean(R.string.live_bet_on.getString()) { LiveBetOnFragment()},
+                PagerBean(R.string.live_bet_on.getString()) { LiveBetOnFragment() },
                 PagerBean(R.string.live_chat.getString()) { LiveChatFragment() },
                 PagerBean(R.string.live_outs.getString()) { LiveOutsFragment() },
                 PagerBean(R.string.live_lineup.getString()) { LiveLineupFragment() },
@@ -63,5 +66,4 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             tabLayout.removeAllTips()
         }
     }
-
 }

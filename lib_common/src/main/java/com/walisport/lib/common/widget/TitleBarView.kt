@@ -121,7 +121,8 @@ class TitleBarView @JvmOverloads constructor(
         expand:Boolean,
         money: String,
         callback: () -> Unit,
-        callbackCompetition: (Boolean) -> Unit
+        callbackCompetition: (Boolean) -> Unit,
+        callLeagueBack: () -> Unit,
     ) {
         val binding = TittleBarLiveBinding.inflate(LayoutInflater.from(context), this, true)
         Glide.with(context).load(leagueImgUrl).override(96.dp2px,22.dp2px)
@@ -135,6 +136,9 @@ class TitleBarView @JvmOverloads constructor(
             }
             tvCompetitionName.clickNoRepeat {
                 callbackCompetition(!expand)
+            }
+            ivLandscapeLeagueIcon.clickNoRepeat {
+                callLeagueBack()
             }
         }
     }
