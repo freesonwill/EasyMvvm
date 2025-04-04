@@ -33,4 +33,5 @@
 
     <color name="tran_75_white">#BFFFFFFF</color>
     <color name="tran_20_white">#33E6E6E6</color>
+    <color name="tran_0">#00000000</color>
 </resources>

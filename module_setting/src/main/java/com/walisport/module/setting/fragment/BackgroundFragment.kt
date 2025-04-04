@@ -1,14 +1,18 @@
 package com.walisport.module.setting.fragment
 
 import android.os.Bundle
+import android.util.DisplayMetrics
+import android.view.LayoutInflater
 import androidx.navigation.fragment.findNavController
 import com.walisport.lib.base.ui.BaseFragment
 import com.walisport.lib.base.ui.viewBind
-import com.walisport.lib.common.utils.ext.ResourceExt.getString
+import com.walisport.lib.common.utils.ext.DimensionExt.dp2px
+import com.walisport.lib.common.utils.ext.DimensionExt.px2dp
+import com.walisport.lib.common.utils.ext.DimensionExt.px2sp
 import com.walisport.lib.common.utils.ext.clickNoRepeat
-import com.walisport.module.setting.R
 import com.walisport.module.setting.data.BackgroundViewModel
 import com.walisport.module.setting.databinding.FragmentBackgroundBinding
+import com.walisport.module.setting.databinding.TittleBarBackgroundBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
@@ -30,20 +34,16 @@ class BackgroundFragment : BaseFragment<BackgroundViewModel, FragmentBackgroundB
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-
+        val binding = TittleBarBackgroundBinding.inflate(LayoutInflater.from(context), mBinding.root, false)
+        binding.barroot.layoutParams.width = resources.displayMetrics.widthPixels-(20.dp2px)//获取屏幕高度
+        mBinding.titleBar.loadDynamicsTitleBar(binding.root)
+        binding.apply {
+            tvBack.clickNoRepeat {  findNavController().navigateUp() }
+            tvTitleRight.clickNoRepeat {  findNavController().navigateUp() }
+        }
     }
 
     override fun initListener() {
-        mBinding.titleBar.loadBackgroundTitleBar(
-            R.string.menu_background_set.getString(),
-            R.string.cancel.getString(),
-            R.string.confirm.getString(),
-            {
-                findNavController().navigateUp()
-            },
-            {//确定
-                findNavController().navigateUp()
-            })
         mBinding.layClass.clickNoRepeat {
             setRadioButtonChecked(SKIN_CLASS)
         }

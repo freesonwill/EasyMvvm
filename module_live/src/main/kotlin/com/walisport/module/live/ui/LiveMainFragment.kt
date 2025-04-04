@@ -1,16 +1,21 @@
 package com.walisport.module.live.ui
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
 import com.walisport.lib.base.adapter.PagerAdapter
 import com.walisport.lib.base.ben.PagerBean
 import com.walisport.lib.base.ui.BaseFragment
 import com.walisport.lib.base.ui.viewBind
+import com.walisport.lib.common.utils.ext.DimensionExt.dp2px
 import com.walisport.lib.common.utils.ext.ResourceExt.getString
+import com.walisport.lib.common.utils.ext.clickNoRepeat
 import com.walisport.lib.common.utils.ext.removeAllTips
 import com.walisport.module.live.R
 import com.walisport.module.live.databinding.FragmentLiveMainBinding
+import com.walisport.module.live.databinding.TittleBarLiveBinding
 import com.walisport.module.live.viewmodel.LiveMainViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -24,12 +29,24 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     }
 
     override fun initListener() {
-        mBinding.titleBar.loadLiveTitleBar("", "中国VS日本", false, "1000.00", {
-            //返回
+        val binding = TittleBarLiveBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
+        mBinding.titleBar.loadDynamicsTitleBar(binding.root) {
             findNavController().navigateUp()
-        }, { b: Boolean ->  //展开收起回调
+        }
+        Glide.with(this).load("").override(96.dp2px, 22.dp2px)
+            .error(com.walisport.lib.common.R.drawable.title_league_icon)           // 加载失败时的占位符
+            .into(binding.ivLandscapeLeagueIcon)
+        binding.apply {
+            tvCompetitionName.text = "中国VS日本"
+            tvMoney.text = "¥ 10000.00"
+            tvCompetitionName.clickNoRepeat {
 
-        })
+            }
+        }
+
+
+
+
     }
 
     override fun createObserver() {
