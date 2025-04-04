@@ -1,6 +1,5 @@
 package com.walisport.module.home.test
 
-import android.os.Bundle
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -16,11 +15,7 @@ class PagerAdapter(
 
     override fun getItemCount(): Int = pages.size
 
-    override fun createFragment(position: Int): Fragment = pages[position].page.invoke().apply {
-        arguments = Bundle().apply {
-            putInt("pageIndex", position)
-        }
-    }
+    override fun createFragment(position: Int): Fragment = pages[position].page.invoke()
 
 
     override fun onBindViewHolder(
@@ -43,4 +38,5 @@ class PagerAdapter(
             }
         }
     }
+
 }

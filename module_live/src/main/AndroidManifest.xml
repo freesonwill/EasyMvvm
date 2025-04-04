@@ -8,6 +8,8 @@
             android:name=".ui.VideoLandscapeActivity"
             android:exported="false"
             android:screenOrientation="landscape"
+            android:configChanges="orientation|screenSize|screenLayout"
+            android:windowSoftInputMode="adjustPan"
             tools:ignore="DiscouragedApi">
             <intent-filter>
                 <action android:name="walisport.intent.action.login_activity" />

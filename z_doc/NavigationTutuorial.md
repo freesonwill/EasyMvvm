@@ -12,6 +12,7 @@
     <include app:graph="@navigation/home_nav_graph" />
     <include app:graph="@navigation/login_nav_graph" />
     <include app:graph="@navigation/setting_nav_graph" />
+</navigation>
 ```
 
 - (3) 命名规范(建议): '模块名_nav_graph'
@@ -232,5 +233,82 @@ app:popUpToSaveState="true"
   app:popUpToSaveState="true"
 />
 ```
-## ViewPager2中的fragment跳转和返回
-要用activity的navController进行路由
+## fragment嵌套
+
+### fragment嵌套fragment
+parentFragment的布局中不能直接添加childFragment，而是使用NavHost折中的方式实现
+
+layout_parent_fragment.xml
+```xml
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:orientation="vertical"
+        tools:context=".test.ViewPagerFragment">
+
+  <TextView
+          android:id="@+id/tv1"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:background="@color/teal_700"
+          android:gravity="center"
+          android:text="@string/hello_blank_fragment"
+          android:textSize="30sp" />
+
+  <!-- NavHostFragment -->
+  <androidx.fragment.app.FragmentContainerView
+          android:id="@+id/childFragment"
+          android:name="androidx.navigation.fragment.NavHostFragment"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          app:navGraph="@navigation/nav_graph_child_fragment"
+  />
+
+</LinearLayout>
+```
+nav_graph_child_fragment.xml
+解释：parentFragment嵌套了childFragment，childFragment是一个NavHostFragment，nav_graph_child_fragment
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        app:startDestination="@id/textViewScreen"
+>
+
+  <fragment
+          android:id="@+id/child1"
+          android:name="com.walisport.module.home.test.child1"
+          android:label="TextView Screen"
+          tools:layout="@layout/fragment_view_pager_item2"
+    >
+    <!-- 添加参数 -->
+    <argument
+            android:name="title"
+            app:argType="string"
+            android:defaultValue="default_user" />
+    <action
+            android:id="@+id/action_textViewScreen_to_homeFragment3"
+            app:destination="@id/homeFragment3"
+            app:popUpToSaveState="true"
+            app:restoreState="true"
+    />
+
+  </fragment>
+
+</navigation>
+```
+
+#### BaseFragment的navController
+- findChildNavController()：    在parentFragment操作子fragment
+- findNavController():           自己内部fragment路由，只会影响自己的区域
+- findActivityNavController():  子fragment想要这个页面的路由
+
+
+### ViewPager2中的fragment跳转和返回
+- 页面路由: findActivityNavController()进行路由
+
+- fragment嵌套ViewPager2时，返回崩溃问题: BaseFragment问题，已经修正
+

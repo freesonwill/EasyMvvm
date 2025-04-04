@@ -10,6 +10,7 @@ import com.walisport.lib.base.utils.LogUtilsExt.logd
 import com.walisport.module.login.R
 import com.walisport.module.login.databinding.FragmentLoginBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import kotlin.reflect.KClass
 
 /**
  * @author: zhangsan
@@ -17,10 +18,9 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
  * @description:
  */
 class LoginFragment : BaseFragment<EmptyViewModel, FragmentLoginBinding>() {
-    override val mBinding: FragmentLoginBinding by viewBind()
-    override val mViewModel: EmptyViewModel by viewModel()
+    override val vbClass: KClass<FragmentLoginBinding> = FragmentLoginBinding::class
+    override val vmClass: KClass<EmptyViewModel> = EmptyViewModel::class
     private val args: LoginFragmentArgs by navArgs()
-    private val TAG = this.javaClass.simpleName
 
     override fun initView(savedInstanceState: Bundle?) {
         //val userId = arguments?.getString("userId")

@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph_home"
-    app:startDestination="@id/homeFragment">
+    app:startDestination="@id/viewPagerFragment">
+    <!--app:startDestination="@id/homeFragment">-->
 
 
     <fragment
@@ -91,7 +92,7 @@
 
     <activity
         android:id="@+id/homeActivity"
-        android:name="com.walisport.module.home.ui.HomeActivity"
+        android:name="com.walisport.module.home.test.TestActivity"
         android:label="activity_home"
         />
     <fragment
@@ -115,10 +116,11 @@
         <action
             android:id="@+id/action_viewPagerItem2Fragment_to_homeFragment"
             app:destination="@id/homeFragment"
-            app:popUpToSaveState="true"
-            app:restoreState="true"
             />
     </fragment>
+<!--app:restoreState="true"-->
+<!--app:popUpToSaveState="true"-->
+<!--app:launchSingleTop="true"-->
 
 
 </navigation>

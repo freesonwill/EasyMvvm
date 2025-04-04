@@ -7,9 +7,8 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import com.walisport.lib.base.data.viewmodel.EmptyViewModel
 import com.walisport.lib.base.ui.BaseActivity
-import com.walisport.lib.base.ui.viewBind
 import com.walisport.lib.common.databinding.ActvityBaseNavBinding
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import kotlin.reflect.KClass
 
 /**
  * @author: zhangsan
@@ -17,8 +16,8 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
  * @description: 基础navigation的activity
  */
 abstract class BaseNavActivity : BaseActivity<EmptyViewModel, ActvityBaseNavBinding>() {
-    override val mViewModel: EmptyViewModel by viewModel()
-    override val mBinding: ActvityBaseNavBinding by viewBind()
+    override val vmClass: KClass<EmptyViewModel> get() = EmptyViewModel::class
+    override val vbClass: KClass<ActvityBaseNavBinding> get() = ActvityBaseNavBinding::class
     protected fun findNavController(): NavController = mBinding.navHost.findNavController()
 
     @NavigationRes

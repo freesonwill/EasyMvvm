@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.walisport.lib.base.adapter.PagerAdapter
 import com.walisport.lib.base.ben.PagerBean
+import com.walisport.lib.base.data.viewmodel.EmptyViewModel
 import com.walisport.lib.base.ui.BaseFragment
 import com.walisport.lib.base.ui.viewBind
 import com.walisport.lib.common.utils.ext.ResourceExt.getString
@@ -14,13 +15,14 @@ import com.walisport.module.live.databinding.FragmentLiveBetSlipLayoutBinding
 import com.walisport.module.live.ui.adapter.LiveBetSlipAdapter
 import com.walisport.module.live.ui.viewmodel.LiveBetSlipViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import kotlin.reflect.KClass
 
 /**
  * 注单
  * */
 class LiveBetSlipFragment : BaseFragment<LiveBetSlipViewModel, FragmentLiveBetSlipLayoutBinding>() {
-    override val mBinding: FragmentLiveBetSlipLayoutBinding by viewBind()
-    override val mViewModel: LiveBetSlipViewModel by viewModel()
+    override val vbClass: KClass<FragmentLiveBetSlipLayoutBinding> = FragmentLiveBetSlipLayoutBinding::class
+    override val vmClass: KClass<LiveBetSlipViewModel> = LiveBetSlipViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
         initMenu()

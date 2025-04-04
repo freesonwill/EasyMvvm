@@ -13,14 +13,15 @@ import com.walisport.lib.common.utils.ext.DimensionExt.dp2px
 import com.walisport.module.live.ui.adapter.LeagueAdapter
 import com.walisport.module.live.data.model.LeagueMatchBean
 import com.walisport.module.live.databinding.FragmentLeagueBinding
+import com.walisport.module.live.databinding.FragmentLiveBetSlipLayoutBinding
 import com.walisport.module.live.ui.viewmodel.LeagueViewModel
+import com.walisport.module.live.ui.viewmodel.LiveBetSlipViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import kotlin.reflect.KClass
 
 class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>() {
-
-    override val mBinding: FragmentLeagueBinding by viewBind()
-
-    override val mViewModel: LeagueViewModel by viewModel()
+    override val vbClass: KClass<FragmentLeagueBinding> = FragmentLeagueBinding::class
+    override val vmClass: KClass<LeagueViewModel> = LeagueViewModel::class
 
     private val itemDecoration: ItemDecoration = object : ItemDecoration() {
         override fun getItemOffsets(
