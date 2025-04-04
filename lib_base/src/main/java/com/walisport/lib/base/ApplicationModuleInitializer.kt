@@ -31,6 +31,7 @@ class ApplicationModuleInitializer : Initializer<String> {
             .setTagPrefix(LogUtilsExt.TAG)
             .setBorderSwitch(false)
             .setLog2FileSwitch(true)
+            .setStackOffset(3)
             .setSaveDays(7)
             .setLogHeadSwitch(false)
             .setSingleTagSwitch(false)

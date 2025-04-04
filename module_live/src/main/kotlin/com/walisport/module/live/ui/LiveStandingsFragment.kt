@@ -9,14 +9,17 @@ import android.view.ViewGroup
 import com.walisport.lib.base.ui.BaseFragment
 import com.walisport.lib.base.ui.viewBind
 import com.walisport.module.live.R
+import com.walisport.module.live.databinding.FragmentLiveOutsBinding
 import com.walisport.module.live.databinding.FragmentLiveStandingsBinding
+import com.walisport.module.live.ui.viewmodel.LiveOutsViewModel
 import com.walisport.module.live.ui.viewmodel.LiveStandingsViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import kotlin.reflect.KClass
 
 //积分榜
 class LiveStandingsFragment : BaseFragment<LiveStandingsViewModel,FragmentLiveStandingsBinding>() {
-    override val mBinding: FragmentLiveStandingsBinding by viewBind()
-    override val mViewModel: LiveStandingsViewModel by viewModel()
+    override val vbClass: KClass<FragmentLiveStandingsBinding> = FragmentLiveStandingsBinding::class
+    override val vmClass: KClass<LiveStandingsViewModel> = LiveStandingsViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
     }

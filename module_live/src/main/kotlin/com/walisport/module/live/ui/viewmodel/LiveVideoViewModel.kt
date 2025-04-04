@@ -6,6 +6,8 @@ import com.walisport.lib.base.data.viewmodel.BaseViewModel
 
 class LiveVideoViewModel : BaseViewModel() {
 
+    val liveUrl=MutableLiveData("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4")
+
     val videoPlayVisible = MutableLiveData(View.VISIBLE)
 
     val statusVisible = MutableLiveData(View.INVISIBLE)

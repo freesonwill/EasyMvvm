@@ -30,7 +30,9 @@
     <color name="color_0f101b">#FF0F101B</color>
     <color name="color_71e993">#FF71e993</color>
     <color name="color_0f1016">#FF0f1016</color>
+    <color name="color_E6E6E6">#FFE6E6E6</color>
 
     <color name="tran_75_white">#BFFFFFFF</color>
     <color name="tran_20_white">#33E6E6E6</color>
+    <color name="tran_0">#00000000</color>
 </resources>

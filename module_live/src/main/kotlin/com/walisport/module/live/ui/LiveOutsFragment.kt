@@ -9,13 +9,16 @@ import android.view.ViewGroup
 import com.walisport.lib.base.ui.BaseFragment
 import com.walisport.lib.base.ui.viewBind
 import com.walisport.module.live.R
+import com.walisport.module.live.databinding.FragmentLiveLineupBinding
 import com.walisport.module.live.databinding.FragmentLiveOutsBinding
+import com.walisport.module.live.ui.viewmodel.LiveLineupViewModel
 import com.walisport.module.live.ui.viewmodel.LiveOutsViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import kotlin.reflect.KClass
 
 class LiveOutsFragment : BaseFragment<LiveOutsViewModel,FragmentLiveOutsBinding>() {
-    override val mBinding: FragmentLiveOutsBinding by viewBind()
-    override val mViewModel: LiveOutsViewModel by viewModel()
+    override val vbClass: KClass<FragmentLiveOutsBinding> = FragmentLiveOutsBinding::class
+    override val vmClass: KClass<LiveOutsViewModel> = LiveOutsViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
     }

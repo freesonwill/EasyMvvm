@@ -9,14 +9,14 @@ import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.walisport.lib.base.data.viewmodel.EmptyViewModel
 import com.walisport.lib.base.ui.BaseFragment
-import com.walisport.lib.base.ui.viewBind
+import com.walisport.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.home.R
 import com.walisport.module.home.databinding.FragmentHomeBinding
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import kotlin.reflect.KClass
 
 class HomeFragment : BaseFragment<EmptyViewModel, FragmentHomeBinding>() {
-    override val mBinding: FragmentHomeBinding by viewBind()
-    override val mViewModel: EmptyViewModel by viewModel()
+    override val vbClass: KClass<FragmentHomeBinding> = FragmentHomeBinding::class
+    override val vmClass: KClass<EmptyViewModel> = EmptyViewModel::class
 
     val navOptions = NavOptions.Builder()
         .setEnterAnim(com.walisport.lib.common.R.anim.slide_in_right)  // 新页面进入动画
@@ -80,11 +80,11 @@ class HomeFragment : BaseFragment<EmptyViewModel, FragmentHomeBinding>() {
 
         }
 
-        mBinding.tv7.setOnClickListener{
+        mBinding.tv7.clickNoRepeat{
             findNavController().navigate(Uri.parse("walisport://module_setting/settingFragment"))
         }
 
-        mBinding.tv8.setOnClickListener{
+        mBinding.tv8.clickNoRepeat{
             findNavController().navigate(Uri.parse("walisport://module_live/liveFragment"))
         }
     }
