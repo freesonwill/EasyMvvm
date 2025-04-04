@@ -6,12 +6,12 @@ import com.walisport.lib.base.data.viewmodel.EmptyViewModel
 import com.walisport.lib.base.ui.BaseFragment
 import com.walisport.lib.base.ui.viewBind
 import com.walisport.module.home.databinding.FragmentThirdBinding
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import kotlin.reflect.KClass
 
 
 class ThirdFragment : BaseFragment<EmptyViewModel,FragmentThirdBinding>() {
-    override val mBinding: FragmentThirdBinding by viewBind()
-    override val mViewModel: EmptyViewModel by viewModel()
+    override val vbClass: KClass<FragmentThirdBinding> = FragmentThirdBinding::class
+    override val vmClass: KClass<EmptyViewModel> = EmptyViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
 

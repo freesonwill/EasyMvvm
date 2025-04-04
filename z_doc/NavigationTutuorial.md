@@ -309,5 +309,9 @@ nav_graph_child_fragment.xml
 
 ### ViewPager2中的fragment跳转和返回
 要用activity的navController进行路由
+#### fragment嵌套ViewPager2时，返回崩溃问题
+- 方案一
+将NavHostFragment单独包一层
 
+![img.png](img.png)
 

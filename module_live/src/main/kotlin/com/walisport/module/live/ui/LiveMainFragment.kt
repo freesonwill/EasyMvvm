@@ -10,14 +10,17 @@ import com.walisport.lib.base.ui.viewBind
 import com.walisport.lib.common.utils.ext.ResourceExt.getString
 import com.walisport.lib.common.utils.ext.removeAllTips
 import com.walisport.module.live.R
+import com.walisport.module.live.databinding.FragmentLeagueBinding
 import com.walisport.module.live.databinding.FragmentLiveMainBinding
+import com.walisport.module.live.ui.viewmodel.LeagueViewModel
 import com.walisport.module.live.viewmodel.LiveMainViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import kotlin.reflect.KClass
 
 class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding>() {
+    override val vbClass: KClass<FragmentLiveMainBinding> = FragmentLiveMainBinding::class
+    override val vmClass: KClass<LiveMainViewModel> = LiveMainViewModel::class
 
-    override val mBinding: FragmentLiveMainBinding by viewBind()
-    override val mViewModel: LiveMainViewModel by viewModel()
     override fun initView(savedInstanceState: Bundle?) {
         setCountView()
         loadFragment()

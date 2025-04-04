@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".test.ViewPagerFragment">
 
@@ -21,13 +21,22 @@
         android:layout_width="match_parent"
         android:layout_height="400dp" />
 
-    <!-- NavHostFragment -->
-   <!-- <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fr2"
+    <!--<androidx.fragment.app.FragmentContainerView
+        android:id="@+id/viewPagerNew"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:navGraph="@navigation/nav_graph_vp_home"
-        />-->
+        android:layout_height="400dp"
+        android:layout_marginTop="20dp"
+        app:navGraph="@navigation/nav_graph_viewpagernew" />-->
+
+
+    <!-- NavHostFragment -->
+    <!-- <androidx.fragment.app.FragmentContainerView
+         android:id="@+id/fr2"
+         android:name="androidx.navigation.fragment.NavHostFragment"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         app:navGraph="@navigation/nav_graph_vp_home"
+         />-->
 
 </LinearLayout>

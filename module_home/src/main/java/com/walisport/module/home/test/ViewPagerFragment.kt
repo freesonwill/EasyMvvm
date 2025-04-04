@@ -1,21 +1,19 @@
 package com.walisport.module.home.test
 
 import android.os.Bundle
+import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.walisport.lib.base.data.viewmodel.EmptyViewModel
-import com.walisport.lib.base.ui.BaseFragment2
+import com.walisport.lib.base.ui.BaseFragment
+import com.walisport.lib.base.ui.getViewBind
+import com.walisport.module.home.databinding.FragmentHomeBinding
 import com.walisport.module.home.databinding.FragmentViewPagerBinding
-import com.walisport.module_home.test.ViewPagerItem2FragmentArgs
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.getViewModel
+import kotlin.reflect.KClass
 
-class ViewPagerFragment : BaseFragment2<EmptyViewModel, FragmentViewPagerBinding>() {
-    override fun createVB(): FragmentViewPagerBinding {
-        return FragmentViewPagerBinding.inflate(layoutInflater,null,false)
-    }
-
-    override fun createVM(): EmptyViewModel {
-        return viewModel<EmptyViewModel>().value
-    }
+class ViewPagerFragment : BaseFragment<EmptyViewModel, FragmentViewPagerBinding>() {
+    override val vbClass: KClass<FragmentViewPagerBinding> = FragmentViewPagerBinding::class
+    override val vmClass: KClass<EmptyViewModel> = EmptyViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.apply {

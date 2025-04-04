@@ -19,18 +19,19 @@ import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
 import com.walisport.lib.base.R
 import com.walisport.lib.base.data.viewmodel.BaseViewModel
-import com.walisport.lib.base.ui.interface_.StatusBarConfig
 import com.walisport.lib.base.ui.interface_.IStatusBar
 import com.walisport.lib.base.ui.interface_.IView
-import com.walisport.lib.base.utils.CommonUtils.inflateMethod
+import com.walisport.lib.base.ui.interface_.StatusBarConfig
 import com.walisport.lib.base.utils.LogUtilsExt.logd
 import com.walisport.lib.base.utils.LogUtilsExt.printStackTrace
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModelForClass
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
+import kotlin.reflect.KClass
 
 /**
  * @author: zhangsan
@@ -38,12 +39,24 @@ import kotlin.coroutines.EmptyCoroutineContext
  * @description: ViewModelFragment基类，自动把ViewModel注入Fragment
  */
 abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), IView, IStatusBar {
-    protected abstract val mBinding: VB
-    protected abstract val mViewModel: VM
     protected open val TAG = this.javaClass.simpleName
+
+    //VB,VM
+    protected lateinit var mBinding: VB; private set
+    protected lateinit var mViewModel: VM; private set
+    abstract val vbClass: KClass<VB>
+    abstract val vmClass: KClass<VM>
+
+    protected open fun createVB(container: ViewGroup?): VB {
+        return getViewBind(vbClass,container)
+    }
+    protected open fun createVM(): VM {
+        return viewModelForClass(vmClass).value
+    }
 
     //设置颜色，默认根据主题颜色设定
     private val statusBar: IStatusBar by lazy { StatusBarDelegate(requireActivity()) }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -51,6 +64,8 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), 
         savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
+        mBinding = createVB(container)
+        mViewModel = createVM()
         if (mBinding is ViewDataBinding) {
             (mBinding as ViewDataBinding).lifecycleOwner = viewLifecycleOwner
         }
@@ -186,8 +201,37 @@ fun Fragment.launch(
  * @param T
  * @return
  */
-inline fun <reified T : ViewBinding> Fragment.viewBind(): Lazy<T> =
+inline fun <reified T : ViewBinding> Fragment.viewBind(
+    root: ViewGroup? = null,
+    attachedToParent: Boolean = false
+): Lazy<T> =
     lazy {
-        "viewBind~~~~~~${this}".logd(this.javaClass.simpleName)
-        T::class.java.inflateMethod?.invoke(null, layoutInflater) as T
+        getViewBind(root, attachedToParent)
     }
+
+inline fun <reified T : ViewBinding> Fragment.getViewBind(
+    root: ViewGroup?,
+    attachedToParent: Boolean = false
+): T {
+    val inflaterMethod = T::class.java.getMethod(
+        "inflate",
+        LayoutInflater::class.java,
+        ViewGroup::class.java,
+        Boolean::class.java
+    )
+    return inflaterMethod.invoke(null, layoutInflater, root, attachedToParent) as T
+}
+
+fun <T : ViewBinding> Fragment.getViewBind(
+    cls: KClass<T>,
+    root: ViewGroup?,
+    attachedToParent: Boolean = false
+): T {
+    val inflaterMethod = cls.java.getMethod(
+        "inflate",
+        LayoutInflater::class.java,
+        ViewGroup::class.java,
+        Boolean::class.java
+    )
+    return inflaterMethod.invoke(null, layoutInflater, root, attachedToParent) as T
+}

@@ -3,22 +3,21 @@ package com.walisport.module.setting.fragment
 import android.os.Bundle
 import androidx.navigation.fragment.findNavController
 import com.walisport.lib.base.ui.BaseFragment
-import com.walisport.lib.base.ui.viewBind
 import com.walisport.lib.common.utils.ext.ResourceExt.getString
 import com.walisport.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.setting.R
 import com.walisport.module.setting.data.BackgroundViewModel
 import com.walisport.module.setting.databinding.FragmentBackgroundBinding
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import kotlin.reflect.KClass
 
 /**
  * 背景设置
  */
 
 class BackgroundFragment : BaseFragment<BackgroundViewModel, FragmentBackgroundBinding>() {
+    override val vbClass: KClass<FragmentBackgroundBinding> = FragmentBackgroundBinding::class
+    override val vmClass: KClass<BackgroundViewModel> = BackgroundViewModel::class
 
-    override val mBinding: FragmentBackgroundBinding by viewBind()
-    override val mViewModel: BackgroundViewModel by viewModel()
 
     companion object {
         const val SKIN_CLASSIC = "CLASSIC"           //经典

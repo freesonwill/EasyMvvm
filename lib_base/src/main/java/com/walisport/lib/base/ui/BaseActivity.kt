@@ -2,7 +2,9 @@ package com.walisport.lib.base.ui
 
 import android.app.Activity
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.MotionEvent
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
@@ -13,13 +15,14 @@ import com.walisport.lib.base.data.viewmodel.BaseViewModel
 import com.walisport.lib.base.ui.interface_.StatusBarConfig
 import com.walisport.lib.base.ui.interface_.IStatusBar
 import com.walisport.lib.base.ui.interface_.IView
-import com.walisport.lib.base.utils.CommonUtils.inflateMethod
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModelForClass
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
+import kotlin.reflect.KClass
 
 /**
  * @author: zhangsan
@@ -28,8 +31,19 @@ import kotlin.coroutines.EmptyCoroutineContext
  */
 abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActivity(), IView, IStatusBar {
     protected open val TAG = this.javaClass.simpleName
-    protected abstract val mBinding: VB
-    protected abstract val mViewModel: VM
+    //VB VM
+    protected lateinit var mBinding: VB; private set
+    protected lateinit var mViewModel: VM; private set
+    abstract val vbClass: KClass<VB>
+    abstract val vmClass: KClass<VM>
+
+    protected open fun createVB(parent: ViewGroup?): VB {
+        return getViewBind(vbClass,parent)
+    }
+    protected open fun createVM(): VM {
+        return viewModelForClass(vmClass).value
+    }
+
     //是否第一次加载
     private var isFirst: Boolean = true
     // 默认不启用键盘隐藏功能，子类可覆盖 edittext软键盘弹出后，点击外部虚拟键盘消失
@@ -39,6 +53,8 @@ abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        mBinding = createVB(null)
+        mViewModel = createVM()
         setContentView(mBinding.root)
         initView(savedInstanceState)
         initListener()
@@ -92,7 +108,29 @@ fun AppCompatActivity.launch(
  * @param T
  * @return
  */
-inline fun <reified T : ViewBinding> Activity.viewBind(): Lazy<T> =
+inline fun <reified T : ViewBinding> Activity.viewBind(parent:ViewGroup? = null, attachedToParent:Boolean=false): Lazy<T> =
     lazy {
-        T::class.java.inflateMethod?.invoke(null, layoutInflater) as T
+        getViewBind(parent,attachedToParent)
     }
+
+inline fun <reified T : ViewBinding> Activity.getViewBind(parent:ViewGroup? = null, attachedToParent:Boolean=false): T  {
+    val inflaterMethod = T::class.java.getMethod("inflate",
+        LayoutInflater::class.java,
+        ViewGroup::class.java,
+        Boolean::class.java)
+    return inflaterMethod.invoke(null,layoutInflater,parent,attachedToParent) as T
+}
+
+fun <T : ViewBinding> Activity.getViewBind(
+    cls: KClass<T>,
+    parent: ViewGroup?,
+    attachedToParent: Boolean = false
+): T {
+    val inflaterMethod = cls.java.getMethod(
+        "inflate",
+        LayoutInflater::class.java,
+        ViewGroup::class.java,
+        Boolean::class.java
+    )
+    return inflaterMethod.invoke(null, layoutInflater, parent, attachedToParent) as T
+}
