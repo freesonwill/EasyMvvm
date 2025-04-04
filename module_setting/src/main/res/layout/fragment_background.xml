@@ -25,7 +25,7 @@
             android:orientation="horizontal">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/lay_class"
+                android:id="@+id/lay_classic"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1">
@@ -50,12 +50,13 @@
                     app:layout_constraintTop_toBottomOf="@+id/iv_class">
 
                     <RadioButton
-                        android:id="@+id/radio_class"
+                        android:id="@+id/radio_classic"
                         android:layout_width="@dimen/dp_16"
                         android:layout_height="@dimen/dp_16"
                         android:background="@drawable/selector_radio_button"
                         android:button="@null"
-                        android:checked="false" />
+                        android:checked="false"
+                        android:clickable="false"/>
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"
@@ -98,7 +99,8 @@
                         android:layout_height="@dimen/dp_16"
                         android:background="@drawable/selector_radio_button"
                         android:button="@null"
-                        android:checked="true" />
+                        android:checked="true"
+                        android:clickable="false"/>
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"
@@ -141,7 +143,8 @@
                         android:layout_height="@dimen/dp_16"
                         android:background="@drawable/selector_radio_button"
                         android:button="@null"
-                        android:checked="false" />
+                        android:checked="false"
+                        android:clickable="false"/>
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"
@@ -191,7 +194,8 @@
                         android:layout_height="@dimen/dp_16"
                         android:background="@drawable/selector_radio_button"
                         android:button="@null"
-                        android:checked="false" />
+                        android:checked="false"
+                        android:clickable="false"/>
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"
@@ -234,7 +238,8 @@
                         android:layout_height="@dimen/dp_16"
                         android:background="@drawable/selector_radio_button"
                         android:button="@null"
-                        android:checked="false" />
+                        android:checked="false"
+                        android:clickable="false"/>
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"
@@ -277,7 +282,8 @@
                         android:layout_height="@dimen/dp_16"
                         android:background="@drawable/selector_radio_button"
                         android:button="@null"
-                        android:checked="false" />
+                        android:checked="false"
+                        android:clickable="false"/>
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"
