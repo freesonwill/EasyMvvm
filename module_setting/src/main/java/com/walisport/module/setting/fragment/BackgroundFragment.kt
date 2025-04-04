@@ -21,7 +21,7 @@ class BackgroundFragment : BaseFragment<BackgroundViewModel, FragmentBackgroundB
     override val mViewModel: BackgroundViewModel by viewModel()
 
     companion object {
-        const val SKIN_CLASSIC = "CLASSIC"               //经典
+        const val SKIN_CLASSIC = "CLASSIC"           //经典
         const val SKIN_BLACK_BLUE = "BLACK_BLUE"     //黑蓝
         const val SKIN_BLACK_GREEN = "BLACK_GREEN"   //黑绿
         const val SKIN_BLACK_RED = "BLACK_RED"       //黑红
@@ -30,7 +30,8 @@ class BackgroundFragment : BaseFragment<BackgroundViewModel, FragmentBackgroundB
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-
+        val skinType = mViewModel.getSkinType()
+        changeAppSkin(skinType)
     }
 
     override fun initListener() {
