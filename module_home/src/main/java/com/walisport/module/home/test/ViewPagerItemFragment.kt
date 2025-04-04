@@ -5,16 +5,15 @@ import androidx.core.os.bundleOf
 import androidx.navigation.fragment.NavHostFragment
 import com.walisport.lib.base.data.viewmodel.EmptyViewModel
 import com.walisport.lib.base.ui.BaseFragment
-import com.walisport.lib.base.ui.viewBind
 import com.walisport.module.home.R
-import com.walisport.module.home.databinding.FragmentViewPagerItemBinding
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import com.walisport.module.home.databinding.FragmentTestViewPagerItemBinding
+import kotlin.reflect.KClass
 
-class ViewPagerItemFragment : BaseFragment<EmptyViewModel, FragmentViewPagerItemBinding>() {
-    override val mBinding: FragmentViewPagerItemBinding by viewBind()
-    override val mViewModel: EmptyViewModel by viewModel()
+class ViewPagerItemFragment : BaseFragment<EmptyViewModel, FragmentTestViewPagerItemBinding>() {
+    override val vbClass: KClass<FragmentTestViewPagerItemBinding> = FragmentTestViewPagerItemBinding::class
+    override val vmClass: KClass<EmptyViewModel> = EmptyViewModel::class
+
     var title: String = ""
-    var parentFragment: ViewPagerFragment? = null
 
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.root.post {

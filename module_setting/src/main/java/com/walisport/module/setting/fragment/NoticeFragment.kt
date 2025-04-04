@@ -9,17 +9,19 @@ import com.walisport.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.setting.R
 import com.walisport.module.setting.databinding.FragmentNoticeBinding
 import com.walisport.module.setting.data.NoticeViewModel
+import com.walisport.module.setting.data.SettingViewModel
+import com.walisport.module.setting.databinding.FragmentSettingBinding
 import com.walisport.module.setting.dialog.MatchNoticeDialog
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import kotlin.reflect.KClass
 
 /**
  * 通知设置
  */
 
 class NoticeFragment : BaseFragment<NoticeViewModel, FragmentNoticeBinding>() {
-
-    override val mBinding: FragmentNoticeBinding by viewBind()
-    override val mViewModel: NoticeViewModel by viewModel()
+    override val vbClass: KClass<FragmentNoticeBinding> = FragmentNoticeBinding::class
+    override val vmClass: KClass<NoticeViewModel> = NoticeViewModel::class
 
     companion object {
         const val TYPE_SYS_GOAL = 0    //系统通知-进球

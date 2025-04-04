@@ -17,7 +17,7 @@ object LogUtilsExt {
      * @param start
      * @param len
      */
-    fun String.printStackTrace(start:Int=0,len:Int=length) {
+    fun String.printStackTrace(tag: String="",start:Int=0,len:Int=length) {
         try {
             throw RuntimeException(this.safeSubstring(start,len))
         }catch (e:Exception){

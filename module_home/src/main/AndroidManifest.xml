@@ -3,7 +3,12 @@
 
     <application>
         <activity
-            android:name=".ui.HomeActivity"
+            android:name="com.walisport.module.home.ui.HomeActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Wsl.Android">
+        </activity>
+        <activity
+            android:name="com.walisport.module.home.test.TestActivity"
             android:exported="true"
             android:theme="@style/Theme.Wsl.Android">
         </activity>

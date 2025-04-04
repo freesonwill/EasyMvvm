@@ -1,4 +1,4 @@
-package com.walisport.module.home.ui.fragment
+package com.walisport.module.home.test
 
 import android.content.Intent
 import android.net.Uri
@@ -11,6 +11,7 @@ import com.walisport.lib.base.data.viewmodel.EmptyViewModel
 import com.walisport.lib.base.ui.BaseFragment
 import com.walisport.module.home.R
 import com.walisport.module.home.databinding.FragmentHomeBinding
+import com.walisport.module.home.ui.fragment.HomeFragmentDirections
 import kotlin.reflect.KClass
 
 class HomeFragment : BaseFragment<EmptyViewModel, FragmentHomeBinding>() {
@@ -36,7 +37,7 @@ class HomeFragment : BaseFragment<EmptyViewModel, FragmentHomeBinding>() {
          * activity -> fragment
          * fragment -> activity
          */
-        mBinding.tv1.setOnClickListener{
+        mBinding.tv1.setOnClickListener {
 
             findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToSecondFragment("Tom"))
             //findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToLoginActivity(null))
@@ -53,13 +54,13 @@ class HomeFragment : BaseFragment<EmptyViewModel, FragmentHomeBinding>() {
             //findNavController().navigate(R.id.secondFragment)
 
         }
-        mBinding.tv3.setOnClickListener{
+        mBinding.tv3.setOnClickListener {
             //deep link
             findNavController().navigate(Uri.parse("walisport://login_activity?userId=lucy"))
             //findNavController().navigate(R.id.action_homeFragment_to_LoginActivity, bundleOf("userId" to "lili"))
-          //findNavController().navigate(Uri.parse("walisport://login_activity?userId=lucy"))
+            //findNavController().navigate(Uri.parse("walisport://login_activity?userId=lucy"))
         }
-        mBinding.tv4.setOnClickListener{
+        mBinding.tv4.setOnClickListener {
             findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToSecondFragment("toFragmentInner"))
             //findNavController().navigate(Uri.parse("walisport://module_login/loginSecondFragment"))
         }
@@ -73,26 +74,26 @@ class HomeFragment : BaseFragment<EmptyViewModel, FragmentHomeBinding>() {
             //findNavController().navigate(R.id.loginFragment)
         }
 
-        mBinding.tv6.setOnClickListener{
+        mBinding.tv6.setOnClickListener {
             //
 //            findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToSecondFragment("Tom"))
 
         }
 
-        mBinding.tv7.setOnClickListener{
+        mBinding.tv7.setOnClickListener {
             findNavController().navigate(Uri.parse("walisport://module_setting/settingFragment"))
         }
 
-        mBinding.tv8.setOnClickListener{
+        mBinding.tv8.setOnClickListener {
             findNavController().navigate(Uri.parse("walisport://module_live/liveFragment"))
         }
     }
 
-    private fun toFragmentInner(){
+    private fun toFragmentInner() {
 
     }
 
-    private fun toActivityByIdBundle(){
+    private fun toActivityByIdBundle() {
         val options = ActivityOptionsCompat.makeCustomAnimation(
             requireContext(),
             android.R.anim.slide_in_left,
