@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import com.walisport.lib.base.data.viewmodel.EmptyViewModel
 import com.walisport.lib.base.ui.BaseFragment
 import com.walisport.lib.base.ui.viewBind
+import com.walisport.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.home.R
 import com.walisport.module.home.databinding.FragmentHomeBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -80,11 +81,11 @@ class HomeFragment : BaseFragment<EmptyViewModel, FragmentHomeBinding>() {
 
         }
 
-        mBinding.tv7.setOnClickListener{
+        mBinding.tv7.clickNoRepeat{
             findNavController().navigate(Uri.parse("walisport://module_setting/settingFragment"))
         }
 
-        mBinding.tv8.setOnClickListener{
+        mBinding.tv8.clickNoRepeat{
             findNavController().navigate(Uri.parse("walisport://module_live/liveFragment"))
         }
     }

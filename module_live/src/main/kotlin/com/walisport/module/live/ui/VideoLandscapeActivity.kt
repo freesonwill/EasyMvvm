@@ -22,7 +22,7 @@ class VideoLandscapeActivity : Activity() {
         hideSystemUI()
 
         val testUrl =
-            "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
+            "http://thinkingform.com/wp-content/uploads/2017/09/video-sample-mp4.mp4?_=1"
 
 //        val url =
 //            "https://jjghvku4.jmyuyu.com/sport/201_3455709_1.flv?auth_key=1742356008-0-0-cebbd8cd6498a8af12b4d1962956fa99"
