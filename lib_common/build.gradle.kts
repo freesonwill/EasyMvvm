@@ -45,6 +45,7 @@ dependencies {
     api(libs.material)
     api(libs.androidx.activity)
     api(libs.androidx.constraintlayout)
+    api(libs.autosize)
     implementation(libs.mmkv)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
