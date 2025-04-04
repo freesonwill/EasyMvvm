@@ -28,6 +28,7 @@
             app:tabIndicatorColor="@android:color/transparent"
             app:tabIndicatorFullWidth="false"
             app:tabIndicatorHeight="0dp"
+            app:tabPaddingStart="@dimen/dp_16"
             app:tabMode="auto"
             app:tabRippleColor="@null"
             app:tabSelectedTextColor="@color/theme_text"
@@ -39,9 +40,12 @@
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewpager"
             android:layout_width="match_parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
             android:layout_height="0dp"
             android:layout_marginTop="@dimen/dp_12"
             app:layout_constraintTop_toBottomOf="@id/tabLayout"
+            android:layout_marginHorizontal="@dimen/dp_8"
             app:layout_constraintBottom_toBottomOf="parent"
             />
 

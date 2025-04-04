@@ -9,7 +9,7 @@ import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
 import java.util.Locale
 
-class SportSkinResourceManager {
+object SportSkinResourceManager {
     private var resourceLoader: SportSkinResourceLoader = SportSkinBuildInResourceLoader("")
 
     fun initResource(resourceLoader: SportSkinResourceLoader) {

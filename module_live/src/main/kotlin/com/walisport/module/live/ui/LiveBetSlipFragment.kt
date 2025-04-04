@@ -28,13 +28,13 @@ class LiveBetSlipFragment : BaseFragment<LiveBetSlipViewModel, FragmentLiveBetSl
             val array = resources.getStringArray(R.array.bet_slip_menus)
             val list = listOf(
                 PagerBean(array[0]) { LiveBetSlipUnsettledFragment() },
-                PagerBean(array[1]) { LiveBetSlipUnsettledFragment() },
-                PagerBean(array[2]) { LiveBetSlipUnsettledFragment() },
-                PagerBean(array[3]) { LiveBetSlipUnsettledFragment() },
-                PagerBean(array[4]) { LiveBetSlipUnsettledFragment() },
+                PagerBean(array[1]) { LiveBetSlipConfirmFragment() },
+                PagerBean(array[2]) { LiveBetSlipSettledFragment() },
+                PagerBean(array[3]) { LiveBetSlipReserveFragment() },
+                PagerBean(array[4]) { LiveBetSlipInvalidFragment() },
             )
-
-            tabLayout.addTab(tabLayout.newTab().setCustomView(R.layout.item_live_bet_slip_menu_layout))
+           val tab = tabLayout.newTab().setCustomView(R.layout.item_live_bet_slip_menu_layout)
+            tabLayout.addTab(tab)
             viewpager.adapter = null
             viewpager.adapter = PagerAdapter(childFragmentManager, lifecycle, list)
             TabLayoutMediator(tabLayout, viewpager) { tab, position ->
