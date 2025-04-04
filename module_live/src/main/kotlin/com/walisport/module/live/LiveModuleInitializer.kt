@@ -6,6 +6,7 @@ import com.walisport.lib.base.ApplicationModuleInitializer
 import com.walisport.module.live.data.LiveMainRepository
 import com.walisport.module.live.ui.viewmodel.LiveVideoViewModel
 import com.walisport.module.live.viewmodel.LiveMainViewModel
+import com.walisport.module.live.viewmodel.VideoActivityViewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
@@ -28,6 +29,7 @@ class LiveModuleInitializer : Initializer<String> {
     private val viewModules = module {
         viewModelOf(::LiveMainViewModel)
         viewModelOf(::LiveVideoViewModel)
+        viewModelOf(::VideoActivityViewModel)
     }
     private val repoModules = module {
         factoryOf(::LiveMainRepository)
