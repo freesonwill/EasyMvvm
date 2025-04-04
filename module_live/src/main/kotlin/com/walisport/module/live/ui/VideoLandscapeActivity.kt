@@ -7,6 +7,7 @@ import android.widget.ImageView
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import com.walisport.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.live.R
 import tv.danmaku.ijk.media.example.widget.media.AndroidMediaController
 import tv.danmaku.ijk.media.example.widget.media.IjkVideoView
@@ -33,7 +34,7 @@ class VideoLandscapeActivity : Activity() {
         mVideoView?.setVideoURI(Uri.parse(testUrl))
         mVideoView?.start()
 
-        findViewById<ImageView>(R.id.video_landscape_back).setOnClickListener { this@VideoLandscapeActivity.finish() }
+        findViewById<ImageView>(R.id.video_landscape_back).clickNoRepeat { this@VideoLandscapeActivity.finish() }
 
     }
 

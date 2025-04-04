@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.walisport.lib.base.ui.BaseFragment
 import com.walisport.lib.base.ui.viewBind
 import com.walisport.lib.common.utils.ext.DimensionExt.dp2px
+import com.walisport.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.live.adapter.LeagueAdapter
 import com.walisport.module.live.data.model.LeagueMatchBean
 import com.walisport.module.live.databinding.FragmentLeagueBinding
@@ -47,7 +48,7 @@ class LeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>() {
     }
 
     override fun initListener() {
-        mBinding.ivLeagueClose.setOnClickListener{
+        mBinding.ivLeagueClose.clickNoRepeat{
             findNavController().navigateUp()
         }
     }

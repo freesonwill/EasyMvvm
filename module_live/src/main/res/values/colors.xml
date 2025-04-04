@@ -4,4 +4,9 @@
     <color name="video_landscape_competition_name_color">#E6E6E6</color>
     <color name="video_tab_text_color">#929298</color>
 
+    <color name="live_text_selected_true">#000000</color>
+    <color name="live_text_selected_false">#929298</color>
+
+    <color name="live_text_bg_selected_true">#24EE8A</color>
+    <color name="live_text_bg_selected_false">#161823</color>
 </resources>
