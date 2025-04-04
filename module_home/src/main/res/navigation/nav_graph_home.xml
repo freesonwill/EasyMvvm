@@ -74,9 +74,9 @@
 
     <fragment
         android:id="@+id/secondFragment"
-        android:name="com.walisport.module.home.ui.fragment.SecondFragment"
+        android:name="com.walisport.module.home.test.SecondFragment"
         android:label="fragment_second"
-        tools:layout="@layout/fragment_second"
+        tools:layout="@layout/fragment_test_second"
         >
         <argument
             android:name="userId"
@@ -93,12 +93,12 @@
         android:id="@+id/homeActivity"
         android:name="com.walisport.module.home.ui.HomeActivity"
         android:label="activity_home"
-        tools:layout="@layout/activity_home" />
+        />
     <fragment
         android:id="@+id/thirdFragment"
-        android:name="com.walisport.module.home.ui.fragment.ThirdFragment"
+        android:name="com.walisport.module.home.test.ThirdFragment"
         android:label="fragment_third"
-        tools:layout="@layout/fragment_third" >
+        tools:layout="@layout/fragment_test_third" >
         <action
             android:id="@+id/action_thirdFragment_to_homeFragment"
             app:destination="@id/homeFragment"

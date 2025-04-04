@@ -5,13 +5,9 @@ import android.os.Bundle
 import com.walisport.app.data.SplashViewModel
 import com.walisport.app.databinding.ActivitySplashBinding
 import com.walisport.app.ui.MainActivity
-import com.walisport.lib.base.data.viewmodel.EmptyViewModel
 import com.walisport.lib.base.ui.BaseActivity
 import com.walisport.lib.base.ui.interface_.StatusBarConfig
-import com.walisport.lib.base.ui.viewBind
 import com.walisport.lib.base.utils.LogUtilsExt.logd
-import com.walisport.module.home.databinding.FragmentViewPagerBinding
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.random.Random
 import kotlin.reflect.KClass
 

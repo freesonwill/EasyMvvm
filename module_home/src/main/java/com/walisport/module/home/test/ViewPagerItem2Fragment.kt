@@ -6,7 +6,7 @@ import com.walisport.lib.base.data.viewmodel.EmptyViewModel
 import com.walisport.lib.base.ui.BaseFragment
 import com.walisport.lib.base.ui.viewBind
 import com.walisport.lib.base.utils.LogUtilsExt.logd
-import com.walisport.module.home.databinding.FragmentViewPagerItem2Binding
+import com.walisport.module.home.databinding.FragmentTestViewPagerItem2Binding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.reflect.KClass
 
@@ -15,9 +15,9 @@ import kotlin.reflect.KClass
  * @date: 2025/3/30 23:46
  * @description:
  */
-class ViewPagerItem2Fragment : BaseFragment<EmptyViewModel, FragmentViewPagerItem2Binding>() {
+class ViewPagerItem2Fragment : BaseFragment<EmptyViewModel, FragmentTestViewPagerItem2Binding>() {
     private val args: ViewPagerItem2FragmentArgs by navArgs()
-    override val vbClass: KClass<FragmentViewPagerItem2Binding> = FragmentViewPagerItem2Binding::class
+    override val vbClass: KClass<FragmentTestViewPagerItem2Binding> = FragmentTestViewPagerItem2Binding::class
     override val vmClass: KClass<EmptyViewModel> = EmptyViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {

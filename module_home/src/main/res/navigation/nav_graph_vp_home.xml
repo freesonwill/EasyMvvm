@@ -9,7 +9,7 @@
         android:id="@+id/textViewScreen"
         android:name="com.walisport.module.home.test.ViewPagerItem2Fragment"
         android:label="TextView Screen"
-        tools:layout="@layout/fragment_view_pager_item2"
+        tools:layout="@layout/fragment_test_view_pager_item2"
         >
         <!-- 添加参数 -->
         <argument

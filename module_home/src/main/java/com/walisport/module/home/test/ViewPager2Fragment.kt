@@ -11,7 +11,7 @@ import com.walisport.module.home.R
  * @date: 2025/4/4 11:04
  * @description:
  */
-class ViewPager2Fragment : Fragment(R.layout.fragment_view_pager2) {
+class ViewPager2Fragment : Fragment(R.layout.fragment_test_view_pager2) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

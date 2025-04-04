@@ -1,22 +1,16 @@
 package com.walisport.module.home.test
 
 import android.os.Bundle
-import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.NavHostFragment
 import com.walisport.lib.base.data.viewmodel.EmptyViewModel
 import com.walisport.lib.base.ui.BaseFragment
-import com.walisport.lib.base.ui.getViewBind
-import com.walisport.lib.base.ui.viewBind
 import com.walisport.module.home.R
-import com.walisport.module.home.databinding.FragmentViewPagerBinding
-import com.walisport.module.home.databinding.FragmentViewPagerItemBinding
-import org.koin.androidx.viewmodel.ext.android.getViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import com.walisport.module.home.databinding.FragmentTestViewPagerItemBinding
 import kotlin.reflect.KClass
 
-class ViewPagerItemFragment : BaseFragment<EmptyViewModel, FragmentViewPagerItemBinding>() {
-    override val vbClass: KClass<FragmentViewPagerItemBinding> = FragmentViewPagerItemBinding::class
+class ViewPagerItemFragment : BaseFragment<EmptyViewModel, FragmentTestViewPagerItemBinding>() {
+    override val vbClass: KClass<FragmentTestViewPagerItemBinding> = FragmentTestViewPagerItemBinding::class
     override val vmClass: KClass<EmptyViewModel> = EmptyViewModel::class
 
     var title: String = ""

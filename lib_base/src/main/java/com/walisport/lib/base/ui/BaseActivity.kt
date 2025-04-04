@@ -38,7 +38,7 @@ abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActi
     abstract val vmClass: KClass<VM>
 
     protected open fun createVB(parent: ViewGroup?): VB {
-        return getViewBind(vbClass,parent)
+        return getViewBind(vbClass,parent,false)
     }
     protected open fun createVM(): VM {
         return viewModelForClass(vmClass).value
@@ -104,7 +104,7 @@ fun AppCompatActivity.launch(
 }
 
 /**
- * ViewBinding.inflate(layoutInflater)
+ * ViewBinding.inflate(layoutInflater,parent,attachedToParent)
  * @param T
  * @return
  */

@@ -3,18 +3,15 @@ package com.walisport.module.home.test
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.ViewGroup
 import androidx.core.app.ActivityOptionsCompat
 import androidx.navigation.ActivityNavigatorExtras
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.walisport.lib.base.data.viewmodel.EmptyViewModel
 import com.walisport.lib.base.ui.BaseFragment
-import com.walisport.lib.base.ui.getViewBind
 import com.walisport.module.home.R
 import com.walisport.module.home.databinding.FragmentHomeBinding
 import com.walisport.module.home.ui.fragment.HomeFragmentDirections
-import org.koin.androidx.viewmodel.ext.android.getViewModel
 import kotlin.reflect.KClass
 
 class HomeFragment : BaseFragment<EmptyViewModel, FragmentHomeBinding>() {

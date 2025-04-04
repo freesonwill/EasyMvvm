@@ -48,7 +48,7 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), 
     abstract val vmClass: KClass<VM>
 
     protected open fun createVB(container: ViewGroup?): VB {
-        return getViewBind(vbClass,container)
+        return getViewBind(vbClass,container,false)
     }
     protected open fun createVM(): VM {
         return viewModelForClass(vmClass).value
@@ -202,7 +202,7 @@ fun Fragment.launch(
  * @return
  */
 inline fun <reified T : ViewBinding> Fragment.viewBind(
-    root: ViewGroup? = null,
+    root: ViewGroup?=null,
     attachedToParent: Boolean = false
 ): Lazy<T> =
     lazy {
