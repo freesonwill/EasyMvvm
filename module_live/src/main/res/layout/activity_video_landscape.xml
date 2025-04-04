@@ -40,7 +40,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/video_landscape_league_icon"
+            android:id="@+id/tv_video_landscape_league_icon"
             android:layout_width="@dimen/dp_96"
             android:layout_height="@dimen/dp_22"
             android:scaleType="centerCrop"
@@ -54,12 +54,11 @@
             android:src="@drawable/title_landscape_separator" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/competition_name"
+            android:id="@+id/tv_competition_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=""
-            android:textColor="@color/video_landscape_competition_name_color"
-            android:textSize="15sp" />
+            android:textColor="@color/color_E6E6E6"
+            android:textSize="@dimen/sp_15" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 
 

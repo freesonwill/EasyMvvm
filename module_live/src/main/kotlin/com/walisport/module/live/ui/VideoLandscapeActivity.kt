@@ -2,6 +2,7 @@ package com.walisport.module.live.ui
 
 import android.net.Uri
 import android.os.Bundle
+import com.bumptech.glide.Glide
 import com.walisport.lib.base.ui.BaseActivity
 import com.walisport.lib.base.ui.interface_.StatusBarConfig
 import com.walisport.lib.base.ui.viewBind
@@ -36,13 +37,13 @@ class VideoLandscapeActivity :
             this@VideoLandscapeActivity.finish()
         }
 
-        mBinding.ivShare.clickNoRepeat {  }
+        mBinding.ivShare.clickNoRepeat { }
 
-        mBinding.ivChooseSource.clickNoRepeat {  }
+        mBinding.ivChooseSource.clickNoRepeat { }
 
-        mBinding.tvChooseVideoSource.clickNoRepeat {  }
+        mBinding.tvChooseVideoSource.clickNoRepeat { }
 
-        mBinding.tvMatchStatus.clickNoRepeat {  }
+        mBinding.tvMatchStatus.clickNoRepeat { }
 
     }
 
@@ -50,6 +51,16 @@ class VideoLandscapeActivity :
         mViewModel.url.observe(this) {
             mBinding.videoView.setVideoURI(Uri.parse(it))
             mBinding.videoView.start()
+        }
+
+        mViewModel.leagueIconUrl.observe(this) {
+            Glide.with(mBinding.tvVideoLandscapeLeagueIcon).load(it)
+                .placeholder(com.walisport.lib.common.R.drawable.title_league_icon)
+                .into(mBinding.tvVideoLandscapeLeagueIcon)
+        }
+
+        mViewModel.playerAName.observe(this) {
+            mBinding.tvCompetitionName.text = "$it vs ${mViewModel.playerBName.value}"
         }
     }
 
