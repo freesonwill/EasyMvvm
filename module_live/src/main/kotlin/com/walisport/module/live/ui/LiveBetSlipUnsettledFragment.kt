@@ -10,17 +10,23 @@ import com.walisport.module.live.ui.viewmodel.LiveBetSlipViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.reflect.KClass
 
-class LiveBetSlipUnsettledFragment:
+class LiveBetSlipUnsettledFragment :
     BaseFragment<LiveBetSlipUnsettledViewModel, FragmentLiveBetslipUnsettledBinding>() {
     override val vbClass: KClass<FragmentLiveBetslipUnsettledBinding> = FragmentLiveBetslipUnsettledBinding::class
     override val vmClass: KClass<LiveBetSlipUnsettledViewModel> = LiveBetSlipUnsettledViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
+        initRecycler()
     }
 
     override fun initListener() {
     }
 
     override fun createObserver() {
+    }
+
+    private fun initRecycler() {
+
+
     }
 }

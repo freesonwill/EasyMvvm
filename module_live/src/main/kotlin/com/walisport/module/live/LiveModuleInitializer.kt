@@ -14,6 +14,11 @@ import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 import com.walisport.module.live.ui.viewmodel.LiveBetSlipUnsettledViewModel
+import com.walisport.module.live.ui.viewmodel.LiveBetSlipConfirmViewModel
+import com.walisport.module.live.ui.viewmodel.LiveBetSlipInvalidViewModel
+import com.walisport.module.live.ui.viewmodel.LiveBetSlipReserveViewModel
+import com.walisport.module.live.ui.viewmodel.LiveBetSlipSettledViewModel
+
 
 class LiveModuleInitializer : Initializer<String> {
 
@@ -34,6 +39,11 @@ class LiveModuleInitializer : Initializer<String> {
         viewModelOf(::VideoActivityViewModel)
         viewModelOf(::LiveBetSlipViewModel)
         viewModelOf(::LiveBetSlipUnsettledViewModel)
+        viewModelOf(::LiveBetSlipUnsettledViewModel)
+        viewModelOf(::LiveBetSlipConfirmViewModel)
+        viewModelOf(::LiveBetSlipInvalidViewModel)
+        viewModelOf(::LiveBetSlipReserveViewModel)
+        viewModelOf(::LiveBetSlipSettledViewModel)
 
 
     }
