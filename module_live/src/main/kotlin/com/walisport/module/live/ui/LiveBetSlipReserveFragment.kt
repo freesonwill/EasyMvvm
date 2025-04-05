@@ -6,10 +6,11 @@ import com.walisport.lib.base.ui.viewBind
 import com.walisport.module.live.databinding.FragmentLiveBetslipReserveBinding
 import com.walisport.module.live.ui.viewmodel.LiveBetSlipReserveViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import kotlin.reflect.KClass
 
 class LiveBetSlipReserveFragment :BaseFragment<LiveBetSlipReserveViewModel,FragmentLiveBetslipReserveBinding>(){
-    override val mBinding: FragmentLiveBetslipReserveBinding by viewBind()
-    override val mViewModel: LiveBetSlipReserveViewModel by viewModel()
+    override val vbClass: KClass<FragmentLiveBetslipReserveBinding> = FragmentLiveBetslipReserveBinding::class
+    override val vmClass: KClass<LiveBetSlipReserveViewModel> = LiveBetSlipReserveViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
     }
