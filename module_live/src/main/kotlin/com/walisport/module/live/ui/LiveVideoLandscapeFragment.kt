@@ -1,24 +1,24 @@
 package com.walisport.module.live.ui
 
+import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.os.Bundle
-import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
-import com.walisport.lib.base.ui.BaseActivity
+import com.walisport.lib.base.ui.BaseFragment
 import com.walisport.lib.base.ui.interface_.StatusBarConfig
+import com.walisport.lib.base.utils.LogUtilsExt.logd
 import com.walisport.lib.common.utils.ext.clickNoRepeat
-import com.walisport.module.live.databinding.ActivityVideoLandscapeBinding
+import com.walisport.module.live.databinding.FragmentLiveVideoLandscapeBinding
 import com.walisport.module.live.viewmodel.VideoActivityViewModel
 import me.jessyan.autosize.internal.CancelAdapt
 import tv.danmaku.ijk.media.example.widget.media.AndroidMediaController
 import kotlin.reflect.KClass
 
-
-class VideoLandscapeActivity :
-    BaseActivity<VideoActivityViewModel, ActivityVideoLandscapeBinding>(), CancelAdapt {
-
-    override val vbClass: KClass<ActivityVideoLandscapeBinding> =
-        ActivityVideoLandscapeBinding::class
+class LiveVideoLandscapeFragment :
+    BaseFragment<VideoActivityViewModel, FragmentLiveVideoLandscapeBinding>(), CancelAdapt {
+    override val vbClass: KClass<FragmentLiveVideoLandscapeBinding> =
+        FragmentLiveVideoLandscapeBinding::class
     override val vmClass: KClass<VideoActivityViewModel> = VideoActivityViewModel::class
 
     private var mBackPressed = false
@@ -29,12 +29,12 @@ class VideoLandscapeActivity :
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        mBinding.videoView.setMediaController(AndroidMediaController(this, false))
+        mBinding.videoView.setMediaController(AndroidMediaController(activity, false))
     }
 
     override fun initListener() {
         mBinding.ivBack.clickNoRepeat {
-            this@VideoLandscapeActivity.finish()
+            findNavController().navigateUp()
         }
 
         mBinding.ivVideoLandscapeLeagueIcon.clickNoRepeat {
@@ -82,17 +82,36 @@ class VideoLandscapeActivity :
         } else {
             mBinding.videoView.enterBackground()
         }
+
+        "onStop".logd(TAG)
     }
 
-    override fun onBackPressed() {
-        mBackPressed = true
-        super.onBackPressed()
+    override fun onResume() {
+        super.onResume()
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+
+        "onResume".logd(TAG)
+
     }
+
+    override fun onPause() {
+        super.onPause()
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+
+        "onPause".logd(TAG)
+    }
+
+//    override fun onBackPressed() {
+//        mBackPressed = true
+//        super.onBackPressed()
+//    }
 
     private fun jumpToLeagueFragment() {
-
+        findNavController().navigate(LiveVideoLandscapeFragmentDirections.actionLiveVideoLandscapeFragmentToLeagueFragment())
     }
 
 
+    companion object {
+        const val TAG = "LiveVideoLandscapeFragment"
+    }
 }
-
