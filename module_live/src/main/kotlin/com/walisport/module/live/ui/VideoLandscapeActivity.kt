@@ -1,6 +1,5 @@
 package com.walisport.module.live.ui
 
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.navigation.findNavController
@@ -90,7 +89,7 @@ class VideoLandscapeActivity :
         super.onBackPressed()
     }
 
-    private fun jumpToLeagueFragment(){
+    private fun jumpToLeagueFragment() {
 
     }
 
