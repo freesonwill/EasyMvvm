@@ -1,5 +1,10 @@
 <resources>
-<style name="CustomTabText" parent="TextAppearance.AppCompat">
-    <item name="android:textSize">25sp</item> <!-- 设置字体大小 -->
-</style>
+
+    <style name="CustomTabText" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">25sp</item> <!-- 设置字体大小 -->
+    </style>
+
+    <style name="betSlipTabText" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">14sp</item> <!-- 设置字体大小 -->
+    </style>
 </resources>

@@ -2,6 +2,7 @@ package com.walisport.lib.skin
 
 import android.content.Context
 import androidx.startup.Initializer
+import com.walisport.lib.base.ApplicationModuleInitializer
 import com.walisport.lib.skin.res.SportSkinResourceManager
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
@@ -15,13 +16,10 @@ class SkinModuleInitializer : Initializer<String> {
     }
 
     override fun dependencies(): List<Class<out Initializer<*>>> {
-        return emptyList()
+        return listOf(ApplicationModuleInitializer::class.java)
     }
-
     private val socketModules = module {
         single<SportSkinManager> { SportSkinManager() }
-        single<SportSkinResourceManager> { SportSkinResourceManager()}
-
     }
     private val moduleList: List<Module> = listOf(socketModules)
 

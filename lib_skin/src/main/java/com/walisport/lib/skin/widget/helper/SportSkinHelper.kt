@@ -7,7 +7,7 @@ import org.koin.java.KoinJavaComponent.inject
 
 
 abstract class SportSkinHelper (protected open val mView:View) {
-    val resourcesManager:SportSkinResourceManager by inject(SportSkinResourceManager::class.java)
+    val resourcesManager = SportSkinResourceManager
 
     protected var mSrcId: Int = INVALID_ID
 
