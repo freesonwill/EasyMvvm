@@ -40,7 +40,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 findNavController().navigate(LiveMainFragmentDirections.actionLiveMainFragmentToLeagueFragment())
             }
         }
-        setCountView()
+       // setCountView()
         loadFragment()
     }
 

@@ -71,7 +71,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel,FragmentLiveBetOnBindi
                 }
             }).apply {
                 post {
-                    addItemDecoration(LinearSpacingItemDecoration(8.dp2px,50.dp2px))
+                    addItemDecoration(LinearSpacingItemDecoration(8.dp2px,10.dp2px))
                     submitList(list)
                 }
             }
