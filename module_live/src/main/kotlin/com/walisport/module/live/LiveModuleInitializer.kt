@@ -15,7 +15,7 @@ import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 import com.walisport.module.live.ui.viewmodel.LiveBetSlipUnsettledViewModel
 import com.walisport.module.live.ui.viewmodel.LiveBetSlipConfirmViewModel
-import com.walisport.module.live.ui.viewmodel.LiveBetSlipInvalidViewModel
+import com.walisport.module.live.ui.viewmodel.LiveBetSlipExpiredViewModel
 import com.walisport.module.live.ui.viewmodel.LiveBetSlipReserveViewModel
 import com.walisport.module.live.ui.viewmodel.LiveBetSlipSettledViewModel
 import com.walisport.module.live.ui.viewmodel.LiveChatViewModel
@@ -52,7 +52,7 @@ class LiveModuleInitializer : Initializer<String> {
         viewModelOf(::LiveBetSlipUnsettledViewModel)
         viewModelOf(::LiveBetSlipUnsettledViewModel)
         viewModelOf(::LiveBetSlipConfirmViewModel)
-        viewModelOf(::LiveBetSlipInvalidViewModel)
+        viewModelOf(::LiveBetSlipExpiredViewModel)
         viewModelOf(::LiveBetSlipReserveViewModel)
         viewModelOf(::LiveBetSlipSettledViewModel)
     }
