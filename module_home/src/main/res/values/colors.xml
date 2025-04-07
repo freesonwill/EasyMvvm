@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bg_home">#161823</color>
+    <color name="tab_indicator_color">#24EE8A</color>
+</resources>
