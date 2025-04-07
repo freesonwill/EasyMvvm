@@ -1,4 +1,4 @@
-package com.walisport.lib_database.entity
+package com.walisport.lib.database.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

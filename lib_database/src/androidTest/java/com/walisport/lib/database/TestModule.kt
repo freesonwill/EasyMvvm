@@ -1,6 +1,7 @@
 package com.walisport.lib_database
 
 import androidx.test.platform.app.InstrumentationRegistry
+import com.walisport.lib.database.GameDatabase
 import org.koin.dsl.module
 
 val testRoomModule = module {
