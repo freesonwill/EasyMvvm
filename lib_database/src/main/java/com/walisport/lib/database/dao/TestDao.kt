@@ -1,8 +1,8 @@
-package com.walisport.lib_database.dao
+package com.walisport.lib.database.dao
 
 import androidx.room.Dao
 import androidx.room.Query
-import com.walisport.lib_database.entity.TestBean
+import com.walisport.lib.database.entity.TestBean
 
 // TODO 測試用，隨時可移除
 @Dao

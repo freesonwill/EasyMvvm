@@ -1,4 +1,4 @@
-package com.walisport.lib_database
+package com.walisport.lib.database
 
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase

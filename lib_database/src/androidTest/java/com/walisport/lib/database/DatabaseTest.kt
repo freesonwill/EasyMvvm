@@ -1,8 +1,8 @@
-package com.walisport.lib_database
+package com.walisport.lib.database
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import com.walisport.lib_database.entity.TestBean
+import com.walisport.lib.database.entity.TestBean
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
