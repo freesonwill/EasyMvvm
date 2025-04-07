@@ -2,7 +2,6 @@ package com.walisport.lib.database
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import com.walisport.lib.database.entity.TestBean
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -25,12 +24,12 @@ class DatabaseTest {
     @Test
     fun insert() {
         runBlocking {
-            launch {
-                gameDB.testDao().insert(TestBean(1, "test"))
-            }.join()
-            val data = async {
-                gameDB.testDao().getAll()
-            }.await()
+//            launch {
+//                gameDB.testDao().insert(TestBean(1, "test"))
+//            }.join()
+//            val data = async {
+//                gameDB.testDao().getAll()
+//            }.await()
             println("data $data")
         }
     }

@@ -4,11 +4,11 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.walisport.lib.database.dao.TestDao
-import com.walisport.lib.database.entity.TestBean
+import com.walisport.lib.database.dao.BetDao
+import com.walisport.lib.database.entity.BetBean
 
 @Database(
-    entities = [TestBean::class],
+    entities = [BetBean::class],
     version = 1,
     exportSchema = false
 )
@@ -34,5 +34,5 @@ abstract class GameDatabase: RoomDatabase() {
                 .build()
     }
 
-    abstract fun testDao(): TestDao
+    abstract fun betDao(): BetDao
 }

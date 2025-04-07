@@ -5,10 +5,12 @@ import com.walisport.lib.database.dao.BetDao
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 
-
-class FloatingButtonRepository(private val betDao: BetDao): BaseRepository() {
-
-    fun observeBettingCount() = betDao.observeBetCount()
-
+class BetSheetRepository(private val betDao: BetDao) : BaseRepository() {
     override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
+
+    fun observeBetSheet() = betDao.observeBetSheet()
+
+    fun sendBetting() {
+
+    }
 }

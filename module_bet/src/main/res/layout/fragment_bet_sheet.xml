@@ -58,7 +58,7 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintTop_toBottomOf="@id/cl_title_bet"
         tools:itemCount="3"
-        tools:listitem="@layout/item_betting_slip" />
+        tools:listitem="@layout/item_bet_sheet" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_calculator"

@@ -19,6 +19,10 @@ class DatabaseModuleInitializer: Initializer<String> {
         return emptyList()
     }
 
+    private val daoModule = module {
+        factory { get<GameDatabase>().betDao() }
+    }
+
     private val moduleList: List<Module> = listOf(module {
         single { GameDatabase.invoke(context = get()) }
     })
