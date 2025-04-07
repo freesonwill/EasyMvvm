@@ -56,6 +56,7 @@ abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActi
         mBinding = createVB(null)
         mViewModel = createVM()
         setContentView(mBinding.root)
+        mBinding.root.fitsSystemWindows = true
         initView(savedInstanceState)
         initListener()
         initData()
@@ -63,7 +64,6 @@ abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActi
         setStatusBar(configStatusBar())
     }
     override fun setStatusBar(config: StatusBarConfig) {
-        mBinding.root.fitsSystemWindows = configStatusBar().fitsSystemWindows
         statusBar.setStatusBar(config)
     }
 

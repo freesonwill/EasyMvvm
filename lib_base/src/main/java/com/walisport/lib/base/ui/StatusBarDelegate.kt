@@ -1,6 +1,8 @@
 package com.walisport.lib.base.ui
 
 import android.app.Activity
+import android.view.ViewGroup
+import androidx.viewbinding.ViewBinding
 import com.gyf.immersionbar.BarHide
 import com.gyf.immersionbar.ImmersionBar
 import com.walisport.lib.base.ui.interface_.StatusBarConfig
@@ -14,7 +16,7 @@ import com.walisport.lib.base.ui.interface_.IStatusBar
  */
 class StatusBarDelegate(private val activity: Activity) : IStatusBar {
 
-    override fun setStatusBar(config: StatusBarConfig) {
+    override fun setStatusBar( config: StatusBarConfig) {
         val immersionBar = ImmersionBar.with(activity)
         //如果全屏播放不用设置状态栏颜色
         if (config.hideStatusBar) {
@@ -23,7 +25,6 @@ class StatusBarDelegate(private val activity: Activity) : IStatusBar {
         } else {
             immersionBar.statusBarColor(config.statusBarColor)//设置状态栏颜色
                 .hideBar(BarHide.FLAG_HIDE_NAVIGATION_BAR)   // 隐藏虚拟导航栏
-               // .fitsSystemWindows(true)
                 .autoStatusBarDarkModeEnable(true,1.0f)
         }
         immersionBar.init()
