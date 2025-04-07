@@ -62,13 +62,10 @@ abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActi
         createObserver()
         setStatusBar(configStatusBar())
     }
-
-
     override fun setStatusBar(config: StatusBarConfig) {
+        mBinding.root.fitsSystemWindows = configStatusBar().fitsSystemWindows
         statusBar.setStatusBar(config)
     }
-
-
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
         if (enableHideKeyboardOnTouchOutside && ev?.action == MotionEvent.ACTION_DOWN) {

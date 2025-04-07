@@ -28,5 +28,7 @@ data class StatusBarConfig(
     val statusBarColor: Int = android.R.color.black,
     //是否隐藏状态栏
     val hideStatusBar: Boolean = false,
+    //fitsSystemWindows设置 默认为设置
+    val fitsSystemWindows:Boolean = true,
 )
 

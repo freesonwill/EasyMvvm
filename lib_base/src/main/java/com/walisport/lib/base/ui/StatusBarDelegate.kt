@@ -23,7 +23,7 @@ class StatusBarDelegate(private val activity: Activity) : IStatusBar {
         } else {
             immersionBar.statusBarColor(config.statusBarColor)//设置状态栏颜色
                 .hideBar(BarHide.FLAG_HIDE_NAVIGATION_BAR)   // 隐藏虚拟导航栏
-                .fitsSystemWindows(true)
+               // .fitsSystemWindows(true)
                 .autoStatusBarDarkModeEnable(true,1.0f)
         }
         immersionBar.init()

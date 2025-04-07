@@ -79,6 +79,7 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), 
         initData()
         createObserver()
         trackLoadingTime()
+        mBinding.root.fitsSystemWindows = configStatusBar().fitsSystemWindows
     }
 
     override fun setStatusBar(config: StatusBarConfig) {
