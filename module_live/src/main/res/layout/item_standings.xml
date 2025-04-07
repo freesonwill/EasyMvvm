@@ -23,7 +23,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
-            android:text="A组"
             android:textColor="@color/white"
             android:textSize="@dimen/sp_16"
             android:textStyle="bold"
@@ -45,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="场次"
+                android:text="@string/standings_cc"
                 android:textColor="@color/color_929298"
                 android:textSize="@dimen/sp_12" />
 
@@ -54,7 +53,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="胜/平/负"
+                android:text="@string/standings_spf"
                 android:textColor="@color/color_929298"
                 android:textSize="@dimen/sp_12" />
 
@@ -63,7 +62,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="进/失"
+                android:text="@string/standings_js"
                 android:textColor="@color/color_929298"
                 android:textSize="@dimen/sp_12" />
 
@@ -72,7 +71,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="积分"
+                android:text="@string/standings_score"
                 android:textColor="@color/color_929298"
                 android:textSize="@dimen/sp_12" />
         </LinearLayout>
