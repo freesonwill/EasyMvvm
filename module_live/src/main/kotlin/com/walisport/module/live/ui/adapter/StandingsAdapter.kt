@@ -33,6 +33,7 @@ class StandingsAdapter(private val context: Context) :
     ) {
         val item = getItem(position)
         if (binding is ItemStandingsBinding) {
+            binding.tvStandingsTeam.text = holder.getString(R.string.standings_a)
             binding.layTeam.removeAllViews()
             for (i in 0 until 4) {
                 val view =
