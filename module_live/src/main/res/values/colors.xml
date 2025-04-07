@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="ijk_transparent_dark">#77000000</color>
+    <color name="video_landscape_competition_name_color">#E6E6E6</color>
     <color name="video_tab_text_color">#929298</color>
 
+    <color name="live_text_selected_true">#000000</color>
+    <color name="live_text_selected_false">#929298</color>
+
+    <color name="live_text_bg_selected_true">#24EE8A</color>
+    <color name="live_text_bg_selected_false">#161823</color>
     <color name="brand_color">#24ee8a</color>
     <color name="theme_text">#000000</color>
     <color name="card_solid">#161823</color>
@@ -11,7 +17,10 @@
     <color name="main_text">#ffffff</color>
     <color name="color_016f4a">#016f4a</color>
     <color name="color_15b264">#15b264</color>
-    <color name="color_24ee8a_20">#3324ee8a</color>
+    <color name="color_24ee8a_20">#cc24ee8a</color>
+    <color name="color_24ee8a">#cc24ee8a</color>
+    <color name="color_929298">#929298</color>
+    <color name="color_ffffff">#ffffff</color>
     <color name="win_color">#01ca52</color>
     <color name="color_24ed89">#24ed89</color>
     <color name="tran_08_ac8e6a">#08ac8e6a</color>

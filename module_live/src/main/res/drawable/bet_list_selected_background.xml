@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/live_bet_list_green_bg" android:state_selected="true"/> <!-- 选中时深灰色 -->
+    <item android:drawable="@drawable/live_bet_list_black_bg"/> <!-- 未选中时透明 -->
+</selector>

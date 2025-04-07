@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/live_bet_list_bg"
+    android:orientation="vertical"
+    android:padding="@dimen/dp_15"
+    android:id="@+id/roots"
+    >
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clBetTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvBetName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="全场让球"
+            android:textSize="@dimen/sp_14"
+            android:textColor="@color/white"
+            tools:ignore="MissingConstraints" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvNameOne"
+            android:layout_marginStart="17dp"
+            app:layout_constraintLeft_toRightOf="@id/tvBetName"
+            android:drawableStart="@drawable/bet_outs_icon_ball"
+            android:layout_width="wrap_content"
+            android:text="3-2"
+            android:drawablePadding="8dp"
+            android:textColor="@color/color_24ee8a"
+            android:layout_height="wrap_content"
+            tools:ignore="MissingConstraints" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvNameTwo"
+            android:layout_marginStart="17dp"
+            android:drawablePadding="8dp"
+            app:layout_constraintLeft_toRightOf="@id/tvNameOne"
+            android:layout_width="wrap_content"
+            android:drawableStart="@drawable/bet_outs_icon_ball"
+            android:text="3-2"
+            android:textColor="@color/color_24ee8a"
+            android:layout_height="wrap_content"
+            tools:ignore="MissingConstraints" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clBet"
+        android:layout_marginTop="19dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvBetDuelLeft"
+            android:drawableStart="@drawable/live_bet_country_icon"
+            android:layout_width="wrap_content"
+            android:text="阿根廷"
+            android:textSize="@dimen/sp_14"
+            android:textColor="@color/white"
+            android:drawablePadding="8dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_height="wrap_content"
+            tools:ignore="MissingConstraints" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvBetDuelRight"
+            android:drawablePadding="8dp"
+            android:textSize="@dimen/sp_14"
+            android:textColor="@color/white"
+            android:layout_width="wrap_content"
+            android:drawableStart="@drawable/live_bet_country_icon"
+            android:text="法国"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_height="wrap_content"
+            tools:ignore="MissingConstraints" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvBet"
+        android:layout_marginTop="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+</androidx.appcompat.widget.LinearLayoutCompat>

@@ -6,7 +6,7 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
 import com.walisport.lib.base.adapter.PagerAdapter
-import com.walisport.lib.base.ben.PagerBean
+import com.walisport.lib.base.data.PagerBean
 import com.walisport.lib.base.ui.BaseFragment
 import com.walisport.lib.common.utils.ext.DimensionExt.dp2px
 import com.walisport.lib.common.utils.ext.ResourceExt.getString
@@ -35,13 +35,12 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             tvCompetitionName.text = "中国VS日本"
             tvMoney.text = "¥ 10000.00"
             tvCompetitionName.clickNoRepeat {
-
             }
             ivLandscapeLeagueIcon.clickNoRepeat {
                 findNavController().navigate(LiveMainFragmentDirections.actionLiveMainFragmentToLeagueFragment())
             }
         }
-        setCountView()
+       // setCountView()
         loadFragment()
     }
 
