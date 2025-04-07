@@ -71,5 +71,12 @@
         android:layout_marginTop="30dp"
         android:text="直播页" />
 
+    <TextView
+        android:id="@+id/tv9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:layout_marginTop="30dp"
+        android:text="下注彈窗" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>

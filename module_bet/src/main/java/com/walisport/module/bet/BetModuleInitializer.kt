@@ -2,6 +2,7 @@ package com.walisport.module.bet
 
 import android.content.Context
 import androidx.startup.Initializer
+import com.walisport.lib.base.ApplicationModuleInitializer
 import com.walisport.module.bet.repo.BetSheetRepository
 import com.walisport.module.bet.repo.FloatingButtonRepository
 import com.walisport.module.bet.viewmodel.BetSheetViewModel
@@ -23,7 +24,7 @@ class BetModuleInitializer: Initializer<String> {
     }
 
     override fun dependencies(): List<Class<out Initializer<*>>> {
-        return emptyList()
+        return listOf(ApplicationModuleInitializer::class.java)
     }
 
     private val viewModules = module {
