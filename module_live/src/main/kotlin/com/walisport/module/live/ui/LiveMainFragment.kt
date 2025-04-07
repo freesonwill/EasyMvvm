@@ -19,6 +19,7 @@ import com.walisport.module.live.viewmodel.LiveMainViewModel
 import kotlin.reflect.KClass
 
 class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding>() {
+
     override val vbClass: KClass<FragmentLiveMainBinding> = FragmentLiveMainBinding::class
     override val vmClass: KClass<LiveMainViewModel> = LiveMainViewModel::class
 
@@ -34,6 +35,9 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             tvCompetitionName.text = "中国VS日本"
             tvMoney.text = "¥ 10000.00"
             tvCompetitionName.clickNoRepeat {
+            }
+            ivLandscapeLeagueIcon.clickNoRepeat {
+                findNavController().navigate(LiveMainFragmentDirections.actionLiveMainFragmentToLeagueFragment())
             }
         }
         setCountView()

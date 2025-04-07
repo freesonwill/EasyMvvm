@@ -20,6 +20,14 @@ import com.walisport.module.live.ui.viewmodel.LiveBetSlipUnsettledViewModel
 import com.walisport.module.live.ui.viewmodel.LiveLineupViewModel
 import com.walisport.module.live.ui.viewmodel.LiveOutsViewModel
 import com.walisport.module.live.ui.viewmodel.LiveStandingsViewModel
+import com.walisport.module.live.ui.viewmodel.LiveBetSlipConfirmViewModel
+import com.walisport.module.live.ui.viewmodel.LiveBetSlipInvalidViewModel
+import com.walisport.module.live.ui.viewmodel.LiveBetSlipReserveViewModel
+import com.walisport.module.live.ui.viewmodel.LiveBetSlipSettledViewModel
+import com.walisport.module.live.ui.viewmodel.LiveChatViewModel
+import com.walisport.module.live.ui.viewmodel.LeagueViewModel
+import com.walisport.module.live.ui.viewmodel.LiveBetOnViewModel
+import com.walisport.module.live.ui.viewmodel.LiveLineupViewModel
 
 class LiveModuleInitializer : Initializer<String> {
 
@@ -37,18 +45,24 @@ class LiveModuleInitializer : Initializer<String> {
     private val viewModules = module {
         viewModelOf(::LiveMainViewModel)
         viewModelOf(::LiveVideoViewModel)
-        viewModelOf(::VideoActivityViewModel)
         viewModelOf(::LiveBetSlipViewModel)
-        viewModelOf(::LiveBetSlipUnsettledViewModel)
-        viewModelOf(::LiveBetOnViewModel)
+        viewModelOf(::VideoActivityViewModel)
         viewModelOf(::LiveChatViewModel)
-        viewModelOf(::LiveOutsViewModel)
-        viewModelOf(::LiveStandingsViewModel)
         viewModelOf(::LeagueViewModel)
+        viewModelOf(::LiveOutsViewModel)
+        viewModelOf(::LiveBetOnViewModel)
         viewModelOf(::LiveLineupViewModel)
+        viewModelOf(::LiveStandingsViewModel)
+        viewModelOf(::LiveBetSlipUnsettledViewModel)
+        viewModelOf(::LiveBetSlipUnsettledViewModel)
+        viewModelOf(::LiveBetSlipConfirmViewModel)
+        viewModelOf(::LiveBetSlipInvalidViewModel)
+        viewModelOf(::LiveBetSlipReserveViewModel)
+        viewModelOf(::LiveBetSlipSettledViewModel)
     }
     private val repoModules = module {
         factoryOf(::LiveMainRepository)
     }
+
     private val moduleList: List<Module> = listOf(viewModules, repoModules)
 }
