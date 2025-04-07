@@ -26,6 +26,10 @@ class SplashViewModel : BaseViewModel() {
         }
     }
 
+    fun saveUserData(uid: Int, token: String) {
+        repository.saveUserData(uid, token)
+    }
+
     fun startSocketConnectAndLogin(
         uid: Int,
         token: String

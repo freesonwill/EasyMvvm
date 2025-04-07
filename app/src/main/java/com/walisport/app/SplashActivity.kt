@@ -123,6 +123,7 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
     override fun initData() {
         super.initData()
         "uid:$uid, token:$token".logd(TAG)
+        mViewModel.saveUserData(uid, token)
         mViewModel.startSocketConnectAndLogin(uid, token)
     }
 

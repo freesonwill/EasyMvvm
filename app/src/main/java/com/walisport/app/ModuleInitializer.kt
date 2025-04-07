@@ -40,7 +40,7 @@ class ModuleInitializer : Initializer<String> {
     }
     private val repoModules = module {
         factory { (scope: CoroutineScope) -> MainRepository(scope, get()) }
-        factory { (scope: CoroutineScope) -> SplashRepository(scope, get()) }
+        factory { (scope: CoroutineScope) -> SplashRepository(scope, get(), get()) }
     }
     private val moduleList:List<Module> = listOf(viewModules,repoModules)
 }
