@@ -16,7 +16,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/video_landscape_back"
+        android:id="@+id/iv_back"
         android:layout_width="@dimen/dp_40"
         android:layout_height="@dimen/dp_40"
         android:layout_marginStart="@dimen/dp_36"
@@ -36,34 +36,34 @@
         android:layout_marginTop="@dimen/dp_13"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        app:layout_constraintLeft_toRightOf="@+id/video_landscape_back"
+        app:layout_constraintLeft_toRightOf="@+id/iv_back"
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/video_landscape_league_icon"
+            android:id="@+id/tv_video_landscape_league_icon"
             android:layout_width="@dimen/dp_96"
             android:layout_height="@dimen/dp_22"
             android:scaleType="centerCrop"
-            android:src="@drawable/video_landscape_league_icon" />
+            android:src="@drawable/title_league_icon" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="1.3dp"
             android:layout_height="@dimen/dp_18"
             android:layout_marginStart="@dimen/dp_6"
             android:layout_marginEnd="@dimen/dp_6"
-            android:src="@drawable/video_landscape_separator" />
+            android:src="@drawable/title_landscape_separator" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/competition_name"
+            android:id="@+id/tv_competition_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=""
-            android:textColor="@color/video_landscape_competition_name_color"
-            android:textSize="15sp" />
+            android:textColor="@color/color_E6E6E6"
+            android:textSize="@dimen/sp_15" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 
 
     <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_share"
         android:layout_width="@dimen/dp_40"
         android:layout_height="@dimen/dp_40"
         android:layout_marginTop="@dimen/dp_4"
@@ -78,16 +78,17 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_choose_source"
         android:layout_width="@dimen/dp_22"
         android:layout_height="@dimen/dp_22"
         android:layout_marginEnd="@dimen/dp_6"
         android:layout_marginBottom="@dimen/dp_39"
         android:src="@drawable/video_landscape_choose_source"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/choose_video_source" />
+        app:layout_constraintEnd_toStartOf="@+id/tv_choose_video_source" />
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/choose_video_source"
+        android:id="@+id/tv_choose_video_source"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp_24"
@@ -96,10 +97,10 @@
         android:textColor="@color/white"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/match_status" />
+        app:layout_constraintRight_toLeftOf="@+id/tv_match_status" />
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/match_status"
+        android:id="@+id/tv_match_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp_36"

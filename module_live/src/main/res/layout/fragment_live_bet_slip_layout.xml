@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="betSlipViewModel"
+            type="com.walisport.module.live.ui.viewmodel.LiveBetSlipViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/color_0E0F1A">
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_32"
+            android:layout_marginTop="@dimen/dp_12"
+            android:background="@color/color_0E0F1A"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tabBackground="@drawable/selector_betslip_tab"
+            app:tabGravity="fill"
+            app:tabIndicatorAnimationMode="elastic"
+            app:tabIndicatorColor="@android:color/transparent"
+            app:tabIndicatorFullWidth="false"
+            app:tabIndicatorHeight="0dp"
+            app:tabPaddingStart="@dimen/dp_16"
+            app:tabMode="auto"
+            app:tabRippleColor="@null"
+            app:tabSelectedTextColor="@color/theme_text"
+            app:tabTextAppearance="@style/betSlipTabText"
+            app:tabTextColor="@color/secondary_text"
+            tools:ignore="SpeakableTextPresentCheck" />
+
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewpager"
+            android:layout_width="match_parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/dp_12"
+            app:layout_constraintTop_toBottomOf="@id/tabLayout"
+            android:layout_marginHorizontal="@dimen/dp_8"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

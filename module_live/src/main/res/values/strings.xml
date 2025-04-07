@@ -1,4 +1,17 @@
 <resources>
     <string name="video_landscape_match_status">赛况</string>
     <string name="video_landscape_choose_video_source">选解说</string>
+    <string name="live_note_order">注单</string>
+    <string name="live_bet_on">投注</string>
+    <string name="live_chat">聊天</string>
+    <string name="live_outs">赛况</string>
+    <string name="live_lineup">阵容</string>
+    <string name="live_standings">积分榜</string>
+    <string-array name="bet_slip_menus">
+        <item>未结算</item>
+        <item>确认中</item>
+        <item>已结算</item>
+        <item>预约</item>
+        <item>失效</item>
+    </string-array>
 </resources>

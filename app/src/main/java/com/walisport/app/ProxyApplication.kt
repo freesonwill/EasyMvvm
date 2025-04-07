@@ -1,7 +1,7 @@
 package com.walisport.app
 
 import android.app.Application
-import com.walisport.lib_common.utils.UserSetting
+import com.walisport.lib.common.utils.UserSetting
 
 class ProxyApplication : Application() {
 

@@ -1,4 +1,4 @@
-package com.walisport.module_home.ui.fragment
+package com.walisport.module.home.ui.fragment
 
 import android.content.Intent
 import android.net.Uri
@@ -7,22 +7,22 @@ import androidx.core.app.ActivityOptionsCompat
 import androidx.navigation.ActivityNavigatorExtras
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
-import com.walisport.lib_base.data.viewmodel.EmptyViewModel
-import com.walisport.lib_base.ui.BaseFragment
-import com.walisport.lib_base.ui.viewBind
-import com.walisport.module_home.R
-import com.walisport.module_home.databinding.FragmentHomeBinding
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import com.walisport.lib.base.data.viewmodel.EmptyViewModel
+import com.walisport.lib.base.ui.BaseFragment
+import com.walisport.lib.common.utils.ext.clickNoRepeat
+import com.walisport.module.home.R
+import com.walisport.module.home.databinding.FragmentHomeBinding
+import kotlin.reflect.KClass
 
 class HomeFragment : BaseFragment<EmptyViewModel, FragmentHomeBinding>() {
-    override val mBinding: FragmentHomeBinding by viewBind()
-    override val mViewModel: EmptyViewModel by viewModel()
+    override val vbClass: KClass<FragmentHomeBinding> = FragmentHomeBinding::class
+    override val vmClass: KClass<EmptyViewModel> = EmptyViewModel::class
 
     val navOptions = NavOptions.Builder()
-        .setEnterAnim(com.walisport.lib_common.R.anim.slide_in_right)  // 新页面进入动画
-        .setExitAnim(com.walisport.lib_common.R.anim.slide_out_left)   // 旧页面退出动画
-        .setPopEnterAnim(com.walisport.lib_common.R.anim.slide_in_left) // 返回时，新页面进入动画
-        .setPopExitAnim(com.walisport.lib_common.R.anim.slide_out_right) // 返回时，当前页面退出动画
+        .setEnterAnim(com.walisport.lib.common.R.anim.slide_in_right)  // 新页面进入动画
+        .setExitAnim(com.walisport.lib.common.R.anim.slide_out_left)   // 旧页面退出动画
+        .setPopEnterAnim(com.walisport.lib.common.R.anim.slide_in_left) // 返回时，新页面进入动画
+        .setPopExitAnim(com.walisport.lib.common.R.anim.slide_out_right) // 返回时，当前页面退出动画
         .build()
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -80,12 +80,12 @@ class HomeFragment : BaseFragment<EmptyViewModel, FragmentHomeBinding>() {
 
         }
 
-        mBinding.tv7.setOnClickListener{
+        mBinding.tv7.clickNoRepeat{
             findNavController().navigate(Uri.parse("walisport://module_setting/settingFragment"))
         }
 
-        mBinding.tv8.setOnClickListener{
-            findNavController().navigate(Uri.parse("walisport://video_landscape_activity?userId=lucy"))
+        mBinding.tv8.clickNoRepeat{
+            findNavController().navigate(Uri.parse("walisport://module_live/liveFragment"))
         }
     }
 

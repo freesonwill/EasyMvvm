@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".test.ViewPagerFragment">
+
+    <TextView
+        android:id="@+id/tv1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/teal_700"
+        android:gravity="center"
+        android:text="@string/hello_blank_fragment"
+        android:textSize="30sp" />
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPagerNew"
+        android:layout_width="match_parent"
+        android:layout_height="400dp" />
+
+    <!--<androidx.fragment.app.FragmentContainerView
+        android:id="@+id/viewPagerNew"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:layout_marginTop="20dp"
+        app:navGraph="@navigation/nav_graph_viewpagernew" />-->
+
+
+    <!-- NavHostFragment -->
+     <!--<androidx.fragment.app.FragmentContainerView
+         android:id="@+id/fr2"
+         android:name="androidx.navigation.fragment.NavHostFragment"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         app:navGraph="@navigation/nav_graph_vp_home"
+         />-->
+    <androidx.fragment.app.FragmentContainerView
+         android:id="@+id/fr2"
+         android:name="com.walisport.module.home.test.ViewPager2Fragment"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         />
+
+</LinearLayout>

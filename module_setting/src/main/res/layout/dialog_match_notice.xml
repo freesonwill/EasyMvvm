@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_shape_round_rect_top"
+    app:layout_constraintBottom_toBottomOf="parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_91"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_20"
+            android:layout_marginEnd="@dimen/dp_12"
+            android:background="@drawable/bg_shape_game_notice">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/dp_12"
+                android:background="@drawable/bg_dialog_notice" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_game_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_17"
+                android:paddingStart="@dimen/dp_12"
+                android:text="36′"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_13"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <LinearLayout
+                android:id="@+id/lay_score"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_game_time">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_16"
+                    android:textStyle="bold" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_6"
+                    android:layout_marginEnd="@dimen/dp_6"
+                    android:paddingStart="@dimen/dp_2"
+                    android:text="-"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_16"
+                    android:textStyle="bold" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textColor="@color/tran_75_white"
+                    android:textSize="@dimen/sp_16"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="莱斯特城"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_16"
+                android:textStyle="bold"
+                android:layout_marginEnd="@dimen/dp_10"
+                app:layout_constraintTop_toTopOf="@+id/lay_score"
+                app:layout_constraintBottom_toBottomOf="@+id/lay_score"
+                app:layout_constraintEnd_toStartOf="@+id/lay_score"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="切尔西"
+                android:textColor="@color/tran_75_white"
+                android:textSize="@dimen/sp_16"
+                android:textStyle="bold"
+                android:layout_marginStart="@dimen/dp_10"
+                app:layout_constraintTop_toTopOf="@+id/lay_score"
+                app:layout_constraintBottom_toBottomOf="@+id/lay_score"
+                app:layout_constraintStart_toEndOf="@+id/lay_score"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_18"
+            android:gravity="center_horizontal"
+            android:text="@string/tip_dialog_notice"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_17" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_6"
+            android:gravity="center_horizontal"
+            android:text="@string/notice_game"
+            android:textColor="@color/color_929298"
+            android:textSize="@dimen/sp_14" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/bet_item"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_62"
+            android:layout_marginTop="@dimen/dp_14">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="@dimen/dp_20"
+                android:layout_height="@dimen/dp_20"
+                android:layout_marginStart="@dimen/dp_12"
+                android:background="@mipmap/icon_notice_bet"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_40"
+                android:text="@string/notice_bet"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_15"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatToggleButton
+                android:id="@+id/toggle_bet"
+                android:layout_width="@dimen/dp_46"
+                android:layout_height="@dimen/dp_26"
+                android:layout_marginEnd="@dimen/dp_20"
+                android:background="@drawable/selector_toggle_button"
+                android:textOff=""
+                android:textOn=""
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_1"
+                android:layout_marginStart="@dimen/dp_40"
+                android:layout_marginEnd="@dimen/dp_10"
+                android:background="@color/color_1d1f29"
+                app:layout_constraintBottom_toBottomOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/fav_item"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_62">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="@dimen/dp_20"
+                android:layout_height="@dimen/dp_20"
+                android:layout_marginStart="@dimen/dp_12"
+                android:background="@mipmap/icon_notice_fav"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_40"
+                android:text="@string/notice_favourite"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_15"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatToggleButton
+                android:id="@+id/toggle_fav"
+                android:layout_width="@dimen/dp_46"
+                android:layout_height="@dimen/dp_26"
+                android:layout_marginEnd="@dimen/dp_20"
+                android:background="@drawable/selector_toggle_button"
+                android:textOff=""
+                android:textOn=""
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_1"
+                android:layout_marginStart="@dimen/dp_40"
+                android:layout_marginEnd="@dimen/dp_10"
+                android:background="@color/color_1d1f29"
+                app:layout_constraintBottom_toBottomOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/all_item"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_62">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="@dimen/dp_20"
+                android:layout_height="@dimen/dp_20"
+                android:layout_marginStart="@dimen/dp_12"
+                android:background="@mipmap/icon_notice_all"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_40"
+                android:text="@string/notice_all"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_15"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatToggleButton
+                android:id="@+id/toggle_all"
+                android:layout_width="@dimen/dp_46"
+                android:layout_height="@dimen/dp_26"
+                android:layout_marginEnd="@dimen/dp_20"
+                android:background="@drawable/selector_toggle_button"
+                android:textOff=""
+                android:textOn=""
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_8"
+            android:background="@color/color_0f101b" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_close"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_60"
+            android:background="@drawable/ripple_effect_rectangle"
+            android:gravity="center"
+            android:text="@string/shut_down"
+            android:textColor="@color/color_71e993"
+            android:textSize="@dimen/sp_16"
+            android:textStyle="bold" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

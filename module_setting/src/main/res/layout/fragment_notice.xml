@@ -3,36 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_f3f3f4">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/color_0E0F19">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.walisport.lib.common.widget.TitleBarView
         android:id="@+id/title_bar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_46"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/iv_back"
-            android:layout_width="@dimen/dp_32"
-            android:layout_height="@dimen/dp_32"
-            android:layout_marginStart="@dimen/dp_10"
-            android:background="@mipmap/icon_back"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/menu_notice_set"
-            android:textColor="@color/color_222222"
-            android:textSize="@dimen/sp_17"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_height="wrap_content"
+        tools:ignore="MissingConstraints" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -46,17 +24,17 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_12"
             android:text="@string/menu_notice_sys"
-            android:textColor="@color/color_666666"
+            android:textColor="@color/color_929298"
             android:textSize="@dimen/sp_15" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/setting_goal"
+            android:id="@+id/notice_goal"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_52"
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginEnd="@dimen/dp_12"
             android:layout_marginTop="@dimen/dp_10"
-            android:background="@drawable/bg_shape_round_rect_top">
+            android:background="@drawable/ripple_effect_top">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="@dimen/dp_20"
@@ -72,7 +50,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_40"
                 android:text="@string/menu_goal_football"
-                android:textColor="@color/color_222222"
+                android:textColor="@color/white"
                 android:textSize="@dimen/sp_15"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -88,11 +66,12 @@
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_notice_sys_goal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dp_30"
                 android:text="@string/menu_part"
-                android:textColor="@color/color_929292"
+                android:textColor="@color/color_929298"
                 android:textSize="@dimen/sp_15"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -103,17 +82,17 @@
                 android:layout_height="@dimen/dp_1"
                 android:layout_marginStart="@dimen/dp_40"
                 android:layout_marginEnd="@dimen/dp_10"
-                android:background="@color/color_f3f3f4"
+                android:background="@color/color_1d1f29"
                 app:layout_constraintBottom_toBottomOf="parent"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/setting_start"
+            android:id="@+id/notice_start"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_52"
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginEnd="@dimen/dp_12"
-            android:background="@drawable/bg_shape_round_rect_bottom">
+            android:background="@drawable/ripple_effect_bottom">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="@dimen/dp_20"
@@ -129,7 +108,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_40"
                 android:text="@string/menu_game_football"
-                android:textColor="@color/color_222222"
+                android:textColor="@color/white"
                 android:textSize="@dimen/sp_15"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -145,11 +124,12 @@
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_notice_sys_start"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dp_30"
                 android:text="@string/menu_part"
-                android:textColor="@color/color_929292"
+                android:textColor="@color/color_929298"
                 android:textSize="@dimen/sp_15"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -162,17 +142,17 @@
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginTop="@dimen/dp_20"
             android:text="@string/menu_notice_app"
-            android:textColor="@color/color_666666"
+            android:textColor="@color/color_929298"
             android:textSize="@dimen/sp_15" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/setting_app_goal"
+            android:id="@+id/notice_app_goal"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_52"
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginEnd="@dimen/dp_12"
             android:layout_marginTop="@dimen/dp_10"
-            android:background="@drawable/bg_shape_round_rect">
+            android:background="@drawable/ripple_effect">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="@dimen/dp_20"
@@ -188,7 +168,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_40"
                 android:text="@string/menu_goal_football"
-                android:textColor="@color/color_222222"
+                android:textColor="@color/white"
                 android:textSize="@dimen/sp_15"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -204,11 +184,12 @@
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_notice_goal_app"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dp_30"
                 android:text="@string/menu_part"
-                android:textColor="@color/color_929292"
+                android:textColor="@color/color_929298"
                 android:textSize="@dimen/sp_15"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"

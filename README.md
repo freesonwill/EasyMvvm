@@ -30,9 +30,21 @@ https://docs.google.com/spreadsheets/d/1fRuB82X0Fmsgi54u52gEWbAgxl5t8CzJVqGr1USD
 模块需要在Application启动时，初始化自己的工作，通过[Jetpack Startup](https://developer.android.com/topic/libraries/app-startup?hl=zh-cn)组件实现
 
 ### mvvm架构
-![img.png](z_doc/img/img.png)
+![img.png](z_doc/img/img_6.png)
 
 https://hackmd.io/@LinkHsieh/HkcXg8Shkx
+
+## 规范
+
+### 命名
+业务模块使用"module_"，库模块使用"lib_"
+
+### UI层只与ViewModel交互
+![img.png](z_doc/img/img_7.png)
+⚠️   
+UI層不要有資料層的東西注入   
+也不應該有資料的業務邏輯
+
 
 ## Todo
 ### 方案讨论
@@ -78,5 +90,30 @@ https://hackmd.io/@LinkHsieh/HkcXg8Shkx
 ```
 11. 消息推送设计： Netty or WebSocket？
 ```text
+
+12. 自定义title：所有标题继承于TitleBarView
+```text
+通用title
+ /**
+     * 通用标题 loadGeneralTitleBar()
+     * @param titleName 标题名称
+     * @param callback 返回
+     */
+
+搜索title
+ /**
+     * 搜索标题 loadSearchTitleBar()
+     * @param hintText 搜索框提示
+     * @param callback 返回
+     * @param callbackSearch 搜索
+     */
+
+动态title loadDynamicsTitleBar()
+ /**
+     * 搜索标题
+     * @param view 传入布局view
+     * @param callback 返回 不传入Unit 默认不显示ivBack 
+     */
+   
 
 ```

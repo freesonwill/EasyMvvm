@@ -4,15 +4,13 @@ import android.os.Bundle
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.walisport.module_bet.viewmodel.FloatingButtonViewModel
-import com.walisport.lib_base.ui.BaseFragment
-import com.walisport.lib_base.ui.viewBind
+import com.walisport.lib.base.ui.BaseFragment
 import com.walisport.module.bet.databinding.FragmentFloatingButtonBinding
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import kotlin.reflect.KClass
 
 class FloatingButtonFragment : BaseFragment<FloatingButtonViewModel, FragmentFloatingButtonBinding>() {
-
-    override val mBinding: FragmentFloatingButtonBinding by viewBind()
-    override val mViewModel: FloatingButtonViewModel by viewModel()
+    override val vbClass: KClass<FragmentFloatingButtonBinding> = FragmentFloatingButtonBinding::class
+    override val vmClass: KClass<FloatingButtonViewModel> = FloatingButtonViewModel::class
     private var onClickListener: (() -> Unit)? = null
 
     override fun initView(savedInstanceState: Bundle?) {

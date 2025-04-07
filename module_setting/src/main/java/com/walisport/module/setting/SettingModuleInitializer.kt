@@ -2,7 +2,7 @@ package com.walisport.module.setting
 
 import android.content.Context
 import androidx.startup.Initializer
-import com.walisport.lib_base.ApplicationModuleInitializer
+import com.walisport.lib.base.ApplicationModuleInitializer
 import com.walisport.module.setting.data.SettingRepository
 import com.walisport.module.setting.data.SettingViewModel
 import com.walisport.module.setting.data.NoticeViewModel

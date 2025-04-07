@@ -5,12 +5,11 @@ import android.os.Bundle
 import com.walisport.app.data.SplashViewModel
 import com.walisport.app.databinding.ActivitySplashBinding
 import com.walisport.app.ui.MainActivity
-import com.walisport.lib_base.ui.BaseActivity
-import com.walisport.lib_base.ui.interface_.StatusBarConfig
-import com.walisport.lib_base.ui.viewBind
-import com.walisport.lib_base.utils.LogUtilsExt.logd
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import com.walisport.lib.base.ui.BaseActivity
+import com.walisport.lib.base.ui.interface_.StatusBarConfig
+import com.walisport.lib.base.utils.LogUtilsExt.logd
 import kotlin.random.Random
+import kotlin.reflect.KClass
 
 class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
 
@@ -111,8 +110,8 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
     private val uid = pair.first
     private val token = pair.second
 
-    override val mBinding: ActivitySplashBinding by viewBind()
-    override val mViewModel: SplashViewModel by viewModel()
+    override val vbClass: KClass<ActivitySplashBinding> = ActivitySplashBinding::class
+    override val vmClass: KClass<SplashViewModel> = SplashViewModel::class
 
     override fun configStatusBar(): StatusBarConfig {
         return StatusBarConfig(hideStatusBar = true)
