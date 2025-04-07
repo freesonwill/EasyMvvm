@@ -2,7 +2,7 @@ package com.walisport.module.bet.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.walisport.lib_base.data.viewmodel.BaseViewModel
+import com.walisport.lib.base.data.viewmodel.BaseViewModel
 
 class NumberCalculatorViewModel : BaseViewModel() {
 

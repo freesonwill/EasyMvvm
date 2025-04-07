@@ -1,8 +1,8 @@
 package com.walisport.module.bet.ui.fragment
 
 import android.os.Bundle
-import com.walisport.lib_base.ui.BaseBottomSheetFragment
-import com.walisport.lib_base.ui.viewBind
+import com.walisport.lib.base.ui.BaseBottomSheetFragment
+import com.walisport.lib.base.ui.viewBind
 import com.walisport.module.bet.R
 import com.walisport.module.bet.databinding.FragmentBetSheetBinding
 import com.walisport.module.bet.ui.custom.NumberKeyboardView
