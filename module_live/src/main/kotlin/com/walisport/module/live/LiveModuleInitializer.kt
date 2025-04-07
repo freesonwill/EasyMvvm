@@ -3,6 +3,7 @@ package com.walisport.module.live
 import android.content.Context
 import androidx.startup.Initializer
 import com.walisport.lib.base.ApplicationModuleInitializer
+import com.walisport.lib.base.data.viewmodel.BaseViewModel
 import com.walisport.module.live.data.LiveMainRepository
 import com.walisport.module.live.ui.viewmodel.LeagueViewModel
 import com.walisport.module.live.ui.viewmodel.LiveBetOnViewModel
@@ -24,10 +25,6 @@ import com.walisport.module.live.ui.viewmodel.LiveBetSlipConfirmViewModel
 import com.walisport.module.live.ui.viewmodel.LiveBetSlipInvalidViewModel
 import com.walisport.module.live.ui.viewmodel.LiveBetSlipReserveViewModel
 import com.walisport.module.live.ui.viewmodel.LiveBetSlipSettledViewModel
-import com.walisport.module.live.ui.viewmodel.LiveChatViewModel
-import com.walisport.module.live.ui.viewmodel.LeagueViewModel
-import com.walisport.module.live.ui.viewmodel.LiveBetOnViewModel
-import com.walisport.module.live.ui.viewmodel.LiveLineupViewModel
 
 class LiveModuleInitializer : Initializer<String> {
 
