@@ -25,5 +25,5 @@ class DatabaseModuleInitializer: Initializer<String> {
 
     private val moduleList: List<Module> = listOf(module {
         single { GameDatabase.invoke(context = get()) }
-    })
+    }, daoModule)
 }

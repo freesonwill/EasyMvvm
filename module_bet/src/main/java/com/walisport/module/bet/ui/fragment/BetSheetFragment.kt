@@ -3,16 +3,23 @@ package com.walisport.module.bet.ui.fragment
 import android.os.Bundle
 import com.walisport.lib.base.ui.BaseBottomSheetFragment
 import com.walisport.lib.base.ui.viewBind
+import com.walisport.lib.database.entity.BetBean
 import com.walisport.module.bet.R
 import com.walisport.module.bet.databinding.FragmentBetSheetBinding
+import com.walisport.module.bet.ui.adapter.BetSheetAdapter
 import com.walisport.module.bet.ui.custom.NumberKeyboardView
+import com.walisport.module.bet.viewmodel.BetSheetViewModel
 import com.walisport.module.bet.viewmodel.NumberCalculatorViewModel
+import org.koin.androidx.viewmodel.ext.android.getViewModel
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.qualifier.named
 
 class BetSheetFragment : BaseBottomSheetFragment<FragmentBetSheetBinding>() {
 
     override val mBinding: FragmentBetSheetBinding by viewBind()
-    private val mViewModel: NumberCalculatorViewModel by viewModel()
+    private val mViewModel: BetSheetViewModel by viewModel()
+    private lateinit var betSheetAdapter: BetSheetAdapter
 
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.etMoney.requestFocus()
@@ -36,6 +43,13 @@ class BetSheetFragment : BaseBottomSheetFragment<FragmentBetSheetBinding>() {
             }
 
         })
+
+        betSheetAdapter = BetSheetAdapter(object : BetSheetAdapter.OnBetSheetClickListener {
+            override fun onDeleteClick(item: BetBean) {
+
+            }
+        })
+        mBinding.rvBet.adapter = betSheetAdapter
     }
 
     override fun initListener() {
@@ -73,6 +87,9 @@ class BetSheetFragment : BaseBottomSheetFragment<FragmentBetSheetBinding>() {
             mBinding.etMoney.setText(it)
             val length = it.length
             mBinding.etMoney.setSelection(length)
+        }
+        mViewModel.onBetSheetListener.observe(viewLifecycleOwner) {
+            betSheetAdapter.submitList(it)
         }
     }
 }

@@ -8,7 +8,7 @@ import com.walisport.module.bet.databinding.ItemBetSheetBinding
 import com.walisport.module.bet.ui.compare.BetBeanCompare
 import com.walisport.module.bet.ui.viewholder.BetSheetViewHolder
 
-class BetSheetAdapter: BaseAdapter<BetBean, BetSheetViewHolder, ItemBetSheetBinding>(
+class BetSheetAdapter(private val onBetSheetClickListener: OnBetSheetClickListener): BaseAdapter<BetBean, BetSheetViewHolder, ItemBetSheetBinding>(
     BetBeanCompare()
 ) {
     override fun convertPlus(
@@ -17,6 +17,9 @@ class BetSheetAdapter: BaseAdapter<BetBean, BetSheetViewHolder, ItemBetSheetBind
         position: Int
     ) {
         holder.init(getItem(position))
+        binding.ivDelete.setOnClickListener {
+            onBetSheetClickListener.onDeleteClick(getItem(position))
+        }
     }
 
     override fun createViewBinding(
@@ -29,5 +32,9 @@ class BetSheetAdapter: BaseAdapter<BetBean, BetSheetViewHolder, ItemBetSheetBind
 
     override fun createViewHolder(binding: ItemBetSheetBinding, viewType: Int): BetSheetViewHolder {
         return BetSheetViewHolder(binding)
+    }
+
+    interface OnBetSheetClickListener {
+        fun onDeleteClick(item: BetBean)
     }
 }

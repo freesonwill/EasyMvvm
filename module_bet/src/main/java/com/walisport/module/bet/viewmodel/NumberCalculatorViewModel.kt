@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.walisport.lib.base.data.viewmodel.BaseViewModel
 
-class NumberCalculatorViewModel : BaseViewModel() {
+open class NumberCalculatorViewModel : BaseViewModel() {
 
     companion object {
         const val MAX_MONEY = 10000
@@ -50,15 +50,19 @@ class NumberCalculatorViewModel : BaseViewModel() {
 
     fun double() {
         _onEditMoney.value = _onEditMoney.value?.let {
-            val money = if (it.last() == '.') {
-                it.substring(0, it.length - 1)
+            if (it.isEmpty()) {
+                ""
             } else {
-                it
+                val money = if (it.last() == '.') {
+                    it.substring(0, it.length - 1)
+                } else {
+                    it
+                }
+                val doubledValue = money.toDouble() * 2
+                val formattedValue = formatMoney(doubledValue.toString())
+                if (doubledValue > MAX_MONEY) MAX_MONEY.toString() else formattedValue
             }
-            val doubledValue = money.toDouble() * 2
-            val formattedValue = formatMoney(doubledValue.toString())
-            if (doubledValue > MAX_MONEY) MAX_MONEY.toString() else formattedValue
-        }
+        } ?: ""
     }
 
     fun back() {

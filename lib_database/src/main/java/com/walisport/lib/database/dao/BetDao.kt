@@ -11,6 +11,9 @@ abstract class BetDao: BaseDao<BetBean>() {
     @Query("SELECT * FROM bet_bean")
     abstract fun observeBetSheet(): Flow<List<BetBean>>
 
+    @Query("SELECT * FROM bet_bean")
+    abstract suspend fun getBetSheet(): List<BetBean>
+
     @Query("SELECT COUNT(*) FROM bet_bean")
     abstract fun observeBetCount(): Flow<Int>
 }
