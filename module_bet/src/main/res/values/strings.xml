@@ -7,5 +7,5 @@
     <string name="btn_max">最高</string>
     <string name="btn_collusion">＋串关</string>
     <string name="btn_bet">投注</string>
-    <string name="et_money_hint">限额10&#8211;10000</string>
+    <string name="et_money_hint">限额%d&#8211;%d</string>
 </resources>

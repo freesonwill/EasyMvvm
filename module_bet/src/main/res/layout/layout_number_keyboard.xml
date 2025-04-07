@@ -83,6 +83,7 @@
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_other"
         style="@style/NumberKeyboardButton"
+        android:textSize="14sp"
         android:layout_marginTop="2dp"
         android:layout_marginEnd="2dp"
         android:backgroundTint="@color/color_button_number" />

@@ -39,11 +39,10 @@ class NumberKeyboardView : LinearLayout {
         mBinding.btnOther.text = listener.getOtherText()
     }
 
-}
-
-interface OnCalculatorClickListener {
-    fun onNumberClick(number: Int)
-    fun onDotClick()
-    fun onOtherClick()
-    fun getOtherText(): String
+    interface OnCalculatorClickListener {
+        fun onNumberClick(number: Int)
+        fun onDotClick()
+        fun onOtherClick()
+        fun getOtherText(): String
+    }
 }
