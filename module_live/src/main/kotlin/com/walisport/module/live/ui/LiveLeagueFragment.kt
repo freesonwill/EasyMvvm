@@ -8,17 +8,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.walisport.lib.base.ui.BaseFragment
-import com.walisport.lib.base.ui.viewBind
 import com.walisport.lib.common.utils.ext.DimensionExt.dp2px
 import com.walisport.lib.common.utils.ext.clickNoRepeat
-import com.walisport.module.live.ui.adapter.LeagueAdapter
-import com.walisport.module.live.adapter.LeagueAdapter
 import com.walisport.module.live.data.model.LeagueMatchBean
 import com.walisport.module.live.databinding.FragmentLeagueBinding
-import com.walisport.module.live.databinding.FragmentLiveBetSlipLayoutBinding
+import com.walisport.module.live.ui.adapter.LeagueAdapter
 import com.walisport.module.live.ui.viewmodel.LeagueViewModel
-import com.walisport.module.live.ui.viewmodel.LiveBetSlipViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.reflect.KClass
 
 class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>() {
