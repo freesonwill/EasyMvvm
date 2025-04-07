@@ -5,13 +5,13 @@ plugins {
 }
 
 android {
-    namespace = "com.walisport.lib_databse"
+    namespace = "com.walisport.lib.databse"
     compileSdk = 34
 
     defaultConfig {
         minSdk = 24
 
-        testInstrumentationRunner = "com.walisport.lib_database.InstrumentationTestRunner"
+        testInstrumentationRunner = "com.walisport.lib.database.InstrumentationTestRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
 

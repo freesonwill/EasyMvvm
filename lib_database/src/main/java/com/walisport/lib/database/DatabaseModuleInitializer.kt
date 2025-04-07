@@ -1,4 +1,4 @@
-package com.walisport.lib_database
+package com.walisport.lib.database
 
 import android.content.Context
 import androidx.startup.Initializer
