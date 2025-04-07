@@ -1,5 +1,4 @@
 <resources>
-    <string name="video_landscape_match_status">赛况</string>
     <string name="video_landscape_choose_video_source">选解说</string>
     <string name="live_note_order">注单</string>
     <string name="live_bet_on">投注</string>
@@ -7,6 +6,16 @@
     <string name="live_outs">赛况</string>
     <string name="live_lineup">阵容</string>
     <string name="live_standings">积分榜</string>
+    <string name="live_word_cup">世界杯</string>
+    <string name="standings_score">积分</string>
+    <string name="standings_js">进/失</string>
+    <string name="standings_spf">胜/平/负</string>
+    <string name="standings_cc">场次</string>
+    <string name="standings_a">A组</string>
+    <string name="standings_b">B组</string>
+    <string name="standings_c">C组</string>
+    <string name="standings_d">D组</string>
+
     <string-array name="bet_slip_menus">
         <item>未结算</item>
         <item>确认中</item>

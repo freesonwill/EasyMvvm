@@ -74,12 +74,15 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        mBinding.root.fitsSystemWindows = true
         initView(savedInstanceState)
         initListener()
         initData()
         createObserver()
         trackLoadingTime()
     }
+
+
 
     override fun setStatusBar(config: StatusBarConfig) {
         statusBar.setStatusBar(config)
