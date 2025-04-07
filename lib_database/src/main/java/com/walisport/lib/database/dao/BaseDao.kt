@@ -1,4 +1,4 @@
-package com.walisport.lib_database.dao
+package com.walisport.lib.database.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
