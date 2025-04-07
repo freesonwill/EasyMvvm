@@ -7,6 +7,7 @@
     <string name="live_outs">赛况</string>
     <string name="live_lineup">阵容</string>
     <string name="live_standings">积分榜</string>
+    <string name="live_word_cup">世界杯</string>
     <string-array name="bet_slip_menus">
         <item>未结算</item>
         <item>确认中</item>

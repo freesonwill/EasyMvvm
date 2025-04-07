@@ -53,11 +53,13 @@
     <dimen name="dp_148">148dp</dimen>
     <dimen name="dp_154">154dp</dimen>
     <dimen name="dp_170">170dp</dimen>
+    <dimen name="dp_200">200dp</dimen>
     <dimen name="dp_211">211dp</dimen>
     <dimen name="dp_335">335dp</dimen>
     <dimen name="dp_359">359dp</dimen>
     <dimen name="dp_418">418dp</dimen>
 
+    <dimen name="sp_12">12sp</dimen>
     <dimen name="sp_13">13sp</dimen>
     <dimen name="sp_14">14sp</dimen>
     <dimen name="sp_15">15sp</dimen>

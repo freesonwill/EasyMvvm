@@ -1,11 +1,11 @@
-package com.walisport.lib_database
+package com.walisport.lib.database
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.walisport.lib_database.dao.TestDao
-import com.walisport.lib_database.entity.TestBean
+import com.walisport.lib.database.dao.TestDao
+import com.walisport.lib.database.entity.TestBean
 
 @Database(
     entities = [TestBean::class],
