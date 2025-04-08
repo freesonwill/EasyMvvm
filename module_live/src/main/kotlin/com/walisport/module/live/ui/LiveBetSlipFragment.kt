@@ -5,7 +5,8 @@ import android.widget.LinearLayout
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.walisport.lib.base.adapter.PagerAdapter
-import com.walisport.lib.base.ben.PagerBean
+import com.walisport.lib.base.data.PagerBean
+import com.walisport.lib.base.data.viewmodel.EmptyViewModel
 import com.walisport.lib.base.ui.BaseFragment
 import com.walisport.lib.common.utils.ext.DimensionExt.dp2px
 import com.walisport.lib.common.utils.ext.removeAllTips

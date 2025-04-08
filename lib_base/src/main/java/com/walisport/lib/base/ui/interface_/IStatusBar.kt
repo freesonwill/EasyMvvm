@@ -1,5 +1,8 @@
 package com.walisport.lib.base.ui.interface_
 
+import android.view.ViewGroup
+import androidx.viewbinding.ViewBinding
+
 /**
  * 状态栏StatusBar
  * @author: zhangsan

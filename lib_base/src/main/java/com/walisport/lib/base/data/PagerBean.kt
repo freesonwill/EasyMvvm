@@ -1,4 +1,4 @@
-package com.walisport.lib.base.ben
+package com.walisport.lib.base.data
 
 import androidx.fragment.app.Fragment
 import com.walisport.lib.base.ui.BaseFragment
