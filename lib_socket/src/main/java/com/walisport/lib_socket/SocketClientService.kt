@@ -72,6 +72,7 @@ class SocketClientService(
         val request = Request.Builder()
             .url(host)
             .build()
+        security.resetSecurity()
         client.newWebSocket(request, object : WebSocketListener() {
             override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
                 super.onFailure(webSocket, t, response)

@@ -2,6 +2,7 @@ package com.walisport.app
 
 import android.content.Context
 import androidx.startup.Initializer
+import com.walisport.app.data.AppNavViewModel
 import com.walisport.app.data.MainRepository
 import com.walisport.app.data.SplashRepository
 import com.walisport.app.data.MainViewModel
@@ -37,6 +38,7 @@ class ModuleInitializer : Initializer<String> {
     private val viewModules = module {
         viewModelOf(::MainViewModel)
         viewModelOf(::SplashViewModel)
+        viewModelOf(::AppNavViewModel)
     }
     private val repoModules = module {
         factory { (scope: CoroutineScope) -> MainRepository(scope, get()) }

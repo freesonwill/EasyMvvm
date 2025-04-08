@@ -16,6 +16,10 @@ import kotlinx.coroutines.withContext
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 
+/**
+ * 這個ViewModel主要處理一些共通監聽的是像，例如統一監聽斷線後重新連線與登入狀態
+ * 現在需要做全背景監聽的只有SplashActivity和AppNavActivity
+ * */
 abstract class BaseActivityViewModel : BaseViewModel() {
     private val connectingRepository: ConnectingRepository by inject { parametersOf(viewModelScope) }
     // 每個activity針對登入和離線錯誤都有不同的處理，接收到相對應的livedata後各自處理
@@ -30,7 +34,7 @@ abstract class BaseActivityViewModel : BaseViewModel() {
                         "Connection Success".logi(BaseActivityViewModel::class.java.simpleName)
                         login()
                     }
-                    else -> {
+                    else -> {   //收到這錯誤，可以根據需求處理，SocketManager會啟動自動重連機制
                         "Connection Failure -> $connectState".loge(BaseActivityViewModel::class.java.simpleName)
                     }
                 }
