@@ -6,7 +6,7 @@
     android:background="@color/color_0E0F19"
     tools:context=".ui.LiveOutsFragment">
 
-    <com.walisport.module.live.widget.TechnicalCountView
+    <com.walisport.module.live.ui.widget.TechnicalCountView
         android:id="@+id/view_tech_static"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
