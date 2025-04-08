@@ -2,20 +2,17 @@ package com.walisport.module.live.ui
 
 import android.os.Bundle
 import android.widget.LinearLayout
-import android.widget.TextView
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.walisport.lib.base.adapter.PagerAdapter
 import com.walisport.lib.base.data.PagerBean
 import com.walisport.lib.base.data.viewmodel.EmptyViewModel
 import com.walisport.lib.base.ui.BaseFragment
-import com.walisport.lib.base.ui.viewBind
 import com.walisport.lib.common.utils.ext.DimensionExt.dp2px
 import com.walisport.lib.common.utils.ext.removeAllTips
 import com.walisport.module.live.R
 import com.walisport.module.live.databinding.FragmentLiveBetSlipLayoutBinding
 import com.walisport.module.live.ui.viewmodel.LiveBetSlipViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.reflect.KClass
 
 /**
@@ -38,7 +35,7 @@ class LiveBetSlipFragment : BaseFragment<LiveBetSlipViewModel, FragmentLiveBetSl
                 PagerBean(array[1]) { LiveBetSlipConfirmFragment() },
                 PagerBean(array[2]) { LiveBetSlipSettledFragment() },
                 PagerBean(array[3]) { LiveBetSlipReserveFragment() },
-                PagerBean(array[4]) { LiveBetSlipInvalidFragment() },
+                PagerBean(array[4]) { LiveBetSlipExpiredFragment() },
             )
 
             viewpager.adapter = null
