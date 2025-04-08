@@ -1,10 +1,11 @@
-package com.walisport.lib.common.ui.adapter
+package com.walisport.lib.base.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.viewbinding.ViewBinding
+import com.walisport.lib.base.viewholder.BaseViewHolder
 
 /***
  * @param T: Item Object
