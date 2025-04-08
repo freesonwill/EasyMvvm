@@ -56,13 +56,13 @@ class BetSheetFragment : BaseBottomSheetFragment<FragmentBetSheetBinding>() {
             dismiss()
         }
         mBinding.btnBack.setOnClickListener {
-            mViewModel.back()
+            mViewModel.backNumber()
         }
         mBinding.btnClear.setOnClickListener {
-            mViewModel.clearMoney()
+            mViewModel.clearNumber()
         }
         mBinding.btnDouble.setOnClickListener {
-            mViewModel.double()
+            mViewModel.doubleNumber()
         }
         mBinding.btn100.setOnClickListener {
             mViewModel.setNumber(100)
@@ -90,7 +90,8 @@ class BetSheetFragment : BaseBottomSheetFragment<FragmentBetSheetBinding>() {
             mBinding.btnReserve.getLocationInWindow(location)
             ReserveDialogFragment.newInstance(
                 location.first() + mBinding.btnReserve.width / 2,
-                location.last() + mBinding.btnReserve.height
+                location.last() + mBinding.btnReserve.height,
+                1.85f
             ).show(childFragmentManager)
         }
     }

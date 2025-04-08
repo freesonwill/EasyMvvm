@@ -10,17 +10,21 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
+import com.walisport.lib.base.ui.interface_.IView
 import com.walisport.lib.base.ui.viewBind
 import com.walisport.module.bet.databinding.FragmentReserveDialogBinding
+import com.walisport.module.bet.ui.custom.NumberKeyboardView
+import com.walisport.module.bet.viewmodel.ReserveDialogViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class ReserveDialogFragment private constructor() : DialogFragment() {
+class ReserveDialogFragment private constructor() : DialogFragment(), IView {
 
     companion object {
         private const val POSITION_X = "positionX"
         private const val POSITION_Y = "positionY"
         private const val RATE_NUMBER = "rateNumber"
 
-        fun newInstance(positionX: Int?, positionY: Int?, rateNumber: Int): ReserveDialogFragment {
+        fun newInstance(positionX: Int?, positionY: Int?, rateNumber: Float): ReserveDialogFragment {
             val b = Bundle()
             positionX?.let {
                 b.putInt(POSITION_X, it)
@@ -28,7 +32,7 @@ class ReserveDialogFragment private constructor() : DialogFragment() {
             positionY?.let {
                 b.putInt(POSITION_Y, it)
             }
-            b.putInt(RATE_NUMBER, rateNumber)
+            b.putFloat(RATE_NUMBER, rateNumber)
             return ReserveDialogFragment().apply {
                 arguments = b
             }
@@ -36,13 +40,21 @@ class ReserveDialogFragment private constructor() : DialogFragment() {
     }
 
     private val mBinding: FragmentReserveDialogBinding by viewBind()
+    private val mViewModel: ReserveDialogViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        initView(savedInstanceState)
+        initListener()
         return mBinding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        createObserver()
     }
 
     override fun onStart() {
@@ -78,6 +90,54 @@ class ReserveDialogFragment private constructor() : DialogFragment() {
         val f = manager.findFragmentByTag(this::class.java.simpleName)
         if (f == null || !f.isAdded) {
             super.show(manager, this::class.java.simpleName)
+        }
+    }
+
+    override fun initView(savedInstanceState: Bundle?) {
+        mBinding.etRate.requestFocus()
+
+        val rate = requireArguments().getFloat(RATE_NUMBER)
+        mViewModel.setNumber(rate)
+
+        mBinding.numberKeyboard.setOnCalculatorClickListener(object : NumberKeyboardView.OnCalculatorClickListener {
+            override fun onNumberClick(number: Int) {
+                mViewModel.addNumber(number)
+            }
+
+            override fun onDotClick() {
+                mViewModel.setDot()
+            }
+
+            override fun onOtherClick() {
+                mViewModel.addMixRate()
+            }
+
+            override fun getOtherText(): String {
+                return "+${mViewModel.mixRate}"
+            }
+
+        })
+    }
+
+    override fun initListener() {
+        mBinding.btnBack.setOnClickListener {
+            mViewModel.backNumber()
+        }
+        mBinding.btnClear.setOnClickListener {
+            mViewModel.clearNumber()
+        }
+        mBinding.btnConfirm.setOnClickListener {
+            mViewModel.reserve()
+            dismiss()
+        }
+    }
+
+    override fun createObserver() {
+        mViewModel.onEditMoney.observe(viewLifecycleOwner) {
+            val text = "@$it"
+            mBinding.etRate.setText(text)
+            val length = text.length
+            mBinding.etRate.setSelection(length)
         }
     }
 }
