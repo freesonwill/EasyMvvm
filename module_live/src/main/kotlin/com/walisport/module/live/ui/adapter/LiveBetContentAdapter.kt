@@ -5,8 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.viewbinding.ViewBinding
-import com.walisport.lib.common.ui.adapter.BaseAdapter
-import com.walisport.lib.common.ui.adapter.BaseViewHolder
+import com.walisport.lib.base.adapter.BaseAdapter
+import com.walisport.lib.base.viewholder.BaseViewHolder
 import com.walisport.module.live.databinding.AdapterLiveBetContentItemLayoutBinding
 
 class LiveBetContentAdapter(compare: DiffUtil.ItemCallback<String>) :
