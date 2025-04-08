@@ -22,9 +22,13 @@ class BetSheetFragment : BaseBottomSheetFragment<FragmentBetSheetBinding>() {
         isCancelable = false
 
         mBinding.etMoney.requestFocus()
-        mBinding.etMoney.hint = getString(R.string.et_money_hint).format(NumberCalculatorViewModel.MIN_MONEY, NumberCalculatorViewModel.MAX_MONEY)
+        mBinding.etMoney.hint = getString(R.string.et_money_hint).format(
+            NumberCalculatorViewModel.MIN_MONEY,
+            NumberCalculatorViewModel.MAX_MONEY
+        )
 
-        mBinding.numberKeyboard.setOnCalculatorClickListener(object : NumberKeyboardView.OnCalculatorClickListener {
+        mBinding.numberKeyboard.setOnCalculatorClickListener(object :
+            NumberKeyboardView.OnCalculatorClickListener {
             override fun onNumberClick(number: Int) {
                 mViewModel.addNumber(number)
             }
@@ -86,13 +90,16 @@ class BetSheetFragment : BaseBottomSheetFragment<FragmentBetSheetBinding>() {
             mViewModel.sendBet()
         }
         mBinding.btnReserve.setOnClickListener {
-            val location = IntArray(2)
-            mBinding.btnReserve.getLocationInWindow(location)
-            ReserveDialogFragment.newInstance(
-                location.first() + mBinding.btnReserve.width / 2,
-                location.last() + mBinding.btnReserve.height,
-                1.85f
-            ).show(childFragmentManager)
+            mViewModel.onBetSheetListener.value?.first()?.let {
+                val location = IntArray(2)
+                mBinding.btnReserve.getLocationInWindow(location)
+                ReserveDialogFragment.newInstance(
+                    location.first() + mBinding.btnReserve.width / 2,
+                    location.last() + mBinding.btnReserve.height,
+                    rateNumber = it.odds
+                ).show(childFragmentManager)
+            }
+
         }
     }
 
