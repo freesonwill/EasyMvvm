@@ -1,6 +1,7 @@
 package com.walisport.module.live.ui
 
 import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import androidx.navigation.fragment.findNavController
@@ -11,12 +12,13 @@ import com.walisport.lib.base.utils.LogUtilsExt.logd
 import com.walisport.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.live.databinding.FragmentLiveVideoLandscapeBinding
 import com.walisport.module.live.viewmodel.VideoActivityViewModel
+import me.jessyan.autosize.AutoSizeConfig
 import me.jessyan.autosize.internal.CancelAdapt
-import tv.danmaku.ijk.media.example.widget.media.AndroidMediaController
 import kotlin.reflect.KClass
 
 class LiveVideoLandscapeFragment :
     BaseFragment<VideoActivityViewModel, FragmentLiveVideoLandscapeBinding>(), CancelAdapt {
+
     override val vbClass: KClass<FragmentLiveVideoLandscapeBinding> =
         FragmentLiveVideoLandscapeBinding::class
     override val vmClass: KClass<VideoActivityViewModel> = VideoActivityViewModel::class
@@ -24,12 +26,18 @@ class LiveVideoLandscapeFragment :
     private var mBackPressed = false
 
 
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        "onConfigurationChanged".logd(TAG)
+    }
+
     override fun configStatusBar(): StatusBarConfig {
         return StatusBarConfig(hideStatusBar = true)
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        mBinding.videoView.setMediaController(AndroidMediaController(activity, false))
+
     }
 
     override fun initListener() {
@@ -73,6 +81,7 @@ class LiveVideoLandscapeFragment :
     }
 
     override fun onStop() {
+//        "onStop".logd(TAG)
         super.onStop()
 
         if (mBackPressed || !mBinding.videoView.isBackgroundPlayEnabled) {
@@ -82,24 +91,28 @@ class LiveVideoLandscapeFragment :
         } else {
             mBinding.videoView.enterBackground()
         }
-
-        "onStop".logd(TAG)
     }
 
     override fun onResume() {
+//        "onResume".logd(TAG)
         super.onResume()
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-
-        "onResume".logd(TAG)
+        //使用横屏时到宽高
+        AutoSizeConfig.getInstance().setDesignWidthInDp(812)
+        AutoSizeConfig.getInstance().setDesignHeightInDp(375)
 
     }
 
     override fun onPause() {
+//        "onPause".logd(TAG)
         super.onPause()
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
-
-        "onPause".logd(TAG)
+        //恢复竖屏，宽高也要回到竖屏时到宽高
+        AutoSizeConfig.getInstance().setDesignWidthInDp(375)
+        AutoSizeConfig.getInstance().setDesignHeightInDp(812)
     }
+
+
 
 //    override fun onBackPressed() {
 //        mBackPressed = true
@@ -110,8 +123,4 @@ class LiveVideoLandscapeFragment :
         findNavController().navigate(LiveVideoLandscapeFragmentDirections.actionLiveVideoLandscapeFragmentToLeagueFragment())
     }
 
-
-    companion object {
-        const val TAG = "LiveVideoLandscapeFragment"
-    }
 }
